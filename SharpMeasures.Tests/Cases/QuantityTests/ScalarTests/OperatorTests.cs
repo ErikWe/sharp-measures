@@ -35,7 +35,7 @@ namespace ErikWe.SharpMeasures.Tests.Cases.QuantityTests.ScalarTests
 
         [Theory]
         [ClassData(typeof(Datasets.Scalar.ScalarDataset))]
-        public void Equality_ShouldMatchDouble(Scalar scalar)
+        public void Equality_ShouldBeEqualAfterAdditionIfNaN(Scalar scalar)
         {
             Scalar scalar2 = new(scalar.Magnitude + 1);
             Scalar scalar3 = new(scalar.Magnitude);
@@ -56,7 +56,7 @@ namespace ErikWe.SharpMeasures.Tests.Cases.QuantityTests.ScalarTests
 
         [Theory]
         [ClassData(typeof(Datasets.Scalar.ScalarDataset))]
-        public void Inequality_ShouldBeEqualIfNonNormal(Scalar scalar)
+        public void Inequality_ShouldBeEqualAfterAdditionIfNaN(Scalar scalar)
         {
             Scalar scalar2 = new(scalar.Magnitude + 1);
             Scalar scalar3 = new(scalar.Magnitude);
