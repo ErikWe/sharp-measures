@@ -5,13 +5,13 @@ using System;
 
 namespace ErikWe.SharpMeasures.Quantities
 {
-    public struct Volume2 : IEquatable<Volume2>, IQuantity2
+    public class Volume2 : IEquatable<Volume2>, IQuantity2<Volume>
     {
         public Volume X { get; }
         public Volume Y { get; }
 
-        Scalar IQuantity2.X => X.Magnitude;
-        Scalar IQuantity2.Y => Y.Magnitude;
+        Scalar IQuantity2.XMagnitude => X.Magnitude;
+        Scalar IQuantity2.YMagnitude => Y.Magnitude;
 
         public Volume2(Scalar2 components)
         {
@@ -56,35 +56,13 @@ namespace ErikWe.SharpMeasures.Quantities
 
         public static UnhandledQuantity Dot(Volume2 a, Volume2 b) => a.X * b.X + a.Y * b.Y;
 
-        public bool Equals(Volume2 other) => X.Equals(other.X) && Y.Equals(other.Y);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Volume2 other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public bool Equals(Volume2? other) => X.Equals(other?.X) && Y.Equals(other?.Y);
+        public override bool Equals(object? obj) => Equals(obj as Volume2);
 
         public override int GetHashCode() => (X, Y).GetHashCode();
         public override string ToString() => $"({X.CubicMetres}, {Y.CubicMetres}) [m^3]";
 
-        public static bool operator ==(Volume2? a, Volume2? b)
-        {
-            if (a is null)
-            {
-                return b is null;
-            }
-            else
-            {
-                return a.Equals(b);
-            }
-        }
-
+        public static bool operator ==(Volume2? a, Volume2? b) => a?.Equals(b) ?? b is null;
         public static bool operator !=(Volume2? a, Volume2? b) => !(a == b);
 
         public static Volume2 operator +(Volume2 a) => a;
@@ -102,8 +80,8 @@ namespace ErikWe.SharpMeasures.Quantities
         public static Volume2 operator *(Scalar2 a, Volume2 b) => new(a.X * b.X, a.Y * b.Y);
         public static Volume2 operator /(Volume2 a, Scalar2 b) => new(a.X / b.X, a.Y / b.Y);
 
-        public static UnhandledQuantity2 operator *(Volume2 a, IQuantity2 b) => new((a.X * b.X).Magnitude, (a.Y * b.Y).Magnitude);
-        public static UnhandledQuantity2 operator /(Volume2 a, IQuantity2 b) => new((a.X / b.X).Magnitude, (a.Y / b.Y).Magnitude);
+        public static UnhandledQuantity2 operator *(Volume2 a, IQuantity2 b) => new(a.X * b.XMagnitude, a.Y * b.YMagnitude);
+        public static UnhandledQuantity2 operator /(Volume2 a, IQuantity2 b) => new(a.X / b.XMagnitude, a.Y / b.YMagnitude);
 
         public static Scalar2 operator /(Volume2 a, Volume b) => new(a.X / b, a.Y / b);
         public static Scalar2 operator /(Volume a, Volume2 b) => new(a / b.X, a / b.Y);

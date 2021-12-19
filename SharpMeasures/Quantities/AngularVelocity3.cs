@@ -5,15 +5,15 @@ using System;
 
 namespace ErikWe.SharpMeasures.Quantities
 {
-    public struct AngularVelocity3 : IEquatable<AngularVelocity3>, IQuantity3
+    public class AngularVelocity3 : IEquatable<AngularVelocity3>, IQuantity3<AngularVelocity>
     {
         public AngularVelocity X { get; }
         public AngularVelocity Y { get; }
         public AngularVelocity Z { get; }
 
-        Scalar IQuantity3.X => X.Magnitude;
-        Scalar IQuantity3.Y => Y.Magnitude;
-        Scalar IQuantity3.Z => Z.Magnitude;
+        Scalar IQuantity3.XMagnitude => X.Magnitude;
+        Scalar IQuantity3.YMagnitude => Y.Magnitude;
+        Scalar IQuantity3.ZMagnitude => Z.Magnitude;
 
         public AngularVelocity3(Scalar3 components)
         {
@@ -50,35 +50,13 @@ namespace ErikWe.SharpMeasures.Quantities
 
         public static UnhandledQuantity Dot(AngularVelocity3 a, AngularVelocity3 b) => a.X * b.X + a.Y * b.Y + a.Z * b.Z;
 
-        public bool Equals(AngularVelocity3 other) => X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is AngularVelocity3 other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public bool Equals(AngularVelocity3? other) => X.Equals(other?.X) && Y.Equals(other?.Y) && Z.Equals(other?.Z);
+        public override bool Equals(object? obj) => Equals(obj as AngularVelocity3);
 
         public override int GetHashCode() => (X, Y, Z).GetHashCode();
         public override string ToString() => $"({X.RadiansPerSecond}, {Y.RadiansPerSecond}, {Z.RadiansPerSecond}) [rad/s]";
 
-        public static bool operator ==(AngularVelocity3? a, AngularVelocity3? b)
-        {
-            if (a is null)
-            {
-                return b is null;
-            }
-            else
-            {
-                return a.Equals(b);
-            }
-        }
-
+        public static bool operator ==(AngularVelocity3? a, AngularVelocity3? b) => a?.Equals(b) ?? b is null;
         public static bool operator !=(AngularVelocity3? a, AngularVelocity3? b) => !(a == b);
 
         public static AngularVelocity3 operator +(AngularVelocity3 a) => a;
@@ -98,8 +76,8 @@ namespace ErikWe.SharpMeasures.Quantities
         public static AngularVelocity3 operator *(Scalar3 a, AngularVelocity3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
         public static AngularVelocity3 operator /(AngularVelocity3 a, Scalar3 b) => new(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
 
-        public static UnhandledQuantity3 operator *(AngularVelocity3 a, IQuantity3 b) => new((a.X * b.X).Magnitude, (a.Y * b.Y).Magnitude, (a.Z * b.Z).Magnitude);
-        public static UnhandledQuantity3 operator /(AngularVelocity3 a, IQuantity3 b) => new((a.X / b.X).Magnitude, (a.Y / b.Y).Magnitude, (a.Z / b.Z).Magnitude);
+        public static UnhandledQuantity3 operator *(AngularVelocity3 a, IQuantity3 b) => new(a.X * b.XMagnitude, a.Y * b.YMagnitude, a.Z * b.ZMagnitude);
+        public static UnhandledQuantity3 operator /(AngularVelocity3 a, IQuantity3 b) => new(a.X / b.XMagnitude, a.Y / b.YMagnitude, a.Z / b.ZMagnitude);
 
         public static Scalar3 operator /(AngularVelocity3 a, AngularVelocity b) => new(a.X / b, a.Y / b, a.Z / b);
         public static Scalar3 operator /(AngularVelocity a, AngularVelocity3 b) => new(a / b.X, a / b.Y, a / b.Z);

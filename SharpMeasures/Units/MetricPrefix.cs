@@ -36,50 +36,13 @@ namespace ErikWe.SharpMeasures.Units
         }
 
         public bool Equals(MetricPrefix other) => Scale.Equals(other.Scale);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is MetricPrefix other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public override bool Equals(object? obj) => obj is MetricPrefix other && Equals(other);
+        public int CompareTo(MetricPrefix other) => Scale.CompareTo(other.Scale);
 
         public override int GetHashCode() => Scale.GetHashCode();
         public override string ToString() => $"{Scale}x";
 
-        public int CompareTo(MetricPrefix other)
-        {
-            if (this > other)
-            {
-                return 1;
-            }
-            else if (this < other)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        public static bool operator ==(MetricPrefix? x, MetricPrefix? y)
-        {
-            if (x is null)
-            {
-                return y is null;
-            }
-            else
-            {
-                return x.Equals(y);
-            }
-        }
-
+        public static bool operator ==(MetricPrefix? x, MetricPrefix? y) => x?.Equals(y) ?? y is null;
         public static bool operator !=(MetricPrefix? x, MetricPrefix? y) => !(x == y);
 
         public static Scalar operator *(MetricPrefix x, MetricPrefix y) => x.Scale * y.Scale;

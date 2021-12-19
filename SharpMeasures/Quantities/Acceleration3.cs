@@ -6,15 +6,15 @@ using System.Numerics;
 
 namespace ErikWe.SharpMeasures.Quantities
 {
-    public class Acceleration3 : IEquatable<Acceleration3>, IQuantity3
+    public class Acceleration3 : IEquatable<Acceleration3>, IQuantity3<Acceleration>
     {
         public Acceleration X { get; }
         public Acceleration Y { get; }
         public Acceleration Z { get; }
 
-        Scalar IQuantity3.X => X.Magnitude;
-        Scalar IQuantity3.Y => Y.Magnitude;
-        Scalar IQuantity3.Z => Z.Magnitude;
+        Scalar IQuantity3.XMagnitude => X.Magnitude;
+        Scalar IQuantity3.YMagnitude => Y.Magnitude;
+        Scalar IQuantity3.ZMagnitude => Z.Magnitude;
 
         public Acceleration3(Scalar3 components)
         {
@@ -44,6 +44,20 @@ namespace ErikWe.SharpMeasures.Quantities
             Z = z;
         }
 
+        public Acceleration3(Scalar x, Scalar y, Scalar z)
+        {
+            X = new Acceleration(x);
+            Y = new Acceleration(y);
+            Z = new Acceleration(z);
+        }
+
+        public Acceleration3(IQuantity x, IQuantity y, IQuantity z)
+        {
+            X = new Acceleration(x.Magnitude);
+            Y = new Acceleration(y.Magnitude);
+            Z = new Acceleration(z.Magnitude);
+        }
+
         public Acceleration3 Normalize() => this / Magnitude().Magnitude;
         public UnhandledQuantity SquaredMagnitude() => Dot(this);
         public Acceleration Magnitude() => new(SquaredMagnitude().Sqrt().Magnitude);
@@ -71,35 +85,13 @@ namespace ErikWe.SharpMeasures.Quantities
             );
         }
 
-        public bool Equals(Acceleration3 other) => X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Acceleration3 other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public bool Equals(Acceleration3? other) => X.Equals(other?.X) && Y.Equals(other?.Y) && Z.Equals(other?.Z);
+        public override bool Equals(object? obj) => Equals(obj as Acceleration3);
 
         public override int GetHashCode() => (X, Y, Z).GetHashCode();
         public override string ToString() => $"({X.MetresPerSecondSquared}, {Y.MetresPerSecondSquared}, {Z.MetresPerSecondSquared}) [m/(s^2)]";
 
-        public static bool operator ==(Acceleration3? a, Acceleration3? b)
-        {
-            if (a is null)
-            {
-                return b is null;
-            }
-            else
-            {
-                return a.Equals(b);
-            }
-        }
-
+        public static bool operator ==(Acceleration3? a, Acceleration3? b) => a?.Equals(b) ?? b is null;
         public static bool operator !=(Acceleration3? a, Acceleration3? b) => !(a == b);
 
         public static Acceleration3 operator +(Acceleration3 a) => a;
@@ -114,8 +106,8 @@ namespace ErikWe.SharpMeasures.Quantities
         public static Acceleration3 operator *(Scalar3 a, Acceleration3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
         public static Acceleration3 operator /(Acceleration3 a, Scalar3 b) => new(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
 
-        public static UnhandledQuantity3 operator *(Acceleration3 a, IQuantity3 b) => new((a.X * b.X).Magnitude, (a.Y * b.Y).Magnitude, (a.Z * b.Z).Magnitude);
-        public static UnhandledQuantity3 operator /(Acceleration3 a, IQuantity3 b) => new((a.X / b.X).Magnitude, (a.Y / b.Y).Magnitude, (a.Z / b.Z).Magnitude);
+        public static UnhandledQuantity3 operator *(Acceleration3 a, IQuantity3 b) => new(a.X * b.XMagnitude, a.Y * b.YMagnitude, a.Z * b.ZMagnitude);
+        public static UnhandledQuantity3 operator /(Acceleration3 a, IQuantity3 b) => new(a.X / b.XMagnitude, a.Y / b.YMagnitude, a.Z / b.ZMagnitude);
 
         public static Velocity3 operator *(Acceleration3 a, Time b) => new(a.X * b, a.Y * b, a.Z * b);
         public static Velocity3 operator *(Time a, Acceleration3 b) => new(a * b.X, a * b.Y, a * b.Z);

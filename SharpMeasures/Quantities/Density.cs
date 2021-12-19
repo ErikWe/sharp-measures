@@ -67,50 +67,13 @@ namespace ErikWe.SharpMeasures.Quantities
         public UnhandledQuantity Sqrt() => new(Magnitude.Sqrt());
 
         public bool Equals(Density other) => Magnitude.Equals(other.Magnitude);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Density other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public override bool Equals(object? obj) => obj is Density other && Equals(other);
+        public int CompareTo(Density other) => Magnitude.CompareTo(other.Magnitude);
 
         public override int GetHashCode() => Magnitude.GetHashCode();
         public override string ToString() => $"{KilogramsPerCubicMetre} [kg/(m^3)]";
 
-        public int CompareTo(Density other)
-        {
-            if (this > other)
-            {
-                return 1;
-            }
-            else if (this < other)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        public static bool operator ==(Density? x, Density? y)
-        {
-            if (x is null)
-            {
-                return y is null;
-            }
-            else
-            {
-                return x.Equals(y);
-            }
-        }
-
+        public static bool operator ==(Density? x, Density? y) => x?.Equals(y) ?? y is null;
         public static bool operator !=(Density? x, Density? y) => !(x == y);
 
         public static Density operator +(Density x) => x;

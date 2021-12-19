@@ -7,13 +7,12 @@ namespace ErikWe.SharpMeasures.Tests.Datasets.Scalar
     {
         public IEnumerator<object?[]> GetEnumerator()
         {
-            yield return new object?[] { double.NaN };
-            yield return new object?[] { double.PositiveInfinity };
-            yield return new object?[] { double.NegativeInfinity };
-            yield return new object?[] { 0 };
-            yield return new object?[] { -3372.00237 };
-            yield return new object?[] { 812378.3032 };
-            yield return new object?[] { null };
+            yield return new object?[] { new Quantities.Scalar(double.NaN) };
+            yield return new object?[] { new Quantities.Scalar(double.PositiveInfinity) };
+            yield return new object?[] { new Quantities.Scalar(double.NegativeInfinity) };
+            yield return new object?[] { new Quantities.Scalar(0) };
+            yield return new object?[] { new Quantities.Scalar(-3372.00237) };
+            yield return new object?[] { new Quantities.Scalar(812378.3032) };
         }
 
         IEnumerator IEnumerable.GetEnumerator()

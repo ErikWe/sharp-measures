@@ -2,9 +2,9 @@
 
   <PropertyGroup>
 	  <Nullable>enable</Nullable>
-	  <AnalysisMode>All</AnalysisMode>
+	  <!--<AnalysisMode>All</AnalysisMode>-->
 	  <TargetFramework>net5.0</TargetFramework>
-	  <LangVersion>10</LangVersion>
+	  <LangVersion>9</LangVersion>
 	  <RootNamespace>ErikWe.SharpMeasures</RootNamespace>
 	  <RepositoryUrl>https://github.com/ErikWe/sharp-measures</RepositoryUrl>
 	  <Version>0.1.0</Version>

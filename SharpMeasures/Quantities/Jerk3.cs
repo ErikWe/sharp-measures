@@ -6,15 +6,15 @@ using System.Numerics;
 
 namespace ErikWe.SharpMeasures.Quantities
 {
-    public class Jerk3 : IEquatable<Jerk3>, IQuantity3
+    public class Jerk3 : IEquatable<Jerk3>, IQuantity3<Jerk>
     {
         public Jerk X { get; }
         public Jerk Y { get; }
         public Jerk Z { get; }
 
-        Scalar IQuantity3.X => X.Magnitude;
-        Scalar IQuantity3.Y => Y.Magnitude;
-        Scalar IQuantity3.Z => Z.Magnitude;
+        Scalar IQuantity3.XMagnitude => X.Magnitude;
+        Scalar IQuantity3.YMagnitude => Y.Magnitude;
+        Scalar IQuantity3.ZMagnitude => Z.Magnitude;
 
         public Jerk3(Scalar3 components)
         {
@@ -71,35 +71,13 @@ namespace ErikWe.SharpMeasures.Quantities
             );
         }
 
-        public bool Equals(Jerk3 other) => X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Jerk3 other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public bool Equals(Jerk3? other) => X.Equals(other?.X) && Y.Equals(other?.Y) && Z.Equals(other?.Z);
+        public override bool Equals(object? obj) => Equals(obj as Jerk3);
 
         public override int GetHashCode() => (X, Y, Z).GetHashCode();
         public override string ToString() => $"({X.MetresPerCubicSecond}, {Y.MetresPerCubicSecond}, {Z.MetresPerCubicSecond}) [m/(s^3)]";
 
-        public static bool operator ==(Jerk3? a, Jerk3? b)
-        {
-            if (a is null)
-            {
-                return b is null;
-            }
-            else
-            {
-                return a.Equals(b);
-            }
-        }
-
+        public static bool operator ==(Jerk3? a, Jerk3? b) => a?.Equals(b) ?? b is null;
         public static bool operator !=(Jerk3? a, Jerk3? b) => !(a == b);
 
         public static Jerk3 operator +(Jerk3 a) => a;
@@ -114,8 +92,8 @@ namespace ErikWe.SharpMeasures.Quantities
         public static Jerk3 operator *(Scalar3 a, Jerk3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
         public static Jerk3 operator /(Jerk3 a, Scalar3 b) => new(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
 
-        public static UnhandledQuantity3 operator *(Jerk3 a, IQuantity3 b) => new((a.X * b.X).Magnitude, (a.Y * b.Y).Magnitude, (a.Z * b.Z).Magnitude);
-        public static UnhandledQuantity3 operator /(Jerk3 a, IQuantity3 b) => new((a.X / b.X).Magnitude, (a.Y / b.Y).Magnitude, (a.Z / b.Z).Magnitude);
+        public static UnhandledQuantity3 operator *(Jerk3 a, IQuantity3 b) => new(a.X * b.XMagnitude, a.Y * b.YMagnitude, a.Z * b.ZMagnitude);
+        public static UnhandledQuantity3 operator /(Jerk3 a, IQuantity3 b) => new(a.X / b.XMagnitude, a.Y / b.YMagnitude, a.Z / b.ZMagnitude);
 
         public static Acceleration3 operator *(Jerk3 a, Time b) => new(a.X * b, a.Y * b, a.Z * b);
         public static Acceleration3 operator *(Time a, Jerk3 b) => new(a * b.X, a * b.Y, a * b.Z);

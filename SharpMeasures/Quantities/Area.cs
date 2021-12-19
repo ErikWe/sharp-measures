@@ -78,50 +78,13 @@ namespace ErikWe.SharpMeasures.Quantities
         public Length Sqrt() => new(Magnitude.Sqrt());
 
         public bool Equals(Area other) => Magnitude.Equals(other.Magnitude);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Area other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public override bool Equals(object? obj) => obj is Area other && Equals(other);
+        public int CompareTo(Area other) => Magnitude.CompareTo(other.Magnitude);
 
         public override int GetHashCode() => Magnitude.GetHashCode();
         public override string ToString() => $"{SquareMetres} [m^2]";
 
-        public int CompareTo(Area other)
-        {
-            if (this > other)
-            {
-                return 1;
-            }
-            else if (this < other)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        public static bool operator ==(Area? x, Area? y)
-        {
-            if (x is null)
-            {
-                return y is null;
-            }
-            else
-            {
-                return x.Equals(y);
-            }
-        }
-
+        public static bool operator ==(Area? x, Area? y) => x?.Equals(y) ?? y is null;
         public static bool operator !=(Area? x, Area? y) => !(x == y);
 
         public static Area operator +(Area x) => x;

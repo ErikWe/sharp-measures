@@ -6,15 +6,15 @@ using System.Numerics;
 
 namespace ErikWe.SharpMeasures.Quantities
 {
-    public struct Area3 : IEquatable<Area3>, IQuantity3
+    public class Area3 : IEquatable<Area3>, IQuantity3<Area>
     {
         public Area X { get; }
         public Area Y { get; }
         public Area Z { get; }
 
-        Scalar IQuantity3.X => X.Magnitude;
-        Scalar IQuantity3.Y => Y.Magnitude;
-        Scalar IQuantity3.Z => Z.Magnitude;
+        Scalar IQuantity3.XMagnitude => X.Magnitude;
+        Scalar IQuantity3.YMagnitude => Y.Magnitude;
+        Scalar IQuantity3.ZMagnitude => Z.Magnitude;
 
         public Area3(Scalar3 components)
         {
@@ -85,35 +85,13 @@ namespace ErikWe.SharpMeasures.Quantities
             );
         }
 
-        public bool Equals(Area3 other) => X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Area3 other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public bool Equals(Area3? other) => X.Equals(other?.X) && Y.Equals(other?.Y) && Z.Equals(other?.Z);
+        public override bool Equals(object? obj) => Equals(obj as Area3);
 
         public override int GetHashCode() => (X, Y, Z).GetHashCode();
         public override string ToString() => $"({X.SquareMetres}, {Y.SquareMetres}, {Z.SquareMetres}) [m^2]";
 
-        public static bool operator ==(Area3? a, Area3? b)
-        {
-            if (a is null)
-            {
-                return b is null;
-            }
-            else
-            {
-                return a.Equals(b);
-            }
-        }
-
+        public static bool operator ==(Area3? a, Area3? b) => a?.Equals(b) ?? b is null;
         public static bool operator !=(Area3? a, Area3? b) => !(a == b);
 
         public static Area3 operator +(Area3 a) => a;
@@ -130,8 +108,8 @@ namespace ErikWe.SharpMeasures.Quantities
         public static Area3 operator *(Scalar3 a, Area3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
         public static Area3 operator /(Area3 a, Scalar3 b) => new(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
 
-        public static UnhandledQuantity3 operator *(Area3 a, IQuantity3 b) => new((a.X * b.X).Magnitude, (a.Y * b.Y).Magnitude, (a.Z * b.Z).Magnitude);
-        public static UnhandledQuantity3 operator /(Area3 a, IQuantity3 b) => new((a.X / b.X).Magnitude, (a.Y / b.Y).Magnitude, (a.Z / b.Z).Magnitude);
+        public static UnhandledQuantity3 operator *(Area3 a, IQuantity3 b) => new(a.X * b.XMagnitude, a.Y * b.YMagnitude, a.Z * b.ZMagnitude);
+        public static UnhandledQuantity3 operator /(Area3 a, IQuantity3 b) => new(a.X / b.XMagnitude, a.Y / b.YMagnitude, a.Z / b.ZMagnitude);
 
         public static Scalar3 operator /(Area3 a, Area b) => new(a.X / b, a.Y / b, a.Z / b);
         public static Scalar3 operator /(Area a, Area3 b) => new(a / b.X, a / b.Y, a / b.Z);

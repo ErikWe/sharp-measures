@@ -56,50 +56,13 @@ namespace ErikWe.SharpMeasures.Quantities
         public UnhandledQuantity Sqrt() => new(Magnitude.Sqrt());
 
         public bool Equals(Velocity other) => Magnitude.Equals(other.Magnitude);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Velocity other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public override bool Equals(object? obj) => obj is Velocity other && Equals(other);
+        public int CompareTo(Velocity other) => Magnitude.CompareTo(other.Magnitude);
 
         public override int GetHashCode() => Magnitude.GetHashCode();
         public override string ToString() => $"{MetresPerSecond} [m/s]";
 
-        public int CompareTo(Velocity other)
-        {
-            if (this > other)
-            {
-                return 1;
-            }
-            else if (this < other)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        public static bool operator ==(Velocity? x, Velocity? y)
-        {
-            if (x is null)
-            {
-                return y is null;
-            }
-            else
-            {
-                return x.Equals(y);
-            }
-        }
-
+        public static bool operator ==(Velocity? x, Velocity? y) => x?.Equals(y) ?? y is null;
         public static bool operator !=(Velocity? x, Velocity? y) => !(x == y);
 
         public static Velocity operator +(Velocity x) => x;

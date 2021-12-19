@@ -1,5 +1,4 @@
 ﻿using ErikWe.SharpMeasures.Quantities.Definitions;
-using ErikWe.SharpMeasures.Units;
 
 using System;
 
@@ -7,9 +6,9 @@ namespace ErikWe.SharpMeasures.Quantities
 {
     public struct Scalar : IEquatable<Scalar>, IComparable<Scalar>, IQuantity
     {
-        Scalar IQuantity.Magnitude => this;
-
         public double Magnitude { get; }
+
+        Scalar IQuantity.Magnitude => this;
 
         public Scalar(double magnitude)
         {
@@ -34,50 +33,13 @@ namespace ErikWe.SharpMeasures.Quantities
         public Scalar Pow(double x) => new(Math.Pow(Magnitude, x));
 
         public bool Equals(Scalar other) => Magnitude.Equals(other.Magnitude);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Scalar other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public override bool Equals(object? obj) => obj is Scalar other && Equals(other);
+        public int CompareTo(Scalar other) => Magnitude.CompareTo(other.Magnitude);
 
         public override int GetHashCode() => Magnitude.GetHashCode();
         public override string ToString() => $"{Magnitude}";
 
-        public int CompareTo(Scalar other)
-        {
-            if (this > other)
-            {
-                return 1;
-            }
-            else if (this < other)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        public static bool operator ==(Scalar? x, Scalar? y)
-        {
-            if (x is null)
-            {
-                return y is null;
-            }
-            else
-            {
-                return x.Equals(y);
-            }
-        }
-
+        public static bool operator ==(Scalar? x, Scalar? y) => x?.Equals(y) ?? y is null;
         public static bool operator !=(Scalar? x, Scalar? y) => !(x == y);
 
         public static Scalar operator +(Scalar x) => x;
@@ -88,7 +50,7 @@ namespace ErikWe.SharpMeasures.Quantities
         public static Scalar operator *(Scalar x, Scalar y) => new(x.Magnitude * y.Magnitude);
         public static Scalar operator /(Scalar x, Scalar y) => new(x.Magnitude / y.Magnitude);
 
-        public static bool operator <(Scalar x, Scalar y) => x.Magnitude > y.Magnitude;
+        public static bool operator <(Scalar x, Scalar y) => x.Magnitude < y.Magnitude;
         public static bool operator >(Scalar x, Scalar y) => x.Magnitude > y.Magnitude;
         public static bool operator <=(Scalar x, Scalar y) => x.Magnitude <= y.Magnitude;
         public static bool operator >=(Scalar x, Scalar y) => x.Magnitude >= y.Magnitude;

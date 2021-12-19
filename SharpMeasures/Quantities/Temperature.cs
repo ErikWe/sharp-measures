@@ -54,50 +54,13 @@ namespace ErikWe.SharpMeasures.Quantities
         public UnhandledQuantity Sqrt() => new(Magnitude.Sqrt());
 
         public bool Equals(Temperature other) => Magnitude.Equals(other.Magnitude);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Temperature other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public override bool Equals(object? obj) => obj is Temperature other && Equals(other);
+        public int CompareTo(Temperature other) => Magnitude.CompareTo(other.Magnitude);
 
         public override int GetHashCode() => Magnitude.GetHashCode();
         public override string ToString() => $"{Kelvin} [K]";
 
-        public int CompareTo(Temperature other)
-        {
-            if (this > other)
-            {
-                return 1;
-            }
-            else if (this < other)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        public static bool operator ==(Temperature? x, Temperature? y)
-        {
-            if (x is null)
-            {
-                return y is null;
-            }
-            else
-            {
-                return x.Equals(y);
-            }
-        }
-
+        public static bool operator ==(Temperature? x, Temperature? y) => x?.Equals(y) ?? y is null;
         public static bool operator !=(Temperature? x, Temperature? y) => !(x == y);
 
         public static Temperature operator +(Temperature x) => x;

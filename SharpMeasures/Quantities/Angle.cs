@@ -40,15 +40,6 @@ namespace ErikWe.SharpMeasures.Quantities
         public Scalar ArcSeconds => InUnit(UnitOfAngle.ArcSecond);
         public Scalar Turns => InUnit(UnitOfAngle.Turn);
 
-        public bool IsNaN => Magnitude.IsNaN;
-        public bool IsZero => Magnitude.IsZero;
-        public bool IsPositive => Magnitude.IsPositive;
-        public bool IsNegative => Magnitude.IsNegative;
-        public bool IsFinite => Magnitude.IsFinite;
-        public bool IsInfinity => Magnitude.IsInfinity;
-        public bool IsPositiveInfinity => Magnitude.IsPositiveInfinity;
-        public bool IsNegativeInfinity => Magnitude.IsNegativeInfinity;
-
         public Angle Abs() => new(Magnitude.Abs());
         public Angle Floor() => new(Magnitude.Floor());
         public Angle Ceiling() => new(Magnitude.Ceiling());
@@ -119,50 +110,13 @@ namespace ErikWe.SharpMeasures.Quantities
         }
 
         public bool Equals(Angle other) => Magnitude.Equals(other.Magnitude);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Angle other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public override bool Equals(object? obj) => obj is Angle other && Equals(other);
+        public int CompareTo(Angle other) => Magnitude.CompareTo(other.Magnitude);
 
         public override int GetHashCode() => Magnitude.GetHashCode();
         public override string ToString() => $"{Radians} [rad]";
 
-        public int CompareTo(Angle other)
-        {
-            if (this > other)
-            {
-                return 1;
-            }
-            else if (this < other)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        public static bool operator ==(Angle? x, Angle? y)
-        {
-            if (x is null)
-            {
-                return y is null;
-            }
-            else
-            {
-                return x.Equals(y);
-            }
-        }
-
+        public static bool operator ==(Angle? x, Angle? y) => x?.Equals(y) ?? y is null;
         public static bool operator !=(Angle? x, Angle? y) => !(x == y);
 
         public static Angle operator +(Angle x) => x;

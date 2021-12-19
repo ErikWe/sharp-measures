@@ -3,15 +3,29 @@ using System.Numerics;
 
 namespace ErikWe.SharpMeasures.Quantities.Definitions
 {
-    public struct UnhandledQuantity3 : IEquatable<UnhandledQuantity3>, IQuantity3
+    public class UnhandledQuantity3 : IEquatable<UnhandledQuantity3>, IQuantity3<UnhandledQuantity>
     {
         public UnhandledQuantity X { get; }
         public UnhandledQuantity Y { get; }
         public UnhandledQuantity Z { get; }
 
-        Scalar IQuantity3.X => X.Magnitude;
-        Scalar IQuantity3.Y => Y.Magnitude;
-        Scalar IQuantity3.Z => Z.Magnitude;
+        Scalar IQuantity3.XMagnitude => X.Magnitude;
+        Scalar IQuantity3.YMagnitude => Y.Magnitude;
+        Scalar IQuantity3.ZMagnitude => Z.Magnitude;
+
+        public UnhandledQuantity3(Scalar3 components)
+        {
+            X = new UnhandledQuantity(components.X);
+            Y = new UnhandledQuantity(components.Y);
+            Z = new UnhandledQuantity(components.Z);
+        }
+
+        public UnhandledQuantity3(IQuantity3 components)
+        {
+            X = new UnhandledQuantity(components.XMagnitude);
+            Y = new UnhandledQuantity(components.YMagnitude);
+            Z = new UnhandledQuantity(components.ZMagnitude);
+        }
 
         public UnhandledQuantity3(Scalar x, Scalar y, Scalar z)
         {
@@ -55,41 +69,19 @@ namespace ErikWe.SharpMeasures.Quantities.Definitions
         public static UnhandledQuantity3 Transform(UnhandledQuantity3 vector, Matrix4x4 transform)
         {
             return new(
-                vector.X * (Scalar)transform.M11 + vector.Y * (Scalar)transform.M21 + vector.Z * (Scalar)transform.M31 + new UnhandledQuantity(transform.M41),
-                vector.X * (Scalar)transform.M12 + vector.Y * (Scalar)transform.M22 + vector.Z * (Scalar)transform.M32 + new UnhandledQuantity(transform.M42),
-                vector.X * (Scalar)transform.M13 + vector.Y * (Scalar)transform.M23 + vector.Z * (Scalar)transform.M33 + new UnhandledQuantity(transform.M43)
+                vector.X * transform.M11 + vector.Y * transform.M21 + vector.Z * transform.M31 + new UnhandledQuantity(transform.M41),
+                vector.X * transform.M12 + vector.Y * transform.M22 + vector.Z * transform.M32 + new UnhandledQuantity(transform.M42),
+                vector.X * transform.M13 + vector.Y * transform.M23 + vector.Z * transform.M33 + new UnhandledQuantity(transform.M43)
             );
         }
 
-        public bool Equals(UnhandledQuantity3 other) => X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is UnhandledQuantity3 other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public bool Equals(UnhandledQuantity3? other) => X.Equals(other?.X) && Y.Equals(other?.Y) && Z.Equals(other?.Z);
+        public override bool Equals(object? obj) => Equals(obj as UnhandledQuantity3);
 
         public override int GetHashCode() => (X, Y, Z).GetHashCode();
         public override string ToString() => $"({X}, {Y}, {Z}) [undef]";
 
-        public static bool operator ==(UnhandledQuantity3? a, UnhandledQuantity3? b)
-        {
-            if (a is null)
-            {
-                return b is null;
-            }
-            else
-            {
-                return a.Equals(b);
-            }
-        }
-
+        public static bool operator ==(UnhandledQuantity3? a, UnhandledQuantity3? b) => a?.Equals(b) ?? b is null;
         public static bool operator !=(UnhandledQuantity3? a, UnhandledQuantity3? b) => !(a == b);
 
         public static UnhandledQuantity3 operator +(UnhandledQuantity3 a) => a;
@@ -100,10 +92,23 @@ namespace ErikWe.SharpMeasures.Quantities.Definitions
         public static UnhandledQuantity3 operator *(UnhandledQuantity3 a, UnhandledQuantity3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
         public static UnhandledQuantity3 operator /(UnhandledQuantity3 a, UnhandledQuantity3 b) => new(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
 
+        public static UnhandledQuantity3 operator *(UnhandledQuantity3 a, Scalar3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
+        public static UnhandledQuantity3 operator *(Scalar3 a, UnhandledQuantity3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
+        public static UnhandledQuantity3 operator /(UnhandledQuantity3 a, Scalar3 b) => new(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
+        public static UnhandledQuantity3 operator /(Scalar3 a, UnhandledQuantity3 b) => new(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
+
+        public static UnhandledQuantity3 operator *(UnhandledQuantity3 a, IQuantity3 b) => new(a.X * b.XMagnitude, a.Y * b.YMagnitude, a.Z * b.ZMagnitude);
+        public static UnhandledQuantity3 operator /(UnhandledQuantity3 a, IQuantity3 b) => new(a.X / b.XMagnitude, a.Y / b.YMagnitude, a.Z / b.ZMagnitude);
+
         public static UnhandledQuantity3 operator *(UnhandledQuantity3 a, UnhandledQuantity b) => new(a.X * b, a.Y * b, a.Z * b);
         public static UnhandledQuantity3 operator *(UnhandledQuantity a, UnhandledQuantity3 b) => new(a * b.X, a * b.Y, a * b.Z);
         public static UnhandledQuantity3 operator /(UnhandledQuantity3 a, UnhandledQuantity b) => new(a.X / b, a.Y / b, a.Z / b);
         public static UnhandledQuantity3 operator /(UnhandledQuantity a, UnhandledQuantity3 b) => new(a / b.X, a / b.Y, a / b.Z);
+
+        public static UnhandledQuantity3 operator *(UnhandledQuantity3 a, Scalar b) => new(a.X * b, a.Y * b, a.Z * b);
+        public static UnhandledQuantity3 operator *(Scalar a, UnhandledQuantity3 b) => new(a * b.X, a * b.Y, a * b.Z);
+        public static UnhandledQuantity3 operator /(UnhandledQuantity3 a, Scalar b) => new(a.X / b, a.Y / b, a.Z / b);
+        public static UnhandledQuantity3 operator /(Scalar a, UnhandledQuantity3 b) => new(a / b.X, a / b.Y, a / b.Z);
 
         public static UnhandledQuantity3 operator *(UnhandledQuantity3 a, IQuantity b) => new(a.X * b, a.Y * b, a.Z * b);
         public static UnhandledQuantity3 operator /(UnhandledQuantity3 a, IQuantity b) => new(a.X / b, a.Y / b, a.Z / b);

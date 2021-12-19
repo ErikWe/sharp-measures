@@ -6,15 +6,15 @@ using System.Numerics;
 
 namespace ErikWe.SharpMeasures.Quantities
 {
-    public class Time3 : IEquatable<Time3>, IQuantity3
+    public class Time3 : IEquatable<Time3>, IQuantity3<Time>
     {
         public Time X { get; }
         public Time Y { get; }
         public Time Z { get; }
 
-        Scalar IQuantity3.X => X.Magnitude;
-        Scalar IQuantity3.Y => Y.Magnitude;
-        Scalar IQuantity3.Z => Z.Magnitude;
+        Scalar IQuantity3.XMagnitude => X.Magnitude;
+        Scalar IQuantity3.YMagnitude => Y.Magnitude;
+        Scalar IQuantity3.ZMagnitude => Z.Magnitude;
 
         public Time3(Scalar3 components)
         {
@@ -71,35 +71,13 @@ namespace ErikWe.SharpMeasures.Quantities
             );
         }
 
-        public bool Equals(Time3 other) => X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Time3 other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public bool Equals(Time3? other) => X.Equals(other?.X) && Y.Equals(other?.Y) && Z.Equals(other?.Z);
+        public override bool Equals(object? obj) => Equals(obj as Time3);
 
         public override int GetHashCode() => (X, Y, Z).GetHashCode();
         public override string ToString() => $"({X.Seconds}, {Y.Seconds}, {Z.Seconds}) [s]";
 
-        public static bool operator ==(Time3? a, Time3? b)
-        {
-            if (a is null)
-            {
-                return b is null;
-            }
-            else
-            {
-                return a.Equals(b);
-            }
-        }
-
+        public static bool operator ==(Time3? a, Time3? b) => a?.Equals(b) ?? b is null;
         public static bool operator !=(Time3? a, Time3? b) => !(a == b);
 
         public static Time3 operator +(Time3 a) => a;
@@ -114,8 +92,8 @@ namespace ErikWe.SharpMeasures.Quantities
         public static Time3 operator *(Scalar3 a, Time3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
         public static Time3 operator /(Time3 a, Scalar3 b) => new(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
 
-        public static UnhandledQuantity3 operator *(Time3 a, IQuantity3 b) => new((a.X * b.X).Magnitude, (a.Y * b.Y).Magnitude, (a.Z * b.Z).Magnitude);
-        public static UnhandledQuantity3 operator /(Time3 a, IQuantity3 b) => new((a.X / b.X).Magnitude, (a.Y / b.Y).Magnitude, (a.Z / b.Z).Magnitude);
+        public static UnhandledQuantity3 operator *(Time3 a, IQuantity3 b) => new(a.X * b.XMagnitude, a.Y * b.YMagnitude, a.Z * b.ZMagnitude);
+        public static UnhandledQuantity3 operator /(Time3 a, IQuantity3 b) => new(a.X / b.XMagnitude, a.Y / b.YMagnitude, a.Z / b.ZMagnitude);
 
         public static Length3 operator *(Time3 a, Velocity3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
         public static Velocity3 operator *(Time3 a, Acceleration3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);

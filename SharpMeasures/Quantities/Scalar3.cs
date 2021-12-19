@@ -1,16 +1,19 @@
 ﻿using ErikWe.SharpMeasures.Quantities.Definitions;
-using ErikWe.SharpMeasures.Units;
 
 using System;
 using System.Numerics;
 
 namespace ErikWe.SharpMeasures.Quantities
 {
-    public class Scalar3 : IEquatable<Scalar3>, IQuantity3
+    public class Scalar3 : IEquatable<Scalar3>, IQuantity3<Scalar>
     {
         public Scalar X { get; }
         public Scalar Y { get; }
         public Scalar Z { get; }
+
+        Scalar IQuantity3.XMagnitude => X;
+        Scalar IQuantity3.YMagnitude => Y;
+        Scalar IQuantity3.ZMagnitude => Z;
 
         public Scalar3(Scalar x, Scalar y, Scalar z)
         {
@@ -46,35 +49,13 @@ namespace ErikWe.SharpMeasures.Quantities
             );
         }
 
-        public bool Equals(Scalar3 other) => X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Scalar3 other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public bool Equals(Scalar3? other) => X.Equals(other?.X) && Y.Equals(other?.Y) && Z.Equals(other?.Z);
+        public override bool Equals(object? obj) => Equals(obj as Scalar3);
 
         public override int GetHashCode() => (X, Y, Z).GetHashCode();
         public override string ToString() => $"({X}, {Y}, {Z})";
 
-        public static bool operator ==(Scalar3? a, Scalar3? b)
-        {
-            if (a is null)
-            {
-                return b is null;
-            }
-            else
-            {
-                return a.Equals(b);
-            }
-        }
-
+        public static bool operator ==(Scalar3? a, Scalar3? b) => a?.Equals(b) ?? b is null;
         public static bool operator !=(Scalar3? a, Scalar3? b) => !(a == b);
 
         public static Scalar3 operator +(Scalar3 a) => a;

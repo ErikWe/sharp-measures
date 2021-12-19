@@ -57,50 +57,13 @@ namespace ErikWe.SharpMeasures.Quantities
         public UnhandledQuantity Sqrt() => new(Magnitude.Sqrt());
 
         public bool Equals(AngularAcceleration other) => Magnitude.Equals(other.Magnitude);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is AngularAcceleration other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public override bool Equals(object? obj) => obj is AngularAcceleration other && Equals(other);
+        public int CompareTo(AngularAcceleration other) => Magnitude.CompareTo(other.Magnitude);
 
         public override int GetHashCode() => Magnitude.GetHashCode();
         public override string ToString() => $"{RadiansPerSecondSquared} [rad/(s^2)]";
 
-        public int CompareTo(AngularAcceleration other)
-        {
-            if (this > other)
-            {
-                return 1;
-            }
-            else if (this < other)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        public static bool operator ==(AngularAcceleration? x, AngularAcceleration? y)
-        {
-            if (x is null)
-            {
-                return y is null;
-            }
-            else
-            {
-                return x.Equals(y);
-            }
-        }
-
+        public static bool operator ==(AngularAcceleration? x, AngularAcceleration? y) => x?.Equals(y) ?? y is null;
         public static bool operator !=(AngularAcceleration? x, AngularAcceleration? y) => !(x == y);
 
         public static AngularAcceleration operator +(AngularAcceleration x) => x;

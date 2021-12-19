@@ -6,15 +6,15 @@ using System.Numerics;
 
 namespace ErikWe.SharpMeasures.Quantities
 {
-    public class Length3 : IEquatable<Length3>, IQuantity3
+    public class Length3 : IEquatable<Length3>, IQuantity3<Length>
     {
         public Length X { get; }
         public Length Y { get; }
         public Length Z { get; }
 
-        Scalar IQuantity3.X => X.Magnitude;
-        Scalar IQuantity3.Y => Y.Magnitude;
-        Scalar IQuantity3.Z => Z.Magnitude;
+        Scalar IQuantity3.XMagnitude => X.Magnitude;
+        Scalar IQuantity3.YMagnitude => Y.Magnitude;
+        Scalar IQuantity3.ZMagnitude => Z.Magnitude;
 
         public Length3(Scalar3 components)
         {
@@ -71,35 +71,13 @@ namespace ErikWe.SharpMeasures.Quantities
             );
         }
 
-        public bool Equals(Length3 other) => X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Length3 other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public bool Equals(Length3? other) => X.Equals(other?.X) && Y.Equals(other?.Y) && Z.Equals(other?.Z);
+        public override bool Equals(object? obj) => Equals(obj as Length3);
 
         public override int GetHashCode() => (X, Y, Z).GetHashCode();
         public override string ToString() => $"({X.Metres}, {Y.Metres}, {Z.Metres}) [m]";
 
-        public static bool operator ==(Length3? a, Length3? b)
-        {
-            if (a is null)
-            {
-                return b is null;
-            }
-            else
-            {
-                return a.Equals(b);
-            }
-        }
-
+        public static bool operator ==(Length3? a, Length3? b) => a?.Equals(b) ?? b is null;
         public static bool operator !=(Length3? a, Length3? b) => !(a == b);
 
         public static Length3 operator +(Length3 a) => a;
@@ -114,8 +92,8 @@ namespace ErikWe.SharpMeasures.Quantities
         public static Length3 operator *(Scalar3 a, Length3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
         public static Length3 operator /(Length3 a, Scalar3 b) => new(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
 
-        public static UnhandledQuantity3 operator *(Length3 a, IQuantity3 b) => new((a.X * b.X).Magnitude, (a.Y * b.Y).Magnitude, (a.Z * b.Z).Magnitude);
-        public static UnhandledQuantity3 operator /(Length3 a, IQuantity3 b) => new((a.X / b.X).Magnitude, (a.Y / b.Y).Magnitude, (a.Z / b.Z).Magnitude);
+        public static UnhandledQuantity3 operator *(Length3 a, IQuantity3 b) => new(a.X * b.XMagnitude, a.Y * b.YMagnitude, a.Z * b.ZMagnitude);
+        public static UnhandledQuantity3 operator /(Length3 a, IQuantity3 b) => new(a.X / b.XMagnitude, a.Y / b.YMagnitude, a.Z / b.ZMagnitude);
 
         public static Velocity3 operator /(Length3 a, Time b) => new(a.X / b, a.Y / b, a.Z / b);
 

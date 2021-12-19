@@ -1,12 +1,19 @@
-﻿namespace ErikWe.SharpMeasures.Quantities.Definitions
+﻿using System;
+
+namespace ErikWe.SharpMeasures.Quantities.Definitions
 {
-    public struct UnhandledQuantity : IQuantity
+    public struct UnhandledQuantity : IQuantity, IEquatable<UnhandledQuantity>, IComparable<UnhandledQuantity>
     {
         public Scalar Magnitude { get; }
 
         public UnhandledQuantity(Scalar magnitude)
         {
             Magnitude = magnitude;
+        }
+
+        public UnhandledQuantity(IQuantity quantity)
+        {
+            Magnitude = quantity.Magnitude;
         }
 
         public bool IsNaN => Magnitude.IsNaN;
@@ -27,50 +34,13 @@
         public UnhandledQuantity Sqrt() => new(Magnitude.Sqrt());
 
         public bool Equals(UnhandledQuantity other) => Magnitude.Equals(other.Magnitude);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is UnhandledQuantity other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public override bool Equals(object? obj) => obj is UnhandledQuantity other && Equals(other);
+        public int CompareTo(UnhandledQuantity other) => Magnitude.CompareTo(other.Magnitude);
 
         public override int GetHashCode() => Magnitude.GetHashCode();
         public override string ToString() => $"{Magnitude} [undef]";
 
-        public int CompareTo(UnhandledQuantity other)
-        {
-            if (this > other)
-            {
-                return 1;
-            }
-            else if (this < other)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        public static bool operator ==(UnhandledQuantity? x, UnhandledQuantity? y)
-        {
-            if (x is null)
-            {
-                return y is null;
-            }
-            else
-            {
-                return x.Equals(y);
-            }
-        }
-
+        public static bool operator ==(UnhandledQuantity? x, UnhandledQuantity? y) => x?.Equals(y) ?? y is null;
         public static bool operator !=(UnhandledQuantity? x, UnhandledQuantity? y) => !(x == y);
 
         public static UnhandledQuantity operator +(UnhandledQuantity x) => x;
@@ -80,6 +50,11 @@
         public static UnhandledQuantity operator %(UnhandledQuantity x, UnhandledQuantity y) => new(x.Magnitude % y.Magnitude);
         public static UnhandledQuantity operator *(UnhandledQuantity x, UnhandledQuantity y) => new(x.Magnitude * y.Magnitude);
         public static UnhandledQuantity operator /(UnhandledQuantity x, UnhandledQuantity y) => new(x.Magnitude / y.Magnitude);
+
+        public static UnhandledQuantity operator *(UnhandledQuantity x, Scalar y) => new(x.Magnitude * y);
+        public static UnhandledQuantity operator *(Scalar x, UnhandledQuantity y) => new(x * y.Magnitude);
+        public static UnhandledQuantity operator /(UnhandledQuantity x, Scalar y) => new(x.Magnitude / y);
+        public static UnhandledQuantity operator /(Scalar x, UnhandledQuantity y) => new(x / y.Magnitude);
 
         public static UnhandledQuantity operator *(UnhandledQuantity x, IQuantity y) => new(x.Magnitude * y.Magnitude);
         public static UnhandledQuantity operator /(UnhandledQuantity x, IQuantity y) => new(x.Magnitude / y.Magnitude);

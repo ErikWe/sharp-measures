@@ -5,13 +5,13 @@ using System;
 
 namespace ErikWe.SharpMeasures.Quantities
 {
-    public class Jerk2 : IEquatable<Jerk2>, IQuantity2
+    public class Jerk2 : IEquatable<Jerk2>, IQuantity2<Jerk>
     {
         public Jerk X { get; }
         public Jerk Y { get; }
 
-        Scalar IQuantity2.X => X.Magnitude;
-        Scalar IQuantity2.Y => Y.Magnitude;
+        Scalar IQuantity2.XMagnitude => X.Magnitude;
+        Scalar IQuantity2.YMagnitude => Y.Magnitude;
 
         public Jerk2(Scalar2 components)
         {
@@ -43,35 +43,13 @@ namespace ErikWe.SharpMeasures.Quantities
         public UnhandledQuantity Dot(Jerk2 other) => Dot(this, other);
         public static UnhandledQuantity Dot(Jerk2 a, Jerk2 b) => a.X * b.X + a.Y * b.Y;
 
-        public bool Equals(Jerk2 other) => X.Equals(other.X) && Y.Equals(other.Y);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Jerk2 other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public bool Equals(Jerk2? other) => X.Equals(other?.X) && Y.Equals(other?.Y);
+        public override bool Equals(object? obj) => Equals(obj as Jerk2);
 
         public override int GetHashCode() => (X, Y).GetHashCode();
         public override string ToString() => $"({X.MetresPerCubicSecond}, {Y.MetresPerCubicSecond}) [m/(s^2)]";
 
-        public static bool operator ==(Jerk2? a, Jerk2? b)
-        {
-            if (a is null)
-            {
-                return b is null;
-            }
-            else
-            {
-                return a.Equals(b);
-            }
-        }
-
+        public static bool operator ==(Jerk2? a, Jerk2? b) => a?.Equals(b) ?? b is null;
         public static bool operator !=(Jerk2? a, Jerk2? b) => !(a == b);
 
         public static Jerk2 operator +(Jerk2 a) => a;
@@ -86,8 +64,8 @@ namespace ErikWe.SharpMeasures.Quantities
         public static Jerk2 operator *(Scalar2 a, Jerk2 b) => new(a.X * b.X, a.Y * b.Y);
         public static Jerk2 operator /(Jerk2 a, Scalar2 b) => new(a.X / b.X, a.Y / b.Y);
 
-        public static UnhandledQuantity2 operator *(Jerk2 a, IQuantity2 b) => new((a.X * b.X).Magnitude, (a.Y * b.Y).Magnitude);
-        public static UnhandledQuantity2 operator /(Jerk2 a, IQuantity2 b) => new((a.X / b.X).Magnitude, (a.Y / b.Y).Magnitude);
+        public static UnhandledQuantity2 operator *(Jerk2 a, IQuantity2 b) => new(a.X * b.XMagnitude, a.Y * b.YMagnitude);
+        public static UnhandledQuantity2 operator /(Jerk2 a, IQuantity2 b) => new(a.X / b.XMagnitude, a.Y / b.YMagnitude);
 
         public static Acceleration2 operator *(Jerk2 a, Time b) => new(a.X * b, a.Y * b);
         public static Acceleration2 operator *(Time a, Jerk2 b) => new(a * b.X, a * b.Y);

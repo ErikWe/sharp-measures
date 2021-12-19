@@ -6,15 +6,15 @@ using System.Numerics;
 
 namespace ErikWe.SharpMeasures.Quantities
 {
-    public class SurfaceDensity3 : IEquatable<SurfaceDensity3>, IQuantity3
+    public class SurfaceDensity3 : IEquatable<SurfaceDensity3>, IQuantity3<SurfaceDensity>
     {
         public SurfaceDensity X { get; }
         public SurfaceDensity Y { get; }
         public SurfaceDensity Z { get; }
 
-        Scalar IQuantity3.X => X.Magnitude;
-        Scalar IQuantity3.Y => Y.Magnitude;
-        Scalar IQuantity3.Z => Z.Magnitude;
+        Scalar IQuantity3.XMagnitude => X.Magnitude;
+        Scalar IQuantity3.YMagnitude => Y.Magnitude;
+        Scalar IQuantity3.ZMagnitude => Z.Magnitude;
 
         public SurfaceDensity3(Scalar3 components)
         {
@@ -71,35 +71,13 @@ namespace ErikWe.SharpMeasures.Quantities
             );
         }
 
-        public bool Equals(SurfaceDensity3 other) => X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is SurfaceDensity3 other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public bool Equals(SurfaceDensity3? other) => X.Equals(other?.X) && Y.Equals(other?.Y) && Z.Equals(other?.Z);
+        public override bool Equals(object? obj) => Equals(obj as SurfaceDensity3);
 
         public override int GetHashCode() => (X, Y, Z).GetHashCode();
         public override string ToString() => $"({X.KilogramsPerSquareMetre}, {Y.KilogramsPerSquareMetre}, {Z.KilogramsPerSquareMetre}) [kg/(m^2)]";
 
-        public static bool operator ==(SurfaceDensity3? a, SurfaceDensity3? b)
-        {
-            if (a is null)
-            {
-                return b is null;
-            }
-            else
-            {
-                return a.Equals(b);
-            }
-        }
-
+        public static bool operator ==(SurfaceDensity3? a, SurfaceDensity3? b) => a?.Equals(b) ?? b is null;
         public static bool operator !=(SurfaceDensity3? a, SurfaceDensity3? b) => !(a == b);
 
         public static SurfaceDensity3 operator +(SurfaceDensity3 a) => a;
@@ -117,8 +95,8 @@ namespace ErikWe.SharpMeasures.Quantities
         public static SurfaceDensity3 operator *(Scalar3 a, SurfaceDensity3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
         public static SurfaceDensity3 operator /(SurfaceDensity3 a, Scalar3 b) => new(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
 
-        public static UnhandledQuantity3 operator *(SurfaceDensity3 a, IQuantity3 b) => new((a.X * b.X).Magnitude, (a.Y * b.Y).Magnitude, (a.Z * b.Z).Magnitude);
-        public static UnhandledQuantity3 operator /(SurfaceDensity3 a, IQuantity3 b) => new((a.X / b.X).Magnitude, (a.Y / b.Y).Magnitude, (a.Z / b.Z).Magnitude);
+        public static UnhandledQuantity3 operator *(SurfaceDensity3 a, IQuantity3 b) => new(a.X * b.XMagnitude, a.Y * b.YMagnitude, a.Z * b.ZMagnitude);
+        public static UnhandledQuantity3 operator /(SurfaceDensity3 a, IQuantity3 b) => new(a.X / b.XMagnitude, a.Y / b.YMagnitude, a.Z / b.ZMagnitude);
 
         public static Mass3 operator *(SurfaceDensity3 a, Area b) => new(a.X * b, a.Y * b, a.Y * b);
         public static Density3 operator /(SurfaceDensity3 a, Length b) => new(a.X / b, a.Y / b, a.Z / b);

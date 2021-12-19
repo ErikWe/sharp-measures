@@ -5,13 +5,13 @@ using System;
 
 namespace ErikWe.SharpMeasures.Quantities
 {
-    public class Frequency2 : IEquatable<Frequency2>, IQuantity2
+    public class Frequency2 : IEquatable<Frequency2>, IQuantity2<Frequency>
     {
         public Frequency X { get; }
         public Frequency Y { get; }
 
-        Scalar IQuantity2.X => X.Magnitude;
-        Scalar IQuantity2.Y => Y.Magnitude;
+        Scalar IQuantity2.XMagnitude => X.Magnitude;
+        Scalar IQuantity2.YMagnitude => Y.Magnitude;
 
         public Frequency2(Scalar2 components)
         {
@@ -44,35 +44,13 @@ namespace ErikWe.SharpMeasures.Quantities
 
         public static UnhandledQuantity Dot(Frequency2 a, Frequency2 b) => a.X * b.X + a.Y * b.Y;
 
-        public bool Equals(Frequency2 other) => X.Equals(other.X) && Y.Equals(other.Y);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Frequency2 other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public bool Equals(Frequency2? other) => X.Equals(other?.X) && Y.Equals(other?.Y);
+        public override bool Equals(object? obj) => Equals(obj as Frequency2);
 
         public override int GetHashCode() => (X, Y).GetHashCode();
         public override string ToString() => $"({X.Hertz}, {Y.Hertz}) [Hz]";
 
-        public static bool operator ==(Frequency2? a, Frequency2? b)
-        {
-            if (a is null)
-            {
-                return b is null;
-            }
-            else
-            {
-                return a.Equals(b);
-            }
-        }
-
+        public static bool operator ==(Frequency2? a, Frequency2? b) => a?.Equals(b) ?? b is null;
         public static bool operator !=(Frequency2? a, Frequency2? b) => !(a == b);
 
         public static Frequency2 operator +(Frequency2 a) => a;
@@ -87,8 +65,8 @@ namespace ErikWe.SharpMeasures.Quantities
         public static Frequency2 operator *(Scalar2 a, Frequency2 b) => new(a.X * b.X, a.Y * b.Y);
         public static Frequency2 operator /(Frequency2 a, Scalar2 b) => new(a.X / b.X, a.Y / b.Y);
 
-        public static UnhandledQuantity2 operator *(Frequency2 a, IQuantity2 b) => new((a.X * b.X).Magnitude, (a.Y * b.Y).Magnitude);
-        public static UnhandledQuantity2 operator /(Frequency2 a, IQuantity2 b) => new((a.X / b.X).Magnitude, (a.Y / b.Y).Magnitude);
+        public static UnhandledQuantity2 operator *(Frequency2 a, IQuantity2 b) => new(a.X * b.XMagnitude, a.Y * b.YMagnitude);
+        public static UnhandledQuantity2 operator /(Frequency2 a, IQuantity2 b) => new(a.X / b.XMagnitude, a.Y / b.YMagnitude);
 
         public static Velocity2 operator *(Frequency2 a, Length2 b) => new(a.X * b.X, a.Y * b.Y);
         public static Acceleration2 operator *(Frequency2 a, Velocity2 b) => new(a.X * b.X, a.Y * b.Y);

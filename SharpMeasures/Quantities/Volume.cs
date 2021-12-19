@@ -79,50 +79,13 @@ namespace ErikWe.SharpMeasures.Quantities
         public UnhandledQuantity Sqrt() => new(Magnitude.Sqrt());
 
         public bool Equals(Volume other) => Magnitude.Equals(other.Magnitude);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Volume other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public int CompareTo(Volume other) => Magnitude.CompareTo(other.Magnitude);
+        public override bool Equals(object? obj) => obj is Volume other && Equals(other);
 
         public override int GetHashCode() => Magnitude.GetHashCode();
         public override string ToString() => $"{CubicMetres} [m^3]";
 
-        public int CompareTo(Volume other)
-        {
-            if (this > other)
-            {
-                return 1;
-            }
-            else if (this < other)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        public static bool operator ==(Volume? x, Volume? y)
-        {
-            if (x is null)
-            {
-                return y is null;
-            }
-            else
-            {
-                return x.Equals(y);
-            }
-        }
-
+        public static bool operator ==(Volume? x, Volume? y) => x?.Equals(y) ?? y is null;
         public static bool operator !=(Volume? x, Volume? y) => !(x == y);
 
         public static Volume operator +(Volume x) => x;

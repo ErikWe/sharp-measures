@@ -5,13 +5,13 @@ using System;
 
 namespace ErikWe.SharpMeasures.Quantities
 {
-    public class Length2 : IEquatable<Length2>, IQuantity2
+    public class Length2 : IEquatable<Length2>, IQuantity2<Length>
     {
         public Length X { get; }
         public Length Y { get; }
 
-        Scalar IQuantity2.X => X.Magnitude;
-        Scalar IQuantity2.Y => Y.Magnitude;
+        Scalar IQuantity2.XMagnitude => X.Magnitude;
+        Scalar IQuantity2.YMagnitude => Y.Magnitude;
 
         public Length2(Scalar2 components)
         {
@@ -44,35 +44,13 @@ namespace ErikWe.SharpMeasures.Quantities
 
         public static Area Dot(Length2 a, Length2 b) => a.X * b.X + a.Y * b.Y;
 
-        public bool Equals(Length2 other) => X.Equals(other.X) && Y.Equals(other.Y);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Length2 other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public bool Equals(Length2? other) => X.Equals(other?.X) && Y.Equals(other?.Y);
+        public override bool Equals(object? obj) => Equals(obj as Length2);
 
         public override int GetHashCode() => (X, Y).GetHashCode();
         public override string ToString() => $"({X.Metres}, {Y.Metres}) [m]";
 
-        public static bool operator ==(Length2? a, Length2? b)
-        {
-            if (a is null)
-            {
-                return b is null;
-            }
-            else
-            {
-                return a.Equals(b);
-            }
-        }
-
+        public static bool operator ==(Length2? a, Length2? b) => a?.Equals(b) ?? b is null;
         public static bool operator !=(Length2? a, Length2? b) => !(a == b);
 
         public static Length2 operator +(Length2 a) => a;
@@ -87,8 +65,8 @@ namespace ErikWe.SharpMeasures.Quantities
         public static Length2 operator *(Scalar2 a, Length2 b) => new(a.X * b.X, a.Y * b.Y);
         public static Length2 operator /(Length2 a, Scalar2 b) => new(a.X / b.X, a.Y / b.Y);
 
-        public static UnhandledQuantity2 operator *(Length2 a, IQuantity2 b) => new((a.X * b.X).Magnitude, (a.Y * b.Y).Magnitude);
-        public static UnhandledQuantity2 operator /(Length2 a, IQuantity2 b) => new((a.X / b.X).Magnitude, (a.Y / b.Y).Magnitude);
+        public static UnhandledQuantity2 operator *(Length2 a, IQuantity2 b) => new(a.X * b.XMagnitude, a.Y * b.YMagnitude);
+        public static UnhandledQuantity2 operator /(Length2 a, IQuantity2 b) => new(a.X / b.XMagnitude, a.Y / b.YMagnitude);
 
         public static Velocity2 operator /(Length2 a, Time b) => new(a.X / b, a.Y / b);
 

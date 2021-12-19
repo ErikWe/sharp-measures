@@ -5,13 +5,13 @@ using System;
 
 namespace ErikWe.SharpMeasures.Quantities
 {
-    public struct Area2 : IEquatable<Area2>, IQuantity2
+    public class Area2 : IEquatable<Area2>, IQuantity2<Area>
     {
         public Area X { get; }
         public Area Y { get; }
 
-        Scalar IQuantity2.X => X.Magnitude;
-        Scalar IQuantity2.Y => Y.Magnitude;
+        Scalar IQuantity2.XMagnitude => X.Magnitude;
+        Scalar IQuantity2.YMagnitude => Y.Magnitude;
 
         public Area2(Scalar2 components)
         {
@@ -56,35 +56,13 @@ namespace ErikWe.SharpMeasures.Quantities
 
         public static UnhandledQuantity Dot(Area2 a, Area2 b) => a.X * b.X + a.Y * b.Y;
 
-        public bool Equals(Area2 other) => X.Equals(other.X) && Y.Equals(other.Y);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Area2 other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public bool Equals(Area2? other) => X.Equals(other?.X) && Y.Equals(other?.Y);
+        public override bool Equals(object? obj) => Equals(obj as Area2);
 
         public override int GetHashCode() => (X, Y).GetHashCode();
         public override string ToString() => $"({X.SquareMetres}, {Y.SquareMetres}) [m^2]";
 
-        public static bool operator ==(Area2? a, Area2? b)
-        {
-            if (a is null)
-            {
-                return b is null;
-            }
-            else
-            {
-                return a.Equals(b);
-            }
-        }
-
+        public static bool operator ==(Area2? a, Area2? b) => a?.Equals(b) ?? b is null;
         public static bool operator !=(Area2? a, Area2? b) => !(a == b);
 
         public static Area2 operator +(Area2 a) => a;
@@ -101,8 +79,8 @@ namespace ErikWe.SharpMeasures.Quantities
         public static Area2 operator *(Scalar2 a, Area2 b) => new(a.X * b.X, a.Y * b.Y);
         public static Area2 operator /(Area2 a, Scalar2 b) => new(a.X / b.X, a.Y / b.Y);
 
-        public static UnhandledQuantity2 operator *(Area2 a, IQuantity2 b) => new((a.X * b.X).Magnitude, (a.Y * b.Y).Magnitude);
-        public static UnhandledQuantity2 operator /(Area2 a, IQuantity2 b) => new((a.X / b.X).Magnitude, (a.Y / b.Y).Magnitude);
+        public static UnhandledQuantity2 operator *(Area2 a, IQuantity2 b) => new(a.X * b.XMagnitude, a.Y * b.YMagnitude);
+        public static UnhandledQuantity2 operator /(Area2 a, IQuantity2 b) => new(a.X / b.XMagnitude, a.Y / b.YMagnitude);
 
         public static Scalar2 operator /(Area2 a, Area b) => new(a.X / b, a.Y / b);
         public static Scalar2 operator /(Area a, Area2 b) => new(a / b.X, a / b.Y);

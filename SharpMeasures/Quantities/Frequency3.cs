@@ -6,15 +6,15 @@ using System.Numerics;
 
 namespace ErikWe.SharpMeasures.Quantities
 {
-    public class Frequency3 : IEquatable<Frequency3>, IQuantity3
+    public class Frequency3 : IEquatable<Frequency3>, IQuantity3<Frequency>
     {
         public Frequency X { get; }
         public Frequency Y { get; }
         public Frequency Z { get; }
 
-        Scalar IQuantity3.X => X.Magnitude;
-        Scalar IQuantity3.Y => Y.Magnitude;
-        Scalar IQuantity3.Z => Z.Magnitude;
+        Scalar IQuantity3.XMagnitude => X.Magnitude;
+        Scalar IQuantity3.YMagnitude => Y.Magnitude;
+        Scalar IQuantity3.ZMagnitude => Z.Magnitude;
 
         public Frequency3(Scalar3 components)
         {
@@ -71,35 +71,13 @@ namespace ErikWe.SharpMeasures.Quantities
             );
         }
 
-        public bool Equals(Frequency3 other) => X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is Frequency3 other)
-            {
-                return Equals(other);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public bool Equals(Frequency3? other) => X.Equals(other?.X) && Y.Equals(other?.Y) && Z.Equals(other?.Z);
+        public override bool Equals(object? obj) => Equals(obj as Frequency3);
 
         public override int GetHashCode() => (X, Y, Z).GetHashCode();
         public override string ToString() => $"({X.Hertz}, {Y.Hertz}, {Z.Hertz}) [Hz]";
 
-        public static bool operator ==(Frequency3? a, Frequency3? b)
-        {
-            if (a is null)
-            {
-                return b is null;
-            }
-            else
-            {
-                return a.Equals(b);
-            }
-        }
-
+        public static bool operator ==(Frequency3? a, Frequency3? b) => a?.Equals(b) ?? b is null;
         public static bool operator !=(Frequency3? a, Frequency3? b) => !(a == b);
 
         public static Frequency3 operator +(Frequency3 a) => a;
@@ -114,8 +92,8 @@ namespace ErikWe.SharpMeasures.Quantities
         public static Frequency3 operator *(Scalar3 a, Frequency3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
         public static Frequency3 operator /(Frequency3 a, Scalar3 b) => new(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
 
-        public static UnhandledQuantity3 operator *(Frequency3 a, IQuantity3 b) => new((a.X * b.X).Magnitude, (a.Y * b.Y).Magnitude, (a.Z * b.Z).Magnitude);
-        public static UnhandledQuantity3 operator /(Frequency3 a, IQuantity3 b) => new((a.X / b.X).Magnitude, (a.Y / b.Y).Magnitude, (a.Z / b.Z).Magnitude);
+        public static UnhandledQuantity3 operator *(Frequency3 a, IQuantity3 b) => new(a.X * b.XMagnitude, a.Y * b.YMagnitude, a.Z * b.ZMagnitude);
+        public static UnhandledQuantity3 operator /(Frequency3 a, IQuantity3 b) => new(a.X / b.XMagnitude, a.Y / b.YMagnitude, a.Z / b.ZMagnitude);
 
         public static Velocity3 operator *(Frequency3 a, Length3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
         public static Acceleration3 operator *(Frequency3 a, Velocity3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
