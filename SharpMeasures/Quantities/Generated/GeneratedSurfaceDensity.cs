@@ -18,12 +18,15 @@ using System;
 /// <see cref="SurfaceDensity"/> b = new(7, <see cref="UnitOfSurfaceDensity.KilogramPerSquareMetre"/>);
 /// </code>
 /// </item>
+/// <item>
+/// <code>
+/// </code>
+/// </item>
 /// </list>
 /// Instances of <see cref="SurfaceDensity"/> may be applied according to:
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="Mass"/> c = 3 * <see cref="SurfaceDensity.OneKilogramPerSquareMetre"/> * <see cref="Area.OneHectare"/>;
 /// </code>
 /// </item>
 /// </list>

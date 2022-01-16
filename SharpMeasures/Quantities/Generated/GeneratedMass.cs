@@ -18,12 +18,15 @@ using System;
 /// <see cref="Mass"/> b = new(7, <see cref="UnitOfMass.Ounce"/>);
 /// </code>
 /// </item>
+/// <item>
+/// <code>
+/// </code>
+/// </item>
 /// </list>
 /// Instances of <see cref="Mass"/> may be applied according to:
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="Density"/> c = 3 * <see cref="Mass.OnePound"/> / <see cref="Volume.OneLitre"/>;
 /// </code>
 /// </item>
 /// </list>

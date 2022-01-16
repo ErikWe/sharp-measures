@@ -18,12 +18,17 @@ using System;
 /// <see cref="Length"/> b = new(7, <see cref="UnitOfLength.Foot"/>);
 /// </code>
 /// </item>
+/// <item>
+/// <code>
+/// <see cref="Length"/> c = <see cref="Velocity.OneMilePerHour"/> * <see cref="Time.OneMinute"/>;
+/// </code>
+/// </item>
 /// </list>
 /// Instances of <see cref="Length"/> may be applied according to:
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="Velocity"/> c = 3 * <see cref="Length.OneParsec"/> / <see cref="Time.OneSecond"/>;
+/// <see cref="Velocity"/> d = 3 * <see cref="Length.OneParsec"/> / <see cref="Time.OneSecond"/>;
 /// </code>
 /// </item>
 /// </list>

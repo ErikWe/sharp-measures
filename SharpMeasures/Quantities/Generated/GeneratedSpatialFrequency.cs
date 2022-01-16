@@ -19,12 +19,15 @@ using System;
 /// <see cref="SpatialFrequency"/> b = new(7, <see cref="UnitOfSpatialFrequency.PerMetre"/>);
 /// </code>
 /// </item>
+/// <item>
+/// <code>
+/// </code>
+/// </item>
 /// </list>
 /// Instances of <see cref="SpatialFrequency"/> may be applied according to:
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="Area"/> c = 3 * <see cref="Length.OneMetre"/> / <see cref="SpatialFrequency.OnePerMetre"/>;
 /// </code>
 /// </item>
 /// </list>

@@ -18,12 +18,15 @@ using System;
 /// <see cref="Density"/> b = new(7, <see cref="UnitOfDensity.KilogramPerCubicMetre"/>);
 /// </code>
 /// </item>
+/// <item>
+/// <code>
+/// </code>
+/// </item>
 /// </list>
 /// Instances of <see cref="Density"/> may be applied according to:
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="Mass"/> c = 3 * <see cref="Density.OneKilogramPerCubicMetre"/> * <see cref="Volume.OneLitre"/>;
 /// </code>
 /// </item>
 /// </list>

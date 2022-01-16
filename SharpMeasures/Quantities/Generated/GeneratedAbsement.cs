@@ -4,6 +4,47 @@ using ErikWe.SharpMeasures.Units;
 
 using System;
 
+/// <summary>A measure of the scalar quantity <see cref="Absement"/>, used for describing sustained displacement - <see cref="Length"/> across some <see cref="Time"/>.
+/// <para>
+/// New instances of <see cref="Absement"/> can be constructed according to:
+/// <list type="bullet">
+/// <item>
+/// <code>
+/// <see cref="Absement"/> a = 5 * <see cref="Absement.OneMetreSecond"/>;
+/// </code>
+/// </item>
+/// <item>
+/// <code>
+/// <see cref="Absement"/> b = new(7, <see cref="UnitOfAbsement.MetreSecond"/>);
+/// </code>
+/// </item>
+/// <item>
+/// <code>
+/// </code>
+/// </item>
+/// </list>
+/// Instances of <see cref="Absement"/> may be applied according to:
+/// <list type="bullet">
+/// <item>
+/// <code>
+/// </code>
+/// </item>
+/// </list>
+/// The magnitude of the measure can be retrieved in a desired unit according to:
+/// <list type="bullet">
+/// <item>
+/// <code>
+/// <see cref="Absement.InMetreSeconds"/>;
+/// </code>
+/// </item>
+/// <item>
+/// <code>
+/// <see cref="Absement.InUnit(UnitOfAbsement)"/>;
+/// </code>
+/// </item>
+/// </list>
+/// </para>
+/// </summary>
 public readonly partial record struct Absement :
     IComparable<Absement>,
     IScalarQuantity<Absement>,

@@ -54,8 +54,8 @@ def getBases(quantityName, quantityData):
     else:
         bases = quantityData['bases']
 
-    if DocsReader.readScalarTag(quantityName, 'Bases'):
-        appliedBases = DocsReader.readScalarTag(quantityName, 'Bases').split(' ')
+    if DocsReader.readScalarTag(quantityName, 'Bases')[0]:
+        appliedBases = DocsReader.readScalarTag(quantityName, 'Bases')[0].split(' ')
 
         for appliedBase in appliedBases:
             for base in bases:

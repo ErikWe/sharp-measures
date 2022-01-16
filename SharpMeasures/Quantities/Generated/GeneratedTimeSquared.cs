@@ -18,12 +18,15 @@ using System;
 /// <see cref="TimeSquared"/> b = new(7, <see cref="UnitOfTimeSquared.SquareSecond"/>);
 /// </code>
 /// </item>
+/// <item>
+/// <code>
+/// </code>
+/// </item>
 /// </list>
 /// Instances of <see cref="TimeSquared"/> may be applied according to:
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="Acceleration"/> c = 3 * <see cref="Length.OneYard"/> / <see cref="TimeSquared.OneSquareSecond"/>;
 /// </code>
 /// </item>
 /// </list>

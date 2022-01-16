@@ -19,12 +19,15 @@ using System;
 /// <see cref="MassFlowRate"/> b = new(7, <see cref="UnitOfMassFlowRate.KilogramPerSecond"/>);
 /// </code>
 /// </item>
+/// <item>
+/// <code>
+/// </code>
+/// </item>
 /// </list>
 /// Instances of <see cref="MassFlowRate"/> may be applied according to:
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="Mass"/> c = 3 * <see cref="MassFlowRate.OneKilogramPerSecond"/> * <see cref="Time.OneMinute"/>;
 /// </code>
 /// </item>
 /// </list>

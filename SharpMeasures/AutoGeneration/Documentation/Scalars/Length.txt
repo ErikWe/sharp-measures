@@ -8,6 +8,10 @@ Metre Foot Parsec Yard Mile Lightyear Inch
 /// </summary>
 #/Document:Header#
 
-#Document:ExampleEquation#
-<see cref="Velocity"/> c = 3 * <see cref="Length.OneParsec"/> / <see cref="Time.OneSecond"/>;
-#/Document:ExampleEquation#
+#Document:ExampleDerived(variable)#
+<see cref="#Quantity#"/> #Param:variable# = <see cref="Velocity.OneMilePerHour"/> * <see cref="Time.OneMinute"/>;
+#/Document:ExampleDerived#
+
+#Document:ExampleUsage(variable, base)#
+<see cref="Velocity"/> #Param:variable# = 3 * <see cref="Length.One#Base#Param:base##"/> / <see cref="Time.OneSecond"/>;
+#/Document:ExampleUsage#

@@ -49,48 +49,42 @@ def ModifyText(text, quantityName, quantityData):
 
     return text
 
-def GetText(tag, quantityName):
-    return DocsReader.readScalarTag(quantityName, tag)
-
 def ProduceDocumentationLines(line, quantityName, quantityData):
-    tag = line.split('#Document:')[1].split('#')[0]
-    text = GetText(tag, quantityName)
+    regexResult = re.findall('#Document:([A-z0-9_\-]*)(#|\(([A-z0-9, _\-=]*)\)#)', line)
+
+    tag = regexResult[0][0]
+    arguments = regexResult[0][2].split(',') if regexResult[0][2] != '' else []
+    parameterValues = {}
+
+    for argument in arguments:
+        parameter = argument.split('=')[0].strip()
+        value = argument.split('=')[1].strip()
+
+        parameterValues[parameter] = value
+
+    text, parameters = DocsReader.readScalarTag(quantityName, tag)
 
     if not text:
-        if '#Document:In' in line:
-            return ModifyText(ProduceInUnitLines(line, quantityName, quantityData), quantityName, quantityData).split('\n')
-        elif '#Document:One' in line:
-            return ModifyText(ProduceOneUnitLines(line, quantityName, quantityData), quantityName, quantityData).split('\n')
+        print('Could not resolve documentation tag: [' + tag + '] for quantity: [' + quantityName + '].')
         return []
 
+    for parameter in parameters:
+        if parameter in parameterValues:
+            text = text.replace('#Param:' + parameter + '#', parameterValues[parameter])
+        else:
+            print('Parameter was not specified: [' + parameter + '], from tag: [' + tag + '], in quantity: [' + quantityName + '].')
+            text = text.replace('#Param:' + parameter + '#', 'ParameterNotSpecified')
+
+    for parameter, value in parameterValues.items():
+        if not parameter in parameters:
+            print('Parameter was specified, but not part of signature: [' + parameter + '], with value: [' + value + '], from tag: [' + tag + '], in quantity: [' + quantityName + '].')
+
+    if '#Param:' in text:
+        regexResult = re.findall('(#Param:)([A-z0-9_\-]*)(#)', text)
+        for result in regexResult:
+            print('Parameter was requested, but not part of signature: [' + result[1] + '], from tag: [' + tag + '], in quantity: [' + quantityName + '].')
+
     return ModifyText(text, quantityName, quantityData).split('\n')
-
-def ProduceInUnitLines(line, quantityName, quantityData):
-    unit = line.split('#Document:In')[1].split('#')[0]
-
-    for possibleUnit in quantityData['units']:
-        if not 'singular' in possibleUnit:
-            continue
-
-        plural = Utility.parsePlural(possibleUnit['singular'], possibleUnit['plural'])
-        if unit == plural:
-            text = GetText('InUnit', quantityName)
-            text = text.replace('#UnitName#', possibleUnit['singular'])
-            text = text.replace('#unitName#', Utility.lowerCase(possibleUnit['singular']))
-            return text
-
-def ProduceOneUnitLines(line, quantityName, quantityData):
-    unit = line.split('#Document:One')[1].split('#')[0]
-
-    for possibleUnit in quantityData['units']:
-        if not 'singular' in possibleUnit:
-            continue
-
-        if unit == possibleUnit['singular']:
-            text = GetText('OneUnit', quantityName)
-            text = text.replace('#UnitName#', possibleUnit['singular'])
-            text = text.replace('#unitName#', Utility.lowerCase(possibleUnit['singular']))
-            return text
 
 def CorrectLine(line):
     if line[:4] == '/// ':

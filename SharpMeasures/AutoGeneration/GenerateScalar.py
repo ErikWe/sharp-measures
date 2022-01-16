@@ -86,7 +86,7 @@ def composeBasesText(quantityName, quantityData):
         if 'separator' in base and base['separator'] == True:
             basesText += '\n'
         else:
-            basesText += '\t#Document:One' + base['singular'] + '#\n'
+            basesText += '\t#Document:OneUnit(unitName = ' + base['singular'] + ')#\n'
             basesText += '\tpublic static ' + quantityName + ' One' + base['singular'] + ' { get; } = new(1, ' + getUnitName(quantityName, quantityData) + '.' + base['singular'] + ');\n'
 
     return basesText
@@ -143,7 +143,7 @@ def composeUnitsText(quantityName, quantityData):
         if 'separator' in unit and unit['separator'] == True:
             unitsText += '\n'
         else:
-            unitsText += '\t#Document:In' + parsePlural(unit['singular'], unit['plural']) + '#\n'
+            unitsText += '\t#Document:InUnit(unitName = ' + unit['singular'] + ')#\n'
             unitsText += '\tpublic Scalar In' + parsePlural(unit['singular'], unit['plural']) + ' => InUnit(' + getUnitName(quantityName, quantityData) + '.' + unit['singular'] + ');\n'
 
     return unitsText

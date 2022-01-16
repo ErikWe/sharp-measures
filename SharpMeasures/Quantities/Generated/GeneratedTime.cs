@@ -18,12 +18,15 @@ using System;
 /// <see cref="Time"/> b = new(7, <see cref="UnitOfTime.Day"/>);
 /// </code>
 /// </item>
+/// <item>
+/// <code>
+/// </code>
+/// </item>
 /// </list>
 /// Instances of <see cref="Time"/> may be applied according to:
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="Velocity"/> c = 3 * <see cref="Length.OneParsec"/> / <see cref="Time.OneWeek"/>;
 /// </code>
 /// </item>
 /// </list>

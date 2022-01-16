@@ -12,12 +12,17 @@
 /// <see cref="#Quantity#"/> b = new(7, <see cref="#Unit#.#Base1#"/>);
 /// </code>
 /// </item>
+/// <item>
+/// <code>
+/// #Document:ExampleDerived(variable = c)#
+/// </code>
+/// </item>
 /// </list>
 /// Instances of <see cref="#Quantity#"/> may be applied according to:
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// #Document:ExampleEquation#
+/// #Document:ExampleUsage(variable = d, base = 2)#
 /// </code>
 /// </item>
 /// </list>
@@ -68,8 +73,8 @@
 /// <remarks>Prefer using a constructor that requires a <see cref="#Unit#"/> to be specified.</remarks>
 #/Document:ConstructorDouble#
 
-#Document:OneUnit#
-/// <summary>The <see cref="#Quantity#"/> with magnitude 1, when expressed in unit <see cref="#Unit#.#UnitName#"/>.</summary>
+#Document:OneUnit(unitName)#
+/// <summary>The <see cref="#Quantity#"/> with magnitude 1, when expressed in unit <see cref="#Unit#.#Param:unitName#"/>.</summary>
 #/Document:OneUnit#
 
 #Document:FromInverse#
@@ -97,8 +102,8 @@
 /// <param name="#cubeRootQuantity#">This <see cref="#CubeRootQuantity#"/> is cubed to produce a <see cref="#Quantity"/>.</param>
 #/Document:FromCubeRoot#
 
-#Document:InUnit#
-/// <summary>Retrieves the magnitude of the <see cref="#Quantity#"/>, expressed in unit <see cref="#Unit#.#UnitName#"/>.</summary>
+#Document:InUnit(unitName)#
+/// <summary>Retrieves the magnitude of the <see cref="#Quantity#"/>, expressed in unit <see cref="#Unit#.#Param:unitName#"/>.</summary>
 #/Document:InUnit#
 
 #Document:IsNaN#

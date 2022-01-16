@@ -18,12 +18,15 @@ using System;
 /// <see cref="Area"/> b = new(7, <see cref="UnitOfArea.SquareMetre"/>);
 /// </code>
 /// </item>
+/// <item>
+/// <code>
+/// </code>
+/// </item>
 /// </list>
 /// Instances of <see cref="Area"/> may be applied according to:
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="Length"/> c = 3 * <see cref="Area.OneHectare"/> / <see cref="Length.OneMetre"/>;
 /// </code>
 /// </item>
 /// </list>

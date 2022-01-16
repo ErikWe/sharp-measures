@@ -18,12 +18,15 @@ using System;
 /// <see cref="Frequency"/> b = new(7, <see cref="UnitOfFrequency.PerSecond"/>);
 /// </code>
 /// </item>
+/// <item>
+/// <code>
+/// </code>
+/// </item>
 /// </list>
 /// Instances of <see cref="Frequency"/> may be applied according to:
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="Velocity"/> c = 3 * <see cref="Length.OneMillimetre"/> * <see cref="Frequency.OneHertz"/>;
 /// </code>
 /// </item>
 /// </list>

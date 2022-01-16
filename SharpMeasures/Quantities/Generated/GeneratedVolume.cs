@@ -18,12 +18,15 @@ using System;
 /// <see cref="Volume"/> b = new(7, <see cref="UnitOfVolume.CubicMetre"/>);
 /// </code>
 /// </item>
+/// <item>
+/// <code>
+/// </code>
+/// </item>
 /// </list>
 /// Instances of <see cref="Volume"/> may be applied according to:
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="VolumetricFlowRate"/> c = 3 * <see cref="Volume.OneLitre"/> / <see cref="Time.OneSecond"/>;
 /// </code>
 /// </item>
 /// </list>

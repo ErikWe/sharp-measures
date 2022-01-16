@@ -19,12 +19,15 @@ using System;
 /// <see cref="SpecificVolume"/> b = new(7, <see cref="UnitOfSpecificVolume.CubicMetrePerKilogram"/>);
 /// </code>
 /// </item>
+/// <item>
+/// <code>
+/// </code>
+/// </item>
 /// </list>
 /// Instances of <see cref="SpecificVolume"/> may be applied according to:
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="Volume"/> c = 3 * <see cref="SpecificVolume.OneCubicMetrePerKilogram"/> * <see cref="Mass.OneOunce"/>;
 /// </code>
 /// </item>
 /// </list>

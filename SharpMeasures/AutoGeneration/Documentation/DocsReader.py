@@ -11,17 +11,23 @@ def readScalarTag(quantityName, tag):
             return readGenericTag(tag)
 
         content = readTag(scalars[quantityName], tag)
-        return content if content else readGenericTag(tag)
+        return content if content[0] else readGenericTag(tag)
     else:
         scalars[quantityName] = readQuantity(quantityName)
         return readScalarTag(quantityName, tag)
 
 def readTag(text, tag):
-    results = re.findall('(#Document:' + tag + '#\n)(.+?)(\n#\/Document:' + tag + '#)', text, flags=re.S)
-    if len(results) == 0:
-        return False
+    regexResult = re.findall('(#Document:' + tag + '(#|\(([A-z0-9, _\-]*)\)#)\n)(.+?)(\n#\/Document:' + tag + '#)', text, flags=re.S)
+    if len(regexResult) == 0:
+        return False, False
 
-    return results[0][1]
+    content = regexResult[0][3]
+    parameters = regexResult[0][2].split(',') if regexResult[0][2] != '' else []
+    
+    for i, parameter in enumerate(parameters):
+        parameters[i] = parameter.strip()
+
+    return content, parameters
 
 def readQuantity(quantityName):
     try:

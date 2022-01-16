@@ -18,12 +18,15 @@ using System;
 /// <see cref="LinearDensity"/> b = new(7, <see cref="UnitOfLinearDensity.KilogramPerMetre"/>);
 /// </code>
 /// </item>
+/// <item>
+/// <code>
+/// </code>
+/// </item>
 /// </list>
 /// Instances of <see cref="LinearDensity"/> may be applied according to:
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="Mass"/> c = 3 * <see cref="LinearDensity.OneKilogramPerMetre"/> * <see cref="Length.OneMillimetre"/>;
 /// </code>
 /// </item>
 /// </list>
