@@ -1,36 +1,38 @@
-﻿using ErikWe.SharpMeasures.Quantities;
+﻿namespace ErikWe.SharpMeasures.Units;
 
 using System;
 
-namespace ErikWe.SharpMeasures.Units
+public readonly record struct UnitOfLength(double BaseScale, MetricPrefix Prefix) :
+    IComparable<UnitOfLength>
 {
-    public struct UnitOfLength
-    {
-        public static readonly UnitOfLength Metre = new(1);
+    public static UnitOfLength Metre { get; } = new() { BaseScale = 1 };
+    public static UnitOfLength Femtometre { get; } = Metre with { Prefix = MetricPrefix.Femto };
+    public static UnitOfLength Picometre { get; } = Metre with { Prefix = MetricPrefix.Pico };
+    public static UnitOfLength Nanometre { get; } = Metre with { Prefix = MetricPrefix.Nano };
+    public static UnitOfLength Micrometre { get; } = Metre with { Prefix = MetricPrefix.Micro };
+    public static UnitOfLength Millimetre { get; } = Metre with { Prefix = MetricPrefix.Milli };
+    public static UnitOfLength Centimetre { get; } = Metre with { Prefix = MetricPrefix.Centi };
+    public static UnitOfLength Decimetre { get; } = Metre with { Prefix = MetricPrefix.Deci };
+    public static UnitOfLength Kilometre { get; } = Metre with { Prefix = MetricPrefix.Kilo };
 
-        public static readonly UnitOfLength Nanometre = new(Metre.Scale * MetricPrefix.Nano);
-        public static readonly UnitOfLength Micrometre = new(Metre.Scale * MetricPrefix.Micro);
-        public static readonly UnitOfLength Millimetre = new(Metre.Scale * MetricPrefix.Milli);
-        public static readonly UnitOfLength Centimetre = new(Metre.Scale * MetricPrefix.Centi);
-        public static readonly UnitOfLength Decimetre = new(Metre.Scale * MetricPrefix.Deci);
-        public static readonly UnitOfLength Kilometre = new(Metre.Scale * MetricPrefix.Kilo);
+    public static UnitOfLength AstronomicalUnit { get; } = Metre with { BaseScale = 1.495978797 * Math.Pow(10, 11) };
+    public static UnitOfLength Lightyear { get; } = Metre with { BaseScale = 9460730472580800 };
+    public static UnitOfLength Parsec { get; } = AstronomicalUnit with { BaseScale = 648000 / Math.PI };
 
-        public static readonly UnitOfLength AstronomicalUnit = new(Metre.Scale * 1.495978797 * Math.Pow(10, 11));
-        public static readonly UnitOfLength Lightyear = new(Metre.Scale * 9460730472580800);
-        public static readonly UnitOfLength Parsec = new(AstronomicalUnit.Scale * 648000 / Math.PI);
+    public static UnitOfLength Inch { get; } = Millimetre with { BaseScale = 25.4 };
+    public static UnitOfLength Foot { get; } = Inch with { BaseScale = 12 };
+    public static UnitOfLength Yard { get; } = Foot with { BaseScale = 3 };
+    public static UnitOfLength Mile { get; } = Yard with { BaseScale = 1760 };
 
-        public static readonly UnitOfLength Inch = new(Millimetre.Scale * 25.4);
-        public static readonly UnitOfLength Foot = new(Inch.Scale * 12);
-        public static readonly UnitOfLength Yard = new(Foot.Scale * 3);
-        public static readonly UnitOfLength Mile = new(Yard.Scale * 1760);
+    public double Factor => BaseScale * Prefix.Scale;
 
-        public static readonly UnitOfLength NauticalMile = new(Metre.Scale * 1852);
+    public UnitOfLength(double scale) : this(scale, MetricPrefix.Identity) { }
 
-        public Scalar Scale { get; }
+    public int CompareTo(UnitOfLength other) => Factor.CompareTo(other.Factor);
+    public override string ToString() => $"{Factor}";
 
-        private UnitOfLength(Scalar scale)
-        {
-            Scale = scale;
-        }
-    }
+    public static bool operator <(UnitOfLength x, UnitOfLength y) => x.Factor < y.Factor;
+    public static bool operator >(UnitOfLength x, UnitOfLength y) => x.Factor > y.Factor;
+    public static bool operator <=(UnitOfLength x, UnitOfLength y) => x.Factor <= y.Factor;
+    public static bool operator >=(UnitOfLength x, UnitOfLength y) => x.Factor >= y.Factor;
 }

@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMeasures", "SharpMeasures.csproj", "{70351B7B-5E24-472D-9EBB-C71DB755B8C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures", "SharpMeasures.csproj", "{70351B7B-5E24-472D-9EBB-C71DB755B8C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMeasures.Tests", "..\SharpMeasures.Tests\SharpMeasures.Tests.csproj", "{BCF03527-5C2A-4936-919A-3C01D9F0B281}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Tests", "..\SharpMeasures.Tests\SharpMeasures.Tests.csproj", "{BCF03527-5C2A-4936-919A-3C01D9F0B281}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Benchmarks", "..\SharpMeasures.Benchmark\SharpMeasures.Benchmarks.csproj", "{C7A0D3F2-34FB-434D-963E-92D17D0090DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{BCF03527-5C2A-4936-919A-3C01D9F0B281}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCF03527-5C2A-4936-919A-3C01D9F0B281}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCF03527-5C2A-4936-919A-3C01D9F0B281}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7A0D3F2-34FB-434D-963E-92D17D0090DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7A0D3F2-34FB-434D-963E-92D17D0090DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7A0D3F2-34FB-434D-963E-92D17D0090DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7A0D3F2-34FB-434D-963E-92D17D0090DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

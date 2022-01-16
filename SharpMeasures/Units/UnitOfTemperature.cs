@@ -1,22 +1,14 @@
-﻿using ErikWe.SharpMeasures.Quantities;
+﻿namespace ErikWe.SharpMeasures.Units;
 
-namespace ErikWe.SharpMeasures.Units
+public readonly record struct UnitOfTemperature(double BaseScale, MetricPrefix Prefix, double Bias)
 {
-    public struct UnitOfTemperature
-    {
-        public static readonly UnitOfTemperature Kelvin = new(1, 0);
-        public static readonly UnitOfTemperature Celcius = new(Kelvin.Scale, Kelvin.Offset + 273.15);
+    public static UnitOfTemperature Kelvin { get; } = new() { BaseScale = 1, Bias = 0 };
+    public static UnitOfTemperature Celsius { get; } = Kelvin with { Bias = 273.15 };
 
-        public static readonly UnitOfTemperature Rankine = new(Kelvin.Scale * 5 / 9, Kelvin.Offset);
-        public static readonly UnitOfTemperature Fahrenheit = new(Rankine.Scale, Rankine.Offset + 459.67);
+    public static UnitOfTemperature Rankine { get; } = Kelvin with { BaseScale = 5d / 9 };
+    public static UnitOfTemperature Fahrenheit { get; } = Rankine with { Bias = 459.67 };
 
-        public Scalar Scale { get; }
-        public Scalar Offset { get; }
+    public UnitOfTemperature(double bias, double scale) : this(bias, MetricPrefix.Identity, scale) { }
 
-        private UnitOfTemperature(Scalar scale, Scalar offset)
-        {
-            Scale = scale;
-            Offset = offset;
-        }
-    }
+    public override string ToString() => $"{Prefix} x {BaseScale} (+ {Bias})";
 }

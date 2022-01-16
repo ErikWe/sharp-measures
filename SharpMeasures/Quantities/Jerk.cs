@@ -1,89 +1,11 @@
-﻿using ErikWe.SharpMeasures.Quantities.Definitions;
-using ErikWe.SharpMeasures.Units;
+﻿namespace ErikWe.SharpMeasures.Quantities;
 
-using System;
-
-namespace ErikWe.SharpMeasures.Quantities
+public readonly partial record struct Jerk :
+    IAddableScalarQuantity<Jerk, Jerk>,
+    ISubtractableScalarQuantity<Jerk, Jerk>
 {
-    public struct Jerk : IEquatable<Jerk>, IComparable<Jerk>, IQuantity
-    {
-        public static readonly Jerk Zero = new(0);
+    public static Jerk From(Acceleration acceleration, Time time) => new(acceleration.Magnitude / time.Magnitude);
 
-        private static Scalar ComputeMagnitude(Scalar magnitude, (UnitOfLength unit, MetricPrefix prefix) length, (UnitOfTime unit, MetricPrefix prefix) time)
-            => length.prefix / Math.Pow(time.prefix, 3) * magnitude * length.unit.Scale / Math.Pow(time.unit.Scale, 3);
-
-        public Scalar Magnitude { get; }
-
-        public Jerk(Scalar magnitude)
-        {
-            Magnitude = magnitude;
-        }
-
-        public Jerk(Scalar magnitude, UnitOfLength lengthUnit, UnitOfTime timeUnit)
-        {
-            Magnitude = ComputeMagnitude(magnitude, (lengthUnit, MetricPrefix.Identity), (timeUnit, MetricPrefix.Identity));
-        }
-
-        public Jerk(Scalar magnitude, (UnitOfLength unit, MetricPrefix prefix) length, (UnitOfTime unit, MetricPrefix prefix) time)
-        {
-            Magnitude = ComputeMagnitude(magnitude, length, time);
-        }
-
-        public Scalar InUnit(UnitOfLength lengthUnit, UnitOfTime timeUnit) => InUnit((lengthUnit, MetricPrefix.Identity), (timeUnit, MetricPrefix.Identity));
-        public Scalar InUnit((UnitOfLength unit, MetricPrefix prefix) length, (UnitOfTime unit, MetricPrefix prefix) time)
-            => Magnitude / (length.prefix / Math.Pow(time.prefix, 3) * length.unit.Scale / Math.Pow(time.unit.Scale, 3));
-
-        public Scalar MetresPerCubicSecond => InUnit(UnitOfLength.Metre, UnitOfTime.Second);
-
-        public bool IsNaN => Magnitude.IsNaN;
-        public bool IsZero => Magnitude.IsZero;
-        public bool IsPositive => Magnitude.IsPositive;
-        public bool IsNegative => Magnitude.IsNegative;
-        public bool IsFinite => Magnitude.IsFinite;
-        public bool IsInfinity => Magnitude.IsInfinity;
-        public bool IsPositiveInfinity => Magnitude.IsPositiveInfinity;
-        public bool IsNegativeInfinity => Magnitude.IsNegativeInfinity;
-
-        public Jerk Abs() => new(Magnitude.Abs());
-        public Jerk Floor() => new(Magnitude.Floor());
-        public Jerk Ceiling() => new(Magnitude.Ceiling());
-        public Jerk Round() => new(Magnitude.Round());
-        public UnhandledQuantity Pow(double x) => new(Magnitude.Pow(x));
-        public UnhandledQuantity Square() => new(Magnitude.Square());
-        public UnhandledQuantity Sqrt() => new(Magnitude.Sqrt());
-
-        public bool Equals(Jerk other) => Magnitude.Equals(other.Magnitude);
-        public override bool Equals(object? obj) => obj is Jerk other && Equals(other);
-        public int CompareTo(Jerk other) => Magnitude.CompareTo(other.Magnitude);
-
-        public override int GetHashCode() => Magnitude.GetHashCode();
-        public override string ToString() => $"{MetresPerCubicSecond} [m/(s^3)]";
-
-        public static bool operator ==(Jerk? x, Jerk? y) => x?.Equals(y) ?? y is null;
-        public static bool operator !=(Jerk? x, Jerk? y) => !(x == y);
-
-        public static Jerk operator +(Jerk x) => x;
-        public static Jerk operator -(Jerk x) => new(-x.Magnitude);
-        public static Jerk operator +(Jerk x, Jerk y) => new(x.Magnitude + y.Magnitude);
-        public static Jerk operator -(Jerk x, Jerk y) => new(x.Magnitude - y.Magnitude);
-        public static Jerk operator %(Jerk x, Jerk y) => new(x.Magnitude % y.Magnitude);
-        public static UnhandledQuantity operator *(Jerk x, Jerk y) => new(x.Magnitude * y.Magnitude);
-        public static Scalar operator /(Jerk x, Jerk y) => new(x.Magnitude / y.Magnitude);
-
-        public static Acceleration operator *(Jerk x, Time y) => new(x.Magnitude * y.Magnitude);
-        public static Acceleration operator /(Jerk x, Frequency y) => new(x.Magnitude / y.Magnitude);
-        public static Frequency operator /(Jerk x, Acceleration y) => new(x.Magnitude / y.Magnitude);
-
-        public static Jerk operator *(Jerk x, Scalar y) => new(x.Magnitude * y);
-        public static Jerk operator *(Scalar x, Jerk y) => new(x * y.Magnitude);
-        public static Jerk operator /(Jerk x, Scalar y) => new(x.Magnitude / y);
-
-        public static UnhandledQuantity operator *(Jerk x, IQuantity y) => new(x.Magnitude * y.Magnitude);
-        public static UnhandledQuantity operator /(Jerk x, IQuantity y) => new(x.Magnitude / y.Magnitude);
-
-        public static bool operator <(Jerk x, Jerk y) => x.Magnitude < y.Magnitude;
-        public static bool operator >(Jerk x, Jerk y) => x.Magnitude > y.Magnitude;
-        public static bool operator <=(Jerk x, Jerk y) => x.Magnitude <= y.Magnitude;
-        public static bool operator >=(Jerk x, Jerk y) => x.Magnitude >= y.Magnitude;
-    }
+    public Acceleration Multiply(Time time) => Acceleration.From(this, time);
+    public static Acceleration operator *(Jerk x, Time y) => x.Multiply(y);
 }

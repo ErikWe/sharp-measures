@@ -1,23 +1,29 @@
-﻿using ErikWe.SharpMeasures.Quantities;
+﻿namespace ErikWe.SharpMeasures.Units;
 
 using System;
 
-namespace ErikWe.SharpMeasures.Units
+public readonly record struct UnitOfVolume(double BaseScale, MetricPrefix Prefix) :
+    IComparable<UnitOfVolume>
 {
-    public struct UnitOfVolume
-    {
-        public static readonly UnitOfVolume Litre = new(FromUnitOfLength(UnitOfLength.Metre) * Math.Pow(10, -3));
-        public static readonly UnitOfVolume Millilitre = new(Litre.Scale * MetricPrefix.Milli);
-        public static readonly UnitOfVolume Centilitre = new(Litre.Scale * MetricPrefix.Centi);
-        public static readonly UnitOfVolume Decilitre = new(Litre.Scale * MetricPrefix.Deci);
+    public static UnitOfVolume From(UnitOfLength unitOfLength) => new(Math.Pow(unitOfLength.Factor, 3));
 
-        public Scalar Scale { get; }
+    public static UnitOfVolume CubicDecimetre { get; } = From(UnitOfLength.Decimetre);
+    public static UnitOfVolume CubicMetre { get; } = From(UnitOfLength.Metre);
 
-        private UnitOfVolume(Scalar scale)
-        {
-            Scale = scale;
-        }
+    public static UnitOfVolume Litre { get; } = CubicDecimetre;
+    public static UnitOfVolume Millilitre { get; } = Litre with { Prefix = MetricPrefix.Milli };
+    public static UnitOfVolume Centilitre { get; } = Litre with { Prefix = MetricPrefix.Centi };
+    public static UnitOfVolume Decilitre { get; } = Litre with { Prefix = MetricPrefix.Deci };
 
-        private static Scalar FromUnitOfLength(UnitOfLength lengthUnit) => Math.Pow(lengthUnit.Scale, 3);
-    }
+    public double Factor => BaseScale * Prefix.Scale;
+
+    public UnitOfVolume(double scale) : this(scale, MetricPrefix.Identity) { }
+
+    public int CompareTo(UnitOfVolume other) => Factor.CompareTo(other.Factor);
+    public override string ToString() => $"{Factor}";
+
+    public static bool operator <(UnitOfVolume x, UnitOfVolume y) => x.Factor < y.Factor;
+    public static bool operator >(UnitOfVolume x, UnitOfVolume y) => x.Factor > y.Factor;
+    public static bool operator <=(UnitOfVolume x, UnitOfVolume y) => x.Factor <= y.Factor;
+    public static bool operator >=(UnitOfVolume x, UnitOfVolume y) => x.Factor >= y.Factor;
 }

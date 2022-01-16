@@ -1,22 +1,25 @@
-﻿using ErikWe.SharpMeasures.Quantities;
+﻿namespace ErikWe.SharpMeasures.Units;
 
 using System;
 
-namespace ErikWe.SharpMeasures.Units
+public readonly record struct UnitOfAngle(double BaseScale, MetricPrefix Prefix) :
+    IComparable<UnitOfAngle>
 {
-    public struct UnitOfAngle
-    {
-        public static readonly UnitOfAngle Radian = new(1);
-        public static readonly UnitOfAngle Degree = new(Radian.Scale * Math.PI / 180);
-        public static readonly UnitOfAngle ArcMinute = new(Degree.Scale / 60);
-        public static readonly UnitOfAngle ArcSecond = new(ArcMinute.Scale / 60);
-        public static readonly UnitOfAngle Turn = new(Radian.Scale * Math.Tau);
+    public static UnitOfAngle Radian { get; } = new() { BaseScale = 1 };
+    public static UnitOfAngle Degree { get; } = Radian with { BaseScale = Math.PI / 180 };
+    public static UnitOfAngle ArcMinute { get; } = Degree with { BaseScale = 1d / 60 };
+    public static UnitOfAngle ArcSecond { get; } = ArcMinute with { BaseScale = 1d / 60 };
+    public static UnitOfAngle Turn { get; } = Radian with { BaseScale = Math.Tau };
 
-        public Scalar Scale { get; }
+    public double Factor => BaseScale * Prefix.Scale;
 
-        private UnitOfAngle(Scalar scale)
-        {
-            Scale = scale;
-        }
-    }
+    public UnitOfAngle(double scale) : this(scale, MetricPrefix.Identity) { }
+
+    public int CompareTo(UnitOfAngle other) => Factor.CompareTo(other.Factor);
+    public override string ToString() => $"{Factor}";
+
+    public static bool operator <(UnitOfAngle x, UnitOfAngle y) => x.Factor < y.Factor;
+    public static bool operator >(UnitOfAngle x, UnitOfAngle y) => x.Factor > y.Factor;
+    public static bool operator <=(UnitOfAngle x, UnitOfAngle y) => x.Factor <= y.Factor;
+    public static bool operator >=(UnitOfAngle x, UnitOfAngle y) => x.Factor >= y.Factor;
 }

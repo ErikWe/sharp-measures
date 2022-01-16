@@ -1,25 +1,31 @@
-﻿using ErikWe.SharpMeasures.Quantities;
+﻿namespace ErikWe.SharpMeasures.Units;
 
-namespace ErikWe.SharpMeasures.Units
+using System;
+
+public readonly record struct UnitOfMass(double BaseScale, MetricPrefix Prefix) :
+    IComparable<UnitOfMass>
 {
-    public struct UnitOfMass
-    {
-        public static readonly UnitOfMass Gram = new(1 / 1000);
+    public static UnitOfMass Gram { get; } = new() { BaseScale = 1d / 1000 };
 
-        public static readonly UnitOfMass Milligram = new(Gram.Scale * MetricPrefix.Milli);
-        public static readonly UnitOfMass Kilogram = new(Gram.Scale * MetricPrefix.Kilo);
-        public static readonly UnitOfMass Tonne = new(Gram.Scale * MetricPrefix.Mega);
+    public static UnitOfMass Milligram { get; } = Gram with { Prefix = MetricPrefix.Milli };
+    public static UnitOfMass Hectogram { get; } = Gram with { Prefix = MetricPrefix.Hecto };
+    public static UnitOfMass Kilogram { get; } = Gram with { Prefix = MetricPrefix.Kilo };
+    public static UnitOfMass Tonne { get; } = Gram with { Prefix = MetricPrefix.Mega };
 
-        /// <summary>Avoirdupois ounce (US customary and British imperial), abbreviated (oz). Equivalent to 28.349523125 <see cref="Gram"/>.</summary>
-        public static readonly UnitOfMass Ounce = new(Gram.Scale * 28.349523125);
-        /// <summary>Avoirdupois pound (US customary and British imperial), abbreviated (lb). Equivalent to 16 <see cref="Ounce"/>.</summary>
-        public static readonly UnitOfMass Pound = new(Ounce.Scale * 16);
+    /// <summary>Avoirdupois ounce (US customary and British imperial), abbreviated (oz). Equivalent to 28.349523125 <see cref="Gram"/>.</summary>
+    public static UnitOfMass Ounce { get; } = Gram with { BaseScale = 28.349523125 };
+    /// <summary>Avoirdupois pound (US customary and British imperial), abbreviated (lb). Equivalent to 16 <see cref="Ounce"/>.</summary>
+    public static UnitOfMass Pound { get; } = Ounce with { BaseScale = 16 };
 
-        public Scalar Scale { get; }
+    public double Factor => BaseScale * Prefix.Scale;
 
-        private UnitOfMass(Scalar scale)
-        {
-            Scale = scale;
-        }
-    }
+    public UnitOfMass(double scale) : this(scale, MetricPrefix.Identity) { }
+
+    public int CompareTo(UnitOfMass other) => Factor.CompareTo(other.Factor);
+    public override string ToString() => $"{Factor}";
+
+    public static bool operator <(UnitOfMass x, UnitOfMass y) => x.Factor < y.Factor;
+    public static bool operator >(UnitOfMass x, UnitOfMass y) => x.Factor > y.Factor;
+    public static bool operator <=(UnitOfMass x, UnitOfMass y) => x.Factor <= y.Factor;
+    public static bool operator >=(UnitOfMass x, UnitOfMass y) => x.Factor >= y.Factor;
 }

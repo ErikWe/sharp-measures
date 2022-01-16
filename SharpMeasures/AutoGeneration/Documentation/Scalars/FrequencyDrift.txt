@@ -1,0 +1,9 @@
+﻿#Document:Header#
+/// <summary>A measure of the scalar quantity <see cref="#Quantity#"/>, used for describing change in <see cref="Frequency"/> over time.
+#Document:HeaderSummary#
+/// </summary>
+#/Document:Header#
+
+#Document:ExampleEquation#
+<see cref="Acceleration"/> c = 3 * <see cref="Length.OneFemtometre"/> * <see cref="FrequencyDrift.OneHertzPerSecond"/>;
+#/Document:ExampleEquation#

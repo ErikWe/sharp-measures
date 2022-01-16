@@ -1,145 +1,26 @@
-﻿using ErikWe.SharpMeasures.Quantities.Definitions;
-using ErikWe.SharpMeasures.Units;
+﻿namespace ErikWe.SharpMeasures.Quantities;
 
 using System;
 
-namespace ErikWe.SharpMeasures.Quantities
+public readonly partial record struct Angle :
+    IAddableScalarQuantity<Angle, Angle>,
+    ISubtractableScalarQuantity<Angle, Angle>
 {
-    public struct Angle : IEquatable<Angle>, IComparable<Angle>, IQuantity
-    {
-        public static readonly Angle Zero = new(0, UnitOfAngle.Turn);
-        public static readonly Angle Full = new(1, UnitOfAngle.Turn);
-        public static readonly Angle Half = Full / 2;
-        public static readonly Angle Quarter = Full / 4;
+    public double Sin() => Math.Sin(Magnitude);
+    public double Cos() => Math.Cos(Magnitude);
+    public double Tan() => Math.Tan(Magnitude);
 
-        private static Scalar ComputeMagnitude(Scalar magnitude, UnitOfAngle unit, MetricPrefix prefix) => prefix * magnitude * unit.Scale;
+    public double Sinh() => Math.Sinh(Magnitude);
+    public double Cosh() => Math.Cosh(Magnitude);
+    public double Tanh() => Math.Tanh(Magnitude);
 
-        public Scalar Magnitude { get; }
+    public static Angle Asin(double sine) => new(Math.Asin(sine));
+    public static Angle Acos(double cosine) => new(Math.Acos(cosine));
+    public static Angle Atan(double tangent) => new(Math.Atan(tangent));
 
-        public Angle(Scalar magnitude)
-        {
-            Magnitude = magnitude;
-        }
+    public static Angle Asinh(double hyperbolicSine) => new(Math.Asinh(hyperbolicSine));
+    public static Angle Acosh(double hyperbolicCosine) => new(Math.Acosh(hyperbolicCosine));
+    public static Angle Atanh(double hyperbolicTangent) => new(Math.Atanh(hyperbolicTangent));
 
-        public Angle(Scalar magnitude, UnitOfAngle unit)
-        {
-            Magnitude = ComputeMagnitude(magnitude, unit, MetricPrefix.Identity);
-        }
-
-        public Angle(Scalar magnitude, UnitOfAngle unit, MetricPrefix prefix)
-        {
-            Magnitude = ComputeMagnitude(magnitude, unit, prefix);
-        }
-
-        public Scalar InUnit(UnitOfAngle unit) => InUnit(unit, MetricPrefix.Identity);
-        public Scalar InUnit(UnitOfAngle unit, MetricPrefix prefix) => Magnitude / (prefix * unit.Scale);
-
-        public Scalar Radians => InUnit(UnitOfAngle.Radian);
-        public Scalar Degrees => InUnit(UnitOfAngle.Degree);
-        public Scalar ArcMinutes => InUnit(UnitOfAngle.ArcMinute);
-        public Scalar ArcSeconds => InUnit(UnitOfAngle.ArcSecond);
-        public Scalar Turns => InUnit(UnitOfAngle.Turn);
-
-        public Angle Abs() => new(Magnitude.Abs());
-        public Angle Floor() => new(Magnitude.Floor());
-        public Angle Ceiling() => new(Magnitude.Ceiling());
-        public Angle Round() => new(Magnitude.Round());
-
-        public UnhandledQuantity Pow(double x) => new(Magnitude.Pow(x));
-        public UnhandledQuantity Square() => new(Magnitude.Square());
-        public UnhandledQuantity Sqrt() => new(Magnitude.Sqrt());
-
-        public Scalar Sin() => Math.Sin(Radians);
-        public Scalar Cos() => Math.Cos(Radians);
-        public Scalar Tan() => Math.Tan(Radians);
-        public Scalar Sinh() => Math.Sinh(Radians);
-        public Scalar Cosh() => Math.Cosh(Radians);
-        public Scalar Tanh() => Math.Tanh(Radians);
-
-        public static Angle Asin(IQuantity quantity) => new(Math.Asin(quantity.Magnitude), UnitOfAngle.Radian);
-        public static Angle Acos(IQuantity quantity) => new(Math.Acos(quantity.Magnitude), UnitOfAngle.Radian);
-        public static Angle Atan(IQuantity quantity) => new(Math.Atan(quantity.Magnitude), UnitOfAngle.Radian);
-        public static Angle Asinh(IQuantity quantity) => new(Math.Asinh(quantity.Magnitude), UnitOfAngle.Radian);
-        public static Angle Acosh(IQuantity quantity) => new(Math.Acosh(quantity.Magnitude), UnitOfAngle.Radian);
-        public static Angle Atanh(IQuantity quantity) => new(Math.Atanh(quantity.Magnitude), UnitOfAngle.Radian);
-
-        public Angle Normalize()
-        {
-            Angle value = this % Full;
-            if (value < Zero)
-            {
-                value += Full;
-            }
-
-            return value;
-        }
-
-        public Angle ShiftedNormalize()
-        {
-            Angle value = Normalize();
-            if (value >= Half)
-            {
-                value -= Full;
-            }
-
-            return value;
-        }
-
-        public Angle DeltaAngle(Angle other) => (other - this).ShiftedNormalize();
-
-        public Angle ClockwiseDeltaAngle(Angle other)
-        {
-            Angle value = DeltaAngle(other);
-            if (value > Zero)
-            {
-                value = Full - value;
-            }
-
-            return value.Abs();
-        }
-
-        public Angle CounterClockwiseDeltaAngle(Angle other)
-        {
-            Angle value = Full - ClockwiseDeltaAngle(other);
-            if (value == Full)
-            {
-                return Zero;
-            }
-
-            return value;
-        }
-
-        public bool Equals(Angle other) => Magnitude.Equals(other.Magnitude);
-        public override bool Equals(object? obj) => obj is Angle other && Equals(other);
-        public int CompareTo(Angle other) => Magnitude.CompareTo(other.Magnitude);
-
-        public override int GetHashCode() => Magnitude.GetHashCode();
-        public override string ToString() => $"{Radians} [rad]";
-
-        public static bool operator ==(Angle? x, Angle? y) => x?.Equals(y) ?? y is null;
-        public static bool operator !=(Angle? x, Angle? y) => !(x == y);
-
-        public static Angle operator +(Angle x) => x;
-        public static Angle operator -(Angle x) => new(-x.Magnitude);
-        public static Angle operator +(Angle x, Angle y) => new(x.Magnitude + y.Magnitude);
-        public static Angle operator -(Angle x, Angle y) => new(x.Magnitude - y.Magnitude);
-        public static Angle operator %(Angle x, Angle y) => new(x.Magnitude % y.Magnitude);
-        public static UnhandledQuantity operator *(Angle x, Angle y) => new(x.Magnitude * y.Magnitude);
-        public static Scalar operator /(Angle x, Angle y) => new(x.Magnitude / y.Magnitude);
-
-        public static AngularVelocity operator *(Angle x, Frequency y) => new(x.Magnitude * y.Magnitude);
-        public static AngularVelocity operator /(Angle x, Time y) => new(x.Magnitude / y.Magnitude);
-
-        public static Angle operator *(Angle x, Scalar y) => new(x.Magnitude * y);
-        public static Angle operator *(Scalar x, Angle y) => new(x * y.Magnitude);
-        public static Angle operator /(Angle x, Scalar y) => new(x.Magnitude / y);
-
-        public static UnhandledQuantity operator *(Angle x, IQuantity y) => new(x.Magnitude * y.Magnitude);
-        public static UnhandledQuantity operator /(Angle x, IQuantity y) => new(x.Magnitude / y.Magnitude);
-
-        public static bool operator <(Angle x, Angle y) => x.Magnitude < y.Magnitude;
-        public static bool operator >(Angle x, Angle y) => x.Magnitude > y.Magnitude;
-        public static bool operator <=(Angle x, Angle y) => x.Magnitude <= y.Magnitude;
-        public static bool operator >=(Angle x, Angle y) => x.Magnitude >= y.Magnitude;
-    }
+    public static Angle Atan2(double y, double x) => new(Math.Atan2(y, x));
 }

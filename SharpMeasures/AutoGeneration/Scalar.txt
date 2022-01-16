@@ -1,0 +1,166 @@
+﻿namespace ErikWe.SharpMeasures.Quantities;
+
+using ErikWe.SharpMeasures.Units;
+
+using System;
+
+#Document:Header#
+public readonly partial record struct #Quantity# :
+    IComparable<#Quantity#>,
+    IScalarQuantity<#Quantity#>#CommaIfInterface#
+#Interfaces#
+{
+    #Document:Zero#
+    public static #Quantity# Zero { get; } = new(0);
+
+#Bases#
+
+#From#
+    
+    #Document:Magnitude#
+    public double Magnitude { get; init; }
+
+    #Document:ConstructorDoubleUnit#
+    public #Quantity#(double magnitude, #Unit# #UnitVariable#) : #newline#this(#MagnitudeFromUnitDouble#) { }
+    #Document:ConstructorDouble#
+    public #Quantity#(double magnitude)
+    {
+        Magnitude = magnitude;
+    }
+
+#SharedUnits#
+
+#Units#
+
+    #Document:IsNaN#
+    public bool IsNaN => double.IsNaN(Magnitude);
+    #Document:IsZero#
+    public bool IsZero => Magnitude == 0;
+    #Document:IsPositive#
+    public bool IsPositive => Magnitude > 0;
+    #Document:IsNegative#
+    public bool IsNegative => double.IsNegative(Magnitude);
+    #Document:IsFinite#
+    public bool IsFinite => double.IsFinite(Magnitude);
+    #Document:IsInfinite#
+    public bool IsInfinite => IsPositiveInfinity || IsNegativeInfinity;
+    #Document:IsPositiveInfinity#
+    public bool IsPositiveInfinity => double.IsPositiveInfinity(Magnitude);
+    #Document:IsNegativeInfinity#
+    public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude);
+
+    #Document:Absolute#
+    public #Quantity# Absolute() => new(Math.Abs(Magnitude));
+    #Document:Floor#
+    public #Quantity# Floor() => new(Math.Floor(Magnitude));
+    #Document:Ceiling#
+    public #Quantity# Ceiling() => new(Math.Ceiling(Magnitude));
+    #Document:Round#
+    public #Quantity# Round() => new(Math.Round(Magnitude));
+
+#Powers#
+
+    #Document:CompareTo#
+    public int CompareTo(#Quantity# other) => Magnitude.CompareTo(other.Magnitude);
+    #Document:ToString#
+    public override string ToString() => $"{Magnitude} [#Abbreviation#]";
+
+    #Document:InUnitInstance#
+    public Scalar InUnit(#Unit# #UnitVariable#) => InUnit(Magnitude, #UnitVariable#);
+    #Document:InUnitStatic#
+    private static Scalar InUnit(double magnitude, #Unit# #UnitVariable#) => new(#MagnitudeToUnit#);
+
+    #Document:PlusMethod#
+    public #Quantity# Plus() => this;
+    #Document:NegateMethod#
+    public #Quantity# Negate() => new(-Magnitude);
+    #Document:PlusOperator#
+    public static #Quantity# operator +(#Quantity# x) => x.Plus();
+    #Document:NegateOperator#
+    public static #Quantity# operator -(#Quantity# x) => x.Negate();
+
+#Additive#
+
+#Cancels#
+
+    #Document:MultiplyUnhandledMethod#
+    public Unhandled Multiply(Unhandled factor) => new(Magnitude * factor.Magnitude);
+    #Document:DivideUnhandledMethod#
+    public Unhandled Divide(Unhandled divisor) => new(Magnitude / divisor.Magnitude);
+    #Document:MultiplyUnhandledOperator#
+    public static Unhandled operator *(#Quantity# x, Unhandled y) => x.Multiply(y);
+    #Document:DivideUnhandledOperator#
+    public static Unhandled operator /(#Quantity# x, Unhandled y) => x.Divide(y);
+
+    #Document:RemainderDoubleMethod#
+    public #Quantity# Remainder(double divisor) => new(Magnitude % divisor);
+    #Document:MultiplyDoubleMethod#
+    public #Quantity# Multiply(double factor) => new(Magnitude * factor);
+    #Document:DivideDoubleMethod#
+    public #Quantity# Divide(double divisor) => new(Magnitude / divisor);
+    #Document:RemainderDoubleOperator#
+    public static #Quantity# operator %(#Quantity# x, double y) => x.Remainder(y);
+    #Document:MultiplyDoubleOperatorLHS#
+    public static #Quantity# operator *(#Quantity# x, double y) => x.Multiply(y);
+    #Document:MultiplyDoubleOperatorRHS#
+    public static #Quantity# operator *(double x, #Quantity# y) => y.Multiply(x);
+    #Document:DivideDoubleOperatorLHS#
+    public static #Quantity# operator /(#Quantity# x, double y) => x.Divide(y);
+#InversionOperatorDouble#
+
+    #Document:RemainderScalarMethod#
+    public #Quantity# Remainder(Scalar divisor) => Remainder(divisor.Magnitude);
+    #Document:MultiplyScalarMethod#
+    public #Quantity# Multiply(Scalar factor) => Multiply(factor.Magnitude);
+    #Document:DivideScalarMethod#
+    public #Quantity# Divide(Scalar divisor) => Divide(divisor.Magnitude);
+    #Document:RemainderScalarOperator#
+    public static #Quantity# operator %(#Quantity# x, Scalar y) => x.Remainder(y);
+    #Document:MultiplyScalarOperatorLHS#
+    public static #Quantity# operator *(#Quantity# x, Scalar y) => x.Multiply(y);
+    #Document:MultiplyScalarOperatorRHS#
+    public static #Quantity# operator *(Scalar x, #Quantity# y) => y.Multiply(x);
+    #Document:DivideScalarOperatorLHS#
+    public static #Quantity# operator /(#Quantity# x, Scalar y) => x.Divide(y);
+#InversionOperatorScalar#
+
+    #Document:MultiplyTScalar#
+    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
+    #Document:DivideTScalar#
+    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    #Document:MultiplyIScalar#
+    public static Unhandled operator *(#Quantity# x, IScalarQuantity y) => x.Multiply(y);
+    #Document:DivideIScalar#
+    public static Unhandled operator /(#Quantity# x, IScalarQuantity y) => x.Multiply(y);
+
+#ToVector#
+
+    #Document:LessThan#
+    public static bool operator <(#Quantity# x, #Quantity# y) => x.Magnitude < y.Magnitude;
+    #Document:GreaterThan#
+    public static bool operator >(#Quantity# x, #Quantity# y) => x.Magnitude > y.Magnitude;
+    #Document:LessThanOrEqual#
+    public static bool operator <=(#Quantity# x, #Quantity# y) => !(x > y);
+    #Document:GreaterThanOrEqual#
+    public static bool operator >=(#Quantity# x, #Quantity# y) => !(x < y);
+
+    #Document:ToDoubleMethod#
+    public double ToDouble() => Magnitude;
+    #Document:ToDoubleOperator#
+    public static implicit operator double(#Quantity# x) => x.ToDouble();
+
+    #Document:ToScalarMethod#
+    public Scalar ToScalar() => new(Magnitude);
+    #Document:ToScalarOperator#
+    public static explicit operator Scalar(#Quantity# x) => x.ToScalar();
+
+    #Document:FromDoubleMethod#
+    public static #Quantity# FromDouble(double x) => new(x);
+    #Document:FromDoubleOperator#
+    public static explicit operator #Quantity#(double x) => FromDouble(x);
+
+    #Document:FromScalarMethod#
+    public static #Quantity# FromScalar(Scalar x) => new(x);
+    #Document:FromScalarOperator#
+    public static explicit operator #Quantity#(Scalar x) => FromScalar(x);
+}

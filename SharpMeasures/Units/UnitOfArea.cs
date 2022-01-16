@@ -1,23 +1,30 @@
-﻿using ErikWe.SharpMeasures.Quantities;
+﻿namespace ErikWe.SharpMeasures.Units;
 
 using System;
 
-namespace ErikWe.SharpMeasures.Units
+public readonly record struct UnitOfArea(double BaseScale, MetricPrefix Prefix) :
+    IComparable<UnitOfArea>
 {
-    public struct UnitOfArea
-    {
-        public static readonly UnitOfArea Are = new(FromUnitOfLength(UnitOfLength.Metre) * Math.Pow(10, 2));
-        public static readonly UnitOfArea Hectare = new(Are.Scale * Math.Pow(10, 2));
+    public static UnitOfArea From(UnitOfLength unitOfLength) => new(Math.Pow(unitOfLength.Factor, 2));
 
-        public static readonly UnitOfArea Acre = new(FromUnitOfLength(UnitOfLength.Mile) / 640);
+    public static UnitOfArea SquareMetre { get; } = From(UnitOfLength.Metre);
+    public static UnitOfArea SquareKilometre { get; } = From(UnitOfLength.Kilometre);
+    public static UnitOfArea SquareMile { get; } = From(UnitOfLength.Mile);
 
-        public Scalar Scale { get; }
+    public static UnitOfArea Are { get; } = SquareMetre with { BaseScale = Math.Pow(10, 2) };
+    public static UnitOfArea Hectare { get; } = Are with { BaseScale = Math.Pow(10, 2) };
 
-        private UnitOfArea(Scalar scale)
-        {
-            Scale = scale;
-        }
+    public static UnitOfArea Acre { get; } = SquareMile with { BaseScale = 1d / 640 };
 
-        private static Scalar FromUnitOfLength(UnitOfLength lengthUnit) => Math.Pow(lengthUnit.Scale, 2);
-    }
+    public double Factor => BaseScale * Prefix.Scale;
+
+    public UnitOfArea(double scale) : this(scale, MetricPrefix.Identity) { }
+
+    public int CompareTo(UnitOfArea other) => Factor.CompareTo(other.Factor);
+    public override string ToString() => $"{Factor}";
+
+    public static bool operator <(UnitOfArea x, UnitOfArea y) => x.Factor < y.Factor;
+    public static bool operator >(UnitOfArea x, UnitOfArea y) => x.Factor > y.Factor;
+    public static bool operator <=(UnitOfArea x, UnitOfArea y) => x.Factor <= y.Factor;
+    public static bool operator >=(UnitOfArea x, UnitOfArea y) => x.Factor >= y.Factor;
 }
