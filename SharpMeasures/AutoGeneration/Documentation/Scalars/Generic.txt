@@ -1,483 +1,495 @@
-﻿#Document:HeaderSummary#
-/// <para>
-/// New instances of <see cref="#Quantity#"/> can be constructed according to:
-/// <list type="bullet">
-/// <item>
-/// <code>
-/// <see cref="#Quantity#"/> a = 5 * <see cref="#Quantity#.One#Base0#"/>;
-/// </code>
-/// </item>
-/// <item>
-/// <code>
-/// <see cref="#Quantity#"/> b = new(7, <see cref="#Unit#.#Base1#"/>);
-/// </code>
-/// </item>
-/// <item>
-/// <code>
-/// #Document:ExampleDerived(variable = c)#
-/// </code>
-/// </item>
-/// </list>
-/// Instances of <see cref="#Quantity#"/> may be applied according to:
-/// <list type="bullet">
-/// <item>
-/// <code>
-/// #Document:ExampleUsage(variable = d, base = 2)#
-/// </code>
-/// </item>
-/// </list>
-/// The magnitude of the measure can be retrieved in a desired unit according to:
-/// <list type="bullet">
-/// <item>
-/// <code>
-/// <see cref="#Quantity#.In#Base3s#"/>;
-/// </code>
-/// </item>
-/// <item>
-/// <code>
-/// <see cref="#Quantity#.InUnit(#Unit#)"/>;
-/// </code>
-/// </item>
-/// </list>
-/// </para>
-#/Document:HeaderSummary#
+﻿#Define:Header(quantity, unitName, singularUnits, pluralUnits)#
+/// TODO Write header documentation for #Param:quantity#.
+#/Define:Header#
 
-#Document:Zero#
-/// <summary>The zero-valued <see cref="#Quantity#"/>.</summary>
-#/Document:Zero#
+#Define:Zero(quantity)#
+/// <summary>The zero-valued <see cref="#Param:quantity#"/>.</summary>
+#/Define:Zero#
 
-#Document:Magnitude#
-/// <summary>The magnitude of the <see cref="#Quantity#"/> measure, in SI units.</summary>
-/// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="#Quantity#.In#Base4s#"/>.
-/// <para>This value should only be used when implementing mathematical operations with other quantities, to maximize effiency</para></remarks>
-#/Document:Magnitude#
+#Define:Magnitude(quantity, pluralUnits)#
+/// <summary>The magnitude of the <see cref="#Param:quantity#"/> measure, in SI units.</summary>
+/// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="#Param:quantity#.In#Param:pluralUnits[%0]#"/>.
+/// <para>This value should only be used (to maximize efficiency) when implementing mathematical operations with other quantities.</para></remarks>
+#/Define:Magnitude#
 
-#Document:ConstructorDoubleUnit#
-/// <summary>Constructs a new <see cref="#Quantity#"/>, with magnitude <paramref name="magnitude"/> in unit <paramref name="#unit#"/>.</summary>
-/// <param name="magnitude">The magnitude of the <see cref="#Quantity#"/>, in unit <paramref name="#unit#"/>.</param>
-/// <param name="#unit#">The unit in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
-/// <remarks>Instances may also be constructed according to:
+#Define:ConstructorScalarUnit(quantity, unit, unitVariable, singularUnits)#
+/// <summary>Constructs a new <see cref="#Param:quantity#"/>, with magnitude <paramref name="magnitude"/> in <see cref="#Param:unit#"/> <paramref name="#Param:unitVariable#"/>.</summary>
+/// <param name="magnitude">The magnitude of the <see cref="#Param:quantity#"/>, in <see cref="#Param:unit#"/> <paramref name="#Param:unitVariable#"/>.</param>
+/// <param name="#Param:unitVariable#">The <see cref="#Param:unit#"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
+/// <remarks>Consider preferring constructing instances according to the following:
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="#Quantity#"/> a = 2.6 * <see cref="#Quantity#.One#Base5#"/>;
+/// <see cref="#Param:quantity#"/> a = 3 * <see cref="#Param:quantity#.One#Param:singularUnits[%0]#"/>;
 /// </code>
 /// </item>
 /// </list>
 /// </remarks>
-#/Document:ConstructorDoubleUnit#
+#/Define:ConstructorScalarUnit#
 
-#Document:ConstructorDouble#
-/// <summary>Constructs a new <see cref="#Quantity#"/>, with magnitude <paramref name="magnitude"/>.</summary>
-/// <param name="magnitude">The magnitude of the <see cref="#Quantity#"/>.</param>
-/// <remarks>Prefer using a constructor that requires a <see cref="#Unit#"/> to be specified.</remarks>
-#/Document:ConstructorDouble#
+#Define:ConstructorDoubleUnit(quantity, unit, unitVariable, singularUnits)#
+/// <summary>Constructs a new <see cref="#Param:quantity#"/>, with magnitude <paramref name="magnitude"/> in <see cref="#Param:unit#"/> <paramref name="#Param:unitVariable#"/>.</summary>
+/// <param name="magnitude">The magnitude of the <see cref="#Param:quantity#"/>, in <see cref="#Param:unit#"/> <paramref name="#Param:unitVariable#"/>.</param>
+/// <param name="#Param:unitVariable#">The <see cref="#Param:unit#"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
+/// <remarks>Consider preferring cosntructing instances according to the following:
+/// <list type="bullet">
+/// <item>
+/// <code>
+/// <see cref="#Param:quantity#"/> a = 3 * <see cref="#Param:quantity#.One#Param:singularUnits[%0]#"/>;
+/// </code>
+/// </item>
+/// </list>
+/// </remarks>
+#/Define:ConstructorDoubleUnit#
 
-#Document:OneUnit(unitName)#
-/// <summary>The <see cref="#Quantity#"/> with magnitude 1, when expressed in unit <see cref="#Unit#.#Param:unitName#"/>.</summary>
-#/Document:OneUnit#
+#Define:ConstructorScalar(quantity, unit)#
+/// <summary>Constructs a new <see cref="#Param:quantity#"/>, with magnitude <paramref name="magnitude"/>.</summary>
+/// <param name="magnitude">The magnitude of the <see cref="#Param:quantity#"/>.</param>
+/// <remarks>Consider preffering a constructor that requires a <see cref="#Param:unit#"/> to be specified.</remarks>
+#/Define:ConstructorScalar#
 
-#Document:FromInverse#
-/// <summary>Constructs a <see cref="#Quantity#"/> by inverting the <see cref="#InverseQuantity#"/> <paramref name="#inverseQuantity#"/>.</summary>
-/// <param name="#inverseQuantity#">This <see cref="#InverseQuantity#"/> is inverted to produce a <see cref="#Quantity#"/>.</param>
-#/Document:FromInverse#
+#Define:ConstructorDouble(quantity, unit)#
+/// <summary>Constructs a new <see cref="#Param:quantity#"/>, with magnitude <paramref name="magnitude"/>.</summary>
+/// <param name="magnitude">The magnitude of the <see cref="#Param:quantity#"/>.</param>
+/// <remarks>Consider preferring a constructor that requires a <see cref="#Param:unit#"/> to be specified.</remarks>
+#/Define:ConstructorDouble#
 
-#Document:FromSquare#
-/// <summary>Constructs a <see cref="#Quantity#"/> by taking the square root of the <see cref="#SquareQuantity#"/> <paramref name="#squareQuantity#"/>.</summary>
-/// <param name="#squareQuantity#">The square root of this <see cref="#SquareQuantity#"/> is taken to produce a <see cref="#Quantity#"/>.</param>
-#/Document:FromSquare#
+#Define:OneUnit(quantity, unitName, unit)#
+/// <summary>The <see cref="#Param:quantity#"/> with magnitude 1, when expressed in unit <see cref="#Param:unitName#.#Param:unit#"/>.</summary>
+#/Define:OneUnit#
 
-#Document:FromCube#
-/// <summary>Constructs a <see cref="#Quantity#"/> by taking the cube root of the <see cref="#CubeQuantity#"/> <paramref name="#cubeQuantity#"/>.</summary>
-/// <param name="#cubeQuantity#">The cube root of this <see cref="#CubeQuantity#"/> is taken to produce a <see cref="#Quantity#"/>.</param>
-#/Document:FromCube#
+#Define:AsShared(quantity, sharedQuantity)#
+/// <summary>Converts the <see cref="#Param:quantity#"/> to an instance of the associated quantity <see cref="#Param:sharedQuantity#"/>, of equal magnitude.</summary> 
+#/Define:AsShared#
 
-#Document:FromSquareRoot#
-/// <summary>Constructs a <see cref="#Quantity#"/> by squaring the <see cref="#SquareRootQuantity#"/> <paramref name="#squareRootQuantity#"/>.</summary>
-/// <param name="#squareRootQuantity#">This <see cref="#SquareRootQuantity#"/> is squared to produce a <see cref="#Quantity"/>.</param>
-#/Document:FromSquareRoot#
+#Define:FromInverse(quantity, inverseQuantity, variableName)#
+/// <summary>Computes <see cref="#Param:quantity#"/> according to { <see cref="#Param:quantity#"/> = 1 / <paramref name="#Param:variableName#"/> }.</summary>
+/// <summary>Constructs a <see cref="#Param:quantity#"/> by inverting the <see cref="#Param:inverseQuantity#"/> <paramref name="#Param:variableName#"/>.</summary>
+#/Define:FromInverse#
 
-#Document:FromCubeRoot#
-/// <summary>Constructs a <see cref="#Quantity#"/> by cubing the <see cref="#CubeRootQuantity#"/> <paramref name="#cubeRootQuantity#"/>.</summary>
-/// <param name="#cubeRootQuantity#">This <see cref="#CubeRootQuantity#"/> is cubed to produce a <see cref="#Quantity"/>.</param>
-#/Document:FromCubeRoot#
+#Define:FromSquare(quantity, squareQuantity, variableName)#
+/// <summary>Computes <see cref="#Param:quantity#"/> according to { <see cref="#Param:quantity#"/> = √<paramref name="#Param:variableName#"/> }.</summary>
+/// <param name="#Param:variableName#">The square root of this <see cref="#Param:squareQuantity#"/> is taken to produce a <see cref="#Param:quantity#"/>.</param>
+#/Define:FromSquare#
 
-#Document:InUnit(unitName)#
-/// <summary>Retrieves the magnitude of the <see cref="#Quantity#"/>, expressed in unit <see cref="#Unit#.#Param:unitName#"/>.</summary>
-#/Document:InUnit#
+#Define:FromCube(quantity, cubeQuantity, variableName)#
+/// <summary>Computes <see cref="#Param:quantity#"/> according to { <see cref="#Param:quantity#"/> = ∛<paramref name="#Param:variableName#"/> }.</summary>
+/// <param name="#Param:variableName#">The cube root of this <see cref="#Param:cubeQuantity#"/> is taken to produce a <see cref="#Param:quantity#"/>.</param>
+#/Define:FromCube#
 
-#Document:IsNaN#
+#Define:FromSquareRoot(quantity, squareRootQuantity, variableName)#
+/// <summary>Computes <see cref="#Param:quantity#"/> according to { <see cref="#Param:quantity#"/> = <paramref name="#Param:variableName#"/>² }.</summary>
+/// <param name="#Param:variableName#">This <see cref="#Param:squareRootQuantity#"/> is squared to produce a <see cref="#Param:quantity#"/>.</param>
+#/Define:FromSquareRoot#
+
+#Define:FromCubeRoot(quantity, cubeRootQuantity, variableName)#
+/// <summary>Computes <see cref="#Param:quantity#"/> according to { <see cref="#Param:quantity#"/> = <paramref name="#Param:variableName#"/>³ }.</summary>
+/// <param name="#Param:variableName#">This <see cref="#Param:cubeRootQuantity#"/> is cubed to produce a <see cref="#Param:quantity#"/>.</param>
+#/Define:FromCubeRoot#
+
+#Define:InUnit(quantity, unit, unitName)#
+/// <summary>Retrieves the magnitude of the <see cref="#Param:quantity#"/>, expressed in unit <see cref="#Param:unit#.#Param:unitName#"/>.</summary>
+#/Define:InUnit#
+
+#Define:IsNaN(quantity)#
+/// <summary>Indicates whether the magnitude of the <see cref="#Param:quantity#"/> is NaN.</summary>
+#/Define:IsNaN#
+
+#Define:IsZero(quantity)#
+/// <summary>Indicates whether the magnitude of the <see cref="#Param:quantity#"/> is zero.</summary>
+#/Define:IsZero#
+
+#Define:IsPositive(quantity)#
+/// <summary>Indicates whether the magnitude of the <see cref="#Param:quantity#"/> is positive.</summary>
+#/Define:IsPositive#
+
+#Define:IsNegative(quantity)#
+/// <summary>Indicates whether the magnitude of the <see cref="#Param:quantity#"/> is negative.</summary>
+#/Define:IsNegative#
+
+#Define:IsFinite(quantity)#
+/// <summary>Indicates whether the magnitude of the <see cref="#Param:quantity#"/> is finite.</summary>
+#/Define:IsFinite#
+
+#Define:IsInfinite(quantity)#
+/// <summary>Indicates whether the magnitude of the <see cref="#Param:quantity#"/> is infinite.</summary>
+#/Define:IsInfinite#
+
+#Define:IsPositiveInfinity(quantity)#
+/// <summary>Indicates whether the magnitude of the <see cref="#Param:quantity#"/> is infinite, and positive.</summary>
+#/Define:IsPositiveInfinity#
+
+#Define:IsNegativeInfinity(quantity)#
+/// <summary>Indicates whether the magnitude of the <see cref="#Param:quantity#"/> is infinite, and negative.</summary>
+#/Define:IsNegativeInfinity#
+
+#Define:Absolute(quantity)#
+/// <summary>Produces a <see cref="#Param:quantity#"/>, with magnitude equal to the absolute of the original magnitude.</summary>
+#/Define:Absolute#
+
+#Define:Floor(quantity)#
+/// <summary>Produces a <see cref="#Param:quantity#"/>, with magnitude equal to the floor of the original magnitude.</summary>
+#/Define:Floor#
+
+#Define:Ceiling(quantity)#
+/// <summary>Produces a <see cref="#Param:quantity#"/>, with magnitude equal to the ceiling of the original magnitude.</summary>
+#/Define:Ceiling#
+
+#Define:Round(quantity)#
+/// <summary>Produces a <see cref="#Param:quantity#"/>, with magnitude equal to the original magnitude, rounded to the nearest integer.</summary>
+#/Define:Round#
+
+#Define:Invert(quantity, inverseQuantity)#
+/// <summary>Inverts the <see cref="#Param:quantity#"/>, producing a <see cref="#Param:inverseQuantity#"/>.</summary>
+#/Define:Invert#
+
+#Define:Square(quantity, squareQuantity)#
+/// <summary>Squares the <see cref="#Param:quantity#"/>, producing a <see cref="#Param:squareQuantity#"/>.</summary>
+#/Define:Square#
+
+#Define:Cube(quantity, cubeQuantity)#
+/// <summary>Cubes the <see cref="#Param:quantity#"/>, producing a <see cref="#Param:cubeQuantity#"/>.</summary>
+#/Define:Cube#
+
+#Define:SquareRoot(quantity, squareRootQuantity)#
+/// <summary>Takes the square root of the <see cref="#Param:quantity#"/>, producing a <see cref="#Param:squareRootQuantity#"/>.</summary>
+#/Define:SquareRoot#
+
+#Define:CubeRoot(quantity, cubeRootQuantity)#
+/// <summary>Takes the cube root of the <see cref="#Param:quantity#"/>, producing a <see cref="#Param:cubeRootQuantity#"/>.</summary>
+#/Define:CubeRoot#
+
+#Define:CompareTo#
 /// <inheritdoc/>
-#/Document:IsNaN#
+#/Define:CompareTo#
 
-#Document:IsZero#
-/// <inheritdoc/>
-#/Document:IsZero#
+#Define:ToString(quantity)#
+/// <summary>Produces a formatted string from the magnitude of the <see cref="#Param:quantity#"/>, and the SI base unit of the quantity.</summary>
+#/Define:ToString#
 
-#Document:IsPositive#
-/// <inheritdoc/>
-#/Document:IsPositive#
+#Define:InUnitInstance(quantity, unit, unitVariable)#
+/// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="#Param:quantity#"/>, expressed in <see cref="#Param:unit#"/>
+/// <paramref name="#Param:unitVariable#"/>.</summary>
+/// <param name="#Param:unitVariable#">The <see cref="#Param:unit#"/> in which the magnitude is expressed.</param>
+#/Define:InUnitInstance#
 
-#Document:IsNegative#
-/// <inheritdoc/>
-#/Document:IsNegative#
+#Define:InUnitStatic(quantity, quantityVariable, unit, unitVariable)#
+/// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="#Param:quantity#"/>, expressed in <see cref="#Param:unit#"/>
+/// <paramref name="#Param:unitVariable#"/>.</summary>
+/// <param name="#Param:quantityVariable#">The <see cref="#Param:quantity#"/> to be expressed in <see cref="#Param:unit#"/> <paramref name="#Param:unitVariable#"/>.</param>
+/// <param name="#Param:unitVariable#">The <see cref="#Param:unit#"/> in which the magnitude is expressed.</param>
+#/Define:InUnitStatic#
 
-#Document:IsFinite#
-/// <inheritdoc/>
-#/Document:IsFinite#
+#Define:PlusMethod(quantity)#
+/// <summary>Unary plus, resulting in the unmodified <see cref="#Param:quantity#"/>.</summary>
+#/Define:PlusMethod#
 
-#Document:IsInfinite#
-/// <inheritdoc/>
-#/Document:IsInfinite#
+#Define:NegateMethod(quantity)#
+/// <summary>Negation, resulting in a <see cref="#Param:quantity#"/> with negated magnitude.</summary>
+#/Define:NegateMethod#
 
-#Document:IsPositiveInfinity#
-/// <inheritdoc/>
-#/Document:IsPositiveInfinity#
-
-#Document:IsNegativeInfinity#
-/// <inheritdoc/>
-#/Document:IsNegativeInfinity#
-
-#Document:Absolute#
-/// <inheritdoc/>
-#/Document:Absolute#
-
-#Document:Floor#
-/// <inheritdoc/>
-#/Document:Floor#
-
-#Document:Ceiling#
-/// <inheritdoc/>
-#/Document:Ceiling#
-
-#Document:Round#
-/// <inheritdoc/>
-#/Document:Round#
-
-#Document:Invert#
-/// <summary>Inverts the <see cref="#Quantity#"/>, producing a <see cref="#InverseQuantity#"/>.</summary>
-#/Document:Invert#
-
-#Document:Square#
-/// <summary>Squares the <see cref="#Quantity#"/>, producing a <see cref="#SquareQuantity#"/>.</summary>
-#/Document:Square#
-
-#Document:Cube#
-/// <summary>Cubes the <see cref="#Quantity#"/>, producing a <see cref="#CubeQuantity#"/>.</summary>
-#/Document:Cube#
-
-#Document:SquareRoot#
-/// <summary>Takes the square root of the <see cref="#Quantity#"/>, producing a <see cref="#SquareRootQuantity#"/>.</summary>
-#/Document:SquareRoot#
-
-#Document:CubeRoot#
-/// <summary>Takes the cube root of the <see cref="#Quantity#"/>, producing a <see cref="#CubeRootQuantity#"/>.</summary>
-#/Document:CubeRoot#
-
-#Document:CompareTo#
-/// <inheritdoc/>
-#/Document:CompareTo#
-
-#Document:ToString#
-/// <summary>Produces a formatted string from the magnitude of the <see cref="#Quantity#"/>, and the SI base unit of the quantity.</summary>
-#/Document:ToString#
-
-#Document:InUnitInstance#
-/// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="#Quantity#"/>, expressed in unit <paramref name="#unit#"/>.</summary>
-/// <param name="#unit#">The unit in which the magnitude is expressed.</param>
-#/Document:InUnitInstance#
-
-#Document:InUnitStatic#
-/// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="#Quantity#"/>, expressed in unit <paramref name="#unit#"/>.</summary>
-/// <param name="magnitude">The magnitude of the instance of <see cref="#Quantity#"/>.</param>
-/// <param name="#unit#">The unit in which the magnitude is expressed.</param>
-#/Document:InUnitStatic#
-
-#Document:PlusMethod#
-/// <summary>Unary plus, resulting in the unmodified <see cref="#Quantity#"/>.</summary>
-#/Document:PlusMethod#
-
-#Document:NegateMethod#
-/// <summary>Negation, resulting in a <see cref="#Quantity#"/> with negated magnitude.</summary>
-#/Document:NegateMethod#
-
-#Document:PlusOperator#
+#Define:PlusOperator(quantity)#
 /// <summary>Unary plus, resulting in the unmodified <paramref name="x"/>.</summary>
-/// <param name="x">Unary plus is applied to this instance of <see cref="#Quantity#"/>.</param>
-#/Document:PlusOperator#
+/// <param name="x">Unary plus is applied to this instance of <see cref="#Param:quantity#"/>.</param>
+#/Define:PlusOperator#
 
-#Document:NegateOperator#
-/// <summary>Negation, resulting in a <see cref="#Quantity#"/> with magnitude negated from that of <paramref name="x"/>.</summary>
-/// <param name="x">Negation is applied to this instance of <see cref="#Quantity#"/>.</param>
-#/Document:NegateOperator#
+#Define:NegateOperator(quantity)#
+/// <summary>Negation, resulting in a <see cref="#Param:quantity#"/> with magnitude negated from that of <paramref name="x"/>.</summary>
+/// <param name="x">Negation is applied to this instance of <see cref="#Param:quantity#"/>.</param>
+#/Define:NegateOperator#
 
-#Document:AddMethod#
-/// <summary>Adds this instance and the <see cref="#Quantity#"/> <paramref name="term"/>, producing another <see cref="#Quantity#"/>.</summary>
-/// <param name="term">This <see cref="#Quantity#"/> is added to this instance.</param>
-#/Document:AddMethod#
+#Define:AddMethod(quantity)#
+/// <summary>Adds this instance and the <see cref="#Param:quantity#"/> <paramref name="term"/>, producing another <see cref="#Param:quantity#"/>.</summary>
+/// <param name="term">This <see cref="#Param:quantity#"/> is added to this instance.</param>
+#/Define:AddMethod#
 
-#Document:SubtractMethod#
-/// <summary>Subtracts the <see cref="#Quantity#"/> <paramref name="term"/> from this instance, producing another <see cref="#Quantity#"/>.</summary>
-/// <param name="term">This <see cref="#Quantity#"/> is subtracted from this instance.</param>
-#/Document:SubtractMethod#
+#Define:SubtractMethod(quantity)#
+/// <summary>Subtracts the <see cref="#Param:quantity#"/> <paramref name="term"/> from this instance, producing another <see cref="#Param:quantity#"/>.</summary>
+/// <param name="term">This <see cref="#Param:quantity#"/> is subtracted from this instance.</param>
+#/Define:SubtractMethod#
 
-#Document:AddOperator#
-/// <summary>Adds the instances of <see cref="#Quantity#"/>, <paramref name="x"/> and <paramref name="y"/> - producing another <see cref="#Quantity#"/>.</summary>
-/// <param name="x">This <see cref="#Quantity#"/> is added to the <see cref="#Quantity#"/> <paramref name="y"/>.</param>
-/// <param name="y">This <see cref="#Quantity#"/> is added to the <see cref="#Quantity#"/> <paramref name="x"/>.</param>
-#/Document:AddOperator#
+#Define:AddOperator(quantity)#
+/// <summary>Adds the instances of <see cref="#Param:quantity#"/>, <paramref name="x"/> and <paramref name="y"/> - producing another <see cref="#Param:quantity#"/>.</summary>
+/// <param name="x">This <see cref="#Param:quantity#"/> is added to the <see cref="#Param:quantity#"/> <paramref name="y"/>.</param>
+/// <param name="y">This <see cref="#Param:quantity#"/> is added to the <see cref="#Param:quantity#"/> <paramref name="x"/>.</param>
+#/Define:AddOperator#
 
-#Document:SubtractOperator#
-/// <summary>Subtract the <see cref="#Quantity#"/> <paramref name="y"/> from the <see cref="#Quantity#"/> <paramref name="x"/>, producing another <see cref="#Quantity#"/>.</summary>
-/// <param name="x">The <see cref="#Quantity#"/> <paramref name="y"/> is subtracted from this <see cref="#Quantity#"/>.</param>
-/// <param name="y">This <see cref="#Quantity#"/> is subtracted from the <see cref="#Quantity#"/> <paramref name="x"/>.</param>
-#/Document:SubtractOperator#
+#Define:SubtractOperator(quantity)#
+/// <summary>Subtract the <see cref="#Param:quantity#"/> <paramref name="y"/> from the <see cref="#Param:quantity#"/> <paramref name="x"/>,
+/// producing another <see cref="#Param:quantity#"/>.</summary>
+/// <param name="x">The <see cref="#Param:quantity#"/> <paramref name="y"/> is subtracted from this <see cref="#Param:quantity#"/>.</param>
+/// <param name="y">This <see cref="#Param:quantity#"/> is subtracted from the <see cref="#Param:quantity#"/> <paramref name="x"/>.</param>
+#/Define:SubtractOperator#
 
-#Document:CancelsMethod#
-/// <summary>Divides this <see cref="#Quantity#"/> by the <see cref="#Quantity#"/> <paramref name="divisor"/> - producing a <see cref="Scalar"/>.</summary>
-/// <param name="divisor">The <see cref="#Quantity#"/> is divided by this <see cref="#Quantity#"/>.</param>
-#/Document:CancelsMethod#
+#Define:CancelsMethod(quantity)#
+/// <summary>Divides this <see cref="#Param:quantity#"/> by the <see cref="#Param:quantity#"/> <paramref name="divisor"/> - producing a <see cref="Scalar"/>.</summary>
+/// <param name="divisor">The <see cref="#Param:quantity#"/> is divided by this <see cref="#Param:quantity#"/>.</param>
+#/Define:CancelsMethod#
 
-#Document:CancelsOperator#
-/// <summary>Divides the <see cref="#Quantity#"/> <paramref name="x"/> by the <see cref="#Quantity#"/> <paramref name="y"/> - producing a <see cref="Scalar"/>.</summary>
-/// <param name="x">This <see cref="#Quantity#"/> is divided by the <see cref="#Quantity#"/> <paramref name="y"/>.</param>
-/// <param name="y">The <see cref="#Quantity#"/> <paramref name="x"/> is divided by this <see cref="#Quantity#"/>.</param>
-#/Document:CancelsOperator#
+#Define:CancelsOperator(quantity)#
+/// <summary>Divides the <see cref="#Param:quantity#"/> <paramref name="x"/> by the <see cref="#Param:quantity#"/> <paramref name="y"/> - producing a <see cref="Scalar"/>.</summary>
+/// <param name="x">This <see cref="#Param:quantity#"/> is divided by the <see cref="#Param:quantity#"/> <paramref name="y"/>.</param>
+/// <param name="y">The <see cref="#Param:quantity#"/> <paramref name="x"/> is divided by this <see cref="#Param:quantity#"/>.</param>
+#/Define:CancelsOperator#
 
-#Document:MultiplyUnhandledMethod#
-/// <summary>Multiplies the <see cref="#Quantity#"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+#Define:MultiplyUnhandledMethod(quantity)#
+/// <summary>Multiplies the <see cref="#Param:quantity#"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
 /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-/// <param name="factor">The factor by which the <see cref="#Quantity#"/> is multiplied.</param>
-#/Document:MultiplyUnhandledMethod#
+/// <param name="factor">The factor by which the <see cref="#Param:quantity#"/> is multiplied.</param>
+#/Define:MultiplyUnhandledMethod#
 
-#Document:DivideUnhandledMethod#
-/// <summary>Divides the <see cref="#Quantity#"/> by the <see cref="Unhandled"/> quantity <paramref name="divisor"/>
+#Define:DivideUnhandledMethod(quantity)#
+/// <summary>Divides the <see cref="#Param:quantity#"/> by the <see cref="Unhandled"/> quantity <paramref name="divisor"/>
 /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-/// <param name="divisor">The divisor by which the <see cref="#Quantity#"/> is divided.</param>
-#/Document:DivideUnhandledMethod#
+/// <param name="divisor">The divisor by which the <see cref="#Param:quantity#"/> is divided.</param>
+#/Define:DivideUnhandledMethod#
 
-#Document:MultiplyUnhandledOperator#
-/// <summary>Multiplies the <see cref="#Quantity#"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+#Define:MultiplyUnhandledOperatorLHS(quantity)#
+/// <summary>Multiplies the <see cref="#Param:quantity#"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
 /// resulting in an <see cref="Unhandled"/> quantity.</summary>
-/// <param name="x">The <see cref="#Quantity#"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-/// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="#Quantity#"/> <paramref name="x"/> is multiplied.</param>
-#/Document:MultiplyUnhandledOperator#
+/// <param name="x">The <see cref="#Param:quantity#"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
+/// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="#Param:quantity#"/> <paramref name="x"/> is multiplied.</param>
+#/Define:MultiplyUnhandledOperatorLHS#
 
-#Document:DivideUnhandledOperator#
-/// <summary>Divides the <see cref="#Quantity#"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+#Define:MultiplyUnhandledOperatorRHS(quantity)#
+/// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="#Param:quantity#"/> <paramref name="x"/> -
 /// resulting in an <see cref="Unhandled"/> quantity.</summary>
-/// <param name="x">The <see cref="#Quantity#"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-/// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="#Quantity#"/> <paramref name="x"/> is divded.</param>
-#/Document:DivideUnhandledOperator#
+/// <param name="x">The <see cref="Unhandled"/> quantity by which the <see cref="#Param:quantity#"/> <paramref name="y"/> is multiplied.</param>
+/// <param name="y">The <see cref="#Param:quantity#"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
+#/Define:MultiplyUnhandledOperatorRHS#
 
-#Document:RemainderDoubleMethod#
-/// <summary>Produces a <see cref="#Quantity#"/>, with magnitude equal to the remainder from division of the original
+#Define:DivideUnhandledOperator(quantity)#
+/// <summary>Divides the <see cref="#Param:quantity#"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+/// resulting in an <see cref="Unhandled"/> quantity.</summary>
+/// <param name="x">The <see cref="#Param:quantity#"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
+/// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="#Param:quantity#"/> <paramref name="x"/> is divded.</param>
+#/Define:DivideUnhandledOperator#
+
+#Define:RemainderDoubleMethod(quantity)#
+/// <summary>Produces a <see cref="#Param:quantity#"/>, with magnitude equal to the remainder from division of the original
 /// magnitude by <paramref name="divisor"/>.</summary>
 /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
-#/Document:RemainderDoubleMethod#
+#/Define:RemainderDoubleMethod#
 
-#Document:MultiplyDoubleMethod#
-/// <summary>Scales the <see cref="#Quantity#"/> by <paramref name="factor"/>.</summary>
-/// <param name="factor">The factor by which the <see cref="#Quantity#"/> is scaled.</param>
-#/Document:MultiplyDoubleMethod#
+#Define:MultiplyDoubleMethod(quantity)#
+/// <summary>Scales the <see cref="#Param:quantity#"/> by <paramref name="factor"/>.</summary>
+/// <param name="factor">The factor by which the <see cref="#Param:quantity#"/> is scaled.</param>
+#/Define:MultiplyDoubleMethod#
 
-#Document:DivideDoubleMethod#
-/// <summary>Scales the <see cref="#Quantity#"/> through division by <paramref name="divisor"/>.</summary>
-/// <param name="divisor">The divisor, by which the <see cref="#Quantity#"/> is divided.</param>
-#/Document:DivideDoubleMethod#
+#Define:DivideDoubleMethod(quantity)#
+/// <summary>Scales the <see cref="#Param:quantity#"/> through division by <paramref name="divisor"/>.</summary>
+/// <param name="divisor">The divisor, by which the <see cref="#Param:quantity#"/> is divided.</param>
+#/Define:DivideDoubleMethod#
 
-#Document:RemainderDoubleOperator#
-/// <summary>Produces a <see cref="#Quantity#"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
+#Define:RemainderDoubleOperator(quantity)#
+/// <summary>Produces a <see cref="#Param:quantity#"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
 /// by <paramref name="y"/>.</summary>
-/// <param name="x">The <see cref="#Quantity#"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-/// <param name="y">The remainder is retrieved from division of <paramref name="x"/> by this value.</param>
-#/Document:RemainderDoubleOperator#
+/// <param name="x">The <see cref="#Param:quantity#"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
+/// <param name="y">The remainder is retrieved from division of <see cref="#Param:quantity#"/> <paramref name="x"/> by this value.</param>
+#/Define:RemainderDoubleOperator#
 
-#Document:MultiplyDoubleOperatorLHS#
-/// <summary>Scales the <see cref="#Quantity#"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
-/// <param name="x">The <see cref="#Quantity#"/>, which is scaled by <paramref name="y"/>.</param>
-/// <param name="y">This value is used to scale the <see cref="#Quantity#"/> <paramref name="x"/>.</param>
-#/Document:MultiplyDoubleOperatorLHS#
+#Define:MultiplyDoubleOperatorLHS(quantity)#
+/// <summary>Scales the <see cref="#Param:quantity#"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
+/// <param name="x">The <see cref="#Param:quantity#"/>, which is scaled by <paramref name="y"/>.</param>
+/// <param name="y">This value is used to scale the <see cref="#Param:quantity#"/> <paramref name="x"/>.</param>
+#/Define:MultiplyDoubleOperatorLHS#
 
-#Document:MultiplyDoubleOperatorRHS#
-/// <summary>Scales the <see cref="#Quantity#"/> <paramref name="y"/> by <paramref name="x"/>.</summary>
-/// <param name="x">This value is used to scale the <see cref="#Quantity#"/> <paramref name="y"/>.</param>
-/// <param name="y">The <see cref="#Quantity#"/>, which is scaled by <paramref name="x"/>.</param>
-#/Document:MultiplyDoubleOperatorRHS#
+#Define:MultiplyDoubleOperatorRHS(quantity)#
+/// <summary>Scales the <see cref="#Param:quantity#"/> <paramref name="y"/> by <paramref name="x"/>.</summary>
+/// <param name="x">This value is used to scale the <see cref="#Param:quantity#"/> <paramref name="y"/>.</param>
+/// <param name="y">The <see cref="#Param:quantity#"/>, which is scaled by <paramref name="x"/>.</param>
+#/Define:MultiplyDoubleOperatorRHS#
 
-#Document:DivideDoubleOperatorLHS#
-/// <summary>Scales the <see cref="#Quantity#"/> <paramref name="x"/> through division by <paramref name="y"/>.</summary>
-/// <param name="x">The <see cref="#Quantity#"/>, which is divided by <paramref name="y"/>.</param>
-/// <param name="y">This value is used to divide the <see cref="#Quantity#"/> <paramref name="x"/>.</param>
-#/Document:DivideDoubleOperatorLHS#
+#Define:DivideDoubleOperatorLHS(quantity)#
+/// <summary>Scales the <see cref="#Param:quantity#"/> <paramref name="x"/> through division by <paramref name="y"/>.</summary>
+/// <param name="x">The <see cref="#Param:quantity#"/>, which is divided by <paramref name="y"/>.</param>
+/// <param name="y">This value is used to divide the <see cref="#Param:quantity#"/> <paramref name="x"/>.</param>
+#/Define:DivideDoubleOperatorLHS#
 
-#Document:DivideDoubleOperatorRHS#
-/// <summary>Inverts the <see cref="#Quantity#"/> <paramref name="y"/> to produce a <see cref="#InverseQuantity#"/>, which is then scaled by <paramref name="x"/>.</summary>
-/// <param name="x">This value is used to scale the inverted <see cref="#Quantity#"/> <paramref name="y"/>.</param>
-/// <param name="y">The <see cref="#Quantity#"/>, which is inverted to a <see cref="#InverseQuantity#"/> and scaled by <paramref name="x"/>.</param>
-#/Document:DivideDoubleOperatorRHS#
+#Define:DivideDoubleOperatorRHS(quantity, inverseQuantity)#
+/// <summary>Inverts the <see cref="#Param:quantity#"/> <paramref name="y"/> to produce a <see cref="#Param:inverseQuantity#"/>, which is then scaled by <paramref name="x"/>.</summary>
+/// <param name="x">This value is used to scale the inverted <see cref="#Param:quantity#"/> <paramref name="y"/>.</param>
+/// <param name="y">The <see cref="#Param:quantity#"/>, which is inverted to a <see cref="#Param:inverseQuantity#"/> and scaled by <paramref name="x"/>.</param>
+#/Define:DivideDoubleOperatorRHS#
 
-#Document:RemainderScalarMethod#
-/// <summary>Produces a <see cref="#Quantity#"/>, with magnitude equal to the remainder from division of the original
+#Define:RemainderScalarMethod(quantity)#
+/// <summary>Produces a <see cref="#Param:quantity#"/>, with magnitude equal to the remainder from division of the original
 /// magnitude by <paramref name="divisor"/>.</summary>
 /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
-#/Document:RemainderScalarMethod#
+#/Define:RemainderScalarMethod#
 
-#Document:MultiplyScalarMethod#
-/// <summary>Scales the <see cref="#Quantity#"/> by <paramref name="factor"/>.</summary>
-/// <param name="factor">The factor by which the <see cref="#Quantity#"/> is scaled.</param>
-#/Document:MultiplyScalarMethod#
+#Define:MultiplyScalarMethod(quantity)#
+/// <summary>Scales the <see cref="#Param:quantity#"/> by <paramref name="factor"/>.</summary>
+/// <param name="factor">The factor by which the <see cref="#Param:quantity#"/> is scaled.</param>
+#/Define:MultiplyScalarMethod#
 
-#Document:DivideScalarMethod#
-/// <summary>Scales the <see cref="#Quantity#"/> through division by <paramref name="divisor"/>.</summary>
-/// <param name="divisor">The divisor, by which the <see cref="#Quantity#"/> is divided.</param>
-#/Document:DivideScalarMethod#
+#Define:DivideScalarMethod(quantity)#
+/// <summary>Scales the <see cref="#Param:quantity#"/> through division by <paramref name="divisor"/>.</summary>
+/// <param name="divisor">The divisor, by which the <see cref="#Param:quantity#"/> is divided.</param>
+#/Define:DivideScalarMethod#
 
-#Document:RemainderScalarOperator#
-/// <summary>Produces a <see cref="#Quantity#"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
+#Define:RemainderScalarOperator(quantity)#
+/// <summary>Produces a <see cref="#Param:quantity#"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
 /// by <paramref name="y"/>.</summary>
-/// <param name="x">The <see cref="#Quantity#"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-/// <param name="y">The remainder is retrieved from division of <paramref name="x"/> by this value.</param>
-#/Document:RemainderScalarOperator#
+/// <param name="x">The <see cref="#Param:quantity#"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
+/// <param name="y">The remainder is retrieved from division of the <see cref="#Param:quantity#"/> <paramref name="x"/> by this value.</param>
+#/Define:RemainderScalarOperator#
 
-#Document:MultiplyScalarOperatorLHS#
-/// <summary>Scales the <see cref="#Quantity#"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
-/// <param name="x">The <see cref="#Quantity#"/>, which is scaled by <paramref name="y"/>.</param>
-/// <param name="y">This value is used to scale the <see cref="#Quantity#"/> <paramref name="x"/>.</param>
-#/Document:MultiplyScalarOperatorLHS#
+#Define:MultiplyScalarOperatorLHS(quantity)#
+/// <summary>Scales the <see cref="#Param:quantity#"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
+/// <param name="x">The <see cref="#Param:quantity#"/>, which is scaled by <paramref name="y"/>.</param>
+/// <param name="y">This value is used to scale the <see cref="#Param:quantity#"/> <paramref name="x"/>.</param>
+#/Define:MultiplyScalarOperatorLHS#
 
-#Document:MultiplyScalarOperatorRHS#
-/// <summary>Scales the <see cref="#Quantity#"/> <paramref name="y"/> by <paramref name="x"/>.</summary>
-/// <param name="x">This value is used to scale the <see cref="#Quantity#"/> <paramref name="y"/>.</param>
-/// <param name="y">The <see cref="#Quantity#"/>, which is scaled by <paramref name="x"/>.</param>
-#/Document:MultiplyScalarOperatorRHS#
+#Define:MultiplyScalarOperatorRHS(quantity)#
+/// <summary>Scales the <see cref="#Param:quantity#"/> <paramref name="y"/> by <paramref name="x"/>.</summary>
+/// <param name="x">This value is used to scale the <see cref="#Param:quantity#"/> <paramref name="y"/>.</param>
+/// <param name="y">The <see cref="#Param:quantity#"/>, which is scaled by <paramref name="x"/>.</param>
+#/Define:MultiplyScalarOperatorRHS#
 
-#Document:DivideScalarOperatorLHS#
-/// <summary>Scales the <see cref="#Quantity#"/> <paramref name="x"/> through division by <paramref name="y"/>.</summary>
-/// <param name="x">The <see cref="#Quantity#"/>, which is divided by <paramref name="y"/>.</param>
-/// <param name="y">This value is used to divide the <see cref="#Quantity#"/> <paramref name="x"/>.</param>
-#/Document:DivideScalarOperatorLHS#
+#Define:DivideScalarOperatorLHS(quantity)#
+/// <summary>Scales the <see cref="#Param:quantity#"/> <paramref name="x"/> through division by <paramref name="y"/>.</summary>
+/// <param name="x">The <see cref="#Param:quantity#"/>, which is divided by <paramref name="y"/>.</param>
+/// <param name="y">This value is used to divide the <see cref="#Param:quantity#"/> <paramref name="x"/>.</param>
+#/Define:DivideScalarOperatorLHS#
 
-#Document:DivideScalarOperatorRHS#
-/// <summary>Inverts the <see cref="#Quantity#"/> <paramref name="y"/> to produce a <see cref="#InverseQuantity#"/>, which is then scaled by <paramref name="x"/>.</summary>
-/// <param name="x">This value is used to scale the inverted <see cref="#Quantity#"/> <paramref name="y"/>.</param>
-/// <param name="y">The <see cref="#Quantity#"/>, which is inverted to a <see cref="#InverseQuantity#"/> and scaled by <paramref name="x"/>.</param>
-#/Document:DivideScalarOperatorRHS#
+#Define:DivideScalarOperatorRHS(quantity, inverseQuantity)#
+/// <summary>Inverts the <see cref="#Param:quantity#"/> <paramref name="y"/> to produce a <see cref="#Param:inverseQuantity#"/>, which is then scaled by <paramref name="x"/>.</summary>
+/// <param name="x">This value is used to scale the inverted <see cref="#Param:quantity#"/> <paramref name="y"/>.</param>
+/// <param name="y">The <see cref="#Param:quantity#"/>, which is inverted to a <see cref="#Param:inverseQuantity#"/> and scaled by <paramref name="x"/>.</param>
+#/Define:DivideScalarOperatorRHS#
 
-#Document:MultiplyTScalar#
-/// <summary>Multiplies the <see cref="#Quantity#"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
+#Define:MultiplyTScalar(quantity)#
+/// <summary>Multiplies the <see cref="#Param:quantity#"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
 /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
 /// <typeparam name="TScalarQuantity">The type of the quantity by which multiplication is done.</typeparam>
-/// <param name="factor">The factor by which the <see cref="#Quantity#"/> is multiplied.</param>
-#/Document:MultiplyTScalar#
+/// <param name="factor">The factor by which the <see cref="#Param:quantity#"/> is multiplied.</param>
+#/Define:MultiplyTScalar#
 
-#Document:DivideTScalar#
-/// <summary>Divides the <see cref="#Quantity#"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
+#Define:DivideTScalar(quantity)#
+/// <summary>Divides the <see cref="#Param:quantity#"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
 /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
 /// <typeparam name="TScalarQuantity">The type of the quantity by which division is done.</typeparam>
-/// <param name="divisor">The divisor by which the <see cref="#Quantity#"/> is divided.</param>
-#/Document:DivideTScalar#
+/// <param name="divisor">The divisor by which the <see cref="#Param:quantity#"/> is divided.</param>
+#/Define:DivideTScalar#
 
-#Document:MultiplyIScalar#
-/// <summary>Multiples the <see cref="#Quantity#"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
-/// <param name="x">The <see cref="#Quantity#"/>, which is multiplied by <paramref name="y"/>.</param>
-/// <param name="y">This quantity is multiplied by the <see cref="#Quantity#"/> <paramref name="x"/>.</param>
-/// <remarks>To maximize performance, prefer <see cref="#Quantity#.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-#/Document:MultiplyIScalar#
+#Define:MultiplyIScalar(quantity)#
+/// <summary>Multiples the <see cref="#Param:quantity#"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+/// <param name="x">The <see cref="#Param:quantity#"/>, which is multiplied by <paramref name="y"/>.</param>
+/// <param name="y">This quantity is multiplied by the <see cref="#Param:quantity#"/> <paramref name="x"/>.</param>
+/// <remarks>To maximize performance, prefer <see cref="#Param:quantity#.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
+#/Define:MultiplyIScalar#
 
-#Document:DivideIScalar#
-/// <summary>Divides the <see cref="#Quantity#"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
-/// <param name="x">The <see cref="#Quantity#"/>, which is divided by <paramref name="y"/>.</param>
-/// <param name="y">The<see cref="#Quantity#"/> <paramref name="x"/> is divided by this quantity.</param>
-/// <remarks>To maximize performance, prefer <see cref="#Quantity#.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-#/Document:DivideIScalar#
+#Define:DivideIScalar(quantity)#
+/// <summary>Divides the <see cref="#Param:quantity#"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+/// <param name="x">The <see cref="#Param:quantity#"/>, which is divided by <paramref name="y"/>.</param>
+/// <param name="y">The<see cref="#Param:quantity#"/> <paramref name="x"/> is divided by this quantity.</param>
+/// <remarks>To maximize performance, prefer <see cref="#Param:quantity#.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
+#/Define:DivideIScalar#
 
-#Document:MultiplyVector3Method#
-/// <summary>Multiplies the <see cref="#Quantity#"/> with the <see cref="Vector3"/> <paramref name="vector"/> to produce a <see cref="#VectorQuantity#3"/>.</summary>
-/// <param name="vector">This <see cref="Vector3"/> is multiplied by the <see cref="#Quantity#"/>.</param>
-#/Document:MultiplyVector3Method#
+#Define:MultiplyVectorNMethod(quantity, vectorQuantity, n)#
+/// <summary>Multiplies the <see cref="#Param:quantity#"/> with the <see cref="Vector#Param:n#"/> <paramref name="vector"/> to produce a <see cref="#Param:vectorQuantity##Param:n#"/>.</summary>
+/// <param name="vector">This <see cref="Vector#Param:n#"/> is multiplied by the <see cref="#Param:quantity#"/>.</param>
+#/Define:MultiplyVectorNMethod#
 
-#Document:MultiplyTuple3Method#
-/// <summary>Multiplies the <see cref="#Quantity#"/> with the <see cref="ValueTuple"/> <paramref name="vector"/> to produce a <see cref="#VectorQuantity#3"/>.</summary>
-/// <param name="vector">This <see cref="Vector3"/> is multiplied by the <see cref="#Quantity#"/>.</param>
-#/Document:MultiplyTuple3Method#
+#Define:MultiplyTupleNMethod(quantity, vectorQuantity, n)#
+/// <summary>Multiplies the <see cref="#Param:quantity#"/> with the <see cref="ValueTuple"/> <paramref name="components"/> to produce a <see cref="#Param:vectorQuantity##Param:n#"/>.</summary>
+/// <param name="components">This <see cref="ValueTuple"/> is multiplied by the <see cref="#Param:quantity#"/>.</param>
+#/Define:MultiplyTupleNMethod#
 
-#Document:MultiplyVector3OperatorLHS#
-/// <summary>Multiplies the <see cref="#Quantity#"/> <paramref name="a"/> with the <see cref="Vector3"/> <paramref name="b"/> to produce a <see cref="#VectorQuantity#3"/>.</summary>
-/// <param name="a">This <see cref="#Quantity#"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
-/// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="#Quantity#"/> <paramref name="a"/>.</param>
-#/Document:MultiplyVector3OperatorLHS#
+#Define:MultiplyScalarTupleNMethod(quantity, vectorQuantity, n)#
+/// <summary>Multiplies the <see cref="#Param:quantity#"/> with the <see cref="ValueTuple"/> <paramref name="components"/> to produce a <see cref="#Param:vectorQuantity##Param:n#"/>.</summary>
+/// <param name="components">This <see cref="ValueTuple"/> is multiplied by the <see cref="#Param:quantity#"/>.</param>
+#/Define:MultiplyScalarTupleNMethod#
 
-#Document:MultiplyVector3OperatorRHS#
-/// <summary>Multiplies the <see cref="#Quantity#"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/> to produce a <see cref="#VectorQuantity#3"/>.</summary>
-/// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="#Quantity#"/> <paramref name="b"/>.</param>
-/// <param name="b">This <see cref="#Quantity#"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
-#/Document:MultiplyVector3OperatorRHS#
+#Define:MultiplyVectorNOperatorLHS(quantity, vectorQuantity, n)#
+/// <summary>Multiplies the <see cref="#Param:quantity#"/> <paramref name="a"/> with the <see cref="Vector#Param:n#"/> <paramref name="b"/> to produce a <see cref="#Param:vectorQuantity##Param:n#"/>.</summary>
+/// <param name="a">This <see cref="#Param:quantity#"/> is multiplied by the <see cref="Vector#Param:n#"/> <paramref name="b"/>.</param>
+/// <param name="b">This <see cref="Vector#Param:n#"/> is multiplied by the <see cref="#Param:quantity#"/> <paramref name="a"/>.</param>
+#/Define:MultiplyVectorNOperatorLHS#
 
-#Document:MultiplyTuple3OperatorLHS#
-/// <summary>Multiplies the <see cref="#Quantity#"/> <paramref name="a"/> with the <see cref="ValueTuple"/> <paramref name="b"/> to produce a <see cref="#VectorQuantity#3"/>.</summary>
-/// <param name="a">This <see cref="#Quantity#"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="b"/>.</param>
-/// <param name="b">This <see cref="ValueTuple"/> is multiplied by the <see cref="#Quantity#"/> <paramref name="a"/>.</param>
-#/Document:MultiplyTuple3OperatorLHS#
+#Define:MultiplyVectorNOperatorRHS(quantity, vectorQuantity, n)#
+/// <summary>Multiplies the <see cref="#Param:quantity#"/> <parmref name="b"/> with the <see cref="Vector#Param:n#"/> <paramref name="a"/> to produce a <see cref="#Param:vectorQuantity##Param:n#"/>.</summary>
+/// <param name="a">This <see cref="Vector#Param:n#"/> is multiplied by the <see cref="#Param:quantity#"/> <paramref name="b"/>.</param>
+/// <param name="b">This <see cref="#Param:quantity#"/> is multiplied by the <see cref="Vector#Param:n#"/> <paramref name="a"/>.</param>
+#/Define:MultiplyVectorNOperatorRHS#
 
-#Document:MultiplyTuple3OperatorRHS#
-/// <summary>Multiplies the <see cref="#Quantity#"/> <paramref name="b"/> with the <see cref="ValueTuple"/> <paramref name="a"/> to produce a <see cref="#VectorQuantity#3"/>.</summary>
-/// <param name="a">This <see cref="ValueTuple"/> is multiplied by the <see cref="#Quantity#"/> <paramref name="b"/>.</param>
-/// <param name="b">This <see cref="#Quantity#"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="a"/>.</param>
-#/Document:MultiplyTuple3OperatorRHS#
+#Define:MultiplyTupleNOperatorLHS(quantity, vectorQuantity, n)#
+/// <summary>Multiplies the <see cref="#Param:quantity#"/> <paramref name="a"/> with the <see cref="ValueTuple"/> <paramref name="b"/> to produce a <see cref="#Param:vectorQuantity##Param:n#"/>.</summary>
+/// <param name="a">This <see cref="#Param:quantity#"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="b"/>.</param>
+/// <param name="b">This <see cref="ValueTuple"/> is multiplied by the <see cref="#Param:quantity#"/> <paramref name="a"/>.</param>
+#/Define:MultiplyTupleNOperatorLHS#
 
-#Document:LessThan#
+#Define:MultiplyTupleNOperatorRHS(quantity, vectorQuantity, n)#
+/// <summary>Multiplies the <see cref="#Param:quantity#"/> <parmref name="b"/> with the <see cref="ValueTuple"/> <paramref name="a"/> to produce a <see cref="#Param:vectorQuantity##Param:n#"/>.</summary>
+/// <param name="a">This <see cref="ValueTuple"/> is multiplied by the <see cref="#Param:quantity#"/> <paramref name="b"/>.</param>
+/// <param name="b">This <see cref="#Param:quantity#"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="a"/>.</param>
+#/Define:MultiplyTupleNOperatorRHS#
+
+#Define:MultiplyScalarTupleNOperatorLHS(quantity, vectorQuantity, n)#
+/// <summary>Multiplies the <see cref="#Param:quantity#"/> <paramref name="a"/> with the <see cref="ValueTuple"/> <paramref name="b"/> to produce a <see cref="#Param:vectorQuantity##Param:n#"/>.</summary>
+/// <param name="a">This <see cref="#Param:quantity#"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="b"/>.</param>
+/// <param name="b">This <see cref="ValueTuple"/> is multiplied by the <see cref="#Param:quantity#"/> <paramref name="a"/>.</param>
+#/Define:MultiplyScalarTupleNOperatorLHS#
+
+#Define:MultiplyScalarTupleNOperatorRHS(quantity, vectorQuantity, n)#
+/// <summary>Multiplies the <see cref="#Param:quantity#"/> <parmref name="b"/> with the <see cref="ValueTuple"/> <paramref name="a"/> to produce a <see cref="#Param:vectorQuantity##Param:n#"/>.</summary>
+/// <param name="a">This <see cref="ValueTuple"/> is multiplied by the <see cref="#Param:quantity#"/> <paramref name="b"/>.</param>
+/// <param name="b">This <see cref="#Param:quantity#"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="a"/>.</param>
+#/Define:MultiplyScalarTupleNOperatorRHS#
+
+#Define:LessThan#
 /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
 /// <param name="x"><paramref name="y"/> is compared against this value.</param>
 /// <param name="y"><paramref name="x"/> is compared against this value.</param>
-#/Document:LessThan#
+#/Define:LessThan#
 
-#Document:GreaterThan#
+#Define:GreaterThan#
 /// <summary>Determines whether <paramref name="x"/> is greater than <paramref name="y"/>.</summary>
 /// <param name="x"><paramref name="y"/> is compared against this value.</param>
 /// <param name="y"><paramref name="x"/> is compared against this value.</param>
-#/Document:GreaterThan#
+#/Define:GreaterThan#
 
-#Document:LessThanOrEqual#
+#Define:LessThanOrEqual#
 /// <summary>Determines whether <paramref name="x"/> is less than or equal to <paramref name="y"/>.</summary>
 /// <param name="x"><paramref name="y"/> is compared against this value.</param>
 /// <param name="y"><paramref name="x"/> is compared against this value.</param>
-#/Document:LessThanOrEqual#
+#/Define:LessThanOrEqual#
 
-#Document:GreaterThanOrEqual#
+#Define:GreaterThanOrEqual#
 /// <summary>Determines whether <paramref name="x"/> is greater than or equal to <paramref name="y"/>.</summary>
 /// <param name="x"><paramref name="y"/> is compared against this value.</param>
 /// <param name="y"><paramref name="x"/> is compared against this value.</param>
-#/Document:GreaterThanOrEqual#
+#/Define:GreaterThanOrEqual#
 
-#Document:ToDoubleMethod#
-/// <summary>Converts <see langword="this"/> to a <see cref="double"/> based on <see cref="Magnitude"/>.</summary>
-#/Document:ToDoubleMethod#
+#Define:ToDoubleMethod(quantity)#
+/// <summary>Converts the <see cref="#Param:quantity#"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
+#/Define:ToDoubleMethod#
 
-#Document:ToDoubleOperator#
-/// <summary>Converts <paramref name="x"/> to a <see cref="double"/> based on the magnitude of the <see cref="#Quantity#"/> <paramref name="x"/>.</summary>
-#/Document:ToDoubleOperator#
+#Define:ToDoubleOperator(quantity)#
+/// <summary>Converts the <see cref="#Param:quantity#"/> to a <see cref="double"/> based on the magnitude of the <see cref="#Param:quantity#"/> <paramref name="x"/>.</summary>
+#/Define:ToDoubleOperator#
 
-#Document:ToScalarMethod#
-/// <summary>Converts <see langword="this"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
-#/Document:ToScalarMethod#
+#Define:ToScalarMethod(quantity)#
+/// <summary>Converts the <see cref="#Param:quantity#"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+#/Define:ToScalarMethod#
 
-#Document:ToScalarOperator#
-/// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
-#/Document:ToScalarOperator#
+#Define:ToScalarOperator(quantity)#
+/// <summary>Converts the <see cref="#Param:quantity#"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+#/Define:ToScalarOperator#
 
-#Document:FromDoubleMethod#
-/// <summary>Converts <paramref name="x"/> to the <see cref="#Quantity#"/> of magnitude <paramref name="x"/>.</summary>
-#/Document:FromDoubleMethod#
+#Define:FromDoubleMethod(quantity)#
+/// <summary>Converts <paramref name="x"/> to the <see cref="#Param:quantity#"/> of magnitude <paramref name="x"/>.</summary>
+#/Define:FromDoubleMethod#
 
-#Document:FromDoubleOperator#
-/// <summary>Converts <paramref name="x"/> to the <see cref="#Quantity#"/> of magnitude <paramref name="x"/>.</summary>
-#/Document:FromDoubleOperator#
+#Define:FromDoubleOperator(quantity)#
+/// <summary>Converts <paramref name="x"/> to the <see cref="#Param:quantity#"/> of magnitude <paramref name="x"/>.</summary>
+#/Define:FromDoubleOperator#
 
-#Document:FromScalarMethod#
-/// <summary>Converts <paramref name="x"/> to the <see cref="#Quantity#"/> of equivalent magnitude.</summary>
-#/Document:FromScalarMethod#
+#Define:FromScalarMethod(quantity)#
+/// <summary>Converts <paramref name="x"/> to the <see cref="#Param:quantity#"/> of equivalent magnitude.</summary>
+#/Define:FromScalarMethod#
 
-#Document:FromScalarOperator#
-/// <summary>Converts <paramref name="x"/> to the <see cref="#Quantity#"/> of equivalent magnitude.</summary>
-#/Document:FromScalarOperator#
+#Define:FromScalarOperator(quantity)#
+/// <summary>Converts <paramref name="x"/> to the <see cref="#Param:quantity#"/> of equivalent magnitude.</summary>
+#/Define:FromScalarOperator#

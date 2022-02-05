@@ -12,10 +12,14 @@
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+
   <ItemGroup>
-    <Folder Include="AutoGeneration\Documentation\Vectors\" />
+    <None Remove="AutoGeneration\Documentation\Vectors\Absement.txt" />
   </ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+  <ItemGroup>
+    <Compile Include="AutoGeneration\Documentation\Vectors\Absement.txt" />
+  </ItemGroup>
 
 </Project>

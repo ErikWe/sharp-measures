@@ -1,0 +1,17 @@
+﻿{
+    "name": "MomentOfInertia",
+    "type": "Scalar",
+    "baseUnits": "kg * m^2",
+    "unit": "[UnitOf]",
+    "unitBias": false,
+    "vector": false,
+    "inverse": false,
+    "square": false,
+    "cube": false,
+    "squareRoot": false,
+    "cubeRoot": false,
+    "units": [
+        { "singular": "KilogramMetreSquared", "plural": "[Metre] +s", "SI": true, "symbol": "kg * m^2" }
+    ],
+    "convertible": []
+}

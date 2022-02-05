@@ -1,0 +1,20 @@
+﻿{
+    "name": "GravitationalAcceleration",
+    "type": "Scalar",
+    "baseUnits": "m * s^-2",
+    "unit": "UnitOfAcceleration",
+    "unitBias": false,
+    "vector": "[name]",
+    "inverse": false,
+    "square": false,
+    "cube": false,
+    "squareRoot": false,
+    "cubeRoot": false,
+    "units": [
+        { "singular": "StandardGravity", "plural": "=" },
+        { "singular": "MetrePerSecondSquared", "plural": "+s [Per]", "SI": true, "symbol": "m / s^2" }
+    ],
+    "convertible": [
+        "Acceleration"
+    ]
+}

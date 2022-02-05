@@ -1,0 +1,302 @@
+﻿namespace ErikWe.SharpMeasures.Quantities;
+
+using ErikWe.SharpMeasures.Units;
+
+using System;
+
+/// <summary>A measure of the scalar quantity <see cref="TimeSquared"/>, describing the square of <see cref="Time"/>.
+/// The quantity is expressed in <see cref="UnitOfTimeSquared"/>, with the SI unit being [s²].
+/// <para>
+/// New instances of <see cref="TimeSquared"/> can be constructed using pre-defined properties, prefixed with 'One', having magnitude 1 expressed
+/// in the desired <see cref="UnitOfTimeSquared"/>. Instances can also be produced by combining other quantities, either through mathematical operators
+/// or using overloads of the static method 'From'. This is demonstrated below:
+/// <list type="bullet">
+/// <item>
+/// <code>
+/// <see cref="TimeSquared"/> a = 3 * <see cref="TimeSquared.OneSquareSecond"/>;
+/// </code>
+/// </item>
+/// <item>
+/// <code>
+/// <see cref="#Param:quantity"/> d = <see cref="TimeSquared.From(Distance, Acceleration)"/>;
+/// </code>
+/// </item>
+/// </list>
+/// The magnitude of the measure can be retrieved using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfTimeSquared"/>.
+/// </para>
+/// </summary>
+public readonly partial record struct TimeSquared :
+    IComparable<TimeSquared>,
+    IScalarQuantity,
+    IScalableScalarQuantity<TimeSquared>,
+    IInvertibleScalarQuantity<FrequencyDrift>,
+    ISquareRootableScalarQuantity<Time>,
+    IMultiplicableScalarQuantity<TimeSquared, Scalar>,
+    IMultiplicableScalarQuantity<Unhandled, Unhandled>,
+    IDivisibleScalarQuantity<TimeSquared, Scalar>,
+    IDivisibleScalarQuantity<Unhandled, Unhandled>,
+    IGenericallyMultiplicableScalarQuantity,
+    IGenericallyDivisibleScalarQuantity
+{
+    /// <summary>The zero-valued <see cref="TimeSquared"/>.</summary>
+    public static TimeSquared Zero { get; } = new(0);
+
+    /// <summary>The <see cref="TimeSquared"/> with magnitude 1, when expressed in unit <see cref="UnitOfTimeSquared.SquareSecond"/>.</summary>
+    public static TimeSquared OneSquareSecond { get; } = new(1, UnitOfTimeSquared.SquareSecond);
+
+    /// <summary>Computes <see cref="TimeSquared"/> according to { <see cref="TimeSquared"/> = 1 / <paramref name="frequencyDrift"/> }.</summary>
+    /// <summary>Constructs a <see cref="TimeSquared"/> by inverting the <see cref="FrequencyDrift"/> <paramref name="frequencyDrift"/>.</summary>
+    public static TimeSquared From(FrequencyDrift frequencyDrift) => new(1 / frequencyDrift.Magnitude);
+    /// <summary>Computes <see cref="TimeSquared"/> according to { <see cref="TimeSquared"/> = <paramref name="time"/>² }.</summary>
+    /// <param name="time">This <see cref="Time"/> is squared to produce a <see cref="TimeSquared"/>.</param>
+    public static TimeSquared From(Time time) => new(Math.Pow(time.Magnitude, 2));
+
+    /// <summary>The magnitude of the <see cref="TimeSquared"/> measure, in SI units.</summary>
+    /// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="TimeSquared.InSquareSeconds"/>.
+    /// <para>This value should only be used (to maximize efficiency) when implementing mathematical operations with other quantities.</para></remarks>
+    public double Magnitude { get; init; }
+
+    /// <summary>Constructs a new <see cref="TimeSquared"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfTimeSquared"/> <paramref name="unitOfTimeSquared"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="TimeSquared"/>, in <see cref="UnitOfTimeSquared"/> <paramref name="unitOfTimeSquared"/>.</param>
+    /// <param name="unitOfTimeSquared">The <see cref="UnitOfTimeSquared"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
+    /// <remarks>Consider preferring constructing instances according to the following:
+    /// <list type="bullet">
+    /// <item>
+    /// <code>
+    /// <see cref="TimeSquared"/> a = 3 * <see cref="TimeSquared.OneSquareSecond"/>;
+    /// </code>
+    /// </item>
+    /// </list>
+    /// </remarks>
+    public TimeSquared(Scalar magnitude, UnitOfTimeSquared unitOfTimeSquared) : this(magnitude.Magnitude, unitOfTimeSquared) { }
+    /// <summary>Constructs a new <see cref="TimeSquared"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfTimeSquared"/> <paramref name="unitOfTimeSquared"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="TimeSquared"/>, in <see cref="UnitOfTimeSquared"/> <paramref name="unitOfTimeSquared"/>.</param>
+    /// <param name="unitOfTimeSquared">The <see cref="UnitOfTimeSquared"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
+    /// <remarks>Consider preferring cosntructing instances according to the following:
+    /// <list type="bullet">
+    /// <item>
+    /// <code>
+    /// <see cref="TimeSquared"/> a = 3 * <see cref="TimeSquared.OneSquareSecond"/>;
+    /// </code>
+    /// </item>
+    /// </list>
+    /// </remarks>
+    public TimeSquared(double magnitude, UnitOfTimeSquared unitOfTimeSquared) : this(magnitude * unitOfTimeSquared.Factor) { }
+    /// <summary>Constructs a new <see cref="TimeSquared"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="TimeSquared"/>.</param>
+    /// <remarks>Consider preffering a constructor that requires a <see cref="UnitOfTimeSquared"/> to be specified.</remarks>
+    public TimeSquared(Scalar magnitude) : this(magnitude.Magnitude) { }
+    /// <summary>Constructs a new <see cref="TimeSquared"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="TimeSquared"/>.</param>
+    /// <remarks>Consider preferring a constructor that requires a <see cref="UnitOfTimeSquared"/> to be specified.</remarks>
+    public TimeSquared(double magnitude)
+    {
+        Magnitude = magnitude;
+    }
+
+    /// <summary>Retrieves the magnitude of the <see cref="TimeSquared"/>, expressed in unit <see cref="UnitOfTimeSquared.SquareSecond"/>.</summary>
+    public Scalar InSquareSeconds => InUnit(UnitOfTimeSquared.SquareSecond);
+
+    /// <summary>Indicates whether the magnitude of the <see cref="TimeSquared"/> is NaN.</summary>
+    public bool IsNaN => double.IsNaN(Magnitude);
+    /// <summary>Indicates whether the magnitude of the <see cref="TimeSquared"/> is zero.</summary>
+    public bool IsZero => Magnitude == 0;
+    /// <summary>Indicates whether the magnitude of the <see cref="TimeSquared"/> is positive.</summary>
+    public bool IsPositive => Magnitude > 0;
+    /// <summary>Indicates whether the magnitude of the <see cref="TimeSquared"/> is negative.</summary>
+    public bool IsNegative => double.IsNegative(Magnitude);
+    /// <summary>Indicates whether the magnitude of the <see cref="TimeSquared"/> is finite.</summary>
+    public bool IsFinite => double.IsFinite(Magnitude);
+    /// <summary>Indicates whether the magnitude of the <see cref="TimeSquared"/> is infinite.</summary>
+    public bool IsInfinite => IsPositiveInfinity || IsNegativeInfinity;
+    /// <summary>Indicates whether the magnitude of the <see cref="TimeSquared"/> is infinite, and positive.</summary>
+    public bool IsPositiveInfinity => double.IsPositiveInfinity(Magnitude);
+    /// <summary>Indicates whether the magnitude of the <see cref="TimeSquared"/> is infinite, and negative.</summary>
+    public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude);
+
+    /// <summary>Produces a <see cref="TimeSquared"/>, with magnitude equal to the absolute of the original magnitude.</summary>
+    public TimeSquared Absolute() => new(Math.Abs(Magnitude));
+    /// <summary>Produces a <see cref="TimeSquared"/>, with magnitude equal to the floor of the original magnitude.</summary>
+    public TimeSquared Floor() => new(Math.Floor(Magnitude));
+    /// <summary>Produces a <see cref="TimeSquared"/>, with magnitude equal to the ceiling of the original magnitude.</summary>
+    public TimeSquared Ceiling() => new(Math.Ceiling(Magnitude));
+    /// <summary>Produces a <see cref="TimeSquared"/>, with magnitude equal to the original magnitude, rounded to the nearest integer.</summary>
+    public TimeSquared Round() => new(Math.Round(Magnitude));
+
+    /// <summary>Inverts the <see cref="TimeSquared"/>, producing a <see cref="FrequencyDrift"/>.</summary>
+    public FrequencyDrift Invert() => FrequencyDrift.From(this);
+    /// <summary>Takes the square root of the <see cref="TimeSquared"/>, producing a <see cref="Time"/>.</summary>
+    public Time SquareRoot() => Time.From(this);
+
+    /// <inheritdoc/>
+    public int CompareTo(TimeSquared other) => Magnitude.CompareTo(other.Magnitude);
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="TimeSquared"/>, and the SI base unit of the quantity.</summary>
+    public override string ToString() => $"{Magnitude} [s^2]";
+
+    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="TimeSquared"/>, expressed in <see cref="UnitOfTimeSquared"/>
+    /// <paramref name="unitOfTimeSquared"/>.</summary>
+    /// <param name="unitOfTimeSquared">The <see cref="UnitOfTimeSquared"/> in which the magnitude is expressed.</param>
+    public Scalar InUnit(UnitOfTimeSquared unitOfTimeSquared) => InUnit(this, unitOfTimeSquared);
+    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="TimeSquared"/>, expressed in <see cref="UnitOfTimeSquared"/>
+    /// <paramref name="unitOfTimeSquared"/>.</summary>
+    /// <param name="timeSquared">The <see cref="TimeSquared"/> to be expressed in <see cref="UnitOfTimeSquared"/> <paramref name="unitOfTimeSquared"/>.</param>
+    /// <param name="unitOfTimeSquared">The <see cref="UnitOfTimeSquared"/> in which the magnitude is expressed.</param>
+    private static Scalar InUnit(TimeSquared timeSquared, UnitOfTimeSquared unitOfTimeSquared) => new(timeSquared.Magnitude / unitOfTimeSquared.Factor);
+
+    /// <summary>Unary plus, resulting in the unmodified <see cref="TimeSquared"/>.</summary>
+    public TimeSquared Plus() => this;
+    /// <summary>Negation, resulting in a <see cref="TimeSquared"/> with negated magnitude.</summary>
+    public TimeSquared Negate() => new(-Magnitude);
+    /// <summary>Unary plus, resulting in the unmodified <paramref name="x"/>.</summary>
+    /// <param name="x">Unary plus is applied to this instance of <see cref="TimeSquared"/>.</param>
+    public static TimeSquared operator +(TimeSquared x) => x.Plus();
+    /// <summary>Negation, resulting in a <see cref="TimeSquared"/> with magnitude negated from that of <paramref name="x"/>.</summary>
+    /// <param name="x">Negation is applied to this instance of <see cref="TimeSquared"/>.</param>
+    public static TimeSquared operator -(TimeSquared x) => x.Negate();
+
+    /// <summary>Multiplies the <see cref="TimeSquared"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <param name="factor">The factor by which the <see cref="TimeSquared"/> is multiplied.</param>
+    public Unhandled Multiply(Unhandled factor) => new(Magnitude * factor.Magnitude);
+    /// <summary>Divides the <see cref="TimeSquared"/> by the <see cref="Unhandled"/> quantity <paramref name="divisor"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <param name="divisor">The divisor by which the <see cref="TimeSquared"/> is divided.</param>
+    public Unhandled Divide(Unhandled divisor) => new(Magnitude / divisor.Magnitude);
+    /// <summary>Multiplies the <see cref="TimeSquared"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <param name="x">The <see cref="TimeSquared"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
+    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="TimeSquared"/> <paramref name="x"/> is multiplied.</param>
+    public static Unhandled operator *(TimeSquared x, Unhandled y) => x.Multiply(y);
+    /// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="TimeSquared"/> <paramref name="x"/> -
+    /// resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <param name="x">The <see cref="Unhandled"/> quantity by which the <see cref="TimeSquared"/> <paramref name="y"/> is multiplied.</param>
+    /// <param name="y">The <see cref="TimeSquared"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
+    public static Unhandled operator *(Unhandled x, TimeSquared y) => y.Multiply(x);
+    /// <summary>Divides the <see cref="TimeSquared"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <param name="x">The <see cref="TimeSquared"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
+    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="TimeSquared"/> <paramref name="x"/> is divded.</param>
+    public static Unhandled operator /(TimeSquared x, Unhandled y) => x.Divide(y);
+
+    /// <summary>Produces a <see cref="TimeSquared"/>, with magnitude equal to the remainder from division of the original
+    /// magnitude by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    public TimeSquared Remainder(double divisor) => new(Magnitude % divisor);
+    /// <summary>Scales the <see cref="TimeSquared"/> by <paramref name="factor"/>.</summary>
+    /// <param name="factor">The factor by which the <see cref="TimeSquared"/> is scaled.</param>
+    public TimeSquared Multiply(double factor) => new(Magnitude * factor);
+    /// <summary>Scales the <see cref="TimeSquared"/> through division by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, by which the <see cref="TimeSquared"/> is divided.</param>
+    public TimeSquared Divide(double divisor) => new(Magnitude / divisor);
+    /// <summary>Produces a <see cref="TimeSquared"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
+    /// by <paramref name="y"/>.</summary>
+    /// <param name="x">The <see cref="TimeSquared"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
+    /// <param name="y">The remainder is retrieved from division of <see cref="TimeSquared"/> <paramref name="x"/> by this value.</param>
+    public static TimeSquared operator %(TimeSquared x, double y) => x.Remainder(y);
+    /// <summary>Scales the <see cref="TimeSquared"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
+    /// <param name="x">The <see cref="TimeSquared"/>, which is scaled by <paramref name="y"/>.</param>
+    /// <param name="y">This value is used to scale the <see cref="TimeSquared"/> <paramref name="x"/>.</param>
+    public static TimeSquared operator *(TimeSquared x, double y) => x.Multiply(y);
+    /// <summary>Scales the <see cref="TimeSquared"/> <paramref name="y"/> by <paramref name="x"/>.</summary>
+    /// <param name="x">This value is used to scale the <see cref="TimeSquared"/> <paramref name="y"/>.</param>
+    /// <param name="y">The <see cref="TimeSquared"/>, which is scaled by <paramref name="x"/>.</param>
+    public static TimeSquared operator *(double x, TimeSquared y) => y.Multiply(x);
+    /// <summary>Scales the <see cref="TimeSquared"/> <paramref name="x"/> through division by <paramref name="y"/>.</summary>
+    /// <param name="x">The <see cref="TimeSquared"/>, which is divided by <paramref name="y"/>.</param>
+    /// <param name="y">This value is used to divide the <see cref="TimeSquared"/> <paramref name="x"/>.</param>
+    public static TimeSquared operator /(TimeSquared x, double y) => x.Divide(y);
+/// <summary>Inverts the <see cref="TimeSquared"/> <paramref name="y"/> to produce a <see cref="FrequencyDrift"/>, which is then scaled by <paramref name="x"/>.</summary>
+/// <param name="x">This value is used to scale the inverted <see cref="TimeSquared"/> <paramref name="y"/>.</param>
+/// <param name="y">The <see cref="TimeSquared"/>, which is inverted to a <see cref="FrequencyDrift"/> and scaled by <paramref name="x"/>.</param>
+    public static FrequencyDrift operator /(double x, TimeSquared y) => x * y.Invert();
+
+    /// <summary>Produces a <see cref="TimeSquared"/>, with magnitude equal to the remainder from division of the original
+    /// magnitude by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    public TimeSquared Remainder(Scalar divisor) => Remainder(divisor.Magnitude);
+    /// <summary>Scales the <see cref="TimeSquared"/> by <paramref name="factor"/>.</summary>
+    /// <param name="factor">The factor by which the <see cref="TimeSquared"/> is scaled.</param>
+    public TimeSquared Multiply(Scalar factor) => Multiply(factor.Magnitude);
+    /// <summary>Scales the <see cref="TimeSquared"/> through division by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, by which the <see cref="TimeSquared"/> is divided.</param>
+    public TimeSquared Divide(Scalar divisor) => Divide(divisor.Magnitude);
+    /// <summary>Produces a <see cref="TimeSquared"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
+    /// by <paramref name="y"/>.</summary>
+    /// <param name="x">The <see cref="TimeSquared"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
+    /// <param name="y">The remainder is retrieved from division of the <see cref="TimeSquared"/> <paramref name="x"/> by this value.</param>
+    public static TimeSquared operator %(TimeSquared x, Scalar y) => x.Remainder(y);
+    /// <summary>Scales the <see cref="TimeSquared"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
+    /// <param name="x">The <see cref="TimeSquared"/>, which is scaled by <paramref name="y"/>.</param>
+    /// <param name="y">This value is used to scale the <see cref="TimeSquared"/> <paramref name="x"/>.</param>
+    public static TimeSquared operator *(TimeSquared x, Scalar y) => x.Multiply(y);
+    /// <summary>Scales the <see cref="TimeSquared"/> <paramref name="y"/> by <paramref name="x"/>.</summary>
+    /// <param name="x">This value is used to scale the <see cref="TimeSquared"/> <paramref name="y"/>.</param>
+    /// <param name="y">The <see cref="TimeSquared"/>, which is scaled by <paramref name="x"/>.</param>
+    public static TimeSquared operator *(Scalar x, TimeSquared y) => y.Multiply(x);
+    /// <summary>Scales the <see cref="TimeSquared"/> <paramref name="x"/> through division by <paramref name="y"/>.</summary>
+    /// <param name="x">The <see cref="TimeSquared"/>, which is divided by <paramref name="y"/>.</param>
+    /// <param name="y">This value is used to divide the <see cref="TimeSquared"/> <paramref name="x"/>.</param>
+    public static TimeSquared operator /(TimeSquared x, Scalar y) => x.Divide(y);
+/// <summary>Inverts the <see cref="TimeSquared"/> <paramref name="y"/> to produce a <see cref="FrequencyDrift"/>, which is then scaled by <paramref name="x"/>.</summary>
+/// <param name="x">This value is used to scale the inverted <see cref="TimeSquared"/> <paramref name="y"/>.</param>
+/// <param name="y">The <see cref="TimeSquared"/>, which is inverted to a <see cref="FrequencyDrift"/> and scaled by <paramref name="x"/>.</param>
+    public static FrequencyDrift operator /(Scalar x, TimeSquared y) => x * y.Invert();
+
+    /// <summary>Multiplies the <see cref="TimeSquared"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <typeparam name="TScalarQuantity">The type of the quantity by which multiplication is done.</typeparam>
+    /// <param name="factor">The factor by which the <see cref="TimeSquared"/> is multiplied.</param>
+    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
+    /// <summary>Divides the <see cref="TimeSquared"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <typeparam name="TScalarQuantity">The type of the quantity by which division is done.</typeparam>
+    /// <param name="divisor">The divisor by which the <see cref="TimeSquared"/> is divided.</param>
+    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    /// <summary>Multiples the <see cref="TimeSquared"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <param name="x">The <see cref="TimeSquared"/>, which is multiplied by <paramref name="y"/>.</param>
+    /// <param name="y">This quantity is multiplied by the <see cref="TimeSquared"/> <paramref name="x"/>.</param>
+    /// <remarks>To maximize performance, prefer <see cref="TimeSquared.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
+    public static Unhandled operator *(TimeSquared x, IScalarQuantity y) => x.Multiply(y);
+    /// <summary>Divides the <see cref="TimeSquared"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <param name="x">The <see cref="TimeSquared"/>, which is divided by <paramref name="y"/>.</param>
+    /// <param name="y">The<see cref="TimeSquared"/> <paramref name="x"/> is divided by this quantity.</param>
+    /// <remarks>To maximize performance, prefer <see cref="TimeSquared.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
+    public static Unhandled operator /(TimeSquared x, IScalarQuantity y) => x.Multiply(y);
+
+    /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
+    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
+    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    public static bool operator <(TimeSquared x, TimeSquared y) => x.Magnitude < y.Magnitude;
+    /// <summary>Determines whether <paramref name="x"/> is greater than <paramref name="y"/>.</summary>
+    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
+    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    public static bool operator >(TimeSquared x, TimeSquared y) => x.Magnitude > y.Magnitude;
+    /// <summary>Determines whether <paramref name="x"/> is less than or equal to <paramref name="y"/>.</summary>
+    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
+    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    public static bool operator <=(TimeSquared x, TimeSquared y) => x.Magnitude <= y.Magnitude;
+    /// <summary>Determines whether <paramref name="x"/> is greater than or equal to <paramref name="y"/>.</summary>
+    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
+    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    public static bool operator >=(TimeSquared x, TimeSquared y) => x.Magnitude >= y.Magnitude;
+
+    /// <summary>Converts the <see cref="TimeSquared"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
+    public double ToDouble() => Magnitude;
+    /// <summary>Converts the <see cref="TimeSquared"/> to a <see cref="double"/> based on the magnitude of the <see cref="TimeSquared"/> <paramref name="x"/>.</summary>
+    public static implicit operator double(TimeSquared x) => x.ToDouble();
+
+    /// <summary>Converts the <see cref="TimeSquared"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    public Scalar ToScalar() => new(Magnitude);
+    /// <summary>Converts the <see cref="TimeSquared"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    public static explicit operator Scalar(TimeSquared x) => x.ToScalar();
+
+    /// <summary>Converts <paramref name="x"/> to the <see cref="TimeSquared"/> of magnitude <paramref name="x"/>.</summary>
+    public static TimeSquared FromDouble(double x) => new(x);
+    /// <summary>Converts <paramref name="x"/> to the <see cref="TimeSquared"/> of magnitude <paramref name="x"/>.</summary>
+    public static explicit operator TimeSquared(double x) => FromDouble(x);
+
+    /// <summary>Converts <paramref name="x"/> to the <see cref="TimeSquared"/> of equivalent magnitude.</summary>
+    public static TimeSquared FromScalar(Scalar x) => new(x);
+    /// <summary>Converts <paramref name="x"/> to the <see cref="TimeSquared"/> of equivalent magnitude.</summary>
+    public static explicit operator TimeSquared(Scalar x) => FromScalar(x);
+}

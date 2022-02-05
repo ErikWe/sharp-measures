@@ -3,12 +3,23 @@
 using System.Numerics;
 
 public readonly record struct Vector3(double X, double Y, double Z) :
-    IVector3<Vector3>
+    IVector3Quantity,
+    IScalableVector3Quantity<Vector3>,
+    IAddableVector3Quantity<Vector3, Vector3>,
+    ISubtractableVector3Quantity<Vector3, Vector3>,
+    IMultiplicableVector3Quantity<Vector3, Scalar>,
+    IDivisibleVector3Quantity<Vector3, Scalar>,
+    IMultiplicableVector3Quantity<Unhandled3, Unhandled>,
+    IDivisibleVector3Quantity<Unhandled3, Unhandled>,
+    IGenericallyMultiplicableVector3Quantity,
+    IGenericallyDivisibleVector3Quantity
 {
     public static Vector3 Zero { get; } = new(0, 0, 0);
     public static Vector3 Ones { get; } = new(1, 1, 1);
 
-    Vector3 IVector3.AsVector3() => this;
+    public Vector3((Scalar x, Scalar y, Scalar z) components) : this(components.x, components.y, components.z) { }
+    public Vector3(Scalar x, Scalar y, Scalar z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
+    public Vector3((double x, double y, double z) components) : this(components.x, components.y, components.z) { }
 
     public Scalar Magnitude() => SquaredMagnitude().SquareRoot();
     public Scalar SquaredMagnitude() => Maths.Vectors.Dot(this, this);
@@ -19,8 +30,8 @@ public readonly record struct Vector3(double X, double Y, double Z) :
     public Unhandled Dot(Unhandled3 factor) => new(Maths.Vectors.Dot(this, factor));
     public Unhandled3 Cross(Unhandled3 factor) => new(Maths.Vectors.Cross(this, factor));
 
-    public Unhandled Dot<TQuantity>(TQuantity factor) where TQuantity : IVector3 => new(Maths.Vectors.Dot(this, factor));
-    public Unhandled3 Cross<TQuantity>(TQuantity factor) where TQuantity : IVector3 => new(Maths.Vectors.Cross(this, factor));
+    public Unhandled Dot<TQuantity>(TQuantity factor) where TQuantity : IVector3Quantity => new(Maths.Vectors.Dot(this, factor));
+    public Unhandled3 Cross<TQuantity>(TQuantity factor) where TQuantity : IVector3Quantity => new(Maths.Vectors.Cross(this, factor));
 
     public override string ToString() => $"({X}, {Y}, {Z})";
 

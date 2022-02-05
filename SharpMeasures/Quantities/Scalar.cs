@@ -4,12 +4,21 @@ using System;
 
 public readonly record struct Scalar(double Magnitude) :
     IComparable<Scalar>,
-    IScalarQuantity<Scalar>,
+    IScalarQuantity,
+    IScalableScalarQuantity<Scalar>,
     IInvertibleScalarQuantity<Scalar>,
     ISquarableScalarQuantity<Scalar>,
     ICubableScalarQuantity<Scalar>,
     ISquareRootableScalarQuantity<Scalar>,
-    ICubeRootableScalarQuantity<Scalar>
+    ICubeRootableScalarQuantity<Scalar>,
+    IAddableScalarQuantity<Scalar, Scalar>,
+    ISubtractableScalarQuantity<Scalar, Scalar>,
+    IMultiplicableScalarQuantity<Scalar, Scalar>,
+    IDivisibleScalarQuantity<Scalar, Scalar>,
+    IMultiplicableScalarQuantity<Unhandled, Unhandled>,
+    IDivisibleScalarQuantity<Unhandled, Unhandled>,
+    IGenericallyMultiplicableScalarQuantity,
+    IGenericallyDivisibleScalarQuantity
 {
     public static Scalar Zero { get; } = new(0);
     public static Scalar One { get; } = new(1);
@@ -75,8 +84,8 @@ public readonly record struct Scalar(double Magnitude) :
     public static Scalar operator *(Scalar x, Scalar y) => new(x.Magnitude * y.Magnitude);
     public static Scalar operator /(Scalar x, Scalar y) => new(x.Magnitude / y.Magnitude);
 
-    public Unhandled Multiply<TScalar>(TScalar factor) where TScalar : IScalarQuantity => new(Magnitude * factor.Magnitude);
-    public Unhandled Divide<TScalar>(TScalar divisor) where TScalar : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
+    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
     public static Unhandled operator *(Scalar x, IScalarQuantity y) => new(x.Magnitude * (y?.Magnitude ?? double.NaN));
     public static Unhandled operator /(Scalar x, IScalarQuantity y) => new(x.Magnitude / (y?.Magnitude ?? double.NaN));
 

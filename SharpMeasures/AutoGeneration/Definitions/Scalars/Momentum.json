@@ -1,0 +1,19 @@
+﻿{
+    "name": "Momentum",
+    "type": "Scalar",
+    "baseUnits": "kg * m * s^-1",
+    "unit": "[UnitOf]",
+    "unitBias": false,
+    "vector": "[name]",
+    "inverse": false,
+    "square": false,
+    "cube": false,
+    "squareRoot": false,
+    "cubeRoot": false,
+    "units": [
+        { "singular": "KilogramMetrePerSecond", "plural": "+s [Per]", "SI": true, "symbol": "kg * m / s" }
+    ],
+    "convertible": [
+        "Impulse"
+    ]
+}

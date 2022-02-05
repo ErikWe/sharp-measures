@@ -1,0 +1,30 @@
+﻿#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(quantity, unitName, singularUnits, pluralUnits)#
+/// <summary>A measure of the scalar quantity <see cref="#Param:quantity#"/>, describes the transferal of <see cref="Energy"/> due to a <see cref="Force"/>
+/// acting on an object. The quantity is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [J].
+#Document:HeaderSummaryAssociated(#Param:quantity#, #Param:unitName#, #Param:singularUnits#, #Param:pluralUnits#)#
+/// </summary>
+/// <remarks>
+/// <see cref="#Param:quantity#"/> is closely related to the following quantities:
+/// <list type="bullet">
+/// <item>
+/// <term><see cref="Energy"/></term>
+/// <description>Describes the capability to perform <see cref="Work"/>.</description>
+/// </item>
+/// <iterm>
+/// <term><see cref="Torque"/></term>
+/// <description>Describes <see cref="AngularAcceleration"/> of an object.</description>
+/// </item>
+/// </list>
+/// </remarks>
+#/Define:Header#
+
+#Define:ExampleDerivedMethod(quantity, variable)#
+<see cref="#Param:quantity"/> #Param:variable# = <see cref="#Param:quantity#.From(Force, Distance)"/>;
+#/Define:ExampleDerivedMethod#
+
+#Define:ExampleFromAssociated(quantity, variable)#
+<see cref="#Param:quantity#"/> #Param:variable# = <see cref="Energy.As#Param:quantity#"/>;
+#/Define:ExampleFromAssociated#

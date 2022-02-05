@@ -1,0 +1,20 @@
+﻿{
+    "name": "Torque",
+    "type": "Scalar",
+    "baseUnits": "kg * m^2 * s^-2",
+    "unit": "[UnitOf]",
+    "unitBias": false,
+    "vector": "[name]",
+    "inverse": false,
+    "square": false,
+    "cube": false,
+    "squareRoot": false,
+    "cubeRoot": false,
+    "units": [
+        { "singular": "NewtonMetre", "plural": "+s", "SI": true, "symbol": "N * m" }
+    ],
+    "convertible": [
+        "Energy",
+        "Work"
+    ]
+}

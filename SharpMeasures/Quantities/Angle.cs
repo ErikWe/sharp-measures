@@ -2,25 +2,15 @@
 
 using System;
 
-public readonly partial record struct Angle :
-    IAddableScalarQuantity<Angle, Angle>,
-    ISubtractableScalarQuantity<Angle, Angle>
+public readonly partial record struct Angle
 {
-    public double Sin() => Math.Sin(Magnitude);
-    public double Cos() => Math.Cos(Magnitude);
-    public double Tan() => Math.Tan(Magnitude);
+    /// <summary>Computes <see cref="Angle"/> according to { <see cref="Angle"/> = <paramref name="angularSpeed"/> ∗ <paramref name="time"/> },
+    /// where <paramref name="angularSpeed"/> is the average <see cref="AngularSpeed"/> over some <see cref="Time"/> <paramref name="time"/>.</summary>
+    public static Angle From(AngularSpeed angularSpeed, Time time) => new(angularSpeed.Magnitude * time.Magnitude);
 
-    public double Sinh() => Math.Sinh(Magnitude);
-    public double Cosh() => Math.Cosh(Magnitude);
-    public double Tanh() => Math.Tanh(Magnitude);
+    /// <summary>Computes the sine of the <see cref="Angle"/>.</summary>
+    public Scalar Sin() => new(Math.Sin(Magnitude));
 
-    public static Angle Asin(double sine) => new(Math.Asin(sine));
-    public static Angle Acos(double cosine) => new(Math.Acos(cosine));
-    public static Angle Atan(double tangent) => new(Math.Atan(tangent));
-
-    public static Angle Asinh(double hyperbolicSine) => new(Math.Asinh(hyperbolicSine));
-    public static Angle Acosh(double hyperbolicCosine) => new(Math.Acosh(hyperbolicCosine));
-    public static Angle Atanh(double hyperbolicTangent) => new(Math.Atanh(hyperbolicTangent));
-
-    public static Angle Atan2(double y, double x) => new(Math.Atan2(y, x));
+    /// <summary>Computes the cosine of the <see cref="Angle"/>.</summary>
+    public Scalar Cos() => new(Math.Cos(Magnitude));
 }

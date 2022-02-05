@@ -4,12 +4,21 @@ using System;
 
 public readonly record struct Unhandled(double Magnitude) :
     IComparable<Unhandled>,
-    IScalarQuantity<Unhandled>,
+    IScalarQuantity,
+    IScalableScalarQuantity<Unhandled>,
     IInvertibleScalarQuantity<Unhandled>,
     ISquarableScalarQuantity<Unhandled>,
     ICubableScalarQuantity<Unhandled>,
     ISquareRootableScalarQuantity<Unhandled>,
-    ICubeRootableScalarQuantity<Unhandled>
+    ICubeRootableScalarQuantity<Unhandled>,
+    IAddableScalarQuantity<Unhandled, Unhandled>,
+    ISubtractableScalarQuantity<Unhandled, Unhandled>,
+    IMultiplicableScalarQuantity<Unhandled, Scalar>,
+    IDivisibleScalarQuantity<Unhandled, Scalar>,
+    IMultiplicableScalarQuantity<Unhandled, Unhandled>,
+    IDivisibleScalarQuantity<Unhandled, Unhandled>,
+    IGenericallyMultiplicableScalarQuantity,
+    IGenericallyDivisibleScalarQuantity
 {
     public static Unhandled Zero { get; } = new(0);
     public static Unhandled One { get; } = new(1);
@@ -69,8 +78,8 @@ public readonly record struct Unhandled(double Magnitude) :
     public static Unhandled operator *(Unhandled x, Scalar y) => new(x.Magnitude * y.Magnitude);
     public static Unhandled operator /(Unhandled x, Scalar y) => new(x.Magnitude / y.Magnitude);
 
-    public Unhandled Multiply<TScalar>(TScalar factor) where TScalar : IScalarQuantity => new(Magnitude * factor.Magnitude);
-    public Unhandled Divide<TScalar>(TScalar divisor) where TScalar : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
+    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
     public static Unhandled operator *(Unhandled x, IScalarQuantity y) => new(x.Magnitude * (y?.Magnitude ?? double.NaN));
     public static Unhandled operator /(Unhandled x, IScalarQuantity y) => new(x.Magnitude / (y?.Magnitude ?? double.NaN));
 

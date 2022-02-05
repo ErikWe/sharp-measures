@@ -1,0 +1,17 @@
+﻿{
+    "name": "FrequencyDrift",
+    "type": "Scalar",
+    "baseUnits": "s^-2",
+    "unit": "[UnitOf]",
+    "unitBias": false,
+    "vector": false,
+    "inverse": "TimeSquared",
+    "square": false,
+    "cube": false,
+    "squareRoot": "Frequency",
+    "cubeRoot": false,
+    "units": [
+        { "singular": "HertzPerSecond", "plural": "=", "SI": true, "symbol": "Hz / s" }
+    ],
+    "convertible": []
+}

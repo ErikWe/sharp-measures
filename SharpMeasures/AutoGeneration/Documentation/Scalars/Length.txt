@@ -1,17 +1,34 @@
-﻿#Document:Bases#
-Metre Foot Parsec Yard Mile Lightyear Inch
-#/Document:Bases#
+﻿#Extends:Generic.txt#
+#Extends:Utility.txt#
 
-#Document:Header#
-/// <summary>A measure of the scalar quantity <see cref="#Quantity#"/>, used for describing one-dimensional sections of space - such as distances and lengths of objects.
-#Document:HeaderSummary#
+#Define:SingularUnits#
+[Metre, Foot, Parsec, Yard, Mile, Lightyear, Inch]
+#/Define:SingularUnits#
+
+#Define:PluralUnits#
+[Metres, Feet, Parsecs, Yards, Miles, Lightyears, Inches]
+#/Define:PluralUnits#
+
+#Define:Header(quantity, unitName, singularUnits, pluralUnits)#
+/// <summary>A measure of the scalar quantity <see cref="#Param:quantity#"/>, describing the size of a one-dimensional section of space.
+/// The quantity is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [m].
+#Document:HeaderSummaryAssociated(#Param:quantity#, #Param:unitName#, #Document:SingularUnits#, #Document:PluralUnits#)#
 /// </summary>
-#/Document:Header#
+/// <remarks>
+/// <see cref="#Param:quantity#"/> is closely related to the following quantities:
+/// <list type="bullet">
+/// <item>
+/// <term><see cref="Distance"/></term>
+/// <description>A more specialized form of <see cref="#Param:quantity#"/>, describing the distance between points in space.</description>
+/// </item>
+/// </list>
+/// </remarks>
+#/Define:Header#
 
-#Document:ExampleDerived(variable)#
-<see cref="#Quantity#"/> #Param:variable# = <see cref="Velocity.OneMilePerHour"/> * <see cref="Time.OneMinute"/>;
-#/Document:ExampleDerived#
+#Define:ExampleDerivedMethod(quantity, variable)#
+<see cref="#Param:quantity#"/> #Param:variable# = <see cref="#Param:quantity#.From(Mass, LinearDensity)"/>;
+#/Define:ExampleDerivedMethod#
 
-#Document:ExampleUsage(variable, base)#
-<see cref="Velocity"/> #Param:variable# = 3 * <see cref="Length.One#Base#Param:base##"/> / <see cref="Time.OneSecond"/>;
-#/Document:ExampleUsage#
+#Define:ExampleFromAssociated(quantity, variable)#
+<see cref="#Param:quantity#"/> #Param:variable# = <see cref="Distance.As#Param:quantity#"/>;
+#/Define:ExampleFromAssociated#

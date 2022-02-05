@@ -1,13 +1,21 @@
-﻿#Document:Bases#
-Are SquareMetre Hectare SquareMile Acre
-#/Document:Bases#
+﻿#Extends:Generic.txt#
+#Extends:Utility.txt#
 
-#Document:Header#
-/// <summary>A measure of the scalar quantity <see cref="#Quantity#"/>, used for describing two-dimensional sections of space - areas.
-#Document:HeaderSummary#
+#Define:SingularUnits#
+[Are, SquareMetre, Hectare, SquareMile, Acre]
+#/Define:SingularUnits#
+
+#Define:PluralUnits#
+[Ares, SquareMetres, Hectares, SquareMiles, Acres]
+#/Define:PluralUnits#
+
+#Define:Header(quantity, unitName, singularUnits, pluralUnits)#
+/// <summary>A measure of the scalar quantity <see cref="#Param:quantity#"/>, describing the size of a two-dimensional section of space - the square of <see cref="Length"/>.
+/// The quantity is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [m²].
+#Document:HeaderSummary(#Param:quantity#, #Param:unitName#, #Document:SingularUnits#, #Document:PluralUnits#)#
 /// </summary>
-#/Document:Header#
+#/Define:Header#
 
-#Document:ExampleEquation#
-<see cref="Length"/> c = 3 * <see cref="Area.OneHectare"/> / <see cref="Length.OneMetre"/>;
-#/Document:ExampleEquation#
+#Define:ExampleDerivedMethod(quantity, variable)#
+<see cref="#Param:quantity#"/> #Param:variable# = <see cref="#Param:quantity#.From(Mass, ArealDensity)"/>;
+#/Define:ExampleDerivedMethod#

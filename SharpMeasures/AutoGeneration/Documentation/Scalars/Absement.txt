@@ -1,9 +1,13 @@
-﻿#Document:Header#
-/// <summary>A measure of the scalar quantity <see cref="#Quantity#"/>, used for describing sustained displacement - <see cref="Length"/> across some <see cref="Time"/>.
-#Document:HeaderSummary#
-/// </summary>
-#/Document:Header#
+﻿#Extends:Generic.txt#
+#Extends:Utility.txt#
 
-#Document:ExampleEquation#
-<see cref="Length"/> c = 3 * <see cref="Absement.OneMetreSecond"/> / <see cref="Time.OneMinute"/>;
-#/Document:ExampleEquation#
+#Define:Header(quantity, unitName, singularUnits, pluralUnits)#
+/// <summary>A measure of the scalar quantity <see cref="#Param:quantity#"/>, describing sustained displacement - <see cref="Distance"/> for some <see cref="Time"/>.
+/// This is the magnitude of the vector quantity <see cref="Absement3"/>, and is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [m * s].
+#Document:HeaderSummary(#Param:quantity#, #Param:unitName#, #Param:singularUnits#, #Param:pluralUnits#)#
+/// </summary>
+#/Define:Header#
+
+#Define:ExampleDerivedMethod(quantity, variable)#
+<see cref="#Param:quantity#"/> #Param:variable# = <see cref="#Param:quantity#.From(Distance, Time)"/>;
+#/Define:ExampleDerivedMethod#

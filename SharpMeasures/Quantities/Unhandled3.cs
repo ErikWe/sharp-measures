@@ -3,19 +3,29 @@
 using System.Numerics;
 
 public readonly record struct Unhandled3(double X, double Y, double Z) :
-    IVector3<Unhandled3>
+    IVector3Quantity,
+    IScalableVector3Quantity<Unhandled3>,
+    IAddableVector3Quantity<Unhandled3, Unhandled3>,
+    ISubtractableVector3Quantity<Unhandled3, Unhandled3>,
+    IMultiplicableVector3Quantity<Unhandled3, Scalar>,
+    IDivisibleVector3Quantity<Unhandled3, Scalar>,
+    IMultiplicableVector3Quantity<Unhandled3, Unhandled>,
+    IDivisibleVector3Quantity<Unhandled3, Unhandled>,
+    IGenericallyMultiplicableVector3Quantity,
+    IGenericallyDivisibleVector3Quantity
 {
     public static readonly Unhandled3 Zero = new(0, 0, 0);
-    public static readonly Unhandled3 One = new(1, 1, 1);
-
-    public Vector3 AsVector3() => new(X, Y, Z);
+    public static readonly Unhandled3 Ones = new(1, 1, 1);
 
     public Unhandled3((Unhandled x, Unhandled y, Unhandled z) components) : this(components.x, components.y, components.z) { }
     public Unhandled3(Unhandled x, Unhandled y, Unhandled z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
+    public Unhandled3((Scalar x, Scalar y, Scalar z) components) : this(components.x, components.y, components.z) { }
+    public Unhandled3(Scalar x, Scalar y, Scalar z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
+    public Unhandled3(Vector3 components) : this(components.X, components.Y, components.Z) { }
     public Unhandled3((double x, double y, double z) components) : this(components.x, components.y, components.z) { }
 
-    Scalar IVector3.Magnitude() => Maths.Vectors.Dot(this, this).SquareRoot();
-    Scalar IVector3.SquaredMagnitude() => Maths.Vectors.Dot(this, this);
+    Scalar IVector3Quantity.Magnitude() => Maths.Vectors.Dot(this, this).SquareRoot();
+    Scalar IVector3Quantity.SquaredMagnitude() => Maths.Vectors.Dot(this, this);
 
     public Unhandled Magnitude() => SquaredMagnitude().SquareRoot();
     public Unhandled SquaredMagnitude() => Dot(this);
@@ -26,8 +36,8 @@ public readonly record struct Unhandled3(double X, double Y, double Z) :
     public Unhandled Dot(Unhandled3 factor) => new(Maths.Vectors.Dot(this, factor));
     public Unhandled3 Cross(Unhandled3 factor) => new(Maths.Vectors.Cross(this, factor));
 
-    public Unhandled Dot<TQuantity>(TQuantity factor) where TQuantity : IVector3 => new(Maths.Vectors.Dot(this, factor));
-    public Unhandled3 Cross<TQuantity>(TQuantity factor) where TQuantity : IVector3 => new(Maths.Vectors.Cross(this, factor));
+    public Unhandled Dot<TQuantity>(TQuantity factor) where TQuantity : IVector3Quantity => new(Maths.Vectors.Dot(this, factor));
+    public Unhandled3 Cross<TQuantity>(TQuantity factor) where TQuantity : IVector3Quantity => new(Maths.Vectors.Cross(this, factor));
 
     public override string ToString() => $"({X}, {Y}, {Z}) [undef]";
 

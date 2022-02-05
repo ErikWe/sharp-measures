@@ -1,0 +1,14 @@
+{
+    "name": "Position",
+    "type": "Vector",
+    "component": "Length",
+    "baseUnits": "[component]",
+    "unit": "[component]",
+    "unitBias": "[component]",
+    "dimensionalities": [3],
+    "units": "[component]",
+    "convertible": [
+        "Size",
+        "Displacement"
+    ]
+}

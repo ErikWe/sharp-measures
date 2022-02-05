@@ -10,6 +10,7 @@ public readonly record struct UnitOfAngle(double BaseScale, MetricPrefix Prefix)
     public static UnitOfAngle ArcMinute { get; } = Degree with { BaseScale = 1d / 60 };
     public static UnitOfAngle ArcSecond { get; } = ArcMinute with { BaseScale = 1d / 60 };
     public static UnitOfAngle Turn { get; } = Radian with { BaseScale = Math.Tau };
+    public static UnitOfAngle Gradian { get; } = Turn with { BaseScale = 1d / 400 };
 
     public double Factor => BaseScale * Prefix.Scale;
 

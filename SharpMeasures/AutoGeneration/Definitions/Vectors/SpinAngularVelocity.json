@@ -1,0 +1,14 @@
+{
+    "name": "SpinAngularVelocity",
+    "type": "Vector",
+    "component": "SpinAngularSpeed",
+    "baseUnits": "[component]",
+    "unit": "[component]",
+    "unitBias": "[component]",
+    "dimensionalities": [3],
+    "units": "[component]",
+    "convertible": [
+        "AngularVelocity",
+        "OrbitalAngularVelocity"
+    ]
+}

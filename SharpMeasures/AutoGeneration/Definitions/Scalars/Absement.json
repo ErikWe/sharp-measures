@@ -1,0 +1,17 @@
+﻿{
+    "name": "Absement",
+    "type": "Scalar",
+    "baseUnits": "m * s",
+    "unit": "[UnitOf]",
+    "unitBias": false,
+    "vector": "[name]",
+    "inverse": false,
+    "square": false,
+    "cube": false,
+    "squareRoot": false,
+    "cubeRoot": false,
+    "units": [
+        { "singular": "MetreSecond", "plural": "+s", "SI": true, "symbol": "m * s" }
+    ],
+    "convertible": []
+}

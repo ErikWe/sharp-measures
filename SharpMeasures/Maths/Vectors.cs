@@ -7,15 +7,15 @@ using System.Numerics;
 internal static class Vectors
 {
     public static Scalar Dot<TLHSVector3, TRHSVector3>(TLHSVector3 lhs, TRHSVector3 rhs)
-        where TLHSVector3 : IVector3
-        where TRHSVector3 : IVector3
+        where TLHSVector3 : IVector3Quantity
+        where TRHSVector3 : IVector3Quantity
     {
         return new(lhs.X * rhs.X + lhs.Y * rhs.Y + lhs.Z * rhs.Z);
     }
 
     public static Quantities.Vector3 Cross<TLHSVector3, TRHSVector3>(TLHSVector3 lhs, TRHSVector3 rhs)
-        where TLHSVector3 : IVector3
-        where TRHSVector3 : IVector3
+        where TLHSVector3 : IVector3Quantity
+        where TRHSVector3 : IVector3Quantity
     {
         return new
         (
@@ -26,7 +26,7 @@ internal static class Vectors
     }
 
     public static Quantities.Vector3 Transform<TVector3>(TVector3 vector, Matrix4x4 transform)
-        where TVector3 : IVector3
+        where TVector3 : IVector3Quantity
     {
         return new
         (

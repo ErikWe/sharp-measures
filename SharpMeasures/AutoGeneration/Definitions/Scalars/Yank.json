@@ -1,0 +1,17 @@
+﻿{
+    "name": "Yank",
+    "type": "Scalar",
+    "baseUnits": "kg * m * s^-3",
+    "unit": "[UnitOf]",
+    "unitBias": false,
+    "vector": "[name]",
+    "inverse": false,
+    "square": false,
+    "cube": false,
+    "squareRoot": false,
+    "cubeRoot": false,
+    "units": [
+        { "singular": "NewtonPerSecond", "plural": "+s [Per]", "SI": true, "symbol": "N / s" }
+    ],
+    "convertible": []
+}

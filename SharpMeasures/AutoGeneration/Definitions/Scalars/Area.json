@@ -1,0 +1,26 @@
+﻿{
+    "name": "Area",
+    "type": "Scalar",
+    "baseUnits": "m^2",
+    "unit": "[UnitOf]",
+    "unitBias": false,
+    "vector": false,
+    "inverse": false,
+    "square": false,
+    "cube": false,
+    "squareRoot": [
+        "Length",
+        "Distance"
+    ],
+    "cubeRoot": false,
+    "units": [
+        { "singular": "SquareMetre", "plural": "+s", "SI": true, "symbol": "m^2" },
+        { "singular": "SquareKilometre", "plural": "+s" },
+        { "singular": "SquareMile", "plural": "+s" },
+        { "special": true, "separator": true },
+        { "singular": "Are", "plural": "+s" },
+        { "singular": "Hectare", "plural": "+s" },
+        { "singular": "Acre", "plural": "+s" }
+    ],
+    "convertible": []
+}

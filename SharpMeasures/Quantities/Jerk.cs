@@ -1,11 +1,8 @@
 ﻿namespace ErikWe.SharpMeasures.Quantities;
 
-public readonly partial record struct Jerk :
-    IAddableScalarQuantity<Jerk, Jerk>,
-    ISubtractableScalarQuantity<Jerk, Jerk>
+public readonly partial record struct Jerk
 {
+    /// <summary>Computes <see cref="Jerk"/> according to { <see cref="Jerk"/> = <paramref name="acceleration"/> / <paramref name="time"/> },
+    /// where <paramref name="acceleration"/> is the change in <see cref="Acceleration"/> over some duration <paramref name="time"/>.</summary>
     public static Jerk From(Acceleration acceleration, Time time) => new(acceleration.Magnitude / time.Magnitude);
-
-    public Acceleration Multiply(Time time) => Acceleration.From(this, time);
-    public static Acceleration operator *(Jerk x, Time y) => x.Multiply(y);
 }

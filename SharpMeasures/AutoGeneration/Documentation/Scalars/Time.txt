@@ -1,13 +1,21 @@
-﻿#Document:Bases#
-Second Day Minute Week Millisecond
-#/Document:Bases#
+﻿#Extends:Generic.txt#
+#Extends:Utility.txt#
 
-#Document:Header#
-/// <summary>A measure of the scalar quantity <see cref="#Quantity#"/>, used for describing durations in time.
-#Document:HeaderSummary#
+#Define:SingularUnits#
+[Second, Day, Minute, Week, Millisecond]
+#/Define:SingularUnits#
+
+#Define:PluralUnits#
+[Seconds, Days, Minutes, Weeks, Milliseconds]
+#/Define:PluralUnits#
+
+#Define:Header(quantity, unitName, singularUnits, pluralUnits)#
+/// <summary>A measure of the scalar quantity <see cref="#Param:quantity#"/>.
+/// The quantity is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [s].
+#Document:HeaderSummary(#Param:quantity#, #Param:unitName#, #Document:SingularUnits#, #Document:PluralUnits#)#
 /// </summary>
-#/Document:Header#
+#/Define:Header#
 
-#Document:ExampleEquation#
-<see cref="Velocity"/> c = 3 * <see cref="Length.OneParsec"/> / <see cref="Time.OneWeek"/>;
-#/Document:ExampleEquation#
+#Define:ExampleDerivedMethod(quantity, variable)#
+<see cref="#Param:quantity"/> #Param:variable# = <see cref="#Param:quantity#.From(Distance, Speed)"/>;
+#/Define:ExampleDerivedMethod#

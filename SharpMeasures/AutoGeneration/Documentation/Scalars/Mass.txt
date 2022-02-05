@@ -1,13 +1,21 @@
-﻿#Document:Bases#
-Kilogram Ounce Gram Pound Tonne
-#/Document:Bases#
+﻿#Extends:Generic.txt#
+#Extends:Utility.txt#
 
-#Document:Header#
-/// <summary>A measure of the scalar quantity <see cref="#Quantity#"/>, used for describing masses of objects.
-#Document:HeaderSummary#
+#Define:SingularUnits#
+[Kilogram, Ounce, Gram, Pound, Tonne]
+#/Define:SingularUnits#
+
+#Define:PluralUnits#
+[Kilograms, Ounces, Grams, Pounds, Tonnes]
+#/Define:PluralUnits#
+
+#Define:Header(quantity, unitName, singularUnits, pluralUnits)#
+/// <summary>A measure of the scalar quantity <see cref="#Param:quantity#"/>.
+/// The quantity is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [kg].
+#Document:HeaderSummary(#Param:quantity#, #Param:unitName#, #Document:SingularUnits#, #Document:PluralUnits#)#
 /// </summary>
-#/Document:Header#
+#/Define:Header#
 
-#Document:ExampleEquation#
-<see cref="Density"/> c = 3 * <see cref="Mass.OnePound"/> / <see cref="Volume.OneLitre"/>;
-#/Document:ExampleEquation#
+#Define:ExampleDerivedMethod(quantity, variable)#
+<see cref="#Param:quantity#"/> #Param:variable# = <see cref="#Param:quantity#.From(Density, Volume)"/>;
+#/Define:ExampleDerivedMethod#

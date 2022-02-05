@@ -1,0 +1,13 @@
+﻿#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(quantity, unitName, singularUnits, pluralUnits)#
+/// <summary>A measure of the scalar quantity <see cref="#Param:quantity#"/>, describing a <see cref="TemperatureDifference"/> over <see cref="Distance"/>.
+/// This is the magnitude of the vector quantity <see cref="TemperatureGradient3"/>, and is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [K / m].
+#Document:HeaderSummary(#Param:quantity#, #Param:unitName#, #Param:singularUnits#, #Param:pluralUnits#)#
+/// </summary>
+#/Define:Header#
+
+#Define:ExampleDerivedMethod(quantity, variable)#
+<see cref="#Param:quantity#"/> #Param:variable# = <see cref="#Param:quantity#.From(TemperatureDifference, Distance)"/>;
+#/Define:ExampleDerivedMethod#

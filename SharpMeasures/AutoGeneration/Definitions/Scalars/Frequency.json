@@ -1,0 +1,22 @@
+﻿{
+    "name": "Frequency",
+    "type": "Scalar",
+    "baseUnits": "s^-1",
+    "unit": "[UnitOf]",
+    "unitBias": false,
+    "vector": false,
+    "inverse": "Time",
+    "square": "FrequencyDrift",
+    "cube": false,
+    "squareRoot": false,
+    "cubeRoot": false,
+    "units": [
+        { "singular": "PerSecond", "plural": "=" },
+        { "special": true, "separator": true },
+        { "singular": "Hertz", "plural": "=", "SI": true, "symbol": "Hz" },
+        { "singular": "Kilohertz", "plural": "=" },
+        { "singular": "Megahertz", "plural": "=" },
+        { "singular": "Gigahertz", "plural": "=" }
+    ],
+    "convertible": []
+}

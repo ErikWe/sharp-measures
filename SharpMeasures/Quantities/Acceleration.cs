@@ -1,14 +1,8 @@
 ﻿namespace ErikWe.SharpMeasures.Quantities;
 
-public readonly partial record struct Acceleration :
-    IAddableScalarQuantity<Acceleration, Acceleration>,
-    ISubtractableScalarQuantity<Acceleration, Acceleration>
+public readonly partial record struct Acceleration
 {
-    public static Acceleration From(Velocity velocity, Time time) => new(velocity.Magnitude / time.Magnitude);
-    public static Acceleration From(Jerk jerk, Time time) => new(jerk.Magnitude * time.Magnitude);
-
-    public Velocity Multiply(Time time) => Velocity.From(this, time);
-    public VelocitySquared Multiply(Length length) => VelocitySquared.From(length, this);
-    public static Velocity operator *(Acceleration x, Time y) => x.Multiply(y);
-    public static VelocitySquared operator *(Acceleration x, Length y) => x.Multiply(y);
+    /// <summary>Computes average <see cref="Acceleration"/> according to { <see cref="Acceleration"/> = <paramref name="speed"/> / <paramref name="time"/> },
+    /// where <paramref name="speed"/> is the change in <see cref="Speed"/> over some <see cref="Time"/> <paramref name="time"/>.</summary>
+    public static Acceleration From(Speed speed, Time time) => new(speed.Magnitude / time.Magnitude);
 }

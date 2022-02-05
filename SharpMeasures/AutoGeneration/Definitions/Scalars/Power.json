@@ -1,0 +1,21 @@
+﻿{
+    "name": "Power",
+    "type": "Scalar",
+    "baseUnits": "kg * m^2 * s^-3",
+    "unit": "[UnitOf]",
+    "unitBias": false,
+    "vector": false,
+    "inverse": false,
+    "square": false,
+    "cube": false,
+    "squareRoot": false,
+    "cubeRoot": false,
+    "units": [
+        { "singular": "Watt", "plural": "+s", "SI": true, "symbol": "W" },
+        { "singular": "Kilowatt", "plural": "+s" },
+        { "singular": "Megawatt", "plural": "+s" },
+        { "singular": "Gigawatt", "plural": "+s" },
+        { "singular": "Terawatt", "plural": "+s" }
+    ],
+    "convertible": []
+}

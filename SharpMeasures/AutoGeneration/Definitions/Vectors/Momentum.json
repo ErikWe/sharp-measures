@@ -1,0 +1,13 @@
+{
+    "name": "Momentum",
+    "type": "Vector",
+    "component": "[name]",
+    "baseUnits": "[component]",
+    "unit": "[component]",
+    "unitBias": "[component]",
+    "dimensionalities": [3],
+    "units": "[component]",
+    "convertible": [
+        "Impulse"
+    ]
+}

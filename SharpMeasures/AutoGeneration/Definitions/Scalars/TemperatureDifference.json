@@ -1,0 +1,22 @@
+﻿{
+    "name": "TemperatureDifference",
+    "type": "Scalar",
+    "baseUnits": "K",
+    "unit": "[UnitOf]",
+    "unitBias": false,
+    "vector": false,
+    "inverse": false,
+    "square": false,
+    "cube": false,
+    "squareRoot": false,
+    "cubeRoot": false,
+    "units": [
+        { "singular": "Kelvin", "plural": "=", "SI": true, "symbol": "K" },
+        { "singular": "Celsius", "plural": "=" },
+        { "singular": "Rankine", "plural": "=" },
+        { "singular": "Fahrenheit", "plural": "=" }
+    ],
+    "convertible": [
+        "Temperature"
+    ]
+}
