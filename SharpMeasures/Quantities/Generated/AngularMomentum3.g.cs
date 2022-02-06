@@ -158,7 +158,12 @@ public readonly partial record struct AngularMomentum3 :
         Z = z;
     }
 
-));
+    /// <summary>Converts the <see cref="AngularMomentum3"/> to an instance of the associated quantity <see cref="OrbitalAngularMomentum"/>, with components of
+    /// equal magnitudes.</summary>
+    public OrbitalAngularMomentum3 AsOrbitalAngularMomentum3() => new(X, Y, Z);
+    /// <summary>Converts the <see cref="AngularMomentum3"/> to an instance of the associated quantity <see cref="SpinAngularMomentum"/>, with components of
+    /// equal magnitudes.</summary>
+    public SpinAngularMomentum3 AsSpinAngularMomentum3() => new(X, Y, Z);
 
     /// <summary>Retrieves the magnitudes of the components of the <see cref="AngularMomentum3"/>, expressed in <see cref="UnitOfAngularMomentum.KilogramMetreSquaredPerSecond"/>.</summary>
     public Vector3 KilogramMetresSquaredPerSecond => InUnit(UnitOfAngularMomentum.KilogramMetreSquaredPerSecond);

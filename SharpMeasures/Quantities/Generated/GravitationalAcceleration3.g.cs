@@ -156,7 +156,9 @@ public readonly partial record struct GravitationalAcceleration3 :
         Z = z;
     }
 
-);
+    /// <summary>Converts the <see cref="GravitationalAcceleration3"/> to an instance of the associated quantity <see cref="Acceleration"/>, with components of
+    /// equal magnitudes.</summary>
+    public Acceleration3 AsAcceleration3() => new(X, Y, Z);
 
     /// <summary>Retrieves the magnitudes of the components of the <see cref="GravitationalAcceleration3"/>, expressed in <see cref="UnitOfAcceleration.StandardGravity"/>.</summary>
     public Vector3 StandardGravity => InUnit(UnitOfAcceleration.StandardGravity);

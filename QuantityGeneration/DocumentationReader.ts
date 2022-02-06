@@ -24,7 +24,7 @@ export const readTag = async (tag: string, fileName: string, searchedFiles: stri
 }
 
 const readTagFromExtension = async (tag: string, fileName: string, searchedFiles: string[]): Promise<{ content: string, parameters: string[] } | false> => {
-    const regex: RegExp = /#Extends:([A-Za-z0-9_\-.]+?)(?:\r\n|\n|#)\s\g/
+    const regex: RegExp = /#Extends:([A-Za-z\d_\-.]+?)(?:\r\n|\n|#)\s/g
 
     const text: string = await fsp.readFile(fileName, { encoding: 'utf-8' })
     const extending: IterableIterator<RegExpMatchArray> = text.matchAll(regex)

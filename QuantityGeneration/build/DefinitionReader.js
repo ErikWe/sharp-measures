@@ -20,7 +20,7 @@ class DefinitionReader {
             scalars: {},
             vectors: {}
         };
-    } // nosonar
+    } // nosonar: 'private' modifier means that no public constructor is generated.
     static Construct(options) {
         return __awaiter(this, void 0, void 0, function* () {
             const instance = new DefinitionReader();

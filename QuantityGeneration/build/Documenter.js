@@ -46,7 +46,7 @@ class Documenter {
             let modified = false;
             for (let line of text.split('\n')) {
                 if (line.includes('#Document:')) {
-                    const indent = (_b = (_a = line.match(new RegExp('[ ]*'))) === null || _a === void 0 ? void 0 : _a[0]) !== null && _b !== void 0 ? _b : '';
+                    const indent = (_b = (_a = line.match(/[ ]*/)) === null || _a === void 0 ? void 0 : _a[0]) !== null && _b !== void 0 ? _b : '';
                     modified = true;
                     for (let rebuiltLine of yield this.produceDocumentationLines(line)) {
                         rebuilt += indent + rebuiltLine.trim() + '\n';
@@ -66,18 +66,8 @@ class Documenter {
                 return [line];
             }
             const parsedArguments = this.extractArguments(invokation.argumentText);
-            const parameterValues = {};
-            let anyUnnamed = false;
-            for (let parsedArgument of parsedArguments) {
-                if (parsedArgument.includes('=')) {
-                    const parameter = parsedArgument.split('=')[0].trim();
-                    const value = parsedArgument.split('=')[1].trim();
-                    parameterValues[parameter] = value;
-                }
-                else {
-                    anyUnnamed = true;
-                }
-            }
+            const parameterValues = this.parseParameterValues(parsedArguments);
+            const anyUnnamed = this.anyUnnamedArguments(parsedArguments);
             const tagData = yield (0, DocumentationReader_1.readTag)(invokation.tag, this.documentationPath);
             if (!tagData) {
                 this.reportErrorUnresolvedTag(invokation.tag);
@@ -102,7 +92,7 @@ class Documenter {
                 }
             }
             if (tagData.content.includes('#Param:')) {
-                let requestedParameters = tagData.content.matchAll(new RegExp('#Param:([A-z0-9_\-]*)(\\[(%?)([0-9]+?)\\]?)#', 'g'));
+                let requestedParameters = tagData.content.matchAll(/'#Param:([A-Za-z\d_\-]*)(\[(%?)([\d]+?)\]?)#/g);
                 for (let requestedParameter of requestedParameters) {
                     this.reportWarningRequestedParameterNotPartOfSignature(invokation.tag, requestedParameter[1]);
                 }
@@ -170,21 +160,24 @@ class Documenter {
                 return this.rescueSingleMixedUnnamedArgument(tag, parsedArguments, parameters, parameterValues);
             }
             else {
-                for (let i = 0; i < parsedArguments.length; i++) {
-                    if (!parsedArguments[i].includes('=')) {
-                        if (Object.keys(parameterValues).includes(parameters[i])) {
-                            this.reportErrorUnmatchedUnnamedArgument(tag, parsedArguments[i]);
-                            return false;
-                        }
-                        else {
-                            parameterValues[parameters[i]] = parsedArguments[i];
-                            this.reportWarningMatchedUnnamedArgument(tag, parsedArguments[i], parameters[i]);
-                        }
-                    }
-                }
-                return true;
+                return this.rescueMultipleUnnamedArguments(tag, parsedArguments, parameters, parameterValues);
             }
         }
+    }
+    rescueMultipleUnnamedArguments(tag, parsedArguments, parameters, parameterValues) {
+        for (let i = 0; i < parsedArguments.length; i++) {
+            if (!parsedArguments[i].includes('=')) {
+                if (Object.keys(parameterValues).includes(parameters[i])) {
+                    this.reportErrorUnmatchedUnnamedArgument(tag, parsedArguments[i]);
+                    return false;
+                }
+                else {
+                    parameterValues[parameters[i]] = parsedArguments[i];
+                    this.reportWarningMatchedUnnamedArgument(tag, parsedArguments[i], parameters[i]);
+                }
+            }
+        }
+        return true;
     }
     rescueUnmixedUnnamedArguments(tag, parsedArguments, parameters, parameterValues) {
         if (parsedArguments.length != parameters.length) {
@@ -228,7 +221,7 @@ class Documenter {
             }
             else {
                 text = text.replace(new RegExp('#Param:' + parameter + '#', 'g'), parameterValues[parameter]);
-                let arrayAccess = text.matchAll(new RegExp('#Param:' + parameter + '\\[(%?)([0-9]+?)\\]#', 'g'));
+                let arrayAccess = text.matchAll(new RegExp('#Param:' + parameter + '\\[(%?)([\\d]+?)\\]#', 'g'));
                 text = this.injectArrayParameter(tag, text, parameter, parameterValues[parameter], arrayAccess);
             }
         }
@@ -237,7 +230,7 @@ class Documenter {
     injectArrayParameter(tag, text, parameter, parameterValue, arrayAccess) {
         if ((parameterValue.length == 0 || parameterValue[0] != '[') && arrayAccess.next().done === false) {
             this.reportErrorParameterNotArray(tag, parameter, parameterValue);
-            return text.replace(new RegExp('#Param:' + parameter + '\\[(%?)([0-9]+?)\\]#', 'g'), 'ParameterNotArrayError');
+            return text.replace(new RegExp('#Param:' + parameter + '\\[(%?)([\\d]+?)\\]#', 'g'), 'ParameterNotArrayError');
         }
         else {
             const elements = parameterValue.slice(1, -1).split(',').map((element) => element.trim());
@@ -252,15 +245,34 @@ class Documenter {
                     }
                     else {
                         this.reportErrorArrayIndexOutOfBounds(tag, parameter, index, elements.length);
-                        text = text.replace(new RegExp('#Param:' + parameter + '\\[([0-9]+?)\\]#', 'g'), 'ParameterIndex$1OutOfBounds' + elements.length + 'Error');
+                        text = text.replace(new RegExp('#Param:' + parameter + '\\[([\\d]+?)\\]#', 'g'), 'ParameterIndex$1OutOfBounds' + elements.length + 'Error');
                     }
                 }
             }
             return text;
         }
     }
+    parseParameterValues(parsedArguments) {
+        const parameterValues = {};
+        for (let parsedArgument of parsedArguments) {
+            if (parsedArgument.includes('=')) {
+                const parameter = parsedArgument.split('=')[0].trim();
+                const value = parsedArgument.split('=')[1].trim();
+                parameterValues[parameter] = value;
+            }
+        }
+        return parameterValues;
+    }
+    anyUnnamedArguments(parsedArguments) {
+        for (let parsedArgument of parsedArguments) {
+            if (!parsedArgument.includes('=')) {
+                return true;
+            }
+        }
+        return false;
+    }
     replaceDocumentationCall(invokation, text, result) {
-        return text.slice(0, invokation.start) + result + text.slice(invokation.end + 1);
+        return text.slice(0, invokation.first) + result + text.slice(invokation.last + 1);
     }
     extractDocumentationCall(text) {
         const startText = '#Document:';
@@ -268,42 +280,62 @@ class Documenter {
         if (startIndex === undefined) {
             return undefined;
         }
-        const data = { tag: '', argumentText: '', start: startIndex, end: 0 };
-        let parenthesisLevel = 0;
-        for (let i = startIndex + startText.length; i < text.length; i++) {
-            if (text[i] === '(' || text[i] === '#') {
-                if (parenthesisLevel === 0) {
-                    data.tag = text.slice(startIndex + startText.length, i);
-                    data.end = i;
-                }
-                if (text[i] === '(') {
-                    parenthesisLevel++;
-                }
+        const documentationTag = this.extractDocumentationCallTag(text.slice(startIndex + startText.length));
+        if (documentationTag === undefined) {
+            return undefined;
+        }
+        let documentationArgumentWithParenthesis = this.extractDocumentationCallArguments(text.slice(startIndex + startText.length + documentationTag.length));
+        if (documentationArgumentWithParenthesis === false) {
+            documentationArgumentWithParenthesis = '';
+        }
+        else if (documentationArgumentWithParenthesis === undefined) {
+            this.reportErrorCouldNotParseDocumentationCallArguments(documentationTag);
+            return undefined;
+        }
+        return {
+            tag: documentationTag,
+            argumentText: documentationArgumentWithParenthesis.slice(1, -1),
+            first: startIndex,
+            last: startIndex + startText.length + documentationTag.length + documentationArgumentWithParenthesis.length
+        };
+    }
+    extractDocumentationCallTag(text) {
+        if (text.includes('(')) {
+            return text.split('(')[0];
+        }
+        else if (text.includes('#')) {
+            return text.split('#')[0];
+        }
+        else if (text.includes('\r')) {
+            return text.split('\r')[0];
+        }
+        else if (text.includes('\n')) {
+            return text.split('\n')[0];
+        }
+        else if (text.includes(' ')) {
+            return text.split(' ')[0];
+        }
+        this.reportErrorIllformattedDocumentationCall();
+        return undefined;
+    }
+    extractDocumentationCallArguments(text) {
+        if (text[0] !== '(') {
+            return false;
+        }
+        let parenthesisLevel = 1;
+        for (let i = 1; i < text.length; i++) {
+            if (text[i] === '(') {
+                parenthesisLevel++;
             }
             else if (text[i] === ')') {
                 parenthesisLevel--;
                 if (parenthesisLevel === 0) {
-                    if (text[i + 1] === '#') {
-                        data.argumentText = text.slice(data.end + 1, i);
-                        data.end = i + 1;
-                        return data;
-                    }
-                    else {
-                        this.reportErrorIllformattedDocumentationCall(data.tag);
-                        return undefined;
-                    }
+                    return text.slice(0, i + 1);
                 }
             }
         }
-        if (data.tag === '') {
-            this.reportErrorCouldNotParseTag();
-            return undefined;
-        }
-        else if (parenthesisLevel !== 0) {
-            this.reportErrorIllformattedDocumentationCall(data.tag);
-            return undefined;
-        }
-        return data;
+        this.reportErrorIllformattedDocumentationCall();
+        return undefined;
     }
     reportErrorPassLimit() {
         console.error('Documenter reached pass-limit of [' + this.passLimit + ']. Documentation involving file [' + this.documentationPath + '] might not be complete.');
@@ -329,11 +361,11 @@ class Documenter {
     reportErrorArrayIndexOutOfBounds(tag, parameter, requestedIndex, bounds) {
         console.error('Parameter list index [' + requestedIndex + '] was requested, but length of argument list was [' + bounds + ']. Parameter: [' + parameter + '] in tag: [' + tag + '] from file: [' + this.documentationPath + '].');
     }
-    reportErrorIllformattedDocumentationCall(tag) {
-        console.error('Documentation call was incorrectly formatted. Assumed tag: [' + tag + '] from file: [' + this.documentationPath + '].');
+    reportErrorIllformattedDocumentationCall() {
+        console.error('Documentation call was incorrectly formatted, in file: [' + this.documentationPath + '].');
     }
-    reportErrorCouldNotParseTag() {
-        console.error('Tag of documentation call could not be parsed, from file: [' + this.documentationPath + '].');
+    reportErrorCouldNotParseDocumentationCallArguments(tag) {
+        console.error('Arguments of documentation call could not be parsed, with tag: [' + tag + '] from file: [' + this.documentationPath + '].');
     }
     reportWarningMatchedUnnamedArgument(tag, parsedArgument, matchedParameter) {
         console.warn('Argument was unnamed, but was positionally matched to parameter [' + matchedParameter + ']. Argument had value: [' + parsedArgument + '] in tag: [' + tag + '] from file: [' + this.documentationPath + '].');

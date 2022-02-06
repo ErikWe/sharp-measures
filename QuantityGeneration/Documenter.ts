@@ -46,7 +46,7 @@ export class Documenter {
     }
 
     private async produceDocumentationLines(line: string): Promise<string[]> {
-        const invokation: { tag: string, argumentText: string, start: number, end: number } | undefined = this.extractDocumentationCall(line)
+        const invokation: { tag: string, argumentText: string, first: number, last: number } | undefined = this.extractDocumentationCall(line)
 
         if (invokation === undefined) {
             return [line]
@@ -88,7 +88,7 @@ export class Documenter {
         }
 
         if (tagData.content.includes('#Param:')) {
-            let requestedParameters: IterableIterator<RegExpMatchArray> = tagData.content.matchAll(/'#Param:([A-Za-z0-9_\-]*)(\\[(%?)([0-9]+?)\\]?)#\g/)
+            let requestedParameters: IterableIterator<RegExpMatchArray> = tagData.content.matchAll(/'#Param:([A-Za-z\d_\-]*)(\[(%?)([\d]+?)\]?)#/g)
             for (let requestedParameter of requestedParameters) {
                 this.reportWarningRequestedParameterNotPartOfSignature(invokation.tag, requestedParameter[1])
             }
@@ -222,7 +222,7 @@ export class Documenter {
             } else {
                 text = text.replace(new RegExp('#Param:' + parameter + '#', 'g'), parameterValues[parameter])
                 
-                let arrayAccess: IterableIterator<RegExpMatchArray> = text.matchAll(new RegExp('#Param:' + parameter + '\\[(%?)([0-9]+?)\\]#', 'g'))
+                let arrayAccess: IterableIterator<RegExpMatchArray> = text.matchAll(new RegExp('#Param:' + parameter + '\\[(%?)([\\d]+?)\\]#', 'g'))
                 text = this.injectArrayParameter(tag, text, parameter, parameterValues[parameter], arrayAccess)
             }
         }
@@ -233,7 +233,7 @@ export class Documenter {
     private injectArrayParameter(tag: string, text: string, parameter: string, parameterValue: string, arrayAccess: IterableIterator<RegExpMatchArray>): string {
         if ((parameterValue.length == 0 || parameterValue[0] != '[') && arrayAccess.next().done === false) {
             this.reportErrorParameterNotArray(tag, parameter, parameterValue)
-            return text.replace(new RegExp('#Param:' + parameter + '\\[(%?)([0-9]+?)\\]#', 'g'), 'ParameterNotArrayError')
+            return text.replace(new RegExp('#Param:' + parameter + '\\[(%?)([\\d]+?)\\]#', 'g'), 'ParameterNotArrayError')
         } else {
             const elements: string[] = parameterValue.slice(1, -1).split(',').map((element) => element.trim())
             for (let access of arrayAccess) {
@@ -246,7 +246,7 @@ export class Documenter {
                         text = text.replace(new RegExp('#Param:' + parameter + '\\[' + access[2] + '\\]#', 'g'), elements[index])
                     } else {
                         this.reportErrorArrayIndexOutOfBounds(tag, parameter, index, elements.length)
-                        text = text.replace(new RegExp('#Param:' + parameter + '\\[([0-9]+?)\\]#', 'g'), 'ParameterIndex$1OutOfBounds' + elements.length + 'Error')
+                        text = text.replace(new RegExp('#Param:' + parameter + '\\[([\\d]+?)\\]#', 'g'), 'ParameterIndex$1OutOfBounds' + elements.length + 'Error')
                     }
                 }
             }
@@ -280,11 +280,11 @@ export class Documenter {
         return false
     }
 
-    private replaceDocumentationCall(invokation: { start: number, end: number }, text: string, result: string): string {
-        return text.slice(0, invokation.start) + result + text.slice(invokation.end + 1)
+    private replaceDocumentationCall(invokation: { first: number, last: number }, text: string, result: string): string {
+        return text.slice(0, invokation.first) + result + text.slice(invokation.last + 1)
     }
 
-    private extractDocumentationCall(text: string): { tag: string, argumentText: string, start: number, end: number } | undefined {
+    private extractDocumentationCall(text: string): { tag: string, argumentText: string, first: number, last: number } | undefined {
         const startText: string = '#Document:'
 
         let startIndex: number = text.indexOf(startText)
@@ -299,20 +299,21 @@ export class Documenter {
             return undefined
         }
 
-        let documentationArgument: string | false | undefined = this.extractDocumentationCallArguments(text.slice(startIndex + startText.length + documentationTag.length))
+        let documentationArgumentWithParenthesis: string | false | undefined
+            = this.extractDocumentationCallArguments(text.slice(startIndex + startText.length + documentationTag.length))
 
-        if (documentationArgument === false) {
-            documentationArgument = ''
-        } else if (documentationArgument === undefined) {
+        if (documentationArgumentWithParenthesis === false) {
+            documentationArgumentWithParenthesis = ''
+        } else if (documentationArgumentWithParenthesis === undefined) {
             this.reportErrorCouldNotParseDocumentationCallArguments(documentationTag)
             return undefined
         }
 
         return {
             tag: documentationTag,
-            argumentText: documentationArgument,
-            start: startIndex,
-            end: startIndex + startText.length + documentationTag.length + documentationArgument.length
+            argumentText: documentationArgumentWithParenthesis.slice(1, -1),
+            first: startIndex,
+            last: startIndex + startText.length + documentationTag.length + documentationArgumentWithParenthesis.length
         }
     }
 
@@ -346,7 +347,7 @@ export class Documenter {
             } else if (text[i] === ')') {
                 parenthesisLevel--
                 if (parenthesisLevel === 0) {
-                    return text.slice(0, i)
+                    return text.slice(0, i + 1)
                 }
             }
         }

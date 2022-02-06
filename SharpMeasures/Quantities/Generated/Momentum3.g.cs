@@ -151,7 +151,9 @@ public readonly partial record struct Momentum3 :
         Z = z;
     }
 
-);
+    /// <summary>Converts the <see cref="Momentum3"/> to an instance of the associated quantity <see cref="Impulse"/>, with components of
+    /// equal magnitudes.</summary>
+    public Impulse3 AsImpulse3() => new(X, Y, Z);
 
     /// <summary>Retrieves the magnitudes of the components of the <see cref="Momentum3"/>, expressed in <see cref="UnitOfMomentum.KilogramMetrePerSecond"/>.</summary>
     public Vector3 KilogramMetresPerSecond => InUnit(UnitOfMomentum.KilogramMetrePerSecond);

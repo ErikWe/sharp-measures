@@ -32,22 +32,22 @@ export class VectorGenerator {
         text = this.setConditionalBlocks(vector, dimensionality, text)
 
         const interfacesText: string = this.composeInterfacesText(vector)
-        text = text.replace(/#Interfaces#\g/, interfacesText)
-        text = text.replace(/#CommaIfInterface#\g/, interfacesText.length > 0 ? ',' : '')
-        text = text.replace(/#CommaIfInterfaceOrTransformable#\g/, interfacesText.length > 0 || dimensionality == 3 ? ',' : '')
+        text = text.replace(/#Interfaces#/g, interfacesText)
+        text = text.replace(/#CommaIfInterface#/g, interfacesText.length > 0 ? ',' : '')
+        text = text.replace(/#CommaIfInterfaceOrTransformable#/g, interfacesText.length > 0 || dimensionality == 3 ? ',' : '')
 
         const convertibleText: string = this.composeConvertibleText(vector)
-        text = text.replace(/#Convertible#\g/, convertibleText)
+        text = text.replace(/#Convertible#/g, convertibleText)
 
         const quantityToUnitText: string = this.composeQuantityToUnitText(vector)
-        text = text.replace(/#QuantityToUnit#\g/, quantityToUnitText)
+        text = text.replace(/#QuantityToUnit#/g, quantityToUnitText)
 
         const unitsText: string = this.composeUnitsText(vector)
-        text = text.replace(/#Units#\g/, unitsText)
+        text = text.replace(/#Units#/g, unitsText)
 
         text = this.insertNames(text, vector, dimensionality)
 
-        text = text.replace(/\t\g/, '    ')
+        text = text.replace(/\t/g, '    ')
 
         if (await fsp.stat(this.documentationDirectory + '\\Vectors\\' + vector.name + dimensionality + '.txt').catch(() => false)) {
             text = await Documenter.document(text, this.documentationDirectory + '\\Vectors\\' + vector.name + dimensionality + '.txt')
@@ -106,27 +106,27 @@ export class VectorGenerator {
     }
 
     private insertNames(text: string, vector: VectorQuantity, dimensionality: number): string {
-        text = text.replace(/#Unit#\g/, vector.unit)
-        text = text.replace(/#UnitVariable#\g/, lowerCase(vector.unit))
+        text = text.replace(/#Unit#/g, vector.unit)
+        text = text.replace(/#UnitVariable#/g, lowerCase(vector.unit))
 
         const unitListTexts = createUnitListTexts(vector)
-        text = text.replace(/#SingularUnits#\g/, unitListTexts.singular)
-        text = text.replace(/#PluralUnits#\g/, unitListTexts.plural)
+        text = text.replace(/#SingularUnits#/g, unitListTexts.singular)
+        text = text.replace(/#PluralUnits#/g, unitListTexts.plural)
         
-        text = text.replace(/#Abbreviation#\g/, vector.symbol ? vector.symbol : 'SymbolParsingError')
+        text = text.replace(/#Abbreviation#/g, vector.symbol ? vector.symbol : 'SymbolParsingError')
 
-        text = text.replace(/#Component#\g/, vector.component ? vector.component : 'Scalar')
+        text = text.replace(/#Component#/g, vector.component ? vector.component : 'Scalar')
 
         if (vector.component) {
             let componentSquare: string | string[] | false = getSquare(this.definitionReader.definitions, this.definitionReader.definitions.scalars[vector.component])
             if (componentSquare !== false && (!Array.isArray(componentSquare) || componentSquare.length > 0)) {
-                text = text.replace(/#SquaredComponent#\g/, Array.isArray(componentSquare) ? componentSquare[0] : componentSquare)
+                text = text.replace(/#SquaredComponent#/g, Array.isArray(componentSquare) ? componentSquare[0] : componentSquare)
             }
         }
 
-        text = text.replace(/#Quantity#\g/, vector.name + dimensionality)
-        text = text.replace(/#quantity#\g/, lowerCase(vector.name + dimensionality))
-        text = text.replace(/#Dimensionality#\g/, dimensionality.toString())
+        text = text.replace(/#Quantity#/g, vector.name + dimensionality)
+        text = text.replace(/#quantity#/g, lowerCase(vector.name + dimensionality))
+        text = text.replace(/#Dimensionality#/g, dimensionality.toString())
         return text
     }
 
@@ -273,15 +273,15 @@ export class VectorGenerator {
 
     private setConditionalBlocks(vector: VectorQuantity, dimensionality: number, text: string): string {
         if (vector.component) {
-            text = text.replace(/(?:\n|\r\n|\r)#ScalarQuantityComponent#\g/, '')
-            text = text.replace(/(?:\n|\r\n|\r)#\/ScalarQuantityComponent#\g/, '')
+            text = text.replace(/(?:\n|\r\n|\r)#ScalarQuantityComponent#/g, '')
+            text = text.replace(/(?:\n|\r\n|\r)#\/ScalarQuantityComponent#/g, '')
 
-            text = text.replace(/(?:\n|\r\n|\r)#NonScalarQuantityComponent#([^]+?)(?:\n|\r\n|\r)#\/NonScalarQuantityComponent#\g/, '')
+            text = text.replace(/(?:\n|\r\n|\r)#NonScalarQuantityComponent#([^]+?)(?:\n|\r\n|\r)#\/NonScalarQuantityComponent#/g, '')
         } else {
-            text = text.replace(/(?:\n|\r\n|\r)#NonScalarQuantityComponent#\g/, '')
-            text = text.replace(/(?:\n|\r\n|\r)#\/NonScalarQuantityComponent#\g/, '')
+            text = text.replace(/(?:\n|\r\n|\r)#NonScalarQuantityComponent#/g, '')
+            text = text.replace(/(?:\n|\r\n|\r)#\/NonScalarQuantityComponent#/g, '')
 
-            text = text.replace(/(?:\n|\r\n|\r)#ScalarQuantityComponent#([^]+?)(?:\n|\r\n|\r)#\/ScalarQuantityComponent#\g/, '')
+            text = text.replace(/(?:\n|\r\n|\r)#ScalarQuantityComponent#([^]+?)(?:\n|\r\n|\r)#\/ScalarQuantityComponent#/g, '')
         }
 
         const emptyArrayOrFalse = (obj: string | string[] | false) => {
@@ -289,22 +289,22 @@ export class VectorGenerator {
         }
 
         if (vector.component && !emptyArrayOrFalse(this.definitionReader.definitions.scalars[vector.component].square)) {
-            text = text.replace(/(?:\n|\r\n|\r)#SquaredScalarQuantityComponent#\g/, '')
-            text = text.replace(/(?:\n|\r\n|\r)#\/SquaredScalarQuantityComponent#\g/, '')
+            text = text.replace(/(?:\n|\r\n|\r)#SquaredScalarQuantityComponent#/g, '')
+            text = text.replace(/(?:\n|\r\n|\r)#\/SquaredScalarQuantityComponent#/g, '')
     
-            text = text.replace(/(?:\n|\r\n|\r)#NonSquaredScalarQuantityComponent#([^]+?)(?:\n|\r\n|\r)#\/NonSquaredScalarQuantityComponent#\g/, '')
+            text = text.replace(/(?:\n|\r\n|\r)#NonSquaredScalarQuantityComponent#([^]+?)(?:\n|\r\n|\r)#\/NonSquaredScalarQuantityComponent#/g, '')
         } else {
-            text = text.replace(/(?:\n|\r\n|\r)#NonSquaredScalarQuantityComponent#\g/, '')
-            text = text.replace(/(?:\n|\r\n|\r)#\/NonSquaredScalarQuantityComponent#\g/, '')
+            text = text.replace(/(?:\n|\r\n|\r)#NonSquaredScalarQuantityComponent#/g, '')
+            text = text.replace(/(?:\n|\r\n|\r)#\/NonSquaredScalarQuantityComponent#/g, '')
     
-            text = text.replace(/(?:\n|\r\n|\r)#SquaredScalarQuantityComponent#([^]+?)(?:\n|\r\n|\r)#\/SquaredScalarQuantityComponent#\g/, '')
+            text = text.replace(/(?:\n|\r\n|\r)#SquaredScalarQuantityComponent#([^]+?)(?:\n|\r\n|\r)#\/SquaredScalarQuantityComponent#/g, '')
         }
 
         if (dimensionality === 3) {
-            text = text.replace(/(?:\n|\r\n|\r)#Vector3#\g/, '')
-            text = text.replace(/(?:\n|\r\n|\r)#\/Vector3#\g/, '')
+            text = text.replace(/(?:\n|\r\n|\r)#Vector3#/g, '')
+            text = text.replace(/(?:\n|\r\n|\r)#\/Vector3#/g, '')
         } else {
-            text = text.replace(/(?:\n|\r\n|\r)#Vector3#([^]+?)(?:\n|\r\n|\r)#\/Vector3#\g/, '')
+            text = text.replace(/(?:\n|\r\n|\r)#Vector3#([^]+?)(?:\n|\r\n|\r)#\/Vector3#/g, '')
         }
         
         return text
@@ -345,11 +345,11 @@ export class VectorGenerator {
 
         if (Array.isArray(vector.convertible)) {
             for (let convertible of vector.convertible) {
-                for (let i of vector.dimensionalities) {
-                    if (i in this.definitionReader.definitions.vectors[convertible].dimensionalities) {
+                for (let dimensionality of vector.dimensionalities) {
+                    if (this.definitionReader.definitions.vectors[convertible].dimensionalities.includes(dimensionality)) {
                         convertibleText += '\t#Document:AsShared(#Quantity#, #Dimensionality#, ' + convertible + ')#\n'
                         convertibleText += '\tpublic ' + convertible + '#Dimensionality# As' + convertible + '#Dimensionality#() => new('
-                        for (let name of getVectorComponentNames(i)) {
+                        for (let name of getVectorComponentNames(dimensionality)) {
                             convertibleText += name + ', '
                         }
                     }

@@ -323,7 +323,7 @@ export const removeConsecutiveNewlines = (text: string): string => {
 }
 
 export const normalizeLineEndings = (text: string): string => {
-    text = text.replace(/(?<!\\r)\\n\g/, '\r\n')
-    text = text.replace(/\\r(?!\\n)\g/, '\r\n')
+    text = text.replace(/(?<!\r)\n/g, '\r\n')
+    text = text.replace(/\r(?!\n)/g, '\r\n')
     return text
 }

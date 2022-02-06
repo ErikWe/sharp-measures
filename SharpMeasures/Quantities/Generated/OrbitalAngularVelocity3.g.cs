@@ -160,7 +160,12 @@ public readonly partial record struct OrbitalAngularVelocity3 :
         Z = z;
     }
 
-));
+    /// <summary>Converts the <see cref="OrbitalAngularVelocity3"/> to an instance of the associated quantity <see cref="AngularVelocity"/>, with components of
+    /// equal magnitudes.</summary>
+    public AngularVelocity3 AsAngularVelocity3() => new(X, Y, Z);
+    /// <summary>Converts the <see cref="OrbitalAngularVelocity3"/> to an instance of the associated quantity <see cref="SpinAngularVelocity"/>, with components of
+    /// equal magnitudes.</summary>
+    public SpinAngularVelocity3 AsSpinAngularVelocity3() => new(X, Y, Z);
 
     /// <summary>Retrieves the magnitudes of the components of the <see cref="OrbitalAngularVelocity3"/>, expressed in <see cref="UnitOfAngularVelocity.RadianPerSecond"/>.</summary>
     public Vector3 RadiansPerSecond => InUnit(UnitOfAngularVelocity.RadianPerSecond);

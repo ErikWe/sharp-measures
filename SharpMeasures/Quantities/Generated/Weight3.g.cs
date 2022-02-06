@@ -151,7 +151,9 @@ public readonly partial record struct Weight3 :
         Z = z;
     }
 
-);
+    /// <summary>Converts the <see cref="Weight3"/> to an instance of the associated quantity <see cref="Force"/>, with components of
+    /// equal magnitudes.</summary>
+    public Force3 AsForce3() => new(X, Y, Z);
 
     /// <summary>Retrieves the magnitudes of the components of the <see cref="Weight3"/>, expressed in <see cref="UnitOfForce.Newton"/>.</summary>
     public Vector3 Newtons => InUnit(UnitOfForce.Newton);

@@ -35,7 +35,7 @@ const readTag = (tag, fileName, searchedFiles = undefined) => __awaiter(void 0, 
 });
 exports.readTag = readTag;
 const readTagFromExtension = (tag, fileName, searchedFiles) => __awaiter(void 0, void 0, void 0, function* () {
-    const regex = new RegExp('#Extends:([A-z0-9_\\-.]+?)(?:\\r\\n|\\n|#)', 'sg');
+    const regex = /#Extends:([A-Za-z\d_\-.]+?)(?:\r\n|\n|#)\s/g;
     const text = yield promises_1.default.readFile(fileName, { encoding: 'utf-8' });
     const extending = text.matchAll(regex);
     if (extending === null) {
@@ -45,7 +45,7 @@ const readTagFromExtension = (tag, fileName, searchedFiles) => __awaiter(void 0,
         const nextFileName = path_1.default.dirname(fileName) + '\\' + extension[1];
         if (!searchedFiles.includes(nextFileName)) {
             const matched = yield (0, exports.readTag)(tag, nextFileName, searchedFiles);
-            if (!(matched === false)) {
+            if (matched !== false) {
                 return matched;
             }
         }

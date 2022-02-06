@@ -38,34 +38,34 @@ class ScalarGenerator {
             }
             let text = this.templateReader.scalarTemplate;
             const interfacesText = this.composeInterfacesText(scalar);
-            text = text.replace(new RegExp('#Interfaces#', 'g'), interfacesText);
-            text = text.replace(new RegExp('#CommaIfInterface#', 'g'), interfacesText.length > 0 ? ',' : '');
+            text = text.replace(/#Interfaces#/g, interfacesText);
+            text = text.replace(/#CommaIfInterface#/g, interfacesText.length > 0 ? ',' : '');
             const basesText = this.composeBasesText(scalar);
-            text = text.replace(new RegExp('#Bases#', 'g'), basesText);
+            text = text.replace(/#Bases#/g, basesText);
             const fromText = this.composeFromText(scalar);
-            text = text.replace(new RegExp('#From#', 'g'), fromText);
+            text = text.replace(/#From#/g, fromText);
             const unitsText = this.composeUnitsText(scalar);
-            text = text.replace(new RegExp('#Units#', 'g'), unitsText);
+            text = text.replace(/#Units#/g, unitsText);
             const powersText = this.composePowersText(scalar);
-            text = text.replace(new RegExp('#Powers#', 'g'), powersText);
+            text = text.replace(/#Powers#/g, powersText);
             const invertDoubleText = this.composeInversionOperatorDoubleText(scalar);
-            text = text.replace(new RegExp('#InversionOperatorDouble#', 'g'), invertDoubleText);
+            text = text.replace(/#InversionOperatorDouble#/g, invertDoubleText);
             const invertScalarText = this.composeInversionOperatorScalarText(scalar);
-            text = text.replace(new RegExp('#InversionOperatorScalar#', 'g'), invertScalarText);
+            text = text.replace(/#InversionOperatorScalar#/g, invertScalarText);
             const magnitudeFromUnitDoubleText = this.composeMagnitudeFromUnitDoubleText(scalar);
-            text = text.replace(new RegExp('#MagnitudeFromUnitDouble#', 'g'), magnitudeFromUnitDoubleText);
+            text = text.replace(/#MagnitudeFromUnitDouble#/g, magnitudeFromUnitDoubleText);
             const magnitudeFromUnitScalarText = this.composeMagnitudeFromUnitScalarText(scalar);
-            text = text.replace(new RegExp('#MagnitudeFromUnitScalar#', 'g'), magnitudeFromUnitScalarText);
+            text = text.replace(/#MagnitudeFromUnitScalar#/g, magnitudeFromUnitScalarText);
             const quantityToUnitText = this.composeQuantityToUnitText(scalar);
-            text = text.replace(new RegExp('#QuantityToUnit#', 'g'), quantityToUnitText);
+            text = text.replace(/#QuantityToUnit#/g, quantityToUnitText);
             const convertibleText = this.composeConvertibleText(scalar);
-            text = text.replace(new RegExp('#Convertible#', 'g'), convertibleText);
+            text = text.replace(/#Convertible#/g, convertibleText);
             const vectorText = this.composeToVectorText(scalar);
-            text = text.replace(new RegExp('#ToVector#', 'g'), vectorText);
+            text = text.replace(/#ToVector#/g, vectorText);
             text = this.insertNames(text, scalar);
-            text = text.replace(new RegExp('\t', 'g'), '    ');
+            text = text.replace(/\t/g, '    ');
             text = yield Documenter_1.Documenter.document(text, this.documentationDirectory + '\\Scalars\\' + scalar.name + '.txt');
-            text = (0, Utility_1.insertAppropriateNewlines)(text);
+            text = (0, Utility_1.insertAppropriateNewlines)(text, 175);
             text = (0, Utility_1.normalizeLineEndings)(text);
             text = (0, Utility_1.removeConsecutiveNewlines)(text);
             text = (0, Utility_1.normalizeLineEndings)(text);
@@ -75,7 +75,6 @@ class ScalarGenerator {
     fixScalarData(scalar) {
         const requiredEntries = ['name', 'type', 'baseUnits', 'unit', 'unitBias',
             'vector', 'inverse', 'square', 'cube', 'squareRoot', 'cubeRoot', 'units', 'convertible'];
-        const optionalEntries = [];
         const missingEntries = [];
         for (let requiredEntry of requiredEntries) {
             if (!(requiredEntry in scalar)) {
@@ -88,7 +87,7 @@ class ScalarGenerator {
         }
         const redudantEntries = [];
         for (let entry of Object.keys(scalar)) {
-            if (!(entry in requiredEntries || entry in optionalEntries)) {
+            if (!requiredEntries.includes(entry)) {
                 requiredEntries.push(entry);
             }
         }
@@ -117,11 +116,11 @@ class ScalarGenerator {
         return true;
     }
     insertNames(text, scalar) {
-        text = text.replace(new RegExp('#Unit#', 'g'), scalar.unit);
-        text = text.replace(new RegExp('#UnitVariable#', 'g'), (0, Utility_1.lowerCase)(scalar.unit));
+        text = text.replace(/#Unit#/g, scalar.unit);
+        text = text.replace(/#UnitVariable#/g, (0, Utility_1.lowerCase)(scalar.unit));
         const unitListTexts = (0, Utility_1.createUnitListTexts)(scalar);
-        text = text.replace(new RegExp('#SingularUnits#', 'g'), unitListTexts.singular);
-        text = text.replace(new RegExp('#PluralUnits#', 'g'), unitListTexts.plural);
+        text = text.replace(/#SingularUnits#/g, unitListTexts.singular);
+        text = text.replace(/#PluralUnits#/g, unitListTexts.plural);
         const powers = [
             { name: 'Inverse', data: scalar.inverse },
             { name: 'Square', data: scalar.square },
@@ -141,13 +140,13 @@ class ScalarGenerator {
             }
         }
         if (scalar.vector) {
-            text = text.replace(new RegExp('#VectorQuantity#', 'g'), scalar.vector);
+            text = text.replace(/#VectorQuantity#/g, scalar.vector);
         }
         if (scalar.symbol) {
-            text = text.replace(new RegExp('#Abbreviation#', 'g'), scalar.symbol);
+            text = text.replace(/#Abbreviation#/g, scalar.symbol);
         }
-        text = text.replace(new RegExp('#Quantity#', 'g'), scalar.name);
-        text = text.replace(new RegExp('#quantity#', 'g'), (0, Utility_1.lowerCase)(scalar.name));
+        text = text.replace(/#Quantity#/g, scalar.name);
+        text = text.replace(/#quantity#/g, (0, Utility_1.lowerCase)(scalar.name));
         return text;
     }
     composeInterfacesText(scalar) {
@@ -338,8 +337,8 @@ class ScalarGenerator {
                 toVectorOperations += '\tpublic static #VectorQuantity##Dimensionality# operator *(#Quantity# a, ' + scalarTupleDefinition + ' b) #newline#=> a.Multiply(b);\n';
                 toVectorOperations += '\t#Document:MultiplyScalarTupleNOperatorRHS' + argument + '#\n';
                 toVectorOperations += '\tpublic static #VectorQuantity##Dimensionality# operator *(' + scalarTupleDefinition + ' a, #Quantity# b) #newline#=> b.Multiply(a);\n';
-                toVectorMethods = toVectorMethods.replace(new RegExp('#Dimensionality#', 'g'), dimensionality.toString());
-                toVectorOperations = toVectorOperations.replace(new RegExp('#Dimensionality#', 'g'), dimensionality.toString());
+                toVectorMethods = toVectorMethods.replace(/#Dimensionality#/g, dimensionality.toString());
+                toVectorOperations = toVectorOperations.replace(/#Dimensionality#/g, dimensionality.toString());
             }
         }
         return toVectorMethods + toVectorOperations;

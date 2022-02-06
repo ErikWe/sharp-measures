@@ -155,7 +155,9 @@ public readonly partial record struct Position3 :
         Z = z;
     }
 
-);
+    /// <summary>Converts the <see cref="Position3"/> to an instance of the associated quantity <see cref="Displacement"/>, with components of
+    /// equal magnitudes.</summary>
+    public Displacement3 AsDisplacement3() => new(X, Y, Z);
 
     /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, expressed in <see cref="UnitOfLength.Femtometre"/>.</summary>
     public Vector3 Femtometres => InUnit(UnitOfLength.Femtometre);

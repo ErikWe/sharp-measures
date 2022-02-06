@@ -28,45 +28,45 @@ export class ScalarGenerator {
         let text: string = this.templateReader.scalarTemplate
 
         const interfacesText: string = this.composeInterfacesText(scalar)
-        text = text.replace(/#Interfaces#\g/, interfacesText)
-        text = text.replace(/#CommaIfInterface#\g/, interfacesText.length > 0 ? ',' : '')
+        text = text.replace(/#Interfaces#/g, interfacesText)
+        text = text.replace(/#CommaIfInterface#/g, interfacesText.length > 0 ? ',' : '')
 
         const basesText: string = this.composeBasesText(scalar)
-        text = text.replace(/#Bases#\g/, basesText)
+        text = text.replace(/#Bases#/g, basesText)
 
         const fromText: string = this.composeFromText(scalar)
-        text = text.replace(/#From#\g/, fromText)
+        text = text.replace(/#From#/g, fromText)
 
         const unitsText: string = this.composeUnitsText(scalar)
-        text = text.replace(/#Units#\g/, unitsText)
+        text = text.replace(/#Units#/g, unitsText)
 
         const powersText: string = this.composePowersText(scalar)
-        text = text.replace(/#Powers#\g/, powersText)
+        text = text.replace(/#Powers#/g, powersText)
 
         const invertDoubleText: string = this.composeInversionOperatorDoubleText(scalar)
-        text = text.replace(/#InversionOperatorDouble#\g/, invertDoubleText)
+        text = text.replace(/#InversionOperatorDouble#/g, invertDoubleText)
 
         const invertScalarText: string = this.composeInversionOperatorScalarText(scalar)
-        text = text.replace(/#InversionOperatorScalar#\g/, invertScalarText)
+        text = text.replace(/#InversionOperatorScalar#/g, invertScalarText)
 
         const magnitudeFromUnitDoubleText: string = this.composeMagnitudeFromUnitDoubleText(scalar)
-        text = text.replace(/#MagnitudeFromUnitDouble#\g/, magnitudeFromUnitDoubleText)
+        text = text.replace(/#MagnitudeFromUnitDouble#/g, magnitudeFromUnitDoubleText)
 
         const magnitudeFromUnitScalarText: string = this.composeMagnitudeFromUnitScalarText(scalar)
-        text = text.replace(/#MagnitudeFromUnitScalar#\g/, magnitudeFromUnitScalarText)
+        text = text.replace(/#MagnitudeFromUnitScalar#/g, magnitudeFromUnitScalarText)
 
         const quantityToUnitText: string = this.composeQuantityToUnitText(scalar)
-        text = text.replace(/#QuantityToUnit#\g/, quantityToUnitText)
+        text = text.replace(/#QuantityToUnit#/g, quantityToUnitText)
 
         const convertibleText: string = this.composeConvertibleText(scalar)
-        text = text.replace(/#Convertible#'\g/, convertibleText)
+        text = text.replace(/#Convertible#/g, convertibleText)
 
         const vectorText: string = this.composeToVectorText(scalar)
-        text = text.replace(/#ToVector#\g/, vectorText)
+        text = text.replace(/#ToVector#/g, vectorText)
 
         text = this.insertNames(text, scalar)
 
-        text = text.replace(/\t\g/, '    ')
+        text = text.replace(/\t/g, '    ')
 
         text = await Documenter.document(text, this.documentationDirectory + '\\Scalars\\' + scalar.name + '.txt')
 
@@ -130,12 +130,12 @@ export class ScalarGenerator {
     }
 
     private insertNames(text: string, scalar: ScalarQuantity): string {
-        text = text.replace(/#Unit#\g/, scalar.unit)
-        text = text.replace(/#UnitVariable#\g/, lowerCase(scalar.unit))
+        text = text.replace(/#Unit#/g, scalar.unit)
+        text = text.replace(/#UnitVariable#/g, lowerCase(scalar.unit))
 
         const unitListTexts = createUnitListTexts(scalar)
-        text = text.replace(/#SingularUnits#\g/, unitListTexts.singular)
-        text = text.replace(/#PluralUnits#\g/, unitListTexts.plural)
+        text = text.replace(/#SingularUnits#/g, unitListTexts.singular)
+        text = text.replace(/#PluralUnits#/g, unitListTexts.plural)
 
         const powers: { name: string, data: QuantityPower }[] = [
             { name: 'Inverse', data: scalar.inverse },
@@ -159,15 +159,15 @@ export class ScalarGenerator {
         }
 
         if (scalar.vector) {
-            text = text.replace(/#VectorQuantity#\g/, scalar.vector)
+            text = text.replace(/#VectorQuantity#/g, scalar.vector)
         }
 
         if (scalar.symbol) {
-            text = text.replace(/#Abbreviation#\g/, scalar.symbol)
+            text = text.replace(/#Abbreviation#/g, scalar.symbol)
         }
 
-        text = text.replace(/#Quantity#\g/, scalar.name)
-        text = text.replace(/#quantity#\g/, lowerCase(scalar.name))
+        text = text.replace(/#Quantity#/g, scalar.name)
+        text = text.replace(/#quantity#/g, lowerCase(scalar.name))
         return text
     }
 
@@ -401,8 +401,8 @@ export class ScalarGenerator {
                 toVectorOperations += '\t#Document:MultiplyScalarTupleNOperatorRHS' + argument + '#\n'
                 toVectorOperations += '\tpublic static #VectorQuantity##Dimensionality# operator *(' + scalarTupleDefinition + ' a, #Quantity# b) #newline#=> b.Multiply(a);\n'
 
-                toVectorMethods = toVectorMethods.replace(/#Dimensionality#\g/, dimensionality.toString())
-                toVectorOperations = toVectorOperations.replace(/#Dimensionality#\g/, dimensionality.toString())
+                toVectorMethods = toVectorMethods.replace(/#Dimensionality#/g, dimensionality.toString())
+                toVectorOperations = toVectorOperations.replace(/#Dimensionality#/g, dimensionality.toString())
             }
         }
 

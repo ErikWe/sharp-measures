@@ -151,7 +151,9 @@ public readonly partial record struct Impulse3 :
         Z = z;
     }
 
-);
+    /// <summary>Converts the <see cref="Impulse3"/> to an instance of the associated quantity <see cref="Momentum"/>, with components of
+    /// equal magnitudes.</summary>
+    public Momentum3 AsMomentum3() => new(X, Y, Z);
 
     /// <summary>Retrieves the magnitudes of the components of the <see cref="Impulse3"/>, expressed in <see cref="UnitOfImpulse.NewtonSecond"/>.</summary>
     public Vector3 NewtonSeconds => InUnit(UnitOfImpulse.NewtonSecond);

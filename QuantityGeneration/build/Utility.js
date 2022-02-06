@@ -241,30 +241,11 @@ const createUnitListTexts = (quantity) => {
     return { singular: '[' + singularUnitList.slice(0, -2) + ']', plural: '[' + pluralUnitList.slice(0, -2) + ']' };
 };
 exports.createUnitListTexts = createUnitListTexts;
-const insertAppropriateNewlines = (text) => {
-    var _a, _b;
+const insertAppropriateNewlines = (text, characterLimit) => {
     let rebuilt = '';
     for (let line of text.split('\n')) {
         if (line.includes('#newline#')) {
-            const indent = (_b = (_a = line.match(new RegExp('[ ]*'))) === null || _a === void 0 ? void 0 : _a[0]) !== null && _b !== void 0 ? _b : '';
-            const comment = line.trim().startsWith('///');
-            let length = 0;
-            const components = line.split('#newline#');
-            for (let component of components) {
-                if (length > 0 && length + component.length > 175) {
-                    length = 0;
-                    rebuilt += '\n' + indent;
-                    if (comment) {
-                        rebuilt += '/// ';
-                    }
-                    else {
-                        rebuilt += '\t';
-                    }
-                }
-                rebuilt += component;
-                length += component.length;
-            }
-            rebuilt += '\n';
+            rebuilt += replaceNewLineIfNecessary(line, characterLimit) + '\n';
         }
         else {
             rebuilt += line + '\n';
@@ -273,6 +254,29 @@ const insertAppropriateNewlines = (text) => {
     return rebuilt;
 };
 exports.insertAppropriateNewlines = insertAppropriateNewlines;
+const replaceNewLineIfNecessary = (line, characterLimit) => {
+    var _a, _b;
+    const indent = (_b = (_a = line.match(/[ ]*/)) === null || _a === void 0 ? void 0 : _a[0]) !== null && _b !== void 0 ? _b : '';
+    const comment = line.trim().startsWith('///');
+    let length = 0;
+    const components = line.split('#newline#');
+    let rebuilt = '';
+    for (let component of components) {
+        if (length > 0 && length + component.length > characterLimit) {
+            length = 0;
+            rebuilt += '\n' + indent;
+            if (comment) {
+                rebuilt += '/// ';
+            }
+            else {
+                rebuilt += '\t';
+            }
+        }
+        rebuilt += component;
+        length += component.length;
+    }
+    return rebuilt;
+};
 const removeConsecutiveNewlines = (text) => {
     let rebuilt = '';
     let previousWasEmpty = true;
@@ -295,8 +299,8 @@ const removeConsecutiveNewlines = (text) => {
 };
 exports.removeConsecutiveNewlines = removeConsecutiveNewlines;
 const normalizeLineEndings = (text) => {
-    text = text.replace(new RegExp('(?<!\\r)\\n', 'g'), '\r\n');
-    text = text.replace(new RegExp('\\r(?!\\n)', 'g'), '\r\n');
+    text = text.replace(/(?<!\r)\n/g, '\r\n');
+    text = text.replace(/\r(?!\n)/g, '\r\n');
     return text;
 };
 exports.normalizeLineEndings = normalizeLineEndings;

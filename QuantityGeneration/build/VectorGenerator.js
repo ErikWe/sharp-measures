@@ -42,17 +42,17 @@ class VectorGenerator {
             text = this.setComponentListTexts(vector, dimensionality, text);
             text = this.setConditionalBlocks(vector, dimensionality, text);
             const interfacesText = this.composeInterfacesText(vector);
-            text = text.replace(new RegExp('#Interfaces#', 'g'), interfacesText);
-            text = text.replace(new RegExp('#CommaIfInterface#', 'g'), interfacesText.length > 0 ? ',' : '');
-            text = text.replace(new RegExp('#CommaIfInterfaceOrTransformable#', 'g'), interfacesText.length > 0 || dimensionality == 3 ? ',' : '');
+            text = text.replace(/#Interfaces#/g, interfacesText);
+            text = text.replace(/#CommaIfInterface#/g, interfacesText.length > 0 ? ',' : '');
+            text = text.replace(/#CommaIfInterfaceOrTransformable#/g, interfacesText.length > 0 || dimensionality == 3 ? ',' : '');
             const convertibleText = this.composeConvertibleText(vector);
-            text = text.replace(new RegExp('#Convertible#', 'g'), convertibleText);
+            text = text.replace(/#Convertible#/g, convertibleText);
             const quantityToUnitText = this.composeQuantityToUnitText(vector);
-            text = text.replace(new RegExp('#QuantityToUnit#', 'g'), quantityToUnitText);
+            text = text.replace(/#QuantityToUnit#/g, quantityToUnitText);
             const unitsText = this.composeUnitsText(vector);
-            text = text.replace(new RegExp('#Units#', 'g'), unitsText);
+            text = text.replace(/#Units#/g, unitsText);
             text = this.insertNames(text, vector, dimensionality);
-            text = text.replace(new RegExp('\t', 'g'), '    ');
+            text = text.replace(/\t/g, '    ');
             if (yield promises_1.default.stat(this.documentationDirectory + '\\Vectors\\' + vector.name + dimensionality + '.txt').catch(() => false)) {
                 text = yield Documenter_1.Documenter.document(text, this.documentationDirectory + '\\Vectors\\' + vector.name + dimensionality + '.txt');
             }
@@ -62,7 +62,7 @@ class VectorGenerator {
             else {
                 this.reportErrorDocumentationFileNotFound(vector, this.documentationDirectory + '\\Vectors\\' + vector.name + '.txt');
             }
-            text = (0, Utility_1.insertAppropriateNewlines)(text);
+            text = (0, Utility_1.insertAppropriateNewlines)(text, 175);
             text = (0, Utility_1.normalizeLineEndings)(text);
             text = (0, Utility_1.removeConsecutiveNewlines)(text);
             text = (0, Utility_1.normalizeLineEndings)(text);
@@ -71,7 +71,6 @@ class VectorGenerator {
     }
     fixVectorData(vector) {
         const requiredEntries = ['name', 'type', 'component', 'baseUnits', 'unit', 'unitBias', 'dimensionalities', 'units', 'convertible'];
-        const optionalEntries = [];
         const missingEntries = [];
         for (let requiredEntry of requiredEntries) {
             if (!(requiredEntry in vector)) {
@@ -84,7 +83,7 @@ class VectorGenerator {
         }
         const redudantEntries = [];
         for (let entry of Object.keys(vector)) {
-            if (!(entry in requiredEntries || entry in optionalEntries)) {
+            if (!requiredEntries.includes(entry)) {
                 requiredEntries.push(entry);
             }
         }
@@ -103,22 +102,22 @@ class VectorGenerator {
         return true;
     }
     insertNames(text, vector, dimensionality) {
-        text = text.replace(new RegExp('#Unit#', 'g'), vector.unit);
-        text = text.replace(new RegExp('#UnitVariable#', 'g'), (0, Utility_1.lowerCase)(vector.unit));
+        text = text.replace(/#Unit#/g, vector.unit);
+        text = text.replace(/#UnitVariable#/g, (0, Utility_1.lowerCase)(vector.unit));
         const unitListTexts = (0, Utility_1.createUnitListTexts)(vector);
-        text = text.replace(new RegExp('#SingularUnits#', 'g'), unitListTexts.singular);
-        text = text.replace(new RegExp('#PluralUnits#', 'g'), unitListTexts.plural);
-        text = text.replace(new RegExp('#Abbreviation#', 'g'), vector.symbol ? vector.symbol : 'SymbolParsingError');
-        text = text.replace(new RegExp('#Component#', 'g'), vector.component ? vector.component : 'Scalar');
+        text = text.replace(/#SingularUnits#/g, unitListTexts.singular);
+        text = text.replace(/#PluralUnits#/g, unitListTexts.plural);
+        text = text.replace(/#Abbreviation#/g, vector.symbol ? vector.symbol : 'SymbolParsingError');
+        text = text.replace(/#Component#/g, vector.component ? vector.component : 'Scalar');
         if (vector.component) {
             let componentSquare = (0, Utility_1.getSquare)(this.definitionReader.definitions, this.definitionReader.definitions.scalars[vector.component]);
             if (componentSquare !== false && (!Array.isArray(componentSquare) || componentSquare.length > 0)) {
-                text = text.replace(new RegExp('#SquaredComponent#', 'g'), Array.isArray(componentSquare) ? componentSquare[0] : componentSquare);
+                text = text.replace(/#SquaredComponent#/g, Array.isArray(componentSquare) ? componentSquare[0] : componentSquare);
             }
         }
-        text = text.replace(new RegExp('#Quantity#', 'g'), vector.name + dimensionality);
-        text = text.replace(new RegExp('#quantity#', 'g'), (0, Utility_1.lowerCase)(vector.name + dimensionality));
-        text = text.replace(new RegExp('#Dimensionality#', 'g'), dimensionality.toString());
+        text = text.replace(/#Quantity#/g, vector.name + dimensionality);
+        text = text.replace(/#quantity#/g, (0, Utility_1.lowerCase)(vector.name + dimensionality));
+        text = text.replace(/#Dimensionality#/g, dimensionality.toString());
         return text;
     }
     setComponentListTexts(vector, dimensionality, text) {
@@ -126,125 +125,125 @@ class VectorGenerator {
                 replace: '#ComponentListProperties#',
                 append: (name) => '\t#Document:Component' + name + '(#Quantity#, #Dimensionality#, #Unit#, #PluralUnits#)#\n' +
                     '\tpublic double ' + name + ' { get; init; }\n',
-                slice: (text) => text.slice(0, -1)
+                slice: (result) => result.slice(0, -1)
             }, {
                 replace: '#ComponentListAssignment#',
                 append: (name) => '\t\t' + name + ' = ' + (0, Utility_1.lowerCase)(name) + ';\n',
-                slice: (text) => text.slice(0, -1)
+                slice: (result) => result.slice(0, -1)
             }, {
                 replace: '#ComponentListComponents#',
                 append: (name) => name + ', ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListZero#',
                 append: (name) => '0, ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListScalarQuantity#',
                 append: (name) => vector.component + ' ' + (0, Utility_1.lowerCase)(name) + ', ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListScalar#',
                 append: (name) => 'Scalar ' + (0, Utility_1.lowerCase)(name) + ', ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListDouble#',
                 append: (name) => 'double ' + (0, Utility_1.lowerCase)(name) + ', ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListTupleAccess#',
                 append: (name) => 'components.' + (0, Utility_1.lowerCase)(name) + ', ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListVectorAccess#',
                 append: (name) => 'components.' + name + ', ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListAAccess#',
                 append: (name) => 'a.' + name + ', ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListLowerCaseMagnitudes#',
                 append: (name) => (0, Utility_1.lowerCase)(name) + '.Magnitude, ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListMagnitudeFromUnit#',
                 append: vector.unitBias ?
                     (name) => '(' + (0, Utility_1.lowerCase)(name) + ' * #UnitVariable#.Prefix.Scale + #UnitVariable#.Bias) * #UnitVariable#.BaseScale, ' :
                     (name) => (0, Utility_1.lowerCase)(name) + ' * #UnitVariable#.Factor, ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListFormatting#',
                 append: (name) => '{' + name + '}, ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListNegate#',
                 append: (name) => '-' + name + ', ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListNegateA#',
                 append: (name) => '-a.' + name + ', ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListRemainder#',
                 append: (name) => name + ' % divisor.Magnitude, ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListMultiplication#',
                 append: (name) => name + ' * factor.Magnitude, ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListDivision#',
                 append: (name) => name + ' / divisor.Magnitude, ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListVectorARemainderScalarB#',
                 append: (name) => 'a.' + name + ' % b.Magnitude, ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListVectorATimesScalarB#',
                 append: (name) => 'a.' + name + ' * b.Magnitude, ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListScalarATimesVectorB#',
                 append: (name) => 'a.Magnitude * b.' + name + ', ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListVectorADividedByScalarB#',
                 append: (name) => 'a.' + name + ' / b.Magnitude, ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListRemainderDouble#',
                 append: (name) => name + ' % divisor, ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListMultiplicationDouble#',
                 append: (name) => name + ' * factor, ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListDivisionDouble#',
                 append: (name) => name + ' / divisor, ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListVectorARemainderDoubleB#',
                 append: (name) => 'a.' + name + ' % b, ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListVectorATimesDoubleB#',
                 append: (name) => 'a.' + name + ' * b, ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListDoubleATimesVectorB#',
                 append: (name) => 'a * b.' + name + ', ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListVectorADividedByDoubleB#',
                 append: (name) => 'a.' + name + ' / b, ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListUnnamedDoubles#',
                 append: (name) => 'double, ',
-                slice: (text) => text.slice(0, -2)
+                slice: (result) => result.slice(0, -2)
             }
         ];
         for (let componentList of componentLists) {
@@ -258,34 +257,34 @@ class VectorGenerator {
     }
     setConditionalBlocks(vector, dimensionality, text) {
         if (vector.component) {
-            text = text.replace(new RegExp('(?:\\n|\\r\\n|\\r)#ScalarQuantityComponent#', 'g'), '');
-            text = text.replace(new RegExp('(?:\\n|\\r\\n|\\r)#\\/ScalarQuantityComponent#', 'g'), '');
-            text = text.replace(new RegExp('(?:\\n|\\r\\n|\\r)#NonScalarQuantityComponent#([^]+?)(?:\\n|\\r\\n|\\r)#\\/NonScalarQuantityComponent#', 'g'), '');
+            text = text.replace(/(?:\n|\r\n|\r)#ScalarQuantityComponent#/g, '');
+            text = text.replace(/(?:\n|\r\n|\r)#\/ScalarQuantityComponent#/g, '');
+            text = text.replace(/(?:\n|\r\n|\r)#NonScalarQuantityComponent#([^]+?)(?:\n|\r\n|\r)#\/NonScalarQuantityComponent#/g, '');
         }
         else {
-            text = text.replace(new RegExp('(?:\\n|\\r\\n|\\r)#NonScalarQuantityComponent#', 'g'), '');
-            text = text.replace(new RegExp('(?:\\n|\\r\\n|\\r)#\\/NonScalarQuantityComponent#', 'g'), '');
-            text = text.replace(new RegExp('(?:\\n|\\r\\n|\\r)#ScalarQuantityComponent#([^]+?)(?:\\n|\\r\\n|\\r)#\\/ScalarQuantityComponent#', 'g'), '');
+            text = text.replace(/(?:\n|\r\n|\r)#NonScalarQuantityComponent#/g, '');
+            text = text.replace(/(?:\n|\r\n|\r)#\/NonScalarQuantityComponent#/g, '');
+            text = text.replace(/(?:\n|\r\n|\r)#ScalarQuantityComponent#([^]+?)(?:\n|\r\n|\r)#\/ScalarQuantityComponent#/g, '');
         }
         const emptyArrayOrFalse = (obj) => {
             return (obj === false || Array.isArray(obj) && obj.length === 0);
         };
         if (vector.component && !emptyArrayOrFalse(this.definitionReader.definitions.scalars[vector.component].square)) {
-            text = text.replace(new RegExp('(?:\\n|\\r\\n|\\r)#SquaredScalarQuantityComponent#', 'g'), '');
-            text = text.replace(new RegExp('(?:\\n|\\r\\n|\\r)#\\/SquaredScalarQuantityComponent#', 'g'), '');
-            text = text.replace(new RegExp('(?:\\n|\\r\\n|\\r)#NonSquaredScalarQuantityComponent#([^]+?)(?:\\n|\\r\\n|\\r)#\\/NonSquaredScalarQuantityComponent#', 'g'), '');
+            text = text.replace(/(?:\n|\r\n|\r)#SquaredScalarQuantityComponent#/g, '');
+            text = text.replace(/(?:\n|\r\n|\r)#\/SquaredScalarQuantityComponent#/g, '');
+            text = text.replace(/(?:\n|\r\n|\r)#NonSquaredScalarQuantityComponent#([^]+?)(?:\n|\r\n|\r)#\/NonSquaredScalarQuantityComponent#/g, '');
         }
         else {
-            text = text.replace(new RegExp('(?:\\n|\\r\\n|\\r)#NonSquaredScalarQuantityComponent#', 'g'), '');
-            text = text.replace(new RegExp('(?:\\n|\\r\\n|\\r)#\\/NonSquaredScalarQuantityComponent#', 'g'), '');
-            text = text.replace(new RegExp('(?:\\n|\\r\\n|\\r)#SquaredScalarQuantityComponent#([^]+?)(?:\\n|\\r\\n|\\r)#\\/SquaredScalarQuantityComponent#', 'g'), '');
+            text = text.replace(/(?:\n|\r\n|\r)#NonSquaredScalarQuantityComponent#/g, '');
+            text = text.replace(/(?:\n|\r\n|\r)#\/NonSquaredScalarQuantityComponent#/g, '');
+            text = text.replace(/(?:\n|\r\n|\r)#SquaredScalarQuantityComponent#([^]+?)(?:\n|\r\n|\r)#\/SquaredScalarQuantityComponent#/g, '');
         }
         if (dimensionality === 3) {
-            text = text.replace(new RegExp('(?:\\n|\\r\\n|\\r)#Vector3#', 'g'), '');
-            text = text.replace(new RegExp('(?:\\n|\\r\\n|\\r)#\\/Vector3#', 'g'), '');
+            text = text.replace(/(?:\n|\r\n|\r)#Vector3#/g, '');
+            text = text.replace(/(?:\n|\r\n|\r)#\/Vector3#/g, '');
         }
         else {
-            text = text.replace(new RegExp('(?:\\n|\\r\\n|\\r)#Vector3#([^]+?)(?:\\n|\\r\\n|\\r)#\\/Vector3#', 'g'), '');
+            text = text.replace(/(?:\n|\r\n|\r)#Vector3#([^]+?)(?:\n|\r\n|\r)#\/Vector3#/g, '');
         }
         return text;
     }
@@ -315,11 +314,11 @@ class VectorGenerator {
         let convertibleText = '';
         if (Array.isArray(vector.convertible)) {
             for (let convertible of vector.convertible) {
-                for (let i of vector.dimensionalities) {
-                    if (i in this.definitionReader.definitions.vectors[convertible].dimensionalities) {
+                for (let dimensionality of vector.dimensionalities) {
+                    if (this.definitionReader.definitions.vectors[convertible].dimensionalities.includes(dimensionality)) {
                         convertibleText += '\t#Document:AsShared(#Quantity#, #Dimensionality#, ' + convertible + ')#\n';
                         convertibleText += '\tpublic ' + convertible + '#Dimensionality# As' + convertible + '#Dimensionality#() => new(';
-                        for (let name of (0, Utility_1.getVectorComponentNames)(i)) {
+                        for (let name of (0, Utility_1.getVectorComponentNames)(dimensionality)) {
                             convertibleText += name + ', ';
                         }
                     }
