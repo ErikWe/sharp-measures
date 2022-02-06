@@ -75,6 +75,11 @@ public readonly partial record struct Weight3 :
     /// - such as <see cref="Newtons"/>.</remarks>
     public double Z { get; init; }
 
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Weight3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfForce)"/> or a pre-defined property
+    /// - such as <see cref="Newtons"/>.</remarks>
+    public Vector3 Components => new(X, Y, Z);
+
     /// <summary>Constructs a new <see cref="Weight3"/> with components <paramref name="components"/>.</summary>
     /// <param name="components">The components of the <see cref="Weight3"/>.</param>
     public Weight3((Weight x, Weight y, Weight z) components) : this(components.x, components.y, components.z) { }

@@ -79,6 +79,11 @@ public readonly partial record struct SpinAngularMomentum3 :
     /// - such as <see cref="KilogramMetresSquaredPerSecond"/>.</remarks>
     public double Z { get; init; }
 
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="SpinAngularMomentum3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfSpinAngularMomentum)"/> or a pre-defined property
+    /// - such as <see cref="KilogramMetresSquaredPerSecond"/>.</remarks>
+    public Vector3 Components => new(X, Y, Z);
+
     /// <summary>Constructs a new <see cref="SpinAngularMomentum3"/> with components <paramref name="components"/>.</summary>
     /// <param name="components">The components of the <see cref="SpinAngularMomentum3"/>.</param>
     public SpinAngularMomentum3((SpinAngularMomentum x, SpinAngularMomentum y, SpinAngularMomentum z) components) : this(components.x, components.y, components.z) { }

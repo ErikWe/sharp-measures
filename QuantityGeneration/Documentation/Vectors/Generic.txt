@@ -24,6 +24,12 @@
 /// - such as <see cref="#Param:pluralUnits[%0]#"/>.</remarks>
 #/
 
+#Define:Components(quantity, dimensionality, unit, pluralUnits)
+/// <summary>Retrieves the magnitudes of the components of the <see cref="#Param:quantity#"/>, in SI units.</summary>
+/// <remarks>For clarity, consider preferring <see cref="InUnit(#Param:unit#)"/> or a pre-defined property
+/// - such as <see cref="#Param:pluralUnits[%0]#"/>.</remarks>
+#/
+
 #Define:ConstructorComponentTuple(quantity, dimensionality)
 /// <summary>Constructs a new <see cref="#Param:quantity#"/> with components <paramref name="components"/>.</summary>
 /// <param name="components">The components of the <see cref="#Param:quantity#"/>.</param>

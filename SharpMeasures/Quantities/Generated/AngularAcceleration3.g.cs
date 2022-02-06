@@ -78,6 +78,11 @@ public readonly partial record struct AngularAcceleration3 :
     /// - such as <see cref="RadiansPerSecondSquared"/>.</remarks>
     public double Z { get; init; }
 
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="AngularAcceleration3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAngularAcceleration)"/> or a pre-defined property
+    /// - such as <see cref="RadiansPerSecondSquared"/>.</remarks>
+    public Vector3 Components => new(X, Y, Z);
+
     /// <summary>Constructs a new <see cref="AngularAcceleration3"/> with components <paramref name="components"/>.</summary>
     /// <param name="components">The components of the <see cref="AngularAcceleration3"/>.</param>
     public AngularAcceleration3((AngularAcceleration x, AngularAcceleration y, AngularAcceleration z) components) : this(components.x, components.y, components.z) { }

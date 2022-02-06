@@ -79,6 +79,11 @@ public readonly partial record struct SpinAngularAcceleration3 :
     /// - such as <see cref="RadiansPerSecondSquared"/>.</remarks>
     public double Z { get; init; }
 
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="SpinAngularAcceleration3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfSpinAngularAcceleration)"/> or a pre-defined property
+    /// - such as <see cref="RadiansPerSecondSquared"/>.</remarks>
+    public Vector3 Components => new(X, Y, Z);
+
     /// <summary>Constructs a new <see cref="SpinAngularAcceleration3"/> with components <paramref name="components"/>.</summary>
     /// <param name="components">The components of the <see cref="SpinAngularAcceleration3"/>.</param>
     public SpinAngularAcceleration3((SpinAngularAcceleration x, SpinAngularAcceleration y, SpinAngularAcceleration z) components) : 

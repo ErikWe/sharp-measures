@@ -60,6 +60,11 @@ public readonly partial record struct Jerk3 :
     /// - such as <see cref="MetresPerSecondCubed"/>.</remarks>
     public double Z { get; init; }
 
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Jerk3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfJerk)"/> or a pre-defined property
+    /// - such as <see cref="MetresPerSecondCubed"/>.</remarks>
+    public Vector3 Components => new(X, Y, Z);
+
     /// <summary>Constructs a new <see cref="Jerk3"/> with components <paramref name="components"/>.</summary>
     /// <param name="components">The components of the <see cref="Jerk3"/>.</param>
     public Jerk3((Jerk x, Jerk y, Jerk z) components) : this(components.x, components.y, components.z) { }

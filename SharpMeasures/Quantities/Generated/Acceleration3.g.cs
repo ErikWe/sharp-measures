@@ -74,6 +74,11 @@ public readonly partial record struct Acceleration3 :
     /// - such as <see cref="MetresPerSecondSquared"/>.</remarks>
     public double Z { get; init; }
 
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Acceleration3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAcceleration)"/> or a pre-defined property
+    /// - such as <see cref="MetresPerSecondSquared"/>.</remarks>
+    public Vector3 Components => new(X, Y, Z);
+
     /// <summary>Constructs a new <see cref="Acceleration3"/> with components <paramref name="components"/>.</summary>
     /// <param name="components">The components of the <see cref="Acceleration3"/>.</param>
     public Acceleration3((Acceleration x, Acceleration y, Acceleration z) components) : this(components.x, components.y, components.z) { }

@@ -79,6 +79,11 @@ public readonly partial record struct Position3 :
     /// - such as <see cref="Femtometres"/>.</remarks>
     public double Z { get; init; }
 
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfLength)"/> or a pre-defined property
+    /// - such as <see cref="Femtometres"/>.</remarks>
+    public Vector3 Components => new(X, Y, Z);
+
     /// <summary>Constructs a new <see cref="Position3"/> with components <paramref name="components"/>.</summary>
     /// <param name="components">The components of the <see cref="Position3"/>.</param>
     public Position3((Length x, Length y, Length z) components) : this(components.x, components.y, components.z) { }

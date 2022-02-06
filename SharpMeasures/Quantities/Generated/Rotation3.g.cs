@@ -59,6 +59,11 @@ public readonly partial record struct Rotation3 :
     /// - such as <see cref="Radians"/>.</remarks>
     public double Z { get; init; }
 
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Rotation3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAngle)"/> or a pre-defined property
+    /// - such as <see cref="Radians"/>.</remarks>
+    public Vector3 Components => new(X, Y, Z);
+
     /// <summary>Constructs a new <see cref="Rotation3"/> with components <paramref name="components"/>.</summary>
     /// <param name="components">The components of the <see cref="Rotation3"/>.</param>
     public Rotation3((Angle x, Angle y, Angle z) components) : this(components.x, components.y, components.z) { }

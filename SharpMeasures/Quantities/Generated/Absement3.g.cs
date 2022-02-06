@@ -59,6 +59,11 @@ public readonly partial record struct Absement3 :
     /// - such as <see cref="MetreSeconds"/>.</remarks>
     public double Z { get; init; }
 
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Absement3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAbsement)"/> or a pre-defined property
+    /// - such as <see cref="MetreSeconds"/>.</remarks>
+    public Vector3 Components => new(X, Y, Z);
+
     /// <summary>Constructs a new <see cref="Absement3"/> with components <paramref name="components"/>.</summary>
     /// <param name="components">The components of the <see cref="Absement3"/>.</param>
     public Absement3((Absement x, Absement y, Absement z) components) : this(components.x, components.y, components.z) { }

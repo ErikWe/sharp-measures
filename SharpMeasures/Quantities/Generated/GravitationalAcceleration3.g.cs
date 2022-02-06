@@ -75,6 +75,11 @@ public readonly partial record struct GravitationalAcceleration3 :
     /// - such as <see cref="StandardGravity"/>.</remarks>
     public double Z { get; init; }
 
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="GravitationalAcceleration3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAcceleration)"/> or a pre-defined property
+    /// - such as <see cref="StandardGravity"/>.</remarks>
+    public Vector3 Components => new(X, Y, Z);
+
     /// <summary>Constructs a new <see cref="GravitationalAcceleration3"/> with components <paramref name="components"/>.</summary>
     /// <param name="components">The components of the <see cref="GravitationalAcceleration3"/>.</param>
     public GravitationalAcceleration3((GravitationalAcceleration x, GravitationalAcceleration y, GravitationalAcceleration z) components) : 

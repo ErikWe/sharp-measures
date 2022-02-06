@@ -60,6 +60,11 @@ public readonly partial record struct Torque3 :
     /// - such as <see cref="NewtonMetres"/>.</remarks>
     public double Z { get; init; }
 
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Torque3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfTorque)"/> or a pre-defined property
+    /// - such as <see cref="NewtonMetres"/>.</remarks>
+    public Vector3 Components => new(X, Y, Z);
+
     /// <summary>Constructs a new <see cref="Torque3"/> with components <paramref name="components"/>.</summary>
     /// <param name="components">The components of the <see cref="Torque3"/>.</param>
     public Torque3((Torque x, Torque y, Torque z) components) : this(components.x, components.y, components.z) { }

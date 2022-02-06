@@ -28,8 +28,8 @@ public class PhysicsClassroomBenchmarks
     [Benchmark]
     public Quantities.Length UsingSharpMeasures()
     {
-        Quantities.Velocity velocity1 = Random.NextDouble() * Quantities.Velocity.OneMetrePerSecond;
-        Quantities.Velocity velocity2 = Random.NextDouble() * Quantities.Velocity.OneMetrePerSecond;
+        Quantities.Speed velocity1 = Random.NextDouble() * Quantities.Speed.OneMetrePerSecond;
+        Quantities.Speed velocity2 = Random.NextDouble() * Quantities.Speed.OneMetrePerSecond;
         Quantities.Time elapsedTime = Random.NextDouble() * Quantities.Time.OneSecond;
 
         Quantities.Acceleration acceleration = (velocity2 - velocity1) / elapsedTime;

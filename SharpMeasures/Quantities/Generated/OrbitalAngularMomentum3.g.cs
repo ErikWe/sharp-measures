@@ -79,6 +79,11 @@ public readonly partial record struct OrbitalAngularMomentum3 :
     /// - such as <see cref="KilogramMetresSquaredPerSecond"/>.</remarks>
     public double Z { get; init; }
 
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="OrbitalAngularMomentum3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfOrbitalAngularMomentum)"/> or a pre-defined property
+    /// - such as <see cref="KilogramMetresSquaredPerSecond"/>.</remarks>
+    public Vector3 Components => new(X, Y, Z);
+
     /// <summary>Constructs a new <see cref="OrbitalAngularMomentum3"/> with components <paramref name="components"/>.</summary>
     /// <param name="components">The components of the <see cref="OrbitalAngularMomentum3"/>.</param>
     public OrbitalAngularMomentum3((OrbitalAngularMomentum x, OrbitalAngularMomentum y, OrbitalAngularMomentum z) components) : 

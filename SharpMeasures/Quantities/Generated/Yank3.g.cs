@@ -60,6 +60,11 @@ public readonly partial record struct Yank3 :
     /// - such as <see cref="NewtonsPerSecond"/>.</remarks>
     public double Z { get; init; }
 
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Yank3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfYank)"/> or a pre-defined property
+    /// - such as <see cref="NewtonsPerSecond"/>.</remarks>
+    public Vector3 Components => new(X, Y, Z);
+
     /// <summary>Constructs a new <see cref="Yank3"/> with components <paramref name="components"/>.</summary>
     /// <param name="components">The components of the <see cref="Yank3"/>.</param>
     public Yank3((Yank x, Yank y, Yank z) components) : this(components.x, components.y, components.z) { }

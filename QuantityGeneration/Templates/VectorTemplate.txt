@@ -22,6 +22,9 @@ public readonly partial record struct #Quantity# :
 
 #ComponentListProperties#
 
+    #Document:Components(#Quantity#, #Dimensionality#, #Unit#, #PluralUnits#)#
+    public Vector#Dimensionality# Components => new(#ComponentListComponents#);
+
 #ScalarQuantityComponent#
     #Document:ConstructorComponentTuple(#Quantity#, #Dimensionality#)#
     public #Quantity#((#ComponentListScalarQuantity#) components) : #newline#this(#ComponentListTupleAccess#) { }

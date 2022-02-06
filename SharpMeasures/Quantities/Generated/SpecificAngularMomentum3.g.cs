@@ -60,6 +60,11 @@ public readonly partial record struct SpecificAngularMomentum3 :
     /// - such as <see cref="SquareMetresPerSecond"/>.</remarks>
     public double Z { get; init; }
 
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="SpecificAngularMomentum3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfSpecificAngularMomentum)"/> or a pre-defined property
+    /// - such as <see cref="SquareMetresPerSecond"/>.</remarks>
+    public Vector3 Components => new(X, Y, Z);
+
     /// <summary>Constructs a new <see cref="SpecificAngularMomentum3"/> with components <paramref name="components"/>.</summary>
     /// <param name="components">The components of the <see cref="SpecificAngularMomentum3"/>.</param>
     public SpecificAngularMomentum3((SpecificAngularMomentum x, SpecificAngularMomentum y, SpecificAngularMomentum z) components) : 
