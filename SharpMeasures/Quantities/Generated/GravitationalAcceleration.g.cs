@@ -8,9 +8,10 @@ using System;
 /// This is the magnitude of the vector quantity <see cref="GravitationalAcceleration3"/>, and is expressed in <see cref="UnitOfAcceleration"/>,
 /// with the SI unit being [m / s²].
 /// <para>
-/// New instances of <see cref="GravitationalAcceleration"/> can be constructed using pre-defined properties, prefixed with 'One', having magnitude 1 expressed
+/// New instances of <see cref="GravitationalAcceleration"/> can be constructed using the pre-defined propertiies, prefixed with 'One', having magnitude 1 expressed
 /// in the desired <see cref="UnitOfAcceleration"/>. Instances can also be produced by combining other quantities, either through mathematical operators
-/// or using overloads of the static method 'From'. This is demonstrated below:
+/// or using overloads of the static method 'From'. Lastly, instances can be constructed from quantities sharing the same unit, using
+/// instance-methods of the associated quantity - typically prefixed with 'As'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
 /// <code>
@@ -22,8 +23,14 @@ using System;
 /// <see cref="GravitationalAcceleration"/> d = <see cref="GravitationalAcceleration.From(Weight, Mass)"/>;
 /// </code>
 /// </item>
+/// <item>
+/// <code>
+/// <see cref="GravitationalAcceleration"/> e = <see cref="Acceleration.AsGravitationalAcceleration"/>;
+/// </code>
+/// </item>
 /// </list>
-/// The magnitude of the measure can be retrieved using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfAcceleration"/>.
+/// The magnitude of the <see cref="GravitationalAcceleration"/> can be retrieved in the desired <see cref="UnitOfAcceleration"/> using pre-defined properties,
+/// such as <see cref="StandardGravity"/>
 /// </para>
 /// </summary>
 /// <remarks>
@@ -55,13 +62,13 @@ public readonly partial record struct GravitationalAcceleration :
     /// <summary>The <see cref="GravitationalAcceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.MetrePerSecondSquared"/>.</summary>
     public static GravitationalAcceleration OneMetrePerSecondSquared { get; } = new(1, UnitOfAcceleration.MetrePerSecondSquared);
 
-    /// <summary>The magnitude of the <see cref="GravitationalAcceleration"/> measure, in SI units.</summary>
-    /// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="GravitationalAcceleration.InStandardGravity"/>.
-    /// <para>This value should only be used (to maximize efficiency) when implementing mathematical operations with other quantities.</para></remarks>
+    /// <summary>The magnitude of the <see cref="GravitationalAcceleration"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAcceleration)"/> or a pre-defined property
+    /// - such as <see cref="StandardGravity"/>.</remarks>
     public double Magnitude { get; init; }
 
-    /// <summary>Constructs a new <see cref="GravitationalAcceleration"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfAcceleration"/> <paramref name="unitOfAcceleration"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="GravitationalAcceleration"/>, in <see cref="UnitOfAcceleration"/> <paramref name="unitOfAcceleration"/>.</param>
+    /// <summary>Constructs a new <see cref="GravitationalAcceleration"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfAcceleration"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="GravitationalAcceleration"/>, expressed in <paramref name="unitOfAcceleration"/>.</param>
     /// <param name="unitOfAcceleration">The <see cref="UnitOfAcceleration"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring constructing instances according to the following:
     /// <list type="bullet">
@@ -73,8 +80,8 @@ public readonly partial record struct GravitationalAcceleration :
     /// </list>
     /// </remarks>
     public GravitationalAcceleration(Scalar magnitude, UnitOfAcceleration unitOfAcceleration) : this(magnitude.Magnitude, unitOfAcceleration) { }
-    /// <summary>Constructs a new <see cref="GravitationalAcceleration"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfAcceleration"/> <paramref name="unitOfAcceleration"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="GravitationalAcceleration"/>, in <see cref="UnitOfAcceleration"/> <paramref name="unitOfAcceleration"/>.</param>
+    /// <summary>Constructs a new <see cref="GravitationalAcceleration"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfAcceleration"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="GravitationalAcceleration"/>, expressed in <paramref name="unitOfAcceleration"/>.</param>
     /// <param name="unitOfAcceleration">The <see cref="UnitOfAcceleration"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring cosntructing instances according to the following:
     /// <list type="bullet">
@@ -86,13 +93,13 @@ public readonly partial record struct GravitationalAcceleration :
     /// </list>
     /// </remarks>
     public GravitationalAcceleration(double magnitude, UnitOfAcceleration unitOfAcceleration) : this(magnitude * unitOfAcceleration.Factor) { }
-    /// <summary>Constructs a new <see cref="GravitationalAcceleration"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="GravitationalAcceleration"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="GravitationalAcceleration"/>.</param>
-    /// <remarks>Consider preffering a constructor that requires a <see cref="UnitOfAcceleration"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="GravitationalAcceleration(Scalar, UnitOfAcceleration)"/>.</remarks>
     public GravitationalAcceleration(Scalar magnitude) : this(magnitude.Magnitude) { }
-    /// <summary>Constructs a new <see cref="GravitationalAcceleration"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="GravitationalAcceleration"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="GravitationalAcceleration"/>.</param>
-    /// <remarks>Consider preferring a constructor that requires a <see cref="UnitOfAcceleration"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="GravitationalAcceleration(double, UnitOfAcceleration)"/>.</remarks>
     public GravitationalAcceleration(double magnitude)
     {
         Magnitude = magnitude;
@@ -101,10 +108,10 @@ public readonly partial record struct GravitationalAcceleration :
     /// <summary>Converts the <see cref="GravitationalAcceleration"/> to an instance of the associated quantity <see cref="Acceleration"/>, of equal magnitude.</summary>
     public Acceleration AsAcceleration => new(Magnitude);
 
-    /// <summary>Retrieves the magnitude of the <see cref="GravitationalAcceleration"/>, expressed in unit <see cref="UnitOfAcceleration.StandardGravity"/>.</summary>
-    public Scalar InStandardGravity => InUnit(UnitOfAcceleration.StandardGravity);
-    /// <summary>Retrieves the magnitude of the <see cref="GravitationalAcceleration"/>, expressed in unit <see cref="UnitOfAcceleration.MetrePerSecondSquared"/>.</summary>
-    public Scalar InMetresPerSecondSquared => InUnit(UnitOfAcceleration.MetrePerSecondSquared);
+    /// <summary>Retrieves the magnitude of the <see cref="GravitationalAcceleration"/>, expressed in <see cref="UnitOfAcceleration.StandardGravity"/>.</summary>
+    public Scalar StandardGravity => InUnit(UnitOfAcceleration.StandardGravity);
+    /// <summary>Retrieves the magnitude of the <see cref="GravitationalAcceleration"/>, expressed in <see cref="UnitOfAcceleration.MetrePerSecondSquared"/>.</summary>
+    public Scalar MetresPerSecondSquared => InUnit(UnitOfAcceleration.MetrePerSecondSquared);
 
     /// <summary>Indicates whether the magnitude of the <see cref="GravitationalAcceleration"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -134,16 +141,16 @@ public readonly partial record struct GravitationalAcceleration :
 
     /// <inheritdoc/>
     public int CompareTo(GravitationalAcceleration other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="GravitationalAcceleration"/>, and the SI base unit of the quantity.</summary>
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="GravitationalAcceleration"/> (in SI units), and the SI base unit of the quantity.</summary>
     public override string ToString() => $"{Magnitude} [m / s^2]";
 
-    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="GravitationalAcceleration"/>, expressed in <see cref="UnitOfAcceleration"/>
-    /// <paramref name="unitOfAcceleration"/>.</summary>
+    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="GravitationalAcceleration"/>,
+    /// expressed in <paramref name="unitOfAcceleration"/>.</summary>
     /// <param name="unitOfAcceleration">The <see cref="UnitOfAcceleration"/> in which the magnitude is expressed.</param>
     public Scalar InUnit(UnitOfAcceleration unitOfAcceleration) => InUnit(this, unitOfAcceleration);
-    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="GravitationalAcceleration"/>, expressed in <see cref="UnitOfAcceleration"/>
-    /// <paramref name="unitOfAcceleration"/>.</summary>
-    /// <param name="gravitationalAcceleration">The <see cref="GravitationalAcceleration"/> to be expressed in <see cref="UnitOfAcceleration"/> <paramref name="unitOfAcceleration"/>.</param>
+    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="GravitationalAcceleration"/>,
+    /// expressed in <paramref name="unitOfAcceleration"/>.</summary>
+    /// <param name="gravitationalAcceleration">The <see cref="GravitationalAcceleration"/> to be expressed in <paramref name="unitOfAcceleration"/>.</param>
     /// <param name="unitOfAcceleration">The <see cref="UnitOfAcceleration"/> in which the magnitude is expressed.</param>
     private static Scalar InUnit(GravitationalAcceleration gravitationalAcceleration, UnitOfAcceleration unitOfAcceleration) => new(gravitationalAcceleration.Magnitude / unitOfAcceleration.Factor);
 
@@ -179,7 +186,7 @@ public readonly partial record struct GravitationalAcceleration :
     /// <summary>Divides the <see cref="GravitationalAcceleration"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="GravitationalAcceleration"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="GravitationalAcceleration"/> <paramref name="x"/> is divded.</param>
+    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="GravitationalAcceleration"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(GravitationalAcceleration x, Unhandled y) => x.Divide(y);
 
     /// <summary>Produces a <see cref="GravitationalAcceleration"/>, with magnitude equal to the remainder from division of the original
@@ -238,35 +245,35 @@ public readonly partial record struct GravitationalAcceleration :
     /// <param name="y">This value is used to divide the <see cref="GravitationalAcceleration"/> <paramref name="x"/>.</param>
     public static GravitationalAcceleration operator /(GravitationalAcceleration x, Scalar y) => x.Divide(y);
 
-    /// <summary>Multiplies the <see cref="GravitationalAcceleration"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which multiplication is done.</typeparam>
-    /// <param name="factor">The factor by which the <see cref="GravitationalAcceleration"/> is multiplied.</param>
-    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
-    /// <summary>Divides the <see cref="GravitationalAcceleration"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which division is done.</typeparam>
-    /// <param name="divisor">The divisor by which the <see cref="GravitationalAcceleration"/> is divided.</param>
-    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    /// <inheritdoc/>
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(Magnitude * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+        where TQuotientScalarQuantity : IScalarQuantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(Magnitude / divisor.Magnitude);
     /// <summary>Multiples the <see cref="GravitationalAcceleration"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="GravitationalAcceleration"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="GravitationalAcceleration"/> <paramref name="x"/>.</param>
-    /// <remarks>To maximize performance, prefer <see cref="GravitationalAcceleration.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator *(GravitationalAcceleration x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    public static Unhandled operator *(GravitationalAcceleration x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
     /// <summary>Divides the <see cref="GravitationalAcceleration"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="GravitationalAcceleration"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="GravitationalAcceleration"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To maximize performance, prefer <see cref="GravitationalAcceleration.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator /(GravitationalAcceleration x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    public static Unhandled operator /(GravitationalAcceleration x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
     /// <summary>Multiplies the <see cref="GravitationalAcceleration"/> with the <see cref="Vector3"/> <paramref name="vector"/> to produce a <see cref="GravitationalAcceleration3"/>.</summary>
     /// <param name="vector">This <see cref="Vector3"/> is multiplied by the <see cref="GravitationalAcceleration"/>.</param>
     public GravitationalAcceleration3 Multiply(Vector3 vector) => new(vector * Magnitude);
-    /// <summary>Multiplies the <see cref="GravitationalAcceleration"/> with the <see cref="ValueTuple"/> <paramref name="components"/> to produce a <see cref="GravitationalAcceleration3"/>.</summary>
-    /// <param name="components">This <see cref="ValueTuple"/> is multiplied by the <see cref="GravitationalAcceleration"/>.</param>
+    /// <summary>Multiplies the <see cref="GravitationalAcceleration"/> with the values of <paramref name="components"/> to produce a <see cref="GravitationalAcceleration3"/>.</summary>
+    /// <param name="components">These values are multiplied by the <see cref="GravitationalAcceleration"/>.</param>
     public GravitationalAcceleration3 Multiply((double x, double y, double z) components) => Multiply(new Vector3(components));
-    /// <summary>Multiplies the <see cref="GravitationalAcceleration"/> with the <see cref="ValueTuple"/> <paramref name="components"/> to produce a <see cref="GravitationalAcceleration3"/>.</summary>
-    /// <param name="components">This <see cref="ValueTuple"/> is multiplied by the <see cref="GravitationalAcceleration"/>.</param>
+    /// <summary>Multiplies the <see cref="GravitationalAcceleration"/> with the values of <paramref name="components"/> to produce a <see cref="GravitationalAcceleration3"/>.</summary>
+    /// <param name="components">These values are multiplied by the <see cref="GravitationalAcceleration"/>.</param>
     public GravitationalAcceleration3 Multiply((Scalar x, Scalar y, Scalar z) components) => Multiply(new Vector3(components));
     /// <summary>Multiplies the <see cref="GravitationalAcceleration"/> <paramref name="a"/> with the <see cref="Vector3"/> <paramref name="b"/> to produce a <see cref="GravitationalAcceleration3"/>.</summary>
     /// <param name="a">This <see cref="GravitationalAcceleration"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
@@ -276,21 +283,21 @@ public readonly partial record struct GravitationalAcceleration :
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="GravitationalAcceleration"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="GravitationalAcceleration"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
     public static GravitationalAcceleration3 operator *(Vector3 a, GravitationalAcceleration b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="GravitationalAcceleration"/> <paramref name="a"/> with the <see cref="ValueTuple"/> <paramref name="b"/> to produce a <see cref="GravitationalAcceleration3"/>.</summary>
-    /// <param name="a">This <see cref="GravitationalAcceleration"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="ValueTuple"/> is multiplied by the <see cref="GravitationalAcceleration"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="GravitationalAcceleration"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="GravitationalAcceleration3"/>.</summary>
+    /// <param name="a">This <see cref="GravitationalAcceleration"/> is multiplied by the values of <paramref name="b"/>.</param>
+    /// <param name="b">These values are multiplied by the <see cref="GravitationalAcceleration"/> <paramref name="a"/>.</param>
     public static GravitationalAcceleration3 operator *(GravitationalAcceleration a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="GravitationalAcceleration"/> <parmref name="b"/> with the <see cref="ValueTuple"/> <paramref name="a"/> to produce a <see cref="GravitationalAcceleration3"/>.</summary>
-    /// <param name="a">This <see cref="ValueTuple"/> is multiplied by the <see cref="GravitationalAcceleration"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="GravitationalAcceleration"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="GravitationalAcceleration"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="GravitationalAcceleration3"/>.</summary>
+    /// <param name="a">These values are multiplied by the <see cref="GravitationalAcceleration"/> <paramref name="b"/>.</param>
+    /// <param name="b">This <see cref="GravitationalAcceleration"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static GravitationalAcceleration3 operator *((double x, double y, double z) a, GravitationalAcceleration b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="GravitationalAcceleration"/> <paramref name="a"/> with the <see cref="ValueTuple"/> <paramref name="b"/> to produce a <see cref="GravitationalAcceleration3"/>.</summary>
-    /// <param name="a">This <see cref="GravitationalAcceleration"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="ValueTuple"/> is multiplied by the <see cref="GravitationalAcceleration"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="GravitationalAcceleration"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="GravitationalAcceleration3"/>.</summary>
+    /// <param name="a">This <see cref="GravitationalAcceleration"/> is multiplied by the values of <paramref name="b"/>.</param>
+    /// <param name="b">These values are multiplied by the <see cref="GravitationalAcceleration"/> <paramref name="a"/>.</param>
     public static GravitationalAcceleration3 operator *(GravitationalAcceleration a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="GravitationalAcceleration"/> <parmref name="b"/> with the <see cref="ValueTuple"/> <paramref name="a"/> to produce a <see cref="GravitationalAcceleration3"/>.</summary>
-    /// <param name="a">This <see cref="ValueTuple"/> is multiplied by the <see cref="GravitationalAcceleration"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="GravitationalAcceleration"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="GravitationalAcceleration"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="GravitationalAcceleration3"/>.</summary>
+    /// <param name="a">These values are multiplied by the <see cref="GravitationalAcceleration"/> <paramref name="b"/>.</param>
+    /// <param name="b">This <see cref="GravitationalAcceleration"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static GravitationalAcceleration3 operator *((Scalar x, Scalar y, Scalar z) a, GravitationalAcceleration b) => b.Multiply(a);
 
     /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
@@ -310,23 +317,28 @@ public readonly partial record struct GravitationalAcceleration :
     /// <param name="y"><paramref name="x"/> is compared against this value.</param>
     public static bool operator >=(GravitationalAcceleration x, GravitationalAcceleration y) => x.Magnitude >= y.Magnitude;
 
-    /// <summary>Converts the <see cref="GravitationalAcceleration"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
+    /// <summary>Converts the <see cref="GravitationalAcceleration"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public double ToDouble() => Magnitude;
-    /// <summary>Converts the <see cref="GravitationalAcceleration"/> to a <see cref="double"/> based on the magnitude of the <see cref="GravitationalAcceleration"/> <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public static implicit operator double(GravitationalAcceleration x) => x.ToDouble();
 
-    /// <summary>Converts the <see cref="GravitationalAcceleration"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts the <see cref="GravitationalAcceleration"/> to the <see cref="Scalar"/> of equivalent magnitude, when
+    /// expressed in SI units.</summary>
     public Scalar ToScalar() => new(Magnitude);
-    /// <summary>Converts the <see cref="GravitationalAcceleration"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(GravitationalAcceleration x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="GravitationalAcceleration"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="GravitationalAcceleration"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static GravitationalAcceleration FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="GravitationalAcceleration"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="GravitationalAcceleration"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static explicit operator GravitationalAcceleration(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="GravitationalAcceleration"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="GravitationalAcceleration"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static GravitationalAcceleration FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="GravitationalAcceleration"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="GravitationalAcceleration"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator GravitationalAcceleration(Scalar x) => FromScalar(x);
 }

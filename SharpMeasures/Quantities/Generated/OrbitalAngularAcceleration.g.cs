@@ -29,7 +29,8 @@ using System;
 /// </code>
 /// </item>
 /// </list>
-/// The magnitude of the measure can be retrieved using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfAngularAcceleration"/>.
+/// The magnitude of the <see cref="OrbitalAngularAcceleration"/> can be retrieved in the desired <see cref="UnitOfAngularAcceleration"/> using pre-defined properties,
+/// such as <see cref="RadiansPerSecondSquared"/>
 /// </para>
 /// </summary>
 /// <remarks>
@@ -41,7 +42,7 @@ using System;
 /// </item>
 /// <item>
 /// <term><see cref="SpinAngularAcceleration"/></term>
-/// <description>Describes the angular acceleration of an object about the internal center of rotation.</description>
+/// <description>Describes the <see cref="AngularAcceleration"/> of an object about the internal center of rotation.</description>
 /// </item>
 /// </list>
 /// </remarks>
@@ -63,13 +64,13 @@ public readonly partial record struct OrbitalAngularAcceleration :
     /// <summary>The <see cref="OrbitalAngularAcceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularAcceleration.RadianPerSecondSquared"/>.</summary>
     public static OrbitalAngularAcceleration OneRadianPerSecondSquared { get; } = new(1, UnitOfAngularAcceleration.RadianPerSecondSquared);
 
-    /// <summary>The magnitude of the <see cref="OrbitalAngularAcceleration"/> measure, in SI units.</summary>
-    /// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="OrbitalAngularAcceleration.InRadiansPerSecondSquared"/>.
-    /// <para>This value should only be used (to maximize efficiency) when implementing mathematical operations with other quantities.</para></remarks>
+    /// <summary>The magnitude of the <see cref="OrbitalAngularAcceleration"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAngularAcceleration)"/> or a pre-defined property
+    /// - such as <see cref="RadiansPerSecondSquared"/>.</remarks>
     public double Magnitude { get; init; }
 
-    /// <summary>Constructs a new <see cref="OrbitalAngularAcceleration"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfAngularAcceleration"/> <paramref name="unitOfAngularAcceleration"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="OrbitalAngularAcceleration"/>, in <see cref="UnitOfAngularAcceleration"/> <paramref name="unitOfAngularAcceleration"/>.</param>
+    /// <summary>Constructs a new <see cref="OrbitalAngularAcceleration"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfAngularAcceleration"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="OrbitalAngularAcceleration"/>, expressed in <paramref name="unitOfAngularAcceleration"/>.</param>
     /// <param name="unitOfAngularAcceleration">The <see cref="UnitOfAngularAcceleration"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring constructing instances according to the following:
     /// <list type="bullet">
@@ -81,8 +82,8 @@ public readonly partial record struct OrbitalAngularAcceleration :
     /// </list>
     /// </remarks>
     public OrbitalAngularAcceleration(Scalar magnitude, UnitOfAngularAcceleration unitOfAngularAcceleration) : this(magnitude.Magnitude, unitOfAngularAcceleration) { }
-    /// <summary>Constructs a new <see cref="OrbitalAngularAcceleration"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfAngularAcceleration"/> <paramref name="unitOfAngularAcceleration"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="OrbitalAngularAcceleration"/>, in <see cref="UnitOfAngularAcceleration"/> <paramref name="unitOfAngularAcceleration"/>.</param>
+    /// <summary>Constructs a new <see cref="OrbitalAngularAcceleration"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfAngularAcceleration"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="OrbitalAngularAcceleration"/>, expressed in <paramref name="unitOfAngularAcceleration"/>.</param>
     /// <param name="unitOfAngularAcceleration">The <see cref="UnitOfAngularAcceleration"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring cosntructing instances according to the following:
     /// <list type="bullet">
@@ -94,13 +95,13 @@ public readonly partial record struct OrbitalAngularAcceleration :
     /// </list>
     /// </remarks>
     public OrbitalAngularAcceleration(double magnitude, UnitOfAngularAcceleration unitOfAngularAcceleration) : this(magnitude * unitOfAngularAcceleration.Factor) { }
-    /// <summary>Constructs a new <see cref="OrbitalAngularAcceleration"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="OrbitalAngularAcceleration"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="OrbitalAngularAcceleration"/>.</param>
-    /// <remarks>Consider preffering a constructor that requires a <see cref="UnitOfAngularAcceleration"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="OrbitalAngularAcceleration(Scalar, UnitOfAngularAcceleration)"/>.</remarks>
     public OrbitalAngularAcceleration(Scalar magnitude) : this(magnitude.Magnitude) { }
-    /// <summary>Constructs a new <see cref="OrbitalAngularAcceleration"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="OrbitalAngularAcceleration"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="OrbitalAngularAcceleration"/>.</param>
-    /// <remarks>Consider preferring a constructor that requires a <see cref="UnitOfAngularAcceleration"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="OrbitalAngularAcceleration(double, UnitOfAngularAcceleration)"/>.</remarks>
     public OrbitalAngularAcceleration(double magnitude)
     {
         Magnitude = magnitude;
@@ -111,8 +112,8 @@ public readonly partial record struct OrbitalAngularAcceleration :
     /// <summary>Converts the <see cref="OrbitalAngularAcceleration"/> to an instance of the associated quantity <see cref="SpinAngularAcceleration"/>, of equal magnitude.</summary>
     public SpinAngularAcceleration AsSpinAngularAcceleration => new(Magnitude);
 
-    /// <summary>Retrieves the magnitude of the <see cref="OrbitalAngularAcceleration"/>, expressed in unit <see cref="UnitOfAngularAcceleration.RadianPerSecondSquared"/>.</summary>
-    public Scalar InRadiansPerSecondSquared => InUnit(UnitOfAngularAcceleration.RadianPerSecondSquared);
+    /// <summary>Retrieves the magnitude of the <see cref="OrbitalAngularAcceleration"/>, expressed in <see cref="UnitOfAngularAcceleration.RadianPerSecondSquared"/>.</summary>
+    public Scalar RadiansPerSecondSquared => InUnit(UnitOfAngularAcceleration.RadianPerSecondSquared);
 
     /// <summary>Indicates whether the magnitude of the <see cref="OrbitalAngularAcceleration"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -142,16 +143,16 @@ public readonly partial record struct OrbitalAngularAcceleration :
 
     /// <inheritdoc/>
     public int CompareTo(OrbitalAngularAcceleration other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="OrbitalAngularAcceleration"/>, and the SI base unit of the quantity.</summary>
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="OrbitalAngularAcceleration"/> (in SI units), and the SI base unit of the quantity.</summary>
     public override string ToString() => $"{Magnitude} [rad / s^2]";
 
-    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="OrbitalAngularAcceleration"/>, expressed in <see cref="UnitOfAngularAcceleration"/>
-    /// <paramref name="unitOfAngularAcceleration"/>.</summary>
+    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="OrbitalAngularAcceleration"/>,
+    /// expressed in <paramref name="unitOfAngularAcceleration"/>.</summary>
     /// <param name="unitOfAngularAcceleration">The <see cref="UnitOfAngularAcceleration"/> in which the magnitude is expressed.</param>
     public Scalar InUnit(UnitOfAngularAcceleration unitOfAngularAcceleration) => InUnit(this, unitOfAngularAcceleration);
-    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="OrbitalAngularAcceleration"/>, expressed in <see cref="UnitOfAngularAcceleration"/>
-    /// <paramref name="unitOfAngularAcceleration"/>.</summary>
-    /// <param name="orbitalAngularAcceleration">The <see cref="OrbitalAngularAcceleration"/> to be expressed in <see cref="UnitOfAngularAcceleration"/> <paramref name="unitOfAngularAcceleration"/>.</param>
+    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="OrbitalAngularAcceleration"/>,
+    /// expressed in <paramref name="unitOfAngularAcceleration"/>.</summary>
+    /// <param name="orbitalAngularAcceleration">The <see cref="OrbitalAngularAcceleration"/> to be expressed in <paramref name="unitOfAngularAcceleration"/>.</param>
     /// <param name="unitOfAngularAcceleration">The <see cref="UnitOfAngularAcceleration"/> in which the magnitude is expressed.</param>
     private static Scalar InUnit(OrbitalAngularAcceleration orbitalAngularAcceleration, UnitOfAngularAcceleration unitOfAngularAcceleration) => new(orbitalAngularAcceleration.Magnitude / unitOfAngularAcceleration.Factor);
 
@@ -187,7 +188,7 @@ public readonly partial record struct OrbitalAngularAcceleration :
     /// <summary>Divides the <see cref="OrbitalAngularAcceleration"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="OrbitalAngularAcceleration"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="OrbitalAngularAcceleration"/> <paramref name="x"/> is divded.</param>
+    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="OrbitalAngularAcceleration"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(OrbitalAngularAcceleration x, Unhandled y) => x.Divide(y);
 
     /// <summary>Produces a <see cref="OrbitalAngularAcceleration"/>, with magnitude equal to the remainder from division of the original
@@ -246,35 +247,35 @@ public readonly partial record struct OrbitalAngularAcceleration :
     /// <param name="y">This value is used to divide the <see cref="OrbitalAngularAcceleration"/> <paramref name="x"/>.</param>
     public static OrbitalAngularAcceleration operator /(OrbitalAngularAcceleration x, Scalar y) => x.Divide(y);
 
-    /// <summary>Multiplies the <see cref="OrbitalAngularAcceleration"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which multiplication is done.</typeparam>
-    /// <param name="factor">The factor by which the <see cref="OrbitalAngularAcceleration"/> is multiplied.</param>
-    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
-    /// <summary>Divides the <see cref="OrbitalAngularAcceleration"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which division is done.</typeparam>
-    /// <param name="divisor">The divisor by which the <see cref="OrbitalAngularAcceleration"/> is divided.</param>
-    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    /// <inheritdoc/>
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(Magnitude * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+        where TQuotientScalarQuantity : IScalarQuantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(Magnitude / divisor.Magnitude);
     /// <summary>Multiples the <see cref="OrbitalAngularAcceleration"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="OrbitalAngularAcceleration"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="OrbitalAngularAcceleration"/> <paramref name="x"/>.</param>
-    /// <remarks>To maximize performance, prefer <see cref="OrbitalAngularAcceleration.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator *(OrbitalAngularAcceleration x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    public static Unhandled operator *(OrbitalAngularAcceleration x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
     /// <summary>Divides the <see cref="OrbitalAngularAcceleration"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="OrbitalAngularAcceleration"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="OrbitalAngularAcceleration"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To maximize performance, prefer <see cref="OrbitalAngularAcceleration.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator /(OrbitalAngularAcceleration x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    public static Unhandled operator /(OrbitalAngularAcceleration x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
     /// <summary>Multiplies the <see cref="OrbitalAngularAcceleration"/> with the <see cref="Vector3"/> <paramref name="vector"/> to produce a <see cref="OrbitalAngularAcceleration3"/>.</summary>
     /// <param name="vector">This <see cref="Vector3"/> is multiplied by the <see cref="OrbitalAngularAcceleration"/>.</param>
     public OrbitalAngularAcceleration3 Multiply(Vector3 vector) => new(vector * Magnitude);
-    /// <summary>Multiplies the <see cref="OrbitalAngularAcceleration"/> with the <see cref="ValueTuple"/> <paramref name="components"/> to produce a <see cref="OrbitalAngularAcceleration3"/>.</summary>
-    /// <param name="components">This <see cref="ValueTuple"/> is multiplied by the <see cref="OrbitalAngularAcceleration"/>.</param>
+    /// <summary>Multiplies the <see cref="OrbitalAngularAcceleration"/> with the values of <paramref name="components"/> to produce a <see cref="OrbitalAngularAcceleration3"/>.</summary>
+    /// <param name="components">These values are multiplied by the <see cref="OrbitalAngularAcceleration"/>.</param>
     public OrbitalAngularAcceleration3 Multiply((double x, double y, double z) components) => Multiply(new Vector3(components));
-    /// <summary>Multiplies the <see cref="OrbitalAngularAcceleration"/> with the <see cref="ValueTuple"/> <paramref name="components"/> to produce a <see cref="OrbitalAngularAcceleration3"/>.</summary>
-    /// <param name="components">This <see cref="ValueTuple"/> is multiplied by the <see cref="OrbitalAngularAcceleration"/>.</param>
+    /// <summary>Multiplies the <see cref="OrbitalAngularAcceleration"/> with the values of <paramref name="components"/> to produce a <see cref="OrbitalAngularAcceleration3"/>.</summary>
+    /// <param name="components">These values are multiplied by the <see cref="OrbitalAngularAcceleration"/>.</param>
     public OrbitalAngularAcceleration3 Multiply((Scalar x, Scalar y, Scalar z) components) => Multiply(new Vector3(components));
     /// <summary>Multiplies the <see cref="OrbitalAngularAcceleration"/> <paramref name="a"/> with the <see cref="Vector3"/> <paramref name="b"/> to produce a <see cref="OrbitalAngularAcceleration3"/>.</summary>
     /// <param name="a">This <see cref="OrbitalAngularAcceleration"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
@@ -284,21 +285,21 @@ public readonly partial record struct OrbitalAngularAcceleration :
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="OrbitalAngularAcceleration"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="OrbitalAngularAcceleration"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
     public static OrbitalAngularAcceleration3 operator *(Vector3 a, OrbitalAngularAcceleration b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="OrbitalAngularAcceleration"/> <paramref name="a"/> with the <see cref="ValueTuple"/> <paramref name="b"/> to produce a <see cref="OrbitalAngularAcceleration3"/>.</summary>
-    /// <param name="a">This <see cref="OrbitalAngularAcceleration"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="ValueTuple"/> is multiplied by the <see cref="OrbitalAngularAcceleration"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="OrbitalAngularAcceleration"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="OrbitalAngularAcceleration3"/>.</summary>
+    /// <param name="a">This <see cref="OrbitalAngularAcceleration"/> is multiplied by the values of <paramref name="b"/>.</param>
+    /// <param name="b">These values are multiplied by the <see cref="OrbitalAngularAcceleration"/> <paramref name="a"/>.</param>
     public static OrbitalAngularAcceleration3 operator *(OrbitalAngularAcceleration a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="OrbitalAngularAcceleration"/> <parmref name="b"/> with the <see cref="ValueTuple"/> <paramref name="a"/> to produce a <see cref="OrbitalAngularAcceleration3"/>.</summary>
-    /// <param name="a">This <see cref="ValueTuple"/> is multiplied by the <see cref="OrbitalAngularAcceleration"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="OrbitalAngularAcceleration"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="OrbitalAngularAcceleration"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="OrbitalAngularAcceleration3"/>.</summary>
+    /// <param name="a">These values are multiplied by the <see cref="OrbitalAngularAcceleration"/> <paramref name="b"/>.</param>
+    /// <param name="b">This <see cref="OrbitalAngularAcceleration"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static OrbitalAngularAcceleration3 operator *((double x, double y, double z) a, OrbitalAngularAcceleration b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="OrbitalAngularAcceleration"/> <paramref name="a"/> with the <see cref="ValueTuple"/> <paramref name="b"/> to produce a <see cref="OrbitalAngularAcceleration3"/>.</summary>
-    /// <param name="a">This <see cref="OrbitalAngularAcceleration"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="ValueTuple"/> is multiplied by the <see cref="OrbitalAngularAcceleration"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="OrbitalAngularAcceleration"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="OrbitalAngularAcceleration3"/>.</summary>
+    /// <param name="a">This <see cref="OrbitalAngularAcceleration"/> is multiplied by the values of <paramref name="b"/>.</param>
+    /// <param name="b">These values are multiplied by the <see cref="OrbitalAngularAcceleration"/> <paramref name="a"/>.</param>
     public static OrbitalAngularAcceleration3 operator *(OrbitalAngularAcceleration a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="OrbitalAngularAcceleration"/> <parmref name="b"/> with the <see cref="ValueTuple"/> <paramref name="a"/> to produce a <see cref="OrbitalAngularAcceleration3"/>.</summary>
-    /// <param name="a">This <see cref="ValueTuple"/> is multiplied by the <see cref="OrbitalAngularAcceleration"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="OrbitalAngularAcceleration"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="OrbitalAngularAcceleration"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="OrbitalAngularAcceleration3"/>.</summary>
+    /// <param name="a">These values are multiplied by the <see cref="OrbitalAngularAcceleration"/> <paramref name="b"/>.</param>
+    /// <param name="b">This <see cref="OrbitalAngularAcceleration"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static OrbitalAngularAcceleration3 operator *((Scalar x, Scalar y, Scalar z) a, OrbitalAngularAcceleration b) => b.Multiply(a);
 
     /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
@@ -318,23 +319,28 @@ public readonly partial record struct OrbitalAngularAcceleration :
     /// <param name="y"><paramref name="x"/> is compared against this value.</param>
     public static bool operator >=(OrbitalAngularAcceleration x, OrbitalAngularAcceleration y) => x.Magnitude >= y.Magnitude;
 
-    /// <summary>Converts the <see cref="OrbitalAngularAcceleration"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
+    /// <summary>Converts the <see cref="OrbitalAngularAcceleration"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public double ToDouble() => Magnitude;
-    /// <summary>Converts the <see cref="OrbitalAngularAcceleration"/> to a <see cref="double"/> based on the magnitude of the <see cref="OrbitalAngularAcceleration"/> <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public static implicit operator double(OrbitalAngularAcceleration x) => x.ToDouble();
 
-    /// <summary>Converts the <see cref="OrbitalAngularAcceleration"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts the <see cref="OrbitalAngularAcceleration"/> to the <see cref="Scalar"/> of equivalent magnitude, when
+    /// expressed in SI units.</summary>
     public Scalar ToScalar() => new(Magnitude);
-    /// <summary>Converts the <see cref="OrbitalAngularAcceleration"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(OrbitalAngularAcceleration x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="OrbitalAngularAcceleration"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="OrbitalAngularAcceleration"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static OrbitalAngularAcceleration FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="OrbitalAngularAcceleration"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="OrbitalAngularAcceleration"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static explicit operator OrbitalAngularAcceleration(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="OrbitalAngularAcceleration"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="OrbitalAngularAcceleration"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static OrbitalAngularAcceleration FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="OrbitalAngularAcceleration"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="OrbitalAngularAcceleration"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator OrbitalAngularAcceleration(Scalar x) => FromScalar(x);
 }

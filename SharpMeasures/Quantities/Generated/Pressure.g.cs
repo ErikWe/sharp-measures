@@ -22,7 +22,8 @@ using System;
 /// </code>
 /// </item>
 /// </list>
-/// The magnitude of the measure can be retrieved using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfPressure"/>.
+/// The magnitude of the <see cref="Pressure"/> can be retrieved in the desired <see cref="UnitOfPressure"/> using pre-defined properties,
+/// such as <see cref="Pascals"/>.
 /// </para>
 /// </summary>
 public readonly partial record struct Pressure :
@@ -48,13 +49,13 @@ public readonly partial record struct Pressure :
     /// <summary>The <see cref="Pressure"/> with magnitude 1, when expressed in unit <see cref="UnitOfPressure.PoundForcePerSquareInch"/>.</summary>
     public static Pressure OnePoundForcePerSquareInch { get; } = new(1, UnitOfPressure.PoundForcePerSquareInch);
 
-    /// <summary>The magnitude of the <see cref="Pressure"/> measure, in SI units.</summary>
-    /// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="Pressure.InPascals"/>.
-    /// <para>This value should only be used (to maximize efficiency) when implementing mathematical operations with other quantities.</para></remarks>
+    /// <summary>The magnitude of the <see cref="Pressure"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfPressure)"/> or a pre-defined property
+    /// - such as <see cref="Pascals"/>.</remarks>
     public double Magnitude { get; init; }
 
-    /// <summary>Constructs a new <see cref="Pressure"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfPressure"/> <paramref name="unitOfPressure"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Pressure"/>, in <see cref="UnitOfPressure"/> <paramref name="unitOfPressure"/>.</param>
+    /// <summary>Constructs a new <see cref="Pressure"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfPressure"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Pressure"/>, expressed in <paramref name="unitOfPressure"/>.</param>
     /// <param name="unitOfPressure">The <see cref="UnitOfPressure"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring constructing instances according to the following:
     /// <list type="bullet">
@@ -66,8 +67,8 @@ public readonly partial record struct Pressure :
     /// </list>
     /// </remarks>
     public Pressure(Scalar magnitude, UnitOfPressure unitOfPressure) : this(magnitude.Magnitude, unitOfPressure) { }
-    /// <summary>Constructs a new <see cref="Pressure"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfPressure"/> <paramref name="unitOfPressure"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Pressure"/>, in <see cref="UnitOfPressure"/> <paramref name="unitOfPressure"/>.</param>
+    /// <summary>Constructs a new <see cref="Pressure"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfPressure"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Pressure"/>, expressed in <paramref name="unitOfPressure"/>.</param>
     /// <param name="unitOfPressure">The <see cref="UnitOfPressure"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring cosntructing instances according to the following:
     /// <list type="bullet">
@@ -79,27 +80,27 @@ public readonly partial record struct Pressure :
     /// </list>
     /// </remarks>
     public Pressure(double magnitude, UnitOfPressure unitOfPressure) : this(magnitude * unitOfPressure.Factor) { }
-    /// <summary>Constructs a new <see cref="Pressure"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Pressure"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Pressure"/>.</param>
-    /// <remarks>Consider preffering a constructor that requires a <see cref="UnitOfPressure"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Pressure(Scalar, UnitOfPressure)"/>.</remarks>
     public Pressure(Scalar magnitude) : this(magnitude.Magnitude) { }
-    /// <summary>Constructs a new <see cref="Pressure"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Pressure"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Pressure"/>.</param>
-    /// <remarks>Consider preferring a constructor that requires a <see cref="UnitOfPressure"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Pressure(double, UnitOfPressure)"/>.</remarks>
     public Pressure(double magnitude)
     {
         Magnitude = magnitude;
     }
 
-    /// <summary>Retrieves the magnitude of the <see cref="Pressure"/>, expressed in unit <see cref="UnitOfPressure.Pascal"/>.</summary>
-    public Scalar InPascals => InUnit(UnitOfPressure.Pascal);
-    /// <summary>Retrieves the magnitude of the <see cref="Pressure"/>, expressed in unit <see cref="UnitOfPressure.Kilopascal"/>.</summary>
-    public Scalar InKilopascals => InUnit(UnitOfPressure.Kilopascal);
+    /// <summary>Retrieves the magnitude of the <see cref="Pressure"/>, expressed in <see cref="UnitOfPressure.Pascal"/>.</summary>
+    public Scalar Pascals => InUnit(UnitOfPressure.Pascal);
+    /// <summary>Retrieves the magnitude of the <see cref="Pressure"/>, expressed in <see cref="UnitOfPressure.Kilopascal"/>.</summary>
+    public Scalar Kilopascals => InUnit(UnitOfPressure.Kilopascal);
 
-    /// <summary>Retrieves the magnitude of the <see cref="Pressure"/>, expressed in unit <see cref="UnitOfPressure.Bar"/>.</summary>
-    public Scalar InBars => InUnit(UnitOfPressure.Bar);
-    /// <summary>Retrieves the magnitude of the <see cref="Pressure"/>, expressed in unit <see cref="UnitOfPressure.PoundForcePerSquareInch"/>.</summary>
-    public Scalar InPoundsForcePerSquareInch => InUnit(UnitOfPressure.PoundForcePerSquareInch);
+    /// <summary>Retrieves the magnitude of the <see cref="Pressure"/>, expressed in <see cref="UnitOfPressure.Bar"/>.</summary>
+    public Scalar Bars => InUnit(UnitOfPressure.Bar);
+    /// <summary>Retrieves the magnitude of the <see cref="Pressure"/>, expressed in <see cref="UnitOfPressure.PoundForcePerSquareInch"/>.</summary>
+    public Scalar PoundsForcePerSquareInch => InUnit(UnitOfPressure.PoundForcePerSquareInch);
 
     /// <summary>Indicates whether the magnitude of the <see cref="Pressure"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -129,16 +130,16 @@ public readonly partial record struct Pressure :
 
     /// <inheritdoc/>
     public int CompareTo(Pressure other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="Pressure"/>, and the SI base unit of the quantity.</summary>
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="Pressure"/> (in SI units), and the SI base unit of the quantity.</summary>
     public override string ToString() => $"{Magnitude} [Pa]";
 
-    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Pressure"/>, expressed in <see cref="UnitOfPressure"/>
-    /// <paramref name="unitOfPressure"/>.</summary>
+    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Pressure"/>,
+    /// expressed in <paramref name="unitOfPressure"/>.</summary>
     /// <param name="unitOfPressure">The <see cref="UnitOfPressure"/> in which the magnitude is expressed.</param>
     public Scalar InUnit(UnitOfPressure unitOfPressure) => InUnit(this, unitOfPressure);
-    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Pressure"/>, expressed in <see cref="UnitOfPressure"/>
-    /// <paramref name="unitOfPressure"/>.</summary>
-    /// <param name="pressure">The <see cref="Pressure"/> to be expressed in <see cref="UnitOfPressure"/> <paramref name="unitOfPressure"/>.</param>
+    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Pressure"/>,
+    /// expressed in <paramref name="unitOfPressure"/>.</summary>
+    /// <param name="pressure">The <see cref="Pressure"/> to be expressed in <paramref name="unitOfPressure"/>.</param>
     /// <param name="unitOfPressure">The <see cref="UnitOfPressure"/> in which the magnitude is expressed.</param>
     private static Scalar InUnit(Pressure pressure, UnitOfPressure unitOfPressure) => new(pressure.Magnitude / unitOfPressure.Factor);
 
@@ -174,7 +175,7 @@ public readonly partial record struct Pressure :
     /// <summary>Divides the <see cref="Pressure"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Pressure"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Pressure"/> <paramref name="x"/> is divded.</param>
+    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Pressure"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(Pressure x, Unhandled y) => x.Divide(y);
 
     /// <summary>Produces a <see cref="Pressure"/>, with magnitude equal to the remainder from division of the original
@@ -233,26 +234,26 @@ public readonly partial record struct Pressure :
     /// <param name="y">This value is used to divide the <see cref="Pressure"/> <paramref name="x"/>.</param>
     public static Pressure operator /(Pressure x, Scalar y) => x.Divide(y);
 
-    /// <summary>Multiplies the <see cref="Pressure"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which multiplication is done.</typeparam>
-    /// <param name="factor">The factor by which the <see cref="Pressure"/> is multiplied.</param>
-    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
-    /// <summary>Divides the <see cref="Pressure"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which division is done.</typeparam>
-    /// <param name="divisor">The divisor by which the <see cref="Pressure"/> is divided.</param>
-    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    /// <inheritdoc/>
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(Magnitude * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+        where TQuotientScalarQuantity : IScalarQuantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(Magnitude / divisor.Magnitude);
     /// <summary>Multiples the <see cref="Pressure"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Pressure"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Pressure"/> <paramref name="x"/>.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Pressure.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator *(Pressure x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    public static Unhandled operator *(Pressure x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
     /// <summary>Divides the <see cref="Pressure"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Pressure"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="Pressure"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Pressure.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator /(Pressure x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    public static Unhandled operator /(Pressure x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
     /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
     /// <param name="x"><paramref name="y"/> is compared against this value.</param>
@@ -271,23 +272,28 @@ public readonly partial record struct Pressure :
     /// <param name="y"><paramref name="x"/> is compared against this value.</param>
     public static bool operator >=(Pressure x, Pressure y) => x.Magnitude >= y.Magnitude;
 
-    /// <summary>Converts the <see cref="Pressure"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
+    /// <summary>Converts the <see cref="Pressure"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public double ToDouble() => Magnitude;
-    /// <summary>Converts the <see cref="Pressure"/> to a <see cref="double"/> based on the magnitude of the <see cref="Pressure"/> <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public static implicit operator double(Pressure x) => x.ToDouble();
 
-    /// <summary>Converts the <see cref="Pressure"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts the <see cref="Pressure"/> to the <see cref="Scalar"/> of equivalent magnitude, when
+    /// expressed in SI units.</summary>
     public Scalar ToScalar() => new(Magnitude);
-    /// <summary>Converts the <see cref="Pressure"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(Pressure x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Pressure"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Pressure"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static Pressure FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Pressure"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Pressure"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static explicit operator Pressure(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Pressure"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Pressure"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static Pressure FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Pressure"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Pressure"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Pressure(Scalar x) => FromScalar(x);
 }

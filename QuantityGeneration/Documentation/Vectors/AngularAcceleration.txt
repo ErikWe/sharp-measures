@@ -1,0 +1,30 @@
+﻿#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(quantity, dimensionality, component, unitName, singularUnits, pluralUnits)
+/// <summary>A measure of the vector quantity <see cref="#Param:quantity#"/>, of dimensionality #Document:LowerCaseText(#Param:dimensionality#)#,
+/// describing change in <see cref="AngularVelocity#Param:dimensionality#"/> over <see cref="Time"/>. The quantity is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [rad / s²].
+#Document:HeaderSummaryAssociated(#Param:quantity#, #Param:dimensionality#, #Param:component#, #Param:unitName#, #Param:singularUnits#, #Param:pluralUnits#)#
+/// </summary>
+/// <remarks>
+/// <see cref="#Param:quantity#"/> is closely related to the following quantities:
+/// <list type="bullet">
+/// <item>
+/// <term><see cref="OrbitalAngularAcceleration#Param:dimensionality#"/></term>
+/// <description>Describes the <see cref="#Param:quantity#"/> of an object about an external point.</description>
+/// </item>
+/// <item>
+/// <term><see cref="SpinAngularAcceleration#Param:dimensionality#"/></term>
+/// <description>Describes the <see cref="#Param:quantity#"/> of an object about the internal center of rotation.</description>
+/// </item>
+/// </list>
+/// </remarks>
+#/
+
+#Define:ExampleDerivedMethod(quantity, dimensionality, variable)#
+<see cref="#Param:quantity#"/> #Param:variable# = <see cref="#Param:quantity#.From(AngularVelocity#Param:dimensionality#, Time)"/>;
+#/Define:ExampleDerivedMethod#
+
+#Define:ExampleFromAssociated(quantity, dimensionality, variable)#
+<see cref="#Param:quantity#"/> #Param:variable# = <see cref="SpinAngularAcceleration#Param:dimensionality#.As#Param:quantity#()"/>;
+#/Define:ExampleFromAssociated#

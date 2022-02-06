@@ -22,7 +22,8 @@ using System;
 /// </code>
 /// </item>
 /// </list>
-/// The magnitude of the measure can be retrieved using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfMass"/>.
+/// The magnitude of the <see cref="Mass"/> can be retrieved in the desired <see cref="UnitOfMass"/> using pre-defined properties,
+/// such as <see cref="Kilograms"/>.
 /// </para>
 /// </summary>
 public readonly partial record struct Mass :
@@ -54,13 +55,13 @@ public readonly partial record struct Mass :
     /// <summary>The <see cref="Mass"/> with magnitude 1, when expressed in unit <see cref="UnitOfMass.Pound"/>.</summary>
     public static Mass OnePound { get; } = new(1, UnitOfMass.Pound);
 
-    /// <summary>The magnitude of the <see cref="Mass"/> measure, in SI units.</summary>
-    /// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="Mass.InMilligrams"/>.
-    /// <para>This value should only be used (to maximize efficiency) when implementing mathematical operations with other quantities.</para></remarks>
+    /// <summary>The magnitude of the <see cref="Mass"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfMass)"/> or a pre-defined property
+    /// - such as <see cref="Milligrams"/>.</remarks>
     public double Magnitude { get; init; }
 
-    /// <summary>Constructs a new <see cref="Mass"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfMass"/> <paramref name="unitOfMass"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Mass"/>, in <see cref="UnitOfMass"/> <paramref name="unitOfMass"/>.</param>
+    /// <summary>Constructs a new <see cref="Mass"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfMass"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Mass"/>, expressed in <paramref name="unitOfMass"/>.</param>
     /// <param name="unitOfMass">The <see cref="UnitOfMass"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring constructing instances according to the following:
     /// <list type="bullet">
@@ -72,8 +73,8 @@ public readonly partial record struct Mass :
     /// </list>
     /// </remarks>
     public Mass(Scalar magnitude, UnitOfMass unitOfMass) : this(magnitude.Magnitude, unitOfMass) { }
-    /// <summary>Constructs a new <see cref="Mass"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfMass"/> <paramref name="unitOfMass"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Mass"/>, in <see cref="UnitOfMass"/> <paramref name="unitOfMass"/>.</param>
+    /// <summary>Constructs a new <see cref="Mass"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfMass"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Mass"/>, expressed in <paramref name="unitOfMass"/>.</param>
     /// <param name="unitOfMass">The <see cref="UnitOfMass"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring cosntructing instances according to the following:
     /// <list type="bullet">
@@ -85,33 +86,33 @@ public readonly partial record struct Mass :
     /// </list>
     /// </remarks>
     public Mass(double magnitude, UnitOfMass unitOfMass) : this(magnitude * unitOfMass.Factor) { }
-    /// <summary>Constructs a new <see cref="Mass"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Mass"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Mass"/>.</param>
-    /// <remarks>Consider preffering a constructor that requires a <see cref="UnitOfMass"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Mass(Scalar, UnitOfMass)"/>.</remarks>
     public Mass(Scalar magnitude) : this(magnitude.Magnitude) { }
-    /// <summary>Constructs a new <see cref="Mass"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Mass"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Mass"/>.</param>
-    /// <remarks>Consider preferring a constructor that requires a <see cref="UnitOfMass"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Mass(double, UnitOfMass)"/>.</remarks>
     public Mass(double magnitude)
     {
         Magnitude = magnitude;
     }
 
-    /// <summary>Retrieves the magnitude of the <see cref="Mass"/>, expressed in unit <see cref="UnitOfMass.Milligram"/>.</summary>
-    public Scalar InMilligrams => InUnit(UnitOfMass.Milligram);
-    /// <summary>Retrieves the magnitude of the <see cref="Mass"/>, expressed in unit <see cref="UnitOfMass.Gram"/>.</summary>
-    public Scalar InGrams => InUnit(UnitOfMass.Gram);
-    /// <summary>Retrieves the magnitude of the <see cref="Mass"/>, expressed in unit <see cref="UnitOfMass.Hectogram"/>.</summary>
-    public Scalar InHectograms => InUnit(UnitOfMass.Hectogram);
-    /// <summary>Retrieves the magnitude of the <see cref="Mass"/>, expressed in unit <see cref="UnitOfMass.Kilogram"/>.</summary>
-    public Scalar InKilograms => InUnit(UnitOfMass.Kilogram);
-    /// <summary>Retrieves the magnitude of the <see cref="Mass"/>, expressed in unit <see cref="UnitOfMass.Tonne"/>.</summary>
-    public Scalar InTonnes => InUnit(UnitOfMass.Tonne);
+    /// <summary>Retrieves the magnitude of the <see cref="Mass"/>, expressed in <see cref="UnitOfMass.Milligram"/>.</summary>
+    public Scalar Milligrams => InUnit(UnitOfMass.Milligram);
+    /// <summary>Retrieves the magnitude of the <see cref="Mass"/>, expressed in <see cref="UnitOfMass.Gram"/>.</summary>
+    public Scalar Grams => InUnit(UnitOfMass.Gram);
+    /// <summary>Retrieves the magnitude of the <see cref="Mass"/>, expressed in <see cref="UnitOfMass.Hectogram"/>.</summary>
+    public Scalar Hectograms => InUnit(UnitOfMass.Hectogram);
+    /// <summary>Retrieves the magnitude of the <see cref="Mass"/>, expressed in <see cref="UnitOfMass.Kilogram"/>.</summary>
+    public Scalar Kilograms => InUnit(UnitOfMass.Kilogram);
+    /// <summary>Retrieves the magnitude of the <see cref="Mass"/>, expressed in <see cref="UnitOfMass.Tonne"/>.</summary>
+    public Scalar Tonnes => InUnit(UnitOfMass.Tonne);
 
-    /// <summary>Retrieves the magnitude of the <see cref="Mass"/>, expressed in unit <see cref="UnitOfMass.Ounce"/>.</summary>
-    public Scalar InOunces => InUnit(UnitOfMass.Ounce);
-    /// <summary>Retrieves the magnitude of the <see cref="Mass"/>, expressed in unit <see cref="UnitOfMass.Pound"/>.</summary>
-    public Scalar InPounds => InUnit(UnitOfMass.Pound);
+    /// <summary>Retrieves the magnitude of the <see cref="Mass"/>, expressed in <see cref="UnitOfMass.Ounce"/>.</summary>
+    public Scalar Ounces => InUnit(UnitOfMass.Ounce);
+    /// <summary>Retrieves the magnitude of the <see cref="Mass"/>, expressed in <see cref="UnitOfMass.Pound"/>.</summary>
+    public Scalar Pounds => InUnit(UnitOfMass.Pound);
 
     /// <summary>Indicates whether the magnitude of the <see cref="Mass"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -141,16 +142,16 @@ public readonly partial record struct Mass :
 
     /// <inheritdoc/>
     public int CompareTo(Mass other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="Mass"/>, and the SI base unit of the quantity.</summary>
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="Mass"/> (in SI units), and the SI base unit of the quantity.</summary>
     public override string ToString() => $"{Magnitude} [kg]";
 
-    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Mass"/>, expressed in <see cref="UnitOfMass"/>
-    /// <paramref name="unitOfMass"/>.</summary>
+    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Mass"/>,
+    /// expressed in <paramref name="unitOfMass"/>.</summary>
     /// <param name="unitOfMass">The <see cref="UnitOfMass"/> in which the magnitude is expressed.</param>
     public Scalar InUnit(UnitOfMass unitOfMass) => InUnit(this, unitOfMass);
-    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Mass"/>, expressed in <see cref="UnitOfMass"/>
-    /// <paramref name="unitOfMass"/>.</summary>
-    /// <param name="mass">The <see cref="Mass"/> to be expressed in <see cref="UnitOfMass"/> <paramref name="unitOfMass"/>.</param>
+    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Mass"/>,
+    /// expressed in <paramref name="unitOfMass"/>.</summary>
+    /// <param name="mass">The <see cref="Mass"/> to be expressed in <paramref name="unitOfMass"/>.</param>
     /// <param name="unitOfMass">The <see cref="UnitOfMass"/> in which the magnitude is expressed.</param>
     private static Scalar InUnit(Mass mass, UnitOfMass unitOfMass) => new(mass.Magnitude / unitOfMass.Factor);
 
@@ -186,7 +187,7 @@ public readonly partial record struct Mass :
     /// <summary>Divides the <see cref="Mass"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Mass"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Mass"/> <paramref name="x"/> is divded.</param>
+    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Mass"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(Mass x, Unhandled y) => x.Divide(y);
 
     /// <summary>Produces a <see cref="Mass"/>, with magnitude equal to the remainder from division of the original
@@ -245,26 +246,26 @@ public readonly partial record struct Mass :
     /// <param name="y">This value is used to divide the <see cref="Mass"/> <paramref name="x"/>.</param>
     public static Mass operator /(Mass x, Scalar y) => x.Divide(y);
 
-    /// <summary>Multiplies the <see cref="Mass"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which multiplication is done.</typeparam>
-    /// <param name="factor">The factor by which the <see cref="Mass"/> is multiplied.</param>
-    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
-    /// <summary>Divides the <see cref="Mass"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which division is done.</typeparam>
-    /// <param name="divisor">The divisor by which the <see cref="Mass"/> is divided.</param>
-    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    /// <inheritdoc/>
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(Magnitude * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+        where TQuotientScalarQuantity : IScalarQuantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(Magnitude / divisor.Magnitude);
     /// <summary>Multiples the <see cref="Mass"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Mass"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Mass"/> <paramref name="x"/>.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Mass.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator *(Mass x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    public static Unhandled operator *(Mass x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
     /// <summary>Divides the <see cref="Mass"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Mass"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="Mass"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Mass.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator /(Mass x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    public static Unhandled operator /(Mass x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
     /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
     /// <param name="x"><paramref name="y"/> is compared against this value.</param>
@@ -283,23 +284,28 @@ public readonly partial record struct Mass :
     /// <param name="y"><paramref name="x"/> is compared against this value.</param>
     public static bool operator >=(Mass x, Mass y) => x.Magnitude >= y.Magnitude;
 
-    /// <summary>Converts the <see cref="Mass"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
+    /// <summary>Converts the <see cref="Mass"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public double ToDouble() => Magnitude;
-    /// <summary>Converts the <see cref="Mass"/> to a <see cref="double"/> based on the magnitude of the <see cref="Mass"/> <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public static implicit operator double(Mass x) => x.ToDouble();
 
-    /// <summary>Converts the <see cref="Mass"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts the <see cref="Mass"/> to the <see cref="Scalar"/> of equivalent magnitude, when
+    /// expressed in SI units.</summary>
     public Scalar ToScalar() => new(Magnitude);
-    /// <summary>Converts the <see cref="Mass"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(Mass x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Mass"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Mass"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static Mass FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Mass"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Mass"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static explicit operator Mass(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Mass"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Mass"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static Mass FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Mass"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Mass"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Mass(Scalar x) => FromScalar(x);
 }

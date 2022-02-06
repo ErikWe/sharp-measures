@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Tests", "..\S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Benchmarks", "..\SharpMeasures.Benchmark\SharpMeasures.Benchmarks.csproj", "{C7A0D3F2-34FB-434D-963E-92D17D0090DE}"
 EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "QuantityGeneration", "..\QuantityGeneration\QuantityGeneration.njsproj", "{1530C596-09E1-4F57-A4DA-E13243385FF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C7A0D3F2-34FB-434D-963E-92D17D0090DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7A0D3F2-34FB-434D-963E-92D17D0090DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7A0D3F2-34FB-434D-963E-92D17D0090DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1530C596-09E1-4F57-A4DA-E13243385FF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1530C596-09E1-4F57-A4DA-E13243385FF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1530C596-09E1-4F57-A4DA-E13243385FF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1530C596-09E1-4F57-A4DA-E13243385FF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

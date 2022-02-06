@@ -21,7 +21,8 @@ using System;
 /// </code>
 /// </item>
 /// </list>
-/// The magnitude of the measure can be retrieved using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfPower"/>.
+/// The magnitude of the <see cref="Power"/> can be retrieved in the desired <see cref="UnitOfPower"/> using pre-defined properties,
+/// such as <see cref="Watts"/>.
 /// </para>
 /// </summary>
 public readonly partial record struct Power :
@@ -49,13 +50,13 @@ public readonly partial record struct Power :
     /// <summary>The <see cref="Power"/> with magnitude 1, when expressed in unit <see cref="UnitOfPower.Terawatt"/>.</summary>
     public static Power OneTerawatt { get; } = new(1, UnitOfPower.Terawatt);
 
-    /// <summary>The magnitude of the <see cref="Power"/> measure, in SI units.</summary>
-    /// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="Power.InWatts"/>.
-    /// <para>This value should only be used (to maximize efficiency) when implementing mathematical operations with other quantities.</para></remarks>
+    /// <summary>The magnitude of the <see cref="Power"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfPower)"/> or a pre-defined property
+    /// - such as <see cref="Watts"/>.</remarks>
     public double Magnitude { get; init; }
 
-    /// <summary>Constructs a new <see cref="Power"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfPower"/> <paramref name="unitOfPower"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Power"/>, in <see cref="UnitOfPower"/> <paramref name="unitOfPower"/>.</param>
+    /// <summary>Constructs a new <see cref="Power"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfPower"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Power"/>, expressed in <paramref name="unitOfPower"/>.</param>
     /// <param name="unitOfPower">The <see cref="UnitOfPower"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring constructing instances according to the following:
     /// <list type="bullet">
@@ -67,8 +68,8 @@ public readonly partial record struct Power :
     /// </list>
     /// </remarks>
     public Power(Scalar magnitude, UnitOfPower unitOfPower) : this(magnitude.Magnitude, unitOfPower) { }
-    /// <summary>Constructs a new <see cref="Power"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfPower"/> <paramref name="unitOfPower"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Power"/>, in <see cref="UnitOfPower"/> <paramref name="unitOfPower"/>.</param>
+    /// <summary>Constructs a new <see cref="Power"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfPower"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Power"/>, expressed in <paramref name="unitOfPower"/>.</param>
     /// <param name="unitOfPower">The <see cref="UnitOfPower"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring cosntructing instances according to the following:
     /// <list type="bullet">
@@ -80,28 +81,28 @@ public readonly partial record struct Power :
     /// </list>
     /// </remarks>
     public Power(double magnitude, UnitOfPower unitOfPower) : this(magnitude * unitOfPower.Factor) { }
-    /// <summary>Constructs a new <see cref="Power"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Power"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Power"/>.</param>
-    /// <remarks>Consider preffering a constructor that requires a <see cref="UnitOfPower"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Power(Scalar, UnitOfPower)"/>.</remarks>
     public Power(Scalar magnitude) : this(magnitude.Magnitude) { }
-    /// <summary>Constructs a new <see cref="Power"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Power"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Power"/>.</param>
-    /// <remarks>Consider preferring a constructor that requires a <see cref="UnitOfPower"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Power(double, UnitOfPower)"/>.</remarks>
     public Power(double magnitude)
     {
         Magnitude = magnitude;
     }
 
-    /// <summary>Retrieves the magnitude of the <see cref="Power"/>, expressed in unit <see cref="UnitOfPower.Watt"/>.</summary>
-    public Scalar InWatts => InUnit(UnitOfPower.Watt);
-    /// <summary>Retrieves the magnitude of the <see cref="Power"/>, expressed in unit <see cref="UnitOfPower.Kilowatt"/>.</summary>
-    public Scalar InKilowatts => InUnit(UnitOfPower.Kilowatt);
-    /// <summary>Retrieves the magnitude of the <see cref="Power"/>, expressed in unit <see cref="UnitOfPower.Megawatt"/>.</summary>
-    public Scalar InMegawatts => InUnit(UnitOfPower.Megawatt);
-    /// <summary>Retrieves the magnitude of the <see cref="Power"/>, expressed in unit <see cref="UnitOfPower.Gigawatt"/>.</summary>
-    public Scalar InGigawatts => InUnit(UnitOfPower.Gigawatt);
-    /// <summary>Retrieves the magnitude of the <see cref="Power"/>, expressed in unit <see cref="UnitOfPower.Terawatt"/>.</summary>
-    public Scalar InTerawatts => InUnit(UnitOfPower.Terawatt);
+    /// <summary>Retrieves the magnitude of the <see cref="Power"/>, expressed in <see cref="UnitOfPower.Watt"/>.</summary>
+    public Scalar Watts => InUnit(UnitOfPower.Watt);
+    /// <summary>Retrieves the magnitude of the <see cref="Power"/>, expressed in <see cref="UnitOfPower.Kilowatt"/>.</summary>
+    public Scalar Kilowatts => InUnit(UnitOfPower.Kilowatt);
+    /// <summary>Retrieves the magnitude of the <see cref="Power"/>, expressed in <see cref="UnitOfPower.Megawatt"/>.</summary>
+    public Scalar Megawatts => InUnit(UnitOfPower.Megawatt);
+    /// <summary>Retrieves the magnitude of the <see cref="Power"/>, expressed in <see cref="UnitOfPower.Gigawatt"/>.</summary>
+    public Scalar Gigawatts => InUnit(UnitOfPower.Gigawatt);
+    /// <summary>Retrieves the magnitude of the <see cref="Power"/>, expressed in <see cref="UnitOfPower.Terawatt"/>.</summary>
+    public Scalar Terawatts => InUnit(UnitOfPower.Terawatt);
 
     /// <summary>Indicates whether the magnitude of the <see cref="Power"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -131,16 +132,16 @@ public readonly partial record struct Power :
 
     /// <inheritdoc/>
     public int CompareTo(Power other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="Power"/>, and the SI base unit of the quantity.</summary>
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="Power"/> (in SI units), and the SI base unit of the quantity.</summary>
     public override string ToString() => $"{Magnitude} [W]";
 
-    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Power"/>, expressed in <see cref="UnitOfPower"/>
-    /// <paramref name="unitOfPower"/>.</summary>
+    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Power"/>,
+    /// expressed in <paramref name="unitOfPower"/>.</summary>
     /// <param name="unitOfPower">The <see cref="UnitOfPower"/> in which the magnitude is expressed.</param>
     public Scalar InUnit(UnitOfPower unitOfPower) => InUnit(this, unitOfPower);
-    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Power"/>, expressed in <see cref="UnitOfPower"/>
-    /// <paramref name="unitOfPower"/>.</summary>
-    /// <param name="power">The <see cref="Power"/> to be expressed in <see cref="UnitOfPower"/> <paramref name="unitOfPower"/>.</param>
+    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Power"/>,
+    /// expressed in <paramref name="unitOfPower"/>.</summary>
+    /// <param name="power">The <see cref="Power"/> to be expressed in <paramref name="unitOfPower"/>.</param>
     /// <param name="unitOfPower">The <see cref="UnitOfPower"/> in which the magnitude is expressed.</param>
     private static Scalar InUnit(Power power, UnitOfPower unitOfPower) => new(power.Magnitude / unitOfPower.Factor);
 
@@ -176,7 +177,7 @@ public readonly partial record struct Power :
     /// <summary>Divides the <see cref="Power"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Power"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Power"/> <paramref name="x"/> is divded.</param>
+    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Power"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(Power x, Unhandled y) => x.Divide(y);
 
     /// <summary>Produces a <see cref="Power"/>, with magnitude equal to the remainder from division of the original
@@ -235,26 +236,26 @@ public readonly partial record struct Power :
     /// <param name="y">This value is used to divide the <see cref="Power"/> <paramref name="x"/>.</param>
     public static Power operator /(Power x, Scalar y) => x.Divide(y);
 
-    /// <summary>Multiplies the <see cref="Power"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which multiplication is done.</typeparam>
-    /// <param name="factor">The factor by which the <see cref="Power"/> is multiplied.</param>
-    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
-    /// <summary>Divides the <see cref="Power"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which division is done.</typeparam>
-    /// <param name="divisor">The divisor by which the <see cref="Power"/> is divided.</param>
-    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    /// <inheritdoc/>
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(Magnitude * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+        where TQuotientScalarQuantity : IScalarQuantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(Magnitude / divisor.Magnitude);
     /// <summary>Multiples the <see cref="Power"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Power"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Power"/> <paramref name="x"/>.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Power.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator *(Power x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    public static Unhandled operator *(Power x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
     /// <summary>Divides the <see cref="Power"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Power"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="Power"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Power.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator /(Power x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    public static Unhandled operator /(Power x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
     /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
     /// <param name="x"><paramref name="y"/> is compared against this value.</param>
@@ -273,23 +274,28 @@ public readonly partial record struct Power :
     /// <param name="y"><paramref name="x"/> is compared against this value.</param>
     public static bool operator >=(Power x, Power y) => x.Magnitude >= y.Magnitude;
 
-    /// <summary>Converts the <see cref="Power"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
+    /// <summary>Converts the <see cref="Power"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public double ToDouble() => Magnitude;
-    /// <summary>Converts the <see cref="Power"/> to a <see cref="double"/> based on the magnitude of the <see cref="Power"/> <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public static implicit operator double(Power x) => x.ToDouble();
 
-    /// <summary>Converts the <see cref="Power"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts the <see cref="Power"/> to the <see cref="Scalar"/> of equivalent magnitude, when
+    /// expressed in SI units.</summary>
     public Scalar ToScalar() => new(Magnitude);
-    /// <summary>Converts the <see cref="Power"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(Power x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Power"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Power"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static Power FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Power"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Power"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static explicit operator Power(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Power"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Power"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static Power FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Power"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Power"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Power(Scalar x) => FromScalar(x);
 }

@@ -6,7 +6,7 @@ using System;
 
 /// <summary>A measure of the scalar quantity <see cref="MomentOfInertia"/>, describes the resistance to rotation of an object. This is similar to
 /// how <see cref="Mass"/> can be seen as the resistance to translation of an object. The quantity is expressed in <see cref="UnitOfMomentOfInertia"/>,
-/// with the SI unit being [kg * m^2].
+/// with the SI unit being [kg * m²].
 /// <para>
 /// New instances of <see cref="MomentOfInertia"/> can be constructed using pre-defined properties, prefixed with 'One', having magnitude 1 expressed
 /// in the desired <see cref="UnitOfMomentOfInertia"/>. Instances can also be produced by combining other quantities, either through mathematical operators
@@ -23,7 +23,8 @@ using System;
 /// </code>
 /// </item>
 /// </list>
-/// The magnitude of the measure can be retrieved using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfMomentOfInertia"/>.
+/// The magnitude of the <see cref="MomentOfInertia"/> can be retrieved in the desired <see cref="UnitOfMomentOfInertia"/> using pre-defined properties,
+/// such as <see cref="KilogramMetresSquared"/>.
 /// </para>
 /// </summary>
 public readonly partial record struct MomentOfInertia :
@@ -43,13 +44,13 @@ public readonly partial record struct MomentOfInertia :
     /// <summary>The <see cref="MomentOfInertia"/> with magnitude 1, when expressed in unit <see cref="UnitOfMomentOfInertia.KilogramMetreSquared"/>.</summary>
     public static MomentOfInertia OneKilogramMetreSquared { get; } = new(1, UnitOfMomentOfInertia.KilogramMetreSquared);
 
-    /// <summary>The magnitude of the <see cref="MomentOfInertia"/> measure, in SI units.</summary>
-    /// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="MomentOfInertia.InKilogramMetresSquared"/>.
-    /// <para>This value should only be used (to maximize efficiency) when implementing mathematical operations with other quantities.</para></remarks>
+    /// <summary>The magnitude of the <see cref="MomentOfInertia"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfMomentOfInertia)"/> or a pre-defined property
+    /// - such as <see cref="KilogramMetresSquared"/>.</remarks>
     public double Magnitude { get; init; }
 
-    /// <summary>Constructs a new <see cref="MomentOfInertia"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfMomentOfInertia"/> <paramref name="unitOfMomentOfInertia"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="MomentOfInertia"/>, in <see cref="UnitOfMomentOfInertia"/> <paramref name="unitOfMomentOfInertia"/>.</param>
+    /// <summary>Constructs a new <see cref="MomentOfInertia"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfMomentOfInertia"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="MomentOfInertia"/>, expressed in <paramref name="unitOfMomentOfInertia"/>.</param>
     /// <param name="unitOfMomentOfInertia">The <see cref="UnitOfMomentOfInertia"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring constructing instances according to the following:
     /// <list type="bullet">
@@ -61,8 +62,8 @@ public readonly partial record struct MomentOfInertia :
     /// </list>
     /// </remarks>
     public MomentOfInertia(Scalar magnitude, UnitOfMomentOfInertia unitOfMomentOfInertia) : this(magnitude.Magnitude, unitOfMomentOfInertia) { }
-    /// <summary>Constructs a new <see cref="MomentOfInertia"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfMomentOfInertia"/> <paramref name="unitOfMomentOfInertia"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="MomentOfInertia"/>, in <see cref="UnitOfMomentOfInertia"/> <paramref name="unitOfMomentOfInertia"/>.</param>
+    /// <summary>Constructs a new <see cref="MomentOfInertia"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfMomentOfInertia"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="MomentOfInertia"/>, expressed in <paramref name="unitOfMomentOfInertia"/>.</param>
     /// <param name="unitOfMomentOfInertia">The <see cref="UnitOfMomentOfInertia"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring cosntructing instances according to the following:
     /// <list type="bullet">
@@ -74,20 +75,20 @@ public readonly partial record struct MomentOfInertia :
     /// </list>
     /// </remarks>
     public MomentOfInertia(double magnitude, UnitOfMomentOfInertia unitOfMomentOfInertia) : this(magnitude * unitOfMomentOfInertia.Factor) { }
-    /// <summary>Constructs a new <see cref="MomentOfInertia"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="MomentOfInertia"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="MomentOfInertia"/>.</param>
-    /// <remarks>Consider preffering a constructor that requires a <see cref="UnitOfMomentOfInertia"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="MomentOfInertia(Scalar, UnitOfMomentOfInertia)"/>.</remarks>
     public MomentOfInertia(Scalar magnitude) : this(magnitude.Magnitude) { }
-    /// <summary>Constructs a new <see cref="MomentOfInertia"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="MomentOfInertia"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="MomentOfInertia"/>.</param>
-    /// <remarks>Consider preferring a constructor that requires a <see cref="UnitOfMomentOfInertia"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="MomentOfInertia(double, UnitOfMomentOfInertia)"/>.</remarks>
     public MomentOfInertia(double magnitude)
     {
         Magnitude = magnitude;
     }
 
-    /// <summary>Retrieves the magnitude of the <see cref="MomentOfInertia"/>, expressed in unit <see cref="UnitOfMomentOfInertia.KilogramMetreSquared"/>.</summary>
-    public Scalar InKilogramMetresSquared => InUnit(UnitOfMomentOfInertia.KilogramMetreSquared);
+    /// <summary>Retrieves the magnitude of the <see cref="MomentOfInertia"/>, expressed in <see cref="UnitOfMomentOfInertia.KilogramMetreSquared"/>.</summary>
+    public Scalar KilogramMetresSquared => InUnit(UnitOfMomentOfInertia.KilogramMetreSquared);
 
     /// <summary>Indicates whether the magnitude of the <see cref="MomentOfInertia"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -117,16 +118,16 @@ public readonly partial record struct MomentOfInertia :
 
     /// <inheritdoc/>
     public int CompareTo(MomentOfInertia other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="MomentOfInertia"/>, and the SI base unit of the quantity.</summary>
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="MomentOfInertia"/> (in SI units), and the SI base unit of the quantity.</summary>
     public override string ToString() => $"{Magnitude} [kg * m^2]";
 
-    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="MomentOfInertia"/>, expressed in <see cref="UnitOfMomentOfInertia"/>
-    /// <paramref name="unitOfMomentOfInertia"/>.</summary>
+    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="MomentOfInertia"/>,
+    /// expressed in <paramref name="unitOfMomentOfInertia"/>.</summary>
     /// <param name="unitOfMomentOfInertia">The <see cref="UnitOfMomentOfInertia"/> in which the magnitude is expressed.</param>
     public Scalar InUnit(UnitOfMomentOfInertia unitOfMomentOfInertia) => InUnit(this, unitOfMomentOfInertia);
-    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="MomentOfInertia"/>, expressed in <see cref="UnitOfMomentOfInertia"/>
-    /// <paramref name="unitOfMomentOfInertia"/>.</summary>
-    /// <param name="momentOfInertia">The <see cref="MomentOfInertia"/> to be expressed in <see cref="UnitOfMomentOfInertia"/> <paramref name="unitOfMomentOfInertia"/>.</param>
+    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="MomentOfInertia"/>,
+    /// expressed in <paramref name="unitOfMomentOfInertia"/>.</summary>
+    /// <param name="momentOfInertia">The <see cref="MomentOfInertia"/> to be expressed in <paramref name="unitOfMomentOfInertia"/>.</param>
     /// <param name="unitOfMomentOfInertia">The <see cref="UnitOfMomentOfInertia"/> in which the magnitude is expressed.</param>
     private static Scalar InUnit(MomentOfInertia momentOfInertia, UnitOfMomentOfInertia unitOfMomentOfInertia) => new(momentOfInertia.Magnitude / unitOfMomentOfInertia.Factor);
 
@@ -162,7 +163,7 @@ public readonly partial record struct MomentOfInertia :
     /// <summary>Divides the <see cref="MomentOfInertia"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="MomentOfInertia"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="MomentOfInertia"/> <paramref name="x"/> is divded.</param>
+    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="MomentOfInertia"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(MomentOfInertia x, Unhandled y) => x.Divide(y);
 
     /// <summary>Produces a <see cref="MomentOfInertia"/>, with magnitude equal to the remainder from division of the original
@@ -221,26 +222,26 @@ public readonly partial record struct MomentOfInertia :
     /// <param name="y">This value is used to divide the <see cref="MomentOfInertia"/> <paramref name="x"/>.</param>
     public static MomentOfInertia operator /(MomentOfInertia x, Scalar y) => x.Divide(y);
 
-    /// <summary>Multiplies the <see cref="MomentOfInertia"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which multiplication is done.</typeparam>
-    /// <param name="factor">The factor by which the <see cref="MomentOfInertia"/> is multiplied.</param>
-    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
-    /// <summary>Divides the <see cref="MomentOfInertia"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which division is done.</typeparam>
-    /// <param name="divisor">The divisor by which the <see cref="MomentOfInertia"/> is divided.</param>
-    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    /// <inheritdoc/>
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(Magnitude * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+        where TQuotientScalarQuantity : IScalarQuantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(Magnitude / divisor.Magnitude);
     /// <summary>Multiples the <see cref="MomentOfInertia"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="MomentOfInertia"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="MomentOfInertia"/> <paramref name="x"/>.</param>
-    /// <remarks>To maximize performance, prefer <see cref="MomentOfInertia.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator *(MomentOfInertia x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    public static Unhandled operator *(MomentOfInertia x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
     /// <summary>Divides the <see cref="MomentOfInertia"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="MomentOfInertia"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="MomentOfInertia"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To maximize performance, prefer <see cref="MomentOfInertia.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator /(MomentOfInertia x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    public static Unhandled operator /(MomentOfInertia x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
     /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
     /// <param name="x"><paramref name="y"/> is compared against this value.</param>
@@ -259,23 +260,28 @@ public readonly partial record struct MomentOfInertia :
     /// <param name="y"><paramref name="x"/> is compared against this value.</param>
     public static bool operator >=(MomentOfInertia x, MomentOfInertia y) => x.Magnitude >= y.Magnitude;
 
-    /// <summary>Converts the <see cref="MomentOfInertia"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
+    /// <summary>Converts the <see cref="MomentOfInertia"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public double ToDouble() => Magnitude;
-    /// <summary>Converts the <see cref="MomentOfInertia"/> to a <see cref="double"/> based on the magnitude of the <see cref="MomentOfInertia"/> <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public static implicit operator double(MomentOfInertia x) => x.ToDouble();
 
-    /// <summary>Converts the <see cref="MomentOfInertia"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts the <see cref="MomentOfInertia"/> to the <see cref="Scalar"/> of equivalent magnitude, when
+    /// expressed in SI units.</summary>
     public Scalar ToScalar() => new(Magnitude);
-    /// <summary>Converts the <see cref="MomentOfInertia"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(MomentOfInertia x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="MomentOfInertia"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="MomentOfInertia"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static MomentOfInertia FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="MomentOfInertia"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="MomentOfInertia"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static explicit operator MomentOfInertia(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="MomentOfInertia"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="MomentOfInertia"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static MomentOfInertia FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="MomentOfInertia"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="MomentOfInertia"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator MomentOfInertia(Scalar x) => FromScalar(x);
 }

@@ -2,9 +2,45 @@
 
 using ErikWe.SharpMeasures.Units;
 
+using System;
 using System.Numerics;
 
-#Document:Header(Momentum3, 3, Momentum, UnitOfMomentum, [KilogramMetrePerSecond], [KilogramMetresPerSecond])#
+/// <summary>A measure of the vector quantity <see cref="Momentum3"/>, of dimensionality three,
+/// a property of an object with <see cref="Mass"/> in motion. The quantity is expressed in
+/// <see cref="UnitOfMomentum"/>, with the SI unit being [N * s].
+/// <para>
+/// New instances of <see cref="Momentum3"/> can be constructed by multiplying a <see cref="Momentum"/> with a Vector3 or (double, double, double).
+/// Instances can also be produced by combining other quantities, either through mathematical operators or using overloads of the static method 'From'.
+/// Lastly, instances can be constructed from quantities sharing the same unit, using instance-methods of the associated quantity - typically prefixed with 'As'. This is demonstrated below:
+/// <list type="bullet">
+/// <item>
+/// <code>
+/// <see cref="Momentum3"/> a = (3, 5, 7) * <see cref="Momentum.OneKilogramMetrePerSecond"/>;
+/// </code>
+/// </item>
+/// <item>
+/// <code>
+/// <see cref="Momentum3"/> d = <see cref="Momentum3.From(Mass, Velocity3)"/>;
+/// </code>
+/// </item>
+/// <item>
+/// <code>
+/// <see cref="Momentum3"/> e = <see cref="Impulse3.AsMomentum3"/>;
+/// </code>
+/// </item>
+/// </list>
+/// The components of the measure can be retrieved as a <see cref="Vector3"/> using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfMomentum"/>.
+/// </para>
+/// </summary>
+/// <remarks>
+/// <see cref="Momentum3"/> is closely related to the following quantities:
+/// <list type="bullet">
+/// <item>
+/// <term><see cref="Impulse3"/></term>
+/// <description>Describes a change in <see cref="Momentum3"/>.</description>
+/// </item>
+/// </list>
+/// </remarks>
 public readonly partial record struct Momentum3 :
     IVector3Quantity,
     IScalableVector3Quantity<Momentum3>,
@@ -14,50 +50,95 @@ public readonly partial record struct Momentum3 :
     IMultiplicableVector3Quantity<Unhandled3, Unhandled>,
     IDivisibleVector3Quantity<Momentum3, Scalar>,
     IDivisibleVector3Quantity<Unhandled3, Unhandled>,
-    IDotableVector3Quantity<Momentum3, Scalar>,
+    IDotableVector3Quantity<Momentum, Vector3>,
+    IDotableVector3Quantity<Unhandled, Unhandled3>,
+    ICrossableVector3Quantity<Momentum3, Vector3>,
+    ICrossableVector3Quantity<Unhandled3, Unhandled3>,
     IGenericallyMultiplicableVector3Quantity,
     IGenericallyDivisibleVector3Quantity,
     IGenericallyDotableVector3Quantity,
     IGenericallyCrossableVector3Quantity
 {
-    #Document:Zero(Momentum3, 3)#
+    /// <summary>The zero-magnitude <see cref="Momentum3"/>.</summary>
     public static Momentum3 Zero { get; } = new(0, 0, 0);
 
-    #Document:ComponentX(Momentum3, 3)#
+    /// <summary>The magnitude of the X-component of the <see cref="Momentum3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfMomentum)"/> or a pre-defined property
+    /// - such as <see cref="KilogramMetresPerSecond"/>.</remarks>
     public double X { get; init; }
-    #Document:ComponentY(Momentum3, 3)#
+    /// <summary>The magnitude of the Y-component of the <see cref="Momentum3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfMomentum)"/> or a pre-defined property
+    /// - such as <see cref="KilogramMetresPerSecond"/>.</remarks>
     public double Y { get; init; }
-    #Document:ComponentZ(Momentum3, 3)#
+    /// <summary>The magnitude of the Z-component of the <see cref="Momentum3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfMomentum)"/> or a pre-defined property
+    /// - such as <see cref="KilogramMetresPerSecond"/>.</remarks>
     public double Z { get; init; }
 
-    #Document:ConstructorComponentTupleUnit(Momentum3, 3, UnitOfMomentum, unitOfMomentum, [KilogramMetrePerSecond])#
-    public Momentum3((Momentum x, Momentum y, Momentum z) components, UnitOfMomentum unitOfMomentum) : this(components.x, components.y, components.z, unitOfMomentum) { }
-    #Document:ConstructorComponentsUnit(Momentum3, 3, UnitOfMomentum, unitOfMomentum, [KilogramMetrePerSecond])#
-    public Momentum3(Momentum x, Momentum y, Momentum z, UnitOfMomentum unitOfMomentum) : this(x.Magnitude, y.Magnitude, z.Magnitude, unitOfMomentum) { }
-    #Document:ConstructorScalarTupleUnit(Momentum3, 3, UnitOfMomentum, unitOfMomentum, [KilogramMetrePerSecond])#
+    /// <summary>Constructs a new <see cref="Momentum3"/> with components <paramref name="components"/>.</summary>
+    /// <param name="components">The components of the <see cref="Momentum3"/>.</param>
+    public Momentum3((Momentum x, Momentum y, Momentum z) components) : this(components.x, components.y, components.z) { }
+    /// <summary>Constructs a new <see cref="Momentum3"/> with components (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>).</summary>
+    /// <param name="x">The X-component of the <see cref="Momentum3"/>.</param>
+    /// <param name="y">The Y-component of the <see cref="Momentum3"/>.</param>
+    /// <param name="z">The Z-component of the <see cref="Momentum3"/>.</param>
+    public Momentum3(Momentum x, Momentum y, Momentum z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
+    /// <summary>Constructs a new <see cref="Momentum3"/> with components of magnitudes <paramref name="components"/>,
+    /// expressed in <paramref name="unitOfMomentum"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Momentum3"/>, expressed in <paramref name="unitOfMomentum"/>.</param>
+    /// <param name="unitOfMomentum">The <see cref="UnitOfMomentum"/> in which the magnitudes of the components, <paramref name="components"/>, are expressed.</param>
     public Momentum3((Scalar x, Scalar y, Scalar z) components, UnitOfMomentum unitOfMomentum) : this(components.x, components.y, components.z, unitOfMomentum) { }
-    #Document:ConstructorScalarsUnit(Momentum3, 3, UnitOfMomentum, unitOfMomentum, [KilogramMetrePerSecond])#
+    /// <summary>Constructs a new <see cref="Momentum3"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>),
+    /// expressed in <paramref name="unitOfMomentum"/>.</summary>
+    /// <param name="x">The magnitude of the X-component of the <see cref="Momentum3"/>, expressed in <paramref name="unitOfMomentum"/>.</param>
+    /// <param name="y">The magnitude of the Y-component of the <see cref="Momentum3"/>, expressed in <paramref name="unitOfMomentum"/>.</param>
+    /// <param name="z">The magnitude of the Z-component of the <see cref="Momentum3"/>, expressed in <paramref name="unitOfMomentum"/>.</param>
+    /// <param name="unitOfMomentum">The <see cref="UnitOfMomentum"/> in which the magnitudes of the components,
+    /// (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>), are expressed.</param>
     public Momentum3(Scalar x, Scalar y, Scalar z, UnitOfMomentum unitOfMomentum) : this(x.Magnitude, y.Magnitude, z.Magnitude, unitOfMomentum) { }
-    #Document:ConstructorVectorUnit(Momentum3, 3, UnitOfMomentum, unitOfMomentum, [KilogramMetrePerSecond])#
+    /// <summary>Constructs a new <see cref="Momentum3"/> with components of magnitudes <paramref name="components"/>,
+    /// expressed in <paramref name="unitOfMomentum"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Momentum3"/>, expressed in <paramref name="unitOfMomentum"/>.</param>
+    /// <param name="unitOfMomentum">The <see cref="UnitOfMomentum"/> in which the magnitudes of the components,
+    /// <paramref name="components"/>, are expressed.</param>
     public Momentum3(Vector3 components, UnitOfMomentum unitOfMomentum) : this(components.X, components.Y, components.Z, unitOfMomentum) { }
-    #Document:ConstructorDoubleTupleUnit(Momentum3, 3, UnitOfMomentum, unitOfMomentum, [KilogramMetrePerSecond])#
+    /// <summary>Constructs a new <see cref="Momentum3"/> with components of magnitudes <paramref name="components"/>,
+    /// expressed in <paramref name="unitOfMomentum"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Momentum3"/>, expressed in <paramref name="unitOfMomentum"/>.</param>
+    /// <param name="unitOfMomentum">The <see cref="UnitOfMomentum"/> in which the magnitudes of the components, <paramref name="components"/>, are expressed.</param>
     public Momentum3((double x, double y, double z) components, UnitOfMomentum unitOfMomentum) : this(components.x, components.y, components.z, unitOfMomentum) { }
-    #Document:ConstructorDoublesTupleUnit(Momentum3, 3, UnitOfMomentum, unitOfMomentum, [KilogramMetrePerSecond])#
+    /// <summary>Constructs a new <see cref="Momentum3"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>),
+    /// expressed in <paramref name="unitOfMomentum"/>.</summary>
+    /// <param name="x">The magnitude of the X-component of the <see cref="Momentum3"/>, expressed in <paramref name="unitOfMomentum"/>.</param>
+    /// <param name="y">The magnitude of the Y-component of the <see cref="Momentum3"/>, expressed in <paramref name="unitOfMomentum"/>.</param>
+    /// <param name="z">The magnitude of the Z-component of the <see cref="Momentum3"/>, expressed in <paramref name="unitOfMomentum"/>.</param>
+    /// <param name="unitOfMomentum">The <see cref="UnitOfMomentum"/> in which the magnitudes of the components,
+    /// (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>), are expressed.</param>
     public Momentum3(double x, double y, double z, UnitOfMomentum unitOfMomentum) : this(x * unitOfMomentum.Factor, y * unitOfMomentum.Factor, z * unitOfMomentum.Factor) { }
 
-    #Document:ConstructorComponentTuple(Momentum3, 3, UnitOfMomentum, unitOfMomentum, [KilogramMetrePerSecond])#
-    public Momentum3((Momentum x, Momentum y, Momentum z) components) : this(components.x, components.y, components.z) { }
-    #Document:ConstructorComponents(Momentum3, 3, UnitOfMomentum, unitOfMomentum, [KilogramMetrePerSecond])#
-    public Momentum3(Momentum x, Momentum y, Momentum z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
-    #Document:ConstructorScalarTuple(Momentum3, 3, UnitOfMomentum, unitOfMomentum, [KilogramMetrePerSecond])#
+    /// <summary>Constructs a new <see cref="Momentum3"/> with components of magnitudes <paramref name="components"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Momentum3"/>.</param>
+    /// <remarks>Consider preferring <see cref="Momentum3(ValueTuple{Scalar, Scalar, Scalar}, UnitOfMomentum)"/>.</remarks>
     public Momentum3((Scalar x, Scalar y, Scalar z) components) : this(components.x, components.y, components.z) { }
-    #Document:ConstructorScalars(Momentum3, 3, UnitOfMomentum, unitOfMomentum, [KilogramMetrePerSecond])#
+    /// <summary>Constructs a new <see cref="Momentum3"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>).</summary>
+    /// <param name="x">The magnitude of the X-component of the <see cref="Momentum3"/>.</param>
+    /// <param name="y">The magnitude of the Y-component of the <see cref="Momentum3"/>.</param>
+    /// <param name="z">The magnitude of the Z-component of the <see cref="Momentum3"/>.</param>
+    /// <remarks>Consider preferring <see cref="Momentum3(Scalar, Scalar, Scalar, UnitOfMomentum)"/>.</remarks>
     public Momentum3(Scalar x, Scalar y, Scalar z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
-    #Document:ConstructorVector(Momentum3, 3, UnitOfMomentum, unitOfMomentum, [KilogramMetrePerSecond])#
+    /// <summary>Constructs a new <see cref="Momentum3"/> with components of magnitudes <paramref name="components"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Momentum3"/>.</param>
+    /// <remarks>Consider preferring <see cref="Momentum3(Vector3, UnitOfMomentum)"/>.</remarks>
     public Momentum3(Vector3 components) : this(components.X, components.Y, components.Z) { }
-    #Document:ConstructorDoubleTuple(Momentum3, 3, UnitOfMomentum, unitOfMomentum, [KilogramMetrePerSecond])#
+    /// <summary>Constructs a new <see cref="Momentum3"/> with components of magnitudes <paramref name="components"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Momentum3"/>.</param>
+    /// <remarks>Consider preferring <see cref="Momentum3(ValueTuple{double, double, double}, UnitOfMomentum)"/>.</remarks>
     public Momentum3((double x, double y, double z) components) : this(components.x, components.y, components.z) { }
-    #Document:ConstructorDoubles(Momentum3, 3, UnitOfMomentum, unitOfMomentum, [KilogramMetrePerSecond])#
+    /// <summary>Constructs a new <see cref="Momentum3"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>).</summary>
+    /// <param name="x">The magnitude of the X-component of the <see cref="Momentum3"/>.</param>
+    /// <param name="y">The magnitude of the Y-component of the <see cref="Momentum3"/>.</param>
+    /// <param name="z">The magnitude of the Z-component of the <see cref="Momentum3"/>.</param>
+    /// <remarks>Consider preferring <see cref="Momentum3(double, double, double, UnitOfMomentum)"/>.</remarks>
     public Momentum3(double x, double y, double z)
     {
         X = x;
@@ -67,130 +148,212 @@ public readonly partial record struct Momentum3 :
 
 );
 
-    #Document:InUnit(quantity = Momentum3, dimensionality = 3, unit = UnitOfMomentum, unitName = KilogramMetrePerSecond)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Momentum3"/>, expressed in <see cref="UnitOfMomentum.KilogramMetrePerSecond"/>.</summary>
     public Vector3 KilogramMetresPerSecond => InUnit(UnitOfMomentum.KilogramMetrePerSecond);
 
-    #Document:ScalarMagnitude(Momentum3, 3)#
+    /// <inheritdoc/>
     Scalar IVector3Quantity.Magnitude() => Maths.Vectors.Dot(this, this).SquareRoot();
-    #Document:ScalarQuantityMagnitude(Momentum3, 3, Momentum)#
+    /// <summary>Computes the magnitude, or norm, of the vector quantity <see cref="Momentum3"/>, as a <see cref="Momentum"/>.</summary>
+    /// <remarks>For improved performance, consider preferring <see cref="SquaredMagnitude"/> when possible.</remarks>
     public Momentum Magnitude() => new(Maths.Vectors.Dot(this, this).SquareRoot());
-#NonScalarQuantityComponent#
-    #Document:ScalarMagnitude(Momentum3, 3)#
-    public Scalar Magnitude() => Maths.Vectors.Dot(this, this).SquareRoot();
-#/NonScalarQuantityComponent#
-    #Document:ScalarSquaredMagnitude(Momentum3, 3)#
-    Scalar IVector3Quantity.SquaredMagnitude() => Maths.Vectors.Dot(this, this);
-    #Document:ScalarQuantitySquaredMagnitude(Momentum3, 3, undefined)#
-    public undefined SquaredMagnitude() => new(Maths.Vectors.Dot(this, this));
+    /// <summary>Computes the square of the magnitude, or norm, of the vector quantity <see cref="Momentum3"/>.</summary>
+    /// <remarks>For clarity, consider first extracting the magnitudes of the components in the desired <see cref="UnitOfMomentum"/>.</remarks>
+    public Scalar SquaredMagnitude() => Maths.Vectors.Dot(this, this);
 
-    #Document:Normalize(Momentum3, 3)#
+    /// <summary>Normalizes the <see cref="Momentum3"/> - if expressed in SI units.</summary>
+    /// <remarks>Note that the resulting <see cref="Momentum3"/> will only be normalized if expressed in SI units.</remarks>
     public Momentum3 Normalize() => this / Magnitude().Magnitude;
-#NonScalarQuantityComponent#
-    #Document:Normalize(Momentum3, 3)#
-    public Momentum3 Normalize() => this / Magnitude();
-#/NonScalarQuantityComponent#
-    #Document:Transform(Momentum3, 3)#
+    /// <summary>Computes the transformation of the existing <see cref="Momentum3"/> by <paramref name="transform"/>, resulting in
+    /// a new <see cref="Momentum3"/>.</summary>
+    /// <param name="transform">The <see cref="Momentum3"/> is transformed by this <see cref="Matrix4x4"/>.</param>
     public Momentum3 Transform(Matrix4x4 transform) => new(Maths.Vectors.Transform(this, transform));
     
-    #Document:DotVector(Momentum3, 3)#
+    /// <summary>Performs dot-multiplication of the <see cref="Momentum3"/> by <paramref name="factor"/>, resulting in a
+    /// <cref name="Momentum"/>.</summary>
+    /// <param name="factor">The <see cref="Momentum3"/> is dot-multiplied by this <see cref="Vector3"/>.</param>
     public Momentum Dot(Vector3 factor) => new(Maths.Vectors.Dot(this, factor));
-    #Document:DotUnhandled(Momentum3, 3)#
+    /// <summary>Performs dot-multiplication of the <see cref="Momentum3"/> by <paramref name="factor"/>, resulting in a
+    /// <cref name="Unhandled"/>.</summary>
+    /// <param name="factor">The <see cref="Momentum3"/> is dot-multiplied by this <see cref="Unhandled3"/>.</param>
     public Unhandled Dot(Unhandled3 factor) => new(Maths.Vectors.Dot(this, factor));
-    #Document:DotGeneric(Momentum3, 3)#
-    public Unhandled Dot<TVector3Quantity>(TVector3Quantity factor) where TVector3Quantity : IVector3Quantity => new(Maths.Vectors.Dot(this, factor));
-    #Document:CrossVector(Momentum3, 3)#
+    /// <inheritdoc/>
+    public TProductScalarQuantity Dot<TProductScalarQuantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<Scalar, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorVector3Quantity : IVector3Quantity
+        => factory(Maths.Vectors.Dot(this, factor));
+    /// <summary>Performs cross-multiplication of the <see cref="Momentum3"/> by <paramref name="factor"/>, resulting in a
+    /// <cref see="Momentum3"/>.</summary>
+    /// <param name="factor">The <see cref="Momentum3"/> is cross-multiplied by this <see cref="Vector3"/>.</param>
     public Momentum3 Cross(Vector3 factor) => new(Maths.Vectors.Cross(this, factor));
-    #Document:CrossUnhandled(Momentum3, 3)#
+    /// <summary>Performs cross-multiplication of the <see cref="Momentum3"/> by <paramref name="factor"/>, resulting in a
+    /// <cref name="Unhandled3"/>.</summary>
+    /// <param name="factor">The <see cref="Momentum3"/> is cross-multiplied by this <see cref="Unhandled3"/>.</param>
     public Unhandled3 Cross(Unhandled3 factor) => new(Maths.Vectors.Cross(this, factor));
-    #Document:CrossGeneric(Momentum3, 3)#
-    public Unhandled3 Cross<TVector3Quantity>(TVector3Quantity factor) where TVector3Quantity : IVector3Quantity => new(Maths.Vectors.Cross(this, factor));
+    /// <inheritdoc/>
+    public TProductVector3Quantity Cross<TProductVector3Quantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<Vector3, TProductVector3Quantity> factory)
+        where TProductVector3Quantity : IVector3Quantity
+        where TFactorVector3Quantity : IVector3Quantity
+        => factory(Maths.Vectors.Cross(this, factor));
 
-    #Document:ToString(Momentum3, 3)#
+    /// <summary>Produces a formatted string from the magnitudes of the components of the <see cref="Momentum3"/> (in SI units),
+    /// and the SI base unit of the quantity.</summary>
     public override string ToString() => $"({X}, {Y}, {Z}) [kg * m / s]";
 
-    #Document:InUnitInstance(Momentum3, 3, UnitOfMomentum, unitOfMomentum)#
+    /// <summary>Produces a <see cref="Vector3"/> with components equal to that of the <see cref="Momentum3"/>,
+    /// expressed in <paramref name="unitOfMomentum"/>.</summary>
+    /// <param name="unitOfMomentum">The <see cref="UnitOfMomentum"/> in which the magnitude is expressed.</param>
     public Vector3 InUnit(UnitOfMomentum unitOfMomentum) => InUnit(this, unitOfMomentum);
-    #Document:InUnitStatic(Momentum3, momentum3, 3, UnitOfMomentum, unitOfMomentum)#
+    /// <summary>Produces a <see cref="Vector3"/> with components equal to that of the <see cref="Momentum3"/>,
+    /// expressed in <paramref name="unitOfMomentum"/>.</summary>
+    /// <param name="momentum3">The <see cref="Momentum3"/> to be expressed in <paramref name="unitOfMomentum"/>.</param>
+    /// <param name="unitOfMomentum">The <see cref="UnitOfMomentum"/> in which the magnitude is expressed.</param>
     private static Vector3 InUnit(Momentum3 momentum3, UnitOfMomentum unitOfMomentum) => momentum3.ToVector3() / unitOfMomentum.Factor;
     
-    #Document:PlusMethod(Momentum3, 3)#
+    /// <summary>Unary plus, resulting in the unmodified <see cref="Momentum3"/>.</summary>
     public Momentum3 Plus() => this;
-    #Document:NegateMethod(Momentum3, 3)#
+    /// <summary>Negation, resulting in a <see cref="Momentum3"/> with negated components.</summary>
     public Momentum3 Negate() => new(-X, -Y, -Z);
-    #Document:PlusOperator(Momentum3, 3)#
+    /// <summary>Unary plus, resulting in the unmodified <paramref name="a"/>.</summary>
+    /// <param name="a">Unary plus is applied to this instance of <see cref="Momentum3"/>.</param>
     public static Momentum3 operator +(Momentum3 a) => a;
-    #Document:NegateOperator(Momentum3, 3)#
+    /// <summary>Negation, resulting in a <see cref="Momentum3"/> with components negated from that of <paramref name="a"/>.</summary>
+    /// <param name="a">Negation is applied to this instance of <see cref="Momentum3"/>.</param>
     public static Momentum3 operator -(Momentum3 a) => new(-a.X, -a.Y, -a.Z);
 
-    #Document:MultiplyUnhandledMethod(Momentum3, 3)#
-    public Unhandled3 Multiply(Unhandled factor) => new(XX * factor.Magnitude, YY * factor.Magnitude, ZZ * factor.Magnitude);
-    #Document:DivideUnhandledMethod(Momentum3, 3)#
+    /// <summary>Multiplies the <see cref="Momentum3"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="factor">The factor by which the <see cref="Momentum3"/> is multiplied.</param>
+    public Unhandled3 Multiply(Unhandled factor) => new(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+    /// <summary>Divides the <see cref="Momentum3"/> by the <see cref="Unhandled"/> quantity <paramref name="divisor"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="divisor">The divisor by which the <see cref="Momentum3"/> is divided.</param>
     public Unhandled3 Divide(Unhandled divisor) => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
-    #Document:MultiplyUnhandledOperatorLHS(Momentum3, 3)#
+    /// <summary>Multiplies the <see cref="Momentum3"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
+    /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="Momentum3"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="Unhandled"/> quantity by which the <see cref="Momentum3"/> <paramref name="a"/> is multiplied.</param>
     public static Unhandled3 operator *(Momentum3 a, Unhandled b) => new(a.X * b.Magnitude, a.Y * b.Magnitude, a.Z * b.Magnitude);
-    #Document:MultiplyUnhandledOperatorRHS(Momentum3, 3)#
+    /// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="b"/> by the <see cref="Momentum3"/> <paramref name="a"/> -
+    /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="Unhandled"/> quantity by which the <see cref="Momentum3"/> <paramref name="b"/> is multiplied.</param>
+    /// <param name="b">The <see cref="Momentum3"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="a"/>.</param>
     public static Unhandled3 operator *(Unhandled a, Momentum3 b) => new(a.Magnitude * b.X, a.Magnitude * b.Y, a.Magnitude * b.Z);
-    #Document:DivideUnhandledOperator(Momentum3, 3)#
+    /// <summary>Divides the <see cref="Momentum3"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
+    /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="Momentum3"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="Unhandled"/> quantity by which the <see cref="Momentum3"/> <paramref name="a"/> is divded.</param>
     public static Unhandled3 operator /(Momentum3 a, Unhandled b) => new(a.X / b.Magnitude, a.Y / b.Magnitude, a.Z / b.Magnitude);
 
-    #Document:RemainderDoubleMethod(Momentum3, 3)#
+    /// <summary>Produces a <see cref="Momentum3"/>, with each component equal to the remainder from division of the
+    /// magnitude of the original component by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
     public Momentum3 Remainder(double divisor) => new(X % divisor, Y % divisor, Z % divisor);
-    #Document:MultiplyDoubleMethod(Momentum3, 3)#
+    /// <summary>Scales the <see cref="Momentum3"/> by <paramref name="factor"/>.</summary>
+    /// <param name="factor">The factor by which the <see cref="Momentum3"/> is scaled.</param>
     public Momentum3 Multiply(double factor) => new(X * factor, Y * factor, Z * factor);
-    #Document:DivideDoubleMethod(Momentum3, 3)#
+    /// <summary>Scales the <see cref="Momentum3"/> through division by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, by which the <see cref="Momentum3"/> is divided.</param>
     public Momentum3 Divide(double divisor) => new(X / divisor, Y / divisor, Z / divisor);
-    #Document:RemainderDoubleOperator(Momentum3, 3)#
+    /// <summary>Produces a <see cref="Momentum3"/>, with each component equal to the remainder from division of the
+    /// magnitude of the component of <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Momentum3"/>, the components of which are divided by <paramref name="b"/> to produce a remainder.</param>
+    /// <param name="b">The remainder is retrieved from division of <see cref="Momentum3"/> <paramref name="a"/> by this value.</param>
     public static Momentum3 operator %(Momentum3 a, double b) => new(a.X % b, a.Y % b, a.Z % b);
-    #Document:MultiplyDoubleOperatorLHS(Momentum3, 3)#
+    /// <summary>Scales the <see cref="Momentum3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Momentum3"/>, which is scaled by <paramref name="b"/>.</param>
+    /// <param name="b">This value is used to scale the <see cref="Momentum3"/> <paramref name="a"/>.</param>
     public static Momentum3 operator *(Momentum3 a, double b) => new(a.X * b, a.Y * b, a.Z * b);
-    #Document:MultiplyDoubleOperatorRHS(Momentum3, 3)#
+    /// <summary>Scales the <see cref="Momentum3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">This value is used to scale the <see cref="Momentum3"/> <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="Momentum3"/>, which is scaled by <paramref name="a"/>.</param>
     public static Momentum3 operator *(double a, Momentum3 b) => new(a * b.X, a * b.Y, a * b.Z);
-    #Document:DivideDoubleOperator(Momentum3, 3)#
+    /// <summary>Scales the <see cref="Momentum3"/> <paramref name="a"/> through division by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Momentum3"/>, which is divided by <paramref name="b"/>.</param>
+    /// <param name="b">This value is used to divide the <see cref="Momentum3"/> <paramref name="a"/>.</param>
     public static Momentum3 operator /(Momentum3 a, double b) => new(a.X / b, a.Y / b, a.Z / b);
 
-    #Document:RemainderScalarMethod(Momentum3, 3)#
+    /// <summary>Produces a <see cref="Momentum3"/>, with each component equal to the remainder from division of the
+    /// magnitude of the original component by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
     public Momentum3 Remainder(Scalar divisor) => new(X % divisor.Magnitude, Y % divisor.Magnitude, Z % divisor.Magnitude);
-    #Document:MultiplyScalarMethod(Momentum3, 3)#
-    public Momentum3 Multiply(Scalar factor) => new(XX * factor.Magnitude, YY * factor.Magnitude, ZZ * factor.Magnitude);
-    #Document:DivideScalarMethod(Momentum3, 3)#
+    /// <summary>Scales the <see cref="Momentum3"/> by <paramref name="factor"/>.</summary>
+    /// <param name="factor">The factor by which the <see cref="Momentum3"/> is scaled.</param>
+    public Momentum3 Multiply(Scalar factor) => new(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+    /// <summary>Scales the <see cref="Momentum3"/> through division by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, by which the <see cref="Momentum3"/> is divided.</param>
     public Momentum3 Divide(Scalar divisor) => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
-    #Document:RemainderScalarOperator(Momentum3, 3)#
+    /// <summary>Produces a <see cref="Momentum3"/>, with each component equal to the remainder from division of the
+    /// magnitude of the component of <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Momentum3"/>, the components of which are divided by <paramref name="b"/> to produce a remainder.</param>
+    /// <param name="b">The remainder is retrieved from division of <see cref="Momentum3"/> <paramref name="a"/> by this value.</param>
     public static Momentum3 operator %(Momentum3 a, Scalar b) => new(a.X % b.Magnitude, a.Y % b.Magnitude, a.Z % b.Magnitude);
-    #Document:MultiplyScalarOperatorLHS(Momentum3, 3)#
+    /// <summary>Scales the <see cref="Momentum3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Momentum3"/>, which is scaled by <paramref name="b"/>.</param>
+    /// <param name="b">This value is used to scale the <see cref="Momentum3"/> <paramref name="a"/>.</param>
     public static Momentum3 operator *(Momentum3 a, Scalar b) => new(a.X * b.Magnitude, a.Y * b.Magnitude, a.Z * b.Magnitude);
-    #Document:MultiplyScalarOperatorRHS(Momentum3, 3)#
+    /// <summary>Scales the <see cref="Momentum3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">This value is used to scale the <see cref="Momentum3"/> <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="Momentum3"/>, which is scaled by <paramref name="a"/>.</param>
     public static Momentum3 operator *(Scalar a, Momentum3 b) => new(a.Magnitude * b.X, a.Magnitude * b.Y, a.Magnitude * b.Z);
-    #Document:DivideScalarOperator(Momentum3, 3)#
+    /// <summary>Scales the <see cref="Momentum3"/> <paramref name="a"/> through division by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Momentum3"/>, which is divided by <paramref name="b"/>.</param>
+    /// <param name="b">This value is used to divide the <see cref="Momentum3"/> <paramref name="a"/>.</param>
     public static Momentum3 operator /(Momentum3 a, Scalar b) => new(a.X / b.Magnitude, a.Y / b.Magnitude, a.Z / b.Magnitude);
 
-    #Document:MultiplyTScalar(Momentum3, 3)#
-    public Unhandled3 Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(XX * factor.Magnitude, YY * factor.Magnitude, ZZ * factor.Magnitude);
-    #Document:DivideTScalar(Momentum3, 3)#
-    public Unhandled3 Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
-    #Document:MultiplyIScalarLHS(Momentum3, 3)#
+    /// <inheritdoc/>
+    public TProductVector3Quantity Multiply<TProductVector3Quantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, double, double, TProductVector3Quantity> factory)
+        where TProductVector3Quantity : IVector3Quantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientVector3Quantity Divide<TQuotientVector3Quantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, double, double, TQuotientVector3Quantity> factory)
+        where TQuotientVector3Quantity : IVector3Quantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
+    /// <summary>Multiples the <see cref="Momentum3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="Momentum3"/>, which is multiplied by <paramref name="b"/>.</param>
+    /// <param name="b">This quantity is multiplied by the <see cref="Momentum3"/> <paramref name="a"/>.</param>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
     public static Unhandled3 operator *(Momentum3 a, IScalarQuantity b) => new(a.X * b.Magnitude, a.Y * b.Magnitude, a.Z * b.Magnitude);
-    #Document:MultiplyIScalarRHS(Momentum3, 3)#
+    /// <summary>Multiples the quantity <paramref name="a"/> by the <see cref="Momentum3"/> <paramref name="b"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">This quantity is multiplied by the <see cref="Momentum3"/> <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="Momentum3"/>, which is multiplied by <paramref name="a"/>.</param>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
     public static Unhandled3 operator *(IScalarQuantity a, Momentum3 b) => new(a.Magnitude * b.X, a.Magnitude * b.Y, a.Magnitude * b.Z);
-    #Document:DivideIScalar(Momentum3, 3)#
+    /// <summary>Divides the <see cref="Momentum3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="Momentum3"/>, which is divided by <paramref name="b"/>.</param>
+    /// <param name="b">The<see cref="Momentum3"/> <paramref name="a"/> is divided by this quantity.</param>
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientVector3Quantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, double, double, TQuotientVector3Quantity})"/>.</remarks>
     public static Unhandled3 operator /(Momentum3 a, IScalarQuantity b) => new(a.X / b.Magnitude, a.Y / b.Magnitude, a.Z / b.Magnitude);
 
-    #Document:ToValueTupleMethod(Momentum3, 3)#
+    /// <summary>Converts the <see cref="Momentum3"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with values
+    /// (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
     public (double x, double y, double z) ToValueTuple() => (X, Y, Z);
-    #Document:ToValueTupleOperator(Momentum3, 3)#
+    /// <summary>Converts <paramref name="a"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with values
+    /// (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
     public static implicit operator (double x, double y, double z)(Momentum3 a) => (a.X, a.Y, a.Z);
 
-    #Document:ToVectorMethod(Momentum3, 3)#
+    /// <summary>Converts the <see cref="Momentum3"/> to the <see cref="Vector3"/> with components of
+    /// equal magnitude, when expressed in SI units.</summary>
     public Vector3 ToVector3() => new(X, Y, Z);
-    #Document:ToVectorOperator(Momentum3, 3)#
+    /// <summary>Converts <paramref name="a"/> to the <see cref="Vector3"/> with components of
+    /// equal magnitude, when expressed in SI units.</summary>
     public static explicit operator Vector3(Momentum3 a) => new(a.X, a.Y, a.Z);
 
-    #Document:FromValueTupleMethod(Momentum3, 3)#
+    /// <summary>Constructs the <see cref="Momentum3"/> with components equal to the values of <paramref name="components"/>,
+    /// when expressed in SI units.</summary>
     public static Momentum3 FromValueTuple((double x, double y, double z) components) => new(components);
-    #Document:FromValueTupleOperator(Momentum3, 3)#
+    /// <summary>Constructs the <see cref="Momentum3"/> with components equal to the values of <paramref name="components"/>,
+    /// when expressed in SI units.</summary>
     public static explicit operator Momentum3((double x, double y, double z) components) => new(components);
 
-    #Document:FromVectorMethod(Momentum3, 3)#
+    /// <summary>Converts <paramref name="a"/> to the <see cref="Momentum3"/> with components of equal magnitude,
+    /// when expressed in SI units.</summary>
     public static Momentum3 FromVector3(Vector3 a) => new(a);
-    #Document:FromVectorOperator(Momentum3, 3)#
+    /// <summary>Converts <paramref name="a"/> to the <see cref="Momentum3"/> with components of equal magnitude,
+    /// when expressed in SI units.</summary>
     public static explicit operator Momentum3(Vector3 a) => new(a);
 }

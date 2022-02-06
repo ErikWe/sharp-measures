@@ -1,0 +1,13 @@
+﻿#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(quantity, dimensionality, component, unitName, singularUnits, pluralUnits)
+/// <summary>A measure of the vector quantity <see cref="#Param:quantity#"/>, of dimensionality #Document:LowerCaseText(#Param:dimensionality#)#,
+/// describing the rotation of an object in space. The quantity is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [rad].
+#Document:HeaderSummary(#Param:quantity#, #Param:dimensionality#, #Param:component#, #Param:unitName#, #Param:singularUnits#, #Param:pluralUnits#)#
+/// </summary>
+#/
+
+#Define:ExampleDerivedMethod(quantity, dimensionality, variable)#
+<see cref="#Param:quantity#"/> #Param:variable# = <see cref="#Param:quantity#.From(AngularVelocity#Param:dimensionality#, Time)"/>;
+#/Define:ExampleDerivedMethod#

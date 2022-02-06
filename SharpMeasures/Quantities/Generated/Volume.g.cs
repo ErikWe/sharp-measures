@@ -22,7 +22,8 @@ using System;
 /// </code>
 /// </item>
 /// </list>
-/// The magnitude of the measure can be retrieved using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfVolume"/>.
+/// The magnitude of the <see cref="Volume"/> can be retrieved in the desired <see cref="UnitOfVolume"/> using pre-defined properties,
+/// such as <see cref="Litres"/>.
 /// </para>
 /// </summary>
 public readonly partial record struct Volume :
@@ -60,13 +61,13 @@ public readonly partial record struct Volume :
     /// <param name="distance">This <see cref="Distance"/> is cubed to produce a <see cref="Volume"/>.</param>
     public static Volume From(Distance distance) => new(Math.Pow(distance.Magnitude, 3));
 
-    /// <summary>The magnitude of the <see cref="Volume"/> measure, in SI units.</summary>
-    /// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="Volume.InCubicDecimetres"/>.
-    /// <para>This value should only be used (to maximize efficiency) when implementing mathematical operations with other quantities.</para></remarks>
+    /// <summary>The magnitude of the <see cref="Volume"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfVolume)"/> or a pre-defined property
+    /// - such as <see cref="CubicDecimetres"/>.</remarks>
     public double Magnitude { get; init; }
 
-    /// <summary>Constructs a new <see cref="Volume"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfVolume"/> <paramref name="unitOfVolume"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Volume"/>, in <see cref="UnitOfVolume"/> <paramref name="unitOfVolume"/>.</param>
+    /// <summary>Constructs a new <see cref="Volume"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfVolume"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Volume"/>, expressed in <paramref name="unitOfVolume"/>.</param>
     /// <param name="unitOfVolume">The <see cref="UnitOfVolume"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring constructing instances according to the following:
     /// <list type="bullet">
@@ -78,8 +79,8 @@ public readonly partial record struct Volume :
     /// </list>
     /// </remarks>
     public Volume(Scalar magnitude, UnitOfVolume unitOfVolume) : this(magnitude.Magnitude, unitOfVolume) { }
-    /// <summary>Constructs a new <see cref="Volume"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfVolume"/> <paramref name="unitOfVolume"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Volume"/>, in <see cref="UnitOfVolume"/> <paramref name="unitOfVolume"/>.</param>
+    /// <summary>Constructs a new <see cref="Volume"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfVolume"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Volume"/>, expressed in <paramref name="unitOfVolume"/>.</param>
     /// <param name="unitOfVolume">The <see cref="UnitOfVolume"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring cosntructing instances according to the following:
     /// <list type="bullet">
@@ -91,31 +92,31 @@ public readonly partial record struct Volume :
     /// </list>
     /// </remarks>
     public Volume(double magnitude, UnitOfVolume unitOfVolume) : this(magnitude * unitOfVolume.Factor) { }
-    /// <summary>Constructs a new <see cref="Volume"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Volume"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Volume"/>.</param>
-    /// <remarks>Consider preffering a constructor that requires a <see cref="UnitOfVolume"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Volume(Scalar, UnitOfVolume)"/>.</remarks>
     public Volume(Scalar magnitude) : this(magnitude.Magnitude) { }
-    /// <summary>Constructs a new <see cref="Volume"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Volume"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Volume"/>.</param>
-    /// <remarks>Consider preferring a constructor that requires a <see cref="UnitOfVolume"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Volume(double, UnitOfVolume)"/>.</remarks>
     public Volume(double magnitude)
     {
         Magnitude = magnitude;
     }
 
-    /// <summary>Retrieves the magnitude of the <see cref="Volume"/>, expressed in unit <see cref="UnitOfVolume.CubicDecimetre"/>.</summary>
-    public Scalar InCubicDecimetres => InUnit(UnitOfVolume.CubicDecimetre);
-    /// <summary>Retrieves the magnitude of the <see cref="Volume"/>, expressed in unit <see cref="UnitOfVolume.CubicMetre"/>.</summary>
-    public Scalar InCubicMetres => InUnit(UnitOfVolume.CubicMetre);
+    /// <summary>Retrieves the magnitude of the <see cref="Volume"/>, expressed in <see cref="UnitOfVolume.CubicDecimetre"/>.</summary>
+    public Scalar CubicDecimetres => InUnit(UnitOfVolume.CubicDecimetre);
+    /// <summary>Retrieves the magnitude of the <see cref="Volume"/>, expressed in <see cref="UnitOfVolume.CubicMetre"/>.</summary>
+    public Scalar CubicMetres => InUnit(UnitOfVolume.CubicMetre);
 
-    /// <summary>Retrieves the magnitude of the <see cref="Volume"/>, expressed in unit <see cref="UnitOfVolume.Millilitre"/>.</summary>
-    public Scalar InMillilitres => InUnit(UnitOfVolume.Millilitre);
-    /// <summary>Retrieves the magnitude of the <see cref="Volume"/>, expressed in unit <see cref="UnitOfVolume.Centilitre"/>.</summary>
-    public Scalar InCentilitres => InUnit(UnitOfVolume.Centilitre);
-    /// <summary>Retrieves the magnitude of the <see cref="Volume"/>, expressed in unit <see cref="UnitOfVolume.Decilitre"/>.</summary>
-    public Scalar InDecilitres => InUnit(UnitOfVolume.Decilitre);
-    /// <summary>Retrieves the magnitude of the <see cref="Volume"/>, expressed in unit <see cref="UnitOfVolume.Litre"/>.</summary>
-    public Scalar InLitres => InUnit(UnitOfVolume.Litre);
+    /// <summary>Retrieves the magnitude of the <see cref="Volume"/>, expressed in <see cref="UnitOfVolume.Millilitre"/>.</summary>
+    public Scalar Millilitres => InUnit(UnitOfVolume.Millilitre);
+    /// <summary>Retrieves the magnitude of the <see cref="Volume"/>, expressed in <see cref="UnitOfVolume.Centilitre"/>.</summary>
+    public Scalar Centilitres => InUnit(UnitOfVolume.Centilitre);
+    /// <summary>Retrieves the magnitude of the <see cref="Volume"/>, expressed in <see cref="UnitOfVolume.Decilitre"/>.</summary>
+    public Scalar Decilitres => InUnit(UnitOfVolume.Decilitre);
+    /// <summary>Retrieves the magnitude of the <see cref="Volume"/>, expressed in <see cref="UnitOfVolume.Litre"/>.</summary>
+    public Scalar Litres => InUnit(UnitOfVolume.Litre);
 
     /// <summary>Indicates whether the magnitude of the <see cref="Volume"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -148,16 +149,16 @@ public readonly partial record struct Volume :
 
     /// <inheritdoc/>
     public int CompareTo(Volume other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="Volume"/>, and the SI base unit of the quantity.</summary>
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="Volume"/> (in SI units), and the SI base unit of the quantity.</summary>
     public override string ToString() => $"{Magnitude} [m^3]";
 
-    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Volume"/>, expressed in <see cref="UnitOfVolume"/>
-    /// <paramref name="unitOfVolume"/>.</summary>
+    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Volume"/>,
+    /// expressed in <paramref name="unitOfVolume"/>.</summary>
     /// <param name="unitOfVolume">The <see cref="UnitOfVolume"/> in which the magnitude is expressed.</param>
     public Scalar InUnit(UnitOfVolume unitOfVolume) => InUnit(this, unitOfVolume);
-    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Volume"/>, expressed in <see cref="UnitOfVolume"/>
-    /// <paramref name="unitOfVolume"/>.</summary>
-    /// <param name="volume">The <see cref="Volume"/> to be expressed in <see cref="UnitOfVolume"/> <paramref name="unitOfVolume"/>.</param>
+    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Volume"/>,
+    /// expressed in <paramref name="unitOfVolume"/>.</summary>
+    /// <param name="volume">The <see cref="Volume"/> to be expressed in <paramref name="unitOfVolume"/>.</param>
     /// <param name="unitOfVolume">The <see cref="UnitOfVolume"/> in which the magnitude is expressed.</param>
     private static Scalar InUnit(Volume volume, UnitOfVolume unitOfVolume) => new(volume.Magnitude / unitOfVolume.Factor);
 
@@ -193,7 +194,7 @@ public readonly partial record struct Volume :
     /// <summary>Divides the <see cref="Volume"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Volume"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Volume"/> <paramref name="x"/> is divded.</param>
+    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Volume"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(Volume x, Unhandled y) => x.Divide(y);
 
     /// <summary>Produces a <see cref="Volume"/>, with magnitude equal to the remainder from division of the original
@@ -252,26 +253,26 @@ public readonly partial record struct Volume :
     /// <param name="y">This value is used to divide the <see cref="Volume"/> <paramref name="x"/>.</param>
     public static Volume operator /(Volume x, Scalar y) => x.Divide(y);
 
-    /// <summary>Multiplies the <see cref="Volume"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which multiplication is done.</typeparam>
-    /// <param name="factor">The factor by which the <see cref="Volume"/> is multiplied.</param>
-    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
-    /// <summary>Divides the <see cref="Volume"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which division is done.</typeparam>
-    /// <param name="divisor">The divisor by which the <see cref="Volume"/> is divided.</param>
-    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    /// <inheritdoc/>
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(Magnitude * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+        where TQuotientScalarQuantity : IScalarQuantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(Magnitude / divisor.Magnitude);
     /// <summary>Multiples the <see cref="Volume"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Volume"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Volume"/> <paramref name="x"/>.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Volume.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator *(Volume x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    public static Unhandled operator *(Volume x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
     /// <summary>Divides the <see cref="Volume"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Volume"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="Volume"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Volume.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator /(Volume x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    public static Unhandled operator /(Volume x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
     /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
     /// <param name="x"><paramref name="y"/> is compared against this value.</param>
@@ -290,23 +291,28 @@ public readonly partial record struct Volume :
     /// <param name="y"><paramref name="x"/> is compared against this value.</param>
     public static bool operator >=(Volume x, Volume y) => x.Magnitude >= y.Magnitude;
 
-    /// <summary>Converts the <see cref="Volume"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
+    /// <summary>Converts the <see cref="Volume"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public double ToDouble() => Magnitude;
-    /// <summary>Converts the <see cref="Volume"/> to a <see cref="double"/> based on the magnitude of the <see cref="Volume"/> <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public static implicit operator double(Volume x) => x.ToDouble();
 
-    /// <summary>Converts the <see cref="Volume"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts the <see cref="Volume"/> to the <see cref="Scalar"/> of equivalent magnitude, when
+    /// expressed in SI units.</summary>
     public Scalar ToScalar() => new(Magnitude);
-    /// <summary>Converts the <see cref="Volume"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(Volume x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Volume"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Volume"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static Volume FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Volume"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Volume"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static explicit operator Volume(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Volume"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Volume"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static Volume FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Volume"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Volume"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Volume(Scalar x) => FromScalar(x);
 }

@@ -28,7 +28,8 @@ using System;
 /// </code>
 /// </item>
 /// </list>
-/// The magnitude of the measure can be retrieved using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfMomentum"/>.
+/// The magnitude of the <see cref="Momentum"/> can be retrieved in the desired <see cref="UnitOfMomentum"/> using pre-defined properties,
+/// such as <see cref="KilogramMetresPerSecond"/>
 /// </para>
 /// </summary>
 /// <remarks>
@@ -58,13 +59,13 @@ public readonly partial record struct Momentum :
     /// <summary>The <see cref="Momentum"/> with magnitude 1, when expressed in unit <see cref="UnitOfMomentum.KilogramMetrePerSecond"/>.</summary>
     public static Momentum OneKilogramMetrePerSecond { get; } = new(1, UnitOfMomentum.KilogramMetrePerSecond);
 
-    /// <summary>The magnitude of the <see cref="Momentum"/> measure, in SI units.</summary>
-    /// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="Momentum.InKilogramMetresPerSecond"/>.
-    /// <para>This value should only be used (to maximize efficiency) when implementing mathematical operations with other quantities.</para></remarks>
+    /// <summary>The magnitude of the <see cref="Momentum"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfMomentum)"/> or a pre-defined property
+    /// - such as <see cref="KilogramMetresPerSecond"/>.</remarks>
     public double Magnitude { get; init; }
 
-    /// <summary>Constructs a new <see cref="Momentum"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfMomentum"/> <paramref name="unitOfMomentum"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Momentum"/>, in <see cref="UnitOfMomentum"/> <paramref name="unitOfMomentum"/>.</param>
+    /// <summary>Constructs a new <see cref="Momentum"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfMomentum"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Momentum"/>, expressed in <paramref name="unitOfMomentum"/>.</param>
     /// <param name="unitOfMomentum">The <see cref="UnitOfMomentum"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring constructing instances according to the following:
     /// <list type="bullet">
@@ -76,8 +77,8 @@ public readonly partial record struct Momentum :
     /// </list>
     /// </remarks>
     public Momentum(Scalar magnitude, UnitOfMomentum unitOfMomentum) : this(magnitude.Magnitude, unitOfMomentum) { }
-    /// <summary>Constructs a new <see cref="Momentum"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfMomentum"/> <paramref name="unitOfMomentum"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Momentum"/>, in <see cref="UnitOfMomentum"/> <paramref name="unitOfMomentum"/>.</param>
+    /// <summary>Constructs a new <see cref="Momentum"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfMomentum"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Momentum"/>, expressed in <paramref name="unitOfMomentum"/>.</param>
     /// <param name="unitOfMomentum">The <see cref="UnitOfMomentum"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring cosntructing instances according to the following:
     /// <list type="bullet">
@@ -89,13 +90,13 @@ public readonly partial record struct Momentum :
     /// </list>
     /// </remarks>
     public Momentum(double magnitude, UnitOfMomentum unitOfMomentum) : this(magnitude * unitOfMomentum.Factor) { }
-    /// <summary>Constructs a new <see cref="Momentum"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Momentum"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Momentum"/>.</param>
-    /// <remarks>Consider preffering a constructor that requires a <see cref="UnitOfMomentum"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Momentum(Scalar, UnitOfMomentum)"/>.</remarks>
     public Momentum(Scalar magnitude) : this(magnitude.Magnitude) { }
-    /// <summary>Constructs a new <see cref="Momentum"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Momentum"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Momentum"/>.</param>
-    /// <remarks>Consider preferring a constructor that requires a <see cref="UnitOfMomentum"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Momentum(double, UnitOfMomentum)"/>.</remarks>
     public Momentum(double magnitude)
     {
         Magnitude = magnitude;
@@ -104,8 +105,8 @@ public readonly partial record struct Momentum :
     /// <summary>Converts the <see cref="Momentum"/> to an instance of the associated quantity <see cref="Impulse"/>, of equal magnitude.</summary>
     public Impulse AsImpulse => new(Magnitude);
 
-    /// <summary>Retrieves the magnitude of the <see cref="Momentum"/>, expressed in unit <see cref="UnitOfMomentum.KilogramMetrePerSecond"/>.</summary>
-    public Scalar InKilogramMetresPerSecond => InUnit(UnitOfMomentum.KilogramMetrePerSecond);
+    /// <summary>Retrieves the magnitude of the <see cref="Momentum"/>, expressed in <see cref="UnitOfMomentum.KilogramMetrePerSecond"/>.</summary>
+    public Scalar KilogramMetresPerSecond => InUnit(UnitOfMomentum.KilogramMetrePerSecond);
 
     /// <summary>Indicates whether the magnitude of the <see cref="Momentum"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -135,16 +136,16 @@ public readonly partial record struct Momentum :
 
     /// <inheritdoc/>
     public int CompareTo(Momentum other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="Momentum"/>, and the SI base unit of the quantity.</summary>
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="Momentum"/> (in SI units), and the SI base unit of the quantity.</summary>
     public override string ToString() => $"{Magnitude} [kg * m / s]";
 
-    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Momentum"/>, expressed in <see cref="UnitOfMomentum"/>
-    /// <paramref name="unitOfMomentum"/>.</summary>
+    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Momentum"/>,
+    /// expressed in <paramref name="unitOfMomentum"/>.</summary>
     /// <param name="unitOfMomentum">The <see cref="UnitOfMomentum"/> in which the magnitude is expressed.</param>
     public Scalar InUnit(UnitOfMomentum unitOfMomentum) => InUnit(this, unitOfMomentum);
-    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Momentum"/>, expressed in <see cref="UnitOfMomentum"/>
-    /// <paramref name="unitOfMomentum"/>.</summary>
-    /// <param name="momentum">The <see cref="Momentum"/> to be expressed in <see cref="UnitOfMomentum"/> <paramref name="unitOfMomentum"/>.</param>
+    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Momentum"/>,
+    /// expressed in <paramref name="unitOfMomentum"/>.</summary>
+    /// <param name="momentum">The <see cref="Momentum"/> to be expressed in <paramref name="unitOfMomentum"/>.</param>
     /// <param name="unitOfMomentum">The <see cref="UnitOfMomentum"/> in which the magnitude is expressed.</param>
     private static Scalar InUnit(Momentum momentum, UnitOfMomentum unitOfMomentum) => new(momentum.Magnitude / unitOfMomentum.Factor);
 
@@ -180,7 +181,7 @@ public readonly partial record struct Momentum :
     /// <summary>Divides the <see cref="Momentum"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Momentum"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Momentum"/> <paramref name="x"/> is divded.</param>
+    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Momentum"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(Momentum x, Unhandled y) => x.Divide(y);
 
     /// <summary>Produces a <see cref="Momentum"/>, with magnitude equal to the remainder from division of the original
@@ -239,35 +240,35 @@ public readonly partial record struct Momentum :
     /// <param name="y">This value is used to divide the <see cref="Momentum"/> <paramref name="x"/>.</param>
     public static Momentum operator /(Momentum x, Scalar y) => x.Divide(y);
 
-    /// <summary>Multiplies the <see cref="Momentum"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which multiplication is done.</typeparam>
-    /// <param name="factor">The factor by which the <see cref="Momentum"/> is multiplied.</param>
-    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
-    /// <summary>Divides the <see cref="Momentum"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which division is done.</typeparam>
-    /// <param name="divisor">The divisor by which the <see cref="Momentum"/> is divided.</param>
-    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    /// <inheritdoc/>
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(Magnitude * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+        where TQuotientScalarQuantity : IScalarQuantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(Magnitude / divisor.Magnitude);
     /// <summary>Multiples the <see cref="Momentum"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Momentum"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Momentum"/> <paramref name="x"/>.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Momentum.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator *(Momentum x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    public static Unhandled operator *(Momentum x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
     /// <summary>Divides the <see cref="Momentum"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Momentum"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="Momentum"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Momentum.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator /(Momentum x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    public static Unhandled operator /(Momentum x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
     /// <summary>Multiplies the <see cref="Momentum"/> with the <see cref="Vector3"/> <paramref name="vector"/> to produce a <see cref="Momentum3"/>.</summary>
     /// <param name="vector">This <see cref="Vector3"/> is multiplied by the <see cref="Momentum"/>.</param>
     public Momentum3 Multiply(Vector3 vector) => new(vector * Magnitude);
-    /// <summary>Multiplies the <see cref="Momentum"/> with the <see cref="ValueTuple"/> <paramref name="components"/> to produce a <see cref="Momentum3"/>.</summary>
-    /// <param name="components">This <see cref="ValueTuple"/> is multiplied by the <see cref="Momentum"/>.</param>
+    /// <summary>Multiplies the <see cref="Momentum"/> with the values of <paramref name="components"/> to produce a <see cref="Momentum3"/>.</summary>
+    /// <param name="components">These values are multiplied by the <see cref="Momentum"/>.</param>
     public Momentum3 Multiply((double x, double y, double z) components) => Multiply(new Vector3(components));
-    /// <summary>Multiplies the <see cref="Momentum"/> with the <see cref="ValueTuple"/> <paramref name="components"/> to produce a <see cref="Momentum3"/>.</summary>
-    /// <param name="components">This <see cref="ValueTuple"/> is multiplied by the <see cref="Momentum"/>.</param>
+    /// <summary>Multiplies the <see cref="Momentum"/> with the values of <paramref name="components"/> to produce a <see cref="Momentum3"/>.</summary>
+    /// <param name="components">These values are multiplied by the <see cref="Momentum"/>.</param>
     public Momentum3 Multiply((Scalar x, Scalar y, Scalar z) components) => Multiply(new Vector3(components));
     /// <summary>Multiplies the <see cref="Momentum"/> <paramref name="a"/> with the <see cref="Vector3"/> <paramref name="b"/> to produce a <see cref="Momentum3"/>.</summary>
     /// <param name="a">This <see cref="Momentum"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
@@ -277,21 +278,21 @@ public readonly partial record struct Momentum :
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="Momentum"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Momentum"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
     public static Momentum3 operator *(Vector3 a, Momentum b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="Momentum"/> <paramref name="a"/> with the <see cref="ValueTuple"/> <paramref name="b"/> to produce a <see cref="Momentum3"/>.</summary>
-    /// <param name="a">This <see cref="Momentum"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="ValueTuple"/> is multiplied by the <see cref="Momentum"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="Momentum"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="Momentum3"/>.</summary>
+    /// <param name="a">This <see cref="Momentum"/> is multiplied by the values of <paramref name="b"/>.</param>
+    /// <param name="b">These values are multiplied by the <see cref="Momentum"/> <paramref name="a"/>.</param>
     public static Momentum3 operator *(Momentum a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="Momentum"/> <parmref name="b"/> with the <see cref="ValueTuple"/> <paramref name="a"/> to produce a <see cref="Momentum3"/>.</summary>
-    /// <param name="a">This <see cref="ValueTuple"/> is multiplied by the <see cref="Momentum"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="Momentum"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="Momentum"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="Momentum3"/>.</summary>
+    /// <param name="a">These values are multiplied by the <see cref="Momentum"/> <paramref name="b"/>.</param>
+    /// <param name="b">This <see cref="Momentum"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static Momentum3 operator *((double x, double y, double z) a, Momentum b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="Momentum"/> <paramref name="a"/> with the <see cref="ValueTuple"/> <paramref name="b"/> to produce a <see cref="Momentum3"/>.</summary>
-    /// <param name="a">This <see cref="Momentum"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="ValueTuple"/> is multiplied by the <see cref="Momentum"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="Momentum"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="Momentum3"/>.</summary>
+    /// <param name="a">This <see cref="Momentum"/> is multiplied by the values of <paramref name="b"/>.</param>
+    /// <param name="b">These values are multiplied by the <see cref="Momentum"/> <paramref name="a"/>.</param>
     public static Momentum3 operator *(Momentum a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="Momentum"/> <parmref name="b"/> with the <see cref="ValueTuple"/> <paramref name="a"/> to produce a <see cref="Momentum3"/>.</summary>
-    /// <param name="a">This <see cref="ValueTuple"/> is multiplied by the <see cref="Momentum"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="Momentum"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="Momentum"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="Momentum3"/>.</summary>
+    /// <param name="a">These values are multiplied by the <see cref="Momentum"/> <paramref name="b"/>.</param>
+    /// <param name="b">This <see cref="Momentum"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static Momentum3 operator *((Scalar x, Scalar y, Scalar z) a, Momentum b) => b.Multiply(a);
 
     /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
@@ -311,23 +312,28 @@ public readonly partial record struct Momentum :
     /// <param name="y"><paramref name="x"/> is compared against this value.</param>
     public static bool operator >=(Momentum x, Momentum y) => x.Magnitude >= y.Magnitude;
 
-    /// <summary>Converts the <see cref="Momentum"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
+    /// <summary>Converts the <see cref="Momentum"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public double ToDouble() => Magnitude;
-    /// <summary>Converts the <see cref="Momentum"/> to a <see cref="double"/> based on the magnitude of the <see cref="Momentum"/> <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public static implicit operator double(Momentum x) => x.ToDouble();
 
-    /// <summary>Converts the <see cref="Momentum"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts the <see cref="Momentum"/> to the <see cref="Scalar"/> of equivalent magnitude, when
+    /// expressed in SI units.</summary>
     public Scalar ToScalar() => new(Magnitude);
-    /// <summary>Converts the <see cref="Momentum"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(Momentum x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Momentum"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Momentum"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static Momentum FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Momentum"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Momentum"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static explicit operator Momentum(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Momentum"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Momentum"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static Momentum FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Momentum"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Momentum"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Momentum(Scalar x) => FromScalar(x);
 }

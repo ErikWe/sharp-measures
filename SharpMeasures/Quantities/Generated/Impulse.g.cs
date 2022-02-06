@@ -28,7 +28,8 @@ using System;
 /// </code>
 /// </item>
 /// </list>
-/// The magnitude of the measure can be retrieved using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfImpulse"/>.
+/// The magnitude of the <see cref="Impulse"/> can be retrieved in the desired <see cref="UnitOfImpulse"/> using pre-defined properties,
+/// such as <see cref="NewtonSeconds"/>
 /// </para>
 /// </summary>
 /// <remarks>
@@ -58,13 +59,13 @@ public readonly partial record struct Impulse :
     /// <summary>The <see cref="Impulse"/> with magnitude 1, when expressed in unit <see cref="UnitOfImpulse.NewtonSecond"/>.</summary>
     public static Impulse OneNewtonSecond { get; } = new(1, UnitOfImpulse.NewtonSecond);
 
-    /// <summary>The magnitude of the <see cref="Impulse"/> measure, in SI units.</summary>
-    /// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="Impulse.InNewtonSeconds"/>.
-    /// <para>This value should only be used (to maximize efficiency) when implementing mathematical operations with other quantities.</para></remarks>
+    /// <summary>The magnitude of the <see cref="Impulse"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfImpulse)"/> or a pre-defined property
+    /// - such as <see cref="NewtonSeconds"/>.</remarks>
     public double Magnitude { get; init; }
 
-    /// <summary>Constructs a new <see cref="Impulse"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfImpulse"/> <paramref name="unitOfImpulse"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Impulse"/>, in <see cref="UnitOfImpulse"/> <paramref name="unitOfImpulse"/>.</param>
+    /// <summary>Constructs a new <see cref="Impulse"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfImpulse"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Impulse"/>, expressed in <paramref name="unitOfImpulse"/>.</param>
     /// <param name="unitOfImpulse">The <see cref="UnitOfImpulse"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring constructing instances according to the following:
     /// <list type="bullet">
@@ -76,8 +77,8 @@ public readonly partial record struct Impulse :
     /// </list>
     /// </remarks>
     public Impulse(Scalar magnitude, UnitOfImpulse unitOfImpulse) : this(magnitude.Magnitude, unitOfImpulse) { }
-    /// <summary>Constructs a new <see cref="Impulse"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfImpulse"/> <paramref name="unitOfImpulse"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Impulse"/>, in <see cref="UnitOfImpulse"/> <paramref name="unitOfImpulse"/>.</param>
+    /// <summary>Constructs a new <see cref="Impulse"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfImpulse"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Impulse"/>, expressed in <paramref name="unitOfImpulse"/>.</param>
     /// <param name="unitOfImpulse">The <see cref="UnitOfImpulse"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring cosntructing instances according to the following:
     /// <list type="bullet">
@@ -89,13 +90,13 @@ public readonly partial record struct Impulse :
     /// </list>
     /// </remarks>
     public Impulse(double magnitude, UnitOfImpulse unitOfImpulse) : this(magnitude * unitOfImpulse.Factor) { }
-    /// <summary>Constructs a new <see cref="Impulse"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Impulse"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Impulse"/>.</param>
-    /// <remarks>Consider preffering a constructor that requires a <see cref="UnitOfImpulse"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Impulse(Scalar, UnitOfImpulse)"/>.</remarks>
     public Impulse(Scalar magnitude) : this(magnitude.Magnitude) { }
-    /// <summary>Constructs a new <see cref="Impulse"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Impulse"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Impulse"/>.</param>
-    /// <remarks>Consider preferring a constructor that requires a <see cref="UnitOfImpulse"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Impulse(double, UnitOfImpulse)"/>.</remarks>
     public Impulse(double magnitude)
     {
         Magnitude = magnitude;
@@ -104,8 +105,8 @@ public readonly partial record struct Impulse :
     /// <summary>Converts the <see cref="Impulse"/> to an instance of the associated quantity <see cref="Momentum"/>, of equal magnitude.</summary>
     public Momentum AsMomentum => new(Magnitude);
 
-    /// <summary>Retrieves the magnitude of the <see cref="Impulse"/>, expressed in unit <see cref="UnitOfImpulse.NewtonSecond"/>.</summary>
-    public Scalar InNewtonSeconds => InUnit(UnitOfImpulse.NewtonSecond);
+    /// <summary>Retrieves the magnitude of the <see cref="Impulse"/>, expressed in <see cref="UnitOfImpulse.NewtonSecond"/>.</summary>
+    public Scalar NewtonSeconds => InUnit(UnitOfImpulse.NewtonSecond);
 
     /// <summary>Indicates whether the magnitude of the <see cref="Impulse"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -135,16 +136,16 @@ public readonly partial record struct Impulse :
 
     /// <inheritdoc/>
     public int CompareTo(Impulse other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="Impulse"/>, and the SI base unit of the quantity.</summary>
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="Impulse"/> (in SI units), and the SI base unit of the quantity.</summary>
     public override string ToString() => $"{Magnitude} [kg * m / s]";
 
-    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Impulse"/>, expressed in <see cref="UnitOfImpulse"/>
-    /// <paramref name="unitOfImpulse"/>.</summary>
+    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Impulse"/>,
+    /// expressed in <paramref name="unitOfImpulse"/>.</summary>
     /// <param name="unitOfImpulse">The <see cref="UnitOfImpulse"/> in which the magnitude is expressed.</param>
     public Scalar InUnit(UnitOfImpulse unitOfImpulse) => InUnit(this, unitOfImpulse);
-    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Impulse"/>, expressed in <see cref="UnitOfImpulse"/>
-    /// <paramref name="unitOfImpulse"/>.</summary>
-    /// <param name="impulse">The <see cref="Impulse"/> to be expressed in <see cref="UnitOfImpulse"/> <paramref name="unitOfImpulse"/>.</param>
+    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Impulse"/>,
+    /// expressed in <paramref name="unitOfImpulse"/>.</summary>
+    /// <param name="impulse">The <see cref="Impulse"/> to be expressed in <paramref name="unitOfImpulse"/>.</param>
     /// <param name="unitOfImpulse">The <see cref="UnitOfImpulse"/> in which the magnitude is expressed.</param>
     private static Scalar InUnit(Impulse impulse, UnitOfImpulse unitOfImpulse) => new(impulse.Magnitude / unitOfImpulse.Factor);
 
@@ -180,7 +181,7 @@ public readonly partial record struct Impulse :
     /// <summary>Divides the <see cref="Impulse"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Impulse"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Impulse"/> <paramref name="x"/> is divded.</param>
+    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Impulse"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(Impulse x, Unhandled y) => x.Divide(y);
 
     /// <summary>Produces a <see cref="Impulse"/>, with magnitude equal to the remainder from division of the original
@@ -239,35 +240,35 @@ public readonly partial record struct Impulse :
     /// <param name="y">This value is used to divide the <see cref="Impulse"/> <paramref name="x"/>.</param>
     public static Impulse operator /(Impulse x, Scalar y) => x.Divide(y);
 
-    /// <summary>Multiplies the <see cref="Impulse"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which multiplication is done.</typeparam>
-    /// <param name="factor">The factor by which the <see cref="Impulse"/> is multiplied.</param>
-    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
-    /// <summary>Divides the <see cref="Impulse"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which division is done.</typeparam>
-    /// <param name="divisor">The divisor by which the <see cref="Impulse"/> is divided.</param>
-    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    /// <inheritdoc/>
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(Magnitude * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+        where TQuotientScalarQuantity : IScalarQuantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(Magnitude / divisor.Magnitude);
     /// <summary>Multiples the <see cref="Impulse"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Impulse"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Impulse"/> <paramref name="x"/>.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Impulse.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator *(Impulse x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    public static Unhandled operator *(Impulse x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
     /// <summary>Divides the <see cref="Impulse"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Impulse"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="Impulse"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Impulse.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator /(Impulse x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    public static Unhandled operator /(Impulse x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
     /// <summary>Multiplies the <see cref="Impulse"/> with the <see cref="Vector3"/> <paramref name="vector"/> to produce a <see cref="Impulse3"/>.</summary>
     /// <param name="vector">This <see cref="Vector3"/> is multiplied by the <see cref="Impulse"/>.</param>
     public Impulse3 Multiply(Vector3 vector) => new(vector * Magnitude);
-    /// <summary>Multiplies the <see cref="Impulse"/> with the <see cref="ValueTuple"/> <paramref name="components"/> to produce a <see cref="Impulse3"/>.</summary>
-    /// <param name="components">This <see cref="ValueTuple"/> is multiplied by the <see cref="Impulse"/>.</param>
+    /// <summary>Multiplies the <see cref="Impulse"/> with the values of <paramref name="components"/> to produce a <see cref="Impulse3"/>.</summary>
+    /// <param name="components">These values are multiplied by the <see cref="Impulse"/>.</param>
     public Impulse3 Multiply((double x, double y, double z) components) => Multiply(new Vector3(components));
-    /// <summary>Multiplies the <see cref="Impulse"/> with the <see cref="ValueTuple"/> <paramref name="components"/> to produce a <see cref="Impulse3"/>.</summary>
-    /// <param name="components">This <see cref="ValueTuple"/> is multiplied by the <see cref="Impulse"/>.</param>
+    /// <summary>Multiplies the <see cref="Impulse"/> with the values of <paramref name="components"/> to produce a <see cref="Impulse3"/>.</summary>
+    /// <param name="components">These values are multiplied by the <see cref="Impulse"/>.</param>
     public Impulse3 Multiply((Scalar x, Scalar y, Scalar z) components) => Multiply(new Vector3(components));
     /// <summary>Multiplies the <see cref="Impulse"/> <paramref name="a"/> with the <see cref="Vector3"/> <paramref name="b"/> to produce a <see cref="Impulse3"/>.</summary>
     /// <param name="a">This <see cref="Impulse"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
@@ -277,21 +278,21 @@ public readonly partial record struct Impulse :
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="Impulse"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Impulse"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
     public static Impulse3 operator *(Vector3 a, Impulse b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="Impulse"/> <paramref name="a"/> with the <see cref="ValueTuple"/> <paramref name="b"/> to produce a <see cref="Impulse3"/>.</summary>
-    /// <param name="a">This <see cref="Impulse"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="ValueTuple"/> is multiplied by the <see cref="Impulse"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="Impulse"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="Impulse3"/>.</summary>
+    /// <param name="a">This <see cref="Impulse"/> is multiplied by the values of <paramref name="b"/>.</param>
+    /// <param name="b">These values are multiplied by the <see cref="Impulse"/> <paramref name="a"/>.</param>
     public static Impulse3 operator *(Impulse a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="Impulse"/> <parmref name="b"/> with the <see cref="ValueTuple"/> <paramref name="a"/> to produce a <see cref="Impulse3"/>.</summary>
-    /// <param name="a">This <see cref="ValueTuple"/> is multiplied by the <see cref="Impulse"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="Impulse"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="Impulse"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="Impulse3"/>.</summary>
+    /// <param name="a">These values are multiplied by the <see cref="Impulse"/> <paramref name="b"/>.</param>
+    /// <param name="b">This <see cref="Impulse"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static Impulse3 operator *((double x, double y, double z) a, Impulse b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="Impulse"/> <paramref name="a"/> with the <see cref="ValueTuple"/> <paramref name="b"/> to produce a <see cref="Impulse3"/>.</summary>
-    /// <param name="a">This <see cref="Impulse"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="ValueTuple"/> is multiplied by the <see cref="Impulse"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="Impulse"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="Impulse3"/>.</summary>
+    /// <param name="a">This <see cref="Impulse"/> is multiplied by the values of <paramref name="b"/>.</param>
+    /// <param name="b">These values are multiplied by the <see cref="Impulse"/> <paramref name="a"/>.</param>
     public static Impulse3 operator *(Impulse a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="Impulse"/> <parmref name="b"/> with the <see cref="ValueTuple"/> <paramref name="a"/> to produce a <see cref="Impulse3"/>.</summary>
-    /// <param name="a">This <see cref="ValueTuple"/> is multiplied by the <see cref="Impulse"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="Impulse"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="Impulse"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="Impulse3"/>.</summary>
+    /// <param name="a">These values are multiplied by the <see cref="Impulse"/> <paramref name="b"/>.</param>
+    /// <param name="b">This <see cref="Impulse"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static Impulse3 operator *((Scalar x, Scalar y, Scalar z) a, Impulse b) => b.Multiply(a);
 
     /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
@@ -311,23 +312,28 @@ public readonly partial record struct Impulse :
     /// <param name="y"><paramref name="x"/> is compared against this value.</param>
     public static bool operator >=(Impulse x, Impulse y) => x.Magnitude >= y.Magnitude;
 
-    /// <summary>Converts the <see cref="Impulse"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
+    /// <summary>Converts the <see cref="Impulse"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public double ToDouble() => Magnitude;
-    /// <summary>Converts the <see cref="Impulse"/> to a <see cref="double"/> based on the magnitude of the <see cref="Impulse"/> <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public static implicit operator double(Impulse x) => x.ToDouble();
 
-    /// <summary>Converts the <see cref="Impulse"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts the <see cref="Impulse"/> to the <see cref="Scalar"/> of equivalent magnitude, when
+    /// expressed in SI units.</summary>
     public Scalar ToScalar() => new(Magnitude);
-    /// <summary>Converts the <see cref="Impulse"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(Impulse x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Impulse"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Impulse"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static Impulse FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Impulse"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Impulse"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static explicit operator Impulse(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Impulse"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Impulse"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static Impulse FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Impulse"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Impulse"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Impulse(Scalar x) => FromScalar(x);
 }

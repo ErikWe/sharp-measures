@@ -22,7 +22,8 @@ using System;
 /// </code>
 /// </item>
 /// </list>
-/// The magnitude of the measure can be retrieved using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfTime"/>.
+/// The magnitude of the <see cref="Time"/> can be retrieved in the desired <see cref="UnitOfTime"/> using pre-defined properties,
+/// such as <see cref="Seconds"/>.
 /// </para>
 /// </summary>
 public readonly partial record struct Time :
@@ -71,13 +72,13 @@ public readonly partial record struct Time :
     /// <param name="timeSquared">The square root of this <see cref="TimeSquared"/> is taken to produce a <see cref="Time"/>.</param>
     public static Time From(TimeSquared timeSquared) => new(Math.Sqrt(timeSquared.Magnitude));
 
-    /// <summary>The magnitude of the <see cref="Time"/> measure, in SI units.</summary>
-    /// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="Time.InFemtoseconds"/>.
-    /// <para>This value should only be used (to maximize efficiency) when implementing mathematical operations with other quantities.</para></remarks>
+    /// <summary>The magnitude of the <see cref="Time"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfTime)"/> or a pre-defined property
+    /// - such as <see cref="Femtoseconds"/>.</remarks>
     public double Magnitude { get; init; }
 
-    /// <summary>Constructs a new <see cref="Time"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfTime"/> <paramref name="unitOfTime"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Time"/>, in <see cref="UnitOfTime"/> <paramref name="unitOfTime"/>.</param>
+    /// <summary>Constructs a new <see cref="Time"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfTime"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Time"/>, expressed in <paramref name="unitOfTime"/>.</param>
     /// <param name="unitOfTime">The <see cref="UnitOfTime"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring constructing instances according to the following:
     /// <list type="bullet">
@@ -89,8 +90,8 @@ public readonly partial record struct Time :
     /// </list>
     /// </remarks>
     public Time(Scalar magnitude, UnitOfTime unitOfTime) : this(magnitude.Magnitude, unitOfTime) { }
-    /// <summary>Constructs a new <see cref="Time"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfTime"/> <paramref name="unitOfTime"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Time"/>, in <see cref="UnitOfTime"/> <paramref name="unitOfTime"/>.</param>
+    /// <summary>Constructs a new <see cref="Time"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfTime"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Time"/>, expressed in <paramref name="unitOfTime"/>.</param>
     /// <param name="unitOfTime">The <see cref="UnitOfTime"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring cosntructing instances according to the following:
     /// <list type="bullet">
@@ -102,41 +103,41 @@ public readonly partial record struct Time :
     /// </list>
     /// </remarks>
     public Time(double magnitude, UnitOfTime unitOfTime) : this(magnitude * unitOfTime.Factor) { }
-    /// <summary>Constructs a new <see cref="Time"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Time"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Time"/>.</param>
-    /// <remarks>Consider preffering a constructor that requires a <see cref="UnitOfTime"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Time(Scalar, UnitOfTime)"/>.</remarks>
     public Time(Scalar magnitude) : this(magnitude.Magnitude) { }
-    /// <summary>Constructs a new <see cref="Time"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Time"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Time"/>.</param>
-    /// <remarks>Consider preferring a constructor that requires a <see cref="UnitOfTime"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Time(double, UnitOfTime)"/>.</remarks>
     public Time(double magnitude)
     {
         Magnitude = magnitude;
     }
 
-    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in unit <see cref="UnitOfTime.Femtosecond"/>.</summary>
-    public Scalar InFemtoseconds => InUnit(UnitOfTime.Femtosecond);
-    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in unit <see cref="UnitOfTime.Picosecond"/>.</summary>
-    public Scalar InPicoseconds => InUnit(UnitOfTime.Picosecond);
-    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in unit <see cref="UnitOfTime.Nanosecond"/>.</summary>
-    public Scalar InNanoseconds => InUnit(UnitOfTime.Nanosecond);
-    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in unit <see cref="UnitOfTime.Microsecond"/>.</summary>
-    public Scalar InMicroseconds => InUnit(UnitOfTime.Microsecond);
-    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in unit <see cref="UnitOfTime.Millisecond"/>.</summary>
-    public Scalar InMilliseconds => InUnit(UnitOfTime.Millisecond);
-    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in unit <see cref="UnitOfTime.Second"/>.</summary>
-    public Scalar InSeconds => InUnit(UnitOfTime.Second);
+    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in <see cref="UnitOfTime.Femtosecond"/>.</summary>
+    public Scalar Femtoseconds => InUnit(UnitOfTime.Femtosecond);
+    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in <see cref="UnitOfTime.Picosecond"/>.</summary>
+    public Scalar Picoseconds => InUnit(UnitOfTime.Picosecond);
+    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in <see cref="UnitOfTime.Nanosecond"/>.</summary>
+    public Scalar Nanoseconds => InUnit(UnitOfTime.Nanosecond);
+    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in <see cref="UnitOfTime.Microsecond"/>.</summary>
+    public Scalar Microseconds => InUnit(UnitOfTime.Microsecond);
+    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in <see cref="UnitOfTime.Millisecond"/>.</summary>
+    public Scalar Milliseconds => InUnit(UnitOfTime.Millisecond);
+    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in <see cref="UnitOfTime.Second"/>.</summary>
+    public Scalar Seconds => InUnit(UnitOfTime.Second);
 
-    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in unit <see cref="UnitOfTime.Minute"/>.</summary>
-    public Scalar InMinutes => InUnit(UnitOfTime.Minute);
-    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in unit <see cref="UnitOfTime.Hour"/>.</summary>
-    public Scalar InHours => InUnit(UnitOfTime.Hour);
-    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in unit <see cref="UnitOfTime.Day"/>.</summary>
-    public Scalar InDays => InUnit(UnitOfTime.Day);
-    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in unit <see cref="UnitOfTime.Week"/>.</summary>
-    public Scalar InWeeks => InUnit(UnitOfTime.Week);
-    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in unit <see cref="UnitOfTime.CommonYear"/>.</summary>
-    public Scalar InCommonYears => InUnit(UnitOfTime.CommonYear);
+    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in <see cref="UnitOfTime.Minute"/>.</summary>
+    public Scalar Minutes => InUnit(UnitOfTime.Minute);
+    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in <see cref="UnitOfTime.Hour"/>.</summary>
+    public Scalar Hours => InUnit(UnitOfTime.Hour);
+    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in <see cref="UnitOfTime.Day"/>.</summary>
+    public Scalar Days => InUnit(UnitOfTime.Day);
+    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in <see cref="UnitOfTime.Week"/>.</summary>
+    public Scalar Weeks => InUnit(UnitOfTime.Week);
+    /// <summary>Retrieves the magnitude of the <see cref="Time"/>, expressed in <see cref="UnitOfTime.CommonYear"/>.</summary>
+    public Scalar CommonYears => InUnit(UnitOfTime.CommonYear);
 
     /// <summary>Indicates whether the magnitude of the <see cref="Time"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -171,16 +172,16 @@ public readonly partial record struct Time :
 
     /// <inheritdoc/>
     public int CompareTo(Time other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="Time"/>, and the SI base unit of the quantity.</summary>
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="Time"/> (in SI units), and the SI base unit of the quantity.</summary>
     public override string ToString() => $"{Magnitude} [s]";
 
-    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Time"/>, expressed in <see cref="UnitOfTime"/>
-    /// <paramref name="unitOfTime"/>.</summary>
+    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Time"/>,
+    /// expressed in <paramref name="unitOfTime"/>.</summary>
     /// <param name="unitOfTime">The <see cref="UnitOfTime"/> in which the magnitude is expressed.</param>
     public Scalar InUnit(UnitOfTime unitOfTime) => InUnit(this, unitOfTime);
-    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Time"/>, expressed in <see cref="UnitOfTime"/>
-    /// <paramref name="unitOfTime"/>.</summary>
-    /// <param name="time">The <see cref="Time"/> to be expressed in <see cref="UnitOfTime"/> <paramref name="unitOfTime"/>.</param>
+    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Time"/>,
+    /// expressed in <paramref name="unitOfTime"/>.</summary>
+    /// <param name="time">The <see cref="Time"/> to be expressed in <paramref name="unitOfTime"/>.</param>
     /// <param name="unitOfTime">The <see cref="UnitOfTime"/> in which the magnitude is expressed.</param>
     private static Scalar InUnit(Time time, UnitOfTime unitOfTime) => new(time.Magnitude / unitOfTime.Factor);
 
@@ -216,7 +217,7 @@ public readonly partial record struct Time :
     /// <summary>Divides the <see cref="Time"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Time"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Time"/> <paramref name="x"/> is divded.</param>
+    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Time"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(Time x, Unhandled y) => x.Divide(y);
 
     /// <summary>Produces a <see cref="Time"/>, with magnitude equal to the remainder from division of the original
@@ -283,26 +284,26 @@ public readonly partial record struct Time :
 /// <param name="y">The <see cref="Time"/>, which is inverted to a <see cref="Frequency"/> and scaled by <paramref name="x"/>.</param>
     public static Frequency operator /(Scalar x, Time y) => x * y.Invert();
 
-    /// <summary>Multiplies the <see cref="Time"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which multiplication is done.</typeparam>
-    /// <param name="factor">The factor by which the <see cref="Time"/> is multiplied.</param>
-    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
-    /// <summary>Divides the <see cref="Time"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which division is done.</typeparam>
-    /// <param name="divisor">The divisor by which the <see cref="Time"/> is divided.</param>
-    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    /// <inheritdoc/>
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(Magnitude * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+        where TQuotientScalarQuantity : IScalarQuantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(Magnitude / divisor.Magnitude);
     /// <summary>Multiples the <see cref="Time"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Time"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Time"/> <paramref name="x"/>.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Time.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator *(Time x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    public static Unhandled operator *(Time x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
     /// <summary>Divides the <see cref="Time"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Time"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="Time"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Time.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator /(Time x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    public static Unhandled operator /(Time x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
     /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
     /// <param name="x"><paramref name="y"/> is compared against this value.</param>
@@ -321,23 +322,28 @@ public readonly partial record struct Time :
     /// <param name="y"><paramref name="x"/> is compared against this value.</param>
     public static bool operator >=(Time x, Time y) => x.Magnitude >= y.Magnitude;
 
-    /// <summary>Converts the <see cref="Time"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
+    /// <summary>Converts the <see cref="Time"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public double ToDouble() => Magnitude;
-    /// <summary>Converts the <see cref="Time"/> to a <see cref="double"/> based on the magnitude of the <see cref="Time"/> <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public static implicit operator double(Time x) => x.ToDouble();
 
-    /// <summary>Converts the <see cref="Time"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts the <see cref="Time"/> to the <see cref="Scalar"/> of equivalent magnitude, when
+    /// expressed in SI units.</summary>
     public Scalar ToScalar() => new(Magnitude);
-    /// <summary>Converts the <see cref="Time"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(Time x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Time"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Time"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static Time FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Time"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Time"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static explicit operator Time(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Time"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Time"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static Time FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Time"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Time"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Time(Scalar x) => FromScalar(x);
 }

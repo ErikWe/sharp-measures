@@ -2,9 +2,45 @@
 
 using ErikWe.SharpMeasures.Units;
 
+using System;
 using System.Numerics;
 
-#Document:Header(Impulse3, 3, Impulse, UnitOfImpulse, [NewtonSecond], [NewtonSeconds])#
+/// <summary>A measure of the vector quantity <see cref="Impulse3"/>, of dimensionality three,
+/// describing a change in the <see cref="Momentum3"/> of an object. The quantity is expressed in
+/// <see cref="UnitOfImpulse"/>, with the SI unit being [N * s].
+/// <para>
+/// New instances of <see cref="Impulse3"/> can be constructed by multiplying a <see cref="Impulse"/> with a Vector3 or (double, double, double).
+/// Instances can also be produced by combining other quantities, either through mathematical operators or using overloads of the static method 'From'.
+/// Lastly, instances can be constructed from quantities sharing the same unit, using instance-methods of the associated quantity - typically prefixed with 'As'. This is demonstrated below:
+/// <list type="bullet">
+/// <item>
+/// <code>
+/// <see cref="Impulse3"/> a = (3, 5, 7) * <see cref="Impulse.OneNewtonSecond"/>;
+/// </code>
+/// </item>
+/// <item>
+/// <code>
+/// <see cref="Impulse3"/> d = <see cref="Impulse3.From(Force3, Time)"/>;
+/// </code>
+/// </item>
+/// <item>
+/// <code>
+/// <see cref="Impulse3"/> e = <see cref="Momentum3.AsImpulse3"/>;
+/// </code>
+/// </item>
+/// </list>
+/// The components of the measure can be retrieved as a <see cref="Vector3"/> using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfImpulse"/>.
+/// </para>
+/// </summary>
+/// <remarks>
+/// <see cref="Impulse3"/> is closely related to the following quantities:
+/// <list type="bullet">
+/// <item>
+/// <term><see cref="Momentum3"/></term>
+/// <description>A property of an object with <see cref="Mass"/> in motion.</description>
+/// </item>
+/// </list>
+/// </remarks>
 public readonly partial record struct Impulse3 :
     IVector3Quantity,
     IScalableVector3Quantity<Impulse3>,
@@ -14,50 +50,95 @@ public readonly partial record struct Impulse3 :
     IMultiplicableVector3Quantity<Unhandled3, Unhandled>,
     IDivisibleVector3Quantity<Impulse3, Scalar>,
     IDivisibleVector3Quantity<Unhandled3, Unhandled>,
-    IDotableVector3Quantity<Impulse3, Scalar>,
+    IDotableVector3Quantity<Impulse, Vector3>,
+    IDotableVector3Quantity<Unhandled, Unhandled3>,
+    ICrossableVector3Quantity<Impulse3, Vector3>,
+    ICrossableVector3Quantity<Unhandled3, Unhandled3>,
     IGenericallyMultiplicableVector3Quantity,
     IGenericallyDivisibleVector3Quantity,
     IGenericallyDotableVector3Quantity,
     IGenericallyCrossableVector3Quantity
 {
-    #Document:Zero(Impulse3, 3)#
+    /// <summary>The zero-magnitude <see cref="Impulse3"/>.</summary>
     public static Impulse3 Zero { get; } = new(0, 0, 0);
 
-    #Document:ComponentX(Impulse3, 3)#
+    /// <summary>The magnitude of the X-component of the <see cref="Impulse3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfImpulse)"/> or a pre-defined property
+    /// - such as <see cref="NewtonSeconds"/>.</remarks>
     public double X { get; init; }
-    #Document:ComponentY(Impulse3, 3)#
+    /// <summary>The magnitude of the Y-component of the <see cref="Impulse3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfImpulse)"/> or a pre-defined property
+    /// - such as <see cref="NewtonSeconds"/>.</remarks>
     public double Y { get; init; }
-    #Document:ComponentZ(Impulse3, 3)#
+    /// <summary>The magnitude of the Z-component of the <see cref="Impulse3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfImpulse)"/> or a pre-defined property
+    /// - such as <see cref="NewtonSeconds"/>.</remarks>
     public double Z { get; init; }
 
-    #Document:ConstructorComponentTupleUnit(Impulse3, 3, UnitOfImpulse, unitOfImpulse, [NewtonSecond])#
-    public Impulse3((Impulse x, Impulse y, Impulse z) components, UnitOfImpulse unitOfImpulse) : this(components.x, components.y, components.z, unitOfImpulse) { }
-    #Document:ConstructorComponentsUnit(Impulse3, 3, UnitOfImpulse, unitOfImpulse, [NewtonSecond])#
-    public Impulse3(Impulse x, Impulse y, Impulse z, UnitOfImpulse unitOfImpulse) : this(x.Magnitude, y.Magnitude, z.Magnitude, unitOfImpulse) { }
-    #Document:ConstructorScalarTupleUnit(Impulse3, 3, UnitOfImpulse, unitOfImpulse, [NewtonSecond])#
+    /// <summary>Constructs a new <see cref="Impulse3"/> with components <paramref name="components"/>.</summary>
+    /// <param name="components">The components of the <see cref="Impulse3"/>.</param>
+    public Impulse3((Impulse x, Impulse y, Impulse z) components) : this(components.x, components.y, components.z) { }
+    /// <summary>Constructs a new <see cref="Impulse3"/> with components (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>).</summary>
+    /// <param name="x">The X-component of the <see cref="Impulse3"/>.</param>
+    /// <param name="y">The Y-component of the <see cref="Impulse3"/>.</param>
+    /// <param name="z">The Z-component of the <see cref="Impulse3"/>.</param>
+    public Impulse3(Impulse x, Impulse y, Impulse z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
+    /// <summary>Constructs a new <see cref="Impulse3"/> with components of magnitudes <paramref name="components"/>,
+    /// expressed in <paramref name="unitOfImpulse"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Impulse3"/>, expressed in <paramref name="unitOfImpulse"/>.</param>
+    /// <param name="unitOfImpulse">The <see cref="UnitOfImpulse"/> in which the magnitudes of the components, <paramref name="components"/>, are expressed.</param>
     public Impulse3((Scalar x, Scalar y, Scalar z) components, UnitOfImpulse unitOfImpulse) : this(components.x, components.y, components.z, unitOfImpulse) { }
-    #Document:ConstructorScalarsUnit(Impulse3, 3, UnitOfImpulse, unitOfImpulse, [NewtonSecond])#
+    /// <summary>Constructs a new <see cref="Impulse3"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>),
+    /// expressed in <paramref name="unitOfImpulse"/>.</summary>
+    /// <param name="x">The magnitude of the X-component of the <see cref="Impulse3"/>, expressed in <paramref name="unitOfImpulse"/>.</param>
+    /// <param name="y">The magnitude of the Y-component of the <see cref="Impulse3"/>, expressed in <paramref name="unitOfImpulse"/>.</param>
+    /// <param name="z">The magnitude of the Z-component of the <see cref="Impulse3"/>, expressed in <paramref name="unitOfImpulse"/>.</param>
+    /// <param name="unitOfImpulse">The <see cref="UnitOfImpulse"/> in which the magnitudes of the components,
+    /// (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>), are expressed.</param>
     public Impulse3(Scalar x, Scalar y, Scalar z, UnitOfImpulse unitOfImpulse) : this(x.Magnitude, y.Magnitude, z.Magnitude, unitOfImpulse) { }
-    #Document:ConstructorVectorUnit(Impulse3, 3, UnitOfImpulse, unitOfImpulse, [NewtonSecond])#
+    /// <summary>Constructs a new <see cref="Impulse3"/> with components of magnitudes <paramref name="components"/>,
+    /// expressed in <paramref name="unitOfImpulse"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Impulse3"/>, expressed in <paramref name="unitOfImpulse"/>.</param>
+    /// <param name="unitOfImpulse">The <see cref="UnitOfImpulse"/> in which the magnitudes of the components,
+    /// <paramref name="components"/>, are expressed.</param>
     public Impulse3(Vector3 components, UnitOfImpulse unitOfImpulse) : this(components.X, components.Y, components.Z, unitOfImpulse) { }
-    #Document:ConstructorDoubleTupleUnit(Impulse3, 3, UnitOfImpulse, unitOfImpulse, [NewtonSecond])#
+    /// <summary>Constructs a new <see cref="Impulse3"/> with components of magnitudes <paramref name="components"/>,
+    /// expressed in <paramref name="unitOfImpulse"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Impulse3"/>, expressed in <paramref name="unitOfImpulse"/>.</param>
+    /// <param name="unitOfImpulse">The <see cref="UnitOfImpulse"/> in which the magnitudes of the components, <paramref name="components"/>, are expressed.</param>
     public Impulse3((double x, double y, double z) components, UnitOfImpulse unitOfImpulse) : this(components.x, components.y, components.z, unitOfImpulse) { }
-    #Document:ConstructorDoublesTupleUnit(Impulse3, 3, UnitOfImpulse, unitOfImpulse, [NewtonSecond])#
+    /// <summary>Constructs a new <see cref="Impulse3"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>),
+    /// expressed in <paramref name="unitOfImpulse"/>.</summary>
+    /// <param name="x">The magnitude of the X-component of the <see cref="Impulse3"/>, expressed in <paramref name="unitOfImpulse"/>.</param>
+    /// <param name="y">The magnitude of the Y-component of the <see cref="Impulse3"/>, expressed in <paramref name="unitOfImpulse"/>.</param>
+    /// <param name="z">The magnitude of the Z-component of the <see cref="Impulse3"/>, expressed in <paramref name="unitOfImpulse"/>.</param>
+    /// <param name="unitOfImpulse">The <see cref="UnitOfImpulse"/> in which the magnitudes of the components,
+    /// (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>), are expressed.</param>
     public Impulse3(double x, double y, double z, UnitOfImpulse unitOfImpulse) : this(x * unitOfImpulse.Factor, y * unitOfImpulse.Factor, z * unitOfImpulse.Factor) { }
 
-    #Document:ConstructorComponentTuple(Impulse3, 3, UnitOfImpulse, unitOfImpulse, [NewtonSecond])#
-    public Impulse3((Impulse x, Impulse y, Impulse z) components) : this(components.x, components.y, components.z) { }
-    #Document:ConstructorComponents(Impulse3, 3, UnitOfImpulse, unitOfImpulse, [NewtonSecond])#
-    public Impulse3(Impulse x, Impulse y, Impulse z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
-    #Document:ConstructorScalarTuple(Impulse3, 3, UnitOfImpulse, unitOfImpulse, [NewtonSecond])#
+    /// <summary>Constructs a new <see cref="Impulse3"/> with components of magnitudes <paramref name="components"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Impulse3"/>.</param>
+    /// <remarks>Consider preferring <see cref="Impulse3(ValueTuple{Scalar, Scalar, Scalar}, UnitOfImpulse)"/>.</remarks>
     public Impulse3((Scalar x, Scalar y, Scalar z) components) : this(components.x, components.y, components.z) { }
-    #Document:ConstructorScalars(Impulse3, 3, UnitOfImpulse, unitOfImpulse, [NewtonSecond])#
+    /// <summary>Constructs a new <see cref="Impulse3"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>).</summary>
+    /// <param name="x">The magnitude of the X-component of the <see cref="Impulse3"/>.</param>
+    /// <param name="y">The magnitude of the Y-component of the <see cref="Impulse3"/>.</param>
+    /// <param name="z">The magnitude of the Z-component of the <see cref="Impulse3"/>.</param>
+    /// <remarks>Consider preferring <see cref="Impulse3(Scalar, Scalar, Scalar, UnitOfImpulse)"/>.</remarks>
     public Impulse3(Scalar x, Scalar y, Scalar z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
-    #Document:ConstructorVector(Impulse3, 3, UnitOfImpulse, unitOfImpulse, [NewtonSecond])#
+    /// <summary>Constructs a new <see cref="Impulse3"/> with components of magnitudes <paramref name="components"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Impulse3"/>.</param>
+    /// <remarks>Consider preferring <see cref="Impulse3(Vector3, UnitOfImpulse)"/>.</remarks>
     public Impulse3(Vector3 components) : this(components.X, components.Y, components.Z) { }
-    #Document:ConstructorDoubleTuple(Impulse3, 3, UnitOfImpulse, unitOfImpulse, [NewtonSecond])#
+    /// <summary>Constructs a new <see cref="Impulse3"/> with components of magnitudes <paramref name="components"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Impulse3"/>.</param>
+    /// <remarks>Consider preferring <see cref="Impulse3(ValueTuple{double, double, double}, UnitOfImpulse)"/>.</remarks>
     public Impulse3((double x, double y, double z) components) : this(components.x, components.y, components.z) { }
-    #Document:ConstructorDoubles(Impulse3, 3, UnitOfImpulse, unitOfImpulse, [NewtonSecond])#
+    /// <summary>Constructs a new <see cref="Impulse3"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>).</summary>
+    /// <param name="x">The magnitude of the X-component of the <see cref="Impulse3"/>.</param>
+    /// <param name="y">The magnitude of the Y-component of the <see cref="Impulse3"/>.</param>
+    /// <param name="z">The magnitude of the Z-component of the <see cref="Impulse3"/>.</param>
+    /// <remarks>Consider preferring <see cref="Impulse3(double, double, double, UnitOfImpulse)"/>.</remarks>
     public Impulse3(double x, double y, double z)
     {
         X = x;
@@ -67,130 +148,212 @@ public readonly partial record struct Impulse3 :
 
 );
 
-    #Document:InUnit(quantity = Impulse3, dimensionality = 3, unit = UnitOfImpulse, unitName = NewtonSecond)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Impulse3"/>, expressed in <see cref="UnitOfImpulse.NewtonSecond"/>.</summary>
     public Vector3 NewtonSeconds => InUnit(UnitOfImpulse.NewtonSecond);
 
-    #Document:ScalarMagnitude(Impulse3, 3)#
+    /// <inheritdoc/>
     Scalar IVector3Quantity.Magnitude() => Maths.Vectors.Dot(this, this).SquareRoot();
-    #Document:ScalarQuantityMagnitude(Impulse3, 3, Impulse)#
+    /// <summary>Computes the magnitude, or norm, of the vector quantity <see cref="Impulse3"/>, as a <see cref="Impulse"/>.</summary>
+    /// <remarks>For improved performance, consider preferring <see cref="SquaredMagnitude"/> when possible.</remarks>
     public Impulse Magnitude() => new(Maths.Vectors.Dot(this, this).SquareRoot());
-#NonScalarQuantityComponent#
-    #Document:ScalarMagnitude(Impulse3, 3)#
-    public Scalar Magnitude() => Maths.Vectors.Dot(this, this).SquareRoot();
-#/NonScalarQuantityComponent#
-    #Document:ScalarSquaredMagnitude(Impulse3, 3)#
-    Scalar IVector3Quantity.SquaredMagnitude() => Maths.Vectors.Dot(this, this);
-    #Document:ScalarQuantitySquaredMagnitude(Impulse3, 3, undefined)#
-    public undefined SquaredMagnitude() => new(Maths.Vectors.Dot(this, this));
+    /// <summary>Computes the square of the magnitude, or norm, of the vector quantity <see cref="Impulse3"/>.</summary>
+    /// <remarks>For clarity, consider first extracting the magnitudes of the components in the desired <see cref="UnitOfImpulse"/>.</remarks>
+    public Scalar SquaredMagnitude() => Maths.Vectors.Dot(this, this);
 
-    #Document:Normalize(Impulse3, 3)#
+    /// <summary>Normalizes the <see cref="Impulse3"/> - if expressed in SI units.</summary>
+    /// <remarks>Note that the resulting <see cref="Impulse3"/> will only be normalized if expressed in SI units.</remarks>
     public Impulse3 Normalize() => this / Magnitude().Magnitude;
-#NonScalarQuantityComponent#
-    #Document:Normalize(Impulse3, 3)#
-    public Impulse3 Normalize() => this / Magnitude();
-#/NonScalarQuantityComponent#
-    #Document:Transform(Impulse3, 3)#
+    /// <summary>Computes the transformation of the existing <see cref="Impulse3"/> by <paramref name="transform"/>, resulting in
+    /// a new <see cref="Impulse3"/>.</summary>
+    /// <param name="transform">The <see cref="Impulse3"/> is transformed by this <see cref="Matrix4x4"/>.</param>
     public Impulse3 Transform(Matrix4x4 transform) => new(Maths.Vectors.Transform(this, transform));
     
-    #Document:DotVector(Impulse3, 3)#
+    /// <summary>Performs dot-multiplication of the <see cref="Impulse3"/> by <paramref name="factor"/>, resulting in a
+    /// <cref name="Impulse"/>.</summary>
+    /// <param name="factor">The <see cref="Impulse3"/> is dot-multiplied by this <see cref="Vector3"/>.</param>
     public Impulse Dot(Vector3 factor) => new(Maths.Vectors.Dot(this, factor));
-    #Document:DotUnhandled(Impulse3, 3)#
+    /// <summary>Performs dot-multiplication of the <see cref="Impulse3"/> by <paramref name="factor"/>, resulting in a
+    /// <cref name="Unhandled"/>.</summary>
+    /// <param name="factor">The <see cref="Impulse3"/> is dot-multiplied by this <see cref="Unhandled3"/>.</param>
     public Unhandled Dot(Unhandled3 factor) => new(Maths.Vectors.Dot(this, factor));
-    #Document:DotGeneric(Impulse3, 3)#
-    public Unhandled Dot<TVector3Quantity>(TVector3Quantity factor) where TVector3Quantity : IVector3Quantity => new(Maths.Vectors.Dot(this, factor));
-    #Document:CrossVector(Impulse3, 3)#
+    /// <inheritdoc/>
+    public TProductScalarQuantity Dot<TProductScalarQuantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<Scalar, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorVector3Quantity : IVector3Quantity
+        => factory(Maths.Vectors.Dot(this, factor));
+    /// <summary>Performs cross-multiplication of the <see cref="Impulse3"/> by <paramref name="factor"/>, resulting in a
+    /// <cref see="Impulse3"/>.</summary>
+    /// <param name="factor">The <see cref="Impulse3"/> is cross-multiplied by this <see cref="Vector3"/>.</param>
     public Impulse3 Cross(Vector3 factor) => new(Maths.Vectors.Cross(this, factor));
-    #Document:CrossUnhandled(Impulse3, 3)#
+    /// <summary>Performs cross-multiplication of the <see cref="Impulse3"/> by <paramref name="factor"/>, resulting in a
+    /// <cref name="Unhandled3"/>.</summary>
+    /// <param name="factor">The <see cref="Impulse3"/> is cross-multiplied by this <see cref="Unhandled3"/>.</param>
     public Unhandled3 Cross(Unhandled3 factor) => new(Maths.Vectors.Cross(this, factor));
-    #Document:CrossGeneric(Impulse3, 3)#
-    public Unhandled3 Cross<TVector3Quantity>(TVector3Quantity factor) where TVector3Quantity : IVector3Quantity => new(Maths.Vectors.Cross(this, factor));
+    /// <inheritdoc/>
+    public TProductVector3Quantity Cross<TProductVector3Quantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<Vector3, TProductVector3Quantity> factory)
+        where TProductVector3Quantity : IVector3Quantity
+        where TFactorVector3Quantity : IVector3Quantity
+        => factory(Maths.Vectors.Cross(this, factor));
 
-    #Document:ToString(Impulse3, 3)#
+    /// <summary>Produces a formatted string from the magnitudes of the components of the <see cref="Impulse3"/> (in SI units),
+    /// and the SI base unit of the quantity.</summary>
     public override string ToString() => $"({X}, {Y}, {Z}) [kg * m / s]";
 
-    #Document:InUnitInstance(Impulse3, 3, UnitOfImpulse, unitOfImpulse)#
+    /// <summary>Produces a <see cref="Vector3"/> with components equal to that of the <see cref="Impulse3"/>,
+    /// expressed in <paramref name="unitOfImpulse"/>.</summary>
+    /// <param name="unitOfImpulse">The <see cref="UnitOfImpulse"/> in which the magnitude is expressed.</param>
     public Vector3 InUnit(UnitOfImpulse unitOfImpulse) => InUnit(this, unitOfImpulse);
-    #Document:InUnitStatic(Impulse3, impulse3, 3, UnitOfImpulse, unitOfImpulse)#
+    /// <summary>Produces a <see cref="Vector3"/> with components equal to that of the <see cref="Impulse3"/>,
+    /// expressed in <paramref name="unitOfImpulse"/>.</summary>
+    /// <param name="impulse3">The <see cref="Impulse3"/> to be expressed in <paramref name="unitOfImpulse"/>.</param>
+    /// <param name="unitOfImpulse">The <see cref="UnitOfImpulse"/> in which the magnitude is expressed.</param>
     private static Vector3 InUnit(Impulse3 impulse3, UnitOfImpulse unitOfImpulse) => impulse3.ToVector3() / unitOfImpulse.Factor;
     
-    #Document:PlusMethod(Impulse3, 3)#
+    /// <summary>Unary plus, resulting in the unmodified <see cref="Impulse3"/>.</summary>
     public Impulse3 Plus() => this;
-    #Document:NegateMethod(Impulse3, 3)#
+    /// <summary>Negation, resulting in a <see cref="Impulse3"/> with negated components.</summary>
     public Impulse3 Negate() => new(-X, -Y, -Z);
-    #Document:PlusOperator(Impulse3, 3)#
+    /// <summary>Unary plus, resulting in the unmodified <paramref name="a"/>.</summary>
+    /// <param name="a">Unary plus is applied to this instance of <see cref="Impulse3"/>.</param>
     public static Impulse3 operator +(Impulse3 a) => a;
-    #Document:NegateOperator(Impulse3, 3)#
+    /// <summary>Negation, resulting in a <see cref="Impulse3"/> with components negated from that of <paramref name="a"/>.</summary>
+    /// <param name="a">Negation is applied to this instance of <see cref="Impulse3"/>.</param>
     public static Impulse3 operator -(Impulse3 a) => new(-a.X, -a.Y, -a.Z);
 
-    #Document:MultiplyUnhandledMethod(Impulse3, 3)#
-    public Unhandled3 Multiply(Unhandled factor) => new(XX * factor.Magnitude, YY * factor.Magnitude, ZZ * factor.Magnitude);
-    #Document:DivideUnhandledMethod(Impulse3, 3)#
+    /// <summary>Multiplies the <see cref="Impulse3"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="factor">The factor by which the <see cref="Impulse3"/> is multiplied.</param>
+    public Unhandled3 Multiply(Unhandled factor) => new(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+    /// <summary>Divides the <see cref="Impulse3"/> by the <see cref="Unhandled"/> quantity <paramref name="divisor"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="divisor">The divisor by which the <see cref="Impulse3"/> is divided.</param>
     public Unhandled3 Divide(Unhandled divisor) => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
-    #Document:MultiplyUnhandledOperatorLHS(Impulse3, 3)#
+    /// <summary>Multiplies the <see cref="Impulse3"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
+    /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="Impulse3"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="Unhandled"/> quantity by which the <see cref="Impulse3"/> <paramref name="a"/> is multiplied.</param>
     public static Unhandled3 operator *(Impulse3 a, Unhandled b) => new(a.X * b.Magnitude, a.Y * b.Magnitude, a.Z * b.Magnitude);
-    #Document:MultiplyUnhandledOperatorRHS(Impulse3, 3)#
+    /// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="b"/> by the <see cref="Impulse3"/> <paramref name="a"/> -
+    /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="Unhandled"/> quantity by which the <see cref="Impulse3"/> <paramref name="b"/> is multiplied.</param>
+    /// <param name="b">The <see cref="Impulse3"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="a"/>.</param>
     public static Unhandled3 operator *(Unhandled a, Impulse3 b) => new(a.Magnitude * b.X, a.Magnitude * b.Y, a.Magnitude * b.Z);
-    #Document:DivideUnhandledOperator(Impulse3, 3)#
+    /// <summary>Divides the <see cref="Impulse3"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
+    /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="Impulse3"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="Unhandled"/> quantity by which the <see cref="Impulse3"/> <paramref name="a"/> is divded.</param>
     public static Unhandled3 operator /(Impulse3 a, Unhandled b) => new(a.X / b.Magnitude, a.Y / b.Magnitude, a.Z / b.Magnitude);
 
-    #Document:RemainderDoubleMethod(Impulse3, 3)#
+    /// <summary>Produces a <see cref="Impulse3"/>, with each component equal to the remainder from division of the
+    /// magnitude of the original component by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
     public Impulse3 Remainder(double divisor) => new(X % divisor, Y % divisor, Z % divisor);
-    #Document:MultiplyDoubleMethod(Impulse3, 3)#
+    /// <summary>Scales the <see cref="Impulse3"/> by <paramref name="factor"/>.</summary>
+    /// <param name="factor">The factor by which the <see cref="Impulse3"/> is scaled.</param>
     public Impulse3 Multiply(double factor) => new(X * factor, Y * factor, Z * factor);
-    #Document:DivideDoubleMethod(Impulse3, 3)#
+    /// <summary>Scales the <see cref="Impulse3"/> through division by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, by which the <see cref="Impulse3"/> is divided.</param>
     public Impulse3 Divide(double divisor) => new(X / divisor, Y / divisor, Z / divisor);
-    #Document:RemainderDoubleOperator(Impulse3, 3)#
+    /// <summary>Produces a <see cref="Impulse3"/>, with each component equal to the remainder from division of the
+    /// magnitude of the component of <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Impulse3"/>, the components of which are divided by <paramref name="b"/> to produce a remainder.</param>
+    /// <param name="b">The remainder is retrieved from division of <see cref="Impulse3"/> <paramref name="a"/> by this value.</param>
     public static Impulse3 operator %(Impulse3 a, double b) => new(a.X % b, a.Y % b, a.Z % b);
-    #Document:MultiplyDoubleOperatorLHS(Impulse3, 3)#
+    /// <summary>Scales the <see cref="Impulse3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Impulse3"/>, which is scaled by <paramref name="b"/>.</param>
+    /// <param name="b">This value is used to scale the <see cref="Impulse3"/> <paramref name="a"/>.</param>
     public static Impulse3 operator *(Impulse3 a, double b) => new(a.X * b, a.Y * b, a.Z * b);
-    #Document:MultiplyDoubleOperatorRHS(Impulse3, 3)#
+    /// <summary>Scales the <see cref="Impulse3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">This value is used to scale the <see cref="Impulse3"/> <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="Impulse3"/>, which is scaled by <paramref name="a"/>.</param>
     public static Impulse3 operator *(double a, Impulse3 b) => new(a * b.X, a * b.Y, a * b.Z);
-    #Document:DivideDoubleOperator(Impulse3, 3)#
+    /// <summary>Scales the <see cref="Impulse3"/> <paramref name="a"/> through division by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Impulse3"/>, which is divided by <paramref name="b"/>.</param>
+    /// <param name="b">This value is used to divide the <see cref="Impulse3"/> <paramref name="a"/>.</param>
     public static Impulse3 operator /(Impulse3 a, double b) => new(a.X / b, a.Y / b, a.Z / b);
 
-    #Document:RemainderScalarMethod(Impulse3, 3)#
+    /// <summary>Produces a <see cref="Impulse3"/>, with each component equal to the remainder from division of the
+    /// magnitude of the original component by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
     public Impulse3 Remainder(Scalar divisor) => new(X % divisor.Magnitude, Y % divisor.Magnitude, Z % divisor.Magnitude);
-    #Document:MultiplyScalarMethod(Impulse3, 3)#
-    public Impulse3 Multiply(Scalar factor) => new(XX * factor.Magnitude, YY * factor.Magnitude, ZZ * factor.Magnitude);
-    #Document:DivideScalarMethod(Impulse3, 3)#
+    /// <summary>Scales the <see cref="Impulse3"/> by <paramref name="factor"/>.</summary>
+    /// <param name="factor">The factor by which the <see cref="Impulse3"/> is scaled.</param>
+    public Impulse3 Multiply(Scalar factor) => new(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+    /// <summary>Scales the <see cref="Impulse3"/> through division by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, by which the <see cref="Impulse3"/> is divided.</param>
     public Impulse3 Divide(Scalar divisor) => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
-    #Document:RemainderScalarOperator(Impulse3, 3)#
+    /// <summary>Produces a <see cref="Impulse3"/>, with each component equal to the remainder from division of the
+    /// magnitude of the component of <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Impulse3"/>, the components of which are divided by <paramref name="b"/> to produce a remainder.</param>
+    /// <param name="b">The remainder is retrieved from division of <see cref="Impulse3"/> <paramref name="a"/> by this value.</param>
     public static Impulse3 operator %(Impulse3 a, Scalar b) => new(a.X % b.Magnitude, a.Y % b.Magnitude, a.Z % b.Magnitude);
-    #Document:MultiplyScalarOperatorLHS(Impulse3, 3)#
+    /// <summary>Scales the <see cref="Impulse3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Impulse3"/>, which is scaled by <paramref name="b"/>.</param>
+    /// <param name="b">This value is used to scale the <see cref="Impulse3"/> <paramref name="a"/>.</param>
     public static Impulse3 operator *(Impulse3 a, Scalar b) => new(a.X * b.Magnitude, a.Y * b.Magnitude, a.Z * b.Magnitude);
-    #Document:MultiplyScalarOperatorRHS(Impulse3, 3)#
+    /// <summary>Scales the <see cref="Impulse3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">This value is used to scale the <see cref="Impulse3"/> <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="Impulse3"/>, which is scaled by <paramref name="a"/>.</param>
     public static Impulse3 operator *(Scalar a, Impulse3 b) => new(a.Magnitude * b.X, a.Magnitude * b.Y, a.Magnitude * b.Z);
-    #Document:DivideScalarOperator(Impulse3, 3)#
+    /// <summary>Scales the <see cref="Impulse3"/> <paramref name="a"/> through division by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Impulse3"/>, which is divided by <paramref name="b"/>.</param>
+    /// <param name="b">This value is used to divide the <see cref="Impulse3"/> <paramref name="a"/>.</param>
     public static Impulse3 operator /(Impulse3 a, Scalar b) => new(a.X / b.Magnitude, a.Y / b.Magnitude, a.Z / b.Magnitude);
 
-    #Document:MultiplyTScalar(Impulse3, 3)#
-    public Unhandled3 Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(XX * factor.Magnitude, YY * factor.Magnitude, ZZ * factor.Magnitude);
-    #Document:DivideTScalar(Impulse3, 3)#
-    public Unhandled3 Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
-    #Document:MultiplyIScalarLHS(Impulse3, 3)#
+    /// <inheritdoc/>
+    public TProductVector3Quantity Multiply<TProductVector3Quantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, double, double, TProductVector3Quantity> factory)
+        where TProductVector3Quantity : IVector3Quantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientVector3Quantity Divide<TQuotientVector3Quantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, double, double, TQuotientVector3Quantity> factory)
+        where TQuotientVector3Quantity : IVector3Quantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
+    /// <summary>Multiples the <see cref="Impulse3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="Impulse3"/>, which is multiplied by <paramref name="b"/>.</param>
+    /// <param name="b">This quantity is multiplied by the <see cref="Impulse3"/> <paramref name="a"/>.</param>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
     public static Unhandled3 operator *(Impulse3 a, IScalarQuantity b) => new(a.X * b.Magnitude, a.Y * b.Magnitude, a.Z * b.Magnitude);
-    #Document:MultiplyIScalarRHS(Impulse3, 3)#
+    /// <summary>Multiples the quantity <paramref name="a"/> by the <see cref="Impulse3"/> <paramref name="b"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">This quantity is multiplied by the <see cref="Impulse3"/> <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="Impulse3"/>, which is multiplied by <paramref name="a"/>.</param>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
     public static Unhandled3 operator *(IScalarQuantity a, Impulse3 b) => new(a.Magnitude * b.X, a.Magnitude * b.Y, a.Magnitude * b.Z);
-    #Document:DivideIScalar(Impulse3, 3)#
+    /// <summary>Divides the <see cref="Impulse3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="Impulse3"/>, which is divided by <paramref name="b"/>.</param>
+    /// <param name="b">The<see cref="Impulse3"/> <paramref name="a"/> is divided by this quantity.</param>
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientVector3Quantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, double, double, TQuotientVector3Quantity})"/>.</remarks>
     public static Unhandled3 operator /(Impulse3 a, IScalarQuantity b) => new(a.X / b.Magnitude, a.Y / b.Magnitude, a.Z / b.Magnitude);
 
-    #Document:ToValueTupleMethod(Impulse3, 3)#
+    /// <summary>Converts the <see cref="Impulse3"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with values
+    /// (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
     public (double x, double y, double z) ToValueTuple() => (X, Y, Z);
-    #Document:ToValueTupleOperator(Impulse3, 3)#
+    /// <summary>Converts <paramref name="a"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with values
+    /// (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
     public static implicit operator (double x, double y, double z)(Impulse3 a) => (a.X, a.Y, a.Z);
 
-    #Document:ToVectorMethod(Impulse3, 3)#
+    /// <summary>Converts the <see cref="Impulse3"/> to the <see cref="Vector3"/> with components of
+    /// equal magnitude, when expressed in SI units.</summary>
     public Vector3 ToVector3() => new(X, Y, Z);
-    #Document:ToVectorOperator(Impulse3, 3)#
+    /// <summary>Converts <paramref name="a"/> to the <see cref="Vector3"/> with components of
+    /// equal magnitude, when expressed in SI units.</summary>
     public static explicit operator Vector3(Impulse3 a) => new(a.X, a.Y, a.Z);
 
-    #Document:FromValueTupleMethod(Impulse3, 3)#
+    /// <summary>Constructs the <see cref="Impulse3"/> with components equal to the values of <paramref name="components"/>,
+    /// when expressed in SI units.</summary>
     public static Impulse3 FromValueTuple((double x, double y, double z) components) => new(components);
-    #Document:FromValueTupleOperator(Impulse3, 3)#
+    /// <summary>Constructs the <see cref="Impulse3"/> with components equal to the values of <paramref name="components"/>,
+    /// when expressed in SI units.</summary>
     public static explicit operator Impulse3((double x, double y, double z) components) => new(components);
 
-    #Document:FromVectorMethod(Impulse3, 3)#
+    /// <summary>Converts <paramref name="a"/> to the <see cref="Impulse3"/> with components of equal magnitude,
+    /// when expressed in SI units.</summary>
     public static Impulse3 FromVector3(Vector3 a) => new(a);
-    #Document:FromVectorOperator(Impulse3, 3)#
+    /// <summary>Converts <paramref name="a"/> to the <see cref="Impulse3"/> with components of equal magnitude,
+    /// when expressed in SI units.</summary>
     public static explicit operator Impulse3(Vector3 a) => new(a);
 }

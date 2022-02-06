@@ -1,5 +1,7 @@
 ﻿namespace ErikWe.SharpMeasures.Quantities;
 
+using System;
+
 /// <summary>Describes a scalar quantity, having only magnitude.</summary>
 public interface IScalarQuantity
 {
@@ -140,24 +142,34 @@ public interface IDivisibleScalarQuantity<out TQuotientScalarQuantity, in TDivis
     public abstract TQuotientScalarQuantity Divide(TDivisorScalarQuantity divisor);
 }
 
-/// <summary>Describes a scalar quantity that may be multiplied by a quantity of a generically provided type, to produce an <see cref="Unhandled"/>.</summary>
+/// <summary>Describes a scalar quantity that may be multiplied by a quantity of a generically provided type, to produce a quantity of another generically
+/// provided type.</summary>
 public interface IGenericallyMultiplicableScalarQuantity :
     IScalarQuantity
 {
-    /// <summary>Multiplies the original quantity by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>, resulting in an
-    /// <see cref="Unhandled"/>.</summary>
-    /// <typeparam name="TScalarQuantity">The scalar quantity by which the original quantity may be multiplied.</typeparam>
+    /// <summary>Multiplies the original quantity by the quantity <paramref name="factor"/> of type <typeparamref name="TFactorScalarQuantity"/>, resulting in a
+    /// <typeparamref name="TProductScalarQuantity"/>.</summary>
+    /// <typeparam name="TProductScalarQuantity">The scalar quantity that is the product of the two quantities.</typeparam>
+    /// <typeparam name="TFactorScalarQuantity">The scalar quantity by which the original quantity may be multiplied.</typeparam>
     /// <param name="factor">The quantity by which the original quantity is multiplied.</param>
-    public abstract Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity;
+    /// <param name="factory">Delegate for constructing a <typeparamref name="TProductScalarQuantity"/> from a <see langword="double"/>.</param>
+    public abstract TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorScalarQuantity : IScalarQuantity;
 }
 
-/// <summary>Describes a scalar quantity that may be divided by a quantity of a generically provided type, to produce an <see cref="Unhandled"/>.</summary>
+/// <summary>Describes a scalar quantity that may be divided by a quantity of a generically provided type, to produce a iquantity of another generically
+/// provided type.</summary>
 public interface IGenericallyDivisibleScalarQuantity :
     IScalarQuantity
 {
-    /// <summary>Divides the original quantity by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>, resulting in an
-    /// <see cref="Unhandled"/>.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the scalar quantity by which the original quantity may be divided.</typeparam>
+    /// <summary>Divides the original quantity by the quantity <paramref name="divisor"/> of type <typeparamref name="TDivisorScalarQuantity"/>, resulting in a
+    /// <typeparamref name="TQuotientScalarQuantity"/>.</summary>
+    /// <typeparam name="TQuotientScalarQuantity">The scalar quantity that is the quotient of the two quantities.</typeparam>
+    /// <typeparam name="TDivisorScalarQuantity">The type of the scalar quantity by which the original quantity may be divided.</typeparam>
     /// <param name="divisor">The quantity by which the original quantity is divided.</param>
-    public abstract Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity;
+    /// <param name="factory">Delegate for constructing a <typeparamref name="TQuotientScalarQuantity"/> from a <see langword="double"/>.</param>
+    public abstract TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+        where TQuotientScalarQuantity : IScalarQuantity
+        where TDivisorScalarQuantity : IScalarQuantity;
 }

@@ -22,7 +22,8 @@ using System;
 /// </code>
 /// </item>
 /// </list>
-/// The magnitude of the measure can be retrieved using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfAngularVelocity"/>.
+/// The magnitude of the <see cref="AngularSpeed"/> can be retrieved in the desired <see cref="UnitOfAngularVelocity"/> using pre-defined properties,
+/// such as <see cref="RadiansPerSecond"/>.
 /// </para>
 /// </summary>
 /// <remarks>
@@ -30,11 +31,11 @@ using System;
 /// <list type="bullet">
 /// <item>
 /// <term><see cref="OrbitalAngularSpeed"/></term>
-/// <description>Describes the angular speed of an object about an external point.</description>
+/// <description>Describes the <see cref="AngularSpeed"/> of an object about an external point.</description>
 /// </item>
 /// <item>
 /// <term><see cref="SpinAngularSpeed"/></term>
-/// <description>Describes the angular speed of an object about the internal center of rotation.</description>
+/// <description>Describes the <see cref="AngularSpeed"/> of an object about the internal center of rotation.</description>
 /// </item>
 /// </list>
 /// </remarks>
@@ -60,13 +61,13 @@ public readonly partial record struct AngularSpeed :
     /// <summary>The <see cref="AngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.TurnPerSecond"/>.</summary>
     public static AngularSpeed OneTurnPerSecond { get; } = new(1, UnitOfAngularVelocity.TurnPerSecond);
 
-    /// <summary>The magnitude of the <see cref="AngularSpeed"/> measure, in SI units.</summary>
-    /// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="AngularSpeed.InRadiansPerSecond"/>.
-    /// <para>This value should only be used (to maximize efficiency) when implementing mathematical operations with other quantities.</para></remarks>
+    /// <summary>The magnitude of the <see cref="AngularSpeed"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAngularVelocity)"/> or a pre-defined property
+    /// - such as <see cref="RadiansPerSecond"/>.</remarks>
     public double Magnitude { get; init; }
 
-    /// <summary>Constructs a new <see cref="AngularSpeed"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfAngularVelocity"/> <paramref name="unitOfAngularVelocity"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="AngularSpeed"/>, in <see cref="UnitOfAngularVelocity"/> <paramref name="unitOfAngularVelocity"/>.</param>
+    /// <summary>Constructs a new <see cref="AngularSpeed"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfAngularVelocity"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="AngularSpeed"/>, expressed in <paramref name="unitOfAngularVelocity"/>.</param>
     /// <param name="unitOfAngularVelocity">The <see cref="UnitOfAngularVelocity"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring constructing instances according to the following:
     /// <list type="bullet">
@@ -78,8 +79,8 @@ public readonly partial record struct AngularSpeed :
     /// </list>
     /// </remarks>
     public AngularSpeed(Scalar magnitude, UnitOfAngularVelocity unitOfAngularVelocity) : this(magnitude.Magnitude, unitOfAngularVelocity) { }
-    /// <summary>Constructs a new <see cref="AngularSpeed"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfAngularVelocity"/> <paramref name="unitOfAngularVelocity"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="AngularSpeed"/>, in <see cref="UnitOfAngularVelocity"/> <paramref name="unitOfAngularVelocity"/>.</param>
+    /// <summary>Constructs a new <see cref="AngularSpeed"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfAngularVelocity"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="AngularSpeed"/>, expressed in <paramref name="unitOfAngularVelocity"/>.</param>
     /// <param name="unitOfAngularVelocity">The <see cref="UnitOfAngularVelocity"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring cosntructing instances according to the following:
     /// <list type="bullet">
@@ -91,13 +92,13 @@ public readonly partial record struct AngularSpeed :
     /// </list>
     /// </remarks>
     public AngularSpeed(double magnitude, UnitOfAngularVelocity unitOfAngularVelocity) : this(magnitude * unitOfAngularVelocity.Factor) { }
-    /// <summary>Constructs a new <see cref="AngularSpeed"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="AngularSpeed"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="AngularSpeed"/>.</param>
-    /// <remarks>Consider preffering a constructor that requires a <see cref="UnitOfAngularVelocity"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="AngularSpeed(Scalar, UnitOfAngularVelocity)"/>.</remarks>
     public AngularSpeed(Scalar magnitude) : this(magnitude.Magnitude) { }
-    /// <summary>Constructs a new <see cref="AngularSpeed"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="AngularSpeed"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="AngularSpeed"/>.</param>
-    /// <remarks>Consider preferring a constructor that requires a <see cref="UnitOfAngularVelocity"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="AngularSpeed(double, UnitOfAngularVelocity)"/>.</remarks>
     public AngularSpeed(double magnitude)
     {
         Magnitude = magnitude;
@@ -108,12 +109,12 @@ public readonly partial record struct AngularSpeed :
     /// <summary>Converts the <see cref="AngularSpeed"/> to an instance of the associated quantity <see cref="SpinAngularSpeed"/>, of equal magnitude.</summary>
     public SpinAngularSpeed AsSpinAngularSpeed => new(Magnitude);
 
-    /// <summary>Retrieves the magnitude of the <see cref="AngularSpeed"/>, expressed in unit <see cref="UnitOfAngularVelocity.RadianPerSecond"/>.</summary>
-    public Scalar InRadiansPerSecond => InUnit(UnitOfAngularVelocity.RadianPerSecond);
-    /// <summary>Retrieves the magnitude of the <see cref="AngularSpeed"/>, expressed in unit <see cref="UnitOfAngularVelocity.DegreePerSecond"/>.</summary>
-    public Scalar InDegreesPerSecond => InUnit(UnitOfAngularVelocity.DegreePerSecond);
-    /// <summary>Retrieves the magnitude of the <see cref="AngularSpeed"/>, expressed in unit <see cref="UnitOfAngularVelocity.TurnPerSecond"/>.</summary>
-    public Scalar InTurnsPerSecond => InUnit(UnitOfAngularVelocity.TurnPerSecond);
+    /// <summary>Retrieves the magnitude of the <see cref="AngularSpeed"/>, expressed in <see cref="UnitOfAngularVelocity.RadianPerSecond"/>.</summary>
+    public Scalar RadiansPerSecond => InUnit(UnitOfAngularVelocity.RadianPerSecond);
+    /// <summary>Retrieves the magnitude of the <see cref="AngularSpeed"/>, expressed in <see cref="UnitOfAngularVelocity.DegreePerSecond"/>.</summary>
+    public Scalar DegreesPerSecond => InUnit(UnitOfAngularVelocity.DegreePerSecond);
+    /// <summary>Retrieves the magnitude of the <see cref="AngularSpeed"/>, expressed in <see cref="UnitOfAngularVelocity.TurnPerSecond"/>.</summary>
+    public Scalar TurnsPerSecond => InUnit(UnitOfAngularVelocity.TurnPerSecond);
 
     /// <summary>Indicates whether the magnitude of the <see cref="AngularSpeed"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -143,16 +144,16 @@ public readonly partial record struct AngularSpeed :
 
     /// <inheritdoc/>
     public int CompareTo(AngularSpeed other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="AngularSpeed"/>, and the SI base unit of the quantity.</summary>
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="AngularSpeed"/> (in SI units), and the SI base unit of the quantity.</summary>
     public override string ToString() => $"{Magnitude} [rad / s]";
 
-    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="AngularSpeed"/>, expressed in <see cref="UnitOfAngularVelocity"/>
-    /// <paramref name="unitOfAngularVelocity"/>.</summary>
+    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="AngularSpeed"/>,
+    /// expressed in <paramref name="unitOfAngularVelocity"/>.</summary>
     /// <param name="unitOfAngularVelocity">The <see cref="UnitOfAngularVelocity"/> in which the magnitude is expressed.</param>
     public Scalar InUnit(UnitOfAngularVelocity unitOfAngularVelocity) => InUnit(this, unitOfAngularVelocity);
-    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="AngularSpeed"/>, expressed in <see cref="UnitOfAngularVelocity"/>
-    /// <paramref name="unitOfAngularVelocity"/>.</summary>
-    /// <param name="angularSpeed">The <see cref="AngularSpeed"/> to be expressed in <see cref="UnitOfAngularVelocity"/> <paramref name="unitOfAngularVelocity"/>.</param>
+    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="AngularSpeed"/>,
+    /// expressed in <paramref name="unitOfAngularVelocity"/>.</summary>
+    /// <param name="angularSpeed">The <see cref="AngularSpeed"/> to be expressed in <paramref name="unitOfAngularVelocity"/>.</param>
     /// <param name="unitOfAngularVelocity">The <see cref="UnitOfAngularVelocity"/> in which the magnitude is expressed.</param>
     private static Scalar InUnit(AngularSpeed angularSpeed, UnitOfAngularVelocity unitOfAngularVelocity) => new(angularSpeed.Magnitude / unitOfAngularVelocity.Factor);
 
@@ -188,7 +189,7 @@ public readonly partial record struct AngularSpeed :
     /// <summary>Divides the <see cref="AngularSpeed"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="AngularSpeed"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="AngularSpeed"/> <paramref name="x"/> is divded.</param>
+    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="AngularSpeed"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(AngularSpeed x, Unhandled y) => x.Divide(y);
 
     /// <summary>Produces a <see cref="AngularSpeed"/>, with magnitude equal to the remainder from division of the original
@@ -247,35 +248,35 @@ public readonly partial record struct AngularSpeed :
     /// <param name="y">This value is used to divide the <see cref="AngularSpeed"/> <paramref name="x"/>.</param>
     public static AngularSpeed operator /(AngularSpeed x, Scalar y) => x.Divide(y);
 
-    /// <summary>Multiplies the <see cref="AngularSpeed"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which multiplication is done.</typeparam>
-    /// <param name="factor">The factor by which the <see cref="AngularSpeed"/> is multiplied.</param>
-    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
-    /// <summary>Divides the <see cref="AngularSpeed"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which division is done.</typeparam>
-    /// <param name="divisor">The divisor by which the <see cref="AngularSpeed"/> is divided.</param>
-    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    /// <inheritdoc/>
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(Magnitude * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+        where TQuotientScalarQuantity : IScalarQuantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(Magnitude / divisor.Magnitude);
     /// <summary>Multiples the <see cref="AngularSpeed"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="AngularSpeed"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="AngularSpeed"/> <paramref name="x"/>.</param>
-    /// <remarks>To maximize performance, prefer <see cref="AngularSpeed.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator *(AngularSpeed x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    public static Unhandled operator *(AngularSpeed x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
     /// <summary>Divides the <see cref="AngularSpeed"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="AngularSpeed"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="AngularSpeed"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To maximize performance, prefer <see cref="AngularSpeed.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator /(AngularSpeed x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    public static Unhandled operator /(AngularSpeed x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
     /// <summary>Multiplies the <see cref="AngularSpeed"/> with the <see cref="Vector3"/> <paramref name="vector"/> to produce a <see cref="AngularVelocity3"/>.</summary>
     /// <param name="vector">This <see cref="Vector3"/> is multiplied by the <see cref="AngularSpeed"/>.</param>
     public AngularVelocity3 Multiply(Vector3 vector) => new(vector * Magnitude);
-    /// <summary>Multiplies the <see cref="AngularSpeed"/> with the <see cref="ValueTuple"/> <paramref name="components"/> to produce a <see cref="AngularVelocity3"/>.</summary>
-    /// <param name="components">This <see cref="ValueTuple"/> is multiplied by the <see cref="AngularSpeed"/>.</param>
+    /// <summary>Multiplies the <see cref="AngularSpeed"/> with the values of <paramref name="components"/> to produce a <see cref="AngularVelocity3"/>.</summary>
+    /// <param name="components">These values are multiplied by the <see cref="AngularSpeed"/>.</param>
     public AngularVelocity3 Multiply((double x, double y, double z) components) => Multiply(new Vector3(components));
-    /// <summary>Multiplies the <see cref="AngularSpeed"/> with the <see cref="ValueTuple"/> <paramref name="components"/> to produce a <see cref="AngularVelocity3"/>.</summary>
-    /// <param name="components">This <see cref="ValueTuple"/> is multiplied by the <see cref="AngularSpeed"/>.</param>
+    /// <summary>Multiplies the <see cref="AngularSpeed"/> with the values of <paramref name="components"/> to produce a <see cref="AngularVelocity3"/>.</summary>
+    /// <param name="components">These values are multiplied by the <see cref="AngularSpeed"/>.</param>
     public AngularVelocity3 Multiply((Scalar x, Scalar y, Scalar z) components) => Multiply(new Vector3(components));
     /// <summary>Multiplies the <see cref="AngularSpeed"/> <paramref name="a"/> with the <see cref="Vector3"/> <paramref name="b"/> to produce a <see cref="AngularVelocity3"/>.</summary>
     /// <param name="a">This <see cref="AngularSpeed"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
@@ -285,21 +286,21 @@ public readonly partial record struct AngularSpeed :
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="AngularSpeed"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="AngularSpeed"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
     public static AngularVelocity3 operator *(Vector3 a, AngularSpeed b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="AngularSpeed"/> <paramref name="a"/> with the <see cref="ValueTuple"/> <paramref name="b"/> to produce a <see cref="AngularVelocity3"/>.</summary>
-    /// <param name="a">This <see cref="AngularSpeed"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="ValueTuple"/> is multiplied by the <see cref="AngularSpeed"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="AngularSpeed"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="AngularVelocity3"/>.</summary>
+    /// <param name="a">This <see cref="AngularSpeed"/> is multiplied by the values of <paramref name="b"/>.</param>
+    /// <param name="b">These values are multiplied by the <see cref="AngularSpeed"/> <paramref name="a"/>.</param>
     public static AngularVelocity3 operator *(AngularSpeed a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="AngularSpeed"/> <parmref name="b"/> with the <see cref="ValueTuple"/> <paramref name="a"/> to produce a <see cref="AngularVelocity3"/>.</summary>
-    /// <param name="a">This <see cref="ValueTuple"/> is multiplied by the <see cref="AngularSpeed"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="AngularSpeed"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="AngularSpeed"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="AngularVelocity3"/>.</summary>
+    /// <param name="a">These values are multiplied by the <see cref="AngularSpeed"/> <paramref name="b"/>.</param>
+    /// <param name="b">This <see cref="AngularSpeed"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static AngularVelocity3 operator *((double x, double y, double z) a, AngularSpeed b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="AngularSpeed"/> <paramref name="a"/> with the <see cref="ValueTuple"/> <paramref name="b"/> to produce a <see cref="AngularVelocity3"/>.</summary>
-    /// <param name="a">This <see cref="AngularSpeed"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="ValueTuple"/> is multiplied by the <see cref="AngularSpeed"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="AngularSpeed"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="AngularVelocity3"/>.</summary>
+    /// <param name="a">This <see cref="AngularSpeed"/> is multiplied by the values of <paramref name="b"/>.</param>
+    /// <param name="b">These values are multiplied by the <see cref="AngularSpeed"/> <paramref name="a"/>.</param>
     public static AngularVelocity3 operator *(AngularSpeed a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="AngularSpeed"/> <parmref name="b"/> with the <see cref="ValueTuple"/> <paramref name="a"/> to produce a <see cref="AngularVelocity3"/>.</summary>
-    /// <param name="a">This <see cref="ValueTuple"/> is multiplied by the <see cref="AngularSpeed"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="AngularSpeed"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="AngularSpeed"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="AngularVelocity3"/>.</summary>
+    /// <param name="a">These values are multiplied by the <see cref="AngularSpeed"/> <paramref name="b"/>.</param>
+    /// <param name="b">This <see cref="AngularSpeed"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static AngularVelocity3 operator *((Scalar x, Scalar y, Scalar z) a, AngularSpeed b) => b.Multiply(a);
 
     /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
@@ -319,23 +320,28 @@ public readonly partial record struct AngularSpeed :
     /// <param name="y"><paramref name="x"/> is compared against this value.</param>
     public static bool operator >=(AngularSpeed x, AngularSpeed y) => x.Magnitude >= y.Magnitude;
 
-    /// <summary>Converts the <see cref="AngularSpeed"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
+    /// <summary>Converts the <see cref="AngularSpeed"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public double ToDouble() => Magnitude;
-    /// <summary>Converts the <see cref="AngularSpeed"/> to a <see cref="double"/> based on the magnitude of the <see cref="AngularSpeed"/> <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public static implicit operator double(AngularSpeed x) => x.ToDouble();
 
-    /// <summary>Converts the <see cref="AngularSpeed"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts the <see cref="AngularSpeed"/> to the <see cref="Scalar"/> of equivalent magnitude, when
+    /// expressed in SI units.</summary>
     public Scalar ToScalar() => new(Magnitude);
-    /// <summary>Converts the <see cref="AngularSpeed"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(AngularSpeed x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="AngularSpeed"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="AngularSpeed"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static AngularSpeed FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="AngularSpeed"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="AngularSpeed"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static explicit operator AngularSpeed(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="AngularSpeed"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="AngularSpeed"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static AngularSpeed FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="AngularSpeed"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="AngularSpeed"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator AngularSpeed(Scalar x) => FromScalar(x);
 }

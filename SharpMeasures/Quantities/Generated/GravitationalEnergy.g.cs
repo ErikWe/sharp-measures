@@ -28,7 +28,8 @@ using System;
 /// </code>
 /// </item>
 /// </list>
-/// The magnitude of the measure can be retrieved using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfEnergy"/>.
+/// The magnitude of the <see cref="GravitationalEnergy"/> can be retrieved in the desired <see cref="UnitOfEnergy"/> using pre-defined properties,
+/// such as <see cref="Joules"/>
 /// </para>
 /// </summary>
 /// <remarks>
@@ -36,7 +37,7 @@ using System;
 /// <list type="bullet">
 /// <item>
 /// <term><see cref="Energy"/></term>
-/// <description>Describes the capability to perform <see cref="Work"/>.</description>
+/// <description>Describes any type of energy.</description>
 /// </item>
 /// <item>
 /// <term><see cref="PotentialEnergy"/></term>
@@ -74,13 +75,13 @@ public readonly partial record struct GravitationalEnergy :
     /// <summary>The <see cref="GravitationalEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Kilocalorie"/>.</summary>
     public static GravitationalEnergy OneKilocalorie { get; } = new(1, UnitOfEnergy.Kilocalorie);
 
-    /// <summary>The magnitude of the <see cref="GravitationalEnergy"/> measure, in SI units.</summary>
-    /// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="GravitationalEnergy.InJoules"/>.
-    /// <para>This value should only be used (to maximize efficiency) when implementing mathematical operations with other quantities.</para></remarks>
+    /// <summary>The magnitude of the <see cref="GravitationalEnergy"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfEnergy)"/> or a pre-defined property
+    /// - such as <see cref="Joules"/>.</remarks>
     public double Magnitude { get; init; }
 
-    /// <summary>Constructs a new <see cref="GravitationalEnergy"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfEnergy"/> <paramref name="unitOfEnergy"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="GravitationalEnergy"/>, in <see cref="UnitOfEnergy"/> <paramref name="unitOfEnergy"/>.</param>
+    /// <summary>Constructs a new <see cref="GravitationalEnergy"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfEnergy"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="GravitationalEnergy"/>, expressed in <paramref name="unitOfEnergy"/>.</param>
     /// <param name="unitOfEnergy">The <see cref="UnitOfEnergy"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring constructing instances according to the following:
     /// <list type="bullet">
@@ -92,8 +93,8 @@ public readonly partial record struct GravitationalEnergy :
     /// </list>
     /// </remarks>
     public GravitationalEnergy(Scalar magnitude, UnitOfEnergy unitOfEnergy) : this(magnitude.Magnitude, unitOfEnergy) { }
-    /// <summary>Constructs a new <see cref="GravitationalEnergy"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfEnergy"/> <paramref name="unitOfEnergy"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="GravitationalEnergy"/>, in <see cref="UnitOfEnergy"/> <paramref name="unitOfEnergy"/>.</param>
+    /// <summary>Constructs a new <see cref="GravitationalEnergy"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfEnergy"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="GravitationalEnergy"/>, expressed in <paramref name="unitOfEnergy"/>.</param>
     /// <param name="unitOfEnergy">The <see cref="UnitOfEnergy"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring cosntructing instances according to the following:
     /// <list type="bullet">
@@ -105,13 +106,13 @@ public readonly partial record struct GravitationalEnergy :
     /// </list>
     /// </remarks>
     public GravitationalEnergy(double magnitude, UnitOfEnergy unitOfEnergy) : this(magnitude * unitOfEnergy.Factor) { }
-    /// <summary>Constructs a new <see cref="GravitationalEnergy"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="GravitationalEnergy"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="GravitationalEnergy"/>.</param>
-    /// <remarks>Consider preffering a constructor that requires a <see cref="UnitOfEnergy"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="GravitationalEnergy(Scalar, UnitOfEnergy)"/>.</remarks>
     public GravitationalEnergy(Scalar magnitude) : this(magnitude.Magnitude) { }
-    /// <summary>Constructs a new <see cref="GravitationalEnergy"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="GravitationalEnergy"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="GravitationalEnergy"/>.</param>
-    /// <remarks>Consider preferring a constructor that requires a <see cref="UnitOfEnergy"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="GravitationalEnergy(double, UnitOfEnergy)"/>.</remarks>
     public GravitationalEnergy(double magnitude)
     {
         Magnitude = magnitude;
@@ -122,21 +123,21 @@ public readonly partial record struct GravitationalEnergy :
     /// <summary>Converts the <see cref="GravitationalEnergy"/> to an instance of the associated quantity <see cref="PotentialEnergy"/>, of equal magnitude.</summary>
     public PotentialEnergy AsPotentialEnergy => new(Magnitude);
 
-    /// <summary>Retrieves the magnitude of the <see cref="GravitationalEnergy"/>, expressed in unit <see cref="UnitOfEnergy.Joule"/>.</summary>
-    public Scalar InJoules => InUnit(UnitOfEnergy.Joule);
-    /// <summary>Retrieves the magnitude of the <see cref="GravitationalEnergy"/>, expressed in unit <see cref="UnitOfEnergy.Kilojoule"/>.</summary>
-    public Scalar InKilojoules => InUnit(UnitOfEnergy.Kilojoule);
-    /// <summary>Retrieves the magnitude of the <see cref="GravitationalEnergy"/>, expressed in unit <see cref="UnitOfEnergy.Megajoule"/>.</summary>
-    public Scalar InMegajoules => InUnit(UnitOfEnergy.Megajoule);
-    /// <summary>Retrieves the magnitude of the <see cref="GravitationalEnergy"/>, expressed in unit <see cref="UnitOfEnergy.Gigajoule"/>.</summary>
-    public Scalar InGigajoules => InUnit(UnitOfEnergy.Gigajoule);
+    /// <summary>Retrieves the magnitude of the <see cref="GravitationalEnergy"/>, expressed in <see cref="UnitOfEnergy.Joule"/>.</summary>
+    public Scalar Joules => InUnit(UnitOfEnergy.Joule);
+    /// <summary>Retrieves the magnitude of the <see cref="GravitationalEnergy"/>, expressed in <see cref="UnitOfEnergy.Kilojoule"/>.</summary>
+    public Scalar Kilojoules => InUnit(UnitOfEnergy.Kilojoule);
+    /// <summary>Retrieves the magnitude of the <see cref="GravitationalEnergy"/>, expressed in <see cref="UnitOfEnergy.Megajoule"/>.</summary>
+    public Scalar Megajoules => InUnit(UnitOfEnergy.Megajoule);
+    /// <summary>Retrieves the magnitude of the <see cref="GravitationalEnergy"/>, expressed in <see cref="UnitOfEnergy.Gigajoule"/>.</summary>
+    public Scalar Gigajoules => InUnit(UnitOfEnergy.Gigajoule);
 
-    /// <summary>Retrieves the magnitude of the <see cref="GravitationalEnergy"/>, expressed in unit <see cref="UnitOfEnergy.KilowattHour"/>.</summary>
-    public Scalar InKilowattHours => InUnit(UnitOfEnergy.KilowattHour);
-    /// <summary>Retrieves the magnitude of the <see cref="GravitationalEnergy"/>, expressed in unit <see cref="UnitOfEnergy.Calorie"/>.</summary>
-    public Scalar InCalories => InUnit(UnitOfEnergy.Calorie);
-    /// <summary>Retrieves the magnitude of the <see cref="GravitationalEnergy"/>, expressed in unit <see cref="UnitOfEnergy.Kilocalorie"/>.</summary>
-    public Scalar InKilocalories => InUnit(UnitOfEnergy.Kilocalorie);
+    /// <summary>Retrieves the magnitude of the <see cref="GravitationalEnergy"/>, expressed in <see cref="UnitOfEnergy.KilowattHour"/>.</summary>
+    public Scalar KilowattHours => InUnit(UnitOfEnergy.KilowattHour);
+    /// <summary>Retrieves the magnitude of the <see cref="GravitationalEnergy"/>, expressed in <see cref="UnitOfEnergy.Calorie"/>.</summary>
+    public Scalar Calories => InUnit(UnitOfEnergy.Calorie);
+    /// <summary>Retrieves the magnitude of the <see cref="GravitationalEnergy"/>, expressed in <see cref="UnitOfEnergy.Kilocalorie"/>.</summary>
+    public Scalar Kilocalories => InUnit(UnitOfEnergy.Kilocalorie);
 
     /// <summary>Indicates whether the magnitude of the <see cref="GravitationalEnergy"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -166,16 +167,16 @@ public readonly partial record struct GravitationalEnergy :
 
     /// <inheritdoc/>
     public int CompareTo(GravitationalEnergy other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="GravitationalEnergy"/>, and the SI base unit of the quantity.</summary>
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="GravitationalEnergy"/> (in SI units), and the SI base unit of the quantity.</summary>
     public override string ToString() => $"{Magnitude} [J]";
 
-    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="GravitationalEnergy"/>, expressed in <see cref="UnitOfEnergy"/>
-    /// <paramref name="unitOfEnergy"/>.</summary>
+    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="GravitationalEnergy"/>,
+    /// expressed in <paramref name="unitOfEnergy"/>.</summary>
     /// <param name="unitOfEnergy">The <see cref="UnitOfEnergy"/> in which the magnitude is expressed.</param>
     public Scalar InUnit(UnitOfEnergy unitOfEnergy) => InUnit(this, unitOfEnergy);
-    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="GravitationalEnergy"/>, expressed in <see cref="UnitOfEnergy"/>
-    /// <paramref name="unitOfEnergy"/>.</summary>
-    /// <param name="gravitationalEnergy">The <see cref="GravitationalEnergy"/> to be expressed in <see cref="UnitOfEnergy"/> <paramref name="unitOfEnergy"/>.</param>
+    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="GravitationalEnergy"/>,
+    /// expressed in <paramref name="unitOfEnergy"/>.</summary>
+    /// <param name="gravitationalEnergy">The <see cref="GravitationalEnergy"/> to be expressed in <paramref name="unitOfEnergy"/>.</param>
     /// <param name="unitOfEnergy">The <see cref="UnitOfEnergy"/> in which the magnitude is expressed.</param>
     private static Scalar InUnit(GravitationalEnergy gravitationalEnergy, UnitOfEnergy unitOfEnergy) => new(gravitationalEnergy.Magnitude / unitOfEnergy.Factor);
 
@@ -211,7 +212,7 @@ public readonly partial record struct GravitationalEnergy :
     /// <summary>Divides the <see cref="GravitationalEnergy"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="GravitationalEnergy"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="GravitationalEnergy"/> <paramref name="x"/> is divded.</param>
+    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="GravitationalEnergy"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(GravitationalEnergy x, Unhandled y) => x.Divide(y);
 
     /// <summary>Produces a <see cref="GravitationalEnergy"/>, with magnitude equal to the remainder from division of the original
@@ -270,26 +271,26 @@ public readonly partial record struct GravitationalEnergy :
     /// <param name="y">This value is used to divide the <see cref="GravitationalEnergy"/> <paramref name="x"/>.</param>
     public static GravitationalEnergy operator /(GravitationalEnergy x, Scalar y) => x.Divide(y);
 
-    /// <summary>Multiplies the <see cref="GravitationalEnergy"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which multiplication is done.</typeparam>
-    /// <param name="factor">The factor by which the <see cref="GravitationalEnergy"/> is multiplied.</param>
-    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
-    /// <summary>Divides the <see cref="GravitationalEnergy"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which division is done.</typeparam>
-    /// <param name="divisor">The divisor by which the <see cref="GravitationalEnergy"/> is divided.</param>
-    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    /// <inheritdoc/>
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(Magnitude * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+        where TQuotientScalarQuantity : IScalarQuantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(Magnitude / divisor.Magnitude);
     /// <summary>Multiples the <see cref="GravitationalEnergy"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="GravitationalEnergy"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="GravitationalEnergy"/> <paramref name="x"/>.</param>
-    /// <remarks>To maximize performance, prefer <see cref="GravitationalEnergy.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator *(GravitationalEnergy x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    public static Unhandled operator *(GravitationalEnergy x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
     /// <summary>Divides the <see cref="GravitationalEnergy"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="GravitationalEnergy"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="GravitationalEnergy"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To maximize performance, prefer <see cref="GravitationalEnergy.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator /(GravitationalEnergy x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    public static Unhandled operator /(GravitationalEnergy x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
     /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
     /// <param name="x"><paramref name="y"/> is compared against this value.</param>
@@ -308,23 +309,28 @@ public readonly partial record struct GravitationalEnergy :
     /// <param name="y"><paramref name="x"/> is compared against this value.</param>
     public static bool operator >=(GravitationalEnergy x, GravitationalEnergy y) => x.Magnitude >= y.Magnitude;
 
-    /// <summary>Converts the <see cref="GravitationalEnergy"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
+    /// <summary>Converts the <see cref="GravitationalEnergy"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public double ToDouble() => Magnitude;
-    /// <summary>Converts the <see cref="GravitationalEnergy"/> to a <see cref="double"/> based on the magnitude of the <see cref="GravitationalEnergy"/> <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public static implicit operator double(GravitationalEnergy x) => x.ToDouble();
 
-    /// <summary>Converts the <see cref="GravitationalEnergy"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts the <see cref="GravitationalEnergy"/> to the <see cref="Scalar"/> of equivalent magnitude, when
+    /// expressed in SI units.</summary>
     public Scalar ToScalar() => new(Magnitude);
-    /// <summary>Converts the <see cref="GravitationalEnergy"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(GravitationalEnergy x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="GravitationalEnergy"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="GravitationalEnergy"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static GravitationalEnergy FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="GravitationalEnergy"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="GravitationalEnergy"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static explicit operator GravitationalEnergy(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="GravitationalEnergy"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="GravitationalEnergy"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static GravitationalEnergy FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="GravitationalEnergy"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="GravitationalEnergy"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator GravitationalEnergy(Scalar x) => FromScalar(x);
 }

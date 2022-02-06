@@ -4,9 +4,9 @@ using ErikWe.SharpMeasures.Units;
 
 using System;
 
-/// <summary>A measure of the scalar quantity <see cref="SpinAngularAcceleration"/>, describing the <see cref="AngularAcceleration"/> of an object about the internal center of rotation.
-/// This is the magnitude of the vector quantity <see cref="SpinAngularAcceleration3"/>, and is expressed in <see cref="UnitOfSpinAngularAcceleration"/>,
-/// with the SI unit being [rad / s²].
+/// <summary>A measure of the scalar quantity <see cref="SpinAngularAcceleration"/>, describing the <see cref="AngularAcceleration"/> of an object
+/// about the internal center of rotation. This is the magnitude of the vector quantity <see cref="SpinAngularAcceleration3"/>, and is
+/// expressed in <see cref="UnitOfSpinAngularAcceleration"/>, with the SI unit being [rad / s²].
 /// <para>
 /// New instances of <see cref="SpinAngularAcceleration"/> can be constructed using the pre-defined propertiies, prefixed with 'One', having magnitude 1 expressed
 /// in the desired <see cref="UnitOfSpinAngularAcceleration"/>. Instances can also be produced by combining other quantities, either through mathematical operators
@@ -29,7 +29,8 @@ using System;
 /// </code>
 /// </item>
 /// </list>
-/// The magnitude of the measure can be retrieved using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfSpinAngularAcceleration"/>.
+/// The magnitude of the <see cref="SpinAngularAcceleration"/> can be retrieved in the desired <see cref="UnitOfSpinAngularAcceleration"/> using pre-defined properties,
+/// such as <see cref="RadiansPerSecondSquared"/>
 /// </para>
 /// </summary>
 /// <remarks>
@@ -41,7 +42,7 @@ using System;
 /// </item>
 /// <item>
 /// <term><see cref="OrbitalAngularAcceleration"/></term>
-/// <description>Describes the angular acceleration of an object about an external point.</description>
+/// <description>Describes the <see cref="AngularAcceleration"/> of an object about an external point.</description>
 /// </item>
 /// </list>
 /// </remarks>
@@ -63,13 +64,13 @@ public readonly partial record struct SpinAngularAcceleration :
     /// <summary>The <see cref="SpinAngularAcceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfSpinAngularAcceleration.RadianPerSecondSquared"/>.</summary>
     public static SpinAngularAcceleration OneRadianPerSecondSquared { get; } = new(1, UnitOfSpinAngularAcceleration.RadianPerSecondSquared);
 
-    /// <summary>The magnitude of the <see cref="SpinAngularAcceleration"/> measure, in SI units.</summary>
-    /// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="SpinAngularAcceleration.InRadiansPerSecondSquared"/>.
-    /// <para>This value should only be used (to maximize efficiency) when implementing mathematical operations with other quantities.</para></remarks>
+    /// <summary>The magnitude of the <see cref="SpinAngularAcceleration"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfSpinAngularAcceleration)"/> or a pre-defined property
+    /// - such as <see cref="RadiansPerSecondSquared"/>.</remarks>
     public double Magnitude { get; init; }
 
-    /// <summary>Constructs a new <see cref="SpinAngularAcceleration"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfSpinAngularAcceleration"/> <paramref name="unitOfSpinAngularAcceleration"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="SpinAngularAcceleration"/>, in <see cref="UnitOfSpinAngularAcceleration"/> <paramref name="unitOfSpinAngularAcceleration"/>.</param>
+    /// <summary>Constructs a new <see cref="SpinAngularAcceleration"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfSpinAngularAcceleration"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="SpinAngularAcceleration"/>, expressed in <paramref name="unitOfSpinAngularAcceleration"/>.</param>
     /// <param name="unitOfSpinAngularAcceleration">The <see cref="UnitOfSpinAngularAcceleration"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring constructing instances according to the following:
     /// <list type="bullet">
@@ -81,8 +82,8 @@ public readonly partial record struct SpinAngularAcceleration :
     /// </list>
     /// </remarks>
     public SpinAngularAcceleration(Scalar magnitude, UnitOfSpinAngularAcceleration unitOfSpinAngularAcceleration) : this(magnitude.Magnitude, unitOfSpinAngularAcceleration) { }
-    /// <summary>Constructs a new <see cref="SpinAngularAcceleration"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfSpinAngularAcceleration"/> <paramref name="unitOfSpinAngularAcceleration"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="SpinAngularAcceleration"/>, in <see cref="UnitOfSpinAngularAcceleration"/> <paramref name="unitOfSpinAngularAcceleration"/>.</param>
+    /// <summary>Constructs a new <see cref="SpinAngularAcceleration"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfSpinAngularAcceleration"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="SpinAngularAcceleration"/>, expressed in <paramref name="unitOfSpinAngularAcceleration"/>.</param>
     /// <param name="unitOfSpinAngularAcceleration">The <see cref="UnitOfSpinAngularAcceleration"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring cosntructing instances according to the following:
     /// <list type="bullet">
@@ -94,13 +95,13 @@ public readonly partial record struct SpinAngularAcceleration :
     /// </list>
     /// </remarks>
     public SpinAngularAcceleration(double magnitude, UnitOfSpinAngularAcceleration unitOfSpinAngularAcceleration) : this(magnitude * unitOfSpinAngularAcceleration.Factor) { }
-    /// <summary>Constructs a new <see cref="SpinAngularAcceleration"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="SpinAngularAcceleration"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="SpinAngularAcceleration"/>.</param>
-    /// <remarks>Consider preffering a constructor that requires a <see cref="UnitOfSpinAngularAcceleration"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="SpinAngularAcceleration(Scalar, UnitOfSpinAngularAcceleration)"/>.</remarks>
     public SpinAngularAcceleration(Scalar magnitude) : this(magnitude.Magnitude) { }
-    /// <summary>Constructs a new <see cref="SpinAngularAcceleration"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="SpinAngularAcceleration"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="SpinAngularAcceleration"/>.</param>
-    /// <remarks>Consider preferring a constructor that requires a <see cref="UnitOfSpinAngularAcceleration"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="SpinAngularAcceleration(double, UnitOfSpinAngularAcceleration)"/>.</remarks>
     public SpinAngularAcceleration(double magnitude)
     {
         Magnitude = magnitude;
@@ -111,8 +112,8 @@ public readonly partial record struct SpinAngularAcceleration :
     /// <summary>Converts the <see cref="SpinAngularAcceleration"/> to an instance of the associated quantity <see cref="OrbitalAngularAcceleration"/>, of equal magnitude.</summary>
     public OrbitalAngularAcceleration AsOrbitalAngularAcceleration => new(Magnitude);
 
-    /// <summary>Retrieves the magnitude of the <see cref="SpinAngularAcceleration"/>, expressed in unit <see cref="UnitOfSpinAngularAcceleration.RadianPerSecondSquared"/>.</summary>
-    public Scalar InRadiansPerSecondSquared => InUnit(UnitOfSpinAngularAcceleration.RadianPerSecondSquared);
+    /// <summary>Retrieves the magnitude of the <see cref="SpinAngularAcceleration"/>, expressed in <see cref="UnitOfSpinAngularAcceleration.RadianPerSecondSquared"/>.</summary>
+    public Scalar RadiansPerSecondSquared => InUnit(UnitOfSpinAngularAcceleration.RadianPerSecondSquared);
 
     /// <summary>Indicates whether the magnitude of the <see cref="SpinAngularAcceleration"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -142,16 +143,16 @@ public readonly partial record struct SpinAngularAcceleration :
 
     /// <inheritdoc/>
     public int CompareTo(SpinAngularAcceleration other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="SpinAngularAcceleration"/>, and the SI base unit of the quantity.</summary>
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="SpinAngularAcceleration"/> (in SI units), and the SI base unit of the quantity.</summary>
     public override string ToString() => $"{Magnitude} [rad / s^2]";
 
-    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="SpinAngularAcceleration"/>, expressed in <see cref="UnitOfSpinAngularAcceleration"/>
-    /// <paramref name="unitOfSpinAngularAcceleration"/>.</summary>
+    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="SpinAngularAcceleration"/>,
+    /// expressed in <paramref name="unitOfSpinAngularAcceleration"/>.</summary>
     /// <param name="unitOfSpinAngularAcceleration">The <see cref="UnitOfSpinAngularAcceleration"/> in which the magnitude is expressed.</param>
     public Scalar InUnit(UnitOfSpinAngularAcceleration unitOfSpinAngularAcceleration) => InUnit(this, unitOfSpinAngularAcceleration);
-    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="SpinAngularAcceleration"/>, expressed in <see cref="UnitOfSpinAngularAcceleration"/>
-    /// <paramref name="unitOfSpinAngularAcceleration"/>.</summary>
-    /// <param name="spinAngularAcceleration">The <see cref="SpinAngularAcceleration"/> to be expressed in <see cref="UnitOfSpinAngularAcceleration"/> <paramref name="unitOfSpinAngularAcceleration"/>.</param>
+    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="SpinAngularAcceleration"/>,
+    /// expressed in <paramref name="unitOfSpinAngularAcceleration"/>.</summary>
+    /// <param name="spinAngularAcceleration">The <see cref="SpinAngularAcceleration"/> to be expressed in <paramref name="unitOfSpinAngularAcceleration"/>.</param>
     /// <param name="unitOfSpinAngularAcceleration">The <see cref="UnitOfSpinAngularAcceleration"/> in which the magnitude is expressed.</param>
     private static Scalar InUnit(SpinAngularAcceleration spinAngularAcceleration, UnitOfSpinAngularAcceleration unitOfSpinAngularAcceleration) => new(spinAngularAcceleration.Magnitude / unitOfSpinAngularAcceleration.Factor);
 
@@ -187,7 +188,7 @@ public readonly partial record struct SpinAngularAcceleration :
     /// <summary>Divides the <see cref="SpinAngularAcceleration"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="SpinAngularAcceleration"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="SpinAngularAcceleration"/> <paramref name="x"/> is divded.</param>
+    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="SpinAngularAcceleration"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(SpinAngularAcceleration x, Unhandled y) => x.Divide(y);
 
     /// <summary>Produces a <see cref="SpinAngularAcceleration"/>, with magnitude equal to the remainder from division of the original
@@ -246,35 +247,35 @@ public readonly partial record struct SpinAngularAcceleration :
     /// <param name="y">This value is used to divide the <see cref="SpinAngularAcceleration"/> <paramref name="x"/>.</param>
     public static SpinAngularAcceleration operator /(SpinAngularAcceleration x, Scalar y) => x.Divide(y);
 
-    /// <summary>Multiplies the <see cref="SpinAngularAcceleration"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which multiplication is done.</typeparam>
-    /// <param name="factor">The factor by which the <see cref="SpinAngularAcceleration"/> is multiplied.</param>
-    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
-    /// <summary>Divides the <see cref="SpinAngularAcceleration"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which division is done.</typeparam>
-    /// <param name="divisor">The divisor by which the <see cref="SpinAngularAcceleration"/> is divided.</param>
-    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    /// <inheritdoc/>
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(Magnitude * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+        where TQuotientScalarQuantity : IScalarQuantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(Magnitude / divisor.Magnitude);
     /// <summary>Multiples the <see cref="SpinAngularAcceleration"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="SpinAngularAcceleration"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="SpinAngularAcceleration"/> <paramref name="x"/>.</param>
-    /// <remarks>To maximize performance, prefer <see cref="SpinAngularAcceleration.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator *(SpinAngularAcceleration x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    public static Unhandled operator *(SpinAngularAcceleration x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
     /// <summary>Divides the <see cref="SpinAngularAcceleration"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="SpinAngularAcceleration"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="SpinAngularAcceleration"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To maximize performance, prefer <see cref="SpinAngularAcceleration.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator /(SpinAngularAcceleration x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    public static Unhandled operator /(SpinAngularAcceleration x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
     /// <summary>Multiplies the <see cref="SpinAngularAcceleration"/> with the <see cref="Vector3"/> <paramref name="vector"/> to produce a <see cref="SpinAngularAcceleration3"/>.</summary>
     /// <param name="vector">This <see cref="Vector3"/> is multiplied by the <see cref="SpinAngularAcceleration"/>.</param>
     public SpinAngularAcceleration3 Multiply(Vector3 vector) => new(vector * Magnitude);
-    /// <summary>Multiplies the <see cref="SpinAngularAcceleration"/> with the <see cref="ValueTuple"/> <paramref name="components"/> to produce a <see cref="SpinAngularAcceleration3"/>.</summary>
-    /// <param name="components">This <see cref="ValueTuple"/> is multiplied by the <see cref="SpinAngularAcceleration"/>.</param>
+    /// <summary>Multiplies the <see cref="SpinAngularAcceleration"/> with the values of <paramref name="components"/> to produce a <see cref="SpinAngularAcceleration3"/>.</summary>
+    /// <param name="components">These values are multiplied by the <see cref="SpinAngularAcceleration"/>.</param>
     public SpinAngularAcceleration3 Multiply((double x, double y, double z) components) => Multiply(new Vector3(components));
-    /// <summary>Multiplies the <see cref="SpinAngularAcceleration"/> with the <see cref="ValueTuple"/> <paramref name="components"/> to produce a <see cref="SpinAngularAcceleration3"/>.</summary>
-    /// <param name="components">This <see cref="ValueTuple"/> is multiplied by the <see cref="SpinAngularAcceleration"/>.</param>
+    /// <summary>Multiplies the <see cref="SpinAngularAcceleration"/> with the values of <paramref name="components"/> to produce a <see cref="SpinAngularAcceleration3"/>.</summary>
+    /// <param name="components">These values are multiplied by the <see cref="SpinAngularAcceleration"/>.</param>
     public SpinAngularAcceleration3 Multiply((Scalar x, Scalar y, Scalar z) components) => Multiply(new Vector3(components));
     /// <summary>Multiplies the <see cref="SpinAngularAcceleration"/> <paramref name="a"/> with the <see cref="Vector3"/> <paramref name="b"/> to produce a <see cref="SpinAngularAcceleration3"/>.</summary>
     /// <param name="a">This <see cref="SpinAngularAcceleration"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
@@ -284,21 +285,21 @@ public readonly partial record struct SpinAngularAcceleration :
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="SpinAngularAcceleration"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="SpinAngularAcceleration"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
     public static SpinAngularAcceleration3 operator *(Vector3 a, SpinAngularAcceleration b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="SpinAngularAcceleration"/> <paramref name="a"/> with the <see cref="ValueTuple"/> <paramref name="b"/> to produce a <see cref="SpinAngularAcceleration3"/>.</summary>
-    /// <param name="a">This <see cref="SpinAngularAcceleration"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="ValueTuple"/> is multiplied by the <see cref="SpinAngularAcceleration"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="SpinAngularAcceleration"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="SpinAngularAcceleration3"/>.</summary>
+    /// <param name="a">This <see cref="SpinAngularAcceleration"/> is multiplied by the values of <paramref name="b"/>.</param>
+    /// <param name="b">These values are multiplied by the <see cref="SpinAngularAcceleration"/> <paramref name="a"/>.</param>
     public static SpinAngularAcceleration3 operator *(SpinAngularAcceleration a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="SpinAngularAcceleration"/> <parmref name="b"/> with the <see cref="ValueTuple"/> <paramref name="a"/> to produce a <see cref="SpinAngularAcceleration3"/>.</summary>
-    /// <param name="a">This <see cref="ValueTuple"/> is multiplied by the <see cref="SpinAngularAcceleration"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="SpinAngularAcceleration"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="SpinAngularAcceleration"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="SpinAngularAcceleration3"/>.</summary>
+    /// <param name="a">These values are multiplied by the <see cref="SpinAngularAcceleration"/> <paramref name="b"/>.</param>
+    /// <param name="b">This <see cref="SpinAngularAcceleration"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static SpinAngularAcceleration3 operator *((double x, double y, double z) a, SpinAngularAcceleration b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="SpinAngularAcceleration"/> <paramref name="a"/> with the <see cref="ValueTuple"/> <paramref name="b"/> to produce a <see cref="SpinAngularAcceleration3"/>.</summary>
-    /// <param name="a">This <see cref="SpinAngularAcceleration"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="ValueTuple"/> is multiplied by the <see cref="SpinAngularAcceleration"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="SpinAngularAcceleration"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="SpinAngularAcceleration3"/>.</summary>
+    /// <param name="a">This <see cref="SpinAngularAcceleration"/> is multiplied by the values of <paramref name="b"/>.</param>
+    /// <param name="b">These values are multiplied by the <see cref="SpinAngularAcceleration"/> <paramref name="a"/>.</param>
     public static SpinAngularAcceleration3 operator *(SpinAngularAcceleration a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="SpinAngularAcceleration"/> <parmref name="b"/> with the <see cref="ValueTuple"/> <paramref name="a"/> to produce a <see cref="SpinAngularAcceleration3"/>.</summary>
-    /// <param name="a">This <see cref="ValueTuple"/> is multiplied by the <see cref="SpinAngularAcceleration"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="SpinAngularAcceleration"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="SpinAngularAcceleration"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="SpinAngularAcceleration3"/>.</summary>
+    /// <param name="a">These values are multiplied by the <see cref="SpinAngularAcceleration"/> <paramref name="b"/>.</param>
+    /// <param name="b">This <see cref="SpinAngularAcceleration"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static SpinAngularAcceleration3 operator *((Scalar x, Scalar y, Scalar z) a, SpinAngularAcceleration b) => b.Multiply(a);
 
     /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
@@ -318,23 +319,28 @@ public readonly partial record struct SpinAngularAcceleration :
     /// <param name="y"><paramref name="x"/> is compared against this value.</param>
     public static bool operator >=(SpinAngularAcceleration x, SpinAngularAcceleration y) => x.Magnitude >= y.Magnitude;
 
-    /// <summary>Converts the <see cref="SpinAngularAcceleration"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
+    /// <summary>Converts the <see cref="SpinAngularAcceleration"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public double ToDouble() => Magnitude;
-    /// <summary>Converts the <see cref="SpinAngularAcceleration"/> to a <see cref="double"/> based on the magnitude of the <see cref="SpinAngularAcceleration"/> <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public static implicit operator double(SpinAngularAcceleration x) => x.ToDouble();
 
-    /// <summary>Converts the <see cref="SpinAngularAcceleration"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts the <see cref="SpinAngularAcceleration"/> to the <see cref="Scalar"/> of equivalent magnitude, when
+    /// expressed in SI units.</summary>
     public Scalar ToScalar() => new(Magnitude);
-    /// <summary>Converts the <see cref="SpinAngularAcceleration"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(SpinAngularAcceleration x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="SpinAngularAcceleration"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="SpinAngularAcceleration"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static SpinAngularAcceleration FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="SpinAngularAcceleration"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="SpinAngularAcceleration"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static explicit operator SpinAngularAcceleration(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="SpinAngularAcceleration"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="SpinAngularAcceleration"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static SpinAngularAcceleration FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="SpinAngularAcceleration"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="SpinAngularAcceleration"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator SpinAngularAcceleration(Scalar x) => FromScalar(x);
 }

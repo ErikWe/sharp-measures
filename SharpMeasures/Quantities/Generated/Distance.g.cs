@@ -29,7 +29,8 @@ using System;
 /// </code>
 /// </item>
 /// </list>
-/// The magnitude of the measure can be retrieved using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfLength"/>.
+/// The magnitude of the <see cref="Distance"/> can be retrieved in the desired <see cref="UnitOfLength"/> using pre-defined properties,
+/// such as <see cref="Metres"/>
 /// </para>
 /// </summary>
 /// <remarks>
@@ -102,13 +103,13 @@ public readonly partial record struct Distance :
     /// <param name="volume">The cube root of this <see cref="Volume"/> is taken to produce a <see cref="Distance"/>.</param>
     public static Distance From(Volume volume) => new(Math.Cbrt(volume.Magnitude));
 
-    /// <summary>The magnitude of the <see cref="Distance"/> measure, in SI units.</summary>
-    /// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="Distance.InFemtometres"/>.
-    /// <para>This value should only be used (to maximize efficiency) when implementing mathematical operations with other quantities.</para></remarks>
+    /// <summary>The magnitude of the <see cref="Distance"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfLength)"/> or a pre-defined property
+    /// - such as <see cref="Femtometres"/>.</remarks>
     public double Magnitude { get; init; }
 
-    /// <summary>Constructs a new <see cref="Distance"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfLength"/> <paramref name="unitOfLength"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Distance"/>, in <see cref="UnitOfLength"/> <paramref name="unitOfLength"/>.</param>
+    /// <summary>Constructs a new <see cref="Distance"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfLength"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Distance"/>, expressed in <paramref name="unitOfLength"/>.</param>
     /// <param name="unitOfLength">The <see cref="UnitOfLength"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring constructing instances according to the following:
     /// <list type="bullet">
@@ -120,8 +121,8 @@ public readonly partial record struct Distance :
     /// </list>
     /// </remarks>
     public Distance(Scalar magnitude, UnitOfLength unitOfLength) : this(magnitude.Magnitude, unitOfLength) { }
-    /// <summary>Constructs a new <see cref="Distance"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfLength"/> <paramref name="unitOfLength"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Distance"/>, in <see cref="UnitOfLength"/> <paramref name="unitOfLength"/>.</param>
+    /// <summary>Constructs a new <see cref="Distance"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfLength"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Distance"/>, expressed in <paramref name="unitOfLength"/>.</param>
     /// <param name="unitOfLength">The <see cref="UnitOfLength"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring cosntructing instances according to the following:
     /// <list type="bullet">
@@ -133,13 +134,13 @@ public readonly partial record struct Distance :
     /// </list>
     /// </remarks>
     public Distance(double magnitude, UnitOfLength unitOfLength) : this(magnitude * unitOfLength.Factor) { }
-    /// <summary>Constructs a new <see cref="Distance"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Distance"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Distance"/>.</param>
-    /// <remarks>Consider preffering a constructor that requires a <see cref="UnitOfLength"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Distance(Scalar, UnitOfLength)"/>.</remarks>
     public Distance(Scalar magnitude) : this(magnitude.Magnitude) { }
-    /// <summary>Constructs a new <see cref="Distance"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Distance"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Distance"/>.</param>
-    /// <remarks>Consider preferring a constructor that requires a <see cref="UnitOfLength"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Distance(double, UnitOfLength)"/>.</remarks>
     public Distance(double magnitude)
     {
         Magnitude = magnitude;
@@ -148,40 +149,40 @@ public readonly partial record struct Distance :
     /// <summary>Converts the <see cref="Distance"/> to an instance of the associated quantity <see cref="Length"/>, of equal magnitude.</summary>
     public Length AsLength => new(Magnitude);
 
-    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in unit <see cref="UnitOfLength.Femtometre"/>.</summary>
-    public Scalar InFemtometres => InUnit(UnitOfLength.Femtometre);
-    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in unit <see cref="UnitOfLength.Picometre"/>.</summary>
-    public Scalar InPicometres => InUnit(UnitOfLength.Picometre);
-    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in unit <see cref="UnitOfLength.Nanometre"/>.</summary>
-    public Scalar InNanometres => InUnit(UnitOfLength.Nanometre);
-    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in unit <see cref="UnitOfLength.Micrometre"/>.</summary>
-    public Scalar InMicrometres => InUnit(UnitOfLength.Micrometre);
-    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in unit <see cref="UnitOfLength.Millimetre"/>.</summary>
-    public Scalar InMillimetres => InUnit(UnitOfLength.Millimetre);
-    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in unit <see cref="UnitOfLength.Centimetre"/>.</summary>
-    public Scalar InCentimetres => InUnit(UnitOfLength.Centimetre);
-    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in unit <see cref="UnitOfLength.Decimetre"/>.</summary>
-    public Scalar InDecimetres => InUnit(UnitOfLength.Decimetre);
-    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in unit <see cref="UnitOfLength.Metre"/>.</summary>
-    public Scalar InMetres => InUnit(UnitOfLength.Metre);
-    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in unit <see cref="UnitOfLength.Kilometre"/>.</summary>
-    public Scalar InKilometres => InUnit(UnitOfLength.Kilometre);
+    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in <see cref="UnitOfLength.Femtometre"/>.</summary>
+    public Scalar Femtometres => InUnit(UnitOfLength.Femtometre);
+    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in <see cref="UnitOfLength.Picometre"/>.</summary>
+    public Scalar Picometres => InUnit(UnitOfLength.Picometre);
+    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in <see cref="UnitOfLength.Nanometre"/>.</summary>
+    public Scalar Nanometres => InUnit(UnitOfLength.Nanometre);
+    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in <see cref="UnitOfLength.Micrometre"/>.</summary>
+    public Scalar Micrometres => InUnit(UnitOfLength.Micrometre);
+    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in <see cref="UnitOfLength.Millimetre"/>.</summary>
+    public Scalar Millimetres => InUnit(UnitOfLength.Millimetre);
+    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in <see cref="UnitOfLength.Centimetre"/>.</summary>
+    public Scalar Centimetres => InUnit(UnitOfLength.Centimetre);
+    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in <see cref="UnitOfLength.Decimetre"/>.</summary>
+    public Scalar Decimetres => InUnit(UnitOfLength.Decimetre);
+    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in <see cref="UnitOfLength.Metre"/>.</summary>
+    public Scalar Metres => InUnit(UnitOfLength.Metre);
+    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in <see cref="UnitOfLength.Kilometre"/>.</summary>
+    public Scalar Kilometres => InUnit(UnitOfLength.Kilometre);
 
-    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in unit <see cref="UnitOfLength.AstronomicalUnit"/>.</summary>
-    public Scalar InAstronomicalUnits => InUnit(UnitOfLength.AstronomicalUnit);
-    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in unit <see cref="UnitOfLength.Lightyear"/>.</summary>
-    public Scalar InLightyears => InUnit(UnitOfLength.Lightyear);
-    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in unit <see cref="UnitOfLength.Parsec"/>.</summary>
-    public Scalar InParsecs => InUnit(UnitOfLength.Parsec);
+    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in <see cref="UnitOfLength.AstronomicalUnit"/>.</summary>
+    public Scalar AstronomicalUnits => InUnit(UnitOfLength.AstronomicalUnit);
+    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in <see cref="UnitOfLength.Lightyear"/>.</summary>
+    public Scalar Lightyears => InUnit(UnitOfLength.Lightyear);
+    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in <see cref="UnitOfLength.Parsec"/>.</summary>
+    public Scalar Parsecs => InUnit(UnitOfLength.Parsec);
 
-    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in unit <see cref="UnitOfLength.Inch"/>.</summary>
-    public Scalar InInches => InUnit(UnitOfLength.Inch);
-    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in unit <see cref="UnitOfLength.Foot"/>.</summary>
-    public Scalar InFeet => InUnit(UnitOfLength.Foot);
-    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in unit <see cref="UnitOfLength.Yard"/>.</summary>
-    public Scalar InYards => InUnit(UnitOfLength.Yard);
-    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in unit <see cref="UnitOfLength.Mile"/>.</summary>
-    public Scalar InMiles => InUnit(UnitOfLength.Mile);
+    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in <see cref="UnitOfLength.Inch"/>.</summary>
+    public Scalar Inches => InUnit(UnitOfLength.Inch);
+    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in <see cref="UnitOfLength.Foot"/>.</summary>
+    public Scalar Feet => InUnit(UnitOfLength.Foot);
+    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in <see cref="UnitOfLength.Yard"/>.</summary>
+    public Scalar Yards => InUnit(UnitOfLength.Yard);
+    /// <summary>Retrieves the magnitude of the <see cref="Distance"/>, expressed in <see cref="UnitOfLength.Mile"/>.</summary>
+    public Scalar Miles => InUnit(UnitOfLength.Mile);
 
     /// <summary>Indicates whether the magnitude of the <see cref="Distance"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -218,16 +219,16 @@ public readonly partial record struct Distance :
 
     /// <inheritdoc/>
     public int CompareTo(Distance other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="Distance"/>, and the SI base unit of the quantity.</summary>
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="Distance"/> (in SI units), and the SI base unit of the quantity.</summary>
     public override string ToString() => $"{Magnitude} [m]";
 
-    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Distance"/>, expressed in <see cref="UnitOfLength"/>
-    /// <paramref name="unitOfLength"/>.</summary>
+    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Distance"/>,
+    /// expressed in <paramref name="unitOfLength"/>.</summary>
     /// <param name="unitOfLength">The <see cref="UnitOfLength"/> in which the magnitude is expressed.</param>
     public Scalar InUnit(UnitOfLength unitOfLength) => InUnit(this, unitOfLength);
-    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Distance"/>, expressed in <see cref="UnitOfLength"/>
-    /// <paramref name="unitOfLength"/>.</summary>
-    /// <param name="distance">The <see cref="Distance"/> to be expressed in <see cref="UnitOfLength"/> <paramref name="unitOfLength"/>.</param>
+    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Distance"/>,
+    /// expressed in <paramref name="unitOfLength"/>.</summary>
+    /// <param name="distance">The <see cref="Distance"/> to be expressed in <paramref name="unitOfLength"/>.</param>
     /// <param name="unitOfLength">The <see cref="UnitOfLength"/> in which the magnitude is expressed.</param>
     private static Scalar InUnit(Distance distance, UnitOfLength unitOfLength) => new(distance.Magnitude / unitOfLength.Factor);
 
@@ -263,7 +264,7 @@ public readonly partial record struct Distance :
     /// <summary>Divides the <see cref="Distance"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Distance"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Distance"/> <paramref name="x"/> is divded.</param>
+    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Distance"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(Distance x, Unhandled y) => x.Divide(y);
 
     /// <summary>Produces a <see cref="Distance"/>, with magnitude equal to the remainder from division of the original
@@ -330,35 +331,35 @@ public readonly partial record struct Distance :
 /// <param name="y">The <see cref="Distance"/>, which is inverted to a <see cref="SpatialFrequency"/> and scaled by <paramref name="x"/>.</param>
     public static SpatialFrequency operator /(Scalar x, Distance y) => x * y.Invert();
 
-    /// <summary>Multiplies the <see cref="Distance"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which multiplication is done.</typeparam>
-    /// <param name="factor">The factor by which the <see cref="Distance"/> is multiplied.</param>
-    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
-    /// <summary>Divides the <see cref="Distance"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which division is done.</typeparam>
-    /// <param name="divisor">The divisor by which the <see cref="Distance"/> is divided.</param>
-    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    /// <inheritdoc/>
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(Magnitude * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+        where TQuotientScalarQuantity : IScalarQuantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(Magnitude / divisor.Magnitude);
     /// <summary>Multiples the <see cref="Distance"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Distance"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Distance"/> <paramref name="x"/>.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Distance.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator *(Distance x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    public static Unhandled operator *(Distance x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
     /// <summary>Divides the <see cref="Distance"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Distance"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="Distance"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Distance.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator /(Distance x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    public static Unhandled operator /(Distance x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
     /// <summary>Multiplies the <see cref="Distance"/> with the <see cref="Vector3"/> <paramref name="vector"/> to produce a <see cref="Displacement3"/>.</summary>
     /// <param name="vector">This <see cref="Vector3"/> is multiplied by the <see cref="Distance"/>.</param>
     public Displacement3 Multiply(Vector3 vector) => new(vector * Magnitude);
-    /// <summary>Multiplies the <see cref="Distance"/> with the <see cref="ValueTuple"/> <paramref name="components"/> to produce a <see cref="Displacement3"/>.</summary>
-    /// <param name="components">This <see cref="ValueTuple"/> is multiplied by the <see cref="Distance"/>.</param>
+    /// <summary>Multiplies the <see cref="Distance"/> with the values of <paramref name="components"/> to produce a <see cref="Displacement3"/>.</summary>
+    /// <param name="components">These values are multiplied by the <see cref="Distance"/>.</param>
     public Displacement3 Multiply((double x, double y, double z) components) => Multiply(new Vector3(components));
-    /// <summary>Multiplies the <see cref="Distance"/> with the <see cref="ValueTuple"/> <paramref name="components"/> to produce a <see cref="Displacement3"/>.</summary>
-    /// <param name="components">This <see cref="ValueTuple"/> is multiplied by the <see cref="Distance"/>.</param>
+    /// <summary>Multiplies the <see cref="Distance"/> with the values of <paramref name="components"/> to produce a <see cref="Displacement3"/>.</summary>
+    /// <param name="components">These values are multiplied by the <see cref="Distance"/>.</param>
     public Displacement3 Multiply((Scalar x, Scalar y, Scalar z) components) => Multiply(new Vector3(components));
     /// <summary>Multiplies the <see cref="Distance"/> <paramref name="a"/> with the <see cref="Vector3"/> <paramref name="b"/> to produce a <see cref="Displacement3"/>.</summary>
     /// <param name="a">This <see cref="Distance"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
@@ -368,21 +369,21 @@ public readonly partial record struct Distance :
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="Distance"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Distance"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
     public static Displacement3 operator *(Vector3 a, Distance b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="Distance"/> <paramref name="a"/> with the <see cref="ValueTuple"/> <paramref name="b"/> to produce a <see cref="Displacement3"/>.</summary>
-    /// <param name="a">This <see cref="Distance"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="ValueTuple"/> is multiplied by the <see cref="Distance"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="Distance"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="Displacement3"/>.</summary>
+    /// <param name="a">This <see cref="Distance"/> is multiplied by the values of <paramref name="b"/>.</param>
+    /// <param name="b">These values are multiplied by the <see cref="Distance"/> <paramref name="a"/>.</param>
     public static Displacement3 operator *(Distance a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="Distance"/> <parmref name="b"/> with the <see cref="ValueTuple"/> <paramref name="a"/> to produce a <see cref="Displacement3"/>.</summary>
-    /// <param name="a">This <see cref="ValueTuple"/> is multiplied by the <see cref="Distance"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="Distance"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="Distance"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="Displacement3"/>.</summary>
+    /// <param name="a">These values are multiplied by the <see cref="Distance"/> <paramref name="b"/>.</param>
+    /// <param name="b">This <see cref="Distance"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static Displacement3 operator *((double x, double y, double z) a, Distance b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="Distance"/> <paramref name="a"/> with the <see cref="ValueTuple"/> <paramref name="b"/> to produce a <see cref="Displacement3"/>.</summary>
-    /// <param name="a">This <see cref="Distance"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="ValueTuple"/> is multiplied by the <see cref="Distance"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="Distance"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="Displacement3"/>.</summary>
+    /// <param name="a">This <see cref="Distance"/> is multiplied by the values of <paramref name="b"/>.</param>
+    /// <param name="b">These values are multiplied by the <see cref="Distance"/> <paramref name="a"/>.</param>
     public static Displacement3 operator *(Distance a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="Distance"/> <parmref name="b"/> with the <see cref="ValueTuple"/> <paramref name="a"/> to produce a <see cref="Displacement3"/>.</summary>
-    /// <param name="a">This <see cref="ValueTuple"/> is multiplied by the <see cref="Distance"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="Distance"/> is multiplied by the <see cref="ValueTuple"/> <paramref name="a"/>.</param>
+    /// <summary>Multiplies the <see cref="Distance"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="Displacement3"/>.</summary>
+    /// <param name="a">These values are multiplied by the <see cref="Distance"/> <paramref name="b"/>.</param>
+    /// <param name="b">This <see cref="Distance"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static Displacement3 operator *((Scalar x, Scalar y, Scalar z) a, Distance b) => b.Multiply(a);
 
     /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
@@ -402,23 +403,28 @@ public readonly partial record struct Distance :
     /// <param name="y"><paramref name="x"/> is compared against this value.</param>
     public static bool operator >=(Distance x, Distance y) => x.Magnitude >= y.Magnitude;
 
-    /// <summary>Converts the <see cref="Distance"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
+    /// <summary>Converts the <see cref="Distance"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public double ToDouble() => Magnitude;
-    /// <summary>Converts the <see cref="Distance"/> to a <see cref="double"/> based on the magnitude of the <see cref="Distance"/> <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public static implicit operator double(Distance x) => x.ToDouble();
 
-    /// <summary>Converts the <see cref="Distance"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts the <see cref="Distance"/> to the <see cref="Scalar"/> of equivalent magnitude, when
+    /// expressed in SI units.</summary>
     public Scalar ToScalar() => new(Magnitude);
-    /// <summary>Converts the <see cref="Distance"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(Distance x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Distance"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Distance"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static Distance FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Distance"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Distance"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static explicit operator Distance(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Distance"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Distance"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static Distance FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Distance"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Distance"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Distance(Scalar x) => FromScalar(x);
 }

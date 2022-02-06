@@ -2,9 +2,49 @@
 
 using ErikWe.SharpMeasures.Units;
 
+using System;
 using System.Numerics;
 
-#Document:Header(OrbitalAngularVelocity3, 3, OrbitalAngularSpeed, UnitOfAngularVelocity, [RadianPerSecond, DegreePerSecond, TurnPerSecond], [RadiansPerSecond, DegreesPerSecond, TurnsPerSecond])#
+/// <summary>A measure of the vector quantity <see cref="OrbitalAngularVelocity3"/>, of dimensionality three,
+/// describing the <see cref="AngularVelocity3"/> of an object about an external point. The quantity is expressed in
+/// <see cref="UnitOfAngularVelocity"/>, with the SI unit being [rad / s].
+/// <para>
+/// New instances of <see cref="OrbitalAngularVelocity3"/> can be constructed by multiplying a <see cref="OrbitalAngularSpeed"/> with a Vector3 or (double, double, double).
+/// Instances can also be produced by combining other quantities, either through mathematical operators or using overloads of the static method 'From'.
+/// Lastly, instances can be constructed from quantities sharing the same unit, using instance-methods of the associated quantity - typically prefixed with 'As'. This is demonstrated below:
+/// <list type="bullet">
+/// <item>
+/// <code>
+/// <see cref="OrbitalAngularVelocity3"/> a = (3, 5, 7) * <see cref="OrbitalAngularSpeed.OneRadianPerSecond"/>;
+/// </code>
+/// </item>
+/// <item>
+/// <code>
+/// <see cref="OrbitalAngularVelocity3"/> d = <see cref="OrbitalAngularVelocity3.From(Rotation3, Time)"/>;
+/// </code>
+/// </item>
+/// <item>
+/// <code>
+/// <see cref="OrbitalAngularVelocity3"/> e = <see cref="AngularVelocity3.AsOrbitalAngularVelocity3"/>;
+/// </code>
+/// </item>
+/// </list>
+/// The components of the measure can be retrieved as a <see cref="Vector3"/> using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfAngularVelocity"/>.
+/// </para>
+/// </summary>
+/// <remarks>
+/// <see cref="OrbitalAngularVelocity3"/> is closely related to the following quantities:
+/// <list type="bullet">
+/// <item>
+/// <term><see cref="AngularVelocity3"/></term>
+/// <description>Describes any type of angular velocity.</description>
+/// </item>
+/// <item>
+/// <term><see cref="SpinAngularVelocity3"/></term>
+/// <description>Describes the <see cref="AngularVelocity3"/> of an object about the internal center of rotation.</description>
+/// </item>
+/// </list>
+/// </remarks>
 public readonly partial record struct OrbitalAngularVelocity3 :
     IVector3Quantity,
     IScalableVector3Quantity<OrbitalAngularVelocity3>,
@@ -14,57 +54,100 @@ public readonly partial record struct OrbitalAngularVelocity3 :
     IMultiplicableVector3Quantity<Unhandled3, Unhandled>,
     IDivisibleVector3Quantity<OrbitalAngularVelocity3, Scalar>,
     IDivisibleVector3Quantity<Unhandled3, Unhandled>,
-    IDotableVector3Quantity<OrbitalAngularVelocity3, Scalar>,
+    IDotableVector3Quantity<OrbitalAngularSpeed, Vector3>,
+    IDotableVector3Quantity<Unhandled, Unhandled3>,
+    ICrossableVector3Quantity<OrbitalAngularVelocity3, Vector3>,
+    ICrossableVector3Quantity<Unhandled3, Unhandled3>,
     IGenericallyMultiplicableVector3Quantity,
     IGenericallyDivisibleVector3Quantity,
     IGenericallyDotableVector3Quantity,
     IGenericallyCrossableVector3Quantity
 {
-    #Document:Zero(OrbitalAngularVelocity3, 3)#
+    /// <summary>The zero-magnitude <see cref="OrbitalAngularVelocity3"/>.</summary>
     public static OrbitalAngularVelocity3 Zero { get; } = new(0, 0, 0);
 
-    #Document:ComponentX(OrbitalAngularVelocity3, 3)#
+    /// <summary>The magnitude of the X-component of the <see cref="OrbitalAngularVelocity3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAngularVelocity)"/> or a pre-defined property
+    /// - such as <see cref="RadiansPerSecond"/>.</remarks>
     public double X { get; init; }
-    #Document:ComponentY(OrbitalAngularVelocity3, 3)#
+    /// <summary>The magnitude of the Y-component of the <see cref="OrbitalAngularVelocity3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAngularVelocity)"/> or a pre-defined property
+    /// - such as <see cref="RadiansPerSecond"/>.</remarks>
     public double Y { get; init; }
-    #Document:ComponentZ(OrbitalAngularVelocity3, 3)#
+    /// <summary>The magnitude of the Z-component of the <see cref="OrbitalAngularVelocity3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAngularVelocity)"/> or a pre-defined property
+    /// - such as <see cref="RadiansPerSecond"/>.</remarks>
     public double Z { get; init; }
 
-    #Document:ConstructorComponentTupleUnit(OrbitalAngularVelocity3, 3, UnitOfAngularVelocity, unitOfAngularVelocity, [RadianPerSecond, DegreePerSecond, TurnPerSecond])#
-    public OrbitalAngularVelocity3((OrbitalAngularSpeed x, OrbitalAngularSpeed y, OrbitalAngularSpeed z) components, UnitOfAngularVelocity unitOfAngularVelocity) : 
-    	this(components.x, components.y, components.z, unitOfAngularVelocity) { }
-    #Document:ConstructorComponentsUnit(OrbitalAngularVelocity3, 3, UnitOfAngularVelocity, unitOfAngularVelocity, [RadianPerSecond, DegreePerSecond, TurnPerSecond])#
-    public OrbitalAngularVelocity3(OrbitalAngularSpeed x, OrbitalAngularSpeed y, OrbitalAngularSpeed z, UnitOfAngularVelocity unitOfAngularVelocity) : 
-    	this(x.Magnitude, y.Magnitude, z.Magnitude, unitOfAngularVelocity) { }
-    #Document:ConstructorScalarTupleUnit(OrbitalAngularVelocity3, 3, UnitOfAngularVelocity, unitOfAngularVelocity, [RadianPerSecond, DegreePerSecond, TurnPerSecond])#
+    /// <summary>Constructs a new <see cref="OrbitalAngularVelocity3"/> with components <paramref name="components"/>.</summary>
+    /// <param name="components">The components of the <see cref="OrbitalAngularVelocity3"/>.</param>
+    public OrbitalAngularVelocity3((OrbitalAngularSpeed x, OrbitalAngularSpeed y, OrbitalAngularSpeed z) components) : this(components.x, components.y, components.z) { }
+    /// <summary>Constructs a new <see cref="OrbitalAngularVelocity3"/> with components (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>).</summary>
+    /// <param name="x">The X-component of the <see cref="OrbitalAngularVelocity3"/>.</param>
+    /// <param name="y">The Y-component of the <see cref="OrbitalAngularVelocity3"/>.</param>
+    /// <param name="z">The Z-component of the <see cref="OrbitalAngularVelocity3"/>.</param>
+    public OrbitalAngularVelocity3(OrbitalAngularSpeed x, OrbitalAngularSpeed y, OrbitalAngularSpeed z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
+    /// <summary>Constructs a new <see cref="OrbitalAngularVelocity3"/> with components of magnitudes <paramref name="components"/>,
+    /// expressed in <paramref name="unitOfAngularVelocity"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="OrbitalAngularVelocity3"/>, expressed in <paramref name="unitOfAngularVelocity"/>.</param>
+    /// <param name="unitOfAngularVelocity">The <see cref="UnitOfAngularVelocity"/> in which the magnitudes of the components, <paramref name="components"/>, are expressed.</param>
     public OrbitalAngularVelocity3((Scalar x, Scalar y, Scalar z) components, UnitOfAngularVelocity unitOfAngularVelocity) : 
     	this(components.x, components.y, components.z, unitOfAngularVelocity) { }
-    #Document:ConstructorScalarsUnit(OrbitalAngularVelocity3, 3, UnitOfAngularVelocity, unitOfAngularVelocity, [RadianPerSecond, DegreePerSecond, TurnPerSecond])#
+    /// <summary>Constructs a new <see cref="OrbitalAngularVelocity3"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>),
+    /// expressed in <paramref name="unitOfAngularVelocity"/>.</summary>
+    /// <param name="x">The magnitude of the X-component of the <see cref="OrbitalAngularVelocity3"/>, expressed in <paramref name="unitOfAngularVelocity"/>.</param>
+    /// <param name="y">The magnitude of the Y-component of the <see cref="OrbitalAngularVelocity3"/>, expressed in <paramref name="unitOfAngularVelocity"/>.</param>
+    /// <param name="z">The magnitude of the Z-component of the <see cref="OrbitalAngularVelocity3"/>, expressed in <paramref name="unitOfAngularVelocity"/>.</param>
+    /// <param name="unitOfAngularVelocity">The <see cref="UnitOfAngularVelocity"/> in which the magnitudes of the components,
+    /// (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>), are expressed.</param>
     public OrbitalAngularVelocity3(Scalar x, Scalar y, Scalar z, UnitOfAngularVelocity unitOfAngularVelocity) : 
     	this(x.Magnitude, y.Magnitude, z.Magnitude, unitOfAngularVelocity) { }
-    #Document:ConstructorVectorUnit(OrbitalAngularVelocity3, 3, UnitOfAngularVelocity, unitOfAngularVelocity, [RadianPerSecond, DegreePerSecond, TurnPerSecond])#
+    /// <summary>Constructs a new <see cref="OrbitalAngularVelocity3"/> with components of magnitudes <paramref name="components"/>,
+    /// expressed in <paramref name="unitOfAngularVelocity"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="OrbitalAngularVelocity3"/>, expressed in <paramref name="unitOfAngularVelocity"/>.</param>
+    /// <param name="unitOfAngularVelocity">The <see cref="UnitOfAngularVelocity"/> in which the magnitudes of the components,
+    /// <paramref name="components"/>, are expressed.</param>
     public OrbitalAngularVelocity3(Vector3 components, UnitOfAngularVelocity unitOfAngularVelocity) : 
     	this(components.X, components.Y, components.Z, unitOfAngularVelocity) { }
-    #Document:ConstructorDoubleTupleUnit(OrbitalAngularVelocity3, 3, UnitOfAngularVelocity, unitOfAngularVelocity, [RadianPerSecond, DegreePerSecond, TurnPerSecond])#
+    /// <summary>Constructs a new <see cref="OrbitalAngularVelocity3"/> with components of magnitudes <paramref name="components"/>,
+    /// expressed in <paramref name="unitOfAngularVelocity"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="OrbitalAngularVelocity3"/>, expressed in <paramref name="unitOfAngularVelocity"/>.</param>
+    /// <param name="unitOfAngularVelocity">The <see cref="UnitOfAngularVelocity"/> in which the magnitudes of the components, <paramref name="components"/>, are expressed.</param>
     public OrbitalAngularVelocity3((double x, double y, double z) components, UnitOfAngularVelocity unitOfAngularVelocity) : 
     	this(components.x, components.y, components.z, unitOfAngularVelocity) { }
-    #Document:ConstructorDoublesTupleUnit(OrbitalAngularVelocity3, 3, UnitOfAngularVelocity, unitOfAngularVelocity, [RadianPerSecond, DegreePerSecond, TurnPerSecond])#
+    /// <summary>Constructs a new <see cref="OrbitalAngularVelocity3"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>),
+    /// expressed in <paramref name="unitOfAngularVelocity"/>.</summary>
+    /// <param name="x">The magnitude of the X-component of the <see cref="OrbitalAngularVelocity3"/>, expressed in <paramref name="unitOfAngularVelocity"/>.</param>
+    /// <param name="y">The magnitude of the Y-component of the <see cref="OrbitalAngularVelocity3"/>, expressed in <paramref name="unitOfAngularVelocity"/>.</param>
+    /// <param name="z">The magnitude of the Z-component of the <see cref="OrbitalAngularVelocity3"/>, expressed in <paramref name="unitOfAngularVelocity"/>.</param>
+    /// <param name="unitOfAngularVelocity">The <see cref="UnitOfAngularVelocity"/> in which the magnitudes of the components,
+    /// (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>), are expressed.</param>
     public OrbitalAngularVelocity3(double x, double y, double z, UnitOfAngularVelocity unitOfAngularVelocity) : 
     	this(x * unitOfAngularVelocity.Factor, y * unitOfAngularVelocity.Factor, z * unitOfAngularVelocity.Factor) { }
 
-    #Document:ConstructorComponentTuple(OrbitalAngularVelocity3, 3, UnitOfAngularVelocity, unitOfAngularVelocity, [RadianPerSecond, DegreePerSecond, TurnPerSecond])#
-    public OrbitalAngularVelocity3((OrbitalAngularSpeed x, OrbitalAngularSpeed y, OrbitalAngularSpeed z) components) : this(components.x, components.y, components.z) { }
-    #Document:ConstructorComponents(OrbitalAngularVelocity3, 3, UnitOfAngularVelocity, unitOfAngularVelocity, [RadianPerSecond, DegreePerSecond, TurnPerSecond])#
-    public OrbitalAngularVelocity3(OrbitalAngularSpeed x, OrbitalAngularSpeed y, OrbitalAngularSpeed z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
-    #Document:ConstructorScalarTuple(OrbitalAngularVelocity3, 3, UnitOfAngularVelocity, unitOfAngularVelocity, [RadianPerSecond, DegreePerSecond, TurnPerSecond])#
+    /// <summary>Constructs a new <see cref="OrbitalAngularVelocity3"/> with components of magnitudes <paramref name="components"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="OrbitalAngularVelocity3"/>.</param>
+    /// <remarks>Consider preferring <see cref="OrbitalAngularVelocity3(ValueTuple{Scalar, Scalar, Scalar}, UnitOfAngularVelocity)"/>.</remarks>
     public OrbitalAngularVelocity3((Scalar x, Scalar y, Scalar z) components) : this(components.x, components.y, components.z) { }
-    #Document:ConstructorScalars(OrbitalAngularVelocity3, 3, UnitOfAngularVelocity, unitOfAngularVelocity, [RadianPerSecond, DegreePerSecond, TurnPerSecond])#
+    /// <summary>Constructs a new <see cref="OrbitalAngularVelocity3"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>).</summary>
+    /// <param name="x">The magnitude of the X-component of the <see cref="OrbitalAngularVelocity3"/>.</param>
+    /// <param name="y">The magnitude of the Y-component of the <see cref="OrbitalAngularVelocity3"/>.</param>
+    /// <param name="z">The magnitude of the Z-component of the <see cref="OrbitalAngularVelocity3"/>.</param>
+    /// <remarks>Consider preferring <see cref="OrbitalAngularVelocity3(Scalar, Scalar, Scalar, UnitOfAngularVelocity)"/>.</remarks>
     public OrbitalAngularVelocity3(Scalar x, Scalar y, Scalar z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
-    #Document:ConstructorVector(OrbitalAngularVelocity3, 3, UnitOfAngularVelocity, unitOfAngularVelocity, [RadianPerSecond, DegreePerSecond, TurnPerSecond])#
+    /// <summary>Constructs a new <see cref="OrbitalAngularVelocity3"/> with components of magnitudes <paramref name="components"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="OrbitalAngularVelocity3"/>.</param>
+    /// <remarks>Consider preferring <see cref="OrbitalAngularVelocity3(Vector3, UnitOfAngularVelocity)"/>.</remarks>
     public OrbitalAngularVelocity3(Vector3 components) : this(components.X, components.Y, components.Z) { }
-    #Document:ConstructorDoubleTuple(OrbitalAngularVelocity3, 3, UnitOfAngularVelocity, unitOfAngularVelocity, [RadianPerSecond, DegreePerSecond, TurnPerSecond])#
+    /// <summary>Constructs a new <see cref="OrbitalAngularVelocity3"/> with components of magnitudes <paramref name="components"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="OrbitalAngularVelocity3"/>.</param>
+    /// <remarks>Consider preferring <see cref="OrbitalAngularVelocity3(ValueTuple{double, double, double}, UnitOfAngularVelocity)"/>.</remarks>
     public OrbitalAngularVelocity3((double x, double y, double z) components) : this(components.x, components.y, components.z) { }
-    #Document:ConstructorDoubles(OrbitalAngularVelocity3, 3, UnitOfAngularVelocity, unitOfAngularVelocity, [RadianPerSecond, DegreePerSecond, TurnPerSecond])#
+    /// <summary>Constructs a new <see cref="OrbitalAngularVelocity3"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>).</summary>
+    /// <param name="x">The magnitude of the X-component of the <see cref="OrbitalAngularVelocity3"/>.</param>
+    /// <param name="y">The magnitude of the Y-component of the <see cref="OrbitalAngularVelocity3"/>.</param>
+    /// <param name="z">The magnitude of the Z-component of the <see cref="OrbitalAngularVelocity3"/>.</param>
+    /// <remarks>Consider preferring <see cref="OrbitalAngularVelocity3(double, double, double, UnitOfAngularVelocity)"/>.</remarks>
     public OrbitalAngularVelocity3(double x, double y, double z)
     {
         X = x;
@@ -74,135 +157,217 @@ public readonly partial record struct OrbitalAngularVelocity3 :
 
 ));
 
-    #Document:InUnit(quantity = OrbitalAngularVelocity3, dimensionality = 3, unit = UnitOfAngularVelocity, unitName = RadianPerSecond)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="OrbitalAngularVelocity3"/>, expressed in <see cref="UnitOfAngularVelocity.RadianPerSecond"/>.</summary>
     public Vector3 RadiansPerSecond => InUnit(UnitOfAngularVelocity.RadianPerSecond);
-    #Document:InUnit(quantity = OrbitalAngularVelocity3, dimensionality = 3, unit = UnitOfAngularVelocity, unitName = DegreePerSecond)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="OrbitalAngularVelocity3"/>, expressed in <see cref="UnitOfAngularVelocity.DegreePerSecond"/>.</summary>
     public Vector3 DegreesPerSecond => InUnit(UnitOfAngularVelocity.DegreePerSecond);
-    #Document:InUnit(quantity = OrbitalAngularVelocity3, dimensionality = 3, unit = UnitOfAngularVelocity, unitName = TurnPerSecond)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="OrbitalAngularVelocity3"/>, expressed in <see cref="UnitOfAngularVelocity.TurnPerSecond"/>.</summary>
     public Vector3 TurnsPerSecond => InUnit(UnitOfAngularVelocity.TurnPerSecond);
 
-    #Document:ScalarMagnitude(OrbitalAngularVelocity3, 3)#
+    /// <inheritdoc/>
     Scalar IVector3Quantity.Magnitude() => Maths.Vectors.Dot(this, this).SquareRoot();
-    #Document:ScalarQuantityMagnitude(OrbitalAngularVelocity3, 3, OrbitalAngularSpeed)#
+    /// <summary>Computes the magnitude, or norm, of the vector quantity <see cref="OrbitalAngularVelocity3"/>, as a <see cref="OrbitalAngularSpeed"/>.</summary>
+    /// <remarks>For improved performance, consider preferring <see cref="SquaredMagnitude"/> when possible.</remarks>
     public OrbitalAngularSpeed Magnitude() => new(Maths.Vectors.Dot(this, this).SquareRoot());
-#NonScalarQuantityComponent#
-    #Document:ScalarMagnitude(OrbitalAngularVelocity3, 3)#
-    public Scalar Magnitude() => Maths.Vectors.Dot(this, this).SquareRoot();
-#/NonScalarQuantityComponent#
-    #Document:ScalarSquaredMagnitude(OrbitalAngularVelocity3, 3)#
-    Scalar IVector3Quantity.SquaredMagnitude() => Maths.Vectors.Dot(this, this);
-    #Document:ScalarQuantitySquaredMagnitude(OrbitalAngularVelocity3, 3, undefined)#
-    public undefined SquaredMagnitude() => new(Maths.Vectors.Dot(this, this));
+    /// <summary>Computes the square of the magnitude, or norm, of the vector quantity <see cref="OrbitalAngularVelocity3"/>.</summary>
+    /// <remarks>For clarity, consider first extracting the magnitudes of the components in the desired <see cref="UnitOfAngularVelocity"/>.</remarks>
+    public Scalar SquaredMagnitude() => Maths.Vectors.Dot(this, this);
 
-    #Document:Normalize(OrbitalAngularVelocity3, 3)#
+    /// <summary>Normalizes the <see cref="OrbitalAngularVelocity3"/> - if expressed in SI units.</summary>
+    /// <remarks>Note that the resulting <see cref="OrbitalAngularVelocity3"/> will only be normalized if expressed in SI units.</remarks>
     public OrbitalAngularVelocity3 Normalize() => this / Magnitude().Magnitude;
-#NonScalarQuantityComponent#
-    #Document:Normalize(OrbitalAngularVelocity3, 3)#
-    public OrbitalAngularVelocity3 Normalize() => this / Magnitude();
-#/NonScalarQuantityComponent#
-    #Document:Transform(OrbitalAngularVelocity3, 3)#
+    /// <summary>Computes the transformation of the existing <see cref="OrbitalAngularVelocity3"/> by <paramref name="transform"/>, resulting in
+    /// a new <see cref="OrbitalAngularVelocity3"/>.</summary>
+    /// <param name="transform">The <see cref="OrbitalAngularVelocity3"/> is transformed by this <see cref="Matrix4x4"/>.</param>
     public OrbitalAngularVelocity3 Transform(Matrix4x4 transform) => new(Maths.Vectors.Transform(this, transform));
     
-    #Document:DotVector(OrbitalAngularVelocity3, 3)#
+    /// <summary>Performs dot-multiplication of the <see cref="OrbitalAngularVelocity3"/> by <paramref name="factor"/>, resulting in a
+    /// <cref name="OrbitalAngularSpeed"/>.</summary>
+    /// <param name="factor">The <see cref="OrbitalAngularVelocity3"/> is dot-multiplied by this <see cref="Vector3"/>.</param>
     public OrbitalAngularSpeed Dot(Vector3 factor) => new(Maths.Vectors.Dot(this, factor));
-    #Document:DotUnhandled(OrbitalAngularVelocity3, 3)#
+    /// <summary>Performs dot-multiplication of the <see cref="OrbitalAngularVelocity3"/> by <paramref name="factor"/>, resulting in a
+    /// <cref name="Unhandled"/>.</summary>
+    /// <param name="factor">The <see cref="OrbitalAngularVelocity3"/> is dot-multiplied by this <see cref="Unhandled3"/>.</param>
     public Unhandled Dot(Unhandled3 factor) => new(Maths.Vectors.Dot(this, factor));
-    #Document:DotGeneric(OrbitalAngularVelocity3, 3)#
-    public Unhandled Dot<TVector3Quantity>(TVector3Quantity factor) where TVector3Quantity : IVector3Quantity => new(Maths.Vectors.Dot(this, factor));
-    #Document:CrossVector(OrbitalAngularVelocity3, 3)#
+    /// <inheritdoc/>
+    public TProductScalarQuantity Dot<TProductScalarQuantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<Scalar, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorVector3Quantity : IVector3Quantity
+        => factory(Maths.Vectors.Dot(this, factor));
+    /// <summary>Performs cross-multiplication of the <see cref="OrbitalAngularVelocity3"/> by <paramref name="factor"/>, resulting in a
+    /// <cref see="OrbitalAngularVelocity3"/>.</summary>
+    /// <param name="factor">The <see cref="OrbitalAngularVelocity3"/> is cross-multiplied by this <see cref="Vector3"/>.</param>
     public OrbitalAngularVelocity3 Cross(Vector3 factor) => new(Maths.Vectors.Cross(this, factor));
-    #Document:CrossUnhandled(OrbitalAngularVelocity3, 3)#
+    /// <summary>Performs cross-multiplication of the <see cref="OrbitalAngularVelocity3"/> by <paramref name="factor"/>, resulting in a
+    /// <cref name="Unhandled3"/>.</summary>
+    /// <param name="factor">The <see cref="OrbitalAngularVelocity3"/> is cross-multiplied by this <see cref="Unhandled3"/>.</param>
     public Unhandled3 Cross(Unhandled3 factor) => new(Maths.Vectors.Cross(this, factor));
-    #Document:CrossGeneric(OrbitalAngularVelocity3, 3)#
-    public Unhandled3 Cross<TVector3Quantity>(TVector3Quantity factor) where TVector3Quantity : IVector3Quantity => new(Maths.Vectors.Cross(this, factor));
+    /// <inheritdoc/>
+    public TProductVector3Quantity Cross<TProductVector3Quantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<Vector3, TProductVector3Quantity> factory)
+        where TProductVector3Quantity : IVector3Quantity
+        where TFactorVector3Quantity : IVector3Quantity
+        => factory(Maths.Vectors.Cross(this, factor));
 
-    #Document:ToString(OrbitalAngularVelocity3, 3)#
+    /// <summary>Produces a formatted string from the magnitudes of the components of the <see cref="OrbitalAngularVelocity3"/> (in SI units),
+    /// and the SI base unit of the quantity.</summary>
     public override string ToString() => $"({X}, {Y}, {Z}) [rad / s]";
 
-    #Document:InUnitInstance(OrbitalAngularVelocity3, 3, UnitOfAngularVelocity, unitOfAngularVelocity)#
+    /// <summary>Produces a <see cref="Vector3"/> with components equal to that of the <see cref="OrbitalAngularVelocity3"/>,
+    /// expressed in <paramref name="unitOfAngularVelocity"/>.</summary>
+    /// <param name="unitOfAngularVelocity">The <see cref="UnitOfAngularVelocity"/> in which the magnitude is expressed.</param>
     public Vector3 InUnit(UnitOfAngularVelocity unitOfAngularVelocity) => InUnit(this, unitOfAngularVelocity);
-    #Document:InUnitStatic(OrbitalAngularVelocity3, orbitalAngularVelocity3, 3, UnitOfAngularVelocity, unitOfAngularVelocity)#
+    /// <summary>Produces a <see cref="Vector3"/> with components equal to that of the <see cref="OrbitalAngularVelocity3"/>,
+    /// expressed in <paramref name="unitOfAngularVelocity"/>.</summary>
+    /// <param name="orbitalAngularVelocity3">The <see cref="OrbitalAngularVelocity3"/> to be expressed in <paramref name="unitOfAngularVelocity"/>.</param>
+    /// <param name="unitOfAngularVelocity">The <see cref="UnitOfAngularVelocity"/> in which the magnitude is expressed.</param>
     private static Vector3 InUnit(OrbitalAngularVelocity3 orbitalAngularVelocity3, UnitOfAngularVelocity unitOfAngularVelocity) => 
     	orbitalAngularVelocity3.ToVector3() / unitOfAngularVelocity.Factor;
     
-    #Document:PlusMethod(OrbitalAngularVelocity3, 3)#
+    /// <summary>Unary plus, resulting in the unmodified <see cref="OrbitalAngularVelocity3"/>.</summary>
     public OrbitalAngularVelocity3 Plus() => this;
-    #Document:NegateMethod(OrbitalAngularVelocity3, 3)#
+    /// <summary>Negation, resulting in a <see cref="OrbitalAngularVelocity3"/> with negated components.</summary>
     public OrbitalAngularVelocity3 Negate() => new(-X, -Y, -Z);
-    #Document:PlusOperator(OrbitalAngularVelocity3, 3)#
+    /// <summary>Unary plus, resulting in the unmodified <paramref name="a"/>.</summary>
+    /// <param name="a">Unary plus is applied to this instance of <see cref="OrbitalAngularVelocity3"/>.</param>
     public static OrbitalAngularVelocity3 operator +(OrbitalAngularVelocity3 a) => a;
-    #Document:NegateOperator(OrbitalAngularVelocity3, 3)#
+    /// <summary>Negation, resulting in a <see cref="OrbitalAngularVelocity3"/> with components negated from that of <paramref name="a"/>.</summary>
+    /// <param name="a">Negation is applied to this instance of <see cref="OrbitalAngularVelocity3"/>.</param>
     public static OrbitalAngularVelocity3 operator -(OrbitalAngularVelocity3 a) => new(-a.X, -a.Y, -a.Z);
 
-    #Document:MultiplyUnhandledMethod(OrbitalAngularVelocity3, 3)#
-    public Unhandled3 Multiply(Unhandled factor) => new(XX * factor.Magnitude, YY * factor.Magnitude, ZZ * factor.Magnitude);
-    #Document:DivideUnhandledMethod(OrbitalAngularVelocity3, 3)#
+    /// <summary>Multiplies the <see cref="OrbitalAngularVelocity3"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="factor">The factor by which the <see cref="OrbitalAngularVelocity3"/> is multiplied.</param>
+    public Unhandled3 Multiply(Unhandled factor) => new(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+    /// <summary>Divides the <see cref="OrbitalAngularVelocity3"/> by the <see cref="Unhandled"/> quantity <paramref name="divisor"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="divisor">The divisor by which the <see cref="OrbitalAngularVelocity3"/> is divided.</param>
     public Unhandled3 Divide(Unhandled divisor) => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
-    #Document:MultiplyUnhandledOperatorLHS(OrbitalAngularVelocity3, 3)#
+    /// <summary>Multiplies the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
+    /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="OrbitalAngularVelocity3"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="Unhandled"/> quantity by which the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/> is multiplied.</param>
     public static Unhandled3 operator *(OrbitalAngularVelocity3 a, Unhandled b) => new(a.X * b.Magnitude, a.Y * b.Magnitude, a.Z * b.Magnitude);
-    #Document:MultiplyUnhandledOperatorRHS(OrbitalAngularVelocity3, 3)#
+    /// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="b"/> by the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/> -
+    /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="Unhandled"/> quantity by which the <see cref="OrbitalAngularVelocity3"/> <paramref name="b"/> is multiplied.</param>
+    /// <param name="b">The <see cref="OrbitalAngularVelocity3"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="a"/>.</param>
     public static Unhandled3 operator *(Unhandled a, OrbitalAngularVelocity3 b) => new(a.Magnitude * b.X, a.Magnitude * b.Y, a.Magnitude * b.Z);
-    #Document:DivideUnhandledOperator(OrbitalAngularVelocity3, 3)#
+    /// <summary>Divides the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
+    /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="OrbitalAngularVelocity3"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="Unhandled"/> quantity by which the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/> is divded.</param>
     public static Unhandled3 operator /(OrbitalAngularVelocity3 a, Unhandled b) => new(a.X / b.Magnitude, a.Y / b.Magnitude, a.Z / b.Magnitude);
 
-    #Document:RemainderDoubleMethod(OrbitalAngularVelocity3, 3)#
+    /// <summary>Produces a <see cref="OrbitalAngularVelocity3"/>, with each component equal to the remainder from division of the
+    /// magnitude of the original component by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
     public OrbitalAngularVelocity3 Remainder(double divisor) => new(X % divisor, Y % divisor, Z % divisor);
-    #Document:MultiplyDoubleMethod(OrbitalAngularVelocity3, 3)#
+    /// <summary>Scales the <see cref="OrbitalAngularVelocity3"/> by <paramref name="factor"/>.</summary>
+    /// <param name="factor">The factor by which the <see cref="OrbitalAngularVelocity3"/> is scaled.</param>
     public OrbitalAngularVelocity3 Multiply(double factor) => new(X * factor, Y * factor, Z * factor);
-    #Document:DivideDoubleMethod(OrbitalAngularVelocity3, 3)#
+    /// <summary>Scales the <see cref="OrbitalAngularVelocity3"/> through division by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, by which the <see cref="OrbitalAngularVelocity3"/> is divided.</param>
     public OrbitalAngularVelocity3 Divide(double divisor) => new(X / divisor, Y / divisor, Z / divisor);
-    #Document:RemainderDoubleOperator(OrbitalAngularVelocity3, 3)#
+    /// <summary>Produces a <see cref="OrbitalAngularVelocity3"/>, with each component equal to the remainder from division of the
+    /// magnitude of the component of <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="OrbitalAngularVelocity3"/>, the components of which are divided by <paramref name="b"/> to produce a remainder.</param>
+    /// <param name="b">The remainder is retrieved from division of <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/> by this value.</param>
     public static OrbitalAngularVelocity3 operator %(OrbitalAngularVelocity3 a, double b) => new(a.X % b, a.Y % b, a.Z % b);
-    #Document:MultiplyDoubleOperatorLHS(OrbitalAngularVelocity3, 3)#
+    /// <summary>Scales the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="OrbitalAngularVelocity3"/>, which is scaled by <paramref name="b"/>.</param>
+    /// <param name="b">This value is used to scale the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/>.</param>
     public static OrbitalAngularVelocity3 operator *(OrbitalAngularVelocity3 a, double b) => new(a.X * b, a.Y * b, a.Z * b);
-    #Document:MultiplyDoubleOperatorRHS(OrbitalAngularVelocity3, 3)#
+    /// <summary>Scales the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">This value is used to scale the <see cref="OrbitalAngularVelocity3"/> <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="OrbitalAngularVelocity3"/>, which is scaled by <paramref name="a"/>.</param>
     public static OrbitalAngularVelocity3 operator *(double a, OrbitalAngularVelocity3 b) => new(a * b.X, a * b.Y, a * b.Z);
-    #Document:DivideDoubleOperator(OrbitalAngularVelocity3, 3)#
+    /// <summary>Scales the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/> through division by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="OrbitalAngularVelocity3"/>, which is divided by <paramref name="b"/>.</param>
+    /// <param name="b">This value is used to divide the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/>.</param>
     public static OrbitalAngularVelocity3 operator /(OrbitalAngularVelocity3 a, double b) => new(a.X / b, a.Y / b, a.Z / b);
 
-    #Document:RemainderScalarMethod(OrbitalAngularVelocity3, 3)#
+    /// <summary>Produces a <see cref="OrbitalAngularVelocity3"/>, with each component equal to the remainder from division of the
+    /// magnitude of the original component by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
     public OrbitalAngularVelocity3 Remainder(Scalar divisor) => new(X % divisor.Magnitude, Y % divisor.Magnitude, Z % divisor.Magnitude);
-    #Document:MultiplyScalarMethod(OrbitalAngularVelocity3, 3)#
-    public OrbitalAngularVelocity3 Multiply(Scalar factor) => new(XX * factor.Magnitude, YY * factor.Magnitude, ZZ * factor.Magnitude);
-    #Document:DivideScalarMethod(OrbitalAngularVelocity3, 3)#
+    /// <summary>Scales the <see cref="OrbitalAngularVelocity3"/> by <paramref name="factor"/>.</summary>
+    /// <param name="factor">The factor by which the <see cref="OrbitalAngularVelocity3"/> is scaled.</param>
+    public OrbitalAngularVelocity3 Multiply(Scalar factor) => new(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+    /// <summary>Scales the <see cref="OrbitalAngularVelocity3"/> through division by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, by which the <see cref="OrbitalAngularVelocity3"/> is divided.</param>
     public OrbitalAngularVelocity3 Divide(Scalar divisor) => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
-    #Document:RemainderScalarOperator(OrbitalAngularVelocity3, 3)#
+    /// <summary>Produces a <see cref="OrbitalAngularVelocity3"/>, with each component equal to the remainder from division of the
+    /// magnitude of the component of <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="OrbitalAngularVelocity3"/>, the components of which are divided by <paramref name="b"/> to produce a remainder.</param>
+    /// <param name="b">The remainder is retrieved from division of <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/> by this value.</param>
     public static OrbitalAngularVelocity3 operator %(OrbitalAngularVelocity3 a, Scalar b) => new(a.X % b.Magnitude, a.Y % b.Magnitude, a.Z % b.Magnitude);
-    #Document:MultiplyScalarOperatorLHS(OrbitalAngularVelocity3, 3)#
+    /// <summary>Scales the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="OrbitalAngularVelocity3"/>, which is scaled by <paramref name="b"/>.</param>
+    /// <param name="b">This value is used to scale the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/>.</param>
     public static OrbitalAngularVelocity3 operator *(OrbitalAngularVelocity3 a, Scalar b) => new(a.X * b.Magnitude, a.Y * b.Magnitude, a.Z * b.Magnitude);
-    #Document:MultiplyScalarOperatorRHS(OrbitalAngularVelocity3, 3)#
+    /// <summary>Scales the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">This value is used to scale the <see cref="OrbitalAngularVelocity3"/> <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="OrbitalAngularVelocity3"/>, which is scaled by <paramref name="a"/>.</param>
     public static OrbitalAngularVelocity3 operator *(Scalar a, OrbitalAngularVelocity3 b) => new(a.Magnitude * b.X, a.Magnitude * b.Y, a.Magnitude * b.Z);
-    #Document:DivideScalarOperator(OrbitalAngularVelocity3, 3)#
+    /// <summary>Scales the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/> through division by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="OrbitalAngularVelocity3"/>, which is divided by <paramref name="b"/>.</param>
+    /// <param name="b">This value is used to divide the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/>.</param>
     public static OrbitalAngularVelocity3 operator /(OrbitalAngularVelocity3 a, Scalar b) => new(a.X / b.Magnitude, a.Y / b.Magnitude, a.Z / b.Magnitude);
 
-    #Document:MultiplyTScalar(OrbitalAngularVelocity3, 3)#
-    public Unhandled3 Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(XX * factor.Magnitude, YY * factor.Magnitude, ZZ * factor.Magnitude);
-    #Document:DivideTScalar(OrbitalAngularVelocity3, 3)#
-    public Unhandled3 Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
-    #Document:MultiplyIScalarLHS(OrbitalAngularVelocity3, 3)#
+    /// <inheritdoc/>
+    public TProductVector3Quantity Multiply<TProductVector3Quantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, double, double, TProductVector3Quantity> factory)
+        where TProductVector3Quantity : IVector3Quantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientVector3Quantity Divide<TQuotientVector3Quantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, double, double, TQuotientVector3Quantity> factory)
+        where TQuotientVector3Quantity : IVector3Quantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
+    /// <summary>Multiples the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="OrbitalAngularVelocity3"/>, which is multiplied by <paramref name="b"/>.</param>
+    /// <param name="b">This quantity is multiplied by the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/>.</param>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
     public static Unhandled3 operator *(OrbitalAngularVelocity3 a, IScalarQuantity b) => new(a.X * b.Magnitude, a.Y * b.Magnitude, a.Z * b.Magnitude);
-    #Document:MultiplyIScalarRHS(OrbitalAngularVelocity3, 3)#
+    /// <summary>Multiples the quantity <paramref name="a"/> by the <see cref="OrbitalAngularVelocity3"/> <paramref name="b"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">This quantity is multiplied by the <see cref="OrbitalAngularVelocity3"/> <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="OrbitalAngularVelocity3"/>, which is multiplied by <paramref name="a"/>.</param>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
     public static Unhandled3 operator *(IScalarQuantity a, OrbitalAngularVelocity3 b) => new(a.Magnitude * b.X, a.Magnitude * b.Y, a.Magnitude * b.Z);
-    #Document:DivideIScalar(OrbitalAngularVelocity3, 3)#
+    /// <summary>Divides the <see cref="OrbitalAngularVelocity3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="OrbitalAngularVelocity3"/>, which is divided by <paramref name="b"/>.</param>
+    /// <param name="b">The<see cref="OrbitalAngularVelocity3"/> <paramref name="a"/> is divided by this quantity.</param>
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientVector3Quantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, double, double, TQuotientVector3Quantity})"/>.</remarks>
     public static Unhandled3 operator /(OrbitalAngularVelocity3 a, IScalarQuantity b) => new(a.X / b.Magnitude, a.Y / b.Magnitude, a.Z / b.Magnitude);
 
-    #Document:ToValueTupleMethod(OrbitalAngularVelocity3, 3)#
+    /// <summary>Converts the <see cref="OrbitalAngularVelocity3"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with values
+    /// (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
     public (double x, double y, double z) ToValueTuple() => (X, Y, Z);
-    #Document:ToValueTupleOperator(OrbitalAngularVelocity3, 3)#
+    /// <summary>Converts <paramref name="a"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with values
+    /// (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
     public static implicit operator (double x, double y, double z)(OrbitalAngularVelocity3 a) => (a.X, a.Y, a.Z);
 
-    #Document:ToVectorMethod(OrbitalAngularVelocity3, 3)#
+    /// <summary>Converts the <see cref="OrbitalAngularVelocity3"/> to the <see cref="Vector3"/> with components of
+    /// equal magnitude, when expressed in SI units.</summary>
     public Vector3 ToVector3() => new(X, Y, Z);
-    #Document:ToVectorOperator(OrbitalAngularVelocity3, 3)#
+    /// <summary>Converts <paramref name="a"/> to the <see cref="Vector3"/> with components of
+    /// equal magnitude, when expressed in SI units.</summary>
     public static explicit operator Vector3(OrbitalAngularVelocity3 a) => new(a.X, a.Y, a.Z);
 
-    #Document:FromValueTupleMethod(OrbitalAngularVelocity3, 3)#
+    /// <summary>Constructs the <see cref="OrbitalAngularVelocity3"/> with components equal to the values of <paramref name="components"/>,
+    /// when expressed in SI units.</summary>
     public static OrbitalAngularVelocity3 FromValueTuple((double x, double y, double z) components) => new(components);
-    #Document:FromValueTupleOperator(OrbitalAngularVelocity3, 3)#
+    /// <summary>Constructs the <see cref="OrbitalAngularVelocity3"/> with components equal to the values of <paramref name="components"/>,
+    /// when expressed in SI units.</summary>
     public static explicit operator OrbitalAngularVelocity3((double x, double y, double z) components) => new(components);
 
-    #Document:FromVectorMethod(OrbitalAngularVelocity3, 3)#
+    /// <summary>Converts <paramref name="a"/> to the <see cref="OrbitalAngularVelocity3"/> with components of equal magnitude,
+    /// when expressed in SI units.</summary>
     public static OrbitalAngularVelocity3 FromVector3(Vector3 a) => new(a);
-    #Document:FromVectorOperator(OrbitalAngularVelocity3, 3)#
+    /// <summary>Converts <paramref name="a"/> to the <see cref="OrbitalAngularVelocity3"/> with components of equal magnitude,
+    /// when expressed in SI units.</summary>
     public static explicit operator OrbitalAngularVelocity3(Vector3 a) => new(a);
 }

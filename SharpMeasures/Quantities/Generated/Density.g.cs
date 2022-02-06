@@ -22,7 +22,8 @@ using System;
 /// </code>
 /// </item>
 /// </list>
-/// The magnitude of the measure can be retrieved using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfDensity"/>.
+/// The magnitude of the <see cref="Density"/> can be retrieved in the desired <see cref="UnitOfDensity"/> using pre-defined properties,
+/// such as <see cref="KilogramsPerCubicMetre"/>.
 /// </para>
 /// </summary>
 public readonly partial record struct Density :
@@ -47,13 +48,13 @@ public readonly partial record struct Density :
     /// <summary>Constructs a <see cref="Density"/> by inverting the <see cref="SpecificVolume"/> <paramref name="specificVolume"/>.</summary>
     public static Density From(SpecificVolume specificVolume) => new(1 / specificVolume.Magnitude);
 
-    /// <summary>The magnitude of the <see cref="Density"/> measure, in SI units.</summary>
-    /// <remarks>When the magnitude of the measure is desired, prefer retrieving this through methods prefixed with 'In', such as <see cref="Density.InKilogramsPerCubicMetre"/>.
-    /// <para>This value should only be used (to maximize efficiency) when implementing mathematical operations with other quantities.</para></remarks>
+    /// <summary>The magnitude of the <see cref="Density"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfDensity)"/> or a pre-defined property
+    /// - such as <see cref="KilogramsPerCubicMetre"/>.</remarks>
     public double Magnitude { get; init; }
 
-    /// <summary>Constructs a new <see cref="Density"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfDensity"/> <paramref name="unitOfDensity"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Density"/>, in <see cref="UnitOfDensity"/> <paramref name="unitOfDensity"/>.</param>
+    /// <summary>Constructs a new <see cref="Density"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfDensity"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Density"/>, expressed in <paramref name="unitOfDensity"/>.</param>
     /// <param name="unitOfDensity">The <see cref="UnitOfDensity"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring constructing instances according to the following:
     /// <list type="bullet">
@@ -65,8 +66,8 @@ public readonly partial record struct Density :
     /// </list>
     /// </remarks>
     public Density(Scalar magnitude, UnitOfDensity unitOfDensity) : this(magnitude.Magnitude, unitOfDensity) { }
-    /// <summary>Constructs a new <see cref="Density"/>, with magnitude <paramref name="magnitude"/> in <see cref="UnitOfDensity"/> <paramref name="unitOfDensity"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Density"/>, in <see cref="UnitOfDensity"/> <paramref name="unitOfDensity"/>.</param>
+    /// <summary>Constructs a new <see cref="Density"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfDensity"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Density"/>, expressed in <paramref name="unitOfDensity"/>.</param>
     /// <param name="unitOfDensity">The <see cref="UnitOfDensity"/> in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
     /// <remarks>Consider preferring cosntructing instances according to the following:
     /// <list type="bullet">
@@ -78,20 +79,20 @@ public readonly partial record struct Density :
     /// </list>
     /// </remarks>
     public Density(double magnitude, UnitOfDensity unitOfDensity) : this(magnitude * unitOfDensity.Factor) { }
-    /// <summary>Constructs a new <see cref="Density"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Density"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Density"/>.</param>
-    /// <remarks>Consider preffering a constructor that requires a <see cref="UnitOfDensity"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Density(Scalar, UnitOfDensity)"/>.</remarks>
     public Density(Scalar magnitude) : this(magnitude.Magnitude) { }
-    /// <summary>Constructs a new <see cref="Density"/>, with magnitude <paramref name="magnitude"/>.</summary>
+    /// <summary>Constructs a new <see cref="Density"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Density"/>.</param>
-    /// <remarks>Consider preferring a constructor that requires a <see cref="UnitOfDensity"/> to be specified.</remarks>
+    /// <remarks>Consider preferring <see cref="Density(double, UnitOfDensity)"/>.</remarks>
     public Density(double magnitude)
     {
         Magnitude = magnitude;
     }
 
-    /// <summary>Retrieves the magnitude of the <see cref="Density"/>, expressed in unit <see cref="UnitOfDensity.KilogramPerCubicMetre"/>.</summary>
-    public Scalar InKilogramsPerCubicMetre => InUnit(UnitOfDensity.KilogramPerCubicMetre);
+    /// <summary>Retrieves the magnitude of the <see cref="Density"/>, expressed in <see cref="UnitOfDensity.KilogramPerCubicMetre"/>.</summary>
+    public Scalar KilogramsPerCubicMetre => InUnit(UnitOfDensity.KilogramPerCubicMetre);
 
     /// <summary>Indicates whether the magnitude of the <see cref="Density"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -124,16 +125,16 @@ public readonly partial record struct Density :
 
     /// <inheritdoc/>
     public int CompareTo(Density other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="Density"/>, and the SI base unit of the quantity.</summary>
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="Density"/> (in SI units), and the SI base unit of the quantity.</summary>
     public override string ToString() => $"{Magnitude} [kg / m^3]";
 
-    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Density"/>, expressed in <see cref="UnitOfDensity"/>
-    /// <paramref name="unitOfDensity"/>.</summary>
+    /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Density"/>,
+    /// expressed in <paramref name="unitOfDensity"/>.</summary>
     /// <param name="unitOfDensity">The <see cref="UnitOfDensity"/> in which the magnitude is expressed.</param>
     public Scalar InUnit(UnitOfDensity unitOfDensity) => InUnit(this, unitOfDensity);
-    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Density"/>, expressed in <see cref="UnitOfDensity"/>
-    /// <paramref name="unitOfDensity"/>.</summary>
-    /// <param name="density">The <see cref="Density"/> to be expressed in <see cref="UnitOfDensity"/> <paramref name="unitOfDensity"/>.</param>
+    /// <summary>Produces a <see cref="Scalar"/> from the magnitude of a <see cref="Density"/>,
+    /// expressed in <paramref name="unitOfDensity"/>.</summary>
+    /// <param name="density">The <see cref="Density"/> to be expressed in <paramref name="unitOfDensity"/>.</param>
     /// <param name="unitOfDensity">The <see cref="UnitOfDensity"/> in which the magnitude is expressed.</param>
     private static Scalar InUnit(Density density, UnitOfDensity unitOfDensity) => new(density.Magnitude / unitOfDensity.Factor);
 
@@ -169,7 +170,7 @@ public readonly partial record struct Density :
     /// <summary>Divides the <see cref="Density"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Density"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Density"/> <paramref name="x"/> is divded.</param>
+    /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Density"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(Density x, Unhandled y) => x.Divide(y);
 
     /// <summary>Produces a <see cref="Density"/>, with magnitude equal to the remainder from division of the original
@@ -236,26 +237,26 @@ public readonly partial record struct Density :
 /// <param name="y">The <see cref="Density"/>, which is inverted to a <see cref="SpecificVolume"/> and scaled by <paramref name="x"/>.</param>
     public static SpecificVolume operator /(Scalar x, Density y) => x * y.Invert();
 
-    /// <summary>Multiplies the <see cref="Density"/> by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which multiplication is done.</typeparam>
-    /// <param name="factor">The factor by which the <see cref="Density"/> is multiplied.</param>
-    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
-    /// <summary>Divides the <see cref="Density"/> by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>
-    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which division is done.</typeparam>
-    /// <param name="divisor">The divisor by which the <see cref="Density"/> is divided.</param>
-    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    /// <inheritdoc/>
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(Magnitude * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+        where TQuotientScalarQuantity : IScalarQuantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(Magnitude / divisor.Magnitude);
     /// <summary>Multiples the <see cref="Density"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Density"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Density"/> <paramref name="x"/>.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Density.Multiply{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator *(Density x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    public static Unhandled operator *(Density x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
     /// <summary>Divides the <see cref="Density"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Density"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="Density"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To maximize performance, prefer <see cref="Density.Divide{TScalarQuantity}(TScalarQuantity)"/> - where boxing is avoided.</remarks>
-    public static Unhandled operator /(Density x, IScalarQuantity y) => x.Multiply(y);
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    public static Unhandled operator /(Density x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
     /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
     /// <param name="x"><paramref name="y"/> is compared against this value.</param>
@@ -274,23 +275,28 @@ public readonly partial record struct Density :
     /// <param name="y"><paramref name="x"/> is compared against this value.</param>
     public static bool operator >=(Density x, Density y) => x.Magnitude >= y.Magnitude;
 
-    /// <summary>Converts the <see cref="Density"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
+    /// <summary>Converts the <see cref="Density"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public double ToDouble() => Magnitude;
-    /// <summary>Converts the <see cref="Density"/> to a <see cref="double"/> based on the magnitude of the <see cref="Density"/> <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
+    /// in SI units.</summary>
     public static implicit operator double(Density x) => x.ToDouble();
 
-    /// <summary>Converts the <see cref="Density"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts the <see cref="Density"/> to the <see cref="Scalar"/> of equivalent magnitude, when
+    /// expressed in SI units.</summary>
     public Scalar ToScalar() => new(Magnitude);
-    /// <summary>Converts the <see cref="Density"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(Density x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Density"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Density"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static Density FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Density"/> of magnitude <paramref name="x"/>.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Density"/> of magnitude <paramref name="x"/>, when expressed
+    /// in SI units.</summary>
     public static explicit operator Density(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Density"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Density"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static Density FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Density"/> of equivalent magnitude.</summary>
+    /// <summary>Converts <paramref name="x"/> to the <see cref="Density"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Density(Scalar x) => FromScalar(x);
 }

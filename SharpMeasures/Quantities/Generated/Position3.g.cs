@@ -2,9 +2,49 @@
 
 using ErikWe.SharpMeasures.Units;
 
+using System;
 using System.Numerics;
 
-#Document:Header(Position3, 3, Length, UnitOfLength, [Femtometre, Picometre, Nanometre, Micrometre, Millimetre, Centimetre, Decimetre, Metre, Kilometre, AstronomicalUnit, Lightyear, Parsec, Inch, Foot, Yard, Mile], [Femtometres, Picometres, Nanometres, Micrometres, Millimetres, Centimetres, Decimetres, Metres, Kilometres, AstronomicalUnits, Lightyears, Parsecs, Inches, Feet, Yards, Miles])#
+/// <summary>A measure of the vector quantity <see cref="Position3"/>, of dimensionality three,
+/// describing a location in space. The quantity is expressed in
+/// <see cref="UnitOfLength"/>, with the SI unit being [m].
+/// <para>
+/// New instances of <see cref="Position3"/> can be constructed by multiplying a <see cref="Length"/> with a Vector3 or (double, double, double).
+/// Instances can also be produced by combining other quantities, either through mathematical operators or using overloads of the static method 'From'.
+/// Lastly, instances can be constructed from quantities sharing the same unit, using instance-methods of the associated quantity - typically prefixed with 'As'. This is demonstrated below:
+/// <list type="bullet">
+/// <item>
+/// <code>
+/// <see cref="Position3"/> a = (3, 5, 7) * <see cref="Length.OneFemtometre"/>;
+/// </code>
+/// </item>
+/// <item>
+/// <code>
+/// <see cref="Position3"/> d = <see cref="Position3.From(#Quantity#, Displacement3)"/>;
+/// </code>
+/// </item>
+/// <item>
+/// <code>
+/// <see cref="Position3"/> e = <see cref="Displacement3.AsPosition3"/>;
+/// </code>
+/// </item>
+/// </list>
+/// The components of the measure can be retrieved as a <see cref="Vector3"/> using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfLength"/>.
+/// </para>
+/// </summary>
+/// <remarks>
+/// <see cref="Position3"/> is closely related to the following quantities:
+/// <list type="bullet">
+/// <item>
+/// <term><see cref="Displacement3"/></term>
+/// <description>Describes the difference in <see cref="Position3"/> of two points in space.</description>
+/// </item>
+/// <item>
+/// <term><see cref="Size3"/></term>
+/// <description>Describes the size of a region of space.</description>
+/// </item>
+/// </list>
+/// </remarks>
 public readonly partial record struct Position3 :
     IVector3Quantity,
     IScalableVector3Quantity<Position3>,
@@ -14,50 +54,95 @@ public readonly partial record struct Position3 :
     IMultiplicableVector3Quantity<Unhandled3, Unhandled>,
     IDivisibleVector3Quantity<Position3, Scalar>,
     IDivisibleVector3Quantity<Unhandled3, Unhandled>,
-    IDotableVector3Quantity<Position3, Scalar>,
+    IDotableVector3Quantity<Length, Vector3>,
+    IDotableVector3Quantity<Unhandled, Unhandled3>,
+    ICrossableVector3Quantity<Position3, Vector3>,
+    ICrossableVector3Quantity<Unhandled3, Unhandled3>,
     IGenericallyMultiplicableVector3Quantity,
     IGenericallyDivisibleVector3Quantity,
     IGenericallyDotableVector3Quantity,
     IGenericallyCrossableVector3Quantity
 {
-    #Document:Zero(Position3, 3)#
+    /// <summary>The zero-magnitude <see cref="Position3"/>.</summary>
     public static Position3 Zero { get; } = new(0, 0, 0);
 
-    #Document:ComponentX(Position3, 3)#
+    /// <summary>The magnitude of the X-component of the <see cref="Position3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfLength)"/> or a pre-defined property
+    /// - such as <see cref="Femtometres"/>.</remarks>
     public double X { get; init; }
-    #Document:ComponentY(Position3, 3)#
+    /// <summary>The magnitude of the Y-component of the <see cref="Position3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfLength)"/> or a pre-defined property
+    /// - such as <see cref="Femtometres"/>.</remarks>
     public double Y { get; init; }
-    #Document:ComponentZ(Position3, 3)#
+    /// <summary>The magnitude of the Z-component of the <see cref="Position3"/>, in SI units.</summary>
+    /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfLength)"/> or a pre-defined property
+    /// - such as <see cref="Femtometres"/>.</remarks>
     public double Z { get; init; }
 
-    #Document:ConstructorComponentTupleUnit(Position3, 3, UnitOfLength, unitOfLength, [Femtometre, Picometre, Nanometre, Micrometre, Millimetre, Centimetre, Decimetre, Metre, Kilometre, AstronomicalUnit, Lightyear, Parsec, Inch, Foot, Yard, Mile])#
-    public Position3((Length x, Length y, Length z) components, UnitOfLength unitOfLength) : this(components.x, components.y, components.z, unitOfLength) { }
-    #Document:ConstructorComponentsUnit(Position3, 3, UnitOfLength, unitOfLength, [Femtometre, Picometre, Nanometre, Micrometre, Millimetre, Centimetre, Decimetre, Metre, Kilometre, AstronomicalUnit, Lightyear, Parsec, Inch, Foot, Yard, Mile])#
-    public Position3(Length x, Length y, Length z, UnitOfLength unitOfLength) : this(x.Magnitude, y.Magnitude, z.Magnitude, unitOfLength) { }
-    #Document:ConstructorScalarTupleUnit(Position3, 3, UnitOfLength, unitOfLength, [Femtometre, Picometre, Nanometre, Micrometre, Millimetre, Centimetre, Decimetre, Metre, Kilometre, AstronomicalUnit, Lightyear, Parsec, Inch, Foot, Yard, Mile])#
+    /// <summary>Constructs a new <see cref="Position3"/> with components <paramref name="components"/>.</summary>
+    /// <param name="components">The components of the <see cref="Position3"/>.</param>
+    public Position3((Length x, Length y, Length z) components) : this(components.x, components.y, components.z) { }
+    /// <summary>Constructs a new <see cref="Position3"/> with components (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>).</summary>
+    /// <param name="x">The X-component of the <see cref="Position3"/>.</param>
+    /// <param name="y">The Y-component of the <see cref="Position3"/>.</param>
+    /// <param name="z">The Z-component of the <see cref="Position3"/>.</param>
+    public Position3(Length x, Length y, Length z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
+    /// <summary>Constructs a new <see cref="Position3"/> with components of magnitudes <paramref name="components"/>,
+    /// expressed in <paramref name="unitOfLength"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Position3"/>, expressed in <paramref name="unitOfLength"/>.</param>
+    /// <param name="unitOfLength">The <see cref="UnitOfLength"/> in which the magnitudes of the components, <paramref name="components"/>, are expressed.</param>
     public Position3((Scalar x, Scalar y, Scalar z) components, UnitOfLength unitOfLength) : this(components.x, components.y, components.z, unitOfLength) { }
-    #Document:ConstructorScalarsUnit(Position3, 3, UnitOfLength, unitOfLength, [Femtometre, Picometre, Nanometre, Micrometre, Millimetre, Centimetre, Decimetre, Metre, Kilometre, AstronomicalUnit, Lightyear, Parsec, Inch, Foot, Yard, Mile])#
+    /// <summary>Constructs a new <see cref="Position3"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>),
+    /// expressed in <paramref name="unitOfLength"/>.</summary>
+    /// <param name="x">The magnitude of the X-component of the <see cref="Position3"/>, expressed in <paramref name="unitOfLength"/>.</param>
+    /// <param name="y">The magnitude of the Y-component of the <see cref="Position3"/>, expressed in <paramref name="unitOfLength"/>.</param>
+    /// <param name="z">The magnitude of the Z-component of the <see cref="Position3"/>, expressed in <paramref name="unitOfLength"/>.</param>
+    /// <param name="unitOfLength">The <see cref="UnitOfLength"/> in which the magnitudes of the components,
+    /// (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>), are expressed.</param>
     public Position3(Scalar x, Scalar y, Scalar z, UnitOfLength unitOfLength) : this(x.Magnitude, y.Magnitude, z.Magnitude, unitOfLength) { }
-    #Document:ConstructorVectorUnit(Position3, 3, UnitOfLength, unitOfLength, [Femtometre, Picometre, Nanometre, Micrometre, Millimetre, Centimetre, Decimetre, Metre, Kilometre, AstronomicalUnit, Lightyear, Parsec, Inch, Foot, Yard, Mile])#
+    /// <summary>Constructs a new <see cref="Position3"/> with components of magnitudes <paramref name="components"/>,
+    /// expressed in <paramref name="unitOfLength"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Position3"/>, expressed in <paramref name="unitOfLength"/>.</param>
+    /// <param name="unitOfLength">The <see cref="UnitOfLength"/> in which the magnitudes of the components,
+    /// <paramref name="components"/>, are expressed.</param>
     public Position3(Vector3 components, UnitOfLength unitOfLength) : this(components.X, components.Y, components.Z, unitOfLength) { }
-    #Document:ConstructorDoubleTupleUnit(Position3, 3, UnitOfLength, unitOfLength, [Femtometre, Picometre, Nanometre, Micrometre, Millimetre, Centimetre, Decimetre, Metre, Kilometre, AstronomicalUnit, Lightyear, Parsec, Inch, Foot, Yard, Mile])#
+    /// <summary>Constructs a new <see cref="Position3"/> with components of magnitudes <paramref name="components"/>,
+    /// expressed in <paramref name="unitOfLength"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Position3"/>, expressed in <paramref name="unitOfLength"/>.</param>
+    /// <param name="unitOfLength">The <see cref="UnitOfLength"/> in which the magnitudes of the components, <paramref name="components"/>, are expressed.</param>
     public Position3((double x, double y, double z) components, UnitOfLength unitOfLength) : this(components.x, components.y, components.z, unitOfLength) { }
-    #Document:ConstructorDoublesTupleUnit(Position3, 3, UnitOfLength, unitOfLength, [Femtometre, Picometre, Nanometre, Micrometre, Millimetre, Centimetre, Decimetre, Metre, Kilometre, AstronomicalUnit, Lightyear, Parsec, Inch, Foot, Yard, Mile])#
+    /// <summary>Constructs a new <see cref="Position3"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>),
+    /// expressed in <paramref name="unitOfLength"/>.</summary>
+    /// <param name="x">The magnitude of the X-component of the <see cref="Position3"/>, expressed in <paramref name="unitOfLength"/>.</param>
+    /// <param name="y">The magnitude of the Y-component of the <see cref="Position3"/>, expressed in <paramref name="unitOfLength"/>.</param>
+    /// <param name="z">The magnitude of the Z-component of the <see cref="Position3"/>, expressed in <paramref name="unitOfLength"/>.</param>
+    /// <param name="unitOfLength">The <see cref="UnitOfLength"/> in which the magnitudes of the components,
+    /// (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>), are expressed.</param>
     public Position3(double x, double y, double z, UnitOfLength unitOfLength) : this(x * unitOfLength.Factor, y * unitOfLength.Factor, z * unitOfLength.Factor) { }
 
-    #Document:ConstructorComponentTuple(Position3, 3, UnitOfLength, unitOfLength, [Femtometre, Picometre, Nanometre, Micrometre, Millimetre, Centimetre, Decimetre, Metre, Kilometre, AstronomicalUnit, Lightyear, Parsec, Inch, Foot, Yard, Mile])#
-    public Position3((Length x, Length y, Length z) components) : this(components.x, components.y, components.z) { }
-    #Document:ConstructorComponents(Position3, 3, UnitOfLength, unitOfLength, [Femtometre, Picometre, Nanometre, Micrometre, Millimetre, Centimetre, Decimetre, Metre, Kilometre, AstronomicalUnit, Lightyear, Parsec, Inch, Foot, Yard, Mile])#
-    public Position3(Length x, Length y, Length z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
-    #Document:ConstructorScalarTuple(Position3, 3, UnitOfLength, unitOfLength, [Femtometre, Picometre, Nanometre, Micrometre, Millimetre, Centimetre, Decimetre, Metre, Kilometre, AstronomicalUnit, Lightyear, Parsec, Inch, Foot, Yard, Mile])#
+    /// <summary>Constructs a new <see cref="Position3"/> with components of magnitudes <paramref name="components"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Position3"/>.</param>
+    /// <remarks>Consider preferring <see cref="Position3(ValueTuple{Scalar, Scalar, Scalar}, UnitOfLength)"/>.</remarks>
     public Position3((Scalar x, Scalar y, Scalar z) components) : this(components.x, components.y, components.z) { }
-    #Document:ConstructorScalars(Position3, 3, UnitOfLength, unitOfLength, [Femtometre, Picometre, Nanometre, Micrometre, Millimetre, Centimetre, Decimetre, Metre, Kilometre, AstronomicalUnit, Lightyear, Parsec, Inch, Foot, Yard, Mile])#
+    /// <summary>Constructs a new <see cref="Position3"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>).</summary>
+    /// <param name="x">The magnitude of the X-component of the <see cref="Position3"/>.</param>
+    /// <param name="y">The magnitude of the Y-component of the <see cref="Position3"/>.</param>
+    /// <param name="z">The magnitude of the Z-component of the <see cref="Position3"/>.</param>
+    /// <remarks>Consider preferring <see cref="Position3(Scalar, Scalar, Scalar, UnitOfLength)"/>.</remarks>
     public Position3(Scalar x, Scalar y, Scalar z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
-    #Document:ConstructorVector(Position3, 3, UnitOfLength, unitOfLength, [Femtometre, Picometre, Nanometre, Micrometre, Millimetre, Centimetre, Decimetre, Metre, Kilometre, AstronomicalUnit, Lightyear, Parsec, Inch, Foot, Yard, Mile])#
+    /// <summary>Constructs a new <see cref="Position3"/> with components of magnitudes <paramref name="components"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Position3"/>.</param>
+    /// <remarks>Consider preferring <see cref="Position3(Vector3, UnitOfLength)"/>.</remarks>
     public Position3(Vector3 components) : this(components.X, components.Y, components.Z) { }
-    #Document:ConstructorDoubleTuple(Position3, 3, UnitOfLength, unitOfLength, [Femtometre, Picometre, Nanometre, Micrometre, Millimetre, Centimetre, Decimetre, Metre, Kilometre, AstronomicalUnit, Lightyear, Parsec, Inch, Foot, Yard, Mile])#
+    /// <summary>Constructs a new <see cref="Position3"/> with components of magnitudes <paramref name="components"/>.</summary>
+    /// <param name="components">The magnitudes of the components of the <see cref="Position3"/>.</param>
+    /// <remarks>Consider preferring <see cref="Position3(ValueTuple{double, double, double}, UnitOfLength)"/>.</remarks>
     public Position3((double x, double y, double z) components) : this(components.x, components.y, components.z) { }
-    #Document:ConstructorDoubles(Position3, 3, UnitOfLength, unitOfLength, [Femtometre, Picometre, Nanometre, Micrometre, Millimetre, Centimetre, Decimetre, Metre, Kilometre, AstronomicalUnit, Lightyear, Parsec, Inch, Foot, Yard, Mile])#
+    /// <summary>Constructs a new <see cref="Position3"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>).</summary>
+    /// <param name="x">The magnitude of the X-component of the <see cref="Position3"/>.</param>
+    /// <param name="y">The magnitude of the Y-component of the <see cref="Position3"/>.</param>
+    /// <param name="z">The magnitude of the Z-component of the <see cref="Position3"/>.</param>
+    /// <remarks>Consider preferring <see cref="Position3(double, double, double, UnitOfLength)"/>.</remarks>
     public Position3(double x, double y, double z)
     {
         X = x;
@@ -65,164 +150,247 @@ public readonly partial record struct Position3 :
         Z = z;
     }
 
-));
+);
 
-    #Document:InUnit(quantity = Position3, dimensionality = 3, unit = UnitOfLength, unitName = Femtometre)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, expressed in <see cref="UnitOfLength.Femtometre"/>.</summary>
     public Vector3 Femtometres => InUnit(UnitOfLength.Femtometre);
-    #Document:InUnit(quantity = Position3, dimensionality = 3, unit = UnitOfLength, unitName = Picometre)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, expressed in <see cref="UnitOfLength.Picometre"/>.</summary>
     public Vector3 Picometres => InUnit(UnitOfLength.Picometre);
-    #Document:InUnit(quantity = Position3, dimensionality = 3, unit = UnitOfLength, unitName = Nanometre)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, expressed in <see cref="UnitOfLength.Nanometre"/>.</summary>
     public Vector3 Nanometres => InUnit(UnitOfLength.Nanometre);
-    #Document:InUnit(quantity = Position3, dimensionality = 3, unit = UnitOfLength, unitName = Micrometre)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, expressed in <see cref="UnitOfLength.Micrometre"/>.</summary>
     public Vector3 Micrometres => InUnit(UnitOfLength.Micrometre);
-    #Document:InUnit(quantity = Position3, dimensionality = 3, unit = UnitOfLength, unitName = Millimetre)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, expressed in <see cref="UnitOfLength.Millimetre"/>.</summary>
     public Vector3 Millimetres => InUnit(UnitOfLength.Millimetre);
-    #Document:InUnit(quantity = Position3, dimensionality = 3, unit = UnitOfLength, unitName = Centimetre)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, expressed in <see cref="UnitOfLength.Centimetre"/>.</summary>
     public Vector3 Centimetres => InUnit(UnitOfLength.Centimetre);
-    #Document:InUnit(quantity = Position3, dimensionality = 3, unit = UnitOfLength, unitName = Decimetre)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, expressed in <see cref="UnitOfLength.Decimetre"/>.</summary>
     public Vector3 Decimetres => InUnit(UnitOfLength.Decimetre);
-    #Document:InUnit(quantity = Position3, dimensionality = 3, unit = UnitOfLength, unitName = Metre)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, expressed in <see cref="UnitOfLength.Metre"/>.</summary>
     public Vector3 Metres => InUnit(UnitOfLength.Metre);
-    #Document:InUnit(quantity = Position3, dimensionality = 3, unit = UnitOfLength, unitName = Kilometre)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, expressed in <see cref="UnitOfLength.Kilometre"/>.</summary>
     public Vector3 Kilometres => InUnit(UnitOfLength.Kilometre);
 
-    #Document:InUnit(quantity = Position3, dimensionality = 3, unit = UnitOfLength, unitName = AstronomicalUnit)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, expressed in <see cref="UnitOfLength.AstronomicalUnit"/>.</summary>
     public Vector3 AstronomicalUnits => InUnit(UnitOfLength.AstronomicalUnit);
-    #Document:InUnit(quantity = Position3, dimensionality = 3, unit = UnitOfLength, unitName = Lightyear)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, expressed in <see cref="UnitOfLength.Lightyear"/>.</summary>
     public Vector3 Lightyears => InUnit(UnitOfLength.Lightyear);
-    #Document:InUnit(quantity = Position3, dimensionality = 3, unit = UnitOfLength, unitName = Parsec)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, expressed in <see cref="UnitOfLength.Parsec"/>.</summary>
     public Vector3 Parsecs => InUnit(UnitOfLength.Parsec);
 
-    #Document:InUnit(quantity = Position3, dimensionality = 3, unit = UnitOfLength, unitName = Inch)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, expressed in <see cref="UnitOfLength.Inch"/>.</summary>
     public Vector3 Inches => InUnit(UnitOfLength.Inch);
-    #Document:InUnit(quantity = Position3, dimensionality = 3, unit = UnitOfLength, unitName = Foot)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, expressed in <see cref="UnitOfLength.Foot"/>.</summary>
     public Vector3 Feet => InUnit(UnitOfLength.Foot);
-    #Document:InUnit(quantity = Position3, dimensionality = 3, unit = UnitOfLength, unitName = Yard)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, expressed in <see cref="UnitOfLength.Yard"/>.</summary>
     public Vector3 Yards => InUnit(UnitOfLength.Yard);
-    #Document:InUnit(quantity = Position3, dimensionality = 3, unit = UnitOfLength, unitName = Mile)#
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Position3"/>, expressed in <see cref="UnitOfLength.Mile"/>.</summary>
     public Vector3 Miles => InUnit(UnitOfLength.Mile);
 
-    #Document:ScalarMagnitude(Position3, 3)#
+    /// <inheritdoc/>
     Scalar IVector3Quantity.Magnitude() => Maths.Vectors.Dot(this, this).SquareRoot();
-    #Document:ScalarQuantityMagnitude(Position3, 3, Length)#
+    /// <summary>Computes the magnitude, or norm, of the vector quantity <see cref="Position3"/>, as a <see cref="Length"/>.</summary>
+    /// <remarks>For improved performance, consider preferring <see cref="SquaredMagnitude"/> when possible.</remarks>
     public Length Magnitude() => new(Maths.Vectors.Dot(this, this).SquareRoot());
-#NonScalarQuantityComponent#
-    #Document:ScalarMagnitude(Position3, 3)#
-    public Scalar Magnitude() => Maths.Vectors.Dot(this, this).SquareRoot();
-#/NonScalarQuantityComponent#
-    #Document:ScalarSquaredMagnitude(Position3, 3)#
+    /// <inheritdoc/>
     Scalar IVector3Quantity.SquaredMagnitude() => Maths.Vectors.Dot(this, this);
-    #Document:ScalarQuantitySquaredMagnitude(Position3, 3, Area)#
+    /// <summary>Computes the square of the magnitude, or norm, of the vector quantity <see cref="Position3"/>, as a <see cref="Area"/>.</summary>
     public Area SquaredMagnitude() => new(Maths.Vectors.Dot(this, this));
 
-    #Document:Normalize(Position3, 3)#
+    /// <summary>Normalizes the <see cref="Position3"/> - if expressed in SI units.</summary>
+    /// <remarks>Note that the resulting <see cref="Position3"/> will only be normalized if expressed in SI units.</remarks>
     public Position3 Normalize() => this / Magnitude().Magnitude;
-#NonScalarQuantityComponent#
-    #Document:Normalize(Position3, 3)#
-    public Position3 Normalize() => this / Magnitude();
-#/NonScalarQuantityComponent#
-    #Document:Transform(Position3, 3)#
+    /// <summary>Computes the transformation of the existing <see cref="Position3"/> by <paramref name="transform"/>, resulting in
+    /// a new <see cref="Position3"/>.</summary>
+    /// <param name="transform">The <see cref="Position3"/> is transformed by this <see cref="Matrix4x4"/>.</param>
     public Position3 Transform(Matrix4x4 transform) => new(Maths.Vectors.Transform(this, transform));
     
-    #Document:DotVector(Position3, 3)#
+    /// <summary>Performs dot-multiplication of the <see cref="Position3"/> by <paramref name="factor"/>, resulting in a
+    /// <cref name="Length"/>.</summary>
+    /// <param name="factor">The <see cref="Position3"/> is dot-multiplied by this <see cref="Vector3"/>.</param>
     public Length Dot(Vector3 factor) => new(Maths.Vectors.Dot(this, factor));
-    #Document:DotUnhandled(Position3, 3)#
+    /// <summary>Performs dot-multiplication of the <see cref="Position3"/> by <paramref name="factor"/>, resulting in a
+    /// <cref name="Unhandled"/>.</summary>
+    /// <param name="factor">The <see cref="Position3"/> is dot-multiplied by this <see cref="Unhandled3"/>.</param>
     public Unhandled Dot(Unhandled3 factor) => new(Maths.Vectors.Dot(this, factor));
-    #Document:DotGeneric(Position3, 3)#
-    public Unhandled Dot<TVector3Quantity>(TVector3Quantity factor) where TVector3Quantity : IVector3Quantity => new(Maths.Vectors.Dot(this, factor));
-    #Document:CrossVector(Position3, 3)#
+    /// <inheritdoc/>
+    public TProductScalarQuantity Dot<TProductScalarQuantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<Scalar, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorVector3Quantity : IVector3Quantity
+        => factory(Maths.Vectors.Dot(this, factor));
+    /// <summary>Performs cross-multiplication of the <see cref="Position3"/> by <paramref name="factor"/>, resulting in a
+    /// <cref see="Position3"/>.</summary>
+    /// <param name="factor">The <see cref="Position3"/> is cross-multiplied by this <see cref="Vector3"/>.</param>
     public Position3 Cross(Vector3 factor) => new(Maths.Vectors.Cross(this, factor));
-    #Document:CrossUnhandled(Position3, 3)#
+    /// <summary>Performs cross-multiplication of the <see cref="Position3"/> by <paramref name="factor"/>, resulting in a
+    /// <cref name="Unhandled3"/>.</summary>
+    /// <param name="factor">The <see cref="Position3"/> is cross-multiplied by this <see cref="Unhandled3"/>.</param>
     public Unhandled3 Cross(Unhandled3 factor) => new(Maths.Vectors.Cross(this, factor));
-    #Document:CrossGeneric(Position3, 3)#
-    public Unhandled3 Cross<TVector3Quantity>(TVector3Quantity factor) where TVector3Quantity : IVector3Quantity => new(Maths.Vectors.Cross(this, factor));
+    /// <inheritdoc/>
+    public TProductVector3Quantity Cross<TProductVector3Quantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<Vector3, TProductVector3Quantity> factory)
+        where TProductVector3Quantity : IVector3Quantity
+        where TFactorVector3Quantity : IVector3Quantity
+        => factory(Maths.Vectors.Cross(this, factor));
 
-    #Document:ToString(Position3, 3)#
+    /// <summary>Produces a formatted string from the magnitudes of the components of the <see cref="Position3"/> (in SI units),
+    /// and the SI base unit of the quantity.</summary>
     public override string ToString() => $"({X}, {Y}, {Z}) [m]";
 
-    #Document:InUnitInstance(Position3, 3, UnitOfLength, unitOfLength)#
+    /// <summary>Produces a <see cref="Vector3"/> with components equal to that of the <see cref="Position3"/>,
+    /// expressed in <paramref name="unitOfLength"/>.</summary>
+    /// <param name="unitOfLength">The <see cref="UnitOfLength"/> in which the magnitude is expressed.</param>
     public Vector3 InUnit(UnitOfLength unitOfLength) => InUnit(this, unitOfLength);
-    #Document:InUnitStatic(Position3, position3, 3, UnitOfLength, unitOfLength)#
+    /// <summary>Produces a <see cref="Vector3"/> with components equal to that of the <see cref="Position3"/>,
+    /// expressed in <paramref name="unitOfLength"/>.</summary>
+    /// <param name="position3">The <see cref="Position3"/> to be expressed in <paramref name="unitOfLength"/>.</param>
+    /// <param name="unitOfLength">The <see cref="UnitOfLength"/> in which the magnitude is expressed.</param>
     private static Vector3 InUnit(Position3 position3, UnitOfLength unitOfLength) => position3.ToVector3() / unitOfLength.Factor;
     
-    #Document:PlusMethod(Position3, 3)#
+    /// <summary>Unary plus, resulting in the unmodified <see cref="Position3"/>.</summary>
     public Position3 Plus() => this;
-    #Document:NegateMethod(Position3, 3)#
+    /// <summary>Negation, resulting in a <see cref="Position3"/> with negated components.</summary>
     public Position3 Negate() => new(-X, -Y, -Z);
-    #Document:PlusOperator(Position3, 3)#
+    /// <summary>Unary plus, resulting in the unmodified <paramref name="a"/>.</summary>
+    /// <param name="a">Unary plus is applied to this instance of <see cref="Position3"/>.</param>
     public static Position3 operator +(Position3 a) => a;
-    #Document:NegateOperator(Position3, 3)#
+    /// <summary>Negation, resulting in a <see cref="Position3"/> with components negated from that of <paramref name="a"/>.</summary>
+    /// <param name="a">Negation is applied to this instance of <see cref="Position3"/>.</param>
     public static Position3 operator -(Position3 a) => new(-a.X, -a.Y, -a.Z);
 
-    #Document:MultiplyUnhandledMethod(Position3, 3)#
-    public Unhandled3 Multiply(Unhandled factor) => new(XX * factor.Magnitude, YY * factor.Magnitude, ZZ * factor.Magnitude);
-    #Document:DivideUnhandledMethod(Position3, 3)#
+    /// <summary>Multiplies the <see cref="Position3"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="factor">The factor by which the <see cref="Position3"/> is multiplied.</param>
+    public Unhandled3 Multiply(Unhandled factor) => new(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+    /// <summary>Divides the <see cref="Position3"/> by the <see cref="Unhandled"/> quantity <paramref name="divisor"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="divisor">The divisor by which the <see cref="Position3"/> is divided.</param>
     public Unhandled3 Divide(Unhandled divisor) => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
-    #Document:MultiplyUnhandledOperatorLHS(Position3, 3)#
+    /// <summary>Multiplies the <see cref="Position3"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
+    /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="Position3"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="Unhandled"/> quantity by which the <see cref="Position3"/> <paramref name="a"/> is multiplied.</param>
     public static Unhandled3 operator *(Position3 a, Unhandled b) => new(a.X * b.Magnitude, a.Y * b.Magnitude, a.Z * b.Magnitude);
-    #Document:MultiplyUnhandledOperatorRHS(Position3, 3)#
+    /// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="b"/> by the <see cref="Position3"/> <paramref name="a"/> -
+    /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="Unhandled"/> quantity by which the <see cref="Position3"/> <paramref name="b"/> is multiplied.</param>
+    /// <param name="b">The <see cref="Position3"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="a"/>.</param>
     public static Unhandled3 operator *(Unhandled a, Position3 b) => new(a.Magnitude * b.X, a.Magnitude * b.Y, a.Magnitude * b.Z);
-    #Document:DivideUnhandledOperator(Position3, 3)#
+    /// <summary>Divides the <see cref="Position3"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
+    /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="Position3"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="Unhandled"/> quantity by which the <see cref="Position3"/> <paramref name="a"/> is divded.</param>
     public static Unhandled3 operator /(Position3 a, Unhandled b) => new(a.X / b.Magnitude, a.Y / b.Magnitude, a.Z / b.Magnitude);
 
-    #Document:RemainderDoubleMethod(Position3, 3)#
+    /// <summary>Produces a <see cref="Position3"/>, with each component equal to the remainder from division of the
+    /// magnitude of the original component by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
     public Position3 Remainder(double divisor) => new(X % divisor, Y % divisor, Z % divisor);
-    #Document:MultiplyDoubleMethod(Position3, 3)#
+    /// <summary>Scales the <see cref="Position3"/> by <paramref name="factor"/>.</summary>
+    /// <param name="factor">The factor by which the <see cref="Position3"/> is scaled.</param>
     public Position3 Multiply(double factor) => new(X * factor, Y * factor, Z * factor);
-    #Document:DivideDoubleMethod(Position3, 3)#
+    /// <summary>Scales the <see cref="Position3"/> through division by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, by which the <see cref="Position3"/> is divided.</param>
     public Position3 Divide(double divisor) => new(X / divisor, Y / divisor, Z / divisor);
-    #Document:RemainderDoubleOperator(Position3, 3)#
+    /// <summary>Produces a <see cref="Position3"/>, with each component equal to the remainder from division of the
+    /// magnitude of the component of <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Position3"/>, the components of which are divided by <paramref name="b"/> to produce a remainder.</param>
+    /// <param name="b">The remainder is retrieved from division of <see cref="Position3"/> <paramref name="a"/> by this value.</param>
     public static Position3 operator %(Position3 a, double b) => new(a.X % b, a.Y % b, a.Z % b);
-    #Document:MultiplyDoubleOperatorLHS(Position3, 3)#
+    /// <summary>Scales the <see cref="Position3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Position3"/>, which is scaled by <paramref name="b"/>.</param>
+    /// <param name="b">This value is used to scale the <see cref="Position3"/> <paramref name="a"/>.</param>
     public static Position3 operator *(Position3 a, double b) => new(a.X * b, a.Y * b, a.Z * b);
-    #Document:MultiplyDoubleOperatorRHS(Position3, 3)#
+    /// <summary>Scales the <see cref="Position3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">This value is used to scale the <see cref="Position3"/> <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="Position3"/>, which is scaled by <paramref name="a"/>.</param>
     public static Position3 operator *(double a, Position3 b) => new(a * b.X, a * b.Y, a * b.Z);
-    #Document:DivideDoubleOperator(Position3, 3)#
+    /// <summary>Scales the <see cref="Position3"/> <paramref name="a"/> through division by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Position3"/>, which is divided by <paramref name="b"/>.</param>
+    /// <param name="b">This value is used to divide the <see cref="Position3"/> <paramref name="a"/>.</param>
     public static Position3 operator /(Position3 a, double b) => new(a.X / b, a.Y / b, a.Z / b);
 
-    #Document:RemainderScalarMethod(Position3, 3)#
+    /// <summary>Produces a <see cref="Position3"/>, with each component equal to the remainder from division of the
+    /// magnitude of the original component by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
     public Position3 Remainder(Scalar divisor) => new(X % divisor.Magnitude, Y % divisor.Magnitude, Z % divisor.Magnitude);
-    #Document:MultiplyScalarMethod(Position3, 3)#
-    public Position3 Multiply(Scalar factor) => new(XX * factor.Magnitude, YY * factor.Magnitude, ZZ * factor.Magnitude);
-    #Document:DivideScalarMethod(Position3, 3)#
+    /// <summary>Scales the <see cref="Position3"/> by <paramref name="factor"/>.</summary>
+    /// <param name="factor">The factor by which the <see cref="Position3"/> is scaled.</param>
+    public Position3 Multiply(Scalar factor) => new(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+    /// <summary>Scales the <see cref="Position3"/> through division by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The divisor, by which the <see cref="Position3"/> is divided.</param>
     public Position3 Divide(Scalar divisor) => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
-    #Document:RemainderScalarOperator(Position3, 3)#
+    /// <summary>Produces a <see cref="Position3"/>, with each component equal to the remainder from division of the
+    /// magnitude of the component of <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Position3"/>, the components of which are divided by <paramref name="b"/> to produce a remainder.</param>
+    /// <param name="b">The remainder is retrieved from division of <see cref="Position3"/> <paramref name="a"/> by this value.</param>
     public static Position3 operator %(Position3 a, Scalar b) => new(a.X % b.Magnitude, a.Y % b.Magnitude, a.Z % b.Magnitude);
-    #Document:MultiplyScalarOperatorLHS(Position3, 3)#
+    /// <summary>Scales the <see cref="Position3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Position3"/>, which is scaled by <paramref name="b"/>.</param>
+    /// <param name="b">This value is used to scale the <see cref="Position3"/> <paramref name="a"/>.</param>
     public static Position3 operator *(Position3 a, Scalar b) => new(a.X * b.Magnitude, a.Y * b.Magnitude, a.Z * b.Magnitude);
-    #Document:MultiplyScalarOperatorRHS(Position3, 3)#
+    /// <summary>Scales the <see cref="Position3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
+    /// <param name="a">This value is used to scale the <see cref="Position3"/> <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="Position3"/>, which is scaled by <paramref name="a"/>.</param>
     public static Position3 operator *(Scalar a, Position3 b) => new(a.Magnitude * b.X, a.Magnitude * b.Y, a.Magnitude * b.Z);
-    #Document:DivideScalarOperator(Position3, 3)#
+    /// <summary>Scales the <see cref="Position3"/> <paramref name="a"/> through division by <paramref name="b"/>.</summary>
+    /// <param name="a">The <see cref="Position3"/>, which is divided by <paramref name="b"/>.</param>
+    /// <param name="b">This value is used to divide the <see cref="Position3"/> <paramref name="a"/>.</param>
     public static Position3 operator /(Position3 a, Scalar b) => new(a.X / b.Magnitude, a.Y / b.Magnitude, a.Z / b.Magnitude);
 
-    #Document:MultiplyTScalar(Position3, 3)#
-    public Unhandled3 Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(XX * factor.Magnitude, YY * factor.Magnitude, ZZ * factor.Magnitude);
-    #Document:DivideTScalar(Position3, 3)#
-    public Unhandled3 Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
-    #Document:MultiplyIScalarLHS(Position3, 3)#
+    /// <inheritdoc/>
+    public TProductVector3Quantity Multiply<TProductVector3Quantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, double, double, TProductVector3Quantity> factory)
+        where TProductVector3Quantity : IVector3Quantity
+        where TFactorScalarQuantity : IScalarQuantity
+        => factory(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+    /// <inheritdoc/>
+    public TQuotientVector3Quantity Divide<TQuotientVector3Quantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, double, double, TQuotientVector3Quantity> factory)
+        where TQuotientVector3Quantity : IVector3Quantity
+        where TDivisorScalarQuantity : IScalarQuantity
+        => factory(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
+    /// <summary>Multiples the <see cref="Position3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="Position3"/>, which is multiplied by <paramref name="b"/>.</param>
+    /// <param name="b">This quantity is multiplied by the <see cref="Position3"/> <paramref name="a"/>.</param>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
     public static Unhandled3 operator *(Position3 a, IScalarQuantity b) => new(a.X * b.Magnitude, a.Y * b.Magnitude, a.Z * b.Magnitude);
-    #Document:MultiplyIScalarRHS(Position3, 3)#
+    /// <summary>Multiples the quantity <paramref name="a"/> by the <see cref="Position3"/> <paramref name="b"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">This quantity is multiplied by the <see cref="Position3"/> <paramref name="b"/>.</param>
+    /// <param name="b">The <see cref="Position3"/>, which is multiplied by <paramref name="a"/>.</param>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
     public static Unhandled3 operator *(IScalarQuantity a, Position3 b) => new(a.Magnitude * b.X, a.Magnitude * b.Y, a.Magnitude * b.Z);
-    #Document:DivideIScalar(Position3, 3)#
+    /// <summary>Divides the <see cref="Position3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
+    /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
+    /// <param name="a">The <see cref="Position3"/>, which is divided by <paramref name="b"/>.</param>
+    /// <param name="b">The<see cref="Position3"/> <paramref name="a"/> is divided by this quantity.</param>
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientVector3Quantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, double, double, TQuotientVector3Quantity})"/>.</remarks>
     public static Unhandled3 operator /(Position3 a, IScalarQuantity b) => new(a.X / b.Magnitude, a.Y / b.Magnitude, a.Z / b.Magnitude);
 
-    #Document:ToValueTupleMethod(Position3, 3)#
+    /// <summary>Converts the <see cref="Position3"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with values
+    /// (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
     public (double x, double y, double z) ToValueTuple() => (X, Y, Z);
-    #Document:ToValueTupleOperator(Position3, 3)#
+    /// <summary>Converts <paramref name="a"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with values
+    /// (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
     public static implicit operator (double x, double y, double z)(Position3 a) => (a.X, a.Y, a.Z);
 
-    #Document:ToVectorMethod(Position3, 3)#
+    /// <summary>Converts the <see cref="Position3"/> to the <see cref="Vector3"/> with components of
+    /// equal magnitude, when expressed in SI units.</summary>
     public Vector3 ToVector3() => new(X, Y, Z);
-    #Document:ToVectorOperator(Position3, 3)#
+    /// <summary>Converts <paramref name="a"/> to the <see cref="Vector3"/> with components of
+    /// equal magnitude, when expressed in SI units.</summary>
     public static explicit operator Vector3(Position3 a) => new(a.X, a.Y, a.Z);
 
-    #Document:FromValueTupleMethod(Position3, 3)#
+    /// <summary>Constructs the <see cref="Position3"/> with components equal to the values of <paramref name="components"/>,
+    /// when expressed in SI units.</summary>
     public static Position3 FromValueTuple((double x, double y, double z) components) => new(components);
-    #Document:FromValueTupleOperator(Position3, 3)#
+    /// <summary>Constructs the <see cref="Position3"/> with components equal to the values of <paramref name="components"/>,
+    /// when expressed in SI units.</summary>
     public static explicit operator Position3((double x, double y, double z) components) => new(components);
 
-    #Document:FromVectorMethod(Position3, 3)#
+    /// <summary>Converts <paramref name="a"/> to the <see cref="Position3"/> with components of equal magnitude,
+    /// when expressed in SI units.</summary>
     public static Position3 FromVector3(Vector3 a) => new(a);
-    #Document:FromVectorOperator(Position3, 3)#
+    /// <summary>Converts <paramref name="a"/> to the <see cref="Position3"/> with components of equal magnitude,
+    /// when expressed in SI units.</summary>
     public static explicit operator Position3(Vector3 a) => new(a);
 }

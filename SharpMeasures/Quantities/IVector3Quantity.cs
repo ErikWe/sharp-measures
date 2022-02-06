@@ -1,5 +1,6 @@
 ﻿namespace ErikWe.SharpMeasures.Quantities;
 
+using System;
 using System.Numerics;
 
 /// <summary>Describes a three-dimensional vector quantity.</summary>
@@ -12,10 +13,10 @@ public interface IVector3Quantity
     /// <summary>The z-component of the vector quantity.</summary>
     public abstract double Z { get; }
 
-    /// <summary>Computes the magnitude of the vector quantity.</summary>
+    /// <summary>Computes the magnitude, or norm, of the vector quantity.</summary>
     /// <remarks>For improved performance, consider preferring <see cref="SquaredMagnitude"/> when possible.</remarks>
     public abstract Scalar Magnitude();
-    /// <summary>Computes the square of the magnitude of the vector quantity.</summary>
+    /// <summary>Computes the square of the magnitude, or norm, of the vector quantity.</summary>
     public abstract Scalar SquaredMagnitude();
 }
 
@@ -109,8 +110,8 @@ public interface IMultiplicableVector3Quantity<out TProductVector3Quantity, in T
 
 /// <summary>Describes a three-dimensional vector quantity that may be multiplied by a scalar quantity of type <typeparamref name="TDivisorScalarQuantity"/>
 /// to produce a quantity of type <typeparamref name="TQuotientVector3Quantity"/>.</summary>
-/// <typeparam name="TQuotientVector3Quantity">The three-dimensional vector quantity that is the product of the two quantities.</typeparam>
-/// <typeparam name="TDivisorScalarQuantity">The scalar quantity by which the original quantity may be multiplied.</typeparam>
+/// <typeparam name="TQuotientVector3Quantity">The three-dimensional vector quantity that is the quotient of the two quantities.</typeparam>
+/// <typeparam name="TDivisorScalarQuantity">The scalar quantity by which the original quantity may be divided.</typeparam>
 public interface IDivisibleVector3Quantity<out TQuotientVector3Quantity, in TDivisorScalarQuantity> :
     IVector3Quantity
     where TQuotientVector3Quantity : IVector3Quantity
@@ -123,7 +124,7 @@ public interface IDivisibleVector3Quantity<out TQuotientVector3Quantity, in TDiv
 
 /// <summary>Describes a three-dimensional vector quantity that may be dot-multiplied by a quantity of type <typeparamref name="TFactorVector3Quantity"/>
 /// to produce a quantity of type <typeparamref name="TProductScalarQuantity"/>.</summary>
-/// <typeparam name="TProductScalarQuantity">The scalar quantity that is the product of the two quantities.</typeparam>
+/// <typeparam name="TProductScalarQuantity">The scalar quantity that is the dot-product of the two quantities.</typeparam>
 /// <typeparam name="TFactorVector3Quantity">The three-dimensional vector quantity by which the original quantity may be dot-multiplied.</typeparam>
 public interface IDotableVector3Quantity<out TProductScalarQuantity, in TFactorVector3Quantity> :
     IVector3Quantity
@@ -138,7 +139,7 @@ public interface IDotableVector3Quantity<out TProductScalarQuantity, in TFactorV
 
 /// <summary>Describes a three-dimensional vector quantity that may be cross-multiplied by a quantity of type <typeparamref name="TFactorVector3Quantity"/>
 /// to produce a quantity of type <typeparamref name="TProductVector3Quantity"/>.</summary>
-/// <typeparam name="TProductVector3Quantity">The three-dimensional vector quantity that is the product of the two quantities.</typeparam>
+/// <typeparam name="TProductVector3Quantity">The three-dimensional vector quantity that is the cross-product of the two quantities.</typeparam>
 /// <typeparam name="TFactorVector3Quantity">The three-dimensional vector quantity by which the original quantity may be cross-multiplied.</typeparam>
 public interface ICrossableVector3Quantity<out TProductVector3Quantity, in TFactorVector3Quantity> :
     IVector3Quantity
@@ -152,49 +153,67 @@ public interface ICrossableVector3Quantity<out TProductVector3Quantity, in TFact
 }
 
 /// <summary>Describes a three-dimensional vector quantity that may be multiplied by a scalar quantity of a generically provided type, to produce
-/// an <see cref="Unhandled3"/>.</summary>
+/// a vector quantity of another generically provided type.</summary>
 public interface IGenericallyMultiplicableVector3Quantity :
     IVector3Quantity
 {
-    /// <summary>Multiplies the original quantity by the quantity <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>, resulting in an
-    /// <see cref="Unhandled3"/>.</summary>
-    /// <typeparam name="TScalarQuantity">The scalar quantity by which the original quantity may be multiplied.</typeparam>
+    /// <summary>Multiplies the original quantity by the quantity <paramref name="factor"/> of type <typeparamref name="TFactorScalarQuantity"/>, resulting in a
+    /// <typeparamref name="TProductVector3Quantity"/>.</summary>
+    /// <typeparam name="TProductVector3Quantity">The three-dimensional vector quantity that is the product of the two quantities.</typeparam>
+    /// <typeparam name="TFactorScalarQuantity">The scalar quantity by which the original quantity may be multiplied.</typeparam>
     /// <param name="factor">The quantity by which the original quantity is multiplied.</param>
-    public abstract Unhandled3 Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity;
+    /// <param name="factory">Delegate for constructing a <typeparamref name="TProductVector3Quantity"/>..</param>
+    public abstract TProductVector3Quantity Multiply<TProductVector3Quantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, double, double, TProductVector3Quantity> factory)
+        where TProductVector3Quantity : IVector3Quantity
+        where TFactorScalarQuantity : IScalarQuantity;
 }
 
-/// <summary>Describes a three-dimensional vector quantity that may be divided by a quantity of a generically provided type, to produce an <see cref="Unhandled3"/>.</summary>
+/// <summary>Describes a three-dimensional vector quantity that may be divided by a quantity of a generically provided type, to produce a
+/// vector quantity of another generically provided type.</summary>
 public interface IGenericallyDivisibleVector3Quantity :
     IVector3Quantity
 {
-    /// <summary>Divides the original quantity by the quantity <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>, resulting in an
-    /// <see cref="Unhandled3"/>.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the scalar quantity by which the original quantity may be divided.</typeparam>
+    /// <summary>Divides the original quantity by the quantity <paramref name="divisor"/> of type <typeparamref name="TDivisorScalarQuantity"/>, resulting in a
+    /// <typeparamref name="TQuotientVector3Quantity"/>.</summary>
+    /// <typeparam name="TQuotientVector3Quantity">The three-dimensional vector quantity that is the quotient of the two quantities.</typeparam>
+    /// <typeparam name="TDivisorScalarQuantity">The type of the scalar quantity by which the original quantity may be divided.</typeparam>
     /// <param name="divisor">The quantity by which the original quantity is divided.</param>
-    public abstract Unhandled3 Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity;
+    /// <param name="factory">Delegate for constructing a <typeparamref name="TQuotientVector3Quantity"/>.</param>
+    public abstract TQuotientVector3Quantity Divide<TQuotientVector3Quantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, double, double, TQuotientVector3Quantity> factory)
+        where TQuotientVector3Quantity : IVector3Quantity
+        where TDivisorScalarQuantity : IScalarQuantity;
 }
 
-/// <summary>Describes a three-dimensional vector quantity that may be dot-multiplied by a scalar quantity of a generically provided type, to produce
-/// an <see cref="Unhandled3"/>.</summary>
+/// <summary>Describes a three-dimensional vector quantity that may be dot-multiplied by a vector quantity of a generically provided type, to produce
+/// a scalar quantity of another generically provided type.</summary>
 public interface IGenericallyDotableVector3Quantity :
     IVector3Quantity
 {
-    /// <summary>Performs dot-multiplication of the original quantity by the quantity <paramref name="factor"/> of type <typeparamref name="TVector3Quantity"/>, resulting in an
-    /// <see cref="Unhandled3"/>.</summary>
-    /// <typeparam name="TVector3Quantity">The scalar quantity by which the original quantity may be dot-multiplied.</typeparam>
+    /// <summary>Performs dot-multiplication of the original quantity by the quantity <paramref name="factor"/> of type <typeparamref name="TFactorVector3Quantity"/>, resulting in a
+    /// <typeparamref name="TProductScalarQuantity"/>.</summary>
+    /// <typeparam name="TProductScalarQuantity">The scalar quantity that is the dot-product of the two quantities.</typeparam>
+    /// <typeparam name="TFactorVector3Quantity">The scalar quantity by which the original quantity may be dot-multiplied.</typeparam>
     /// <param name="factor">The quantity by which the original quantity is dot-multiplied.</param>
-    public abstract Unhandled3 Dot<TVector3Quantity>(TVector3Quantity factor) where TVector3Quantity : IVector3Quantity;
+    /// <param name="factory">Delegate for constructing a <typeparamref name="TProductScalarQuantity"/> from a <see cref="Scalar"/>.</param>
+    public abstract TProductScalarQuantity Dot<TProductScalarQuantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<Scalar, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorVector3Quantity : IVector3Quantity;
 }
 
-/// <summary>Describes a three-dimensional vector quantity that may be cross-multiplied by a quantity of a generically provided type, to produce an <see cref="Unhandled3"/>.</summary>
+/// <summary>Describes a three-dimensional vector quantity that may be cross-multiplied by a quantity of a generically provided type, to produce a vector
+/// quantity of another generically provided type.</summary>
 public interface IGenericallyCrossableVector3Quantity :
     IVector3Quantity
 {
-    /// <summary>Performs cross-multiplication of the original quantity by the quantity <paramref name="divisor"/> of type <typeparamref name="TVector3Quantity"/>, resulting in an
-    /// <see cref="Unhandled3"/>.</summary>
-    /// <typeparam name="TVector3Quantity">The type of the scalar quantity by which the original quantity may be cross-multiplied.</typeparam>
+    /// <summary>Performs cross-multiplication of the original quantity by the quantity <paramref name="divisor"/> of type <typeparamref name="TFactorVector3Quantity"/>, resulting in a
+    /// <typeparamref name="TProductVector3Quantity"/>.</summary>
+    /// <typeparam name="TProductVector3Quantity">The three-dimensional vector quantity that is the cross-product of the two quantities.</typeparam>
+    /// <typeparam name="TFactorVector3Quantity">The type of the scalar quantity by which the original quantity may be cross-multiplied.</typeparam>
     /// <param name="divisor">The quantity by which the original quantity is cross-multiplied.</param>
-    public abstract Unhandled3 Cross<TVector3Quantity>(TVector3Quantity divisor) where TVector3Quantity : IVector3Quantity;
+    /// <param name="factory">Delegate for constructing a <typeparamref name="TProductVector3Quantity"/> from a <see cref="Vector3"/>.</param>
+    public abstract TProductVector3Quantity Cross<TProductVector3Quantity, TFactorVector3Quantity>(TFactorVector3Quantity divisor, Func<Vector3, TProductVector3Quantity> factory)
+        where TProductVector3Quantity : IVector3Quantity
+        where TFactorVector3Quantity : IVector3Quantity;
 }
 
 /// <summary>Describes a scalar quantity that may be multiplied by a three-dimensional vector quantity of type <typeparamref name="TFactorVector3Quantity"/>
