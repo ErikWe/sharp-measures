@@ -6,6 +6,8 @@
 **/CoverageReports/
 **/Doxygen/
 
+**/QuantityGeneration/build/
+
 Doxyfile
 
 # User-specific files
