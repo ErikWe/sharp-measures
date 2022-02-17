@@ -1,0 +1,67 @@
+#Define:Header(unit, siUnit)
+/// TODO Write header documentation for #Param:unit#.
+#/
+
+#Define:Quantity(unit, siUnit, quantity)
+/// <summary>The <see cref="Quantities.#Param:quantity#"/> that the <see cref="#Param:unit#"/> represents.</summary>
+#/
+
+#Define:Constructor(unit, siUnit, quantity, quantityVariable)
+/// <summary>Constructs a new <see cref="#Param:unit#"/>, representing the <see cref="Quantities.#Param:quantity#"/> <paramref name="#Param:quantityVariable#"/>.</summary>
+/// <param name="#Param:quantityVariable#">The <see cref="Quantities.#Param:quantity#"/> that the new <see cref="#Param:unit#"/> represents.</param>
+#/
+
+#Define:WithPrefix(unit, siUnit)
+/// <summary>Derives a new <see cref="#Param:unit#"/> from this instance, by prefixing the <see cref="MetricPrefix"/> <paramref name="prefix"/>.</summary>
+/// <param name="prefix">The <see cref="MetricPrefix"/> with which the new <see cref="#Param:unit#"/> is expressed.</param>
+/// <remarks>Any <see cref="MetricPrefix"/> applied to the original instance will be retained, essentially stacking the prefixes.</remarks>
+#/
+
+#Define:ScaledBy(unit, siUnit)
+/// <summary>Derives a new <see cref="#Param:unit#"/> from this instance, through scaling by <paramref name="scale"/>.</summary>
+/// <param name="scale">The original <see cref="#Param:unit#"/> is scaled by this value.</param>
+#/
+
+#Define:CompareTo(unit, siUnit)
+/// <inheritdoc/>
+#/
+
+#Define:ToString(unit, siUnit, quantity)
+/// <summary>Produces a formatted string constisting of the type followed by the represented <see cref="Quantities.#Param:quantity#"/>.</summary>
+#/
+
+#Define:LessThan(unit, siUnit, quantity)
+/// <summary>Determines whether the <see cref="Quantities.#Param:quantity#"/> represented by <paramref name="x"/> is
+/// less than that of <paramref name="y"/>.</summary>
+/// <param name="x">The method determines whether the <see cref="Quantities.#Param:quantity#"/> represented by this <see cref="#Param:unit#"/> is
+/// less than that of <paramref name="y"/>.</param>
+/// <param name="y">The method determines whether the <see cref="Quantities.#Param:quantity#"/> represented by <paramref name="x"/> is
+/// less than that of this <see cref="#Param:unit#"/>.</param>
+#/
+
+#Define:GreaterThan(unit, siUnit, quantity)
+/// <summary>Determines whether the <see cref="Quantities.#Param:quantity#"/> represented by <paramref name="x"/> is
+/// greater than that of <paramref name="y"/>.</summary>
+/// <param name="x">The method determines whether the <see cref="Quantities.#Param:quantity#"/> represented by this <see cref="#Param:unit#"/> is
+/// greater than that of <paramref name="y"/>.</param>
+/// <param name="y">The method determines whether the <see cref="Quantities.#Param:quantity#"/> represented by <paramref name="x"/> is
+/// greater than that of this <see cref="#Param:unit#"/>.</param>
+#/
+
+#Define:LessThanOrEqual(unit, siUnit, quantity)
+/// <summary>Determines whether the <see cref="Quantities.#Param:quantity#"/> represented by <paramref name="x"/> is
+/// less than or equal to that of <paramref name="y"/>.</summary>
+/// <param name="x">The method determines whether the <see cref="Quantities.#Param:quantity#"/> represented by this <see cref="#Param:unit#"/> is
+/// less than or equal to that of <paramref name="y"/>.</param>
+/// <param name="y">The method determines whether the <see cref="Quantities.#Param:quantity#"/> represented by <paramref name="x"/> is
+/// less than or equal to that of this <see cref="#Param:unit#"/>.</param>
+#/
+
+#Define:GreaterThanOrEqual(unit, siUnit, quantity)
+/// <summary>Determines whether the <see cref="Quantities.#Param:quantity#"/> represented by <paramref name="x"/> is
+/// greater than or equal to that of <paramref name="y"/>.</summary>
+/// <param name="x">The method determines whether the <see cref="Quantities.#Param:quantity#"/> represented by this <see cref="#Param:unit#"/> is
+/// greater than or equal to that of <paramref name="y"/>.</param>
+/// <param name="y">The method determines whether the <see cref="Quantities.#Param:quantity#"/> represented by <paramref name="x"/> is
+/// greater than or equal to that of this <see cref="#Param:unit#"/>.</param>
+#/

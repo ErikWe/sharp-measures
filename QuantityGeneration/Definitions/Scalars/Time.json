@@ -1,28 +1,7 @@
 ﻿{
-    "name": "Time",
     "type": "Scalar",
-    "baseUnits": "s",
-    "unit": "[UnitOf]",
-    "unitBias": false,
-    "vector": false,
-    "inverse": "Frequency",
-    "square": "TimeSquared",
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "Femtosecond", "plural": "+s" },
-        { "singular": "Picosecond", "plural": "+s" },
-        { "singular": "Nanosecond", "plural": "+s" },
-        { "singular": "Microsecond", "plural": "+s" },
-        { "singular": "Millisecond", "plural": "+s" },
-        { "singular": "Second", "plural": "+s", "SI": true, "symbol": "s" },
-        { "special": true, "separator": true },
-        { "singular": "Minute", "plural": "+s" },
-        { "singular": "Hour", "plural": "+s" },
-        { "singular": "Day", "plural": "+s" },
-        { "singular": "Week", "plural": "+s" },
-        { "singular": "CommonYear", "plural": "+s" }
-    ],
-    "convertible": []
+    "name": "Time",
+    "inverse": ["Frequency"],
+    "square": ["TimeSquared"],
+    "unit": "[name]"
 }

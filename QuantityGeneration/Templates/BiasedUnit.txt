@@ -1,0 +1,36 @@
+namespace ErikWe.SharpMeasures.Units;
+
+using ErikWe.SharpMeasures.Quantities;
+
+#Document:Header(#Unit#, #SIUnit#)#
+public readonly record struct #Unit#
+{
+#Derived##NewlineIfDerived##NewlineIfDerived##Units#
+
+    #Document:Scale(#Unit#, #SIUnit#, #UnbiasedQuantity#)#
+    public #UnbiasedQuantity# #UnbiasedQuantity# { get; private init; }
+
+    #Document:Offset(#Unit#, #SIUnit#)#
+    public Scalar Offset { get; private init; }
+
+    #Document:Constructor(#Unit#, #SIUnit#, #UnbiasedQuantity#, #unbiasedQuantity#)#
+    private #Unit#(#UnbiasedQuantity# #unbiasedQuantity#, Scalar offset)
+    {
+        #UnbiasedQuantity# = #unbiasedQuantity#;
+        Offset = offset;
+    }
+
+    #Document:WithPrefix(#Unit#, #SIUnit#)#
+    public #Unit# WithPrefix(MetricPrefix prefix) => new(#UnbiasedQuantity# * prefix.Scale, Offset);
+    #Document:ScaledBy(#Unit#, #SIUnit#)#
+    public #Unit# ScaledBy(Scalar scale) => new(#UnbiasedQuantity# * scale, Offset);
+    #Document:ScaledBy(#Unit#, #SIUnit#)#
+    public #Unit# ScaledBy(double scale) => new(#UnbiasedQuantity# * scale, Offset);
+    #Document:OffsetBy(#Unit#, #SIUnit#)#
+    public #Unit# OffsetBy(Scalar offset) => new(#UnbiasedQuantity#, Offset + offset);
+    #Document:OffsetBy(#Unit#, #SIUnit#)#
+    public #Unit# OffsetBy(double offset) => new(#UnbiasedQuantity#, Offset + offset);
+
+    #Document:ToString(#Unit#, #SIUnit#, #Quantity#)#
+    public override string ToString() => $"{GetType()}: {#UnbiasedQuantity#} + {Offset}";
+}

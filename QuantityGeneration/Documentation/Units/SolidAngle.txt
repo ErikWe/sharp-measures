@@ -1,0 +1,41 @@
+#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(unit, siUnit)
+/// <summary>Describes a unit of the quantity <see cref="Quantities.SolidAngle"/>.</summary>
+/// <remarks>#Document:DeriveRemark(#Param:unit#)# Custom <see cref="#Param:unit#"/> can also be derived from
+/// other units using the static <see cref="From(UnitOfAngle)"/>, or an overload.</remarks>
+#/
+
+#Define:FromAngle(unit, siUnit)
+/// <summary>Derives a <see cref="#Param:unit#"/> according to { <paramref name="unitOfAngle"/>² }.</summary>
+/// <param name="unitOfAngle">A <see cref="#Param:unit#"/> is derived from squaring this <see cref="UnitOfAngle"/>.</param>
+#/
+
+#Define:FromAngleAngle(unit, siUnit)
+/// <summary>Derives a <see cref="#Param:unit#"/> according to { <paramref name="unitOfAngle1"/> * <paramref name="unitOfAngle2"/> }.</summary>
+/// <param name="unitOfAngle1">A <see cref="#Param:unit#"/> is derived from multiplication of this <see cref="UnitOfAngle"/> by <paramref name="unitOfAngle2"/>.</param>
+/// <param name="unitOfAngle2">A <see cref="#Param:unit#"/> is derived from multiplication of this <see cref="UnitOfAngle"/> by <paramref name="unitOfAngle1"/>.</param>
+#/
+
+#Define:UnitSteradian
+/// <summary>The SI unit of <see cref="Quantities.SolidAngle"/>, derived according to { <see cref="UnitOfAngle.Radian"/>² }. Usually written as [sr].</summary>
+/// <remarks>This is equivalent to <see cref="SquareRadian"/>.</remarks>
+#/
+
+#Define:UnitSquareRadian
+/// <summary>Expresses <see cref="Quantities.SolidAngle"/> according to { <see cref="UnitOfAngle.Radian"/>² }. Usually written as [rad²].</summary>
+/// <remarks>This is equivalent to <see cref="Steradian"/>.</remarks>
+#/
+
+#Define:UnitSquareDegree
+/// <summary>Expresses <see cref="Quantities.SolidAngle"/> according to { <see cref="UnitOfAngle.Degree"/>² }. Usually written as [deg²].</summary>
+#/
+
+#Define:UnitSquareArcminute
+/// <summary>Expresses <see cref="Quantities.SolidAngle"/> according to { <see cref="UnitOfAngle.Arcminute"/>² }. Usually written as [arcmin²].</summary>
+#/
+
+#Define:UnitSquareArcsecond
+/// <summary>Expresses <see cref="Quantities.SolidAngle"/> according to { <see cref="UnitOfAngle.Arcsecond"/>² }. Usually written as [arcsec²].</summary>
+#/

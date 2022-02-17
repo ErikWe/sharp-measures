@@ -1,17 +1,6 @@
 ﻿{
-    "name": "SpeedSquared",
     "type": "Scalar",
-    "baseUnits": "m^2 * s^-2",
-    "unit": "UnitOfVelocitySquared",
-    "unitBias": false,
-    "vector": "VelocitySquared",
-    "inverse": false,
-    "square": false,
-    "cube": false,
-    "squareRoot": "Speed",
-    "cubeRoot": false,
-    "units": [
-        { "singular": "SquareMetrePerSecondSquared", "plural": "+s [Per]", "SI": true, "symbol": "m^2 / s^2" }
-    ],
-    "convertible": []
+    "name": "SpeedSquared",
+    "squareRoot": ["Speed"],
+    "unit": "VelocitySquared"
 }

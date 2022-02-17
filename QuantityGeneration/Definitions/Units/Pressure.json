@@ -1,0 +1,23 @@
+{
+    "type": "Unit",
+    "name": "Pressure",
+    "quantity": "[name]",
+    "derived": [
+        {
+            "signature": [
+                "Force",
+                "Area"
+            ],
+            "expression": "Pressure.From({1}, {2})"
+        }
+    ],
+    "units": [
+        { "name": "Pascal", "plural": "+s", "symbol": "Pa", "SI": true, "derived": ["Force.Newton", "Area.SquareMetre"] },
+        { "name": "Kilopascal", "plural": "+s", "prefix": { "from": "Pascal", "with": "Kilo" } },
+        { "special": true, "separator": true },
+        { "name": "Bar", "plural": "+s", "scaled": { "from": "Kilopascal", "by": "100" } },
+        { "name": "StandardAtmosphere", "plural": "+s", "scaled": { "from": "Pascal", "by": "101325" } },
+        { "special": true, "separator": true },
+        { "name": "PoundForcePerSquareInch", "plural": "PoundsForcePerSquareInch", "derived": ["Force.PoundForce", "Area.SquareInch"] }
+    ]
+}

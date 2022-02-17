@@ -1,0 +1,31 @@
+{
+    "type": "Unit",
+    "name": "Area",
+    "quantity": "[name]",
+    "derived": [
+        {
+            "signature": [
+                "Length"
+            ],
+            "expression": "Area.From({1})"
+        },
+        {
+            "signature": [
+                "Length",
+                "Length"
+            ],
+            "expression": "Area.From({1}, {2})"
+        }
+    ],
+    "units": [
+        { "name": "SquareMetre", "plural": "+s", "symbol": "m²", "SI": true, "derived": ["Length.Metre"] },
+        { "name": "SquareKilometre", "plural": "+s", "derived": ["Length.Kilometre"] },
+        { "name": "SquareInch", "plural": "+es", "derived": ["Length.Inch"] },
+        { "name": "SquareMile", "plural": "+s", "derived": ["Length.Mile"] },
+        { "special": true, "separator": true },
+        { "name": "Are", "plural": "+s", "scaled": { "from": "SquareMetre", "by": "100" } },
+        { "name": "Hectare", "plural": "+s", "prefix": { "from": "Are", "with": "Hecto" }  },
+        { "special": true, "seperator": true },
+        { "name": "Acre", "plural": "+s", "scaled": { "from": "SquareMile", "by": "1d / 640" } }
+    ]
+}

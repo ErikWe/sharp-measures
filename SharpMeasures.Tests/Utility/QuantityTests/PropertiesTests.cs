@@ -1,48 +1,48 @@
-﻿
+﻿namespace ErikWe.SharpMeasures.Tests.Utility.QuantityTests;
+
+using ErikWe.SharpMeasures.Quantities;
+
 using Xunit;
 
-namespace ErikWe.SharpMeasures.Tests.Utility.QuantityTests
+public static class PropertiesTests
 {
-    public static class PropertiesTests
+    public static void IsNaN_ShouldMatchDouble(IScalarQuantity a, bool isNaN)
     {
-        public static void IsNaN_ShouldMatchDouble(IQuantity quantity)
-        {
-            Assert.Equal(double.IsNaN(quantity.Magnitude), quantity.IsNaN);
-        }
+        Assert.Equal(double.IsNaN(a.Magnitude), isNaN);
+    }
 
-        public static void IsZero_ShouldBeTrueWhenZero(IQuantity quantity)
-        {
-            Assert.Equal(quantity.Magnitude == 0, quantity.IsZero);
-        }
+    public static void IsZero_ShouldBeTrueWhenZero(IScalarQuantity a, bool isZero)
+    {
+        Assert.Equal(a.Magnitude == 0, isZero);
+    }
 
-        public static void IsPositive_ShouldBeTrueWhenLargerThanZero(IQuantity quantity)
-        {
-            Assert.Equal(quantity.Magnitude > 0, quantity.IsPositive);
-        }
+    public static void IsPositive_ShouldBeTrueWhenLargerThanZero(IScalarQuantity a, bool isPositive)
+    {
+        Assert.Equal(a.Magnitude > 0, isPositive);
+    }
 
-        public static void IsNegative_ShouldMatchDouble(IQuantity quantity)
-        {
-            Assert.Equal(double.IsNegative(quantity.Magnitude), quantity.IsNegative);
-        }
+    public static void IsNegative_ShouldMatchDouble(IScalarQuantity a, bool isNegative)
+    {
+        Assert.Equal(double.IsNegative(a.Magnitude), isNegative);
+    }
 
-        public static void IsFinite_ShouldMatchDouble(IQuantity quantity)
-        {
-            Assert.Equal(double.IsFinite(quantity.Magnitude), quantity.IsFinite);
-        }
+    public static void IsFinite_ShouldMatchDouble(IScalarQuantity a, bool isFinite)
+    {
+        Assert.Equal(double.IsFinite(a.Magnitude), isFinite);
+    }
 
-        public static void IsInfinity_ShouldMatchDouble(IQuantity quantity)
-        {
-            Assert.Equal(double.IsInfinity(quantity.Magnitude), quantity.IsInfinity);
-        }
+    public static void IsInfinity_ShouldMatchDouble(IScalarQuantity a, bool isInfinity)
+    {
+        Assert.Equal(double.IsInfinity(a.Magnitude), isInfinity);
+    }
 
-        public static void IsPositiveInfinity_ShouldMatchDouble(IQuantity quantity)
-        {
-            Assert.Equal(double.IsPositiveInfinity(quantity.Magnitude), quantity.IsPositiveInfinity);
-        }
+    public static void IsPositiveInfinity_ShouldMatchDouble(IScalarQuantity a, bool isPositiveInfinity)
+    {
+        Assert.Equal(double.IsPositiveInfinity(a.Magnitude), isPositiveInfinity);
+    }
 
-        public static void IsNegativeInfinity_ShouldMatchDouble(IQuantity quantity)
-        {
-            Assert.Equal(double.IsNegativeInfinity(quantity.Magnitude), quantity.IsNegativeInfinity);
-        }
+    public static void IsNegativeInfinity_ShouldMatchDouble(IScalarQuantity a, bool isNegativeInfinity)
+    {
+        Assert.Equal(double.IsNegativeInfinity(a.Magnitude), isNegativeInfinity);
     }
 }

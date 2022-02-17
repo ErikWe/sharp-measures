@@ -1,11 +1,7 @@
 {
-    "name": "Jerk",
     "type": "Vector",
+    "name": "Jerk",
     "component": "[name]",
-    "baseUnits": "[component]",
-    "unit": "[component]",
-    "unitBias": "[component]",
     "dimensionalities": [3],
-    "units": "[component]",
-    "convertible": []
+    "unit": "[component]"
 }

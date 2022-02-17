@@ -1,11 +1,11 @@
-﻿#Define:HeaderSummary(quantity, dimensionality, component, unitName, singularUnits, pluralUnits)
+﻿#Define:HeaderSummary(quantity, dimensionality, component, unitName, singularBases, pluralUnits)
 /// <para>
 /// New instances of <see cref="#Param:quantity#"/> can be constructed by multiplying a <see cref="#Param:component#"/> with a <see cref="Vector#Param:dimensionality#"/> or #Document:DoubleTuple(#Param:dimensionality#)#.
 /// Instances can also be produced by combining other quantities, either through mathematical operators or using overloads of the static method 'From'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="#Param:quantity#"/> a = #Document:TupleExample(dimensionality = #Param:dimensionality#)# * <see cref="#Param:component#.One#Param:singularUnits[%0]#"/>;
+/// <see cref="#Param:quantity#"/> a = #Document:TupleExample(dimensionality = #Param:dimensionality#)# * <see cref="#Param:component#.One#Param:singularBases[%0]#"/>;
 /// </code>
 /// </item>
 /// <item>
@@ -14,11 +14,11 @@
 /// </code>
 /// </item>
 /// </list>
-/// The components of the measure can be retrieved as a <see cref="Vector#Param:dimensionality#"/> using pre-defined properties, prefixed with 'In', followed by the desired <see cref="#Param:unitName#"/>.
+/// The magnitude of the components can be retrieved in the desired <see cref="#Param:unitName#"/> using pre-defined properties, such as <see cref="#Param:pluralUnits[%0]#"/>.
 /// </para>
 #/
 
-#Define:HeaderSummaryAssociated(quantity, dimensionality, component, unitName, singularUnits, pluralUnits)
+#Define:HeaderSummaryAssociated(quantity, dimensionality, component, unitName, singularBases, pluralUnits)
 /// <para>
 /// New instances of <see cref="#Param:quantity#"/> can be constructed by multiplying a <see cref="#Param:component#"/> with a Vector#Param:dimensionality# or #Document:DoubleTuple(#Param:dimensionality#)#.
 /// Instances can also be produced by combining other quantities, either through mathematical operators or using overloads of the static method 'From'.
@@ -26,7 +26,7 @@
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="#Param:quantity#"/> a = #Document:TupleExample(dimensionality = #Param:dimensionality#)# * <see cref="#Param:component#.One#Param:singularUnits[%0]#"/>;
+/// <see cref="#Param:quantity#"/> a = #Document:TupleExample(dimensionality = #Param:dimensionality#)# * <see cref="#Param:component#.One#Param:singularBases[%0]#"/>;
 /// </code>
 /// </item>
 /// <item>
@@ -40,8 +40,7 @@
 /// </code>
 /// </item>
 /// </list>
-/// The components of the measure can be retrieved as a <see cref="Vector#Param:dimensionality#"/> using pre-defined properties, prefixed with 'In', followed by the desired <see cref="#Param:unitName#"/>.
-/// </para>
+/// The magnitude of the components can be retrieved in the desired <see cref="#Param:unitName#"/> using pre-defined properties, such as <see cref="#Param:pluralUnits[%0]#"/>./// </para>
 #/
 
 #Define:TupleExample(dimensionality)

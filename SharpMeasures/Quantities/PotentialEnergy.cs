@@ -2,7 +2,6 @@
 
 public readonly partial record struct PotentialEnergy
 {
-    /// <summary>Computes final <see cref="PotentialEnergy"/> according to { <see cref="PotentialEnergy"/>
-    /// = <paramref name="initiaPotentialEnergy"/> - <paramref name="work"/> }.</summary>
+    /// <summary>Computes final <see cref="PotentialEnergy"/> according to { <paramref name="initiaPotentialEnergy"/> - <paramref name="work"/> }.</summary>
     public static PotentialEnergy From(PotentialEnergy initiaPotentialEnergy, Work work) => new(initiaPotentialEnergy.Magnitude - work.Magnitude);
 }

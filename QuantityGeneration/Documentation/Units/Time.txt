@@ -1,0 +1,55 @@
+#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(unit, siUnit)
+/// <summary>Describes a unit of the quantity <see cref="Quantities.Time"/>.</summary>
+/// <remarks>#Document:DeriveRemark(#Param:unit#)#</remarks>
+#/
+
+#Define:UnitSecond
+/// <summary>The SI unit of <see cref="Quantities.Time"/>. Usually written as [s].</summary>
+#/
+
+#Define:UnitMinute
+/// <summary>Expresses <see cref="Quantities.Time"/> according to { 60 ∙ <see cref="Second"/> }. Usually written [min].</summary>
+#/
+
+#Define:UnitHour
+/// <summary>Expresses <see cref="Quantities.Time"/> according to { 60 ∙ <see cref="Minute"/> }. Usually written [hr].</summary>
+#/
+
+#Define:UnitDay
+/// <summary>Expresses <see cref="Quantities.Time"/> according to { 24 ∙ <see cref="Hour"/> }.</summary>
+#/
+
+#Define:UnitWeek
+/// <summary>Expresses <see cref="Quantities.Time"/> according to { 7 ∙ <see cref="Day"/> }.</summary>
+#/
+
+#Define:UnitCommonYear
+/// <summary>Expresses <see cref="Quantities.Time"/> in terms of the duration of non-leap year, according to { 365 ∙ <see cref="Day"/> }. Usually written [yr].</summary>
+#/
+
+#Define:UnitJulianYear
+/// <summary>Expresses <see cref="Quantities.Time"/> in terms of the duration of year in the Julian calendar, according to { 365.25 ∙ <see cref="Day"/> }.</summary>
+#/
+
+#Define:UnitFemtosecond
+/// <summary>Expresses <see cref="Quantities.Time"/> as one quadrillionth [10^(-15)] of a <see cref="Second"/>. Usually written as [fs].</summary>
+#/
+
+#Define:UnitPicosecond
+/// <summary>Expresses <see cref="Quantities.Time"/> as one trillionth [10^(-12)] of a <see cref="Second"/>. Usually written as [ps].</summary>
+#/
+
+#Define:UnitNanosecond
+/// <summary>Expresses <see cref="Quantities.Time"/> as one billionth [10^(-9)] of a <see cref="Second"/>. Usually written as [ns].</summary>
+#/
+
+#Define:UnitMicrosecond
+/// <summary>Expresses <see cref="Quantities.Time"/> as one millionth of a <see cref="Second"/>. Usually written as [μs].</summary>
+#/
+
+#Define:UnitMillisecond
+/// <summary>Expresses <see cref="Quantities.Time"/> as one thousandth of a <see cref="Second"/>. Usually written as [ms].</summary>
+#/

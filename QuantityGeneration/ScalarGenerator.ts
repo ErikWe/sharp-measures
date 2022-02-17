@@ -1,11 +1,12 @@
 import fsp from 'fs/promises'
 import { Documenter } from './Documenter'
 import { DefinitionReader } from './DefinitionReader'
-import { ScalarQuantity } from './ScalarQuantity'
 import { TemplateReader } from './TemplateReader'
-import { createUnitListTexts, getBases, getBaseUnits, getConvertible, getCube, getCubeRoot, getDimensionalitiesOfVector, getInverse, getNameOfVectorVersionOfScalar,
-    getSquare, getSquareRoot, getSymbol, getUnitBias, getUnitName, getUnits, getVectorComponentNames, insertAppropriateNewlines, lowerCase, normalizeLineEndings,
-    removeConsecutiveNewlines } from './Utility'
+import { ScalarQuantity } from './ScalarQuantity'
+import { VectorQuantity } from './VectorQuantity'
+import { Unit } from './Unit'
+import { composeUnitsNameList, composeBasesNameList, getBases, getConvertible, getDefaultUnit, getUnit, getUnits, getVectorComponentNames,
+    getVectorVersionOfScalar, insertAppropriateNewlines, lowerCase, normalizeLineEndings, parseUnitPlural, removeConsecutiveNewlines, getUnitQuantity } from './Utility'
 
 export class ScalarGenerator {
 
@@ -21,10 +22,6 @@ export class ScalarGenerator {
     }
 
     private async generateScalar(scalar: ScalarQuantity): Promise<void> {
-        if (!this.fixScalarData(scalar)) {
-            return
-        }
-
         let text: string = this.templateReader.scalarTemplate
 
         const interfacesText: string = this.composeInterfacesText(scalar)
@@ -52,9 +49,6 @@ export class ScalarGenerator {
         const magnitudeFromUnitDoubleText: string = this.composeMagnitudeFromUnitDoubleText(scalar)
         text = text.replace(/#MagnitudeFromUnitDouble#/g, magnitudeFromUnitDoubleText)
 
-        const magnitudeFromUnitScalarText: string = this.composeMagnitudeFromUnitScalarText(scalar)
-        text = text.replace(/#MagnitudeFromUnitScalar#/g, magnitudeFromUnitScalarText)
-
         const quantityToUnitText: string = this.composeQuantityToUnitText(scalar)
         text = text.replace(/#QuantityToUnit#/g, quantityToUnitText)
 
@@ -68,7 +62,11 @@ export class ScalarGenerator {
 
         text = text.replace(/\t/g, '    ')
 
-        text = await Documenter.document(text, this.documentationDirectory + '\\Scalars\\' + scalar.name + '.txt')
+        if (await fsp.stat(this.documentationDirectory + '\\Scalars\\' + scalar.name + '.txt').catch(() => false)) {
+            text = await Documenter.document(text, this.documentationDirectory + '\\Scalars\\' + scalar.name + '.txt')
+        } else {
+            this.reportErrorDocumentationFileNotFound(scalar, this.documentationDirectory + '\\Scalars\\' + scalar.name + '.txt')
+        }
 
         text = insertAppropriateNewlines(text, 175)
         text = normalizeLineEndings(text)
@@ -78,66 +76,33 @@ export class ScalarGenerator {
         await fsp.writeFile(this.destination + '\\' + scalar.name + '.g.cs', text)
     }
 
-    private fixScalarData(scalar: ScalarQuantity): boolean {
-        const requiredEntries: string[] = ['name', 'type', 'baseUnits', 'unit', 'unitBias',
-            'vector', 'inverse', 'square', 'cube', 'squareRoot', 'cubeRoot', 'units', 'convertible']
-
-        const missingEntries: string[] = []
-        for (let requiredEntry of requiredEntries) {
-            if (!(requiredEntry in scalar)) {
-                missingEntries.push(requiredEntry)
-            }
-        }
-
-        if (missingEntries.length > 0) {
-            this.reportErrorMissingEntries(scalar, missingEntries)
-            return false
-        }
-
-        const redudantEntries: string[] = []
-        for (let entry of Object.keys(scalar)) {
-            if (!requiredEntries.includes(entry))
-            {
-                requiredEntries.push(entry)
-            }
-        }
-
-        if (redudantEntries.length > 0) {
-            this.reportWarningRedundantEntries(scalar, redudantEntries)
-        }
-
-        scalar.baseUnits = getBaseUnits(this.definitionReader.definitions, scalar)
-        scalar.unit = getUnitName(this.definitionReader.definitions, scalar)
-        scalar.unitBias = getUnitBias(this.definitionReader.definitions, scalar)
-        scalar.vector = getNameOfVectorVersionOfScalar(this.definitionReader.definitions, scalar)
-        scalar.inverse = getInverse(this.definitionReader.definitions, scalar)
-        scalar.square = getSquare(this.definitionReader.definitions, scalar)
-        scalar.cube = getCube(this.definitionReader.definitions, scalar)
-        scalar.squareRoot = getSquareRoot(this.definitionReader.definitions, scalar)
-        scalar.cubeRoot = getCubeRoot(this.definitionReader.definitions, scalar)
-        scalar.units = getUnits(this.definitionReader.definitions, scalar)
-        scalar.symbol = getSymbol(this.definitionReader.definitions, scalar)
-        scalar.bases = getBases(this.definitionReader.definitions, scalar)
-        scalar.convertible = getConvertible(this.definitionReader.definitions, scalar)
-
-        if (scalar.vector) {
-            scalar.vectorDimensionalities = getDimensionalitiesOfVector(this.definitionReader.definitions, this.definitionReader.definitions.vectors[scalar.vector])
-        } else {
-            scalar.vectorDimensionalities = []
-        }
-
-        return true
-    }
-
     private insertNames(text: string, scalar: ScalarQuantity): string {
-        text = text.replace(/#Unit#/g, scalar.unit)
-        text = text.replace(/#UnitVariable#/g, lowerCase(scalar.unit))
+        const unit: Unit = getUnit(this.definitionReader.definitions, scalar)
+        text = text.replace(/#Unit#/g, 'UnitOf' + unit.name)
+        text = text.replace(/#UnitVariable#/g, lowerCase('UnitOf' + unit.name))
 
-        const unitListTexts = createUnitListTexts(scalar)
-        text = text.replace(/#SingularUnits#/g, unitListTexts.singular)
-        text = text.replace(/#PluralUnits#/g, unitListTexts.plural)
+        text = text.replace(/#UnitQuantity#/g, getUnitQuantity(this.definitionReader.definitions, unit).name)
 
-        const powers: { name: string, data: QuantityPower }[] = [
+        text = text.replace(/#UnbiasedQuantity#/g, unit.unbiasedQuantity ? unit.unbiasedQuantity : 'NoUnbiasedQuantityError')
+
+        const defaultUnit = getDefaultUnit(this.definitionReader.definitions, scalar)
+        if (defaultUnit !== undefined && !defaultUnit.special) {
+            text = text.replace(/#DefaultUnit#/g, defaultUnit.name)
+            text = text.replace(/#DefaultUnits#/g, parseUnitPlural(defaultUnit.name, defaultUnit.plural))
+            if (defaultUnit.symbol === undefined) {
+                this.reportErrorMissingDefaultUnitSymbol(scalar)
+                text = text.replace(/#DefaultSymbol#/g, 'NoDefaultUnitSymbolError')
+            } else {
+                text = text.replace(/#DefaultSymbol#/g, defaultUnit.symbol)
+            }
+        } else {
+            this.reportErrorMissingDefaultUnit(scalar)
+            text = text.replace(/#DefaultUnit#/g, 'NoDefaultUnitError')
+            text = text.replace(/#DefaultUnits#/g, 'NoDefaultUnitError')
+            text = text.replace(/#DefaultSymbol#/g, 'NoDefaultUnitError')
+        }
+
+        const powers: { name: string, data: string[] | undefined }[] = [
             { name: 'Inverse', data: scalar.inverse },
             { name: 'Square', data: scalar.square },
             { name: 'Cube', data: scalar.cube },
@@ -146,7 +111,7 @@ export class ScalarGenerator {
         ]
 
         for (let power of powers) {
-            if (power.data && power.data.length > 0) {
+            if (power.data !== undefined && power.data.length > 0) {
                 text = text.replace(new RegExp('#' + power.name + 'Quantity#', 'g'), power.data[0])
                 text = text.replace(new RegExp('#' + power.name + 'QuantityVariable#', 'g'), lowerCase(power.data[0]))
     
@@ -158,13 +123,12 @@ export class ScalarGenerator {
             }
         }
 
-        if (scalar.vector) {
-            text = text.replace(/#VectorQuantity#/g, scalar.vector)
-        }
+        text = text.replace(/#VectorQuantity#/g, getVectorVersionOfScalar(this.definitionReader.definitions, scalar)?.name ?? 'NoVectorVersionError')
 
-        if (scalar.symbol) {
-            text = text.replace(/#Abbreviation#/g, scalar.symbol)
-        }
+        text = text.replace(/#SingularUnits#/g, composeUnitsNameList(this.definitionReader.definitions, scalar).singular)
+        text = text.replace(/#PluralUnits#/g, composeUnitsNameList(this.definitionReader.definitions, scalar).plural)
+        text = text.replace(/#SingularBases#/g, composeBasesNameList(this.definitionReader.definitions, scalar).singular)
+        text = text.replace(/#PluralBases#/g, composeBasesNameList(this.definitionReader.definitions, scalar).plural)
 
         text = text.replace(/#Quantity#/g, scalar.name)
         text = text.replace(/#quantity#/g, lowerCase(scalar.name))
@@ -172,7 +136,7 @@ export class ScalarGenerator {
     }
 
     private composeInterfacesText(scalar: ScalarQuantity): string {
-        const powers: { name: string, data: QuantityPower, expression: (quantityName: string) => string }[] = [
+        const powers: { name: string, data: string[] | undefined, expression: (quantityName: string) => string }[] = [
             { name: 'Inverse', data: scalar.inverse, expression: (x) => 'IInvertibleScalarQuantity<' + x + '>' },
             { name: 'Square', data: scalar.square, expression: (x) => 'ISquarableScalarQuantity<' + x + '>' },
             { name: 'Cube', data: scalar.cube, expression: (x) => 'ICubableScalarQuantity<' + x + '>' },
@@ -197,8 +161,9 @@ export class ScalarGenerator {
         interfaces.push('IGenericallyMultiplicableScalarQuantity')
         interfaces.push('IGenericallyDivisibleScalarQuantity')
 
-        if (scalar.vectorDimensionalities) {
-            for (let dimensionality of scalar.vectorDimensionalities) {
+        const vector: VectorQuantity | undefined = getVectorVersionOfScalar(this.definitionReader.definitions, scalar)
+        if (vector) {
+            for (let dimensionality of vector.dimensionalities) {
                 interfaces.push('IVector' + dimensionality + 'MultiplicableScalarQuantity<#VectorQuantity#' + dimensionality + ', Vector' + dimensionality + '>')
             }
         }
@@ -212,18 +177,22 @@ export class ScalarGenerator {
     }
 
     private composeBasesText(scalar: ScalarQuantity): string {
-        let basesText: string = ''
+        const bases: Unit['units'] | undefined = getBases(this.definitionReader.definitions, scalar)
 
-        if (Array.isArray(scalar.bases)) {
-            for (let base of scalar.bases) {
-                if (base.special) {
-                    if (base.separator) {
-                        basesText += '\n'
-                    }
-                } else {
-                    basesText += '\t#Document:OneUnit(#Quantity#, #Unit#, ' + base.singular + ')#\n'
-                    basesText += '\tpublic static #Quantity# One' + base.singular + ' { get; } = new(1, #Unit#.' + base.singular + ');\n'
+        if (bases === undefined) {
+            return ''
+        }
+
+        let basesText: string = ''
+        
+        for (let base of bases) {
+            if (base.special) {
+                if (base.separator) {
+                    basesText += '\n'
                 }
+            } else {
+                basesText += '\t#Document:OneUnit(#Quantity#, #Unit#, ' + base.name + ')#\n'
+                basesText += '\tpublic static #Quantity# One' + base.name + ' { get; } = new(1, #Unit#.' + base.name + ');\n'
             }
         }
 
@@ -231,7 +200,7 @@ export class ScalarGenerator {
     }
 
     private composeFromText(scalar: ScalarQuantity): string {
-        const powers: { name: string, data: QuantityPower, expression: (variableName: string) => string }[] = [
+        const powers: { name: string, data: string[] | undefined, expression: (variableName: string) => string }[] = [
             { name: 'Inverse', data: scalar.inverse, expression: (x) => '1 / ' + x + '.Magnitude' },
             { name: 'Square', data: scalar.square, expression: (x) => 'Math.Sqrt(' + x + '.Magnitude)' },
             { name: 'Cube', data: scalar.cube, expression: (x) => 'Math.Cbrt(' + x + '.Magnitude)' },
@@ -242,7 +211,7 @@ export class ScalarGenerator {
         let fromText: string = ''
         
         for (let power of powers) {
-            if (Array.isArray(power.data)) {
+            if (power.data !== undefined) {
                 for (let i = 0; i < power.data.length; i++) {
                     const quantity: string = power.name + 'Quantity' + i
                     const variable: string = quantity + 'Variable'
@@ -252,22 +221,46 @@ export class ScalarGenerator {
             }
         }
 
+        if (scalar.squareRoot !== undefined) {
+            for (let i = 0; i < scalar.squareRoot.length; i++) {
+                const quantity: string = 'SquareRootQuantity' + i
+                const variable: string = quantity + 'Variable'
+                fromText += '\t#Document:FromTwoSquareRoot(#Quantity#, #' + quantity + '#, #' + variable + '#)#\n'
+                fromText += '\tpublic static #Quantity# From(#' + quantity + '# #' + variable + '#1, #' + quantity + '# #' + variable + '#2) => new(' +
+                    '#' + variable + '#1.Magnitude * #' + variable + '#2.Magnitude);\n'
+            }
+        }
+
+        if (scalar.cubeRoot !== undefined) {
+            for (let i = 0; i < scalar.cubeRoot.length; i++) {
+                const quantity: string = 'CubeRootQuantity' + i
+                const variable: string = quantity + 'Variable'
+                fromText += '\t#Document:FromThreeCubeRoot(#Quantity#, #' + quantity + '#, #' + variable + '#)#\n'
+                fromText += '\tpublic static #Quantity# From(#' + quantity + '# #' + variable + '#1, #' + quantity + '# #' + variable + '#2, #' + quantity + '# #' +
+                    variable +  '#3) => new(' + '#' + variable + '#1.Magnitude * #' + variable + '#2.Magnitude * #' + variable + '#3.Magnitude);\n'
+            }
+        }
+
         return fromText
     }
 
     private composeUnitsText(scalar: ScalarQuantity): string {
+        const units: Unit['units'] | undefined = getUnits(this.definitionReader.definitions, scalar)
+
+        if (units === undefined) {
+            return ''
+        }
+
         let unitsText: string = ''
 
-        if (Array.isArray(scalar.units)) {
-            for (let unit of scalar.units) {
-                if (unit.special) {
-                    if (unit.separator) {
-                        unitsText += '\n'
-                    }
-                } else {
-                    unitsText += '\t#Document:InUnit(#Quantity#, #Unit#, ' + unit.singular + ')#\n'
-                    unitsText += '\tpublic Scalar ' + unit.plural + ' => InUnit(#Unit#.' + unit.singular + ');\n'
+        for (let unit of units) {
+            if (unit.special) {
+                if (unit.separator) {
+                    unitsText += '\n'
                 }
+            } else {
+                unitsText += '\t#Document:InUnit(#Quantity#, #Unit#, ' + unit.name + ')#\n'
+                unitsText += '\tpublic Scalar ' + parseUnitPlural(unit.name, unit.plural) + ' => InUnit(#Unit#.' + unit.name + ');\n'
             }
         }
 
@@ -275,7 +268,7 @@ export class ScalarGenerator {
     }
 
     private composePowersText(scalar: ScalarQuantity): string {
-        const powers: { powerName: string, data: QuantityPower, methodName: string }[] = [
+        const powers: { powerName: string, data: string[] | undefined, methodName: string }[] = [
             { powerName: 'Inverse', data: scalar.inverse, methodName: 'Invert' },
             { powerName: 'Square', data: scalar.square, methodName: 'Square' },
             { powerName: 'Cube', data: scalar.cube, methodName: 'Cube' },
@@ -300,67 +293,62 @@ export class ScalarGenerator {
         let invertText: string = ''
 
         if (scalar.inverse && scalar.inverse.length > 0) {
-            invertText += '\#Document:DivideDoubleOperatorRHS(#Quantity#, #InverseQuantity#)#\n'
+            invertText += '\t#Document:DivideDoubleOperatorRHS(#Quantity#, #InverseQuantity#)#\n'
             invertText += '\tpublic static #InverseQuantity# operator /(double x, #Quantity# y) => x * y.Invert();\n'
         }
 
-        return invertText
+        return invertText.slice(0, -1)
     }
 
     private composeInversionOperatorScalarText(scalar: ScalarQuantity): string {
         let invertText: string = ''
 
         if (scalar.inverse && scalar.inverse.length > 0) {
-            invertText += '\#Document:DivideScalarOperatorRHS(#Quantity#, #InverseQuantity#)#\n'
+            invertText += '\t#Document:DivideScalarOperatorRHS(#Quantity#, #InverseQuantity#)#\n'
             invertText += '\tpublic static #InverseQuantity# operator /(Scalar x, #Quantity# y) => x * y.Invert();\n'
         }
 
-        return invertText
+        return invertText.slice(0, -1)
     }
 
     private composeMagnitudeFromUnitDoubleText(scalar: ScalarQuantity): string {
         if (scalar.unitBias === true) {
-            return '(magnitude * #UnitVariable#.Prefix.Scale + #UnitVariable#.Bias) * #UnitVariable#.BaseScale'
+            return '(magnitude * #UnitVariable#.#UnbiasedQuantity#.Magnitude) - #UnitVariable#.Offset'
+        } else if (getUnit(this.definitionReader.definitions, scalar).bias) {
+            return 'magnitude * #UnitVariable#.#UnbiasedQuantity#.Magnitude'
         } else {
-            return 'magnitude * #UnitVariable#.Factor'
-        }
-    }
-
-    private composeMagnitudeFromUnitScalarText(scalar: ScalarQuantity): string {
-        if (scalar.unitBias === true) {
-            return '(magnitude.Magnitude * #UnitVariable#.Prefix.Scale + #UnitVariable#.Bias) * #UnitVariable#.BaseScale'
-        } else {
-            return 'magnitude.Magnitude * #UnitVariable#.Factor'
+            return 'magnitude * #UnitVariable#.#UnitQuantity#.Magnitude'
         }
     }
 
     private composeQuantityToUnitText(scalar: ScalarQuantity): string {
         if (scalar.unitBias === true) {
-            return '(#quantity#.Magnitude / #UnitVariable#.BaseScale - #UnitVariable#.Bias) / #UnitVariable#.Prefix.Scale'
+            return '(#quantity#.Magnitude + #UnitVariable#.Offset) / #UnitVariable#.#UnbiasedQuantity#.Magnitude'
+        } else if (getUnit(this.definitionReader.definitions, scalar).bias) {
+            return '#quantity#.Magnitude / #UnitVariable#.#UnbiasedQuantity#.Magnitude'
         } else {
-            return '#quantity#.Magnitude / #UnitVariable#.Factor'
+            return '#quantity#.Magnitude / #UnitVariable#.#UnitQuantity#.Magnitude'
         }
     }
 
     private composeConvertibleText(scalar: ScalarQuantity): string {
         let convertibleText: string = ''
 
-        if (Array.isArray(scalar.convertible)) {
-            for (let convertible of scalar.convertible) {
-                convertibleText += '\t#Document:AsShared(quantity = #Quantity#, sharedQuantity = ' + convertible + ')#\n'
-                convertibleText += '\tpublic ' + convertible + ' As' + convertible + ' => new(Magnitude);\n'
-            }
+        for (let convertible of getConvertible(this.definitionReader.definitions, scalar)) {
+            convertibleText += '\t#Document:AsShared(quantity = #Quantity#, sharedQuantity = ' + convertible.name + ')#\n'
+            convertibleText += '\tpublic ' + convertible.name + ' As' + convertible.name + ' => new(Magnitude);\n'
         }
 
-        return convertibleText
+        return convertibleText.slice(0, -1)
     }
 
     private composeToVectorText(scalar: ScalarQuantity): string {
         let toVectorMethods: string = ''
         let toVectorOperations: string = ''
 
-        if (Array.isArray(scalar.vectorDimensionalities)) {
-            for (let dimensionality of scalar.vectorDimensionalities) {
+        const vector: VectorQuantity | undefined = getVectorVersionOfScalar(this.definitionReader.definitions, scalar)
+        if (vector) {
+            for (let dimensionality of vector.dimensionalities) {
                 const argument: string = '(quantity = #Quantity#, vectorQuantity = #VectorQuantity#, n = #Dimensionality#)'
 
                 let doubleTupleDefinition: string = ''
@@ -373,7 +361,7 @@ export class ScalarGenerator {
                 scalarTupleDefinition = '(' + scalarTupleDefinition.slice(0, -2) + ')'
 
                 toVectorMethods += '\t#Document:MultiplyVectorNMethod' + argument + '#\n'
-                toVectorMethods += '\tpublic #VectorQuantity##Dimensionality# Multiply(Vector#Dimensionality# vector) #newline#=> new(vector * Magnitude);\n'
+                toVectorMethods += '\tpublic #VectorQuantity##Dimensionality# Multiply(Vector#Dimensionality# factor) #newline#=> new(factor * Magnitude);\n'
 
                 toVectorMethods += '\t#Document:MultiplyTupleNMethod' + argument + '#\n'
                 toVectorMethods += '\tpublic #VectorQuantity##Dimensionality# Multiply(#newline#' + doubleTupleDefinition + ' components) #newline#'
@@ -409,13 +397,21 @@ export class ScalarGenerator {
         return toVectorMethods + toVectorOperations
     }
 
-    private reportErrorMissingEntries(scalar: ScalarQuantity, entries: string[]): void {
-        console.error('Scalar quantity: [' + scalar.name + '] is missing ' + (entries.length > 1 ? 'entries' : 'entry') + ': ' + entries + '.')
+    private reportErrorDocumentationFileNotFound(scalar: ScalarQuantity, fileName: string): void {
+        console.error('Could not locate documentation file for scalar quantity: [' + scalar.name + '], tried: [' + fileName + '].')
     }
 
-    private reportWarningRedundantEntries(scalar: ScalarQuantity, entries: string[]): void {
-        console.warn('Scalar quantity: [' + scalar.name + '] has redundant ' + (entries.length > 1 ? 'entries' : 'entry') + ':' + entries + '.')
+    private reportErrorMissingDefaultUnitSymbol(scalar: ScalarQuantity): void {
+        const defaultUnit: Unit['units'][number] | undefined = getDefaultUnit(this.definitionReader.definitions, scalar)
+
+        if (defaultUnit === undefined || defaultUnit.special) {
+            console.error('Default unit of scalar quantity: [' + scalar.name + '] is missing symbol.')
+        } else {
+            console.error('Default unit: [' + defaultUnit.name + '] of scalar quantity: [' + scalar.name + '] is missing symbol.')
+        }
+    }
+
+    private reportErrorMissingDefaultUnit(scalar: ScalarQuantity): void {
+        console.error('Could not identify default unit of scalar quantity: [' + scalar.name + '].')
     }
 }
-
-type QuantityPower = string | string[] | false

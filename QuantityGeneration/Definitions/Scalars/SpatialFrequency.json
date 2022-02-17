@@ -1,20 +1,9 @@
 ﻿{
-    "name": "SpatialFrequency",
     "type": "Scalar",
-    "baseUnits": "m^-1",
-    "unit": "[UnitOf]",
-    "unitBias": false,
-    "vector": false,
+    "name": "SpatialFrequency",
     "inverse": [
         "Distance",
         "Length"
     ],
-    "square": false,
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "PerMetre", "plural": "=", "SI": true, "symbol": "1 / m" }
-    ],
-    "convertible": []
+    "unit": "[name]"
 }

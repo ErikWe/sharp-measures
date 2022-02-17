@@ -1,16 +1,11 @@
 ﻿{
-    "name": "Distance",
     "type": "Scalar",
-    "baseUnits": "[Length]",
-    "unit": "[Length]",
-    "unitBias": false,
+    "name": "Distance",
     "vector": "Displacement",
-    "inverse": "SpatialFrequency",
-    "square": "Area",
-    "cube": "Volume",
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": "[Length]",
+    "inverse": ["SpatialFrequency"],
+    "square": ["Area"],
+    "cube": ["Volume"],
+    "unit": "[Length]",
     "convertible": [
         "Length"
     ]

@@ -1,11 +1,11 @@
 ﻿#Extends:Generic.txt#
 #Extends:Utility.txt#
 
-#Define:Header(quantity, dimensionality, component, unitName, singularUnits, pluralUnits)
+#Define:Header(quantity, dimensionality, component, unitName, singularBases, pluralUnits)
 /// <summary>A measure of the vector quantity <see cref="#Param:quantity#"/>, of dimensionality #Document:LowerCaseText(#Param:dimensionality#)#,
 /// describing change in <see cref="Force#Param:dimensionality#"/> over <see cref="Time"/>. The quantity is expressed in <see cref="#Param:unitName#"/>,
-/// with the SI unit being [m / s].
-#Document:HeaderSummary(#Param:quantity#, #Param:dimensionality#, #Param:component#, #Param:unitName#, #Param:singularUnits#, #Param:pluralUnits#)#
+/// with the SI unit being [N∙s⁻¹].
+#Document:HeaderSummary(#Param:quantity#, #Param:dimensionality#, #Param:component#, #Param:unitName#, #Param:singularBases#, #Param:pluralUnits#)#
 /// </summary>
 #/
 

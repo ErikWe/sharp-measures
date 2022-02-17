@@ -1,11 +1,7 @@
 {
-    "name": "Absement",
     "type": "Vector",
+    "name": "Absement",
     "component": "[name]",
-    "baseUnits": "[component]",
-    "unit": "[component]",
-    "unitBias": "[component]",
     "dimensionalities": [3],
-    "units": "[component]",
-    "convertible": []
+    "unit": "[component]"
 }

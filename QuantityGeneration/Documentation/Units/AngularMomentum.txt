@@ -1,0 +1,21 @@
+#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(unit, siUnit)
+/// <summary>Describes a unit of the quantity <see cref="Quantities.AngularMomentum"/>, and related quantities.</summary>
+/// <remarks>#Document:DeriveRemark(#Param:unit#)# Custom <see cref="#Param:unit#"/> can also be derived from
+/// other units using the static <see cref="From(UnitOfMomentOfInertia, UnitOfAngularVelocity)"/>.</remarks>
+#/
+
+#Define:FromMomentOfInertiaAngularVelocity(unit, siUnit)
+/// <summary>Derives a <see cref="#Param:unit#"/> according to { <paramref name="unitOfMomentOfInertia"/> ∙ <paramref name="unitOfAngularVelocity"/> }.</summary>
+/// <param name="unitOfMomentOfInertia">A <see cref="#Param:unit#"/> is derived from multiplication of this
+/// <see cref="UnitOfMomentOfInertia"/> by <paramref name="unitOfAngularVelocity"/>.</param>
+/// <param name="unitOfAngularVelocity">A <see cref="#Param:unit#"/> is derived from multiplication of the <see cref="UnitOfAngularVelocity"/>
+/// by <paramref name="unitOfMomentOfInertia"/>.</param>
+#/
+
+#Define:UnitKilogramSquareMetrePerSecond
+/// <summary>The SI unit of <see cref="Quantities.AngularMomentum"/>, derived according to {
+/// <see cref="UnitOfMomentOfInertia.KilogramSquareMetre"/> ∙ <see cref="UnitOfAngularVelocity.RadianPerSecond"/> }. Usually written as [kg∙m²/s] or [kg∙m²∙s⁻¹].</summary>
+#/

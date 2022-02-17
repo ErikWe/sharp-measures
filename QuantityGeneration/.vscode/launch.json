@@ -16,14 +16,14 @@
                 "${workspaceFolder}/**/*.js"
             ],
             "args": [
-                "--destination",
+                "--quantityDestination",
                 "..\\SharpMeasures\\Quantities\\Generated",
+                "--unitDestination",
+                "..\\SharpMeasures\\Units\\Generated",
                 "--definitions",
                 "Definitions",
-                "--scalarTemplate",
-                "Templates\\ScalarTemplate.txt",
-                "--vectorTemplate",
-                "Templates\\VectorTemplate.txt",
+                "--templates",
+                "Templates",
                 "--documentation",
                 "Documentation",
                 "--DESTROY"

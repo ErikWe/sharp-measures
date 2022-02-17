@@ -1,0 +1,20 @@
+{
+    "type": "Unit",
+    "name": "Time",
+    "quantity": "[name]",
+    "units": [
+        { "name": "Second", "plural": "+s", "symbol": "s", "SI": true, "value": "1" },
+        { "name": "Minute", "plural": "+s", "scaled": { "from": "Second", "by": "60" } },
+        { "name": "Hour", "plural": "+s", "scaled": { "from": "Minute", "by": "60" } },
+        { "name": "Day", "plural": "+s", "scaled": { "from": "Hour", "by": "24" } },
+        { "name": "Week", "plural": "+s", "scaled": { "from": "Day", "by": "7" } },
+        { "name": "CommonYear", "plural": "+s", "scaled": { "from": "Day", "by": "365" } },
+        { "name": "JulianYear", "plural": "+s", "scaled": { "from": "Day", "by": "365.25" } },
+        { "special": true, "separator": true },
+        { "name": "Femtosecond", "plural": "+s", "prefix": { "from": "Second", "with": "Femto" } },
+        { "name": "Picosecond", "plural": "+s", "prefix": { "from": "Second", "with": "Pico" } },
+        { "name": "Nanosecond", "plural": "+s", "prefix": { "from": "Second", "with": "Nano" } },
+        { "name": "Microsecond", "plural": "+s", "prefix": { "from": "Second", "with": "Micro" } },
+        { "name": "Millisecond", "plural": "+s", "prefix": { "from": "Second", "with": "Milli" } }
+    ]
+}

@@ -1,24 +1,5 @@
 ﻿{
-    "name": "Mass",
     "type": "Scalar",
-    "baseUnits": "kg",
-    "unit": "[UnitOf]",
-    "unitBias": false,
-    "vector": false,
-    "inverse": false,
-    "square": false,
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "Milligram", "plural": "+s" },
-        { "singular": "Gram", "plural": "+s" },
-        { "singular": "Hectogram", "plural": "+s" },
-        { "singular": "Kilogram", "plural": "+s", "SI": true, "symbol": "kg" },
-        { "singular": "Tonne", "plural": "+s" },
-        { "special": true, "separator": true },
-        { "singular": "Ounce", "plural": "+s" },
-        { "singular": "Pound", "plural": "+s" }
-    ],
-    "convertible": []
+    "name": "Mass",
+    "unit": "[name]"
 }

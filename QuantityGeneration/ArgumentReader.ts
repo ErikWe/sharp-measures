@@ -25,10 +25,16 @@ export class ArgumentReader {
             description: 'Display this usage guide.'
         },
         {
-            name: 'destination',
+            name: 'quantityDestination',
             type: String,
             defaultValue: 'Quantities\\Generated',
-            description: 'Relative path of destination directory.'
+            description: 'Relative path of quantity destination directory.'
+        },
+        {
+            name: 'unitDestination',
+            type: String,
+            defaultValue: 'Units',
+            description: 'Relative path of unit destination directory.'
         },
         {
             name: 'definitions',
@@ -43,16 +49,10 @@ export class ArgumentReader {
             description: 'Relative path of the directory containing quantity documentation'
         },
         {
-            name: 'scalarTemplate',
+            name: 'templates',
             type: String,
-            defaultValue: 'AutoGeneration\\Templates\\ScalarTemplate.txt',
-            description: 'Relative path of scalar template file.'
-        },
-        {
-            name: 'vectorTemplate',
-            type: String,
-            defaultValue: 'AutoGeneration\\Templates\\VectorTemplate.txt',
-            description: 'Relative path of vector template file'
+            defaultValue: 'AutoGeneration\\Templates',
+            description: 'Relative path of templates directory.'
         },
         {
             name: 'DESTROY',

@@ -46,6 +46,8 @@ public readonly partial record struct Pressure :
     public static Pressure OneKilopascal { get; } = new(1, UnitOfPressure.Kilopascal);
     /// <summary>The <see cref="Pressure"/> with magnitude 1, when expressed in unit <see cref="UnitOfPressure.Bar"/>.</summary>
     public static Pressure OneBar { get; } = new(1, UnitOfPressure.Bar);
+    /// <summary>The <see cref="Pressure"/> with magnitude 1, when expressed in unit <see cref="UnitOfPressure.StandardAtmosphere"/>.</summary>
+    public static Pressure OneStandardAtmosphere { get; } = new(1, UnitOfPressure.StandardAtmosphere);
     /// <summary>The <see cref="Pressure"/> with magnitude 1, when expressed in unit <see cref="UnitOfPressure.PoundForcePerSquareInch"/>.</summary>
     public static Pressure OnePoundForcePerSquareInch { get; } = new(1, UnitOfPressure.PoundForcePerSquareInch);
 
@@ -79,7 +81,7 @@ public readonly partial record struct Pressure :
     /// </item>
     /// </list>
     /// </remarks>
-    public Pressure(double magnitude, UnitOfPressure unitOfPressure) : this(magnitude * unitOfPressure.Factor) { }
+    public Pressure(double magnitude, UnitOfPressure unitOfPressure) : this(magnitude * unitOfPressure.Pressure.Magnitude) { }
     /// <summary>Constructs a new <see cref="Pressure"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Pressure"/>.</param>
     /// <remarks>Consider preferring <see cref="Pressure(Scalar, UnitOfPressure)"/>.</remarks>
@@ -96,9 +98,10 @@ public readonly partial record struct Pressure :
     public Scalar Pascals => InUnit(UnitOfPressure.Pascal);
     /// <summary>Retrieves the magnitude of the <see cref="Pressure"/>, expressed in <see cref="UnitOfPressure.Kilopascal"/>.</summary>
     public Scalar Kilopascals => InUnit(UnitOfPressure.Kilopascal);
-
     /// <summary>Retrieves the magnitude of the <see cref="Pressure"/>, expressed in <see cref="UnitOfPressure.Bar"/>.</summary>
     public Scalar Bars => InUnit(UnitOfPressure.Bar);
+    /// <summary>Retrieves the magnitude of the <see cref="Pressure"/>, expressed in <see cref="UnitOfPressure.StandardAtmosphere"/>.</summary>
+    public Scalar StandardAtmospheres => InUnit(UnitOfPressure.StandardAtmosphere);
     /// <summary>Retrieves the magnitude of the <see cref="Pressure"/>, expressed in <see cref="UnitOfPressure.PoundForcePerSquareInch"/>.</summary>
     public Scalar PoundsForcePerSquareInch => InUnit(UnitOfPressure.PoundForcePerSquareInch);
 
@@ -119,19 +122,20 @@ public readonly partial record struct Pressure :
     /// <summary>Indicates whether the magnitude of the <see cref="Pressure"/> is infinite, and negative.</summary>
     public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude);
 
-    /// <summary>Produces a <see cref="Pressure"/>, with magnitude equal to the absolute of the original magnitude.</summary>
+    /// <summary>Computes the absolute of the <see cref="Pressure"/>.</summary>
     public Pressure Absolute() => new(Math.Abs(Magnitude));
-    /// <summary>Produces a <see cref="Pressure"/>, with magnitude equal to the floor of the original magnitude.</summary>
+    /// <summary>Computes the floor of the <see cref="Pressure"/>.</summary>
     public Pressure Floor() => new(Math.Floor(Magnitude));
-    /// <summary>Produces a <see cref="Pressure"/>, with magnitude equal to the ceiling of the original magnitude.</summary>
+    /// <summary>Computes the ceiling of the <see cref="Pressure"/>.</summary>
     public Pressure Ceiling() => new(Math.Ceiling(Magnitude));
-    /// <summary>Produces a <see cref="Pressure"/>, with magnitude equal to the original magnitude, rounded to the nearest integer.</summary>
+    /// <summary>Rounds the <see cref="Pressure"/> to the nearest integer value.</summary>
     public Pressure Round() => new(Math.Round(Magnitude));
 
     /// <inheritdoc/>
     public int CompareTo(Pressure other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="Pressure"/> (in SI units), and the SI base unit of the quantity.</summary>
-    public override string ToString() => $"{Magnitude} [Pa]";
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="Pressure"/> in the default unit
+    /// <see cref="UnitOfPressure.Pascal"/>, followed by the symbol [Pa].</summary>
+    public override string ToString() => $"{Pascals} [Pa]";
 
     /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Pressure"/>,
     /// expressed in <paramref name="unitOfPressure"/>.</summary>
@@ -141,20 +145,20 @@ public readonly partial record struct Pressure :
     /// expressed in <paramref name="unitOfPressure"/>.</summary>
     /// <param name="pressure">The <see cref="Pressure"/> to be expressed in <paramref name="unitOfPressure"/>.</param>
     /// <param name="unitOfPressure">The <see cref="UnitOfPressure"/> in which the magnitude is expressed.</param>
-    private static Scalar InUnit(Pressure pressure, UnitOfPressure unitOfPressure) => new(pressure.Magnitude / unitOfPressure.Factor);
+    private static Scalar InUnit(Pressure pressure, UnitOfPressure unitOfPressure) => new(pressure.Magnitude / unitOfPressure.Pressure.Magnitude);
 
     /// <summary>Unary plus, resulting in the unmodified <see cref="Pressure"/>.</summary>
     public Pressure Plus() => this;
     /// <summary>Negation, resulting in a <see cref="Pressure"/> with negated magnitude.</summary>
     public Pressure Negate() => new(-Magnitude);
     /// <summary>Unary plus, resulting in the unmodified <paramref name="x"/>.</summary>
-    /// <param name="x">Unary plus is applied to this instance of <see cref="Pressure"/>.</param>
+    /// <param name="x">Unary plus is applied to this <see cref="Pressure"/>.</param>
     public static Pressure operator +(Pressure x) => x.Plus();
-    /// <summary>Negation, resulting in a <see cref="Pressure"/> with magnitude negated from that of <paramref name="x"/>.</summary>
-    /// <param name="x">Negation is applied to this instance of <see cref="Pressure"/>.</param>
+    /// <summary>Negation, resulting in a <see cref="Pressure"/> with negated magnitude from that of <paramref name="x"/>.</summary>
+    /// <param name="x">Negation is applied to this <see cref="Pressure"/>.</param>
     public static Pressure operator -(Pressure x) => x.Negate();
 
-    /// <summary>Multiplies the <see cref="Pressure"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+    /// <summary>Multiplicates the <see cref="Pressure"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="factor">The factor by which the <see cref="Pressure"/> is multiplied.</param>
     public Unhandled Multiply(Unhandled factor) => new(Magnitude * factor.Magnitude);
@@ -162,25 +166,24 @@ public readonly partial record struct Pressure :
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="divisor">The divisor by which the <see cref="Pressure"/> is divided.</param>
     public Unhandled Divide(Unhandled divisor) => new(Magnitude / divisor.Magnitude);
-    /// <summary>Multiplies the <see cref="Pressure"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Multiplication of the <see cref="Pressure"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Pressure"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Pressure"/> <paramref name="x"/> is multiplied.</param>
     public static Unhandled operator *(Pressure x, Unhandled y) => x.Multiply(y);
-    /// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="Pressure"/> <paramref name="x"/> -
+    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="Pressure"/> <paramref name="x"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Unhandled"/> quantity by which the <see cref="Pressure"/> <paramref name="y"/> is multiplied.</param>
     /// <param name="y">The <see cref="Pressure"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
     public static Unhandled operator *(Unhandled x, Pressure y) => y.Multiply(x);
-    /// <summary>Divides the <see cref="Pressure"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Division of the <see cref="Pressure"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Pressure"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Pressure"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(Pressure x, Unhandled y) => x.Divide(y);
 
-    /// <summary>Produces a <see cref="Pressure"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="Pressure"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public Pressure Remainder(double divisor) => new(Magnitude % divisor);
     /// <summary>Scales the <see cref="Pressure"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Pressure"/> is scaled.</param>
@@ -188,10 +191,9 @@ public readonly partial record struct Pressure :
     /// <summary>Scales the <see cref="Pressure"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="Pressure"/> is divided.</param>
     public Pressure Divide(double divisor) => new(Magnitude / divisor);
-    /// <summary>Produces a <see cref="Pressure"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Pressure"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of <see cref="Pressure"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="Pressure"/> <paramref name="x"/> by this value.</param>
     public static Pressure operator %(Pressure x, double y) => x.Remainder(y);
     /// <summary>Scales the <see cref="Pressure"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Pressure"/>, which is scaled by <paramref name="y"/>.</param>
@@ -206,9 +208,8 @@ public readonly partial record struct Pressure :
     /// <param name="y">This value is used to divide the <see cref="Pressure"/> <paramref name="x"/>.</param>
     public static Pressure operator /(Pressure x, double y) => x.Divide(y);
 
-    /// <summary>Produces a <see cref="Pressure"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="Pressure"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public Pressure Remainder(Scalar divisor) => Remainder(divisor.Magnitude);
     /// <summary>Scales the <see cref="Pressure"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Pressure"/> is scaled.</param>
@@ -216,10 +217,9 @@ public readonly partial record struct Pressure :
     /// <summary>Scales the <see cref="Pressure"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="Pressure"/> is divided.</param>
     public Pressure Divide(Scalar divisor) => Divide(divisor.Magnitude);
-    /// <summary>Produces a <see cref="Pressure"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Pressure"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of the <see cref="Pressure"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="Pressure"/> <paramref name="x"/> by this value.</param>
     public static Pressure operator %(Pressure x, Scalar y) => x.Remainder(y);
     /// <summary>Scales the <see cref="Pressure"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Pressure"/>, which is scaled by <paramref name="y"/>.</param>
@@ -235,41 +235,69 @@ public readonly partial record struct Pressure :
     public static Pressure operator /(Pressure x, Scalar y) => x.Divide(y);
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorScalarQuantity : IScalarQuantity
-        => factory(Magnitude * factor.Magnitude);
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude * factor.Magnitude);
+        }
+    }
+
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
         where TQuotientScalarQuantity : IScalarQuantity
         where TDivisorScalarQuantity : IScalarQuantity
-        => factory(Magnitude / divisor.Magnitude);
-    /// <summary>Multiples the <see cref="Pressure"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude / divisor.Magnitude);
+        }
+    }
+
+    /// <summary>Multiplication of the <see cref="Pressure"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Pressure"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Pressure"/> <paramref name="x"/>.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity,
+    /// Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator *(Pressure x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
-    /// <summary>Divides the <see cref="Pressure"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <summary>Division of the <see cref="Pressure"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Pressure"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="Pressure"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
+    /// Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator /(Pressure x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
-    /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Pressure"/> is less than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than that of this <see cref="Pressure"/>.</param>
     public static bool operator <(Pressure x, Pressure y) => x.Magnitude < y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Pressure"/> is greater than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than that of this <see cref="Pressure"/>.</param>
     public static bool operator >(Pressure x, Pressure y) => x.Magnitude > y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is less than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Pressure"/> is less than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than or equal to that of this <see cref="Pressure"/>.</param>
     public static bool operator <=(Pressure x, Pressure y) => x.Magnitude <= y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Pressure"/> is greater than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of this <see cref="Pressure"/>.</param>
     public static bool operator >=(Pressure x, Pressure y) => x.Magnitude >= y.Magnitude;
 
     /// <summary>Converts the <see cref="Pressure"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
@@ -277,7 +305,7 @@ public readonly partial record struct Pressure :
     public double ToDouble() => Magnitude;
     /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
     /// in SI units.</summary>
-    public static implicit operator double(Pressure x) => x.ToDouble();
+    public static explicit operator double(Pressure x) => x.ToDouble();
 
     /// <summary>Converts the <see cref="Pressure"/> to the <see cref="Scalar"/> of equivalent magnitude, when
     /// expressed in SI units.</summary>
@@ -285,15 +313,15 @@ public readonly partial record struct Pressure :
     /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(Pressure x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Pressure"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="Pressure"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static Pressure FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Pressure"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="Pressure"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static explicit operator Pressure(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Pressure"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="Pressure"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static Pressure FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Pressure"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="Pressure"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static explicit operator Pressure(Scalar x) => FromScalar(x);
 }

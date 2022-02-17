@@ -1,17 +1,6 @@
 ﻿{
-    "name": "Jerk",
     "type": "Scalar",
-    "baseUnits": "m * s^-3",
-    "unit": "[UnitOf]",
-    "unitBias": false,
+    "name": "Jerk",
     "vector": "[name]",
-    "inverse": false,
-    "square": false,
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "MetrePerSecondCubed", "plural": "+s [Per]", "SI": true, "symbol": "m / s^3" }
-    ],
-    "convertible": []
+    "unit": "[name]"
 }

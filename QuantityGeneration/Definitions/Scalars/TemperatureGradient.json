@@ -1,20 +1,5 @@
 ﻿{
-    "name": "TemperatureGradient",
     "type": "Scalar",
-    "baseUnits": "K * m^-1",
-    "unit": "[UnitOf]",
-    "unitBias": false,
-    "vector": "[name]",
-    "inverse": false,
-    "square": false,
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "KelvinPerMetre", "plural": "=", "SI": true, "symbol": "K / m" },
-        { "singular": "CelsiusPerMetre", "plural": "=" },
-        { "singular": "RankinePerMetre", "plural": "=" },
-        { "singular": "FahrenheitPerMetre", "plural": "=" }
-    ],
-    "convertible": []
+    "name": "TemperatureGradient",
+    "unit": "[name]"
 }

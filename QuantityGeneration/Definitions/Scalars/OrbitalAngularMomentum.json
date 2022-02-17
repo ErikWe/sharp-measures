@@ -1,18 +1,8 @@
 ﻿{
-    "name": "OrbitalAngularMomentum",
     "type": "Scalar",
-    "baseUnits": "kg * m^2 * s^-1",
-    "unit": "[UnitOf]",
-    "unitBias": false,
+    "name": "OrbitalAngularMomentum",
     "vector": "[name]",
-    "inverse": false,
-    "square": false,
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "KilogramMetreSquaredPerSecond", "plural": "[Metre] +s", "SI": true, "symbol": "kg * m^2 / s" }
-    ],
+    "unit": "[AngularMomentum]",
     "convertible": [
         "AngularMomentum",
         "SpinAngularMomentum"

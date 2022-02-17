@@ -9,7 +9,7 @@
 [Seconds, Days, Minutes, Weeks, Milliseconds]
 #/Define:PluralUnits#
 
-#Define:Header(quantity, unitName, singularUnits, pluralUnits)#
+#Define:Header(quantity, unitName, singularBases, pluralUnits)#
 /// <summary>A measure of the scalar quantity <see cref="#Param:quantity#"/>.
 /// The quantity is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [s].
 #Document:HeaderSummary(#Param:quantity#, #Param:unitName#, #Document:SingularUnits#, #Document:PluralUnits#)#
@@ -17,5 +17,5 @@
 #/Define:Header#
 
 #Define:ExampleDerivedMethod(quantity, variable)#
-<see cref="#Param:quantity"/> #Param:variable# = <see cref="#Param:quantity#.From(Distance, Speed)"/>;
+<see cref="#Param:quantity#"/> #Param:variable# = <see cref="#Param:quantity#.From(Distance, Speed)"/>;
 #/Define:ExampleDerivedMethod#

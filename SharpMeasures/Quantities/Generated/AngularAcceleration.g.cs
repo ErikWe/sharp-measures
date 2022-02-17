@@ -6,7 +6,7 @@ using System;
 
 /// <summary>A measure of the scalar quantity <see cref="AngularAcceleration"/>, describing change in <see cref="AngularSpeed"/> over <see cref="Time"/>.
 /// This is the magnitude of the vector quantity <see cref="AngularAcceleration3"/>, and is expressed in <see cref="UnitOfAngularAcceleration"/>,
-/// with the SI unit being [rad / s²].
+/// with the SI unit being [rad∙s⁻²].
 /// <para>
 /// New instances of <see cref="AngularAcceleration"/> can be constructed using the pre-defined propertiies, prefixed with 'One', having magnitude 1 expressed
 /// in the desired <see cref="UnitOfAngularAcceleration"/>. Instances can also be produced by combining other quantities, either through mathematical operators
@@ -94,7 +94,8 @@ public readonly partial record struct AngularAcceleration :
     /// </item>
     /// </list>
     /// </remarks>
-    public AngularAcceleration(double magnitude, UnitOfAngularAcceleration unitOfAngularAcceleration) : this(magnitude * unitOfAngularAcceleration.Factor) { }
+    public AngularAcceleration(double magnitude, UnitOfAngularAcceleration unitOfAngularAcceleration) : 
+    	this(magnitude * unitOfAngularAcceleration.AngularAcceleration.Magnitude) { }
     /// <summary>Constructs a new <see cref="AngularAcceleration"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="AngularAcceleration"/>.</param>
     /// <remarks>Consider preferring <see cref="AngularAcceleration(Scalar, UnitOfAngularAcceleration)"/>.</remarks>
@@ -132,19 +133,20 @@ public readonly partial record struct AngularAcceleration :
     /// <summary>Indicates whether the magnitude of the <see cref="AngularAcceleration"/> is infinite, and negative.</summary>
     public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude);
 
-    /// <summary>Produces a <see cref="AngularAcceleration"/>, with magnitude equal to the absolute of the original magnitude.</summary>
+    /// <summary>Computes the absolute of the <see cref="AngularAcceleration"/>.</summary>
     public AngularAcceleration Absolute() => new(Math.Abs(Magnitude));
-    /// <summary>Produces a <see cref="AngularAcceleration"/>, with magnitude equal to the floor of the original magnitude.</summary>
+    /// <summary>Computes the floor of the <see cref="AngularAcceleration"/>.</summary>
     public AngularAcceleration Floor() => new(Math.Floor(Magnitude));
-    /// <summary>Produces a <see cref="AngularAcceleration"/>, with magnitude equal to the ceiling of the original magnitude.</summary>
+    /// <summary>Computes the ceiling of the <see cref="AngularAcceleration"/>.</summary>
     public AngularAcceleration Ceiling() => new(Math.Ceiling(Magnitude));
-    /// <summary>Produces a <see cref="AngularAcceleration"/>, with magnitude equal to the original magnitude, rounded to the nearest integer.</summary>
+    /// <summary>Rounds the <see cref="AngularAcceleration"/> to the nearest integer value.</summary>
     public AngularAcceleration Round() => new(Math.Round(Magnitude));
 
     /// <inheritdoc/>
     public int CompareTo(AngularAcceleration other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="AngularAcceleration"/> (in SI units), and the SI base unit of the quantity.</summary>
-    public override string ToString() => $"{Magnitude} [rad / s^2]";
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="AngularAcceleration"/> in the default unit
+    /// <see cref="UnitOfAngularAcceleration.RadianPerSecondSquared"/>, followed by the symbol [rad∙s⁻²].</summary>
+    public override string ToString() => $"{RadiansPerSecondSquared} [rad∙s⁻²]";
 
     /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="AngularAcceleration"/>,
     /// expressed in <paramref name="unitOfAngularAcceleration"/>.</summary>
@@ -154,20 +156,21 @@ public readonly partial record struct AngularAcceleration :
     /// expressed in <paramref name="unitOfAngularAcceleration"/>.</summary>
     /// <param name="angularAcceleration">The <see cref="AngularAcceleration"/> to be expressed in <paramref name="unitOfAngularAcceleration"/>.</param>
     /// <param name="unitOfAngularAcceleration">The <see cref="UnitOfAngularAcceleration"/> in which the magnitude is expressed.</param>
-    private static Scalar InUnit(AngularAcceleration angularAcceleration, UnitOfAngularAcceleration unitOfAngularAcceleration) => new(angularAcceleration.Magnitude / unitOfAngularAcceleration.Factor);
+    private static Scalar InUnit(AngularAcceleration angularAcceleration, UnitOfAngularAcceleration unitOfAngularAcceleration) 
+    	=> new(angularAcceleration.Magnitude / unitOfAngularAcceleration.AngularAcceleration.Magnitude);
 
     /// <summary>Unary plus, resulting in the unmodified <see cref="AngularAcceleration"/>.</summary>
     public AngularAcceleration Plus() => this;
     /// <summary>Negation, resulting in a <see cref="AngularAcceleration"/> with negated magnitude.</summary>
     public AngularAcceleration Negate() => new(-Magnitude);
     /// <summary>Unary plus, resulting in the unmodified <paramref name="x"/>.</summary>
-    /// <param name="x">Unary plus is applied to this instance of <see cref="AngularAcceleration"/>.</param>
+    /// <param name="x">Unary plus is applied to this <see cref="AngularAcceleration"/>.</param>
     public static AngularAcceleration operator +(AngularAcceleration x) => x.Plus();
-    /// <summary>Negation, resulting in a <see cref="AngularAcceleration"/> with magnitude negated from that of <paramref name="x"/>.</summary>
-    /// <param name="x">Negation is applied to this instance of <see cref="AngularAcceleration"/>.</param>
+    /// <summary>Negation, resulting in a <see cref="AngularAcceleration"/> with negated magnitude from that of <paramref name="x"/>.</summary>
+    /// <param name="x">Negation is applied to this <see cref="AngularAcceleration"/>.</param>
     public static AngularAcceleration operator -(AngularAcceleration x) => x.Negate();
 
-    /// <summary>Multiplies the <see cref="AngularAcceleration"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+    /// <summary>Multiplicates the <see cref="AngularAcceleration"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="factor">The factor by which the <see cref="AngularAcceleration"/> is multiplied.</param>
     public Unhandled Multiply(Unhandled factor) => new(Magnitude * factor.Magnitude);
@@ -175,25 +178,24 @@ public readonly partial record struct AngularAcceleration :
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="divisor">The divisor by which the <see cref="AngularAcceleration"/> is divided.</param>
     public Unhandled Divide(Unhandled divisor) => new(Magnitude / divisor.Magnitude);
-    /// <summary>Multiplies the <see cref="AngularAcceleration"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Multiplication of the <see cref="AngularAcceleration"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="AngularAcceleration"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="AngularAcceleration"/> <paramref name="x"/> is multiplied.</param>
     public static Unhandled operator *(AngularAcceleration x, Unhandled y) => x.Multiply(y);
-    /// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="AngularAcceleration"/> <paramref name="x"/> -
+    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="AngularAcceleration"/> <paramref name="x"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Unhandled"/> quantity by which the <see cref="AngularAcceleration"/> <paramref name="y"/> is multiplied.</param>
     /// <param name="y">The <see cref="AngularAcceleration"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
     public static Unhandled operator *(Unhandled x, AngularAcceleration y) => y.Multiply(x);
-    /// <summary>Divides the <see cref="AngularAcceleration"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Division of the <see cref="AngularAcceleration"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="AngularAcceleration"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="AngularAcceleration"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(AngularAcceleration x, Unhandled y) => x.Divide(y);
 
-    /// <summary>Produces a <see cref="AngularAcceleration"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="AngularAcceleration"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public AngularAcceleration Remainder(double divisor) => new(Magnitude % divisor);
     /// <summary>Scales the <see cref="AngularAcceleration"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="AngularAcceleration"/> is scaled.</param>
@@ -201,10 +203,9 @@ public readonly partial record struct AngularAcceleration :
     /// <summary>Scales the <see cref="AngularAcceleration"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="AngularAcceleration"/> is divided.</param>
     public AngularAcceleration Divide(double divisor) => new(Magnitude / divisor);
-    /// <summary>Produces a <see cref="AngularAcceleration"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="AngularAcceleration"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of <see cref="AngularAcceleration"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="AngularAcceleration"/> <paramref name="x"/> by this value.</param>
     public static AngularAcceleration operator %(AngularAcceleration x, double y) => x.Remainder(y);
     /// <summary>Scales the <see cref="AngularAcceleration"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="AngularAcceleration"/>, which is scaled by <paramref name="y"/>.</param>
@@ -219,9 +220,8 @@ public readonly partial record struct AngularAcceleration :
     /// <param name="y">This value is used to divide the <see cref="AngularAcceleration"/> <paramref name="x"/>.</param>
     public static AngularAcceleration operator /(AngularAcceleration x, double y) => x.Divide(y);
 
-    /// <summary>Produces a <see cref="AngularAcceleration"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="AngularAcceleration"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public AngularAcceleration Remainder(Scalar divisor) => Remainder(divisor.Magnitude);
     /// <summary>Scales the <see cref="AngularAcceleration"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="AngularAcceleration"/> is scaled.</param>
@@ -229,10 +229,9 @@ public readonly partial record struct AngularAcceleration :
     /// <summary>Scales the <see cref="AngularAcceleration"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="AngularAcceleration"/> is divided.</param>
     public AngularAcceleration Divide(Scalar divisor) => Divide(divisor.Magnitude);
-    /// <summary>Produces a <see cref="AngularAcceleration"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="AngularAcceleration"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of the <see cref="AngularAcceleration"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="AngularAcceleration"/> <paramref name="x"/> by this value.</param>
     public static AngularAcceleration operator %(AngularAcceleration x, Scalar y) => x.Remainder(y);
     /// <summary>Scales the <see cref="AngularAcceleration"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="AngularAcceleration"/>, which is scaled by <paramref name="y"/>.</param>
@@ -248,75 +247,112 @@ public readonly partial record struct AngularAcceleration :
     public static AngularAcceleration operator /(AngularAcceleration x, Scalar y) => x.Divide(y);
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorScalarQuantity : IScalarQuantity
-        => factory(Magnitude * factor.Magnitude);
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude * factor.Magnitude);
+        }
+    }
+
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
         where TQuotientScalarQuantity : IScalarQuantity
         where TDivisorScalarQuantity : IScalarQuantity
-        => factory(Magnitude / divisor.Magnitude);
-    /// <summary>Multiples the <see cref="AngularAcceleration"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude / divisor.Magnitude);
+        }
+    }
+
+    /// <summary>Multiplication of the <see cref="AngularAcceleration"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="AngularAcceleration"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="AngularAcceleration"/> <paramref name="x"/>.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity,
+    /// Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator *(AngularAcceleration x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
-    /// <summary>Divides the <see cref="AngularAcceleration"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <summary>Division of the <see cref="AngularAcceleration"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="AngularAcceleration"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="AngularAcceleration"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
+    /// Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator /(AngularAcceleration x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
-    /// <summary>Multiplies the <see cref="AngularAcceleration"/> with the <see cref="Vector3"/> <paramref name="vector"/> to produce a <see cref="AngularAcceleration3"/>.</summary>
-    /// <param name="vector">This <see cref="Vector3"/> is multiplied by the <see cref="AngularAcceleration"/>.</param>
-    public AngularAcceleration3 Multiply(Vector3 vector) => new(vector * Magnitude);
-    /// <summary>Multiplies the <see cref="AngularAcceleration"/> with the values of <paramref name="components"/> to produce a <see cref="AngularAcceleration3"/>.</summary>
+    /// <summary>Multiplicates the <see cref="AngularAcceleration"/> with the <see cref="Vector3"/> <paramref name="factor"/> to produce
+    /// a <see cref="AngularAcceleration3"/>.</summary>
+    /// <param name="factor">This <see cref="Vector3"/> is multiplied by the <see cref="AngularAcceleration"/>.</param>
+    public AngularAcceleration3 Multiply(Vector3 factor) => new(factor * Magnitude);
+    /// <summary>Multiplicates the <see cref="AngularAcceleration"/> with the values of <paramref name="components"/> to produce
+    /// a <see cref="AngularAcceleration3"/>.</summary>
     /// <param name="components">These values are multiplied by the <see cref="AngularAcceleration"/>.</param>
     public AngularAcceleration3 Multiply((double x, double y, double z) components) => Multiply(new Vector3(components));
-    /// <summary>Multiplies the <see cref="AngularAcceleration"/> with the values of <paramref name="components"/> to produce a <see cref="AngularAcceleration3"/>.</summary>
+    /// <summary>Multiplicates the <see cref="AngularAcceleration"/> with the values of <paramref name="components"/> to produce
+    /// a <see cref="AngularAcceleration3"/>.</summary>
     /// <param name="components">These values are multiplied by the <see cref="AngularAcceleration"/>.</param>
     public AngularAcceleration3 Multiply((Scalar x, Scalar y, Scalar z) components) => Multiply(new Vector3(components));
-    /// <summary>Multiplies the <see cref="AngularAcceleration"/> <paramref name="a"/> with the <see cref="Vector3"/> <paramref name="b"/> to produce a <see cref="AngularAcceleration3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="AngularAcceleration"/> <paramref name="a"/> with the <see cref="Vector3"/> <paramref name="b"/>
+    /// to produce a <see cref="AngularAcceleration3"/>.</summary>
     /// <param name="a">This <see cref="AngularAcceleration"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="AngularAcceleration"/> <paramref name="a"/>.</param>
     public static AngularAcceleration3 operator *(AngularAcceleration a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="AngularAcceleration"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/> to produce a <see cref="AngularAcceleration3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="AngularAcceleration"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// to produce a <see cref="AngularAcceleration3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="AngularAcceleration"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="AngularAcceleration"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
     public static AngularAcceleration3 operator *(Vector3 a, AngularAcceleration b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="AngularAcceleration"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="AngularAcceleration3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="AngularAcceleration"/> <paramref name="a"/> with the values of <paramref name="b"/>
+    /// to produce a <see cref="AngularAcceleration3"/>.</summary>
     /// <param name="a">This <see cref="AngularAcceleration"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="AngularAcceleration"/> <paramref name="a"/>.</param>
     public static AngularAcceleration3 operator *(AngularAcceleration a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="AngularAcceleration"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="AngularAcceleration3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="AngularAcceleration"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// to produce a <see cref="AngularAcceleration3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="AngularAcceleration"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="AngularAcceleration"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static AngularAcceleration3 operator *((double x, double y, double z) a, AngularAcceleration b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="AngularAcceleration"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="AngularAcceleration3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="AngularAcceleration"/> <paramref name="a"/> with the values of <paramref name="b"/>
+    /// to produce a <see cref="AngularAcceleration3"/>.</summary>
     /// <param name="a">This <see cref="AngularAcceleration"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="AngularAcceleration"/> <paramref name="a"/>.</param>
     public static AngularAcceleration3 operator *(AngularAcceleration a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="AngularAcceleration"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="AngularAcceleration3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="AngularAcceleration"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// to produce a <see cref="AngularAcceleration3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="AngularAcceleration"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="AngularAcceleration"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static AngularAcceleration3 operator *((Scalar x, Scalar y, Scalar z) a, AngularAcceleration b) => b.Multiply(a);
 
-    /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="AngularAcceleration"/> is less than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than that of this <see cref="AngularAcceleration"/>.</param>
     public static bool operator <(AngularAcceleration x, AngularAcceleration y) => x.Magnitude < y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="AngularAcceleration"/> is greater than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than that of this <see cref="AngularAcceleration"/>.</param>
     public static bool operator >(AngularAcceleration x, AngularAcceleration y) => x.Magnitude > y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is less than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="AngularAcceleration"/> is less than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than or equal to that of this <see cref="AngularAcceleration"/>.</param>
     public static bool operator <=(AngularAcceleration x, AngularAcceleration y) => x.Magnitude <= y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="AngularAcceleration"/> is greater than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of this <see cref="AngularAcceleration"/>.</param>
     public static bool operator >=(AngularAcceleration x, AngularAcceleration y) => x.Magnitude >= y.Magnitude;
 
     /// <summary>Converts the <see cref="AngularAcceleration"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
@@ -324,7 +360,7 @@ public readonly partial record struct AngularAcceleration :
     public double ToDouble() => Magnitude;
     /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
     /// in SI units.</summary>
-    public static implicit operator double(AngularAcceleration x) => x.ToDouble();
+    public static explicit operator double(AngularAcceleration x) => x.ToDouble();
 
     /// <summary>Converts the <see cref="AngularAcceleration"/> to the <see cref="Scalar"/> of equivalent magnitude, when
     /// expressed in SI units.</summary>
@@ -332,15 +368,15 @@ public readonly partial record struct AngularAcceleration :
     /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(AngularAcceleration x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="AngularAcceleration"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="AngularAcceleration"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static AngularAcceleration FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="AngularAcceleration"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="AngularAcceleration"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static explicit operator AngularAcceleration(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="AngularAcceleration"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="AngularAcceleration"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static AngularAcceleration FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="AngularAcceleration"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="AngularAcceleration"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static explicit operator AngularAcceleration(Scalar x) => FromScalar(x);
 }

@@ -3,8 +3,8 @@
 
 #Define:Header(quantity, dimensionality, component, unitName, singularUnits, pluralUnits)
 /// <summary>A measure of the vector quantity <see cref="#Param:quantity#"/>, of dimensionality #Document:LowerCaseText(#Param:dimensionality#)#,
-/// describing the <see cref="AngularMomentum#Param:dimensionality"/> per <see cref="Mass"/> of an object. The quantity is expressed
-/// in <see cref="#Param:unitName#"/>, with the SI unit being [m² / s].
+/// describing the <see cref="AngularMomentum#Param:dimensionality#"/> per <see cref="Mass"/> of an object. The quantity is expressed
+/// in <see cref="#Param:unitName#"/>, with the SI unit being [m²∙s⁻¹].
 #Document:HeaderSummary(#Param:quantity#, #Param:dimensionality#, #Param:component#, #Param:unitName#, #Param:singularUnits#, #Param:pluralUnits#)#
 /// </summary>
 #/

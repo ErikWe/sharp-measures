@@ -1,0 +1,21 @@
+{
+    "type": "Unit",
+    "name": "Power",
+    "quantity": "[name]",
+    "derived": [
+        {
+            "signature": [
+                "Energy",
+                "Time"
+            ],
+            "expression": "Power.From({1}.AsWork, {2})"
+        }
+    ],
+    "units": [
+        { "name": "Watt", "plural": "+s", "symbol": "W", "SI": true, "derived": ["Energy.Joule", "Time.Second"] },
+        { "name": "Kilowatt", "plural": "+s", "prefix": { "from": "Watt", "with": "Kilo" } },
+        { "name": "Megawatt", "plural": "+s", "prefix": { "from": "Watt", "with": "Mega" } },
+        { "name": "Gigawatt", "plural": "+s", "prefix": { "from": "Watt", "with": "Giga" } },
+        { "name": "Terawatt", "plural": "+s", "prefix": { "from": "Watt", "with": "Tera" } }
+    ]
+}

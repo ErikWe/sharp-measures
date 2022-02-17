@@ -2,7 +2,6 @@
 
 public readonly partial record struct SpecificAngularMomentum
 {
-    /// <summary>Computes <see cref="SpecificAngularMomentum"/> according to { <see cref="SpecificAngularMomentum"/>
-    /// = <paramref name="angularMomentum"/> / <paramref name="mass"/> }.</summary>
+    /// <summary>Computes <see cref="SpecificAngularMomentum"/> according to { <paramref name="angularMomentum"/> / <paramref name="mass"/> }.</summary>
     public static SpecificAngularMomentum From(AngularMomentum angularMomentum, Mass mass) => new(angularMomentum.Magnitude / mass.Magnitude);
 }

@@ -3,7 +3,7 @@
 
 #Define:Header(quantity, dimensionality, component, unitName, singularUnits, pluralUnits)
 /// <summary>A measure of the vector quantity <see cref="#Param:quantity#"/>, of dimensionality #Document:LowerCaseText(#Param:dimensionality#)#, describing sustained displacement
-/// - <see cref="Displacement#Param:dimensionality#"/> for some <see cref="Time"/>. The quantity is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [m * s].
+/// - <see cref="Displacement#Param:dimensionality#"/> for some <see cref="Time"/>. The quantity is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [m∙s].
 #Document:HeaderSummary(#Param:quantity#, #Param:dimensionality#, #Param:component#, #Param:unitName#, #Param:singularUnits#, #Param:pluralUnits#)#
 /// </summary>
 #/

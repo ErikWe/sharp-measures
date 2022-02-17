@@ -1,0 +1,18 @@
+{
+    "type": "Unit",
+    "name": "Jerk",
+    "quantity": "[name]",
+    "derived": [
+        {
+            "signature": [
+                "Acceleration",
+                "Time"
+            ],
+            "expression": "Jerk.From({1}, {2})"
+        }
+    ],
+    "units": [
+        { "name": "MetrePerSecondCubed", "plural": "+s [Per]", "symbol": "m∙s⁻³", "SI": true, "derived": ["Acceleration.MetrePerSecondSquared", "Time.Second"] },
+        { "name": "FootPerSecondCubed", "plural": "+s [Per]", "symbol": "FeetPerSecondCubed", "derived": ["Acceleration.FootPerSecondSquared", "Time.Second"] }
+    ]
+}

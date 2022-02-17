@@ -2,7 +2,7 @@
 
 public readonly partial record struct Area
 {
-    /// <summary>Computes <see cref="Area"/> according to { <see cref="Area"/> = <paramref name="length1"/> ∗ <paramref name="length2"/> },
-    /// where <paramref name="length1"/> and <paramref name="length2"/> are perpendicular measures of <see cref="Length"/>.</summary>
-    public static Area From(Length length1, Length length2) => new(length1.Magnitude * length2.Magnitude);
+    /// <summary>Computes <see cref="Area"/> according to { <paramref name="mass"/> / <paramref name="arealDensity"/> },
+    /// where <paramref name="mass"/> is the <see cref="Mass"/> of an object with average <see cref="ArealDensity"/> <paramref name="arealDensity"/>.</summary>
+    public static Area From(Mass mass, ArealDensity arealDensity) => new(mass.Magnitude / arealDensity.Magnitude);
 }

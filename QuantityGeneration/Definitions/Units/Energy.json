@@ -1,0 +1,32 @@
+{
+    "type": "Unit",
+    "name": "Energy",
+    "quantity": "[name]",
+    "derived": [
+        {
+            "signature": [
+                "Force",
+                "Length"
+            ],
+            "expression": "Work.From({1}, {2}.AsDistance).AsEnergy"
+        },
+        {
+            "signature": [
+                "Power",
+                "Time"
+            ],
+            "expression": "Work.From({1}, {2}).AsEnergy"
+        }
+    ],
+    "units": [
+        { "name": "Joule", "plural": "+s", "symbol": "J", "SI": true, "derived": ["Force.Newton", "Length.Metre"] },
+        { "name": "Kilojoule", "plural": "+s", "prefix": { "from": "Joule", "with": "Kilo" } },
+        { "name": "Megajoule", "plural": "+s", "prefix": { "from": "Joule", "with": "Mega" } },
+        { "name": "Gigajoule", "plural": "+s", "prefix": { "from": "Joule", "with": "Giga" } },
+        { "special": true, "seperator": true },
+        { "name": "KilowattHour", "plural": "+s", "derived": ["Power.Kilowatt", "Time.Hour"] },
+        { "special": true, "separator": true },
+        { "name": "Calorie", "plural": "+s", "scaled": { "from": "Joule", "by": "4.184" } },
+        { "name": "Kilocalorie", "plural": "+s", "prefix": { "from": "Calorie", "with": "Kilo" } }
+    ]
+}

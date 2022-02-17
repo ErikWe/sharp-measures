@@ -1,17 +1,5 @@
 ﻿{
-    "name": "MassFlowRate",
     "type": "Scalar",
-    "baseUnits": "kg * s^-1",
-    "unit": "[UnitOf]",
-    "unitBias": false,
-    "vector": false,
-    "inverse": false,
-    "square": false,
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "KilogramPerSecond", "plural": "+s [Per]", "SI": true, "symbol": "kg / s" }
-    ],
-    "convertible": []
+    "name": "MassFlowRate",
+    "unit": "[name]"
 }

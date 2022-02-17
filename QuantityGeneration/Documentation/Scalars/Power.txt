@@ -1,9 +1,10 @@
 ﻿#Extends:Generic.txt#
 #Extends:Utility.txt#
 
-#Define:Header(quantity, unitName, singularUnits, pluralUnits)#
-/// <summary>A measure of the scalar quantity <see cref="#Param:quantity#"/>, describes the rate of <see cref="Work"/> over <see cref="Time"/>.
-#Document:HeaderSummary(#Param:quantity#, #Param:unitName#, #Param:singularUnits#, #Param:pluralUnits#)#
+#Define:Header(quantity, unitName, singularBases, pluralUnits)#
+/// <summary>A measure of the scalar quantity <see cref="#Param:quantity#"/>, describes the rate of <see cref="Work"/> over <see cref="Time"/>. The quantity
+/// is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [W].
+#Document:HeaderSummary(#Param:quantity#, #Param:unitName#, #Param:singularBases#, #Param:pluralUnits#)#
 /// </summary>
 #/Define:Header#
 

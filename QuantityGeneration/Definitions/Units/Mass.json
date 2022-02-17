@@ -1,0 +1,15 @@
+{
+    "type": "Unit",
+    "name": "Mass",
+    "quantity": "[name]",
+    "units": [
+        { "name": "Gram", "plural": "+s", "value": "1" },
+        { "name": "Milligram", "plural": "+s", "prefix": { "from": "Gram", "with": "Milli" } },
+        { "name": "Hectogram", "plural": "+s", "prefix": { "from": "Gram", "with": "Hecto" } },
+        { "name": "Kilogram", "plural": "+s", "symbol": "kg", "SI": true, "prefix": { "from": "Gram", "with": "Kilo" } },
+        { "name": "Tonne", "plural": "+s", "prefix": { "from": "Gram", "with": "Mega" } },
+        { "special": true, "separator": true },
+        { "name": "Ounce", "plural": "+s", "scaled": { "from": "Gram", "by": "28.349523125" } },
+        { "name": "Pound", "plural": "+s", "scaled": { "from": "Ounce", "by": "16" } }
+    ]
+}

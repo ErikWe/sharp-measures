@@ -1,12 +1,9 @@
 {
-    "name": "Force",
     "type": "Vector",
+    "name": "Force",
     "component": "[name]",
-    "baseUnits": "[component]",
-    "unit": "[component]",
-    "unitBias": "[component]",
     "dimensionalities": [3],
-    "units": "[component]",
+    "unit": "[component]",
     "convertible": [
         "Weight"
     ]

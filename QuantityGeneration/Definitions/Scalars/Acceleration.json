@@ -1,17 +1,6 @@
 ﻿{
-    "name": "Acceleration",
     "type": "Scalar",
-    "baseUnits": "m * s^-2",
-    "unit": "[UnitOf]",
-    "unitBias": false,
+    "name": "Acceleration",
     "vector": "[name]",
-    "inverse": false,
-    "square": false,
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "MetrePerSecondSquared", "plural": "+s [Per]", "SI": true, "symbol": "m / s^2" }
-    ],
-    "convertible": []
+    "unit": "[name]"
 }

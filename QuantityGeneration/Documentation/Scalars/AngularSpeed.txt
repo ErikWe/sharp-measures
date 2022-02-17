@@ -1,10 +1,10 @@
 ﻿#Extends:Generic.txt#
 #Extends:Utility.txt#
 
-#Define:Header(quantity, unitName, singularUnits, pluralUnits)#
+#Define:Header(quantity, unitName, singularBases, pluralUnits)#
 /// <summary>A measure of the scalar quantity <see cref="#Param:quantity#"/>, describing change in <see cref="Angle"/> over <see cref="Time"/>.
-/// This is the magnitude of the vector quantity <see cref="AngularSpeed3"/>, and is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [rad / s].
-#Document:HeaderSummary(#Param:quantity#, #Param:unitName#, #Param:singularUnits#, #Param:pluralUnits#)#
+/// This is the magnitude of the vector quantity <see cref="AngularVelocity3"/>, and is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [rad∙s⁻¹].
+#Document:HeaderSummary(#Param:quantity#, #Param:unitName#, #Param:singularBases#, #Param:pluralUnits#)#
 /// </summary>
 /// <remarks>
 /// <see cref="#Param:quantity#"/> is closely related to the following quantities:

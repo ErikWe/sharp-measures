@@ -14,10 +14,6 @@
 /// <term><see cref="Position#Param:dimensionality#"/></term>
 /// <description>Describes a location in space.</description>
 /// </item>
-/// <item>
-/// <term><see cref="Size#Param:dimensionality#"/></term>
-/// <description>Describes the size of a region of space.</description>
-/// </item>
 /// </list>
 /// </remarks>
 #/

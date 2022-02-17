@@ -1,12 +1,9 @@
 {
-    "name": "SpinAngularMomentum",
     "type": "Vector",
+    "name": "SpinAngularMomentum",
     "component": "[name]",
-    "baseUnits": "[component]",
-    "unit": "[component]",
-    "unitBias": "[component]",
     "dimensionalities": [3],
-    "units": "[component]",
+    "unit": "[component]",
     "convertible": [
         "AngularMomentum",
         "OrbitalAngularMomentum"

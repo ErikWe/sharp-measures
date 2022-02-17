@@ -5,7 +5,7 @@ using ErikWe.SharpMeasures.Units;
 using System;
 
 /// <summary>A measure of the scalar quantity <see cref="LinearDensity"/>, describing the amount of <see cref="Mass"/> over a <see cref="Length"/>.
-/// The quantity is expressed in <see cref="UnitOfLinearDensity"/>, with the SI unit being [kg / m].
+/// The quantity is expressed in <see cref="UnitOfLinearDensity"/>, with the SI unit being [kg∙m⁻¹].
 /// <para>
 /// New instances of <see cref="LinearDensity"/> can be constructed using pre-defined properties, prefixed with 'One', having magnitude 1 expressed
 /// in the desired <see cref="UnitOfLinearDensity"/>. Instances can also be produced by combining other quantities, either through mathematical operators
@@ -73,7 +73,7 @@ public readonly partial record struct LinearDensity :
     /// </item>
     /// </list>
     /// </remarks>
-    public LinearDensity(double magnitude, UnitOfLinearDensity unitOfLinearDensity) : this(magnitude * unitOfLinearDensity.Factor) { }
+    public LinearDensity(double magnitude, UnitOfLinearDensity unitOfLinearDensity) : this(magnitude * unitOfLinearDensity.LinearDensity.Magnitude) { }
     /// <summary>Constructs a new <see cref="LinearDensity"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="LinearDensity"/>.</param>
     /// <remarks>Consider preferring <see cref="LinearDensity(Scalar, UnitOfLinearDensity)"/>.</remarks>
@@ -106,19 +106,20 @@ public readonly partial record struct LinearDensity :
     /// <summary>Indicates whether the magnitude of the <see cref="LinearDensity"/> is infinite, and negative.</summary>
     public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude);
 
-    /// <summary>Produces a <see cref="LinearDensity"/>, with magnitude equal to the absolute of the original magnitude.</summary>
+    /// <summary>Computes the absolute of the <see cref="LinearDensity"/>.</summary>
     public LinearDensity Absolute() => new(Math.Abs(Magnitude));
-    /// <summary>Produces a <see cref="LinearDensity"/>, with magnitude equal to the floor of the original magnitude.</summary>
+    /// <summary>Computes the floor of the <see cref="LinearDensity"/>.</summary>
     public LinearDensity Floor() => new(Math.Floor(Magnitude));
-    /// <summary>Produces a <see cref="LinearDensity"/>, with magnitude equal to the ceiling of the original magnitude.</summary>
+    /// <summary>Computes the ceiling of the <see cref="LinearDensity"/>.</summary>
     public LinearDensity Ceiling() => new(Math.Ceiling(Magnitude));
-    /// <summary>Produces a <see cref="LinearDensity"/>, with magnitude equal to the original magnitude, rounded to the nearest integer.</summary>
+    /// <summary>Rounds the <see cref="LinearDensity"/> to the nearest integer value.</summary>
     public LinearDensity Round() => new(Math.Round(Magnitude));
 
     /// <inheritdoc/>
     public int CompareTo(LinearDensity other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="LinearDensity"/> (in SI units), and the SI base unit of the quantity.</summary>
-    public override string ToString() => $"{Magnitude} [kg / m]";
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="LinearDensity"/> in the default unit
+    /// <see cref="UnitOfLinearDensity.KilogramPerMetre"/>, followed by the symbol [kg∙m⁻¹].</summary>
+    public override string ToString() => $"{KilogramsPerMetre} [kg∙m⁻¹]";
 
     /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="LinearDensity"/>,
     /// expressed in <paramref name="unitOfLinearDensity"/>.</summary>
@@ -128,20 +129,21 @@ public readonly partial record struct LinearDensity :
     /// expressed in <paramref name="unitOfLinearDensity"/>.</summary>
     /// <param name="linearDensity">The <see cref="LinearDensity"/> to be expressed in <paramref name="unitOfLinearDensity"/>.</param>
     /// <param name="unitOfLinearDensity">The <see cref="UnitOfLinearDensity"/> in which the magnitude is expressed.</param>
-    private static Scalar InUnit(LinearDensity linearDensity, UnitOfLinearDensity unitOfLinearDensity) => new(linearDensity.Magnitude / unitOfLinearDensity.Factor);
+    private static Scalar InUnit(LinearDensity linearDensity, UnitOfLinearDensity unitOfLinearDensity) 
+    	=> new(linearDensity.Magnitude / unitOfLinearDensity.LinearDensity.Magnitude);
 
     /// <summary>Unary plus, resulting in the unmodified <see cref="LinearDensity"/>.</summary>
     public LinearDensity Plus() => this;
     /// <summary>Negation, resulting in a <see cref="LinearDensity"/> with negated magnitude.</summary>
     public LinearDensity Negate() => new(-Magnitude);
     /// <summary>Unary plus, resulting in the unmodified <paramref name="x"/>.</summary>
-    /// <param name="x">Unary plus is applied to this instance of <see cref="LinearDensity"/>.</param>
+    /// <param name="x">Unary plus is applied to this <see cref="LinearDensity"/>.</param>
     public static LinearDensity operator +(LinearDensity x) => x.Plus();
-    /// <summary>Negation, resulting in a <see cref="LinearDensity"/> with magnitude negated from that of <paramref name="x"/>.</summary>
-    /// <param name="x">Negation is applied to this instance of <see cref="LinearDensity"/>.</param>
+    /// <summary>Negation, resulting in a <see cref="LinearDensity"/> with negated magnitude from that of <paramref name="x"/>.</summary>
+    /// <param name="x">Negation is applied to this <see cref="LinearDensity"/>.</param>
     public static LinearDensity operator -(LinearDensity x) => x.Negate();
 
-    /// <summary>Multiplies the <see cref="LinearDensity"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+    /// <summary>Multiplicates the <see cref="LinearDensity"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="factor">The factor by which the <see cref="LinearDensity"/> is multiplied.</param>
     public Unhandled Multiply(Unhandled factor) => new(Magnitude * factor.Magnitude);
@@ -149,25 +151,24 @@ public readonly partial record struct LinearDensity :
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="divisor">The divisor by which the <see cref="LinearDensity"/> is divided.</param>
     public Unhandled Divide(Unhandled divisor) => new(Magnitude / divisor.Magnitude);
-    /// <summary>Multiplies the <see cref="LinearDensity"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Multiplication of the <see cref="LinearDensity"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="LinearDensity"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="LinearDensity"/> <paramref name="x"/> is multiplied.</param>
     public static Unhandled operator *(LinearDensity x, Unhandled y) => x.Multiply(y);
-    /// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="LinearDensity"/> <paramref name="x"/> -
+    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="LinearDensity"/> <paramref name="x"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Unhandled"/> quantity by which the <see cref="LinearDensity"/> <paramref name="y"/> is multiplied.</param>
     /// <param name="y">The <see cref="LinearDensity"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
     public static Unhandled operator *(Unhandled x, LinearDensity y) => y.Multiply(x);
-    /// <summary>Divides the <see cref="LinearDensity"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Division of the <see cref="LinearDensity"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="LinearDensity"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="LinearDensity"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(LinearDensity x, Unhandled y) => x.Divide(y);
 
-    /// <summary>Produces a <see cref="LinearDensity"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="LinearDensity"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public LinearDensity Remainder(double divisor) => new(Magnitude % divisor);
     /// <summary>Scales the <see cref="LinearDensity"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="LinearDensity"/> is scaled.</param>
@@ -175,10 +176,9 @@ public readonly partial record struct LinearDensity :
     /// <summary>Scales the <see cref="LinearDensity"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="LinearDensity"/> is divided.</param>
     public LinearDensity Divide(double divisor) => new(Magnitude / divisor);
-    /// <summary>Produces a <see cref="LinearDensity"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="LinearDensity"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of <see cref="LinearDensity"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="LinearDensity"/> <paramref name="x"/> by this value.</param>
     public static LinearDensity operator %(LinearDensity x, double y) => x.Remainder(y);
     /// <summary>Scales the <see cref="LinearDensity"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="LinearDensity"/>, which is scaled by <paramref name="y"/>.</param>
@@ -193,9 +193,8 @@ public readonly partial record struct LinearDensity :
     /// <param name="y">This value is used to divide the <see cref="LinearDensity"/> <paramref name="x"/>.</param>
     public static LinearDensity operator /(LinearDensity x, double y) => x.Divide(y);
 
-    /// <summary>Produces a <see cref="LinearDensity"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="LinearDensity"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public LinearDensity Remainder(Scalar divisor) => Remainder(divisor.Magnitude);
     /// <summary>Scales the <see cref="LinearDensity"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="LinearDensity"/> is scaled.</param>
@@ -203,10 +202,9 @@ public readonly partial record struct LinearDensity :
     /// <summary>Scales the <see cref="LinearDensity"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="LinearDensity"/> is divided.</param>
     public LinearDensity Divide(Scalar divisor) => Divide(divisor.Magnitude);
-    /// <summary>Produces a <see cref="LinearDensity"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="LinearDensity"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of the <see cref="LinearDensity"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="LinearDensity"/> <paramref name="x"/> by this value.</param>
     public static LinearDensity operator %(LinearDensity x, Scalar y) => x.Remainder(y);
     /// <summary>Scales the <see cref="LinearDensity"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="LinearDensity"/>, which is scaled by <paramref name="y"/>.</param>
@@ -222,41 +220,69 @@ public readonly partial record struct LinearDensity :
     public static LinearDensity operator /(LinearDensity x, Scalar y) => x.Divide(y);
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorScalarQuantity : IScalarQuantity
-        => factory(Magnitude * factor.Magnitude);
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude * factor.Magnitude);
+        }
+    }
+
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
         where TQuotientScalarQuantity : IScalarQuantity
         where TDivisorScalarQuantity : IScalarQuantity
-        => factory(Magnitude / divisor.Magnitude);
-    /// <summary>Multiples the <see cref="LinearDensity"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude / divisor.Magnitude);
+        }
+    }
+
+    /// <summary>Multiplication of the <see cref="LinearDensity"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="LinearDensity"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="LinearDensity"/> <paramref name="x"/>.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity,
+    /// Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator *(LinearDensity x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
-    /// <summary>Divides the <see cref="LinearDensity"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <summary>Division of the <see cref="LinearDensity"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="LinearDensity"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="LinearDensity"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
+    /// Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator /(LinearDensity x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
-    /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="LinearDensity"/> is less than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than that of this <see cref="LinearDensity"/>.</param>
     public static bool operator <(LinearDensity x, LinearDensity y) => x.Magnitude < y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="LinearDensity"/> is greater than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than that of this <see cref="LinearDensity"/>.</param>
     public static bool operator >(LinearDensity x, LinearDensity y) => x.Magnitude > y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is less than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="LinearDensity"/> is less than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than or equal to that of this <see cref="LinearDensity"/>.</param>
     public static bool operator <=(LinearDensity x, LinearDensity y) => x.Magnitude <= y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="LinearDensity"/> is greater than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of this <see cref="LinearDensity"/>.</param>
     public static bool operator >=(LinearDensity x, LinearDensity y) => x.Magnitude >= y.Magnitude;
 
     /// <summary>Converts the <see cref="LinearDensity"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
@@ -264,7 +290,7 @@ public readonly partial record struct LinearDensity :
     public double ToDouble() => Magnitude;
     /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
     /// in SI units.</summary>
-    public static implicit operator double(LinearDensity x) => x.ToDouble();
+    public static explicit operator double(LinearDensity x) => x.ToDouble();
 
     /// <summary>Converts the <see cref="LinearDensity"/> to the <see cref="Scalar"/> of equivalent magnitude, when
     /// expressed in SI units.</summary>
@@ -272,15 +298,15 @@ public readonly partial record struct LinearDensity :
     /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(LinearDensity x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="LinearDensity"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="LinearDensity"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static LinearDensity FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="LinearDensity"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="LinearDensity"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static explicit operator LinearDensity(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="LinearDensity"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="LinearDensity"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static LinearDensity FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="LinearDensity"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="LinearDensity"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static explicit operator LinearDensity(Scalar x) => FromScalar(x);
 }

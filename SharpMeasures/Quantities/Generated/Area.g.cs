@@ -45,6 +45,8 @@ public readonly partial record struct Area :
     public static Area OneSquareMetre { get; } = new(1, UnitOfArea.SquareMetre);
     /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.SquareKilometre"/>.</summary>
     public static Area OneSquareKilometre { get; } = new(1, UnitOfArea.SquareKilometre);
+    /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.SquareInch"/>.</summary>
+    public static Area OneSquareInch { get; } = new(1, UnitOfArea.SquareInch);
     /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.SquareMile"/>.</summary>
     public static Area OneSquareMile { get; } = new(1, UnitOfArea.SquareMile);
     /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.Are"/>.</summary>
@@ -54,12 +56,24 @@ public readonly partial record struct Area :
     /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.Acre"/>.</summary>
     public static Area OneAcre { get; } = new(1, UnitOfArea.Acre);
 
-    /// <summary>Computes <see cref="Area"/> according to { <see cref="Area"/> = <paramref name="length"/>² }.</summary>
+    /// <summary>Computes <see cref="Area"/> according to { <paramref name="length"/>² }.</summary>
     /// <param name="length">This <see cref="Length"/> is squared to produce a <see cref="Area"/>.</param>
     public static Area From(Length length) => new(Math.Pow(length.Magnitude, 2));
-    /// <summary>Computes <see cref="Area"/> according to { <see cref="Area"/> = <paramref name="distance"/>² }.</summary>
+    /// <summary>Computes <see cref="Area"/> according to { <paramref name="distance"/>² }.</summary>
     /// <param name="distance">This <see cref="Distance"/> is squared to produce a <see cref="Area"/>.</param>
     public static Area From(Distance distance) => new(Math.Pow(distance.Magnitude, 2));
+    /// <summary>Computes <see cref="Area"/> according to { <paramref name="length1"/> ∙ <paramref name="length2"/> }.</summary>
+    /// <param name="length1">This <see cref="Length"/> is multiplied by <paramref name="length2"/> to
+    /// produce a <see cref="Area"/>.</param>
+    /// <param name="length2">This <see cref="Length"/> is multiplied by <paramref name="length1"/> to
+    /// produce a <see cref="Area"/>.</param>
+    public static Area From(Length length1, Length length2) => new(length1.Magnitude * length2.Magnitude);
+    /// <summary>Computes <see cref="Area"/> according to { <paramref name="distance1"/> ∙ <paramref name="distance2"/> }.</summary>
+    /// <param name="distance1">This <see cref="Distance"/> is multiplied by <paramref name="distance2"/> to
+    /// produce a <see cref="Area"/>.</param>
+    /// <param name="distance2">This <see cref="Distance"/> is multiplied by <paramref name="distance1"/> to
+    /// produce a <see cref="Area"/>.</param>
+    public static Area From(Distance distance1, Distance distance2) => new(distance1.Magnitude * distance2.Magnitude);
 
     /// <summary>The magnitude of the <see cref="Area"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfArea)"/> or a pre-defined property
@@ -91,7 +105,7 @@ public readonly partial record struct Area :
     /// </item>
     /// </list>
     /// </remarks>
-    public Area(double magnitude, UnitOfArea unitOfArea) : this(magnitude * unitOfArea.Factor) { }
+    public Area(double magnitude, UnitOfArea unitOfArea) : this(magnitude * unitOfArea.Area.Magnitude) { }
     /// <summary>Constructs a new <see cref="Area"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Area"/>.</param>
     /// <remarks>Consider preferring <see cref="Area(Scalar, UnitOfArea)"/>.</remarks>
@@ -108,9 +122,10 @@ public readonly partial record struct Area :
     public Scalar SquareMetres => InUnit(UnitOfArea.SquareMetre);
     /// <summary>Retrieves the magnitude of the <see cref="Area"/>, expressed in <see cref="UnitOfArea.SquareKilometre"/>.</summary>
     public Scalar SquareKilometres => InUnit(UnitOfArea.SquareKilometre);
+    /// <summary>Retrieves the magnitude of the <see cref="Area"/>, expressed in <see cref="UnitOfArea.SquareInch"/>.</summary>
+    public Scalar SquareInches => InUnit(UnitOfArea.SquareInch);
     /// <summary>Retrieves the magnitude of the <see cref="Area"/>, expressed in <see cref="UnitOfArea.SquareMile"/>.</summary>
     public Scalar SquareMiles => InUnit(UnitOfArea.SquareMile);
-
     /// <summary>Retrieves the magnitude of the <see cref="Area"/>, expressed in <see cref="UnitOfArea.Are"/>.</summary>
     public Scalar Ares => InUnit(UnitOfArea.Are);
     /// <summary>Retrieves the magnitude of the <see cref="Area"/>, expressed in <see cref="UnitOfArea.Hectare"/>.</summary>
@@ -135,22 +150,23 @@ public readonly partial record struct Area :
     /// <summary>Indicates whether the magnitude of the <see cref="Area"/> is infinite, and negative.</summary>
     public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude);
 
-    /// <summary>Produces a <see cref="Area"/>, with magnitude equal to the absolute of the original magnitude.</summary>
+    /// <summary>Computes the absolute of the <see cref="Area"/>.</summary>
     public Area Absolute() => new(Math.Abs(Magnitude));
-    /// <summary>Produces a <see cref="Area"/>, with magnitude equal to the floor of the original magnitude.</summary>
+    /// <summary>Computes the floor of the <see cref="Area"/>.</summary>
     public Area Floor() => new(Math.Floor(Magnitude));
-    /// <summary>Produces a <see cref="Area"/>, with magnitude equal to the ceiling of the original magnitude.</summary>
+    /// <summary>Computes the ceiling of the <see cref="Area"/>.</summary>
     public Area Ceiling() => new(Math.Ceiling(Magnitude));
-    /// <summary>Produces a <see cref="Area"/>, with magnitude equal to the original magnitude, rounded to the nearest integer.</summary>
+    /// <summary>Rounds the <see cref="Area"/> to the nearest integer value.</summary>
     public Area Round() => new(Math.Round(Magnitude));
 
-    /// <summary>Takes the square root of the <see cref="Area"/>, producing a <see cref="Length"/>.</summary>
+    /// <summary>Computes the square root of the <see cref="Area"/>, producing a <see cref="Length"/>.</summary>
     public Length SquareRoot() => Length.From(this);
 
     /// <inheritdoc/>
     public int CompareTo(Area other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="Area"/> (in SI units), and the SI base unit of the quantity.</summary>
-    public override string ToString() => $"{Magnitude} [m^2]";
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="Area"/> in the default unit
+    /// <see cref="UnitOfArea.SquareMetre"/>, followed by the symbol [m²].</summary>
+    public override string ToString() => $"{SquareMetres} [m²]";
 
     /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Area"/>,
     /// expressed in <paramref name="unitOfArea"/>.</summary>
@@ -160,20 +176,20 @@ public readonly partial record struct Area :
     /// expressed in <paramref name="unitOfArea"/>.</summary>
     /// <param name="area">The <see cref="Area"/> to be expressed in <paramref name="unitOfArea"/>.</param>
     /// <param name="unitOfArea">The <see cref="UnitOfArea"/> in which the magnitude is expressed.</param>
-    private static Scalar InUnit(Area area, UnitOfArea unitOfArea) => new(area.Magnitude / unitOfArea.Factor);
+    private static Scalar InUnit(Area area, UnitOfArea unitOfArea) => new(area.Magnitude / unitOfArea.Area.Magnitude);
 
     /// <summary>Unary plus, resulting in the unmodified <see cref="Area"/>.</summary>
     public Area Plus() => this;
     /// <summary>Negation, resulting in a <see cref="Area"/> with negated magnitude.</summary>
     public Area Negate() => new(-Magnitude);
     /// <summary>Unary plus, resulting in the unmodified <paramref name="x"/>.</summary>
-    /// <param name="x">Unary plus is applied to this instance of <see cref="Area"/>.</param>
+    /// <param name="x">Unary plus is applied to this <see cref="Area"/>.</param>
     public static Area operator +(Area x) => x.Plus();
-    /// <summary>Negation, resulting in a <see cref="Area"/> with magnitude negated from that of <paramref name="x"/>.</summary>
-    /// <param name="x">Negation is applied to this instance of <see cref="Area"/>.</param>
+    /// <summary>Negation, resulting in a <see cref="Area"/> with negated magnitude from that of <paramref name="x"/>.</summary>
+    /// <param name="x">Negation is applied to this <see cref="Area"/>.</param>
     public static Area operator -(Area x) => x.Negate();
 
-    /// <summary>Multiplies the <see cref="Area"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+    /// <summary>Multiplicates the <see cref="Area"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="factor">The factor by which the <see cref="Area"/> is multiplied.</param>
     public Unhandled Multiply(Unhandled factor) => new(Magnitude * factor.Magnitude);
@@ -181,25 +197,24 @@ public readonly partial record struct Area :
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="divisor">The divisor by which the <see cref="Area"/> is divided.</param>
     public Unhandled Divide(Unhandled divisor) => new(Magnitude / divisor.Magnitude);
-    /// <summary>Multiplies the <see cref="Area"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Multiplication of the <see cref="Area"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Area"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Area"/> <paramref name="x"/> is multiplied.</param>
     public static Unhandled operator *(Area x, Unhandled y) => x.Multiply(y);
-    /// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="Area"/> <paramref name="x"/> -
+    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="Area"/> <paramref name="x"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Unhandled"/> quantity by which the <see cref="Area"/> <paramref name="y"/> is multiplied.</param>
     /// <param name="y">The <see cref="Area"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
     public static Unhandled operator *(Unhandled x, Area y) => y.Multiply(x);
-    /// <summary>Divides the <see cref="Area"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Division of the <see cref="Area"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Area"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Area"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(Area x, Unhandled y) => x.Divide(y);
 
-    /// <summary>Produces a <see cref="Area"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="Area"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public Area Remainder(double divisor) => new(Magnitude % divisor);
     /// <summary>Scales the <see cref="Area"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Area"/> is scaled.</param>
@@ -207,10 +222,9 @@ public readonly partial record struct Area :
     /// <summary>Scales the <see cref="Area"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="Area"/> is divided.</param>
     public Area Divide(double divisor) => new(Magnitude / divisor);
-    /// <summary>Produces a <see cref="Area"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Area"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of <see cref="Area"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="Area"/> <paramref name="x"/> by this value.</param>
     public static Area operator %(Area x, double y) => x.Remainder(y);
     /// <summary>Scales the <see cref="Area"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Area"/>, which is scaled by <paramref name="y"/>.</param>
@@ -225,9 +239,8 @@ public readonly partial record struct Area :
     /// <param name="y">This value is used to divide the <see cref="Area"/> <paramref name="x"/>.</param>
     public static Area operator /(Area x, double y) => x.Divide(y);
 
-    /// <summary>Produces a <see cref="Area"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="Area"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public Area Remainder(Scalar divisor) => Remainder(divisor.Magnitude);
     /// <summary>Scales the <see cref="Area"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Area"/> is scaled.</param>
@@ -235,10 +248,9 @@ public readonly partial record struct Area :
     /// <summary>Scales the <see cref="Area"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="Area"/> is divided.</param>
     public Area Divide(Scalar divisor) => Divide(divisor.Magnitude);
-    /// <summary>Produces a <see cref="Area"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Area"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of the <see cref="Area"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="Area"/> <paramref name="x"/> by this value.</param>
     public static Area operator %(Area x, Scalar y) => x.Remainder(y);
     /// <summary>Scales the <see cref="Area"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Area"/>, which is scaled by <paramref name="y"/>.</param>
@@ -254,41 +266,69 @@ public readonly partial record struct Area :
     public static Area operator /(Area x, Scalar y) => x.Divide(y);
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorScalarQuantity : IScalarQuantity
-        => factory(Magnitude * factor.Magnitude);
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude * factor.Magnitude);
+        }
+    }
+
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
         where TQuotientScalarQuantity : IScalarQuantity
         where TDivisorScalarQuantity : IScalarQuantity
-        => factory(Magnitude / divisor.Magnitude);
-    /// <summary>Multiples the <see cref="Area"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude / divisor.Magnitude);
+        }
+    }
+
+    /// <summary>Multiplication of the <see cref="Area"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Area"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Area"/> <paramref name="x"/>.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity,
+    /// Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator *(Area x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
-    /// <summary>Divides the <see cref="Area"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <summary>Division of the <see cref="Area"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Area"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="Area"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
+    /// Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator /(Area x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
-    /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Area"/> is less than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than that of this <see cref="Area"/>.</param>
     public static bool operator <(Area x, Area y) => x.Magnitude < y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Area"/> is greater than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than that of this <see cref="Area"/>.</param>
     public static bool operator >(Area x, Area y) => x.Magnitude > y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is less than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Area"/> is less than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than or equal to that of this <see cref="Area"/>.</param>
     public static bool operator <=(Area x, Area y) => x.Magnitude <= y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Area"/> is greater than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of this <see cref="Area"/>.</param>
     public static bool operator >=(Area x, Area y) => x.Magnitude >= y.Magnitude;
 
     /// <summary>Converts the <see cref="Area"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
@@ -296,7 +336,7 @@ public readonly partial record struct Area :
     public double ToDouble() => Magnitude;
     /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
     /// in SI units.</summary>
-    public static implicit operator double(Area x) => x.ToDouble();
+    public static explicit operator double(Area x) => x.ToDouble();
 
     /// <summary>Converts the <see cref="Area"/> to the <see cref="Scalar"/> of equivalent magnitude, when
     /// expressed in SI units.</summary>
@@ -304,15 +344,15 @@ public readonly partial record struct Area :
     /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(Area x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Area"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="Area"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static Area FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Area"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="Area"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static explicit operator Area(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Area"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="Area"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static Area FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Area"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="Area"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static explicit operator Area(Scalar x) => FromScalar(x);
 }

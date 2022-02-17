@@ -59,6 +59,8 @@ public readonly partial record struct Length :
     /// <summary>The zero-valued <see cref="Length"/>.</summary>
     public static Length Zero { get; } = new(0);
 
+    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Metre"/>.</summary>
+    public static Length OneMetre { get; } = new(1, UnitOfLength.Metre);
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Femtometre"/>.</summary>
     public static Length OneFemtometre { get; } = new(1, UnitOfLength.Femtometre);
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Picometre"/>.</summary>
@@ -73,16 +75,20 @@ public readonly partial record struct Length :
     public static Length OneCentimetre { get; } = new(1, UnitOfLength.Centimetre);
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Decimetre"/>.</summary>
     public static Length OneDecimetre { get; } = new(1, UnitOfLength.Decimetre);
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Metre"/>.</summary>
-    public static Length OneMetre { get; } = new(1, UnitOfLength.Metre);
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Kilometre"/>.</summary>
     public static Length OneKilometre { get; } = new(1, UnitOfLength.Kilometre);
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.AstronomicalUnit"/>.</summary>
     public static Length OneAstronomicalUnit { get; } = new(1, UnitOfLength.AstronomicalUnit);
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Lightyear"/>.</summary>
-    public static Length OneLightyear { get; } = new(1, UnitOfLength.Lightyear);
+    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.LightYear"/>.</summary>
+    public static Length OneLightYear { get; } = new(1, UnitOfLength.LightYear);
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Parsec"/>.</summary>
     public static Length OneParsec { get; } = new(1, UnitOfLength.Parsec);
+    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Kiloparsec"/>.</summary>
+    public static Length OneKiloparsec { get; } = new(1, UnitOfLength.Kiloparsec);
+    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Megaparsec"/>.</summary>
+    public static Length OneMegaparsec { get; } = new(1, UnitOfLength.Megaparsec);
+    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Gigaparsec"/>.</summary>
+    public static Length OneGigaparsec { get; } = new(1, UnitOfLength.Gigaparsec);
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Inch"/>.</summary>
     public static Length OneInch { get; } = new(1, UnitOfLength.Inch);
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Foot"/>.</summary>
@@ -92,19 +98,19 @@ public readonly partial record struct Length :
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Mile"/>.</summary>
     public static Length OneMile { get; } = new(1, UnitOfLength.Mile);
 
-    /// <summary>Computes <see cref="Length"/> according to { <see cref="Length"/> = 1 / <paramref name="spatialFrequency"/> }.</summary>
+    /// <summary>Computes <see cref="Length"/> according to { 1 / <paramref name="spatialFrequency"/> }.</summary>
     /// <summary>Constructs a <see cref="Length"/> by inverting the <see cref="SpatialFrequency"/> <paramref name="spatialFrequency"/>.</summary>
     public static Length From(SpatialFrequency spatialFrequency) => new(1 / spatialFrequency.Magnitude);
-    /// <summary>Computes <see cref="Length"/> according to { <see cref="Length"/> = √<paramref name="area"/> }.</summary>
+    /// <summary>Computes <see cref="Length"/> according to { √<paramref name="area"/> }.</summary>
     /// <param name="area">The square root of this <see cref="Area"/> is taken to produce a <see cref="Length"/>.</param>
     public static Length From(Area area) => new(Math.Sqrt(area.Magnitude));
-    /// <summary>Computes <see cref="Length"/> according to { <see cref="Length"/> = ∛<paramref name="volume"/> }.</summary>
+    /// <summary>Computes <see cref="Length"/> according to { ∛<paramref name="volume"/> }.</summary>
     /// <param name="volume">The cube root of this <see cref="Volume"/> is taken to produce a <see cref="Length"/>.</param>
     public static Length From(Volume volume) => new(Math.Cbrt(volume.Magnitude));
 
     /// <summary>The magnitude of the <see cref="Length"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfLength)"/> or a pre-defined property
-    /// - such as <see cref="Femtometres"/>.</remarks>
+    /// - such as <see cref="Metres"/>.</remarks>
     public double Magnitude { get; init; }
 
     /// <summary>Constructs a new <see cref="Length"/> with magnitude <paramref name="magnitude"/>, expressed in <paramref name="unitOfLength"/>.</summary>
@@ -114,7 +120,7 @@ public readonly partial record struct Length :
     /// <list type="bullet">
     /// <item>
     /// <code>
-    /// <see cref="Length"/> a = 3 * <see cref="Length.OneFemtometre"/>;
+    /// <see cref="Length"/> a = 3 * <see cref="Length.OneMetre"/>;
     /// </code>
     /// </item>
     /// </list>
@@ -127,12 +133,12 @@ public readonly partial record struct Length :
     /// <list type="bullet">
     /// <item>
     /// <code>
-    /// <see cref="Length"/> a = 3 * <see cref="Length.OneFemtometre"/>;
+    /// <see cref="Length"/> a = 3 * <see cref="Length.OneMetre"/>;
     /// </code>
     /// </item>
     /// </list>
     /// </remarks>
-    public Length(double magnitude, UnitOfLength unitOfLength) : this(magnitude * unitOfLength.Factor) { }
+    public Length(double magnitude, UnitOfLength unitOfLength) : this(magnitude * unitOfLength.Length.Magnitude) { }
     /// <summary>Constructs a new <see cref="Length"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Length"/>.</param>
     /// <remarks>Consider preferring <see cref="Length(Scalar, UnitOfLength)"/>.</remarks>
@@ -148,6 +154,8 @@ public readonly partial record struct Length :
     /// <summary>Converts the <see cref="Length"/> to an instance of the associated quantity <see cref="Distance"/>, of equal magnitude.</summary>
     public Distance AsDistance => new(Magnitude);
 
+    /// <summary>Retrieves the magnitude of the <see cref="Length"/>, expressed in <see cref="UnitOfLength.Metre"/>.</summary>
+    public Scalar Metres => InUnit(UnitOfLength.Metre);
     /// <summary>Retrieves the magnitude of the <see cref="Length"/>, expressed in <see cref="UnitOfLength.Femtometre"/>.</summary>
     public Scalar Femtometres => InUnit(UnitOfLength.Femtometre);
     /// <summary>Retrieves the magnitude of the <see cref="Length"/>, expressed in <see cref="UnitOfLength.Picometre"/>.</summary>
@@ -162,18 +170,20 @@ public readonly partial record struct Length :
     public Scalar Centimetres => InUnit(UnitOfLength.Centimetre);
     /// <summary>Retrieves the magnitude of the <see cref="Length"/>, expressed in <see cref="UnitOfLength.Decimetre"/>.</summary>
     public Scalar Decimetres => InUnit(UnitOfLength.Decimetre);
-    /// <summary>Retrieves the magnitude of the <see cref="Length"/>, expressed in <see cref="UnitOfLength.Metre"/>.</summary>
-    public Scalar Metres => InUnit(UnitOfLength.Metre);
     /// <summary>Retrieves the magnitude of the <see cref="Length"/>, expressed in <see cref="UnitOfLength.Kilometre"/>.</summary>
     public Scalar Kilometres => InUnit(UnitOfLength.Kilometre);
-
     /// <summary>Retrieves the magnitude of the <see cref="Length"/>, expressed in <see cref="UnitOfLength.AstronomicalUnit"/>.</summary>
     public Scalar AstronomicalUnits => InUnit(UnitOfLength.AstronomicalUnit);
-    /// <summary>Retrieves the magnitude of the <see cref="Length"/>, expressed in <see cref="UnitOfLength.Lightyear"/>.</summary>
-    public Scalar Lightyears => InUnit(UnitOfLength.Lightyear);
+    /// <summary>Retrieves the magnitude of the <see cref="Length"/>, expressed in <see cref="UnitOfLength.LightYear"/>.</summary>
+    public Scalar LightYears => InUnit(UnitOfLength.LightYear);
     /// <summary>Retrieves the magnitude of the <see cref="Length"/>, expressed in <see cref="UnitOfLength.Parsec"/>.</summary>
     public Scalar Parsecs => InUnit(UnitOfLength.Parsec);
-
+    /// <summary>Retrieves the magnitude of the <see cref="Length"/>, expressed in <see cref="UnitOfLength.Kiloparsec"/>.</summary>
+    public Scalar Kiloparsecs => InUnit(UnitOfLength.Kiloparsec);
+    /// <summary>Retrieves the magnitude of the <see cref="Length"/>, expressed in <see cref="UnitOfLength.Megaparsec"/>.</summary>
+    public Scalar Megaparsecs => InUnit(UnitOfLength.Megaparsec);
+    /// <summary>Retrieves the magnitude of the <see cref="Length"/>, expressed in <see cref="UnitOfLength.Gigaparsec"/>.</summary>
+    public Scalar Gigaparsecs => InUnit(UnitOfLength.Gigaparsec);
     /// <summary>Retrieves the magnitude of the <see cref="Length"/>, expressed in <see cref="UnitOfLength.Inch"/>.</summary>
     public Scalar Inches => InUnit(UnitOfLength.Inch);
     /// <summary>Retrieves the magnitude of the <see cref="Length"/>, expressed in <see cref="UnitOfLength.Foot"/>.</summary>
@@ -200,26 +210,27 @@ public readonly partial record struct Length :
     /// <summary>Indicates whether the magnitude of the <see cref="Length"/> is infinite, and negative.</summary>
     public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude);
 
-    /// <summary>Produces a <see cref="Length"/>, with magnitude equal to the absolute of the original magnitude.</summary>
+    /// <summary>Computes the absolute of the <see cref="Length"/>.</summary>
     public Length Absolute() => new(Math.Abs(Magnitude));
-    /// <summary>Produces a <see cref="Length"/>, with magnitude equal to the floor of the original magnitude.</summary>
+    /// <summary>Computes the floor of the <see cref="Length"/>.</summary>
     public Length Floor() => new(Math.Floor(Magnitude));
-    /// <summary>Produces a <see cref="Length"/>, with magnitude equal to the ceiling of the original magnitude.</summary>
+    /// <summary>Computes the ceiling of the <see cref="Length"/>.</summary>
     public Length Ceiling() => new(Math.Ceiling(Magnitude));
-    /// <summary>Produces a <see cref="Length"/>, with magnitude equal to the original magnitude, rounded to the nearest integer.</summary>
+    /// <summary>Rounds the <see cref="Length"/> to the nearest integer value.</summary>
     public Length Round() => new(Math.Round(Magnitude));
 
-    /// <summary>Inverts the <see cref="Length"/>, producing a <see cref="SpatialFrequency"/>.</summary>
+    /// <summary>Computes the inverse of the <see cref="Length"/>, producing a <see cref="SpatialFrequency"/>.</summary>
     public SpatialFrequency Invert() => SpatialFrequency.From(this);
-    /// <summary>Squares the <see cref="Length"/>, producing a <see cref="Area"/>.</summary>
+    /// <summary>Computes the square of the <see cref="Length"/>, producing a <see cref="Area"/>.</summary>
     public Area Square() => Area.From(this);
-    /// <summary>Cubes the <see cref="Length"/>, producing a <see cref="Volume"/>.</summary>
+    /// <summary>Computes the cube of the <see cref="Length"/>, producing a <see cref="Volume"/>.</summary>
     public Volume Cube() => Volume.From(this);
 
     /// <inheritdoc/>
     public int CompareTo(Length other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="Length"/> (in SI units), and the SI base unit of the quantity.</summary>
-    public override string ToString() => $"{Magnitude} [m]";
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="Length"/> in the default unit
+    /// <see cref="UnitOfLength.Metre"/>, followed by the symbol [m].</summary>
+    public override string ToString() => $"{Metres} [m]";
 
     /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Length"/>,
     /// expressed in <paramref name="unitOfLength"/>.</summary>
@@ -229,20 +240,20 @@ public readonly partial record struct Length :
     /// expressed in <paramref name="unitOfLength"/>.</summary>
     /// <param name="length">The <see cref="Length"/> to be expressed in <paramref name="unitOfLength"/>.</param>
     /// <param name="unitOfLength">The <see cref="UnitOfLength"/> in which the magnitude is expressed.</param>
-    private static Scalar InUnit(Length length, UnitOfLength unitOfLength) => new(length.Magnitude / unitOfLength.Factor);
+    private static Scalar InUnit(Length length, UnitOfLength unitOfLength) => new(length.Magnitude / unitOfLength.Length.Magnitude);
 
     /// <summary>Unary plus, resulting in the unmodified <see cref="Length"/>.</summary>
     public Length Plus() => this;
     /// <summary>Negation, resulting in a <see cref="Length"/> with negated magnitude.</summary>
     public Length Negate() => new(-Magnitude);
     /// <summary>Unary plus, resulting in the unmodified <paramref name="x"/>.</summary>
-    /// <param name="x">Unary plus is applied to this instance of <see cref="Length"/>.</param>
+    /// <param name="x">Unary plus is applied to this <see cref="Length"/>.</param>
     public static Length operator +(Length x) => x.Plus();
-    /// <summary>Negation, resulting in a <see cref="Length"/> with magnitude negated from that of <paramref name="x"/>.</summary>
-    /// <param name="x">Negation is applied to this instance of <see cref="Length"/>.</param>
+    /// <summary>Negation, resulting in a <see cref="Length"/> with negated magnitude from that of <paramref name="x"/>.</summary>
+    /// <param name="x">Negation is applied to this <see cref="Length"/>.</param>
     public static Length operator -(Length x) => x.Negate();
 
-    /// <summary>Multiplies the <see cref="Length"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+    /// <summary>Multiplicates the <see cref="Length"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="factor">The factor by which the <see cref="Length"/> is multiplied.</param>
     public Unhandled Multiply(Unhandled factor) => new(Magnitude * factor.Magnitude);
@@ -250,25 +261,24 @@ public readonly partial record struct Length :
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="divisor">The divisor by which the <see cref="Length"/> is divided.</param>
     public Unhandled Divide(Unhandled divisor) => new(Magnitude / divisor.Magnitude);
-    /// <summary>Multiplies the <see cref="Length"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Multiplication of the <see cref="Length"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Length"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Length"/> <paramref name="x"/> is multiplied.</param>
     public static Unhandled operator *(Length x, Unhandled y) => x.Multiply(y);
-    /// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="Length"/> <paramref name="x"/> -
+    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="Length"/> <paramref name="x"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Unhandled"/> quantity by which the <see cref="Length"/> <paramref name="y"/> is multiplied.</param>
     /// <param name="y">The <see cref="Length"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
     public static Unhandled operator *(Unhandled x, Length y) => y.Multiply(x);
-    /// <summary>Divides the <see cref="Length"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Division of the <see cref="Length"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Length"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Length"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(Length x, Unhandled y) => x.Divide(y);
 
-    /// <summary>Produces a <see cref="Length"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="Length"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public Length Remainder(double divisor) => new(Magnitude % divisor);
     /// <summary>Scales the <see cref="Length"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Length"/> is scaled.</param>
@@ -276,10 +286,9 @@ public readonly partial record struct Length :
     /// <summary>Scales the <see cref="Length"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="Length"/> is divided.</param>
     public Length Divide(double divisor) => new(Magnitude / divisor);
-    /// <summary>Produces a <see cref="Length"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Length"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of <see cref="Length"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="Length"/> <paramref name="x"/> by this value.</param>
     public static Length operator %(Length x, double y) => x.Remainder(y);
     /// <summary>Scales the <see cref="Length"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Length"/>, which is scaled by <paramref name="y"/>.</param>
@@ -293,14 +302,13 @@ public readonly partial record struct Length :
     /// <param name="x">The <see cref="Length"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">This value is used to divide the <see cref="Length"/> <paramref name="x"/>.</param>
     public static Length operator /(Length x, double y) => x.Divide(y);
-/// <summary>Inverts the <see cref="Length"/> <paramref name="y"/> to produce a <see cref="SpatialFrequency"/>, which is then scaled by <paramref name="x"/>.</summary>
-/// <param name="x">This value is used to scale the inverted <see cref="Length"/> <paramref name="y"/>.</param>
-/// <param name="y">The <see cref="Length"/>, which is inverted to a <see cref="SpatialFrequency"/> and scaled by <paramref name="x"/>.</param>
+    /// <summary>Inverts the <see cref="Length"/> <paramref name="y"/> to produce a <see cref="SpatialFrequency"/>, which is then scaled by <paramref name="x"/>.</summary>
+    /// <param name="x">This value is used to scale the inverted <see cref="Length"/> <paramref name="y"/>.</param>
+    /// <param name="y">The <see cref="Length"/>, which is inverted to a <see cref="SpatialFrequency"/> and scaled by <paramref name="x"/>.</param>
     public static SpatialFrequency operator /(double x, Length y) => x * y.Invert();
 
-    /// <summary>Produces a <see cref="Length"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="Length"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public Length Remainder(Scalar divisor) => Remainder(divisor.Magnitude);
     /// <summary>Scales the <see cref="Length"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Length"/> is scaled.</param>
@@ -308,10 +316,9 @@ public readonly partial record struct Length :
     /// <summary>Scales the <see cref="Length"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="Length"/> is divided.</param>
     public Length Divide(Scalar divisor) => Divide(divisor.Magnitude);
-    /// <summary>Produces a <see cref="Length"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Length"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of the <see cref="Length"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="Length"/> <paramref name="x"/> by this value.</param>
     public static Length operator %(Length x, Scalar y) => x.Remainder(y);
     /// <summary>Scales the <see cref="Length"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Length"/>, which is scaled by <paramref name="y"/>.</param>
@@ -325,81 +332,119 @@ public readonly partial record struct Length :
     /// <param name="x">The <see cref="Length"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">This value is used to divide the <see cref="Length"/> <paramref name="x"/>.</param>
     public static Length operator /(Length x, Scalar y) => x.Divide(y);
-/// <summary>Inverts the <see cref="Length"/> <paramref name="y"/> to produce a <see cref="SpatialFrequency"/>, which is then scaled by <paramref name="x"/>.</summary>
-/// <param name="x">This value is used to scale the inverted <see cref="Length"/> <paramref name="y"/>.</param>
-/// <param name="y">The <see cref="Length"/>, which is inverted to a <see cref="SpatialFrequency"/> and scaled by <paramref name="x"/>.</param>
+    /// <summary>Inverts the <see cref="Length"/> <paramref name="y"/> to produce a <see cref="SpatialFrequency"/>,
+    /// which is then scaled by <paramref name="x"/>.</summary>
+    /// <param name="x">This value is used to scale the inverted <see cref="Length"/> <paramref name="y"/>.</param>
+    /// <param name="y">The <see cref="Length"/>, which is inverted to a <see cref="SpatialFrequency"/> and scaled by <paramref name="x"/>.</param>
     public static SpatialFrequency operator /(Scalar x, Length y) => x * y.Invert();
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorScalarQuantity : IScalarQuantity
-        => factory(Magnitude * factor.Magnitude);
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude * factor.Magnitude);
+        }
+    }
+
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
         where TQuotientScalarQuantity : IScalarQuantity
         where TDivisorScalarQuantity : IScalarQuantity
-        => factory(Magnitude / divisor.Magnitude);
-    /// <summary>Multiples the <see cref="Length"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude / divisor.Magnitude);
+        }
+    }
+
+    /// <summary>Multiplication of the <see cref="Length"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Length"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Length"/> <paramref name="x"/>.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity,
+    /// Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator *(Length x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
-    /// <summary>Divides the <see cref="Length"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <summary>Division of the <see cref="Length"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Length"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="Length"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
+    /// Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator /(Length x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
-    /// <summary>Multiplies the <see cref="Length"/> with the <see cref="Vector3"/> <paramref name="vector"/> to produce a <see cref="Displacement3"/>.</summary>
-    /// <param name="vector">This <see cref="Vector3"/> is multiplied by the <see cref="Length"/>.</param>
-    public Displacement3 Multiply(Vector3 vector) => new(vector * Magnitude);
-    /// <summary>Multiplies the <see cref="Length"/> with the values of <paramref name="components"/> to produce a <see cref="Displacement3"/>.</summary>
+    /// <summary>Multiplicates the <see cref="Length"/> with the <see cref="Vector3"/> <paramref name="factor"/> to produce
+    /// a <see cref="Displacement3"/>.</summary>
+    /// <param name="factor">This <see cref="Vector3"/> is multiplied by the <see cref="Length"/>.</param>
+    public Displacement3 Multiply(Vector3 factor) => new(factor * Magnitude);
+    /// <summary>Multiplicates the <see cref="Length"/> with the values of <paramref name="components"/> to produce
+    /// a <see cref="Displacement3"/>.</summary>
     /// <param name="components">These values are multiplied by the <see cref="Length"/>.</param>
     public Displacement3 Multiply((double x, double y, double z) components) => Multiply(new Vector3(components));
-    /// <summary>Multiplies the <see cref="Length"/> with the values of <paramref name="components"/> to produce a <see cref="Displacement3"/>.</summary>
+    /// <summary>Multiplicates the <see cref="Length"/> with the values of <paramref name="components"/> to produce
+    /// a <see cref="Displacement3"/>.</summary>
     /// <param name="components">These values are multiplied by the <see cref="Length"/>.</param>
     public Displacement3 Multiply((Scalar x, Scalar y, Scalar z) components) => Multiply(new Vector3(components));
-    /// <summary>Multiplies the <see cref="Length"/> <paramref name="a"/> with the <see cref="Vector3"/> <paramref name="b"/> to produce a <see cref="Displacement3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="Length"/> <paramref name="a"/> with the <see cref="Vector3"/> <paramref name="b"/>
+    /// to produce a <see cref="Displacement3"/>.</summary>
     /// <param name="a">This <see cref="Length"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="Length"/> <paramref name="a"/>.</param>
     public static Displacement3 operator *(Length a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="Length"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/> to produce a <see cref="Displacement3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="Length"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// to produce a <see cref="Displacement3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="Length"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Length"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
     public static Displacement3 operator *(Vector3 a, Length b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="Length"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="Displacement3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="Length"/> <paramref name="a"/> with the values of <paramref name="b"/>
+    /// to produce a <see cref="Displacement3"/>.</summary>
     /// <param name="a">This <see cref="Length"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Length"/> <paramref name="a"/>.</param>
     public static Displacement3 operator *(Length a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="Length"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="Displacement3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="Length"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// to produce a <see cref="Displacement3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Length"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Length"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static Displacement3 operator *((double x, double y, double z) a, Length b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="Length"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="Displacement3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="Length"/> <paramref name="a"/> with the values of <paramref name="b"/>
+    /// to produce a <see cref="Displacement3"/>.</summary>
     /// <param name="a">This <see cref="Length"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Length"/> <paramref name="a"/>.</param>
     public static Displacement3 operator *(Length a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="Length"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="Displacement3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="Length"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// to produce a <see cref="Displacement3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Length"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Length"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static Displacement3 operator *((Scalar x, Scalar y, Scalar z) a, Length b) => b.Multiply(a);
 
-    /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Length"/> is less than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than that of this <see cref="Length"/>.</param>
     public static bool operator <(Length x, Length y) => x.Magnitude < y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Length"/> is greater than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than that of this <see cref="Length"/>.</param>
     public static bool operator >(Length x, Length y) => x.Magnitude > y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is less than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Length"/> is less than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than or equal to that of this <see cref="Length"/>.</param>
     public static bool operator <=(Length x, Length y) => x.Magnitude <= y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Length"/> is greater than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of this <see cref="Length"/>.</param>
     public static bool operator >=(Length x, Length y) => x.Magnitude >= y.Magnitude;
 
     /// <summary>Converts the <see cref="Length"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
@@ -407,7 +452,7 @@ public readonly partial record struct Length :
     public double ToDouble() => Magnitude;
     /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
     /// in SI units.</summary>
-    public static implicit operator double(Length x) => x.ToDouble();
+    public static explicit operator double(Length x) => x.ToDouble();
 
     /// <summary>Converts the <see cref="Length"/> to the <see cref="Scalar"/> of equivalent magnitude, when
     /// expressed in SI units.</summary>
@@ -415,15 +460,15 @@ public readonly partial record struct Length :
     /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(Length x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Length"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="Length"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static Length FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Length"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="Length"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static explicit operator Length(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Length"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="Length"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static Length FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Length"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="Length"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static explicit operator Length(Scalar x) => FromScalar(x);
 }

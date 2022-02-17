@@ -1,0 +1,19 @@
+#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(unit, siUnit)
+/// <summary>Describes a unit of the quantity <see cref="Quantities.Momentum"/>, and related quantities.</summary>
+/// <remarks>#Document:DeriveRemark(#Param:unit#)# Custom <see cref="#Param:unit#"/> can also be derived from
+/// other units using the static <see cref="From(UnitOfMass, UnitOfVelocity)"/>.</remarks>
+#/
+
+#Define:FromMassVelocity(unit, siUnit)
+/// <summary>Derives a <see cref="#Param:unit#"/> according to { <paramref name="unitOfMass"/> ∙ <paramref name="unitOfVelocity"/> }.</summary>
+/// <param name="unitOfMass">A <see cref="#Param:unit#"/> is derived from multiplication of this <see cref="UnitOfMass"/> by <paramref name="unitOfVelocity"/>.</param>
+/// <param name="unitOfVelocity">A <see cref="#Param:unit#"/> is derived from multiplication of this <see cref="UnitOfVelocity"/> by <paramref name="unitOfMass"/>.</param>
+#/
+
+#Define:UnitKilogramMetrePerSecond
+/// <summary>The SI unit of <see cref="Quantities.Momentum"/>, derived according to { <see cref="UnitOfMass.Kilogram"/> ∙ <see cref="UnitOfVelocity.MetrePerSecond"/> }.
+/// Usually written as [kg∙m/s] or [kg∙m∙s⁻¹].</summary>
+#/

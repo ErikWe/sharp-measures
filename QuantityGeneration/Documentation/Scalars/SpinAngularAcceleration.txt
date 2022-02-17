@@ -1,11 +1,11 @@
 ﻿#Extends:Generic.txt#
 #Extends:Utility.txt#
 
-#Define:Header(quantity, unitName, singularUnits, pluralUnits)#
+#Define:Header(quantity, unitName, singularBases, pluralUnits)#
 /// <summary>A measure of the scalar quantity <see cref="#Param:quantity#"/>, describing the <see cref="AngularAcceleration"/> of an object
 /// about the internal center of rotation. This is the magnitude of the vector quantity <see cref="SpinAngularAcceleration3"/>, and is
-/// expressed in <see cref="#Param:unitName#"/>, with the SI unit being [rad / s²].
-#Document:HeaderSummaryAssociated(#Param:quantity#, #Param:unitName#, #Param:singularUnits#, #Param:pluralUnits#)#
+/// expressed in <see cref="#Param:unitName#"/>, with the SI unit being [rad∙s⁻²].
+#Document:HeaderSummaryAssociated(#Param:quantity#, #Param:unitName#, #Param:singularBases#, #Param:pluralUnits#)#
 /// </summary>
 /// <remarks>
 /// <see cref="#Param:quantity#"/> is closely related to the following quantities:

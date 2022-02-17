@@ -2,34 +2,15 @@ let vectorQuantity : {
     type: "Vector",
     name: string,
     component: string,
-    baseUnits: string,
+    dimensionalities: number[],
     unit: string,
     unitBias: string | boolean,
-    dimensionalities: number[],
-    units: string | ({ 
-        special: false | undefined,
-        singular: string,
-        plural: string,
-        SI : boolean | undefined,
-        symbol: string | undefined,
-        base: true | false | undefined
-    } | {
-        special: true,
-        separator: boolean | undefined
-    }) [],
-    convertible: string | string[] | false,
-    symbol: string | undefined,
-    bases: string | ({ 
-        special: false | undefined,
-        singular: string,
-        plural: string,
-        SI : boolean | undefined,
-        symbol: string | undefined,
-        base: true | false | undefined
-    } | {
-        special: true,
-        separator: boolean | undefined
-    })[]
+    defaultUnit: string | undefined,
+    includeUnits: string[] | undefined,
+    excludeUnits: string[] | undefined,
+    includeBases: string[] | undefined,
+    excludeBases: string[] | undefined,
+    convertible: string[] | undefined,
 }
 
 

@@ -1,17 +1,6 @@
 ﻿{
-    "name": "Density",
     "type": "Scalar",
-    "baseUnits": "kg * m^-3",
-    "unit": "[UnitOf]",
-    "unitBias": false,
-    "vector": false,
-    "inverse": "SpecificVolume",
-    "square": false,
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "KilogramPerCubicMetre", "plural": "+s [Per]", "SI": true, "symbol": "kg / m^3" }
-    ],
-    "convertible": []
+    "name": "Density",
+    "inverse": ["SpecificVolume"],
+    "unit": "[name]"
 }

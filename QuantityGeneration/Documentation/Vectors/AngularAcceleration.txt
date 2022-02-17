@@ -3,7 +3,7 @@
 
 #Define:Header(quantity, dimensionality, component, unitName, singularUnits, pluralUnits)
 /// <summary>A measure of the vector quantity <see cref="#Param:quantity#"/>, of dimensionality #Document:LowerCaseText(#Param:dimensionality#)#,
-/// describing change in <see cref="AngularVelocity#Param:dimensionality#"/> over <see cref="Time"/>. The quantity is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [rad / s²].
+/// describing change in <see cref="AngularVelocity#Param:dimensionality#"/> over <see cref="Time"/>. The quantity is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [rad∙s⁻²].
 #Document:HeaderSummaryAssociated(#Param:quantity#, #Param:dimensionality#, #Param:component#, #Param:unitName#, #Param:singularUnits#, #Param:pluralUnits#)#
 /// </summary>
 /// <remarks>

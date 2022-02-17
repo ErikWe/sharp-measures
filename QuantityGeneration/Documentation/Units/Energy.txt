@@ -1,0 +1,52 @@
+#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(unit, siUnit)
+/// <summary>Describes a unit of the quantities <see cref="Quantities.Energy"/> and <see cref="Quantities.Work"/>.</summary>
+/// <remarks>#Document:DeriveRemark(#Param:unit#)# Custom <see cref="#Param:unit#"/> can also be derived from
+/// other units using the static <see cref="From(UnitOfForce, UnitOfLength)"/>, or an overload.</remarks>
+#/
+
+#Define:FromForceLength(unit, siUnit)
+/// <summary>Derives a <see cref="#Param:unit#"/> according to { <paramref name="unitOfForce"/> ∙ <paramref name="unitOfLength"/> }.</summary>
+/// <param name="unitOfForce">A <see cref="#Param:unit#"/> is derived from multiplication of this <see cref="UnitOfForce"/> by <paramref name="unitOfLength"/>.</param>
+/// <param name="unitOfLength">A <see cref="#Param:unit#"/> is derived from multiplication of this <see cref="UnitOfLength"/> by <paramref name="unitOfForce"/>.</param>
+#/
+
+#Define:FromPowerTime(unit, siUnit)
+/// <summary>Derives a <see cref="#Param:unit#"/> according to { <paramref name="unitOfPower"/> ∙ <paramref name="unitOfTime"/> }.</summary>
+/// <param name="unitOfPower">A <see cref="#Param:unit#"/> is derived from multiplication of this <see cref="UnitOfPower"/> by <paramref name="unitOfTime"/>.</param>
+/// <param name="unitOfTime">A <see cref="#Param:unit#"/> is derived from multiplication of this <see cref="UnitOfTime"/> by <paramref name="unitOfPower"/>.</param>
+#/
+
+#Define:UnitJoule
+/// <summary>The SI unit of <see cref="Quantities.Energy"/>, derived according to { <see cref="UnitOfForce.Newton"/> ∙ <see cref="UnitOfLength.Metre"/> }.
+/// Usually written as [J].</summary>
+#/
+
+#Define:UnitKilojoule
+/// <summary>Expresses <see cref="Quantities.Energy"/> as one thousand <see cref="Joule"/>. Usually written as [kJ].</summary>
+#/
+
+#Define:UnitMegajoule
+/// <summary>Expresses <see cref="Quantities.Energy"/> as one million <see cref="Joule"/>. Usually written as [MJ].</summary>
+#/
+
+#Define:UnitGigajoule
+/// <summary>Expresses <see cref="Quantities.Energy"/> as one billion [10^9] <see cref="Joule"/>. Usually written as [GJ].</summary>
+#/
+
+#Define:UnitKilowattHour
+/// <summary>Expresses <see cref="Quantities.Energy"/> according to { <see cref="UnitOfPower.Kilowatt"/> ∙ <see cref="UnitOfTime.Hour"/> }.
+/// Usually written as [kWh] or [kW∙h].</summary>
+#/
+
+#Define:UnitCalorie
+/// <summary>Expresses <see cref="Quantities.Energy"/> according to { 4.184 ∙ <see cref="Joule"/> }. Usually written as [cal].</summary>
+/// <remarks>Not to be confused with <see cref="Kilocalorie"/>, which is sometimes also known as calorie.</remarks>
+#/
+
+#Define:UnitKilocalorie
+/// <summary>Expresses <see cref="Quantities.Energy"/> as one thousand <see cref="Calorie"/>. Usually written as [kcal] or [cal].</summary>
+/// <remarks>This is sometimes also known as calorie, but is not equivalent to <see cref="Calorie"/>.</remarks>
+#/

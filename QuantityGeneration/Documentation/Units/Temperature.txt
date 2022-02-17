@@ -1,0 +1,40 @@
+#Extends:GenericBiased.txt#
+#Extends:Utility.txt#
+
+#Define:Header(unit, siUnit)
+/// <summary>Describes a unit of the quantities <see cref="Quantities.Temperature"/> and <see cref="Quantities.TemperatureDifference"/>.</summary>
+/// <remarks>#Document:DeriveBiasedRemark(#Param:unit#)#</remarks>
+#/
+
+#Define:Offset(unit, siUnit)
+/// <summary>The value of the <see cref="#Param:unit#"/> at absolute zero.</summary>
+#/
+
+#Define:Constructor(unit, siUnit, differenceQuantity, differenceQuantityVariable)
+/// <summary>Constructs a new <see cref="#Param:unit#"/>, where a unit step represents <paramref name="#Param:differenceQuantityVariable#"/>, and
+/// the value at absolute zero is <paramref name="offset"/>.</summary>
+/// <param name="#Param:differenceQuantityVariable#">The <see cref="#Param:differenceQuantity#"/> that a unit step of <see cref="#Param:unit#"/> represents.</param>
+/// <param name="offset">The value of the <see cref="#Param:unit#"/> at absolute zero.</param>
+#/
+
+#Define:UnitKelvin
+/// <summary>The SI unit of <see cref="Quantities.Temperature"/>, with 0 representing absolute zero. Usually written as [K].</summary>
+/// <remarks>When used to express <see cref="Quantities.TemperatureDifference"/>, this is equivalent to <see cref="Celsius"/>.</remarks>
+#/
+
+#Define:UnitCelsius
+/// <summary>Expresses <see cref="Quantities.Temperature"/> according to { <see cref="Kelvin"/> + 273.15 }. Usually written as [°C]</summary>
+/// <remarks>When used to express <see cref="Quantities.TemperatureDifference"/>, the offset of [273.15] has no effect - and the unit is
+/// equivalent to <see cref="Kelvin"/>.</remarks>
+#/
+
+#Define:UnitRankine
+/// <summary>Expresses <see cref="Quantities.Temperature"/> according to { 1.8 ∙ <see cref="Kelvin"/> }. Usually written as [°R or °Ra].</summary>
+/// <remarks>When used to express <see cref="Quantities.TemperatureDifference"/>, this is equivalent to <see cref="Fahrenheit"/>.</remarks>
+#/
+
+#Define:UnitFahrenheit
+/// <summary>Expresses <see cref="Quantities.Temperature"/> according to { <see cref="Rankine"/> + 459.67 }. Usually written as [°F]</summary>
+/// <remarks>When used to express <see cref="Quantities.TemperatureDifference"/>, the offset of [459.67] has no effect - and the unit is
+/// equivalent to <see cref="Rankine"/>.</remarks>
+#/

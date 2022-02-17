@@ -1,17 +1,5 @@
 ﻿{
-    "name": "LinearDensity",
     "type": "Scalar",
-    "baseUnits": "kg * m^-1",
-    "unit": "[UnitOf]",
-    "unitBias": false,
-    "vector": false,
-    "inverse": false,
-    "square": false,
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "KilogramPerMetre", "plural": "+s [Per]", "SI": true, "symbol": "kg / m" }
-    ],
-    "convertible": []
+    "name": "LinearDensity",
+    "unit": "[name]"
 }

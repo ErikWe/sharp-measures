@@ -1,0 +1,19 @@
+#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(unit, siUnit)
+/// <summary>Describes a unit of the quantity <see cref="Quantities.Yank"/>, and related quantities.</summary>
+/// <remarks>#Document:DeriveRemark(#Param:unit#)# Custom <see cref="#Param:unit#"/> can also be derived from
+/// other units using the static <see cref="From(UnitOfForce, UnitOfTime)"/>.</remarks>
+#/
+
+#Define:FromForceTime(unit, siUnit)
+/// <summary>Derives a <see cref="#Param:unit#"/> according to { <paramref name="unitOfForce"/> / <paramref name="unitOfTime"/> }.</summary>
+/// <param name="unitOfForce">A <see cref="#Param:unit#"/> is derived from division of this <see cref="UnitOfForce"/> by <paramref name="unitOfTime"/>.</param>
+/// <param name="unitOfTime">A <see cref="#Param:unit#"/> is derived from division of <paramref name="unitOfForce"/> by this <see cref="UnitOfTime"/>.</param>
+#/
+
+#Define:UnitNewtonPerSecond
+/// <summary>The SI unit of <see cref="Quantities.Yank"/>, derived according to { <see cref="UnitOfForce.Newton"/> / <see cref="UnitOfTime.Second"/> }.
+/// Usually written as [N/s] or [N∙s⁻¹].</summary>
+#/

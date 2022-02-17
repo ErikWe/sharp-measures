@@ -1,18 +1,8 @@
 ﻿{
-    "name": "SpinAngularAcceleration",
     "type": "Scalar",
-    "baseUnits": "s^-2",
-    "unit": "[UnitOf]",
-    "unitBias": false,
+    "name": "SpinAngularAcceleration",
     "vector": "[name]",
-    "inverse": false,
-    "square": false,
-    "cube" : false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "RadianPerSecondSquared", "plural": "+s [Per]", "SI": true, "symbol": "rad / s^2" }
-    ],
+    "unit": "[AngularAcceleration]",
     "convertible": [
         "AngularAcceleration",
         "OrbitalAngularAcceleration"

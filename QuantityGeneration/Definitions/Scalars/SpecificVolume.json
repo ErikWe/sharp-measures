@@ -1,17 +1,6 @@
 ﻿{
-    "name": "SpecificVolume",
     "type": "Scalar",
-    "baseUnits": "kg^-1 * m^3",
-    "unit": "[UnitOf]",
-    "unitBias": false,
-    "vector": false,
-    "inverse": "Density",
-    "square": false,
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "CubicMetrePerKilogram", "plural": "+s [Per]", "SI": true, "symbol": "m^3 / kg" }
-    ],
-    "convertible": []
+    "name": "SpecificVolume",
+    "inverse": ["Density"],
+    "unit": "[name]"
 }

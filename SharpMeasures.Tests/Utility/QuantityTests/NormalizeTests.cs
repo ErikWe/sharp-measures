@@ -1,17 +1,16 @@
-﻿
+﻿namespace ErikWe.SharpMeasures.Tests.Utility.QuantityTests;
+
+using ErikWe.SharpMeasures.Quantities;
+
 using Xunit;
 
-namespace ErikWe.SharpMeasures.Tests.Utility.QuantityTests
+public static class NormalizeTests
 {
-    public static class NormalizeTests
+    public static void ShouldBeLengthOne<TQuantity>(TQuantity a)
+        where TQuantity : INormalizableVector3Quantity<TQuantity>
     {
-        public static void ShouldBeLengthOne<TComponent, TQuantity>(IQuantity2<TComponent, TQuantity> a)
-            where TComponent : IQuantity
-            where TQuantity : IQuantity2<TComponent, TQuantity>
-        {
-            TQuantity result = a.Normalize();
+        IVector3Quantity result = a.Normalize();
 
-            Assert.Equal(1, result.Length().Magnitude, 2);
-        }
+        Assert.Equal(1, result.Magnitude(), 2);
     }
 }

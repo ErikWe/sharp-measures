@@ -1,12 +1,9 @@
 {
-    "name": "Displacement",
     "type": "Vector",
+    "name": "Displacement",
     "component": "Length",
-    "baseUnits": "[component]",
-    "unit": "[component]",
-    "unitBias": "[component]",
     "dimensionalities": [3],
-    "units": "[component]",
+    "unit": "[component]",
     "convertible": [
         "Position"
     ]

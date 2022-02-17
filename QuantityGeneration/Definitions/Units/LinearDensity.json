@@ -1,0 +1,17 @@
+{
+    "type": "Unit",
+    "name": "LinearDensity",
+    "quantity": "[name]",
+    "derived": [
+        {
+            "signature": [
+                "Mass",
+                "Length"
+            ],
+            "expression": "LinearDensity.From({1}, {2})"
+        }
+    ],
+    "units": [
+        { "name": "KilogramPerMetre", "plural": "+s [Per]", "symbol": "kg∙m⁻¹", "SI": true, "derived": ["Mass.Kilogram", "Length.Metre"] }
+    ]
+}

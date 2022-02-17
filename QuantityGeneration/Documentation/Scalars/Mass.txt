@@ -9,7 +9,7 @@
 [Kilograms, Ounces, Grams, Pounds, Tonnes]
 #/Define:PluralUnits#
 
-#Define:Header(quantity, unitName, singularUnits, pluralUnits)#
+#Define:Header(quantity, unitName, singularBases, pluralUnits)#
 /// <summary>A measure of the scalar quantity <see cref="#Param:quantity#"/>.
 /// The quantity is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [kg].
 #Document:HeaderSummary(#Param:quantity#, #Param:unitName#, #Document:SingularUnits#, #Document:PluralUnits#)#

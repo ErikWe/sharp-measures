@@ -1,0 +1,19 @@
+#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(unit, siUnit)
+/// <summary>Describes a unit of the quantity <see cref="Quantities.Density"/>.</summary>
+/// <remarks>#Document:DeriveRemark(#Param:unit#)# Custom <see cref="#Param:unit#"/> can also be derived from
+/// other units using the static <see cref="From(UnitOfMass, UnitOfVolume)"/></remarks>
+#/
+
+#Define:FromMassVolume(unit, siUnit)
+/// <summary>Derives a <see cref="#Param:unit#"/> according to { <paramref name="unitOfMass"/> / <paramref name="unitOfVolume"/> }.</summary>
+/// <param name="unitOfMass">A <see cref="#Param:unit#"/> is derived from division of this <see cref="UnitOfMass"/> by <paramref name="unitOfVolume"/>.</param>
+/// <param name="unitOfVolume">A <see cref="#Param:unit#"/> is derived from division of <paramref name="unitOfMass"/> by this <see cref="UnitOfVolume"/>.</param>
+#/
+
+#Define:UnitKilogramPerCubicMetre
+/// <summary>The SI unit of <see cref="Quantities.Density"/>, derived according to { <see cref="UnitOfMass.Kilogram"/> / <see cref="UnitOfVolume.CubicMetre"/> }.
+/// Usually written as [kg/m³] or [kg∙m⁻³].</summary>
+#/

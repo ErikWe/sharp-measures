@@ -1,11 +1,7 @@
 {
-    "name": "Acceleration",
     "type": "Vector",
+    "name": "Acceleration",
     "component": "[name]",
-    "baseUnits": "[component]",
-    "unit": "[component]",
-    "unitBias": "[component]",
     "dimensionalities": [3],
-    "units": "[component]",
-    "convertible": []
+    "unit": "[component]"
 }

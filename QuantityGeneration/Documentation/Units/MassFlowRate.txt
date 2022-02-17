@@ -1,0 +1,24 @@
+#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(unit, siUnit)
+/// <summary>Describes a unit of the quantity <see cref="Quantities.MassFlowRate"/>.</summary>
+/// <remarks>#Document:DeriveRemark(#Param:unit#)# Custom <see cref="#Param:unit#"/> can also be derived from
+/// other units using the static <see cref="From(UnitOfMass, UnitOfTime)"/>.</remarks>
+#/
+
+#Define:FromMassTime(unit, siUnit)
+/// <summary>Derives a <see cref="#Param:unit#"/> according to { <paramref name="unitOfMass"/> / <paramref name="unitOfTime"/> }.</summary>
+/// <param name="unitOfMass">A <see cref="#Param:unit#"/> is derived from division of this <see cref="UnitOfMass"/> by <paramref name="unitOfTime"/>.</param>
+/// <param name="unitOfTime">A <see cref="#Param:unit#"/> is derived from division of <paramref name="unitOfMass"/> by this <see cref="UnitOfTime"/>.</param>
+#/
+
+#Define:UnitKilogramPerSecond
+/// <summary>The SI unit of <see cref="Quantities.MassFlowRate"/>, derived according to { <see cref="UnitOfMass.Kilogram"/> / <see cref="UnitOfTime.Second"/> }.
+/// Usually written as [kg/s] or [kg∙s⁻¹].</summary>
+#/
+
+#Define:UnitPoundPerSecond
+/// <summary>Expresses <see cref="Quantities.MassFlowRate"/> according to { <see cref="UnitOfMass.Pound"/> / <see cref="UnitOfTime.Second"/> }.
+/// Usually written as [lb/s] or [lb∙s⁻¹].</summary>
+#/

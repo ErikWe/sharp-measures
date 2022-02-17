@@ -9,7 +9,7 @@
 [Ares, SquareMetres, Hectares, SquareMiles, Acres]
 #/Define:PluralUnits#
 
-#Define:Header(quantity, unitName, singularUnits, pluralUnits)#
+#Define:Header(quantity, unitName, singularBases, pluralUnits)#
 /// <summary>A measure of the scalar quantity <see cref="#Param:quantity#"/>, describing the size of a two-dimensional section of space - the square of <see cref="Length"/>.
 /// The quantity is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [m²].
 #Document:HeaderSummary(#Param:quantity#, #Param:unitName#, #Document:SingularUnits#, #Document:PluralUnits#)#

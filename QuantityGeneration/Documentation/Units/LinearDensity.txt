@@ -1,0 +1,19 @@
+#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(unit, siUnit)
+/// <summary>Describes a unit of the quantity <see cref="Quantities.LinearDensity"/>.</summary>
+/// <remarks>#Document:DeriveRemark(#Param:unit#)# Custom <see cref="#Param:unit#"/> can also be derived from
+/// other units using the static <see cref="From(UnitOfMass, UnitOfLength)"/>.</remarks>
+#/
+
+#Define:FromMassLength(unit, siUnit)
+/// <summary>Derives a <see cref="#Param:unit#"/> according to { <paramref name="unitOfMass"/> / <paramref name="unitOfLength"/> }.</summary>
+/// <param name="unitOfMass">A <see cref="#Param:unit#"/> is derived from division of this <see cref="UnitOfMass"/> by <paramref name="unitOfLength"/>.</param>
+/// <param name="unitOfLength">A <see cref="#Param:unit#"/> is derived from division of <paramref name="unitOfMass"/> by this <see cref="UnitOfLength"/>.</param>
+#/
+
+#Define:UnitKilogramPerMetre
+/// <summary>The SI unit of <see cref="Quantities.LinearDensity"/>, derived according to { <see cref="UnitOfMass.Kilogram"/> / <see cref="UnitOfLength.Metre"/> }.
+/// Usually written as [kg/m] or [kg∙m⁻¹].</summary>
+#/

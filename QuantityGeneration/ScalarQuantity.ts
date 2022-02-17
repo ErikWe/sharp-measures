@@ -1,42 +1,20 @@
 let scalarQuantity : {
     type: "Scalar",
     name: string,
-    baseUnits: string,
-    unit: string,
-    unitBias: string | boolean,
     vector: string | false,
-    vectorDimensionalities: number[] | undefined,
-    inverse: QuantityPower,
-    square: QuantityPower,
-    cube: QuantityPower,
-    squareRoot: QuantityPower,
-    cubeRoot: QuantityPower,
-    units: string | ({ 
-        special: false | undefined,
-        singular: string,
-        plural: string,
-        SI : boolean | undefined,
-        symbol: string | undefined,
-        base: true | false | undefined
-    } | {
-        special: true,
-        separator: boolean | undefined
-    })[],
-    convertible: QuantityPower,
-    symbol: string | undefined,
-    bases: string | ({ 
-        special: false | undefined,
-        singular: string,
-        plural: string,
-        SI : boolean | undefined,
-        symbol: string | undefined,
-        base: true | false | undefined
-    } | {
-        special: true,
-        separator: boolean | undefined
-    })[]
+    inverse: string[] | undefined,
+    square: string[] | undefined,
+    cube: string[] | undefined,
+    squareRoot: string[] | undefined,
+    cubeRoot: string[] | undefined,
+    unit: string,
+    unitBias: boolean | undefined,
+    defaultUnit: string | undefined,
+    includeUnits: string[] | undefined,
+    excludeUnits: string[] | undefined,
+    includeBases: string[] | undefined,
+    excludeBases: string[] | undefined,
+    convertible: string[] | undefined
 }
-
-type QuantityPower = string | string[] | false
 
 export type ScalarQuantity = typeof scalarQuantity

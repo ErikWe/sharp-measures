@@ -1,4 +1,4 @@
-﻿#Define:HeaderSummary(quantity, unitName, singularUnits, pluralUnits)#
+﻿#Define:HeaderSummary(quantity, unitName, singularBases, pluralUnits)#
 /// <para>
 /// New instances of <see cref="#Param:quantity#"/> can be constructed using pre-defined properties, prefixed with 'One', having magnitude 1 expressed
 /// in the desired <see cref="#Param:unitName#"/>. Instances can also be produced by combining other quantities, either through mathematical operators
@@ -6,7 +6,7 @@
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="#Param:quantity#"/> a = 3 * <see cref="#Param:quantity#.One#Param:singularUnits[%0]#"/>;
+/// <see cref="#Param:quantity#"/> a = 3 * <see cref="#Param:quantity#.One#Param:singularBases[%0]#"/>;
 /// </code>
 /// </item>
 /// <item>
@@ -20,7 +20,7 @@
 /// </para>
 #/Define:HeaderSummary#
 
-#Define:HeaderSummaryAssociated(quantity, unitName, singularUnits, pluralUnits)#
+#Define:HeaderSummaryAssociated(quantity, unitName, singularBases, pluralUnits)#
 /// <para>
 /// New instances of <see cref="#Param:quantity#"/> can be constructed using the pre-defined propertiies, prefixed with 'One', having magnitude 1 expressed
 /// in the desired <see cref="#Param:unitName#"/>. Instances can also be produced by combining other quantities, either through mathematical operators
@@ -29,7 +29,7 @@
 /// <list type="bullet">
 /// <item>
 /// <code>
-/// <see cref="#Param:quantity#"/> a = 3 * <see cref="#Param:quantity#.One#Param:singularUnits[%0]#"/>;
+/// <see cref="#Param:quantity#"/> a = 3 * <see cref="#Param:quantity#.One#Param:singularBases[%0]#"/>;
 /// </code>
 /// </item>
 /// <item>

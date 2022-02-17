@@ -1,0 +1,17 @@
+{
+    "type": "Unit",
+    "name": "Yank",
+    "quantity": "[name]",
+    "derived": [
+        {
+            "signature": [
+                "Force",
+                "Time"
+            ],
+            "expression": "Yank.From({1}, {2})"
+        }
+    ],
+    "units": [
+        { "name": "NewtonPerSecond", "plural": "+s [Per]", "symbol": "N∙s⁻¹", "SI": true, "derived": ["Force.Newton", "Time.Second"] }
+    ]
+}

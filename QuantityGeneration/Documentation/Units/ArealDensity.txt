@@ -1,0 +1,19 @@
+#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(unit, siUnit)
+/// <summary>Describes a unit of the quantity <see cref="Quantities.ArealDensity"/>.</summary>
+/// <remarks>#Document:DeriveRemark(#Param:unit#)# Custom <see cref="#Param:unit#"/> can also be derived from
+/// other units using the static <see cref="From(UnitOfMass, UnitOfArea)"/></remarks>
+#/
+
+#Define:FromMassArea(unit, siUnit)
+/// <summary>Derives a <see cref="#Param:unit#"/> according to { <paramref name="unitOfMass"/> / <paramref name="unitOfArea"/> }.</summary>
+/// <param name="unitOfMass">A <see cref="#Param:unit#"/> is derived from division of this <see cref="UnitOfMass"/> by <paramref name="unitOfArea"/>.</param>
+/// <param name="unitOfArea">A <see cref="#Param:unit#"/> is derived from division of <paramref name="unitOfMass"/> by this <see cref="UnitOfArea"/>.</param>
+#/
+
+#Define:UnitKilogramPerSquareMetre
+/// <summary>The SI unit of <see cref="Quantities.ArealDensity"/>, derived according to { <see cref="UnitOfMass.Kilogram"/> / <see cref="UnitOfArea.SquareMetre"/> }.
+/// Usually written as [kg/m²] or [kg∙m⁻²].</summary>
+#/

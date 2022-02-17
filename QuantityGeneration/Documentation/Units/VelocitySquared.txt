@@ -1,0 +1,24 @@
+#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(unit, siUnit)
+/// <summary>Describes a unit of the quantity <see cref="Quantities.SpeedSquared"/>, and related quantities.</summary>
+/// <remarks>#Document:DeriveRemark(#Param:unit#)# Custom <see cref="#Param:unit#"/> can also be derived from
+/// other units using the static <see cref="From(UnitOfVelocity)"/>, or an overload.</remarks>
+#/
+
+#Define:FromVelocity(unit, siUnit)
+/// <summary>Derives a <see cref="#Param:unit#"/> according to { <paramref name="unitOfVelocity"/>² }.</summary>
+/// <param name="unitOfVelocity">A <see cref="#Param:unit#"/> is derived from squaring this <see cref="UnitOfVelocity"/>.</param>
+#/
+
+#Define:FromVelocityVelocity(unit, siUnit)
+/// <summary>Derives a <see cref="#Param:unit#"/> according to { <paramref name="unitOfVelocity1"/> ∙ <paramref name="unitOfVelocity2"/> }.</summary>
+/// <param name="unitOfVelocity1">A <see cref="#Param:unit#"/> is derived from multiplication of this <see cref="UnitOfVelocity"/> by <paramref name="unitOfVelocity2"/>.</param>
+/// <param name="unitOfVelocity2">A <see cref="#Param:unit#"/> is derived from multiplication of this <see cref="UnitOfVelocity"/> by <paramref name="unitOfVelocity1"/>.</param>
+#/
+
+#Define:UnitSquareMetrePerSecondSquared
+/// <summary>The SI unit of <see cref="Quantities.SpeedSquared"/>, derived according to { <see cref="UnitOfVelocity.MetrePerSecond"/>² }.
+/// Usually written as [m²/s²] or [m²∙s⁻²].</summary>
+#/

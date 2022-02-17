@@ -1,0 +1,17 @@
+{
+    "type": "Unit",
+    "name": "Torque",
+    "quantity": "[name]",
+    "derived": [
+        {
+            "signature": [
+                "Length",
+                "Force"
+            ],
+            "expression": "Torque.From({1}.AsDistance, {2}, Angle.OneQuarterTurn)"
+        }
+    ],
+    "units": [
+        { "name": "NewtonMetre", "plural": "+s", "symbol": "N∙m", "SI": true, "derived": ["Length.Metre", "Force.Newton"] }
+    ]
+}

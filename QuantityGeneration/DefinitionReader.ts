@@ -2,6 +2,7 @@ import fsp from 'fs/promises'
 import { CommandLineOptions } from 'command-line-args'
 import { ScalarQuantity } from './ScalarQuantity'
 import { VectorQuantity } from './VectorQuantity'
+import { Unit } from './Unit'
 import { QuantityDefinitions } from './Utility'
 
 export class DefinitionReader {
@@ -14,7 +15,8 @@ export class DefinitionReader {
 
     public definitions: QuantityDefinitions = {
         scalars: {},
-        vectors: {}
+        vectors: {},
+        units: {}
     }
 
     private constructor() { } // nosonar: 'private' modifier means that no public constructor is generated.
@@ -36,13 +38,13 @@ export class DefinitionReader {
                     content = content.substring(1);
                 }
 
-                const jsonData: ScalarQuantity | VectorQuantity = JSON.parse(content)
+                const jsonData: GeneratedType = JSON.parse(content)
                 this.appendDefinition(jsonData, directory + '\\' + item)
             }
         }));
     }
 
-    private async appendDefinition(jsonData: ScalarQuantity | VectorQuantity, originFile: string): Promise<void> {
+    private async appendDefinition(jsonData: GeneratedType, originFile: string): Promise<void> {
         if (!('type' in jsonData && 'name' in jsonData)) {
             if ('name' in jsonData) {
                 this.reportErrorMissingType(jsonData, originFile)
@@ -60,6 +62,8 @@ export class DefinitionReader {
             this.definitions.scalars[jsonData.name] = jsonData
         } else if (jsonData.type == 'Vector') {
             this.definitions.vectors[jsonData.name] = jsonData
+        } else if (jsonData.type == 'Unit') {
+            this.definitions.units[jsonData.name] = jsonData
         } else {
             this.reportErrorTypeParsing(jsonData, originFile)
         }
@@ -69,15 +73,17 @@ export class DefinitionReader {
         console.error('Quantity definition is missing entry [name], in file: [' + originFile + '].')
     }
 
-    private reportErrorMissingType(jsonData: ScalarQuantity | VectorQuantity, originFile: string): void {
+    private reportErrorMissingType(jsonData: GeneratedType, originFile: string): void {
         console.error('Quantity definition is missing entry [type]: [' + jsonData.name + '] in file: [' + originFile + '].')
     }
 
-    private reportErrorTypeParsing(jsonData: ScalarQuantity | VectorQuantity, originFile: string): void {
+    private reportErrorTypeParsing(jsonData: GeneratedType, originFile: string): void {
         console.error('Could not parse quantity type: [' + jsonData.name + '] of type: [' + jsonData.type + '] in file: [' + originFile + '].')
     }
 
-    private reportWarningNameMismatch(jsonData: ScalarQuantity | VectorQuantity, originFile: string): void {
+    private reportWarningNameMismatch(jsonData: GeneratedType, originFile: string): void {
         console.warn('Quantity name does not match file name: [' + jsonData.name + '] in file: [' + originFile + '].')
     }
 }
+
+type GeneratedType = ScalarQuantity | VectorQuantity | Unit

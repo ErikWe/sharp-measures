@@ -30,6 +30,7 @@ public readonly partial record struct SolidAngle :
     IComparable<SolidAngle>,
     IScalarQuantity,
     IScalableScalarQuantity<SolidAngle>,
+    ISquareRootableScalarQuantity<Angle>,
     IMultiplicableScalarQuantity<SolidAngle, Scalar>,
     IMultiplicableScalarQuantity<Unhandled, Unhandled>,
     IDivisibleScalarQuantity<SolidAngle, Scalar>,
@@ -46,10 +47,20 @@ public readonly partial record struct SolidAngle :
     public static SolidAngle OneSquareRadian { get; } = new(1, UnitOfSolidAngle.SquareRadian);
     /// <summary>The <see cref="SolidAngle"/> with magnitude 1, when expressed in unit <see cref="UnitOfSolidAngle.SquareDegree"/>.</summary>
     public static SolidAngle OneSquareDegree { get; } = new(1, UnitOfSolidAngle.SquareDegree);
-    /// <summary>The <see cref="SolidAngle"/> with magnitude 1, when expressed in unit <see cref="UnitOfSolidAngle.SquareArcMinutes"/>.</summary>
-    public static SolidAngle OneSquareArcMinutes { get; } = new(1, UnitOfSolidAngle.SquareArcMinutes);
-    /// <summary>The <see cref="SolidAngle"/> with magnitude 1, when expressed in unit <see cref="UnitOfSolidAngle.SquareArcSeconds"/>.</summary>
-    public static SolidAngle OneSquareArcSeconds { get; } = new(1, UnitOfSolidAngle.SquareArcSeconds);
+    /// <summary>The <see cref="SolidAngle"/> with magnitude 1, when expressed in unit <see cref="UnitOfSolidAngle.SquareArcminute"/>.</summary>
+    public static SolidAngle OneSquareArcminute { get; } = new(1, UnitOfSolidAngle.SquareArcminute);
+    /// <summary>The <see cref="SolidAngle"/> with magnitude 1, when expressed in unit <see cref="UnitOfSolidAngle.SquareArcsecond"/>.</summary>
+    public static SolidAngle OneSquareArcsecond { get; } = new(1, UnitOfSolidAngle.SquareArcsecond);
+
+    /// <summary>Computes <see cref="SolidAngle"/> according to { <paramref name="angle"/>² }.</summary>
+    /// <param name="angle">This <see cref="Angle"/> is squared to produce a <see cref="SolidAngle"/>.</param>
+    public static SolidAngle From(Angle angle) => new(Math.Pow(angle.Magnitude, 2));
+    /// <summary>Computes <see cref="SolidAngle"/> according to { <paramref name="angle1"/> ∙ <paramref name="angle2"/> }.</summary>
+    /// <param name="angle1">This <see cref="Angle"/> is multiplied by <paramref name="angle2"/> to
+    /// produce a <see cref="SolidAngle"/>.</param>
+    /// <param name="angle2">This <see cref="Angle"/> is multiplied by <paramref name="angle1"/> to
+    /// produce a <see cref="SolidAngle"/>.</param>
+    public static SolidAngle From(Angle angle1, Angle angle2) => new(angle1.Magnitude * angle2.Magnitude);
 
     /// <summary>The magnitude of the <see cref="SolidAngle"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfSolidAngle)"/> or a pre-defined property
@@ -81,7 +92,7 @@ public readonly partial record struct SolidAngle :
     /// </item>
     /// </list>
     /// </remarks>
-    public SolidAngle(double magnitude, UnitOfSolidAngle unitOfSolidAngle) : this(magnitude * unitOfSolidAngle.Factor) { }
+    public SolidAngle(double magnitude, UnitOfSolidAngle unitOfSolidAngle) : this(magnitude * unitOfSolidAngle.SolidAngle.Magnitude) { }
     /// <summary>Constructs a new <see cref="SolidAngle"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="SolidAngle"/>.</param>
     /// <remarks>Consider preferring <see cref="SolidAngle(Scalar, UnitOfSolidAngle)"/>.</remarks>
@@ -100,10 +111,10 @@ public readonly partial record struct SolidAngle :
     public Scalar SquareRadians => InUnit(UnitOfSolidAngle.SquareRadian);
     /// <summary>Retrieves the magnitude of the <see cref="SolidAngle"/>, expressed in <see cref="UnitOfSolidAngle.SquareDegree"/>.</summary>
     public Scalar SquareDegrees => InUnit(UnitOfSolidAngle.SquareDegree);
-    /// <summary>Retrieves the magnitude of the <see cref="SolidAngle"/>, expressed in <see cref="UnitOfSolidAngle.SquareArcMinutes"/>.</summary>
-    public Scalar SquareArcMinutess => InUnit(UnitOfSolidAngle.SquareArcMinutes);
-    /// <summary>Retrieves the magnitude of the <see cref="SolidAngle"/>, expressed in <see cref="UnitOfSolidAngle.SquareArcSeconds"/>.</summary>
-    public Scalar SquareArcSecondss => InUnit(UnitOfSolidAngle.SquareArcSeconds);
+    /// <summary>Retrieves the magnitude of the <see cref="SolidAngle"/>, expressed in <see cref="UnitOfSolidAngle.SquareArcminute"/>.</summary>
+    public Scalar SquareArcminutes => InUnit(UnitOfSolidAngle.SquareArcminute);
+    /// <summary>Retrieves the magnitude of the <see cref="SolidAngle"/>, expressed in <see cref="UnitOfSolidAngle.SquareArcsecond"/>.</summary>
+    public Scalar SquareArcseconds => InUnit(UnitOfSolidAngle.SquareArcsecond);
 
     /// <summary>Indicates whether the magnitude of the <see cref="SolidAngle"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -122,19 +133,23 @@ public readonly partial record struct SolidAngle :
     /// <summary>Indicates whether the magnitude of the <see cref="SolidAngle"/> is infinite, and negative.</summary>
     public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude);
 
-    /// <summary>Produces a <see cref="SolidAngle"/>, with magnitude equal to the absolute of the original magnitude.</summary>
+    /// <summary>Computes the absolute of the <see cref="SolidAngle"/>.</summary>
     public SolidAngle Absolute() => new(Math.Abs(Magnitude));
-    /// <summary>Produces a <see cref="SolidAngle"/>, with magnitude equal to the floor of the original magnitude.</summary>
+    /// <summary>Computes the floor of the <see cref="SolidAngle"/>.</summary>
     public SolidAngle Floor() => new(Math.Floor(Magnitude));
-    /// <summary>Produces a <see cref="SolidAngle"/>, with magnitude equal to the ceiling of the original magnitude.</summary>
+    /// <summary>Computes the ceiling of the <see cref="SolidAngle"/>.</summary>
     public SolidAngle Ceiling() => new(Math.Ceiling(Magnitude));
-    /// <summary>Produces a <see cref="SolidAngle"/>, with magnitude equal to the original magnitude, rounded to the nearest integer.</summary>
+    /// <summary>Rounds the <see cref="SolidAngle"/> to the nearest integer value.</summary>
     public SolidAngle Round() => new(Math.Round(Magnitude));
+
+    /// <summary>Computes the square root of the <see cref="SolidAngle"/>, producing a <see cref="Angle"/>.</summary>
+    public Angle SquareRoot() => Angle.From(this);
 
     /// <inheritdoc/>
     public int CompareTo(SolidAngle other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="SolidAngle"/> (in SI units), and the SI base unit of the quantity.</summary>
-    public override string ToString() => $"{Magnitude} [sr]";
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="SolidAngle"/> in the default unit
+    /// <see cref="UnitOfSolidAngle.Steradian"/>, followed by the symbol [sr].</summary>
+    public override string ToString() => $"{Steradians} [sr]";
 
     /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="SolidAngle"/>,
     /// expressed in <paramref name="unitOfSolidAngle"/>.</summary>
@@ -144,20 +159,20 @@ public readonly partial record struct SolidAngle :
     /// expressed in <paramref name="unitOfSolidAngle"/>.</summary>
     /// <param name="solidAngle">The <see cref="SolidAngle"/> to be expressed in <paramref name="unitOfSolidAngle"/>.</param>
     /// <param name="unitOfSolidAngle">The <see cref="UnitOfSolidAngle"/> in which the magnitude is expressed.</param>
-    private static Scalar InUnit(SolidAngle solidAngle, UnitOfSolidAngle unitOfSolidAngle) => new(solidAngle.Magnitude / unitOfSolidAngle.Factor);
+    private static Scalar InUnit(SolidAngle solidAngle, UnitOfSolidAngle unitOfSolidAngle) => new(solidAngle.Magnitude / unitOfSolidAngle.SolidAngle.Magnitude);
 
     /// <summary>Unary plus, resulting in the unmodified <see cref="SolidAngle"/>.</summary>
     public SolidAngle Plus() => this;
     /// <summary>Negation, resulting in a <see cref="SolidAngle"/> with negated magnitude.</summary>
     public SolidAngle Negate() => new(-Magnitude);
     /// <summary>Unary plus, resulting in the unmodified <paramref name="x"/>.</summary>
-    /// <param name="x">Unary plus is applied to this instance of <see cref="SolidAngle"/>.</param>
+    /// <param name="x">Unary plus is applied to this <see cref="SolidAngle"/>.</param>
     public static SolidAngle operator +(SolidAngle x) => x.Plus();
-    /// <summary>Negation, resulting in a <see cref="SolidAngle"/> with magnitude negated from that of <paramref name="x"/>.</summary>
-    /// <param name="x">Negation is applied to this instance of <see cref="SolidAngle"/>.</param>
+    /// <summary>Negation, resulting in a <see cref="SolidAngle"/> with negated magnitude from that of <paramref name="x"/>.</summary>
+    /// <param name="x">Negation is applied to this <see cref="SolidAngle"/>.</param>
     public static SolidAngle operator -(SolidAngle x) => x.Negate();
 
-    /// <summary>Multiplies the <see cref="SolidAngle"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+    /// <summary>Multiplicates the <see cref="SolidAngle"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="factor">The factor by which the <see cref="SolidAngle"/> is multiplied.</param>
     public Unhandled Multiply(Unhandled factor) => new(Magnitude * factor.Magnitude);
@@ -165,25 +180,24 @@ public readonly partial record struct SolidAngle :
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="divisor">The divisor by which the <see cref="SolidAngle"/> is divided.</param>
     public Unhandled Divide(Unhandled divisor) => new(Magnitude / divisor.Magnitude);
-    /// <summary>Multiplies the <see cref="SolidAngle"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Multiplication of the <see cref="SolidAngle"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="SolidAngle"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="SolidAngle"/> <paramref name="x"/> is multiplied.</param>
     public static Unhandled operator *(SolidAngle x, Unhandled y) => x.Multiply(y);
-    /// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="SolidAngle"/> <paramref name="x"/> -
+    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="SolidAngle"/> <paramref name="x"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Unhandled"/> quantity by which the <see cref="SolidAngle"/> <paramref name="y"/> is multiplied.</param>
     /// <param name="y">The <see cref="SolidAngle"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
     public static Unhandled operator *(Unhandled x, SolidAngle y) => y.Multiply(x);
-    /// <summary>Divides the <see cref="SolidAngle"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Division of the <see cref="SolidAngle"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="SolidAngle"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="SolidAngle"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(SolidAngle x, Unhandled y) => x.Divide(y);
 
-    /// <summary>Produces a <see cref="SolidAngle"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="SolidAngle"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public SolidAngle Remainder(double divisor) => new(Magnitude % divisor);
     /// <summary>Scales the <see cref="SolidAngle"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="SolidAngle"/> is scaled.</param>
@@ -191,10 +205,9 @@ public readonly partial record struct SolidAngle :
     /// <summary>Scales the <see cref="SolidAngle"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="SolidAngle"/> is divided.</param>
     public SolidAngle Divide(double divisor) => new(Magnitude / divisor);
-    /// <summary>Produces a <see cref="SolidAngle"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="SolidAngle"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of <see cref="SolidAngle"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="SolidAngle"/> <paramref name="x"/> by this value.</param>
     public static SolidAngle operator %(SolidAngle x, double y) => x.Remainder(y);
     /// <summary>Scales the <see cref="SolidAngle"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="SolidAngle"/>, which is scaled by <paramref name="y"/>.</param>
@@ -209,9 +222,8 @@ public readonly partial record struct SolidAngle :
     /// <param name="y">This value is used to divide the <see cref="SolidAngle"/> <paramref name="x"/>.</param>
     public static SolidAngle operator /(SolidAngle x, double y) => x.Divide(y);
 
-    /// <summary>Produces a <see cref="SolidAngle"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="SolidAngle"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public SolidAngle Remainder(Scalar divisor) => Remainder(divisor.Magnitude);
     /// <summary>Scales the <see cref="SolidAngle"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="SolidAngle"/> is scaled.</param>
@@ -219,10 +231,9 @@ public readonly partial record struct SolidAngle :
     /// <summary>Scales the <see cref="SolidAngle"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="SolidAngle"/> is divided.</param>
     public SolidAngle Divide(Scalar divisor) => Divide(divisor.Magnitude);
-    /// <summary>Produces a <see cref="SolidAngle"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="SolidAngle"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of the <see cref="SolidAngle"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="SolidAngle"/> <paramref name="x"/> by this value.</param>
     public static SolidAngle operator %(SolidAngle x, Scalar y) => x.Remainder(y);
     /// <summary>Scales the <see cref="SolidAngle"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="SolidAngle"/>, which is scaled by <paramref name="y"/>.</param>
@@ -238,41 +249,69 @@ public readonly partial record struct SolidAngle :
     public static SolidAngle operator /(SolidAngle x, Scalar y) => x.Divide(y);
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorScalarQuantity : IScalarQuantity
-        => factory(Magnitude * factor.Magnitude);
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude * factor.Magnitude);
+        }
+    }
+
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
         where TQuotientScalarQuantity : IScalarQuantity
         where TDivisorScalarQuantity : IScalarQuantity
-        => factory(Magnitude / divisor.Magnitude);
-    /// <summary>Multiples the <see cref="SolidAngle"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude / divisor.Magnitude);
+        }
+    }
+
+    /// <summary>Multiplication of the <see cref="SolidAngle"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="SolidAngle"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="SolidAngle"/> <paramref name="x"/>.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity,
+    /// Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator *(SolidAngle x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
-    /// <summary>Divides the <see cref="SolidAngle"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <summary>Division of the <see cref="SolidAngle"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="SolidAngle"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="SolidAngle"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
+    /// Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator /(SolidAngle x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
-    /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="SolidAngle"/> is less than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than that of this <see cref="SolidAngle"/>.</param>
     public static bool operator <(SolidAngle x, SolidAngle y) => x.Magnitude < y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="SolidAngle"/> is greater than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than that of this <see cref="SolidAngle"/>.</param>
     public static bool operator >(SolidAngle x, SolidAngle y) => x.Magnitude > y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is less than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="SolidAngle"/> is less than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than or equal to that of this <see cref="SolidAngle"/>.</param>
     public static bool operator <=(SolidAngle x, SolidAngle y) => x.Magnitude <= y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="SolidAngle"/> is greater than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of this <see cref="SolidAngle"/>.</param>
     public static bool operator >=(SolidAngle x, SolidAngle y) => x.Magnitude >= y.Magnitude;
 
     /// <summary>Converts the <see cref="SolidAngle"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
@@ -280,7 +319,7 @@ public readonly partial record struct SolidAngle :
     public double ToDouble() => Magnitude;
     /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
     /// in SI units.</summary>
-    public static implicit operator double(SolidAngle x) => x.ToDouble();
+    public static explicit operator double(SolidAngle x) => x.ToDouble();
 
     /// <summary>Converts the <see cref="SolidAngle"/> to the <see cref="Scalar"/> of equivalent magnitude, when
     /// expressed in SI units.</summary>
@@ -288,15 +327,15 @@ public readonly partial record struct SolidAngle :
     /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(SolidAngle x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="SolidAngle"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="SolidAngle"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static SolidAngle FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="SolidAngle"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="SolidAngle"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static explicit operator SolidAngle(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="SolidAngle"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="SolidAngle"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static SolidAngle FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="SolidAngle"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="SolidAngle"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static explicit operator SolidAngle(Scalar x) => FromScalar(x);
 }

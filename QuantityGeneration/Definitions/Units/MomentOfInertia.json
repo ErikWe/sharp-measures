@@ -1,0 +1,17 @@
+{
+    "type": "Unit",
+    "name": "MomentOfInertia",
+    "quantity": "[name]",
+    "derived": [
+        {
+            "signature": [
+                "Mass",
+                "Length"
+            ],
+            "expression": "MomentOfInertia.From({1}, {2}.AsDistance)"
+        }
+    ],
+    "units": [
+        { "name": "KilogramSquareMetre", "plural": "+s", "symbol": "kg∙m²", "SI": true, "derived": ["Mass.Kilogram", "Length.Metre"] }
+    ]
+}

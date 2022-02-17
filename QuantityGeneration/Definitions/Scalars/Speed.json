@@ -1,20 +1,7 @@
 ﻿{
-    "name": "Speed",
     "type": "Scalar",
-    "baseUnits": "m * s^-1",
-    "unit": "UnitOfVelocity",
+    "name": "Speed",
     "vector": "Velocity",
-    "unitBias": false,
-    "inverse": false,
-    "square": "SpeedSquared",
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "MetrePerSecond", "plural": "+s [Per]", "SI": true, "symbol": "m / s" },
-        { "singular": "KilometrePerHour", "plural": "+s [Per]" },
-        { "special": true, "separator": true },
-        { "singular": "MilePerHour", "plural": "+s [Per]" }
-    ],
-    "convertible": []
+    "square": ["SpeedSquared"],
+    "unit": "Velocity"
 }

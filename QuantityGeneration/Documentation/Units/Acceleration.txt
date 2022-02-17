@@ -1,0 +1,29 @@
+#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(unit, siUnit)
+/// <summary>Describes a unit of the quantity <see cref="Quantities.Acceleration"/>, and related quantities.</summary>
+/// <remarks>#Document:DeriveRemark(#Param:unit#)# Custom <see cref="#Param:unit#"/> can also be derived from
+/// other units using the static <see cref="From(UnitOfVelocity, UnitOfTime)"/>.</remarks>
+#/
+
+#Define:FromVelocityTime(unit, siUnit)
+/// <summary>Derives a <see cref="#Param:unit#"/> according to { <paramref name="unitOfVelocity"/> / <paramref name="unitOfTime"/> }.</summary>
+/// <param name="unitOfVelocity">A <see cref="#Param:unit#"/> is derived from division of this <see cref="UnitOfVelocity"/> by <paramref name="unitOfTime"/>.</param>
+/// <param name="unitOfTime">A <see cref="#Param:unit#"/> is derived from division of <paramref name="unitOfVelocity"/> by this <see cref="UnitOfTime"/>.</param>
+#/
+
+#Define:UnitMetrePerSecondSquared
+/// <summary>The SI unit of <see cref="Quantities.Acceleration"/>, derived according to { <see cref="UnitOfVelocity.MetrePerSecond"/> /
+/// <see cref="UnitOfTime.Second"/> }. Usually written as [m/s²] or [m∙s⁻²].</summary>
+#/
+
+#Define:UnitFootPerSecondSquared
+/// <summary>Expresses <see cref="Quantities.Acceleration"/> according to { <see cref="UnitOfVelocity.FootPerSecond"/> / <see cref="UnitOfTime.Second"/> }.
+/// Usually written as [ft/s²] or [ft∙s⁻²].</summary>
+#/
+
+#Define:UnitStandardGravity
+/// <summary>Expresses <see cref="Quantities.Acceleration"/> in terms of the standard gravity on Earth, according to { 9.80665 ∙ <see cref="MetrePerSecondSquared"/> }.
+/// Usually written as [g].</summary>
+#/

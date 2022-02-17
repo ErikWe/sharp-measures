@@ -1,22 +1,7 @@
 ﻿{
-    "name": "Angle",
     "type": "Scalar",
-    "baseUnits": "1",
-    "unit": "[UnitOf]",
-    "unitBias": false,
+    "name": "Angle",
     "vector": "Rotation",
-    "inverse": false,
-    "square": false,
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "Radian", "plural": "+s", "SI": true, "symbol": "rad" },
-        { "singular": "Degree", "plural": "+s" },
-        { "singular": "ArcMinute", "plural": "+s" },
-        { "singular": "ArcSecond", "plural": "+s" },
-        { "singular": "Turn", "plural": "+s" },
-        { "singular": "Gradian", "plural": "+s" }
-    ],
-    "convertible": []
+    "square": ["SolidAngle"],
+    "unit": "[name]"
 }

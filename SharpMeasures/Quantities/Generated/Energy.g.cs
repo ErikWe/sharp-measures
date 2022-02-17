@@ -112,7 +112,7 @@ public readonly partial record struct Energy :
     /// </item>
     /// </list>
     /// </remarks>
-    public Energy(double magnitude, UnitOfEnergy unitOfEnergy) : this(magnitude * unitOfEnergy.Factor) { }
+    public Energy(double magnitude, UnitOfEnergy unitOfEnergy) : this(magnitude * unitOfEnergy.Energy.Magnitude) { }
     /// <summary>Constructs a new <see cref="Energy"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Energy"/>.</param>
     /// <remarks>Consider preferring <see cref="Energy(Scalar, UnitOfEnergy)"/>.</remarks>
@@ -142,7 +142,6 @@ public readonly partial record struct Energy :
     public Scalar Megajoules => InUnit(UnitOfEnergy.Megajoule);
     /// <summary>Retrieves the magnitude of the <see cref="Energy"/>, expressed in <see cref="UnitOfEnergy.Gigajoule"/>.</summary>
     public Scalar Gigajoules => InUnit(UnitOfEnergy.Gigajoule);
-
     /// <summary>Retrieves the magnitude of the <see cref="Energy"/>, expressed in <see cref="UnitOfEnergy.KilowattHour"/>.</summary>
     public Scalar KilowattHours => InUnit(UnitOfEnergy.KilowattHour);
     /// <summary>Retrieves the magnitude of the <see cref="Energy"/>, expressed in <see cref="UnitOfEnergy.Calorie"/>.</summary>
@@ -167,19 +166,20 @@ public readonly partial record struct Energy :
     /// <summary>Indicates whether the magnitude of the <see cref="Energy"/> is infinite, and negative.</summary>
     public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude);
 
-    /// <summary>Produces a <see cref="Energy"/>, with magnitude equal to the absolute of the original magnitude.</summary>
+    /// <summary>Computes the absolute of the <see cref="Energy"/>.</summary>
     public Energy Absolute() => new(Math.Abs(Magnitude));
-    /// <summary>Produces a <see cref="Energy"/>, with magnitude equal to the floor of the original magnitude.</summary>
+    /// <summary>Computes the floor of the <see cref="Energy"/>.</summary>
     public Energy Floor() => new(Math.Floor(Magnitude));
-    /// <summary>Produces a <see cref="Energy"/>, with magnitude equal to the ceiling of the original magnitude.</summary>
+    /// <summary>Computes the ceiling of the <see cref="Energy"/>.</summary>
     public Energy Ceiling() => new(Math.Ceiling(Magnitude));
-    /// <summary>Produces a <see cref="Energy"/>, with magnitude equal to the original magnitude, rounded to the nearest integer.</summary>
+    /// <summary>Rounds the <see cref="Energy"/> to the nearest integer value.</summary>
     public Energy Round() => new(Math.Round(Magnitude));
 
     /// <inheritdoc/>
     public int CompareTo(Energy other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="Energy"/> (in SI units), and the SI base unit of the quantity.</summary>
-    public override string ToString() => $"{Magnitude} [J]";
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="Energy"/> in the default unit
+    /// <see cref="UnitOfEnergy.Joule"/>, followed by the symbol [J].</summary>
+    public override string ToString() => $"{Joules} [J]";
 
     /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Energy"/>,
     /// expressed in <paramref name="unitOfEnergy"/>.</summary>
@@ -189,20 +189,20 @@ public readonly partial record struct Energy :
     /// expressed in <paramref name="unitOfEnergy"/>.</summary>
     /// <param name="energy">The <see cref="Energy"/> to be expressed in <paramref name="unitOfEnergy"/>.</param>
     /// <param name="unitOfEnergy">The <see cref="UnitOfEnergy"/> in which the magnitude is expressed.</param>
-    private static Scalar InUnit(Energy energy, UnitOfEnergy unitOfEnergy) => new(energy.Magnitude / unitOfEnergy.Factor);
+    private static Scalar InUnit(Energy energy, UnitOfEnergy unitOfEnergy) => new(energy.Magnitude / unitOfEnergy.Energy.Magnitude);
 
     /// <summary>Unary plus, resulting in the unmodified <see cref="Energy"/>.</summary>
     public Energy Plus() => this;
     /// <summary>Negation, resulting in a <see cref="Energy"/> with negated magnitude.</summary>
     public Energy Negate() => new(-Magnitude);
     /// <summary>Unary plus, resulting in the unmodified <paramref name="x"/>.</summary>
-    /// <param name="x">Unary plus is applied to this instance of <see cref="Energy"/>.</param>
+    /// <param name="x">Unary plus is applied to this <see cref="Energy"/>.</param>
     public static Energy operator +(Energy x) => x.Plus();
-    /// <summary>Negation, resulting in a <see cref="Energy"/> with magnitude negated from that of <paramref name="x"/>.</summary>
-    /// <param name="x">Negation is applied to this instance of <see cref="Energy"/>.</param>
+    /// <summary>Negation, resulting in a <see cref="Energy"/> with negated magnitude from that of <paramref name="x"/>.</summary>
+    /// <param name="x">Negation is applied to this <see cref="Energy"/>.</param>
     public static Energy operator -(Energy x) => x.Negate();
 
-    /// <summary>Multiplies the <see cref="Energy"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+    /// <summary>Multiplicates the <see cref="Energy"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="factor">The factor by which the <see cref="Energy"/> is multiplied.</param>
     public Unhandled Multiply(Unhandled factor) => new(Magnitude * factor.Magnitude);
@@ -210,25 +210,24 @@ public readonly partial record struct Energy :
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="divisor">The divisor by which the <see cref="Energy"/> is divided.</param>
     public Unhandled Divide(Unhandled divisor) => new(Magnitude / divisor.Magnitude);
-    /// <summary>Multiplies the <see cref="Energy"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Multiplication of the <see cref="Energy"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Energy"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Energy"/> <paramref name="x"/> is multiplied.</param>
     public static Unhandled operator *(Energy x, Unhandled y) => x.Multiply(y);
-    /// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="Energy"/> <paramref name="x"/> -
+    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="Energy"/> <paramref name="x"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Unhandled"/> quantity by which the <see cref="Energy"/> <paramref name="y"/> is multiplied.</param>
     /// <param name="y">The <see cref="Energy"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
     public static Unhandled operator *(Unhandled x, Energy y) => y.Multiply(x);
-    /// <summary>Divides the <see cref="Energy"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Division of the <see cref="Energy"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Energy"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Energy"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(Energy x, Unhandled y) => x.Divide(y);
 
-    /// <summary>Produces a <see cref="Energy"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="Energy"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public Energy Remainder(double divisor) => new(Magnitude % divisor);
     /// <summary>Scales the <see cref="Energy"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Energy"/> is scaled.</param>
@@ -236,10 +235,9 @@ public readonly partial record struct Energy :
     /// <summary>Scales the <see cref="Energy"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="Energy"/> is divided.</param>
     public Energy Divide(double divisor) => new(Magnitude / divisor);
-    /// <summary>Produces a <see cref="Energy"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Energy"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of <see cref="Energy"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="Energy"/> <paramref name="x"/> by this value.</param>
     public static Energy operator %(Energy x, double y) => x.Remainder(y);
     /// <summary>Scales the <see cref="Energy"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Energy"/>, which is scaled by <paramref name="y"/>.</param>
@@ -254,9 +252,8 @@ public readonly partial record struct Energy :
     /// <param name="y">This value is used to divide the <see cref="Energy"/> <paramref name="x"/>.</param>
     public static Energy operator /(Energy x, double y) => x.Divide(y);
 
-    /// <summary>Produces a <see cref="Energy"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="Energy"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public Energy Remainder(Scalar divisor) => Remainder(divisor.Magnitude);
     /// <summary>Scales the <see cref="Energy"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Energy"/> is scaled.</param>
@@ -264,10 +261,9 @@ public readonly partial record struct Energy :
     /// <summary>Scales the <see cref="Energy"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="Energy"/> is divided.</param>
     public Energy Divide(Scalar divisor) => Divide(divisor.Magnitude);
-    /// <summary>Produces a <see cref="Energy"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Energy"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of the <see cref="Energy"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="Energy"/> <paramref name="x"/> by this value.</param>
     public static Energy operator %(Energy x, Scalar y) => x.Remainder(y);
     /// <summary>Scales the <see cref="Energy"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Energy"/>, which is scaled by <paramref name="y"/>.</param>
@@ -283,41 +279,69 @@ public readonly partial record struct Energy :
     public static Energy operator /(Energy x, Scalar y) => x.Divide(y);
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorScalarQuantity : IScalarQuantity
-        => factory(Magnitude * factor.Magnitude);
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude * factor.Magnitude);
+        }
+    }
+
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
         where TQuotientScalarQuantity : IScalarQuantity
         where TDivisorScalarQuantity : IScalarQuantity
-        => factory(Magnitude / divisor.Magnitude);
-    /// <summary>Multiples the <see cref="Energy"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude / divisor.Magnitude);
+        }
+    }
+
+    /// <summary>Multiplication of the <see cref="Energy"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Energy"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Energy"/> <paramref name="x"/>.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity,
+    /// Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator *(Energy x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
-    /// <summary>Divides the <see cref="Energy"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <summary>Division of the <see cref="Energy"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Energy"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="Energy"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
+    /// Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator /(Energy x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
-    /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Energy"/> is less than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than that of this <see cref="Energy"/>.</param>
     public static bool operator <(Energy x, Energy y) => x.Magnitude < y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Energy"/> is greater than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than that of this <see cref="Energy"/>.</param>
     public static bool operator >(Energy x, Energy y) => x.Magnitude > y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is less than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Energy"/> is less than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than or equal to that of this <see cref="Energy"/>.</param>
     public static bool operator <=(Energy x, Energy y) => x.Magnitude <= y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Energy"/> is greater than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of this <see cref="Energy"/>.</param>
     public static bool operator >=(Energy x, Energy y) => x.Magnitude >= y.Magnitude;
 
     /// <summary>Converts the <see cref="Energy"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
@@ -325,7 +349,7 @@ public readonly partial record struct Energy :
     public double ToDouble() => Magnitude;
     /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
     /// in SI units.</summary>
-    public static implicit operator double(Energy x) => x.ToDouble();
+    public static explicit operator double(Energy x) => x.ToDouble();
 
     /// <summary>Converts the <see cref="Energy"/> to the <see cref="Scalar"/> of equivalent magnitude, when
     /// expressed in SI units.</summary>
@@ -333,15 +357,15 @@ public readonly partial record struct Energy :
     /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(Energy x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Energy"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="Energy"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static Energy FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Energy"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="Energy"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static explicit operator Energy(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Energy"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="Energy"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static Energy FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Energy"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="Energy"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static explicit operator Energy(Scalar x) => FromScalar(x);
 }

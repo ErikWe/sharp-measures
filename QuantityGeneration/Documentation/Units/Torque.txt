@@ -1,0 +1,19 @@
+#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(unit, siUnit)
+/// <summary>Describes a unit of the quantity <see cref="Quantities.Torque"/>, or related quantities.</summary>
+/// <remarks>#Document:DeriveRemark(#Param:unit#)# Custom <see cref="#Param:unit#"/> can also be derived from
+/// other units using the static <see cref="From(UnitOfLength, UnitOfForce)"/>.</remarks>
+#/
+
+#Define:FromLengthForce(unit, siUnit)
+/// <summary>Derives a <see cref="#Param:unit#"/> according to { <paramref name="unitOfLength"/> ∙ <paramref name="unitOfForce"/> }.</summary>
+/// <param name="unitOfLength">A <see cref="#Param:unit#"/> is derived from multiplication of this <see cref="UnitOfLength"/> by <paramref name="unitOfForce"/>.</param>
+/// <param name="unitOfForce">A <see cref="#Param:unit#"/> is derived from multiplication of this <see cref="UnitOfForce"/> by <paramref name="unitOfLength"/>.</param>
+#/
+
+#Define:UnitNewtonMetre
+/// <summary>The SI unit of <see cref="Quantities.Torque"/>, derived according to { <see cref="UnitOfLength.Metre"/> ∙ <see cref="UnitOfForce.Newton"/> }.
+/// Usually written as [N∙m].</summary>
+#/

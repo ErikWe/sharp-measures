@@ -4,8 +4,8 @@ using ErikWe.SharpMeasures.Units;
 
 using System;
 
-/// <summary>A measure of the scalar quantity <see cref="FrequencyDrift"/>, describing change in <see cref="Frequency"/> over time.
-/// The quantity is expressed in <see cref="UnitOfFrequencyDrift"/>, with the SI unit being [Hz / s].
+/// <summary>A measure of the scalar quantity <see cref="FrequencyDrift"/>, describing change in <see cref="Frequency"/> over <see cref="Time"/>.
+/// The quantity is expressed in <see cref="UnitOfFrequencyDrift"/>, with the SI unit being [Hz∙s⁻¹].
 /// <para>
 /// New instances of <see cref="FrequencyDrift"/> can be constructed using pre-defined properties, prefixed with 'One', having magnitude 1 expressed
 /// in the desired <see cref="UnitOfFrequencyDrift"/>. Instances can also be produced by combining other quantities, either through mathematical operators
@@ -18,7 +18,7 @@ using System;
 /// </item>
 /// <item>
 /// <code>
-/// <see cref="FrequencyDrift"/> d = <see cref="FrequencyDrift.From(TimeSquared)"/>;
+/// <see cref="FrequencyDrift"/> d = <see cref="FrequencyDrift.From(Frequency, Time)"/>;
 /// </code>
 /// </item>
 /// </list>
@@ -44,13 +44,21 @@ public readonly partial record struct FrequencyDrift :
 
     /// <summary>The <see cref="FrequencyDrift"/> with magnitude 1, when expressed in unit <see cref="UnitOfFrequencyDrift.HertzPerSecond"/>.</summary>
     public static FrequencyDrift OneHertzPerSecond { get; } = new(1, UnitOfFrequencyDrift.HertzPerSecond);
+    /// <summary>The <see cref="FrequencyDrift"/> with magnitude 1, when expressed in unit <see cref="UnitOfFrequencyDrift.PerSecondSquared"/>.</summary>
+    public static FrequencyDrift OnePerSecondSquared { get; } = new(1, UnitOfFrequencyDrift.PerSecondSquared);
 
-    /// <summary>Computes <see cref="FrequencyDrift"/> according to { <see cref="FrequencyDrift"/> = 1 / <paramref name="timeSquared"/> }.</summary>
+    /// <summary>Computes <see cref="FrequencyDrift"/> according to { 1 / <paramref name="timeSquared"/> }.</summary>
     /// <summary>Constructs a <see cref="FrequencyDrift"/> by inverting the <see cref="TimeSquared"/> <paramref name="timeSquared"/>.</summary>
     public static FrequencyDrift From(TimeSquared timeSquared) => new(1 / timeSquared.Magnitude);
-    /// <summary>Computes <see cref="FrequencyDrift"/> according to { <see cref="FrequencyDrift"/> = <paramref name="frequency"/>² }.</summary>
+    /// <summary>Computes <see cref="FrequencyDrift"/> according to { <paramref name="frequency"/>² }.</summary>
     /// <param name="frequency">This <see cref="Frequency"/> is squared to produce a <see cref="FrequencyDrift"/>.</param>
     public static FrequencyDrift From(Frequency frequency) => new(Math.Pow(frequency.Magnitude, 2));
+    /// <summary>Computes <see cref="FrequencyDrift"/> according to { <paramref name="frequency1"/> ∙ <paramref name="frequency2"/> }.</summary>
+    /// <param name="frequency1">This <see cref="Frequency"/> is multiplied by <paramref name="frequency2"/> to
+    /// produce a <see cref="FrequencyDrift"/>.</param>
+    /// <param name="frequency2">This <see cref="Frequency"/> is multiplied by <paramref name="frequency1"/> to
+    /// produce a <see cref="FrequencyDrift"/>.</param>
+    public static FrequencyDrift From(Frequency frequency1, Frequency frequency2) => new(frequency1.Magnitude * frequency2.Magnitude);
 
     /// <summary>The magnitude of the <see cref="FrequencyDrift"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfFrequencyDrift)"/> or a pre-defined property
@@ -82,7 +90,7 @@ public readonly partial record struct FrequencyDrift :
     /// </item>
     /// </list>
     /// </remarks>
-    public FrequencyDrift(double magnitude, UnitOfFrequencyDrift unitOfFrequencyDrift) : this(magnitude * unitOfFrequencyDrift.Factor) { }
+    public FrequencyDrift(double magnitude, UnitOfFrequencyDrift unitOfFrequencyDrift) : this(magnitude * unitOfFrequencyDrift.FrequencyDrift.Magnitude) { }
     /// <summary>Constructs a new <see cref="FrequencyDrift"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="FrequencyDrift"/>.</param>
     /// <remarks>Consider preferring <see cref="FrequencyDrift(Scalar, UnitOfFrequencyDrift)"/>.</remarks>
@@ -97,6 +105,8 @@ public readonly partial record struct FrequencyDrift :
 
     /// <summary>Retrieves the magnitude of the <see cref="FrequencyDrift"/>, expressed in <see cref="UnitOfFrequencyDrift.HertzPerSecond"/>.</summary>
     public Scalar HertzPerSecond => InUnit(UnitOfFrequencyDrift.HertzPerSecond);
+    /// <summary>Retrieves the magnitude of the <see cref="FrequencyDrift"/>, expressed in <see cref="UnitOfFrequencyDrift.PerSecondSquared"/>.</summary>
+    public Scalar PerSecondSquared => InUnit(UnitOfFrequencyDrift.PerSecondSquared);
 
     /// <summary>Indicates whether the magnitude of the <see cref="FrequencyDrift"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -115,24 +125,25 @@ public readonly partial record struct FrequencyDrift :
     /// <summary>Indicates whether the magnitude of the <see cref="FrequencyDrift"/> is infinite, and negative.</summary>
     public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude);
 
-    /// <summary>Produces a <see cref="FrequencyDrift"/>, with magnitude equal to the absolute of the original magnitude.</summary>
+    /// <summary>Computes the absolute of the <see cref="FrequencyDrift"/>.</summary>
     public FrequencyDrift Absolute() => new(Math.Abs(Magnitude));
-    /// <summary>Produces a <see cref="FrequencyDrift"/>, with magnitude equal to the floor of the original magnitude.</summary>
+    /// <summary>Computes the floor of the <see cref="FrequencyDrift"/>.</summary>
     public FrequencyDrift Floor() => new(Math.Floor(Magnitude));
-    /// <summary>Produces a <see cref="FrequencyDrift"/>, with magnitude equal to the ceiling of the original magnitude.</summary>
+    /// <summary>Computes the ceiling of the <see cref="FrequencyDrift"/>.</summary>
     public FrequencyDrift Ceiling() => new(Math.Ceiling(Magnitude));
-    /// <summary>Produces a <see cref="FrequencyDrift"/>, with magnitude equal to the original magnitude, rounded to the nearest integer.</summary>
+    /// <summary>Rounds the <see cref="FrequencyDrift"/> to the nearest integer value.</summary>
     public FrequencyDrift Round() => new(Math.Round(Magnitude));
 
-    /// <summary>Inverts the <see cref="FrequencyDrift"/>, producing a <see cref="TimeSquared"/>.</summary>
+    /// <summary>Computes the inverse of the <see cref="FrequencyDrift"/>, producing a <see cref="TimeSquared"/>.</summary>
     public TimeSquared Invert() => TimeSquared.From(this);
-    /// <summary>Takes the square root of the <see cref="FrequencyDrift"/>, producing a <see cref="Frequency"/>.</summary>
+    /// <summary>Computes the square root of the <see cref="FrequencyDrift"/>, producing a <see cref="Frequency"/>.</summary>
     public Frequency SquareRoot() => Frequency.From(this);
 
     /// <inheritdoc/>
     public int CompareTo(FrequencyDrift other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="FrequencyDrift"/> (in SI units), and the SI base unit of the quantity.</summary>
-    public override string ToString() => $"{Magnitude} [Hz / s]";
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="FrequencyDrift"/> in the default unit
+    /// <see cref="UnitOfFrequencyDrift.HertzPerSecond"/>, followed by the symbol [Hz∙s⁻¹].</summary>
+    public override string ToString() => $"{HertzPerSecond} [Hz∙s⁻¹]";
 
     /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="FrequencyDrift"/>,
     /// expressed in <paramref name="unitOfFrequencyDrift"/>.</summary>
@@ -142,20 +153,21 @@ public readonly partial record struct FrequencyDrift :
     /// expressed in <paramref name="unitOfFrequencyDrift"/>.</summary>
     /// <param name="frequencyDrift">The <see cref="FrequencyDrift"/> to be expressed in <paramref name="unitOfFrequencyDrift"/>.</param>
     /// <param name="unitOfFrequencyDrift">The <see cref="UnitOfFrequencyDrift"/> in which the magnitude is expressed.</param>
-    private static Scalar InUnit(FrequencyDrift frequencyDrift, UnitOfFrequencyDrift unitOfFrequencyDrift) => new(frequencyDrift.Magnitude / unitOfFrequencyDrift.Factor);
+    private static Scalar InUnit(FrequencyDrift frequencyDrift, UnitOfFrequencyDrift unitOfFrequencyDrift) 
+    	=> new(frequencyDrift.Magnitude / unitOfFrequencyDrift.FrequencyDrift.Magnitude);
 
     /// <summary>Unary plus, resulting in the unmodified <see cref="FrequencyDrift"/>.</summary>
     public FrequencyDrift Plus() => this;
     /// <summary>Negation, resulting in a <see cref="FrequencyDrift"/> with negated magnitude.</summary>
     public FrequencyDrift Negate() => new(-Magnitude);
     /// <summary>Unary plus, resulting in the unmodified <paramref name="x"/>.</summary>
-    /// <param name="x">Unary plus is applied to this instance of <see cref="FrequencyDrift"/>.</param>
+    /// <param name="x">Unary plus is applied to this <see cref="FrequencyDrift"/>.</param>
     public static FrequencyDrift operator +(FrequencyDrift x) => x.Plus();
-    /// <summary>Negation, resulting in a <see cref="FrequencyDrift"/> with magnitude negated from that of <paramref name="x"/>.</summary>
-    /// <param name="x">Negation is applied to this instance of <see cref="FrequencyDrift"/>.</param>
+    /// <summary>Negation, resulting in a <see cref="FrequencyDrift"/> with negated magnitude from that of <paramref name="x"/>.</summary>
+    /// <param name="x">Negation is applied to this <see cref="FrequencyDrift"/>.</param>
     public static FrequencyDrift operator -(FrequencyDrift x) => x.Negate();
 
-    /// <summary>Multiplies the <see cref="FrequencyDrift"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+    /// <summary>Multiplicates the <see cref="FrequencyDrift"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="factor">The factor by which the <see cref="FrequencyDrift"/> is multiplied.</param>
     public Unhandled Multiply(Unhandled factor) => new(Magnitude * factor.Magnitude);
@@ -163,25 +175,24 @@ public readonly partial record struct FrequencyDrift :
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="divisor">The divisor by which the <see cref="FrequencyDrift"/> is divided.</param>
     public Unhandled Divide(Unhandled divisor) => new(Magnitude / divisor.Magnitude);
-    /// <summary>Multiplies the <see cref="FrequencyDrift"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Multiplication of the <see cref="FrequencyDrift"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="FrequencyDrift"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="FrequencyDrift"/> <paramref name="x"/> is multiplied.</param>
     public static Unhandled operator *(FrequencyDrift x, Unhandled y) => x.Multiply(y);
-    /// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="FrequencyDrift"/> <paramref name="x"/> -
+    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="FrequencyDrift"/> <paramref name="x"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Unhandled"/> quantity by which the <see cref="FrequencyDrift"/> <paramref name="y"/> is multiplied.</param>
     /// <param name="y">The <see cref="FrequencyDrift"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
     public static Unhandled operator *(Unhandled x, FrequencyDrift y) => y.Multiply(x);
-    /// <summary>Divides the <see cref="FrequencyDrift"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Division of the <see cref="FrequencyDrift"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="FrequencyDrift"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="FrequencyDrift"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(FrequencyDrift x, Unhandled y) => x.Divide(y);
 
-    /// <summary>Produces a <see cref="FrequencyDrift"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="FrequencyDrift"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public FrequencyDrift Remainder(double divisor) => new(Magnitude % divisor);
     /// <summary>Scales the <see cref="FrequencyDrift"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="FrequencyDrift"/> is scaled.</param>
@@ -189,10 +200,9 @@ public readonly partial record struct FrequencyDrift :
     /// <summary>Scales the <see cref="FrequencyDrift"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="FrequencyDrift"/> is divided.</param>
     public FrequencyDrift Divide(double divisor) => new(Magnitude / divisor);
-    /// <summary>Produces a <see cref="FrequencyDrift"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="FrequencyDrift"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of <see cref="FrequencyDrift"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="FrequencyDrift"/> <paramref name="x"/> by this value.</param>
     public static FrequencyDrift operator %(FrequencyDrift x, double y) => x.Remainder(y);
     /// <summary>Scales the <see cref="FrequencyDrift"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="FrequencyDrift"/>, which is scaled by <paramref name="y"/>.</param>
@@ -206,14 +216,13 @@ public readonly partial record struct FrequencyDrift :
     /// <param name="x">The <see cref="FrequencyDrift"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">This value is used to divide the <see cref="FrequencyDrift"/> <paramref name="x"/>.</param>
     public static FrequencyDrift operator /(FrequencyDrift x, double y) => x.Divide(y);
-/// <summary>Inverts the <see cref="FrequencyDrift"/> <paramref name="y"/> to produce a <see cref="TimeSquared"/>, which is then scaled by <paramref name="x"/>.</summary>
-/// <param name="x">This value is used to scale the inverted <see cref="FrequencyDrift"/> <paramref name="y"/>.</param>
-/// <param name="y">The <see cref="FrequencyDrift"/>, which is inverted to a <see cref="TimeSquared"/> and scaled by <paramref name="x"/>.</param>
+    /// <summary>Inverts the <see cref="FrequencyDrift"/> <paramref name="y"/> to produce a <see cref="TimeSquared"/>, which is then scaled by <paramref name="x"/>.</summary>
+    /// <param name="x">This value is used to scale the inverted <see cref="FrequencyDrift"/> <paramref name="y"/>.</param>
+    /// <param name="y">The <see cref="FrequencyDrift"/>, which is inverted to a <see cref="TimeSquared"/> and scaled by <paramref name="x"/>.</param>
     public static TimeSquared operator /(double x, FrequencyDrift y) => x * y.Invert();
 
-    /// <summary>Produces a <see cref="FrequencyDrift"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="FrequencyDrift"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public FrequencyDrift Remainder(Scalar divisor) => Remainder(divisor.Magnitude);
     /// <summary>Scales the <see cref="FrequencyDrift"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="FrequencyDrift"/> is scaled.</param>
@@ -221,10 +230,9 @@ public readonly partial record struct FrequencyDrift :
     /// <summary>Scales the <see cref="FrequencyDrift"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="FrequencyDrift"/> is divided.</param>
     public FrequencyDrift Divide(Scalar divisor) => Divide(divisor.Magnitude);
-    /// <summary>Produces a <see cref="FrequencyDrift"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="FrequencyDrift"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of the <see cref="FrequencyDrift"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="FrequencyDrift"/> <paramref name="x"/> by this value.</param>
     public static FrequencyDrift operator %(FrequencyDrift x, Scalar y) => x.Remainder(y);
     /// <summary>Scales the <see cref="FrequencyDrift"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="FrequencyDrift"/>, which is scaled by <paramref name="y"/>.</param>
@@ -238,47 +246,76 @@ public readonly partial record struct FrequencyDrift :
     /// <param name="x">The <see cref="FrequencyDrift"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">This value is used to divide the <see cref="FrequencyDrift"/> <paramref name="x"/>.</param>
     public static FrequencyDrift operator /(FrequencyDrift x, Scalar y) => x.Divide(y);
-/// <summary>Inverts the <see cref="FrequencyDrift"/> <paramref name="y"/> to produce a <see cref="TimeSquared"/>, which is then scaled by <paramref name="x"/>.</summary>
-/// <param name="x">This value is used to scale the inverted <see cref="FrequencyDrift"/> <paramref name="y"/>.</param>
-/// <param name="y">The <see cref="FrequencyDrift"/>, which is inverted to a <see cref="TimeSquared"/> and scaled by <paramref name="x"/>.</param>
+    /// <summary>Inverts the <see cref="FrequencyDrift"/> <paramref name="y"/> to produce a <see cref="TimeSquared"/>,
+    /// which is then scaled by <paramref name="x"/>.</summary>
+    /// <param name="x">This value is used to scale the inverted <see cref="FrequencyDrift"/> <paramref name="y"/>.</param>
+    /// <param name="y">The <see cref="FrequencyDrift"/>, which is inverted to a <see cref="TimeSquared"/> and scaled by <paramref name="x"/>.</param>
     public static TimeSquared operator /(Scalar x, FrequencyDrift y) => x * y.Invert();
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorScalarQuantity : IScalarQuantity
-        => factory(Magnitude * factor.Magnitude);
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude * factor.Magnitude);
+        }
+    }
+
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
         where TQuotientScalarQuantity : IScalarQuantity
         where TDivisorScalarQuantity : IScalarQuantity
-        => factory(Magnitude / divisor.Magnitude);
-    /// <summary>Multiples the <see cref="FrequencyDrift"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude / divisor.Magnitude);
+        }
+    }
+
+    /// <summary>Multiplication of the <see cref="FrequencyDrift"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="FrequencyDrift"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="FrequencyDrift"/> <paramref name="x"/>.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity,
+    /// Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator *(FrequencyDrift x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
-    /// <summary>Divides the <see cref="FrequencyDrift"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <summary>Division of the <see cref="FrequencyDrift"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="FrequencyDrift"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="FrequencyDrift"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
+    /// Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator /(FrequencyDrift x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
-    /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="FrequencyDrift"/> is less than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than that of this <see cref="FrequencyDrift"/>.</param>
     public static bool operator <(FrequencyDrift x, FrequencyDrift y) => x.Magnitude < y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="FrequencyDrift"/> is greater than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than that of this <see cref="FrequencyDrift"/>.</param>
     public static bool operator >(FrequencyDrift x, FrequencyDrift y) => x.Magnitude > y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is less than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="FrequencyDrift"/> is less than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than or equal to that of this <see cref="FrequencyDrift"/>.</param>
     public static bool operator <=(FrequencyDrift x, FrequencyDrift y) => x.Magnitude <= y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="FrequencyDrift"/> is greater than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of this <see cref="FrequencyDrift"/>.</param>
     public static bool operator >=(FrequencyDrift x, FrequencyDrift y) => x.Magnitude >= y.Magnitude;
 
     /// <summary>Converts the <see cref="FrequencyDrift"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
@@ -286,7 +323,7 @@ public readonly partial record struct FrequencyDrift :
     public double ToDouble() => Magnitude;
     /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
     /// in SI units.</summary>
-    public static implicit operator double(FrequencyDrift x) => x.ToDouble();
+    public static explicit operator double(FrequencyDrift x) => x.ToDouble();
 
     /// <summary>Converts the <see cref="FrequencyDrift"/> to the <see cref="Scalar"/> of equivalent magnitude, when
     /// expressed in SI units.</summary>
@@ -294,15 +331,15 @@ public readonly partial record struct FrequencyDrift :
     /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(FrequencyDrift x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="FrequencyDrift"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="FrequencyDrift"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static FrequencyDrift FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="FrequencyDrift"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="FrequencyDrift"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static explicit operator FrequencyDrift(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="FrequencyDrift"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="FrequencyDrift"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static FrequencyDrift FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="FrequencyDrift"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="FrequencyDrift"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static explicit operator FrequencyDrift(Scalar x) => FromScalar(x);
 }

@@ -6,7 +6,7 @@ using System;
 using System.Numerics;
 
 /// <summary>A measure of the vector quantity <see cref="Absement3"/>, of dimensionality three, describing sustained displacement
-/// - <see cref="Displacement3"/> for some <see cref="Time"/>. The quantity is expressed in <see cref="UnitOfAbsement"/>, with the SI unit being [m * s].
+/// - <see cref="Displacement3"/> for some <see cref="Time"/>. The quantity is expressed in <see cref="UnitOfAbsement"/>, with the SI unit being [m∙s].
 /// <para>
 /// New instances of <see cref="Absement3"/> can be constructed by multiplying a <see cref="Absement"/> with a <see cref="Vector3"/> or (double, double, double).
 /// Instances can also be produced by combining other quantities, either through mathematical operators or using overloads of the static method 'From'. This is demonstrated below:
@@ -22,7 +22,7 @@ using System.Numerics;
 /// </code>
 /// </item>
 /// </list>
-/// The components of the measure can be retrieved as a <see cref="Vector3"/> using pre-defined properties, prefixed with 'In', followed by the desired <see cref="UnitOfAbsement"/>.
+/// The magnitude of the components can be retrieved in the desired <see cref="UnitOfAbsement"/> using pre-defined properties, such as <see cref="MetreSeconds"/>.
 /// </para>
 /// </summary>
 public readonly partial record struct Absement3 :
@@ -103,7 +103,8 @@ public readonly partial record struct Absement3 :
     /// <param name="z">The magnitude of the Z-component of the <see cref="Absement3"/>, expressed in <paramref name="unitOfAbsement"/>.</param>
     /// <param name="unitOfAbsement">The <see cref="UnitOfAbsement"/> in which the magnitudes of the components,
     /// (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>), are expressed.</param>
-    public Absement3(double x, double y, double z, UnitOfAbsement unitOfAbsement) : this(x * unitOfAbsement.Factor, y * unitOfAbsement.Factor, z * unitOfAbsement.Factor) { }
+    public Absement3(double x, double y, double z, UnitOfAbsement unitOfAbsement) : 
+    	this(x * unitOfAbsement.Absement, y * unitOfAbsement.Absement, z * unitOfAbsement.Absement) { }
 
     /// <summary>Constructs a new <see cref="Absement3"/> with components of magnitudes <paramref name="components"/>.</summary>
     /// <param name="components">The magnitudes of the components of the <see cref="Absement3"/>.</param>
@@ -141,50 +142,70 @@ public readonly partial record struct Absement3 :
     /// <inheritdoc/>
     Scalar IVector3Quantity.Magnitude() => Maths.Vectors.Dot(this, this).SquareRoot();
     /// <summary>Computes the magnitude, or norm, of the vector quantity <see cref="Absement3"/>, as a <see cref="Absement"/>.</summary>
-    /// <remarks>For improved performance, consider preferring <see cref="SquaredMagnitude"/> when possible.</remarks>
+    /// <remarks>For improved performance, consider preferring <see cref="SquaredMagnitude"/> when applicable.</remarks>
     public Absement Magnitude() => new(Maths.Vectors.Dot(this, this).SquareRoot());
     /// <summary>Computes the square of the magnitude, or norm, of the vector quantity <see cref="Absement3"/>.</summary>
     /// <remarks>For clarity, consider first extracting the magnitudes of the components in the desired <see cref="UnitOfAbsement"/>.</remarks>
     public Scalar SquaredMagnitude() => Maths.Vectors.Dot(this, this);
 
-    /// <summary>Normalizes the <see cref="Absement3"/> - if expressed in SI units.</summary>
+    /// <summary>Computes the normalized <see cref="Absement3"/> - if expressed in SI units.</summary>
     /// <remarks>Note that the resulting <see cref="Absement3"/> will only be normalized if expressed in SI units.</remarks>
     public Absement3 Normalize() => this / Magnitude().Magnitude;
-    /// <summary>Computes the transformation of the existing <see cref="Absement3"/> by <paramref name="transform"/>, resulting in
-    /// a new <see cref="Absement3"/>.</summary>
+    /// <summary>Computes the transformation of the <see cref="Absement3"/> by <paramref name="transform"/>.</summary>
     /// <param name="transform">The <see cref="Absement3"/> is transformed by this <see cref="Matrix4x4"/>.</param>
     public Absement3 Transform(Matrix4x4 transform) => new(Maths.Vectors.Transform(this, transform));
     
     /// <summary>Performs dot-multiplication of the <see cref="Absement3"/> by <paramref name="factor"/>, resulting in a
-    /// <cref name="Absement"/>.</summary>
+    /// <see cref="Absement"/>.</summary>
     /// <param name="factor">The <see cref="Absement3"/> is dot-multiplied by this <see cref="Vector3"/>.</param>
     public Absement Dot(Vector3 factor) => new(Maths.Vectors.Dot(this, factor));
     /// <summary>Performs dot-multiplication of the <see cref="Absement3"/> by <paramref name="factor"/>, resulting in a
-    /// <cref name="Unhandled"/>.</summary>
+    /// <see cref="Unhandled"/>.</summary>
     /// <param name="factor">The <see cref="Absement3"/> is dot-multiplied by this <see cref="Unhandled3"/>.</param>
     public Unhandled Dot(Unhandled3 factor) => new(Maths.Vectors.Dot(this, factor));
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TProductScalarQuantity Dot<TProductScalarQuantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<Scalar, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorVector3Quantity : IVector3Quantity
-        => factory(Maths.Vectors.Dot(this, factor));
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Maths.Vectors.Dot(this, factor));
+        }
+    }
+
     /// <summary>Performs cross-multiplication of the <see cref="Absement3"/> by <paramref name="factor"/>, resulting in a
     /// <cref see="Absement3"/>.</summary>
     /// <param name="factor">The <see cref="Absement3"/> is cross-multiplied by this <see cref="Vector3"/>.</param>
     public Absement3 Cross(Vector3 factor) => new(Maths.Vectors.Cross(this, factor));
     /// <summary>Performs cross-multiplication of the <see cref="Absement3"/> by <paramref name="factor"/>, resulting in a
-    /// <cref name="Unhandled3"/>.</summary>
+    /// <see cref="Unhandled3"/>.</summary>
     /// <param name="factor">The <see cref="Absement3"/> is cross-multiplied by this <see cref="Unhandled3"/>.</param>
     public Unhandled3 Cross(Unhandled3 factor) => new(Maths.Vectors.Cross(this, factor));
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TProductVector3Quantity Cross<TProductVector3Quantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<Vector3, TProductVector3Quantity> factory)
         where TProductVector3Quantity : IVector3Quantity
         where TFactorVector3Quantity : IVector3Quantity
-        => factory(Maths.Vectors.Cross(this, factor));
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Maths.Vectors.Cross(this, factor));
+        }
+    }
 
-    /// <summary>Produces a formatted string from the magnitudes of the components of the <see cref="Absement3"/> (in SI units),
-    /// and the SI base unit of the quantity.</summary>
-    public override string ToString() => $"({X}, {Y}, {Z}) [m * s]";
+    /// <summary>Produces a formatted string from the magnitudes of the components of the <see cref="Absement3"/> in the default unit
+    /// <see cref="UnitOfAbsement.MetreSecond"/>, followed by the symbol [m∙s].</summary>
+    public override string ToString() => $"{MetreSeconds} [m∙s]";
 
     /// <summary>Produces a <see cref="Vector3"/> with components equal to that of the <see cref="Absement3"/>,
     /// expressed in <paramref name="unitOfAbsement"/>.</summary>
@@ -194,20 +215,20 @@ public readonly partial record struct Absement3 :
     /// expressed in <paramref name="unitOfAbsement"/>.</summary>
     /// <param name="absement3">The <see cref="Absement3"/> to be expressed in <paramref name="unitOfAbsement"/>.</param>
     /// <param name="unitOfAbsement">The <see cref="UnitOfAbsement"/> in which the magnitude is expressed.</param>
-    private static Vector3 InUnit(Absement3 absement3, UnitOfAbsement unitOfAbsement) => absement3.ToVector3() / unitOfAbsement.Factor;
+    private static Vector3 InUnit(Absement3 absement3, UnitOfAbsement unitOfAbsement) => absement3.ToVector3() / unitOfAbsement.Absement.Magnitude;
     
     /// <summary>Unary plus, resulting in the unmodified <see cref="Absement3"/>.</summary>
     public Absement3 Plus() => this;
     /// <summary>Negation, resulting in a <see cref="Absement3"/> with negated components.</summary>
     public Absement3 Negate() => new(-X, -Y, -Z);
     /// <summary>Unary plus, resulting in the unmodified <paramref name="a"/>.</summary>
-    /// <param name="a">Unary plus is applied to this instance of <see cref="Absement3"/>.</param>
+    /// <param name="a">Unary plus is applied to this <see cref="Absement3"/>.</param>
     public static Absement3 operator +(Absement3 a) => a;
-    /// <summary>Negation, resulting in a <see cref="Absement3"/> with components negated from that of <paramref name="a"/>.</summary>
-    /// <param name="a">Negation is applied to this instance of <see cref="Absement3"/>.</param>
+    /// <summary>Negation, resulting in a <see cref="Absement3"/> with negated components from that of <paramref name="a"/>.</summary>
+    /// <param name="a">Negation is applied to this <see cref="Absement3"/>.</param>
     public static Absement3 operator -(Absement3 a) => new(-a.X, -a.Y, -a.Z);
 
-    /// <summary>Multiplies the <see cref="Absement3"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+    /// <summary>Multiplicates the <see cref="Absement3"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
     /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="factor">The factor by which the <see cref="Absement3"/> is multiplied.</param>
     public Unhandled3 Multiply(Unhandled factor) => new(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
@@ -215,17 +236,17 @@ public readonly partial record struct Absement3 :
     /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="divisor">The divisor by which the <see cref="Absement3"/> is divided.</param>
     public Unhandled3 Divide(Unhandled divisor) => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
-    /// <summary>Multiplies the <see cref="Absement3"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
+    /// <summary>Multiplication of the <see cref="Absement3"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
     /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="a">The <see cref="Absement3"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
     /// <param name="b">The <see cref="Unhandled"/> quantity by which the <see cref="Absement3"/> <paramref name="a"/> is multiplied.</param>
     public static Unhandled3 operator *(Absement3 a, Unhandled b) => new(a.X * b.Magnitude, a.Y * b.Magnitude, a.Z * b.Magnitude);
-    /// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="b"/> by the <see cref="Absement3"/> <paramref name="a"/> -
+    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="b"/> by the <see cref="Absement3"/> <paramref name="a"/> -
     /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="a">The <see cref="Unhandled"/> quantity by which the <see cref="Absement3"/> <paramref name="b"/> is multiplied.</param>
     /// <param name="b">The <see cref="Absement3"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="a"/>.</param>
     public static Unhandled3 operator *(Unhandled a, Absement3 b) => new(a.Magnitude * b.X, a.Magnitude * b.Y, a.Magnitude * b.Z);
-    /// <summary>Divides the <see cref="Absement3"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
+    /// <summary>Division of the <see cref="Absement3"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
     /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="a">The <see cref="Absement3"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
     /// <param name="b">The <see cref="Unhandled"/> quantity by which the <see cref="Absement3"/> <paramref name="a"/> is divded.</param>
@@ -233,7 +254,7 @@ public readonly partial record struct Absement3 :
 
     /// <summary>Produces a <see cref="Absement3"/>, with each component equal to the remainder from division of the
     /// magnitude of the original component by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public Absement3 Remainder(double divisor) => new(X % divisor, Y % divisor, Z % divisor);
     /// <summary>Scales the <see cref="Absement3"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Absement3"/> is scaled.</param>
@@ -244,7 +265,7 @@ public readonly partial record struct Absement3 :
     /// <summary>Produces a <see cref="Absement3"/>, with each component equal to the remainder from division of the
     /// magnitude of the component of <paramref name="a"/> by <paramref name="b"/>.</summary>
     /// <param name="a">The <see cref="Absement3"/>, the components of which are divided by <paramref name="b"/> to produce a remainder.</param>
-    /// <param name="b">The remainder is retrieved from division of <see cref="Absement3"/> <paramref name="a"/> by this value.</param>
+    /// <param name="b">The remainder is produced from division of <see cref="Absement3"/> <paramref name="a"/> by this value.</param>
     public static Absement3 operator %(Absement3 a, double b) => new(a.X % b, a.Y % b, a.Z % b);
     /// <summary>Scales the <see cref="Absement3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
     /// <param name="a">The <see cref="Absement3"/>, which is scaled by <paramref name="b"/>.</param>
@@ -261,7 +282,7 @@ public readonly partial record struct Absement3 :
 
     /// <summary>Produces a <see cref="Absement3"/>, with each component equal to the remainder from division of the
     /// magnitude of the original component by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public Absement3 Remainder(Scalar divisor) => new(X % divisor.Magnitude, Y % divisor.Magnitude, Z % divisor.Magnitude);
     /// <summary>Scales the <see cref="Absement3"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Absement3"/> is scaled.</param>
@@ -272,7 +293,7 @@ public readonly partial record struct Absement3 :
     /// <summary>Produces a <see cref="Absement3"/>, with each component equal to the remainder from division of the
     /// magnitude of the component of <paramref name="a"/> by <paramref name="b"/>.</summary>
     /// <param name="a">The <see cref="Absement3"/>, the components of which are divided by <paramref name="b"/> to produce a remainder.</param>
-    /// <param name="b">The remainder is retrieved from division of <see cref="Absement3"/> <paramref name="a"/> by this value.</param>
+    /// <param name="b">The remainder is produced from division of <see cref="Absement3"/> <paramref name="a"/> by this value.</param>
     public static Absement3 operator %(Absement3 a, Scalar b) => new(a.X % b.Magnitude, a.Y % b.Magnitude, a.Z % b.Magnitude);
     /// <summary>Scales the <see cref="Absement3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
     /// <param name="a">The <see cref="Absement3"/>, which is scaled by <paramref name="b"/>.</param>
@@ -288,59 +309,81 @@ public readonly partial record struct Absement3 :
     public static Absement3 operator /(Absement3 a, Scalar b) => new(a.X / b.Magnitude, a.Y / b.Magnitude, a.Z / b.Magnitude);
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TProductVector3Quantity Multiply<TProductVector3Quantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, double, double, TProductVector3Quantity> factory)
         where TProductVector3Quantity : IVector3Quantity
         where TFactorScalarQuantity : IScalarQuantity
-        => factory(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+        }
+    }
+
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TQuotientVector3Quantity Divide<TQuotientVector3Quantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, double, double, TQuotientVector3Quantity> factory)
         where TQuotientVector3Quantity : IVector3Quantity
         where TDivisorScalarQuantity : IScalarQuantity
-        => factory(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
-    /// <summary>Multiples the <see cref="Absement3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
+        }
+    }
+
+    /// <summary>Multiplication of the <see cref="Absement3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
     /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="a">The <see cref="Absement3"/>, which is multiplied by <paramref name="b"/>.</param>
     /// <param name="b">This quantity is multiplied by the <see cref="Absement3"/> <paramref name="a"/>.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
-    public static Unhandled3 operator *(Absement3 a, IScalarQuantity b) => new(a.X * b.Magnitude, a.Y * b.Magnitude, a.Z * b.Magnitude);
-    /// <summary>Multiples the quantity <paramref name="a"/> by the <see cref="Absement3"/> <paramref name="b"/>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity,
+    /// Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled3 operator *(Absement3 a, IScalarQuantity b) => a.Multiply<Unhandled3, IScalarQuantity>(b, (x, y, z) => new Unhandled3(x, y, z));
+    /// <summary>Multiplication of the quantity <paramref name="a"/> by the <see cref="Absement3"/> <paramref name="b"/>
     /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="a">This quantity is multiplied by the <see cref="Absement3"/> <paramref name="b"/>.</param>
     /// <param name="b">The <see cref="Absement3"/>, which is multiplied by <paramref name="a"/>.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
-    public static Unhandled3 operator *(IScalarQuantity a, Absement3 b) => new(a.Magnitude * b.X, a.Magnitude * b.Y, a.Magnitude * b.Z);
-    /// <summary>Divides the <see cref="Absement3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity,
+    /// Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled3 operator *(IScalarQuantity a, Absement3 b) => b.Multiply<Unhandled3, IScalarQuantity>(a, (x, y, z) => new Unhandled3(x, y, z));
+    /// <summary>Division of the <see cref="Absement3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
     /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="a">The <see cref="Absement3"/>, which is divided by <paramref name="b"/>.</param>
-    /// <param name="b">The<see cref="Absement3"/> <paramref name="a"/> is divided by this quantity.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientVector3Quantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, double, double, TQuotientVector3Quantity})"/>.</remarks>
-    public static Unhandled3 operator /(Absement3 a, IScalarQuantity b) => new(a.X / b.Magnitude, a.Y / b.Magnitude, a.Z / b.Magnitude);
+    /// <param name="b">The <see cref="Absement3"/> <paramref name="a"/> is divided by this quantity.</param>
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientVector3Quantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
+    /// Func{double, double, double, TQuotientVector3Quantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled3 operator /(Absement3 a, IScalarQuantity b) => a.Divide<Unhandled3, IScalarQuantity>(b, (x, y, z) => new Unhandled3(x, y, z));
 
-    /// <summary>Converts the <see cref="Absement3"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with values
-    /// (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
+    /// <summary>Converts the <see cref="Absement3"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with 
+    /// values (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
     public (double x, double y, double z) ToValueTuple() => (X, Y, Z);
-    /// <summary>Converts <paramref name="a"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with values
-    /// (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
-    public static implicit operator (double x, double y, double z)(Absement3 a) => (a.X, a.Y, a.Z);
+    /// <summary>Converts <paramref name="a"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with 
+    /// values (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
+    public static explicit operator (double x, double y, double z)(Absement3 a) => (a.X, a.Y, a.Z);
 
-    /// <summary>Converts the <see cref="Absement3"/> to the <see cref="Vector3"/> with components of
-    /// equal magnitude, when expressed in SI units.</summary>
+    /// <summary>Converts the <see cref="Absement3"/> to the <see cref="Vector3"/> with components of equal magnitude, when expressed in SI units.</summary>
     public Vector3 ToVector3() => new(X, Y, Z);
-    /// <summary>Converts <paramref name="a"/> to the <see cref="Vector3"/> with components of
-    /// equal magnitude, when expressed in SI units.</summary>
+    /// <summary>Converts <paramref name="a"/> to the <see cref="Vector3"/> with components of equal magnitude, when expressed in SI units.</summary>
     public static explicit operator Vector3(Absement3 a) => new(a.X, a.Y, a.Z);
 
-    /// <summary>Constructs the <see cref="Absement3"/> with components equal to the values of <paramref name="components"/>,
-    /// when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="Absement3"/> with components equal to the values of <paramref name="components"/>, when expressed in SI units.</summary>
     public static Absement3 FromValueTuple((double x, double y, double z) components) => new(components);
-    /// <summary>Constructs the <see cref="Absement3"/> with components equal to the values of <paramref name="components"/>,
-    /// when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="Absement3"/> with components equal to the values of <paramref name="components"/>, when expressed in SI units.</summary>
     public static explicit operator Absement3((double x, double y, double z) components) => new(components);
 
-    /// <summary>Converts <paramref name="a"/> to the <see cref="Absement3"/> with components of equal magnitude,
-    /// when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="Absement3"/> with components <paramref name="a"/>, when expressed in SI units.</summary>
     public static Absement3 FromVector3(Vector3 a) => new(a);
-    /// <summary>Converts <paramref name="a"/> to the <see cref="Absement3"/> with components of equal magnitude,
-    /// when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="Absement3"/> with components <paramref name="a"/>, when expressed in SI units.</summary>
     public static explicit operator Absement3(Vector3 a) => new(a);
 }

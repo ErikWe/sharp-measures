@@ -1,17 +1,7 @@
 ﻿{
-    "name": "TimeSquared",
     "type": "Scalar",
-    "baseUnits": "s^2",
-    "unit": "[UnitOf]",
-    "unitBias": false,
-    "vector": false,
-    "inverse": "FrequencyDrift",
-    "square": false,
-    "cube": false,
-    "squareRoot": "Time",
-    "cubeRoot": false,
-    "units": [
-        { "singular": "SquareSecond", "plural": "+s", "SI": true, "symbol": "s^2" }
-    ],
-    "convertible": []
+    "name": "TimeSquared",
+    "inverse": ["FrequencyDrift"],
+    "squareRoot": ["Time"],
+    "unit": "[name]"
 }

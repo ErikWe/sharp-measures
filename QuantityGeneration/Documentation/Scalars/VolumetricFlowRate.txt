@@ -1,10 +1,10 @@
 ﻿#Extends:Generic.txt#
 #Extends:Utility.txt#
 
-#Define:Header(quantity, unitName, singularUnits, pluralUnits)#
+#Define:Header(quantity, unitName, singularBases, pluralUnits)#
 /// <summary>A measure of the scalar quantity <see cref="#Param:quantity#"/>, describing the amount of <see cref="Volume"/> that flows through some
-/// point over some <see cref="Time"/>. The quantity is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [m³ / s].
-#Document:HeaderSummary(#Param:quantity#, #Param:unitName#, #Param:singularUnits#, #Param:pluralUnits#)#
+/// point over some <see cref="Time"/>. The quantity is expressed in <see cref="#Param:unitName#"/>, with the SI unit being [m³∙s⁻¹].
+#Document:HeaderSummary(#Param:quantity#, #Param:unitName#, #Param:singularBases#, #Param:pluralUnits#)#
 /// </summary>
 #/Define:Header#
 

@@ -1,0 +1,23 @@
+{
+    "type": "Unit",
+    "name": "TimeSquared",
+    "quantity": "[name]",
+    "derived": [
+        {
+            "signature": [
+                "Time"
+            ],
+            "expression": "TimeSquared.From({1})"
+        },
+        {
+            "signature": [
+                "Time",
+                "Time"
+            ],
+            "expression": "TimeSquared.From({1}, {2})"
+        }
+    ],
+    "units": [
+        { "name": "SquareSecond", "plural": "+s", "symbol": "s²", "SI": true, "derived": ["Time.Second"] }
+    ]
+}

@@ -1,26 +1,9 @@
 ﻿{
-    "name": "Volume",
     "type": "Scalar",
-    "baseUnits": "m^3",
-    "unit": "[UnitOf]",
-    "unitBias": false,
-    "vector": false,
-    "inverse": false,
-    "square": false,
-    "cube": false,
-    "squareRoot": false,
+    "name": "Volume",
     "cubeRoot": [
         "Length",
         "Distance"
     ],
-    "units": [
-        { "singular": "CubicDecimetre", "plural": "+s" },
-        { "singular": "CubicMetre", "plural": "+s", "SI": true, "symbol": "m^3" },
-        { "special": true, "separator": true },
-        { "singular": "Millilitre", "plural": "+s" },
-        { "singular": "Centilitre", "plural": "+s" },
-        { "singular": "Decilitre", "plural": "+s" },
-        { "singular": "Litre", "plural": "+s" }
-    ],
-    "convertible": []
+    "unit": "[name]"
 }

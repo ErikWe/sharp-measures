@@ -1,0 +1,10 @@
+#Extends:Generic.txt#
+
+#Define:OffsetBy(unit, siUnit)
+/// <summary>Derives a new <see cref="#Param:unit#"/> from this instance, with an offset of <paramref name="offset"/>.</summary>
+/// <param name="offset">The original <see cref="#Param:unit#"/> is offset by this value.</param>
+#/
+
+#Define:Scale(unit, siUnit, differenceQuantity)
+/// <summary>The <see cref="#Param:differenceQuantity#"/> that a unit step of <see cref="#Param:unit#"/> represents.</summary>
+#/

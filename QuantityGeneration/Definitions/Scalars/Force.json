@@ -1,19 +1,8 @@
 ﻿{
-    "name": "Force",
     "type": "Scalar",
-    "baseUnits": "kg * m * s^-2",
-    "unit": "[UnitOf]",
-    "unitBias": false,
+    "name": "Force",
     "vector": "[name]",
-    "inverse": false,
-    "square": false,
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "Newton", "plural": "+s", "SI": true, "symbol": "N" },
-        { "singular": "PoundForce", "plural": "[Pound] +s" }
-    ],
+    "unit": "[name]",
     "convertible": [
         "Weight"
     ]

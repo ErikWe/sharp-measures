@@ -1,0 +1,35 @@
+#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(unit, siUnit)
+/// <summary>Describes a unit of the quantity <see cref="Quantities.Power"/>.</summary>
+/// <remarks>#Document:DeriveRemark(#Param:unit#)# Custom <see cref="#Param:unit#"/> can also be derived from
+/// other units using the static <see cref="From(UnitOfEnergy, UnitOfTime)"/>.</remarks>
+#/
+
+#Define:FromEnergyTime(unit, siUnit)
+/// <summary>Derives a <see cref="#Param:unit#"/> according to { <paramref name="unitOfEnergy"/> / <paramref name="unitOfTime"/> }.</summary>
+/// <param name="unitOfEnergy">A <see cref="#Param:unit#"/> is derived from division of this <see cref="UnitOfEnergy"/> by <paramref name="unitOfTime"/>.</param>
+/// <param name="unitOfTime">A <see cref="#Param:unit#"/> is derived from division of <paramref name="unitOfEnergy"/> by this <see cref="UnitOfTime"/>.</param>
+#/
+
+#Define:UnitWatt
+/// <summary>The SI unit of <see cref="Quantities.Power"/>, derived according to { <see cref="UnitOfEnergy.Joule"/> / <see cref="UnitOfTime.Second"/> }.
+/// Usually written as [W].</summary>
+#/
+
+#Define:UnitKilowatt
+/// <summary>Expresses <see cref="Quantities.Power"/> as one thousand <see cref="Watt"/>. Usually written as [kW].</summary>
+#/
+
+#Define:UnitMegawatt
+/// <summary>Expresses <see cref="Quantities.Power"/> as one million <see cref="Watt"/>. Usually written as [MW].</summary>
+#/
+
+#Define:UnitGigawatt
+/// <summary>Expresses <see cref="Quantities.Power"/> as one billion [10^9] <see cref="Watt"/>. Usually written as [GW].</summary>
+#/
+
+#Define:UnitTerawatt
+/// <summary>Expresses <see cref="Quantities.Power"/> as one trillion [10^12] <see cref="Watt"/>. Usually written as [TW].</summary>
+#/

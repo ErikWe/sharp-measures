@@ -5,7 +5,7 @@ using ErikWe.SharpMeasures.Units;
 using System;
 
 /// <summary>A measure of the scalar quantity <see cref="SpecificVolume"/>, describing the <see cref="Volume"/> required for some amount of <see cref="Mass"/>.
-/// This is the inverse of <see cref="Density"/>. The quantity is expressed in <see cref="UnitOfSpecificVolume"/>, with the SI unit being [m³ / kg].
+/// This is the inverse of <see cref="Density"/>. The quantity is expressed in <see cref="UnitOfSpecificVolume"/>, with the SI unit being [m³∙kg⁻¹].
 /// <para>
 /// New instances of <see cref="SpecificVolume"/> can be constructed using pre-defined properties, prefixed with 'One', having magnitude 1 expressed
 /// in the desired <see cref="UnitOfSpecificVolume"/>. Instances can also be produced by combining other quantities, either through mathematical operators
@@ -44,7 +44,7 @@ public readonly partial record struct SpecificVolume :
     /// <summary>The <see cref="SpecificVolume"/> with magnitude 1, when expressed in unit <see cref="UnitOfSpecificVolume.CubicMetrePerKilogram"/>.</summary>
     public static SpecificVolume OneCubicMetrePerKilogram { get; } = new(1, UnitOfSpecificVolume.CubicMetrePerKilogram);
 
-    /// <summary>Computes <see cref="SpecificVolume"/> according to { <see cref="SpecificVolume"/> = 1 / <paramref name="density"/> }.</summary>
+    /// <summary>Computes <see cref="SpecificVolume"/> according to { 1 / <paramref name="density"/> }.</summary>
     /// <summary>Constructs a <see cref="SpecificVolume"/> by inverting the <see cref="Density"/> <paramref name="density"/>.</summary>
     public static SpecificVolume From(Density density) => new(1 / density.Magnitude);
 
@@ -78,7 +78,7 @@ public readonly partial record struct SpecificVolume :
     /// </item>
     /// </list>
     /// </remarks>
-    public SpecificVolume(double magnitude, UnitOfSpecificVolume unitOfSpecificVolume) : this(magnitude * unitOfSpecificVolume.Factor) { }
+    public SpecificVolume(double magnitude, UnitOfSpecificVolume unitOfSpecificVolume) : this(magnitude * unitOfSpecificVolume.SpecificVolume.Magnitude) { }
     /// <summary>Constructs a new <see cref="SpecificVolume"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="SpecificVolume"/>.</param>
     /// <remarks>Consider preferring <see cref="SpecificVolume(Scalar, UnitOfSpecificVolume)"/>.</remarks>
@@ -111,22 +111,23 @@ public readonly partial record struct SpecificVolume :
     /// <summary>Indicates whether the magnitude of the <see cref="SpecificVolume"/> is infinite, and negative.</summary>
     public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude);
 
-    /// <summary>Produces a <see cref="SpecificVolume"/>, with magnitude equal to the absolute of the original magnitude.</summary>
+    /// <summary>Computes the absolute of the <see cref="SpecificVolume"/>.</summary>
     public SpecificVolume Absolute() => new(Math.Abs(Magnitude));
-    /// <summary>Produces a <see cref="SpecificVolume"/>, with magnitude equal to the floor of the original magnitude.</summary>
+    /// <summary>Computes the floor of the <see cref="SpecificVolume"/>.</summary>
     public SpecificVolume Floor() => new(Math.Floor(Magnitude));
-    /// <summary>Produces a <see cref="SpecificVolume"/>, with magnitude equal to the ceiling of the original magnitude.</summary>
+    /// <summary>Computes the ceiling of the <see cref="SpecificVolume"/>.</summary>
     public SpecificVolume Ceiling() => new(Math.Ceiling(Magnitude));
-    /// <summary>Produces a <see cref="SpecificVolume"/>, with magnitude equal to the original magnitude, rounded to the nearest integer.</summary>
+    /// <summary>Rounds the <see cref="SpecificVolume"/> to the nearest integer value.</summary>
     public SpecificVolume Round() => new(Math.Round(Magnitude));
 
-    /// <summary>Inverts the <see cref="SpecificVolume"/>, producing a <see cref="Density"/>.</summary>
+    /// <summary>Computes the inverse of the <see cref="SpecificVolume"/>, producing a <see cref="Density"/>.</summary>
     public Density Invert() => Density.From(this);
 
     /// <inheritdoc/>
     public int CompareTo(SpecificVolume other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="SpecificVolume"/> (in SI units), and the SI base unit of the quantity.</summary>
-    public override string ToString() => $"{Magnitude} [m^3 / kg]";
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="SpecificVolume"/> in the default unit
+    /// <see cref="UnitOfSpecificVolume.CubicMetrePerKilogram"/>, followed by the symbol [m³∙kg⁻¹].</summary>
+    public override string ToString() => $"{CubicMetresPerKilogram} [m³∙kg⁻¹]";
 
     /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="SpecificVolume"/>,
     /// expressed in <paramref name="unitOfSpecificVolume"/>.</summary>
@@ -136,20 +137,21 @@ public readonly partial record struct SpecificVolume :
     /// expressed in <paramref name="unitOfSpecificVolume"/>.</summary>
     /// <param name="specificVolume">The <see cref="SpecificVolume"/> to be expressed in <paramref name="unitOfSpecificVolume"/>.</param>
     /// <param name="unitOfSpecificVolume">The <see cref="UnitOfSpecificVolume"/> in which the magnitude is expressed.</param>
-    private static Scalar InUnit(SpecificVolume specificVolume, UnitOfSpecificVolume unitOfSpecificVolume) => new(specificVolume.Magnitude / unitOfSpecificVolume.Factor);
+    private static Scalar InUnit(SpecificVolume specificVolume, UnitOfSpecificVolume unitOfSpecificVolume) 
+    	=> new(specificVolume.Magnitude / unitOfSpecificVolume.SpecificVolume.Magnitude);
 
     /// <summary>Unary plus, resulting in the unmodified <see cref="SpecificVolume"/>.</summary>
     public SpecificVolume Plus() => this;
     /// <summary>Negation, resulting in a <see cref="SpecificVolume"/> with negated magnitude.</summary>
     public SpecificVolume Negate() => new(-Magnitude);
     /// <summary>Unary plus, resulting in the unmodified <paramref name="x"/>.</summary>
-    /// <param name="x">Unary plus is applied to this instance of <see cref="SpecificVolume"/>.</param>
+    /// <param name="x">Unary plus is applied to this <see cref="SpecificVolume"/>.</param>
     public static SpecificVolume operator +(SpecificVolume x) => x.Plus();
-    /// <summary>Negation, resulting in a <see cref="SpecificVolume"/> with magnitude negated from that of <paramref name="x"/>.</summary>
-    /// <param name="x">Negation is applied to this instance of <see cref="SpecificVolume"/>.</param>
+    /// <summary>Negation, resulting in a <see cref="SpecificVolume"/> with negated magnitude from that of <paramref name="x"/>.</summary>
+    /// <param name="x">Negation is applied to this <see cref="SpecificVolume"/>.</param>
     public static SpecificVolume operator -(SpecificVolume x) => x.Negate();
 
-    /// <summary>Multiplies the <see cref="SpecificVolume"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+    /// <summary>Multiplicates the <see cref="SpecificVolume"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="factor">The factor by which the <see cref="SpecificVolume"/> is multiplied.</param>
     public Unhandled Multiply(Unhandled factor) => new(Magnitude * factor.Magnitude);
@@ -157,25 +159,24 @@ public readonly partial record struct SpecificVolume :
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="divisor">The divisor by which the <see cref="SpecificVolume"/> is divided.</param>
     public Unhandled Divide(Unhandled divisor) => new(Magnitude / divisor.Magnitude);
-    /// <summary>Multiplies the <see cref="SpecificVolume"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Multiplication of the <see cref="SpecificVolume"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="SpecificVolume"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="SpecificVolume"/> <paramref name="x"/> is multiplied.</param>
     public static Unhandled operator *(SpecificVolume x, Unhandled y) => x.Multiply(y);
-    /// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="SpecificVolume"/> <paramref name="x"/> -
+    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="SpecificVolume"/> <paramref name="x"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Unhandled"/> quantity by which the <see cref="SpecificVolume"/> <paramref name="y"/> is multiplied.</param>
     /// <param name="y">The <see cref="SpecificVolume"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
     public static Unhandled operator *(Unhandled x, SpecificVolume y) => y.Multiply(x);
-    /// <summary>Divides the <see cref="SpecificVolume"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Division of the <see cref="SpecificVolume"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="SpecificVolume"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="SpecificVolume"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(SpecificVolume x, Unhandled y) => x.Divide(y);
 
-    /// <summary>Produces a <see cref="SpecificVolume"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="SpecificVolume"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public SpecificVolume Remainder(double divisor) => new(Magnitude % divisor);
     /// <summary>Scales the <see cref="SpecificVolume"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="SpecificVolume"/> is scaled.</param>
@@ -183,10 +184,9 @@ public readonly partial record struct SpecificVolume :
     /// <summary>Scales the <see cref="SpecificVolume"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="SpecificVolume"/> is divided.</param>
     public SpecificVolume Divide(double divisor) => new(Magnitude / divisor);
-    /// <summary>Produces a <see cref="SpecificVolume"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="SpecificVolume"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of <see cref="SpecificVolume"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="SpecificVolume"/> <paramref name="x"/> by this value.</param>
     public static SpecificVolume operator %(SpecificVolume x, double y) => x.Remainder(y);
     /// <summary>Scales the <see cref="SpecificVolume"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="SpecificVolume"/>, which is scaled by <paramref name="y"/>.</param>
@@ -200,14 +200,13 @@ public readonly partial record struct SpecificVolume :
     /// <param name="x">The <see cref="SpecificVolume"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">This value is used to divide the <see cref="SpecificVolume"/> <paramref name="x"/>.</param>
     public static SpecificVolume operator /(SpecificVolume x, double y) => x.Divide(y);
-/// <summary>Inverts the <see cref="SpecificVolume"/> <paramref name="y"/> to produce a <see cref="Density"/>, which is then scaled by <paramref name="x"/>.</summary>
-/// <param name="x">This value is used to scale the inverted <see cref="SpecificVolume"/> <paramref name="y"/>.</param>
-/// <param name="y">The <see cref="SpecificVolume"/>, which is inverted to a <see cref="Density"/> and scaled by <paramref name="x"/>.</param>
+    /// <summary>Inverts the <see cref="SpecificVolume"/> <paramref name="y"/> to produce a <see cref="Density"/>, which is then scaled by <paramref name="x"/>.</summary>
+    /// <param name="x">This value is used to scale the inverted <see cref="SpecificVolume"/> <paramref name="y"/>.</param>
+    /// <param name="y">The <see cref="SpecificVolume"/>, which is inverted to a <see cref="Density"/> and scaled by <paramref name="x"/>.</param>
     public static Density operator /(double x, SpecificVolume y) => x * y.Invert();
 
-    /// <summary>Produces a <see cref="SpecificVolume"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="SpecificVolume"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public SpecificVolume Remainder(Scalar divisor) => Remainder(divisor.Magnitude);
     /// <summary>Scales the <see cref="SpecificVolume"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="SpecificVolume"/> is scaled.</param>
@@ -215,10 +214,9 @@ public readonly partial record struct SpecificVolume :
     /// <summary>Scales the <see cref="SpecificVolume"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="SpecificVolume"/> is divided.</param>
     public SpecificVolume Divide(Scalar divisor) => Divide(divisor.Magnitude);
-    /// <summary>Produces a <see cref="SpecificVolume"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="SpecificVolume"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of the <see cref="SpecificVolume"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="SpecificVolume"/> <paramref name="x"/> by this value.</param>
     public static SpecificVolume operator %(SpecificVolume x, Scalar y) => x.Remainder(y);
     /// <summary>Scales the <see cref="SpecificVolume"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="SpecificVolume"/>, which is scaled by <paramref name="y"/>.</param>
@@ -232,47 +230,76 @@ public readonly partial record struct SpecificVolume :
     /// <param name="x">The <see cref="SpecificVolume"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">This value is used to divide the <see cref="SpecificVolume"/> <paramref name="x"/>.</param>
     public static SpecificVolume operator /(SpecificVolume x, Scalar y) => x.Divide(y);
-/// <summary>Inverts the <see cref="SpecificVolume"/> <paramref name="y"/> to produce a <see cref="Density"/>, which is then scaled by <paramref name="x"/>.</summary>
-/// <param name="x">This value is used to scale the inverted <see cref="SpecificVolume"/> <paramref name="y"/>.</param>
-/// <param name="y">The <see cref="SpecificVolume"/>, which is inverted to a <see cref="Density"/> and scaled by <paramref name="x"/>.</param>
+    /// <summary>Inverts the <see cref="SpecificVolume"/> <paramref name="y"/> to produce a <see cref="Density"/>,
+    /// which is then scaled by <paramref name="x"/>.</summary>
+    /// <param name="x">This value is used to scale the inverted <see cref="SpecificVolume"/> <paramref name="y"/>.</param>
+    /// <param name="y">The <see cref="SpecificVolume"/>, which is inverted to a <see cref="Density"/> and scaled by <paramref name="x"/>.</param>
     public static Density operator /(Scalar x, SpecificVolume y) => x * y.Invert();
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorScalarQuantity : IScalarQuantity
-        => factory(Magnitude * factor.Magnitude);
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude * factor.Magnitude);
+        }
+    }
+
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
         where TQuotientScalarQuantity : IScalarQuantity
         where TDivisorScalarQuantity : IScalarQuantity
-        => factory(Magnitude / divisor.Magnitude);
-    /// <summary>Multiples the <see cref="SpecificVolume"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude / divisor.Magnitude);
+        }
+    }
+
+    /// <summary>Multiplication of the <see cref="SpecificVolume"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="SpecificVolume"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="SpecificVolume"/> <paramref name="x"/>.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity,
+    /// Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator *(SpecificVolume x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
-    /// <summary>Divides the <see cref="SpecificVolume"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <summary>Division of the <see cref="SpecificVolume"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="SpecificVolume"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="SpecificVolume"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
+    /// Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator /(SpecificVolume x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
-    /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="SpecificVolume"/> is less than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than that of this <see cref="SpecificVolume"/>.</param>
     public static bool operator <(SpecificVolume x, SpecificVolume y) => x.Magnitude < y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="SpecificVolume"/> is greater than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than that of this <see cref="SpecificVolume"/>.</param>
     public static bool operator >(SpecificVolume x, SpecificVolume y) => x.Magnitude > y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is less than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="SpecificVolume"/> is less than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than or equal to that of this <see cref="SpecificVolume"/>.</param>
     public static bool operator <=(SpecificVolume x, SpecificVolume y) => x.Magnitude <= y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="SpecificVolume"/> is greater than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of this <see cref="SpecificVolume"/>.</param>
     public static bool operator >=(SpecificVolume x, SpecificVolume y) => x.Magnitude >= y.Magnitude;
 
     /// <summary>Converts the <see cref="SpecificVolume"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
@@ -280,7 +307,7 @@ public readonly partial record struct SpecificVolume :
     public double ToDouble() => Magnitude;
     /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
     /// in SI units.</summary>
-    public static implicit operator double(SpecificVolume x) => x.ToDouble();
+    public static explicit operator double(SpecificVolume x) => x.ToDouble();
 
     /// <summary>Converts the <see cref="SpecificVolume"/> to the <see cref="Scalar"/> of equivalent magnitude, when
     /// expressed in SI units.</summary>
@@ -288,15 +315,15 @@ public readonly partial record struct SpecificVolume :
     /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(SpecificVolume x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="SpecificVolume"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="SpecificVolume"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static SpecificVolume FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="SpecificVolume"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="SpecificVolume"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static explicit operator SpecificVolume(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="SpecificVolume"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="SpecificVolume"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static SpecificVolume FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="SpecificVolume"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="SpecificVolume"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static explicit operator SpecificVolume(Scalar x) => FromScalar(x);
 }

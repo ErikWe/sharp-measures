@@ -46,18 +46,18 @@
 /// <param name="z">The Z-component of the <see cref="#Param:quantity#"/>.</param>
 #/
 
-#Define:ConstructorScalarTupleUnit(quantity, dimensionality, unit, unitVariable, singularUnits)
+#Define:ConstructorScalarTupleUnit(quantity, dimensionality, unit, unitVariable)
 /// <summary>Constructs a new <see cref="#Param:quantity#"/> with components of magnitudes <paramref name="components"/>,
 /// expressed in <paramref name="#Param:unitVariable#"/>.</summary>
 /// <param name="components">The magnitudes of the components of the <see cref="#Param:quantity#"/>, expressed in <paramref name="#Param:unitVariable#"/>.</param>
 /// <param name="#Param:unitVariable#">The <see cref="#Param:unit#"/> in which the magnitudes of the components, <paramref name="components"/>, are expressed.</param>
 #/
 
-#Define:ConstructorScalarsUnit(quantity, dimensionality, unit, unitVariable, singularUnits)
-#Document:ConstructorScalarsUnit#Param:dimensionality#(#Param:quantity#, #Param:unit#, #Param:unitVariable#, #Param:singularUnits#)#
+#Define:ConstructorScalarsUnit(quantity, dimensionality, unit, unitVariable)
+#Document:ConstructorScalarsUnit#Param:dimensionality#(#Param:quantity#, #Param:unit#, #Param:unitVariable#)#
 #/
 
-#Define:ConstructorScalarsUnit3(quantity, unit, unitVariable, singularUnits)
+#Define:ConstructorScalarsUnit3(quantity, unit, unitVariable)
 /// <summary>Constructs a new <see cref="#Param:quantity#"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>),
 /// expressed in <paramref name="#Param:unitVariable#"/>.</summary>
 /// <param name="x">The magnitude of the X-component of the <see cref="#Param:quantity#"/>, expressed in <paramref name="#Param:unitVariable#"/>.</param>
@@ -67,7 +67,7 @@
 /// (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>), are expressed.</param>
 #/
 
-#Define:ConstructorVectorUnit(quantity, dimensionality, unit, unitVariable, singularUnits)
+#Define:ConstructorVectorUnit(quantity, dimensionality, unit, unitVariable)
 /// <summary>Constructs a new <see cref="#Param:quantity#"/> with components of magnitudes <paramref name="components"/>,
 /// expressed in <paramref name="#Param:unitVariable#"/>.</summary>
 /// <param name="components">The magnitudes of the components of the <see cref="#Param:quantity#"/>, expressed in <paramref name="#Param:unitVariable#"/>.</param>
@@ -75,18 +75,18 @@
 /// <paramref name="components"/>, are expressed.</param>
 #/
 
-#Define:ConstructorDoubleTupleUnit(quantity, dimensionality, unit, unitVariable, singularUnits)
+#Define:ConstructorDoubleTupleUnit(quantity, dimensionality, unit, unitVariable)
 /// <summary>Constructs a new <see cref="#Param:quantity#"/> with components of magnitudes <paramref name="components"/>,
 /// expressed in <paramref name="#Param:unitVariable#"/>.</summary>
 /// <param name="components">The magnitudes of the components of the <see cref="#Param:quantity#"/>, expressed in <paramref name="#Param:unitVariable#"/>.</param>
 /// <param name="#Param:unitVariable#">The <see cref="#Param:unit#"/> in which the magnitudes of the components, <paramref name="components"/>, are expressed.</param>
 #/
 
-#Define:ConstructorDoublesUnit(quantity, dimensionality, unit, unitVariable, singularUnits)
-#Document:ConstructorDoublesUnit#Param:dimensionality#(#Param:quantity#, #Param:unit#, #Param:unitVariable#, #Param:singularUnits#)#
+#Define:ConstructorDoublesUnit(quantity, dimensionality, unit, unitVariable)
+#Document:ConstructorDoublesUnit#Param:dimensionality#(#Param:quantity#, #Param:unit#, #Param:unitVariable#)#
 #/
 
-#Define:ConstructorDoublesUnit3(quantity, unit, unitVariable, singularUnits)
+#Define:ConstructorDoublesUnit3(quantity, unit, unitVariable)
 /// <summary>Constructs a new <see cref="#Param:quantity#"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>),
 /// expressed in <paramref name="#Param:unitVariable#"/>.</summary>
 /// <param name="x">The magnitude of the X-component of the <see cref="#Param:quantity#"/>, expressed in <paramref name="#Param:unitVariable#"/>.</param>
@@ -96,21 +96,21 @@
 /// (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>), are expressed.</param>
 #/
 
-#Define:ConstructorScalarTuple(quantity, dimensionality, unit, unitVariable, singularUnits)
-#Document:ConstructorScalarTuple#Param:dimensionality#(#Param:quantity#, #Param:unit#, #Param:unitVariable#, #Param:singularUnits#)#
+#Define:ConstructorScalarTuple(quantity, dimensionality, unit, unitVariable)
+#Document:ConstructorScalarTuple#Param:dimensionality#(#Param:quantity#, #Param:unit#, #Param:unitVariable#)#
 #/
 
-#Define:ConstructorScalarTuple3(quantity, unit, unitVariable, singularUnits)
+#Define:ConstructorScalarTuple3(quantity, unit, unitVariable)
 /// <summary>Constructs a new <see cref="#Param:quantity#"/> with components of magnitudes <paramref name="components"/>.</summary>
 /// <param name="components">The magnitudes of the components of the <see cref="#Param:quantity#"/>.</param>
 /// <remarks>Consider preferring <see cref="#Param:quantity#(ValueTuple{Scalar, Scalar, Scalar}, #Param:unit#)"/>.</remarks>
 #/
 
-#Define:ConstructorScalars(quantity, dimensionality, unit, unitVariable, singularUnits)
-#Document:ConstructorScalars#Param:dimensionality#(#Param:quantity#, #Param:unit#, #Param:unitVariable#, #Param:singularUnits#)#
+#Define:ConstructorScalars(quantity, dimensionality, unit, unitVariable)
+#Document:ConstructorScalars#Param:dimensionality#(#Param:quantity#, #Param:unit#, #Param:unitVariable#)#
 #/
 
-#Define:ConstructorScalars3(quantity, unit, unitVariable, singularUnits)
+#Define:ConstructorScalars3(quantity, unit, unitVariable)
 /// <summary>Constructs a new <see cref="#Param:quantity#"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>).</summary>
 /// <param name="x">The magnitude of the X-component of the <see cref="#Param:quantity#"/>.</param>
 /// <param name="y">The magnitude of the Y-component of the <see cref="#Param:quantity#"/>.</param>
@@ -118,27 +118,27 @@
 /// <remarks>Consider preferring <see cref="#Param:quantity#(Scalar, Scalar, Scalar, #Param:unit#)"/>.</remarks>
 #/
 
-#Define:ConstructorVector(quantity, dimensionality, unit, unitVariable, singularUnits)
+#Define:ConstructorVector(quantity, dimensionality, unit, unitVariable)
 /// <summary>Constructs a new <see cref="#Param:quantity#"/> with components of magnitudes <paramref name="components"/>.</summary>
 /// <param name="components">The magnitudes of the components of the <see cref="#Param:quantity#"/>.</param>
 /// <remarks>Consider preferring <see cref="#Param:quantity#(Vector#Param:dimensionality#, #Param:unit#)"/>.</remarks>
 #/
 
-#Define:ConstructorDoubleTuple(quantity, dimensionality, unit, unitVariable, singularUnits)
-#Document:ConstructorDoubleTuple#Param:dimensionality#(#Param:quantity#, #Param:unit#, #Param:unitVariable#, #Param:singularUnits#)#
+#Define:ConstructorDoubleTuple(quantity, dimensionality, unit, unitVariable)
+#Document:ConstructorDoubleTuple#Param:dimensionality#(#Param:quantity#, #Param:unit#, #Param:unitVariable#)#
 #/
 
-#Define:ConstructorDoubleTuple3(quantity, unit, unitVariable, singularUnits)
+#Define:ConstructorDoubleTuple3(quantity, unit, unitVariable)
 /// <summary>Constructs a new <see cref="#Param:quantity#"/> with components of magnitudes <paramref name="components"/>.</summary>
 /// <param name="components">The magnitudes of the components of the <see cref="#Param:quantity#"/>.</param>
 /// <remarks>Consider preferring <see cref="#Param:quantity#(ValueTuple{double, double, double}, #Param:unit#)"/>.</remarks>
 #/
 
-#Define:ConstructorDoubles(quantity, dimensionality, unit, unitVariable, singularUnits)
-#Document:ConstructorDoubles#Param:dimensionality#(#Param:quantity#, #Param:unit#, #Param:unitVariable#, #Param:singularUnits#)#
+#Define:ConstructorDoubles(quantity, dimensionality, unit, unitVariable)
+#Document:ConstructorDoubles#Param:dimensionality#(#Param:quantity#, #Param:unit#, #Param:unitVariable#)#
 #/
 
-#Define:ConstructorDoubles3(quantity, unit, unitVariable, singularUnits)
+#Define:ConstructorDoubles3(quantity, unit, unitVariable)
 /// <summary>Constructs a new <see cref="#Param:quantity#"/> with components of magnitudes (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>).</summary>
 /// <param name="x">The magnitude of the X-component of the <see cref="#Param:quantity#"/>.</param>
 /// <param name="y">The magnitude of the Y-component of the <see cref="#Param:quantity#"/>.</param>
@@ -147,7 +147,7 @@
 #/
 
 #Define:AsShared(quantity, dimensionality, sharedQuantity)
-/// <summary>Converts the <see cref="#Param:quantity#"/> to an instance of the associated quantity <see cref="#Param:sharedQuantity#"/>, with components of
+/// <summary>Converts the <see cref="#Param:quantity#"/> to an instance of the associated quantity <see cref="#Param:sharedQuantity##Param:dimensionality#"/>, with components of
 /// equal magnitudes.</summary> 
 #/
 
@@ -161,13 +161,13 @@
 
 #Define:ScalarMagnitude(quantity, dimensionality, unit)
 /// <summary>Computes the magnitude, or norm, of the vector quantity <see cref="#Param:quantity#"/>.</summary>
-/// <remarks>For improved performance, consider preferring <see cref="SquaredMagnitude"/> when possible. For clarity, also consider
+/// <remarks>For improved performance, consider preferring <see cref="SquaredMagnitude"/> when applicable. For clarity, also consider
 /// first extracting the magnitudes of the components in the desired <see cref="#Param:unit#"/>.</remarks>
 #/
 
 #Define:ScalarQuantityMagnitude(quantity, dimensionality, component)
 /// <summary>Computes the magnitude, or norm, of the vector quantity <see cref="#Param:quantity#"/>, as a <see cref="#Param:component#"/>.</summary>
-/// <remarks>For improved performance, consider preferring <see cref="SquaredMagnitude"/> when possible.</remarks>
+/// <remarks>For improved performance, consider preferring <see cref="SquaredMagnitude"/> when applicable.</remarks>
 #/
 
 #Define:ScalarSquaredMagnitudeExplicit
@@ -184,30 +184,30 @@
 #/
 
 #Define:Normalize(quantity, dimensionality)
-/// <summary>Normalizes the <see cref="#Param:quantity#"/> - if expressed in SI units.</summary>
+/// <summary>Computes the normalized <see cref="#Param:quantity#"/> - if expressed in SI units.</summary>
 /// <remarks>Note that the resulting <see cref="#Param:quantity#"/> will only be normalized if expressed in SI units.</remarks>
 #/
 
 #Define:Transform(quantity, dimensionality)
-/// <summary>Computes the transformation of the existing <see cref="#Param:quantity#"/> by <paramref name="transform"/>, resulting in
-/// a new <see cref="#Param:quantity#"/>.</summary>
+/// <summary>Computes the transformation of the <see cref="#Param:quantity#"/> by <paramref name="transform"/>.</summary>
 /// <param name="transform">The <see cref="#Param:quantity#"/> is transformed by this <see cref="Matrix4x4"/>.</param>
 #/
 
 #Define:DotVector(quantity, dimensionality, component)
 /// <summary>Performs dot-multiplication of the <see cref="#Param:quantity#"/> by <paramref name="factor"/>, resulting in a
-/// <cref name="#Param:component#"/>.</summary>
+/// <see cref="#Param:component#"/>.</summary>
 /// <param name="factor">The <see cref="#Param:quantity#"/> is dot-multiplied by this <see cref="Vector#Param:dimensionality#"/>.</param>
 #/
 
 #Define:DotUnhandled(quantity, dimensionality)
 /// <summary>Performs dot-multiplication of the <see cref="#Param:quantity#"/> by <paramref name="factor"/>, resulting in a
-/// <cref name="Unhandled"/>.</summary>
+/// <see cref="Unhandled"/>.</summary>
 /// <param name="factor">The <see cref="#Param:quantity#"/> is dot-multiplied by this <see cref="Unhandled#Param:dimensionality#"/>.</param>
 #/
 
 #Define:DotGeneric(quantity, dimensionality)
 /// <inheritdoc/>
+/// <exception cref="ArgumentNullException"/>
 #/
 
 #Define:CrossVector(quantity, dimensionality)
@@ -218,17 +218,18 @@
 
 #Define:CrossUnhandled(quantity, dimensionality)
 /// <summary>Performs cross-multiplication of the <see cref="#Param:quantity#"/> by <paramref name="factor"/>, resulting in a
-/// <cref name="Unhandled#Param:dimensionality#"/>.</summary>
+/// <see cref="Unhandled#Param:dimensionality#"/>.</summary>
 /// <param name="factor">The <see cref="#Param:quantity#"/> is cross-multiplied by this <see cref="Unhandled#Param:dimensionality#"/>.</param>
 #/
 
 #Define:CrossGeneric(quantity, dimensionality)
 /// <inheritdoc/>
+/// <exception cref="ArgumentNullException"/>
 #/
 
-#Define:ToString(quantity, dimensionality)
-/// <summary>Produces a formatted string from the magnitudes of the components of the <see cref="#Param:quantity#"/> (in SI units),
-/// and the SI base unit of the quantity.</summary>
+#Define:ToString(quantity, dimensionality, unit, defaultUnit, defaultSymbol)
+/// <summary>Produces a formatted string from the magnitudes of the components of the <see cref="#Param:quantity#"/> in the default unit
+/// <see cref="#Param:unit#.#Param:defaultUnit#"/>, followed by the symbol [#Param:defaultSymbol#].</summary>
 #/
 
 #Define:InUnitInstance(quantity, dimensionality, unit, unitVariable)
@@ -254,16 +255,16 @@
 
 #Define:PlusOperator(quantity, dimensionality)
 /// <summary>Unary plus, resulting in the unmodified <paramref name="a"/>.</summary>
-/// <param name="a">Unary plus is applied to this instance of <see cref="#Param:quantity#"/>.</param>
+/// <param name="a">Unary plus is applied to this <see cref="#Param:quantity#"/>.</param>
 #/
 
 #Define:NegateOperator(quantity, dimensionality)
-/// <summary>Negation, resulting in a <see cref="#Param:quantity#"/> with components negated from that of <paramref name="a"/>.</summary>
-/// <param name="a">Negation is applied to this instance of <see cref="#Param:quantity#"/>.</param>
+/// <summary>Negation, resulting in a <see cref="#Param:quantity#"/> with negated components from that of <paramref name="a"/>.</summary>
+/// <param name="a">Negation is applied to this <see cref="#Param:quantity#"/>.</param>
 #/
 
 #Define:MultiplyUnhandledMethod(quantity, dimensionality)
-/// <summary>Multiplies the <see cref="#Param:quantity#"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+/// <summary>Multiplicates the <see cref="#Param:quantity#"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
 /// - resulting in an <see cref="Unhandled#Param:dimensionality#"/> quantity.</summary>
 /// <param name="factor">The factor by which the <see cref="#Param:quantity#"/> is multiplied.</param>
 #/
@@ -275,21 +276,21 @@
 #/
 
 #Define:MultiplyUnhandledOperatorLHS(quantity, dimensionality)
-/// <summary>Multiplies the <see cref="#Param:quantity#"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
+/// <summary>Multiplication of the <see cref="#Param:quantity#"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
 /// resulting in an <see cref="Unhandled#Param:dimensionality#"/> quantity.</summary>
 /// <param name="a">The <see cref="#Param:quantity#"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
 /// <param name="b">The <see cref="Unhandled"/> quantity by which the <see cref="#Param:quantity#"/> <paramref name="a"/> is multiplied.</param>
 #/
 
 #Define:MultiplyUnhandledOperatorRHS(quantity, dimensionality)
-/// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="b"/> by the <see cref="#Param:quantity#"/> <paramref name="a"/> -
+/// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="b"/> by the <see cref="#Param:quantity#"/> <paramref name="a"/> -
 /// resulting in an <see cref="Unhandled#Param:dimensionality#"/> quantity.</summary>
 /// <param name="a">The <see cref="Unhandled"/> quantity by which the <see cref="#Param:quantity#"/> <paramref name="b"/> is multiplied.</param>
 /// <param name="b">The <see cref="#Param:quantity#"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="a"/>.</param>
 #/
 
 #Define:DivideUnhandledOperator(quantity, dimensionality)
-/// <summary>Divides the <see cref="#Param:quantity#"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
+/// <summary>Division of the <see cref="#Param:quantity#"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
 /// resulting in an <see cref="Unhandled#Param:dimensionality#"/> quantity.</summary>
 /// <param name="a">The <see cref="#Param:quantity#"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
 /// <param name="b">The <see cref="Unhandled"/> quantity by which the <see cref="#Param:quantity#"/> <paramref name="a"/> is divded.</param>
@@ -298,7 +299,7 @@
 #Define:RemainderDoubleMethod(quantity, dimensionality)
 /// <summary>Produces a <see cref="#Param:quantity#"/>, with each component equal to the remainder from division of the
 /// magnitude of the original component by <paramref name="divisor"/>.</summary>
-/// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+/// <param name="divisor">The remainder is produced from division by this value.</param>
 #/
 
 #Define:MultiplyDoubleMethod(quantity, dimensionality)
@@ -315,7 +316,7 @@
 /// <summary>Produces a <see cref="#Param:quantity#"/>, with each component equal to the remainder from division of the
 /// magnitude of the component of <paramref name="a"/> by <paramref name="b"/>.</summary>
 /// <param name="a">The <see cref="#Param:quantity#"/>, the components of which are divided by <paramref name="b"/> to produce a remainder.</param>
-/// <param name="b">The remainder is retrieved from division of <see cref="#Param:quantity#"/> <paramref name="a"/> by this value.</param>
+/// <param name="b">The remainder is produced from division of <see cref="#Param:quantity#"/> <paramref name="a"/> by this value.</param>
 #/
 
 #Define:MultiplyDoubleOperatorLHS(quantity, dimensionality)
@@ -339,7 +340,7 @@
 #Define:RemainderScalarMethod(quantity, dimensionality)
 /// <summary>Produces a <see cref="#Param:quantity#"/>, with each component equal to the remainder from division of the
 /// magnitude of the original component by <paramref name="divisor"/>.</summary>
-/// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+/// <param name="divisor">The remainder is produced from division by this value.</param>
 #/
 
 #Define:MultiplyScalarMethod(quantity, dimensionality)
@@ -356,7 +357,7 @@
 /// <summary>Produces a <see cref="#Param:quantity#"/>, with each component equal to the remainder from division of the
 /// magnitude of the component of <paramref name="a"/> by <paramref name="b"/>.</summary>
 /// <param name="a">The <see cref="#Param:quantity#"/>, the components of which are divided by <paramref name="b"/> to produce a remainder.</param>
-/// <param name="b">The remainder is retrieved from division of <see cref="#Param:quantity#"/> <paramref name="a"/> by this value.</param>
+/// <param name="b">The remainder is produced from division of <see cref="#Param:quantity#"/> <paramref name="a"/> by this value.</param>
 #/
 
 #Define:MultiplyScalarOperatorLHS(quantity, dimensionality)
@@ -379,10 +380,12 @@
 
 #Define:MultiplyGeneric(quantity, dimensionality)
 /// <inheritdoc/>
+/// <exception cref="ArgumentNullException"/>
 #/
 
 #Define:DivideGeneric(quantity, dimensionality)
 /// <inheritdoc/>
+/// <exception cref="ArgumentNullException"/>
 #/
 
 #Define:MultiplyIScalarLHS(quantity, dimensionality)
@@ -390,11 +393,13 @@
 #/
 
 #Define:MultiplyIScalarLHS3(quantity)
-/// <summary>Multiples the <see cref="#Param:quantity#"/> <paramref name="a"/> by the quantity <paramref name="b"/>
+/// <summary>Multiplication of the <see cref="#Param:quantity#"/> <paramref name="a"/> by the quantity <paramref name="b"/>
 /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
 /// <param name="a">The <see cref="#Param:quantity#"/>, which is multiplied by <paramref name="b"/>.</param>
 /// <param name="b">This quantity is multiplied by the <see cref="#Param:quantity#"/> <paramref name="a"/>.</param>
-/// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
+/// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity,
+/// Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
+/// <exception cref="ArgumentNullException"/>
 #/
 
 #Define:MultiplyIScalarRHS(quantity, dimensionality)
@@ -402,11 +407,13 @@
 #/
 
 #Define:MultiplyIScalarRHS3(quantity)
-/// <summary>Multiples the quantity <paramref name="a"/> by the <see cref="#Param:quantity#"/> <paramref name="b"/>
+/// <summary>Multiplication of the quantity <paramref name="a"/> by the <see cref="#Param:quantity#"/> <paramref name="b"/>
 /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
 /// <param name="a">This quantity is multiplied by the <see cref="#Param:quantity#"/> <paramref name="b"/>.</param>
 /// <param name="b">The <see cref="#Param:quantity#"/>, which is multiplied by <paramref name="a"/>.</param>
-/// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
+/// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity,
+/// Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
+/// <exception cref="ArgumentNullException"/>
 #/
 
 #Define:DivideIScalar(quantity, dimensionality)
@@ -414,11 +421,13 @@
 #/
 
 #Define:DivideIScalar3(quantity)
-/// <summary>Divides the <see cref="#Param:quantity#"/> <paramref name="a"/> by the quantity <paramref name="b"/>
+/// <summary>Division of the <see cref="#Param:quantity#"/> <paramref name="a"/> by the quantity <paramref name="b"/>
 /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
 /// <param name="a">The <see cref="#Param:quantity#"/>, which is divided by <paramref name="b"/>.</param>
-/// <param name="b">The<see cref="#Param:quantity#"/> <paramref name="a"/> is divided by this quantity.</param>
-/// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientVector3Quantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, double, double, TQuotientVector3Quantity})"/>.</remarks>
+/// <param name="b">The <see cref="#Param:quantity#"/> <paramref name="a"/> is divided by this quantity.</param>
+/// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientVector3Quantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
+/// Func{double, double, double, TQuotientVector3Quantity})"/>.</remarks>
+/// <exception cref="ArgumentNullException"/>
 #/
 
 #Define:ToValueTupleMethod(quantity, dimensionality)
@@ -426,8 +435,7 @@
 #/
 
 #Define:ToValueTupleMethod3(quantity)
-/// <summary>Converts the <see cref="#Param:quantity#"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with values
-/// (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
+/// <summary>Converts the <see cref="#Param:quantity#"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with #newline#values (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
 #/
 
 #Define:ToValueTupleOperator(quantity, dimensionality)
@@ -435,36 +443,29 @@
 #/
 
 #Define:ToValueTupleOperator3(quantity)
-/// <summary>Converts <paramref name="a"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with values
-/// (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
+/// <summary>Converts <paramref name="a"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with #newline#values (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
 #/
 
 #Define:ToVectorMethod(quantity, dimensionality)
-/// <summary>Converts the <see cref="#Param:quantity#"/> to the <see cref="Vector#Param:dimensionality#"/> with components of
-/// equal magnitude, when expressed in SI units.</summary>
+/// <summary>Converts the <see cref="#Param:quantity#"/> to the <see cref="Vector#Param:dimensionality#"/> with components of equal magnitude, #newline#when expressed in SI units.</summary>
 #/
 
 #Define:ToVectorOperator(quantity, dimensionality)
-/// <summary>Converts <paramref name="a"/> to the <see cref="Vector#Param:dimensionality#"/> with components of
-/// equal magnitude, when expressed in SI units.</summary>
+/// <summary>Converts <paramref name="a"/> to the <see cref="Vector#Param:dimensionality#"/> with components of equal magnitude, #newline#when expressed in SI units.</summary>
 #/
 
 #Define:FromValueTupleMethod(quantity, dimensionality)
-/// <summary>Constructs the <see cref="#Param:quantity#"/> with components equal to the values of <paramref name="components"/>,
-/// when expressed in SI units.</summary>
+/// <summary>Constructs the <see cref="#Param:quantity#"/> with components equal to the values of <paramref name="components"/>, #newline#when expressed in SI units.</summary>
 #/
 
 #Define:FromValueTupleOperator(quantity, dimensionality)
-/// <summary>Constructs the <see cref="#Param:quantity#"/> with components equal to the values of <paramref name="components"/>,
-/// when expressed in SI units.</summary>
+/// <summary>Constructs the <see cref="#Param:quantity#"/> with components equal to the values of <paramref name="components"/>, #newline#when expressed in SI units.</summary>
 #/
 
 #Define:FromVectorMethod(quantity, dimensionality)
-/// <summary>Converts <paramref name="a"/> to the <see cref="#Param:quantity#"/> with components of equal magnitude,
-/// when expressed in SI units.</summary>
+/// <summary>Constructs the <see cref="#Param:quantity#"/> with components <paramref name="a"/>, #newline#when expressed in SI units.</summary>
 #/
 
 #Define:FromVectorOperator(quantity, dimensionality)
-/// <summary>Converts <paramref name="a"/> to the <see cref="#Param:quantity#"/> with components of equal magnitude,
-/// when expressed in SI units.</summary>
+/// <summary>Constructs the <see cref="#Param:quantity#"/> with components <paramref name="a"/>, #newline#when expressed in SI units.</summary>
 #/

@@ -1,9 +1,11 @@
-import { ScalarQuantity } from "./ScalarQuantity"
-import { VectorQuantity } from "./VectorQuantity"
+import { ScalarQuantity } from './ScalarQuantity'
+import { VectorQuantity } from './VectorQuantity'
+import { Unit } from './Unit'
 
 let quantityDefinitions : {
     scalars: Record<string, ScalarQuantity>,
-    vectors: Record<string, VectorQuantity>
+    vectors: Record<string, VectorQuantity>,
+    units: Record<string, Unit>
 }
 
 export type QuantityDefinitions = typeof quantityDefinitions
@@ -37,70 +39,42 @@ export const ensureArray = <T>(obj: T | T[]): T[] => {
     }
 }
 
-export const getQuantityEntry = <T extends (ScalarQuantity | VectorQuantity), K extends keyof T>(entry: K, delegate: (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity) => T[K], definitions: QuantityDefinitions, quantity: T): T[K] => {
-    const value: T[K] = quantity[entry]
+export const getVectorComponent = (definitions: QuantityDefinitions, quantity: VectorQuantity): ScalarQuantity => {
+    if (quantity.component === '[name]') {
+        return definitions.scalars[quantity.name]
+    } else if (quantity.component === '[component]') {
+        throw new Error('Quantity: [' + quantity.name + '] had cyclic reference involving [component].')
+    } else if (quantity.component[0] === '[') {
+        return getVectorComponent(definitions, definitions.vectors[quantity.component.slice(1, -1)])
+    } else {
+        return definitions.scalars[quantity.component]
+    }
+}
 
-    if (quantity.type == 'Vector' && typeof value === 'string' && value == '[component]') {
-        return delegate(definitions, definitions.scalars[getVectorComponent(definitions, quantity)])
-    } else if (typeof value === 'string' && value[0] == '[') {
-        if (quantity.type == 'Scalar') {
-            return delegate(definitions, definitions.scalars[value.slice(1, -1)])
+export const getUnit = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): Unit => {
+    if (quantity.unit === '[name]') {
+        return definitions.units[quantity.name]
+    } else if (quantity.type === 'Vector' && quantity.unit === '[component]') {
+        return getUnit(definitions, getVectorComponent(definitions, quantity))
+    } else if (quantity.unit[0] === '[') {
+        if (quantity.type === 'Vector') {
+            return getUnit(definitions, definitions.vectors[quantity.unit.slice(1, -1)]) 
         } else {
-            return delegate(definitions, definitions.vectors[value.slice(1, -1)])
+            return getUnit(definitions, definitions.scalars[quantity.unit.slice(1, -1)]) 
         }
     } else {
-        return quantity[entry]
+        return definitions.units[quantity.unit]
     }
 }
 
-export const getVectorComponent = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): VectorQuantity['component'] => {
-    if (quantity.type == 'Scalar') {
-        throw new Error('Cannot retrieve vector component of scalar quantity: [' + quantity.name + '].')
-    }
-    
-    if (quantity.component == '[name]') {
-        return quantity.name
-    } else if (quantity.component == '[component]') {
-        throw new Error('Quantity: [' + quantity.name + '] had cyclic reference involving [component].')
+export const getVectorVersionOfScalar = (definitions: QuantityDefinitions, quantity: ScalarQuantity): VectorQuantity | undefined => {
+    if (quantity.vector === false) {
+        return undefined
+    } else if (quantity.vector === '[name]') {
+        return definitions.vectors[quantity.name]
     } else {
-        return getQuantityEntry('component', getVectorComponent, definitions, quantity)
+        return definitions.vectors[quantity.vector]
     }
-}
-
-export const getBaseUnits = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): (ScalarQuantity | VectorQuantity)['baseUnits'] => {
-    return getQuantityEntry<ScalarQuantity | VectorQuantity, 'baseUnits'>('baseUnits', getBaseUnits, definitions, quantity)
-}
-
-export const getUnitName = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): (ScalarQuantity | VectorQuantity)['unit'] => {
-    if (quantity['unit'] == '[UnitOf]') {
-        return 'UnitOf' + quantity['name']
-    } else {
-        return getQuantityEntry('unit', getUnitName, definitions, quantity)
-    }
-}
-
-export const getUnitBias = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): (ScalarQuantity | VectorQuantity)['unitBias'] => {
-    return getQuantityEntry('unitBias', getUnitBias, definitions, quantity)
-}
-
-export const getNameOfVectorVersionOfScalar = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): ScalarQuantity['vector'] => {
-    if (quantity.type == 'Vector') {
-        throw new Error('Cannot retrieve vector version of vector quantity: [' + quantity.name + '].')
-    }
-
-    if (quantity['vector'] == '[name]') {
-        return quantity['name']
-    } else {
-        return getQuantityEntry('vector', getNameOfVectorVersionOfScalar, definitions, quantity)
-    }
-}
-
-export const getDimensionalitiesOfVector = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): VectorQuantity['dimensionalities'] => {
-    if (quantity.type == 'Scalar') {
-        throw new Error('Cannot retrieve dimensionalities of scalar quantity: [' + quantity.name + '].')
-    }
-
-    return getQuantityEntry('dimensionalities', getDimensionalitiesOfVector, definitions, quantity)
 }
 
 export const getVectorComponentNames = (dimensionality: number): string[] => {
@@ -108,154 +82,132 @@ export const getVectorComponentNames = (dimensionality: number): string[] => {
     return names.slice(0, dimensionality)
 }
 
-export const getInverse = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): ScalarQuantity['inverse'] => {
-    if (quantity.type == 'Vector') {
-        throw new Error('Cannot retrieve inverse of vector quantity: [' + quantity.name + '].')
-    }
+export const getUnits = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): Unit['units'] => {
+    const unit: Unit = getUnit(definitions, quantity)
 
-    const inverse = getQuantityEntry('inverse', getInverse, definitions, quantity)
-
-    if (!inverse) {
-        return []
-    } else {
-        return ensureArray(inverse)
-    }
-}
-
-export const getSquare = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): ScalarQuantity['square'] => {
-    if (quantity.type == 'Vector') {
-        throw new Error('Cannot retrieve square of vector quantity: [' + quantity.name + '].')
-    }
-
-    const square = getQuantityEntry('square', getSquare, definitions, quantity)
-
-    if (!square) {
-        return []
-    } else {
-        return ensureArray(square)
-    }
-}
-
-export const getCube = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): ScalarQuantity['cube'] => {
-    if (quantity.type == 'Vector') {
-        throw new Error('Cannot retrieve cube of vector quantity: [' + quantity.name + '].')
-    }
-
-    const cube = getQuantityEntry('cube', getCube, definitions, quantity)
-
-    if (!cube) {
-        return []
-    } else {
-        return ensureArray(cube)
-    }
-}
-
-export const getSquareRoot = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): ScalarQuantity['squareRoot'] => {
-    if (quantity.type == 'Vector') {
-        throw new Error('Cannot retrieve square root of vector quantity: [' + quantity.name + '].')
-    }
-
-    const squareRoot = getQuantityEntry('squareRoot', getSquareRoot, definitions, quantity)
-
-    if (!squareRoot) {
-        return []
-    } else {
-        return ensureArray(squareRoot)
-    }
-}
-
-export const getCubeRoot = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): ScalarQuantity['cubeRoot'] => {
-    if (quantity.type == 'Vector') {
-        throw new Error('Cannot retrieve cube root of vector quantity: [' + quantity.name + '].')
-    }
-
-    const cubeRoot = getQuantityEntry('cubeRoot', getCubeRoot, definitions, quantity)
-
-    if (!cubeRoot) {
-        return []
-    } else {
-        return ensureArray(cubeRoot)
-    }
-}
-
-export const getUnits = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): (ScalarQuantity | VectorQuantity)['units'] => {
-    const units = getQuantityEntry('units', getUnits, definitions, quantity)
-
-    if (typeof units === 'string') {
-        throw new Error('Could not parse unit: [' + quantity.units + '] of quantity: [' + quantity.name + '].')
-    }
-
-    for (let unit of units) {
-        if (!unit.special) {
-            unit.plural = parseUnitPlural(unit.singular, unit.plural)
+    const includedUnits: Unit['units'] = []
+    for (let namedUnit of unit.units) {
+        if (!namedUnit.special) {
+            if (!isUnitExcluded(quantity, namedUnit, quantity.excludeUnits) && !isUnitUnincluded(quantity, namedUnit, quantity.includeUnits)) {
+                includedUnits.push(namedUnit)
+            }
         }
     }
 
-    return units
+    return includedUnits
 }
 
-export const getSymbol = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): string | undefined => {
-    const units = getUnits(definitions, quantity)
+export const getBases = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): Unit['units'] => {
+    const units: Unit['units'] = getUnits(definitions, quantity)
 
-    if (typeof units === 'string') {
-        return undefined
+    const includedUnits: Unit['units'] = []
+    for (let unit of units) {
+        if (!unit.special) {
+            if (!isUnitExcluded(quantity, unit, quantity.excludeBases) && !isUnitUnincluded(quantity, unit, quantity.includeBases)) {
+                includedUnits.push(unit)
+            }
+        }
     }
+
+    return includedUnits
+}
+
+const isUnitExcluded = (quantity: ScalarQuantity | VectorQuantity, unit: Unit['units'][number], list: string[] | undefined): boolean => {
+    return (unit.special !== true && list !== undefined && list.includes(unit.name))
+}
+
+const isUnitUnincluded = (quantity: ScalarQuantity | VectorQuantity, unit: Unit['units'][number], list: string[] | undefined): boolean => {
+    return (unit.special !== true && list !== undefined && !list.includes(unit.name))
+}
+
+export const getSIUnit = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): Unit['units'][number] | undefined => {
+    const units: Unit['units'] = getUnits(definitions, quantity)
 
     for (let unit of units) {
         if (!unit.special && unit.SI) {
-            return unit.symbol
+            return unit
         }
     }
 
     return undefined
 }
 
-export const getBases = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): (ScalarQuantity | VectorQuantity)['units'] => {
-    const units = getUnits(definitions, quantity)
-    
-    if (typeof units === 'string') {
-        return []
-    }
+export const getDefaultUnit = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): Unit['units'][number] | undefined => {
+    if (quantity.defaultUnit === undefined) {
+        return getSIUnit(definitions, quantity)
+    } else if (quantity.type === 'Vector' && quantity.defaultUnit === '[component]') {
+        return getDefaultUnit(definitions, getVectorComponent(definitions, quantity))
+    } else {
+        const units: Unit['units'] = getUnits(definitions, quantity)
 
-    const bases: (ScalarQuantity | VectorQuantity)['units'] = []
-
-    for (let unit of units) {
-        if (!unit.special && (unit.base || unit.base === undefined)) {
-            bases.push(unit)
+        for (let unit of units) {
+            if (!unit.special && unit.name === quantity.defaultUnit) {
+                return unit
+            }
         }
     }
 
-    return bases
+    return undefined
 }
 
-export const getConvertible = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): (ScalarQuantity | VectorQuantity)['convertible'] => {
-    const convertible = getQuantityEntry('convertible', getConvertible, definitions, quantity)
-
-    if (!convertible) {
+export const getConvertible = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): ScalarQuantity[] | VectorQuantity[] => {
+    if (quantity.convertible === undefined) {
         return []
+    }
+
+    if (quantity.type === 'Scalar') {
+        const convertibles: ScalarQuantity[] = []
+        for (let convertible of quantity.convertible) {
+            convertibles.push(definitions.scalars[convertible])
+        }
+        return convertibles
     } else {
-        return ensureArray(convertible)
+        const convertibles: VectorQuantity[] = []
+        for (let convertible of quantity.convertible) {
+            convertibles.push(definitions.vectors[convertible])
+        }
+        return convertibles
     }
 }
 
-export const createUnitListTexts = (quantity: ScalarQuantity | VectorQuantity) : { singular: string, plural: string } => {
-    const units = quantity.units
-    
-    if (typeof units === 'string') {
-        throw new Error('Could not parse bases of quantity: [' + quantity.name + '], units was not parsed correctly.')
+export const getUnitQuantity = (definitions: QuantityDefinitions, unit: Unit): ScalarQuantity => {
+    if (unit.quantity === '[name]') {
+        return definitions.scalars[unit.name]
+    } else {
+        return definitions.scalars[unit.quantity]
     }
+}
 
-    let singularUnitList = ''
-    let pluralUnitList = ''
+export const composeUnitsNameList = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): { singular: string, plural: string } => {
+    const units: Unit['units'] = getUnits(definitions, quantity)
+
+    let singular: string = ''
+    let plural: string = ''
 
     for (let unit of units) {
         if (!unit.special) {
-            singularUnitList += unit.singular + ', '
-            pluralUnitList += unit.plural + ', '
+            singular += unit.name + ', '
+            plural += parseUnitPlural(unit.name, unit.plural) + ', '
         }
     }
 
-    return { singular: '[' + singularUnitList.slice(0, -2) + ']', plural: '[' + pluralUnitList.slice(0, -2) + ']' }
+    return { singular: '[' + singular.slice(0, -2) + ']', plural: '[' + plural.slice(0, -2) + ']' }
+}
+
+export const composeBasesNameList = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): { singular: string, plural: string } => {
+    const units: Unit['units'] = getBases(definitions, quantity)
+
+    let singular: string = ''
+    let plural: string = ''
+
+    for (let unit of units) {
+        if (!unit.special) {
+            singular += unit.name + ', '
+            plural += parseUnitPlural(unit.name, unit.plural) + ', '
+        }
+    }
+
+    return { singular: '[' + singular.slice(0, -2) + ']', plural: '[' + plural.slice(0, -2) + ']' }
 }
 
 export const insertAppropriateNewlines = (text: string, characterLimit: number): string => {

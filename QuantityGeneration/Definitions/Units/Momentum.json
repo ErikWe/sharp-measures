@@ -1,0 +1,17 @@
+{
+    "type": "Unit",
+    "name": "Momentum",
+    "quantity": "[name]",
+    "derived": [
+        {
+            "signature": [
+                "Mass",
+                "Velocity"
+            ],
+            "expression": "Momentum.From({1}, {2})"
+        }
+    ],
+    "units": [
+        { "name": "KilogramMetrePerSecond", "plural": "+s [Per]", "symbol": "kg∙m∙s⁻¹", "SI": true, "derived": ["Mass.Kilogram", "Velocity.MetrePerSecond"] }
+    ]
+}

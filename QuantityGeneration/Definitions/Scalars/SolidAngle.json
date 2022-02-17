@@ -1,21 +1,6 @@
 ﻿{
-    "name": "SolidAngle",
     "type": "Scalar",
-    "baseUnits": "1",
-    "unit": "[UnitOf]",
-    "unitBias": false,
-    "vector": false,
-    "inverse": false,
-    "square": false,
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "Steradian", "plural": "+s", "SI": true, "symbol": "sr" },
-        { "singular": "SquareRadian", "plural": "+s" },
-        { "singular": "SquareDegree", "plural": "+s" },
-        { "singular": "SquareArcMinutes", "plural": "+s" },
-        { "singular": "SquareArcSeconds", "plural": "+s" }
-    ],
-    "convertible": []
+    "name": "SolidAngle",
+    "squareRoot": ["Angle"],
+    "unit": "[name]"
 }

@@ -1,16 +1,7 @@
 ﻿{
-    "name": "PotentialEnergy",
     "type": "Scalar",
-    "baseUnits": "kg * m^2 * s^-2",
-    "unit": "UnitOfEnergy",
-    "unitBias": false,
-    "vector": false,
-    "inverse": false,
-    "square": false,
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": "[Energy]",
+    "name": "PotentialEnergy",
+    "unit": "[Energy]",
     "convertible": [
         "Energy",
         "GravitationalEnergy",

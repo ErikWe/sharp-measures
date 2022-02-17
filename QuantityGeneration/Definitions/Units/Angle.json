@@ -1,0 +1,25 @@
+{
+    "type": "Unit",
+    "name": "Angle",
+    "quantity": "[name]",
+    "units": [
+        { "name": "Radian", "plural": "+s", "symbol": "rad", "SI": true, "value": 1 },
+        { "name": "Milliradian", "plural": "+s", "prefix": { "from": "Radian", "with": "Milli" } },
+        { "special": true, "separator": true },
+        { "name": "Degree", "plural": "+s", "scaled": { "from": "Radian", "by": "Math.PI / 180" } },
+        { "name": "Gradian", "plural": "+s", "scaled": { "from": "Radian", "by": "Math.PI / 200" } },
+        { "special": true, "separator": true },
+        { "name": "Arcminute", "plural": "+s", "scaled": { "from": "Degree", "by": "1d / 60" } },
+        { "name": "Arcsecond", "plural": "+s", "scaled": { "from": "Arcminute", "by": "1d / 60" } },
+        { "name": "Milliarcsecond", "plural": "+s", "prefix": { "from": "Arcsecond", "with": "Milli" } },
+        { "name": "Microarcsecond", "plural": "+s", "prefix": { "from": "Arcsecond", "with": "Micro" } },
+        { "special": true, "separator": true },
+        { "name": "Turn", "plural": "+s", "scaled": { "from": "Radian", "by": "Math.Tau" } },
+        { "name": "HalfTurn", "plural": "+s", "scaled": { "from": "Turn", "by": ".5d" } },
+        { "name": "QuarterTurn", "plural": "+s", "scaled": { "from": "Turn", "by": ".25d" } },
+        { "name": "Centiturn", "plural": "+s", "prefix": { "from": "Turn", "with": "Centi" } },
+        { "name": "Milliturn", "plural": "+s", "prefix": { "from": "Turn", "with": "Milli" } },
+        { "special": true, "separator": true },
+        { "name": "BinaryDegree", "plural": "+s", "scaled": { "from": "Turn", "by": "1d / 256" } }
+    ]
+}

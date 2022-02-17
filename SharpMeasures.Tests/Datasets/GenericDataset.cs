@@ -1,145 +1,144 @@
-﻿using System.Collections;
+﻿namespace ErikWe.SharpMeasures.Tests.Datasets;
+
+using System.Collections;
 using System.Collections.Generic;
 
-namespace ErikWe.SharpMeasures.Tests.Datasets
+public static class GenericDataset
 {
-    public static class GenericDataset
+    public static IEnumerable<object?[]> Enumerate(IEnumerator<object?[]>[] iterators)
     {
-        public static IEnumerable<object?[]> Enumerate(IEnumerator<object?[]>[] iterators)
+        List<object?[]>[] elements = new List<object?[]>[iterators.Length];
+        int longestLength = 0;
+
+        for (int i = 0; i < iterators.Length; i++)
         {
-            List<object?[]>[] elements = new List<object?[]>[iterators.Length];
-            int longestLength = 0;
+            elements[i] = new List<object?[]>();
 
-            for (int i = 0; i < iterators.Length; i++)
+            while (iterators[i].MoveNext())
             {
-                elements[i] = new List<object?[]>();
-
-                while (iterators[i].MoveNext())
-                {
-                    elements[i].Add(iterators[i].Current);
-                }
-
-                if (elements[i].Count > longestLength)
-                {
-                    longestLength = elements[i].Count;
-                }
+                elements[i].Add(iterators[i].Current);
             }
 
-            for (int i = 0; i < longestLength; i++)
+            if (elements[i].Count > longestLength)
             {
-                yield return Compose(elements, i, 1);
-                yield return Compose(elements, i, 2);
-                yield return Compose(elements, i, 3);
-                yield return Compose(elements, i, 5);
+                longestLength = elements[i].Count;
             }
         }
 
-        private static object?[] Compose(List<object?[]>[] elements, int iteration, int bias)
+        for (int i = 0; i < longestLength; i++)
         {
-            List<object?> list = new();
-
-            for (int j = 0; j < elements.Length; j++)
-            {
-                list.AddRange(elements[j][(iteration + j) * bias % elements[j].Count]);
-            }
-
-            return list.ToArray();
+            yield return Compose(elements, i, 1);
+            yield return Compose(elements, i, 2);
+            yield return Compose(elements, i, 3);
+            yield return Compose(elements, i, 5);
         }
     }
 
-    public class GenericDataset<T1, T2> : IEnumerable<object?[]>
-        where T1 : IEnumerable<object?[]>, new()
-        where T2 : IEnumerable<object?[]>, new()
+    private static object?[] Compose(List<object?[]>[] elements, int iteration, int bias)
     {
-        public IEnumerator<object?[]> GetEnumerator()
-        {
-            IEnumerator<object?[]>[] iterators = new IEnumerator<object?[]>[]
-            {
-                new T1().GetEnumerator(),
-                new T2().GetEnumerator()
-            };
+        List<object?> list = new();
 
-            return GenericDataset.Enumerate(iterators).GetEnumerator();
+        for (int j = 0; j < elements.Length; j++)
+        {
+            list.AddRange(elements[j][(iteration + j) * bias % elements[j].Count]);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        return list.ToArray();
+    }
+}
+
+public class GenericDataset<T1, T2> : IEnumerable<object?[]>
+    where T1 : IEnumerable<object?[]>, new()
+    where T2 : IEnumerable<object?[]>, new()
+{
+    public IEnumerator<object?[]> GetEnumerator()
+    {
+        IEnumerator<object?[]>[] iterators = new IEnumerator<object?[]>[]
         {
-            return GetEnumerator();
-        }
+            new T1().GetEnumerator(),
+            new T2().GetEnumerator()
+        };
+
+        return GenericDataset.Enumerate(iterators).GetEnumerator();
     }
 
-    public class GenericDataset<T1, T2, T3> : IEnumerable<object?[]>
-        where T1 : IEnumerable<object?[]>, new()
-        where T2 : IEnumerable<object?[]>, new()
-        where T3 : IEnumerable<object?[]>, new()
+    IEnumerator IEnumerable.GetEnumerator()
     {
-        public IEnumerator<object?[]> GetEnumerator()
-        {
-            IEnumerator<object?[]>[] iterators = new IEnumerator<object?[]>[]
-            {
-                new T1().GetEnumerator(),
-                new T2().GetEnumerator(),
-                new T3().GetEnumerator()
-            };
+        return GetEnumerator();
+    }
+}
 
-            return GenericDataset.Enumerate(iterators).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
+public class GenericDataset<T1, T2, T3> : IEnumerable<object?[]>
+    where T1 : IEnumerable<object?[]>, new()
+    where T2 : IEnumerable<object?[]>, new()
+    where T3 : IEnumerable<object?[]>, new()
+{
+    public IEnumerator<object?[]> GetEnumerator()
+    {
+        IEnumerator<object?[]>[] iterators = new IEnumerator<object?[]>[]
         {
-            return GetEnumerator();
-        }
+            new T1().GetEnumerator(),
+            new T2().GetEnumerator(),
+            new T3().GetEnumerator()
+        };
+
+        return GenericDataset.Enumerate(iterators).GetEnumerator();
     }
 
-    public class GenericDataset<T1, T2, T3, T4> : IEnumerable<object?[]>
-        where T1 : IEnumerable<object?[]>, new()
-        where T2 : IEnumerable<object?[]>, new()
-        where T3 : IEnumerable<object?[]>, new()
-        where T4 : IEnumerable<object?[]>, new()
+    IEnumerator IEnumerable.GetEnumerator()
     {
-        public IEnumerator<object?[]> GetEnumerator()
-        {
-            IEnumerator<object?[]>[] iterators = new IEnumerator<object?[]>[]
-            {
-                new T1().GetEnumerator(),
-                new T2().GetEnumerator(),
-                new T3().GetEnumerator(),
-                new T4().GetEnumerator()
-            };
+        return GetEnumerator();
+    }
+}
 
-            return GenericDataset.Enumerate(iterators).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
+public class GenericDataset<T1, T2, T3, T4> : IEnumerable<object?[]>
+    where T1 : IEnumerable<object?[]>, new()
+    where T2 : IEnumerable<object?[]>, new()
+    where T3 : IEnumerable<object?[]>, new()
+    where T4 : IEnumerable<object?[]>, new()
+{
+    public IEnumerator<object?[]> GetEnumerator()
+    {
+        IEnumerator<object?[]>[] iterators = new IEnumerator<object?[]>[]
         {
-            return GetEnumerator();
-        }
+            new T1().GetEnumerator(),
+            new T2().GetEnumerator(),
+            new T3().GetEnumerator(),
+            new T4().GetEnumerator()
+        };
+
+        return GenericDataset.Enumerate(iterators).GetEnumerator();
     }
 
-    public class GenericDataset<T1, T2, T3, T4, T5> : IEnumerable<object?[]>
-        where T1 : IEnumerable<object?[]>, new()
-        where T2 : IEnumerable<object?[]>, new()
-        where T3 : IEnumerable<object?[]>, new()
-        where T4 : IEnumerable<object?[]>, new()
-        where T5 : IEnumerable<object?[]>, new()
+    IEnumerator IEnumerable.GetEnumerator()
     {
-        public IEnumerator<object?[]> GetEnumerator()
-        {
-            IEnumerator<object?[]>[] iterators = new IEnumerator<object?[]>[]
-            {
-                new T1().GetEnumerator(),
-                new T2().GetEnumerator(),
-                new T3().GetEnumerator(),
-                new T4().GetEnumerator(),
-                new T5().GetEnumerator()
-            };
+        return GetEnumerator();
+    }
+}
 
-            return GenericDataset.Enumerate(iterators).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
+public class GenericDataset<T1, T2, T3, T4, T5> : IEnumerable<object?[]>
+    where T1 : IEnumerable<object?[]>, new()
+    where T2 : IEnumerable<object?[]>, new()
+    where T3 : IEnumerable<object?[]>, new()
+    where T4 : IEnumerable<object?[]>, new()
+    where T5 : IEnumerable<object?[]>, new()
+{
+    public IEnumerator<object?[]> GetEnumerator()
+    {
+        IEnumerator<object?[]>[] iterators = new IEnumerator<object?[]>[]
         {
-            return GetEnumerator();
-        }
+            new T1().GetEnumerator(),
+            new T2().GetEnumerator(),
+            new T3().GetEnumerator(),
+            new T4().GetEnumerator(),
+            new T5().GetEnumerator()
+        };
+
+        return GenericDataset.Enumerate(iterators).GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

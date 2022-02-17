@@ -1,18 +1,5 @@
 ﻿{
-    "name": "VolumetricFlowRate",
     "type": "Scalar",
-    "baseUnits": "m^3 * s^-1",
-    "unit": "[UnitOf]",
-    "unitBias": false,
-    "vector": false,
-    "inverse": false,
-    "square": false,
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "CubicMetrePerSecond", "plural": "+s [Per]", "SI": true, "symbol": "m^3 / s" },
-        { "singular": "LitrePerSecond", "plural": "+s [Per]" }
-    ],
-    "convertible": []
+    "name": "VolumetricFlowRate",
+    "unit": "[name]"
 }

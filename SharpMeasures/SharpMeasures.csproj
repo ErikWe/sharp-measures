@@ -10,16 +10,15 @@
 	  <Version>0.1.0</Version>
 	  <Authors>ErikWe</Authors>
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
   <ItemGroup>
-    <None Remove="AutoGeneration\Documentation\Vectors\Absement.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="AutoGeneration\Documentation\Vectors\Absement.txt" />
+    <Compile Remove="AutoGeneration\**" />
+    <EmbeddedResource Remove="AutoGeneration\**" />
+    <None Remove="AutoGeneration\**" />
   </ItemGroup>
 
 </Project>

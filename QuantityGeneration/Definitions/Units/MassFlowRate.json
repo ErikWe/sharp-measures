@@ -1,0 +1,18 @@
+{
+    "type": "Unit",
+    "name": "MassFlowRate",
+    "quantity": "[name]",
+    "derived": [
+        {
+            "signature": [
+                "Mass",
+                "Time"
+            ],
+            "expression": "MassFlowRate.From({1}, {2})"
+        }
+    ],
+    "units": [
+        { "name": "KilogramPerSecond", "plural": "+s [Per]", "symbol": "kg∙s⁻¹", "SI": true, "derived": ["Mass.Kilogram", "Time.Second"] },
+        { "name": "PoundPerSecond", "plural": "+s [Per]", "derived": ["Mass.Pound", "Time.Second"] }
+    ]
+}

@@ -1,0 +1,21 @@
+{
+    "type": "Unit",
+    "name": "TemperatureGradient",
+    "quantity": "[name]",
+    "derived": [
+        {
+            "signature": [
+                "Temperature",
+                "Length"
+            ],
+            "expression": "TemperatureGradient.From({1}, {2}.AsDistance)"
+        }
+    ],
+    "units": [
+        { "name": "KelvinPerMetre", "plural": "=", "symbol": "K∙m⁻¹", "SI": true, "derived": ["Temperature.Kelvin", "Length.Metre"] },
+        { "name": "CelsiusPerMetre", "plural": "=", "alias": "KelvinPerMetre" },
+        { "name": "RankinePerMetre", "plural": "=", "derived": ["Temperature.Rankine", "Length.Metre"] },
+        { "name": "FahrenheitPerMetre", "plural": "=", "derived": ["Temperature.Fahrenheit", "Length.Metre"] },
+        { "name": "FahrenheitPerFoot", "plural": "=", "derived": ["Temperature.Fahrenheit", "Length.Foot"] }
+    ]
+}

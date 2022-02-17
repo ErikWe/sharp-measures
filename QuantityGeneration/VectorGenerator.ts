@@ -1,10 +1,12 @@
 import fsp from 'fs/promises'
 import { Documenter } from './Documenter'
 import { DefinitionReader } from './DefinitionReader'
-import { VectorQuantity } from './VectorQuantity'
 import { TemplateReader } from './TemplateReader'
-import { createUnitListTexts, getBases, getBaseUnits, getConvertible, getDimensionalitiesOfVector, getSquare, getSymbol, getUnitBias, getUnitName,
-    getUnits, getVectorComponent, getVectorComponentNames, insertAppropriateNewlines, lowerCase, normalizeLineEndings, removeConsecutiveNewlines } from './Utility'
+import { ScalarQuantity } from './ScalarQuantity'
+import { VectorQuantity } from './VectorQuantity'
+import { Unit } from './Unit'
+import { composeUnitsNameList, composeBasesNameList, getConvertible, getDefaultUnit, getUnit, getUnits, getUnitQuantity, getVectorComponent,
+    getVectorComponentNames, insertAppropriateNewlines, lowerCase, normalizeLineEndings, parseUnitPlural, removeConsecutiveNewlines } from './Utility'
 
 export class VectorGenerator {
 
@@ -22,10 +24,6 @@ export class VectorGenerator {
     }
 
     private async generateVector(vector: VectorQuantity, dimensionality: number): Promise<void> {
-        if (!this.fixVectorData(vector)) {
-            return
-        }
-
         let text: string = this.templateReader.vectorTemplate
 
         text = this.setComponentListTexts(vector, dimensionality, text)
@@ -65,64 +63,41 @@ export class VectorGenerator {
         await fsp.writeFile(this.destination + '\\' + vector.name + dimensionality + '.g.cs', text)
     }
 
-    private fixVectorData(vector: VectorQuantity): boolean {
-        const requiredEntries: string[] = ['name', 'type', 'component', 'baseUnits', 'unit', 'unitBias', 'dimensionalities', 'units', 'convertible']
-
-        const missingEntries: string[] = []
-        for (let requiredEntry of requiredEntries) {
-            if (!(requiredEntry in vector)) {
-                missingEntries.push(requiredEntry)
-            }
-        }
-
-        if (missingEntries.length > 0) {
-            this.reportErrorMissingEntries(vector, missingEntries)
-            return false
-        }
-
-        const redudantEntries: string[] = []
-        for (let entry of Object.keys(vector)) {
-            if (!requiredEntries.includes(entry))
-            {
-                requiredEntries.push(entry)
-            }
-        }
-
-        if (redudantEntries.length > 0) {
-            this.reportWarningRedundantEntries(vector, redudantEntries)
-        }
-
-        vector.component = getVectorComponent(this.definitionReader.definitions, vector)
-        vector.baseUnits = getBaseUnits(this.definitionReader.definitions, vector)
-        vector.unit = getUnitName(this.definitionReader.definitions, vector)
-        vector.unitBias = getUnitBias(this.definitionReader.definitions, vector)
-        vector.dimensionalities = getDimensionalitiesOfVector(this.definitionReader.definitions, vector)
-        vector.units = getUnits(this.definitionReader.definitions, vector)
-        vector.symbol = getSymbol(this.definitionReader.definitions, vector)
-        vector.bases = getBases(this.definitionReader.definitions, vector)
-        vector.convertible = getConvertible(this.definitionReader.definitions, vector)
-
-        return true
-    }
-
     private insertNames(text: string, vector: VectorQuantity, dimensionality: number): string {
-        text = text.replace(/#Unit#/g, vector.unit)
-        text = text.replace(/#UnitVariable#/g, lowerCase(vector.unit))
+        const unit: Unit = getUnit(this.definitionReader.definitions, vector)
+        text = text.replace(/#Unit#/g, 'UnitOf' + unit.name)
+        text = text.replace(/#UnitVariable#/g, lowerCase('UnitOf' + unit.name))
 
-        const unitListTexts = createUnitListTexts(vector)
-        text = text.replace(/#SingularUnits#/g, unitListTexts.singular)
-        text = text.replace(/#PluralUnits#/g, unitListTexts.plural)
-        
-        text = text.replace(/#Abbreviation#/g, vector.symbol ? vector.symbol : 'SymbolParsingError')
+        text = text.replace(/#UnitQuantity#/g, getUnitQuantity(this.definitionReader.definitions, unit).name)
 
-        text = text.replace(/#Component#/g, vector.component ? vector.component : 'Scalar')
-
-        if (vector.component) {
-            let componentSquare: string | string[] | false = getSquare(this.definitionReader.definitions, this.definitionReader.definitions.scalars[vector.component])
-            if (componentSquare !== false && (!Array.isArray(componentSquare) || componentSquare.length > 0)) {
-                text = text.replace(/#SquaredComponent#/g, Array.isArray(componentSquare) ? componentSquare[0] : componentSquare)
+        const defaultUnit = getDefaultUnit(this.definitionReader.definitions, vector)
+        if (defaultUnit !== undefined && !defaultUnit.special) {
+            text = text.replace(/#DefaultUnit#/g, defaultUnit.name)
+            text = text.replace(/#DefaultUnits#/g, parseUnitPlural(defaultUnit.name, defaultUnit.plural))
+            if (defaultUnit.symbol === undefined) {
+                this.reportErrorMissingDefaultUnitSymbol(vector)
+                text = text.replace(/#DefaultSymbol#/g, 'NoDefaultUnitSymbolError')
+            } else {
+                text = text.replace(/#DefaultSymbol#/g, defaultUnit.symbol)
             }
+        } else {
+            this.reportErrorMissingDefaultUnit(vector)
+            text = text.replace(/#DefaultUnit#/g, 'NoDefaultUnitError')
+            text = text.replace(/#DefaultUnits#/g, 'NoDefaultUnitError')
+            text = text.replace(/#DefaultSymbol#/g, 'NoDefaultUnitError')
         }
+
+        const component: ScalarQuantity = getVectorComponent(this.definitionReader.definitions, vector)
+        text = text.replace(/#Component#/g, component.name)
+
+        if (component.square !== undefined && component.square.length > 0) {
+            text = text.replace(/#SquaredComponent#/g, component.square[0])
+        }
+
+        text = text.replace(/#SingularUnits#/g, composeUnitsNameList(this.definitionReader.definitions, vector).singular)
+        text = text.replace(/#PluralUnits#/g, composeUnitsNameList(this.definitionReader.definitions, vector).plural)
+        text = text.replace(/#SingularBases#/g, composeBasesNameList(this.definitionReader.definitions, vector).singular)
+        text = text.replace(/#PluralBases#/g, composeBasesNameList(this.definitionReader.definitions, vector).plural)
 
         text = text.replace(/#Quantity#/g, vector.name + dimensionality)
         text = text.replace(/#quantity#/g, lowerCase(vector.name + dimensionality))
@@ -131,6 +106,8 @@ export class VectorGenerator {
     }
 
     private setComponentListTexts(vector: VectorQuantity, dimensionality: number, text: string): string {
+        const vectorComponent: ScalarQuantity = getVectorComponent(this.definitionReader.definitions, vector)
+
         const componentLists: { replace: string, append: (name: string) => string, slice: (text: string) => string }[] = [{
                 replace: '#ComponentListProperties#',
                 append: (name: string) =>
@@ -151,7 +128,7 @@ export class VectorGenerator {
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListScalarQuantity#',
-                append: (name: string) => vector.component + ' ' + lowerCase(name) + ', ',
+                append: (name: string) => vectorComponent.name + ' ' + lowerCase(name) + ', ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListScalar#',
@@ -174,6 +151,10 @@ export class VectorGenerator {
                 append: (name: string) => 'a.' + name + ', ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
+                replace: '#ComponentListLowerCaseName#',
+                append: (name: string) => lowerCase(name) + ', ',
+                slice: (result: string) => result.slice(0, -2)
+            }, {
                 replace: '#ComponentListLowerCaseMagnitudes#',
                 append: (name: string) => lowerCase(name) + '.Magnitude, ',
                 slice: (result: string) => result.slice(0, -2)
@@ -181,7 +162,11 @@ export class VectorGenerator {
                 replace: '#ComponentListMagnitudeFromUnit#',
                 append: vector.unitBias ?
                     (name: string) => '(' + lowerCase(name) + ' * #UnitVariable#.Prefix.Scale + #UnitVariable#.Bias) * #UnitVariable#.BaseScale, ' :
-                    (name: string) => lowerCase(name) + ' * #UnitVariable#.Factor, ',
+                    (name: string) => {
+                        return getUnitQuantity(this.definitionReader.definitions, getUnit(this.definitionReader.definitions, vector)).name == vector.name ?
+                            lowerCase(name) + ' * #UnitVariable#.#UnitQuantity#, ' :
+                            lowerCase(name) + ' * #UnitVariable#.#UnitQuantity#.Magnitude, '
+                    },
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListFormatting#',
@@ -284,11 +269,8 @@ export class VectorGenerator {
             text = text.replace(/(?:\n|\r\n|\r)#ScalarQuantityComponent#([^]+?)(?:\n|\r\n|\r)#\/ScalarQuantityComponent#/g, '')
         }
 
-        const emptyArrayOrFalse = (obj: string | string[] | false) => {
-            return (obj === false || Array.isArray(obj) && obj.length === 0)
-        }
-
-        if (vector.component && !emptyArrayOrFalse(this.definitionReader.definitions.scalars[vector.component].square)) {
+        const component: ScalarQuantity = getVectorComponent(this.definitionReader.definitions, vector)
+        if (component.square !== undefined && component.square.length > 0) {
             text = text.replace(/(?:\n|\r\n|\r)#SquaredScalarQuantityComponent#/g, '')
             text = text.replace(/(?:\n|\r\n|\r)#\/SquaredScalarQuantityComponent#/g, '')
     
@@ -343,12 +325,12 @@ export class VectorGenerator {
     private composeConvertibleText(vector: VectorQuantity): string {
         let convertibleText: string = ''
 
-        if (Array.isArray(vector.convertible)) {
-            for (let convertible of vector.convertible) {
+        for (let convertible of getConvertible(this.definitionReader.definitions, vector)) {
+            if (convertible.type === 'Vector') {
                 for (let dimensionality of vector.dimensionalities) {
-                    if (this.definitionReader.definitions.vectors[convertible].dimensionalities.includes(dimensionality)) {
-                        convertibleText += '\t#Document:AsShared(#Quantity#, #Dimensionality#, ' + convertible + ')#\n'
-                        convertibleText += '\tpublic ' + convertible + '#Dimensionality# As' + convertible + '#Dimensionality#() => new('
+                    if (convertible.dimensionalities.includes(dimensionality)) {
+                        convertibleText += '\t#Document:AsShared(#Quantity#, #Dimensionality#, ' + convertible.name + ')#\n'
+                        convertibleText += '\tpublic ' + convertible.name + '#Dimensionality# As' + convertible.name + '#Dimensionality#() => new('
                         for (let name of getVectorComponentNames(dimensionality)) {
                             convertibleText += name + ', '
                         }
@@ -362,40 +344,52 @@ export class VectorGenerator {
     }
 
     private composeQuantityToUnitText(vector: VectorQuantity): string {
-        if (vector.unitBias) {
-            return '(#quantity#.ToVector#Dimensionality#() / #UnitVariable#.BaseScale - Vector#Dimensionality#.Ones * #UnitVariable#.Bias) / #UnitVariable#.Prefix.Scale'
+        if (vector.unitBias === true) {
+            return '(#quantity#.ToVector#Dimensionality#() + Vector#Dimensionality#.Ones * #UnitVariable#.Offset) / #UnitVariable#.#UnbiasedQuantity#.Magnitude'
+        } else if (getUnit(this.definitionReader.definitions, vector).bias) {
+            return '#quantity#.ToVector#Dimensionality#() / #UnitVariable#.#UnbiasedQuantity#.Magnitude'
         } else {
-            return '#quantity#.ToVector#Dimensionality#() / #UnitVariable#.Factor'
+            return '#quantity#.ToVector#Dimensionality#() / #UnitVariable#.#UnitQuantity#.Magnitude'
         }
     }
 
     private composeUnitsText(vector: VectorQuantity): string {
-        let unitsText: string = ""
+        const units: Unit['units'] | undefined = getUnits(this.definitionReader.definitions, vector)
 
-        if (Array.isArray(vector.units)) {
-            for (let unit of vector.units) {
-                if (unit.special && unit.separator === true) {
-                    unitsText += '\n'
-                } else if (!unit.special) {
-                    unitsText += '\t#Document:InUnit(quantity = #Quantity#, dimensionality = #Dimensionality#, unit = #Unit#, unitName = ' + unit.singular + ')#\n'
-                    unitsText += '\tpublic Vector#Dimensionality# ' + unit.plural + ' => '
-                    unitsText += 'InUnit(' + vector.unit + '.' + unit.singular + ');\n'
-                }
+        if (units === undefined) {
+            return ''
+        }
+
+        let unitsText: string = ''
+
+        for (let unit of units) {
+            if (unit.special && unit.separator === true) {
+                unitsText += '\n'
+            } else if (!unit.special) {
+                unitsText += '\t#Document:InUnit(quantity = #Quantity#, dimensionality = #Dimensionality#, unit = #Unit#, unitName = ' + unit.name + ')#\n'
+                unitsText += '\tpublic Vector#Dimensionality# ' + parseUnitPlural(unit.name, unit.plural) + ' => '
+                unitsText += 'InUnit(#Unit#.' + unit.name + ');\n'
             }
         }
 
         return unitsText
     }
 
-    private reportErrorMissingEntries(vector: VectorQuantity, entries: string[]): void {
-        console.error('Vector quantity: [' + vector.name + '] is missing ' + (entries.length > 1 ? 'entries' : 'entry') + ': ' + entries + '.')
-    }
-
     private reportErrorDocumentationFileNotFound(vector: VectorQuantity, fileName: string): void {
         console.error('Could not locate documentation file for vector quantity: [' + vector.name + '], tried: [' + fileName + '].')
     }
 
-    private reportWarningRedundantEntries(vector: VectorQuantity, entries: string[]): void {
-        console.warn('Vector quantity: [' + vector.name + '] has redundant ' + (entries.length > 1 ? 'entries' : 'entry') + ':' + entries + '.')
+    private reportErrorMissingDefaultUnitSymbol(vector: VectorQuantity): void {
+        const defaultUnit: Unit['units'][number] | undefined = getDefaultUnit(this.definitionReader.definitions, vector)
+
+        if (defaultUnit === undefined || defaultUnit.special) {
+            console.error('Default unit of vector quantity: [' + vector.name + '] is missing symbol.')
+        } else {
+            console.error('Default unit: [' + defaultUnit.name + '] of vector quantity: [' + vector.name + '] is missing symbol.')
+        }
+    }
+
+    private reportErrorMissingDefaultUnit(vector: VectorQuantity): void {
+        console.error('Could not identify default unit of vector quantity: [' + vector.name + '].')
     }
 }

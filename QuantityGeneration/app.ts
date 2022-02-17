@@ -4,6 +4,7 @@ import { DefinitionReader } from './DefinitionReader'
 import { TemplateReader } from './TemplateReader'
 import { ScalarGenerator } from './ScalarGenerator'
 import { VectorGenerator } from './VectorGenerator'
+import { UnitGenerator } from './UnitGenerator'
 
 class Program {
 
@@ -12,14 +13,20 @@ class Program {
         const definitionReader: DefinitionReader = await DefinitionReader.Construct(argumentReader.options)
         const templateReader: TemplateReader = await TemplateReader.Construct(argumentReader.options)
 
-        const destination: string = process.cwd() + '\\' + argumentReader.options.destination
-        const destinationOK: boolean = await this.createDestination(destination, argumentReader.options.DESTROY === true)
+        const quantityDestination: string = process.cwd() + '\\' + argumentReader.options.quantityDestination
+        const quantityDestinationOK: boolean = await this.createDestination(quantityDestination, argumentReader.options.DESTROY === true)
+        
+        const unitDestination: string = process.cwd() + '\\' + argumentReader.options.unitDestination
+        const unitDestinationOK: boolean = await this.createDestination(unitDestination, argumentReader.options.DESTROY === true)
 
         const documentationDirectory: string = process.cwd() + '\\' + argumentReader.options.documentation
 
-        if (destinationOK) {
-            await this.createScalars(destination, documentationDirectory, definitionReader, templateReader)
-            await this.createVectors(destination, documentationDirectory, definitionReader, templateReader)
+        if (quantityDestinationOK) {
+            await this.createScalars(quantityDestination, documentationDirectory, definitionReader, templateReader)
+            await this.createVectors(quantityDestination, documentationDirectory, definitionReader, templateReader)
+        }
+        if (unitDestinationOK) {
+            await this.createUnits(unitDestination, documentationDirectory, definitionReader, templateReader)
         }
     }
 
@@ -31,16 +38,18 @@ class Program {
         new VectorGenerator(destination, documentationDirectory, definitionReader, templateReader).generate()
     }
 
+    private static async createUnits(destination: string, documentationDirectory: string, definitionReader: DefinitionReader, templateReader: TemplateReader) {
+        new UnitGenerator(destination, documentationDirectory, definitionReader, templateReader).generate()
+    }
+
     private static async createDestination(destination: string, destroy: boolean) : Promise<boolean> {
         if (await this.pathExists(destination)) {
             if (!destroy) {
                 const items = await fsp.readdir(destination)
                 if (items.length > 0) {
-                    console.log('The directory [' + destination + '] is not empty. To continue and LOSE EXISTING CONTENT, add the flag \'-DESTROY\'')
+                    console.log('The directory [' + destination + '] is not empty. To continue and potentially LOSE EXISTING CONTENT, add the flag \'-DESTROY\'')
                     return false
                 }
-            } else {
-                await fsp.rm(destination, { recursive: true, force: true })
             }
         }
 

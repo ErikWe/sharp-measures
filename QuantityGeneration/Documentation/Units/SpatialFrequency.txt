@@ -1,0 +1,18 @@
+#Extends:Generic.txt#
+#Extends:Utility.txt#
+
+#Define:Header(unit, siUnit)
+/// <summary>Describes a unit of the quantity <see cref="Quantities.SpatialFrequency"/>.</summary>
+/// <remarks>#Document:DeriveRemark(#Param:unit#)# Custom <see cref="#Param:unit#"/> can also be derived from
+/// other units using the static <see cref="From(UnitOfLength)"/>.</remarks>
+#/
+
+#Define:FromLength(unit, siUnit)
+/// <summary>Derives a <see cref="#Param:unit#"/> according to { 1 / <paramref name="unitOfLength"/> }.</summary>
+/// <param name="unitOfLength">A <see cref="#Param:unit#"/> is derived from the inverse of this <see cref="UnitOfLength"/>.</param>
+#/
+
+#Define:UnitPerMetre
+/// <summary>The SI unit of <see cref="Quantities.SpatialFrequency"/>, derived according to { 1 / <see cref="UnitOfLength.Metre"/> }.
+/// Usually written as [1/m] or [m⁻¹].</summary>
+#/

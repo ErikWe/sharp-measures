@@ -1,21 +1,5 @@
 ﻿{
-    "name": "Pressure",
     "type": "Scalar",
-    "baseUnits": "kg * m^-1 * s^-2",
-    "unit": "[UnitOf]",
-    "unitBias": false,
-    "vector": false,
-    "inverse": false,
-    "square": false,
-    "cube": false,
-    "squareRoot": false,
-    "cubeRoot": false,
-    "units": [
-        { "singular": "Pascal", "plural": "+s", "SI": true, "symbol": "Pa" },
-        { "singular": "Kilopascal", "plural": "+s" },
-        { "special": true, "separator": true },
-        { "singular": "Bar", "plural": "+s" },
-        { "singular": "PoundForcePerSquareInch", "plural": "[Pound] +s" }
-    ],
-    "convertible": []
+    "name": "Pressure",
+    "unit": "[name]"
 }

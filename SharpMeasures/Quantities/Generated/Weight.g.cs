@@ -92,7 +92,7 @@ public readonly partial record struct Weight :
     /// </item>
     /// </list>
     /// </remarks>
-    public Weight(double magnitude, UnitOfForce unitOfForce) : this(magnitude * unitOfForce.Factor) { }
+    public Weight(double magnitude, UnitOfForce unitOfForce) : this(magnitude * unitOfForce.Force.Magnitude) { }
     /// <summary>Constructs a new <see cref="Weight"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Weight"/>.</param>
     /// <remarks>Consider preferring <see cref="Weight(Scalar, UnitOfForce)"/>.</remarks>
@@ -130,19 +130,20 @@ public readonly partial record struct Weight :
     /// <summary>Indicates whether the magnitude of the <see cref="Weight"/> is infinite, and negative.</summary>
     public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude);
 
-    /// <summary>Produces a <see cref="Weight"/>, with magnitude equal to the absolute of the original magnitude.</summary>
+    /// <summary>Computes the absolute of the <see cref="Weight"/>.</summary>
     public Weight Absolute() => new(Math.Abs(Magnitude));
-    /// <summary>Produces a <see cref="Weight"/>, with magnitude equal to the floor of the original magnitude.</summary>
+    /// <summary>Computes the floor of the <see cref="Weight"/>.</summary>
     public Weight Floor() => new(Math.Floor(Magnitude));
-    /// <summary>Produces a <see cref="Weight"/>, with magnitude equal to the ceiling of the original magnitude.</summary>
+    /// <summary>Computes the ceiling of the <see cref="Weight"/>.</summary>
     public Weight Ceiling() => new(Math.Ceiling(Magnitude));
-    /// <summary>Produces a <see cref="Weight"/>, with magnitude equal to the original magnitude, rounded to the nearest integer.</summary>
+    /// <summary>Rounds the <see cref="Weight"/> to the nearest integer value.</summary>
     public Weight Round() => new(Math.Round(Magnitude));
 
     /// <inheritdoc/>
     public int CompareTo(Weight other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="Weight"/> (in SI units), and the SI base unit of the quantity.</summary>
-    public override string ToString() => $"{Magnitude} [N]";
+    /// <summary>Produces a formatted string from the magnitude of the <see cref="Weight"/> in the default unit
+    /// <see cref="UnitOfForce.Newton"/>, followed by the symbol [N].</summary>
+    public override string ToString() => $"{Newtons} [N]";
 
     /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="Weight"/>,
     /// expressed in <paramref name="unitOfForce"/>.</summary>
@@ -152,20 +153,20 @@ public readonly partial record struct Weight :
     /// expressed in <paramref name="unitOfForce"/>.</summary>
     /// <param name="weight">The <see cref="Weight"/> to be expressed in <paramref name="unitOfForce"/>.</param>
     /// <param name="unitOfForce">The <see cref="UnitOfForce"/> in which the magnitude is expressed.</param>
-    private static Scalar InUnit(Weight weight, UnitOfForce unitOfForce) => new(weight.Magnitude / unitOfForce.Factor);
+    private static Scalar InUnit(Weight weight, UnitOfForce unitOfForce) => new(weight.Magnitude / unitOfForce.Force.Magnitude);
 
     /// <summary>Unary plus, resulting in the unmodified <see cref="Weight"/>.</summary>
     public Weight Plus() => this;
     /// <summary>Negation, resulting in a <see cref="Weight"/> with negated magnitude.</summary>
     public Weight Negate() => new(-Magnitude);
     /// <summary>Unary plus, resulting in the unmodified <paramref name="x"/>.</summary>
-    /// <param name="x">Unary plus is applied to this instance of <see cref="Weight"/>.</param>
+    /// <param name="x">Unary plus is applied to this <see cref="Weight"/>.</param>
     public static Weight operator +(Weight x) => x.Plus();
-    /// <summary>Negation, resulting in a <see cref="Weight"/> with magnitude negated from that of <paramref name="x"/>.</summary>
-    /// <param name="x">Negation is applied to this instance of <see cref="Weight"/>.</param>
+    /// <summary>Negation, resulting in a <see cref="Weight"/> with negated magnitude from that of <paramref name="x"/>.</summary>
+    /// <param name="x">Negation is applied to this <see cref="Weight"/>.</param>
     public static Weight operator -(Weight x) => x.Negate();
 
-    /// <summary>Multiplies the <see cref="Weight"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
+    /// <summary>Multiplicates the <see cref="Weight"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="factor">The factor by which the <see cref="Weight"/> is multiplied.</param>
     public Unhandled Multiply(Unhandled factor) => new(Magnitude * factor.Magnitude);
@@ -173,25 +174,24 @@ public readonly partial record struct Weight :
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="divisor">The divisor by which the <see cref="Weight"/> is divided.</param>
     public Unhandled Divide(Unhandled divisor) => new(Magnitude / divisor.Magnitude);
-    /// <summary>Multiplies the <see cref="Weight"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Multiplication of the <see cref="Weight"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Weight"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Weight"/> <paramref name="x"/> is multiplied.</param>
     public static Unhandled operator *(Weight x, Unhandled y) => x.Multiply(y);
-    /// <summary>Multiplies the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="Weight"/> <paramref name="x"/> -
+    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="y"/> by the <see cref="Weight"/> <paramref name="x"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Unhandled"/> quantity by which the <see cref="Weight"/> <paramref name="y"/> is multiplied.</param>
     /// <param name="y">The <see cref="Weight"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
     public static Unhandled operator *(Unhandled x, Weight y) => y.Multiply(x);
-    /// <summary>Divides the <see cref="Weight"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
+    /// <summary>Division of the <see cref="Weight"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Weight"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Weight"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(Weight x, Unhandled y) => x.Divide(y);
 
-    /// <summary>Produces a <see cref="Weight"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="Weight"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public Weight Remainder(double divisor) => new(Magnitude % divisor);
     /// <summary>Scales the <see cref="Weight"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Weight"/> is scaled.</param>
@@ -199,10 +199,9 @@ public readonly partial record struct Weight :
     /// <summary>Scales the <see cref="Weight"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="Weight"/> is divided.</param>
     public Weight Divide(double divisor) => new(Magnitude / divisor);
-    /// <summary>Produces a <see cref="Weight"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Weight"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of <see cref="Weight"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="Weight"/> <paramref name="x"/> by this value.</param>
     public static Weight operator %(Weight x, double y) => x.Remainder(y);
     /// <summary>Scales the <see cref="Weight"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Weight"/>, which is scaled by <paramref name="y"/>.</param>
@@ -217,9 +216,8 @@ public readonly partial record struct Weight :
     /// <param name="y">This value is used to divide the <see cref="Weight"/> <paramref name="x"/>.</param>
     public static Weight operator /(Weight x, double y) => x.Divide(y);
 
-    /// <summary>Produces a <see cref="Weight"/>, with magnitude equal to the remainder from division of the original
-    /// magnitude by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
+    /// <summary>Computes the remainder from division of the <see cref="Weight"/> by <paramref name="divisor"/>.</summary>
+    /// <param name="divisor">The remainder is produced from division by this value.</param>
     public Weight Remainder(Scalar divisor) => Remainder(divisor.Magnitude);
     /// <summary>Scales the <see cref="Weight"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Weight"/> is scaled.</param>
@@ -227,10 +225,9 @@ public readonly partial record struct Weight :
     /// <summary>Scales the <see cref="Weight"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="Weight"/> is divided.</param>
     public Weight Divide(Scalar divisor) => Divide(divisor.Magnitude);
-    /// <summary>Produces a <see cref="Weight"/>, with magnitude equal to the remainder from division of the magnitude of <paramref name="x"/>
-    /// by <paramref name="y"/>.</summary>
+    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Weight"/>, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is retrieved from division of the <see cref="Weight"/> <paramref name="x"/> by this value.</param>
+    /// <param name="y">The remainder is produced from division of the <see cref="Weight"/> <paramref name="x"/> by this value.</param>
     public static Weight operator %(Weight x, Scalar y) => x.Remainder(y);
     /// <summary>Scales the <see cref="Weight"/> <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Weight"/>, which is scaled by <paramref name="y"/>.</param>
@@ -246,75 +243,112 @@ public readonly partial record struct Weight :
     public static Weight operator /(Weight x, Scalar y) => x.Divide(y);
 
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorScalarQuantity : IScalarQuantity
-        => factory(Magnitude * factor.Magnitude);
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude * factor.Magnitude);
+        }
+    }
+
     /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
     public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
         where TQuotientScalarQuantity : IScalarQuantity
         where TDivisorScalarQuantity : IScalarQuantity
-        => factory(Magnitude / divisor.Magnitude);
-    /// <summary>Multiples the <see cref="Weight"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else
+        {
+            return factory(Magnitude / divisor.Magnitude);
+        }
+    }
+
+    /// <summary>Multiplication of the <see cref="Weight"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Weight"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Weight"/> <paramref name="x"/>.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity,
+    /// Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator *(Weight x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
-    /// <summary>Divides the <see cref="Weight"/> <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <summary>Division of the <see cref="Weight"/> <paramref name="x"/> by the quantity <paramref name="y"/>
+    /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Weight"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="Weight"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
+    /// Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator /(Weight x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
 
-    /// <summary>Multiplies the <see cref="Weight"/> with the <see cref="Vector3"/> <paramref name="vector"/> to produce a <see cref="Weight3"/>.</summary>
-    /// <param name="vector">This <see cref="Vector3"/> is multiplied by the <see cref="Weight"/>.</param>
-    public Weight3 Multiply(Vector3 vector) => new(vector * Magnitude);
-    /// <summary>Multiplies the <see cref="Weight"/> with the values of <paramref name="components"/> to produce a <see cref="Weight3"/>.</summary>
+    /// <summary>Multiplicates the <see cref="Weight"/> with the <see cref="Vector3"/> <paramref name="factor"/> to produce
+    /// a <see cref="Weight3"/>.</summary>
+    /// <param name="factor">This <see cref="Vector3"/> is multiplied by the <see cref="Weight"/>.</param>
+    public Weight3 Multiply(Vector3 factor) => new(factor * Magnitude);
+    /// <summary>Multiplicates the <see cref="Weight"/> with the values of <paramref name="components"/> to produce
+    /// a <see cref="Weight3"/>.</summary>
     /// <param name="components">These values are multiplied by the <see cref="Weight"/>.</param>
     public Weight3 Multiply((double x, double y, double z) components) => Multiply(new Vector3(components));
-    /// <summary>Multiplies the <see cref="Weight"/> with the values of <paramref name="components"/> to produce a <see cref="Weight3"/>.</summary>
+    /// <summary>Multiplicates the <see cref="Weight"/> with the values of <paramref name="components"/> to produce
+    /// a <see cref="Weight3"/>.</summary>
     /// <param name="components">These values are multiplied by the <see cref="Weight"/>.</param>
     public Weight3 Multiply((Scalar x, Scalar y, Scalar z) components) => Multiply(new Vector3(components));
-    /// <summary>Multiplies the <see cref="Weight"/> <paramref name="a"/> with the <see cref="Vector3"/> <paramref name="b"/> to produce a <see cref="Weight3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="Weight"/> <paramref name="a"/> with the <see cref="Vector3"/> <paramref name="b"/>
+    /// to produce a <see cref="Weight3"/>.</summary>
     /// <param name="a">This <see cref="Weight"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="Weight"/> <paramref name="a"/>.</param>
     public static Weight3 operator *(Weight a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="Weight"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/> to produce a <see cref="Weight3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="Weight"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// to produce a <see cref="Weight3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="Weight"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Weight"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
     public static Weight3 operator *(Vector3 a, Weight b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="Weight"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="Weight3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="Weight"/> <paramref name="a"/> with the values of <paramref name="b"/>
+    /// to produce a <see cref="Weight3"/>.</summary>
     /// <param name="a">This <see cref="Weight"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Weight"/> <paramref name="a"/>.</param>
     public static Weight3 operator *(Weight a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="Weight"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="Weight3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="Weight"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// to produce a <see cref="Weight3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Weight"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Weight"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static Weight3 operator *((double x, double y, double z) a, Weight b) => b.Multiply(a);
-    /// <summary>Multiplies the <see cref="Weight"/> <paramref name="a"/> with the values of <paramref name="b"/> to produce a <see cref="Weight3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="Weight"/> <paramref name="a"/> with the values of <paramref name="b"/>
+    /// to produce a <see cref="Weight3"/>.</summary>
     /// <param name="a">This <see cref="Weight"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Weight"/> <paramref name="a"/>.</param>
     public static Weight3 operator *(Weight a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplies the <see cref="Weight"/> <parmref name="b"/> with the values of <paramref name="a"/> to produce a <see cref="Weight3"/>.</summary>
+    /// <summary>Multiplication of the <see cref="Weight"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// to produce a <see cref="Weight3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Weight"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Weight"/> is multiplied by the values of <paramref name="a"/>.</param>
     public static Weight3 operator *((Scalar x, Scalar y, Scalar z) a, Weight b) => b.Multiply(a);
 
-    /// <summary>Determines whether <paramref name="x"/> is less than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Weight"/> is less than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than that of this <see cref="Weight"/>.</param>
     public static bool operator <(Weight x, Weight y) => x.Magnitude < y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Weight"/> is greater than that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than that of this <see cref="Weight"/>.</param>
     public static bool operator >(Weight x, Weight y) => x.Magnitude > y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is less than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Weight"/> is less than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than or equal to that of this <see cref="Weight"/>.</param>
     public static bool operator <=(Weight x, Weight y) => x.Magnitude <= y.Magnitude;
-    /// <summary>Determines whether <paramref name="x"/> is greater than or equal to <paramref name="y"/>.</summary>
-    /// <param name="x"><paramref name="y"/> is compared against this value.</param>
-    /// <param name="y"><paramref name="x"/> is compared against this value.</param>
+    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of <paramref name="y"/>.</summary>
+    /// <param name="x">The method determines whether the magnitude of this <see cref="Weight"/> is greater than or equal to that of <paramref name="y"/>.</param>
+    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of this <see cref="Weight"/>.</param>
     public static bool operator >=(Weight x, Weight y) => x.Magnitude >= y.Magnitude;
 
     /// <summary>Converts the <see cref="Weight"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
@@ -322,7 +356,7 @@ public readonly partial record struct Weight :
     public double ToDouble() => Magnitude;
     /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>, when expressed
     /// in SI units.</summary>
-    public static implicit operator double(Weight x) => x.ToDouble();
+    public static explicit operator double(Weight x) => x.ToDouble();
 
     /// <summary>Converts the <see cref="Weight"/> to the <see cref="Scalar"/> of equivalent magnitude, when
     /// expressed in SI units.</summary>
@@ -330,15 +364,15 @@ public readonly partial record struct Weight :
     /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude, when expressed in SI units.</summary>
     public static explicit operator Scalar(Weight x) => x.ToScalar();
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Weight"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="Weight"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static Weight FromDouble(double x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Weight"/> of magnitude <paramref name="x"/>, when expressed
+    /// <summary>Constructs the <see cref="Weight"/> of magnitude <paramref name="x"/>, when expressed
     /// in SI units.</summary>
     public static explicit operator Weight(double x) => FromDouble(x);
 
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Weight"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="Weight"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static Weight FromScalar(Scalar x) => new(x);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Weight"/> of equivalent magnitude, when expressed in SI units.</summary>
+    /// <summary>Constructs the <see cref="Weight"/> of magnitude <paramref name="x"/>, when expressed in SI units.</summary>
     public static explicit operator Weight(Scalar x) => FromScalar(x);
 }

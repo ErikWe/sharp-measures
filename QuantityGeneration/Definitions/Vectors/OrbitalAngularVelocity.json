@@ -1,12 +1,9 @@
 {
-    "name": "OrbitalAngularVelocity",
     "type": "Vector",
+    "name": "OrbitalAngularVelocity",
     "component": "OrbitalAngularSpeed",
-    "baseUnits": "[component]",
-    "unit": "[component]",
-    "unitBias": "[component]",
     "dimensionalities": [3],
-    "units": "[component]",
+    "unit": "[component]",
     "convertible": [
         "AngularVelocity",
         "SpinAngularVelocity"
