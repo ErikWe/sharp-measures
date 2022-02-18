@@ -244,7 +244,7 @@ public readonly partial record struct Time :
     /// <summary>Scales the <see cref="Time"/> <paramref name="y"/> by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the <see cref="Time"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Time"/>, which is scaled by <paramref name="x"/>.</param>
-    public static Time operator *(double x, Time y) => new(x * y.Magnitude);
+    public static Time operator *(double x, Time y) => y.Multiply(x);
     /// <summary>Scales the <see cref="Time"/> <paramref name="x"/> through division by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Time"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">This value is used to divide the <see cref="Time"/> <paramref name="x"/>.</param>
@@ -252,7 +252,7 @@ public readonly partial record struct Time :
     /// <summary>Inverts the <see cref="Time"/> <paramref name="y"/> to produce a <see cref="Frequency"/>, which is then scaled by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the inverted <see cref="Time"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Time"/>, which is inverted to a <see cref="Frequency"/> and scaled by <paramref name="x"/>.</param>
-    public static Frequency operator /(double x, Time y) => x * y.Invert();
+    public static Frequency operator /(double x, Time y) => new(x * 1 / y.Magnitude);
 
     /// <summary>Computes the remainder from division of the <see cref="Time"/> by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>
@@ -283,7 +283,7 @@ public readonly partial record struct Time :
     /// which is then scaled by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the inverted <see cref="Time"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Time"/>, which is inverted to a <see cref="Frequency"/> and scaled by <paramref name="x"/>.</param>
-    public static Frequency operator /(Scalar x, Time y) => x * y.Invert();
+    public static Frequency operator /(Scalar x, Time y) => new(x * 1 / y.Magnitude);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
@@ -294,6 +294,10 @@ public readonly partial record struct Time :
         if (factory == null)
         {
             throw new ArgumentNullException(nameof(factory));
+        }
+        else if (factor == null)
+        {
+            throw new ArgumentNullException(nameof(factor));
         }
         else
         {
@@ -311,6 +315,10 @@ public readonly partial record struct Time :
         {
             throw new ArgumentNullException(nameof(factory));
         }
+        else if (divisor == null)
+        {
+            throw new ArgumentNullException(nameof(divisor));
+        }
         else
         {
             return factory(Magnitude / divisor.Magnitude);
@@ -324,7 +332,7 @@ public readonly partial record struct Time :
     /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity,
     /// Func{double, TProductScalarQuantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator *(Time x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
+    public static Unhandled operator *(Time x, IScalarQuantity y) => x.Multiply(y, (m) => new Unhandled(m));
     /// <summary>Division of the <see cref="Time"/> <paramref name="x"/> by the quantity <paramref name="y"/>
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Time"/>, which is divided by <paramref name="y"/>.</param>
@@ -332,7 +340,7 @@ public readonly partial record struct Time :
     /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
     /// Func{double, TQuotientScalarQuantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator /(Time x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
+    public static Unhandled operator /(Time x, IScalarQuantity y) => x.Divide(y, (m) => new Unhandled(m));
 
     /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
     /// <param name="x">The method determines whether the magnitude of this <see cref="Time"/> is less than that of <paramref name="y"/>.</param>

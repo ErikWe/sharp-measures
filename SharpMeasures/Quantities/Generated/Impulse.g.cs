@@ -247,6 +247,10 @@ public readonly partial record struct Impulse :
         {
             throw new ArgumentNullException(nameof(factory));
         }
+        else if (factor == null)
+        {
+            throw new ArgumentNullException(nameof(factor));
+        }
         else
         {
             return factory(Magnitude * factor.Magnitude);
@@ -263,6 +267,10 @@ public readonly partial record struct Impulse :
         {
             throw new ArgumentNullException(nameof(factory));
         }
+        else if (divisor == null)
+        {
+            throw new ArgumentNullException(nameof(divisor));
+        }
         else
         {
             return factory(Magnitude / divisor.Magnitude);
@@ -276,7 +284,7 @@ public readonly partial record struct Impulse :
     /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity,
     /// Func{double, TProductScalarQuantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator *(Impulse x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
+    public static Unhandled operator *(Impulse x, IScalarQuantity y) => x.Multiply(y, (m) => new Unhandled(m));
     /// <summary>Division of the <see cref="Impulse"/> <paramref name="x"/> by the quantity <paramref name="y"/>
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Impulse"/>, which is divided by <paramref name="y"/>.</param>
@@ -284,7 +292,7 @@ public readonly partial record struct Impulse :
     /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
     /// Func{double, TQuotientScalarQuantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator /(Impulse x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
+    public static Unhandled operator /(Impulse x, IScalarQuantity y) => x.Divide(y, (m) => new Unhandled(m));
 
     /// <summary>Multiplicates the <see cref="Impulse"/> with the <see cref="Vector3"/> <paramref name="factor"/> to produce
     /// a <see cref="Impulse3"/>.</summary>

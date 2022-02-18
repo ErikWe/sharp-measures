@@ -109,6 +109,10 @@ public readonly partial record struct #Quantity# :
         {
             throw new ArgumentNullException(nameof(factory));
         }
+        else if (factor == null)
+        {
+            throw new ArgumentNullException(nameof(factor));
+        }
         else
         {
             return factory(Maths.Vectors.Dot(this, factor));
@@ -128,6 +132,10 @@ public readonly partial record struct #Quantity# :
         if (factory == null)
         {
             throw new ArgumentNullException(nameof(factory));
+        }
+        else if (factor == null)
+        {
+            throw new ArgumentNullException(nameof(factor));
         }
         else
         {
@@ -203,6 +211,10 @@ public readonly partial record struct #Quantity# :
         {
             throw new ArgumentNullException(nameof(factory));
         }
+        else if (factor == null)
+        {
+            throw new ArgumentNullException(nameof(factor));
+        }
         else
         {
             return factory(#ComponentListMultiplication#);
@@ -218,6 +230,10 @@ public readonly partial record struct #Quantity# :
         {
             throw new ArgumentNullException(nameof(factory));
         }
+        else if (divisor == null)
+        {
+            throw new ArgumentNullException(nameof(divisor));
+        }
         else
         {
             return factory(#ComponentListDivision#);
@@ -225,11 +241,11 @@ public readonly partial record struct #Quantity# :
     }
 
     #Document:MultiplyIScalarLHS(#Quantity#, #Dimensionality#)#
-    public static Unhandled#Dimensionality# operator *(#Quantity# a, IScalarQuantity b) #newline#=> a.Multiply<Unhandled#Dimensionality#, IScalarQuantity>(b, (#ComponentListLowerCaseName#) => new Unhandled#Dimensionality#(#ComponentListLowerCaseName#));
+    public static Unhandled#Dimensionality# operator *(#Quantity# a, IScalarQuantity b) #newline#=> a.Multiply(b, (#ComponentListLowerCaseName#) => new Unhandled#Dimensionality#(#ComponentListLowerCaseName#));
     #Document:MultiplyIScalarRHS(#Quantity#, #Dimensionality#)#
-    public static Unhandled#Dimensionality# operator *(IScalarQuantity a, #Quantity# b) #newline#=> b.Multiply<Unhandled#Dimensionality#, IScalarQuantity>(a, (#ComponentListLowerCaseName#) => new Unhandled#Dimensionality#(#ComponentListLowerCaseName#));
+    public static Unhandled#Dimensionality# operator *(IScalarQuantity a, #Quantity# b) #newline#=> b.Multiply(a, (#ComponentListLowerCaseName#) => new Unhandled#Dimensionality#(#ComponentListLowerCaseName#));
     #Document:DivideIScalar(#Quantity#, #Dimensionality#)#
-    public static Unhandled#Dimensionality# operator /(#Quantity# a, IScalarQuantity b) #newline#=> a.Divide<Unhandled#Dimensionality#, IScalarQuantity>(b, (#ComponentListLowerCaseName#) => new Unhandled#Dimensionality#(#ComponentListLowerCaseName#));
+    public static Unhandled#Dimensionality# operator /(#Quantity# a, IScalarQuantity b) #newline#=> a.Divide(b, (#ComponentListLowerCaseName#) => new Unhandled#Dimensionality#(#ComponentListLowerCaseName#));
 
     #Document:ToValueTupleMethod(#Quantity#, #Dimensionality#)#
     public (#ComponentListDouble#) ToValueTuple() => (#ComponentListComponents#);

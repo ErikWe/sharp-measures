@@ -211,7 +211,7 @@ public readonly partial record struct Speed :
     /// <summary>Scales the <see cref="Speed"/> <paramref name="y"/> by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the <see cref="Speed"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Speed"/>, which is scaled by <paramref name="x"/>.</param>
-    public static Speed operator *(double x, Speed y) => new(x * y.Magnitude);
+    public static Speed operator *(double x, Speed y) => y.Multiply(x);
     /// <summary>Scales the <see cref="Speed"/> <paramref name="x"/> through division by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Speed"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">This value is used to divide the <see cref="Speed"/> <paramref name="x"/>.</param>
@@ -253,6 +253,10 @@ public readonly partial record struct Speed :
         {
             throw new ArgumentNullException(nameof(factory));
         }
+        else if (factor == null)
+        {
+            throw new ArgumentNullException(nameof(factor));
+        }
         else
         {
             return factory(Magnitude * factor.Magnitude);
@@ -269,6 +273,10 @@ public readonly partial record struct Speed :
         {
             throw new ArgumentNullException(nameof(factory));
         }
+        else if (divisor == null)
+        {
+            throw new ArgumentNullException(nameof(divisor));
+        }
         else
         {
             return factory(Magnitude / divisor.Magnitude);
@@ -282,7 +290,7 @@ public readonly partial record struct Speed :
     /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity,
     /// Func{double, TProductScalarQuantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator *(Speed x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
+    public static Unhandled operator *(Speed x, IScalarQuantity y) => x.Multiply(y, (m) => new Unhandled(m));
     /// <summary>Division of the <see cref="Speed"/> <paramref name="x"/> by the quantity <paramref name="y"/>
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Speed"/>, which is divided by <paramref name="y"/>.</param>
@@ -290,7 +298,7 @@ public readonly partial record struct Speed :
     /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
     /// Func{double, TQuotientScalarQuantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator /(Speed x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
+    public static Unhandled operator /(Speed x, IScalarQuantity y) => x.Divide(y, (m) => new Unhandled(m));
 
     /// <summary>Multiplicates the <see cref="Speed"/> with the <see cref="Vector3"/> <paramref name="factor"/> to produce
     /// a <see cref="Velocity3"/>.</summary>

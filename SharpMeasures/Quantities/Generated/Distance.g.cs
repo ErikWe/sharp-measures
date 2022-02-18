@@ -306,7 +306,7 @@ public readonly partial record struct Distance :
     /// <summary>Inverts the <see cref="Distance"/> <paramref name="y"/> to produce a <see cref="SpatialFrequency"/>, which is then scaled by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the inverted <see cref="Distance"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Distance"/>, which is inverted to a <see cref="SpatialFrequency"/> and scaled by <paramref name="x"/>.</param>
-    public static SpatialFrequency operator /(double x, Distance y) => x * y.Invert();
+    public static SpatialFrequency operator /(double x, Distance y) => new(x * 1 / y.Magnitude);
 
     /// <summary>Computes the remainder from division of the <see cref="Distance"/> by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>
@@ -337,7 +337,7 @@ public readonly partial record struct Distance :
     /// which is then scaled by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the inverted <see cref="Distance"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Distance"/>, which is inverted to a <see cref="SpatialFrequency"/> and scaled by <paramref name="x"/>.</param>
-    public static SpatialFrequency operator /(Scalar x, Distance y) => x * y.Invert();
+    public static SpatialFrequency operator /(Scalar x, Distance y) => new(x * 1 / y.Magnitude);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
@@ -348,6 +348,10 @@ public readonly partial record struct Distance :
         if (factory == null)
         {
             throw new ArgumentNullException(nameof(factory));
+        }
+        else if (factor == null)
+        {
+            throw new ArgumentNullException(nameof(factor));
         }
         else
         {
@@ -365,6 +369,10 @@ public readonly partial record struct Distance :
         {
             throw new ArgumentNullException(nameof(factory));
         }
+        else if (divisor == null)
+        {
+            throw new ArgumentNullException(nameof(divisor));
+        }
         else
         {
             return factory(Magnitude / divisor.Magnitude);
@@ -378,7 +386,7 @@ public readonly partial record struct Distance :
     /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity,
     /// Func{double, TProductScalarQuantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator *(Distance x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
+    public static Unhandled operator *(Distance x, IScalarQuantity y) => x.Multiply(y, (m) => new Unhandled(m));
     /// <summary>Division of the <see cref="Distance"/> <paramref name="x"/> by the quantity <paramref name="y"/>
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Distance"/>, which is divided by <paramref name="y"/>.</param>
@@ -386,7 +394,7 @@ public readonly partial record struct Distance :
     /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
     /// Func{double, TQuotientScalarQuantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator /(Distance x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
+    public static Unhandled operator /(Distance x, IScalarQuantity y) => x.Divide(y, (m) => new Unhandled(m));
 
     /// <summary>Multiplicates the <see cref="Distance"/> with the <see cref="Vector3"/> <paramref name="factor"/> to produce
     /// a <see cref="Displacement3"/>.</summary>

@@ -194,6 +194,10 @@ public readonly partial record struct Weight3 :
         {
             throw new ArgumentNullException(nameof(factory));
         }
+        else if (factor == null)
+        {
+            throw new ArgumentNullException(nameof(factor));
+        }
         else
         {
             return factory(Maths.Vectors.Dot(this, factor));
@@ -217,6 +221,10 @@ public readonly partial record struct Weight3 :
         if (factory == null)
         {
             throw new ArgumentNullException(nameof(factory));
+        }
+        else if (factor == null)
+        {
+            throw new ArgumentNullException(nameof(factor));
         }
         else
         {
@@ -339,6 +347,10 @@ public readonly partial record struct Weight3 :
         {
             throw new ArgumentNullException(nameof(factory));
         }
+        else if (factor == null)
+        {
+            throw new ArgumentNullException(nameof(factor));
+        }
         else
         {
             return factory(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
@@ -355,6 +367,10 @@ public readonly partial record struct Weight3 :
         {
             throw new ArgumentNullException(nameof(factory));
         }
+        else if (divisor == null)
+        {
+            throw new ArgumentNullException(nameof(divisor));
+        }
         else
         {
             return factory(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
@@ -368,7 +384,7 @@ public readonly partial record struct Weight3 :
     /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity,
     /// Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled3 operator *(Weight3 a, IScalarQuantity b) => a.Multiply<Unhandled3, IScalarQuantity>(b, (x, y, z) => new Unhandled3(x, y, z));
+    public static Unhandled3 operator *(Weight3 a, IScalarQuantity b) => a.Multiply(b, (x, y, z) => new Unhandled3(x, y, z));
     /// <summary>Multiplication of the quantity <paramref name="a"/> by the <see cref="Weight3"/> <paramref name="b"/>
     /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="a">This quantity is multiplied by the <see cref="Weight3"/> <paramref name="b"/>.</param>
@@ -376,7 +392,7 @@ public readonly partial record struct Weight3 :
     /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity,
     /// Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled3 operator *(IScalarQuantity a, Weight3 b) => b.Multiply<Unhandled3, IScalarQuantity>(a, (x, y, z) => new Unhandled3(x, y, z));
+    public static Unhandled3 operator *(IScalarQuantity a, Weight3 b) => b.Multiply(a, (x, y, z) => new Unhandled3(x, y, z));
     /// <summary>Division of the <see cref="Weight3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
     /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="a">The <see cref="Weight3"/>, which is divided by <paramref name="b"/>.</param>
@@ -384,7 +400,7 @@ public readonly partial record struct Weight3 :
     /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientVector3Quantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
     /// Func{double, double, double, TQuotientVector3Quantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled3 operator /(Weight3 a, IScalarQuantity b) => a.Divide<Unhandled3, IScalarQuantity>(b, (x, y, z) => new Unhandled3(x, y, z));
+    public static Unhandled3 operator /(Weight3 a, IScalarQuantity b) => a.Divide(b, (x, y, z) => new Unhandled3(x, y, z));
 
     /// <summary>Converts the <see cref="Weight3"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with 
     /// values (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>

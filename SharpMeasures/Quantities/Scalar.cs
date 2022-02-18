@@ -177,7 +177,7 @@ public readonly record struct Scalar :
     /// <summary>Division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The numerator, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The denominator, which divides <paramref name="x"/>.</param>
-    public static Scalar operator /(double x, Scalar y) => y.Invert().Multiply(x);
+    public static Scalar operator /(double x, Scalar y) => new(x * 1 / y.Magnitude);
 
     /// <summary>Computes the remainder from division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
@@ -211,6 +211,10 @@ public readonly record struct Scalar :
         {
             throw new ArgumentNullException(nameof(factory));
         }
+        else if (factor == null)
+        {
+            throw new ArgumentNullException(nameof(factor));
+        }
         else
         {
             return factory(Magnitude * factor.Magnitude);
@@ -226,7 +230,12 @@ public readonly record struct Scalar :
         if (factory == null)
         {
             throw new ArgumentNullException(nameof(factory));
-        } else
+        }
+        else if (divisor == null)
+        {
+            throw new ArgumentNullException(nameof(divisor));
+        }
+        else
         {
             return factory(Magnitude / divisor.Magnitude);
         }
@@ -236,12 +245,14 @@ public readonly record struct Scalar :
     /// <param name="x">The <see cref="Scalar"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Scalar"/> <paramref name="x"/>.</param>
     /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
-    public static Unhandled operator *(Scalar x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled operator *(Scalar x, IScalarQuantity y) => x.Multiply(y, (m) => new Unhandled(m));
     /// <summary>Division of <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Scalar"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="Scalar"/> <paramref name="x"/> is divided by this quantity.</param>
     /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
-    public static Unhandled operator /(Scalar x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled operator /(Scalar x, IScalarQuantity y) => x.Divide(y, (m) => new Unhandled(m));
 
     /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
     /// <param name="x">The method determines whether the magnitude of this <see cref="Scalar"/> is less than that of <paramref name="y"/>.</param>

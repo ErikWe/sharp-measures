@@ -236,7 +236,7 @@ public readonly partial record struct Frequency :
     /// <summary>Inverts the <see cref="Frequency"/> <paramref name="y"/> to produce a <see cref="Time"/>, which is then scaled by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the inverted <see cref="Frequency"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Frequency"/>, which is inverted to a <see cref="Time"/> and scaled by <paramref name="x"/>.</param>
-    public static Time operator /(double x, Frequency y) => x * y.Invert();
+    public static Time operator /(double x, Frequency y) => new(x * 1 / y.Magnitude);
 
     /// <summary>Computes the remainder from division of the <see cref="Frequency"/> by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>
@@ -267,7 +267,7 @@ public readonly partial record struct Frequency :
     /// which is then scaled by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the inverted <see cref="Frequency"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Frequency"/>, which is inverted to a <see cref="Time"/> and scaled by <paramref name="x"/>.</param>
-    public static Time operator /(Scalar x, Frequency y) => x * y.Invert();
+    public static Time operator /(Scalar x, Frequency y) => new(x * 1 / y.Magnitude);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
@@ -278,6 +278,10 @@ public readonly partial record struct Frequency :
         if (factory == null)
         {
             throw new ArgumentNullException(nameof(factory));
+        }
+        else if (factor == null)
+        {
+            throw new ArgumentNullException(nameof(factor));
         }
         else
         {
@@ -295,6 +299,10 @@ public readonly partial record struct Frequency :
         {
             throw new ArgumentNullException(nameof(factory));
         }
+        else if (divisor == null)
+        {
+            throw new ArgumentNullException(nameof(divisor));
+        }
         else
         {
             return factory(Magnitude / divisor.Magnitude);
@@ -308,7 +316,7 @@ public readonly partial record struct Frequency :
     /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity,
     /// Func{double, TProductScalarQuantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator *(Frequency x, IScalarQuantity y) => x.Multiply<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
+    public static Unhandled operator *(Frequency x, IScalarQuantity y) => x.Multiply(y, (m) => new Unhandled(m));
     /// <summary>Division of the <see cref="Frequency"/> <paramref name="x"/> by the quantity <paramref name="y"/>
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Frequency"/>, which is divided by <paramref name="y"/>.</param>
@@ -316,7 +324,7 @@ public readonly partial record struct Frequency :
     /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
     /// Func{double, TQuotientScalarQuantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator /(Frequency x, IScalarQuantity y) => x.Divide<Unhandled, IScalarQuantity>(y, (m) => new Unhandled(m));
+    public static Unhandled operator /(Frequency x, IScalarQuantity y) => x.Divide(y, (m) => new Unhandled(m));
 
     /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
     /// <param name="x">The method determines whether the magnitude of this <see cref="Frequency"/> is less than that of <paramref name="y"/>.</param>
