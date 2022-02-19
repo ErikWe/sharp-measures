@@ -1,4 +1,4 @@
-﻿namespace ErikWe.SharpMeasures.Tests.Datasets.Unhandled;
+﻿namespace ErikWe.SharpMeasures.Tests.Datasets;
 
 using System.Collections;
 using System.Collections.Generic;

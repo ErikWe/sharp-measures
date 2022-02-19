@@ -1,4 +1,4 @@
-﻿namespace ErikWe.SharpMeasures.Tests.Datasets.Unhandled;
+﻿namespace ErikWe.SharpMeasures.Tests.Datasets;
 
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ public class UnhandledDataset : IEnumerable<object?[]>
 {
     public IEnumerator<object?[]> GetEnumerator()
     {
-        IEnumerator<object?[]> scalarEnumerator = new Scalar.ScalarDataset().GetEnumerator();
+        IEnumerator<object?[]> scalarEnumerator = new ScalarDataset().GetEnumerator();
 
         while (scalarEnumerator.MoveNext())
         {

@@ -1,9 +1,7 @@
 ﻿namespace ErikWe.SharpMeasures.Tests.Cases.QuantityTests.UnhandledTests;
 
 using ErikWe.SharpMeasures.Quantities;
-using ErikWe.SharpMeasures.Tests.Datasets.Double;
-using ErikWe.SharpMeasures.Tests.Datasets.Scalar;
-using ErikWe.SharpMeasures.Tests.Datasets.Unhandled;
+using ErikWe.SharpMeasures.Tests.Datasets;
 
 using Xunit;
 

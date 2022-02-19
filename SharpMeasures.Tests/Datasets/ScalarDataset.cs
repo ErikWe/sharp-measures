@@ -1,4 +1,4 @@
-﻿namespace ErikWe.SharpMeasures.Tests.Datasets.Scalar;
+﻿namespace ErikWe.SharpMeasures.Tests.Datasets;
 
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ public class ScalarDataset : IEnumerable<object?[]>
 {
     public IEnumerator<object?[]> GetEnumerator()
     {
-        IEnumerator<object?[]> doubleEnumerator = new Double.DoubleDataset().GetEnumerator();
+        IEnumerator<object?[]> doubleEnumerator = new DoubleDataset().GetEnumerator();
 
         while (doubleEnumerator.MoveNext())
         {

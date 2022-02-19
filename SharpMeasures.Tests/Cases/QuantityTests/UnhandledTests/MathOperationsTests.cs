@@ -2,9 +2,6 @@
 
 using ErikWe.SharpMeasures.Quantities;
 using ErikWe.SharpMeasures.Tests.Datasets;
-using ErikWe.SharpMeasures.Tests.Datasets.Double;
-using ErikWe.SharpMeasures.Tests.Datasets.Scalar;
-using ErikWe.SharpMeasures.Tests.Datasets.Unhandled;
 
 using System;
 

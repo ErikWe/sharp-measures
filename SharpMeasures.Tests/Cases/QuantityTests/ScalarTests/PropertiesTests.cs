@@ -1,7 +1,7 @@
 ﻿namespace ErikWe.SharpMeasures.Tests.Cases.QuantityTests.ScalarTests;
 
 using ErikWe.SharpMeasures.Quantities;
-using ErikWe.SharpMeasures.Tests.Datasets.Scalar;
+using ErikWe.SharpMeasures.Tests.Datasets;
 
 using Xunit;
 

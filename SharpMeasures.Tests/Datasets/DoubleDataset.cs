@@ -1,4 +1,4 @@
-﻿namespace ErikWe.SharpMeasures.Tests.Datasets.Double;
+﻿namespace ErikWe.SharpMeasures.Tests.Datasets;
 
 using System.Collections;
 using System.Collections.Generic;

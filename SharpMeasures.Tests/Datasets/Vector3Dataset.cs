@@ -1,4 +1,4 @@
-﻿namespace ErikWe.SharpMeasures.Tests.Datasets.Scalar;
+﻿namespace ErikWe.SharpMeasures.Tests.Datasets;
 
 using System.Collections;
 using System.Collections.Generic;
