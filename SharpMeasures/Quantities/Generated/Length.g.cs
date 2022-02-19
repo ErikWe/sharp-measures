@@ -305,7 +305,7 @@ public readonly partial record struct Length :
     /// <summary>Inverts the <see cref="Length"/> <paramref name="y"/> to produce a <see cref="SpatialFrequency"/>, which is then scaled by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the inverted <see cref="Length"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Length"/>, which is inverted to a <see cref="SpatialFrequency"/> and scaled by <paramref name="x"/>.</param>
-    public static SpatialFrequency operator /(double x, Length y) => new(x * 1 / y.Magnitude);
+    public static SpatialFrequency operator /(double x, Length y) => new(x / y.Magnitude);
 
     /// <summary>Computes the remainder from division of the <see cref="Length"/> by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>
@@ -336,7 +336,7 @@ public readonly partial record struct Length :
     /// which is then scaled by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the inverted <see cref="Length"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Length"/>, which is inverted to a <see cref="SpatialFrequency"/> and scaled by <paramref name="x"/>.</param>
-    public static SpatialFrequency operator /(Scalar x, Length y) => new(x * 1 / y.Magnitude);
+    public static SpatialFrequency operator /(Scalar x, Length y) => new(x / y.Magnitude);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>

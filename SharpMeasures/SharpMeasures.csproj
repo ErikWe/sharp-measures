@@ -3,7 +3,7 @@
   <PropertyGroup>
 	  <Nullable>enable</Nullable>
 	  <AnalysisMode>All</AnalysisMode>
-	  <TargetFramework>net5.0</TargetFramework>
+	  <TargetFramework>net6.0</TargetFramework>
 	  <LangVersion>10</LangVersion>
 	  <RootNamespace>ErikWe.SharpMeasures</RootNamespace>
 	  <RepositoryUrl>https://github.com/ErikWe/sharp-measures</RepositoryUrl>

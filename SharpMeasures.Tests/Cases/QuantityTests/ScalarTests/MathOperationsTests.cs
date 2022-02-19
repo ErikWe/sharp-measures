@@ -108,7 +108,7 @@ public class MathOperationsTests
 
     [Theory]
     [ClassData(typeof(GenericDataset<ScalarDataset, ScalarDataset>))]
-    public void AddScalar_Method_MagnitudeShouldEqualSubtraction(Scalar lhs, Scalar rhs)
+    public void SubtractScalar_Method_MagnitudeShouldEqualSubtraction(Scalar lhs, Scalar rhs)
     {
         Scalar result = lhs.Subtract(rhs);
 
@@ -117,7 +117,7 @@ public class MathOperationsTests
 
     [Theory]
     [ClassData(typeof(GenericDataset<ScalarDataset, ScalarDataset>))]
-    public void AddScalar_Operator_MagnitudeShouldEqualSubtraction(Scalar lhs, Scalar rhs)
+    public void SubtractScalar_Operator_MagnitudeShouldEqualSubtraction(Scalar lhs, Scalar rhs)
     {
         Scalar result = lhs - rhs;
 
@@ -289,14 +289,14 @@ public class MathOperationsTests
     {
         IScalarQuantity? factor = null;
 
-        Assert.Throws<ArgumentNullException>(() => Scalar.Zero.Multiply(factor!, (x) => new Unhandled(x)));
+        Assert.Throws<ArgumentNullException>(() => Scalar.Zero.Multiply(factor!, (x) => new Scalar(x)));
     }
 
     [Theory]
-    [ClassData(typeof(GenericDataset<ScalarDataset, UnhandledDataset>))]
-    public void MultiplyGeneric_MagnitudeShouldEqualMultiplication(Scalar scalar, Unhandled factor)
+    [ClassData(typeof(GenericDataset<ScalarDataset, ScalarDataset>))]
+    public void MultiplyGeneric_MagnitudeShouldEqualMultiplication(Scalar scalar, IScalarQuantity factor)
     {
-        Length result = scalar.Multiply(factor, (x) => new Length(x));
+        Scalar result = scalar.Multiply(factor, (x) => new Scalar(x));
 
         Assert.Equal(scalar.Magnitude * factor.Magnitude, result.Magnitude, 2);
     }
@@ -314,14 +314,14 @@ public class MathOperationsTests
     {
         IScalarQuantity? divisor = null;
 
-        Assert.Throws<ArgumentNullException>(() => Scalar.Zero.Divide(divisor!, (x) => new Unhandled(x)));
+        Assert.Throws<ArgumentNullException>(() => Scalar.Zero.Divide(divisor!, (x) => new Scalar(x)));
     }
 
     [Theory]
-    [ClassData(typeof(GenericDataset<ScalarDataset, UnhandledDataset>))]
-    public void DivideGeneric_MagnitudeShouldEqualDivision(Scalar scalar, Unhandled divisor)
+    [ClassData(typeof(GenericDataset<ScalarDataset, ScalarDataset>))]
+    public void DivideGeneric_MagnitudeShouldEqualDivision(Scalar scalar, IScalarQuantity divisor)
     {
-        Length result = scalar.Divide(divisor, (x) => new Length(x));
+        Scalar result = scalar.Divide(divisor, (x) => new Scalar(x));
 
         Assert.Equal(scalar.Magnitude / divisor.Magnitude, result.Magnitude, 2);
     }

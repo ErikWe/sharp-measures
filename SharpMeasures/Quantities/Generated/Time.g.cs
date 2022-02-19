@@ -252,7 +252,7 @@ public readonly partial record struct Time :
     /// <summary>Inverts the <see cref="Time"/> <paramref name="y"/> to produce a <see cref="Frequency"/>, which is then scaled by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the inverted <see cref="Time"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Time"/>, which is inverted to a <see cref="Frequency"/> and scaled by <paramref name="x"/>.</param>
-    public static Frequency operator /(double x, Time y) => new(x * 1 / y.Magnitude);
+    public static Frequency operator /(double x, Time y) => new(x / y.Magnitude);
 
     /// <summary>Computes the remainder from division of the <see cref="Time"/> by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>
@@ -283,7 +283,7 @@ public readonly partial record struct Time :
     /// which is then scaled by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the inverted <see cref="Time"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Time"/>, which is inverted to a <see cref="Frequency"/> and scaled by <paramref name="x"/>.</param>
-    public static Frequency operator /(Scalar x, Time y) => new(x * 1 / y.Magnitude);
+    public static Frequency operator /(Scalar x, Time y) => new(x / y.Magnitude);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>

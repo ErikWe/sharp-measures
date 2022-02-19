@@ -177,7 +177,7 @@ public readonly record struct Scalar :
     /// <summary>Division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The numerator, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The denominator, which divides <paramref name="x"/>.</param>
-    public static Scalar operator /(double x, Scalar y) => new(x * 1 / y.Magnitude);
+    public static Scalar operator /(double x, Scalar y) => new(x / y.Magnitude);
 
     /// <summary>Computes the remainder from division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>

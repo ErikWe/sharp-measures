@@ -152,7 +152,7 @@ public readonly record struct Unhandled :
     /// <summary>Inverts the <see cref="Unhandled"/> quantity <paramref name="y"/>, and then scales it by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the inverted <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity, which is inverted and then scaled by <paramref name="x"/>.</param>
-    public static Unhandled operator /(double x, Unhandled y) => y.Invert().Multiply(x);
+    public static Unhandled operator /(double x, Unhandled y) => new(x / y.Magnitude);
 
     /// <summary>Computes the remainder from division of the <see cref="Unhandled"/> quantity by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>
@@ -179,11 +179,33 @@ public readonly record struct Unhandled :
     /// <summary>Multiplies the <see cref="Unhandled"/> quantity by <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>.</summary>
     /// <typeparam name="TScalarQuantity">The type of the quantity by which this <see cref="Unhandled"/> quantity is multiplied.</typeparam>
     /// <param name="factor">The <see cref="Unhandled"/> quantity is multiplied by this quantity.</param>
-    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity => new(Magnitude * factor.Magnitude);
+    /// <exception cref="ArgumentNullException"/>
+    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity
+    {
+        if (factor == null)
+        {
+            throw new ArgumentNullException(nameof(factor));
+        }
+        else
+        {
+            return new(Magnitude * factor.Magnitude);
+        }
+    }
     /// <summary>Divides the <see cref="Unhandled"/> quantity by <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>.</summary>
     /// <typeparam name="TScalarQuantity">The type of the quantity by which this <see cref="Unhandled"/> quantity is divided.</typeparam>
     /// <param name="divisor">The <see cref="Unhandled"/> quantity is divided by this quantity.</param>
-    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+    /// <exception cref="ArgumentNullException"/>
+    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity
+    {
+        if (divisor == null)
+        {
+            throw new ArgumentNullException(nameof(divisor));
+        }
+        else
+        {
+            return new(Magnitude / divisor.Magnitude);
+        }
+    }
     /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="x"/> by the quantity <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Unhandled"/> quantity, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>

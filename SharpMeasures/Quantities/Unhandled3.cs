@@ -97,6 +97,10 @@ public readonly record struct Unhandled3 :
         {
             throw new ArgumentNullException(nameof(factory));
         }
+        else if (factor == null)
+        {
+            throw new ArgumentNullException(nameof(factor));
+        }
         else
         {
             return factory(Maths.Vectors.Dot(this, factor));
@@ -116,6 +120,10 @@ public readonly record struct Unhandled3 :
         if (factory == null)
         {
             throw new ArgumentNullException(nameof(factory));
+        }
+        else if (factor == null)
+        {
+            throw new ArgumentNullException(nameof(factor));
         }
         else
         {
@@ -242,6 +250,10 @@ public readonly record struct Unhandled3 :
         {
             throw new ArgumentNullException(nameof(factory));
         }
+        else if (factor == null)
+        {
+            throw new ArgumentNullException(nameof(factor));
+        }
         else
         {
             return factory(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
@@ -257,6 +269,10 @@ public readonly record struct Unhandled3 :
         if (factory == null)
         {
             throw new ArgumentNullException(nameof(factory));
+        }
+        else if (divisor == null)
+        {
+            throw new ArgumentNullException(nameof(divisor));
         }
         else
         {

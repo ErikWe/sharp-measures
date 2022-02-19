@@ -214,7 +214,7 @@ public readonly partial record struct TimeSquared :
     /// <summary>Inverts the <see cref="TimeSquared"/> <paramref name="y"/> to produce a <see cref="FrequencyDrift"/>, which is then scaled by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the inverted <see cref="TimeSquared"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="TimeSquared"/>, which is inverted to a <see cref="FrequencyDrift"/> and scaled by <paramref name="x"/>.</param>
-    public static FrequencyDrift operator /(double x, TimeSquared y) => new(x * 1 / y.Magnitude);
+    public static FrequencyDrift operator /(double x, TimeSquared y) => new(x / y.Magnitude);
 
     /// <summary>Computes the remainder from division of the <see cref="TimeSquared"/> by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>
@@ -245,7 +245,7 @@ public readonly partial record struct TimeSquared :
     /// which is then scaled by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the inverted <see cref="TimeSquared"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="TimeSquared"/>, which is inverted to a <see cref="FrequencyDrift"/> and scaled by <paramref name="x"/>.</param>
-    public static FrequencyDrift operator /(Scalar x, TimeSquared y) => new(x * 1 / y.Magnitude);
+    public static FrequencyDrift operator /(Scalar x, TimeSquared y) => new(x / y.Magnitude);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>

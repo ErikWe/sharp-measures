@@ -294,7 +294,7 @@ export class ScalarGenerator {
 
         if (scalar.inverse && scalar.inverse.length > 0) {
             invertText += '\t#Document:DivideDoubleOperatorRHS(#Quantity#, #InverseQuantity#)#\n'
-            invertText += '\tpublic static #InverseQuantity# operator /(double x, #Quantity# y) => new(x * 1 / y.Magnitude);\n'
+            invertText += '\tpublic static #InverseQuantity# operator /(double x, #Quantity# y) => new(x / y.Magnitude);\n'
         }
 
         return invertText.slice(0, -1)
@@ -305,7 +305,7 @@ export class ScalarGenerator {
 
         if (scalar.inverse && scalar.inverse.length > 0) {
             invertText += '\t#Document:DivideScalarOperatorRHS(#Quantity#, #InverseQuantity#)#\n'
-            invertText += '\tpublic static #InverseQuantity# operator /(Scalar x, #Quantity# y) => new(x * 1 / y.Magnitude);\n'
+            invertText += '\tpublic static #InverseQuantity# operator /(Scalar x, #Quantity# y) => new(x / y.Magnitude);\n'
         }
 
         return invertText.slice(0, -1)

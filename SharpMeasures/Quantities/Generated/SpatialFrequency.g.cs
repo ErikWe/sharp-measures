@@ -207,7 +207,7 @@ public readonly partial record struct SpatialFrequency :
     /// <summary>Inverts the <see cref="SpatialFrequency"/> <paramref name="y"/> to produce a <see cref="Distance"/>, which is then scaled by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the inverted <see cref="SpatialFrequency"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="SpatialFrequency"/>, which is inverted to a <see cref="Distance"/> and scaled by <paramref name="x"/>.</param>
-    public static Distance operator /(double x, SpatialFrequency y) => new(x * 1 / y.Magnitude);
+    public static Distance operator /(double x, SpatialFrequency y) => new(x / y.Magnitude);
 
     /// <summary>Computes the remainder from division of the <see cref="SpatialFrequency"/> by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>
@@ -238,7 +238,7 @@ public readonly partial record struct SpatialFrequency :
     /// which is then scaled by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the inverted <see cref="SpatialFrequency"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="SpatialFrequency"/>, which is inverted to a <see cref="Distance"/> and scaled by <paramref name="x"/>.</param>
-    public static Distance operator /(Scalar x, SpatialFrequency y) => new(x * 1 / y.Magnitude);
+    public static Distance operator /(Scalar x, SpatialFrequency y) => new(x / y.Magnitude);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>

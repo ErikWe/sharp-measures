@@ -203,7 +203,7 @@ public readonly partial record struct SpecificVolume :
     /// <summary>Inverts the <see cref="SpecificVolume"/> <paramref name="y"/> to produce a <see cref="Density"/>, which is then scaled by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the inverted <see cref="SpecificVolume"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="SpecificVolume"/>, which is inverted to a <see cref="Density"/> and scaled by <paramref name="x"/>.</param>
-    public static Density operator /(double x, SpecificVolume y) => new(x * 1 / y.Magnitude);
+    public static Density operator /(double x, SpecificVolume y) => new(x / y.Magnitude);
 
     /// <summary>Computes the remainder from division of the <see cref="SpecificVolume"/> by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>
@@ -234,7 +234,7 @@ public readonly partial record struct SpecificVolume :
     /// which is then scaled by <paramref name="x"/>.</summary>
     /// <param name="x">This value is used to scale the inverted <see cref="SpecificVolume"/> <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="SpecificVolume"/>, which is inverted to a <see cref="Density"/> and scaled by <paramref name="x"/>.</param>
-    public static Density operator /(Scalar x, SpecificVolume y) => new(x * 1 / y.Magnitude);
+    public static Density operator /(Scalar x, SpecificVolume y) => new(x / y.Magnitude);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
