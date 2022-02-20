@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -61,7 +63,7 @@ public readonly partial record struct AngularMomentum :
     public static AngularMomentum Zero { get; } = new(0);
 
     /// <summary>The <see cref="AngularMomentum"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularMomentum.KilogramSquareMetrePerSecond"/>.</summary>
-    public static AngularMomentum OneKilogramSquareMetrePerSecond { get; } = new(1, UnitOfAngularMomentum.KilogramSquareMetrePerSecond);
+    public static AngularMomentum OneKilogramSquareMetrePerSecond { get; } = UnitOfAngularMomentum.KilogramSquareMetrePerSecond.AngularMomentum;
 
     /// <summary>The magnitude of the <see cref="AngularMomentum"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAngularMomentum)"/> or a pre-defined property

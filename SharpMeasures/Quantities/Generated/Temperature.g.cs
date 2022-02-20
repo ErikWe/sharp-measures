@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -53,13 +55,10 @@ public readonly partial record struct Temperature :
     IGenericallyMultiplicableScalarQuantity,
     IGenericallyDivisibleScalarQuantity
 {
-    /// <summary>The zero-valued <see cref="Temperature"/>.</summary>
-    public static Temperature Zero { get; } = new(0);
-
     /// <summary>The <see cref="Temperature"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperature.Kelvin"/>.</summary>
-    public static Temperature OneKelvin { get; } = new(1, UnitOfTemperature.Kelvin);
+    public static Temperature OneKelvin { get; } = UnitOfTemperature.Kelvin.TemperatureDifference.AsTemperature;
     /// <summary>The <see cref="Temperature"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperature.Rankine"/>.</summary>
-    public static Temperature OneRankine { get; } = new(1, UnitOfTemperature.Rankine);
+    public static Temperature OneRankine { get; } = UnitOfTemperature.Rankine.TemperatureDifference.AsTemperature;
 
     /// <summary>The magnitude of the <see cref="Temperature"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfTemperature)"/> or a pre-defined property

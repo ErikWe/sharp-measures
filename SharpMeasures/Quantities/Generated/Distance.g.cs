@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -61,43 +63,43 @@ public readonly partial record struct Distance :
     public static Distance Zero { get; } = new(0);
 
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Metre"/>.</summary>
-    public static Distance OneMetre { get; } = new(1, UnitOfLength.Metre);
+    public static Distance OneMetre { get; } = UnitOfLength.Metre.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Femtometre"/>.</summary>
-    public static Distance OneFemtometre { get; } = new(1, UnitOfLength.Femtometre);
+    public static Distance OneFemtometre { get; } = UnitOfLength.Femtometre.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Picometre"/>.</summary>
-    public static Distance OnePicometre { get; } = new(1, UnitOfLength.Picometre);
+    public static Distance OnePicometre { get; } = UnitOfLength.Picometre.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Nanometre"/>.</summary>
-    public static Distance OneNanometre { get; } = new(1, UnitOfLength.Nanometre);
+    public static Distance OneNanometre { get; } = UnitOfLength.Nanometre.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Micrometre"/>.</summary>
-    public static Distance OneMicrometre { get; } = new(1, UnitOfLength.Micrometre);
+    public static Distance OneMicrometre { get; } = UnitOfLength.Micrometre.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Millimetre"/>.</summary>
-    public static Distance OneMillimetre { get; } = new(1, UnitOfLength.Millimetre);
+    public static Distance OneMillimetre { get; } = UnitOfLength.Millimetre.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Centimetre"/>.</summary>
-    public static Distance OneCentimetre { get; } = new(1, UnitOfLength.Centimetre);
+    public static Distance OneCentimetre { get; } = UnitOfLength.Centimetre.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Decimetre"/>.</summary>
-    public static Distance OneDecimetre { get; } = new(1, UnitOfLength.Decimetre);
+    public static Distance OneDecimetre { get; } = UnitOfLength.Decimetre.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Kilometre"/>.</summary>
-    public static Distance OneKilometre { get; } = new(1, UnitOfLength.Kilometre);
+    public static Distance OneKilometre { get; } = UnitOfLength.Kilometre.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.AstronomicalUnit"/>.</summary>
-    public static Distance OneAstronomicalUnit { get; } = new(1, UnitOfLength.AstronomicalUnit);
+    public static Distance OneAstronomicalUnit { get; } = UnitOfLength.AstronomicalUnit.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.LightYear"/>.</summary>
-    public static Distance OneLightYear { get; } = new(1, UnitOfLength.LightYear);
+    public static Distance OneLightYear { get; } = UnitOfLength.LightYear.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Parsec"/>.</summary>
-    public static Distance OneParsec { get; } = new(1, UnitOfLength.Parsec);
+    public static Distance OneParsec { get; } = UnitOfLength.Parsec.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Kiloparsec"/>.</summary>
-    public static Distance OneKiloparsec { get; } = new(1, UnitOfLength.Kiloparsec);
+    public static Distance OneKiloparsec { get; } = UnitOfLength.Kiloparsec.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Megaparsec"/>.</summary>
-    public static Distance OneMegaparsec { get; } = new(1, UnitOfLength.Megaparsec);
+    public static Distance OneMegaparsec { get; } = UnitOfLength.Megaparsec.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Gigaparsec"/>.</summary>
-    public static Distance OneGigaparsec { get; } = new(1, UnitOfLength.Gigaparsec);
+    public static Distance OneGigaparsec { get; } = UnitOfLength.Gigaparsec.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Inch"/>.</summary>
-    public static Distance OneInch { get; } = new(1, UnitOfLength.Inch);
+    public static Distance OneInch { get; } = UnitOfLength.Inch.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Foot"/>.</summary>
-    public static Distance OneFoot { get; } = new(1, UnitOfLength.Foot);
+    public static Distance OneFoot { get; } = UnitOfLength.Foot.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Yard"/>.</summary>
-    public static Distance OneYard { get; } = new(1, UnitOfLength.Yard);
+    public static Distance OneYard { get; } = UnitOfLength.Yard.Length.AsDistance;
     /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Mile"/>.</summary>
-    public static Distance OneMile { get; } = new(1, UnitOfLength.Mile);
+    public static Distance OneMile { get; } = UnitOfLength.Mile.Length.AsDistance;
 
     /// <summary>Computes <see cref="Distance"/> according to { 1 / <paramref name="spatialFrequency"/> }.</summary>
     /// <summary>Constructs a <see cref="Distance"/> by inverting the <see cref="SpatialFrequency"/> <paramref name="spatialFrequency"/>.</summary>

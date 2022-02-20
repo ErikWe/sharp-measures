@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -41,7 +43,7 @@ public readonly partial record struct LinearDensity :
     public static LinearDensity Zero { get; } = new(0);
 
     /// <summary>The <see cref="LinearDensity"/> with magnitude 1, when expressed in unit <see cref="UnitOfLinearDensity.KilogramPerMetre"/>.</summary>
-    public static LinearDensity OneKilogramPerMetre { get; } = new(1, UnitOfLinearDensity.KilogramPerMetre);
+    public static LinearDensity OneKilogramPerMetre { get; } = UnitOfLinearDensity.KilogramPerMetre.LinearDensity;
 
     /// <summary>The magnitude of the <see cref="LinearDensity"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfLinearDensity)"/> or a pre-defined property

@@ -23,7 +23,7 @@
 /// Usually written as [ft/s²] or [ft∙s⁻²].</summary>
 #/
 
-#Define:UnitStandardGravity
-/// <summary>Expresses <see cref="Quantities.Acceleration"/> in terms of the standard gravity on Earth, according to { 9.80665 ∙ <see cref="MetrePerSecondSquared"/> }.
+#Define:ConstantStandardGravity
+/// <summary>A constant <see cref="Quantities.Acceleration"/>, representing the standard gravity on Earth - with value { 9.80665 ∙ <see cref="MetrePerSecondSquared"/> }.
 /// Usually written as [g].</summary>
 #/

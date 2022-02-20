@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -62,7 +64,7 @@ public readonly partial record struct Torque :
     public static Torque Zero { get; } = new(0);
 
     /// <summary>The <see cref="Torque"/> with magnitude 1, when expressed in unit <see cref="UnitOfTorque.NewtonMetre"/>.</summary>
-    public static Torque OneNewtonMetre { get; } = new(1, UnitOfTorque.NewtonMetre);
+    public static Torque OneNewtonMetre { get; } = UnitOfTorque.NewtonMetre.Torque;
 
     /// <summary>The magnitude of the <see cref="Torque"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfTorque)"/> or a pre-defined property

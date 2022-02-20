@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -43,7 +45,7 @@ public readonly partial record struct TimeSquared :
     public static TimeSquared Zero { get; } = new(0);
 
     /// <summary>The <see cref="TimeSquared"/> with magnitude 1, when expressed in unit <see cref="UnitOfTimeSquared.SquareSecond"/>.</summary>
-    public static TimeSquared OneSquareSecond { get; } = new(1, UnitOfTimeSquared.SquareSecond);
+    public static TimeSquared OneSquareSecond { get; } = UnitOfTimeSquared.SquareSecond.TimeSquared;
 
     /// <summary>Computes <see cref="TimeSquared"/> according to { 1 / <paramref name="frequencyDrift"/> }.</summary>
     /// <summary>Constructs a <see cref="TimeSquared"/> by inverting the <see cref="FrequencyDrift"/> <paramref name="frequencyDrift"/>.</summary>

@@ -3,7 +3,7 @@ import { Documenter } from './Documenter'
 import { DefinitionReader } from './DefinitionReader'
 import { Unit } from './Unit'
 import { TemplateReader } from './TemplateReader'
-import { getUnitQuantity, insertAppropriateNewlines, normalizeLineEndings, removeConsecutiveNewlines, parseUnitPlural, lowerCase } from './Utility'
+import { fixLines, getUnitQuantity, parseUnitPlural, lowerCase } from './Utility'
 import { ScalarQuantity } from './ScalarQuantity'
 
 export class UnitGenerator {
@@ -28,9 +28,10 @@ export class UnitGenerator {
         const unitsText: string = this.composeUnitsText(unit)
         text = text.replace(/#Units#/g, unitsText)
 
-        text = this.insertNames(text, unit)
+        const constantsText: string = this.composeConstantsText(unit)
+        text = text.replace(/#Constants#/g, constantsText)
 
-        text = text.replace(/\t/g, '    ')
+        text = this.insertNames(text, unit)
 
         if (await fsp.stat(this.documentationDirectory + '\\Units\\' + unit.name + '.txt').catch(() => false)) {
             text = await Documenter.document(text, this.documentationDirectory + '\\Units\\' + unit.name + '.txt')
@@ -38,10 +39,7 @@ export class UnitGenerator {
             this.reportErrorDocumentationFileNotFound(unit, this.documentationDirectory + '\\Units\\' + unit.name + '.txt')
         }
 
-        text = insertAppropriateNewlines(text, 175)
-        text = normalizeLineEndings(text)
-        text = removeConsecutiveNewlines(text)
-        text = normalizeLineEndings(text)
+        text = fixLines(text)
 
         await fsp.writeFile(this.destination + '\\UnitOf' + unit.name + '.g.cs', text)
     }
@@ -79,6 +77,27 @@ export class UnitGenerator {
         }
 
         return unitsText
+    }
+
+    private composeConstantsText(unit: Unit): string {
+        if (unit.constants === undefined) {
+            return ''
+        }
+
+        let constantsText: string = ''
+
+        for (let constant of unit.constants) {
+            if (constant.special === true) {
+                if (constant.separator === true) {
+                    constantsText += '\n'
+                }
+            } else {
+                constantsText += '\t#Document:Constant' + constant.name + '#\n'
+                constantsText += '\tpublic static #Unit# ' + constant.name + ' { get; } = ' + constant.scaled.from + '.ScaledBy(' + constant.scaled.by + ');\n'
+            }
+        }
+
+        return constantsText
     }
 
     private composeDerivedText(unit: Unit): string {

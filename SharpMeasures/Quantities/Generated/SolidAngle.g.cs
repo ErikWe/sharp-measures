@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -42,15 +44,15 @@ public readonly partial record struct SolidAngle :
     public static SolidAngle Zero { get; } = new(0);
 
     /// <summary>The <see cref="SolidAngle"/> with magnitude 1, when expressed in unit <see cref="UnitOfSolidAngle.Steradian"/>.</summary>
-    public static SolidAngle OneSteradian { get; } = new(1, UnitOfSolidAngle.Steradian);
+    public static SolidAngle OneSteradian { get; } = UnitOfSolidAngle.Steradian.SolidAngle;
     /// <summary>The <see cref="SolidAngle"/> with magnitude 1, when expressed in unit <see cref="UnitOfSolidAngle.SquareRadian"/>.</summary>
-    public static SolidAngle OneSquareRadian { get; } = new(1, UnitOfSolidAngle.SquareRadian);
+    public static SolidAngle OneSquareRadian { get; } = UnitOfSolidAngle.SquareRadian.SolidAngle;
     /// <summary>The <see cref="SolidAngle"/> with magnitude 1, when expressed in unit <see cref="UnitOfSolidAngle.SquareDegree"/>.</summary>
-    public static SolidAngle OneSquareDegree { get; } = new(1, UnitOfSolidAngle.SquareDegree);
+    public static SolidAngle OneSquareDegree { get; } = UnitOfSolidAngle.SquareDegree.SolidAngle;
     /// <summary>The <see cref="SolidAngle"/> with magnitude 1, when expressed in unit <see cref="UnitOfSolidAngle.SquareArcminute"/>.</summary>
-    public static SolidAngle OneSquareArcminute { get; } = new(1, UnitOfSolidAngle.SquareArcminute);
+    public static SolidAngle OneSquareArcminute { get; } = UnitOfSolidAngle.SquareArcminute.SolidAngle;
     /// <summary>The <see cref="SolidAngle"/> with magnitude 1, when expressed in unit <see cref="UnitOfSolidAngle.SquareArcsecond"/>.</summary>
-    public static SolidAngle OneSquareArcsecond { get; } = new(1, UnitOfSolidAngle.SquareArcsecond);
+    public static SolidAngle OneSquareArcsecond { get; } = UnitOfSolidAngle.SquareArcsecond.SolidAngle;
 
     /// <summary>Computes <see cref="SolidAngle"/> according to { <paramref name="angle"/>² }.</summary>
     /// <param name="angle">This <see cref="Angle"/> is squared to produce a <see cref="SolidAngle"/>.</param>

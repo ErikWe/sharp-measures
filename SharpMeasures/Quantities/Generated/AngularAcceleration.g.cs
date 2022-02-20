@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -62,7 +64,7 @@ public readonly partial record struct AngularAcceleration :
     public static AngularAcceleration Zero { get; } = new(0);
 
     /// <summary>The <see cref="AngularAcceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularAcceleration.RadianPerSecondSquared"/>.</summary>
-    public static AngularAcceleration OneRadianPerSecondSquared { get; } = new(1, UnitOfAngularAcceleration.RadianPerSecondSquared);
+    public static AngularAcceleration OneRadianPerSecondSquared { get; } = UnitOfAngularAcceleration.RadianPerSecondSquared.AngularAcceleration;
 
     /// <summary>The magnitude of the <see cref="AngularAcceleration"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAngularAcceleration)"/> or a pre-defined property

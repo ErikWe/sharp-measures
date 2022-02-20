@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace ErikWe.SharpMeasures.Units;
 
 using ErikWe.SharpMeasures.Quantities;
@@ -23,7 +25,7 @@ public readonly record struct UnitOfAcceleration :
     /// Usually written as [ft/s²] or [ft∙s⁻²].</summary>
     public static UnitOfAcceleration FootPerSecondSquared { get; } = From(UnitOfVelocity.FootPerSecond, UnitOfTime.Second);
 
-    /// <summary>Expresses <see cref="Quantities.Acceleration"/> in terms of the standard gravity on Earth, according to { 9.80665 ∙ <see cref="MetrePerSecondSquared"/> }.
+    /// <summary>A constant <see cref="Quantities.Acceleration"/>, representing the standard gravity on Earth - with value { 9.80665 ∙ <see cref="MetrePerSecondSquared"/> }.
     /// Usually written as [g].</summary>
     public static UnitOfAcceleration StandardGravity { get; } = MetrePerSecondSquared.ScaledBy(9.80665);
 

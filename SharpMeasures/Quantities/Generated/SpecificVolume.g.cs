@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -42,7 +44,7 @@ public readonly partial record struct SpecificVolume :
     public static SpecificVolume Zero { get; } = new(0);
 
     /// <summary>The <see cref="SpecificVolume"/> with magnitude 1, when expressed in unit <see cref="UnitOfSpecificVolume.CubicMetrePerKilogram"/>.</summary>
-    public static SpecificVolume OneCubicMetrePerKilogram { get; } = new(1, UnitOfSpecificVolume.CubicMetrePerKilogram);
+    public static SpecificVolume OneCubicMetrePerKilogram { get; } = UnitOfSpecificVolume.CubicMetrePerKilogram.SpecificVolume;
 
     /// <summary>Computes <see cref="SpecificVolume"/> according to { 1 / <paramref name="density"/> }.</summary>
     /// <summary>Constructs a <see cref="SpecificVolume"/> by inverting the <see cref="Density"/> <paramref name="density"/>.</summary>

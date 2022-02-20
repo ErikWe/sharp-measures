@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -42,7 +44,7 @@ public readonly partial record struct Density :
     public static Density Zero { get; } = new(0);
 
     /// <summary>The <see cref="Density"/> with magnitude 1, when expressed in unit <see cref="UnitOfDensity.KilogramPerCubicMetre"/>.</summary>
-    public static Density OneKilogramPerCubicMetre { get; } = new(1, UnitOfDensity.KilogramPerCubicMetre);
+    public static Density OneKilogramPerCubicMetre { get; } = UnitOfDensity.KilogramPerCubicMetre.Density;
 
     /// <summary>Computes <see cref="Density"/> according to { 1 / <paramref name="specificVolume"/> }.</summary>
     /// <summary>Constructs a <see cref="Density"/> by inverting the <see cref="SpecificVolume"/> <paramref name="specificVolume"/>.</summary>

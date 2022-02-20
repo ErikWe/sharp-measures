@@ -14,6 +14,8 @@ let scalarQuantity : {
     excludeUnits: string[] | undefined,
     includeBases: string[] | undefined,
     excludeBases: string[] | undefined,
+    includeConstants: string[] | undefined,
+    excludeConstants: string[] | undefined,
     convertible: string[] | undefined
 }
 

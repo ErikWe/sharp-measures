@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -42,17 +44,17 @@ public readonly partial record struct Volume :
     public static Volume Zero { get; } = new(0);
 
     /// <summary>The <see cref="Volume"/> with magnitude 1, when expressed in unit <see cref="UnitOfVolume.CubicMetre"/>.</summary>
-    public static Volume OneCubicMetre { get; } = new(1, UnitOfVolume.CubicMetre);
+    public static Volume OneCubicMetre { get; } = UnitOfVolume.CubicMetre.Volume;
     /// <summary>The <see cref="Volume"/> with magnitude 1, when expressed in unit <see cref="UnitOfVolume.CubicDecimetre"/>.</summary>
-    public static Volume OneCubicDecimetre { get; } = new(1, UnitOfVolume.CubicDecimetre);
+    public static Volume OneCubicDecimetre { get; } = UnitOfVolume.CubicDecimetre.Volume;
     /// <summary>The <see cref="Volume"/> with magnitude 1, when expressed in unit <see cref="UnitOfVolume.Litre"/>.</summary>
-    public static Volume OneLitre { get; } = new(1, UnitOfVolume.Litre);
+    public static Volume OneLitre { get; } = UnitOfVolume.Litre.Volume;
     /// <summary>The <see cref="Volume"/> with magnitude 1, when expressed in unit <see cref="UnitOfVolume.Millilitre"/>.</summary>
-    public static Volume OneMillilitre { get; } = new(1, UnitOfVolume.Millilitre);
+    public static Volume OneMillilitre { get; } = UnitOfVolume.Millilitre.Volume;
     /// <summary>The <see cref="Volume"/> with magnitude 1, when expressed in unit <see cref="UnitOfVolume.Centilitre"/>.</summary>
-    public static Volume OneCentilitre { get; } = new(1, UnitOfVolume.Centilitre);
+    public static Volume OneCentilitre { get; } = UnitOfVolume.Centilitre.Volume;
     /// <summary>The <see cref="Volume"/> with magnitude 1, when expressed in unit <see cref="UnitOfVolume.Decilitre"/>.</summary>
-    public static Volume OneDecilitre { get; } = new(1, UnitOfVolume.Decilitre);
+    public static Volume OneDecilitre { get; } = UnitOfVolume.Decilitre.Volume;
 
     /// <summary>Computes <see cref="Volume"/> according to { <paramref name="length"/>³ }.</summary>
     /// <param name="length">This <see cref="Length"/> is cubed to produce a <see cref="Volume"/>.</param>

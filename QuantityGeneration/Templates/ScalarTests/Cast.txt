@@ -1,0 +1,83 @@
+#nullable enable
+
+namespace ErikWe.SharpMeasures.Tests.Cases.QuantityTests.#Quantity#Tests;
+
+using ErikWe.SharpMeasures.Quantities;
+using ErikWe.SharpMeasures.Tests.Datasets;
+
+using Xunit;
+
+public class CastTests
+{
+    [Theory]
+    [ClassData(typeof(#Quantity#Dataset))]
+    public void ToDouble_ShouldMatchMagnitude(#Quantity# quantity)
+    {
+        double result = quantity.ToDouble();
+
+        Assert.Equal(quantity.Magnitude, result, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(#Quantity#Dataset))]
+    public void CastToDouble_ShouldMatchMagnitude(#Quantity# quantity)
+    {
+        double result = (double)quantity;
+
+        Assert.Equal(quantity.Magnitude, result, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(#Quantity#Dataset))]
+    public void ToScalar_ShouldMatchMagnitude(#Quantity# quantity)
+    {
+        Scalar result = quantity.ToScalar();
+
+        Assert.Equal(quantity.Magnitude, result, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(#Quantity#Dataset))]
+    public void CastToScalar_ShouldMatchMagnitude(#Quantity# quantity)
+    {
+        Scalar result = (Scalar)quantity;
+
+        Assert.Equal(quantity.Magnitude, result, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(DoubleDataset))]
+    public void FromDouble_ShouldMatchMagnitude(double magnitude)
+    {
+        #Quantity# result = #Quantity#.FromDouble(magnitude);
+
+        Assert.Equal(magnitude, result.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(DoubleDataset))]
+    public void CastFromDouble_ShouldMatchMagnitude(double magnitude)
+    {
+        #Quantity# result = (#Quantity#)magnitude;
+
+        Assert.Equal(magnitude, result.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(ScalarDataset))]
+    public void FromScalar_ShouldMatchMagnitude(Scalar magnitude)
+    {
+        #Quantity# result = #Quantity#.FromScalar(magnitude);
+
+        Assert.Equal(magnitude, result.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(ScalarDataset))]
+    public void CastFromScalar_ShouldMatchMagnitude(Scalar magnitude)
+    {
+        #Quantity# result = (#Quantity#)magnitude;
+
+        Assert.Equal(magnitude, result.Magnitude, 2);
+    }
+}

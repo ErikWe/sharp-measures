@@ -1,0 +1,21 @@
+#nullable enable
+
+namespace ErikWe.SharpMeasures.Tests.Datasets;
+
+using ErikWe.SharpMeasures.Units;
+
+using System.Collections;
+using System.Collections.Generic;
+
+public class #Unit#Dataset : IEnumerable<object?[]>
+{
+    public IEnumerator<object?[]> GetEnumerator()
+    {
+#Units#
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+}

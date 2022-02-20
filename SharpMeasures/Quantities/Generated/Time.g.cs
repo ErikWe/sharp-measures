@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -43,29 +45,29 @@ public readonly partial record struct Time :
     public static Time Zero { get; } = new(0);
 
     /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Second"/>.</summary>
-    public static Time OneSecond { get; } = new(1, UnitOfTime.Second);
+    public static Time OneSecond { get; } = UnitOfTime.Second.Time;
     /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Minute"/>.</summary>
-    public static Time OneMinute { get; } = new(1, UnitOfTime.Minute);
+    public static Time OneMinute { get; } = UnitOfTime.Minute.Time;
     /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Hour"/>.</summary>
-    public static Time OneHour { get; } = new(1, UnitOfTime.Hour);
+    public static Time OneHour { get; } = UnitOfTime.Hour.Time;
     /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Day"/>.</summary>
-    public static Time OneDay { get; } = new(1, UnitOfTime.Day);
+    public static Time OneDay { get; } = UnitOfTime.Day.Time;
     /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Week"/>.</summary>
-    public static Time OneWeek { get; } = new(1, UnitOfTime.Week);
+    public static Time OneWeek { get; } = UnitOfTime.Week.Time;
     /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.CommonYear"/>.</summary>
-    public static Time OneCommonYear { get; } = new(1, UnitOfTime.CommonYear);
+    public static Time OneCommonYear { get; } = UnitOfTime.CommonYear.Time;
     /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.JulianYear"/>.</summary>
-    public static Time OneJulianYear { get; } = new(1, UnitOfTime.JulianYear);
+    public static Time OneJulianYear { get; } = UnitOfTime.JulianYear.Time;
     /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Femtosecond"/>.</summary>
-    public static Time OneFemtosecond { get; } = new(1, UnitOfTime.Femtosecond);
+    public static Time OneFemtosecond { get; } = UnitOfTime.Femtosecond.Time;
     /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Picosecond"/>.</summary>
-    public static Time OnePicosecond { get; } = new(1, UnitOfTime.Picosecond);
+    public static Time OnePicosecond { get; } = UnitOfTime.Picosecond.Time;
     /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Nanosecond"/>.</summary>
-    public static Time OneNanosecond { get; } = new(1, UnitOfTime.Nanosecond);
+    public static Time OneNanosecond { get; } = UnitOfTime.Nanosecond.Time;
     /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Microsecond"/>.</summary>
-    public static Time OneMicrosecond { get; } = new(1, UnitOfTime.Microsecond);
+    public static Time OneMicrosecond { get; } = UnitOfTime.Microsecond.Time;
     /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Millisecond"/>.</summary>
-    public static Time OneMillisecond { get; } = new(1, UnitOfTime.Millisecond);
+    public static Time OneMillisecond { get; } = UnitOfTime.Millisecond.Time;
 
     /// <summary>Computes <see cref="Time"/> according to { 1 / <paramref name="frequency"/> }.</summary>
     /// <summary>Constructs a <see cref="Time"/> by inverting the <see cref="Frequency"/> <paramref name="frequency"/>.</summary>

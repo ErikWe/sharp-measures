@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -42,7 +44,7 @@ public readonly partial record struct MomentOfInertia :
     public static MomentOfInertia Zero { get; } = new(0);
 
     /// <summary>The <see cref="MomentOfInertia"/> with magnitude 1, when expressed in unit <see cref="UnitOfMomentOfInertia.KilogramSquareMetre"/>.</summary>
-    public static MomentOfInertia OneKilogramSquareMetre { get; } = new(1, UnitOfMomentOfInertia.KilogramSquareMetre);
+    public static MomentOfInertia OneKilogramSquareMetre { get; } = UnitOfMomentOfInertia.KilogramSquareMetre.MomentOfInertia;
 
     /// <summary>The magnitude of the <see cref="MomentOfInertia"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfMomentOfInertia)"/> or a pre-defined property

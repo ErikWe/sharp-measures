@@ -1,0 +1,114 @@
+#nullable enable
+
+namespace ErikWe.SharpMeasures.Tests.Cases.QuantityTests.#Quantity#Tests;
+
+using ErikWe.SharpMeasures.Quantities;
+using ErikWe.SharpMeasures.Tests.Datasets;
+using ErikWe.SharpMeasures.Units;
+
+using Xunit;
+
+public class ConstructorTests
+{
+#Unbiased#
+    [Fact]
+    public void Zero_MagnitudeShouldBeZero()
+    {
+        #Quantity# quantity = #Quantity#.Zero;
+
+        Assert.Equal(0, quantity.Magnitude);
+    }
+#/Unbiased#
+
+#Constants#
+
+#Bases#
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<ScalarDataset, #Unit#Dataset>))]
+    public void Scalar_Unit_MagnitudeShouldBeMultipliedByUnitScale(Scalar magnitude, #Unit# unit)
+    {
+        #Quantity# quantity = new(magnitude, unit);
+        
+#Unbiased#
+        Assert.Equal(magnitude * unit.#UnitQuantity#.Magnitude, quantity.Magnitude, 2);
+#/Unbiased#
+#BiasedUnit#
+        Assert.Equal(magnitude * unit.#UnbiasedQuantity#.Magnitude, quantity.Magnitude, 2);
+#/BiasedUnit#
+#Biased#
+        Assert.Equal(magnitude * unit.#UnbiasedQuantity#.Magnitude, quantity.Magnitude, 2);
+#/Biased#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<ScalarDataset, #Unit#Dataset>))]
+    public void Double_Unit_MagnitudeShouldBeMultipliedByUnitScale(double magnitude, #Unit# unit)
+    {
+        #Quantity# quantity = new(magnitude, unit);
+
+#Unbiased#
+        Assert.Equal(magnitude * unit.#UnitQuantity#.Magnitude, quantity.Magnitude, 2);
+#/Unbiased#
+#BiasedUnit#
+        Assert.Equal(magnitude * unit.#UnbiasedQuantity#.Magnitude, quantity.Magnitude, 2);
+#/BiasedUnit#
+#Biased#
+        Assert.Equal(magnitude * unit.#UnbiasedQuantity#.Magnitude, quantity.Magnitude, 2);
+#/Biased#
+    }
+
+    [Theory]
+    [ClassData(typeof(ScalarDataset))]
+    public void Scalar_MagnitudeShouldBeEqual(Scalar magnitude)
+    {
+        #Quantity# quantity = new(magnitude);
+
+        Assert.Equal(magnitude, quantity.Magnitude);
+    }
+
+    [Theory]
+    [ClassData(typeof(DoubleDataset))]
+    public void Double_MagnitudeShouldBeEqual(double magnitude)
+    {
+        #Quantity# quantity = new(magnitude);
+
+        Assert.Equal(magnitude, quantity.Magnitude);
+    }
+
+    [Theory]
+    [ClassData(typeof(DoubleDataset))]
+    public void FromDouble_MagnitudeShouldBeEqualToDouble(double a)
+    {
+        #Quantity# quantity = #Quantity#.FromDouble(a);
+
+        Assert.Equal(a, quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(DoubleDataset))]
+    public void CastedDouble_MagnitudeShouldBeEqualToDouble(double a)
+    {
+        #Quantity# quantity = (#Quantity#)a;
+
+        Assert.Equal(a, quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(ScalarDataset))]
+    public void FromScalar_MagnitudesShouldBeEqual(Scalar a)
+    {
+        #Quantity# quantity = #Quantity#.FromScalar(a);
+
+        Assert.Equal(a, quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(ScalarDataset))]
+    public void CastedScalar_MagnitudesShouldBeEqual(Scalar a)
+    {
+        #Quantity# quantity = (#Quantity#)a;
+
+        Assert.Equal(a, quantity.Magnitude, 2);
+    }
+}

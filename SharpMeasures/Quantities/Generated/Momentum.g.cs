@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -57,7 +59,7 @@ public readonly partial record struct Momentum :
     public static Momentum Zero { get; } = new(0);
 
     /// <summary>The <see cref="Momentum"/> with magnitude 1, when expressed in unit <see cref="UnitOfMomentum.KilogramMetrePerSecond"/>.</summary>
-    public static Momentum OneKilogramMetrePerSecond { get; } = new(1, UnitOfMomentum.KilogramMetrePerSecond);
+    public static Momentum OneKilogramMetrePerSecond { get; } = UnitOfMomentum.KilogramMetrePerSecond.Momentum;
 
     /// <summary>The magnitude of the <see cref="Momentum"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfMomentum)"/> or a pre-defined property

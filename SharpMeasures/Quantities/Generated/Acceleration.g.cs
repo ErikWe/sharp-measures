@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -56,12 +58,13 @@ public readonly partial record struct Acceleration :
     /// <summary>The zero-valued <see cref="Acceleration"/>.</summary>
     public static Acceleration Zero { get; } = new(0);
 
+    /// <summary>The constant <see cref="Acceleration"/> <see cref="UnitOfAcceleration.StandardGravity"/>.</summary>
+    public static Acceleration StandardGravity { get; } = UnitOfAcceleration.StandardGravity.Acceleration;
+
     /// <summary>The <see cref="Acceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.MetrePerSecondSquared"/>.</summary>
-    public static Acceleration OneMetrePerSecondSquared { get; } = new(1, UnitOfAcceleration.MetrePerSecondSquared);
+    public static Acceleration OneMetrePerSecondSquared { get; } = UnitOfAcceleration.MetrePerSecondSquared.Acceleration;
     /// <summary>The <see cref="Acceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.FootPerSecondSquared"/>.</summary>
-    public static Acceleration OneFootPerSecondSquared { get; } = new(1, UnitOfAcceleration.FootPerSecondSquared);
-    /// <summary>The <see cref="Acceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.StandardGravity"/>.</summary>
-    public static Acceleration OneStandardGravity { get; } = new(1, UnitOfAcceleration.StandardGravity);
+    public static Acceleration OneFootPerSecondSquared { get; } = UnitOfAcceleration.FootPerSecondSquared.Acceleration;
 
     /// <summary>The magnitude of the <see cref="Acceleration"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAcceleration)"/> or a pre-defined property
@@ -110,8 +113,9 @@ public readonly partial record struct Acceleration :
     public Scalar MetresPerSecondSquared => InUnit(UnitOfAcceleration.MetrePerSecondSquared);
     /// <summary>Retrieves the magnitude of the <see cref="Acceleration"/>, expressed in <see cref="UnitOfAcceleration.FootPerSecondSquared"/>.</summary>
     public Scalar FootsPerSecondSquared => InUnit(UnitOfAcceleration.FootPerSecondSquared);
-    /// <summary>Retrieves the magnitude of the <see cref="Acceleration"/>, expressed in <see cref="UnitOfAcceleration.StandardGravity"/>.</summary>
-    public Scalar StandardGravity => InUnit(UnitOfAcceleration.StandardGravity);
+
+    /// <summary>The number of multiples of the constant <see cref="UnitOfAcceleration.StandardGravity"/> that the <see cref="Acceleration"/> corresponds to.</summary>
+    public Scalar StandardGravityMultiples => InUnit(UnitOfAcceleration.StandardGravity);
 
     /// <summary>Indicates whether the magnitude of the <see cref="Acceleration"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);

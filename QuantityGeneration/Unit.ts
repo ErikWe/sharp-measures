@@ -22,6 +22,17 @@ let unit : {
         special: true,
         separator: boolean | undefined
     })[],
+    constants: ({
+        special: false | undefined,
+        name: string,
+        plural: string,
+        symbol: string | undefined,
+        scaled: { from: string, by: string },
+        offset: { from: string, by: string } | undefined
+    } | {
+        special: true,
+        separator: boolean | undefined
+    })[] | undefined
 }
 
 export type Unit = typeof unit

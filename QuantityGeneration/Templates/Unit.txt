@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace ErikWe.SharpMeasures.Units;
 
 using ErikWe.SharpMeasures.Quantities;
@@ -9,6 +11,8 @@ public readonly record struct #Unit# :
     IComparable<#Unit#>
 {
 #Derived##NewlineIfDerived##NewlineIfDerived##Units#
+
+#Constants#
 
     #Document:Quantity(#Unit#, #SIUnit#, #Quantity#)#
     public #Quantity# #Quantity# { get; private init; }

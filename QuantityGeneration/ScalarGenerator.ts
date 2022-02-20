@@ -5,8 +5,8 @@ import { TemplateReader } from './TemplateReader'
 import { ScalarQuantity } from './ScalarQuantity'
 import { VectorQuantity } from './VectorQuantity'
 import { Unit } from './Unit'
-import { composeUnitsNameList, composeBasesNameList, getBases, getConvertible, getDefaultUnit, getUnit, getUnits, getVectorComponentNames,
-    getVectorVersionOfScalar, insertAppropriateNewlines, lowerCase, normalizeLineEndings, parseUnitPlural, removeConsecutiveNewlines, getUnitQuantity } from './Utility'
+import { composeUnitsNameList, composeBasesNameList, fixLines, getBases, getConstants, getConvertible, getDefaultConstant, getDefaultUnit, getUnit,
+    getUnitQuantity, getUnits, getVectorComponentNames, getVectorVersionOfScalar, lowerCase, parseUnitPlural, getUnitUnbiasedQuantity } from './Utility'
 
 export class ScalarGenerator {
 
@@ -24,9 +24,14 @@ export class ScalarGenerator {
     private async generateScalar(scalar: ScalarQuantity): Promise<void> {
         let text: string = this.templateReader.scalarTemplate
 
+        text = this.setConditionalBlocks(scalar, text)
+
         const interfacesText: string = this.composeInterfacesText(scalar)
         text = text.replace(/#Interfaces#/g, interfacesText)
         text = text.replace(/#CommaIfInterface#/g, interfacesText.length > 0 ? ',' : '')
+
+        const constantsText: string = this.composeConstantsText(scalar)
+        text = text.replace(/#Constants#/g, constantsText)
 
         const basesText: string = this.composeBasesText(scalar)
         text = text.replace(/#Bases#/g, basesText)
@@ -36,6 +41,9 @@ export class ScalarGenerator {
 
         const unitsText: string = this.composeUnitsText(scalar)
         text = text.replace(/#Units#/g, unitsText)
+
+        const constantMultiplesText: string = this.composeConstantMultiplesText(scalar)
+        text = text.replace(/#ConstantMultiples#/g, constantMultiplesText)
 
         const powersText: string = this.composePowersText(scalar)
         text = text.replace(/#Powers#/g, powersText)
@@ -60,18 +68,13 @@ export class ScalarGenerator {
 
         text = this.insertNames(text, scalar)
 
-        text = text.replace(/\t/g, '    ')
-
         if (await fsp.stat(this.documentationDirectory + '\\Scalars\\' + scalar.name + '.txt').catch(() => false)) {
             text = await Documenter.document(text, this.documentationDirectory + '\\Scalars\\' + scalar.name + '.txt')
         } else {
             this.reportErrorDocumentationFileNotFound(scalar, this.documentationDirectory + '\\Scalars\\' + scalar.name + '.txt')
         }
 
-        text = insertAppropriateNewlines(text, 175)
-        text = normalizeLineEndings(text)
-        text = removeConsecutiveNewlines(text)
-        text = normalizeLineEndings(text)
+        text = fixLines(text)
 
         await fsp.writeFile(this.destination + '\\' + scalar.name + '.g.cs', text)
     }
@@ -85,10 +88,33 @@ export class ScalarGenerator {
 
         text = text.replace(/#UnbiasedQuantity#/g, unit.unbiasedQuantity ? unit.unbiasedQuantity : 'NoUnbiasedQuantityError')
 
-        const defaultUnit = getDefaultUnit(this.definitionReader.definitions, scalar)
+        text = this.insertDefaultUnitNames(text, scalar)
+        text = this.insertPowerNames(text, scalar)
+
+        text = text.replace(/#VectorQuantity#/g, getVectorVersionOfScalar(this.definitionReader.definitions, scalar)?.name ?? 'NoVectorVersionError')
+
+        text = text.replace(/#SingularUnits#/g, composeUnitsNameList(this.definitionReader.definitions, scalar).singular)
+        text = text.replace(/#PluralUnits#/g, composeUnitsNameList(this.definitionReader.definitions, scalar).plural)
+        text = text.replace(/#SingularBases#/g, composeBasesNameList(this.definitionReader.definitions, scalar).singular)
+        text = text.replace(/#PluralBases#/g, composeBasesNameList(this.definitionReader.definitions, scalar).plural)
+
+        text = text.replace(/#Quantity#/g, scalar.name)
+        text = text.replace(/#quantity#/g, lowerCase(scalar.name))
+        return text
+    }
+
+    private insertDefaultUnitNames(text: string, scalar: ScalarQuantity): string {
+        let defaultUnit: Unit['units'][number] | NonNullable<Unit['constants']>[number] | undefined = getDefaultUnit(this.definitionReader.definitions, scalar)
+        let isConstant: boolean = false
+
+        if (defaultUnit === undefined) {
+            defaultUnit = getDefaultConstant(this.definitionReader.definitions, scalar)
+            isConstant = true
+        }
+
         if (defaultUnit !== undefined && !defaultUnit.special) {
             text = text.replace(/#DefaultUnit#/g, defaultUnit.name)
-            text = text.replace(/#DefaultUnits#/g, parseUnitPlural(defaultUnit.name, defaultUnit.plural))
+            text = text.replace(/#DefaultUnits#/g, parseUnitPlural(defaultUnit.name, defaultUnit.plural) + (isConstant ? 'Multiples' : ''))
             if (defaultUnit.symbol === undefined) {
                 this.reportErrorMissingDefaultUnitSymbol(scalar)
                 text = text.replace(/#DefaultSymbol#/g, 'NoDefaultUnitSymbolError')
@@ -102,6 +128,10 @@ export class ScalarGenerator {
             text = text.replace(/#DefaultSymbol#/g, 'NoDefaultUnitError')
         }
 
+        return text
+    }
+
+    private insertPowerNames(text: string, scalar: ScalarQuantity): string {
         const powers: { name: string, data: string[] | undefined }[] = [
             { name: 'Inverse', data: scalar.inverse },
             { name: 'Square', data: scalar.square },
@@ -123,15 +153,16 @@ export class ScalarGenerator {
             }
         }
 
-        text = text.replace(/#VectorQuantity#/g, getVectorVersionOfScalar(this.definitionReader.definitions, scalar)?.name ?? 'NoVectorVersionError')
+        return text
+    }
 
-        text = text.replace(/#SingularUnits#/g, composeUnitsNameList(this.definitionReader.definitions, scalar).singular)
-        text = text.replace(/#PluralUnits#/g, composeUnitsNameList(this.definitionReader.definitions, scalar).plural)
-        text = text.replace(/#SingularBases#/g, composeBasesNameList(this.definitionReader.definitions, scalar).singular)
-        text = text.replace(/#PluralBases#/g, composeBasesNameList(this.definitionReader.definitions, scalar).plural)
-
-        text = text.replace(/#Quantity#/g, scalar.name)
-        text = text.replace(/#quantity#/g, lowerCase(scalar.name))
+    private setConditionalBlocks(scalar: ScalarQuantity, text: string): string {
+        if (scalar.unitBias) {
+            text = text.replace(/(\n|\r\n|\r?)#Unbiased#([^]+?)#\/Unbiased#/g, '')
+        } else {
+            text = text.replace(/(\n|\r\n|\r?)#(\/?)Unbiased#/g, '')
+        }
+        
         return text
     }
 
@@ -176,15 +207,55 @@ export class ScalarGenerator {
         return interfacesText.slice(0, -2)
     }
 
-    private composeBasesText(scalar: ScalarQuantity): string {
-        const bases: Unit['units'] | undefined = getBases(this.definitionReader.definitions, scalar)
+    private composeConstantsText(scalar: ScalarQuantity): string {
+        const unit: Unit = getUnit(this.definitionReader.definitions, scalar)
+        const unitQuantity: ScalarQuantity | undefined = unit.bias ?
+            getUnitUnbiasedQuantity(this.definitionReader.definitions, unit) :
+            getUnitQuantity(this.definitionReader.definitions, unit)
+            const constants: Unit['constants'] = getConstants(this.definitionReader.definitions, scalar)
 
-        if (bases === undefined) {
+        if (unitQuantity === undefined || constants === undefined) {
             return ''
         }
 
+        let constantsText: string = ''
+
+        for (let constant of constants) {
+            if (constant.special) {
+                if (constant.separator) {
+                    constantsText += '\n'
+                }
+            } else {
+                constantsText += '\t#Document:Constant(#Quantity#, #Unit#, ' + constant.name + ')#\n'
+                constantsText += '\tpublic static #Quantity# ' + constant.name + ' { get; } = '
+                
+                if (unitQuantity === scalar) {
+                    constantsText += '#Unit#.' + constant.name + '.' + unitQuantity.name + ';\n'
+                } else if ((getConvertible(this.definitionReader.definitions, unitQuantity) as Array<ScalarQuantity | VectorQuantity>).includes(scalar)) {
+                    constantsText += '#Unit#.' + constant.name + '.' + unitQuantity.name + '.As#Quantity#;\n'
+                } else {
+                    constantsText += 'new(1, #Unit#.' + constant.name + ');\n'
+                }
+            }
+        }
+
+        return constantsText
+    }
+
+    private composeBasesText(scalar: ScalarQuantity): string {
+        const unit: Unit = getUnit(this.definitionReader.definitions, scalar)
+        const unitQuantity: ScalarQuantity | undefined = unit.bias ?
+            getUnitUnbiasedQuantity(this.definitionReader.definitions, unit) :
+            getUnitQuantity(this.definitionReader.definitions, unit)
+
+        if (unitQuantity === undefined) {
+            return ''
+        }
+
+        const bases: Unit['units'] = getBases(this.definitionReader.definitions, scalar)
+
         let basesText: string = ''
-        
+
         for (let base of bases) {
             if (base.special) {
                 if (base.separator) {
@@ -192,7 +263,15 @@ export class ScalarGenerator {
                 }
             } else {
                 basesText += '\t#Document:OneUnit(#Quantity#, #Unit#, ' + base.name + ')#\n'
-                basesText += '\tpublic static #Quantity# One' + base.name + ' { get; } = new(1, #Unit#.' + base.name + ');\n'
+                basesText += '\tpublic static #Quantity# One' + base.name + ' { get; } = '
+                
+                if (unitQuantity === scalar) {
+                    basesText += '#Unit#.' + base.name + '.' + unitQuantity.name + ';\n'
+                } else if ((getConvertible(this.definitionReader.definitions, unitQuantity) as Array<ScalarQuantity | VectorQuantity>).includes(scalar)) {
+                    basesText += '#Unit#.' + base.name + '.' + unitQuantity.name + '.As#Quantity#;\n'
+                } else {
+                    basesText += 'new(1, #Unit#.' + base.name + ');\n'
+                }
             }
         }
 
@@ -245,14 +324,9 @@ export class ScalarGenerator {
     }
 
     private composeUnitsText(scalar: ScalarQuantity): string {
-        const units: Unit['units'] | undefined = getUnits(this.definitionReader.definitions, scalar)
-
-        if (units === undefined) {
-            return ''
-        }
-
         let unitsText: string = ''
-
+        
+        const units: Unit['units'] = getUnits(this.definitionReader.definitions, scalar)
         for (let unit of units) {
             if (unit.special) {
                 if (unit.separator) {
@@ -261,6 +335,27 @@ export class ScalarGenerator {
             } else {
                 unitsText += '\t#Document:InUnit(#Quantity#, #Unit#, ' + unit.name + ')#\n'
                 unitsText += '\tpublic Scalar ' + parseUnitPlural(unit.name, unit.plural) + ' => InUnit(#Unit#.' + unit.name + ');\n'
+            }
+        }
+
+        return unitsText
+    }
+
+    private composeConstantMultiplesText(scalar: ScalarQuantity): string {
+        let unitsText: string = ''
+
+        const constants: Unit['constants'] = getConstants(this.definitionReader.definitions, scalar)
+        if (constants !== undefined)
+        {
+            for (let constant of constants) {
+                if (constant.special) {
+                    if (constant.separator) {
+                        unitsText += '\n'
+                    }
+                } else {
+                    unitsText += '\t#Document:InConstant(#Quantity#, #Unit#, ' + constant.name + ')#\n'
+                    unitsText += '\tpublic Scalar ' + parseUnitPlural(constant.name, constant.plural) + 'Multiples => InUnit(#Unit#.' + constant.name + ');\n'
+                }
             }
         }
 
@@ -402,7 +497,10 @@ export class ScalarGenerator {
     }
 
     private reportErrorMissingDefaultUnitSymbol(scalar: ScalarQuantity): void {
-        const defaultUnit: Unit['units'][number] | undefined = getDefaultUnit(this.definitionReader.definitions, scalar)
+        const defaultUnit: Unit['units'][number] | NonNullable<Unit['constants']>[number] | undefined = getDefaultUnit(this.definitionReader.definitions, scalar)
+        if (defaultUnit === undefined) {
+            getDefaultConstant(this.definitionReader.definitions, scalar)
+        }
 
         if (defaultUnit === undefined || defaultUnit.special) {
             console.error('Default unit of scalar quantity: [' + scalar.name + '] is missing symbol.')

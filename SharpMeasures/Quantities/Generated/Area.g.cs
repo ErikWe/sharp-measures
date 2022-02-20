@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -42,19 +44,19 @@ public readonly partial record struct Area :
     public static Area Zero { get; } = new(0);
 
     /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.SquareMetre"/>.</summary>
-    public static Area OneSquareMetre { get; } = new(1, UnitOfArea.SquareMetre);
+    public static Area OneSquareMetre { get; } = UnitOfArea.SquareMetre.Area;
     /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.SquareKilometre"/>.</summary>
-    public static Area OneSquareKilometre { get; } = new(1, UnitOfArea.SquareKilometre);
+    public static Area OneSquareKilometre { get; } = UnitOfArea.SquareKilometre.Area;
     /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.SquareInch"/>.</summary>
-    public static Area OneSquareInch { get; } = new(1, UnitOfArea.SquareInch);
+    public static Area OneSquareInch { get; } = UnitOfArea.SquareInch.Area;
     /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.SquareMile"/>.</summary>
-    public static Area OneSquareMile { get; } = new(1, UnitOfArea.SquareMile);
+    public static Area OneSquareMile { get; } = UnitOfArea.SquareMile.Area;
     /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.Are"/>.</summary>
-    public static Area OneAre { get; } = new(1, UnitOfArea.Are);
+    public static Area OneAre { get; } = UnitOfArea.Are.Area;
     /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.Hectare"/>.</summary>
-    public static Area OneHectare { get; } = new(1, UnitOfArea.Hectare);
+    public static Area OneHectare { get; } = UnitOfArea.Hectare.Area;
     /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.Acre"/>.</summary>
-    public static Area OneAcre { get; } = new(1, UnitOfArea.Acre);
+    public static Area OneAcre { get; } = UnitOfArea.Acre.Area;
 
     /// <summary>Computes <see cref="Area"/> according to { <paramref name="length"/>² }.</summary>
     /// <param name="length">This <see cref="Length"/> is squared to produce a <see cref="Area"/>.</param>

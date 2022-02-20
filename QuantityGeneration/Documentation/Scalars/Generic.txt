@@ -58,6 +58,10 @@
 /// <summary>The <see cref="#Param:quantity#"/> with magnitude 1, when expressed in unit <see cref="#Param:unitName#.#Param:unit#"/>.</summary>
 #/
 
+#Define:Constant(quantity, unitName, constant)
+/// <summary>The constant <see cref="#Param:quantity#"/> <see cref="#Param:unitName#.#Param:constant#"/>.</summary>
+#/
+
 #Define:AsShared(quantity, sharedQuantity)
 /// <summary>Converts the <see cref="#Param:quantity#"/> to an instance of the associated quantity <see cref="#Param:sharedQuantity#"/>, of equal magnitude.</summary> 
 #/
@@ -108,6 +112,10 @@
 
 #Define:InUnit(quantity, unit, unitName)
 /// <summary>Retrieves the magnitude of the <see cref="#Param:quantity#"/>, expressed in <see cref="#Param:unit#.#Param:unitName#"/>.</summary>
+#/
+
+#Define:InConstant(quantity, unit, constant)
+/// <summary>The number of multiples of the constant <see cref="#Param:unit#.#Param:constant#"/> that the <see cref="#Param:quantity#"/> corresponds to.</summary>
 #/
 
 #Define:IsNaN(quantity)

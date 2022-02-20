@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -11,8 +13,12 @@ public readonly partial record struct #Quantity# :
     IScalableScalarQuantity<#Quantity#>#CommaIfInterface#
 #Interfaces#
 {
+#Unbiased#
     #Document:Zero(#Quantity#)#
     public static #Quantity# Zero { get; } = new(0);
+#/Unbiased#
+
+#Constants#
 
 #Bases#
 
@@ -36,6 +42,8 @@ public readonly partial record struct #Quantity# :
 #Convertible#
 
 #Units#
+
+#ConstantMultiples#
 
     #Document:IsNaN(#Quantity#)#
     public bool IsNaN => double.IsNaN(Magnitude);

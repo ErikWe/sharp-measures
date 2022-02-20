@@ -112,11 +112,30 @@ export const getBases = (definitions: QuantityDefinitions, quantity: ScalarQuant
     return includedUnits
 }
 
-const isUnitExcluded = (quantity: ScalarQuantity | VectorQuantity, unit: Unit['units'][number], list: string[] | undefined): boolean => {
+export const getConstants = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): NonNullable<Unit['constants']> => {
+    const includedConstants: Unit['constants'] = []
+    
+    const unit: Unit = getUnit(definitions, quantity)
+    if (unit.constants === undefined) {
+        return includedConstants
+    }
+    
+    for (let constant of unit.constants) {
+        if (!constant.special) {
+            if (!isUnitExcluded(quantity, constant, quantity.excludeConstants) && !isUnitUnincluded(quantity, constant, quantity.includeBases)) {
+                includedConstants.push(constant)
+            }
+        }
+    }
+
+    return includedConstants
+}
+
+const isUnitExcluded = (quantity: ScalarQuantity | VectorQuantity, unit: Unit['units'][number] | NonNullable<Unit['constants']>[number], list: string[] | undefined): boolean => {
     return (unit.special !== true && list !== undefined && list.includes(unit.name))
 }
 
-const isUnitUnincluded = (quantity: ScalarQuantity | VectorQuantity, unit: Unit['units'][number], list: string[] | undefined): boolean => {
+const isUnitUnincluded = (quantity: ScalarQuantity | VectorQuantity, unit: Unit['units'][number] | NonNullable<Unit['constants']>[number], list: string[] | undefined): boolean => {
     return (unit.special !== true && list !== undefined && !list.includes(unit.name))
 }
 
@@ -138,12 +157,34 @@ export const getDefaultUnit = (definitions: QuantityDefinitions, quantity: Scala
     } else if (quantity.type === 'Vector' && quantity.defaultUnit === '[component]') {
         return getDefaultUnit(definitions, getVectorComponent(definitions, quantity))
     } else {
-        const units: Unit['units'] = getUnits(definitions, quantity)
+        return getUnitOfName(definitions, quantity, quantity.defaultUnit)
+    }
+}
 
-        for (let unit of units) {
-            if (!unit.special && unit.name === quantity.defaultUnit) {
-                return unit
-            }
+export const getDefaultConstant = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): NonNullable<Unit['constants']>[number] | undefined => {
+    if (quantity.defaultUnit === undefined) {
+        return undefined
+    } else if (quantity.type === 'Vector' && quantity.defaultUnit === '[component]') {
+        return getDefaultConstant(definitions, getVectorComponent(definitions, quantity))
+    } else {
+        return getConstantOfName(definitions, quantity, quantity.defaultUnit)
+    }
+}
+
+const getUnitOfName = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity, name: string): Unit['units'][number] | undefined => {
+    for (let unit of getUnits(definitions, quantity)) {
+        if (!unit.special && unit.name === name) {
+            return unit
+        }
+    }
+
+    return undefined
+}
+
+const getConstantOfName = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity, name: string): NonNullable<Unit['constants']>[number] | undefined => {
+    for (let constant of getConstants(definitions, quantity)) {
+        if (!constant.special && constant.name === name) {
+            return constant
         }
     }
 
@@ -178,6 +219,14 @@ export const getUnitQuantity = (definitions: QuantityDefinitions, unit: Unit): S
     }
 }
 
+export const getUnitUnbiasedQuantity = (definitions: QuantityDefinitions, unit: Unit): ScalarQuantity | undefined => {
+    if (unit.unbiasedQuantity === undefined) {
+        return undefined
+    } else {
+        return definitions.scalars[unit.unbiasedQuantity]
+    }
+}
+
 export const composeUnitsNameList = (definitions: QuantityDefinitions, quantity: ScalarQuantity | VectorQuantity): { singular: string, plural: string } => {
     const units: Unit['units'] = getUnits(definitions, quantity)
 
@@ -208,6 +257,19 @@ export const composeBasesNameList = (definitions: QuantityDefinitions, quantity:
     }
 
     return { singular: '[' + singular.slice(0, -2) + ']', plural: '[' + plural.slice(0, -2) + ']' }
+}
+
+export const fixLines = (text: string): string => {
+    text = text.replace(/\t/g, '    ')
+
+    text = insertAppropriateNewlines(text, 175)
+    text = normalizeLineEndings(text)
+    text = removeConsecutiveNewlines(text)
+    text = normalizeLineEndings(text)
+    text = removeLeadingNewline(text)
+    text = normalizeLineEndings(text)
+
+    return text
 }
 
 export const insertAppropriateNewlines = (text: string, characterLimit: number): string => {
@@ -271,6 +333,26 @@ export const removeConsecutiveNewlines = (text: string): string => {
         rebuilt = rebuilt.slice(0, -1)
     }
 
+    return rebuilt.slice(0, -1)
+}
+
+export const removeLeadingNewline = (text: string): string => {
+    let rebuilt: string = ''
+    let previousWasBracket: boolean = false
+
+    for (let line of text.split('\n')) {
+        if (line[0] === '{') {
+            previousWasBracket = true
+        } else if (previousWasBracket) {
+            previousWasBracket = false
+            if (line.replace('\t', '').trim() === '') {
+                continue
+            }
+        }
+
+        rebuilt += line + '\n'
+    }
+    
     return rebuilt.slice(0, -1)
 }
 

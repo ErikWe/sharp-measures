@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -44,33 +46,33 @@ public readonly partial record struct Angle :
     public static Angle Zero { get; } = new(0);
 
     /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Radian"/>.</summary>
-    public static Angle OneRadian { get; } = new(1, UnitOfAngle.Radian);
+    public static Angle OneRadian { get; } = UnitOfAngle.Radian.Angle;
     /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Milliradian"/>.</summary>
-    public static Angle OneMilliradian { get; } = new(1, UnitOfAngle.Milliradian);
+    public static Angle OneMilliradian { get; } = UnitOfAngle.Milliradian.Angle;
     /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Degree"/>.</summary>
-    public static Angle OneDegree { get; } = new(1, UnitOfAngle.Degree);
+    public static Angle OneDegree { get; } = UnitOfAngle.Degree.Angle;
     /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Gradian"/>.</summary>
-    public static Angle OneGradian { get; } = new(1, UnitOfAngle.Gradian);
+    public static Angle OneGradian { get; } = UnitOfAngle.Gradian.Angle;
     /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Arcminute"/>.</summary>
-    public static Angle OneArcminute { get; } = new(1, UnitOfAngle.Arcminute);
+    public static Angle OneArcminute { get; } = UnitOfAngle.Arcminute.Angle;
     /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Arcsecond"/>.</summary>
-    public static Angle OneArcsecond { get; } = new(1, UnitOfAngle.Arcsecond);
+    public static Angle OneArcsecond { get; } = UnitOfAngle.Arcsecond.Angle;
     /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Milliarcsecond"/>.</summary>
-    public static Angle OneMilliarcsecond { get; } = new(1, UnitOfAngle.Milliarcsecond);
+    public static Angle OneMilliarcsecond { get; } = UnitOfAngle.Milliarcsecond.Angle;
     /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Microarcsecond"/>.</summary>
-    public static Angle OneMicroarcsecond { get; } = new(1, UnitOfAngle.Microarcsecond);
+    public static Angle OneMicroarcsecond { get; } = UnitOfAngle.Microarcsecond.Angle;
     /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Turn"/>.</summary>
-    public static Angle OneTurn { get; } = new(1, UnitOfAngle.Turn);
+    public static Angle OneTurn { get; } = UnitOfAngle.Turn.Angle;
     /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.HalfTurn"/>.</summary>
-    public static Angle OneHalfTurn { get; } = new(1, UnitOfAngle.HalfTurn);
+    public static Angle OneHalfTurn { get; } = UnitOfAngle.HalfTurn.Angle;
     /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.QuarterTurn"/>.</summary>
-    public static Angle OneQuarterTurn { get; } = new(1, UnitOfAngle.QuarterTurn);
+    public static Angle OneQuarterTurn { get; } = UnitOfAngle.QuarterTurn.Angle;
     /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Centiturn"/>.</summary>
-    public static Angle OneCentiturn { get; } = new(1, UnitOfAngle.Centiturn);
+    public static Angle OneCentiturn { get; } = UnitOfAngle.Centiturn.Angle;
     /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Milliturn"/>.</summary>
-    public static Angle OneMilliturn { get; } = new(1, UnitOfAngle.Milliturn);
+    public static Angle OneMilliturn { get; } = UnitOfAngle.Milliturn.Angle;
     /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.BinaryDegree"/>.</summary>
-    public static Angle OneBinaryDegree { get; } = new(1, UnitOfAngle.BinaryDegree);
+    public static Angle OneBinaryDegree { get; } = UnitOfAngle.BinaryDegree.Angle;
 
     /// <summary>Computes <see cref="Angle"/> according to { √<paramref name="solidAngle"/> }.</summary>
     /// <param name="solidAngle">The square root of this <see cref="SolidAngle"/> is taken to produce a <see cref="Angle"/>.</param>

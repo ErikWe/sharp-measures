@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -43,7 +45,7 @@ public readonly partial record struct SpatialFrequency :
     public static SpatialFrequency Zero { get; } = new(0);
 
     /// <summary>The <see cref="SpatialFrequency"/> with magnitude 1, when expressed in unit <see cref="UnitOfSpatialFrequency.PerMetre"/>.</summary>
-    public static SpatialFrequency OnePerMetre { get; } = new(1, UnitOfSpatialFrequency.PerMetre);
+    public static SpatialFrequency OnePerMetre { get; } = UnitOfSpatialFrequency.PerMetre.SpatialFrequency;
 
     /// <summary>Computes <see cref="SpatialFrequency"/> according to { 1 / <paramref name="distance"/> }.</summary>
     /// <summary>Constructs a <see cref="SpatialFrequency"/> by inverting the <see cref="Distance"/> <paramref name="distance"/>.</summary>

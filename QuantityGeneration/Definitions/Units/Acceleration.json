@@ -13,8 +13,9 @@
     ],
     "units": [
         { "name": "MetrePerSecondSquared", "plural": "+s [Per]", "symbol": "m∙s⁻²", "SI": true, "derived": ["Velocity.MetrePerSecond", "Time.Second"] },
-        { "name": "FootPerSecondSquared", "plural": "+s [Per]", "derived": ["Velocity.FootPerSecond", "Time.Second"] },
-        { "special": true, "separator": true },
+        { "name": "FootPerSecondSquared", "plural": "+s [Per]", "derived": ["Velocity.FootPerSecond", "Time.Second"] }
+    ],
+    "constants": [
         { "name": "StandardGravity", "plural": "=", "symbol": "g", "scaled": { "from": "MetrePerSecondSquared", "by": "9.80665" } }
     ]
 }

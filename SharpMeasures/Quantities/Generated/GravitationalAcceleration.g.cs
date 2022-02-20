@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -51,12 +53,13 @@ public readonly partial record struct GravitationalAcceleration :
     /// <summary>The zero-valued <see cref="GravitationalAcceleration"/>.</summary>
     public static GravitationalAcceleration Zero { get; } = new(0);
 
+    /// <summary>The constant <see cref="GravitationalAcceleration"/> <see cref="UnitOfAcceleration.StandardGravity"/>.</summary>
+    public static GravitationalAcceleration StandardGravity { get; } = new(1, UnitOfAcceleration.StandardGravity);
+
     /// <summary>The <see cref="GravitationalAcceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.MetrePerSecondSquared"/>.</summary>
     public static GravitationalAcceleration OneMetrePerSecondSquared { get; } = new(1, UnitOfAcceleration.MetrePerSecondSquared);
     /// <summary>The <see cref="GravitationalAcceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.FootPerSecondSquared"/>.</summary>
     public static GravitationalAcceleration OneFootPerSecondSquared { get; } = new(1, UnitOfAcceleration.FootPerSecondSquared);
-    /// <summary>The <see cref="GravitationalAcceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.StandardGravity"/>.</summary>
-    public static GravitationalAcceleration OneStandardGravity { get; } = new(1, UnitOfAcceleration.StandardGravity);
 
     /// <summary>The magnitude of the <see cref="GravitationalAcceleration"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAcceleration)"/> or a pre-defined property
@@ -108,8 +111,9 @@ public readonly partial record struct GravitationalAcceleration :
     public Scalar MetresPerSecondSquared => InUnit(UnitOfAcceleration.MetrePerSecondSquared);
     /// <summary>Retrieves the magnitude of the <see cref="GravitationalAcceleration"/>, expressed in <see cref="UnitOfAcceleration.FootPerSecondSquared"/>.</summary>
     public Scalar FootsPerSecondSquared => InUnit(UnitOfAcceleration.FootPerSecondSquared);
-    /// <summary>Retrieves the magnitude of the <see cref="GravitationalAcceleration"/>, expressed in <see cref="UnitOfAcceleration.StandardGravity"/>.</summary>
-    public Scalar StandardGravity => InUnit(UnitOfAcceleration.StandardGravity);
+
+    /// <summary>The number of multiples of the constant <see cref="UnitOfAcceleration.StandardGravity"/> that the <see cref="GravitationalAcceleration"/> corresponds to.</summary>
+    public Scalar StandardGravityMultiples => InUnit(UnitOfAcceleration.StandardGravity);
 
     /// <summary>Indicates whether the magnitude of the <see cref="GravitationalAcceleration"/> is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -141,7 +145,7 @@ public readonly partial record struct GravitationalAcceleration :
     public int CompareTo(GravitationalAcceleration other) => Magnitude.CompareTo(other.Magnitude);
     /// <summary>Produces a formatted string from the magnitude of the <see cref="GravitationalAcceleration"/> in the default unit
     /// <see cref="UnitOfAcceleration.StandardGravity"/>, followed by the symbol [g].</summary>
-    public override string ToString() => $"{StandardGravity} [g]";
+    public override string ToString() => $"{StandardGravityMultiples} [g]";
 
     /// <summary>Produces a <see cref="Scalar"/> with magnitude equal to that of the <see cref="GravitationalAcceleration"/>,
     /// expressed in <paramref name="unitOfAcceleration"/>.</summary>

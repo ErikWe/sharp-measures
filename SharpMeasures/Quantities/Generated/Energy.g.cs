@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -68,19 +70,19 @@ public readonly partial record struct Energy :
     public static Energy Zero { get; } = new(0);
 
     /// <summary>The <see cref="Energy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Joule"/>.</summary>
-    public static Energy OneJoule { get; } = new(1, UnitOfEnergy.Joule);
+    public static Energy OneJoule { get; } = UnitOfEnergy.Joule.Energy;
     /// <summary>The <see cref="Energy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Kilojoule"/>.</summary>
-    public static Energy OneKilojoule { get; } = new(1, UnitOfEnergy.Kilojoule);
+    public static Energy OneKilojoule { get; } = UnitOfEnergy.Kilojoule.Energy;
     /// <summary>The <see cref="Energy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Megajoule"/>.</summary>
-    public static Energy OneMegajoule { get; } = new(1, UnitOfEnergy.Megajoule);
+    public static Energy OneMegajoule { get; } = UnitOfEnergy.Megajoule.Energy;
     /// <summary>The <see cref="Energy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Gigajoule"/>.</summary>
-    public static Energy OneGigajoule { get; } = new(1, UnitOfEnergy.Gigajoule);
+    public static Energy OneGigajoule { get; } = UnitOfEnergy.Gigajoule.Energy;
     /// <summary>The <see cref="Energy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.KilowattHour"/>.</summary>
-    public static Energy OneKilowattHour { get; } = new(1, UnitOfEnergy.KilowattHour);
+    public static Energy OneKilowattHour { get; } = UnitOfEnergy.KilowattHour.Energy;
     /// <summary>The <see cref="Energy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Calorie"/>.</summary>
-    public static Energy OneCalorie { get; } = new(1, UnitOfEnergy.Calorie);
+    public static Energy OneCalorie { get; } = UnitOfEnergy.Calorie.Energy;
     /// <summary>The <see cref="Energy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Kilocalorie"/>.</summary>
-    public static Energy OneKilocalorie { get; } = new(1, UnitOfEnergy.Kilocalorie);
+    public static Energy OneKilocalorie { get; } = UnitOfEnergy.Kilocalorie.Energy;
 
     /// <summary>The magnitude of the <see cref="Energy"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfEnergy)"/> or a pre-defined property

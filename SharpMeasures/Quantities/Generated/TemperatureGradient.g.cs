@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -41,15 +43,15 @@ public readonly partial record struct TemperatureGradient :
     public static TemperatureGradient Zero { get; } = new(0);
 
     /// <summary>The <see cref="TemperatureGradient"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperatureGradient.KelvinPerMetre"/>.</summary>
-    public static TemperatureGradient OneKelvinPerMetre { get; } = new(1, UnitOfTemperatureGradient.KelvinPerMetre);
+    public static TemperatureGradient OneKelvinPerMetre { get; } = UnitOfTemperatureGradient.KelvinPerMetre.TemperatureGradient;
     /// <summary>The <see cref="TemperatureGradient"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperatureGradient.CelsiusPerMetre"/>.</summary>
-    public static TemperatureGradient OneCelsiusPerMetre { get; } = new(1, UnitOfTemperatureGradient.CelsiusPerMetre);
+    public static TemperatureGradient OneCelsiusPerMetre { get; } = UnitOfTemperatureGradient.CelsiusPerMetre.TemperatureGradient;
     /// <summary>The <see cref="TemperatureGradient"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperatureGradient.RankinePerMetre"/>.</summary>
-    public static TemperatureGradient OneRankinePerMetre { get; } = new(1, UnitOfTemperatureGradient.RankinePerMetre);
+    public static TemperatureGradient OneRankinePerMetre { get; } = UnitOfTemperatureGradient.RankinePerMetre.TemperatureGradient;
     /// <summary>The <see cref="TemperatureGradient"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperatureGradient.FahrenheitPerMetre"/>.</summary>
-    public static TemperatureGradient OneFahrenheitPerMetre { get; } = new(1, UnitOfTemperatureGradient.FahrenheitPerMetre);
+    public static TemperatureGradient OneFahrenheitPerMetre { get; } = UnitOfTemperatureGradient.FahrenheitPerMetre.TemperatureGradient;
     /// <summary>The <see cref="TemperatureGradient"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperatureGradient.FahrenheitPerFoot"/>.</summary>
-    public static TemperatureGradient OneFahrenheitPerFoot { get; } = new(1, UnitOfTemperatureGradient.FahrenheitPerFoot);
+    public static TemperatureGradient OneFahrenheitPerFoot { get; } = UnitOfTemperatureGradient.FahrenheitPerFoot.TemperatureGradient;
 
     /// <summary>The magnitude of the <see cref="TemperatureGradient"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfTemperatureGradient)"/> or a pre-defined property

@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -60,43 +62,43 @@ public readonly partial record struct Length :
     public static Length Zero { get; } = new(0);
 
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Metre"/>.</summary>
-    public static Length OneMetre { get; } = new(1, UnitOfLength.Metre);
+    public static Length OneMetre { get; } = UnitOfLength.Metre.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Femtometre"/>.</summary>
-    public static Length OneFemtometre { get; } = new(1, UnitOfLength.Femtometre);
+    public static Length OneFemtometre { get; } = UnitOfLength.Femtometre.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Picometre"/>.</summary>
-    public static Length OnePicometre { get; } = new(1, UnitOfLength.Picometre);
+    public static Length OnePicometre { get; } = UnitOfLength.Picometre.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Nanometre"/>.</summary>
-    public static Length OneNanometre { get; } = new(1, UnitOfLength.Nanometre);
+    public static Length OneNanometre { get; } = UnitOfLength.Nanometre.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Micrometre"/>.</summary>
-    public static Length OneMicrometre { get; } = new(1, UnitOfLength.Micrometre);
+    public static Length OneMicrometre { get; } = UnitOfLength.Micrometre.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Millimetre"/>.</summary>
-    public static Length OneMillimetre { get; } = new(1, UnitOfLength.Millimetre);
+    public static Length OneMillimetre { get; } = UnitOfLength.Millimetre.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Centimetre"/>.</summary>
-    public static Length OneCentimetre { get; } = new(1, UnitOfLength.Centimetre);
+    public static Length OneCentimetre { get; } = UnitOfLength.Centimetre.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Decimetre"/>.</summary>
-    public static Length OneDecimetre { get; } = new(1, UnitOfLength.Decimetre);
+    public static Length OneDecimetre { get; } = UnitOfLength.Decimetre.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Kilometre"/>.</summary>
-    public static Length OneKilometre { get; } = new(1, UnitOfLength.Kilometre);
+    public static Length OneKilometre { get; } = UnitOfLength.Kilometre.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.AstronomicalUnit"/>.</summary>
-    public static Length OneAstronomicalUnit { get; } = new(1, UnitOfLength.AstronomicalUnit);
+    public static Length OneAstronomicalUnit { get; } = UnitOfLength.AstronomicalUnit.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.LightYear"/>.</summary>
-    public static Length OneLightYear { get; } = new(1, UnitOfLength.LightYear);
+    public static Length OneLightYear { get; } = UnitOfLength.LightYear.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Parsec"/>.</summary>
-    public static Length OneParsec { get; } = new(1, UnitOfLength.Parsec);
+    public static Length OneParsec { get; } = UnitOfLength.Parsec.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Kiloparsec"/>.</summary>
-    public static Length OneKiloparsec { get; } = new(1, UnitOfLength.Kiloparsec);
+    public static Length OneKiloparsec { get; } = UnitOfLength.Kiloparsec.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Megaparsec"/>.</summary>
-    public static Length OneMegaparsec { get; } = new(1, UnitOfLength.Megaparsec);
+    public static Length OneMegaparsec { get; } = UnitOfLength.Megaparsec.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Gigaparsec"/>.</summary>
-    public static Length OneGigaparsec { get; } = new(1, UnitOfLength.Gigaparsec);
+    public static Length OneGigaparsec { get; } = UnitOfLength.Gigaparsec.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Inch"/>.</summary>
-    public static Length OneInch { get; } = new(1, UnitOfLength.Inch);
+    public static Length OneInch { get; } = UnitOfLength.Inch.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Foot"/>.</summary>
-    public static Length OneFoot { get; } = new(1, UnitOfLength.Foot);
+    public static Length OneFoot { get; } = UnitOfLength.Foot.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Yard"/>.</summary>
-    public static Length OneYard { get; } = new(1, UnitOfLength.Yard);
+    public static Length OneYard { get; } = UnitOfLength.Yard.Length;
     /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Mile"/>.</summary>
-    public static Length OneMile { get; } = new(1, UnitOfLength.Mile);
+    public static Length OneMile { get; } = UnitOfLength.Mile.Length;
 
     /// <summary>Computes <see cref="Length"/> according to { 1 / <paramref name="spatialFrequency"/> }.</summary>
     /// <summary>Constructs a <see cref="Length"/> by inverting the <see cref="SpatialFrequency"/> <paramref name="spatialFrequency"/>.</summary>

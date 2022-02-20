@@ -155,6 +155,10 @@
 /// <summary>Retrieves the magnitudes of the components of the <see cref="#Param:quantity#"/>, expressed in <see cref="#Param:unit#.#Param:unitName#"/>.</summary>
 #/
 
+#Define:InConstant(quantity, unit, constant)
+/// <summary>The number of multiples of the constant <see cref="#Param:unit#.#Param:constant#"/> that each component of the <see cref="#Param:quantity#"/> corresponds to.</summary>
+#/
+
 #Define:ScalarMagnitudeExplicit
 /// <inheritdoc/>
 #/

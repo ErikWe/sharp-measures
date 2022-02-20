@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -57,7 +59,7 @@ public readonly partial record struct Impulse :
     public static Impulse Zero { get; } = new(0);
 
     /// <summary>The <see cref="Impulse"/> with magnitude 1, when expressed in unit <see cref="UnitOfImpulse.NewtonSecond"/>.</summary>
-    public static Impulse OneNewtonSecond { get; } = new(1, UnitOfImpulse.NewtonSecond);
+    public static Impulse OneNewtonSecond { get; } = UnitOfImpulse.NewtonSecond.Impulse;
 
     /// <summary>The magnitude of the <see cref="Impulse"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfImpulse)"/> or a pre-defined property

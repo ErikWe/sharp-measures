@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -42,7 +44,7 @@ public readonly partial record struct SpecificAngularMomentum :
     public static SpecificAngularMomentum Zero { get; } = new(0);
 
     /// <summary>The <see cref="SpecificAngularMomentum"/> with magnitude 1, when expressed in unit <see cref="UnitOfSpecificAngularMomentum.SquareMetrePerSecond"/>.</summary>
-    public static SpecificAngularMomentum OneSquareMetrePerSecond { get; } = new(1, UnitOfSpecificAngularMomentum.SquareMetrePerSecond);
+    public static SpecificAngularMomentum OneSquareMetrePerSecond { get; } = UnitOfSpecificAngularMomentum.SquareMetrePerSecond.SpecificAngularMomentum;
 
     /// <summary>The magnitude of the <see cref="SpecificAngularMomentum"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfSpecificAngularMomentum)"/> or a pre-defined property

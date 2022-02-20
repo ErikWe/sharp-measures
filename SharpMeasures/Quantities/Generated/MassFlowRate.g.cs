@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -41,9 +43,9 @@ public readonly partial record struct MassFlowRate :
     public static MassFlowRate Zero { get; } = new(0);
 
     /// <summary>The <see cref="MassFlowRate"/> with magnitude 1, when expressed in unit <see cref="UnitOfMassFlowRate.KilogramPerSecond"/>.</summary>
-    public static MassFlowRate OneKilogramPerSecond { get; } = new(1, UnitOfMassFlowRate.KilogramPerSecond);
+    public static MassFlowRate OneKilogramPerSecond { get; } = UnitOfMassFlowRate.KilogramPerSecond.MassFlowRate;
     /// <summary>The <see cref="MassFlowRate"/> with magnitude 1, when expressed in unit <see cref="UnitOfMassFlowRate.PoundPerSecond"/>.</summary>
-    public static MassFlowRate OnePoundPerSecond { get; } = new(1, UnitOfMassFlowRate.PoundPerSecond);
+    public static MassFlowRate OnePoundPerSecond { get; } = UnitOfMassFlowRate.PoundPerSecond.MassFlowRate;
 
     /// <summary>The magnitude of the <see cref="MassFlowRate"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfMassFlowRate)"/> or a pre-defined property

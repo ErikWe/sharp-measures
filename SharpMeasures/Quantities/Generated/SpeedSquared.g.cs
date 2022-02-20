@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -42,7 +44,7 @@ public readonly partial record struct SpeedSquared :
     public static SpeedSquared Zero { get; } = new(0);
 
     /// <summary>The <see cref="SpeedSquared"/> with magnitude 1, when expressed in unit <see cref="UnitOfVelocitySquared.SquareMetrePerSecondSquared"/>.</summary>
-    public static SpeedSquared OneSquareMetrePerSecondSquared { get; } = new(1, UnitOfVelocitySquared.SquareMetrePerSecondSquared);
+    public static SpeedSquared OneSquareMetrePerSecondSquared { get; } = UnitOfVelocitySquared.SquareMetrePerSecondSquared.SpeedSquared;
 
     /// <summary>Computes <see cref="SpeedSquared"/> according to { <paramref name="speed"/>² }.</summary>
     /// <param name="speed">This <see cref="Speed"/> is squared to produce a <see cref="SpeedSquared"/>.</param>

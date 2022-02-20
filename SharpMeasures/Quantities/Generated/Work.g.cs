@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -60,19 +62,19 @@ public readonly partial record struct Work :
     public static Work Zero { get; } = new(0);
 
     /// <summary>The <see cref="Work"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Joule"/>.</summary>
-    public static Work OneJoule { get; } = new(1, UnitOfEnergy.Joule);
+    public static Work OneJoule { get; } = UnitOfEnergy.Joule.Energy.AsWork;
     /// <summary>The <see cref="Work"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Kilojoule"/>.</summary>
-    public static Work OneKilojoule { get; } = new(1, UnitOfEnergy.Kilojoule);
+    public static Work OneKilojoule { get; } = UnitOfEnergy.Kilojoule.Energy.AsWork;
     /// <summary>The <see cref="Work"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Megajoule"/>.</summary>
-    public static Work OneMegajoule { get; } = new(1, UnitOfEnergy.Megajoule);
+    public static Work OneMegajoule { get; } = UnitOfEnergy.Megajoule.Energy.AsWork;
     /// <summary>The <see cref="Work"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Gigajoule"/>.</summary>
-    public static Work OneGigajoule { get; } = new(1, UnitOfEnergy.Gigajoule);
+    public static Work OneGigajoule { get; } = UnitOfEnergy.Gigajoule.Energy.AsWork;
     /// <summary>The <see cref="Work"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.KilowattHour"/>.</summary>
-    public static Work OneKilowattHour { get; } = new(1, UnitOfEnergy.KilowattHour);
+    public static Work OneKilowattHour { get; } = UnitOfEnergy.KilowattHour.Energy.AsWork;
     /// <summary>The <see cref="Work"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Calorie"/>.</summary>
-    public static Work OneCalorie { get; } = new(1, UnitOfEnergy.Calorie);
+    public static Work OneCalorie { get; } = UnitOfEnergy.Calorie.Energy.AsWork;
     /// <summary>The <see cref="Work"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Kilocalorie"/>.</summary>
-    public static Work OneKilocalorie { get; } = new(1, UnitOfEnergy.Kilocalorie);
+    public static Work OneKilocalorie { get; } = UnitOfEnergy.Kilocalorie.Energy.AsWork;
 
     /// <summary>The magnitude of the <see cref="Work"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfEnergy)"/> or a pre-defined property

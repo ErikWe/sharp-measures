@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -43,15 +45,15 @@ public readonly partial record struct Speed :
     public static Speed Zero { get; } = new(0);
 
     /// <summary>The <see cref="Speed"/> with magnitude 1, when expressed in unit <see cref="UnitOfVelocity.MetrePerSecond"/>.</summary>
-    public static Speed OneMetrePerSecond { get; } = new(1, UnitOfVelocity.MetrePerSecond);
+    public static Speed OneMetrePerSecond { get; } = UnitOfVelocity.MetrePerSecond.Speed;
     /// <summary>The <see cref="Speed"/> with magnitude 1, when expressed in unit <see cref="UnitOfVelocity.KilometrePerSecond"/>.</summary>
-    public static Speed OneKilometrePerSecond { get; } = new(1, UnitOfVelocity.KilometrePerSecond);
+    public static Speed OneKilometrePerSecond { get; } = UnitOfVelocity.KilometrePerSecond.Speed;
     /// <summary>The <see cref="Speed"/> with magnitude 1, when expressed in unit <see cref="UnitOfVelocity.KilometrePerHour"/>.</summary>
-    public static Speed OneKilometrePerHour { get; } = new(1, UnitOfVelocity.KilometrePerHour);
+    public static Speed OneKilometrePerHour { get; } = UnitOfVelocity.KilometrePerHour.Speed;
     /// <summary>The <see cref="Speed"/> with magnitude 1, when expressed in unit <see cref="UnitOfVelocity.FootPerSecond"/>.</summary>
-    public static Speed OneFootPerSecond { get; } = new(1, UnitOfVelocity.FootPerSecond);
+    public static Speed OneFootPerSecond { get; } = UnitOfVelocity.FootPerSecond.Speed;
     /// <summary>The <see cref="Speed"/> with magnitude 1, when expressed in unit <see cref="UnitOfVelocity.MilePerHour"/>.</summary>
-    public static Speed OneMilePerHour { get; } = new(1, UnitOfVelocity.MilePerHour);
+    public static Speed OneMilePerHour { get; } = UnitOfVelocity.MilePerHour.Speed;
 
     /// <summary>Computes <see cref="Speed"/> according to { √<paramref name="speedSquared"/> }.</summary>
     /// <param name="speedSquared">The square root of this <see cref="SpeedSquared"/> is taken to produce a <see cref="Speed"/>.</param>

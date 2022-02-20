@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -41,9 +43,9 @@ public readonly partial record struct VolumetricFlowRate :
     public static VolumetricFlowRate Zero { get; } = new(0);
 
     /// <summary>The <see cref="VolumetricFlowRate"/> with magnitude 1, when expressed in unit <see cref="UnitOfVolumetricFlowRate.CubicMetrePerSecond"/>.</summary>
-    public static VolumetricFlowRate OneCubicMetrePerSecond { get; } = new(1, UnitOfVolumetricFlowRate.CubicMetrePerSecond);
+    public static VolumetricFlowRate OneCubicMetrePerSecond { get; } = UnitOfVolumetricFlowRate.CubicMetrePerSecond.VolumetricFlowRate;
     /// <summary>The <see cref="VolumetricFlowRate"/> with magnitude 1, when expressed in unit <see cref="UnitOfVolumetricFlowRate.LitrePerSecond"/>.</summary>
-    public static VolumetricFlowRate OneLitrePerSecond { get; } = new(1, UnitOfVolumetricFlowRate.LitrePerSecond);
+    public static VolumetricFlowRate OneLitrePerSecond { get; } = UnitOfVolumetricFlowRate.LitrePerSecond.VolumetricFlowRate;
 
     /// <summary>The magnitude of the <see cref="VolumetricFlowRate"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfVolumetricFlowRate)"/> or a pre-defined property

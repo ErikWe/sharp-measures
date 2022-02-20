@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -55,13 +57,13 @@ public readonly partial record struct AngularSpeed :
     public static AngularSpeed Zero { get; } = new(0);
 
     /// <summary>The <see cref="AngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RadianPerSecond"/>.</summary>
-    public static AngularSpeed OneRadianPerSecond { get; } = new(1, UnitOfAngularVelocity.RadianPerSecond);
+    public static AngularSpeed OneRadianPerSecond { get; } = UnitOfAngularVelocity.RadianPerSecond.AngularSpeed;
     /// <summary>The <see cref="AngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.DegreePerSecond"/>.</summary>
-    public static AngularSpeed OneDegreePerSecond { get; } = new(1, UnitOfAngularVelocity.DegreePerSecond);
+    public static AngularSpeed OneDegreePerSecond { get; } = UnitOfAngularVelocity.DegreePerSecond.AngularSpeed;
     /// <summary>The <see cref="AngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RevolutionPerSecond"/>.</summary>
-    public static AngularSpeed OneRevolutionPerSecond { get; } = new(1, UnitOfAngularVelocity.RevolutionPerSecond);
+    public static AngularSpeed OneRevolutionPerSecond { get; } = UnitOfAngularVelocity.RevolutionPerSecond.AngularSpeed;
     /// <summary>The <see cref="AngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RevolutionPerMinute"/>.</summary>
-    public static AngularSpeed OneRevolutionPerMinute { get; } = new(1, UnitOfAngularVelocity.RevolutionPerMinute);
+    public static AngularSpeed OneRevolutionPerMinute { get; } = UnitOfAngularVelocity.RevolutionPerMinute.AngularSpeed;
 
     /// <summary>The magnitude of the <see cref="AngularSpeed"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAngularVelocity)"/> or a pre-defined property

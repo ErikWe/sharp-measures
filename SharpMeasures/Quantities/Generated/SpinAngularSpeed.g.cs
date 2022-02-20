@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -61,13 +63,13 @@ public readonly partial record struct SpinAngularSpeed :
     public static SpinAngularSpeed Zero { get; } = new(0);
 
     /// <summary>The <see cref="SpinAngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RadianPerSecond"/>.</summary>
-    public static SpinAngularSpeed OneRadianPerSecond { get; } = new(1, UnitOfAngularVelocity.RadianPerSecond);
+    public static SpinAngularSpeed OneRadianPerSecond { get; } = UnitOfAngularVelocity.RadianPerSecond.AngularSpeed.AsSpinAngularSpeed;
     /// <summary>The <see cref="SpinAngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.DegreePerSecond"/>.</summary>
-    public static SpinAngularSpeed OneDegreePerSecond { get; } = new(1, UnitOfAngularVelocity.DegreePerSecond);
+    public static SpinAngularSpeed OneDegreePerSecond { get; } = UnitOfAngularVelocity.DegreePerSecond.AngularSpeed.AsSpinAngularSpeed;
     /// <summary>The <see cref="SpinAngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RevolutionPerSecond"/>.</summary>
-    public static SpinAngularSpeed OneRevolutionPerSecond { get; } = new(1, UnitOfAngularVelocity.RevolutionPerSecond);
+    public static SpinAngularSpeed OneRevolutionPerSecond { get; } = UnitOfAngularVelocity.RevolutionPerSecond.AngularSpeed.AsSpinAngularSpeed;
     /// <summary>The <see cref="SpinAngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RevolutionPerMinute"/>.</summary>
-    public static SpinAngularSpeed OneRevolutionPerMinute { get; } = new(1, UnitOfAngularVelocity.RevolutionPerMinute);
+    public static SpinAngularSpeed OneRevolutionPerMinute { get; } = UnitOfAngularVelocity.RevolutionPerMinute.AngularSpeed.AsSpinAngularSpeed;
 
     /// <summary>The magnitude of the <see cref="SpinAngularSpeed"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAngularVelocity)"/> or a pre-defined property

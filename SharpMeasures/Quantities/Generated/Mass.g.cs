@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -41,19 +43,19 @@ public readonly partial record struct Mass :
     public static Mass Zero { get; } = new(0);
 
     /// <summary>The <see cref="Mass"/> with magnitude 1, when expressed in unit <see cref="UnitOfMass.Gram"/>.</summary>
-    public static Mass OneGram { get; } = new(1, UnitOfMass.Gram);
+    public static Mass OneGram { get; } = UnitOfMass.Gram.Mass;
     /// <summary>The <see cref="Mass"/> with magnitude 1, when expressed in unit <see cref="UnitOfMass.Milligram"/>.</summary>
-    public static Mass OneMilligram { get; } = new(1, UnitOfMass.Milligram);
+    public static Mass OneMilligram { get; } = UnitOfMass.Milligram.Mass;
     /// <summary>The <see cref="Mass"/> with magnitude 1, when expressed in unit <see cref="UnitOfMass.Hectogram"/>.</summary>
-    public static Mass OneHectogram { get; } = new(1, UnitOfMass.Hectogram);
+    public static Mass OneHectogram { get; } = UnitOfMass.Hectogram.Mass;
     /// <summary>The <see cref="Mass"/> with magnitude 1, when expressed in unit <see cref="UnitOfMass.Kilogram"/>.</summary>
-    public static Mass OneKilogram { get; } = new(1, UnitOfMass.Kilogram);
+    public static Mass OneKilogram { get; } = UnitOfMass.Kilogram.Mass;
     /// <summary>The <see cref="Mass"/> with magnitude 1, when expressed in unit <see cref="UnitOfMass.Tonne"/>.</summary>
-    public static Mass OneTonne { get; } = new(1, UnitOfMass.Tonne);
+    public static Mass OneTonne { get; } = UnitOfMass.Tonne.Mass;
     /// <summary>The <see cref="Mass"/> with magnitude 1, when expressed in unit <see cref="UnitOfMass.Ounce"/>.</summary>
-    public static Mass OneOunce { get; } = new(1, UnitOfMass.Ounce);
+    public static Mass OneOunce { get; } = UnitOfMass.Ounce.Mass;
     /// <summary>The <see cref="Mass"/> with magnitude 1, when expressed in unit <see cref="UnitOfMass.Pound"/>.</summary>
-    public static Mass OnePound { get; } = new(1, UnitOfMass.Pound);
+    public static Mass OnePound { get; } = UnitOfMass.Pound.Mass;
 
     /// <summary>The magnitude of the <see cref="Mass"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfMass)"/> or a pre-defined property

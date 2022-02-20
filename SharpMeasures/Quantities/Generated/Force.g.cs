@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -57,9 +59,9 @@ public readonly partial record struct Force :
     public static Force Zero { get; } = new(0);
 
     /// <summary>The <see cref="Force"/> with magnitude 1, when expressed in unit <see cref="UnitOfForce.Newton"/>.</summary>
-    public static Force OneNewton { get; } = new(1, UnitOfForce.Newton);
+    public static Force OneNewton { get; } = UnitOfForce.Newton.Force;
     /// <summary>The <see cref="Force"/> with magnitude 1, when expressed in unit <see cref="UnitOfForce.PoundForce"/>.</summary>
-    public static Force OnePoundForce { get; } = new(1, UnitOfForce.PoundForce);
+    public static Force OnePoundForce { get; } = UnitOfForce.PoundForce.Force;
 
     /// <summary>The magnitude of the <see cref="Force"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfForce)"/> or a pre-defined property

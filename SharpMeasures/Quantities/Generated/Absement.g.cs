@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -42,7 +44,7 @@ public readonly partial record struct Absement :
     public static Absement Zero { get; } = new(0);
 
     /// <summary>The <see cref="Absement"/> with magnitude 1, when expressed in unit <see cref="UnitOfAbsement.MetreSecond"/>.</summary>
-    public static Absement OneMetreSecond { get; } = new(1, UnitOfAbsement.MetreSecond);
+    public static Absement OneMetreSecond { get; } = UnitOfAbsement.MetreSecond.Absement;
 
     /// <summary>The magnitude of the <see cref="Absement"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAbsement)"/> or a pre-defined property

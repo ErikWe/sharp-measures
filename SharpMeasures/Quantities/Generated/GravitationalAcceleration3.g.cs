@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -158,8 +160,9 @@ public readonly partial record struct GravitationalAcceleration3 :
     public Vector3 MetresPerSecondSquared => InUnit(UnitOfAcceleration.MetrePerSecondSquared);
     /// <summary>Retrieves the magnitudes of the components of the <see cref="GravitationalAcceleration3"/>, expressed in <see cref="UnitOfAcceleration.FootPerSecondSquared"/>.</summary>
     public Vector3 FootsPerSecondSquared => InUnit(UnitOfAcceleration.FootPerSecondSquared);
-    /// <summary>Retrieves the magnitudes of the components of the <see cref="GravitationalAcceleration3"/>, expressed in <see cref="UnitOfAcceleration.StandardGravity"/>.</summary>
-    public Vector3 StandardGravity => InUnit(UnitOfAcceleration.StandardGravity);
+
+    /// <summary>The number of multiples of the constant <see cref="UnitOfAcceleration.StandardGravity"/> that each component of the <see cref="GravitationalAcceleration3"/> corresponds to.</summary>
+    public Vector3 StandardGravityMultiples => InUnit(UnitOfAcceleration.StandardGravity);
 
     /// <inheritdoc/>
     Scalar IVector3Quantity.Magnitude() => Maths.Vectors.Dot(this, this).SquareRoot();
@@ -235,7 +238,7 @@ public readonly partial record struct GravitationalAcceleration3 :
 
     /// <summary>Produces a formatted string from the magnitudes of the components of the <see cref="GravitationalAcceleration3"/> in the default unit
     /// <see cref="UnitOfAcceleration.StandardGravity"/>, followed by the symbol [g].</summary>
-    public override string ToString() => $"{StandardGravity} [g]";
+    public override string ToString() => $"{StandardGravityMultiples} [g]";
 
     /// <summary>Produces a <see cref="Vector3"/> with components equal to that of the <see cref="GravitationalAcceleration3"/>,
     /// expressed in <paramref name="unitOfAcceleration"/>.</summary>

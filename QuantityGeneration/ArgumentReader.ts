@@ -37,6 +37,16 @@ export class ArgumentReader {
             description: 'Relative path of unit destination directory.'
         },
         {
+            name: 'testDestination',
+            type: String,
+            defaultValue: '..\\SharpMeasures.Tests'
+        },
+        {
+            name: 'testDatasetDestination',
+            type: String,
+            defaultValue: '...\\SharpMeasures.Tests\\Datasets'
+        },
+        {
             name: 'definitions',
             type: String,
             defaultValue: 'AutoGeneration\\Definitions',

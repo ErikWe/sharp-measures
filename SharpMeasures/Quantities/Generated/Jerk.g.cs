@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -42,9 +44,9 @@ public readonly partial record struct Jerk :
     public static Jerk Zero { get; } = new(0);
 
     /// <summary>The <see cref="Jerk"/> with magnitude 1, when expressed in unit <see cref="UnitOfJerk.MetrePerSecondCubed"/>.</summary>
-    public static Jerk OneMetrePerSecondCubed { get; } = new(1, UnitOfJerk.MetrePerSecondCubed);
+    public static Jerk OneMetrePerSecondCubed { get; } = UnitOfJerk.MetrePerSecondCubed.Jerk;
     /// <summary>The <see cref="Jerk"/> with magnitude 1, when expressed in unit <see cref="UnitOfJerk.FootPerSecondCubed"/>.</summary>
-    public static Jerk OneFootPerSecondCubed { get; } = new(1, UnitOfJerk.FootPerSecondCubed);
+    public static Jerk OneFootPerSecondCubed { get; } = UnitOfJerk.FootPerSecondCubed.Jerk;
 
     /// <summary>The magnitude of the <see cref="Jerk"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfJerk)"/> or a pre-defined property

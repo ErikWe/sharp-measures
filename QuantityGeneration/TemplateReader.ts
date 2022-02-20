@@ -15,6 +15,16 @@ export class TemplateReader {
     public unitTemplate: string = ""
     public biasedUnitTemplate: string = ""
 
+    public scalarTests = {
+        dataset: "",
+        cast: "",
+        constructor: ""
+    }
+
+    public unitTests = {
+        dataset: ""
+    }
+
     private constructor() {} // nosonar: 'private' modifier means that no public constructor is generated.
 
     private async init(options: CommandLineOptions): Promise<void> {
@@ -31,5 +41,15 @@ export class TemplateReader {
         this.vectorTemplate = await fsp.readFile(vectorTemplatePath, { encoding: 'utf-8' })
         this.unitTemplate = await fsp.readFile(unitTemplatePath, { encoding: 'utf-8' })
         this.biasedUnitTemplate = await fsp.readFile(biasedUnitTemplatePath, { encoding: 'utf-8' })
+
+        const scalarTestsPath: PathLike = process.cwd() + '\\' + options.templates + '\\ScalarTests\\'
+
+        this.scalarTests.dataset = await fsp.readFile(scalarTestsPath + 'Dataset.txt', { encoding: 'utf-8' })
+        this.scalarTests.cast = await fsp.readFile(scalarTestsPath + 'Cast.txt', { encoding: 'utf-8' })
+        this.scalarTests.constructor = await fsp.readFile(scalarTestsPath + 'Constructor.txt', { encoding: 'utf-8' })
+
+        const unitTestsPath: PathLike = process.cwd() + '\\' + options.templates + '\\UnitTests\\'
+
+        this.unitTests.dataset = await fsp.readFile(unitTestsPath + 'Dataset.txt', { encoding: 'utf-8' })
     }
 }

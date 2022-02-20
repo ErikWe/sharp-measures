@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -61,13 +63,13 @@ public readonly partial record struct OrbitalAngularSpeed :
     public static OrbitalAngularSpeed Zero { get; } = new(0);
 
     /// <summary>The <see cref="OrbitalAngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RadianPerSecond"/>.</summary>
-    public static OrbitalAngularSpeed OneRadianPerSecond { get; } = new(1, UnitOfAngularVelocity.RadianPerSecond);
+    public static OrbitalAngularSpeed OneRadianPerSecond { get; } = UnitOfAngularVelocity.RadianPerSecond.AngularSpeed.AsOrbitalAngularSpeed;
     /// <summary>The <see cref="OrbitalAngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.DegreePerSecond"/>.</summary>
-    public static OrbitalAngularSpeed OneDegreePerSecond { get; } = new(1, UnitOfAngularVelocity.DegreePerSecond);
+    public static OrbitalAngularSpeed OneDegreePerSecond { get; } = UnitOfAngularVelocity.DegreePerSecond.AngularSpeed.AsOrbitalAngularSpeed;
     /// <summary>The <see cref="OrbitalAngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RevolutionPerSecond"/>.</summary>
-    public static OrbitalAngularSpeed OneRevolutionPerSecond { get; } = new(1, UnitOfAngularVelocity.RevolutionPerSecond);
+    public static OrbitalAngularSpeed OneRevolutionPerSecond { get; } = UnitOfAngularVelocity.RevolutionPerSecond.AngularSpeed.AsOrbitalAngularSpeed;
     /// <summary>The <see cref="OrbitalAngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RevolutionPerMinute"/>.</summary>
-    public static OrbitalAngularSpeed OneRevolutionPerMinute { get; } = new(1, UnitOfAngularVelocity.RevolutionPerMinute);
+    public static OrbitalAngularSpeed OneRevolutionPerMinute { get; } = UnitOfAngularVelocity.RevolutionPerMinute.AngularSpeed.AsOrbitalAngularSpeed;
 
     /// <summary>The magnitude of the <see cref="OrbitalAngularSpeed"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAngularVelocity)"/> or a pre-defined property

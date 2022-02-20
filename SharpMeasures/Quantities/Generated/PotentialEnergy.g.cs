@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -64,19 +66,19 @@ public readonly partial record struct PotentialEnergy :
     public static PotentialEnergy Zero { get; } = new(0);
 
     /// <summary>The <see cref="PotentialEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Joule"/>.</summary>
-    public static PotentialEnergy OneJoule { get; } = new(1, UnitOfEnergy.Joule);
+    public static PotentialEnergy OneJoule { get; } = UnitOfEnergy.Joule.Energy.AsPotentialEnergy;
     /// <summary>The <see cref="PotentialEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Kilojoule"/>.</summary>
-    public static PotentialEnergy OneKilojoule { get; } = new(1, UnitOfEnergy.Kilojoule);
+    public static PotentialEnergy OneKilojoule { get; } = UnitOfEnergy.Kilojoule.Energy.AsPotentialEnergy;
     /// <summary>The <see cref="PotentialEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Megajoule"/>.</summary>
-    public static PotentialEnergy OneMegajoule { get; } = new(1, UnitOfEnergy.Megajoule);
+    public static PotentialEnergy OneMegajoule { get; } = UnitOfEnergy.Megajoule.Energy.AsPotentialEnergy;
     /// <summary>The <see cref="PotentialEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Gigajoule"/>.</summary>
-    public static PotentialEnergy OneGigajoule { get; } = new(1, UnitOfEnergy.Gigajoule);
+    public static PotentialEnergy OneGigajoule { get; } = UnitOfEnergy.Gigajoule.Energy.AsPotentialEnergy;
     /// <summary>The <see cref="PotentialEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.KilowattHour"/>.</summary>
-    public static PotentialEnergy OneKilowattHour { get; } = new(1, UnitOfEnergy.KilowattHour);
+    public static PotentialEnergy OneKilowattHour { get; } = UnitOfEnergy.KilowattHour.Energy.AsPotentialEnergy;
     /// <summary>The <see cref="PotentialEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Calorie"/>.</summary>
-    public static PotentialEnergy OneCalorie { get; } = new(1, UnitOfEnergy.Calorie);
+    public static PotentialEnergy OneCalorie { get; } = UnitOfEnergy.Calorie.Energy.AsPotentialEnergy;
     /// <summary>The <see cref="PotentialEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Kilocalorie"/>.</summary>
-    public static PotentialEnergy OneKilocalorie { get; } = new(1, UnitOfEnergy.Kilocalorie);
+    public static PotentialEnergy OneKilocalorie { get; } = UnitOfEnergy.Kilocalorie.Energy.AsPotentialEnergy;
 
     /// <summary>The magnitude of the <see cref="PotentialEnergy"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfEnergy)"/> or a pre-defined property

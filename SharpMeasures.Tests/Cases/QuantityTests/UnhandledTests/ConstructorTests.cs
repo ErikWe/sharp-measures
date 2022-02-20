@@ -63,7 +63,7 @@ public class ConstructorTests
     [ClassData(typeof(ScalarDataset))]
     public void FromScalar_MagnitudesShouldBeEqual(Scalar a)
     {
-        Unhandled quantity = Unhandled.FromDouble(a);
+        Unhandled quantity = Unhandled.FromScalar(a);
 
         Assert.Equal(a, quantity.Magnitude, 2);
     }

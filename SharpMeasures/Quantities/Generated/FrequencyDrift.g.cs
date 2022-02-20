@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -43,9 +45,9 @@ public readonly partial record struct FrequencyDrift :
     public static FrequencyDrift Zero { get; } = new(0);
 
     /// <summary>The <see cref="FrequencyDrift"/> with magnitude 1, when expressed in unit <see cref="UnitOfFrequencyDrift.HertzPerSecond"/>.</summary>
-    public static FrequencyDrift OneHertzPerSecond { get; } = new(1, UnitOfFrequencyDrift.HertzPerSecond);
+    public static FrequencyDrift OneHertzPerSecond { get; } = UnitOfFrequencyDrift.HertzPerSecond.FrequencyDrift;
     /// <summary>The <see cref="FrequencyDrift"/> with magnitude 1, when expressed in unit <see cref="UnitOfFrequencyDrift.PerSecondSquared"/>.</summary>
-    public static FrequencyDrift OnePerSecondSquared { get; } = new(1, UnitOfFrequencyDrift.PerSecondSquared);
+    public static FrequencyDrift OnePerSecondSquared { get; } = UnitOfFrequencyDrift.PerSecondSquared.FrequencyDrift;
 
     /// <summary>Computes <see cref="FrequencyDrift"/> according to { 1 / <paramref name="timeSquared"/> }.</summary>
     /// <summary>Constructs a <see cref="FrequencyDrift"/> by inverting the <see cref="TimeSquared"/> <paramref name="timeSquared"/>.</summary>

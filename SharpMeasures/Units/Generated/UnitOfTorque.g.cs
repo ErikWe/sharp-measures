@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace ErikWe.SharpMeasures.Units;
 
 using ErikWe.SharpMeasures.Quantities;

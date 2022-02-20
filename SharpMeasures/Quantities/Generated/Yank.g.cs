@@ -1,4 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.Quantities;
+﻿#nullable enable
+
+namespace ErikWe.SharpMeasures.Quantities;
 
 using ErikWe.SharpMeasures.Units;
 
@@ -42,7 +44,7 @@ public readonly partial record struct Yank :
     public static Yank Zero { get; } = new(0);
 
     /// <summary>The <see cref="Yank"/> with magnitude 1, when expressed in unit <see cref="UnitOfYank.NewtonPerSecond"/>.</summary>
-    public static Yank OneNewtonPerSecond { get; } = new(1, UnitOfYank.NewtonPerSecond);
+    public static Yank OneNewtonPerSecond { get; } = UnitOfYank.NewtonPerSecond.Yank;
 
     /// <summary>The magnitude of the <see cref="Yank"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfYank)"/> or a pre-defined property
