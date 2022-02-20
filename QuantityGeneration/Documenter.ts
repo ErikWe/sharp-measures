@@ -31,8 +31,8 @@ export class Documenter {
 
         for (let line of text.split('\n')) {
             if (line.includes('#Document:')) {
-                const indent: string = line.match(/[ ]*/)?.[0] ?? ''
-    
+                const indent: string = line.match(/[ \t]*/)?.[0] ?? ''
+
                 modified = true
                 for (let rebuiltLine of await this.produceDocumentationLines(line)) {
                     rebuilt += indent + rebuiltLine.trim() + '\n'
@@ -61,7 +61,7 @@ export class Documenter {
 
         if (!tagData) {
             this.reportErrorUnresolvedTag(invokation.tag)
-            return this.replaceDocumentationCall(invokation, line, 'UnresolvedTagError').split('\n')
+            return this.replaceDocumentationCall(invokation, line, 'UnresolvedTagError:' + invokation.tag).split('\n')
         }
 
         if (parsedArguments.length < tagData.parameters.length) {
@@ -88,7 +88,7 @@ export class Documenter {
         }
 
         if (tagData.content.includes('#Param:')) {
-            let requestedParameters: IterableIterator<RegExpMatchArray> = tagData.content.matchAll(/'#Param:([A-Za-z\d_\-]*)(\[(%?)([\d]+?)\]?)#/g)
+            let requestedParameters: IterableIterator<RegExpMatchArray> = tagData.content.matchAll(/Param:([A-Za-z\d_\-]*)(?:(?:\[(%?)([\d]+?)\])?)/g)
             for (let requestedParameter of requestedParameters) {
                 this.reportWarningRequestedParameterNotPartOfSignature(invokation.tag, requestedParameter[1])
             }
