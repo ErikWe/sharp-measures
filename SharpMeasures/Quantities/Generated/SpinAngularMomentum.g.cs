@@ -193,6 +193,11 @@ public readonly partial record struct SpinAngularMomentum :
     /// <param name="x">The <see cref="SpinAngularMomentum"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="SpinAngularMomentum"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(SpinAngularMomentum x, Unhandled y) => x.Divide(y);
+    /// <summary>Division of the <see cref="Unhandled"/> quantity <paramref name="x"/> by the <see cref="SpinAngularMomentum"/> <paramref name="y"/> -
+    /// resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <param name="x">The <see cref="Unhandled"/> quantity, which is divided by the <see cref="SpinAngularMomentum"/> <paramref name="y"/>.</param>
+    /// <param name="y">The <see cref="SpinAngularMomentum"/> by which the <see cref="Unhandled"/> quantity <paramref name="x"/> is divided.</param>
+    public static Unhandled operator /(Unhandled x, SpinAngularMomentum y) => new(x.Magnitude / y.Magnitude);
 
     /// <summary>Computes the remainder from division of the <see cref="SpinAngularMomentum"/> by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>

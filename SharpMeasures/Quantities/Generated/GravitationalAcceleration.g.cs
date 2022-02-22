@@ -60,6 +60,10 @@ public readonly partial record struct GravitationalAcceleration :
     public static GravitationalAcceleration OneMetrePerSecondSquared { get; } = new(1, UnitOfAcceleration.MetrePerSecondSquared);
     /// <summary>The <see cref="GravitationalAcceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.FootPerSecondSquared"/>.</summary>
     public static GravitationalAcceleration OneFootPerSecondSquared { get; } = new(1, UnitOfAcceleration.FootPerSecondSquared);
+    /// <summary>The <see cref="GravitationalAcceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.KilometrePerHourPerSecond"/>.</summary>
+    public static GravitationalAcceleration OneKilometrePerHourPerSecond { get; } = new(1, UnitOfAcceleration.KilometrePerHourPerSecond);
+    /// <summary>The <see cref="GravitationalAcceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.MilePerHourPerSecond"/>.</summary>
+    public static GravitationalAcceleration OneMilePerHourPerSecond { get; } = new(1, UnitOfAcceleration.MilePerHourPerSecond);
 
     /// <summary>The magnitude of the <see cref="GravitationalAcceleration"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfAcceleration)"/> or a pre-defined property
@@ -111,6 +115,10 @@ public readonly partial record struct GravitationalAcceleration :
     public Scalar MetresPerSecondSquared => InUnit(UnitOfAcceleration.MetrePerSecondSquared);
     /// <summary>Retrieves the magnitude of the <see cref="GravitationalAcceleration"/>, expressed in <see cref="UnitOfAcceleration.FootPerSecondSquared"/>.</summary>
     public Scalar FootsPerSecondSquared => InUnit(UnitOfAcceleration.FootPerSecondSquared);
+    /// <summary>Retrieves the magnitude of the <see cref="GravitationalAcceleration"/>, expressed in <see cref="UnitOfAcceleration.KilometrePerHourPerSecond"/>.</summary>
+    public Scalar KilometresPerHourPerSecond => InUnit(UnitOfAcceleration.KilometrePerHourPerSecond);
+    /// <summary>Retrieves the magnitude of the <see cref="GravitationalAcceleration"/>, expressed in <see cref="UnitOfAcceleration.MilePerHourPerSecond"/>.</summary>
+    public Scalar MilesPerHourPerSecond => InUnit(UnitOfAcceleration.MilePerHourPerSecond);
 
     /// <summary>The number of multiples of the constant <see cref="UnitOfAcceleration.StandardGravity"/> that the <see cref="GravitationalAcceleration"/> corresponds to.</summary>
     public Scalar StandardGravityMultiples => InUnit(UnitOfAcceleration.StandardGravity);
@@ -192,6 +200,11 @@ public readonly partial record struct GravitationalAcceleration :
     /// <param name="x">The <see cref="GravitationalAcceleration"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="GravitationalAcceleration"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(GravitationalAcceleration x, Unhandled y) => x.Divide(y);
+    /// <summary>Division of the <see cref="Unhandled"/> quantity <paramref name="x"/> by the <see cref="GravitationalAcceleration"/> <paramref name="y"/> -
+    /// resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <param name="x">The <see cref="Unhandled"/> quantity, which is divided by the <see cref="GravitationalAcceleration"/> <paramref name="y"/>.</param>
+    /// <param name="y">The <see cref="GravitationalAcceleration"/> by which the <see cref="Unhandled"/> quantity <paramref name="x"/> is divided.</param>
+    public static Unhandled operator /(Unhandled x, GravitationalAcceleration y) => new(x.Magnitude / y.Magnitude);
 
     /// <summary>Computes the remainder from division of the <see cref="GravitationalAcceleration"/> by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>

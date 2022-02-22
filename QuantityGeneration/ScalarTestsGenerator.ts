@@ -14,9 +14,16 @@ export class ScalarTestsGenerator {
         const keys: string[] = Object.keys(this.definitionReader.definitions.scalars)
 
         await Promise.all(keys.map(async (key: string) => {
-            this.generateDataset(this.definitionReader.definitions.scalars[key])
-            this.generateCastTests(this.definitionReader.definitions.scalars[key])
-            this.generateConstructorTests(this.definitionReader.definitions.scalars[key])
+            const scalar: ScalarQuantity = this.definitionReader.definitions.scalars[key]
+            this.generateDataset(scalar)
+            this.generateCastTests(scalar)
+            this.generateComparisonTests(scalar)
+            this.generateConstructorTests(scalar)
+            this.generateEqualityTests(scalar)
+            this.generateMathFunctionsTests(scalar)
+            this.generateMathOperationsTests(scalar)
+            this.generateMathPowersTests(scalar)
+            this.generatePropertiesTests(scalar)
         }))
     }
 
@@ -34,10 +41,20 @@ export class ScalarTestsGenerator {
         let text: string = this.templateReader.scalarTests.cast
 
         text = this.insertNames(text, scalar)
-
         text = fixLines(text)
-
         this.attemptWriteFile(this.destination + '\\Cases\\QuantityTests\\' + scalar.name + 'Tests\\Generated\\CastTests.g.cs', text)
+    }
+
+    private async generateComparisonTests(scalar: ScalarQuantity): Promise<void> {
+        if (scalar.unitBias) {
+            return
+        }
+
+        let text: string = this.templateReader.scalarTests.comparison
+
+        text = this.insertNames(text, scalar)
+        text = fixLines(text)
+        this.attemptWriteFile(this.destination + '\\Cases\\QuantityTests\\' + scalar.name + 'Tests\\Generated\\ComparisonTests.g.cs', text)
     }
 
     private async generateConstructorTests(scalar: ScalarQuantity): Promise<void> {
@@ -52,10 +69,73 @@ export class ScalarTestsGenerator {
         text = text.replace(/#Bases#/g, basesText)
 
         text = this.insertNames(text, scalar)
-
         text = fixLines(text)
-
         this.attemptWriteFile(this.destination + '\\Cases\\QuantityTests\\' + scalar.name + 'Tests\\Generated\\ConstructorTests.g.cs', text)
+    }
+
+    private async generateEqualityTests(scalar: ScalarQuantity): Promise<void> {
+        let text: string = this.templateReader.scalarTests.equality
+
+        text = this.insertNames(text, scalar)
+        text = fixLines(text)
+        this.attemptWriteFile(this.destination + '\\Cases\\QuantityTests\\' + scalar.name + 'Tests\\Generated\\EqualityTests.g.cs', text)
+    }
+
+    private async generateMathFunctionsTests(scalar: ScalarQuantity): Promise<void> {
+        let text: string = this.templateReader.scalarTests.mathFunctions
+
+        text = this.insertNames(text, scalar)
+        text = fixLines(text)
+        this.attemptWriteFile(this.destination + '\\Cases\\QuantityTests\\' + scalar.name + 'Tests\\Generated\\MathFunctionsTests.g.cs', text)
+    }
+
+    private async generateMathOperationsTests(scalar: ScalarQuantity): Promise<void> {
+        let text: string = this.templateReader.scalarTests.mathOperations
+
+        text = this.setConditionalBlocks(scalar, text)
+
+        text = this.insertNames(text, scalar)
+        text = fixLines(text)
+        this.attemptWriteFile(this.destination + '\\Cases\\QuantityTests\\' + scalar.name + 'Tests\\Generated\\MathOperationsTests.g.cs', text)
+    }
+
+    private async generateMathPowersTests(scalar: ScalarQuantity): Promise<void> {
+        let text: string = this.templateReader.scalarTests.mathPowers
+
+        const powers: { powerName: string, data: string[] | undefined }[] = [
+            { powerName: 'Invert', data: scalar.inverse },
+            { powerName: 'Square', data: scalar.square },
+            { powerName: 'Cube', data: scalar.cube },
+            { powerName: 'SquareRoot', data: scalar.squareRoot },
+            { powerName: 'CubeRoot', data: scalar.cubeRoot }
+        ]
+
+        let anyPower: boolean = false
+
+        for (let power of powers) {
+            if (power.data && power.data.length > 0) {
+                text = text.replace(new RegExp('(\\n|\\r\\n|\\r?)#(\\/?)' + power.powerName + '#', 'g'), '')
+                anyPower = true
+            } else {
+                text = text.replace(new RegExp('(\\n|\\r\\n|\\}r?)#' + power.powerName + '#([^]+?)#\\/' + power.powerName + '#', 'g'), '')
+            }
+        }
+
+        if (!anyPower) {
+            return
+        }
+
+        text = this.insertNames(text, scalar)
+        text = fixLines(text)
+        this.attemptWriteFile(this.destination + '\\Cases\\QuantityTests\\' + scalar.name + 'Tests\\Generated\\MathPowersTests.g.cs', text)
+    }
+
+    private async generatePropertiesTests(scalar: ScalarQuantity): Promise<void> {
+        let text: string = this.templateReader.scalarTests.properties
+
+        text = this.insertNames(text, scalar)
+        text = fixLines(text)
+        this.attemptWriteFile(this.destination + '\\Cases\\QuantityTests\\' + scalar.name + 'Tests\\Generated\\PropertiesTests.g.cs', text)
     }
 
     private composeConstructorConstantsText(scalar: ScalarQuantity): string {
@@ -116,6 +196,7 @@ export class ScalarTestsGenerator {
         text = text.replace(/#UnbiasedQuantity#/g, unit.unbiasedQuantity ? unit.unbiasedQuantity : 'NoUnbiasedQuantityError')
 
         text = text.replace(/#Quantity#/g, scalar.name)
+        text = text.replace(/#InverseQuantity#/g, scalar.inverse && scalar.inverse.length > 0 ? scalar.inverse[0] : 'NoInverseQuantityError')
 
         return text
     }
@@ -133,6 +214,14 @@ export class ScalarTestsGenerator {
             text = text.replace(/(\n|\r\n|\r?)#(\/?)Unbiased#/g, '')
             text = text.replace(/(\n|\r\n|\r?)#Biased#([^]+?)#\/Biased#/g, '')
             text = text.replace(/(\n|\r\n|\r?)#BiasedUnit#([^]+?)#\/BiasedUnit#/g, '')
+        }
+
+        if (scalar.inverse !== undefined && scalar.inverse.length > 0) {
+            text = text.replace(/(\n|\r\n|\r?)#(\/?)Invert#/g, '')
+            text = text.replace(/(\n|\r\n|\r?)#NoInvert#([^]+?)#\/NoInvert#/g, '')
+        } else {
+            text = text.replace(/(\n|\r\n|\r?)#(\/?)NoInvert#/g, '')
+            text = text.replace(/(\n|\r\n|\r?)#Invert#([^]+?)#\/Invert#/g, '')
         }
         
         return text

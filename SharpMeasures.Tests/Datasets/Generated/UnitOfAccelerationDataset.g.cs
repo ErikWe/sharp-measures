@@ -13,6 +13,8 @@ public class UnitOfAccelerationDataset : IEnumerable<object?[]>
     {
             yield return new object?[] { UnitOfAcceleration.MetrePerSecondSquared };
             yield return new object?[] { UnitOfAcceleration.FootPerSecondSquared };
+            yield return new object?[] { UnitOfAcceleration.KilometrePerHourPerSecond };
+            yield return new object?[] { UnitOfAcceleration.MilePerHourPerSecond };
     }
 
     IEnumerator IEnumerable.GetEnumerator()

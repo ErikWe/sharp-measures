@@ -10,10 +10,10 @@ public class EqualityTests
     [Fact]
     public void Method_Null_ShouldBeInequal()
     {
-        Scalar scalar = Scalar.Zero;
-        Scalar? nullScalar = null;
+        Unhandled quantity = Unhandled.Zero;
+        Unhandled? nullQuantity = null;
 
-        Assert.False(scalar.Equals(nullScalar));
+        Assert.False(quantity.Equals(nullQuantity));
     }
 
     [Theory]
@@ -26,13 +26,13 @@ public class EqualityTests
     [Fact]
     public void Operator_NullCases()
     {
-        Unhandled scalar = Unhandled.Zero;
-        Unhandled? nullScalar1 = null;
-        Unhandled? nullScalar2 = null;
+        Unhandled quantity = Unhandled.Zero;
+        Unhandled? nullQuantity1 = null;
+        Unhandled? nullQuantity2 = null;
 
-        Utility.QuantityTests.EqualityTests.Operator_ShouldMatchMethodOrEqualIfBothNull(scalar, nullScalar1, scalar == nullScalar1, scalar != nullScalar1);
-        Utility.QuantityTests.EqualityTests.Operator_ShouldMatchMethodOrEqualIfBothNull(nullScalar1, scalar, nullScalar1 == scalar, nullScalar1 != scalar);
-        Utility.QuantityTests.EqualityTests.Operator_ShouldMatchMethodOrEqualIfBothNull(nullScalar1, nullScalar2, nullScalar1 == nullScalar2, nullScalar1 != nullScalar2);
+        Utility.QuantityTests.EqualityTests.Operator_ShouldMatchMethodOrEqualIfBothNull(quantity, nullQuantity1, quantity == nullQuantity1, quantity != nullQuantity1);
+        Utility.QuantityTests.EqualityTests.Operator_ShouldMatchMethodOrEqualIfBothNull(nullQuantity1, quantity, nullQuantity1 == quantity, nullQuantity1 != quantity);
+        Utility.QuantityTests.EqualityTests.Operator_ShouldMatchMethodOrEqualIfBothNull(nullQuantity1, nullQuantity2, nullQuantity1 == nullQuantity2, nullQuantity1 != nullQuantity2);
     }
     
     [Theory]

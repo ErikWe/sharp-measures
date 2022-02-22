@@ -15,6 +15,7 @@ public class UnitOfVelocityDataset : IEnumerable<object?[]>
             yield return new object?[] { UnitOfVelocity.KilometrePerSecond };
             yield return new object?[] { UnitOfVelocity.KilometrePerHour };
             yield return new object?[] { UnitOfVelocity.FootPerSecond };
+            yield return new object?[] { UnitOfVelocity.YardPerSecond };
             yield return new object?[] { UnitOfVelocity.MilePerHour };
     }
 

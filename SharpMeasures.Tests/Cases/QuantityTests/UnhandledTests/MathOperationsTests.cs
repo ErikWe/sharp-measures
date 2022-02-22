@@ -118,12 +118,12 @@ public class MathOperationsTests
     }
 
     [Theory]
-    [ClassData(typeof(GenericDataset<ScalarDataset, DoubleDataset>))]
-    public void RemainderDouble_Method_MagnitudeShouldEqualRemainder(Scalar scalar, double divisor)
+    [ClassData(typeof(GenericDataset<UnhandledDataset, DoubleDataset>))]
+    public void RemainderDouble_Method_MagnitudeShouldEqualRemainder(Unhandled quantity, double divisor)
     {
-        Scalar result = scalar.Remainder(divisor);
+        Unhandled result = quantity.Remainder(divisor);
 
-        Assert.Equal(scalar.Magnitude % divisor, result.Magnitude, 2);
+        Assert.Equal(quantity.Magnitude % divisor, result.Magnitude, 2);
     }
 
     [Theory]

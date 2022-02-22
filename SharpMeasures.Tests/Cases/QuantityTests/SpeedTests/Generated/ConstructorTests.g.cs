@@ -51,6 +51,14 @@ public class ConstructorTests
     }
 
     [Fact]
+    public void OneYardPerSecond_ShouldMatchUnitScale()
+    {
+        Speed quantity = Speed.OneYardPerSecond;
+
+        Assert.Equal(UnitOfVelocity.YardPerSecond.Speed.Magnitude, quantity.Magnitude, 2);
+    }
+
+    [Fact]
     public void OneMilePerHour_ShouldMatchUnitScale()
     {
         Speed quantity = Speed.OneMilePerHour;

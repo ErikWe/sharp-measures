@@ -222,6 +222,11 @@ public readonly partial record struct TranslationalKineticEnergy :
     /// <param name="x">The <see cref="TranslationalKineticEnergy"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="TranslationalKineticEnergy"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(TranslationalKineticEnergy x, Unhandled y) => x.Divide(y);
+    /// <summary>Division of the <see cref="Unhandled"/> quantity <paramref name="x"/> by the <see cref="TranslationalKineticEnergy"/> <paramref name="y"/> -
+    /// resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <param name="x">The <see cref="Unhandled"/> quantity, which is divided by the <see cref="TranslationalKineticEnergy"/> <paramref name="y"/>.</param>
+    /// <param name="y">The <see cref="TranslationalKineticEnergy"/> by which the <see cref="Unhandled"/> quantity <paramref name="x"/> is divided.</param>
+    public static Unhandled operator /(Unhandled x, TranslationalKineticEnergy y) => new(x.Magnitude / y.Magnitude);
 
     /// <summary>Computes the remainder from division of the <see cref="TranslationalKineticEnergy"/> by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>

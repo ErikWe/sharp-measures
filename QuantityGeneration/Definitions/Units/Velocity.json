@@ -16,6 +16,7 @@
         { "name": "KilometrePerSecond", "plural": "+s [Per]", "derived": ["Length.Kilometre", "Time.Second"] },
         { "name": "KilometrePerHour", "plural": "+s [Per]", "derived": ["Length.Kilometre", "Time.Hour"] },
         { "name": "FootPerSecond", "plural": "FeetPerSecond", "derived": ["Length.Foot", "Time.Second"] },
+        { "name": "YardPerSecond", "plural": "+s [Per", "derived": ["Length.Yard", "Time.Second"] },
         { "name": "MilePerHour", "plural": "+s [Per]", "derived": ["Length.Mile", "Time.Hour"] }
     ]
 }

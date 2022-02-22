@@ -24,6 +24,12 @@ public readonly record struct UnitOfAcceleration :
     /// <summary>Expresses <see cref="Quantities.Acceleration"/> according to { <see cref="UnitOfVelocity.FootPerSecond"/> / <see cref="UnitOfTime.Second"/> }.
     /// Usually written as [ft/s²] or [ft∙s⁻²].</summary>
     public static UnitOfAcceleration FootPerSecondSquared { get; } = From(UnitOfVelocity.FootPerSecond, UnitOfTime.Second);
+    /// <summary>Expresses <see cref="Quantities.Acceleration"/> according to { <see cref="UnitOfVelocity.KilometrePerHour"/> / <see cref="UnitOfTime.Second"/> }.
+    /// Usually written as [km/hr/s].</summary>
+    public static UnitOfAcceleration KilometrePerHourPerSecond { get; } = From(UnitOfVelocity.KilometrePerHour, UnitOfTime.Second);
+    /// <summary>Expresses <see cref="Quantities.Acceleration"/> according to { <see cref="UnitOfVelocity.MilePerHour"/> / <see cref="UnitOfTime.Second"/> }.
+    /// Usually written as [mi/hr/s].</summary>
+    public static UnitOfAcceleration MilePerHourPerSecond { get; } = From(UnitOfVelocity.MilePerHour, UnitOfTime.Second);
 
     /// <summary>A constant <see cref="Quantities.Acceleration"/>, representing the standard gravity on Earth - with value { 9.80665 ∙ <see cref="MetrePerSecondSquared"/> }.
     /// Usually written as [g].</summary>

@@ -186,6 +186,11 @@ public readonly partial record struct Momentum :
     /// <param name="x">The <see cref="Momentum"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Momentum"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(Momentum x, Unhandled y) => x.Divide(y);
+    /// <summary>Division of the <see cref="Unhandled"/> quantity <paramref name="x"/> by the <see cref="Momentum"/> <paramref name="y"/> -
+    /// resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <param name="x">The <see cref="Unhandled"/> quantity, which is divided by the <see cref="Momentum"/> <paramref name="y"/>.</param>
+    /// <param name="y">The <see cref="Momentum"/> by which the <see cref="Unhandled"/> quantity <paramref name="x"/> is divided.</param>
+    public static Unhandled operator /(Unhandled x, Momentum y) => new(x.Magnitude / y.Magnitude);
 
     /// <summary>Computes the remainder from division of the <see cref="Momentum"/> by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>

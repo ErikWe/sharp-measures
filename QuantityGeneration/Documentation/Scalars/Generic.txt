@@ -252,11 +252,18 @@
 /// <param name="y">The <see cref="#Param:quantity#"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
 #/
 
-#Define:DivideUnhandledOperator(quantity)
+#Define:DivideUnhandledOperatorLHS(quantity)
 /// <summary>Division of the <see cref="#Param:quantity#"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
 /// resulting in an <see cref="Unhandled"/> quantity.</summary>
 /// <param name="x">The <see cref="#Param:quantity#"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
 /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="#Param:quantity#"/> <paramref name="x"/> is divided.</param>
+#/
+
+#Define:DivideUnhandledOperatorRHS(quantity)
+/// <summary>Division of the <see cref="Unhandled"/> quantity <paramref name="x"/> by the <see cref="#Param:quantity#"/> <paramref name="y"/> -
+/// resulting in an <see cref="Unhandled"/> quantity.</summary>
+/// <param name="x">The <see cref="Unhandled"/> quantity, which is divided by the <see cref="#Param:quantity#"/> <paramref name="y"/>.</param>
+/// <param name="y">The <see cref="#Param:quantity#"/> by which the <see cref="Unhandled"/> quantity <paramref name="x"/> is divided.</param>
 #/
 
 #Define:RemainderDoubleMethod(quantity)

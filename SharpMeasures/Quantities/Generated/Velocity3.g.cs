@@ -147,6 +147,8 @@ public readonly partial record struct Velocity3 :
     public Vector3 KilometresPerHour => InUnit(UnitOfVelocity.KilometrePerHour);
     /// <summary>Retrieves the magnitudes of the components of the <see cref="Velocity3"/>, expressed in <see cref="UnitOfVelocity.FootPerSecond"/>.</summary>
     public Vector3 FeetPerSecond => InUnit(UnitOfVelocity.FootPerSecond);
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Velocity3"/>, expressed in <see cref="UnitOfVelocity.YardPerSecond"/>.</summary>
+    public Vector3 YardsPerSecond => InUnit(UnitOfVelocity.YardPerSecond);
     /// <summary>Retrieves the magnitudes of the components of the <see cref="Velocity3"/>, expressed in <see cref="UnitOfVelocity.MilePerHour"/>.</summary>
     public Vector3 MilesPerHour => InUnit(UnitOfVelocity.MilePerHour);
 

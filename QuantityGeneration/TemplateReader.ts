@@ -18,7 +18,13 @@ export class TemplateReader {
     public scalarTests = {
         dataset: "",
         cast: "",
-        constructor: ""
+        comparison: "",
+        constructor: "",
+        equality: "",
+        mathFunctions: "",
+        mathOperations: "",
+        mathPowers: "",
+        properties: ""
     }
 
     public unitTests = {
@@ -46,7 +52,13 @@ export class TemplateReader {
 
         this.scalarTests.dataset = await fsp.readFile(scalarTestsPath + 'Dataset.txt', { encoding: 'utf-8' })
         this.scalarTests.cast = await fsp.readFile(scalarTestsPath + 'Cast.txt', { encoding: 'utf-8' })
+        this.scalarTests.comparison = await fsp.readFile(scalarTestsPath + 'Comparison.txt', { encoding: 'utf-8' })
         this.scalarTests.constructor = await fsp.readFile(scalarTestsPath + 'Constructor.txt', { encoding: 'utf-8' })
+        this.scalarTests.equality = await fsp.readFile(scalarTestsPath + 'Equality.txt', { encoding: 'utf-8' })
+        this.scalarTests.mathFunctions = await fsp.readFile(scalarTestsPath + 'MathFunctions.txt', { encoding: 'utf-8' })
+        this.scalarTests.mathOperations = await fsp.readFile(scalarTestsPath + 'MathOperations.txt', { encoding: 'utf-8' })
+        this.scalarTests.mathPowers = await fsp.readFile(scalarTestsPath + 'MathPowers.txt', { encoding: 'utf-8' })
+        this.scalarTests.properties = await fsp.readFile(scalarTestsPath + 'Properties.txt', { encoding: 'utf-8' })
 
         const unitTestsPath: PathLike = process.cwd() + '\\' + options.templates + '\\UnitTests\\'
 

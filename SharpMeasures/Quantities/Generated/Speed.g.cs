@@ -52,6 +52,8 @@ public readonly partial record struct Speed :
     public static Speed OneKilometrePerHour { get; } = UnitOfVelocity.KilometrePerHour.Speed;
     /// <summary>The <see cref="Speed"/> with magnitude 1, when expressed in unit <see cref="UnitOfVelocity.FootPerSecond"/>.</summary>
     public static Speed OneFootPerSecond { get; } = UnitOfVelocity.FootPerSecond.Speed;
+    /// <summary>The <see cref="Speed"/> with magnitude 1, when expressed in unit <see cref="UnitOfVelocity.YardPerSecond"/>.</summary>
+    public static Speed OneYardPerSecond { get; } = UnitOfVelocity.YardPerSecond.Speed;
     /// <summary>The <see cref="Speed"/> with magnitude 1, when expressed in unit <see cref="UnitOfVelocity.MilePerHour"/>.</summary>
     public static Speed OneMilePerHour { get; } = UnitOfVelocity.MilePerHour.Speed;
 
@@ -110,6 +112,8 @@ public readonly partial record struct Speed :
     public Scalar KilometresPerHour => InUnit(UnitOfVelocity.KilometrePerHour);
     /// <summary>Retrieves the magnitude of the <see cref="Speed"/>, expressed in <see cref="UnitOfVelocity.FootPerSecond"/>.</summary>
     public Scalar FeetPerSecond => InUnit(UnitOfVelocity.FootPerSecond);
+    /// <summary>Retrieves the magnitude of the <see cref="Speed"/>, expressed in <see cref="UnitOfVelocity.YardPerSecond"/>.</summary>
+    public Scalar YardsPerSecond => InUnit(UnitOfVelocity.YardPerSecond);
     /// <summary>Retrieves the magnitude of the <see cref="Speed"/>, expressed in <see cref="UnitOfVelocity.MilePerHour"/>.</summary>
     public Scalar MilesPerHour => InUnit(UnitOfVelocity.MilePerHour);
 
@@ -192,6 +196,11 @@ public readonly partial record struct Speed :
     /// <param name="x">The <see cref="Speed"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
     /// <param name="y">The <see cref="Unhandled"/> quantity by which the <see cref="Speed"/> <paramref name="x"/> is divided.</param>
     public static Unhandled operator /(Speed x, Unhandled y) => x.Divide(y);
+    /// <summary>Division of the <see cref="Unhandled"/> quantity <paramref name="x"/> by the <see cref="Speed"/> <paramref name="y"/> -
+    /// resulting in an <see cref="Unhandled"/> quantity.</summary>
+    /// <param name="x">The <see cref="Unhandled"/> quantity, which is divided by the <see cref="Speed"/> <paramref name="y"/>.</param>
+    /// <param name="y">The <see cref="Speed"/> by which the <see cref="Unhandled"/> quantity <paramref name="x"/> is divided.</param>
+    public static Unhandled operator /(Unhandled x, Speed y) => new(x.Magnitude / y.Magnitude);
 
     /// <summary>Computes the remainder from division of the <see cref="Speed"/> by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>

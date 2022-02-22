@@ -158,6 +158,10 @@ public readonly partial record struct Acceleration3 :
     public Vector3 MetresPerSecondSquared => InUnit(UnitOfAcceleration.MetrePerSecondSquared);
     /// <summary>Retrieves the magnitudes of the components of the <see cref="Acceleration3"/>, expressed in <see cref="UnitOfAcceleration.FootPerSecondSquared"/>.</summary>
     public Vector3 FootsPerSecondSquared => InUnit(UnitOfAcceleration.FootPerSecondSquared);
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Acceleration3"/>, expressed in <see cref="UnitOfAcceleration.KilometrePerHourPerSecond"/>.</summary>
+    public Vector3 KilometresPerHourPerSecond => InUnit(UnitOfAcceleration.KilometrePerHourPerSecond);
+    /// <summary>Retrieves the magnitudes of the components of the <see cref="Acceleration3"/>, expressed in <see cref="UnitOfAcceleration.MilePerHourPerSecond"/>.</summary>
+    public Vector3 MilesPerHourPerSecond => InUnit(UnitOfAcceleration.MilePerHourPerSecond);
 
     /// <summary>The number of multiples of the constant <see cref="UnitOfAcceleration.StandardGravity"/> that each component of the <see cref="Acceleration3"/> corresponds to.</summary>
     public Vector3 StandardGravityMultiples => InUnit(UnitOfAcceleration.StandardGravity);

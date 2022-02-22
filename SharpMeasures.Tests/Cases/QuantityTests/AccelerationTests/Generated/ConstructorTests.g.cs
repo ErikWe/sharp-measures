@@ -42,6 +42,22 @@ public class ConstructorTests
         Assert.Equal(UnitOfAcceleration.FootPerSecondSquared.Acceleration.Magnitude, quantity.Magnitude, 2);
     }
 
+    [Fact]
+    public void OneKilometrePerHourPerSecond_ShouldMatchUnitScale()
+    {
+        Acceleration quantity = Acceleration.OneKilometrePerHourPerSecond;
+
+        Assert.Equal(UnitOfAcceleration.KilometrePerHourPerSecond.Acceleration.Magnitude, quantity.Magnitude, 2);
+    }
+
+    [Fact]
+    public void OneMilePerHourPerSecond_ShouldMatchUnitScale()
+    {
+        Acceleration quantity = Acceleration.OneMilePerHourPerSecond;
+
+        Assert.Equal(UnitOfAcceleration.MilePerHourPerSecond.Acceleration.Magnitude, quantity.Magnitude, 2);
+    }
+
     [Theory]
     [ClassData(typeof(GenericDataset<ScalarDataset, UnitOfAccelerationDataset>))]
     public void Scalar_Unit_MagnitudeShouldBeMultipliedByUnitScale(Scalar magnitude, UnitOfAcceleration unit)

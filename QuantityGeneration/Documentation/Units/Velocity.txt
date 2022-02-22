@@ -33,6 +33,11 @@
 /// Usually written as [ft/s] or [ft∙s⁻¹].</summary>
 #/
 
+#Define:UnitYardPerSecond
+/// <summary>Expresses <see cref="Quantities.Speed"/> according to { <see cref="UnitOfLength.Yard"/> / <see cref="UnitOfTime.Second"/> }.
+/// Usually written as [yd/s] or [yd∙s⁻¹].</summary>
+#/
+
 #Define:UnitMilePerHour
 /// <summary>Expresses <see cref="Quantities.Speed"/> according to { <see cref="UnitOfLength.Mile"/> / <see cref="UnitOfTime.Hour"/> }.
 /// Usually written as [mi/h] or [mph].</summary>

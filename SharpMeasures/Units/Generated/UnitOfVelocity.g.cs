@@ -30,6 +30,9 @@ public readonly record struct UnitOfVelocity :
     /// <summary>Expresses <see cref="Quantities.Speed"/> according to { <see cref="UnitOfLength.Foot"/> / <see cref="UnitOfTime.Second"/> }.
     /// Usually written as [ft/s] or [ft∙s⁻¹].</summary>
     public static UnitOfVelocity FootPerSecond { get; } = From(UnitOfLength.Foot, UnitOfTime.Second);
+    /// <summary>Expresses <see cref="Quantities.Speed"/> according to { <see cref="UnitOfLength.Yard"/> / <see cref="UnitOfTime.Second"/> }.
+    /// Usually written as [yd/s] or [yd∙s⁻¹].</summary>
+    public static UnitOfVelocity YardPerSecond { get; } = From(UnitOfLength.Yard, UnitOfTime.Second);
     /// <summary>Expresses <see cref="Quantities.Speed"/> according to { <see cref="UnitOfLength.Mile"/> / <see cref="UnitOfTime.Hour"/> }.
     /// Usually written as [mi/h] or [mph].</summary>
     public static UnitOfVelocity MilePerHour { get; } = From(UnitOfLength.Mile, UnitOfTime.Hour);

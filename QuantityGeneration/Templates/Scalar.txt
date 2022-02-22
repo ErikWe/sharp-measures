@@ -100,8 +100,10 @@ public readonly partial record struct #Quantity# :
     public static Unhandled operator *(#Quantity# x, Unhandled y) => x.Multiply(y);
     #Document:MultiplyUnhandledOperatorRHS(#Quantity#)#
     public static Unhandled operator *(Unhandled x, #Quantity# y) => y.Multiply(x);
-    #Document:DivideUnhandledOperator(#Quantity#)#
+    #Document:DivideUnhandledOperatorLHS(#Quantity#)#
     public static Unhandled operator /(#Quantity# x, Unhandled y) => x.Divide(y);
+    #Document:DivideUnhandledOperatorRHS(#Quantity#)#
+    public static Unhandled operator /(Unhandled x, #Quantity# y) => new(x.Magnitude / y.Magnitude);
 
     #Document:RemainderDoubleMethod(#Quantity#)#
     public #Quantity# Remainder(double divisor) => new(Magnitude % divisor);
