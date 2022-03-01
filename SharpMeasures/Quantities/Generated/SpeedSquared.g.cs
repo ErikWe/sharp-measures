@@ -43,7 +43,7 @@ public readonly partial record struct SpeedSquared :
     /// <summary>The zero-valued <see cref="SpeedSquared"/>.</summary>
     public static SpeedSquared Zero { get; } = new(0);
 
-    /// <summary>The <see cref="SpeedSquared"/> with magnitude 1, when expressed in unit <see cref="UnitOfVelocitySquared.SquareMetrePerSecondSquared"/>.</summary>
+    /// <summary>The <see cref="SpeedSquared"/> of magnitude 1, when expressed in <see cref="UnitOfVelocitySquared.SquareMetrePerSecondSquared"/>.</summary>
     public static SpeedSquared OneSquareMetrePerSecondSquared { get; } = UnitOfVelocitySquared.SquareMetrePerSecondSquared.SpeedSquared;
 
     /// <summary>Computes <see cref="SpeedSquared"/> according to { <paramref name="speed"/>² }.</summary>

@@ -42,7 +42,7 @@ public readonly partial record struct ArealDensity :
     /// <summary>The zero-valued <see cref="ArealDensity"/>.</summary>
     public static ArealDensity Zero { get; } = new(0);
 
-    /// <summary>The <see cref="ArealDensity"/> with magnitude 1, when expressed in unit <see cref="UnitOfArealDensity.KilogramPerSquareMetre"/>.</summary>
+    /// <summary>The <see cref="ArealDensity"/> of magnitude 1, when expressed in <see cref="UnitOfArealDensity.KilogramPerSquareMetre"/>.</summary>
     public static ArealDensity OneKilogramPerSquareMetre { get; } = UnitOfArealDensity.KilogramPerSquareMetre.ArealDensity;
 
     /// <summary>The magnitude of the <see cref="ArealDensity"/>, in SI units.</summary>

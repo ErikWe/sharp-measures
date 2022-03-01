@@ -6,6 +6,8 @@ using ErikWe.SharpMeasures.Quantities;
 using ErikWe.SharpMeasures.Tests.Datasets;
 using ErikWe.SharpMeasures.Units;
 
+using System;
+
 using Xunit;
 
 public class ConstructorTests
@@ -96,5 +98,23 @@ public class ConstructorTests
         SpeedSquared quantity = (SpeedSquared)a;
 
         Assert.Equal(a, quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(SpeedDataset))]
+    public void FromSpeed_ShouldMatchExpression(Speed sourceQuantity)
+    {
+        SpeedSquared quantity = SpeedSquared.From(sourceQuantity);
+
+        Assert.Equal(Math.Pow(sourceQuantity.Magnitude, 2), quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<SpeedDataset, SpeedDataset>))]
+    public void FromTwoSpeed_ShouldMatchExpression(Speed sourceQuantity1, Speed sourceQuantity2)
+    {
+        SpeedSquared quantity = SpeedSquared.From(sourceQuantity1, sourceQuantity2);
+
+        Assert.Equal(sourceQuantity1.Magnitude * sourceQuantity2.Magnitude, quantity.Magnitude, 2);
     }
 }

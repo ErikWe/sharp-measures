@@ -44,7 +44,7 @@ public readonly partial record struct SpatialFrequency :
     /// <summary>The zero-valued <see cref="SpatialFrequency"/>.</summary>
     public static SpatialFrequency Zero { get; } = new(0);
 
-    /// <summary>The <see cref="SpatialFrequency"/> with magnitude 1, when expressed in unit <see cref="UnitOfSpatialFrequency.PerMetre"/>.</summary>
+    /// <summary>The <see cref="SpatialFrequency"/> of magnitude 1, when expressed in <see cref="UnitOfSpatialFrequency.PerMetre"/>.</summary>
     public static SpatialFrequency OnePerMetre { get; } = UnitOfSpatialFrequency.PerMetre.SpatialFrequency;
 
     /// <summary>Computes <see cref="SpatialFrequency"/> according to { 1 / <paramref name="distance"/> }.</summary>

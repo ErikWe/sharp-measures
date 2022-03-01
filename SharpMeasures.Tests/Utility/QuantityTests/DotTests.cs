@@ -2,6 +2,8 @@
 
 using ErikWe.SharpMeasures.Quantities;
 
+using System;
+
 using Xunit;
 
 public static class DotTests
@@ -12,6 +14,16 @@ public static class DotTests
         where TFactorQuantity : IVector3Quantity
     {
         TProductQuantity result = a.Dot(b);
+
+        Assert.Equal(a.X * b.X + a.Y * b.Y + a.Z * b.Z, result.Magnitude, 2);
+    }
+
+    public static void Vector3_ShouldBeSumOfSquares<TQuantity, TProductQuantity, TFactorQuantity>(TQuantity a, TFactorQuantity b, Func<double, TProductQuantity> factory)
+        where TQuantity : IGenericallyDotableVector3Quantity
+        where TProductQuantity : IScalarQuantity
+        where TFactorQuantity : IVector3Quantity
+    {
+        TProductQuantity result = a.Dot(b, factory);
 
         Assert.Equal(a.X * b.X + a.Y * b.Y + a.Z * b.Z, result.Magnitude, 2);
     }

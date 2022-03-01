@@ -43,15 +43,15 @@ public readonly partial record struct SolidAngle :
     /// <summary>The zero-valued <see cref="SolidAngle"/>.</summary>
     public static SolidAngle Zero { get; } = new(0);
 
-    /// <summary>The <see cref="SolidAngle"/> with magnitude 1, when expressed in unit <see cref="UnitOfSolidAngle.Steradian"/>.</summary>
+    /// <summary>The <see cref="SolidAngle"/> of magnitude 1, when expressed in <see cref="UnitOfSolidAngle.Steradian"/>.</summary>
     public static SolidAngle OneSteradian { get; } = UnitOfSolidAngle.Steradian.SolidAngle;
-    /// <summary>The <see cref="SolidAngle"/> with magnitude 1, when expressed in unit <see cref="UnitOfSolidAngle.SquareRadian"/>.</summary>
+    /// <summary>The <see cref="SolidAngle"/> of magnitude 1, when expressed in <see cref="UnitOfSolidAngle.SquareRadian"/>.</summary>
     public static SolidAngle OneSquareRadian { get; } = UnitOfSolidAngle.SquareRadian.SolidAngle;
-    /// <summary>The <see cref="SolidAngle"/> with magnitude 1, when expressed in unit <see cref="UnitOfSolidAngle.SquareDegree"/>.</summary>
+    /// <summary>The <see cref="SolidAngle"/> of magnitude 1, when expressed in <see cref="UnitOfSolidAngle.SquareDegree"/>.</summary>
     public static SolidAngle OneSquareDegree { get; } = UnitOfSolidAngle.SquareDegree.SolidAngle;
-    /// <summary>The <see cref="SolidAngle"/> with magnitude 1, when expressed in unit <see cref="UnitOfSolidAngle.SquareArcminute"/>.</summary>
+    /// <summary>The <see cref="SolidAngle"/> of magnitude 1, when expressed in <see cref="UnitOfSolidAngle.SquareArcminute"/>.</summary>
     public static SolidAngle OneSquareArcminute { get; } = UnitOfSolidAngle.SquareArcminute.SolidAngle;
-    /// <summary>The <see cref="SolidAngle"/> with magnitude 1, when expressed in unit <see cref="UnitOfSolidAngle.SquareArcsecond"/>.</summary>
+    /// <summary>The <see cref="SolidAngle"/> of magnitude 1, when expressed in <see cref="UnitOfSolidAngle.SquareArcsecond"/>.</summary>
     public static SolidAngle OneSquareArcsecond { get; } = UnitOfSolidAngle.SquareArcsecond.SolidAngle;
 
     /// <summary>Computes <see cref="SolidAngle"/> according to { <paramref name="angle"/>² }.</summary>

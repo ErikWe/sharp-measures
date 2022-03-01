@@ -26,5 +26,5 @@
 #/Define:ExampleDerivedMethod#
 
 #Define:ExampleFromAssociated(quantity, variable)#
-<see cref="#Param:quantity#"/> #Param:variable# = <see cref="AngularSpeed.As#Param:quantity#()"/>;
+<see cref="#Param:quantity#"/> #Param:variable# = <see cref="AngularSpeed.As#Param:quantity#"/>;
 #/Define:ExampleFromAssociated#

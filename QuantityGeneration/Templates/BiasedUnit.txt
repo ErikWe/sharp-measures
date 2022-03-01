@@ -25,13 +25,13 @@ public readonly record struct #Unit#
     }
 
     #Document:WithPrefix(#Unit#, #SIUnit#)#
-    public #Unit# WithPrefix(MetricPrefix prefix) => new(#UnbiasedQuantity# * prefix.Scale, Offset);
+    public #Unit# WithPrefix(MetricPrefix prefix) => ScaledBy(prefix.Scale);
     #Document:ScaledBy(#Unit#, #SIUnit#)#
-    public #Unit# ScaledBy(Scalar scale) => new(#UnbiasedQuantity# * scale, Offset);
+    public #Unit# ScaledBy(Scalar scale) => ScaledBy(scale.Magnitude);
     #Document:ScaledBy(#Unit#, #SIUnit#)#
-    public #Unit# ScaledBy(double scale) => new(#UnbiasedQuantity# * scale, Offset);
+    public #Unit# ScaledBy(double scale) => new(#UnbiasedQuantity# * scale, Offset / scale);
     #Document:OffsetBy(#Unit#, #SIUnit#)#
-    public #Unit# OffsetBy(Scalar offset) => new(#UnbiasedQuantity#, Offset + offset);
+    public #Unit# OffsetBy(Scalar offset) => OffsetBy(offset.Magnitude);
     #Document:OffsetBy(#Unit#, #SIUnit#)#
     public #Unit# OffsetBy(double offset) => new(#UnbiasedQuantity#, Offset + offset);
 

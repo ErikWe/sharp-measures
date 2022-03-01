@@ -25,6 +25,11 @@ public readonly partial record struct Speed
     /// <summary>Computes <see cref="Distance"/> according to { <paramref name="speed"/> ∙ <paramref name="time"/> }.</summary>
     public static Distance operator *(Speed speed, Time time) => speed.Multiply(time);
 
+    /// <summary>Computes <see cref="Momentum"/> according to { <see langword="this"/> ∙ <paramref name="mass"/> }.</summary>
+    public Momentum Multiply(Mass mass) => Momentum.From(mass, this);
+    /// <summary>Computes <see cref="Momentum"/> according to { <paramref name="speed"/> ∙ <paramref name="mass"/> }.</summary>
+    public static Momentum operator *(Speed speed, Mass mass) => speed.Multiply(mass);
+
     /// <summary>Computes average <see cref="Acceleration"/> according to { <see langword="this"/> / <paramref name="time"/> }.</summary>
     public Acceleration Divide(Time time) => Acceleration.From(this, time);
     /// <summary>Computes average <see cref="Acceleration"/> according to { <paramref name="speed"/> / <paramref name="time"/> }.</summary>

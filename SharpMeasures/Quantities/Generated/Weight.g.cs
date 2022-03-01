@@ -59,9 +59,9 @@ public readonly partial record struct Weight :
     /// <summary>The zero-valued <see cref="Weight"/>.</summary>
     public static Weight Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Weight"/> with magnitude 1, when expressed in unit <see cref="UnitOfForce.Newton"/>.</summary>
+    /// <summary>The <see cref="Weight"/> of magnitude 1, when expressed in <see cref="UnitOfForce.Newton"/>.</summary>
     public static Weight OneNewton { get; } = UnitOfForce.Newton.Force.AsWeight;
-    /// <summary>The <see cref="Weight"/> with magnitude 1, when expressed in unit <see cref="UnitOfForce.PoundForce"/>.</summary>
+    /// <summary>The <see cref="Weight"/> of magnitude 1, when expressed in <see cref="UnitOfForce.PoundForce"/>.</summary>
     public static Weight OnePoundForce { get; } = UnitOfForce.PoundForce.Force.AsWeight;
 
     /// <summary>The magnitude of the <see cref="Weight"/>, in SI units.</summary>
@@ -323,7 +323,7 @@ public readonly partial record struct Weight :
     /// <param name="a">This <see cref="Weight"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="Weight"/> <paramref name="a"/>.</param>
     public static Weight3 operator *(Weight a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Weight"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Weight"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="Weight3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="Weight"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Weight"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -333,7 +333,7 @@ public readonly partial record struct Weight :
     /// <param name="a">This <see cref="Weight"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Weight"/> <paramref name="a"/>.</param>
     public static Weight3 operator *(Weight a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Weight"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Weight"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Weight3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Weight"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Weight"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -343,7 +343,7 @@ public readonly partial record struct Weight :
     /// <param name="a">This <see cref="Weight"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Weight"/> <paramref name="a"/>.</param>
     public static Weight3 operator *(Weight a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Weight"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Weight"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Weight3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Weight"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Weight"/> is multiplied by the values of <paramref name="a"/>.</param>

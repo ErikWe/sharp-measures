@@ -57,13 +57,13 @@ public readonly partial record struct TemperatureDifference :
     /// <summary>The zero-valued <see cref="TemperatureDifference"/>.</summary>
     public static TemperatureDifference Zero { get; } = new(0);
 
-    /// <summary>The <see cref="TemperatureDifference"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperature.Kelvin"/>.</summary>
+    /// <summary>The <see cref="TemperatureDifference"/> of magnitude 1, when expressed in <see cref="UnitOfTemperature.Kelvin"/>.</summary>
     public static TemperatureDifference OneKelvin { get; } = UnitOfTemperature.Kelvin.TemperatureDifference;
-    /// <summary>The <see cref="TemperatureDifference"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperature.Celsius"/>.</summary>
+    /// <summary>The <see cref="TemperatureDifference"/> of magnitude 1, when expressed in <see cref="UnitOfTemperature.Celsius"/>.</summary>
     public static TemperatureDifference OneCelsius { get; } = UnitOfTemperature.Celsius.TemperatureDifference;
-    /// <summary>The <see cref="TemperatureDifference"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperature.Rankine"/>.</summary>
+    /// <summary>The <see cref="TemperatureDifference"/> of magnitude 1, when expressed in <see cref="UnitOfTemperature.Rankine"/>.</summary>
     public static TemperatureDifference OneRankine { get; } = UnitOfTemperature.Rankine.TemperatureDifference;
-    /// <summary>The <see cref="TemperatureDifference"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperature.Fahrenheit"/>.</summary>
+    /// <summary>The <see cref="TemperatureDifference"/> of magnitude 1, when expressed in <see cref="UnitOfTemperature.Fahrenheit"/>.</summary>
     public static TemperatureDifference OneFahrenheit { get; } = UnitOfTemperature.Fahrenheit.TemperatureDifference;
 
     /// <summary>The magnitude of the <see cref="TemperatureDifference"/>, in SI units.</summary>

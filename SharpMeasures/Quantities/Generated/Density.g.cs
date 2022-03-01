@@ -43,7 +43,7 @@ public readonly partial record struct Density :
     /// <summary>The zero-valued <see cref="Density"/>.</summary>
     public static Density Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Density"/> with magnitude 1, when expressed in unit <see cref="UnitOfDensity.KilogramPerCubicMetre"/>.</summary>
+    /// <summary>The <see cref="Density"/> of magnitude 1, when expressed in <see cref="UnitOfDensity.KilogramPerCubicMetre"/>.</summary>
     public static Density OneKilogramPerCubicMetre { get; } = UnitOfDensity.KilogramPerCubicMetre.Density;
 
     /// <summary>Computes <see cref="Density"/> according to { 1 / <paramref name="specificVolume"/> }.</summary>

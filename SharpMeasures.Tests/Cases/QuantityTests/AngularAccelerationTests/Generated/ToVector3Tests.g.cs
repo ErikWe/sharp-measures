@@ -1,0 +1,93 @@
+namespace ErikWe.SharpMeasures.Tests.Cases.QuantityTests.AngularAccelerationTests;
+
+using ErikWe.SharpMeasures.Quantities;
+using ErikWe.SharpMeasures.Tests.Datasets;
+
+using Xunit;
+
+public class ToVector3Tests
+{
+    [Theory]
+    [ClassData(typeof(GenericDataset<AngularAccelerationDataset, Vector3Dataset>))]
+    public void Vector3_Method_ShouldMatchMultiplication(AngularAcceleration quantity, Vector3 vector)
+    {
+        AngularAcceleration3 result = quantity.Multiply(vector);
+
+        Assert.Equal(quantity.Magnitude * vector.X, result.X, 2);
+        Assert.Equal(quantity.Magnitude * vector.Y, result.Y, 2);
+        Assert.Equal(quantity.Magnitude * vector.Z, result.Z, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<AngularAccelerationDataset, DoubleDataset, DoubleDataset, DoubleDataset>))]
+    public void DoubleTuple_Method_ShouldMatchMultiplication(AngularAcceleration quantity, double x, double y, double z)
+    {
+        AngularAcceleration3 result = quantity.Multiply((x, y, z));
+
+        Assert.Equal(quantity.Magnitude * x, result.X, 2);
+        Assert.Equal(quantity.Magnitude * x, result.X, 2);
+        Assert.Equal(quantity.Magnitude * x, result.X, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<AngularAccelerationDataset, ScalarDataset, ScalarDataset, ScalarDataset>))]
+    public void ScalarTuple_Method_ShouldMatchMultiplication(AngularAcceleration quantity, Scalar x, Scalar y, Scalar z)
+    {
+        AngularAcceleration3 result = quantity.Multiply((x, y, z));
+
+        Assert.Equal(quantity.Magnitude * x, result.X, 2);
+        Assert.Equal(quantity.Magnitude * x, result.X, 2);
+        Assert.Equal(quantity.Magnitude * x, result.X, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<AngularAccelerationDataset, Vector3Dataset>))]
+    public void Vector3_Operator_ShouldMatchMultiplication(AngularAcceleration quantity, Vector3 vector)
+    {
+        AngularAcceleration3 resultLHS = quantity * vector;
+        AngularAcceleration3 resultRHS = vector * quantity;
+
+        Assert.Equal(quantity.Magnitude * vector.X, resultLHS.X, 2);
+        Assert.Equal(vector.X * quantity.Magnitude, resultRHS.X, 2);
+
+        Assert.Equal(quantity.Magnitude * vector.Y, resultLHS.Y, 2);
+        Assert.Equal(vector.Y * quantity.Magnitude, resultRHS.Y, 2);
+
+        Assert.Equal(quantity.Magnitude * vector.Z, resultLHS.Z, 2);
+        Assert.Equal(vector.Z * quantity.Magnitude, resultRHS.Z, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<AngularAccelerationDataset, DoubleDataset, DoubleDataset, DoubleDataset>))]
+    public void DoubleTuple_Operator_ShouldMatchMultiplication(AngularAcceleration quantity, double x, double y, double z)
+    {
+        AngularAcceleration3 resultLHS = quantity * (x, y, z);
+        AngularAcceleration3 resultRHS = (x, y, z) * quantity;
+
+        Assert.Equal(quantity.Magnitude * x, resultLHS.X, 2);
+        Assert.Equal(x * quantity.Magnitude, resultRHS.X, 2);
+
+        Assert.Equal(quantity.Magnitude * y, resultLHS.Y, 2);
+        Assert.Equal(y * quantity.Magnitude, resultRHS.Y, 2);
+
+        Assert.Equal(quantity.Magnitude * z, resultLHS.Z, 2);
+        Assert.Equal(z * quantity.Magnitude, resultRHS.Z, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<AngularAccelerationDataset, ScalarDataset, ScalarDataset, ScalarDataset>))]
+    public void ScalarTuple_Operator_ShouldMatchMultiplication(AngularAcceleration quantity, Scalar x, Scalar y, Scalar z)
+    {
+        AngularAcceleration3 resultLHS = quantity * (x, y, z);
+        AngularAcceleration3 resultRHS = (x, y, z) * quantity;
+
+        Assert.Equal(quantity.Magnitude * x, resultLHS.X, 2);
+        Assert.Equal(x * quantity.Magnitude, resultRHS.X, 2);
+
+        Assert.Equal(quantity.Magnitude * y, resultLHS.Y, 2);
+        Assert.Equal(y * quantity.Magnitude, resultRHS.Y, 2);
+
+        Assert.Equal(quantity.Magnitude * z, resultLHS.Z, 2);
+        Assert.Equal(z * quantity.Magnitude, resultRHS.Z, 2);
+    }
+}

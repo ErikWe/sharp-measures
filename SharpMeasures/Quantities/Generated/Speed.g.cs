@@ -44,17 +44,17 @@ public readonly partial record struct Speed :
     /// <summary>The zero-valued <see cref="Speed"/>.</summary>
     public static Speed Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Speed"/> with magnitude 1, when expressed in unit <see cref="UnitOfVelocity.MetrePerSecond"/>.</summary>
+    /// <summary>The <see cref="Speed"/> of magnitude 1, when expressed in <see cref="UnitOfVelocity.MetrePerSecond"/>.</summary>
     public static Speed OneMetrePerSecond { get; } = UnitOfVelocity.MetrePerSecond.Speed;
-    /// <summary>The <see cref="Speed"/> with magnitude 1, when expressed in unit <see cref="UnitOfVelocity.KilometrePerSecond"/>.</summary>
+    /// <summary>The <see cref="Speed"/> of magnitude 1, when expressed in <see cref="UnitOfVelocity.KilometrePerSecond"/>.</summary>
     public static Speed OneKilometrePerSecond { get; } = UnitOfVelocity.KilometrePerSecond.Speed;
-    /// <summary>The <see cref="Speed"/> with magnitude 1, when expressed in unit <see cref="UnitOfVelocity.KilometrePerHour"/>.</summary>
+    /// <summary>The <see cref="Speed"/> of magnitude 1, when expressed in <see cref="UnitOfVelocity.KilometrePerHour"/>.</summary>
     public static Speed OneKilometrePerHour { get; } = UnitOfVelocity.KilometrePerHour.Speed;
-    /// <summary>The <see cref="Speed"/> with magnitude 1, when expressed in unit <see cref="UnitOfVelocity.FootPerSecond"/>.</summary>
+    /// <summary>The <see cref="Speed"/> of magnitude 1, when expressed in <see cref="UnitOfVelocity.FootPerSecond"/>.</summary>
     public static Speed OneFootPerSecond { get; } = UnitOfVelocity.FootPerSecond.Speed;
-    /// <summary>The <see cref="Speed"/> with magnitude 1, when expressed in unit <see cref="UnitOfVelocity.YardPerSecond"/>.</summary>
+    /// <summary>The <see cref="Speed"/> of magnitude 1, when expressed in <see cref="UnitOfVelocity.YardPerSecond"/>.</summary>
     public static Speed OneYardPerSecond { get; } = UnitOfVelocity.YardPerSecond.Speed;
-    /// <summary>The <see cref="Speed"/> with magnitude 1, when expressed in unit <see cref="UnitOfVelocity.MilePerHour"/>.</summary>
+    /// <summary>The <see cref="Speed"/> of magnitude 1, when expressed in <see cref="UnitOfVelocity.MilePerHour"/>.</summary>
     public static Speed OneMilePerHour { get; } = UnitOfVelocity.MilePerHour.Speed;
 
     /// <summary>Computes <see cref="Speed"/> according to { √<paramref name="speedSquared"/> }.</summary>
@@ -328,7 +328,7 @@ public readonly partial record struct Speed :
     /// <param name="a">This <see cref="Speed"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="Speed"/> <paramref name="a"/>.</param>
     public static Velocity3 operator *(Speed a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Speed"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Speed"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="Velocity3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="Speed"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Speed"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -338,7 +338,7 @@ public readonly partial record struct Speed :
     /// <param name="a">This <see cref="Speed"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Speed"/> <paramref name="a"/>.</param>
     public static Velocity3 operator *(Speed a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Speed"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Speed"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Velocity3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Speed"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Speed"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -348,7 +348,7 @@ public readonly partial record struct Speed :
     /// <param name="a">This <see cref="Speed"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Speed"/> <paramref name="a"/>.</param>
     public static Velocity3 operator *(Speed a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Speed"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Speed"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Velocity3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Speed"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Speed"/> is multiplied by the values of <paramref name="a"/>.</param>

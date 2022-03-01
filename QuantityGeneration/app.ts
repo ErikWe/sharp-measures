@@ -5,6 +5,7 @@ import { TemplateReader } from './TemplateReader'
 import { ScalarGenerator } from './ScalarGenerator'
 import { ScalarTestsGenerator } from './ScalarTestsGenerator'
 import { VectorGenerator } from './VectorGenerator'
+import { VectorTestsGenerator } from './VectorTestsGenerator'
 import { UnitGenerator } from './UnitGenerator'
 import { UnitTestsGenerator } from './UnitTestsGenerator'
 
@@ -51,6 +52,7 @@ class Program {
 
     private static async createTests(destination: string, definitionReader: DefinitionReader, templateReader: TemplateReader, destroy: boolean) {
         new ScalarTestsGenerator(destination, definitionReader, templateReader, destroy).generate()
+        new VectorTestsGenerator(destination, definitionReader, templateReader, destroy).generate()
         new UnitTestsGenerator(destination, definitionReader, templateReader, destroy).generate()
     }
 

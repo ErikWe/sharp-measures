@@ -69,19 +69,19 @@ public readonly partial record struct Energy :
     /// <summary>The zero-valued <see cref="Energy"/>.</summary>
     public static Energy Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Energy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Joule"/>.</summary>
+    /// <summary>The <see cref="Energy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Joule"/>.</summary>
     public static Energy OneJoule { get; } = UnitOfEnergy.Joule.Energy;
-    /// <summary>The <see cref="Energy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Kilojoule"/>.</summary>
+    /// <summary>The <see cref="Energy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Kilojoule"/>.</summary>
     public static Energy OneKilojoule { get; } = UnitOfEnergy.Kilojoule.Energy;
-    /// <summary>The <see cref="Energy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Megajoule"/>.</summary>
+    /// <summary>The <see cref="Energy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Megajoule"/>.</summary>
     public static Energy OneMegajoule { get; } = UnitOfEnergy.Megajoule.Energy;
-    /// <summary>The <see cref="Energy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Gigajoule"/>.</summary>
+    /// <summary>The <see cref="Energy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Gigajoule"/>.</summary>
     public static Energy OneGigajoule { get; } = UnitOfEnergy.Gigajoule.Energy;
-    /// <summary>The <see cref="Energy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.KilowattHour"/>.</summary>
+    /// <summary>The <see cref="Energy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.KilowattHour"/>.</summary>
     public static Energy OneKilowattHour { get; } = UnitOfEnergy.KilowattHour.Energy;
-    /// <summary>The <see cref="Energy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Calorie"/>.</summary>
+    /// <summary>The <see cref="Energy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Calorie"/>.</summary>
     public static Energy OneCalorie { get; } = UnitOfEnergy.Calorie.Energy;
-    /// <summary>The <see cref="Energy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Kilocalorie"/>.</summary>
+    /// <summary>The <see cref="Energy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Kilocalorie"/>.</summary>
     public static Energy OneKilocalorie { get; } = UnitOfEnergy.Kilocalorie.Energy;
 
     /// <summary>The magnitude of the <see cref="Energy"/>, in SI units.</summary>

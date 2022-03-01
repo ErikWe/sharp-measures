@@ -1,5 +1,7 @@
 ﻿namespace ErikWe.SharpMeasures.Units;
 
+using ErikWe.SharpMeasures.Quantities;
+
 using System;
 
 /// <summary>Describes a metric prefix. Common <see cref="MetricPrefix"/> exists as static properties, and <see cref="WithPowerOfTen(double)"/> can be used to construct
@@ -60,7 +62,11 @@ public readonly record struct MetricPrefix :
 
     /// <summary>Constructs a new <see cref="MetricPrefix"/> with scale <paramref name="scale"/>.</summary>
     /// <param name="scale">The amount that values should be scaled by.</param>
-    private MetricPrefix(double scale)
+    public MetricPrefix(Scalar scale) : this(scale.Magnitude) { }
+
+    /// <summary>Constructs a new <see cref="MetricPrefix"/> with scale <paramref name="scale"/>.</summary>
+    /// <param name="scale">The amount that values should be scaled by.</param>
+    public MetricPrefix(double scale)
     {
         Scale = scale;
     }

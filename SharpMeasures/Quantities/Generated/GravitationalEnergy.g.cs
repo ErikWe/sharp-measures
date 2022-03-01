@@ -61,19 +61,19 @@ public readonly partial record struct GravitationalEnergy :
     /// <summary>The zero-valued <see cref="GravitationalEnergy"/>.</summary>
     public static GravitationalEnergy Zero { get; } = new(0);
 
-    /// <summary>The <see cref="GravitationalEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Joule"/>.</summary>
+    /// <summary>The <see cref="GravitationalEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Joule"/>.</summary>
     public static GravitationalEnergy OneJoule { get; } = new(1, UnitOfEnergy.Joule);
-    /// <summary>The <see cref="GravitationalEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Kilojoule"/>.</summary>
+    /// <summary>The <see cref="GravitationalEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Kilojoule"/>.</summary>
     public static GravitationalEnergy OneKilojoule { get; } = new(1, UnitOfEnergy.Kilojoule);
-    /// <summary>The <see cref="GravitationalEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Megajoule"/>.</summary>
+    /// <summary>The <see cref="GravitationalEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Megajoule"/>.</summary>
     public static GravitationalEnergy OneMegajoule { get; } = new(1, UnitOfEnergy.Megajoule);
-    /// <summary>The <see cref="GravitationalEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Gigajoule"/>.</summary>
+    /// <summary>The <see cref="GravitationalEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Gigajoule"/>.</summary>
     public static GravitationalEnergy OneGigajoule { get; } = new(1, UnitOfEnergy.Gigajoule);
-    /// <summary>The <see cref="GravitationalEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.KilowattHour"/>.</summary>
+    /// <summary>The <see cref="GravitationalEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.KilowattHour"/>.</summary>
     public static GravitationalEnergy OneKilowattHour { get; } = new(1, UnitOfEnergy.KilowattHour);
-    /// <summary>The <see cref="GravitationalEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Calorie"/>.</summary>
+    /// <summary>The <see cref="GravitationalEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Calorie"/>.</summary>
     public static GravitationalEnergy OneCalorie { get; } = new(1, UnitOfEnergy.Calorie);
-    /// <summary>The <see cref="GravitationalEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Kilocalorie"/>.</summary>
+    /// <summary>The <see cref="GravitationalEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Kilocalorie"/>.</summary>
     public static GravitationalEnergy OneKilocalorie { get; } = new(1, UnitOfEnergy.Kilocalorie);
 
     /// <summary>The magnitude of the <see cref="GravitationalEnergy"/>, in SI units.</summary>

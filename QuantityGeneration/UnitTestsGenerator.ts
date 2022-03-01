@@ -13,7 +13,13 @@ export class UnitTestsGenerator {
         const keys: string[] = Object.keys(this.definitionReader.definitions.units)
 
         await Promise.all(keys.map(async (key: string) => {
-            this.generateDataset(this.definitionReader.definitions.units[key])
+            const unit: Unit = this.definitionReader.definitions.units[key]
+            this.generateDataset(unit)
+            this.generateConstructorTests(unit)
+
+            if (!unit.bias) {
+                this.generateComparisonTests(unit)
+            }
         }))
     }
 
@@ -24,10 +30,25 @@ export class UnitTestsGenerator {
         text = text.replace(/#Units#/g, unitsText)
 
         text = this.insertNames(text, unit)
-
         text = fixLines(text)
-
         this.attemptWriteFile(this.destination + '\\Datasets\\Generated\\UnitOf' + unit.name + 'Dataset.g.cs', text)
+    }
+
+    private async generateComparisonTests(unit: Unit): Promise<void> {
+        let text: string = this.templateReader.unitTests.comparison
+
+        text = this.insertNames(text, unit)
+        text = fixLines(text)
+        this.attemptWriteFile(this.destination + '\\Cases\\UnitTests\\' + unit.name + 'Tests\\Generated\\ComparisonTests.g.cs', text)
+    }
+
+    private async generateConstructorTests(unit: Unit): Promise<void> {
+        let text: string = this.templateReader.unitTests.constructor
+
+        text = this.setConditionalBlocks(unit, text)
+        text = this.insertNames(text, unit)
+        text = fixLines(text)
+        this.attemptWriteFile(this.destination + '\\Cases\\UnitTests\\' + unit.name + 'Tests\\Generated\\ConstructorTests.g.cs', text)
     }
 
     private insertNames(text: string, unit: Unit): string {
@@ -35,6 +56,8 @@ export class UnitTestsGenerator {
 
         const quantity: ScalarQuantity = getUnitQuantity(this.definitionReader.definitions, unit)
         text = text.replace(/#Quantity#/g, quantity.name)
+
+        text = text.replace(/#UnbiasedQuantity#/g, unit.unbiasedQuantity ? unit.unbiasedQuantity : 'NoUnbiasedQuantityError')
 
         return text
     }
@@ -49,6 +72,18 @@ export class UnitTestsGenerator {
         }
 
         return unitsText.slice(0, -1)
+    }
+
+    private setConditionalBlocks(unit: Unit, text: string): string {
+        if (unit.bias) {
+            text = text.replace(/(\n|\r\n|\r?)#(\/?)Biased#/g, '')
+            text = text.replace(/(\n|\r\n|\r?)#Unbiased#([^]+?)#\/Unbiased#/g, '')
+        } else {
+            text = text.replace(/(\n|\r\n|\r?)#(\/?)Unbiased#/g, '')
+            text = text.replace(/(\n|\r\n|\r?)#Biased#([^]+?)#\/Biased#/g, '')
+        }
+        
+        return text
     }
 
     private async attemptWriteFile(destination: string, text: string): Promise<void> {

@@ -61,43 +61,43 @@ public readonly partial record struct Length :
     /// <summary>The zero-valued <see cref="Length"/>.</summary>
     public static Length Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Metre"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Metre"/>.</summary>
     public static Length OneMetre { get; } = UnitOfLength.Metre.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Femtometre"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Femtometre"/>.</summary>
     public static Length OneFemtometre { get; } = UnitOfLength.Femtometre.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Picometre"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Picometre"/>.</summary>
     public static Length OnePicometre { get; } = UnitOfLength.Picometre.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Nanometre"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Nanometre"/>.</summary>
     public static Length OneNanometre { get; } = UnitOfLength.Nanometre.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Micrometre"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Micrometre"/>.</summary>
     public static Length OneMicrometre { get; } = UnitOfLength.Micrometre.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Millimetre"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Millimetre"/>.</summary>
     public static Length OneMillimetre { get; } = UnitOfLength.Millimetre.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Centimetre"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Centimetre"/>.</summary>
     public static Length OneCentimetre { get; } = UnitOfLength.Centimetre.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Decimetre"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Decimetre"/>.</summary>
     public static Length OneDecimetre { get; } = UnitOfLength.Decimetre.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Kilometre"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Kilometre"/>.</summary>
     public static Length OneKilometre { get; } = UnitOfLength.Kilometre.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.AstronomicalUnit"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.AstronomicalUnit"/>.</summary>
     public static Length OneAstronomicalUnit { get; } = UnitOfLength.AstronomicalUnit.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.LightYear"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.LightYear"/>.</summary>
     public static Length OneLightYear { get; } = UnitOfLength.LightYear.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Parsec"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Parsec"/>.</summary>
     public static Length OneParsec { get; } = UnitOfLength.Parsec.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Kiloparsec"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Kiloparsec"/>.</summary>
     public static Length OneKiloparsec { get; } = UnitOfLength.Kiloparsec.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Megaparsec"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Megaparsec"/>.</summary>
     public static Length OneMegaparsec { get; } = UnitOfLength.Megaparsec.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Gigaparsec"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Gigaparsec"/>.</summary>
     public static Length OneGigaparsec { get; } = UnitOfLength.Gigaparsec.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Inch"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Inch"/>.</summary>
     public static Length OneInch { get; } = UnitOfLength.Inch.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Foot"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Foot"/>.</summary>
     public static Length OneFoot { get; } = UnitOfLength.Foot.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Yard"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Yard"/>.</summary>
     public static Length OneYard { get; } = UnitOfLength.Yard.Length;
-    /// <summary>The <see cref="Length"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Mile"/>.</summary>
+    /// <summary>The <see cref="Length"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Mile"/>.</summary>
     public static Length OneMile { get; } = UnitOfLength.Mile.Length;
 
     /// <summary>Computes <see cref="Length"/> according to { 1 / <paramref name="spatialFrequency"/> }.</summary>
@@ -419,7 +419,7 @@ public readonly partial record struct Length :
     /// <param name="a">This <see cref="Length"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="Length"/> <paramref name="a"/>.</param>
     public static Displacement3 operator *(Length a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Length"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Length"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="Displacement3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="Length"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Length"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -429,7 +429,7 @@ public readonly partial record struct Length :
     /// <param name="a">This <see cref="Length"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Length"/> <paramref name="a"/>.</param>
     public static Displacement3 operator *(Length a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Length"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Length"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Displacement3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Length"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Length"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -439,7 +439,7 @@ public readonly partial record struct Length :
     /// <param name="a">This <see cref="Length"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Length"/> <paramref name="a"/>.</param>
     public static Displacement3 operator *(Length a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Length"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Length"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Displacement3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Length"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Length"/> is multiplied by the values of <paramref name="a"/>.</param>

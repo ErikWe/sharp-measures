@@ -43,17 +43,17 @@ public readonly partial record struct Volume :
     /// <summary>The zero-valued <see cref="Volume"/>.</summary>
     public static Volume Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Volume"/> with magnitude 1, when expressed in unit <see cref="UnitOfVolume.CubicMetre"/>.</summary>
+    /// <summary>The <see cref="Volume"/> of magnitude 1, when expressed in <see cref="UnitOfVolume.CubicMetre"/>.</summary>
     public static Volume OneCubicMetre { get; } = UnitOfVolume.CubicMetre.Volume;
-    /// <summary>The <see cref="Volume"/> with magnitude 1, when expressed in unit <see cref="UnitOfVolume.CubicDecimetre"/>.</summary>
+    /// <summary>The <see cref="Volume"/> of magnitude 1, when expressed in <see cref="UnitOfVolume.CubicDecimetre"/>.</summary>
     public static Volume OneCubicDecimetre { get; } = UnitOfVolume.CubicDecimetre.Volume;
-    /// <summary>The <see cref="Volume"/> with magnitude 1, when expressed in unit <see cref="UnitOfVolume.Litre"/>.</summary>
+    /// <summary>The <see cref="Volume"/> of magnitude 1, when expressed in <see cref="UnitOfVolume.Litre"/>.</summary>
     public static Volume OneLitre { get; } = UnitOfVolume.Litre.Volume;
-    /// <summary>The <see cref="Volume"/> with magnitude 1, when expressed in unit <see cref="UnitOfVolume.Millilitre"/>.</summary>
+    /// <summary>The <see cref="Volume"/> of magnitude 1, when expressed in <see cref="UnitOfVolume.Millilitre"/>.</summary>
     public static Volume OneMillilitre { get; } = UnitOfVolume.Millilitre.Volume;
-    /// <summary>The <see cref="Volume"/> with magnitude 1, when expressed in unit <see cref="UnitOfVolume.Centilitre"/>.</summary>
+    /// <summary>The <see cref="Volume"/> of magnitude 1, when expressed in <see cref="UnitOfVolume.Centilitre"/>.</summary>
     public static Volume OneCentilitre { get; } = UnitOfVolume.Centilitre.Volume;
-    /// <summary>The <see cref="Volume"/> with magnitude 1, when expressed in unit <see cref="UnitOfVolume.Decilitre"/>.</summary>
+    /// <summary>The <see cref="Volume"/> of magnitude 1, when expressed in <see cref="UnitOfVolume.Decilitre"/>.</summary>
     public static Volume OneDecilitre { get; } = UnitOfVolume.Decilitre.Volume;
 
     /// <summary>Computes <see cref="Volume"/> according to { <paramref name="length"/>³ }.</summary>

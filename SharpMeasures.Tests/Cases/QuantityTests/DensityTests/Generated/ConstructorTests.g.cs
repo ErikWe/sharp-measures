@@ -97,4 +97,13 @@ public class ConstructorTests
 
         Assert.Equal(a, quantity.Magnitude, 2);
     }
+
+    [Theory]
+    [ClassData(typeof(SpecificVolumeDataset))]
+    public void FromSpecificVolume_ShouldMatchExpression(SpecificVolume sourceQuantity)
+    {
+        Density quantity = Density.From(sourceQuantity);
+
+        Assert.Equal(1 / sourceQuantity.Magnitude, quantity.Magnitude, 2);
+    }
 }

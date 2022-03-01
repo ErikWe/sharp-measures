@@ -43,7 +43,7 @@ public readonly partial record struct Yank :
     /// <summary>The zero-valued <see cref="Yank"/>.</summary>
     public static Yank Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Yank"/> with magnitude 1, when expressed in unit <see cref="UnitOfYank.NewtonPerSecond"/>.</summary>
+    /// <summary>The <see cref="Yank"/> of magnitude 1, when expressed in <see cref="UnitOfYank.NewtonPerSecond"/>.</summary>
     public static Yank OneNewtonPerSecond { get; } = UnitOfYank.NewtonPerSecond.Yank;
 
     /// <summary>The magnitude of the <see cref="Yank"/>, in SI units.</summary>
@@ -300,7 +300,7 @@ public readonly partial record struct Yank :
     /// <param name="a">This <see cref="Yank"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="Yank"/> <paramref name="a"/>.</param>
     public static Yank3 operator *(Yank a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Yank"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Yank"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="Yank3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="Yank"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Yank"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -310,7 +310,7 @@ public readonly partial record struct Yank :
     /// <param name="a">This <see cref="Yank"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Yank"/> <paramref name="a"/>.</param>
     public static Yank3 operator *(Yank a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Yank"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Yank"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Yank3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Yank"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Yank"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -320,7 +320,7 @@ public readonly partial record struct Yank :
     /// <param name="a">This <see cref="Yank"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Yank"/> <paramref name="a"/>.</param>
     public static Yank3 operator *(Yank a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Yank"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Yank"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Yank3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Yank"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Yank"/> is multiplied by the values of <paramref name="a"/>.</param>

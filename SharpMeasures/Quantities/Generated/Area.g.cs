@@ -43,19 +43,19 @@ public readonly partial record struct Area :
     /// <summary>The zero-valued <see cref="Area"/>.</summary>
     public static Area Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.SquareMetre"/>.</summary>
+    /// <summary>The <see cref="Area"/> of magnitude 1, when expressed in <see cref="UnitOfArea.SquareMetre"/>.</summary>
     public static Area OneSquareMetre { get; } = UnitOfArea.SquareMetre.Area;
-    /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.SquareKilometre"/>.</summary>
+    /// <summary>The <see cref="Area"/> of magnitude 1, when expressed in <see cref="UnitOfArea.SquareKilometre"/>.</summary>
     public static Area OneSquareKilometre { get; } = UnitOfArea.SquareKilometre.Area;
-    /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.SquareInch"/>.</summary>
+    /// <summary>The <see cref="Area"/> of magnitude 1, when expressed in <see cref="UnitOfArea.SquareInch"/>.</summary>
     public static Area OneSquareInch { get; } = UnitOfArea.SquareInch.Area;
-    /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.SquareMile"/>.</summary>
+    /// <summary>The <see cref="Area"/> of magnitude 1, when expressed in <see cref="UnitOfArea.SquareMile"/>.</summary>
     public static Area OneSquareMile { get; } = UnitOfArea.SquareMile.Area;
-    /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.Are"/>.</summary>
+    /// <summary>The <see cref="Area"/> of magnitude 1, when expressed in <see cref="UnitOfArea.Are"/>.</summary>
     public static Area OneAre { get; } = UnitOfArea.Are.Area;
-    /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.Hectare"/>.</summary>
+    /// <summary>The <see cref="Area"/> of magnitude 1, when expressed in <see cref="UnitOfArea.Hectare"/>.</summary>
     public static Area OneHectare { get; } = UnitOfArea.Hectare.Area;
-    /// <summary>The <see cref="Area"/> with magnitude 1, when expressed in unit <see cref="UnitOfArea.Acre"/>.</summary>
+    /// <summary>The <see cref="Area"/> of magnitude 1, when expressed in <see cref="UnitOfArea.Acre"/>.</summary>
     public static Area OneAcre { get; } = UnitOfArea.Acre.Area;
 
     /// <summary>Computes <see cref="Area"/> according to { <paramref name="length"/>² }.</summary>

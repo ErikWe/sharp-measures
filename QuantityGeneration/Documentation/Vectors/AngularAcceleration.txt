@@ -26,5 +26,5 @@
 #/Define:ExampleDerivedMethod#
 
 #Define:ExampleFromAssociated(quantity, dimensionality, variable)#
-<see cref="#Param:quantity#"/> #Param:variable# = <see cref="SpinAngularAcceleration#Param:dimensionality#.As#Param:quantity#()"/>;
+<see cref="#Param:quantity#"/> #Param:variable# = <see cref="SpinAngularAcceleration#Param:dimensionality#.AsAngularAcceleration"/>;
 #/Define:ExampleFromAssociated#

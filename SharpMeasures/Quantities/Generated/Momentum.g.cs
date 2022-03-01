@@ -58,7 +58,7 @@ public readonly partial record struct Momentum :
     /// <summary>The zero-valued <see cref="Momentum"/>.</summary>
     public static Momentum Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Momentum"/> with magnitude 1, when expressed in unit <see cref="UnitOfMomentum.KilogramMetrePerSecond"/>.</summary>
+    /// <summary>The <see cref="Momentum"/> of magnitude 1, when expressed in <see cref="UnitOfMomentum.KilogramMetrePerSecond"/>.</summary>
     public static Momentum OneKilogramMetrePerSecond { get; } = UnitOfMomentum.KilogramMetrePerSecond.Momentum;
 
     /// <summary>The magnitude of the <see cref="Momentum"/>, in SI units.</summary>
@@ -318,7 +318,7 @@ public readonly partial record struct Momentum :
     /// <param name="a">This <see cref="Momentum"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="Momentum"/> <paramref name="a"/>.</param>
     public static Momentum3 operator *(Momentum a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Momentum"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Momentum"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="Momentum3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="Momentum"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Momentum"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -328,7 +328,7 @@ public readonly partial record struct Momentum :
     /// <param name="a">This <see cref="Momentum"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Momentum"/> <paramref name="a"/>.</param>
     public static Momentum3 operator *(Momentum a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Momentum"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Momentum"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Momentum3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Momentum"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Momentum"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -338,7 +338,7 @@ public readonly partial record struct Momentum :
     /// <param name="a">This <see cref="Momentum"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Momentum"/> <paramref name="a"/>.</param>
     public static Momentum3 operator *(Momentum a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Momentum"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Momentum"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Momentum3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Momentum"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Momentum"/> is multiplied by the values of <paramref name="a"/>.</param>

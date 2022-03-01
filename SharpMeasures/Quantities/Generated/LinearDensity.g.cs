@@ -42,7 +42,7 @@ public readonly partial record struct LinearDensity :
     /// <summary>The zero-valued <see cref="LinearDensity"/>.</summary>
     public static LinearDensity Zero { get; } = new(0);
 
-    /// <summary>The <see cref="LinearDensity"/> with magnitude 1, when expressed in unit <see cref="UnitOfLinearDensity.KilogramPerMetre"/>.</summary>
+    /// <summary>The <see cref="LinearDensity"/> of magnitude 1, when expressed in <see cref="UnitOfLinearDensity.KilogramPerMetre"/>.</summary>
     public static LinearDensity OneKilogramPerMetre { get; } = UnitOfLinearDensity.KilogramPerMetre.LinearDensity;
 
     /// <summary>The magnitude of the <see cref="LinearDensity"/>, in SI units.</summary>

@@ -42,15 +42,15 @@ public readonly partial record struct TemperatureGradient :
     /// <summary>The zero-valued <see cref="TemperatureGradient"/>.</summary>
     public static TemperatureGradient Zero { get; } = new(0);
 
-    /// <summary>The <see cref="TemperatureGradient"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperatureGradient.KelvinPerMetre"/>.</summary>
+    /// <summary>The <see cref="TemperatureGradient"/> of magnitude 1, when expressed in <see cref="UnitOfTemperatureGradient.KelvinPerMetre"/>.</summary>
     public static TemperatureGradient OneKelvinPerMetre { get; } = UnitOfTemperatureGradient.KelvinPerMetre.TemperatureGradient;
-    /// <summary>The <see cref="TemperatureGradient"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperatureGradient.CelsiusPerMetre"/>.</summary>
+    /// <summary>The <see cref="TemperatureGradient"/> of magnitude 1, when expressed in <see cref="UnitOfTemperatureGradient.CelsiusPerMetre"/>.</summary>
     public static TemperatureGradient OneCelsiusPerMetre { get; } = UnitOfTemperatureGradient.CelsiusPerMetre.TemperatureGradient;
-    /// <summary>The <see cref="TemperatureGradient"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperatureGradient.RankinePerMetre"/>.</summary>
+    /// <summary>The <see cref="TemperatureGradient"/> of magnitude 1, when expressed in <see cref="UnitOfTemperatureGradient.RankinePerMetre"/>.</summary>
     public static TemperatureGradient OneRankinePerMetre { get; } = UnitOfTemperatureGradient.RankinePerMetre.TemperatureGradient;
-    /// <summary>The <see cref="TemperatureGradient"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperatureGradient.FahrenheitPerMetre"/>.</summary>
+    /// <summary>The <see cref="TemperatureGradient"/> of magnitude 1, when expressed in <see cref="UnitOfTemperatureGradient.FahrenheitPerMetre"/>.</summary>
     public static TemperatureGradient OneFahrenheitPerMetre { get; } = UnitOfTemperatureGradient.FahrenheitPerMetre.TemperatureGradient;
-    /// <summary>The <see cref="TemperatureGradient"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperatureGradient.FahrenheitPerFoot"/>.</summary>
+    /// <summary>The <see cref="TemperatureGradient"/> of magnitude 1, when expressed in <see cref="UnitOfTemperatureGradient.FahrenheitPerFoot"/>.</summary>
     public static TemperatureGradient OneFahrenheitPerFoot { get; } = UnitOfTemperatureGradient.FahrenheitPerFoot.TemperatureGradient;
 
     /// <summary>The magnitude of the <see cref="TemperatureGradient"/>, in SI units.</summary>

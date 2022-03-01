@@ -6,6 +6,8 @@ using ErikWe.SharpMeasures.Quantities;
 using ErikWe.SharpMeasures.Tests.Datasets;
 using ErikWe.SharpMeasures.Units;
 
+using System;
+
 using Xunit;
 
 public class ConstructorTests
@@ -184,5 +186,23 @@ public class ConstructorTests
         Time quantity = (Time)a;
 
         Assert.Equal(a, quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(FrequencyDataset))]
+    public void FromFrequency_ShouldMatchExpression(Frequency sourceQuantity)
+    {
+        Time quantity = Time.From(sourceQuantity);
+
+        Assert.Equal(1 / sourceQuantity.Magnitude, quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(TimeSquaredDataset))]
+    public void FromTimeSquared_ShouldMatchExpression(TimeSquared sourceQuantity)
+    {
+        Time quantity = Time.From(sourceQuantity);
+
+        Assert.Equal(Math.Sqrt(sourceQuantity.Magnitude), quantity.Magnitude, 2);
     }
 }

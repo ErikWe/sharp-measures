@@ -56,13 +56,13 @@ public readonly partial record struct AngularSpeed :
     /// <summary>The zero-valued <see cref="AngularSpeed"/>.</summary>
     public static AngularSpeed Zero { get; } = new(0);
 
-    /// <summary>The <see cref="AngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RadianPerSecond"/>.</summary>
+    /// <summary>The <see cref="AngularSpeed"/> of magnitude 1, when expressed in <see cref="UnitOfAngularVelocity.RadianPerSecond"/>.</summary>
     public static AngularSpeed OneRadianPerSecond { get; } = UnitOfAngularVelocity.RadianPerSecond.AngularSpeed;
-    /// <summary>The <see cref="AngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.DegreePerSecond"/>.</summary>
+    /// <summary>The <see cref="AngularSpeed"/> of magnitude 1, when expressed in <see cref="UnitOfAngularVelocity.DegreePerSecond"/>.</summary>
     public static AngularSpeed OneDegreePerSecond { get; } = UnitOfAngularVelocity.DegreePerSecond.AngularSpeed;
-    /// <summary>The <see cref="AngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RevolutionPerSecond"/>.</summary>
+    /// <summary>The <see cref="AngularSpeed"/> of magnitude 1, when expressed in <see cref="UnitOfAngularVelocity.RevolutionPerSecond"/>.</summary>
     public static AngularSpeed OneRevolutionPerSecond { get; } = UnitOfAngularVelocity.RevolutionPerSecond.AngularSpeed;
-    /// <summary>The <see cref="AngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RevolutionPerMinute"/>.</summary>
+    /// <summary>The <see cref="AngularSpeed"/> of magnitude 1, when expressed in <see cref="UnitOfAngularVelocity.RevolutionPerMinute"/>.</summary>
     public static AngularSpeed OneRevolutionPerMinute { get; } = UnitOfAngularVelocity.RevolutionPerMinute.AngularSpeed;
 
     /// <summary>The magnitude of the <see cref="AngularSpeed"/>, in SI units.</summary>
@@ -331,7 +331,7 @@ public readonly partial record struct AngularSpeed :
     /// <param name="a">This <see cref="AngularSpeed"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="AngularSpeed"/> <paramref name="a"/>.</param>
     public static AngularVelocity3 operator *(AngularSpeed a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="AngularSpeed"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="AngularSpeed"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="AngularVelocity3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="AngularSpeed"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="AngularSpeed"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -341,7 +341,7 @@ public readonly partial record struct AngularSpeed :
     /// <param name="a">This <see cref="AngularSpeed"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="AngularSpeed"/> <paramref name="a"/>.</param>
     public static AngularVelocity3 operator *(AngularSpeed a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="AngularSpeed"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="AngularSpeed"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="AngularVelocity3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="AngularSpeed"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="AngularSpeed"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -351,7 +351,7 @@ public readonly partial record struct AngularSpeed :
     /// <param name="a">This <see cref="AngularSpeed"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="AngularSpeed"/> <paramref name="a"/>.</param>
     public static AngularVelocity3 operator *(AngularSpeed a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="AngularSpeed"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="AngularSpeed"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="AngularVelocity3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="AngularSpeed"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="AngularSpeed"/> is multiplied by the values of <paramref name="a"/>.</param>

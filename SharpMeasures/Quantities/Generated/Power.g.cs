@@ -42,15 +42,15 @@ public readonly partial record struct Power :
     /// <summary>The zero-valued <see cref="Power"/>.</summary>
     public static Power Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Power"/> with magnitude 1, when expressed in unit <see cref="UnitOfPower.Watt"/>.</summary>
+    /// <summary>The <see cref="Power"/> of magnitude 1, when expressed in <see cref="UnitOfPower.Watt"/>.</summary>
     public static Power OneWatt { get; } = UnitOfPower.Watt.Power;
-    /// <summary>The <see cref="Power"/> with magnitude 1, when expressed in unit <see cref="UnitOfPower.Kilowatt"/>.</summary>
+    /// <summary>The <see cref="Power"/> of magnitude 1, when expressed in <see cref="UnitOfPower.Kilowatt"/>.</summary>
     public static Power OneKilowatt { get; } = UnitOfPower.Kilowatt.Power;
-    /// <summary>The <see cref="Power"/> with magnitude 1, when expressed in unit <see cref="UnitOfPower.Megawatt"/>.</summary>
+    /// <summary>The <see cref="Power"/> of magnitude 1, when expressed in <see cref="UnitOfPower.Megawatt"/>.</summary>
     public static Power OneMegawatt { get; } = UnitOfPower.Megawatt.Power;
-    /// <summary>The <see cref="Power"/> with magnitude 1, when expressed in unit <see cref="UnitOfPower.Gigawatt"/>.</summary>
+    /// <summary>The <see cref="Power"/> of magnitude 1, when expressed in <see cref="UnitOfPower.Gigawatt"/>.</summary>
     public static Power OneGigawatt { get; } = UnitOfPower.Gigawatt.Power;
-    /// <summary>The <see cref="Power"/> with magnitude 1, when expressed in unit <see cref="UnitOfPower.Terawatt"/>.</summary>
+    /// <summary>The <see cref="Power"/> of magnitude 1, when expressed in <see cref="UnitOfPower.Terawatt"/>.</summary>
     public static Power OneTerawatt { get; } = UnitOfPower.Terawatt.Power;
 
     /// <summary>The magnitude of the <see cref="Power"/>, in SI units.</summary>

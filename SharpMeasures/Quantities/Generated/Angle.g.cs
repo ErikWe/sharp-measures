@@ -45,33 +45,33 @@ public readonly partial record struct Angle :
     /// <summary>The zero-valued <see cref="Angle"/>.</summary>
     public static Angle Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Radian"/>.</summary>
+    /// <summary>The <see cref="Angle"/> of magnitude 1, when expressed in <see cref="UnitOfAngle.Radian"/>.</summary>
     public static Angle OneRadian { get; } = UnitOfAngle.Radian.Angle;
-    /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Milliradian"/>.</summary>
+    /// <summary>The <see cref="Angle"/> of magnitude 1, when expressed in <see cref="UnitOfAngle.Milliradian"/>.</summary>
     public static Angle OneMilliradian { get; } = UnitOfAngle.Milliradian.Angle;
-    /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Degree"/>.</summary>
+    /// <summary>The <see cref="Angle"/> of magnitude 1, when expressed in <see cref="UnitOfAngle.Degree"/>.</summary>
     public static Angle OneDegree { get; } = UnitOfAngle.Degree.Angle;
-    /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Gradian"/>.</summary>
+    /// <summary>The <see cref="Angle"/> of magnitude 1, when expressed in <see cref="UnitOfAngle.Gradian"/>.</summary>
     public static Angle OneGradian { get; } = UnitOfAngle.Gradian.Angle;
-    /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Arcminute"/>.</summary>
+    /// <summary>The <see cref="Angle"/> of magnitude 1, when expressed in <see cref="UnitOfAngle.Arcminute"/>.</summary>
     public static Angle OneArcminute { get; } = UnitOfAngle.Arcminute.Angle;
-    /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Arcsecond"/>.</summary>
+    /// <summary>The <see cref="Angle"/> of magnitude 1, when expressed in <see cref="UnitOfAngle.Arcsecond"/>.</summary>
     public static Angle OneArcsecond { get; } = UnitOfAngle.Arcsecond.Angle;
-    /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Milliarcsecond"/>.</summary>
+    /// <summary>The <see cref="Angle"/> of magnitude 1, when expressed in <see cref="UnitOfAngle.Milliarcsecond"/>.</summary>
     public static Angle OneMilliarcsecond { get; } = UnitOfAngle.Milliarcsecond.Angle;
-    /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Microarcsecond"/>.</summary>
+    /// <summary>The <see cref="Angle"/> of magnitude 1, when expressed in <see cref="UnitOfAngle.Microarcsecond"/>.</summary>
     public static Angle OneMicroarcsecond { get; } = UnitOfAngle.Microarcsecond.Angle;
-    /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Turn"/>.</summary>
+    /// <summary>The <see cref="Angle"/> of magnitude 1, when expressed in <see cref="UnitOfAngle.Turn"/>.</summary>
     public static Angle OneTurn { get; } = UnitOfAngle.Turn.Angle;
-    /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.HalfTurn"/>.</summary>
+    /// <summary>The <see cref="Angle"/> of magnitude 1, when expressed in <see cref="UnitOfAngle.HalfTurn"/>.</summary>
     public static Angle OneHalfTurn { get; } = UnitOfAngle.HalfTurn.Angle;
-    /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.QuarterTurn"/>.</summary>
+    /// <summary>The <see cref="Angle"/> of magnitude 1, when expressed in <see cref="UnitOfAngle.QuarterTurn"/>.</summary>
     public static Angle OneQuarterTurn { get; } = UnitOfAngle.QuarterTurn.Angle;
-    /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Centiturn"/>.</summary>
+    /// <summary>The <see cref="Angle"/> of magnitude 1, when expressed in <see cref="UnitOfAngle.Centiturn"/>.</summary>
     public static Angle OneCentiturn { get; } = UnitOfAngle.Centiturn.Angle;
-    /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.Milliturn"/>.</summary>
+    /// <summary>The <see cref="Angle"/> of magnitude 1, when expressed in <see cref="UnitOfAngle.Milliturn"/>.</summary>
     public static Angle OneMilliturn { get; } = UnitOfAngle.Milliturn.Angle;
-    /// <summary>The <see cref="Angle"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngle.BinaryDegree"/>.</summary>
+    /// <summary>The <see cref="Angle"/> of magnitude 1, when expressed in <see cref="UnitOfAngle.BinaryDegree"/>.</summary>
     public static Angle OneBinaryDegree { get; } = UnitOfAngle.BinaryDegree.Angle;
 
     /// <summary>Computes <see cref="Angle"/> according to { √<paramref name="solidAngle"/> }.</summary>
@@ -361,7 +361,7 @@ public readonly partial record struct Angle :
     /// <param name="a">This <see cref="Angle"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="Angle"/> <paramref name="a"/>.</param>
     public static Rotation3 operator *(Angle a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Angle"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Angle"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="Rotation3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="Angle"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Angle"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -371,7 +371,7 @@ public readonly partial record struct Angle :
     /// <param name="a">This <see cref="Angle"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Angle"/> <paramref name="a"/>.</param>
     public static Rotation3 operator *(Angle a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Angle"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Angle"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Rotation3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Angle"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Angle"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -381,7 +381,7 @@ public readonly partial record struct Angle :
     /// <param name="a">This <see cref="Angle"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Angle"/> <paramref name="a"/>.</param>
     public static Rotation3 operator *(Angle a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Angle"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Angle"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Rotation3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Angle"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Angle"/> is multiplied by the values of <paramref name="a"/>.</param>

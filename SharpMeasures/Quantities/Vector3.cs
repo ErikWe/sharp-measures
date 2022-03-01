@@ -7,12 +7,18 @@ using System.Numerics;
 public readonly record struct Vector3 :
     IVector3Quantity,
     IScalableVector3Quantity<Vector3>,
+    INormalizableVector3Quantity<Vector3>,
+    ITransformableVector3Quantity<Vector3>,
     IAddableVector3Quantity<Vector3, Vector3>,
     ISubtractableVector3Quantity<Vector3, Vector3>,
     IMultiplicableVector3Quantity<Vector3, Scalar>,
     IDivisibleVector3Quantity<Vector3, Scalar>,
     IMultiplicableVector3Quantity<Unhandled3, Unhandled>,
     IDivisibleVector3Quantity<Unhandled3, Unhandled>,
+    IDotableVector3Quantity<Scalar, Vector3>,
+    IDotableVector3Quantity<Unhandled, Unhandled3>,
+    ICrossableVector3Quantity<Vector3, Vector3>,
+    ICrossableVector3Quantity<Unhandled3, Unhandled3>,
     IGenericallyMultiplicableVector3Quantity,
     IGenericallyDivisibleVector3Quantity,
     IGenericallyDotableVector3Quantity,
@@ -64,14 +70,17 @@ public readonly record struct Vector3 :
     /// <param name="transform">The <see cref="Vector3"/> is transformed by this <see cref="Matrix4x4"/>.</param>
     public Vector3 Transform(Matrix4x4 transform) => Maths.Vectors.Transform(this, transform);
 
+    /// <summary>Performs dot-multiplication of the <see cref="Vector3"/> by <paramref name="factor"/>, resulting in a
+    /// <see cref="Scalar"/> quantity.</summary>
+    /// <param name="factor">The original <see cref="Vector3"/> is dot-multiplied by this <see cref="Vector3"/>.</param>
+    public Scalar Dot(Vector3 factor) => new(Maths.Vectors.Dot(this, factor));
     /// <summary>Performs dot-multiplication of the <see cref="Vector3"/> by <paramref name="factor"/>, resulting in an
     /// <see cref="Unhandled"/> scalar quantity.</summary>
     /// <param name="factor">The <see cref="Vector3"/> is dot-multiplied by this <see cref="Vector3"/>.</param>
     public Unhandled Dot(Unhandled3 factor) => new(Maths.Vectors.Dot(this, factor));
-
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
-    public TProductScalarQuantity Dot<TProductScalarQuantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<Scalar, TProductScalarQuantity> factory)
+    public TProductScalarQuantity Dot<TProductScalarQuantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<double, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorVector3Quantity : IVector3Quantity
     {
@@ -89,13 +98,17 @@ public readonly record struct Vector3 :
         }
     }
 
+    /// <summary>Performs cross-multiplication of the <see cref="Vector3"/> by <paramref name="factor"/>, resulting in a
+    /// <cref see="Vector3"/>.</summary>
+    /// <param name="factor">The original <see cref="Vector3"/> is cross-multiplied by this <see cref="Vector3"/>.</param>
+    public Vector3 Cross(Vector3 factor) => new(Maths.Vectors.Cross(this, factor));
     /// <summary>Performs cross-multiplication of the <see cref="Vector3"/> by <paramref name="factor"/>, resulting in an
     /// <see cref="Unhandled3"/>.</summary>
     /// <param name="factor">The <see cref="Vector3"/> is cross-multiplied by this <see cref="Unhandled3"/>.</param>
     public Unhandled3 Cross(Unhandled3 factor) => new(Maths.Vectors.Cross(this, factor));
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
-    public TProductVector3Quantity Cross<TProductVector3Quantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<Vector3, TProductVector3Quantity> factory)
+    public TProductVector3Quantity Cross<TProductVector3Quantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<(double, double, double), TProductVector3Quantity> factory)
         where TProductVector3Quantity : IVector3Quantity
         where TFactorVector3Quantity : IVector3Quantity
     {
@@ -224,7 +237,7 @@ public readonly record struct Vector3 :
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
-    public TProductVector3Quantity Multiply<TProductVector3Quantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, double, double, TProductVector3Quantity> factory)
+    public TProductVector3Quantity Multiply<TProductVector3Quantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<(double, double, double), TProductVector3Quantity> factory)
         where TProductVector3Quantity : IVector3Quantity
         where TFactorScalarQuantity : IScalarQuantity
     {
@@ -238,13 +251,13 @@ public readonly record struct Vector3 :
         }
         else
         {
-            return factory(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+            return factory((X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude));
         }
     }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
-    public TQuotientVector3Quantity Divide<TQuotientVector3Quantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, double, double, TQuotientVector3Quantity> factory)
+    public TQuotientVector3Quantity Divide<TQuotientVector3Quantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<(double, double, double), TQuotientVector3Quantity> factory)
         where TQuotientVector3Quantity : IVector3Quantity
         where TDivisorScalarQuantity : IScalarQuantity
     {
@@ -258,7 +271,7 @@ public readonly record struct Vector3 :
         }
         else
         {
-            return factory(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
+            return factory((X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude));
         }
     }
 
@@ -267,25 +280,25 @@ public readonly record struct Vector3 :
     /// <param name="a">The <see cref="Vector3"/>, which is multiplied by <paramref name="b"/>.</param>
     /// <param name="b">This quantity is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
     /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity,
-    /// Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
+    /// Func{ValueTuple{double, double, double}, TProductVector3Quantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled3 operator *(Vector3 a, IScalarQuantity b) => a.Multiply(b, (x, y, z) => new Unhandled3(x, y, z));
+    public static Unhandled3 operator *(Vector3 a, IScalarQuantity b) => a.Multiply(b, (x) => new Unhandled3(x));
     /// <summary>Multiplication of the quantity <paramref name="a"/> by the <see cref="Vector3"/> <paramref name="b"/>
     /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="a">This quantity is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">The <see cref="Vector3"/>, which is multiplied by <paramref name="a"/>.</param>
     /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity,
-    /// Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
+    /// Func{ValueTuple{double, double, double}, TProductVector3Quantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled3 operator *(IScalarQuantity a, Vector3 b) => b.Multiply(a, (x, y, z) => new Unhandled3(x, y, z));
+    public static Unhandled3 operator *(IScalarQuantity a, Vector3 b) => b.Multiply(a, (x) => new Unhandled3(x));
     /// <summary>Division of the <see cref="Vector3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
     /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="a">The <see cref="Vector3"/>, which is divided by <paramref name="b"/>.</param>
     /// <param name="b">The <see cref="Vector3"/> <paramref name="a"/> is divided by this quantity.</param>
     /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientVector3Quantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
-    /// Func{double, double, double, TQuotientVector3Quantity})"/>.</remarks>
+    /// Func{ValueTuple{double, double, double}, TQuotientVector3Quantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled3 operator /(Vector3 a, IScalarQuantity b) => a.Divide(b, (x, y, z) => new Unhandled3(x, y, z));
+    public static Unhandled3 operator /(Vector3 a, IScalarQuantity b) => a.Divide(b, (x) => new Unhandled3(x));
 
     /// <summary>Converts the <see cref="Vector3"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with
     /// values (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>).</summary>

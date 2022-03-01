@@ -26,7 +26,7 @@ using System.Numerics;
 /// </item>
 /// <item>
 /// <code>
-/// <see cref="AngularMomentum3"/> e = <see cref="SpinAngularMomentum3.AsAngularMomentum3"/>;
+/// <see cref="AngularMomentum3"/> e = <see cref="SpinAngularMomentum3.AsAngularMomentum"/>;
 /// </code>
 /// </item>
 /// </list>
@@ -161,10 +161,10 @@ public readonly partial record struct AngularMomentum3 :
 
     /// <summary>Converts the <see cref="AngularMomentum3"/> to an instance of the associated quantity <see cref="OrbitalAngularMomentum3"/>, with components of
     /// equal magnitudes.</summary>
-    public OrbitalAngularMomentum3 AsOrbitalAngularMomentum3() => new(X, Y, Z);
+    public OrbitalAngularMomentum3 AsOrbitalAngularMomentum => new(X, Y, Z);
     /// <summary>Converts the <see cref="AngularMomentum3"/> to an instance of the associated quantity <see cref="SpinAngularMomentum3"/>, with components of
     /// equal magnitudes.</summary>
-    public SpinAngularMomentum3 AsSpinAngularMomentum3() => new(X, Y, Z);
+    public SpinAngularMomentum3 AsSpinAngularMomentum => new(X, Y, Z);
 
     /// <summary>Retrieves the magnitudes of the components of the <see cref="AngularMomentum3"/>, expressed in <see cref="UnitOfAngularMomentum.KilogramSquareMetrePerSecond"/>.</summary>
     public Vector3 KilogramSquareMetresPerSecond => InUnit(UnitOfAngularMomentum.KilogramSquareMetrePerSecond);
@@ -195,7 +195,7 @@ public readonly partial record struct AngularMomentum3 :
     public Unhandled Dot(Unhandled3 factor) => new(Maths.Vectors.Dot(this, factor));
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
-    public TProductScalarQuantity Dot<TProductScalarQuantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<Scalar, TProductScalarQuantity> factory)
+    public TProductScalarQuantity Dot<TProductScalarQuantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<double, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorVector3Quantity : IVector3Quantity
     {
@@ -214,7 +214,7 @@ public readonly partial record struct AngularMomentum3 :
     }
 
     /// <summary>Performs cross-multiplication of the <see cref="AngularMomentum3"/> by <paramref name="factor"/>, resulting in a
-    /// <cref see="AngularMomentum3"/>.</summary>
+    /// <see cref="AngularMomentum3"/>.</summary>
     /// <param name="factor">The <see cref="AngularMomentum3"/> is cross-multiplied by this <see cref="Vector3"/>.</param>
     public AngularMomentum3 Cross(Vector3 factor) => new(Maths.Vectors.Cross(this, factor));
     /// <summary>Performs cross-multiplication of the <see cref="AngularMomentum3"/> by <paramref name="factor"/>, resulting in a
@@ -223,7 +223,7 @@ public readonly partial record struct AngularMomentum3 :
     public Unhandled3 Cross(Unhandled3 factor) => new(Maths.Vectors.Cross(this, factor));
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
-    public TProductVector3Quantity Cross<TProductVector3Quantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<Vector3, TProductVector3Quantity> factory)
+    public TProductVector3Quantity Cross<TProductVector3Quantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<(double, double, double), TProductVector3Quantity> factory)
         where TProductVector3Quantity : IVector3Quantity
         where TFactorVector3Quantity : IVector3Quantity
     {
@@ -349,7 +349,7 @@ public readonly partial record struct AngularMomentum3 :
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
-    public TProductVector3Quantity Multiply<TProductVector3Quantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, double, double, TProductVector3Quantity> factory)
+    public TProductVector3Quantity Multiply<TProductVector3Quantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<(double, double, double), TProductVector3Quantity> factory)
         where TProductVector3Quantity : IVector3Quantity
         where TFactorScalarQuantity : IScalarQuantity
     {
@@ -363,13 +363,13 @@ public readonly partial record struct AngularMomentum3 :
         }
         else
         {
-            return factory(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+            return factory((X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude));
         }
     }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
-    public TQuotientVector3Quantity Divide<TQuotientVector3Quantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, double, double, TQuotientVector3Quantity> factory)
+    public TQuotientVector3Quantity Divide<TQuotientVector3Quantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<(double, double, double), TQuotientVector3Quantity> factory)
         where TQuotientVector3Quantity : IVector3Quantity
         where TDivisorScalarQuantity : IScalarQuantity
     {
@@ -383,7 +383,7 @@ public readonly partial record struct AngularMomentum3 :
         }
         else
         {
-            return factory(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
+            return factory((X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude));
         }
     }
 
@@ -392,25 +392,25 @@ public readonly partial record struct AngularMomentum3 :
     /// <param name="a">The <see cref="AngularMomentum3"/>, which is multiplied by <paramref name="b"/>.</param>
     /// <param name="b">This quantity is multiplied by the <see cref="AngularMomentum3"/> <paramref name="a"/>.</param>
     /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity,
-    /// Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
+    /// Func{ValueTuple{double, double, double}, TProductVector3Quantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled3 operator *(AngularMomentum3 a, IScalarQuantity b) => a.Multiply(b, (x, y, z) => new Unhandled3(x, y, z));
+    public static Unhandled3 operator *(AngularMomentum3 a, IScalarQuantity b) => a.Multiply(b, (x) => new Unhandled3(x));
     /// <summary>Multiplication of the quantity <paramref name="a"/> by the <see cref="AngularMomentum3"/> <paramref name="b"/>
     /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="a">This quantity is multiplied by the <see cref="AngularMomentum3"/> <paramref name="b"/>.</param>
     /// <param name="b">The <see cref="AngularMomentum3"/>, which is multiplied by <paramref name="a"/>.</param>
     /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity,
-    /// Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
+    /// Func{ValueTuple{double, double, double}, TProductVector3Quantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled3 operator *(IScalarQuantity a, AngularMomentum3 b) => b.Multiply(a, (x, y, z) => new Unhandled3(x, y, z));
+    public static Unhandled3 operator *(IScalarQuantity a, AngularMomentum3 b) => b.Multiply(a, (x) => new Unhandled3(x));
     /// <summary>Division of the <see cref="AngularMomentum3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
     /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="a">The <see cref="AngularMomentum3"/>, which is divided by <paramref name="b"/>.</param>
     /// <param name="b">The <see cref="AngularMomentum3"/> <paramref name="a"/> is divided by this quantity.</param>
     /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientVector3Quantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
-    /// Func{double, double, double, TQuotientVector3Quantity})"/>.</remarks>
+    /// Func{ValueTuple{double, double, double}, TQuotientVector3Quantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled3 operator /(AngularMomentum3 a, IScalarQuantity b) => a.Divide(b, (x, y, z) => new Unhandled3(x, y, z));
+    public static Unhandled3 operator /(AngularMomentum3 a, IScalarQuantity b) => a.Divide(b, (x) => new Unhandled3(x));
 
     /// <summary>Converts the <see cref="AngularMomentum3"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with 
     /// values (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>

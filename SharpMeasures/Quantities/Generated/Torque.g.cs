@@ -63,7 +63,7 @@ public readonly partial record struct Torque :
     /// <summary>The zero-valued <see cref="Torque"/>.</summary>
     public static Torque Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Torque"/> with magnitude 1, when expressed in unit <see cref="UnitOfTorque.NewtonMetre"/>.</summary>
+    /// <summary>The <see cref="Torque"/> of magnitude 1, when expressed in <see cref="UnitOfTorque.NewtonMetre"/>.</summary>
     public static Torque OneNewtonMetre { get; } = UnitOfTorque.NewtonMetre.Torque;
 
     /// <summary>The magnitude of the <see cref="Torque"/>, in SI units.</summary>
@@ -325,7 +325,7 @@ public readonly partial record struct Torque :
     /// <param name="a">This <see cref="Torque"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="Torque"/> <paramref name="a"/>.</param>
     public static Torque3 operator *(Torque a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Torque"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Torque"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="Torque3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="Torque"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Torque"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -335,7 +335,7 @@ public readonly partial record struct Torque :
     /// <param name="a">This <see cref="Torque"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Torque"/> <paramref name="a"/>.</param>
     public static Torque3 operator *(Torque a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Torque"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Torque"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Torque3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Torque"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Torque"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -345,7 +345,7 @@ public readonly partial record struct Torque :
     /// <param name="a">This <see cref="Torque"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Torque"/> <paramref name="a"/>.</param>
     public static Torque3 operator *(Torque a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Torque"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Torque"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Torque3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Torque"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Torque"/> is multiplied by the values of <paramref name="a"/>.</param>

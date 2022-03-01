@@ -1,0 +1,50 @@
+#nullable enable
+
+namespace ErikWe.SharpMeasures.Tests.Cases.QuantityTests.#Quantity##Dimensionality#Tests;
+
+using ErikWe.SharpMeasures.Quantities;
+using ErikWe.SharpMeasures.Tests.Datasets;
+
+using System;
+
+using Xunit;
+
+public class CrossTests
+{
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, Vector#Dimensionality#Dataset>))]
+    public void WithVector#Dimensionality#(#Quantity##Dimensionality# quantity, Vector#Dimensionality# vector)
+    {
+        Utility.QuantityTests.CrossTests.Vector#Dimensionality#_ShouldMatchDefinition<#Quantity##Dimensionality#, #Quantity##Dimensionality#, Vector#Dimensionality#>(quantity, vector);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, Unhandled#Dimensionality#Dataset>))]
+    public void WithUnhandled#Dimensionality#(#Quantity##Dimensionality# quantity, Unhandled#Dimensionality# vector)
+    {
+        Utility.QuantityTests.CrossTests.Vector#Dimensionality#_ShouldMatchDefinition<#Quantity##Dimensionality#, Unhandled#Dimensionality#, Unhandled#Dimensionality#>(quantity, vector);
+    }
+
+    [Fact]
+    public void Generic_NullFactory_ShouldThrowArgumentNull()
+    {
+        Func<(double, double, double), Unhandled#Dimensionality#>? factory = null;
+
+        Assert.Throws<ArgumentNullException>(() => #Quantity##Dimensionality#.Zero.Cross(Vector#Dimensionality#.Zero, factory!));
+    }
+
+    [Fact]
+    public void Generic_NullFactor_ShouldThrowArgumentNull()
+    {
+        IVector#Dimensionality#Quantity? factor = null;
+
+        Assert.Throws<ArgumentNullException>(() => #Quantity##Dimensionality#.Zero.Cross(factor!, (x) => new Unhandled#Dimensionality#(x)));
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, Vector#Dimensionality#Dataset>))]
+    public void Generic(#Quantity##Dimensionality# quantity, IVector#Dimensionality#Quantity vector)
+    {
+        Utility.QuantityTests.CrossTests.Vector#Dimensionality#_ShouldMatchDefinition(quantity, vector, (x) => new Unhandled#Dimensionality#(x));
+    }
+}

@@ -230,7 +230,32 @@ public class MathOperationsTests
     }
 
     [Fact]
+    public void MultiplyGeneric_NullFactory_ShouldThrowArgumentNull()
+    {
+        Func<double, Unhandled>? factory = null;
+
+        Assert.Throws<ArgumentNullException>(() => Unhandled.Zero.Multiply(Scalar.Zero, factory!));
+    }
+
+    [Fact]
     public void MultiplyGeneric_NullFactor_ShouldThrowArgumentNull()
+    {
+        IScalarQuantity? factor = null;
+
+        Assert.Throws<ArgumentNullException>(() => Unhandled.Zero.Multiply(factor!, (x) => new Unhandled(x)));
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<UnhandledDataset, ScalarDataset>))]
+    public void MultiplyGeneric_MagnitudeShouldEqualMultiplication(Unhandled quantity, IScalarQuantity factor)
+    {
+        Unhandled result = quantity.Multiply(factor, (x) => new Unhandled(x));
+
+        Assert.Equal(quantity.Magnitude * factor.Magnitude, result.Magnitude, 2);
+    }
+
+    [Fact]
+    public void MultiplySemiGeneric_NullFactor_ShouldThrowArgumentNull()
     {
         IScalarQuantity? factor = null;
 
@@ -239,7 +264,7 @@ public class MathOperationsTests
 
     [Theory]
     [ClassData(typeof(GenericDataset<UnhandledDataset, ScalarDataset>))]
-    public void MultiplyGeneric_MagnitudeShouldEqualMultiplication(Unhandled quantity, IScalarQuantity factor)
+    public void MultiplySemiGeneric_MagnitudeShouldEqualMultiplication(Unhandled quantity, IScalarQuantity factor)
     {
         Unhandled result = quantity.Multiply(factor);
 
@@ -247,7 +272,32 @@ public class MathOperationsTests
     }
 
     [Fact]
+    public void DivideGeneric_NullFactory_ShouldThrowArgumentNull()
+    {
+        Func<double, Unhandled>? factory = null;
+
+        Assert.Throws<ArgumentNullException>(() => Unhandled.Zero.Divide(Scalar.Zero, factory!));
+    }
+
+    [Fact]
     public void DivideGeneric_NullDivisor_ShouldThrowArgumentNull()
+    {
+        IScalarQuantity? divisor = null;
+
+        Assert.Throws<ArgumentNullException>(() => Unhandled.Zero.Divide(divisor!, (x) => new Unhandled(x)));
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<UnhandledDataset, ScalarDataset>))]
+    public void DivideGeneric_MagnitudeShouldEqualDivision(Unhandled quantity, IScalarQuantity divisor)
+    {
+        Unhandled result = quantity.Divide(divisor, (x) => new Unhandled(x));
+
+        Assert.Equal(quantity.Magnitude / divisor.Magnitude, result.Magnitude, 2);
+    }
+
+    [Fact]
+    public void DivideSemiGeneric_NullDivisor_ShouldThrowArgumentNull()
     {
         IScalarQuantity? divisor = null;
 
@@ -256,7 +306,7 @@ public class MathOperationsTests
 
     [Theory]
     [ClassData(typeof(GenericDataset<UnhandledDataset, ScalarDataset>))]
-    public void DivideGeneric_MagnitudeShouldEqualDivision(Unhandled quantity, IScalarQuantity divisor)
+    public void DivideSemiGeneric_MagnitudeShouldEqualDivision(Unhandled quantity, IScalarQuantity divisor)
     {
         Unhandled result = quantity.Divide(divisor);
 
@@ -290,10 +340,10 @@ public class MathOperationsTests
 
     [Theory]
     [ClassData(typeof(GenericDataset<UnhandledDataset, ScalarDataset>))]
-    public void DivideIScalar_MagnitudeShouldEqualDivision(Unhandled quantity, IScalarQuantity factor)
+    public void DivideIScalar_MagnitudeShouldEqualDivision(Unhandled quantity, IScalarQuantity divisor)
     {
-        Unhandled result = quantity / factor;
+        Unhandled result = quantity / divisor;
 
-        Assert.Equal(quantity.Magnitude / factor.Magnitude, result.Magnitude, 2);
+        Assert.Equal(quantity.Magnitude / divisor.Magnitude, result.Magnitude, 2);
     }
 }

@@ -1,0 +1,27 @@
+#nullable enable
+
+namespace ErikWe.SharpMeasures.Tests.Cases.QuantityTests.#Quantity##Dimensionality#Tests;
+
+using ErikWe.SharpMeasures.Quantities;
+using ErikWe.SharpMeasures.Tests.Datasets;
+using ErikWe.SharpMeasures.Units;
+
+using Xunit;
+
+public class InUnitsTests
+{
+    [Theory]
+    [ClassData(typeof(GenericDataset<Vector#Dimensionality#Dataset, #Unit#Dataset>))]
+    public void InUnit(Vector#Dimensionality# expected, #Unit# unit)
+    {
+        #Quantity##Dimensionality# quantity = new(expected, unit);
+
+        Vector#Dimensionality# actual = quantity.InUnit(unit);
+
+        Utility.AssertExtra.AssertEqualComponents(expected, actual);
+    }
+
+#Constants#
+
+#Units#
+}

@@ -408,7 +408,7 @@ export class ScalarGenerator {
 
     private composeMagnitudeFromUnitDoubleText(scalar: ScalarQuantity): string {
         if (scalar.unitBias === true) {
-            return '(magnitude * #UnitVariable#.#UnbiasedQuantity#.Magnitude) - #UnitVariable#.Offset'
+            return '(magnitude - #UnitVariable#.Offset) * #UnitVariable#.#UnbiasedQuantity#.Magnitude'
         } else if (getUnit(this.definitionReader.definitions, scalar).bias) {
             return 'magnitude * #UnitVariable#.#UnbiasedQuantity#.Magnitude'
         } else {
@@ -418,7 +418,7 @@ export class ScalarGenerator {
 
     private composeQuantityToUnitText(scalar: ScalarQuantity): string {
         if (scalar.unitBias === true) {
-            return '(#quantity#.Magnitude + #UnitVariable#.Offset) / #UnitVariable#.#UnbiasedQuantity#.Magnitude'
+            return '#quantity#.Magnitude / #UnitVariable#.#UnbiasedQuantity#.Magnitude + #UnitVariable#.Offset'
         } else if (getUnit(this.definitionReader.definitions, scalar).bias) {
             return '#quantity#.Magnitude / #UnitVariable#.#UnbiasedQuantity#.Magnitude'
         } else {

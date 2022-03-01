@@ -43,7 +43,7 @@ public readonly partial record struct MomentOfInertia :
     /// <summary>The zero-valued <see cref="MomentOfInertia"/>.</summary>
     public static MomentOfInertia Zero { get; } = new(0);
 
-    /// <summary>The <see cref="MomentOfInertia"/> with magnitude 1, when expressed in unit <see cref="UnitOfMomentOfInertia.KilogramSquareMetre"/>.</summary>
+    /// <summary>The <see cref="MomentOfInertia"/> of magnitude 1, when expressed in <see cref="UnitOfMomentOfInertia.KilogramSquareMetre"/>.</summary>
     public static MomentOfInertia OneKilogramSquareMetre { get; } = UnitOfMomentOfInertia.KilogramSquareMetre.MomentOfInertia;
 
     /// <summary>The magnitude of the <see cref="MomentOfInertia"/>, in SI units.</summary>

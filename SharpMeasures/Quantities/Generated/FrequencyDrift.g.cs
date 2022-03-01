@@ -44,9 +44,9 @@ public readonly partial record struct FrequencyDrift :
     /// <summary>The zero-valued <see cref="FrequencyDrift"/>.</summary>
     public static FrequencyDrift Zero { get; } = new(0);
 
-    /// <summary>The <see cref="FrequencyDrift"/> with magnitude 1, when expressed in unit <see cref="UnitOfFrequencyDrift.HertzPerSecond"/>.</summary>
+    /// <summary>The <see cref="FrequencyDrift"/> of magnitude 1, when expressed in <see cref="UnitOfFrequencyDrift.HertzPerSecond"/>.</summary>
     public static FrequencyDrift OneHertzPerSecond { get; } = UnitOfFrequencyDrift.HertzPerSecond.FrequencyDrift;
-    /// <summary>The <see cref="FrequencyDrift"/> with magnitude 1, when expressed in unit <see cref="UnitOfFrequencyDrift.PerSecondSquared"/>.</summary>
+    /// <summary>The <see cref="FrequencyDrift"/> of magnitude 1, when expressed in <see cref="UnitOfFrequencyDrift.PerSecondSquared"/>.</summary>
     public static FrequencyDrift OnePerSecondSquared { get; } = UnitOfFrequencyDrift.PerSecondSquared.FrequencyDrift;
 
     /// <summary>Computes <see cref="FrequencyDrift"/> according to { 1 / <paramref name="timeSquared"/> }.</summary>

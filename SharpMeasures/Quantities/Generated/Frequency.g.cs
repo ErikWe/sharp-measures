@@ -44,21 +44,21 @@ public readonly partial record struct Frequency :
     /// <summary>The zero-valued <see cref="Frequency"/>.</summary>
     public static Frequency Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Frequency"/> with magnitude 1, when expressed in unit <see cref="UnitOfFrequency.PerSecond"/>.</summary>
+    /// <summary>The <see cref="Frequency"/> of magnitude 1, when expressed in <see cref="UnitOfFrequency.PerSecond"/>.</summary>
     public static Frequency OnePerSecond { get; } = UnitOfFrequency.PerSecond.Frequency;
-    /// <summary>The <see cref="Frequency"/> with magnitude 1, when expressed in unit <see cref="UnitOfFrequency.PerMinute"/>.</summary>
+    /// <summary>The <see cref="Frequency"/> of magnitude 1, when expressed in <see cref="UnitOfFrequency.PerMinute"/>.</summary>
     public static Frequency OnePerMinute { get; } = UnitOfFrequency.PerMinute.Frequency;
-    /// <summary>The <see cref="Frequency"/> with magnitude 1, when expressed in unit <see cref="UnitOfFrequency.PerHour"/>.</summary>
+    /// <summary>The <see cref="Frequency"/> of magnitude 1, when expressed in <see cref="UnitOfFrequency.PerHour"/>.</summary>
     public static Frequency OnePerHour { get; } = UnitOfFrequency.PerHour.Frequency;
-    /// <summary>The <see cref="Frequency"/> with magnitude 1, when expressed in unit <see cref="UnitOfFrequency.Hertz"/>.</summary>
+    /// <summary>The <see cref="Frequency"/> of magnitude 1, when expressed in <see cref="UnitOfFrequency.Hertz"/>.</summary>
     public static Frequency OneHertz { get; } = UnitOfFrequency.Hertz.Frequency;
-    /// <summary>The <see cref="Frequency"/> with magnitude 1, when expressed in unit <see cref="UnitOfFrequency.Kilohertz"/>.</summary>
+    /// <summary>The <see cref="Frequency"/> of magnitude 1, when expressed in <see cref="UnitOfFrequency.Kilohertz"/>.</summary>
     public static Frequency OneKilohertz { get; } = UnitOfFrequency.Kilohertz.Frequency;
-    /// <summary>The <see cref="Frequency"/> with magnitude 1, when expressed in unit <see cref="UnitOfFrequency.Megahertz"/>.</summary>
+    /// <summary>The <see cref="Frequency"/> of magnitude 1, when expressed in <see cref="UnitOfFrequency.Megahertz"/>.</summary>
     public static Frequency OneMegahertz { get; } = UnitOfFrequency.Megahertz.Frequency;
-    /// <summary>The <see cref="Frequency"/> with magnitude 1, when expressed in unit <see cref="UnitOfFrequency.Gigahertz"/>.</summary>
+    /// <summary>The <see cref="Frequency"/> of magnitude 1, when expressed in <see cref="UnitOfFrequency.Gigahertz"/>.</summary>
     public static Frequency OneGigahertz { get; } = UnitOfFrequency.Gigahertz.Frequency;
-    /// <summary>The <see cref="Frequency"/> with magnitude 1, when expressed in unit <see cref="UnitOfFrequency.Terahertz"/>.</summary>
+    /// <summary>The <see cref="Frequency"/> of magnitude 1, when expressed in <see cref="UnitOfFrequency.Terahertz"/>.</summary>
     public static Frequency OneTerahertz { get; } = UnitOfFrequency.Terahertz.Frequency;
 
     /// <summary>Computes <see cref="Frequency"/> according to { 1 / <paramref name="time"/> }.</summary>

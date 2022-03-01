@@ -23,5 +23,5 @@
 #/Define:ExampleDerivedMethod#
 
 #Define:ExampleFromAssociated(quantity, dimensionality, variable)#
-<see cref="#Param:quantity#"/> #Param:variable# = <see cref="Impulse#Param:dimensionality#.As#Param:quantity#"/>;
+<see cref="#Param:quantity#"/> #Param:variable# = <see cref="Impulse#Param:dimensionality#.AsMomentum"/>;
 #/Define:ExampleFromAssociated#

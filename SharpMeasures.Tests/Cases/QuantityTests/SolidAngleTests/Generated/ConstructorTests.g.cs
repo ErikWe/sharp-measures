@@ -6,6 +6,8 @@ using ErikWe.SharpMeasures.Quantities;
 using ErikWe.SharpMeasures.Tests.Datasets;
 using ErikWe.SharpMeasures.Units;
 
+using System;
+
 using Xunit;
 
 public class ConstructorTests
@@ -128,5 +130,23 @@ public class ConstructorTests
         SolidAngle quantity = (SolidAngle)a;
 
         Assert.Equal(a, quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(AngleDataset))]
+    public void FromAngle_ShouldMatchExpression(Angle sourceQuantity)
+    {
+        SolidAngle quantity = SolidAngle.From(sourceQuantity);
+
+        Assert.Equal(Math.Pow(sourceQuantity.Magnitude, 2), quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<AngleDataset, AngleDataset>))]
+    public void FromTwoAngle_ShouldMatchExpression(Angle sourceQuantity1, Angle sourceQuantity2)
+    {
+        SolidAngle quantity = SolidAngle.From(sourceQuantity1, sourceQuantity2);
+
+        Assert.Equal(sourceQuantity1.Magnitude * sourceQuantity2.Magnitude, quantity.Magnitude, 2);
     }
 }

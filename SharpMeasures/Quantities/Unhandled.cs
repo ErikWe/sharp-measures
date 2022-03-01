@@ -17,7 +17,9 @@ public readonly record struct Unhandled :
     IMultiplicableScalarQuantity<Unhandled, Scalar>,
     IDivisibleScalarQuantity<Unhandled, Scalar>,
     IMultiplicableScalarQuantity<Unhandled, Unhandled>,
-    IDivisibleScalarQuantity<Unhandled, Unhandled>
+    IDivisibleScalarQuantity<Unhandled, Unhandled>,
+    IGenericallyMultiplicableScalarQuantity,
+    IGenericallyDivisibleScalarQuantity
 {
     /// <summary>A zero-magnitude <see cref="Unhandled"/> quantity.</summary>
     public static Unhandled Zero { get; } = new(0);
@@ -176,11 +178,31 @@ public readonly record struct Unhandled :
     /// <param name="y">This value is used to divide the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
     public static Unhandled operator /(Unhandled x, Scalar y) => x.Divide(y);
 
-    /// <summary>Multiplies the <see cref="Unhandled"/> quantity by <paramref name="factor"/> of type <typeparamref name="TScalarQuantity"/>.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which this <see cref="Unhandled"/> quantity is multiplied.</typeparam>
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"></exception>
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+        where TProductScalarQuantity : IScalarQuantity
+        where TFactorScalarQuantity : IScalarQuantity
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else if (factor == null)
+        {
+            throw new ArgumentNullException(nameof(factor));
+        }
+        else
+        {
+            return factory(Magnitude * factor.Magnitude);
+        }
+    }
+
+    /// <summary>Multiplies the <see cref="Unhandled"/> quantity by <paramref name="factor"/> of type <typeparamref name="TFactorScalarQuantity"/>.</summary>
+    /// <typeparam name="TFactorScalarQuantity">The type of the quantity by which this <see cref="Unhandled"/> quantity is multiplied.</typeparam>
     /// <param name="factor">The <see cref="Unhandled"/> quantity is multiplied by this quantity.</param>
     /// <exception cref="ArgumentNullException"/>
-    public Unhandled Multiply<TScalarQuantity>(TScalarQuantity factor) where TScalarQuantity : IScalarQuantity
+    public Unhandled Multiply<TFactorScalarQuantity>(TFactorScalarQuantity factor) where TFactorScalarQuantity : IScalarQuantity
     {
         if (factor == null)
         {
@@ -191,11 +213,32 @@ public readonly record struct Unhandled :
             return new(Magnitude * factor.Magnitude);
         }
     }
-    /// <summary>Divides the <see cref="Unhandled"/> quantity by <paramref name="divisor"/> of type <typeparamref name="TScalarQuantity"/>.</summary>
-    /// <typeparam name="TScalarQuantity">The type of the quantity by which this <see cref="Unhandled"/> quantity is divided.</typeparam>
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"></exception>
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+        where TQuotientScalarQuantity : IScalarQuantity
+        where TDivisorScalarQuantity : IScalarQuantity
+    {
+        if (factory == null)
+        {
+            throw new ArgumentNullException(nameof(factory));
+        }
+        else if (divisor == null)
+        {
+            throw new ArgumentNullException(nameof(divisor));
+        }
+        else
+        {
+            return factory(Magnitude / divisor.Magnitude);
+        }
+    }
+
+    /// <summary>Divides the <see cref="Unhandled"/> quantity by <paramref name="divisor"/> of type <typeparamref name="TFactorScalarQuantity"/>.</summary>
+    /// <typeparam name="TFactorScalarQuantity">The type of the quantity by which this <see cref="Unhandled"/> quantity is divided.</typeparam>
     /// <param name="divisor">The <see cref="Unhandled"/> quantity is divided by this quantity.</param>
     /// <exception cref="ArgumentNullException"/>
-    public Unhandled Divide<TScalarQuantity>(TScalarQuantity divisor) where TScalarQuantity : IScalarQuantity
+    public Unhandled Divide<TFactorScalarQuantity>(TFactorScalarQuantity divisor) where TFactorScalarQuantity : IScalarQuantity
     {
         if (divisor == null)
         {
@@ -206,6 +249,7 @@ public readonly record struct Unhandled :
             return new(Magnitude / divisor.Magnitude);
         }
     }
+
     /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="x"/> by the quantity <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Unhandled"/> quantity, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
@@ -216,6 +260,39 @@ public readonly record struct Unhandled :
     /// <param name="y">The <see cref="Unhandled"/> quantity <paramref name="x"/> is divided by this quantity.</param>
     /// <remarks>To avoid boxing, prefer <see cref="Multiply{TFactorScalarQuantity}(TFactorScalarQuantity)"/>.</remarks>
     public static Unhandled operator /(Unhandled x, IScalarQuantity y) => x.Divide(y);
+
+    /// <summary>Multiplicates the <see cref="Unhandled"/> quantity with the <see cref="Vector3"/> <paramref name="factor"/> to produce
+    /// an <see cref="Unhandled3"/>.</summary>
+    /// <param name="factor">This <see cref="Vector3"/> is multiplied by the <see cref="Unhandled"/> quantity.</param>
+    public Unhandled3 Multiply(Vector3 factor) => new(factor * Magnitude);
+    /// <summary>Multiplicates the <see cref="Unhandled"/> quantity with the values of <paramref name="components"/> to produce
+    /// an <see cref="Unhandled3"/>.</summary>
+    /// <param name="components">These values are multiplied by the <see cref="Unhandled"/> quantity.</param>
+    public Unhandled3 Multiply((double x, double y, double z) components) => Multiply(new Vector3(components));
+    /// <summary>Multiplicates the <see cref="Unhandled"/> quantity with the values of <paramref name="components"/> to produce
+    /// an <see cref="Unhandled3"/>.</summary>
+    /// <param name="components">These values are multiplied by the <see cref="Unhandled"/>.</param>
+    public Unhandled3 Multiply((Scalar x, Scalar y, Scalar z) components) => Multiply(new Vector3(components));
+    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="a"/> with the <see cref="Vector3"/> <paramref name="b"/>
+    /// to produce an <see cref="Unhandled3"/>.</summary>
+    /// <param name="a">This <see cref="Unhandled"/> quantity is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
+    /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="Unhandled"/> quantity <paramref name="a"/>.</param>
+    public static Unhandled3 operator *(Unhandled a, (double x, double y, double z) b) => a.Multiply(b);
+    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="b"/> with the values of <paramref name="a"/>
+    /// to produce an <see cref="Unhandled3"/>.</summary>
+    /// <param name="a">These values are multiplied by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
+    /// <param name="b">This <see cref="Unhandled"/> quantity is multiplied by the values of <paramref name="a"/>.</param>
+    public static Unhandled3 operator *((double x, double y, double z) a, Unhandled b) => b.Multiply(a);
+    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="a"/> with the values of <paramref name="b"/>
+    /// to produce an <see cref="Unhandled3"/>.</summary>
+    /// <param name="a">This <see cref="Unhandled"/> quantity is multiplied by the values of <paramref name="b"/>.</param>
+    /// <param name="b">These values are multiplied by the <see cref="Unhandled"/> quantity <paramref name="a"/>.</param>
+    public static Unhandled3 operator *(Unhandled a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
+    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="b"/> with the values of <paramref name="a"/>
+    /// to produce an <see cref="Unhandled3"/>.</summary>
+    /// <param name="a">These values are multiplied by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
+    /// <param name="b">This <see cref="Unhandled"/> quantity is multiplied by the values of <paramref name="a"/>.</param>
+    public static Unhandled3 operator *((Scalar x, Scalar y, Scalar z) a, Unhandled b) => b.Multiply(a);
 
     /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
     /// <param name="x">The method determines whether the magnitude of this <see cref="Unhandled"/> is less than that of <paramref name="y"/>.</param>

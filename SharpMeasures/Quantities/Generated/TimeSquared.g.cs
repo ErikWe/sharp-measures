@@ -44,7 +44,7 @@ public readonly partial record struct TimeSquared :
     /// <summary>The zero-valued <see cref="TimeSquared"/>.</summary>
     public static TimeSquared Zero { get; } = new(0);
 
-    /// <summary>The <see cref="TimeSquared"/> with magnitude 1, when expressed in unit <see cref="UnitOfTimeSquared.SquareSecond"/>.</summary>
+    /// <summary>The <see cref="TimeSquared"/> of magnitude 1, when expressed in <see cref="UnitOfTimeSquared.SquareSecond"/>.</summary>
     public static TimeSquared OneSquareSecond { get; } = UnitOfTimeSquared.SquareSecond.TimeSquared;
 
     /// <summary>Computes <see cref="TimeSquared"/> according to { 1 / <paramref name="frequencyDrift"/> }.</summary>

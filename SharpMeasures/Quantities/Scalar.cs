@@ -2,7 +2,7 @@
 
 using System;
 
-/// <summary>A pure scalar, consisting of only magnitude.</summary>
+/// <summary>A pure scalar, representing a magnitude.</summary>
 public readonly record struct Scalar :
     IComparable<Scalar>,
     IScalarQuantity,

@@ -61,13 +61,13 @@ public readonly partial record struct Acceleration :
     /// <summary>The constant <see cref="Acceleration"/> <see cref="UnitOfAcceleration.StandardGravity"/>.</summary>
     public static Acceleration StandardGravity { get; } = UnitOfAcceleration.StandardGravity.Acceleration;
 
-    /// <summary>The <see cref="Acceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.MetrePerSecondSquared"/>.</summary>
+    /// <summary>The <see cref="Acceleration"/> of magnitude 1, when expressed in <see cref="UnitOfAcceleration.MetrePerSecondSquared"/>.</summary>
     public static Acceleration OneMetrePerSecondSquared { get; } = UnitOfAcceleration.MetrePerSecondSquared.Acceleration;
-    /// <summary>The <see cref="Acceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.FootPerSecondSquared"/>.</summary>
+    /// <summary>The <see cref="Acceleration"/> of magnitude 1, when expressed in <see cref="UnitOfAcceleration.FootPerSecondSquared"/>.</summary>
     public static Acceleration OneFootPerSecondSquared { get; } = UnitOfAcceleration.FootPerSecondSquared.Acceleration;
-    /// <summary>The <see cref="Acceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.KilometrePerHourPerSecond"/>.</summary>
+    /// <summary>The <see cref="Acceleration"/> of magnitude 1, when expressed in <see cref="UnitOfAcceleration.KilometrePerHourPerSecond"/>.</summary>
     public static Acceleration OneKilometrePerHourPerSecond { get; } = UnitOfAcceleration.KilometrePerHourPerSecond.Acceleration;
-    /// <summary>The <see cref="Acceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.MilePerHourPerSecond"/>.</summary>
+    /// <summary>The <see cref="Acceleration"/> of magnitude 1, when expressed in <see cref="UnitOfAcceleration.MilePerHourPerSecond"/>.</summary>
     public static Acceleration OneMilePerHourPerSecond { get; } = UnitOfAcceleration.MilePerHourPerSecond.Acceleration;
 
     /// <summary>The magnitude of the <see cref="Acceleration"/>, in SI units.</summary>
@@ -333,7 +333,7 @@ public readonly partial record struct Acceleration :
     /// <param name="a">This <see cref="Acceleration"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="Acceleration"/> <paramref name="a"/>.</param>
     public static Acceleration3 operator *(Acceleration a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Acceleration"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Acceleration"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="Acceleration3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="Acceleration"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Acceleration"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -343,7 +343,7 @@ public readonly partial record struct Acceleration :
     /// <param name="a">This <see cref="Acceleration"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Acceleration"/> <paramref name="a"/>.</param>
     public static Acceleration3 operator *(Acceleration a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Acceleration"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Acceleration"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Acceleration3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Acceleration"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Acceleration"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -353,7 +353,7 @@ public readonly partial record struct Acceleration :
     /// <param name="a">This <see cref="Acceleration"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Acceleration"/> <paramref name="a"/>.</param>
     public static Acceleration3 operator *(Acceleration a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Acceleration"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Acceleration"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Acceleration3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Acceleration"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Acceleration"/> is multiplied by the values of <paramref name="a"/>.</param>

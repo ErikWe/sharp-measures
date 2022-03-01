@@ -19,7 +19,7 @@ public readonly record struct UnitOfTemperature
 
     /// <summary>Expresses <see cref="Quantities.Temperature"/> according to { 1.8 ∙ <see cref="Kelvin"/> }. Usually written as [°R or °Ra].</summary>
     /// <remarks>When used to express <see cref="Quantities.TemperatureDifference"/>, this is equivalent to <see cref="Fahrenheit"/>.</remarks>
-    public static UnitOfTemperature Rankine { get; } = Kelvin.ScaledBy(5/9);
+    public static UnitOfTemperature Rankine { get; } = Kelvin.ScaledBy(5d / 9);
     /// <summary>Expresses <see cref="Quantities.Temperature"/> according to { <see cref="Rankine"/> + 459.67 }. Usually written as [°F]</summary>
     /// <remarks>When used to express <see cref="Quantities.TemperatureDifference"/>, the offset of [459.67] has no effect - and the unit is
     /// equivalent to <see cref="Rankine"/>.</remarks>
@@ -44,18 +44,24 @@ public readonly record struct UnitOfTemperature
     /// <summary>Derives a new <see cref="UnitOfTemperature"/> from this instance, by prefixing the <see cref="MetricPrefix"/> <paramref name="prefix"/>.</summary>
     /// <param name="prefix">The <see cref="MetricPrefix"/> with which the new <see cref="UnitOfTemperature"/> is expressed.</param>
     /// <remarks>Any <see cref="MetricPrefix"/> applied to the original instance will be retained, essentially stacking the prefixes.</remarks>
-    public UnitOfTemperature WithPrefix(MetricPrefix prefix) => new(TemperatureDifference * prefix.Scale, Offset);
+    public UnitOfTemperature WithPrefix(MetricPrefix prefix) => ScaledBy(prefix.Scale);
     /// <summary>Derives a new <see cref="UnitOfTemperature"/> from this instance, through scaling by <paramref name="scale"/>.</summary>
     /// <param name="scale">The original <see cref="UnitOfTemperature"/> is scaled by this value.</param>
-    public UnitOfTemperature ScaledBy(Scalar scale) => new(TemperatureDifference * scale, Offset);
+    /// <remarks>When deriving <see cref="UnitOfTemperature"/>, the order of <see cref="ScaledBy(Scalar)"/> and <see cref="OffsetBy(Scalar)"/> matters.</remarks>
+    public UnitOfTemperature ScaledBy(Scalar scale) => ScaledBy(scale.Magnitude);
     /// <summary>Derives a new <see cref="UnitOfTemperature"/> from this instance, through scaling by <paramref name="scale"/>.</summary>
     /// <param name="scale">The original <see cref="UnitOfTemperature"/> is scaled by this value.</param>
-    public UnitOfTemperature ScaledBy(double scale) => new(TemperatureDifference * scale, Offset);
-    /// <summary>Derives a new <see cref="UnitOfTemperature"/> from this instance, with an offset of <paramref name="offset"/>.</summary>
-    /// <param name="offset">The original <see cref="UnitOfTemperature"/> is offset by this value.</param>
-    public UnitOfTemperature OffsetBy(Scalar offset) => new(TemperatureDifference, Offset + offset);
-    /// <summary>Derives a new <see cref="UnitOfTemperature"/> from this instance, with an offset of <paramref name="offset"/>.</summary>
-    /// <param name="offset">The original <see cref="UnitOfTemperature"/> is offset by this value.</param>
+    /// <remarks>When deriving <see cref="UnitOfTemperature"/>, the order of <see cref="ScaledBy(Scalar)"/> and <see cref="OffsetBy(Scalar)"/> matters.</remarks>
+    public UnitOfTemperature ScaledBy(double scale) => new(TemperatureDifference * scale, Offset / scale);
+    /// <summary>Derives a new <see cref="UnitOfTemperature"/> from this instance, with an offset of <paramref name="offset"/> - where the offset represents the
+    /// value of the new <see cref="UnitOfTemperature"/> when the original <see cref="UnitOfTemperature"/> is zero.</summary>
+    /// <param name="offset">The value of the new <see cref="UnitOfTemperature"/> when the original <see cref="UnitOfTemperature"/> is zero.</param>
+    /// <remarks>When deriving <see cref="UnitOfTemperature"/>, the order of <see cref="OffsetBy(Scalar)"/> and <see cref="ScaledBy(Scalar)"/> matters.</remarks>
+    public UnitOfTemperature OffsetBy(Scalar offset) => OffsetBy(offset.Magnitude);
+    /// <summary>Derives a new <see cref="UnitOfTemperature"/> from this instance, with an offset of <paramref name="offset"/> - where the offset represents the
+    /// value of the new <see cref="UnitOfTemperature"/> when the original <see cref="UnitOfTemperature"/> is zero.</summary>
+    /// <param name="offset">The value of the new <see cref="UnitOfTemperature"/> when the original <see cref="UnitOfTemperature"/> is zero.</param>
+    /// <remarks>When deriving <see cref="UnitOfTemperature"/>, the order of <see cref="OffsetBy(Scalar)"/> and <see cref="ScaledBy(Scalar)"/> matters.</remarks>
     public UnitOfTemperature OffsetBy(double offset) => new(TemperatureDifference, Offset + offset);
 
     /// <summary>Produces a formatted string constisting of the type followed by the represented <see cref="Quantities.Temperature"/>.</summary>

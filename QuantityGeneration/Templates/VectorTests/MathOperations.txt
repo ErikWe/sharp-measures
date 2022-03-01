@@ -1,0 +1,289 @@
+#nullable enable
+
+namespace ErikWe.SharpMeasures.Tests.Cases.QuantityTests.#Quantity##Dimensionality#Tests;
+
+using ErikWe.SharpMeasures.Quantities;
+using ErikWe.SharpMeasures.Tests.Datasets;
+
+using System;
+
+using Xunit;
+
+public class MathOperationsTests
+{
+    [Theory]
+    [ClassData(typeof(#Quantity##Dimensionality#Dataset))]
+    public void Plus_Method_ShouldBeUnchanged(#Quantity##Dimensionality# quantity)
+    {
+        #Quantity##Dimensionality# result = quantity.Plus();
+
+        Assert.Equal(quantity, result);
+    }
+
+    [Theory]
+    [ClassData(typeof(#Quantity##Dimensionality#Dataset))]
+    public void Plus_Operator_ShouldBeUnchanged(#Quantity##Dimensionality# quantity)
+    {
+        #Quantity##Dimensionality# result = +quantity;
+
+        Assert.Equal(quantity, result);
+    }
+
+    [Theory]
+    [ClassData(typeof(#Quantity##Dimensionality#Dataset))]
+    public void Negate_Method_ShouldBeScaledByMinusOne(#Quantity##Dimensionality# quantity)
+    {
+        #Quantity##Dimensionality# result = quantity.Negate();
+
+        Utility.AssertExtra.AssertEqualComponents(quantity * -1, result);
+    }
+
+    [Theory]
+    [ClassData(typeof(#Quantity##Dimensionality#Dataset))]
+    public void Negated_Operator_ShouldBeScaledByMinusOne(#Quantity##Dimensionality# quantity)
+    {
+        #Quantity##Dimensionality# result = -quantity;
+
+        Utility.AssertExtra.AssertEqualComponents(quantity * -1, result);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, UnhandledDataset>))]
+    public void MultiplyUnhandled_Method_MagnitudeShouldEqualMultiplication(#Quantity##Dimensionality# quantity, Unhandled factor)
+    {
+        Unhandled#Dimensionality# result = quantity.Multiply(factor);
+
+#AssertMultipliedMagnitude#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, UnhandledDataset>))]
+    public void MultiplyUnhandled_Operator_MagnitudeShouldEqualMultiplication(#Quantity##Dimensionality# quantity, Unhandled factor)
+    {
+        Unhandled#Dimensionality# resultLHS = quantity * factor;
+        Unhandled#Dimensionality# resultRHS = factor * quantity;
+
+#AssertMultipliedMagnitudeLHS#
+
+#AssertMultipliedMagnitudeRHS#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, UnhandledDataset>))]
+    public void DivideUnhandled_Method_MagnitudeShouldEqualDivision(#Quantity##Dimensionality# quantity, Unhandled divisor)
+    {
+        Unhandled#Dimensionality# result = quantity.Divide(divisor);
+
+#AssertDividedMagnitude#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, UnhandledDataset>))]
+    public void DivideUnhandled_Operator_MagnitudeShouldEqualDivision(#Quantity##Dimensionality# quantity, Unhandled divisor)
+    {
+        Unhandled#Dimensionality# result = quantity / divisor;
+
+#AssertDividedMagnitude#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, DoubleDataset>))]
+    public void RemainderDouble_Method_MagnitudeShouldEqualRemainder(#Quantity##Dimensionality# quantity, double divisor)
+    {
+        #Quantity##Dimensionality# result = quantity.Remainder(divisor);
+
+#AssertRemainder#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, DoubleDataset>))]
+    public void RemainderDouble_Operator_MagnitudeShouldEqualRemainder(#Quantity##Dimensionality# quantity, double divisor)
+    {
+        #Quantity##Dimensionality# result = quantity % divisor;
+
+#AssertRemainder#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, DoubleDataset>))]
+    public void MultiplyDouble_Method_MagnitudeShouldEqualMultiplication(#Quantity##Dimensionality# quantity, double factor)
+    {
+        #Quantity##Dimensionality# result = quantity.Multiply(factor);
+
+#AssertMultiplied#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, DoubleDataset>))]
+    public void MultiplyDouble_Operator_MagnitudeShouldEqualMultiplication(#Quantity##Dimensionality# quantity, double factor)
+    {
+        #Quantity##Dimensionality# resultLHS = quantity * factor;
+        #Quantity##Dimensionality# resultRHS = factor * quantity;
+
+#AssertMultipliedLHS#
+
+#AssertMultipliedRHS#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, DoubleDataset>))]
+    public void DivideDouble_Method_MagnitudeShouldEqualDivision(#Quantity##Dimensionality# quantity, double divisor)
+    {
+        #Quantity##Dimensionality# result = quantity.Divide(divisor);
+
+#AssertDivided#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, DoubleDataset>))]
+    public void DivideDouble_Operator_MagnitudeShouldEqualDivision(#Quantity##Dimensionality# quantity, double divisor)
+    {
+        #Quantity##Dimensionality# result = quantity / divisor;
+
+#AssertDivided#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, ScalarDataset>))]
+    public void RemainderScalar_Method_MagnitudeShouldEqualRemainder(#Quantity##Dimensionality# quantity, Scalar divisor)
+    {
+        #Quantity##Dimensionality# result = quantity.Remainder(divisor);
+
+#AssertRemainder#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, ScalarDataset>))]
+    public void RemainderScalar_Operator_MagnitudeShouldEqualRemainder(#Quantity##Dimensionality# quantity, Scalar divisor)
+    {
+        #Quantity##Dimensionality# result = quantity % divisor;
+
+#AssertRemainder#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, ScalarDataset>))]
+    public void MultiplyScalar_Method_MagnitudeShouldEqualMultiplication(#Quantity##Dimensionality# quantity, Scalar factor)
+    {
+        #Quantity##Dimensionality# result = quantity.Multiply(factor);
+
+#AssertMultiplied#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, ScalarDataset>))]
+    public void MultiplyScalar_Operator_MagnitudeShouldEqualMultiplication(#Quantity##Dimensionality# quantity, Scalar factor)
+    {
+        #Quantity##Dimensionality# resultLHS = quantity * factor;
+        #Quantity##Dimensionality# resultRHS = factor * quantity;
+
+#AssertMultipliedLHS#
+
+#AssertMultipliedRHS#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, ScalarDataset>))]
+    public void DivideScalar_Method_MagnitudeShouldEqualDivision(#Quantity##Dimensionality# quantity, Scalar divisor)
+    {
+        #Quantity##Dimensionality# result = quantity.Divide(divisor);
+
+#AssertDivided#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, ScalarDataset>))]
+    public void DivideScalar_Operator_MagnitudeShouldEqualDivision(#Quantity##Dimensionality# quantity, Scalar divisor)
+    {
+        #Quantity##Dimensionality# result = quantity / divisor;
+
+#AssertDivided#
+    }
+
+    [Fact]
+    public void MultiplyGeneric_NullFactory_ShouldThrowArgumentNull()
+    {
+        Func<(double, double, double), Unhandled#Dimensionality#>? factory = null;
+
+        Assert.Throws<ArgumentNullException>(() => #Quantity##Dimensionality#.Zero.Multiply(Scalar.Zero, factory!));
+    }
+
+    [Fact]
+    public void MultiplyGeneric_NullFactor_ShouldThrowArgumentNull()
+    {
+        IScalarQuantity? factor = null;
+
+        Assert.Throws<ArgumentNullException>(() => #Quantity##Dimensionality#.Zero.Multiply(factor!, (x) => new Unhandled#Dimensionality#(x)));
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, ScalarDataset>))]
+    public void MultiplyGeneric_MagnitudeShouldEqualMultiplication(#Quantity##Dimensionality# quantity, IScalarQuantity factor)
+    {
+        Unhandled#Dimensionality# result = quantity.Multiply(factor, (x) => new Unhandled#Dimensionality#(x));
+
+#AssertMultipliedMagnitude#
+    }
+
+    [Fact]
+    public void DivideGeneric_NullFactory_ShouldThrowArgumentNull()
+    {
+        Func<(double, double, double), Unhandled#Dimensionality#>? factory = null;
+
+        Assert.Throws<ArgumentNullException>(() => #Quantity##Dimensionality#.Zero.Divide(Scalar.Zero, factory!));
+    }
+
+    [Fact]
+    public void DivideGeneric_NullDivisor_ShouldThrowArgumentNull()
+    {
+        IScalarQuantity? divisor = null;
+
+        Assert.Throws<ArgumentNullException>(() => #Quantity##Dimensionality#.Zero.Divide(divisor!, (x) => new Unhandled#Dimensionality#(x)));
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, ScalarDataset>))]
+    public void DivideGeneric_MagnitudeShouldEqualDivision(#Quantity##Dimensionality# quantity, IScalarQuantity divisor)
+    {
+        Unhandled#Dimensionality# result = quantity.Divide(divisor, (x) => new Unhandled#Dimensionality#(x));
+
+#AssertDividedMagnitude#
+    }
+
+    [Fact]
+    public void MultiplyIScalar_Null_ShouldThrowArgumentNull()
+    {
+        IScalarQuantity? factor = null;
+
+        Assert.Throws<ArgumentNullException>(() => #Quantity##Dimensionality#.Zero * factor!);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, ScalarDataset>))]
+    public void MultiplyIScalar_MagnitudeShouldEqualMultiplication(#Quantity##Dimensionality# quantity, IScalarQuantity factor)
+    {
+        Unhandled#Dimensionality# resultLHS = quantity * factor;
+        Unhandled#Dimensionality# resultRHS = factor * quantity;
+
+#AssertMultipliedMagnitudeLHS#
+
+#AssertMultipliedMagnitudeRHS#
+    }
+
+    [Fact]
+    public void DivideIScalar_Null_ShouldThrowArgumentNull()
+    {
+        IScalarQuantity? factor = null;
+
+        Assert.Throws<ArgumentNullException>(() => #Quantity##Dimensionality#.Zero / factor!);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, ScalarDataset>))]
+    public void DivideIScalar_MagnitudeShouldEqualDivision(#Quantity##Dimensionality# quantity, IScalarQuantity divisor)
+    {
+        Unhandled#Dimensionality# result = quantity / divisor;
+
+#AssertDividedMagnitude#
+    }
+}

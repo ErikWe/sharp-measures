@@ -44,29 +44,29 @@ public readonly partial record struct Time :
     /// <summary>The zero-valued <see cref="Time"/>.</summary>
     public static Time Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Second"/>.</summary>
+    /// <summary>The <see cref="Time"/> of magnitude 1, when expressed in <see cref="UnitOfTime.Second"/>.</summary>
     public static Time OneSecond { get; } = UnitOfTime.Second.Time;
-    /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Minute"/>.</summary>
+    /// <summary>The <see cref="Time"/> of magnitude 1, when expressed in <see cref="UnitOfTime.Minute"/>.</summary>
     public static Time OneMinute { get; } = UnitOfTime.Minute.Time;
-    /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Hour"/>.</summary>
+    /// <summary>The <see cref="Time"/> of magnitude 1, when expressed in <see cref="UnitOfTime.Hour"/>.</summary>
     public static Time OneHour { get; } = UnitOfTime.Hour.Time;
-    /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Day"/>.</summary>
+    /// <summary>The <see cref="Time"/> of magnitude 1, when expressed in <see cref="UnitOfTime.Day"/>.</summary>
     public static Time OneDay { get; } = UnitOfTime.Day.Time;
-    /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Week"/>.</summary>
+    /// <summary>The <see cref="Time"/> of magnitude 1, when expressed in <see cref="UnitOfTime.Week"/>.</summary>
     public static Time OneWeek { get; } = UnitOfTime.Week.Time;
-    /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.CommonYear"/>.</summary>
+    /// <summary>The <see cref="Time"/> of magnitude 1, when expressed in <see cref="UnitOfTime.CommonYear"/>.</summary>
     public static Time OneCommonYear { get; } = UnitOfTime.CommonYear.Time;
-    /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.JulianYear"/>.</summary>
+    /// <summary>The <see cref="Time"/> of magnitude 1, when expressed in <see cref="UnitOfTime.JulianYear"/>.</summary>
     public static Time OneJulianYear { get; } = UnitOfTime.JulianYear.Time;
-    /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Femtosecond"/>.</summary>
+    /// <summary>The <see cref="Time"/> of magnitude 1, when expressed in <see cref="UnitOfTime.Femtosecond"/>.</summary>
     public static Time OneFemtosecond { get; } = UnitOfTime.Femtosecond.Time;
-    /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Picosecond"/>.</summary>
+    /// <summary>The <see cref="Time"/> of magnitude 1, when expressed in <see cref="UnitOfTime.Picosecond"/>.</summary>
     public static Time OnePicosecond { get; } = UnitOfTime.Picosecond.Time;
-    /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Nanosecond"/>.</summary>
+    /// <summary>The <see cref="Time"/> of magnitude 1, when expressed in <see cref="UnitOfTime.Nanosecond"/>.</summary>
     public static Time OneNanosecond { get; } = UnitOfTime.Nanosecond.Time;
-    /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Microsecond"/>.</summary>
+    /// <summary>The <see cref="Time"/> of magnitude 1, when expressed in <see cref="UnitOfTime.Microsecond"/>.</summary>
     public static Time OneMicrosecond { get; } = UnitOfTime.Microsecond.Time;
-    /// <summary>The <see cref="Time"/> with magnitude 1, when expressed in unit <see cref="UnitOfTime.Millisecond"/>.</summary>
+    /// <summary>The <see cref="Time"/> of magnitude 1, when expressed in <see cref="UnitOfTime.Millisecond"/>.</summary>
     public static Time OneMillisecond { get; } = UnitOfTime.Millisecond.Time;
 
     /// <summary>Computes <see cref="Time"/> according to { 1 / <paramref name="frequency"/> }.</summary>

@@ -27,7 +27,7 @@ using System;
 /// </item>
 /// <item>
 /// <code>
-/// <see cref="Distance"/> e = <see cref="Length.AsDistance()"/>;
+/// <see cref="Distance"/> e = <see cref="Length.AsDistance"/>;
 /// </code>
 /// </item>
 /// </list>
@@ -62,43 +62,43 @@ public readonly partial record struct Distance :
     /// <summary>The zero-valued <see cref="Distance"/>.</summary>
     public static Distance Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Metre"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Metre"/>.</summary>
     public static Distance OneMetre { get; } = UnitOfLength.Metre.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Femtometre"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Femtometre"/>.</summary>
     public static Distance OneFemtometre { get; } = UnitOfLength.Femtometre.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Picometre"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Picometre"/>.</summary>
     public static Distance OnePicometre { get; } = UnitOfLength.Picometre.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Nanometre"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Nanometre"/>.</summary>
     public static Distance OneNanometre { get; } = UnitOfLength.Nanometre.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Micrometre"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Micrometre"/>.</summary>
     public static Distance OneMicrometre { get; } = UnitOfLength.Micrometre.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Millimetre"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Millimetre"/>.</summary>
     public static Distance OneMillimetre { get; } = UnitOfLength.Millimetre.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Centimetre"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Centimetre"/>.</summary>
     public static Distance OneCentimetre { get; } = UnitOfLength.Centimetre.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Decimetre"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Decimetre"/>.</summary>
     public static Distance OneDecimetre { get; } = UnitOfLength.Decimetre.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Kilometre"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Kilometre"/>.</summary>
     public static Distance OneKilometre { get; } = UnitOfLength.Kilometre.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.AstronomicalUnit"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.AstronomicalUnit"/>.</summary>
     public static Distance OneAstronomicalUnit { get; } = UnitOfLength.AstronomicalUnit.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.LightYear"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.LightYear"/>.</summary>
     public static Distance OneLightYear { get; } = UnitOfLength.LightYear.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Parsec"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Parsec"/>.</summary>
     public static Distance OneParsec { get; } = UnitOfLength.Parsec.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Kiloparsec"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Kiloparsec"/>.</summary>
     public static Distance OneKiloparsec { get; } = UnitOfLength.Kiloparsec.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Megaparsec"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Megaparsec"/>.</summary>
     public static Distance OneMegaparsec { get; } = UnitOfLength.Megaparsec.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Gigaparsec"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Gigaparsec"/>.</summary>
     public static Distance OneGigaparsec { get; } = UnitOfLength.Gigaparsec.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Inch"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Inch"/>.</summary>
     public static Distance OneInch { get; } = UnitOfLength.Inch.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Foot"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Foot"/>.</summary>
     public static Distance OneFoot { get; } = UnitOfLength.Foot.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Yard"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Yard"/>.</summary>
     public static Distance OneYard { get; } = UnitOfLength.Yard.Length.AsDistance;
-    /// <summary>The <see cref="Distance"/> with magnitude 1, when expressed in unit <see cref="UnitOfLength.Mile"/>.</summary>
+    /// <summary>The <see cref="Distance"/> of magnitude 1, when expressed in <see cref="UnitOfLength.Mile"/>.</summary>
     public static Distance OneMile { get; } = UnitOfLength.Mile.Length.AsDistance;
 
     /// <summary>Computes <see cref="Distance"/> according to { 1 / <paramref name="spatialFrequency"/> }.</summary>
@@ -420,7 +420,7 @@ public readonly partial record struct Distance :
     /// <param name="a">This <see cref="Distance"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="Distance"/> <paramref name="a"/>.</param>
     public static Displacement3 operator *(Distance a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Distance"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Distance"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="Displacement3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="Distance"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Distance"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -430,7 +430,7 @@ public readonly partial record struct Distance :
     /// <param name="a">This <see cref="Distance"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Distance"/> <paramref name="a"/>.</param>
     public static Displacement3 operator *(Distance a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Distance"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Distance"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Displacement3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Distance"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Distance"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -440,7 +440,7 @@ public readonly partial record struct Distance :
     /// <param name="a">This <see cref="Distance"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Distance"/> <paramref name="a"/>.</param>
     public static Displacement3 operator *(Distance a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Distance"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Distance"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Displacement3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Distance"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Distance"/> is multiplied by the values of <paramref name="a"/>.</param>

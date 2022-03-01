@@ -7,13 +7,13 @@ public class Unhandled3Dataset : IEnumerable<object?[]>
 {
     public IEnumerator<object?[]> GetEnumerator()
     {
-        IEnumerator<object?[]> tripleScalarEnumerator = new GenericDataset<UnhandledDataset, UnhandledDataset, UnhandledDataset>().GetEnumerator();
+        IEnumerator<object?[]> tripleScalarDataset = new GenericDataset<ScalarDataset, ScalarDataset, ScalarDataset>().GetEnumerator();
 
-        while (tripleScalarEnumerator.MoveNext())
+        while (tripleScalarDataset.MoveNext())
         {
-            Quantities.Unhandled x = (Quantities.Unhandled?)tripleScalarEnumerator.Current[0] ?? Quantities.Unhandled.Zero;
-            Quantities.Unhandled y = (Quantities.Unhandled?)tripleScalarEnumerator.Current[1] ?? Quantities.Unhandled.Zero;
-            Quantities.Unhandled z = (Quantities.Unhandled?)tripleScalarEnumerator.Current[2] ?? Quantities.Unhandled.Zero;
+            Quantities.Scalar x = (Quantities.Scalar?)tripleScalarDataset.Current[0] ?? Quantities.Scalar.Zero;
+            Quantities.Scalar y = (Quantities.Scalar?)tripleScalarDataset.Current[1] ?? Quantities.Scalar.Zero;
+            Quantities.Scalar z = (Quantities.Scalar?)tripleScalarDataset.Current[2] ?? Quantities.Scalar.Zero;
 
             yield return new object?[] { new Quantities.Unhandled3(x, y, z) };
         }

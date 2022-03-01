@@ -43,9 +43,9 @@ public readonly partial record struct Jerk :
     /// <summary>The zero-valued <see cref="Jerk"/>.</summary>
     public static Jerk Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Jerk"/> with magnitude 1, when expressed in unit <see cref="UnitOfJerk.MetrePerSecondCubed"/>.</summary>
+    /// <summary>The <see cref="Jerk"/> of magnitude 1, when expressed in <see cref="UnitOfJerk.MetrePerSecondCubed"/>.</summary>
     public static Jerk OneMetrePerSecondCubed { get; } = UnitOfJerk.MetrePerSecondCubed.Jerk;
-    /// <summary>The <see cref="Jerk"/> with magnitude 1, when expressed in unit <see cref="UnitOfJerk.FootPerSecondCubed"/>.</summary>
+    /// <summary>The <see cref="Jerk"/> of magnitude 1, when expressed in <see cref="UnitOfJerk.FootPerSecondCubed"/>.</summary>
     public static Jerk OneFootPerSecondCubed { get; } = UnitOfJerk.FootPerSecondCubed.Jerk;
 
     /// <summary>The magnitude of the <see cref="Jerk"/>, in SI units.</summary>
@@ -304,7 +304,7 @@ public readonly partial record struct Jerk :
     /// <param name="a">This <see cref="Jerk"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="Jerk"/> <paramref name="a"/>.</param>
     public static Jerk3 operator *(Jerk a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Jerk"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Jerk"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="Jerk3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="Jerk"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Jerk"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -314,7 +314,7 @@ public readonly partial record struct Jerk :
     /// <param name="a">This <see cref="Jerk"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Jerk"/> <paramref name="a"/>.</param>
     public static Jerk3 operator *(Jerk a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Jerk"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Jerk"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Jerk3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Jerk"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Jerk"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -324,7 +324,7 @@ public readonly partial record struct Jerk :
     /// <param name="a">This <see cref="Jerk"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Jerk"/> <paramref name="a"/>.</param>
     public static Jerk3 operator *(Jerk a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Jerk"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Jerk"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Jerk3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Jerk"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Jerk"/> is multiplied by the values of <paramref name="a"/>.</param>

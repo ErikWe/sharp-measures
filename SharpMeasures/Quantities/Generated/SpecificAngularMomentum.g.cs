@@ -43,7 +43,7 @@ public readonly partial record struct SpecificAngularMomentum :
     /// <summary>The zero-valued <see cref="SpecificAngularMomentum"/>.</summary>
     public static SpecificAngularMomentum Zero { get; } = new(0);
 
-    /// <summary>The <see cref="SpecificAngularMomentum"/> with magnitude 1, when expressed in unit <see cref="UnitOfSpecificAngularMomentum.SquareMetrePerSecond"/>.</summary>
+    /// <summary>The <see cref="SpecificAngularMomentum"/> of magnitude 1, when expressed in <see cref="UnitOfSpecificAngularMomentum.SquareMetrePerSecond"/>.</summary>
     public static SpecificAngularMomentum OneSquareMetrePerSecond { get; } = UnitOfSpecificAngularMomentum.SquareMetrePerSecond.SpecificAngularMomentum;
 
     /// <summary>The magnitude of the <see cref="SpecificAngularMomentum"/>, in SI units.</summary>
@@ -302,7 +302,7 @@ public readonly partial record struct SpecificAngularMomentum :
     /// <param name="a">This <see cref="SpecificAngularMomentum"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="SpecificAngularMomentum"/> <paramref name="a"/>.</param>
     public static SpecificAngularMomentum3 operator *(SpecificAngularMomentum a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="SpecificAngularMomentum"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="SpecificAngularMomentum"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="SpecificAngularMomentum3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="SpecificAngularMomentum"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="SpecificAngularMomentum"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -312,7 +312,7 @@ public readonly partial record struct SpecificAngularMomentum :
     /// <param name="a">This <see cref="SpecificAngularMomentum"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="SpecificAngularMomentum"/> <paramref name="a"/>.</param>
     public static SpecificAngularMomentum3 operator *(SpecificAngularMomentum a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="SpecificAngularMomentum"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="SpecificAngularMomentum"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="SpecificAngularMomentum3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="SpecificAngularMomentum"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="SpecificAngularMomentum"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -322,7 +322,7 @@ public readonly partial record struct SpecificAngularMomentum :
     /// <param name="a">This <see cref="SpecificAngularMomentum"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="SpecificAngularMomentum"/> <paramref name="a"/>.</param>
     public static SpecificAngularMomentum3 operator *(SpecificAngularMomentum a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="SpecificAngularMomentum"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="SpecificAngularMomentum"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="SpecificAngularMomentum3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="SpecificAngularMomentum"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="SpecificAngularMomentum"/> is multiplied by the values of <paramref name="a"/>.</param>

@@ -8,7 +8,7 @@
         { "name": "Kelvin", "plural": "=", "symbol": "K", "SI": true, "value": "1", "bias": "0" },
         { "name": "Celsius", "plural": "=", "bias": "-273.15", "alias": "Kelvin" },
         { "special": true, "separator": true },
-        { "name": "Rankine", "plural": "=", "scaled": { "from": "Kelvin", "by": "5/9" } },
+        { "name": "Rankine", "plural": "=", "scaled": { "from": "Kelvin", "by": "5d / 9" } },
         { "name": "Fahrenheit", "plural": "=", "bias": "-459.67", "alias": "Rankine" }
     ]
 }

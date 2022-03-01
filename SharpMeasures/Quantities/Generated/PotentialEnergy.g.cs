@@ -65,19 +65,19 @@ public readonly partial record struct PotentialEnergy :
     /// <summary>The zero-valued <see cref="PotentialEnergy"/>.</summary>
     public static PotentialEnergy Zero { get; } = new(0);
 
-    /// <summary>The <see cref="PotentialEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Joule"/>.</summary>
+    /// <summary>The <see cref="PotentialEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Joule"/>.</summary>
     public static PotentialEnergy OneJoule { get; } = UnitOfEnergy.Joule.Energy.AsPotentialEnergy;
-    /// <summary>The <see cref="PotentialEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Kilojoule"/>.</summary>
+    /// <summary>The <see cref="PotentialEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Kilojoule"/>.</summary>
     public static PotentialEnergy OneKilojoule { get; } = UnitOfEnergy.Kilojoule.Energy.AsPotentialEnergy;
-    /// <summary>The <see cref="PotentialEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Megajoule"/>.</summary>
+    /// <summary>The <see cref="PotentialEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Megajoule"/>.</summary>
     public static PotentialEnergy OneMegajoule { get; } = UnitOfEnergy.Megajoule.Energy.AsPotentialEnergy;
-    /// <summary>The <see cref="PotentialEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Gigajoule"/>.</summary>
+    /// <summary>The <see cref="PotentialEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Gigajoule"/>.</summary>
     public static PotentialEnergy OneGigajoule { get; } = UnitOfEnergy.Gigajoule.Energy.AsPotentialEnergy;
-    /// <summary>The <see cref="PotentialEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.KilowattHour"/>.</summary>
+    /// <summary>The <see cref="PotentialEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.KilowattHour"/>.</summary>
     public static PotentialEnergy OneKilowattHour { get; } = UnitOfEnergy.KilowattHour.Energy.AsPotentialEnergy;
-    /// <summary>The <see cref="PotentialEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Calorie"/>.</summary>
+    /// <summary>The <see cref="PotentialEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Calorie"/>.</summary>
     public static PotentialEnergy OneCalorie { get; } = UnitOfEnergy.Calorie.Energy.AsPotentialEnergy;
-    /// <summary>The <see cref="PotentialEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Kilocalorie"/>.</summary>
+    /// <summary>The <see cref="PotentialEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Kilocalorie"/>.</summary>
     public static PotentialEnergy OneKilocalorie { get; } = UnitOfEnergy.Kilocalorie.Energy.AsPotentialEnergy;
 
     /// <summary>The magnitude of the <see cref="PotentialEnergy"/>, in SI units.</summary>

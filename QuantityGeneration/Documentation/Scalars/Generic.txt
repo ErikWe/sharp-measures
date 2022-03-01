@@ -55,7 +55,7 @@
 #/
 
 #Define:OneUnit(quantity, unitName, unit)
-/// <summary>The <see cref="#Param:quantity#"/> with magnitude 1, when expressed in unit <see cref="#Param:unitName#.#Param:unit#"/>.</summary>
+/// <summary>The <see cref="#Param:quantity#"/> of magnitude 1, when expressed in <see cref="#Param:unitName#.#Param:unit#"/>.</summary>
 #/
 
 #Define:Constant(quantity, unitName, constant)
@@ -413,7 +413,7 @@
 #/
 
 #Define:MultiplyVectorNOperatorRHS(quantity, vectorQuantity, n)
-/// <summary>Multiplication of the <see cref="#Param:quantity#"/> <parmref name="b"/> with the <see cref="Vector#Param:n#"/> <paramref name="a"/>
+/// <summary>Multiplication of the <see cref="#Param:quantity#"/> <paramref name="b"/> with the <see cref="Vector#Param:n#"/> <paramref name="a"/>
 /// to produce a <see cref="#Param:vectorQuantity##Param:n#"/>.</summary>
 /// <param name="a">This <see cref="Vector#Param:n#"/> is multiplied by the <see cref="#Param:quantity#"/> <paramref name="b"/>.</param>
 /// <param name="b">This <see cref="#Param:quantity#"/> is multiplied by the <see cref="Vector#Param:n#"/> <paramref name="a"/>.</param>
@@ -427,7 +427,7 @@
 #/
 
 #Define:MultiplyTupleNOperatorRHS(quantity, vectorQuantity, n)
-/// <summary>Multiplication of the <see cref="#Param:quantity#"/> <parmref name="b"/> with the values of <paramref name="a"/>
+/// <summary>Multiplication of the <see cref="#Param:quantity#"/> <paramref name="b"/> with the values of <paramref name="a"/>
 /// to produce a <see cref="#Param:vectorQuantity##Param:n#"/>.</summary>
 /// <param name="a">These values are multiplied by the <see cref="#Param:quantity#"/> <paramref name="b"/>.</param>
 /// <param name="b">This <see cref="#Param:quantity#"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -441,7 +441,7 @@
 #/
 
 #Define:MultiplyScalarTupleNOperatorRHS(quantity, vectorQuantity, n)
-/// <summary>Multiplication of the <see cref="#Param:quantity#"/> <parmref name="b"/> with the values of <paramref name="a"/>
+/// <summary>Multiplication of the <see cref="#Param:quantity#"/> <paramref name="b"/> with the values of <paramref name="a"/>
 /// to produce a <see cref="#Param:vectorQuantity##Param:n#"/>.</summary>
 /// <param name="a">These values are multiplied by the <see cref="#Param:quantity#"/> <paramref name="b"/>.</param>
 /// <param name="b">This <see cref="#Param:quantity#"/> is multiplied by the values of <paramref name="a"/>.</param>

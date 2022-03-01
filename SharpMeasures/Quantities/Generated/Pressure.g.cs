@@ -42,15 +42,15 @@ public readonly partial record struct Pressure :
     /// <summary>The zero-valued <see cref="Pressure"/>.</summary>
     public static Pressure Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Pressure"/> with magnitude 1, when expressed in unit <see cref="UnitOfPressure.Pascal"/>.</summary>
+    /// <summary>The <see cref="Pressure"/> of magnitude 1, when expressed in <see cref="UnitOfPressure.Pascal"/>.</summary>
     public static Pressure OnePascal { get; } = UnitOfPressure.Pascal.Pressure;
-    /// <summary>The <see cref="Pressure"/> with magnitude 1, when expressed in unit <see cref="UnitOfPressure.Kilopascal"/>.</summary>
+    /// <summary>The <see cref="Pressure"/> of magnitude 1, when expressed in <see cref="UnitOfPressure.Kilopascal"/>.</summary>
     public static Pressure OneKilopascal { get; } = UnitOfPressure.Kilopascal.Pressure;
-    /// <summary>The <see cref="Pressure"/> with magnitude 1, when expressed in unit <see cref="UnitOfPressure.Bar"/>.</summary>
+    /// <summary>The <see cref="Pressure"/> of magnitude 1, when expressed in <see cref="UnitOfPressure.Bar"/>.</summary>
     public static Pressure OneBar { get; } = UnitOfPressure.Bar.Pressure;
-    /// <summary>The <see cref="Pressure"/> with magnitude 1, when expressed in unit <see cref="UnitOfPressure.StandardAtmosphere"/>.</summary>
+    /// <summary>The <see cref="Pressure"/> of magnitude 1, when expressed in <see cref="UnitOfPressure.StandardAtmosphere"/>.</summary>
     public static Pressure OneStandardAtmosphere { get; } = UnitOfPressure.StandardAtmosphere.Pressure;
-    /// <summary>The <see cref="Pressure"/> with magnitude 1, when expressed in unit <see cref="UnitOfPressure.PoundForcePerSquareInch"/>.</summary>
+    /// <summary>The <see cref="Pressure"/> of magnitude 1, when expressed in <see cref="UnitOfPressure.PoundForcePerSquareInch"/>.</summary>
     public static Pressure OnePoundForcePerSquareInch { get; } = UnitOfPressure.PoundForcePerSquareInch.Pressure;
 
     /// <summary>The magnitude of the <see cref="Pressure"/>, in SI units.</summary>

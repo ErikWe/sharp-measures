@@ -56,13 +56,13 @@ public readonly partial record struct GravitationalAcceleration :
     /// <summary>The constant <see cref="GravitationalAcceleration"/> <see cref="UnitOfAcceleration.StandardGravity"/>.</summary>
     public static GravitationalAcceleration StandardGravity { get; } = new(1, UnitOfAcceleration.StandardGravity);
 
-    /// <summary>The <see cref="GravitationalAcceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.MetrePerSecondSquared"/>.</summary>
+    /// <summary>The <see cref="GravitationalAcceleration"/> of magnitude 1, when expressed in <see cref="UnitOfAcceleration.MetrePerSecondSquared"/>.</summary>
     public static GravitationalAcceleration OneMetrePerSecondSquared { get; } = new(1, UnitOfAcceleration.MetrePerSecondSquared);
-    /// <summary>The <see cref="GravitationalAcceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.FootPerSecondSquared"/>.</summary>
+    /// <summary>The <see cref="GravitationalAcceleration"/> of magnitude 1, when expressed in <see cref="UnitOfAcceleration.FootPerSecondSquared"/>.</summary>
     public static GravitationalAcceleration OneFootPerSecondSquared { get; } = new(1, UnitOfAcceleration.FootPerSecondSquared);
-    /// <summary>The <see cref="GravitationalAcceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.KilometrePerHourPerSecond"/>.</summary>
+    /// <summary>The <see cref="GravitationalAcceleration"/> of magnitude 1, when expressed in <see cref="UnitOfAcceleration.KilometrePerHourPerSecond"/>.</summary>
     public static GravitationalAcceleration OneKilometrePerHourPerSecond { get; } = new(1, UnitOfAcceleration.KilometrePerHourPerSecond);
-    /// <summary>The <see cref="GravitationalAcceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAcceleration.MilePerHourPerSecond"/>.</summary>
+    /// <summary>The <see cref="GravitationalAcceleration"/> of magnitude 1, when expressed in <see cref="UnitOfAcceleration.MilePerHourPerSecond"/>.</summary>
     public static GravitationalAcceleration OneMilePerHourPerSecond { get; } = new(1, UnitOfAcceleration.MilePerHourPerSecond);
 
     /// <summary>The magnitude of the <see cref="GravitationalAcceleration"/>, in SI units.</summary>
@@ -332,7 +332,7 @@ public readonly partial record struct GravitationalAcceleration :
     /// <param name="a">This <see cref="GravitationalAcceleration"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="GravitationalAcceleration"/> <paramref name="a"/>.</param>
     public static GravitationalAcceleration3 operator *(GravitationalAcceleration a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="GravitationalAcceleration"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="GravitationalAcceleration"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="GravitationalAcceleration3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="GravitationalAcceleration"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="GravitationalAcceleration"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -342,7 +342,7 @@ public readonly partial record struct GravitationalAcceleration :
     /// <param name="a">This <see cref="GravitationalAcceleration"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="GravitationalAcceleration"/> <paramref name="a"/>.</param>
     public static GravitationalAcceleration3 operator *(GravitationalAcceleration a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="GravitationalAcceleration"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="GravitationalAcceleration"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="GravitationalAcceleration3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="GravitationalAcceleration"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="GravitationalAcceleration"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -352,7 +352,7 @@ public readonly partial record struct GravitationalAcceleration :
     /// <param name="a">This <see cref="GravitationalAcceleration"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="GravitationalAcceleration"/> <paramref name="a"/>.</param>
     public static GravitationalAcceleration3 operator *(GravitationalAcceleration a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="GravitationalAcceleration"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="GravitationalAcceleration"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="GravitationalAcceleration3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="GravitationalAcceleration"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="GravitationalAcceleration"/> is multiplied by the values of <paramref name="a"/>.</param>

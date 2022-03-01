@@ -6,6 +6,8 @@ using ErikWe.SharpMeasures.Quantities;
 using ErikWe.SharpMeasures.Tests.Datasets;
 using ErikWe.SharpMeasures.Units;
 
+using System;
+
 using Xunit;
 
 public class ConstructorTests
@@ -136,5 +138,41 @@ public class ConstructorTests
         Volume quantity = (Volume)a;
 
         Assert.Equal(a, quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(LengthDataset))]
+    public void FromLength_ShouldMatchExpression(Length sourceQuantity)
+    {
+        Volume quantity = Volume.From(sourceQuantity);
+
+        Assert.Equal(Math.Pow(sourceQuantity.Magnitude, 3), quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(DistanceDataset))]
+    public void FromDistance_ShouldMatchExpression(Distance sourceQuantity)
+    {
+        Volume quantity = Volume.From(sourceQuantity);
+
+        Assert.Equal(Math.Pow(sourceQuantity.Magnitude, 3), quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<LengthDataset, LengthDataset, LengthDataset>))]
+    public void FromThreeLength_ShouldMatchExpression(Length sourceQuantity1, Length sourceQuantity2, Length sourceQuantity3)
+    {
+        Volume quantity = Volume.From(sourceQuantity1, sourceQuantity2, sourceQuantity3);
+
+        Assert.Equal(sourceQuantity1.Magnitude * sourceQuantity2.Magnitude * sourceQuantity3.Magnitude, quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<DistanceDataset, DistanceDataset, DistanceDataset>))]
+    public void FromThreeDistance_ShouldMatchExpression(Distance sourceQuantity1, Distance sourceQuantity2, Distance sourceQuantity3)
+    {
+        Volume quantity = Volume.From(sourceQuantity1, sourceQuantity2, sourceQuantity3);
+
+        Assert.Equal(sourceQuantity1.Magnitude * sourceQuantity2.Magnitude * sourceQuantity3.Magnitude, quantity.Magnitude, 2);
     }
 }

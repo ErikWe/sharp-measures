@@ -1,0 +1,50 @@
+#nullable enable
+
+namespace ErikWe.SharpMeasures.Tests.Cases.QuantityTests.#Quantity##Dimensionality#Tests;
+
+using ErikWe.SharpMeasures.Quantities;
+using ErikWe.SharpMeasures.Tests.Datasets;
+
+using System;
+
+using Xunit;
+
+public class DotTests
+{
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, Vector#Dimensionality#Dataset>))]
+    public void WithVector#Dimensionality#(#Quantity##Dimensionality# quantity, Vector#Dimensionality# vector)
+    {
+        Utility.QuantityTests.DotTests.Vector#Dimensionality#_ShouldBeSumOfSquares<#Quantity##Dimensionality#, #Component#, Vector#Dimensionality#>(quantity, vector);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, Unhandled#Dimensionality#Dataset>))]
+    public void WithUnhandled#Dimensionality#(#Quantity##Dimensionality# quantity, Unhandled#Dimensionality# vector)
+    {
+        Utility.QuantityTests.DotTests.Vector#Dimensionality#_ShouldBeSumOfSquares<#Quantity##Dimensionality#, Unhandled, Unhandled#Dimensionality#>(quantity, vector);
+    }
+
+    [Fact]
+    public void Generic_NullFactory_ShouldThrowArgumentNull()
+    {
+        Func<double, Unhandled>? factory = null;
+
+        Assert.Throws<ArgumentNullException>(() => #Quantity##Dimensionality#.Zero.Dot(Vector#Dimensionality#.Zero, factory!));
+    }
+
+    [Fact]
+    public void Generic_NullFactor_ShouldThrowArgumentNull()
+    {
+        IVector#Dimensionality#Quantity? factor = null;
+
+        Assert.Throws<ArgumentNullException>(() => #Quantity##Dimensionality#.Zero.Dot(factor!, (x) => new Unhandled(x)));
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity##Dimensionality#Dataset, Vector#Dimensionality#Dataset>))]
+    public void Generic(#Quantity##Dimensionality# quantity, IVector#Dimensionality#Quantity vector)
+    {
+        Utility.QuantityTests.DotTests.Vector#Dimensionality#_ShouldBeSumOfSquares(quantity, vector, (x) => new Unhandled(x));
+    }
+}

@@ -6,6 +6,8 @@ using ErikWe.SharpMeasures.Quantities;
 using ErikWe.SharpMeasures.Tests.Datasets;
 using ErikWe.SharpMeasures.Units;
 
+using System;
+
 using Xunit;
 
 public class ConstructorTests
@@ -240,5 +242,32 @@ public class ConstructorTests
         Length quantity = (Length)a;
 
         Assert.Equal(a, quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(SpatialFrequencyDataset))]
+    public void FromSpatialFrequency_ShouldMatchExpression(SpatialFrequency sourceQuantity)
+    {
+        Length quantity = Length.From(sourceQuantity);
+
+        Assert.Equal(1 / sourceQuantity.Magnitude, quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(AreaDataset))]
+    public void FromArea_ShouldMatchExpression(Area sourceQuantity)
+    {
+        Length quantity = Length.From(sourceQuantity);
+
+        Assert.Equal(Math.Sqrt(sourceQuantity.Magnitude), quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(VolumeDataset))]
+    public void FromVolume_ShouldMatchExpression(Volume sourceQuantity)
+    {
+        Length quantity = Length.From(sourceQuantity);
+
+        Assert.Equal(Math.Cbrt(sourceQuantity.Magnitude), quantity.Magnitude, 2);
     }
 }

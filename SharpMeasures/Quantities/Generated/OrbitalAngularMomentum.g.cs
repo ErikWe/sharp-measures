@@ -62,7 +62,7 @@ public readonly partial record struct OrbitalAngularMomentum :
     /// <summary>The zero-valued <see cref="OrbitalAngularMomentum"/>.</summary>
     public static OrbitalAngularMomentum Zero { get; } = new(0);
 
-    /// <summary>The <see cref="OrbitalAngularMomentum"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularMomentum.KilogramSquareMetrePerSecond"/>.</summary>
+    /// <summary>The <see cref="OrbitalAngularMomentum"/> of magnitude 1, when expressed in <see cref="UnitOfAngularMomentum.KilogramSquareMetrePerSecond"/>.</summary>
     public static OrbitalAngularMomentum OneKilogramSquareMetrePerSecond { get; } = UnitOfAngularMomentum.KilogramSquareMetrePerSecond.AngularMomentum.AsOrbitalAngularMomentum;
 
     /// <summary>The magnitude of the <see cref="OrbitalAngularMomentum"/>, in SI units.</summary>
@@ -325,7 +325,7 @@ public readonly partial record struct OrbitalAngularMomentum :
     /// <param name="a">This <see cref="OrbitalAngularMomentum"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="OrbitalAngularMomentum"/> <paramref name="a"/>.</param>
     public static OrbitalAngularMomentum3 operator *(OrbitalAngularMomentum a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="OrbitalAngularMomentum"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="OrbitalAngularMomentum"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="OrbitalAngularMomentum3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="OrbitalAngularMomentum"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="OrbitalAngularMomentum"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -335,7 +335,7 @@ public readonly partial record struct OrbitalAngularMomentum :
     /// <param name="a">This <see cref="OrbitalAngularMomentum"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="OrbitalAngularMomentum"/> <paramref name="a"/>.</param>
     public static OrbitalAngularMomentum3 operator *(OrbitalAngularMomentum a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="OrbitalAngularMomentum"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="OrbitalAngularMomentum"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="OrbitalAngularMomentum3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="OrbitalAngularMomentum"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="OrbitalAngularMomentum"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -345,7 +345,7 @@ public readonly partial record struct OrbitalAngularMomentum :
     /// <param name="a">This <see cref="OrbitalAngularMomentum"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="OrbitalAngularMomentum"/> <paramref name="a"/>.</param>
     public static OrbitalAngularMomentum3 operator *(OrbitalAngularMomentum a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="OrbitalAngularMomentum"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="OrbitalAngularMomentum"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="OrbitalAngularMomentum3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="OrbitalAngularMomentum"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="OrbitalAngularMomentum"/> is multiplied by the values of <paramref name="a"/>.</param>

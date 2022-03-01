@@ -6,6 +6,8 @@ using ErikWe.SharpMeasures.Quantities;
 using ErikWe.SharpMeasures.Tests.Datasets;
 using ErikWe.SharpMeasures.Units;
 
+using System;
+
 using Xunit;
 
 public class ConstructorTests
@@ -144,5 +146,41 @@ public class ConstructorTests
         Area quantity = (Area)a;
 
         Assert.Equal(a, quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(LengthDataset))]
+    public void FromLength_ShouldMatchExpression(Length sourceQuantity)
+    {
+        Area quantity = Area.From(sourceQuantity);
+
+        Assert.Equal(Math.Pow(sourceQuantity.Magnitude, 2), quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(DistanceDataset))]
+    public void FromDistance_ShouldMatchExpression(Distance sourceQuantity)
+    {
+        Area quantity = Area.From(sourceQuantity);
+
+        Assert.Equal(Math.Pow(sourceQuantity.Magnitude, 2), quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<LengthDataset, LengthDataset>))]
+    public void FromTwoLength_ShouldMatchExpression(Length sourceQuantity1, Length sourceQuantity2)
+    {
+        Area quantity = Area.From(sourceQuantity1, sourceQuantity2);
+
+        Assert.Equal(sourceQuantity1.Magnitude * sourceQuantity2.Magnitude, quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<DistanceDataset, DistanceDataset>))]
+    public void FromTwoDistance_ShouldMatchExpression(Distance sourceQuantity1, Distance sourceQuantity2)
+    {
+        Area quantity = Area.From(sourceQuantity1, sourceQuantity2);
+
+        Assert.Equal(sourceQuantity1.Magnitude * sourceQuantity2.Magnitude, quantity.Magnitude, 2);
     }
 }

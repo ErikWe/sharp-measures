@@ -58,7 +58,7 @@ public readonly partial record struct Impulse :
     /// <summary>The zero-valued <see cref="Impulse"/>.</summary>
     public static Impulse Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Impulse"/> with magnitude 1, when expressed in unit <see cref="UnitOfImpulse.NewtonSecond"/>.</summary>
+    /// <summary>The <see cref="Impulse"/> of magnitude 1, when expressed in <see cref="UnitOfImpulse.NewtonSecond"/>.</summary>
     public static Impulse OneNewtonSecond { get; } = UnitOfImpulse.NewtonSecond.Impulse;
 
     /// <summary>The magnitude of the <see cref="Impulse"/>, in SI units.</summary>
@@ -318,7 +318,7 @@ public readonly partial record struct Impulse :
     /// <param name="a">This <see cref="Impulse"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="Impulse"/> <paramref name="a"/>.</param>
     public static Impulse3 operator *(Impulse a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Impulse"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Impulse"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="Impulse3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="Impulse"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Impulse"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -328,7 +328,7 @@ public readonly partial record struct Impulse :
     /// <param name="a">This <see cref="Impulse"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Impulse"/> <paramref name="a"/>.</param>
     public static Impulse3 operator *(Impulse a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Impulse"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Impulse"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Impulse3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Impulse"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Impulse"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -338,7 +338,7 @@ public readonly partial record struct Impulse :
     /// <param name="a">This <see cref="Impulse"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Impulse"/> <paramref name="a"/>.</param>
     public static Impulse3 operator *(Impulse a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Impulse"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Impulse"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Impulse3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Impulse"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Impulse"/> is multiplied by the values of <paramref name="a"/>.</param>

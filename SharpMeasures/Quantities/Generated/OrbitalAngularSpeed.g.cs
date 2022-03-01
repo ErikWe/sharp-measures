@@ -26,7 +26,7 @@ using System;
 /// </item>
 /// <item>
 /// <code>
-/// <see cref="OrbitalAngularSpeed"/> e = <see cref="AngularSpeed.AsOrbitalAngularSpeed()"/>;
+/// <see cref="OrbitalAngularSpeed"/> e = <see cref="AngularSpeed.AsOrbitalAngularSpeed"/>;
 /// </code>
 /// </item>
 /// </list>
@@ -62,13 +62,13 @@ public readonly partial record struct OrbitalAngularSpeed :
     /// <summary>The zero-valued <see cref="OrbitalAngularSpeed"/>.</summary>
     public static OrbitalAngularSpeed Zero { get; } = new(0);
 
-    /// <summary>The <see cref="OrbitalAngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RadianPerSecond"/>.</summary>
+    /// <summary>The <see cref="OrbitalAngularSpeed"/> of magnitude 1, when expressed in <see cref="UnitOfAngularVelocity.RadianPerSecond"/>.</summary>
     public static OrbitalAngularSpeed OneRadianPerSecond { get; } = UnitOfAngularVelocity.RadianPerSecond.AngularSpeed.AsOrbitalAngularSpeed;
-    /// <summary>The <see cref="OrbitalAngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.DegreePerSecond"/>.</summary>
+    /// <summary>The <see cref="OrbitalAngularSpeed"/> of magnitude 1, when expressed in <see cref="UnitOfAngularVelocity.DegreePerSecond"/>.</summary>
     public static OrbitalAngularSpeed OneDegreePerSecond { get; } = UnitOfAngularVelocity.DegreePerSecond.AngularSpeed.AsOrbitalAngularSpeed;
-    /// <summary>The <see cref="OrbitalAngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RevolutionPerSecond"/>.</summary>
+    /// <summary>The <see cref="OrbitalAngularSpeed"/> of magnitude 1, when expressed in <see cref="UnitOfAngularVelocity.RevolutionPerSecond"/>.</summary>
     public static OrbitalAngularSpeed OneRevolutionPerSecond { get; } = UnitOfAngularVelocity.RevolutionPerSecond.AngularSpeed.AsOrbitalAngularSpeed;
-    /// <summary>The <see cref="OrbitalAngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RevolutionPerMinute"/>.</summary>
+    /// <summary>The <see cref="OrbitalAngularSpeed"/> of magnitude 1, when expressed in <see cref="UnitOfAngularVelocity.RevolutionPerMinute"/>.</summary>
     public static OrbitalAngularSpeed OneRevolutionPerMinute { get; } = UnitOfAngularVelocity.RevolutionPerMinute.AngularSpeed.AsOrbitalAngularSpeed;
 
     /// <summary>The magnitude of the <see cref="OrbitalAngularSpeed"/>, in SI units.</summary>
@@ -337,7 +337,7 @@ public readonly partial record struct OrbitalAngularSpeed :
     /// <param name="a">This <see cref="OrbitalAngularSpeed"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="OrbitalAngularSpeed"/> <paramref name="a"/>.</param>
     public static OrbitalAngularVelocity3 operator *(OrbitalAngularSpeed a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="OrbitalAngularSpeed"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="OrbitalAngularSpeed"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="OrbitalAngularVelocity3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="OrbitalAngularSpeed"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="OrbitalAngularSpeed"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -347,7 +347,7 @@ public readonly partial record struct OrbitalAngularSpeed :
     /// <param name="a">This <see cref="OrbitalAngularSpeed"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="OrbitalAngularSpeed"/> <paramref name="a"/>.</param>
     public static OrbitalAngularVelocity3 operator *(OrbitalAngularSpeed a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="OrbitalAngularSpeed"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="OrbitalAngularSpeed"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="OrbitalAngularVelocity3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="OrbitalAngularSpeed"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="OrbitalAngularSpeed"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -357,7 +357,7 @@ public readonly partial record struct OrbitalAngularSpeed :
     /// <param name="a">This <see cref="OrbitalAngularSpeed"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="OrbitalAngularSpeed"/> <paramref name="a"/>.</param>
     public static OrbitalAngularVelocity3 operator *(OrbitalAngularSpeed a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="OrbitalAngularSpeed"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="OrbitalAngularSpeed"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="OrbitalAngularVelocity3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="OrbitalAngularSpeed"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="OrbitalAngularSpeed"/> is multiplied by the values of <paramref name="a"/>.</param>

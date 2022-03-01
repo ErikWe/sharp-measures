@@ -1,0 +1,128 @@
+#nullable enable
+
+namespace ErikWe.SharpMeasures.Tests.Cases.QuantityTests.#Quantity##Dimensionality#Tests;
+
+using ErikWe.SharpMeasures.Quantities;
+using ErikWe.SharpMeasures.Tests.Datasets;
+using ErikWe.SharpMeasures.Units;
+
+using Xunit;
+
+public class ConstructorTests
+{
+    [Fact]
+    public void Zero_MagnitudeShouldBeZero()
+    {
+        #Quantity##Dimensionality# quantity = #Quantity##Dimensionality#.Zero;
+
+        Assert.Equal(0, quantity.Magnitude().Magnitude);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#ComponentListComponentDatasets#>))]
+    public void TupleComponents_ComponentsShouldBeEqual(#ComponentListScalarQuantity#)
+    {
+        #Quantity##Dimensionality# quantity = new((#ComponentListLowerCaseName#));
+
+        Utility.AssertExtra.AssertEqualComponents((#ComponentListLowerCaseMagnitudes#), quantity);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#ComponentListComponentDatasets#>))]
+    public void Components_ComponentMagnitudesShouldBeEqual(#ComponentListScalarQuantity#)
+    {
+        #Quantity##Dimensionality# quantity = new(#ComponentListLowerCaseName#);
+
+        Utility.AssertExtra.AssertEqualComponents((#ComponentListLowerCaseMagnitudes#), quantity);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#ComponentListScalarDatasets#, #Unit#Dataset>))]
+    public void TupleScalars_Unit_ComponentMagnitudesShouldBeEqual(#ComponentListScalar#, #Unit# unit)
+    {
+        #Quantity##Dimensionality# quantity = new((#ComponentListLowerCaseName#), unit);
+
+#AssertScalarsUnit#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#ComponentListScalarDatasets#, #Unit#Dataset>))]
+    public void Scalars_Unit_ComponentMagnitudesShouldBeEqual(#ComponentListScalar#, #Unit# unit)
+    {
+        #Quantity##Dimensionality# quantity = new(#ComponentListLowerCaseName#, unit);
+
+#AssertScalarsUnit#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<Vector#Dimensionality#Dataset, #Unit#Dataset>))]
+    public void Vector#Dimensionality#_Unit_ComponentMagnitudesShouldBeEqual(Vector#Dimensionality# vector, #Unit# unit)
+    {
+        #Quantity##Dimensionality# quantity = new(vector, unit);
+
+#AssertVector3Unit#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#ComponentListDoubleDatasets#, #Unit#Dataset>))]
+    public void TupleDoubles_Unit_ComponentMagnitudesShouldBeEqual(#ComponentListDouble#, #Unit# unit)
+    {
+        #Quantity##Dimensionality# quantity = new((#ComponentListLowerCaseName#), unit);
+
+#AssertDoublesUnit#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#ComponentListDoubleDatasets#, #Unit#Dataset>))]
+    public void Doubles_Unit_ComponentMagnitudesShouldBeEqual(#ComponentListDouble#, #Unit# unit)
+    {
+        #Quantity##Dimensionality# quantity = new(#ComponentListLowerCaseName#, unit);
+
+#AssertDoublesUnit#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#ComponentListScalarDatasets#>))]
+    public void TupleScalars_ComponentMagnitudesShouldBeEqual(#ComponentListScalar#)
+    {
+        #Quantity##Dimensionality# quantity = new((#ComponentListLowerCaseName#));
+
+        Utility.AssertExtra.AssertEqualComponents((#ComponentListLowerCaseName#), quantity);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#ComponentListScalarDatasets#>))]
+    public void Scalars_ComponentMagnitudesShouldBeEqual(#ComponentListScalar#)
+    {
+        #Quantity##Dimensionality# quantity = new(#ComponentListLowerCaseName#);
+
+        Utility.AssertExtra.AssertEqualComponents((#ComponentListLowerCaseName#), quantity);
+    }
+
+    [Theory]
+    [ClassData(typeof(Vector#Dimensionality#Dataset))]
+    public void Vector#Dimensionality#_ComponentMagnitudesShouldBeEqual(Vector#Dimensionality# vector)
+    {
+        #Quantity##Dimensionality# quantity = new(vector);
+
+        Utility.AssertExtra.AssertEqualComponents(vector.ToValueTuple(), quantity);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#ComponentListDoubleDatasets#>))]
+    public void TupleDoubles_ComponentMagnitudesShouldBeEqual(#ComponentListDouble#)
+    {
+        #Quantity##Dimensionality# quantity = new((#ComponentListLowerCaseName#));
+
+        Utility.AssertExtra.AssertEqualComponents((#ComponentListLowerCaseName#), quantity);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#ComponentListDoubleDatasets#>))]
+    public void Doubles_ComponentMagnitudesShouldBeEqual(#ComponentListDouble#)
+    {
+        #Quantity##Dimensionality# quantity = new(#ComponentListLowerCaseName#);
+
+        Utility.AssertExtra.AssertEqualComponents((#ComponentListLowerCaseName#), quantity);
+    }
+}

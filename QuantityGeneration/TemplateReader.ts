@@ -16,18 +16,37 @@ export class TemplateReader {
     public biasedUnitTemplate: string = ""
 
     public scalarTests = {
-        dataset: "",
         cast: "",
         comparison: "",
         constructor: "",
+        convertible: "",
+        dataset: "",
         equality: "",
+        inUnits: "",
         mathFunctions: "",
         mathOperations: "",
         mathPowers: "",
-        properties: ""
+        properties: "",
+        toVectorN: ""
+    }
+
+    public vectorTests = {
+        cast: "",
+        constructor: "",
+        cross: "",
+        convertible: "",
+        dataset: "",
+        dot: "",
+        inUnits: "",
+        magnitude: "",
+        mathOperations: "",
+        normalize: "",
+        transform: ""
     }
 
     public unitTests = {
+        comparison: "",
+        constructor: "",
         dataset: ""
     }
 
@@ -50,18 +69,37 @@ export class TemplateReader {
 
         const scalarTestsPath: PathLike = process.cwd() + '\\' + options.templates + '\\ScalarTests\\'
 
-        this.scalarTests.dataset = await fsp.readFile(scalarTestsPath + 'Dataset.txt', { encoding: 'utf-8' })
         this.scalarTests.cast = await fsp.readFile(scalarTestsPath + 'Cast.txt', { encoding: 'utf-8' })
         this.scalarTests.comparison = await fsp.readFile(scalarTestsPath + 'Comparison.txt', { encoding: 'utf-8' })
         this.scalarTests.constructor = await fsp.readFile(scalarTestsPath + 'Constructor.txt', { encoding: 'utf-8' })
+        this.scalarTests.convertible = await fsp.readFile(scalarTestsPath + 'Convertible.txt', { encoding: 'utf-8' })
+        this.scalarTests.dataset = await fsp.readFile(scalarTestsPath + 'Dataset.txt', { encoding: 'utf-8' })
         this.scalarTests.equality = await fsp.readFile(scalarTestsPath + 'Equality.txt', { encoding: 'utf-8' })
+        this.scalarTests.inUnits = await fsp.readFile(scalarTestsPath + 'InUnits.txt', { encoding: 'utf-8' })
         this.scalarTests.mathFunctions = await fsp.readFile(scalarTestsPath + 'MathFunctions.txt', { encoding: 'utf-8' })
         this.scalarTests.mathOperations = await fsp.readFile(scalarTestsPath + 'MathOperations.txt', { encoding: 'utf-8' })
         this.scalarTests.mathPowers = await fsp.readFile(scalarTestsPath + 'MathPowers.txt', { encoding: 'utf-8' })
         this.scalarTests.properties = await fsp.readFile(scalarTestsPath + 'Properties.txt', { encoding: 'utf-8' })
+        this.scalarTests.toVectorN = await fsp.readFile(scalarTestsPath + 'ToVectorN.txt', { encoding: 'utf-8' })
+
+        const vectorTestsPath: PathLike = process.cwd() + '\\' + options.templates + '\\VectorTests\\'
+
+        this.vectorTests.cast = await fsp.readFile(vectorTestsPath + 'Cast.txt', { encoding: 'utf-8' })
+        this.vectorTests.constructor = await fsp.readFile(vectorTestsPath + 'Constructor.txt', { encoding: 'utf-8' })
+        this.vectorTests.cross = await fsp.readFile(vectorTestsPath + 'Cross.txt', { encoding: 'utf-8' })
+        this.vectorTests.convertible = await fsp.readFile(vectorTestsPath + 'Convertible.txt', { encoding: 'utf-8' })
+        this.vectorTests.dataset = await fsp.readFile(vectorTestsPath + 'Dataset.txt', { encoding: 'utf-8' })
+        this.vectorTests.dot = await fsp.readFile(vectorTestsPath + 'Dot.txt', { encoding: 'utf-8' })
+        this.vectorTests.inUnits = await fsp.readFile(vectorTestsPath + 'InUnits.txt', { encoding: 'utf-8' })
+        this.vectorTests.magnitude = await fsp.readFile(vectorTestsPath + 'Magnitude.txt', { encoding: 'utf-8' })
+        this.vectorTests.mathOperations = await fsp.readFile(vectorTestsPath + 'MathOperations.txt', { encoding: 'utf-8' })
+        this.vectorTests.normalize = await fsp.readFile(vectorTestsPath + 'Normalize.txt', { encoding: 'utf-8' })
+        this.vectorTests.transform = await fsp.readFile(vectorTestsPath + 'Transform.txt', { encoding: 'utf-8' })
 
         const unitTestsPath: PathLike = process.cwd() + '\\' + options.templates + '\\UnitTests\\'
 
+        this.unitTests.comparison = await fsp.readFile(unitTestsPath + 'Comparison.txt', { encoding: 'utf-8' })
+        this.unitTests.constructor = await fsp.readFile(unitTestsPath + 'Constructor.txt', { encoding: 'utf-8' })
         this.unitTests.dataset = await fsp.readFile(unitTestsPath + 'Dataset.txt', { encoding: 'utf-8' })
     }
 }

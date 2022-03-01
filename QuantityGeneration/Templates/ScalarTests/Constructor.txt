@@ -6,6 +6,8 @@ using ErikWe.SharpMeasures.Quantities;
 using ErikWe.SharpMeasures.Tests.Datasets;
 using ErikWe.SharpMeasures.Units;
 
+#UsingSystem#
+
 using Xunit;
 
 public class ConstructorTests
@@ -37,7 +39,7 @@ public class ConstructorTests
         Assert.Equal(magnitude * unit.#UnbiasedQuantity#.Magnitude, quantity.Magnitude, 2);
 #/BiasedUnit#
 #Biased#
-        Assert.Equal(magnitude * unit.#UnbiasedQuantity#.Magnitude - unit.Offset, quantity.Magnitude, 2);
+        Assert.Equal((magnitude - unit.Offset) * unit.#UnbiasedQuantity#.Magnitude, quantity.Magnitude, 2);
 #/Biased#
     }
 
@@ -54,7 +56,7 @@ public class ConstructorTests
         Assert.Equal(magnitude * unit.#UnbiasedQuantity#.Magnitude, quantity.Magnitude, 2);
 #/BiasedUnit#
 #Biased#
-        Assert.Equal(magnitude * unit.#UnbiasedQuantity#.Magnitude - unit.Offset, quantity.Magnitude, 2);
+        Assert.Equal((magnitude - unit.Offset) * unit.#UnbiasedQuantity#.Magnitude, quantity.Magnitude, 2);
 #/Biased#
     }
 
@@ -111,4 +113,6 @@ public class ConstructorTests
 
         Assert.Equal(a, quantity.Magnitude, 2);
     }
+
+#FromPowers#
 }

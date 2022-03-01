@@ -6,6 +6,8 @@ using ErikWe.SharpMeasures.Quantities;
 using ErikWe.SharpMeasures.Tests.Datasets;
 using ErikWe.SharpMeasures.Units;
 
+using System;
+
 using Xunit;
 
 public class ConstructorTests
@@ -104,5 +106,32 @@ public class ConstructorTests
         FrequencyDrift quantity = (FrequencyDrift)a;
 
         Assert.Equal(a, quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(TimeSquaredDataset))]
+    public void FromTimeSquared_ShouldMatchExpression(TimeSquared sourceQuantity)
+    {
+        FrequencyDrift quantity = FrequencyDrift.From(sourceQuantity);
+
+        Assert.Equal(1 / sourceQuantity.Magnitude, quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(FrequencyDataset))]
+    public void FromFrequency_ShouldMatchExpression(Frequency sourceQuantity)
+    {
+        FrequencyDrift quantity = FrequencyDrift.From(sourceQuantity);
+
+        Assert.Equal(Math.Pow(sourceQuantity.Magnitude, 2), quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<FrequencyDataset, FrequencyDataset>))]
+    public void FromTwoFrequency_ShouldMatchExpression(Frequency sourceQuantity1, Frequency sourceQuantity2)
+    {
+        FrequencyDrift quantity = FrequencyDrift.From(sourceQuantity1, sourceQuantity2);
+
+        Assert.Equal(sourceQuantity1.Magnitude * sourceQuantity2.Magnitude, quantity.Magnitude, 2);
     }
 }

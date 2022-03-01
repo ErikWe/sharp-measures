@@ -27,7 +27,7 @@ using System;
 /// </item>
 /// <item>
 /// <code>
-/// <see cref="AngularAcceleration"/> e = <see cref="SpinAngularAcceleration.AsAngularAcceleration()"/>;
+/// <see cref="AngularAcceleration"/> e = <see cref="SpinAngularAcceleration.AsAngularAcceleration"/>;
 /// </code>
 /// </item>
 /// </list>
@@ -63,7 +63,7 @@ public readonly partial record struct AngularAcceleration :
     /// <summary>The zero-valued <see cref="AngularAcceleration"/>.</summary>
     public static AngularAcceleration Zero { get; } = new(0);
 
-    /// <summary>The <see cref="AngularAcceleration"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularAcceleration.RadianPerSecondSquared"/>.</summary>
+    /// <summary>The <see cref="AngularAcceleration"/> of magnitude 1, when expressed in <see cref="UnitOfAngularAcceleration.RadianPerSecondSquared"/>.</summary>
     public static AngularAcceleration OneRadianPerSecondSquared { get; } = UnitOfAngularAcceleration.RadianPerSecondSquared.AngularAcceleration;
 
     /// <summary>The magnitude of the <see cref="AngularAcceleration"/>, in SI units.</summary>
@@ -327,7 +327,7 @@ public readonly partial record struct AngularAcceleration :
     /// <param name="a">This <see cref="AngularAcceleration"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="AngularAcceleration"/> <paramref name="a"/>.</param>
     public static AngularAcceleration3 operator *(AngularAcceleration a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="AngularAcceleration"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="AngularAcceleration"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="AngularAcceleration3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="AngularAcceleration"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="AngularAcceleration"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -337,7 +337,7 @@ public readonly partial record struct AngularAcceleration :
     /// <param name="a">This <see cref="AngularAcceleration"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="AngularAcceleration"/> <paramref name="a"/>.</param>
     public static AngularAcceleration3 operator *(AngularAcceleration a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="AngularAcceleration"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="AngularAcceleration"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="AngularAcceleration3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="AngularAcceleration"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="AngularAcceleration"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -347,7 +347,7 @@ public readonly partial record struct AngularAcceleration :
     /// <param name="a">This <see cref="AngularAcceleration"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="AngularAcceleration"/> <paramref name="a"/>.</param>
     public static AngularAcceleration3 operator *(AngularAcceleration a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="AngularAcceleration"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="AngularAcceleration"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="AngularAcceleration3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="AngularAcceleration"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="AngularAcceleration"/> is multiplied by the values of <paramref name="a"/>.</param>

@@ -55,9 +55,9 @@ public readonly partial record struct Temperature :
     IGenericallyMultiplicableScalarQuantity,
     IGenericallyDivisibleScalarQuantity
 {
-    /// <summary>The <see cref="Temperature"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperature.Kelvin"/>.</summary>
+    /// <summary>The <see cref="Temperature"/> of magnitude 1, when expressed in <see cref="UnitOfTemperature.Kelvin"/>.</summary>
     public static Temperature OneKelvin { get; } = UnitOfTemperature.Kelvin.TemperatureDifference.AsTemperature;
-    /// <summary>The <see cref="Temperature"/> with magnitude 1, when expressed in unit <see cref="UnitOfTemperature.Rankine"/>.</summary>
+    /// <summary>The <see cref="Temperature"/> of magnitude 1, when expressed in <see cref="UnitOfTemperature.Rankine"/>.</summary>
     public static Temperature OneRankine { get; } = UnitOfTemperature.Rankine.TemperatureDifference.AsTemperature;
 
     /// <summary>The magnitude of the <see cref="Temperature"/>, in SI units.</summary>
@@ -91,7 +91,7 @@ public readonly partial record struct Temperature :
     /// </list>
     /// </remarks>
     public Temperature(double magnitude, UnitOfTemperature unitOfTemperature) : 
-    	this((magnitude * unitOfTemperature.TemperatureDifference.Magnitude) - unitOfTemperature.Offset) { }
+    	this((magnitude - unitOfTemperature.Offset) * unitOfTemperature.TemperatureDifference.Magnitude) { }
     /// <summary>Constructs a new <see cref="Temperature"/> with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Temperature"/>.</param>
     /// <remarks>Consider preferring <see cref="Temperature(Scalar, UnitOfTemperature)"/>.</remarks>
@@ -157,7 +157,7 @@ public readonly partial record struct Temperature :
     /// <param name="temperature">The <see cref="Temperature"/> to be expressed in <paramref name="unitOfTemperature"/>.</param>
     /// <param name="unitOfTemperature">The <see cref="UnitOfTemperature"/> in which the magnitude is expressed.</param>
     private static Scalar InUnit(Temperature temperature, UnitOfTemperature unitOfTemperature) 
-    	=> new((temperature.Magnitude + unitOfTemperature.Offset) / unitOfTemperature.TemperatureDifference.Magnitude);
+    	=> new(temperature.Magnitude / unitOfTemperature.TemperatureDifference.Magnitude + unitOfTemperature.Offset);
 
     /// <summary>Unary plus, resulting in the unmodified <see cref="Temperature"/>.</summary>
     public Temperature Plus() => this;

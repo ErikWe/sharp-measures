@@ -65,19 +65,19 @@ public readonly partial record struct RotationalKineticEnergy :
     /// <summary>The zero-valued <see cref="RotationalKineticEnergy"/>.</summary>
     public static RotationalKineticEnergy Zero { get; } = new(0);
 
-    /// <summary>The <see cref="RotationalKineticEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Joule"/>.</summary>
+    /// <summary>The <see cref="RotationalKineticEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Joule"/>.</summary>
     public static RotationalKineticEnergy OneJoule { get; } = new(1, UnitOfEnergy.Joule);
-    /// <summary>The <see cref="RotationalKineticEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Kilojoule"/>.</summary>
+    /// <summary>The <see cref="RotationalKineticEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Kilojoule"/>.</summary>
     public static RotationalKineticEnergy OneKilojoule { get; } = new(1, UnitOfEnergy.Kilojoule);
-    /// <summary>The <see cref="RotationalKineticEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Megajoule"/>.</summary>
+    /// <summary>The <see cref="RotationalKineticEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Megajoule"/>.</summary>
     public static RotationalKineticEnergy OneMegajoule { get; } = new(1, UnitOfEnergy.Megajoule);
-    /// <summary>The <see cref="RotationalKineticEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Gigajoule"/>.</summary>
+    /// <summary>The <see cref="RotationalKineticEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Gigajoule"/>.</summary>
     public static RotationalKineticEnergy OneGigajoule { get; } = new(1, UnitOfEnergy.Gigajoule);
-    /// <summary>The <see cref="RotationalKineticEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.KilowattHour"/>.</summary>
+    /// <summary>The <see cref="RotationalKineticEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.KilowattHour"/>.</summary>
     public static RotationalKineticEnergy OneKilowattHour { get; } = new(1, UnitOfEnergy.KilowattHour);
-    /// <summary>The <see cref="RotationalKineticEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Calorie"/>.</summary>
+    /// <summary>The <see cref="RotationalKineticEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Calorie"/>.</summary>
     public static RotationalKineticEnergy OneCalorie { get; } = new(1, UnitOfEnergy.Calorie);
-    /// <summary>The <see cref="RotationalKineticEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Kilocalorie"/>.</summary>
+    /// <summary>The <see cref="RotationalKineticEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Kilocalorie"/>.</summary>
     public static RotationalKineticEnergy OneKilocalorie { get; } = new(1, UnitOfEnergy.Kilocalorie);
 
     /// <summary>The magnitude of the <see cref="RotationalKineticEnergy"/>, in SI units.</summary>

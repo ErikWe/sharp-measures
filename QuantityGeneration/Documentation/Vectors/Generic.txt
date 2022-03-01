@@ -216,7 +216,7 @@
 
 #Define:CrossVector(quantity, dimensionality)
 /// <summary>Performs cross-multiplication of the <see cref="#Param:quantity#"/> by <paramref name="factor"/>, resulting in a
-/// <cref see="#Param:quantity#"/>.</summary>
+/// <see cref="#Param:quantity#"/>.</summary>
 /// <param name="factor">The <see cref="#Param:quantity#"/> is cross-multiplied by this <see cref="Vector#Param:dimensionality#"/>.</param>
 #/
 
@@ -402,7 +402,7 @@
 /// <param name="a">The <see cref="#Param:quantity#"/>, which is multiplied by <paramref name="b"/>.</param>
 /// <param name="b">This quantity is multiplied by the <see cref="#Param:quantity#"/> <paramref name="a"/>.</param>
 /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity,
-/// Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
+/// Func{ValueTuple{double, double, double}, TProductVector3Quantity})"/>.</remarks>
 /// <exception cref="ArgumentNullException"/>
 #/
 
@@ -416,7 +416,7 @@
 /// <param name="a">This quantity is multiplied by the <see cref="#Param:quantity#"/> <paramref name="b"/>.</param>
 /// <param name="b">The <see cref="#Param:quantity#"/>, which is multiplied by <paramref name="a"/>.</param>
 /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductVector3Quantity, TFactorScalarQuantity}(TFactorScalarQuantity,
-/// Func{double, double, double, TProductVector3Quantity})"/>.</remarks>
+/// Func{ValueTuple{double, double, double}, TProductVector3Quantity})"/>.</remarks>
 /// <exception cref="ArgumentNullException"/>
 #/
 
@@ -430,7 +430,7 @@
 /// <param name="a">The <see cref="#Param:quantity#"/>, which is divided by <paramref name="b"/>.</param>
 /// <param name="b">The <see cref="#Param:quantity#"/> <paramref name="a"/> is divided by this quantity.</param>
 /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientVector3Quantity, TDivisorScalarQuantity}(TDivisorScalarQuantity,
-/// Func{double, double, double, TQuotientVector3Quantity})"/>.</remarks>
+/// Func{ValueTuple{double, double, double}, TQuotientVector3Quantity})"/>.</remarks>
 /// <exception cref="ArgumentNullException"/>
 #/
 

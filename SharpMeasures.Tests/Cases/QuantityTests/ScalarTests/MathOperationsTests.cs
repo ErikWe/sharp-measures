@@ -350,10 +350,10 @@ public class MathOperationsTests
 
     [Theory]
     [ClassData(typeof(GenericDataset<ScalarDataset, UnhandledDataset>))]
-    public void DivideIScalar_MagnitudeShouldEqualDivision(Scalar scalar, IScalarQuantity factor)
+    public void DivideIScalar_MagnitudeShouldEqualDivision(Scalar scalar, IScalarQuantity divisor)
     {
-        Unhandled result = scalar / factor;
+        Unhandled result = scalar / divisor;
 
-        Assert.Equal(scalar.Magnitude / factor.Magnitude, result.Magnitude, 2);
+        Assert.Equal(scalar.Magnitude / divisor.Magnitude, result.Magnitude, 2);
     }
 }

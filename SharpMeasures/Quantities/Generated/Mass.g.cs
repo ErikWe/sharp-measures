@@ -42,19 +42,19 @@ public readonly partial record struct Mass :
     /// <summary>The zero-valued <see cref="Mass"/>.</summary>
     public static Mass Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Mass"/> with magnitude 1, when expressed in unit <see cref="UnitOfMass.Gram"/>.</summary>
+    /// <summary>The <see cref="Mass"/> of magnitude 1, when expressed in <see cref="UnitOfMass.Gram"/>.</summary>
     public static Mass OneGram { get; } = UnitOfMass.Gram.Mass;
-    /// <summary>The <see cref="Mass"/> with magnitude 1, when expressed in unit <see cref="UnitOfMass.Milligram"/>.</summary>
+    /// <summary>The <see cref="Mass"/> of magnitude 1, when expressed in <see cref="UnitOfMass.Milligram"/>.</summary>
     public static Mass OneMilligram { get; } = UnitOfMass.Milligram.Mass;
-    /// <summary>The <see cref="Mass"/> with magnitude 1, when expressed in unit <see cref="UnitOfMass.Hectogram"/>.</summary>
+    /// <summary>The <see cref="Mass"/> of magnitude 1, when expressed in <see cref="UnitOfMass.Hectogram"/>.</summary>
     public static Mass OneHectogram { get; } = UnitOfMass.Hectogram.Mass;
-    /// <summary>The <see cref="Mass"/> with magnitude 1, when expressed in unit <see cref="UnitOfMass.Kilogram"/>.</summary>
+    /// <summary>The <see cref="Mass"/> of magnitude 1, when expressed in <see cref="UnitOfMass.Kilogram"/>.</summary>
     public static Mass OneKilogram { get; } = UnitOfMass.Kilogram.Mass;
-    /// <summary>The <see cref="Mass"/> with magnitude 1, when expressed in unit <see cref="UnitOfMass.Tonne"/>.</summary>
+    /// <summary>The <see cref="Mass"/> of magnitude 1, when expressed in <see cref="UnitOfMass.Tonne"/>.</summary>
     public static Mass OneTonne { get; } = UnitOfMass.Tonne.Mass;
-    /// <summary>The <see cref="Mass"/> with magnitude 1, when expressed in unit <see cref="UnitOfMass.Ounce"/>.</summary>
+    /// <summary>The <see cref="Mass"/> of magnitude 1, when expressed in <see cref="UnitOfMass.Ounce"/>.</summary>
     public static Mass OneOunce { get; } = UnitOfMass.Ounce.Mass;
-    /// <summary>The <see cref="Mass"/> with magnitude 1, when expressed in unit <see cref="UnitOfMass.Pound"/>.</summary>
+    /// <summary>The <see cref="Mass"/> of magnitude 1, when expressed in <see cref="UnitOfMass.Pound"/>.</summary>
     public static Mass OnePound { get; } = UnitOfMass.Pound.Mass;
 
     /// <summary>The magnitude of the <see cref="Mass"/>, in SI units.</summary>

@@ -22,5 +22,5 @@
 #/Define:ExampleDerivedMethod#
 
 #Define:ExampleFromAssociated(quantity, dimensionality, variable)#
-<see cref="#Param:quantity#"/> #Param:variable# = <see cref="Displacement#Param:dimensionality#.As#Param:quantity#"/>;
+<see cref="#Param:quantity#"/> #Param:variable# = <see cref="Displacement#Param:dimensionality#.AsPosition"/>;
 #/Define:ExampleFromAssociated#

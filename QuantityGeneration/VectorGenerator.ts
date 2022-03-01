@@ -119,7 +119,8 @@ export class VectorGenerator {
     private setComponentListTexts(vector: VectorQuantity, dimensionality: number, text: string): string {
         const vectorComponent: ScalarQuantity = getVectorComponent(this.definitionReader.definitions, vector)
 
-        const componentLists: { replace: string, append: (name: string) => string, slice: (text: string) => string }[] = [{
+        const componentLists: { replace: string, append: (name: string) => string, slice: (text: string) => string }[] = [
+            {
                 replace: '#ComponentListProperties#',
                 append: (name: string) =>
                     '\t#Document:Component' + name + '(#Quantity#, #Dimensionality#, #Unit#, #PluralUnits#)#\n' +
@@ -332,7 +333,7 @@ export class VectorGenerator {
                 for (let dimensionality of vector.dimensionalities) {
                     if (convertible.dimensionalities.includes(dimensionality)) {
                         convertibleText += '\t#Document:AsShared(#Quantity#, #Dimensionality#, ' + convertible.name + ')#\n'
-                        convertibleText += '\tpublic ' + convertible.name + '#Dimensionality# As' + convertible.name + '#Dimensionality#() => new('
+                        convertibleText += '\tpublic ' + convertible.name + '#Dimensionality# As' + convertible.name + ' => new('
                         for (let name of getVectorComponentNames(dimensionality)) {
                             convertibleText += name + ', '
                         }

@@ -6,6 +6,8 @@ using ErikWe.SharpMeasures.Quantities;
 using ErikWe.SharpMeasures.Tests.Datasets;
 using ErikWe.SharpMeasures.Units;
 
+using System;
+
 using Xunit;
 
 public class ConstructorTests
@@ -136,5 +138,14 @@ public class ConstructorTests
         Speed quantity = (Speed)a;
 
         Assert.Equal(a, quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(SpeedSquaredDataset))]
+    public void FromSpeedSquared_ShouldMatchExpression(SpeedSquared sourceQuantity)
+    {
+        Speed quantity = Speed.From(sourceQuantity);
+
+        Assert.Equal(Math.Sqrt(sourceQuantity.Magnitude), quantity.Magnitude, 2);
     }
 }

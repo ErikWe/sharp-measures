@@ -62,7 +62,7 @@ public readonly partial record struct AngularMomentum :
     /// <summary>The zero-valued <see cref="AngularMomentum"/>.</summary>
     public static AngularMomentum Zero { get; } = new(0);
 
-    /// <summary>The <see cref="AngularMomentum"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularMomentum.KilogramSquareMetrePerSecond"/>.</summary>
+    /// <summary>The <see cref="AngularMomentum"/> of magnitude 1, when expressed in <see cref="UnitOfAngularMomentum.KilogramSquareMetrePerSecond"/>.</summary>
     public static AngularMomentum OneKilogramSquareMetrePerSecond { get; } = UnitOfAngularMomentum.KilogramSquareMetrePerSecond.AngularMomentum;
 
     /// <summary>The magnitude of the <see cref="AngularMomentum"/>, in SI units.</summary>
@@ -325,7 +325,7 @@ public readonly partial record struct AngularMomentum :
     /// <param name="a">This <see cref="AngularMomentum"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="AngularMomentum"/> <paramref name="a"/>.</param>
     public static AngularMomentum3 operator *(AngularMomentum a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="AngularMomentum"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="AngularMomentum"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="AngularMomentum3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="AngularMomentum"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="AngularMomentum"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -335,7 +335,7 @@ public readonly partial record struct AngularMomentum :
     /// <param name="a">This <see cref="AngularMomentum"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="AngularMomentum"/> <paramref name="a"/>.</param>
     public static AngularMomentum3 operator *(AngularMomentum a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="AngularMomentum"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="AngularMomentum"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="AngularMomentum3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="AngularMomentum"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="AngularMomentum"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -345,7 +345,7 @@ public readonly partial record struct AngularMomentum :
     /// <param name="a">This <see cref="AngularMomentum"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="AngularMomentum"/> <paramref name="a"/>.</param>
     public static AngularMomentum3 operator *(AngularMomentum a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="AngularMomentum"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="AngularMomentum"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="AngularMomentum3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="AngularMomentum"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="AngularMomentum"/> is multiplied by the values of <paramref name="a"/>.</param>

@@ -42,9 +42,9 @@ public readonly partial record struct MassFlowRate :
     /// <summary>The zero-valued <see cref="MassFlowRate"/>.</summary>
     public static MassFlowRate Zero { get; } = new(0);
 
-    /// <summary>The <see cref="MassFlowRate"/> with magnitude 1, when expressed in unit <see cref="UnitOfMassFlowRate.KilogramPerSecond"/>.</summary>
+    /// <summary>The <see cref="MassFlowRate"/> of magnitude 1, when expressed in <see cref="UnitOfMassFlowRate.KilogramPerSecond"/>.</summary>
     public static MassFlowRate OneKilogramPerSecond { get; } = UnitOfMassFlowRate.KilogramPerSecond.MassFlowRate;
-    /// <summary>The <see cref="MassFlowRate"/> with magnitude 1, when expressed in unit <see cref="UnitOfMassFlowRate.PoundPerSecond"/>.</summary>
+    /// <summary>The <see cref="MassFlowRate"/> of magnitude 1, when expressed in <see cref="UnitOfMassFlowRate.PoundPerSecond"/>.</summary>
     public static MassFlowRate OnePoundPerSecond { get; } = UnitOfMassFlowRate.PoundPerSecond.MassFlowRate;
 
     /// <summary>The magnitude of the <see cref="MassFlowRate"/>, in SI units.</summary>

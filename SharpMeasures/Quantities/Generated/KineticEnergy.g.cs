@@ -69,19 +69,19 @@ public readonly partial record struct KineticEnergy :
     /// <summary>The zero-valued <see cref="KineticEnergy"/>.</summary>
     public static KineticEnergy Zero { get; } = new(0);
 
-    /// <summary>The <see cref="KineticEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Joule"/>.</summary>
+    /// <summary>The <see cref="KineticEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Joule"/>.</summary>
     public static KineticEnergy OneJoule { get; } = UnitOfEnergy.Joule.Energy.AsKineticEnergy;
-    /// <summary>The <see cref="KineticEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Kilojoule"/>.</summary>
+    /// <summary>The <see cref="KineticEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Kilojoule"/>.</summary>
     public static KineticEnergy OneKilojoule { get; } = UnitOfEnergy.Kilojoule.Energy.AsKineticEnergy;
-    /// <summary>The <see cref="KineticEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Megajoule"/>.</summary>
+    /// <summary>The <see cref="KineticEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Megajoule"/>.</summary>
     public static KineticEnergy OneMegajoule { get; } = UnitOfEnergy.Megajoule.Energy.AsKineticEnergy;
-    /// <summary>The <see cref="KineticEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Gigajoule"/>.</summary>
+    /// <summary>The <see cref="KineticEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Gigajoule"/>.</summary>
     public static KineticEnergy OneGigajoule { get; } = UnitOfEnergy.Gigajoule.Energy.AsKineticEnergy;
-    /// <summary>The <see cref="KineticEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.KilowattHour"/>.</summary>
+    /// <summary>The <see cref="KineticEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.KilowattHour"/>.</summary>
     public static KineticEnergy OneKilowattHour { get; } = UnitOfEnergy.KilowattHour.Energy.AsKineticEnergy;
-    /// <summary>The <see cref="KineticEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Calorie"/>.</summary>
+    /// <summary>The <see cref="KineticEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Calorie"/>.</summary>
     public static KineticEnergy OneCalorie { get; } = UnitOfEnergy.Calorie.Energy.AsKineticEnergy;
-    /// <summary>The <see cref="KineticEnergy"/> with magnitude 1, when expressed in unit <see cref="UnitOfEnergy.Kilocalorie"/>.</summary>
+    /// <summary>The <see cref="KineticEnergy"/> of magnitude 1, when expressed in <see cref="UnitOfEnergy.Kilocalorie"/>.</summary>
     public static KineticEnergy OneKilocalorie { get; } = UnitOfEnergy.Kilocalorie.Energy.AsKineticEnergy;
 
     /// <summary>The magnitude of the <see cref="KineticEnergy"/>, in SI units.</summary>

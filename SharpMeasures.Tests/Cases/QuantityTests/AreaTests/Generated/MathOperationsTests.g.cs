@@ -276,10 +276,10 @@ public class MathOperationsTests
 
     [Theory]
     [ClassData(typeof(GenericDataset<AreaDataset, ScalarDataset>))]
-    public void DivideIScalar_MagnitudeShouldEqualDivision(Area quantity, IScalarQuantity factor)
+    public void DivideIScalar_MagnitudeShouldEqualDivision(Area quantity, IScalarQuantity divisor)
     {
-        Unhandled result = quantity / factor;
+        Unhandled result = quantity / divisor;
 
-        Assert.Equal(quantity.Magnitude / factor.Magnitude, result.Magnitude, 2);
+        Assert.Equal(quantity.Magnitude / divisor.Magnitude, result.Magnitude, 2);
     }
 }

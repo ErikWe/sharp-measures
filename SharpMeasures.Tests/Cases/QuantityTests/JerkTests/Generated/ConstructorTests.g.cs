@@ -105,4 +105,5 @@ public class ConstructorTests
 
         Assert.Equal(a, quantity.Magnitude, 2);
     }
+
 }

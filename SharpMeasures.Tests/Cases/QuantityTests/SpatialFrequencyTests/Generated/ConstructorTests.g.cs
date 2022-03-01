@@ -97,4 +97,22 @@ public class ConstructorTests
 
         Assert.Equal(a, quantity.Magnitude, 2);
     }
+
+    [Theory]
+    [ClassData(typeof(DistanceDataset))]
+    public void FromDistance_ShouldMatchExpression(Distance sourceQuantity)
+    {
+        SpatialFrequency quantity = SpatialFrequency.From(sourceQuantity);
+
+        Assert.Equal(1 / sourceQuantity.Magnitude, quantity.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(LengthDataset))]
+    public void FromLength_ShouldMatchExpression(Length sourceQuantity)
+    {
+        SpatialFrequency quantity = SpatialFrequency.From(sourceQuantity);
+
+        Assert.Equal(1 / sourceQuantity.Magnitude, quantity.Magnitude, 2);
+    }
 }

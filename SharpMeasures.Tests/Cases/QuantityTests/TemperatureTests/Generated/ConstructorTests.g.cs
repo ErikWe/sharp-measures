@@ -32,7 +32,7 @@ public class ConstructorTests
     {
         Temperature quantity = new(magnitude, unit);
         
-        Assert.Equal(magnitude * unit.TemperatureDifference.Magnitude - unit.Offset, quantity.Magnitude, 2);
+        Assert.Equal((magnitude - unit.Offset) * unit.TemperatureDifference.Magnitude, quantity.Magnitude, 2);
     }
 
     [Theory]
@@ -41,7 +41,7 @@ public class ConstructorTests
     {
         Temperature quantity = new(magnitude, unit);
 
-        Assert.Equal(magnitude * unit.TemperatureDifference.Magnitude - unit.Offset, quantity.Magnitude, 2);
+        Assert.Equal((magnitude - unit.Offset) * unit.TemperatureDifference.Magnitude, quantity.Magnitude, 2);
     }
 
     [Theory]
@@ -97,4 +97,5 @@ public class ConstructorTests
 
         Assert.Equal(a, quantity.Magnitude, 2);
     }
+
 }

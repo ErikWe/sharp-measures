@@ -26,7 +26,7 @@ using System;
 /// </item>
 /// <item>
 /// <code>
-/// <see cref="SpinAngularSpeed"/> e = <see cref="AngularSpeed.AsSpinAngularSpeed()"/>;
+/// <see cref="SpinAngularSpeed"/> e = <see cref="AngularSpeed.AsSpinAngularSpeed"/>;
 /// </code>
 /// </item>
 /// </list>
@@ -62,13 +62,13 @@ public readonly partial record struct SpinAngularSpeed :
     /// <summary>The zero-valued <see cref="SpinAngularSpeed"/>.</summary>
     public static SpinAngularSpeed Zero { get; } = new(0);
 
-    /// <summary>The <see cref="SpinAngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RadianPerSecond"/>.</summary>
+    /// <summary>The <see cref="SpinAngularSpeed"/> of magnitude 1, when expressed in <see cref="UnitOfAngularVelocity.RadianPerSecond"/>.</summary>
     public static SpinAngularSpeed OneRadianPerSecond { get; } = UnitOfAngularVelocity.RadianPerSecond.AngularSpeed.AsSpinAngularSpeed;
-    /// <summary>The <see cref="SpinAngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.DegreePerSecond"/>.</summary>
+    /// <summary>The <see cref="SpinAngularSpeed"/> of magnitude 1, when expressed in <see cref="UnitOfAngularVelocity.DegreePerSecond"/>.</summary>
     public static SpinAngularSpeed OneDegreePerSecond { get; } = UnitOfAngularVelocity.DegreePerSecond.AngularSpeed.AsSpinAngularSpeed;
-    /// <summary>The <see cref="SpinAngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RevolutionPerSecond"/>.</summary>
+    /// <summary>The <see cref="SpinAngularSpeed"/> of magnitude 1, when expressed in <see cref="UnitOfAngularVelocity.RevolutionPerSecond"/>.</summary>
     public static SpinAngularSpeed OneRevolutionPerSecond { get; } = UnitOfAngularVelocity.RevolutionPerSecond.AngularSpeed.AsSpinAngularSpeed;
-    /// <summary>The <see cref="SpinAngularSpeed"/> with magnitude 1, when expressed in unit <see cref="UnitOfAngularVelocity.RevolutionPerMinute"/>.</summary>
+    /// <summary>The <see cref="SpinAngularSpeed"/> of magnitude 1, when expressed in <see cref="UnitOfAngularVelocity.RevolutionPerMinute"/>.</summary>
     public static SpinAngularSpeed OneRevolutionPerMinute { get; } = UnitOfAngularVelocity.RevolutionPerMinute.AngularSpeed.AsSpinAngularSpeed;
 
     /// <summary>The magnitude of the <see cref="SpinAngularSpeed"/>, in SI units.</summary>
@@ -337,7 +337,7 @@ public readonly partial record struct SpinAngularSpeed :
     /// <param name="a">This <see cref="SpinAngularSpeed"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="SpinAngularSpeed"/> <paramref name="a"/>.</param>
     public static SpinAngularVelocity3 operator *(SpinAngularSpeed a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="SpinAngularSpeed"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="SpinAngularSpeed"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="SpinAngularVelocity3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="SpinAngularSpeed"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="SpinAngularSpeed"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -347,7 +347,7 @@ public readonly partial record struct SpinAngularSpeed :
     /// <param name="a">This <see cref="SpinAngularSpeed"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="SpinAngularSpeed"/> <paramref name="a"/>.</param>
     public static SpinAngularVelocity3 operator *(SpinAngularSpeed a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="SpinAngularSpeed"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="SpinAngularSpeed"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="SpinAngularVelocity3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="SpinAngularSpeed"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="SpinAngularSpeed"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -357,7 +357,7 @@ public readonly partial record struct SpinAngularSpeed :
     /// <param name="a">This <see cref="SpinAngularSpeed"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="SpinAngularSpeed"/> <paramref name="a"/>.</param>
     public static SpinAngularVelocity3 operator *(SpinAngularSpeed a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="SpinAngularSpeed"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="SpinAngularSpeed"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="SpinAngularVelocity3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="SpinAngularSpeed"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="SpinAngularSpeed"/> is multiplied by the values of <paramref name="a"/>.</param>

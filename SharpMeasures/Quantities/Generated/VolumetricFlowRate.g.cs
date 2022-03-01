@@ -42,9 +42,9 @@ public readonly partial record struct VolumetricFlowRate :
     /// <summary>The zero-valued <see cref="VolumetricFlowRate"/>.</summary>
     public static VolumetricFlowRate Zero { get; } = new(0);
 
-    /// <summary>The <see cref="VolumetricFlowRate"/> with magnitude 1, when expressed in unit <see cref="UnitOfVolumetricFlowRate.CubicMetrePerSecond"/>.</summary>
+    /// <summary>The <see cref="VolumetricFlowRate"/> of magnitude 1, when expressed in <see cref="UnitOfVolumetricFlowRate.CubicMetrePerSecond"/>.</summary>
     public static VolumetricFlowRate OneCubicMetrePerSecond { get; } = UnitOfVolumetricFlowRate.CubicMetrePerSecond.VolumetricFlowRate;
-    /// <summary>The <see cref="VolumetricFlowRate"/> with magnitude 1, when expressed in unit <see cref="UnitOfVolumetricFlowRate.LitrePerSecond"/>.</summary>
+    /// <summary>The <see cref="VolumetricFlowRate"/> of magnitude 1, when expressed in <see cref="UnitOfVolumetricFlowRate.LitrePerSecond"/>.</summary>
     public static VolumetricFlowRate OneLitrePerSecond { get; } = UnitOfVolumetricFlowRate.LitrePerSecond.VolumetricFlowRate;
 
     /// <summary>The magnitude of the <see cref="VolumetricFlowRate"/>, in SI units.</summary>

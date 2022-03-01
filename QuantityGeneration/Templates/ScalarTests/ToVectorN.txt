@@ -1,0 +1,66 @@
+namespace ErikWe.SharpMeasures.Tests.Cases.QuantityTests.#Quantity#Tests;
+
+using ErikWe.SharpMeasures.Quantities;
+using ErikWe.SharpMeasures.Tests.Datasets;
+
+using Xunit;
+
+public class ToVector#Dimensionality#Tests
+{
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity#Dataset, Vector#Dimensionality#Dataset>))]
+    public void Vector#Dimensionality#_Method_ShouldMatchMultiplication(#Quantity# quantity, Vector#Dimensionality# vector)
+    {
+        #VectorQuantity##Dimensionality# result = quantity.Multiply(vector);
+
+#AssertEqualVectorMethod#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity#Dataset, #DoubleDatasets#>))]
+    public void DoubleTuple_Method_ShouldMatchMultiplication(#Quantity# quantity, #Doubles#)
+    {
+        #VectorQuantity##Dimensionality# result = quantity.Multiply((#Tuple#));
+
+#AssertEqualTupleMethod#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity#Dataset, #ScalarDatasets#>))]
+    public void ScalarTuple_Method_ShouldMatchMultiplication(#Quantity# quantity, #Scalars#)
+    {
+        #VectorQuantity##Dimensionality# result = quantity.Multiply((#Tuple#));
+
+#AssertEqualTupleMethod#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity#Dataset, Vector#Dimensionality#Dataset>))]
+    public void Vector#Dimensionality#_Operator_ShouldMatchMultiplication(#Quantity# quantity, Vector#Dimensionality# vector)
+    {
+        #VectorQuantity##Dimensionality# resultLHS = quantity * vector;
+        #VectorQuantity##Dimensionality# resultRHS = vector * quantity;
+
+#AssertEqualVectorOperator#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity#Dataset, #DoubleDatasets#>))]
+    public void DoubleTuple_Operator_ShouldMatchMultiplication(#Quantity# quantity, #Doubles#)
+    {
+        #VectorQuantity##Dimensionality# resultLHS = quantity * (#Tuple#);
+        #VectorQuantity##Dimensionality# resultRHS = (#Tuple#) * quantity;
+
+#AssertEqualTupleOperator#
+    }
+
+    [Theory]
+    [ClassData(typeof(GenericDataset<#Quantity#Dataset, #ScalarDatasets#>))]
+    public void ScalarTuple_Operator_ShouldMatchMultiplication(#Quantity# quantity, #Scalars#)
+    {
+        #VectorQuantity##Dimensionality# resultLHS = quantity * (#Tuple#);
+        #VectorQuantity##Dimensionality# resultRHS = (#Tuple#) * quantity;
+
+#AssertEqualTupleOperator#
+    }
+}

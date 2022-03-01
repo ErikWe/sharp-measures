@@ -58,9 +58,9 @@ public readonly partial record struct Force :
     /// <summary>The zero-valued <see cref="Force"/>.</summary>
     public static Force Zero { get; } = new(0);
 
-    /// <summary>The <see cref="Force"/> with magnitude 1, when expressed in unit <see cref="UnitOfForce.Newton"/>.</summary>
+    /// <summary>The <see cref="Force"/> of magnitude 1, when expressed in <see cref="UnitOfForce.Newton"/>.</summary>
     public static Force OneNewton { get; } = UnitOfForce.Newton.Force;
-    /// <summary>The <see cref="Force"/> with magnitude 1, when expressed in unit <see cref="UnitOfForce.PoundForce"/>.</summary>
+    /// <summary>The <see cref="Force"/> of magnitude 1, when expressed in <see cref="UnitOfForce.PoundForce"/>.</summary>
     public static Force OnePoundForce { get; } = UnitOfForce.PoundForce.Force;
 
     /// <summary>The magnitude of the <see cref="Force"/>, in SI units.</summary>
@@ -322,7 +322,7 @@ public readonly partial record struct Force :
     /// <param name="a">This <see cref="Force"/> is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="Force"/> <paramref name="a"/>.</param>
     public static Force3 operator *(Force a, Vector3 b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Force"/> <parmref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Force"/> <paramref name="b"/> with the <see cref="Vector3"/> <paramref name="a"/>
     /// to produce a <see cref="Force3"/>.</summary>
     /// <param name="a">This <see cref="Vector3"/> is multiplied by the <see cref="Force"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Force"/> is multiplied by the <see cref="Vector3"/> <paramref name="a"/>.</param>
@@ -332,7 +332,7 @@ public readonly partial record struct Force :
     /// <param name="a">This <see cref="Force"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Force"/> <paramref name="a"/>.</param>
     public static Force3 operator *(Force a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Force"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Force"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Force3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Force"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Force"/> is multiplied by the values of <paramref name="a"/>.</param>
@@ -342,7 +342,7 @@ public readonly partial record struct Force :
     /// <param name="a">This <see cref="Force"/> is multiplied by the values of <paramref name="b"/>.</param>
     /// <param name="b">These values are multiplied by the <see cref="Force"/> <paramref name="a"/>.</param>
     public static Force3 operator *(Force a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Force"/> <parmref name="b"/> with the values of <paramref name="a"/>
+    /// <summary>Multiplication of the <see cref="Force"/> <paramref name="b"/> with the values of <paramref name="a"/>
     /// to produce a <see cref="Force3"/>.</summary>
     /// <param name="a">These values are multiplied by the <see cref="Force"/> <paramref name="b"/>.</param>
     /// <param name="b">This <see cref="Force"/> is multiplied by the values of <paramref name="a"/>.</param>

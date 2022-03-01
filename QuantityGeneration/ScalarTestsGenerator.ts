@@ -3,8 +3,10 @@ import path from 'path'
 import { DefinitionReader } from './DefinitionReader'
 import { TemplateReader } from './TemplateReader'
 import { ScalarQuantity } from './ScalarQuantity'
+import { VectorQuantity } from './VectorQuantity'
 import { Unit } from './Unit'
-import { fixLines, getBases, getConstants, getUnit, getUnitQuantity } from './Utility'
+import { fixLines, getBases, getConstants, getConvertible, getUnit, getUnits, getUnitQuantity, getVectorComponentNames,
+    getVectorVersionOfScalar, lowerCase, parseUnitPlural } from './Utility'
 
 export class ScalarTestsGenerator {
 
@@ -19,11 +21,14 @@ export class ScalarTestsGenerator {
             this.generateCastTests(scalar)
             this.generateComparisonTests(scalar)
             this.generateConstructorTests(scalar)
+            this.generateConvertibleTests(scalar)
             this.generateEqualityTests(scalar)
+            this.generateInUnitsTests(scalar)
             this.generateMathFunctionsTests(scalar)
             this.generateMathOperationsTests(scalar)
             this.generateMathPowersTests(scalar)
             this.generatePropertiesTests(scalar)
+            this.generateToVectorTests(scalar)
         }))
     }
 
@@ -31,9 +36,7 @@ export class ScalarTestsGenerator {
         let text: string = this.templateReader.scalarTests.dataset
 
         text = this.insertNames(text, scalar)
-
         text = fixLines(text)
-
         await this.attemptWriteFile(this.destination + '\\Datasets\\Generated\\' + scalar.name + 'Dataset.g.cs', text)
     }
 
@@ -46,10 +49,6 @@ export class ScalarTestsGenerator {
     }
 
     private async generateComparisonTests(scalar: ScalarQuantity): Promise<void> {
-        if (scalar.unitBias) {
-            return
-        }
-
         let text: string = this.templateReader.scalarTests.comparison
 
         text = this.insertNames(text, scalar)
@@ -68,9 +67,29 @@ export class ScalarTestsGenerator {
         const basesText: string = this.composeConstructorBasesText(scalar)
         text = text.replace(/#Bases#/g, basesText)
 
+        const fromPowers: { text: string, usingSystem: boolean } = this.composeConstructorFromPowersText(scalar)
+        text = text.replace(/#FromPowers#/g, fromPowers.text)
+
+        if (fromPowers.usingSystem) {
+            text = text.replace(/#UsingSystem#/g, 'using System;')
+        } else {
+            text = text.replace(/(\n|\r\n|\r)#UsingSystem#(\n|\r\n|\r)/g, '')
+        }
+
         text = this.insertNames(text, scalar)
         text = fixLines(text)
         this.attemptWriteFile(this.destination + '\\Cases\\QuantityTests\\' + scalar.name + 'Tests\\Generated\\ConstructorTests.g.cs', text)
+    }
+
+    private async generateConvertibleTests(scalar: ScalarQuantity): Promise<void> {
+        let text: string = this.templateReader.scalarTests.convertible
+
+        const convertibleText: string = this.composeConvertibleText(scalar)
+        text = text.replace(/#Convertible#/g, convertibleText)
+
+        text = this.insertNames(text, scalar)
+        text = fixLines(text)
+        this.attemptWriteFile(this.destination + '\\Cases\\QuantityTests\\' + scalar.name + 'Tests\\Generated\\ConvertibleTests.g.cs', text)
     }
 
     private async generateEqualityTests(scalar: ScalarQuantity): Promise<void> {
@@ -79,6 +98,21 @@ export class ScalarTestsGenerator {
         text = this.insertNames(text, scalar)
         text = fixLines(text)
         this.attemptWriteFile(this.destination + '\\Cases\\QuantityTests\\' + scalar.name + 'Tests\\Generated\\EqualityTests.g.cs', text)
+    }
+
+    private async generateInUnitsTests(scalar: ScalarQuantity): Promise<void> {
+        let text: string = this.templateReader.scalarTests.inUnits
+        
+        const inUnitsText: string = this.composeInUnitsText(scalar)
+        text = text.replace(/#Units#/g, inUnitsText)
+        
+        const constantMultiplesText: string = this.composeConstantMultiplesText(scalar)
+        text = text.replace(/#Constants#/g, constantMultiplesText)
+
+        text = this.setConditionalBlocks(scalar, text)
+        text = this.insertNames(text, scalar)
+        text = fixLines(text)
+        this.attemptWriteFile(this.destination + '\\Cases\\QuantityTests\\' + scalar.name + 'Tests\\Generated\\InUnitsTests.g.cs', text)
     }
 
     private async generateMathFunctionsTests(scalar: ScalarQuantity): Promise<void> {
@@ -93,7 +127,6 @@ export class ScalarTestsGenerator {
         let text: string = this.templateReader.scalarTests.mathOperations
 
         text = this.setConditionalBlocks(scalar, text)
-
         text = this.insertNames(text, scalar)
         text = fixLines(text)
         this.attemptWriteFile(this.destination + '\\Cases\\QuantityTests\\' + scalar.name + 'Tests\\Generated\\MathOperationsTests.g.cs', text)
@@ -136,6 +169,85 @@ export class ScalarTestsGenerator {
         text = this.insertNames(text, scalar)
         text = fixLines(text)
         this.attemptWriteFile(this.destination + '\\Cases\\QuantityTests\\' + scalar.name + 'Tests\\Generated\\PropertiesTests.g.cs', text)
+    }
+
+    private async generateToVectorTests(scalar: ScalarQuantity): Promise<void> {
+        const vector: VectorQuantity | undefined = getVectorVersionOfScalar(this.definitionReader.definitions, scalar)
+
+        if (vector === undefined) {
+            return
+        }
+
+        const componentLists: { replace: string, append: (name: string) => string, slice: (text: string) => string }[] = [
+            {
+                replace: '#AssertEqualVectorMethod#',
+                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude * vector.' + name +', result.' + name + ', 2);\n',
+                slice: (result: string) => result.slice(0, -1)
+            },
+            {
+                replace: '#DoubleDatasets#',
+                append: (name: string) => 'DoubleDataset, ',
+                slice: (result: string) => result.slice(0, -2)
+            },
+            {
+                replace: '#ScalarDatasets#',
+                append: (name: string) => 'ScalarDataset, ',
+                slice: (result: string) => result.slice(0, -2)
+            },
+            {
+                replace: '#Doubles#',
+                append: (name: string) => 'double ' + lowerCase(name) + ', ',
+                slice: (result: string) => result.slice(0, -2)
+            },
+            {
+                replace: '#Scalars#',
+                append: (name: string) => 'Scalar ' + lowerCase(name) + ', ',
+                slice: (result: string) => result.slice(0, -2)
+            },
+            {
+                replace: '#Tuple#',
+                append: (name: string) => lowerCase(name) + ', ',
+                slice: (result: string) => result.slice(0, -2)
+            },
+            {
+                replace: '#AssertEqualTupleMethod#',
+                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude * x, result.X, 2);\n',
+                slice: (result: string) => result.slice(0, -1)
+            },
+            {
+                replace: '#AssertEqualVectorOperator#',
+                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude * vector.' + name + ', resultLHS.' + name + ', 2);\n' +
+                    '\t\tAssert.Equal(vector.' + name + ' * quantity.Magnitude, resultRHS.' + name + ', 2);\n\n',
+                slice: (result: string) => result.slice(0, -2)
+            },
+            {
+                replace: '#AssertEqualTupleOperator#',
+                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude * ' + lowerCase(name) + ', resultLHS.' + name + ', 2);\n' +
+                    '\t\tAssert.Equal(' + lowerCase(name) + ' * quantity.Magnitude, resultRHS.' + name + ', 2);\n\n',
+                slice: (result: string) => result.slice(0, -2)
+            }
+        ]
+
+        for (let dimensionality of vector.dimensionalities) {
+            let text: string = this.templateReader.scalarTests.toVectorN
+
+            text = text.replace(/#Dimensionality#/g, dimensionality.toString())
+
+
+            for (let componentList of componentLists) {
+                let listText: string = ''
+                
+                for (let componentName of getVectorComponentNames(dimensionality)) {
+                    listText += componentList.append(componentName)
+                }
+    
+                text = text.replace(new RegExp(componentList.replace, 'g'), componentList.slice(listText))
+            }
+
+            text = this.insertNames(text, scalar)
+            text = fixLines(text)
+            this.attemptWriteFile(this.destination + '\\Cases\\QuantityTests\\' + scalar.name + 'Tests\\Generated\\ToVector' + dimensionality + 'Tests.g.cs', text)
+        }
     }
 
     private composeConstructorConstantsText(scalar: ScalarQuantity): string {
@@ -188,6 +300,119 @@ export class ScalarTestsGenerator {
         return basesText.slice(1, -1)
     }
 
+    private composeConstructorFromPowersText(scalar: ScalarQuantity): { text: string, usingSystem: boolean } {
+        const powers: { data: string[] | undefined, expression: string, system: boolean }[] = [
+            { data: scalar.inverse, expression: '1 / sourceQuantity.Magnitude', system: false },
+            { data: scalar.square, expression: 'Math.Sqrt(sourceQuantity.Magnitude)', system: true },
+            { data: scalar.cube, expression: 'Math.Cbrt(sourceQuantity.Magnitude)', system: true },
+            { data: scalar.squareRoot, expression: 'Math.Pow(sourceQuantity.Magnitude, 2)', system: true },
+            { data: scalar.cubeRoot, expression: 'Math.Pow(sourceQuantity.Magnitude, 3)', system: true }
+        ]
+
+        let fromText: string = ''
+        let usingSystem: boolean = false
+
+        for (let power of powers) {
+            if (power.data !== undefined) {
+                if (power.system) {
+                    usingSystem = true
+                }
+
+                for (let source of power.data) {
+                    fromText += '\t[Theory]\n'
+                    fromText += '\t[ClassData(typeof(' + source + 'Dataset))]\n'
+                    fromText += '\tpublic void From' + source + '_ShouldMatchExpression(' + source + ' sourceQuantity)\n'
+                    fromText += '\t{\n'
+                    fromText += '\t\t' + scalar.name + ' quantity = ' + scalar.name + '.From(sourceQuantity);\n\n'
+                    fromText += '\t\tAssert.Equal(' + power.expression + ', quantity.Magnitude, 2);\n'
+                    fromText += '\t}\n\n'
+                }
+            }
+        }
+
+        if (scalar.squareRoot !== undefined) {
+            for (let source of scalar.squareRoot) {
+                fromText += '\t[Theory]\n'
+                fromText += '\t[ClassData(typeof(GenericDataset<' + source + 'Dataset, ' + source + 'Dataset>))]\n'
+                fromText += '\tpublic void FromTwo' + source + '_ShouldMatchExpression(' + source + ' sourceQuantity1, ' + source + ' sourceQuantity2)\n'
+                fromText += '\t{\n'
+                fromText += '\t\t' + scalar.name + ' quantity = ' + scalar.name + '.From(sourceQuantity1, sourceQuantity2);\n\n'
+                fromText += '\t\tAssert.Equal(sourceQuantity1.Magnitude * sourceQuantity2.Magnitude, quantity.Magnitude, 2);\n'
+                fromText += '\t}\n\n'
+            }
+        }
+
+        if (scalar.cubeRoot !== undefined) {
+            for (let source of scalar.cubeRoot) {
+                fromText += '\t[Theory]\n'
+                fromText += '\t[ClassData(typeof(GenericDataset<' + source + 'Dataset, ' + source + 'Dataset, ' + source + 'Dataset>))]\n'
+                fromText += '\tpublic void FromThree' + source + '_ShouldMatchExpression(' + source + ' sourceQuantity1, ' + source + ' sourceQuantity2, ' + source + ' sourceQuantity3)\n'
+                fromText += '\t{\n'
+                fromText += '\t\t' + scalar.name + ' quantity = ' + scalar.name + '.From(sourceQuantity1, sourceQuantity2, sourceQuantity3);\n\n'
+                fromText += '\t\tAssert.Equal(sourceQuantity1.Magnitude * sourceQuantity2.Magnitude * sourceQuantity3.Magnitude, quantity.Magnitude, 2);\n'
+                fromText += '\t}\n\n'
+            }
+        }
+
+        return { text: fromText.slice(0, -2), usingSystem: usingSystem }
+    }
+
+    private composeConvertibleText(scalar: ScalarQuantity): string {
+        let convertibleText: string = ''
+
+        for (let convertible of getConvertible(this.definitionReader.definitions, scalar)) {
+            convertibleText += '\t[Theory]\n'
+            convertibleText += '\t[ClassData(typeof(#Quantity#Dataset))]\n'
+            convertibleText += '\tpublic void ' + convertible.name + '(#Quantity# quantity)\n'
+            convertibleText += '\t{\n'
+            convertibleText += '\t\t' + convertible.name + ' result = quantity.As' + convertible.name + ';\n\n'
+            convertibleText += '\t\tAssert.Equal(quantity.Magnitude, result.Magnitude, 2);\n'
+            convertibleText += '\t}\n\n'
+        }
+
+        return convertibleText.slice(0, -2)
+    }
+
+    private composeInUnitsText(scalar: ScalarQuantity): string {
+        let unitsText: string = ''
+        
+        const units: Unit['units'] = getUnits(this.definitionReader.definitions, scalar)
+        for (let unit of units) {
+            if (!unit.special) {
+                unitsText += '\t[Theory]\n'
+                unitsText += '\t[ClassData(typeof(ScalarDataset))]\n'
+                unitsText += '\tpublic void In' + unit.name + '(Scalar expected)\n'
+                unitsText += '\t{\n'
+                unitsText += '\t\t#Quantity# quantity = new(expected, #Unit#.' + unit.name + ');\n\n'
+                unitsText += '\t\tScalar actual = quantity.' + parseUnitPlural(unit.name, unit.plural) + ';\n\n'
+                unitsText += '\t\tUtility.AssertExtra.AssertEqualMagnitudes(expected, actual);\n'
+                unitsText += '\t}\n\n'
+            }
+        }
+
+        return unitsText.slice(0, -2)
+    }
+
+    private composeConstantMultiplesText(scalar: ScalarQuantity): string {
+        let multiplesText: string = ''
+        
+        const constants: Unit['constants'] = getConstants(this.definitionReader.definitions, scalar)
+        for (let constant of constants) {
+            if (!constant.special) {
+                multiplesText += '\t[Theory]\n'
+                multiplesText += '\t[ClassData(typeof(ScalarDataset))]\n'
+                multiplesText += '\tpublic void In' + constant.name + '(Scalar expected)\n'
+                multiplesText += '\t{\n'
+                multiplesText += '\t\t#Quantity# quantity = new(expected, #Unit#.' + constant.name + ');\n\n'
+                multiplesText += '\t\tScalar actual = quantity.' + constant.name + 'Multiples;\n\n'
+                multiplesText += '\t\tUtility.AssertExtra.AssertEqualMagnitudes(expected, actual);\n'
+                multiplesText += '\t}\n\n'
+            }
+        }
+
+        return multiplesText.slice(0, -2)
+    }
+
     private insertNames(text: string, scalar: ScalarQuantity): string {
         const unit: Unit = getUnit(this.definitionReader.definitions, scalar)
         text = text.replace(/#Unit#/g, 'UnitOf' + unit.name)
@@ -197,6 +422,11 @@ export class ScalarTestsGenerator {
 
         text = text.replace(/#Quantity#/g, scalar.name)
         text = text.replace(/#InverseQuantity#/g, scalar.inverse && scalar.inverse.length > 0 ? scalar.inverse[0] : 'NoInverseQuantityError')
+
+        const vector: VectorQuantity | undefined = getVectorVersionOfScalar(this.definitionReader.definitions, scalar)
+        if (vector) {
+            text = text.replace(/#VectorQuantity#/g, vector.name)
+        }
 
         return text
     }

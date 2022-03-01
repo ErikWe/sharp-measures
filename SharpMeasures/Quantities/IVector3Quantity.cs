@@ -163,7 +163,7 @@ public interface IGenericallyMultiplicableVector3Quantity :
     /// <typeparam name="TFactorScalarQuantity">The scalar quantity by which the original quantity may be multiplied.</typeparam>
     /// <param name="factor">The quantity by which the original quantity is multiplied.</param>
     /// <param name="factory">Delegate for constructing a <typeparamref name="TProductVector3Quantity"/>..</param>
-    public abstract TProductVector3Quantity Multiply<TProductVector3Quantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, double, double, TProductVector3Quantity> factory)
+    public abstract TProductVector3Quantity Multiply<TProductVector3Quantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<(double, double, double), TProductVector3Quantity> factory)
         where TProductVector3Quantity : IVector3Quantity
         where TFactorScalarQuantity : IScalarQuantity;
 }
@@ -179,7 +179,7 @@ public interface IGenericallyDivisibleVector3Quantity :
     /// <typeparam name="TDivisorScalarQuantity">The type of the scalar quantity by which the original quantity may be divided.</typeparam>
     /// <param name="divisor">The quantity by which the original quantity is divided.</param>
     /// <param name="factory">Delegate for constructing a <typeparamref name="TQuotientVector3Quantity"/>.</param>
-    public abstract TQuotientVector3Quantity Divide<TQuotientVector3Quantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, double, double, TQuotientVector3Quantity> factory)
+    public abstract TQuotientVector3Quantity Divide<TQuotientVector3Quantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<(double, double, double), TQuotientVector3Quantity> factory)
         where TQuotientVector3Quantity : IVector3Quantity
         where TDivisorScalarQuantity : IScalarQuantity;
 }
@@ -192,10 +192,10 @@ public interface IGenericallyDotableVector3Quantity :
     /// <summary>Performs dot-multiplication of the original quantity by the quantity <paramref name="factor"/> of type <typeparamref name="TFactorVector3Quantity"/>, resulting in a
     /// <typeparamref name="TProductScalarQuantity"/>.</summary>
     /// <typeparam name="TProductScalarQuantity">The scalar quantity that is the dot-product of the two quantities.</typeparam>
-    /// <typeparam name="TFactorVector3Quantity">The scalar quantity by which the original quantity may be dot-multiplied.</typeparam>
+    /// <typeparam name="TFactorVector3Quantity">The three-dimensional vector quantity by which the original quantity may be dot-multiplied.</typeparam>
     /// <param name="factor">The quantity by which the original quantity is dot-multiplied.</param>
     /// <param name="factory">Delegate for constructing a <typeparamref name="TProductScalarQuantity"/> from a <see cref="Scalar"/>.</param>
-    public abstract TProductScalarQuantity Dot<TProductScalarQuantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<Scalar, TProductScalarQuantity> factory)
+    public abstract TProductScalarQuantity Dot<TProductScalarQuantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<double, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorVector3Quantity : IVector3Quantity;
 }
@@ -208,10 +208,10 @@ public interface IGenericallyCrossableVector3Quantity :
     /// <summary>Performs cross-multiplication of the original quantity by the quantity <paramref name="factor"/> of type <typeparamref name="TFactorVector3Quantity"/>, resulting in a
     /// <typeparamref name="TProductVector3Quantity"/>.</summary>
     /// <typeparam name="TProductVector3Quantity">The three-dimensional vector quantity that is the cross-product of the two quantities.</typeparam>
-    /// <typeparam name="TFactorVector3Quantity">The type of the scalar quantity by which the original quantity may be cross-multiplied.</typeparam>
+    /// <typeparam name="TFactorVector3Quantity">The three-dimensional vector quantity by which the original quantity may be cross-multiplied.</typeparam>
     /// <param name="factor">The quantity by which the original quantity is cross-multiplied.</param>
-    /// <param name="factory">Delegate for constructing a <typeparamref name="TProductVector3Quantity"/> from a <see cref="Vector3"/>.</param>
-    public abstract TProductVector3Quantity Cross<TProductVector3Quantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<Vector3, TProductVector3Quantity> factory)
+    /// <param name="factory">Delegate for constructing a <typeparamref name="TProductVector3Quantity"/>.</param>
+    public abstract TProductVector3Quantity Cross<TProductVector3Quantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<(double, double, double), TProductVector3Quantity> factory)
         where TProductVector3Quantity : IVector3Quantity
         where TFactorVector3Quantity : IVector3Quantity;
 }
