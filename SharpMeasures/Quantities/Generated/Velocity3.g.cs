@@ -69,9 +69,9 @@ public readonly partial record struct Velocity3 :
 
     /// <summary>The X-component of the <see cref="Velocity3"/>.</summary>
     public Speed X => new(MagnitudeX);
-    /// <summary>The X-component of the <see cref="Velocity3"/>.</summary>
+    /// <summary>The Y-component of the <see cref="Velocity3"/>.</summary>
     public Speed Y => new(MagnitudeY);
-    /// <summary>The X-component of the <see cref="Velocity3"/>.</summary>
+    /// <summary>The Z-component of the <see cref="Velocity3"/>.</summary>
     public Speed Z => new(MagnitudeZ);
 
     /// <summary>Constructs a new <see cref="Velocity3"/> with components <paramref name="components"/>.</summary>

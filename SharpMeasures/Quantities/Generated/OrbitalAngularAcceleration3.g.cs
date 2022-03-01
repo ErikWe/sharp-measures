@@ -87,9 +87,9 @@ public readonly partial record struct OrbitalAngularAcceleration3 :
 
     /// <summary>The X-component of the <see cref="OrbitalAngularAcceleration3"/>.</summary>
     public OrbitalAngularAcceleration X => new(MagnitudeX);
-    /// <summary>The X-component of the <see cref="OrbitalAngularAcceleration3"/>.</summary>
+    /// <summary>The Y-component of the <see cref="OrbitalAngularAcceleration3"/>.</summary>
     public OrbitalAngularAcceleration Y => new(MagnitudeY);
-    /// <summary>The X-component of the <see cref="OrbitalAngularAcceleration3"/>.</summary>
+    /// <summary>The Z-component of the <see cref="OrbitalAngularAcceleration3"/>.</summary>
     public OrbitalAngularAcceleration Z => new(MagnitudeZ);
 
     /// <summary>Constructs a new <see cref="OrbitalAngularAcceleration3"/> with components <paramref name="components"/>.</summary>

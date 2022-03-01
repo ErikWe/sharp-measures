@@ -69,9 +69,9 @@ public readonly partial record struct SpecificAngularMomentum3 :
 
     /// <summary>The X-component of the <see cref="SpecificAngularMomentum3"/>.</summary>
     public SpecificAngularMomentum X => new(MagnitudeX);
-    /// <summary>The X-component of the <see cref="SpecificAngularMomentum3"/>.</summary>
+    /// <summary>The Y-component of the <see cref="SpecificAngularMomentum3"/>.</summary>
     public SpecificAngularMomentum Y => new(MagnitudeY);
-    /// <summary>The X-component of the <see cref="SpecificAngularMomentum3"/>.</summary>
+    /// <summary>The Z-component of the <see cref="SpecificAngularMomentum3"/>.</summary>
     public SpecificAngularMomentum Z => new(MagnitudeZ);
 
     /// <summary>Constructs a new <see cref="SpecificAngularMomentum3"/> with components <paramref name="components"/>.</summary>

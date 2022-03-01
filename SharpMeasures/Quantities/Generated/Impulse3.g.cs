@@ -83,9 +83,9 @@ public readonly partial record struct Impulse3 :
 
     /// <summary>The X-component of the <see cref="Impulse3"/>.</summary>
     public Impulse X => new(MagnitudeX);
-    /// <summary>The X-component of the <see cref="Impulse3"/>.</summary>
+    /// <summary>The Y-component of the <see cref="Impulse3"/>.</summary>
     public Impulse Y => new(MagnitudeY);
-    /// <summary>The X-component of the <see cref="Impulse3"/>.</summary>
+    /// <summary>The Z-component of the <see cref="Impulse3"/>.</summary>
     public Impulse Z => new(MagnitudeZ);
 
     /// <summary>Constructs a new <see cref="Impulse3"/> with components <paramref name="components"/>.</summary>

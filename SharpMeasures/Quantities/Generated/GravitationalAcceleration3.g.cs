@@ -78,9 +78,9 @@ public readonly partial record struct GravitationalAcceleration3 :
 
     /// <summary>The X-component of the <see cref="GravitationalAcceleration3"/>.</summary>
     public GravitationalAcceleration X => new(MagnitudeX);
-    /// <summary>The X-component of the <see cref="GravitationalAcceleration3"/>.</summary>
+    /// <summary>The Y-component of the <see cref="GravitationalAcceleration3"/>.</summary>
     public GravitationalAcceleration Y => new(MagnitudeY);
-    /// <summary>The X-component of the <see cref="GravitationalAcceleration3"/>.</summary>
+    /// <summary>The Z-component of the <see cref="GravitationalAcceleration3"/>.</summary>
     public GravitationalAcceleration Z => new(MagnitudeZ);
 
     /// <summary>Constructs a new <see cref="GravitationalAcceleration3"/> with components <paramref name="components"/>.</summary>

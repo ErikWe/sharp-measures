@@ -87,9 +87,9 @@ public readonly partial record struct OrbitalAngularMomentum3 :
 
     /// <summary>The X-component of the <see cref="OrbitalAngularMomentum3"/>.</summary>
     public OrbitalAngularMomentum X => new(MagnitudeX);
-    /// <summary>The X-component of the <see cref="OrbitalAngularMomentum3"/>.</summary>
+    /// <summary>The Y-component of the <see cref="OrbitalAngularMomentum3"/>.</summary>
     public OrbitalAngularMomentum Y => new(MagnitudeY);
-    /// <summary>The X-component of the <see cref="OrbitalAngularMomentum3"/>.</summary>
+    /// <summary>The Z-component of the <see cref="OrbitalAngularMomentum3"/>.</summary>
     public OrbitalAngularMomentum Z => new(MagnitudeZ);
 
     /// <summary>Constructs a new <see cref="OrbitalAngularMomentum3"/> with components <paramref name="components"/>.</summary>

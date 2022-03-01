@@ -35,11 +35,11 @@
 #/
 
 #Define:ComponentY(quantity, dimensionality, unit, pluralUnits)
-/// <summary>The X-component of the <see cref="#Param:quantity#"/>.</summary>
+/// <summary>The Y-component of the <see cref="#Param:quantity#"/>.</summary>
 #/
 
 #Define:ComponentZ(quantity, dimensionality, unit, pluralUnits)
-/// <summary>The X-component of the <see cref="#Param:quantity#"/>.</summary>
+/// <summary>The Z-component of the <see cref="#Param:quantity#"/>.</summary>
 #/
 
 #Define:ConstructorComponentTuple(quantity, dimensionality)

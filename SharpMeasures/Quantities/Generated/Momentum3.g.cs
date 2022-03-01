@@ -83,9 +83,9 @@ public readonly partial record struct Momentum3 :
 
     /// <summary>The X-component of the <see cref="Momentum3"/>.</summary>
     public Momentum X => new(MagnitudeX);
-    /// <summary>The X-component of the <see cref="Momentum3"/>.</summary>
+    /// <summary>The Y-component of the <see cref="Momentum3"/>.</summary>
     public Momentum Y => new(MagnitudeY);
-    /// <summary>The X-component of the <see cref="Momentum3"/>.</summary>
+    /// <summary>The Z-component of the <see cref="Momentum3"/>.</summary>
     public Momentum Z => new(MagnitudeZ);
 
     /// <summary>Constructs a new <see cref="Momentum3"/> with components <paramref name="components"/>.</summary>

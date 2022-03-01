@@ -83,9 +83,9 @@ public readonly partial record struct Weight3 :
 
     /// <summary>The X-component of the <see cref="Weight3"/>.</summary>
     public Weight X => new(MagnitudeX);
-    /// <summary>The X-component of the <see cref="Weight3"/>.</summary>
+    /// <summary>The Y-component of the <see cref="Weight3"/>.</summary>
     public Weight Y => new(MagnitudeY);
-    /// <summary>The X-component of the <see cref="Weight3"/>.</summary>
+    /// <summary>The Z-component of the <see cref="Weight3"/>.</summary>
     public Weight Z => new(MagnitudeZ);
 
     /// <summary>Constructs a new <see cref="Weight3"/> with components <paramref name="components"/>.</summary>

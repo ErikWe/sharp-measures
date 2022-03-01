@@ -86,9 +86,9 @@ public readonly partial record struct AngularAcceleration3 :
 
     /// <summary>The X-component of the <see cref="AngularAcceleration3"/>.</summary>
     public AngularAcceleration X => new(MagnitudeX);
-    /// <summary>The X-component of the <see cref="AngularAcceleration3"/>.</summary>
+    /// <summary>The Y-component of the <see cref="AngularAcceleration3"/>.</summary>
     public AngularAcceleration Y => new(MagnitudeY);
-    /// <summary>The X-component of the <see cref="AngularAcceleration3"/>.</summary>
+    /// <summary>The Z-component of the <see cref="AngularAcceleration3"/>.</summary>
     public AngularAcceleration Z => new(MagnitudeZ);
 
     /// <summary>Constructs a new <see cref="AngularAcceleration3"/> with components <paramref name="components"/>.</summary>

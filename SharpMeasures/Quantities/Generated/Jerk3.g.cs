@@ -69,9 +69,9 @@ public readonly partial record struct Jerk3 :
 
     /// <summary>The X-component of the <see cref="Jerk3"/>.</summary>
     public Jerk X => new(MagnitudeX);
-    /// <summary>The X-component of the <see cref="Jerk3"/>.</summary>
+    /// <summary>The Y-component of the <see cref="Jerk3"/>.</summary>
     public Jerk Y => new(MagnitudeY);
-    /// <summary>The X-component of the <see cref="Jerk3"/>.</summary>
+    /// <summary>The Z-component of the <see cref="Jerk3"/>.</summary>
     public Jerk Z => new(MagnitudeZ);
 
     /// <summary>Constructs a new <see cref="Jerk3"/> with components <paramref name="components"/>.</summary>

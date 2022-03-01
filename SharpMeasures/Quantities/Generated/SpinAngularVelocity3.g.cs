@@ -87,9 +87,9 @@ public readonly partial record struct SpinAngularVelocity3 :
 
     /// <summary>The X-component of the <see cref="SpinAngularVelocity3"/>.</summary>
     public SpinAngularSpeed X => new(MagnitudeX);
-    /// <summary>The X-component of the <see cref="SpinAngularVelocity3"/>.</summary>
+    /// <summary>The Y-component of the <see cref="SpinAngularVelocity3"/>.</summary>
     public SpinAngularSpeed Y => new(MagnitudeY);
-    /// <summary>The X-component of the <see cref="SpinAngularVelocity3"/>.</summary>
+    /// <summary>The Z-component of the <see cref="SpinAngularVelocity3"/>.</summary>
     public SpinAngularSpeed Z => new(MagnitudeZ);
 
     /// <summary>Constructs a new <see cref="SpinAngularVelocity3"/> with components <paramref name="components"/>.</summary>

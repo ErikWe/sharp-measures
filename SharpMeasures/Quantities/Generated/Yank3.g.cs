@@ -69,9 +69,9 @@ public readonly partial record struct Yank3 :
 
     /// <summary>The X-component of the <see cref="Yank3"/>.</summary>
     public Yank X => new(MagnitudeX);
-    /// <summary>The X-component of the <see cref="Yank3"/>.</summary>
+    /// <summary>The Y-component of the <see cref="Yank3"/>.</summary>
     public Yank Y => new(MagnitudeY);
-    /// <summary>The X-component of the <see cref="Yank3"/>.</summary>
+    /// <summary>The Z-component of the <see cref="Yank3"/>.</summary>
     public Yank Z => new(MagnitudeZ);
 
     /// <summary>Constructs a new <see cref="Yank3"/> with components <paramref name="components"/>.</summary>

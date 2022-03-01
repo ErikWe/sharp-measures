@@ -69,9 +69,9 @@ public readonly partial record struct Torque3 :
 
     /// <summary>The X-component of the <see cref="Torque3"/>.</summary>
     public Torque X => new(MagnitudeX);
-    /// <summary>The X-component of the <see cref="Torque3"/>.</summary>
+    /// <summary>The Y-component of the <see cref="Torque3"/>.</summary>
     public Torque Y => new(MagnitudeY);
-    /// <summary>The X-component of the <see cref="Torque3"/>.</summary>
+    /// <summary>The Z-component of the <see cref="Torque3"/>.</summary>
     public Torque Z => new(MagnitudeZ);
 
     /// <summary>Constructs a new <see cref="Torque3"/> with components <paramref name="components"/>.</summary>
