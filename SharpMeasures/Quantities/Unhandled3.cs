@@ -30,14 +30,21 @@ public readonly record struct Unhandled3 :
     public static readonly Unhandled3 Ones = new(1, 1, 1);
 
     /// <summary>The magnitude of the X-component of the <see cref="Unhandled3"/>.</summary>
-    public double X { get; init; }
+    public double MagnitudeX { get; init; }
     /// <summary>The magnitude of the Y-component of the <see cref="Unhandled3"/>.</summary>
-    public double Y { get; init; }
+    public double MagnitudeY { get; init; }
     /// <summary>The magnitude of the Z-component of the <see cref="Unhandled3"/>.</summary>
-    public double Z { get; init; }
+    public double MagnitudeZ { get; init; }
 
     /// <summary>Retrieves the magnitudes of the components of the <see cref="Unhandled3"/>.</summary>
-    public Vector3 Components => new(X, Y, Z);
+    public Vector3 Components => new(MagnitudeX, MagnitudeY, MagnitudeZ);
+
+    /// <summary>The X-component of the <see cref="Unhandled3"/>.</summary>
+    public Unhandled X => new(MagnitudeX);
+    /// <summary>The Y-component of the <see cref="Unhandled3"/>.</summary>
+    public Unhandled Y => new(MagnitudeY);
+    /// <summary>The Z-component of the <see cref="Unhandled3"/>.</summary>
+    public Unhandled Z => new(MagnitudeZ);
 
     /// <summary>Constructs a new <see cref="Unhandled3"/> with components <paramref name="components"/>.</summary>
     /// <param name="components">The components of the <see cref="Unhandled3"/>.</param>
@@ -57,7 +64,7 @@ public readonly record struct Unhandled3 :
     public Unhandled3(Scalar x, Scalar y, Scalar z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
     /// <summary>Constructs a new <see cref="Unhandled3"/> with components of magnitudes <paramref name="components"/>.</summary>
     /// <param name="components">The magnitudes of the components of the <see cref="Unhandled3"/>.</param>
-    public Unhandled3(Vector3 components) : this(components.X, components.Y, components.Z) { }
+    public Unhandled3(Vector3 components) : this(components.MagnitudeX, components.MagnitudeY, components.MagnitudeZ) { }
     /// <summary>Constructs a new <see cref="Unhandled3"/> with components of magnitudes <paramref name="components"/>.</summary>
     /// <param name="components">The magnitudes of the components of the <see cref="Unhandled3"/>.</param>
     public Unhandled3((double x, double y, double z) components) : this(components.x, components.y, components.z) { }
@@ -67,9 +74,9 @@ public readonly record struct Unhandled3 :
     /// <param name="z">The magnitude of the Z-component of the <see cref="Unhandled3"/>.</param>
     public Unhandled3(double x, double y, double z)
     {
-        X = x;
-        Y = y;
-        Z = z;
+        MagnitudeX = x;
+        MagnitudeY = y;
+        MagnitudeZ = z;
     }
 
     /// <inheritdoc/>
@@ -153,12 +160,12 @@ public readonly record struct Unhandled3 :
     }
 
     /// <summary>Produces a formatted string from the magnitudes of the components of the <see cref="Unhandled3"/>, followed by the symbol [undef].</summary>
-    public override string ToString() => $"({X}, {Y}, {Z}) [undef]";
+    public override string ToString() => $"({MagnitudeX}, {MagnitudeY}, {MagnitudeZ}) [undef]";
 
     /// <summary>Unary plus, resulting in the unmodified <see cref="Unhandled3"/>.</summary>
     public Unhandled3 Plus() => this;
     /// <summary>Negation, resulting in a <see cref="Unhandled3"/> with negated components.</summary>
-    public Unhandled3 Negate() => new(-X, -Y, -Z);
+    public Unhandled3 Negate() => new(-MagnitudeX, -MagnitudeY, -MagnitudeZ);
     /// <summary>Unary plus, resulting in the unmodified <paramref name="a"/>.</summary>
     /// <param name="a">Unary plus is applied to this <see cref="Unhandled3"/>.</param>
     public static Unhandled3 operator +(Unhandled3 a) => a.Plus();
@@ -168,10 +175,10 @@ public readonly record struct Unhandled3 :
 
     /// <summary>Adds <paramref name="term"/> to the <see cref="Unhandled3"/>.</summary>
     /// <param name="term">This value is added to the <see cref="Unhandled3"/>.</param>
-    public Unhandled3 Add(Unhandled3 term) => new(X + term.X, Y + term.Y, Z + term.Z);
+    public Unhandled3 Add(Unhandled3 term) => new(MagnitudeX + term.MagnitudeX, MagnitudeY + term.MagnitudeY, MagnitudeZ + term.MagnitudeZ);
     /// <summary>Subtracts <paramref name="term"/> from the <see cref="Unhandled3"/>.</summary>
     /// <param name="term">This value is subtracted from the <see cref="Unhandled3"/>.</param>
-    public Unhandled3 Subtract(Unhandled3 term) => new(X - term.X, Y - term.Y, Z - term.Z);
+    public Unhandled3 Subtract(Unhandled3 term) => new(MagnitudeX - term.MagnitudeX, MagnitudeY - term.MagnitudeY, MagnitudeZ - term.MagnitudeZ);
     /// <summary>Addition of <paramref name="a"/> and <paramref name="b"/>.</summary>
     /// <param name="a">The first term of the addition.</param>
     /// <param name="b">The second term of the addition.</param>
@@ -184,11 +191,11 @@ public readonly record struct Unhandled3 :
     /// <summary>Multiplicates the <see cref="Unhandled3"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
     /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="factor">The factor by which the <see cref="Unhandled3"/> is multiplied.</param>
-    public Unhandled3 Multiply(Unhandled factor) => new(X * factor, Y * factor, Z * factor);
+    public Unhandled3 Multiply(Unhandled factor) => new(MagnitudeX * factor, MagnitudeY * factor, MagnitudeZ * factor);
     /// <summary>Divides the <see cref="Unhandled3"/> by the <see cref="Unhandled"/> quantity <paramref name="divisor"/>
     /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="divisor">The divisor by which the <see cref="Unhandled3"/> is divided.</param>
-    public Unhandled3 Divide(Unhandled divisor) => new(X / divisor, Y / divisor, Z / divisor);
+    public Unhandled3 Divide(Unhandled divisor) => new(MagnitudeX / divisor, MagnitudeY / divisor, MagnitudeZ / divisor);
     /// <summary>Multiplication of the <see cref="Unhandled3"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
     /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="a">The <see cref="Unhandled3"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
@@ -208,13 +215,13 @@ public readonly record struct Unhandled3 :
     /// <summary>Produces an <see cref="Unhandled3"/>, with each component equal to the remainder from division of the
     /// magnitude of the original component by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>
-    public Unhandled3 Remainder(double divisor) => new(X % divisor, Y % divisor, Z % divisor);
+    public Unhandled3 Remainder(double divisor) => new(MagnitudeX % divisor, MagnitudeY % divisor, MagnitudeZ % divisor);
     /// <summary>Scales the <see cref="Unhandled3"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Unhandled3"/> is scaled.</param>
-    public Unhandled3 Multiply(double factor) => new(X * factor, Y * factor, Z * factor);
+    public Unhandled3 Multiply(double factor) => new(MagnitudeX * factor, MagnitudeY * factor, MagnitudeZ * factor);
     /// <summary>Scales the <see cref="Unhandled3"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="Unhandled3"/> is divided.</param>
-    public Unhandled3 Divide(double divisor) => new(X / divisor, Y / divisor, Z / divisor);
+    public Unhandled3 Divide(double divisor) => new(MagnitudeX / divisor, MagnitudeY / divisor, MagnitudeZ / divisor);
     /// <summary>Produces a <see cref="Unhandled3"/>, with each component equal to the remainder from division of the
     /// magnitude of the component of <paramref name="a"/> by <paramref name="b"/>.</summary>
     /// <param name="a">The <see cref="Unhandled3"/>, the components of which are divided by <paramref name="b"/> to produce a remainder.</param>
@@ -236,13 +243,13 @@ public readonly record struct Unhandled3 :
     /// <summary>Produces an <see cref="Unhandled3"/>, with each component equal to the remainder from division of the
     /// magnitude of the original component by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>
-    public Unhandled3 Remainder(Scalar divisor) => new(X % divisor, Y % divisor, Z % divisor);
+    public Unhandled3 Remainder(Scalar divisor) => new(MagnitudeX % divisor, MagnitudeY % divisor, MagnitudeZ % divisor);
     /// <summary>Scales the <see cref="Unhandled3"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Unhandled3"/> is scaled.</param>
-    public Unhandled3 Multiply(Scalar factor) => new(X * factor, Y * factor, Z * factor);
+    public Unhandled3 Multiply(Scalar factor) => new(MagnitudeX * factor, MagnitudeY * factor, MagnitudeZ * factor);
     /// <summary>Scales the <see cref="Unhandled3"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="Unhandled3"/> is divided.</param>
-    public Unhandled3 Divide(Scalar divisor) => new(X / divisor, Y / divisor, Z / divisor);
+    public Unhandled3 Divide(Scalar divisor) => new(MagnitudeX / divisor, MagnitudeY / divisor, MagnitudeZ / divisor);
     /// <summary>Produces a <see cref="Unhandled3"/>, with each component equal to the remainder from division of the
     /// magnitude of the component of <paramref name="a"/> by <paramref name="b"/>.</summary>
     /// <param name="a">The <see cref="Unhandled3"/>, the components of which are divided by <paramref name="b"/> to produce a remainder.</param>
@@ -270,7 +277,7 @@ public readonly record struct Unhandled3 :
         ArgumentNullException.ThrowIfNull(factory, nameof(factory));
         ArgumentNullException.ThrowIfNull(factor, nameof(factor));
 
-        return factory((X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude));
+        return factory((MagnitudeX * factor.Magnitude, MagnitudeY * factor.Magnitude, MagnitudeZ * factor.Magnitude));
     }
     /// <summary>Multiplies the <see cref="Unhandled3"/> by <paramref name="factor"/> of type <typeparamref name="TFactorScalarQuantity"/>.</summary>
     /// <typeparam name="TFactorScalarQuantity">The type of the quantity by which this <see cref="Unhandled3"/> is multiplied.</typeparam>
@@ -281,7 +288,7 @@ public readonly record struct Unhandled3 :
     {
         ArgumentNullException.ThrowIfNull(factor, nameof(factor));
 
-        return new(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+        return new(MagnitudeX * factor.Magnitude, MagnitudeY * factor.Magnitude, MagnitudeZ * factor.Magnitude);
     }
 
     /// <inheritdoc/>
@@ -293,7 +300,7 @@ public readonly record struct Unhandled3 :
         ArgumentNullException.ThrowIfNull(factory, nameof(factory));
         ArgumentNullException.ThrowIfNull(divisor, nameof(divisor));
 
-        return factory((X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude));
+        return factory((MagnitudeX / divisor.Magnitude, MagnitudeY / divisor.Magnitude, MagnitudeZ / divisor.Magnitude));
     }
     /// <summary>Divides the <see cref="Unhandled3"/> by <paramref name="divisor"/> of type <typeparamref name="TDivisorQuantity"/>.</summary>
     /// <typeparam name="TDivisorQuantity">The type of the quantity by which this <see cref="Unhandled3"/> quantity is divided.</typeparam>
@@ -304,7 +311,7 @@ public readonly record struct Unhandled3 :
     {
         ArgumentNullException.ThrowIfNull(divisor, nameof(divisor));
 
-        return new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
+        return new(MagnitudeX / divisor.Magnitude, MagnitudeY / divisor.Magnitude, MagnitudeZ / divisor.Magnitude);
     }
 
     /// <summary>Multiplication of the <see cref="Unhandled3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
@@ -333,16 +340,16 @@ public readonly record struct Unhandled3 :
     public static Unhandled3 operator /(Unhandled3 a, IScalarQuantity b) => a.Divide(b, (x) => new Unhandled3(x));
 
     /// <summary>Converts the <see cref="Unhandled3"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with
-    /// values (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>).</summary>
-    public (double x, double y, double z) ToValueTuple() => (X, Y, Z);
+    /// values (<see cref="MagnitudeX"/>, <see cref="MagnitudeY"/>, <see cref="MagnitudeZ"/>).</summary>
+    public (double x, double y, double z) ToValueTuple() => (MagnitudeX, MagnitudeY, MagnitudeZ);
     /// <summary>Converts <paramref name="a"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with
-    /// values (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>).</summary>
-    public static explicit operator (double x, double y, double z)(Unhandled3 a) => (a.X, a.Y, a.Z);
+    /// values (<see cref="MagnitudeX"/>, <see cref="MagnitudeY"/>, <see cref="MagnitudeZ"/>).</summary>
+    public static explicit operator (double x, double y, double z)(Unhandled3 a) => (a.MagnitudeX, a.MagnitudeY, a.MagnitudeZ);
 
     /// <summary>Converts the <see cref="Unhandled3"/> to the <see cref="Vector3"/> with components of equal magnitude.</summary>
-    public Vector3 ToVector3() => new(X, Y, Z);
+    public Vector3 ToVector3() => new(MagnitudeX, MagnitudeY, MagnitudeZ);
     /// <summary>Converts <paramref name="a"/> to the <see cref="Vector3"/> with components of equal magnitude.</summary>
-    public static explicit operator Vector3(Unhandled3 a) => new(a.X, a.Y, a.Z);
+    public static explicit operator Vector3(Unhandled3 a) => new(a.MagnitudeX, a.MagnitudeY, a.MagnitudeZ);
 
     /// <summary>Constructs the <see cref="Unhandled3"/> with components equal to the values of <paramref name="components"/>.</summary>
     public static Unhandled3 FromValueTuple((double x, double y, double z) components) => new(components);

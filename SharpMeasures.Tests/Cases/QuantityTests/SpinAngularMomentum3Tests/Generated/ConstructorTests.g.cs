@@ -42,9 +42,9 @@ public class ConstructorTests
     {
         SpinAngularMomentum3 quantity = new((x, y, z), unit);
 
-        Assert.Equal(x * unit.AngularMomentum.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.AngularMomentum.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.AngularMomentum.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.AngularMomentum.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.AngularMomentum.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.AngularMomentum.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -53,9 +53,9 @@ public class ConstructorTests
     {
         SpinAngularMomentum3 quantity = new(x, y, z, unit);
 
-        Assert.Equal(x * unit.AngularMomentum.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.AngularMomentum.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.AngularMomentum.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.AngularMomentum.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.AngularMomentum.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.AngularMomentum.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -64,9 +64,9 @@ public class ConstructorTests
     {
         SpinAngularMomentum3 quantity = new(vector, unit);
 
-        Assert.Equal(vector.X * unit.AngularMomentum.Magnitude, quantity.X, 2);
-        Assert.Equal(vector.Y * unit.AngularMomentum.Magnitude, quantity.Y, 2);
-        Assert.Equal(vector.Z * unit.AngularMomentum.Magnitude, quantity.Z, 2);
+        Assert.Equal(vector.MagnitudeX * unit.AngularMomentum.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(vector.MagnitudeY * unit.AngularMomentum.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(vector.MagnitudeZ * unit.AngularMomentum.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -75,9 +75,9 @@ public class ConstructorTests
     {
         SpinAngularMomentum3 quantity = new((x, y, z), unit);
 
-        Assert.Equal(x * unit.AngularMomentum.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.AngularMomentum.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.AngularMomentum.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.AngularMomentum.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.AngularMomentum.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.AngularMomentum.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -86,9 +86,9 @@ public class ConstructorTests
     {
         SpinAngularMomentum3 quantity = new(x, y, z, unit);
 
-        Assert.Equal(x * unit.AngularMomentum.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.AngularMomentum.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.AngularMomentum.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.AngularMomentum.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.AngularMomentum.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.AngularMomentum.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]

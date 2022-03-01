@@ -60,8 +60,8 @@ public class CrossTests
     {
         Unhandled3 result = quantity.Cross(vector);
 
-        Assert.Equal(quantity.Y * vector.Z - quantity.Z * vector.Y, result.X, 2);
-        Assert.Equal(quantity.Z * vector.X - quantity.X * vector.Z, result.Y, 2);
-        Assert.Equal(quantity.X * vector.Y - quantity.Y * vector.X, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeY * vector.MagnitudeZ - quantity.MagnitudeZ * vector.MagnitudeY, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeZ * vector.MagnitudeX - quantity.MagnitudeX * vector.MagnitudeZ, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeX * vector.MagnitudeY - quantity.MagnitudeY * vector.MagnitudeX, result.MagnitudeZ, 2);
     }
 }

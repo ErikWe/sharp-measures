@@ -20,7 +20,7 @@ public static class EqualityTests
 
     public static void Method_ShouldBeEqualIfEqualComponentsAndType(IVector3Quantity a, IVector3Quantity? b)
     {
-        if (b is not null && a.GetType() == b.GetType() && a.X == b.X && a.Y == b.Y && a.Z == b.Z)
+        if (b is not null && a.GetType() == b.GetType() && a.MagnitudeX == b.MagnitudeX && a.MagnitudeY == b.MagnitudeY && a.MagnitudeZ == b.MagnitudeZ)
         {
             Assert.True(a.Equals(b));
         }

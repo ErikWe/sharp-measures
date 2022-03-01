@@ -13,6 +13,15 @@ public class MagnitudeTests
 {
     [Theory]
     [ClassData(typeof(OrbitalAngularMomentum3Dataset))]
+    public void Individual_MagnitudesShouldBeSameAsOriginal(OrbitalAngularMomentum3 quantity)
+    {
+        Assert.Equal(quantity.MagnitudeX, quantity.X.Magnitude, 2);
+        Assert.Equal(quantity.MagnitudeY, quantity.Y.Magnitude, 2);
+        Assert.Equal(quantity.MagnitudeZ, quantity.Z.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(OrbitalAngularMomentum3Dataset))]
     public void Components_MagnitudesShouldBeEqual(OrbitalAngularMomentum3 quantity)
     {
         Vector3 components = quantity.Components;
@@ -26,7 +35,7 @@ public class MagnitudeTests
     {
         OrbitalAngularMomentum magnitude = quantity.Magnitude();
 
-        Assert.Equal(Math.Sqrt(quantity.X * quantity.X + quantity.Y * quantity.Y + quantity.Z * quantity.Z), magnitude.Magnitude, 2);
+        Assert.Equal(Math.Sqrt(quantity.MagnitudeX * quantity.MagnitudeX + quantity.MagnitudeY * quantity.MagnitudeY + quantity.MagnitudeZ * quantity.MagnitudeZ), magnitude.Magnitude, 2);
     }
 
     [Theory]
@@ -35,7 +44,7 @@ public class MagnitudeTests
     {
         Scalar magnitude = ((IVector3Quantity)quantity).Magnitude();
 
-        Assert.Equal(Math.Sqrt(quantity.X * quantity.X + quantity.Y * quantity.Y + quantity.Z * quantity.Z), magnitude.Magnitude, 2);
+        Assert.Equal(Math.Sqrt(quantity.MagnitudeX * quantity.MagnitudeX + quantity.MagnitudeY * quantity.MagnitudeY + quantity.MagnitudeZ * quantity.MagnitudeZ), magnitude.Magnitude, 2);
     }
 
     [Theory]
@@ -44,6 +53,6 @@ public class MagnitudeTests
     {
         Scalar squaredMagnitude = ((IVector3Quantity)quantity).SquaredMagnitude();
 
-        Assert.Equal(quantity.X * quantity.X + quantity.Y * quantity.Y + quantity.Z * quantity.Z, squaredMagnitude.Magnitude, 2);
+        Assert.Equal(quantity.MagnitudeX * quantity.MagnitudeX + quantity.MagnitudeY * quantity.MagnitudeY + quantity.MagnitudeZ * quantity.MagnitudeZ, squaredMagnitude.Magnitude, 2);
     }
 }

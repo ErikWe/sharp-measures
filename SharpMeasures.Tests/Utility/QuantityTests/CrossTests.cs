@@ -15,9 +15,9 @@ public static class CrossTests
     {
         TProductQuantity result = a.Cross(b);
 
-        Assert.Equal(a.Y * b.Z - a.Z * b.Y, result.X, 2);
-        Assert.Equal(a.Z * b.X - a.X * b.Z, result.Y, 2);
-        Assert.Equal(a.X * b.Y - a.Y * b.X, result.Z, 2);
+        Assert.Equal(a.MagnitudeY * b.MagnitudeZ - a.MagnitudeZ * b.MagnitudeY, result.MagnitudeX, 2);
+        Assert.Equal(a.MagnitudeZ * b.MagnitudeX - a.MagnitudeX * b.MagnitudeZ, result.MagnitudeY, 2);
+        Assert.Equal(a.MagnitudeX * b.MagnitudeY - a.MagnitudeY * b.MagnitudeX, result.MagnitudeZ, 2);
     }
 
     public static void Vector3_ShouldMatchDefinition<TQuantity, TProductQuantity, TFactorQuantity>(TQuantity a, TFactorQuantity b, Func<(double, double, double), TProductQuantity> factory)
@@ -27,8 +27,8 @@ public static class CrossTests
     {
         TProductQuantity result = a.Cross(b, factory);
 
-        Assert.Equal(a.Y * b.Z - a.Z * b.Y, result.X, 2);
-        Assert.Equal(a.Z * b.X - a.X * b.Z, result.Y, 2);
-        Assert.Equal(a.X * b.Y - a.Y * b.X, result.Z, 2);
+        Assert.Equal(a.MagnitudeY * b.MagnitudeZ - a.MagnitudeZ * b.MagnitudeY, result.MagnitudeX, 2);
+        Assert.Equal(a.MagnitudeZ * b.MagnitudeX - a.MagnitudeX * b.MagnitudeZ, result.MagnitudeY, 2);
+        Assert.Equal(a.MagnitudeX * b.MagnitudeY - a.MagnitudeY * b.MagnitudeX, result.MagnitudeZ, 2);
     }
 }

@@ -66,20 +66,27 @@ public readonly partial record struct Force3 :
     /// <summary>The magnitude of the X-component of the <see cref="Force3"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfForce)"/> or a pre-defined property
     /// - such as <see cref="Newtons"/>.</remarks>
-    public double X { get; init; }
+    public double MagnitudeX { get; init; }
     /// <summary>The magnitude of the Y-component of the <see cref="Force3"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfForce)"/> or a pre-defined property
     /// - such as <see cref="Newtons"/>.</remarks>
-    public double Y { get; init; }
+    public double MagnitudeY { get; init; }
     /// <summary>The magnitude of the Z-component of the <see cref="Force3"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfForce)"/> or a pre-defined property
     /// - such as <see cref="Newtons"/>.</remarks>
-    public double Z { get; init; }
+    public double MagnitudeZ { get; init; }
 
     /// <summary>Retrieves the magnitudes of the components of the <see cref="Force3"/>, in SI units.</summary>
     /// <remarks>For clarity, consider preferring <see cref="InUnit(UnitOfForce)"/> or a pre-defined property
     /// - such as <see cref="Newtons"/>.</remarks>
-    public Vector3 Components => new(X, Y, Z);
+    public Vector3 Components => new(MagnitudeX, MagnitudeY, MagnitudeZ);
+
+    /// <summary>The X-component of the <see cref="Force3"/>.</summary>
+    public Force X => new(MagnitudeX);
+    /// <summary>The X-component of the <see cref="Force3"/>.</summary>
+    public Force Y => new(MagnitudeY);
+    /// <summary>The X-component of the <see cref="Force3"/>.</summary>
+    public Force Z => new(MagnitudeZ);
 
     /// <summary>Constructs a new <see cref="Force3"/> with components <paramref name="components"/>.</summary>
     /// <param name="components">The components of the <see cref="Force3"/>.</param>
@@ -107,7 +114,7 @@ public readonly partial record struct Force3 :
     /// <param name="components">The magnitudes of the components of the <see cref="Force3"/>, expressed in <paramref name="unitOfForce"/>.</param>
     /// <param name="unitOfForce">The <see cref="UnitOfForce"/> in which the magnitudes of the components,
     /// <paramref name="components"/>, are expressed.</param>
-    public Force3(Vector3 components, UnitOfForce unitOfForce) : this(components.X, components.Y, components.Z, unitOfForce) { }
+    public Force3(Vector3 components, UnitOfForce unitOfForce) : this(components.MagnitudeX, components.MagnitudeY, components.MagnitudeZ, unitOfForce) { }
     /// <summary>Constructs a new <see cref="Force3"/> with components of magnitudes <paramref name="components"/>,
     /// expressed in <paramref name="unitOfForce"/>.</summary>
     /// <param name="components">The magnitudes of the components of the <see cref="Force3"/>, expressed in <paramref name="unitOfForce"/>.</param>
@@ -135,7 +142,7 @@ public readonly partial record struct Force3 :
     /// <summary>Constructs a new <see cref="Force3"/> with components of magnitudes <paramref name="components"/>.</summary>
     /// <param name="components">The magnitudes of the components of the <see cref="Force3"/>.</param>
     /// <remarks>Consider preferring <see cref="Force3(Vector3, UnitOfForce)"/>.</remarks>
-    public Force3(Vector3 components) : this(components.X, components.Y, components.Z) { }
+    public Force3(Vector3 components) : this(components.MagnitudeX, components.MagnitudeY, components.MagnitudeZ) { }
     /// <summary>Constructs a new <see cref="Force3"/> with components of magnitudes <paramref name="components"/>.</summary>
     /// <param name="components">The magnitudes of the components of the <see cref="Force3"/>.</param>
     /// <remarks>Consider preferring <see cref="Force3(ValueTuple{double, double, double}, UnitOfForce)"/>.</remarks>
@@ -147,14 +154,14 @@ public readonly partial record struct Force3 :
     /// <remarks>Consider preferring <see cref="Force3(double, double, double, UnitOfForce)"/>.</remarks>
     public Force3(double x, double y, double z)
     {
-        X = x;
-        Y = y;
-        Z = z;
+        MagnitudeX = x;
+        MagnitudeY = y;
+        MagnitudeZ = z;
     }
 
     /// <summary>Converts the <see cref="Force3"/> to an instance of the associated quantity <see cref="Weight3"/>, with components of
     /// equal magnitudes.</summary>
-    public Weight3 AsWeight => new(X, Y, Z);
+    public Weight3 AsWeight => new(MagnitudeX, MagnitudeY, MagnitudeZ);
 
     /// <summary>Retrieves the magnitudes of the components of the <see cref="Force3"/>, expressed in <see cref="UnitOfForce.Newton"/>.</summary>
     public Vector3 Newtons => InUnit(UnitOfForce.Newton);
@@ -234,93 +241,93 @@ public readonly partial record struct Force3 :
     /// <summary>Unary plus, resulting in the unmodified <see cref="Force3"/>.</summary>
     public Force3 Plus() => this;
     /// <summary>Negation, resulting in a <see cref="Force3"/> with negated components.</summary>
-    public Force3 Negate() => new(-X, -Y, -Z);
+    public Force3 Negate() => new(-MagnitudeX, -MagnitudeY, -MagnitudeZ);
     /// <summary>Unary plus, resulting in the unmodified <paramref name="a"/>.</summary>
     /// <param name="a">Unary plus is applied to this <see cref="Force3"/>.</param>
     public static Force3 operator +(Force3 a) => a;
     /// <summary>Negation, resulting in a <see cref="Force3"/> with negated components from that of <paramref name="a"/>.</summary>
     /// <param name="a">Negation is applied to this <see cref="Force3"/>.</param>
-    public static Force3 operator -(Force3 a) => new(-a.X, -a.Y, -a.Z);
+    public static Force3 operator -(Force3 a) => new(-a.MagnitudeX, -a.MagnitudeY, -a.MagnitudeZ);
 
     /// <summary>Multiplicates the <see cref="Force3"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
     /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="factor">The factor by which the <see cref="Force3"/> is multiplied.</param>
-    public Unhandled3 Multiply(Unhandled factor) => new(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+    public Unhandled3 Multiply(Unhandled factor) => new(MagnitudeX * factor.Magnitude, MagnitudeY * factor.Magnitude, MagnitudeZ * factor.Magnitude);
     /// <summary>Divides the <see cref="Force3"/> by the <see cref="Unhandled"/> quantity <paramref name="divisor"/>
     /// - resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="divisor">The divisor by which the <see cref="Force3"/> is divided.</param>
-    public Unhandled3 Divide(Unhandled divisor) => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
+    public Unhandled3 Divide(Unhandled divisor) => new(MagnitudeX / divisor.Magnitude, MagnitudeY / divisor.Magnitude, MagnitudeZ / divisor.Magnitude);
     /// <summary>Multiplication of the <see cref="Force3"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
     /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="a">The <see cref="Force3"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
     /// <param name="b">The <see cref="Unhandled"/> quantity by which the <see cref="Force3"/> <paramref name="a"/> is multiplied.</param>
-    public static Unhandled3 operator *(Force3 a, Unhandled b) => new(a.X * b.Magnitude, a.Y * b.Magnitude, a.Z * b.Magnitude);
+    public static Unhandled3 operator *(Force3 a, Unhandled b) => new(a.MagnitudeX * b.Magnitude, a.MagnitudeY * b.Magnitude, a.MagnitudeZ * b.Magnitude);
     /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="b"/> by the <see cref="Force3"/> <paramref name="a"/> -
     /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="a">The <see cref="Unhandled"/> quantity by which the <see cref="Force3"/> <paramref name="b"/> is multiplied.</param>
     /// <param name="b">The <see cref="Force3"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="a"/>.</param>
-    public static Unhandled3 operator *(Unhandled a, Force3 b) => new(a.Magnitude * b.X, a.Magnitude * b.Y, a.Magnitude * b.Z);
+    public static Unhandled3 operator *(Unhandled a, Force3 b) => new(a.Magnitude * b.MagnitudeX, a.Magnitude * b.MagnitudeY, a.Magnitude * b.MagnitudeZ);
     /// <summary>Division of the <see cref="Force3"/> <paramref name="a"/> by the <see cref="Unhandled"/> quantity <paramref name="b"/> -
     /// resulting in an <see cref="Unhandled3"/> quantity.</summary>
     /// <param name="a">The <see cref="Force3"/>, which is divided by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
     /// <param name="b">The <see cref="Unhandled"/> quantity by which the <see cref="Force3"/> <paramref name="a"/> is divded.</param>
-    public static Unhandled3 operator /(Force3 a, Unhandled b) => new(a.X / b.Magnitude, a.Y / b.Magnitude, a.Z / b.Magnitude);
+    public static Unhandled3 operator /(Force3 a, Unhandled b) => new(a.MagnitudeX / b.Magnitude, a.MagnitudeY / b.Magnitude, a.MagnitudeZ / b.Magnitude);
 
     /// <summary>Produces a <see cref="Force3"/>, with each component equal to the remainder from division of the
     /// magnitude of the original component by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>
-    public Force3 Remainder(double divisor) => new(X % divisor, Y % divisor, Z % divisor);
+    public Force3 Remainder(double divisor) => new(MagnitudeX % divisor, MagnitudeY % divisor, MagnitudeZ % divisor);
     /// <summary>Scales the <see cref="Force3"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Force3"/> is scaled.</param>
-    public Force3 Multiply(double factor) => new(X * factor, Y * factor, Z * factor);
+    public Force3 Multiply(double factor) => new(MagnitudeX * factor, MagnitudeY * factor, MagnitudeZ * factor);
     /// <summary>Scales the <see cref="Force3"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="Force3"/> is divided.</param>
-    public Force3 Divide(double divisor) => new(X / divisor, Y / divisor, Z / divisor);
+    public Force3 Divide(double divisor) => new(MagnitudeX / divisor, MagnitudeY / divisor, MagnitudeZ / divisor);
     /// <summary>Produces a <see cref="Force3"/>, with each component equal to the remainder from division of the
     /// magnitude of the component of <paramref name="a"/> by <paramref name="b"/>.</summary>
     /// <param name="a">The <see cref="Force3"/>, the components of which are divided by <paramref name="b"/> to produce a remainder.</param>
     /// <param name="b">The remainder is produced from division of <see cref="Force3"/> <paramref name="a"/> by this value.</param>
-    public static Force3 operator %(Force3 a, double b) => new(a.X % b, a.Y % b, a.Z % b);
+    public static Force3 operator %(Force3 a, double b) => new(a.MagnitudeX % b, a.MagnitudeY % b, a.MagnitudeZ % b);
     /// <summary>Scales the <see cref="Force3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
     /// <param name="a">The <see cref="Force3"/>, which is scaled by <paramref name="b"/>.</param>
     /// <param name="b">This value is used to scale the <see cref="Force3"/> <paramref name="a"/>.</param>
-    public static Force3 operator *(Force3 a, double b) => new(a.X * b, a.Y * b, a.Z * b);
+    public static Force3 operator *(Force3 a, double b) => new(a.MagnitudeX * b, a.MagnitudeY * b, a.MagnitudeZ * b);
     /// <summary>Scales the <see cref="Force3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
     /// <param name="a">This value is used to scale the <see cref="Force3"/> <paramref name="b"/>.</param>
     /// <param name="b">The <see cref="Force3"/>, which is scaled by <paramref name="a"/>.</param>
-    public static Force3 operator *(double a, Force3 b) => new(a * b.X, a * b.Y, a * b.Z);
+    public static Force3 operator *(double a, Force3 b) => new(a * b.MagnitudeX, a * b.MagnitudeY, a * b.MagnitudeZ);
     /// <summary>Scales the <see cref="Force3"/> <paramref name="a"/> through division by <paramref name="b"/>.</summary>
     /// <param name="a">The <see cref="Force3"/>, which is divided by <paramref name="b"/>.</param>
     /// <param name="b">This value is used to divide the <see cref="Force3"/> <paramref name="a"/>.</param>
-    public static Force3 operator /(Force3 a, double b) => new(a.X / b, a.Y / b, a.Z / b);
+    public static Force3 operator /(Force3 a, double b) => new(a.MagnitudeX / b, a.MagnitudeY / b, a.MagnitudeZ / b);
 
     /// <summary>Produces a <see cref="Force3"/>, with each component equal to the remainder from division of the
     /// magnitude of the original component by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>
-    public Force3 Remainder(Scalar divisor) => new(X % divisor.Magnitude, Y % divisor.Magnitude, Z % divisor.Magnitude);
+    public Force3 Remainder(Scalar divisor) => new(MagnitudeX % divisor.Magnitude, MagnitudeY % divisor.Magnitude, MagnitudeZ % divisor.Magnitude);
     /// <summary>Scales the <see cref="Force3"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Force3"/> is scaled.</param>
-    public Force3 Multiply(Scalar factor) => new(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+    public Force3 Multiply(Scalar factor) => new(MagnitudeX * factor.Magnitude, MagnitudeY * factor.Magnitude, MagnitudeZ * factor.Magnitude);
     /// <summary>Scales the <see cref="Force3"/> through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="Force3"/> is divided.</param>
-    public Force3 Divide(Scalar divisor) => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
+    public Force3 Divide(Scalar divisor) => new(MagnitudeX / divisor.Magnitude, MagnitudeY / divisor.Magnitude, MagnitudeZ / divisor.Magnitude);
     /// <summary>Produces a <see cref="Force3"/>, with each component equal to the remainder from division of the
     /// magnitude of the component of <paramref name="a"/> by <paramref name="b"/>.</summary>
     /// <param name="a">The <see cref="Force3"/>, the components of which are divided by <paramref name="b"/> to produce a remainder.</param>
     /// <param name="b">The remainder is produced from division of <see cref="Force3"/> <paramref name="a"/> by this value.</param>
-    public static Force3 operator %(Force3 a, Scalar b) => new(a.X % b.Magnitude, a.Y % b.Magnitude, a.Z % b.Magnitude);
+    public static Force3 operator %(Force3 a, Scalar b) => new(a.MagnitudeX % b.Magnitude, a.MagnitudeY % b.Magnitude, a.MagnitudeZ % b.Magnitude);
     /// <summary>Scales the <see cref="Force3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
     /// <param name="a">The <see cref="Force3"/>, which is scaled by <paramref name="b"/>.</param>
     /// <param name="b">This value is used to scale the <see cref="Force3"/> <paramref name="a"/>.</param>
-    public static Force3 operator *(Force3 a, Scalar b) => new(a.X * b.Magnitude, a.Y * b.Magnitude, a.Z * b.Magnitude);
+    public static Force3 operator *(Force3 a, Scalar b) => new(a.MagnitudeX * b.Magnitude, a.MagnitudeY * b.Magnitude, a.MagnitudeZ * b.Magnitude);
     /// <summary>Scales the <see cref="Force3"/> <paramref name="a"/> by <paramref name="b"/>.</summary>
     /// <param name="a">This value is used to scale the <see cref="Force3"/> <paramref name="b"/>.</param>
     /// <param name="b">The <see cref="Force3"/>, which is scaled by <paramref name="a"/>.</param>
-    public static Force3 operator *(Scalar a, Force3 b) => new(a.Magnitude * b.X, a.Magnitude * b.Y, a.Magnitude * b.Z);
+    public static Force3 operator *(Scalar a, Force3 b) => new(a.Magnitude * b.MagnitudeX, a.Magnitude * b.MagnitudeY, a.Magnitude * b.MagnitudeZ);
     /// <summary>Scales the <see cref="Force3"/> <paramref name="a"/> through division by <paramref name="b"/>.</summary>
     /// <param name="a">The <see cref="Force3"/>, which is divided by <paramref name="b"/>.</param>
     /// <param name="b">This value is used to divide the <see cref="Force3"/> <paramref name="a"/>.</param>
-    public static Force3 operator /(Force3 a, Scalar b) => new(a.X / b.Magnitude, a.Y / b.Magnitude, a.Z / b.Magnitude);
+    public static Force3 operator /(Force3 a, Scalar b) => new(a.MagnitudeX / b.Magnitude, a.MagnitudeY / b.Magnitude, a.MagnitudeZ / b.Magnitude);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
@@ -331,7 +338,7 @@ public readonly partial record struct Force3 :
         ArgumentNullException.ThrowIfNull(factory, nameof(factory));
         ArgumentNullException.ThrowIfNull(factor, nameof(factor));
 
-        return factory((X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude));
+        return factory((MagnitudeX * factor.Magnitude, MagnitudeY * factor.Magnitude, MagnitudeZ * factor.Magnitude));
     }
 
     /// <inheritdoc/>
@@ -343,7 +350,7 @@ public readonly partial record struct Force3 :
         ArgumentNullException.ThrowIfNull(factory, nameof(factory));
         ArgumentNullException.ThrowIfNull(divisor, nameof(divisor));
 
-        return factory((X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude));
+        return factory((MagnitudeX / divisor.Magnitude, MagnitudeY / divisor.Magnitude, MagnitudeZ / divisor.Magnitude));
     }
 
     /// <summary>Multiplication of the <see cref="Force3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
@@ -372,16 +379,16 @@ public readonly partial record struct Force3 :
     public static Unhandled3 operator /(Force3 a, IScalarQuantity b) => a.Divide(b, (x) => new Unhandled3(x));
 
     /// <summary>Converts the <see cref="Force3"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with 
-    /// values (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
-    public (double x, double y, double z) ToValueTuple() => (X, Y, Z);
+    /// values (<see cref="MagnitudeX"/>, <see cref="MagnitudeY"/>, <see cref="MagnitudeZ"/>), when expressed in SI units.</summary>
+    public (double x, double y, double z) ToValueTuple() => (MagnitudeX, MagnitudeY, MagnitudeZ);
     /// <summary>Converts <paramref name="a"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with 
-    /// values (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
-    public static explicit operator (double x, double y, double z)(Force3 a) => (a.X, a.Y, a.Z);
+    /// values (<see cref="MagnitudeX"/>, <see cref="MagnitudeY"/>, <see cref="MagnitudeZ"/>), when expressed in SI units.</summary>
+    public static explicit operator (double x, double y, double z)(Force3 a) => (a.MagnitudeX, a.MagnitudeY, a.MagnitudeZ);
 
     /// <summary>Converts the <see cref="Force3"/> to the <see cref="Vector3"/> with components of equal magnitude, when expressed in SI units.</summary>
-    public Vector3 ToVector3() => new(X, Y, Z);
+    public Vector3 ToVector3() => new(MagnitudeX, MagnitudeY, MagnitudeZ);
     /// <summary>Converts <paramref name="a"/> to the <see cref="Vector3"/> with components of equal magnitude, when expressed in SI units.</summary>
-    public static explicit operator Vector3(Force3 a) => new(a.X, a.Y, a.Z);
+    public static explicit operator Vector3(Force3 a) => new(a.MagnitudeX, a.MagnitudeY, a.MagnitudeZ);
 
     /// <summary>Constructs the <see cref="Force3"/> with components equal to the values of <paramref name="components"/>, when expressed in SI units.</summary>
     public static Force3 FromValueTuple((double x, double y, double z) components) => new(components);

@@ -6,19 +6,19 @@
 /// <summary>The zero-magnitude <see cref="#Param:quantity#"/>.</summary>
 #/
 
-#Define:ComponentX(quantity, dimensionality, unit, pluralUnits)
+#Define:MagnitudeX(quantity, dimensionality, unit, pluralUnits)
 /// <summary>The magnitude of the X-component of the <see cref="#Param:quantity#"/>, in SI units.</summary>
 /// <remarks>For clarity, consider preferring <see cref="InUnit(#Param:unit#)"/> or a pre-defined property
 /// - such as <see cref="#Param:pluralUnits[%0]#"/>.</remarks>
 #/
 
-#Define:ComponentY(quantity, dimensionality, unit, pluralUnits)
+#Define:MagnitudeY(quantity, dimensionality, unit, pluralUnits)
 /// <summary>The magnitude of the Y-component of the <see cref="#Param:quantity#"/>, in SI units.</summary>
 /// <remarks>For clarity, consider preferring <see cref="InUnit(#Param:unit#)"/> or a pre-defined property
 /// - such as <see cref="#Param:pluralUnits[%0]#"/>.</remarks>
 #/
 
-#Define:ComponentZ(quantity, dimensionality, unit, pluralUnits)
+#Define:MagnitudeZ(quantity, dimensionality, unit, pluralUnits)
 /// <summary>The magnitude of the Z-component of the <see cref="#Param:quantity#"/>, in SI units.</summary>
 /// <remarks>For clarity, consider preferring <see cref="InUnit(#Param:unit#)"/> or a pre-defined property
 /// - such as <see cref="#Param:pluralUnits[%0]#"/>.</remarks>
@@ -28,6 +28,18 @@
 /// <summary>Retrieves the magnitudes of the components of the <see cref="#Param:quantity#"/>, in SI units.</summary>
 /// <remarks>For clarity, consider preferring <see cref="InUnit(#Param:unit#)"/> or a pre-defined property
 /// - such as <see cref="#Param:pluralUnits[%0]#"/>.</remarks>
+#/
+
+#Define:ComponentX(quantity, dimensionality, unit, pluralUnits)
+/// <summary>The X-component of the <see cref="#Param:quantity#"/>.</summary>
+#/
+
+#Define:ComponentY(quantity, dimensionality, unit, pluralUnits)
+/// <summary>The X-component of the <see cref="#Param:quantity#"/>.</summary>
+#/
+
+#Define:ComponentZ(quantity, dimensionality, unit, pluralUnits)
+/// <summary>The X-component of the <see cref="#Param:quantity#"/>.</summary>
 #/
 
 #Define:ConstructorComponentTuple(quantity, dimensionality)
@@ -439,7 +451,7 @@
 #/
 
 #Define:ToValueTupleMethod3(quantity)
-/// <summary>Converts the <see cref="#Param:quantity#"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with #newline#values (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
+/// <summary>Converts the <see cref="#Param:quantity#"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with #newline#values (<see cref="MagnitudeX"/>, <see cref="MagnitudeY"/>, <see cref="MagnitudeZ"/>), when expressed in SI units.</summary>
 #/
 
 #Define:ToValueTupleOperator(quantity, dimensionality)
@@ -447,7 +459,7 @@
 #/
 
 #Define:ToValueTupleOperator3(quantity)
-/// <summary>Converts <paramref name="a"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with #newline#values (<see cref="X"/>, <see cref="Y"/>, <see cref="Z"/>), when expressed in SI units.</summary>
+/// <summary>Converts <paramref name="a"/> to a (<see langword="double"/>, <see langword="double"/>, <see langword="double"/>) with #newline#values (<see cref="MagnitudeX"/>, <see cref="MagnitudeY"/>, <see cref="MagnitudeZ"/>), when expressed in SI units.</summary>
 #/
 
 #Define:ToVectorMethod(quantity, dimensionality)

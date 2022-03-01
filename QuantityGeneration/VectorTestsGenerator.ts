@@ -197,7 +197,7 @@ export class VectorTestsGenerator {
             convertibleText += '\t{\n'
             convertibleText += '\t\t' + convertible.name + '#Dimensionality# result = quantity.As' + convertible.name + ';\n\n'
             for (let name of getVectorComponentNames(dimensionality)) {
-                convertibleText += '\t\tAssert.Equal(quantity.' + name + ', result.' + name + ', 2);\n'
+                convertibleText += '\t\tAssert.Equal(quantity.Magnitude' + name + ', result.Magnitude' + name + ', 2);\n'
             }
             convertibleText += '\t}\n\n'
         }
@@ -400,59 +400,63 @@ export class VectorTestsGenerator {
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListSquareSum#',
-                append: (name: string) => 'quantity.' + name + ' * quantity.' + name + ' + ',
+                append: (name: string) => 'quantity.Magnitude' + name + ' * quantity.Magnitude' + name + ' + ',
                 slice: (result: string) => result.slice(0, -3)
             }, {
                 replace: '#AssertScalarsUnit#',
-                append: (name: string) => '\t\tAssert.Equal(' + lowerCase(name) + ' * unit.#UnitQuantity#.Magnitude, quantity.' + name + ', 2);\n',
+                append: (name: string) => '\t\tAssert.Equal(' + lowerCase(name) + ' * unit.#UnitQuantity#.Magnitude, quantity.Magnitude' + name + ', 2);\n',
                 slice: (result: string) => result.slice(0, -1)
             }, {
                 replace: '#AssertVector3Unit#',
-                append: (name: string) => '\t\tAssert.Equal(vector.' + name + ' * unit.#UnitQuantity#.Magnitude, quantity.' + name + ', 2);\n',
+                append: (name: string) => '\t\tAssert.Equal(vector.Magnitude' + name + ' * unit.#UnitQuantity#.Magnitude, quantity.Magnitude' + name + ', 2);\n',
                 slice: (result: string) => result.slice(0, -1)
             }, {
                 replace: '#AssertDoublesUnit#',
-                append: (name: string) => '\t\tAssert.Equal(' + lowerCase(name) + ' * unit.#UnitQuantity#.Magnitude, quantity.' + name + ', 2);\n',
+                append: (name: string) => '\t\tAssert.Equal(' + lowerCase(name) + ' * unit.#UnitQuantity#.Magnitude, quantity.Magnitude' + name + ', 2);\n',
                 slice: (result: string) => result.slice(0, -1)
             }, {
                 replace: '#AssertMultipliedMagnitude#',
-                append: (name: string) => '\t\tAssert.Equal(quantity.' + name + ' * factor.Magnitude, result.' + name + ', 2);\n',
+                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude' + name + ' * factor.Magnitude, result.Magnitude' + name + ', 2);\n',
                 slice: (result: string) => result.slice(0, -1)
             }, {
                 replace: '#AssertMultipliedMagnitudeLHS#',
-                append: (name: string) => '\t\tAssert.Equal(quantity.' + name + ' * factor.Magnitude, resultLHS.' + name + ', 2);\n',
+                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude' + name + ' * factor.Magnitude, resultLHS.Magnitude' + name + ', 2);\n',
                 slice: (result: string) => result.slice(0, -1)
             }, {
                 replace: '#AssertMultipliedMagnitudeRHS#',
-                append: (name: string) => '\t\tAssert.Equal(factor.Magnitude * quantity.' + name + ', resultRHS.' + name + ', 2);\n',
+                append: (name: string) => '\t\tAssert.Equal(factor.Magnitude * quantity.Magnitude' + name + ', resultRHS.Magnitude' + name + ', 2);\n',
                 slice: (result: string) => result.slice(0, -1)
             }, {
                 replace: '#AssertDividedMagnitude#',
-                append: (name: string) => '\t\tAssert.Equal(quantity.' + name + ' / divisor.Magnitude, result.' + name + ', 2);\n',
+                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude' + name + ' / divisor.Magnitude, result.Magnitude' + name + ', 2);\n',
                 slice: (result: string) => result.slice(0, -1)
             }, {
                 replace: '#AssertRemainder#',
-                append: (name: string) => '\t\tAssert.Equal(quantity.' + name + ' % divisor, result.' + name + ', 2);\n',
+                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude' + name + ' % divisor, result.Magnitude' + name + ', 2);\n',
                 slice: (result: string) => result.slice(0, -1)
             }, {
                 replace: '#AssertMultiplied#',
-                append: (name: string) => '\t\tAssert.Equal(quantity.' + name + ' * factor, result.' + name + ', 2);\n',
+                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude' + name + ' * factor, result.Magnitude' + name + ', 2);\n',
                 slice: (result: string) => result.slice(0, -1)
             }, {
                 replace: '#AssertMultipliedLHS#',
-                append: (name: string) => '\t\tAssert.Equal(quantity.' + name + ' * factor, resultLHS.' + name + ', 2);\n',
+                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude' + name + ' * factor, resultLHS.Magnitude' + name + ', 2);\n',
                 slice: (result: string) => result.slice(0, -1)
             }, {
                 replace: '#AssertMultipliedRHS#',
-                append: (name: string) => '\t\tAssert.Equal(factor * quantity.' + name + ', resultRHS.' + name + ', 2);\n',
+                append: (name: string) => '\t\tAssert.Equal(factor * quantity.Magnitude' + name + ', resultRHS.Magnitude' + name + ', 2);\n',
                 slice: (result: string) => result.slice(0, -1)
             }, {
                 replace: '#AssertDivided#',
-                append: (name: string) => '\t\tAssert.Equal(quantity.' + name + ' / divisor, result.' + name + ', 2);\n',
+                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude' + name + ' / divisor, result.Magnitude' + name + ', 2);\n',
                 slice: (result: string) => result.slice(0, -1)
             }, {
                 replace: '#AssertToUnit#',
-                append: (name: string) => '\t\tAssert.Equal(quantity.' + name + ' / unit.#UnitQuantity#.Magnitude, components.' + name + ', 2);\n',
+                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude' + name + ' / unit.#UnitQuantity#.Magnitude, components.Magnitude' + name + ', 2);\n',
+                slice: (result: string) => result.slice(0, -1)
+            }, {
+                replace: '#AssertIndividual#',
+                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude' + name + ', quantity.' + name + '.Magnitude, 2);\n',
                 slice: (result: string) => result.slice(0, -1)
             }
         ]

@@ -30,11 +30,11 @@ public static class AssertExtra
     }
 
     public static void AssertEqualComponents(IVector3Quantity expected, (double x, double y, double z) actual)
-        => AssertEqualComponents((expected.X, expected.Y, expected.Z), actual);
+        => AssertEqualComponents((expected.MagnitudeX, expected.MagnitudeY, expected.MagnitudeZ), actual);
     public static void AssertEqualComponents((double x, double y, double z) expected, IVector3Quantity actual)
-        => AssertEqualComponents(expected, (actual.X, actual.Y, actual.Z));
+        => AssertEqualComponents(expected, (actual.MagnitudeX, actual.MagnitudeY, actual.MagnitudeZ));
     public static void AssertEqualComponents(IVector3Quantity expected, IVector3Quantity actual)
-        => AssertEqualComponents((expected.X, expected.Y, expected.Z), (actual.X, actual.Y, actual.Z));
+        => AssertEqualComponents((expected.MagnitudeX, expected.MagnitudeY, expected.MagnitudeZ), (actual.MagnitudeX, actual.MagnitudeY, actual.MagnitudeZ));
     public static void AssertEqualComponents(Vector3 expected, (double x, double y, double z) actual) => AssertEqualComponents(expected.ToValueTuple(), actual);
     public static void AssertEqualComponents((double x, double y, double z) expected, Vector3 actual) => AssertEqualComponents(expected, actual.ToValueTuple());
     public static void AssertEqualComponents(Vector3 expected, IVector3Quantity actual) => AssertEqualComponents(expected.ToValueTuple(), actual);

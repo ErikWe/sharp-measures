@@ -10,7 +10,7 @@ internal static class Vectors
         where TLHSVector3 : IVector3Quantity
         where TRHSVector3 : IVector3Quantity
     {
-        return new(lhs.X * rhs.X + lhs.Y * rhs.Y + lhs.Z * rhs.Z);
+        return new(lhs.MagnitudeX * rhs.MagnitudeX + lhs.MagnitudeY * rhs.MagnitudeY + lhs.MagnitudeZ * rhs.MagnitudeZ);
     }
 
     public static Quantities.Vector3 Cross<TLHSVector3, TRHSVector3>(TLHSVector3 lhs, TRHSVector3 rhs)
@@ -19,9 +19,9 @@ internal static class Vectors
     {
         return new
         (
-            lhs.Y * rhs.Z - lhs.Z * rhs.Y,
-            lhs.Z * rhs.X - lhs.X * rhs.Z,
-            lhs.X * rhs.Y - lhs.Y * rhs.X
+            lhs.MagnitudeY * rhs.MagnitudeZ - lhs.MagnitudeZ * rhs.MagnitudeY,
+            lhs.MagnitudeZ * rhs.MagnitudeX - lhs.MagnitudeX * rhs.MagnitudeZ,
+            lhs.MagnitudeX * rhs.MagnitudeY - lhs.MagnitudeY * rhs.MagnitudeX
         );
     }
 
@@ -30,9 +30,9 @@ internal static class Vectors
     {
         return new
         (
-            vector.X * transform.M11 + vector.Y * transform.M21 + vector.Z * transform.M31 + transform.M41,
-            vector.X * transform.M12 + vector.Y * transform.M22 + vector.Z * transform.M32 + transform.M42,
-            vector.X * transform.M13 + vector.Y * transform.M23 + vector.Z * transform.M33 + transform.M43
+            vector.MagnitudeX * transform.M11 + vector.MagnitudeY * transform.M21 + vector.MagnitudeZ * transform.M31 + transform.M41,
+            vector.MagnitudeX * transform.M12 + vector.MagnitudeY * transform.M22 + vector.MagnitudeZ * transform.M32 + transform.M42,
+            vector.MagnitudeX * transform.M13 + vector.MagnitudeY * transform.M23 + vector.MagnitudeZ * transform.M33 + transform.M43
         );
     }
 }

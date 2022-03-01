@@ -22,10 +22,12 @@ public readonly partial record struct #Quantity# :
     #Document:Zero(#Quantity#, #Dimensionality#)#
     public static #Quantity# Zero { get; } = new(#ComponentListZero#);
 
-#ComponentListProperties#
+#ComponentListPropertyMagnitudes#
 
     #Document:Components(#Quantity#, #Dimensionality#, #Unit#, #PluralUnits#)#
     public Vector#Dimensionality# Components => new(#ComponentListComponents#);
+
+#ComponentListProperties#
 
 #ScalarQuantityComponent#
     #Document:ConstructorComponentTuple(#Quantity#, #Dimensionality#)#

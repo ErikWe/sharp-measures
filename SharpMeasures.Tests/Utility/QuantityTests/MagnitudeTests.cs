@@ -12,11 +12,11 @@ public static class MagnitudeTests
     {
         Scalar result = a.Magnitude();
 
-        Assert.Equal(Math.Sqrt(a.X * a.X + a.Y * a.Y + a.Z * a.Z), result.Magnitude, 2);
+        Assert.Equal(Math.Sqrt(a.MagnitudeX * a.MagnitudeX + a.MagnitudeY * a.MagnitudeY + a.MagnitudeZ * a.MagnitudeZ), result.Magnitude, 2);
     }
 
     public static void Component_ShouldBeSquareRootOfSumOfSquares(IVector3Quantity a, IScalarQuantity result)
     {
-        Assert.Equal(Math.Sqrt(a.X * a.X + a.Y * a.Y + a.Z * a.Z), result.Magnitude, 2);
+        Assert.Equal(Math.Sqrt(a.MagnitudeX * a.MagnitudeX + a.MagnitudeY * a.MagnitudeY + a.MagnitudeZ * a.MagnitudeZ), result.Magnitude, 2);
     }
 }

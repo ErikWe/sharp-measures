@@ -22,8 +22,8 @@ public static class NormalizeTests
     {
         TQuantity normalized = a.Normalize();
 
-        Assert.Equal(a.X / a.Magnitude().Magnitude, normalized.X, 2);
-        Assert.Equal(a.Y / a.Magnitude().Magnitude, normalized.Y, 2);
-        Assert.Equal(a.Z / a.Magnitude().Magnitude, normalized.Z, 2);
+        Assert.Equal(a.MagnitudeX / a.Magnitude().Magnitude, normalized.MagnitudeX, 2);
+        Assert.Equal(a.MagnitudeY / a.Magnitude().Magnitude, normalized.MagnitudeY, 2);
+        Assert.Equal(a.MagnitudeZ / a.Magnitude().Magnitude, normalized.MagnitudeZ, 2);
     }
 }

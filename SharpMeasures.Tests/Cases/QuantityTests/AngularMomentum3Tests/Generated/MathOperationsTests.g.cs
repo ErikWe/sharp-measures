@@ -53,9 +53,9 @@ public class MathOperationsTests
     {
         Unhandled3 result = quantity.Multiply(factor);
 
-        Assert.Equal(quantity.X * factor.Magnitude, result.X, 2);
-        Assert.Equal(quantity.Y * factor.Magnitude, result.Y, 2);
-        Assert.Equal(quantity.Z * factor.Magnitude, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX * factor.Magnitude, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY * factor.Magnitude, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ * factor.Magnitude, result.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -65,13 +65,13 @@ public class MathOperationsTests
         Unhandled3 resultLHS = quantity * factor;
         Unhandled3 resultRHS = factor * quantity;
 
-        Assert.Equal(quantity.X * factor.Magnitude, resultLHS.X, 2);
-        Assert.Equal(quantity.Y * factor.Magnitude, resultLHS.Y, 2);
-        Assert.Equal(quantity.Z * factor.Magnitude, resultLHS.Z, 2);
+        Assert.Equal(quantity.MagnitudeX * factor.Magnitude, resultLHS.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY * factor.Magnitude, resultLHS.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ * factor.Magnitude, resultLHS.MagnitudeZ, 2);
 
-        Assert.Equal(factor.Magnitude * quantity.X, resultRHS.X, 2);
-        Assert.Equal(factor.Magnitude * quantity.Y, resultRHS.Y, 2);
-        Assert.Equal(factor.Magnitude * quantity.Z, resultRHS.Z, 2);
+        Assert.Equal(factor.Magnitude * quantity.MagnitudeX, resultRHS.MagnitudeX, 2);
+        Assert.Equal(factor.Magnitude * quantity.MagnitudeY, resultRHS.MagnitudeY, 2);
+        Assert.Equal(factor.Magnitude * quantity.MagnitudeZ, resultRHS.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -80,9 +80,9 @@ public class MathOperationsTests
     {
         Unhandled3 result = quantity.Divide(divisor);
 
-        Assert.Equal(quantity.X / divisor.Magnitude, result.X, 2);
-        Assert.Equal(quantity.Y / divisor.Magnitude, result.Y, 2);
-        Assert.Equal(quantity.Z / divisor.Magnitude, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX / divisor.Magnitude, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY / divisor.Magnitude, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ / divisor.Magnitude, result.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -91,9 +91,9 @@ public class MathOperationsTests
     {
         Unhandled3 result = quantity / divisor;
 
-        Assert.Equal(quantity.X / divisor.Magnitude, result.X, 2);
-        Assert.Equal(quantity.Y / divisor.Magnitude, result.Y, 2);
-        Assert.Equal(quantity.Z / divisor.Magnitude, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX / divisor.Magnitude, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY / divisor.Magnitude, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ / divisor.Magnitude, result.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -102,9 +102,9 @@ public class MathOperationsTests
     {
         AngularMomentum3 result = quantity.Remainder(divisor);
 
-        Assert.Equal(quantity.X % divisor, result.X, 2);
-        Assert.Equal(quantity.Y % divisor, result.Y, 2);
-        Assert.Equal(quantity.Z % divisor, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX % divisor, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY % divisor, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ % divisor, result.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -113,9 +113,9 @@ public class MathOperationsTests
     {
         AngularMomentum3 result = quantity % divisor;
 
-        Assert.Equal(quantity.X % divisor, result.X, 2);
-        Assert.Equal(quantity.Y % divisor, result.Y, 2);
-        Assert.Equal(quantity.Z % divisor, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX % divisor, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY % divisor, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ % divisor, result.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -124,9 +124,9 @@ public class MathOperationsTests
     {
         AngularMomentum3 result = quantity.Multiply(factor);
 
-        Assert.Equal(quantity.X * factor, result.X, 2);
-        Assert.Equal(quantity.Y * factor, result.Y, 2);
-        Assert.Equal(quantity.Z * factor, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX * factor, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY * factor, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ * factor, result.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -136,13 +136,13 @@ public class MathOperationsTests
         AngularMomentum3 resultLHS = quantity * factor;
         AngularMomentum3 resultRHS = factor * quantity;
 
-        Assert.Equal(quantity.X * factor, resultLHS.X, 2);
-        Assert.Equal(quantity.Y * factor, resultLHS.Y, 2);
-        Assert.Equal(quantity.Z * factor, resultLHS.Z, 2);
+        Assert.Equal(quantity.MagnitudeX * factor, resultLHS.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY * factor, resultLHS.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ * factor, resultLHS.MagnitudeZ, 2);
 
-        Assert.Equal(factor * quantity.X, resultRHS.X, 2);
-        Assert.Equal(factor * quantity.Y, resultRHS.Y, 2);
-        Assert.Equal(factor * quantity.Z, resultRHS.Z, 2);
+        Assert.Equal(factor * quantity.MagnitudeX, resultRHS.MagnitudeX, 2);
+        Assert.Equal(factor * quantity.MagnitudeY, resultRHS.MagnitudeY, 2);
+        Assert.Equal(factor * quantity.MagnitudeZ, resultRHS.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -151,9 +151,9 @@ public class MathOperationsTests
     {
         AngularMomentum3 result = quantity.Divide(divisor);
 
-        Assert.Equal(quantity.X / divisor, result.X, 2);
-        Assert.Equal(quantity.Y / divisor, result.Y, 2);
-        Assert.Equal(quantity.Z / divisor, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX / divisor, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY / divisor, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ / divisor, result.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -162,9 +162,9 @@ public class MathOperationsTests
     {
         AngularMomentum3 result = quantity / divisor;
 
-        Assert.Equal(quantity.X / divisor, result.X, 2);
-        Assert.Equal(quantity.Y / divisor, result.Y, 2);
-        Assert.Equal(quantity.Z / divisor, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX / divisor, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY / divisor, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ / divisor, result.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -173,9 +173,9 @@ public class MathOperationsTests
     {
         AngularMomentum3 result = quantity.Remainder(divisor);
 
-        Assert.Equal(quantity.X % divisor, result.X, 2);
-        Assert.Equal(quantity.Y % divisor, result.Y, 2);
-        Assert.Equal(quantity.Z % divisor, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX % divisor, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY % divisor, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ % divisor, result.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -184,9 +184,9 @@ public class MathOperationsTests
     {
         AngularMomentum3 result = quantity % divisor;
 
-        Assert.Equal(quantity.X % divisor, result.X, 2);
-        Assert.Equal(quantity.Y % divisor, result.Y, 2);
-        Assert.Equal(quantity.Z % divisor, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX % divisor, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY % divisor, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ % divisor, result.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -195,9 +195,9 @@ public class MathOperationsTests
     {
         AngularMomentum3 result = quantity.Multiply(factor);
 
-        Assert.Equal(quantity.X * factor, result.X, 2);
-        Assert.Equal(quantity.Y * factor, result.Y, 2);
-        Assert.Equal(quantity.Z * factor, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX * factor, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY * factor, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ * factor, result.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -207,13 +207,13 @@ public class MathOperationsTests
         AngularMomentum3 resultLHS = quantity * factor;
         AngularMomentum3 resultRHS = factor * quantity;
 
-        Assert.Equal(quantity.X * factor, resultLHS.X, 2);
-        Assert.Equal(quantity.Y * factor, resultLHS.Y, 2);
-        Assert.Equal(quantity.Z * factor, resultLHS.Z, 2);
+        Assert.Equal(quantity.MagnitudeX * factor, resultLHS.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY * factor, resultLHS.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ * factor, resultLHS.MagnitudeZ, 2);
 
-        Assert.Equal(factor * quantity.X, resultRHS.X, 2);
-        Assert.Equal(factor * quantity.Y, resultRHS.Y, 2);
-        Assert.Equal(factor * quantity.Z, resultRHS.Z, 2);
+        Assert.Equal(factor * quantity.MagnitudeX, resultRHS.MagnitudeX, 2);
+        Assert.Equal(factor * quantity.MagnitudeY, resultRHS.MagnitudeY, 2);
+        Assert.Equal(factor * quantity.MagnitudeZ, resultRHS.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -222,9 +222,9 @@ public class MathOperationsTests
     {
         AngularMomentum3 result = quantity.Divide(divisor);
 
-        Assert.Equal(quantity.X / divisor, result.X, 2);
-        Assert.Equal(quantity.Y / divisor, result.Y, 2);
-        Assert.Equal(quantity.Z / divisor, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX / divisor, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY / divisor, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ / divisor, result.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -233,9 +233,9 @@ public class MathOperationsTests
     {
         AngularMomentum3 result = quantity / divisor;
 
-        Assert.Equal(quantity.X / divisor, result.X, 2);
-        Assert.Equal(quantity.Y / divisor, result.Y, 2);
-        Assert.Equal(quantity.Z / divisor, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX / divisor, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY / divisor, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ / divisor, result.MagnitudeZ, 2);
     }
 
     [Fact]
@@ -260,9 +260,9 @@ public class MathOperationsTests
     {
         Unhandled3 result = quantity.Multiply(factor, (x) => new Unhandled3(x));
 
-        Assert.Equal(quantity.X * factor.Magnitude, result.X, 2);
-        Assert.Equal(quantity.Y * factor.Magnitude, result.Y, 2);
-        Assert.Equal(quantity.Z * factor.Magnitude, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX * factor.Magnitude, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY * factor.Magnitude, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ * factor.Magnitude, result.MagnitudeZ, 2);
     }
 
     [Fact]
@@ -287,9 +287,9 @@ public class MathOperationsTests
     {
         Unhandled3 result = quantity.Divide(divisor, (x) => new Unhandled3(x));
 
-        Assert.Equal(quantity.X / divisor.Magnitude, result.X, 2);
-        Assert.Equal(quantity.Y / divisor.Magnitude, result.Y, 2);
-        Assert.Equal(quantity.Z / divisor.Magnitude, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX / divisor.Magnitude, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY / divisor.Magnitude, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ / divisor.Magnitude, result.MagnitudeZ, 2);
     }
 
     [Fact]
@@ -307,13 +307,13 @@ public class MathOperationsTests
         Unhandled3 resultLHS = quantity * factor;
         Unhandled3 resultRHS = factor * quantity;
 
-        Assert.Equal(quantity.X * factor.Magnitude, resultLHS.X, 2);
-        Assert.Equal(quantity.Y * factor.Magnitude, resultLHS.Y, 2);
-        Assert.Equal(quantity.Z * factor.Magnitude, resultLHS.Z, 2);
+        Assert.Equal(quantity.MagnitudeX * factor.Magnitude, resultLHS.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY * factor.Magnitude, resultLHS.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ * factor.Magnitude, resultLHS.MagnitudeZ, 2);
 
-        Assert.Equal(factor.Magnitude * quantity.X, resultRHS.X, 2);
-        Assert.Equal(factor.Magnitude * quantity.Y, resultRHS.Y, 2);
-        Assert.Equal(factor.Magnitude * quantity.Z, resultRHS.Z, 2);
+        Assert.Equal(factor.Magnitude * quantity.MagnitudeX, resultRHS.MagnitudeX, 2);
+        Assert.Equal(factor.Magnitude * quantity.MagnitudeY, resultRHS.MagnitudeY, 2);
+        Assert.Equal(factor.Magnitude * quantity.MagnitudeZ, resultRHS.MagnitudeZ, 2);
     }
 
     [Fact]
@@ -330,8 +330,8 @@ public class MathOperationsTests
     {
         Unhandled3 result = quantity / divisor;
 
-        Assert.Equal(quantity.X / divisor.Magnitude, result.X, 2);
-        Assert.Equal(quantity.Y / divisor.Magnitude, result.Y, 2);
-        Assert.Equal(quantity.Z / divisor.Magnitude, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX / divisor.Magnitude, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY / divisor.Magnitude, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ / divisor.Magnitude, result.MagnitudeZ, 2);
     }
 }

@@ -42,9 +42,9 @@ public class ConstructorTests
     {
         Impulse3 quantity = new((x, y, z), unit);
 
-        Assert.Equal(x * unit.Impulse.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.Impulse.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.Impulse.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.Impulse.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.Impulse.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.Impulse.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -53,9 +53,9 @@ public class ConstructorTests
     {
         Impulse3 quantity = new(x, y, z, unit);
 
-        Assert.Equal(x * unit.Impulse.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.Impulse.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.Impulse.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.Impulse.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.Impulse.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.Impulse.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -64,9 +64,9 @@ public class ConstructorTests
     {
         Impulse3 quantity = new(vector, unit);
 
-        Assert.Equal(vector.X * unit.Impulse.Magnitude, quantity.X, 2);
-        Assert.Equal(vector.Y * unit.Impulse.Magnitude, quantity.Y, 2);
-        Assert.Equal(vector.Z * unit.Impulse.Magnitude, quantity.Z, 2);
+        Assert.Equal(vector.MagnitudeX * unit.Impulse.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(vector.MagnitudeY * unit.Impulse.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(vector.MagnitudeZ * unit.Impulse.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -75,9 +75,9 @@ public class ConstructorTests
     {
         Impulse3 quantity = new((x, y, z), unit);
 
-        Assert.Equal(x * unit.Impulse.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.Impulse.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.Impulse.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.Impulse.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.Impulse.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.Impulse.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -86,9 +86,9 @@ public class ConstructorTests
     {
         Impulse3 quantity = new(x, y, z, unit);
 
-        Assert.Equal(x * unit.Impulse.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.Impulse.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.Impulse.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.Impulse.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.Impulse.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.Impulse.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]

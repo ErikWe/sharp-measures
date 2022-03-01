@@ -42,9 +42,9 @@ public class ConstructorTests
     {
         Jerk3 quantity = new((x, y, z), unit);
 
-        Assert.Equal(x * unit.Jerk.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.Jerk.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.Jerk.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.Jerk.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.Jerk.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.Jerk.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -53,9 +53,9 @@ public class ConstructorTests
     {
         Jerk3 quantity = new(x, y, z, unit);
 
-        Assert.Equal(x * unit.Jerk.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.Jerk.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.Jerk.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.Jerk.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.Jerk.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.Jerk.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -64,9 +64,9 @@ public class ConstructorTests
     {
         Jerk3 quantity = new(vector, unit);
 
-        Assert.Equal(vector.X * unit.Jerk.Magnitude, quantity.X, 2);
-        Assert.Equal(vector.Y * unit.Jerk.Magnitude, quantity.Y, 2);
-        Assert.Equal(vector.Z * unit.Jerk.Magnitude, quantity.Z, 2);
+        Assert.Equal(vector.MagnitudeX * unit.Jerk.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(vector.MagnitudeY * unit.Jerk.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(vector.MagnitudeZ * unit.Jerk.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -75,9 +75,9 @@ public class ConstructorTests
     {
         Jerk3 quantity = new((x, y, z), unit);
 
-        Assert.Equal(x * unit.Jerk.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.Jerk.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.Jerk.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.Jerk.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.Jerk.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.Jerk.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -86,9 +86,9 @@ public class ConstructorTests
     {
         Jerk3 quantity = new(x, y, z, unit);
 
-        Assert.Equal(x * unit.Jerk.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.Jerk.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.Jerk.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.Jerk.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.Jerk.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.Jerk.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]

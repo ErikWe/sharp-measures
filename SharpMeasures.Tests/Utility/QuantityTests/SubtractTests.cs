@@ -23,9 +23,9 @@ public static class SubtractTests
     {
         TDifferenceQuantity result = a.Subtract(b);
 
-        Assert.Equal(a.X - b.X, result.X, 2);
-        Assert.Equal(a.Y - b.Y, result.Y, 2);
-        Assert.Equal(a.Z - b.Z, result.Z, 2);
+        Assert.Equal(a.MagnitudeX - b.MagnitudeX, result.MagnitudeX, 2);
+        Assert.Equal(a.MagnitudeY - b.MagnitudeY, result.MagnitudeY, 2);
+        Assert.Equal(a.MagnitudeZ - b.MagnitudeZ, result.MagnitudeZ, 2);
     }
 
     public static void Operator_Scalar_MagnitudeShouldEqualSubtractionOfMagnitudes(IScalarQuantity term1, IScalarQuantity term2, IScalarQuantity difference)
@@ -35,8 +35,8 @@ public static class SubtractTests
 
     public static void Operator_Vector3_ComponentsShouldEqualSubtractionOfComponents(IVector3Quantity term1, IVector3Quantity term2, IVector3Quantity difference)
     {
-        Assert.Equal(term1.X - term2.X, difference.X, 2);
-        Assert.Equal(term1.Y - term2.Y, difference.Y, 2);
-        Assert.Equal(term1.Z - term2.Z, difference.Z, 2);
+        Assert.Equal(term1.MagnitudeX - term2.MagnitudeX, difference.MagnitudeX, 2);
+        Assert.Equal(term1.MagnitudeY - term2.MagnitudeY, difference.MagnitudeY, 2);
+        Assert.Equal(term1.MagnitudeZ - term2.MagnitudeZ, difference.MagnitudeZ, 2);
     }
 }

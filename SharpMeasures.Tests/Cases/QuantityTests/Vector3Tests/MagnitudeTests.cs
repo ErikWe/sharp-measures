@@ -11,11 +11,20 @@ public class MagnitudeTests
 {
     [Theory]
     [ClassData(typeof(Vector3Dataset))]
+    public void Individual_MagnitudesShouldBeSameAsOriginal(Vector3 vector)
+    {
+        Assert.Equal(vector.MagnitudeX, vector.X.Magnitude, 2);
+        Assert.Equal(vector.MagnitudeY, vector.Y.Magnitude, 2);
+        Assert.Equal(vector.MagnitudeZ, vector.Z.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(Vector3Dataset))]
     public void Magnitude_ShouldBeSquareRootOfSumOfSquares(Vector3 vector)
     {
         Scalar magnitude = vector.Magnitude();
 
-        Assert.Equal(Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y + vector.Z * vector.Z), magnitude.Magnitude, 2);
+        Assert.Equal(Math.Sqrt(vector.MagnitudeX * vector.MagnitudeX + vector.MagnitudeY * vector.MagnitudeY + vector.MagnitudeZ * vector.MagnitudeZ), magnitude.Magnitude, 2);
     }
 
     [Theory]
@@ -24,6 +33,6 @@ public class MagnitudeTests
     {
         Scalar squaredMagnitude = vector.SquaredMagnitude();
 
-        Assert.Equal(vector.X * vector.X + vector.Y * vector.Y + vector.Z * vector.Z, squaredMagnitude.Magnitude, 2);
+        Assert.Equal(vector.MagnitudeX * vector.MagnitudeX + vector.MagnitudeY * vector.MagnitudeY + vector.MagnitudeZ * vector.MagnitudeZ, squaredMagnitude.Magnitude, 2);
     }
 }

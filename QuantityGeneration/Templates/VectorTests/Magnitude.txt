@@ -13,6 +13,13 @@ public class MagnitudeTests
 {
     [Theory]
     [ClassData(typeof(#Quantity##Dimensionality#Dataset))]
+    public void Individual_MagnitudesShouldBeSameAsOriginal(#Quantity##Dimensionality# quantity)
+    {
+#AssertIndividual#
+    }
+
+    [Theory]
+    [ClassData(typeof(#Quantity##Dimensionality#Dataset))]
     public void Components_MagnitudesShouldBeEqual(#Quantity##Dimensionality# quantity)
     {
         Vector#Dimensionality# components = quantity.Components;

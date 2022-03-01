@@ -60,6 +60,6 @@ public class DotTests
     {
         Unhandled result = quantity.Dot(vector);
 
-        Assert.Equal(quantity.X * vector.X + quantity.Y * vector.Y + quantity.Z * vector.Z, result.Magnitude, 2);
+        Assert.Equal(quantity.MagnitudeX * vector.MagnitudeX + quantity.MagnitudeY * vector.MagnitudeY + quantity.MagnitudeZ * vector.MagnitudeZ, result.Magnitude, 2);
     }
 }

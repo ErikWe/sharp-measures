@@ -13,9 +13,9 @@ public class ToVector3Tests
     {
         AngularVelocity3 result = quantity.Multiply(vector);
 
-        Assert.Equal(quantity.Magnitude * vector.X, result.X, 2);
-        Assert.Equal(quantity.Magnitude * vector.Y, result.Y, 2);
-        Assert.Equal(quantity.Magnitude * vector.Z, result.Z, 2);
+        Assert.Equal(quantity.Magnitude * vector.MagnitudeX, result.MagnitudeX, 2);
+        Assert.Equal(quantity.Magnitude * vector.MagnitudeY, result.MagnitudeY, 2);
+        Assert.Equal(quantity.Magnitude * vector.MagnitudeZ, result.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -24,9 +24,9 @@ public class ToVector3Tests
     {
         AngularVelocity3 result = quantity.Multiply((x, y, z));
 
-        Assert.Equal(quantity.Magnitude * x, result.X, 2);
-        Assert.Equal(quantity.Magnitude * x, result.X, 2);
-        Assert.Equal(quantity.Magnitude * x, result.X, 2);
+        Assert.Equal(quantity.Magnitude * x, result.MagnitudeX, 2);
+        Assert.Equal(quantity.Magnitude * y, result.MagnitudeY, 2);
+        Assert.Equal(quantity.Magnitude * z, result.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -35,9 +35,9 @@ public class ToVector3Tests
     {
         AngularVelocity3 result = quantity.Multiply((x, y, z));
 
-        Assert.Equal(quantity.Magnitude * x, result.X, 2);
-        Assert.Equal(quantity.Magnitude * x, result.X, 2);
-        Assert.Equal(quantity.Magnitude * x, result.X, 2);
+        Assert.Equal(quantity.Magnitude * x, result.MagnitudeX, 2);
+        Assert.Equal(quantity.Magnitude * y, result.MagnitudeY, 2);
+        Assert.Equal(quantity.Magnitude * z, result.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -47,14 +47,14 @@ public class ToVector3Tests
         AngularVelocity3 resultLHS = quantity * vector;
         AngularVelocity3 resultRHS = vector * quantity;
 
-        Assert.Equal(quantity.Magnitude * vector.X, resultLHS.X, 2);
-        Assert.Equal(vector.X * quantity.Magnitude, resultRHS.X, 2);
+        Assert.Equal(quantity.Magnitude * vector.MagnitudeX, resultLHS.MagnitudeX, 2);
+        Assert.Equal(vector.MagnitudeX * quantity.Magnitude, resultRHS.MagnitudeX, 2);
 
-        Assert.Equal(quantity.Magnitude * vector.Y, resultLHS.Y, 2);
-        Assert.Equal(vector.Y * quantity.Magnitude, resultRHS.Y, 2);
+        Assert.Equal(quantity.Magnitude * vector.MagnitudeY, resultLHS.MagnitudeY, 2);
+        Assert.Equal(vector.MagnitudeY * quantity.Magnitude, resultRHS.MagnitudeY, 2);
 
-        Assert.Equal(quantity.Magnitude * vector.Z, resultLHS.Z, 2);
-        Assert.Equal(vector.Z * quantity.Magnitude, resultRHS.Z, 2);
+        Assert.Equal(quantity.Magnitude * vector.MagnitudeZ, resultLHS.MagnitudeZ, 2);
+        Assert.Equal(vector.MagnitudeZ * quantity.Magnitude, resultRHS.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -64,14 +64,14 @@ public class ToVector3Tests
         AngularVelocity3 resultLHS = quantity * (x, y, z);
         AngularVelocity3 resultRHS = (x, y, z) * quantity;
 
-        Assert.Equal(quantity.Magnitude * x, resultLHS.X, 2);
-        Assert.Equal(x * quantity.Magnitude, resultRHS.X, 2);
+        Assert.Equal(quantity.Magnitude * x, resultLHS.MagnitudeX, 2);
+        Assert.Equal(x * quantity.Magnitude, resultRHS.MagnitudeX, 2);
 
-        Assert.Equal(quantity.Magnitude * y, resultLHS.Y, 2);
-        Assert.Equal(y * quantity.Magnitude, resultRHS.Y, 2);
+        Assert.Equal(quantity.Magnitude * y, resultLHS.MagnitudeY, 2);
+        Assert.Equal(y * quantity.Magnitude, resultRHS.MagnitudeY, 2);
 
-        Assert.Equal(quantity.Magnitude * z, resultLHS.Z, 2);
-        Assert.Equal(z * quantity.Magnitude, resultRHS.Z, 2);
+        Assert.Equal(quantity.Magnitude * z, resultLHS.MagnitudeZ, 2);
+        Assert.Equal(z * quantity.Magnitude, resultRHS.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -81,13 +81,13 @@ public class ToVector3Tests
         AngularVelocity3 resultLHS = quantity * (x, y, z);
         AngularVelocity3 resultRHS = (x, y, z) * quantity;
 
-        Assert.Equal(quantity.Magnitude * x, resultLHS.X, 2);
-        Assert.Equal(x * quantity.Magnitude, resultRHS.X, 2);
+        Assert.Equal(quantity.Magnitude * x, resultLHS.MagnitudeX, 2);
+        Assert.Equal(x * quantity.Magnitude, resultRHS.MagnitudeX, 2);
 
-        Assert.Equal(quantity.Magnitude * y, resultLHS.Y, 2);
-        Assert.Equal(y * quantity.Magnitude, resultRHS.Y, 2);
+        Assert.Equal(quantity.Magnitude * y, resultLHS.MagnitudeY, 2);
+        Assert.Equal(y * quantity.Magnitude, resultRHS.MagnitudeY, 2);
 
-        Assert.Equal(quantity.Magnitude * z, resultLHS.Z, 2);
-        Assert.Equal(z * quantity.Magnitude, resultRHS.Z, 2);
+        Assert.Equal(quantity.Magnitude * z, resultLHS.MagnitudeZ, 2);
+        Assert.Equal(z * quantity.Magnitude, resultRHS.MagnitudeZ, 2);
     }
 }

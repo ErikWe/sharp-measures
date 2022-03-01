@@ -11,6 +11,15 @@ public class MagnitudeTests
 {
     [Theory]
     [ClassData(typeof(Unhandled3Dataset))]
+    public void Individual_MagnitudesShouldBeSameAsOriginal(Unhandled3 quantity)
+    {
+        Assert.Equal(quantity.MagnitudeX, quantity.X.Magnitude, 2);
+        Assert.Equal(quantity.MagnitudeY, quantity.Y.Magnitude, 2);
+        Assert.Equal(quantity.MagnitudeZ, quantity.Z.Magnitude, 2);
+    }
+
+    [Theory]
+    [ClassData(typeof(Unhandled3Dataset))]
     public void Components_MagnitudesShouldBeEqual(Unhandled3 quantity)
     {
         Vector3 components = quantity.Components;
@@ -24,7 +33,7 @@ public class MagnitudeTests
     {
         Unhandled magnitude = quantity.Magnitude();
 
-        Assert.Equal(Math.Sqrt(quantity.X * quantity.X + quantity.Y * quantity.Y + quantity.Z * quantity.Z), magnitude.Magnitude, 2);
+        Assert.Equal(Math.Sqrt(quantity.MagnitudeX * quantity.MagnitudeX + quantity.MagnitudeY * quantity.MagnitudeY + quantity.MagnitudeZ * quantity.MagnitudeZ), magnitude.Magnitude, 2);
     }
 
     [Theory]
@@ -33,7 +42,7 @@ public class MagnitudeTests
     {
         Unhandled squaredMagnitude = quantity.SquaredMagnitude();
 
-        Assert.Equal(quantity.X * quantity.X + quantity.Y * quantity.Y + quantity.Z * quantity.Z, squaredMagnitude.Magnitude, 2);
+        Assert.Equal(quantity.MagnitudeX * quantity.MagnitudeX + quantity.MagnitudeY * quantity.MagnitudeY + quantity.MagnitudeZ * quantity.MagnitudeZ, squaredMagnitude.Magnitude, 2);
     }
 
     [Theory]
@@ -42,7 +51,7 @@ public class MagnitudeTests
     {
         Scalar magnitude = ((IVector3Quantity)quantity).Magnitude();
 
-        Assert.Equal(Math.Sqrt(quantity.X * quantity.X + quantity.Y * quantity.Y + quantity.Z * quantity.Z), magnitude.Magnitude, 2);
+        Assert.Equal(Math.Sqrt(quantity.MagnitudeX * quantity.MagnitudeX + quantity.MagnitudeY * quantity.MagnitudeY + quantity.MagnitudeZ * quantity.MagnitudeZ), magnitude.Magnitude, 2);
     }
 
     [Theory]
@@ -51,6 +60,6 @@ public class MagnitudeTests
     {
         Scalar squaredMagnitude = ((IVector3Quantity)quantity).SquaredMagnitude();
 
-        Assert.Equal(quantity.X * quantity.X + quantity.Y * quantity.Y + quantity.Z * quantity.Z, squaredMagnitude.Magnitude, 2);
+        Assert.Equal(quantity.MagnitudeX * quantity.MagnitudeX + quantity.MagnitudeY * quantity.MagnitudeY + quantity.MagnitudeZ * quantity.MagnitudeZ, squaredMagnitude.Magnitude, 2);
     }
 }

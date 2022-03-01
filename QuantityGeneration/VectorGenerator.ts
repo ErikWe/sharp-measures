@@ -121,18 +121,24 @@ export class VectorGenerator {
 
         const componentLists: { replace: string, append: (name: string) => string, slice: (text: string) => string }[] = [
             {
+                replace: '#ComponentListPropertyMagnitudes#',
+                append: (name: string) =>
+                    '\t#Document:Magnitude' + name + '(#Quantity#, #Dimensionality#, #Unit#, #PluralUnits#)#\n' +
+                    '\tpublic double Magnitude' + name + ' { get; init; }\n',
+                slice: (result: string) => result.slice(0, -1)
+            }, {
                 replace: '#ComponentListProperties#',
                 append: (name: string) =>
                     '\t#Document:Component' + name + '(#Quantity#, #Dimensionality#, #Unit#, #PluralUnits#)#\n' +
-                    '\tpublic double ' + name + ' { get; init; }\n',
+                    '\tpublic #Component# ' + name + ' => new(Magnitude' + name + ');\n',
                 slice: (result: string) => result.slice(0, -1)
             }, {
                 replace: '#ComponentListAssignment#',
-                append: (name: string) => '\t\t' + name + ' = ' + lowerCase(name) + ';\n',
+                append: (name: string) => '\t\tMagnitude' + name + ' = ' + lowerCase(name) + ';\n',
                 slice: (result: string) => result.slice(0, -1)
             }, {
                 replace: '#ComponentListComponents#',
-                append: (name: string) => name + ', ',
+                append: (name: string) => 'Magnitude' + name + ', ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListZero#',
@@ -156,11 +162,11 @@ export class VectorGenerator {
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListVectorAccess#',
-                append: (name: string) => 'components.' + name + ', ',
+                append: (name: string) => 'components.Magnitude' + name + ', ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListAAccess#',
-                append: (name: string) => 'a.' + name + ', ',
+                append: (name: string) => 'a.Magnitude' + name + ', ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListLowerCaseName#',
@@ -186,67 +192,67 @@ export class VectorGenerator {
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListNegate#',
-                append: (name: string) => '-' + name + ', ',
+                append: (name: string) => '-Magnitude' + name + ', ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListNegateA#',
-                append: (name: string) => '-a.' + name + ', ',
+                append: (name: string) => '-a.Magnitude' + name + ', ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListRemainder#',
-                append: (name: string) => name + ' % divisor.Magnitude, ',
+                append: (name: string) => 'Magnitude' + name + ' % divisor.Magnitude, ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListMultiplication#',
-                append: (name: string) => name + ' * factor.Magnitude, ',
+                append: (name: string) => 'Magnitude' + name + ' * factor.Magnitude, ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListDivision#',
-                append: (name: string) => name + ' / divisor.Magnitude, ',
+                append: (name: string) => 'Magnitude' + name + ' / divisor.Magnitude, ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListVectorARemainderScalarB#',
-                append: (name: string) => 'a.' + name + ' % b.Magnitude, ',
+                append: (name: string) => 'a.Magnitude' + name + ' % b.Magnitude, ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListVectorATimesScalarB#',
-                append: (name: string) => 'a.' + name + ' * b.Magnitude, ',
+                append: (name: string) => 'a.Magnitude' + name + ' * b.Magnitude, ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListScalarATimesVectorB#',
-                append: (name: string) => 'a.Magnitude * b.' + name + ', ',
+                append: (name: string) => 'a.Magnitude * b.Magnitude' + name + ', ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListVectorADividedByScalarB#',
-                append: (name: string) => 'a.' + name + ' / b.Magnitude, ',
+                append: (name: string) => 'a.Magnitude' + name + ' / b.Magnitude, ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListRemainderDouble#',
-                append: (name: string) => name + ' % divisor, ',
+                append: (name: string) => 'Magnitude' + name + ' % divisor, ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListMultiplicationDouble#',
-                append: (name: string) => name + ' * factor, ',
+                append: (name: string) => 'Magnitude' + name + ' * factor, ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListDivisionDouble#',
-                append: (name: string) => name + ' / divisor, ',
+                append: (name: string) => 'Magnitude' + name + ' / divisor, ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListVectorARemainderDoubleB#',
-                append: (name: string) => 'a.' + name + ' % b, ',
+                append: (name: string) => 'a.Magnitude' + name + ' % b, ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListVectorATimesDoubleB#',
-                append: (name: string) => 'a.' + name + ' * b, ',
+                append: (name: string) => 'a.Magnitude' + name + ' * b, ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListDoubleATimesVectorB#',
-                append: (name: string) => 'a * b.' + name + ', ',
+                append: (name: string) => 'a * b.Magnitude' + name + ', ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListVectorADividedByDoubleB#',
-                append: (name: string) => 'a.' + name + ' / b, ',
+                append: (name: string) => 'a.Magnitude' + name + ' / b, ',
                 slice: (result: string) => result.slice(0, -2)
             }, {
                 replace: '#ComponentListUnnamedDoubles#',
@@ -335,7 +341,7 @@ export class VectorGenerator {
                         convertibleText += '\t#Document:AsShared(#Quantity#, #Dimensionality#, ' + convertible.name + ')#\n'
                         convertibleText += '\tpublic ' + convertible.name + '#Dimensionality# As' + convertible.name + ' => new('
                         for (let name of getVectorComponentNames(dimensionality)) {
-                            convertibleText += name + ', '
+                            convertibleText += 'Magnitude' + name + ', '
                         }
                     }
                     convertibleText = convertibleText.slice(0, -2) + ');\n'

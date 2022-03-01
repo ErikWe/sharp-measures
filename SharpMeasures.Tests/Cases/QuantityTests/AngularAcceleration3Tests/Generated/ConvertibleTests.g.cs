@@ -15,9 +15,9 @@ public class ConvertibleTests
     {
         OrbitalAngularAcceleration3 result = quantity.AsOrbitalAngularAcceleration;
 
-        Assert.Equal(quantity.X, result.X, 2);
-        Assert.Equal(quantity.Y, result.Y, 2);
-        Assert.Equal(quantity.Z, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ, result.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -26,8 +26,8 @@ public class ConvertibleTests
     {
         SpinAngularAcceleration3 result = quantity.AsSpinAngularAcceleration;
 
-        Assert.Equal(quantity.X, result.X, 2);
-        Assert.Equal(quantity.Y, result.Y, 2);
-        Assert.Equal(quantity.Z, result.Z, 2);
+        Assert.Equal(quantity.MagnitudeX, result.MagnitudeX, 2);
+        Assert.Equal(quantity.MagnitudeY, result.MagnitudeY, 2);
+        Assert.Equal(quantity.MagnitudeZ, result.MagnitudeZ, 2);
     }
 }

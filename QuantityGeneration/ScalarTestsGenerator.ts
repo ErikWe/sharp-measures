@@ -181,7 +181,7 @@ export class ScalarTestsGenerator {
         const componentLists: { replace: string, append: (name: string) => string, slice: (text: string) => string }[] = [
             {
                 replace: '#AssertEqualVectorMethod#',
-                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude * vector.' + name +', result.' + name + ', 2);\n',
+                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude * vector.Magnitude' + name +', result.Magnitude' + name + ', 2);\n',
                 slice: (result: string) => result.slice(0, -1)
             },
             {
@@ -211,19 +211,19 @@ export class ScalarTestsGenerator {
             },
             {
                 replace: '#AssertEqualTupleMethod#',
-                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude * x, result.X, 2);\n',
+                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude * ' + lowerCase(name) + ', result.Magnitude' + name + ', 2);\n',
                 slice: (result: string) => result.slice(0, -1)
             },
             {
                 replace: '#AssertEqualVectorOperator#',
-                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude * vector.' + name + ', resultLHS.' + name + ', 2);\n' +
-                    '\t\tAssert.Equal(vector.' + name + ' * quantity.Magnitude, resultRHS.' + name + ', 2);\n\n',
+                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude * vector.Magnitude' + name + ', resultLHS.Magnitude' + name + ', 2);\n' +
+                    '\t\tAssert.Equal(vector.Magnitude' + name + ' * quantity.Magnitude, resultRHS.Magnitude' + name + ', 2);\n\n',
                 slice: (result: string) => result.slice(0, -2)
             },
             {
                 replace: '#AssertEqualTupleOperator#',
-                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude * ' + lowerCase(name) + ', resultLHS.' + name + ', 2);\n' +
-                    '\t\tAssert.Equal(' + lowerCase(name) + ' * quantity.Magnitude, resultRHS.' + name + ', 2);\n\n',
+                append: (name: string) => '\t\tAssert.Equal(quantity.Magnitude * ' + lowerCase(name) + ', resultLHS.Magnitude' + name + ', 2);\n' +
+                    '\t\tAssert.Equal(' + lowerCase(name) + ' * quantity.Magnitude, resultRHS.Magnitude' + name + ', 2);\n\n',
                 slice: (result: string) => result.slice(0, -2)
             }
         ]

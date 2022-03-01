@@ -42,9 +42,9 @@ public class ConstructorTests
     {
         Rotation3 quantity = new((x, y, z), unit);
 
-        Assert.Equal(x * unit.Angle.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.Angle.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.Angle.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.Angle.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.Angle.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.Angle.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -53,9 +53,9 @@ public class ConstructorTests
     {
         Rotation3 quantity = new(x, y, z, unit);
 
-        Assert.Equal(x * unit.Angle.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.Angle.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.Angle.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.Angle.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.Angle.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.Angle.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -64,9 +64,9 @@ public class ConstructorTests
     {
         Rotation3 quantity = new(vector, unit);
 
-        Assert.Equal(vector.X * unit.Angle.Magnitude, quantity.X, 2);
-        Assert.Equal(vector.Y * unit.Angle.Magnitude, quantity.Y, 2);
-        Assert.Equal(vector.Z * unit.Angle.Magnitude, quantity.Z, 2);
+        Assert.Equal(vector.MagnitudeX * unit.Angle.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(vector.MagnitudeY * unit.Angle.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(vector.MagnitudeZ * unit.Angle.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -75,9 +75,9 @@ public class ConstructorTests
     {
         Rotation3 quantity = new((x, y, z), unit);
 
-        Assert.Equal(x * unit.Angle.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.Angle.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.Angle.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.Angle.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.Angle.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.Angle.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -86,9 +86,9 @@ public class ConstructorTests
     {
         Rotation3 quantity = new(x, y, z, unit);
 
-        Assert.Equal(x * unit.Angle.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.Angle.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.Angle.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.Angle.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.Angle.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.Angle.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]

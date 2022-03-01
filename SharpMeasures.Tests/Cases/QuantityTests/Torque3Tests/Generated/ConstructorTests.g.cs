@@ -42,9 +42,9 @@ public class ConstructorTests
     {
         Torque3 quantity = new((x, y, z), unit);
 
-        Assert.Equal(x * unit.Torque.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.Torque.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.Torque.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.Torque.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.Torque.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.Torque.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -53,9 +53,9 @@ public class ConstructorTests
     {
         Torque3 quantity = new(x, y, z, unit);
 
-        Assert.Equal(x * unit.Torque.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.Torque.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.Torque.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.Torque.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.Torque.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.Torque.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -64,9 +64,9 @@ public class ConstructorTests
     {
         Torque3 quantity = new(vector, unit);
 
-        Assert.Equal(vector.X * unit.Torque.Magnitude, quantity.X, 2);
-        Assert.Equal(vector.Y * unit.Torque.Magnitude, quantity.Y, 2);
-        Assert.Equal(vector.Z * unit.Torque.Magnitude, quantity.Z, 2);
+        Assert.Equal(vector.MagnitudeX * unit.Torque.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(vector.MagnitudeY * unit.Torque.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(vector.MagnitudeZ * unit.Torque.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -75,9 +75,9 @@ public class ConstructorTests
     {
         Torque3 quantity = new((x, y, z), unit);
 
-        Assert.Equal(x * unit.Torque.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.Torque.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.Torque.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.Torque.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.Torque.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.Torque.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]
@@ -86,9 +86,9 @@ public class ConstructorTests
     {
         Torque3 quantity = new(x, y, z, unit);
 
-        Assert.Equal(x * unit.Torque.Magnitude, quantity.X, 2);
-        Assert.Equal(y * unit.Torque.Magnitude, quantity.Y, 2);
-        Assert.Equal(z * unit.Torque.Magnitude, quantity.Z, 2);
+        Assert.Equal(x * unit.Torque.Magnitude, quantity.MagnitudeX, 2);
+        Assert.Equal(y * unit.Torque.Magnitude, quantity.MagnitudeY, 2);
+        Assert.Equal(z * unit.Torque.Magnitude, quantity.MagnitudeZ, 2);
     }
 
     [Theory]

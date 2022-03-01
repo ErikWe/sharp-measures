@@ -10,11 +10,11 @@ public static class SquaredMagnitudeTests
     {
         Scalar result = a.SquaredMagnitude();
 
-        Assert.Equal(a.X * a.X + a.Y * a.Y + a.Z * a.Z, result.Magnitude, 2);
+        Assert.Equal(a.MagnitudeX * a.MagnitudeX + a.MagnitudeY * a.MagnitudeY + a.MagnitudeZ * a.MagnitudeZ, result.Magnitude, 2);
     }
 
     public static void SquaredComponent_ShouldBeSumOfSquares(IVector3Quantity a, IScalarQuantity result)
     {
-        Assert.Equal(a.X * a.X + a.Y * a.Y + a.Z * a.Z, result.Magnitude, 2);
+        Assert.Equal(a.MagnitudeX * a.MagnitudeX + a.MagnitudeY * a.MagnitudeY + a.MagnitudeZ * a.MagnitudeZ, result.Magnitude, 2);
     }
 }
