@@ -246,18 +246,11 @@ public readonly partial record struct SpeedSquared :
         where TProductScalarQuantity : IScalarQuantity
         where TFactorScalarQuantity : IScalarQuantity
     {
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-        else if (factor == null)
-        {
-            throw new ArgumentNullException(nameof(factor));
-        }
-        else
-        {
-            return factory(Magnitude * factor.Magnitude);
-        }
+        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
+        ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+
+        return factory(Magnitude * factor.Magnitude);
+
     }
 
     /// <inheritdoc/>
@@ -266,18 +259,10 @@ public readonly partial record struct SpeedSquared :
         where TQuotientScalarQuantity : IScalarQuantity
         where TDivisorScalarQuantity : IScalarQuantity
     {
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-        else if (divisor == null)
-        {
-            throw new ArgumentNullException(nameof(divisor));
-        }
-        else
-        {
-            return factory(Magnitude / divisor.Magnitude);
-        }
+        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
+        ArgumentNullException.ThrowIfNull(divisor, nameof(divisor));
+
+        return factory(Magnitude / divisor.Magnitude);
     }
 
     /// <summary>Multiplication of the <see cref="SpeedSquared"/> <paramref name="x"/> by the quantity <paramref name="y"/>

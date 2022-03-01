@@ -109,18 +109,10 @@ public readonly partial record struct #Quantity# :
         where TProductScalarQuantity : IScalarQuantity
         where TFactorVector#Dimensionality#Quantity : IVector#Dimensionality#Quantity
     {
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-        else if (factor == null)
-        {
-            throw new ArgumentNullException(nameof(factor));
-        }
-        else
-        {
-            return factory(Maths.Vectors.Dot(this, factor));
-        }
+        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
+        ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+
+        return factory(Maths.Vectors.Dot(this, factor));
     }
 
 #Vector3#
@@ -133,18 +125,10 @@ public readonly partial record struct #Quantity# :
         where TProductVector#Dimensionality#Quantity : IVector#Dimensionality#Quantity
         where TFactorVector#Dimensionality#Quantity : IVector#Dimensionality#Quantity
     {
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-        else if (factor == null)
-        {
-            throw new ArgumentNullException(nameof(factor));
-        }
-        else
-        {
-            return factory(Maths.Vectors.Cross(this, factor));
-        }
+        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
+        ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+
+        return factory(Maths.Vectors.Cross(this, factor));
     }
 #/Vector3#
 
@@ -211,18 +195,10 @@ public readonly partial record struct #Quantity# :
         where TProductVector#Dimensionality#Quantity : IVector#Dimensionality#Quantity
         where TFactorScalarQuantity : IScalarQuantity
     {
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-        else if (factor == null)
-        {
-            throw new ArgumentNullException(nameof(factor));
-        }
-        else
-        {
-            return factory((#ComponentListMultiplication#));
-        }
+        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
+        ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+
+        return factory((#ComponentListMultiplication#));
     }
 
     #Document:DivideGeneric(#Quantity#, #Dimensionality#)#
@@ -230,18 +206,10 @@ public readonly partial record struct #Quantity# :
         where TQuotientVector#Dimensionality#Quantity : IVector#Dimensionality#Quantity
         where TDivisorScalarQuantity : IScalarQuantity
     {
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-        else if (divisor == null)
-        {
-            throw new ArgumentNullException(nameof(divisor));
-        }
-        else
-        {
-            return factory((#ComponentListDivision#));
-        }
+        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
+        ArgumentNullException.ThrowIfNull(divisor, nameof(divisor));
+
+        return factory((#ComponentListDivision#));
     }
 
     #Document:MultiplyIScalarLHS(#Quantity#, #Dimensionality#)#

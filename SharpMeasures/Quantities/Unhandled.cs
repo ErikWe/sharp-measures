@@ -184,18 +184,10 @@ public readonly record struct Unhandled :
         where TProductScalarQuantity : IScalarQuantity
         where TFactorScalarQuantity : IScalarQuantity
     {
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-        else if (factor == null)
-        {
-            throw new ArgumentNullException(nameof(factor));
-        }
-        else
-        {
-            return factory(Magnitude * factor.Magnitude);
-        }
+        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
+        ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+
+        return factory(Magnitude * factor.Magnitude);
     }
 
     /// <summary>Multiplies the <see cref="Unhandled"/> quantity by <paramref name="factor"/> of type <typeparamref name="TFactorScalarQuantity"/>.</summary>
@@ -204,14 +196,9 @@ public readonly record struct Unhandled :
     /// <exception cref="ArgumentNullException"/>
     public Unhandled Multiply<TFactorScalarQuantity>(TFactorScalarQuantity factor) where TFactorScalarQuantity : IScalarQuantity
     {
-        if (factor == null)
-        {
-            throw new ArgumentNullException(nameof(factor));
-        }
-        else
-        {
-            return new(Magnitude * factor.Magnitude);
-        }
+        ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+
+        return new(Magnitude * factor.Magnitude);
     }
 
     /// <inheritdoc/>
@@ -220,18 +207,10 @@ public readonly record struct Unhandled :
         where TQuotientScalarQuantity : IScalarQuantity
         where TDivisorScalarQuantity : IScalarQuantity
     {
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-        else if (divisor == null)
-        {
-            throw new ArgumentNullException(nameof(divisor));
-        }
-        else
-        {
-            return factory(Magnitude / divisor.Magnitude);
-        }
+        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
+        ArgumentNullException.ThrowIfNull(divisor, nameof(divisor));
+
+        return factory(Magnitude / divisor.Magnitude);
     }
 
     /// <summary>Divides the <see cref="Unhandled"/> quantity by <paramref name="divisor"/> of type <typeparamref name="TFactorScalarQuantity"/>.</summary>
@@ -240,14 +219,9 @@ public readonly record struct Unhandled :
     /// <exception cref="ArgumentNullException"/>
     public Unhandled Divide<TFactorScalarQuantity>(TFactorScalarQuantity divisor) where TFactorScalarQuantity : IScalarQuantity
     {
-        if (divisor == null)
-        {
-            throw new ArgumentNullException(nameof(divisor));
-        }
-        else
-        {
-            return new(Magnitude / divisor.Magnitude);
-        }
+        ArgumentNullException.ThrowIfNull(divisor, nameof(divisor));
+
+        return new(Magnitude / divisor.Magnitude);
     }
 
     /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="x"/> by the quantity <paramref name="y"/>.</summary>

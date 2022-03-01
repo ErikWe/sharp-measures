@@ -103,18 +103,10 @@ public readonly record struct Unhandled3 :
         where TProductScalarQuantity : IScalarQuantity
         where TFactorVector3Quantity : IVector3Quantity
     {
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-        else if (factor == null)
-        {
-            throw new ArgumentNullException(nameof(factor));
-        }
-        else
-        {
-            return factory(Maths.Vectors.Dot(this, factor));
-        }
+        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
+        ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+
+        return factory(Maths.Vectors.Dot(this, factor));
     }
     /// <summary>Performs dot-multiplication of the <see cref="Unhandled3"/> by <paramref name="factor"/>, resulting in an
     /// <see cref="Unhandled"/> scalar quantity.</summary>
@@ -124,14 +116,9 @@ public readonly record struct Unhandled3 :
     public Unhandled Dot<TFactorVector3Quantity>(TFactorVector3Quantity factor)
         where TFactorVector3Quantity : IVector3Quantity
     {
-        if (factor == null)
-        {
-            throw new ArgumentNullException(nameof(factor));
-        }
-        else
-        {
-            return new(Maths.Vectors.Dot(this, factor));
-        }
+        ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+
+        return new(Maths.Vectors.Dot(this, factor));
     }
 
     /// <summary>Performs cross-multiplication of the <see cref="Unhandled3"/> by <paramref name="factor"/>, resulting in a
@@ -148,18 +135,10 @@ public readonly record struct Unhandled3 :
         where TProductVector3Quantity : IVector3Quantity
         where TFactorVector3Quantity : IVector3Quantity
     {
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-        else if (factor == null)
-        {
-            throw new ArgumentNullException(nameof(factor));
-        }
-        else
-        {
-            return factory(Maths.Vectors.Cross(this, factor));
-        }
+        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
+        ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+
+        return factory(Maths.Vectors.Cross(this, factor));
     }
     /// <summary>Performs cross-multiplication of the <see cref="Unhandled3"/> by <paramref name="factor"/>, resulting in an <see cref="Unhandled3"/>.</summary>
     /// <typeparam name="TFactorVector3Quantity">The three-dimensional vector quantity by which the original <see cref="Unhandled3"/> may be dot-multiplied.</typeparam>
@@ -168,14 +147,9 @@ public readonly record struct Unhandled3 :
     public Unhandled3 Cross<TFactorVector3Quantity>(TFactorVector3Quantity factor)
         where TFactorVector3Quantity : IVector3Quantity
     {
-        if (factor == null)
-        {
-            throw new ArgumentNullException(nameof(factor));
-        }
-        else
-        {
-            return new(Maths.Vectors.Cross(this, factor));
-        }
+        ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+
+        return new(Maths.Vectors.Cross(this, factor));
     }
 
     /// <summary>Produces a formatted string from the magnitudes of the components of the <see cref="Unhandled3"/>, followed by the symbol [undef].</summary>
@@ -293,18 +267,10 @@ public readonly record struct Unhandled3 :
         where TProductVector3Quantity : IVector3Quantity
         where TFactorScalarQuantity : IScalarQuantity
     {
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-        else if (factor == null)
-        {
-            throw new ArgumentNullException(nameof(factor));
-        }
-        else
-        {
-            return factory((X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude));
-        }
+        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
+        ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+
+        return factory((X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude));
     }
     /// <summary>Multiplies the <see cref="Unhandled3"/> by <paramref name="factor"/> of type <typeparamref name="TFactorScalarQuantity"/>.</summary>
     /// <typeparam name="TFactorScalarQuantity">The type of the quantity by which this <see cref="Unhandled3"/> is multiplied.</typeparam>
@@ -313,14 +279,9 @@ public readonly record struct Unhandled3 :
     public Unhandled3 Multiply<TFactorScalarQuantity>(TFactorScalarQuantity factor)
         where TFactorScalarQuantity : IScalarQuantity
     {
-        if (factor == null)
-        {
-            throw new ArgumentNullException(nameof(factor));
-        }
-        else
-        {
-            return new(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
-        }
+        ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+
+        return new(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
     }
 
     /// <inheritdoc/>
@@ -329,18 +290,10 @@ public readonly record struct Unhandled3 :
         where TQuotientVector3Quantity : IVector3Quantity
         where TDivisorScalarQuantity : IScalarQuantity
     {
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-        else if (divisor == null)
-        {
-            throw new ArgumentNullException(nameof(divisor));
-        }
-        else
-        {
-            return factory((X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude));
-        }
+        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
+        ArgumentNullException.ThrowIfNull(divisor, nameof(divisor));
+
+        return factory((X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude));
     }
     /// <summary>Divides the <see cref="Unhandled3"/> by <paramref name="divisor"/> of type <typeparamref name="TDivisorQuantity"/>.</summary>
     /// <typeparam name="TDivisorQuantity">The type of the quantity by which this <see cref="Unhandled3"/> quantity is divided.</typeparam>
@@ -349,14 +302,9 @@ public readonly record struct Unhandled3 :
     public Unhandled3 Divide<TDivisorQuantity>(TDivisorQuantity divisor)
         where TDivisorQuantity : IScalarQuantity
     {
-        if (divisor == null)
-        {
-            throw new ArgumentNullException(nameof(divisor));
-        }
-        else
-        {
-            return new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
-        }
+        ArgumentNullException.ThrowIfNull(divisor, nameof(divisor));
+
+        return new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
     }
 
     /// <summary>Multiplication of the <see cref="Unhandled3"/> <paramref name="a"/> by the quantity <paramref name="b"/>

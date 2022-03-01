@@ -203,18 +203,10 @@ public readonly partial record struct OrbitalAngularAcceleration3 :
         where TProductScalarQuantity : IScalarQuantity
         where TFactorVector3Quantity : IVector3Quantity
     {
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-        else if (factor == null)
-        {
-            throw new ArgumentNullException(nameof(factor));
-        }
-        else
-        {
-            return factory(Maths.Vectors.Dot(this, factor));
-        }
+        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
+        ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+
+        return factory(Maths.Vectors.Dot(this, factor));
     }
 
     /// <summary>Performs cross-multiplication of the <see cref="OrbitalAngularAcceleration3"/> by <paramref name="factor"/>, resulting in a
@@ -231,18 +223,10 @@ public readonly partial record struct OrbitalAngularAcceleration3 :
         where TProductVector3Quantity : IVector3Quantity
         where TFactorVector3Quantity : IVector3Quantity
     {
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-        else if (factor == null)
-        {
-            throw new ArgumentNullException(nameof(factor));
-        }
-        else
-        {
-            return factory(Maths.Vectors.Cross(this, factor));
-        }
+        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
+        ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+
+        return factory(Maths.Vectors.Cross(this, factor));
     }
 
     /// <summary>Produces a formatted string from the magnitudes of the components of the <see cref="OrbitalAngularAcceleration3"/> in the default unit
@@ -357,18 +341,10 @@ public readonly partial record struct OrbitalAngularAcceleration3 :
         where TProductVector3Quantity : IVector3Quantity
         where TFactorScalarQuantity : IScalarQuantity
     {
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-        else if (factor == null)
-        {
-            throw new ArgumentNullException(nameof(factor));
-        }
-        else
-        {
-            return factory((X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude));
-        }
+        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
+        ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+
+        return factory((X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude));
     }
 
     /// <inheritdoc/>
@@ -377,18 +353,10 @@ public readonly partial record struct OrbitalAngularAcceleration3 :
         where TQuotientVector3Quantity : IVector3Quantity
         where TDivisorScalarQuantity : IScalarQuantity
     {
-        if (factory == null)
-        {
-            throw new ArgumentNullException(nameof(factory));
-        }
-        else if (divisor == null)
-        {
-            throw new ArgumentNullException(nameof(divisor));
-        }
-        else
-        {
-            return factory((X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude));
-        }
+        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
+        ArgumentNullException.ThrowIfNull(divisor, nameof(divisor));
+
+        return factory((X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude));
     }
 
     /// <summary>Multiplication of the <see cref="OrbitalAngularAcceleration3"/> <paramref name="a"/> by the quantity <paramref name="b"/>
