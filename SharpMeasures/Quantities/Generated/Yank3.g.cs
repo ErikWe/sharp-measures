@@ -15,9 +15,7 @@ using System.Numerics;
 /// Instances can also be produced by combining other quantities, either through mathematical operators or using overloads of the static method 'From'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
-/// <code>
-/// <see cref="Yank3"/> a = (3, 5, 7) * <see cref="Yank.OneNewtonPerSecond"/>;
-/// </code>
+/// <code><see cref="Yank3"/> a = (3, 5, 7) * <see cref="Yank.OneNewtonPerSecond"/>;</code>
 /// </item>
 /// <item>
 /// <code>

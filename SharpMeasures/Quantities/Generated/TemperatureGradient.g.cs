@@ -14,14 +14,10 @@ using System;
 /// or using overloads of the static method 'From'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
-/// <code>
-/// <see cref="TemperatureGradient"/> a = 3 * <see cref="TemperatureGradient.OneKelvinPerMetre"/>;
-/// </code>
+/// <code><see cref="TemperatureGradient"/> a = 3 * <see cref="TemperatureGradient.OneKelvinPerMetre"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="TemperatureGradient"/> d = <see cref="TemperatureGradient.From(TemperatureDifference, Distance)"/>;
-/// </code>
+/// <code><see cref="TemperatureGradient"/> d = <see cref="TemperatureGradient.From(TemperatureDifference, Distance)"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="TemperatureGradient"/> can be retrieved in the desired <see cref="UnitOfTemperatureGradient"/> using pre-defined properties,

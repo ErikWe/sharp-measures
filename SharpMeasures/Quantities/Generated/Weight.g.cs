@@ -16,14 +16,10 @@ using System;
 /// instance-methods of the associated quantity - typically prefixed with 'As'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
-/// <code>
-/// <see cref="Weight"/> a = 3 * <see cref="Weight.OneNewton"/>;
-/// </code>
+/// <code><see cref="Weight"/> a = 3 * <see cref="Weight.OneNewton"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Weight"/> d = <see cref="Weight.From(Mass, GravitationalAcceleration)"/>;
-/// </code>
+/// <code><see cref="Weight"/> d = <see cref="Weight.From(Mass, GravitationalAcceleration)"/>;</code>
 /// </item>
 /// <item>
 /// <code>

@@ -15,14 +15,10 @@ using System;
 /// or using overloads of the static method 'From'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
-/// <code>
-/// <see cref="SpatialFrequency"/> a = 3 * <see cref="SpatialFrequency.OnePerMetre"/>;
-/// </code>
+/// <code><see cref="SpatialFrequency"/> a = 3 * <see cref="SpatialFrequency.OnePerMetre"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="SpatialFrequency"/> d = <see cref="SpatialFrequency.From(LinearDensity, Mass)"/>;
-/// </code>
+/// <code><see cref="SpatialFrequency"/> d = <see cref="SpatialFrequency.From(LinearDensity, Mass)"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="SpatialFrequency"/> can be retrieved in the desired <see cref="UnitOfSpatialFrequency"/> using pre-defined properties,

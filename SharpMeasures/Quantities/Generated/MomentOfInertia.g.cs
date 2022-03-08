@@ -15,14 +15,10 @@ using System;
 /// or using overloads of the static method 'From'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
-/// <code>
-/// <see cref="MomentOfInertia"/> a = 3 * <see cref="MomentOfInertia.OneKilogramSquareMetre"/>;
-/// </code>
+/// <code><see cref="MomentOfInertia"/> a = 3 * <see cref="MomentOfInertia.OneKilogramSquareMetre"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="MomentOfInertia"/> d = <see cref="MomentOfInertia.From(AngularMomentum, AngularSpeed)"/>;
-/// </code>
+/// <code><see cref="MomentOfInertia"/> d = <see cref="MomentOfInertia.From(AngularMomentum, AngularSpeed)"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="MomentOfInertia"/> can be retrieved in the desired <see cref="UnitOfMomentOfInertia"/> using pre-defined properties,

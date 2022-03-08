@@ -4,9 +4,7 @@
 /// Instances can also be produced by combining other quantities, either through mathematical operators or using overloads of the static method 'From'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
-/// <code>
-/// <see cref="#Param:quantity#"/> a = #Document:TupleExample(dimensionality = #Param:dimensionality#)# * <see cref="#Param:component#.One#Param:singularBases[%0]#"/>;
-/// </code>
+/// <code><see cref="#Param:quantity#"/> a = #Document:TupleExample(dimensionality = #Param:dimensionality#)# * <see cref="#Param:component#.One#Param:singularBases[%0]#"/>;</code>
 /// </item>
 /// <item>
 /// <code>
@@ -25,9 +23,7 @@
 /// Lastly, instances can be constructed from quantities sharing the same unit, using instance-methods of the associated quantity - typically prefixed with 'As'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
-/// <code>
-/// <see cref="#Param:quantity#"/> a = #Document:TupleExample(dimensionality = #Param:dimensionality#)# * <see cref="#Param:component#.One#Param:singularBases[%0]#"/>;
-/// </code>
+/// <code><see cref="#Param:quantity#"/> a = #Document:TupleExample(dimensionality = #Param:dimensionality#)# * <see cref="#Param:component#.One#Param:singularBases[%0]#"/>;</code>
 /// </item>
 /// <item>
 /// <code>

@@ -16,9 +16,7 @@ using System.Numerics;
 /// Lastly, instances can be constructed from quantities sharing the same unit, using instance-methods of the associated quantity - typically prefixed with 'As'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
-/// <code>
-/// <see cref="OrbitalAngularVelocity3"/> a = (3, 5, 7) * <see cref="OrbitalAngularSpeed.OneRadianPerSecond"/>;
-/// </code>
+/// <code><see cref="OrbitalAngularVelocity3"/> a = (3, 5, 7) * <see cref="OrbitalAngularSpeed.OneRadianPerSecond"/>;</code>
 /// </item>
 /// <item>
 /// <code>

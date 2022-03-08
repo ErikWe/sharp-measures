@@ -14,14 +14,10 @@ using System;
 /// or using overloads of the static method 'From'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
-/// <code>
-/// <see cref="Absement"/> a = 3 * <see cref="Absement.OneMetreSecond"/>;
-/// </code>
+/// <code><see cref="Absement"/> a = 3 * <see cref="Absement.OneMetreSecond"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Absement"/> d = <see cref="Absement.From(Distance, Time)"/>;
-/// </code>
+/// <code><see cref="Absement"/> d = <see cref="Absement.From(Distance, Time)"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="Absement"/> can be retrieved in the desired <see cref="UnitOfAbsement"/> using pre-defined properties,

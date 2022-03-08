@@ -14,14 +14,10 @@ using System;
 /// or using overloads of the static method 'From'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
-/// <code>
-/// <see cref="Yank"/> a = 3 * <see cref="Yank.OneNewtonPerSecond"/>;
-/// </code>
+/// <code><see cref="Yank"/> a = 3 * <see cref="Yank.OneNewtonPerSecond"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Yank"/> d = <see cref="Yank.From(Force, Time)"/>;
-/// </code>
+/// <code><see cref="Yank"/> d = <see cref="Yank.From(Force, Time)"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="Yank"/> can be retrieved in the desired <see cref="UnitOfYank"/> using pre-defined properties,

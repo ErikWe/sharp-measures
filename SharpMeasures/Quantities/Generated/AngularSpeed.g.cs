@@ -14,14 +14,10 @@ using System;
 /// or using overloads of the static method 'From'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
-/// <code>
-/// <see cref="AngularSpeed"/> a = 3 * <see cref="AngularSpeed.OneRadianPerSecond"/>;
-/// </code>
+/// <code><see cref="AngularSpeed"/> a = 3 * <see cref="AngularSpeed.OneRadianPerSecond"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="AngularSpeed"/> d = <see cref="AngularSpeed.From(Angle, Time)"/>;
-/// </code>
+/// <code><see cref="AngularSpeed"/> d = <see cref="AngularSpeed.From(Angle, Time)"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="AngularSpeed"/> can be retrieved in the desired <see cref="UnitOfAngularVelocity"/> using pre-defined properties,

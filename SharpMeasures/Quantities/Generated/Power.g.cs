@@ -14,14 +14,10 @@ using System;
 /// or using overloads of the static method 'From'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
-/// <code>
-/// <see cref="Power"/> a = 3 * <see cref="Power.OneWatt"/>;
-/// </code>
+/// <code><see cref="Power"/> a = 3 * <see cref="Power.OneWatt"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Power"/> d = <see cref="Power.From(Work, Time)"/>;
-/// </code>
+/// <code><see cref="Power"/> d = <see cref="Power.From(Work, Time)"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="Power"/> can be retrieved in the desired <see cref="UnitOfPower"/> using pre-defined properties,

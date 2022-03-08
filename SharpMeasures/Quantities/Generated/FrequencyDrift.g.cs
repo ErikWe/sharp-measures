@@ -14,14 +14,10 @@ using System;
 /// or using overloads of the static method 'From'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
-/// <code>
-/// <see cref="FrequencyDrift"/> a = 3 * <see cref="FrequencyDrift.OneHertzPerSecond"/>;
-/// </code>
+/// <code><see cref="FrequencyDrift"/> a = 3 * <see cref="FrequencyDrift.OneHertzPerSecond"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="FrequencyDrift"/> d = <see cref="FrequencyDrift.From(Frequency, Time)"/>;
-/// </code>
+/// <code><see cref="FrequencyDrift"/> d = <see cref="FrequencyDrift.From(Frequency, Time)"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="FrequencyDrift"/> can be retrieved in the desired <see cref="UnitOfFrequencyDrift"/> using pre-defined properties,

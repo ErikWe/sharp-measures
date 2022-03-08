@@ -5,14 +5,10 @@
 /// or using overloads of the static method 'From'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
-/// <code>
-/// <see cref="#Param:quantity#"/> a = 3 * <see cref="#Param:quantity#.One#Param:singularBases[%0]#"/>;
-/// </code>
+/// <code><see cref="#Param:quantity#"/> a = 3 * <see cref="#Param:quantity#.One#Param:singularBases[%0]#"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// #Document:ExampleDerivedMethod(quantity = #Param:quantity#, variable = d)#
-/// </code>
+/// <code>#Document:ExampleDerivedMethod(quantity = #Param:quantity#, variable = d)#</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="#Param:quantity#"/> can be retrieved in the desired <see cref="#Param:unitName#"/> using pre-defined properties,
@@ -28,14 +24,10 @@
 /// instance-methods of the associated quantity - typically prefixed with 'As'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
-/// <code>
-/// <see cref="#Param:quantity#"/> a = 3 * <see cref="#Param:quantity#.One#Param:singularBases[%0]#"/>;
-/// </code>
+/// <code><see cref="#Param:quantity#"/> a = 3 * <see cref="#Param:quantity#.One#Param:singularBases[%0]#"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// #Document:ExampleDerivedMethod(quantity = #Param:quantity#, variable = d)#
-/// </code>
+/// <code>#Document:ExampleDerivedMethod(quantity = #Param:quantity#, variable = d)#</code>
 /// </item>
 /// <item>
 /// <code>

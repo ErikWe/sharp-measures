@@ -14,14 +14,10 @@ using System;
 /// or using overloads of the static method 'From'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
-/// <code>
-/// <see cref="Pressure"/> a = 3 * <see cref="Pressure.OnePascal"/>;
-/// </code>
+/// <code><see cref="Pressure"/> a = 3 * <see cref="Pressure.OnePascal"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Pressure"/> d = <see cref="Pressure.From(Force, Area)"/>;
-/// </code>
+/// <code><see cref="Pressure"/> d = <see cref="Pressure.From(Force, Area)"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="Pressure"/> can be retrieved in the desired <see cref="UnitOfPressure"/> using pre-defined properties,
