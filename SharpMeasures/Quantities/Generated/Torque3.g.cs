@@ -18,9 +18,7 @@ using System.Numerics;
 /// <code><see cref="Torque3"/> a = (3, 5, 7) * <see cref="Torque.OneNewtonMetre"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Torque3"/> d = <see cref="Torque3.From(Displacement3, Force3)"/>;
-/// </code>
+/// <code><see cref="Torque3"/> d = <see cref="Torque3.From(Displacement3, Force3)"/>; </code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfTorque"/> using pre-defined properties, such as <see cref="NewtonMetres"/>.

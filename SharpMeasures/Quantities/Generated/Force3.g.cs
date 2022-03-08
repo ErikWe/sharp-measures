@@ -19,14 +19,10 @@ using System.Numerics;
 /// <code><see cref="Force3"/> a = (3, 5, 7) * <see cref="Force.OneNewton"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Force3"/> d = <see cref="Force3.From(Mass, Acceleration3)"/>;
-/// </code>
+/// <code><see cref="Force3"/> d = <see cref="Force3.From(Mass, Acceleration3)"/>; </code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Force3"/> e = <see cref="Weight3.AsForce"/>;
-/// </code>
+/// <code><see cref="Force3"/> e = <see cref="Weight3.AsForce"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfForce"/> using pre-defined properties, such as <see cref="Newtons"/>./// </para>

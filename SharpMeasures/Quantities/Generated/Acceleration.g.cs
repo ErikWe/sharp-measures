@@ -21,9 +21,7 @@ using System;
 /// <code><see cref="Acceleration"/> d = <see cref="Acceleration.From(Speed, Time)"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Acceleration"/> e = <see cref="GravitationalAcceleration.AsAcceleration"/>;
-/// </code>
+/// <code><see cref="Acceleration"/> e = <see cref="GravitationalAcceleration.AsAcceleration"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="Acceleration"/> can be retrieved in the desired <see cref="UnitOfAcceleration"/> using pre-defined properties,

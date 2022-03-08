@@ -19,14 +19,10 @@ using System.Numerics;
 /// <code><see cref="Momentum3"/> a = (3, 5, 7) * <see cref="Momentum.OneKilogramMetrePerSecond"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Momentum3"/> d = <see cref="Momentum3.From(Mass, Velocity3)"/>;
-/// </code>
+/// <code><see cref="Momentum3"/> d = <see cref="Momentum3.From(Mass, Velocity3)"/>; </code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Momentum3"/> e = <see cref="Impulse3.AsMomentum"/>;
-/// </code>
+/// <code><see cref="Momentum3"/> e = <see cref="Impulse3.AsMomentum"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfMomentum"/> using pre-defined properties, such as <see cref="KilogramMetresPerSecond"/>./// </para>

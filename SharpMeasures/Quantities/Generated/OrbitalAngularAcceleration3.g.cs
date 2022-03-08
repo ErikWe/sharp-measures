@@ -19,14 +19,10 @@ using System.Numerics;
 /// <code><see cref="OrbitalAngularAcceleration3"/> a = (3, 5, 7) * <see cref="OrbitalAngularAcceleration.OneRadianPerSecondSquared"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="OrbitalAngularAcceleration3"/> d = <see cref="OrbitalAngularAcceleration3.From(OrbitalAngularVelocity3, Time)"/>;
-/// </code>
+/// <code><see cref="OrbitalAngularAcceleration3"/> d = <see cref="OrbitalAngularAcceleration3.From(OrbitalAngularVelocity3, Time)"/>; </code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="OrbitalAngularAcceleration3"/> e = <see cref="AngularAcceleration3.AsOrbitalAngularAcceleration"/>;
-/// </code>
+/// <code><see cref="OrbitalAngularAcceleration3"/> e = <see cref="AngularAcceleration3.AsOrbitalAngularAcceleration"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfAngularAcceleration"/> using pre-defined properties, such as <see cref="RadiansPerSecondSquared"/>./// </para>

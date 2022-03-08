@@ -18,9 +18,7 @@ using System.Numerics;
 /// <code><see cref="SpecificAngularMomentum3"/> a = (3, 5, 7) * <see cref="SpecificAngularMomentum.OneSquareMetrePerSecond"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="SpecificAngularMomentum3"/> d = <see cref="SpecificAngularMomentum3.From(AngularMomentum3, Mass)"/>;
-/// </code>
+/// <code><see cref="SpecificAngularMomentum3"/> d = <see cref="SpecificAngularMomentum3.From(AngularMomentum3, Mass)"/>; </code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfSpecificAngularMomentum"/> using pre-defined properties, such as <see cref="SquareMetresPerSecond"/>.

@@ -17,9 +17,7 @@ using System.Numerics;
 /// <code><see cref="Rotation3"/> a = (3, 5, 7) * <see cref="Angle.OneRadian"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Rotation3"/> d = <see cref="Rotation3.From(AngularVelocity3, Time)"/>;
-/// </code>
+/// <code><see cref="Rotation3"/> d = <see cref="Rotation3.From(AngularVelocity3, Time)"/>; </code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfAngle"/> using pre-defined properties, such as <see cref="Radians"/>.

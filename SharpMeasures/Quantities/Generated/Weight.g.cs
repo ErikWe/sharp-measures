@@ -22,9 +22,7 @@ using System;
 /// <code><see cref="Weight"/> d = <see cref="Weight.From(Mass, GravitationalAcceleration)"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Weight"/> e = <see cref="Force.AsWeight"/>;
-/// </code>
+/// <code><see cref="Weight"/> e = <see cref="Force.AsWeight"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="Weight"/> can be retrieved in the desired <see cref="UnitOfForce"/> using pre-defined properties,

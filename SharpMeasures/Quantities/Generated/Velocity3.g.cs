@@ -18,9 +18,7 @@ using System.Numerics;
 /// <code><see cref="Velocity3"/> a = (3, 5, 7) * <see cref="Speed.OneMetrePerSecond"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Velocity3"/> d = <see cref="Velocity3.From(Displacement3, Time)"/>;
-/// </code>
+/// <code><see cref="Velocity3"/> d = <see cref="Velocity3.From(Displacement3, Time)"/>; </code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfVelocity"/> using pre-defined properties, such as <see cref="MetresPerSecond"/>.

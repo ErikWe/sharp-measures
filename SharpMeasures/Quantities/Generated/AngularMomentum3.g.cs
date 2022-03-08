@@ -18,14 +18,10 @@ using System.Numerics;
 /// <code><see cref="AngularMomentum3"/> a = (3, 5, 7) * <see cref="AngularMomentum.OneKilogramSquareMetrePerSecond"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="AngularMomentum3"/> d = <see cref="AngularMomentum3.From(MomentOfInertia, AngularVelocity3)"/>;
-/// </code>
+/// <code><see cref="AngularMomentum3"/> d = <see cref="AngularMomentum3.From(MomentOfInertia, AngularVelocity3)"/>; </code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="AngularMomentum3"/> e = <see cref="SpinAngularMomentum3.AsAngularMomentum"/>;
-/// </code>
+/// <code><see cref="AngularMomentum3"/> e = <see cref="SpinAngularMomentum3.AsAngularMomentum"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfAngularMomentum"/> using pre-defined properties, such as <see cref="KilogramSquareMetresPerSecond"/>./// </para>

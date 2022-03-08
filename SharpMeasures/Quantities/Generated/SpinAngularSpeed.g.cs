@@ -21,9 +21,7 @@ using System;
 /// <code><see cref="SpinAngularSpeed"/> d = <see cref="SpinAngularSpeed.From(Angle, Time)"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="SpinAngularSpeed"/> e = <see cref="AngularSpeed.AsSpinAngularSpeed"/>;
-/// </code>
+/// <code><see cref="SpinAngularSpeed"/> e = <see cref="AngularSpeed.AsSpinAngularSpeed"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="SpinAngularSpeed"/> can be retrieved in the desired <see cref="UnitOfAngularVelocity"/> using pre-defined properties,

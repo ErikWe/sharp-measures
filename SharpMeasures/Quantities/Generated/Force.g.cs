@@ -21,9 +21,7 @@ using System;
 /// <code><see cref="Force"/> d = <see cref="Force.From(Mass, Acceleration)"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Force"/> e = <see cref="Weight.AsForce"/>;
-/// </code>
+/// <code><see cref="Force"/> e = <see cref="Weight.AsForce"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="Force"/> can be retrieved in the desired <see cref="UnitOfForce"/> using pre-defined properties,

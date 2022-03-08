@@ -19,14 +19,10 @@ using System.Numerics;
 /// <code><see cref="Impulse3"/> a = (3, 5, 7) * <see cref="Impulse.OneNewtonSecond"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Impulse3"/> d = <see cref="Impulse3.From(Force3, Time)"/>;
-/// </code>
+/// <code><see cref="Impulse3"/> d = <see cref="Impulse3.From(Force3, Time)"/>; </code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Impulse3"/> e = <see cref="Momentum3.AsImpulse"/>;
-/// </code>
+/// <code><see cref="Impulse3"/> e = <see cref="Momentum3.AsImpulse"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfImpulse"/> using pre-defined properties, such as <see cref="NewtonSeconds"/>./// </para>

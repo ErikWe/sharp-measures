@@ -19,14 +19,10 @@ using System.Numerics;
 /// <code><see cref="Displacement3"/> a = (3, 5, 7) * <see cref="Length.OneMetre"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Displacement3"/> d = <see cref="Displacement3.From(Velocity3, Time)"/>;
-/// </code>
+/// <code><see cref="Displacement3"/> d = <see cref="Displacement3.From(Velocity3, Time)"/>; </code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Displacement3"/> e = <see cref="Position3.AsDisplacement"/>;
-/// </code>
+/// <code><see cref="Displacement3"/> e = <see cref="Position3.AsDisplacement"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfLength"/> using pre-defined properties, such as <see cref="Metres"/>./// </para>

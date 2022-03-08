@@ -22,9 +22,7 @@ using System;
 /// <code><see cref="OrbitalAngularAcceleration"/> d = <see cref="OrbitalAngularAcceleration.From(OrbitalAngularSpeed, Time)"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="OrbitalAngularAcceleration"/> e = <see cref="AngularAcceleration.AsOrbitalAngularAcceleration"/>;
-/// </code>
+/// <code><see cref="OrbitalAngularAcceleration"/> e = <see cref="AngularAcceleration.AsOrbitalAngularAcceleration"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="OrbitalAngularAcceleration"/> can be retrieved in the desired <see cref="UnitOfAngularAcceleration"/> using pre-defined properties,

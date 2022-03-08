@@ -18,9 +18,7 @@ using System.Numerics;
 /// <code><see cref="GravitationalAcceleration3"/> a = (3, 5, 7) * <see cref="GravitationalAcceleration.OneMetrePerSecondSquared"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="GravitationalAcceleration3"/> d = <see cref="GravitationalAcceleration3.From(Weight3, Mass)"/>;
-/// </code>
+/// <code><see cref="GravitationalAcceleration3"/> d = <see cref="GravitationalAcceleration3.From(Weight3, Mass)"/>; </code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfAcceleration"/> using pre-defined properties, such as <see cref="MetresPerSecondSquared"/>.

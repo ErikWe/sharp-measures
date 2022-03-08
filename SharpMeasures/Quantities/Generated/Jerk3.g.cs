@@ -18,9 +18,7 @@ using System.Numerics;
 /// <code><see cref="Jerk3"/> a = (3, 5, 7) * <see cref="Jerk.OneMetrePerSecondCubed"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Jerk3"/> d = <see cref="Jerk3.From(Acceleration3, Time)"/>;
-/// </code>
+/// <code><see cref="Jerk3"/> d = <see cref="Jerk3.From(Acceleration3, Time)"/>; </code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfJerk"/> using pre-defined properties, such as <see cref="MetresPerSecondCubed"/>.

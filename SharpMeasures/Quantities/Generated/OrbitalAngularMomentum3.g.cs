@@ -19,14 +19,10 @@ using System.Numerics;
 /// <code><see cref="OrbitalAngularMomentum3"/> a = (3, 5, 7) * <see cref="OrbitalAngularMomentum.OneKilogramSquareMetrePerSecond"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="OrbitalAngularMomentum3"/> d = <see cref="OrbitalAngularMomentum3.From(MomentOfInertia, OrbitalAngularVelocity3)"/>;
-/// </code>
+/// <code><see cref="OrbitalAngularMomentum3"/> d = <see cref="OrbitalAngularMomentum3.From(MomentOfInertia, OrbitalAngularVelocity3)"/>; </code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="OrbitalAngularMomentum3"/> e = <see cref="AngularMomentum3.AsOrbitalAngularMomentum"/>;
-/// </code>
+/// <code><see cref="OrbitalAngularMomentum3"/> e = <see cref="AngularMomentum3.AsOrbitalAngularMomentum"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfAngularMomentum"/> using pre-defined properties, such as <see cref="KilogramSquareMetresPerSecond"/>./// </para>

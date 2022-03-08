@@ -19,14 +19,10 @@ using System.Numerics;
 /// <code><see cref="SpinAngularAcceleration3"/> a = (3, 5, 7) * <see cref="SpinAngularAcceleration.OneRadianPerSecondSquared"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="SpinAngularAcceleration3"/> d = <see cref="SpinAngularAcceleration3.From(SpinAngularVelocity3, Time)"/>;
-/// </code>
+/// <code><see cref="SpinAngularAcceleration3"/> d = <see cref="SpinAngularAcceleration3.From(SpinAngularVelocity3, Time)"/>; </code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="SpinAngularAcceleration3"/> e = <see cref="AngularAcceleration3.AsSpinAngularAcceleration"/>;
-/// </code>
+/// <code><see cref="SpinAngularAcceleration3"/> e = <see cref="AngularAcceleration3.AsSpinAngularAcceleration"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfAngularAcceleration"/> using pre-defined properties, such as <see cref="RadiansPerSecondSquared"/>./// </para>

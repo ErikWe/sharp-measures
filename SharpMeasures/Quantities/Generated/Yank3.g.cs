@@ -18,9 +18,7 @@ using System.Numerics;
 /// <code><see cref="Yank3"/> a = (3, 5, 7) * <see cref="Yank.OneNewtonPerSecond"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Yank3"/> d = <see cref="Yank3.From(Force3, Time)"/>;
-/// </code>
+/// <code><see cref="Yank3"/> d = <see cref="Yank3.From(Force3, Time)"/>; </code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfYank"/> using pre-defined properties, such as <see cref="NewtonsPerSecond"/>.
