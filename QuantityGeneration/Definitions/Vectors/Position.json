@@ -1,7 +1,7 @@
 {
     "type": "Vector",
     "name": "Position",
-    "component": "Length",
+    "component": "Distance",
     "dimensionalities": [3],
     "unit": "[component]",
     "convertible": [

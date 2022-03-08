@@ -33,7 +33,7 @@ public class MagnitudeTests
     [ClassData(typeof(Position3Dataset))]
     public void Magnitude_ShouldBeSquareRootOfSumOfSquares(Position3 quantity)
     {
-        Length magnitude = quantity.Magnitude();
+        Distance magnitude = quantity.Magnitude();
 
         Assert.Equal(Math.Sqrt(quantity.MagnitudeX * quantity.MagnitudeX + quantity.MagnitudeY * quantity.MagnitudeY + quantity.MagnitudeZ * quantity.MagnitudeZ), magnitude.Magnitude, 2);
     }

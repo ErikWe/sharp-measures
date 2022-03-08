@@ -19,8 +19,8 @@ public class ConstructorTests
     }
 
     [Theory]
-    [ClassData(typeof(GenericDataset<LengthDataset, LengthDataset, LengthDataset>))]
-    public void TupleComponents_ComponentsShouldBeEqual(Length x, Length y, Length z)
+    [ClassData(typeof(GenericDataset<DistanceDataset, DistanceDataset, DistanceDataset>))]
+    public void TupleComponents_ComponentsShouldBeEqual(Distance x, Distance y, Distance z)
     {
         Position3 quantity = new((x, y, z));
 
@@ -28,8 +28,8 @@ public class ConstructorTests
     }
 
     [Theory]
-    [ClassData(typeof(GenericDataset<LengthDataset, LengthDataset, LengthDataset>))]
-    public void Components_ComponentMagnitudesShouldBeEqual(Length x, Length y, Length z)
+    [ClassData(typeof(GenericDataset<DistanceDataset, DistanceDataset, DistanceDataset>))]
+    public void Components_ComponentMagnitudesShouldBeEqual(Distance x, Distance y, Distance z)
     {
         Position3 quantity = new(x, y, z);
 

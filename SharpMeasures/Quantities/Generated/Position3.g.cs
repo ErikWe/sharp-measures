@@ -10,12 +10,12 @@ using System.Numerics;
 /// <summary>A measure of the vector quantity <see cref="Position3"/>, of dimensionality three,
 /// describing a location in space. The quantity is expressed in <see cref="UnitOfLength"/>, with the SI unit being [m].
 /// <para>
-/// New instances of <see cref="Position3"/> can be constructed by multiplying a <see cref="Length"/> with a Vector3 or (double, double, double).
+/// New instances of <see cref="Position3"/> can be constructed by multiplying a <see cref="Distance"/> with a Vector3 or (double, double, double).
 /// Instances can also be produced by combining other quantities, either through mathematical operators or using overloads of the static method 'From'.
 /// Lastly, instances can be constructed from quantities sharing the same unit, using instance-methods of the associated quantity - typically prefixed with 'As'. This is demonstrated below:
 /// <list type="bullet">
 /// <item>
-/// <code><see cref="Position3"/> a = (3, 5, 7) * <see cref="Length.OneMetre"/>;</code>
+/// <code><see cref="Position3"/> a = (3, 5, 7) * <see cref="Distance.OneMetre"/>;</code>
 /// </item>
 /// <item>
 /// <code><see cref="Position3"/> d = <see cref="Position3.From(Position3, Displacement3)"/>; </code>
@@ -44,7 +44,7 @@ public readonly partial record struct Position3 :
     IMultiplicableVector3Quantity<Unhandled3, Unhandled>,
     IDivisibleVector3Quantity<Position3, Scalar>,
     IDivisibleVector3Quantity<Unhandled3, Unhandled>,
-    IDotableVector3Quantity<Length, Vector3>,
+    IDotableVector3Quantity<Distance, Vector3>,
     IDotableVector3Quantity<Unhandled, Unhandled3>,
     ICrossableVector3Quantity<Position3, Vector3>,
     ICrossableVector3Quantity<Unhandled3, Unhandled3>,
@@ -75,20 +75,20 @@ public readonly partial record struct Position3 :
     public Vector3 Components => new(MagnitudeX, MagnitudeY, MagnitudeZ);
 
     /// <summary>The X-component of the <see cref="Position3"/>.</summary>
-    public Length X => new(MagnitudeX);
+    public Distance X => new(MagnitudeX);
     /// <summary>The Y-component of the <see cref="Position3"/>.</summary>
-    public Length Y => new(MagnitudeY);
+    public Distance Y => new(MagnitudeY);
     /// <summary>The Z-component of the <see cref="Position3"/>.</summary>
-    public Length Z => new(MagnitudeZ);
+    public Distance Z => new(MagnitudeZ);
 
     /// <summary>Constructs a new <see cref="Position3"/> with components <paramref name="components"/>.</summary>
     /// <param name="components">The components of the <see cref="Position3"/>.</param>
-    public Position3((Length x, Length y, Length z) components) : this(components.x, components.y, components.z) { }
+    public Position3((Distance x, Distance y, Distance z) components) : this(components.x, components.y, components.z) { }
     /// <summary>Constructs a new <see cref="Position3"/> with components (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>).</summary>
     /// <param name="x">The X-component of the <see cref="Position3"/>.</param>
     /// <param name="y">The Y-component of the <see cref="Position3"/>.</param>
     /// <param name="z">The Z-component of the <see cref="Position3"/>.</param>
-    public Position3(Length x, Length y, Length z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
+    public Position3(Distance x, Distance y, Distance z) : this(x.Magnitude, y.Magnitude, z.Magnitude) { }
     /// <summary>Constructs a new <see cref="Position3"/> with components of magnitudes <paramref name="components"/>,
     /// expressed in <paramref name="unitOfLength"/>.</summary>
     /// <param name="components">The magnitudes of the components of the <see cref="Position3"/>, expressed in <paramref name="unitOfLength"/>.</param>
@@ -198,9 +198,9 @@ public readonly partial record struct Position3 :
 
     /// <inheritdoc/>
     Scalar IVector3Quantity.Magnitude() => Maths.Vectors.Dot(this, this).SquareRoot();
-    /// <summary>Computes the magnitude, or norm, of the vector quantity <see cref="Position3"/>, as a <see cref="Length"/>.</summary>
+    /// <summary>Computes the magnitude, or norm, of the vector quantity <see cref="Position3"/>, as a <see cref="Distance"/>.</summary>
     /// <remarks>For improved performance, consider preferring <see cref="SquaredMagnitude"/> when applicable.</remarks>
-    public Length Magnitude() => new(Maths.Vectors.Dot(this, this).SquareRoot());
+    public Distance Magnitude() => new(Maths.Vectors.Dot(this, this).SquareRoot());
     /// <inheritdoc/>
     Scalar IVector3Quantity.SquaredMagnitude() => Maths.Vectors.Dot(this, this);
     /// <summary>Computes the square of the magnitude, or norm, of the vector quantity <see cref="Position3"/>, as a <see cref="Area"/>.</summary>
@@ -214,9 +214,9 @@ public readonly partial record struct Position3 :
     public Position3 Transform(Matrix4x4 transform) => new(Maths.Vectors.Transform(this, transform));
     
     /// <summary>Performs dot-multiplication of the <see cref="Position3"/> by <paramref name="factor"/>, resulting in a
-    /// <see cref="Length"/>.</summary>
+    /// <see cref="Distance"/>.</summary>
     /// <param name="factor">The <see cref="Position3"/> is dot-multiplied by this <see cref="Vector3"/>.</param>
-    public Length Dot(Vector3 factor) => new(Maths.Vectors.Dot(this, factor));
+    public Distance Dot(Vector3 factor) => new(Maths.Vectors.Dot(this, factor));
     /// <summary>Performs dot-multiplication of the <see cref="Position3"/> by <paramref name="factor"/>, resulting in a
     /// <see cref="Unhandled"/>.</summary>
     /// <param name="factor">The <see cref="Position3"/> is dot-multiplied by this <see cref="Unhandled3"/>.</param>

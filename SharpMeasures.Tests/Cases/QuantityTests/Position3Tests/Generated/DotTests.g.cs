@@ -15,7 +15,7 @@ public class DotTests
     [ClassData(typeof(GenericDataset<Position3Dataset, Vector3Dataset>))]
     public void WithVector3(Position3 quantity, Vector3 vector)
     {
-        Utility.QuantityTests.DotTests.Vector3_ShouldBeSumOfSquares<Position3, Length, Vector3>(quantity, vector);
+        Utility.QuantityTests.DotTests.Vector3_ShouldBeSumOfSquares<Position3, Distance, Vector3>(quantity, vector);
     }
 
     [Theory]
