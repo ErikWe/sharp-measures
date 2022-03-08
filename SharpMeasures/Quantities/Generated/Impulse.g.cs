@@ -21,9 +21,7 @@ using System;
 /// <code><see cref="Impulse"/> d = <see cref="Impulse.From(Force, Time)"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Impulse"/> e = <see cref="Momentum.AsImpulse"/>;
-/// </code>
+/// <code><see cref="Impulse"/> e = <see cref="Momentum.AsImpulse"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="Impulse"/> can be retrieved in the desired <see cref="UnitOfImpulse"/> using pre-defined properties,

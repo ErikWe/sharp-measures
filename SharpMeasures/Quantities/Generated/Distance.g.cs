@@ -22,9 +22,7 @@ using System;
 /// <code><see cref="Distance"/> d = <see cref="Distance.From(Speed, Time)"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Distance"/> e = <see cref="Length.AsDistance"/>;
-/// </code>
+/// <code><see cref="Distance"/> e = <see cref="Length.AsDistance"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="Distance"/> can be retrieved in the desired <see cref="UnitOfLength"/> using pre-defined properties,

@@ -24,9 +24,7 @@ using System.Numerics;
 /// </code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Impulse3"/> e = <see cref="Momentum3.AsImpulse"/>;
-/// </code>
+/// <code><see cref="Impulse3"/> e = <see cref="Momentum3.AsImpulse"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfImpulse"/> using pre-defined properties, such as <see cref="NewtonSeconds"/>./// </para>

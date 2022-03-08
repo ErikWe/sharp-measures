@@ -23,9 +23,7 @@ using System.Numerics;
 /// </code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Position3"/> e = <see cref="Displacement3.AsPosition"/>;
-/// </code>
+/// <code><see cref="Position3"/> e = <see cref="Displacement3.AsPosition"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfLength"/> using pre-defined properties, such as <see cref="Metres"/>./// </para>

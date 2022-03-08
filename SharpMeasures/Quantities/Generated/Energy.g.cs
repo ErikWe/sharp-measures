@@ -21,9 +21,7 @@ using System;
 /// <code><see cref="Energy"/> d = <see cref="Energy.From(PotentialEnergy, KineticEnergy)"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Energy"/> e = <see cref="Work.AsEnergy"/>;
-/// </code>
+/// <code><see cref="Energy"/> e = <see cref="Work.AsEnergy"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="Energy"/> can be retrieved in the desired <see cref="UnitOfEnergy"/> using pre-defined properties,

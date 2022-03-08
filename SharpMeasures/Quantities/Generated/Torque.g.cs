@@ -22,9 +22,7 @@ using System;
 /// <code><see cref="Torque"/> d = <see cref="Torque.From(Distance, Force, Angle)"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Torque"/> e = <see cref="Work.AsTorque"/>;
-/// </code>
+/// <code><see cref="Torque"/> e = <see cref="Work.AsTorque"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="Torque"/> can be retrieved in the desired <see cref="UnitOfTorque"/> using pre-defined properties,

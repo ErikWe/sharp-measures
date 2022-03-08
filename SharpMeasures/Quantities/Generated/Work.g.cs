@@ -21,9 +21,7 @@ using System;
 /// <code><see cref="Work"/> d = <see cref="Work.From(Force, Distance)"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Work"/> e = <see cref="Energy.AsWork"/>;
-/// </code>
+/// <code><see cref="Work"/> e = <see cref="Energy.AsWork"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="Work"/> can be retrieved in the desired <see cref="UnitOfEnergy"/> using pre-defined properties,

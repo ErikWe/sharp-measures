@@ -23,9 +23,7 @@ using System.Numerics;
 /// </code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Acceleration3"/> e = <see cref="GravitationalAcceleration3.AsAcceleration"/>;
-/// </code>
+/// <code><see cref="Acceleration3"/> e = <see cref="GravitationalAcceleration3.AsAcceleration"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfAcceleration"/> using pre-defined properties, such as <see cref="MetresPerSecondSquared"/>./// </para>

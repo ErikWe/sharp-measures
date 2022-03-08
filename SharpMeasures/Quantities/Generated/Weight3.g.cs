@@ -24,9 +24,7 @@ using System.Numerics;
 /// </code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Weight3"/> e = <see cref="Force3.AsWeight"/>;
-/// </code>
+/// <code><see cref="Weight3"/> e = <see cref="Force3.AsWeight"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfForce"/> using pre-defined properties, such as <see cref="Newtons"/>./// </para>

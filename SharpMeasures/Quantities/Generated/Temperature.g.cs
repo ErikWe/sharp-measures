@@ -22,9 +22,7 @@ using System;
 /// <code><see cref="Temperature"/> d = <see cref="Temperature.From(Temperature, TemperatureDifference)"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Temperature"/> e = <see cref="TemperatureDifference.AsTemperature"/>;
-/// </code>
+/// <code><see cref="Temperature"/> e = <see cref="TemperatureDifference.AsTemperature"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="Temperature"/> can be retrieved in the desired <see cref="UnitOfTemperature"/> using pre-defined properties,

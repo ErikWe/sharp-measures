@@ -24,9 +24,7 @@ using System.Numerics;
 /// </code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="SpinAngularAcceleration3"/> e = <see cref="AngularAcceleration3.AsSpinAngularAcceleration"/>;
-/// </code>
+/// <code><see cref="SpinAngularAcceleration3"/> e = <see cref="AngularAcceleration3.AsSpinAngularAcceleration"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="UnitOfAngularAcceleration"/> using pre-defined properties, such as <see cref="RadiansPerSecondSquared"/>./// </para>

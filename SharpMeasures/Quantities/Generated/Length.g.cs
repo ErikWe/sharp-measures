@@ -21,9 +21,7 @@ using System;
 /// <code><see cref="Length"/> d = <see cref="Length.From(Mass, LinearDensity)"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="Length"/> e = <see cref="Distance.AsLength"/>;
-/// </code>
+/// <code><see cref="Length"/> e = <see cref="Distance.AsLength"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="Length"/> can be retrieved in the desired <see cref="UnitOfLength"/> using pre-defined properties,

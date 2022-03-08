@@ -31,9 +31,7 @@
 /// </code>
 /// </item>
 /// <item>
-/// <code>
-/// #Document:ExampleFromAssociated(quantity = #Param:quantity#, dimensionality = #Param:dimensionality#, variable = e)#
-/// </code>
+/// <code>#Document:ExampleFromAssociated(quantity = #Param:quantity#, dimensionality = #Param:dimensionality#, variable = e)#</code>
 /// </item>
 /// </list>
 /// The magnitude of the components can be retrieved in the desired <see cref="#Param:unitName#"/> using pre-defined properties, such as <see cref="#Param:pluralUnits[%0]#"/>./// </para>

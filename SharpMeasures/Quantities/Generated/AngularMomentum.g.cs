@@ -21,9 +21,7 @@ using System;
 /// <code><see cref="AngularMomentum"/> d = <see cref="AngularMomentum.From(MomentOfInertia, AngularSpeed)"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="AngularMomentum"/> e = <see cref="SpinAngularMomentum.AsAngularMomentum"/>;
-/// </code>
+/// <code><see cref="AngularMomentum"/> e = <see cref="SpinAngularMomentum.AsAngularMomentum"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="AngularMomentum"/> can be retrieved in the desired <see cref="UnitOfAngularMomentum"/> using pre-defined properties,

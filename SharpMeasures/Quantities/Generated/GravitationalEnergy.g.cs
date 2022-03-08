@@ -21,9 +21,7 @@ using System;
 /// <code><see cref="GravitationalEnergy"/> d = <see cref="GravitationalEnergy.From(Weight, Distance)"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="GravitationalEnergy"/> e = <see cref="PotentialEnergy.AsGravitationalEnergy"/>;
-/// </code>
+/// <code><see cref="GravitationalEnergy"/> e = <see cref="PotentialEnergy.AsGravitationalEnergy"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="GravitationalEnergy"/> can be retrieved in the desired <see cref="UnitOfEnergy"/> using pre-defined properties,

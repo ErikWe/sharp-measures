@@ -21,9 +21,7 @@ using System;
 /// <code><see cref="RotationalKineticEnergy"/> d = <see cref="RotationalKineticEnergy.From(MomentOfInertia, AngularSpeed)"/>;</code>
 /// </item>
 /// <item>
-/// <code>
-/// <see cref="RotationalKineticEnergy"/> e = <see cref="KineticEnergy.AsRotationalKineticEnergy"/>;
-/// </code>
+/// <code><see cref="RotationalKineticEnergy"/> e = <see cref="KineticEnergy.AsRotationalKineticEnergy"/>;</code>
 /// </item>
 /// </list>
 /// The magnitude of the <see cref="RotationalKineticEnergy"/> can be retrieved in the desired <see cref="UnitOfEnergy"/> using pre-defined properties,
