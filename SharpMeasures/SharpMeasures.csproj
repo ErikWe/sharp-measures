@@ -11,6 +11,9 @@
 	  <Authors>ErikWe</Authors>
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
 	  <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+	  <Description>
+		  Introduces many physical quantites, with support for mathematical operations. This prevents accidental mixing of units, while simultaneously simplifying how units are applied.
+	  </Description>
   </PropertyGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
