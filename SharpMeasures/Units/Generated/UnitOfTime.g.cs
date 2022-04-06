@@ -39,7 +39,7 @@ public readonly record struct UnitOfTime :
     public static UnitOfTime Millisecond { get; } = Second.WithPrefix(MetricPrefix.Milli);
 
     /// <summary>The <see cref="Quantities.Time"/> that the <see cref="UnitOfTime"/> represents.</summary>
-    public Time Time { get; private init; }
+    public Time Time { get; }
 
     /// <summary>Constructs a new <see cref="UnitOfTime"/>, representing the <see cref="Quantities.Time"/> <paramref name="time"/>.</summary>
     /// <param name="time">The <see cref="Quantities.Time"/> that the new <see cref="UnitOfTime"/> represents.</param>
