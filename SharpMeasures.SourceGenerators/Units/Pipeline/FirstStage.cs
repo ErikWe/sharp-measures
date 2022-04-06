@@ -12,5 +12,5 @@ internal static class FirstStage
     public static IncrementalValuesProvider<Result> Perform(IncrementalGeneratorInitializationContext context)
         => MarkedDeclarationSyntaxProvider.Attach(context.SyntaxProvider, OutputTransform, new[] { typeof(UnitAttribute), typeof(BiasedUnitAttribute) });
 
-    private static Result OutputTransform(MarkedDeclarationSyntaxProvider.OutputData output) => new(output);
+    private static Result OutputTransform(MarkedDeclarationSyntaxProvider.OutputData declaration) => new(declaration);
 }

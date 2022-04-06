@@ -17,8 +17,8 @@ internal static class UnitsComposer
 
         int initialLength = source.Length;
 
-        AppendIndependentInstances(source, data, addedInstances, data.FixedInstances, AppendUnitExpression, token);
-        AppendIndependentInstances(source, data, addedInstances, data.DerivedInstances, AppendUnitExpression, token);
+        AppendIndependentInstances(source, data, addedInstances, data.Instances.Fixed, AppendUnitExpression, token);
+        AppendIndependentInstances(source, data, addedInstances, data.Instances.Derived, AppendUnitExpression, token);
         AppendDependantInstances(source, data, addedInstances, token);
         
         if (source.Length > initialLength)
@@ -41,10 +41,10 @@ internal static class UnitsComposer
     {
         List<IDependantAttribute> unaddedInstances = new();
 
-        AppendDependantInstances(source, data, addedInstances, unaddedInstances, data.AliasInstances, AppendUnitExpression, token);
-        AppendDependantInstances(source, data, addedInstances, unaddedInstances, data.ScaledInstances, AppendUnitExpression, token);
-        AppendDependantInstances(source, data, addedInstances, unaddedInstances, data.PrefixedInstances, AppendUnitExpression, token);
-        AppendDependantInstances(source, data, addedInstances, unaddedInstances, data.OffsetInstances, AppendUnitExpression, token);
+        AppendDependantInstances(source, data, addedInstances, unaddedInstances, data.Instances.Alias, AppendUnitExpression, token);
+        AppendDependantInstances(source, data, addedInstances, unaddedInstances, data.Instances.Scaled, AppendUnitExpression, token);
+        AppendDependantInstances(source, data, addedInstances, unaddedInstances, data.Instances.Prefixed, AppendUnitExpression, token);
+        AppendDependantInstances(source, data, addedInstances, unaddedInstances, data.Instances.Offset, AppendUnitExpression, token);
 
         AppendUnaddedInstances(source, data, addedInstances, unaddedInstances, token);
     }

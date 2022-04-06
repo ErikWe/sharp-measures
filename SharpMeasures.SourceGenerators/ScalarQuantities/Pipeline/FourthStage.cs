@@ -11,8 +11,8 @@ using System.Collections.Generic;
 
 internal static class FourthStage
 {
-    public readonly record struct Result(TypeDeclarationSyntax TypeDeclaration, INamedTypeSymbol TypeSymbol, IEnumerable<DocumentationFile> Documentation,
-        ScalarQuantityAttributeParameters Parameters);
+    public readonly record struct Result(MarkedDeclarationSyntaxProvider.OutputData Declaration, IEnumerable<DocumentationFile> Documentation,
+        INamedTypeSymbol TypeSymbol, ScalarQuantityAttributeParameters Parameters);
 
     private readonly record struct IntermediateResult(TypeDeclarationSyntax TypeDeclaration, INamedTypeSymbol TypeSymbol, IEnumerable<DocumentationFile> Documentation,
         AttributeData AttributeData);

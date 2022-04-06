@@ -10,13 +10,13 @@ using System.Collections.Generic;
 
 internal static class ThirdStage
 {
-    public readonly record struct Result(TypeDeclarationSyntax TypeDeclaration, AttributeSyntax Attribute, INamedTypeSymbol TypeSymbol, IEnumerable<DocumentationFile> Documentation);
+    public readonly record struct Result(MarkedDeclarationSyntaxProvider.OutputData Declaration, IEnumerable<DocumentationFile> Documentation, INamedTypeSymbol TypeSymbol);
 
     public static IncrementalValuesProvider<Result> Perform(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<SecondStage.Result> provider)
         => TypeSymbolProvider.Attach(provider, context.CompilationProvider, InputTransform, OutputTransform)
             .WhereNotNull();
 
-    private static TypeDeclarationSyntax InputTransform(SecondStage.Result input) => input.TypeDeclaration;
+    private static TypeDeclarationSyntax InputTransform(SecondStage.Result input) => input.Declaration.TypeDeclaration;
     private static Result? OutputTransform(SecondStage.Result input, INamedTypeSymbol? symbol)
-        => symbol is not null ? new(input.TypeDeclaration, input.Attribute, symbol, input.Documentation) : null;
+        => symbol is null ? null : new(input.Declaration, input.Documentation, symbol);
 }

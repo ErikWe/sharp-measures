@@ -13,11 +13,12 @@ using System.Threading;
 
 internal static class FifthStage
 {
+    public readonly record struct UnitInstances(IEnumerable<FixedUnitInstanceAttributeParameters> Fixed, IEnumerable<AliasUnitInstanceAttributeParameters> Alias,
+        IEnumerable<DerivedUnitInstanceAttributeParameters> Derived, IEnumerable<ScaledUnitInstanceAttributeParameters> Scaled,
+        IEnumerable<PrefixedUnitInstanceAttributeParameters> Prefixed, IEnumerable<OffsetUnitInstanceAttributeParameters> Offset);
+
     public readonly record struct Result(MarkedDeclarationSyntaxProvider.OutputData Declaration, IEnumerable<DocumentationFile> Documentation,
-        INamedTypeSymbol TypeSymbol, UnitAttributeParameters Parameters, IEnumerable<DerivedUnitAttributeParameters> Derivations,
-        IEnumerable<FixedUnitInstanceAttributeParameters> FixedInstances, IEnumerable<AliasUnitInstanceAttributeParameters> AliasInstances,
-        IEnumerable<DerivedUnitInstanceAttributeParameters> DerivedInstances, IEnumerable<ScaledUnitInstanceAttributeParameters> ScaledInstances,
-        IEnumerable<PrefixedUnitInstanceAttributeParameters> PrefixedInstances, IEnumerable<OffsetUnitInstanceAttributeParameters> OffsetInstances);
+        INamedTypeSymbol TypeSymbol, UnitAttributeParameters Parameters, IEnumerable<DerivedUnitAttributeParameters> Derivations, UnitInstances Instances);
 
     private readonly record struct IntermediateResult(MarkedDeclarationSyntaxProvider.OutputData Declaration, IEnumerable<DocumentationFile> Documentation,
         INamedTypeSymbol TypeSymbol, UnitAttributeParameters Parameters, IEnumerable<AttributeData> DerivationData,
@@ -75,8 +76,8 @@ internal static class FifthStage
     private static INamedTypeSymbol InputTransform(IntermediateResult input) => input.TypeSymbol;
 
     private static Result OutputTransform(IntermediateResult input)
-        => new(input.Declaration, input.Documentation, input.TypeSymbol, input.Parameters, input.Derivations, input.FixedInstances, input.AliasInstances,
-            input.DerivedInstances, input.ScaledInstances, input.PrefixedInstances, input.OffsetInstances);
+        => new(input.Declaration, input.Documentation, input.TypeSymbol, input.Parameters, input.Derivations, new UnitInstances(input.FixedInstances, input.AliasInstances,
+            input.DerivedInstances, input.ScaledInstances, input.PrefixedInstances, input.OffsetInstances));
 
     private readonly record struct AttributeTransforms<TParameters, TParsedParameters>(
         MatchingAttributeDataProvider.DOutputTransformMultiple<IntermediateResult, IntermediateResult> AttributeAppender,
