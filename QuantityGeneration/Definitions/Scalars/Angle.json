@@ -1,7 +1,0 @@
-﻿{
-    "type": "Scalar",
-    "name": "Angle",
-    "vector": "Rotation",
-    "square": ["SolidAngle"],
-    "unit": "[name]"
-}

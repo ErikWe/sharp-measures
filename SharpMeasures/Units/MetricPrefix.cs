@@ -1,7 +1,5 @@
 ﻿namespace ErikWe.SharpMeasures.Units;
 
-using ErikWe.SharpMeasures.Quantities;
-
 using System;
 
 /// <summary>Describes a metric prefix. Common <see cref="MetricPrefix"/> exists as static properties, and <see cref="WithPowerOfTen(double)"/> can be used to construct
@@ -26,7 +24,7 @@ public readonly record struct MetricPrefix :
     /// <summary>Denotes that a value should be scaled by one thousand [10^3 = 1 000]. Usually written as [k].</summary>
     public static MetricPrefix Kilo { get; } = WithPowerOfTen(3);
     /// <summary>Denotes that a value should be scaled by one hundred [10^2 = 100]. Usually written as [h].</summary>
-    public static MetricPrefix Hecto{ get; }  = WithPowerOfTen(2);
+    public static MetricPrefix Hecto { get; } = WithPowerOfTen(2);
     /// <summary>Denotes that a value should be scaled by ten [10^1 = 10]. Written as [da].</summary>
     public static MetricPrefix Deca { get; } = WithPowerOfTen(1);
     /// <summary>Denotes that a value should not be scaled, or scaled by one.</summary>

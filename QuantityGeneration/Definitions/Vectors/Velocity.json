@@ -1,7 +1,0 @@
-{
-    "type": "Vector",
-    "name": "Velocity",
-    "component": "Speed",
-    "dimensionalities": [3],
-    "unit": "[component]"
-}

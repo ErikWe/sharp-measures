@@ -1,9 +1,0 @@
-#Define:DeriveRemark(unit)
-Common <see cref="#Param:unit#"/> exists as static properties, and from these custom <see cref="#Param:unit#"/> may be derived using 
-/// the instance-methods <see cref="WithPrefix(MetricPrefix)"/> or <see cref="ScaledBy(Scalar)"/>.
-#/
-
-#Define:DeriveBiasedRemark(unit)
-Common <see cref="#Param:unit#"/> exists as static properties, and from these custom <see cref="#Param:unit#"/> may be derived using 
-/// the instance-methods <see cref="WithPrefix(MetricPrefix)"/>, <see cref="ScaledBy(Scalar)"/>, or <see cref="OffsetBy(Scalar)"/>.
-#/

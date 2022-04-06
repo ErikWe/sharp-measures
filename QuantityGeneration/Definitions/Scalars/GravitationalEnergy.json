@@ -1,9 +1,0 @@
-﻿{
-    "type": "Scalar",
-    "name": "GravitationalEnergy",
-    "unit": "[Energy]",
-    "convertible": [
-        "Energy",
-        "PotentialEnergy"
-    ]
-}

@@ -1,7 +1,0 @@
-﻿{
-    "type": "Scalar",
-    "name": "Speed",
-    "vector": "Velocity",
-    "square": ["SpeedSquared"],
-    "unit": "Velocity"
-}

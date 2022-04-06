@@ -1,8 +1,0 @@
-﻿{
-    "type": "Scalar",
-    "name": "TemperatureDifference",
-    "unit": "[Temperature]",
-    "convertible": [
-        "Temperature"
-    ]
-}

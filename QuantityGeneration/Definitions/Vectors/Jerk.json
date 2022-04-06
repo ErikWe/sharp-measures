@@ -1,7 +1,0 @@
-{
-    "type": "Vector",
-    "name": "Jerk",
-    "component": "[name]",
-    "dimensionalities": [3],
-    "unit": "[component]"
-}

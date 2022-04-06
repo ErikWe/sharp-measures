@@ -1,9 +1,0 @@
-﻿{
-    "type": "Scalar",
-    "name": "Volume",
-    "cubeRoot": [
-        "Length",
-        "Distance"
-    ],
-    "unit": "[name]"
-}

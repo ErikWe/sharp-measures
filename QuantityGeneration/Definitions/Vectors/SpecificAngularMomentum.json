@@ -1,7 +1,0 @@
-{
-    "type": "Vector",
-    "name": "SpecificAngularMomentum",
-    "component": "[name]",
-    "dimensionalities": [3],
-    "unit": "[component]"
-}
