@@ -27,6 +27,6 @@ public class UnitGenerator : IIncrementalGenerator
             BiasedSourceComposer.Compose(result, context.CancellationToken) :
             SourceComposer.Compose(result, context.CancellationToken);
 
-        context.AddSource($"{result.TypeDeclaration.Identifier.Text}.g.cs", SourceText.From(source, Encoding.UTF8));
+        context.AddSource($"{result.Declaration.TypeDeclaration.Identifier.Text}.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 }

@@ -5,17 +5,15 @@ using ErikWe.SharpMeasures.SourceGenerators.Providers;
 using ErikWe.SharpMeasures.SourceGenerators.Units.Attributes;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using System.Collections.Generic;
 
 internal static class FourthStage
 {
-    public readonly record struct Result(TypeDeclarationSyntax TypeDeclaration, INamedTypeSymbol TypeSymbol, IEnumerable<DocumentationFile> Documentation,
-        UnitAttributeParameters Parameters);
-
-    private readonly record struct IntermediateResult(TypeDeclarationSyntax TypeDeclaration, INamedTypeSymbol TypeSymbol, IEnumerable<DocumentationFile> Documentation,
-        AttributeData AttributeData);
+    public readonly record struct Result(MarkedDeclarationSyntaxProvider.OutputData Declaration, IEnumerable<DocumentationFile> Documentation,
+        INamedTypeSymbol TypeSymbol, UnitAttributeParameters Parameters);
+    private readonly record struct IntermediateResult(MarkedDeclarationSyntaxProvider.OutputData Declaration, IEnumerable<DocumentationFile> Documentation,
+        INamedTypeSymbol TypeSymbol, AttributeData AttributeData);
 
     public static IncrementalValuesProvider<Result> Perform(IncrementalValuesProvider<ThirdStage.Result> provider)
         => AttributeParametersProvider.Attach(PerformIntermediate(provider), InputTransform, OutputTransform, UnitAttributeParameters.Parse)
@@ -25,10 +23,10 @@ internal static class FourthStage
         => SyntaxToAttributeDataProvider.Attach(provider, InputTransform, OutputTransform)
             .WhereNotNull();
 
-    private static SyntaxToAttributeDataProvider.InputData InputTransform(ThirdStage.Result input) => new(input.TypeSymbol, input.Attribute);
+    private static SyntaxToAttributeDataProvider.InputData InputTransform(ThirdStage.Result input) => new(input.TypeSymbol, input.Declaration.Attribute);
     private static IntermediateResult? OutputTransform(ThirdStage.Result input, AttributeData? attributeData)
-        => attributeData is not null ? new(input.TypeDeclaration, input.TypeSymbol, input.Documentation, attributeData) : null;
+        => attributeData is null ? null : new(input.Declaration, input.Documentation, input.TypeSymbol, attributeData);
     private static AttributeData InputTransform(IntermediateResult input) => input.AttributeData;
     private static Result? OutputTransform(IntermediateResult input, UnitAttributeParameters? parameters)
-        => parameters is not null ? new(input.TypeDeclaration, input.TypeSymbol, input.Documentation, parameters.Value) : null;
+        => parameters is null ? null : new(input.Declaration, input.Documentation, input.TypeSymbol, parameters.Value);
 }

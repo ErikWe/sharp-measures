@@ -9,7 +9,8 @@ using System.Collections.Generic;
 
 internal static class MarkedDeclarationSyntaxProvider
 {
-    public delegate TOut DOutputTransform<TOut>(TypeDeclarationSyntax typeDeclaration, AttributeSyntax attribute);
+    public readonly record struct OutputData(TypeDeclarationSyntax TypeDeclaration, AttributeSyntax Attribute);
+    public delegate TOut DOutputTransform<TOut>(OutputData outputData);
 
     public static IncrementalValuesProvider<TOut> Attach<TAttribute, TOut>(SyntaxValueProvider syntaxProvider, DOutputTransform<TOut> outputTransform)
         where TOut : struct
@@ -34,14 +35,15 @@ internal static class MarkedDeclarationSyntaxProvider
     {
         return syntaxProvider.CreateSyntaxProvider(
             predicate: static (node, _) => IsSyntaxNodePartialTypeDeclarationWithAttributes(node),
-            transform: (context, _) => MarkedTypeDeclarationElseNull<TOut>(context, outputTransform, attributeNames)
+            transform: (context, _) => MarkedTypeDeclarationElseNull(context, outputTransform, attributeNames)
         ).WhereNotNull();
     }
 
     private static bool IsSyntaxNodePartialTypeDeclarationWithAttributes(SyntaxNode node)
     {
-        static bool hasAttributes(TypeDeclarationSyntax declaration) => declaration.AttributeLists.Count > 0;
+        return node is TypeDeclarationSyntax declaration && hasAttributes(declaration) && isPartial(declaration);
 
+        static bool hasAttributes(TypeDeclarationSyntax declaration) => declaration.AttributeLists.Count > 0;
         static bool isPartial(TypeDeclarationSyntax declaration)
         {
             static bool isPartialModifier(SyntaxToken token) => token.IsKind(SyntaxKind.PartialKeyword);
@@ -56,8 +58,6 @@ internal static class MarkedDeclarationSyntaxProvider
 
             return false;
         }
-
-        return node is TypeDeclarationSyntax declaration && hasAttributes(declaration) && isPartial(declaration);
     }
 
     private static TOut? MarkedTypeDeclarationElseNull<TOut>(GeneratorSyntaxContext context, DOutputTransform<TOut> outputTransform, IEnumerable<string> attributeNames)
@@ -88,7 +88,7 @@ internal static class MarkedDeclarationSyntaxProvider
                 if (getAttributeSymbol(attribute) is IMethodSymbol attributeConstructorSymbol
                     && isValidAttribute(attributeConstructorSymbol.ContainingType))
                 {
-                    return outputTransform(declaration, attribute);
+                    return outputTransform(new OutputData(declaration, attribute));
                 }
             }
         }

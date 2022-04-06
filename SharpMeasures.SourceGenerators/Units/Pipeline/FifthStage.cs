@@ -6,7 +6,6 @@ using ErikWe.SharpMeasures.SourceGenerators.Providers;
 using ErikWe.SharpMeasures.SourceGenerators.Units.Attributes;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using System;
 using System.Collections.Generic;
@@ -14,15 +13,16 @@ using System.Threading;
 
 internal static class FifthStage
 {
-    public readonly record struct Result(TypeDeclarationSyntax TypeDeclaration, INamedTypeSymbol TypeSymbol, IEnumerable<DocumentationFile> Documentation,
-        UnitAttributeParameters Parameters, IEnumerable<DerivedUnitAttributeParameters> Derivations, IEnumerable<FixedUnitInstanceAttributeParameters> FixedInstances,
-        IEnumerable<AliasUnitInstanceAttributeParameters> AliasInstances, IEnumerable<DerivedUnitInstanceAttributeParameters> DerivedInstances,
-        IEnumerable<ScaledUnitInstanceAttributeParameters> ScaledInstances, IEnumerable<PrefixedUnitInstanceAttributeParameters> PrefixedInstances,
-        IEnumerable<OffsetUnitInstanceAttributeParameters> OffsetInstances);
+    public readonly record struct Result(MarkedDeclarationSyntaxProvider.OutputData Declaration, IEnumerable<DocumentationFile> Documentation,
+        INamedTypeSymbol TypeSymbol, UnitAttributeParameters Parameters, IEnumerable<DerivedUnitAttributeParameters> Derivations,
+        IEnumerable<FixedUnitInstanceAttributeParameters> FixedInstances, IEnumerable<AliasUnitInstanceAttributeParameters> AliasInstances,
+        IEnumerable<DerivedUnitInstanceAttributeParameters> DerivedInstances, IEnumerable<ScaledUnitInstanceAttributeParameters> ScaledInstances,
+        IEnumerable<PrefixedUnitInstanceAttributeParameters> PrefixedInstances, IEnumerable<OffsetUnitInstanceAttributeParameters> OffsetInstances);
 
-    private readonly record struct IntermediateResult(TypeDeclarationSyntax TypeDeclaration, INamedTypeSymbol TypeSymbol, IEnumerable<DocumentationFile> Documentation,
-        UnitAttributeParameters Parameters, IEnumerable<AttributeData> DerivationData, IEnumerable<DerivedUnitAttributeParameters> Derivations,
-        IEnumerable<AttributeData> FixedInstanceData, IEnumerable<FixedUnitInstanceAttributeParameters> FixedInstances, IEnumerable<AttributeData> AliasInstanceData,
+    private readonly record struct IntermediateResult(MarkedDeclarationSyntaxProvider.OutputData Declaration, IEnumerable<DocumentationFile> Documentation,
+        INamedTypeSymbol TypeSymbol, UnitAttributeParameters Parameters, IEnumerable<AttributeData> DerivationData,
+        IEnumerable<DerivedUnitAttributeParameters> Derivations, IEnumerable<AttributeData> FixedInstanceData,
+        IEnumerable<FixedUnitInstanceAttributeParameters> FixedInstances, IEnumerable<AttributeData> AliasInstanceData,
         IEnumerable<AliasUnitInstanceAttributeParameters> AliasInstances, IEnumerable<AttributeData> DerivedInstanceData,
         IEnumerable<DerivedUnitInstanceAttributeParameters> DerivedInstances, IEnumerable<AttributeData> ScaledInstanceData,
         IEnumerable<ScaledUnitInstanceAttributeParameters> ScaledInstances, IEnumerable<AttributeData> PrefixedInstanceData,
@@ -67,7 +67,7 @@ internal static class FifthStage
         AttributeTransforms<TParameters, TParsedParameters> transforms)
         => AttributeParametersProvider.Attach(provider, transforms.AttributeRetriever, transforms.ParameterAppender, transforms.ParameterParser);
 
-    private static IntermediateResult InputTransform(FourthStage.Result input) => new(input.TypeDeclaration, input.TypeSymbol, input.Documentation, input.Parameters,
+    private static IntermediateResult InputTransform(FourthStage.Result input) => new(input.Declaration, input.Documentation, input.TypeSymbol, input.Parameters,
         Array.Empty<AttributeData>(), Array.Empty<DerivedUnitAttributeParameters>(), Array.Empty<AttributeData>(), Array.Empty<FixedUnitInstanceAttributeParameters>(),
         Array.Empty<AttributeData>(), Array.Empty<AliasUnitInstanceAttributeParameters>(), Array.Empty<AttributeData>(), Array.Empty<DerivedUnitInstanceAttributeParameters>(),
         Array.Empty<AttributeData>(), Array.Empty<ScaledUnitInstanceAttributeParameters>(), Array.Empty<AttributeData>(),
@@ -75,7 +75,7 @@ internal static class FifthStage
     private static INamedTypeSymbol InputTransform(IntermediateResult input) => input.TypeSymbol;
 
     private static Result OutputTransform(IntermediateResult input)
-        => new(input.TypeDeclaration, input.TypeSymbol, input.Documentation, input.Parameters, input.Derivations, input.FixedInstances, input.AliasInstances,
+        => new(input.Declaration, input.Documentation, input.TypeSymbol, input.Parameters, input.Derivations, input.FixedInstances, input.AliasInstances,
             input.DerivedInstances, input.ScaledInstances, input.PrefixedInstances, input.OffsetInstances);
 
     private readonly record struct AttributeTransforms<TParameters, TParsedParameters>(
