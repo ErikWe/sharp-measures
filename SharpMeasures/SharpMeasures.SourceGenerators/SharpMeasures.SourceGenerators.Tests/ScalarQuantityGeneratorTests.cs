@@ -1,6 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.SourceGenerators.Tests;
+﻿namespace SharpMeasures.SourceGenerators.Tests;
 
-using ErikWe.SharpMeasures.SourceGenerators.ScalarQuantities;
+using SharpMeasures.SourceGenerators.ScalarQuantities;
 
 using System.Threading.Tasks;
 
@@ -15,7 +15,7 @@ public class ScalarQuantityGeneratorTests
     public Task ScalarQuantityGenerator_ShouldBeExactCode()
     {
         string source = @"
-using ErikWe.SharpMeasures.Attributes;
+using SharpMeasures.Attributes;
 
 namespace Foo
 {

@@ -1,6 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.SourceGenerators.Providers.Documentation;
+﻿namespace SharpMeasures.SourceGenerators.Providers.Documentation;
 
-using ErikWe.SharpMeasures.SourceGenerators.Documentation;
+using SharpMeasures.SourceGenerators.Documentation;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

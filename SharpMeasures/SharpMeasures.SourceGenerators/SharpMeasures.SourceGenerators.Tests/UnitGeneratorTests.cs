@@ -1,6 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.SourceGenerators.Tests;
+﻿namespace SharpMeasures.SourceGenerators.Tests;
 
-using ErikWe.SharpMeasures.SourceGenerators.Units;
+using SharpMeasures.SourceGenerators.Units;
 
 using System.Threading.Tasks;
 
@@ -15,8 +15,8 @@ public class UnitGeneratorTests
     public Task UnitGenerator_ShouldBeExactCode()
     {
         string source = @"
-using ErikWe.SharpMeasures.Attributes;
-using ErikWe.SharpMeasures.Attributes.Utility;
+using SharpMeasures.Attributes;
+using SharpMeasures.Attributes.Utility;
 
 using System;
 

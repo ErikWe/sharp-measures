@@ -1,4 +1,4 @@
-﻿namespace ErikWe.SharpMeasures.Attributes.Utility;
+﻿namespace SharpMeasures.Attributes.Utility;
 
 /// <summary>Some common expressions for unit derivation.</summary>
 public static class UnitDerivations

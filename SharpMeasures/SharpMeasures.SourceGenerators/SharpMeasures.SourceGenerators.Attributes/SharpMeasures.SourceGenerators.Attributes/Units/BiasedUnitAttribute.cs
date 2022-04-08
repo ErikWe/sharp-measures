@@ -1,4 +1,4 @@
-﻿namespace ErikWe.SharpMeasures.Attributes;
+﻿namespace SharpMeasures.Attributes;
 
 using System;
 

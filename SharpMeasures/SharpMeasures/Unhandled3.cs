@@ -1,6 +1,6 @@
-﻿namespace ErikWe.SharpMeasures;
+﻿namespace SharpMeasures;
 
-using ErikWe.SharpMeasures.Utility;
+using SharpMeasures.Utility;
 
 using System;
 using System.Numerics;

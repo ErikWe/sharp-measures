@@ -1,6 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.SourceGenerators.Analyzers;
+﻿namespace SharpMeasures.SourceGenerators.Analyzers;
 
-using ErikWe.SharpMeasures.SourceGenerators.Analyzers.Diagnostics;
+using SharpMeasures.SourceGenerators.Analyzers.Diagnostics;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;

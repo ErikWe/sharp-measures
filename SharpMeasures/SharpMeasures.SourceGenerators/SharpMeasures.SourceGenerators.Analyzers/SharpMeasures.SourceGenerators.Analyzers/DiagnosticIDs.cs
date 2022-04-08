@@ -1,4 +1,4 @@
-﻿namespace ErikWe.SharpMeasures.SourceGenerators.Analyzers;
+﻿namespace SharpMeasures.SourceGenerators.Analyzers;
 
 public static class DiagnosticIDs
 {

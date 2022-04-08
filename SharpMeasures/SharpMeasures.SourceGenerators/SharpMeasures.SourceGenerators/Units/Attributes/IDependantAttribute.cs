@@ -1,4 +1,4 @@
-﻿namespace ErikWe.SharpMeasures.SourceGenerators.Units.Attributes;
+﻿namespace SharpMeasures.SourceGenerators.Units.Attributes;
 
 internal interface IDependantAttribute : IAttributeParameters
 {

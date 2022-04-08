@@ -1,4 +1,4 @@
-﻿namespace ErikWe.SharpMeasures.SourceGenerators.Analyzers.Diagnostics;
+﻿namespace SharpMeasures.SourceGenerators.Analyzers.Diagnostics;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;

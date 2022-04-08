@@ -1,4 +1,4 @@
-﻿namespace ErikWe.SharpMeasures.SourceGenerators.Providers.Documentation;
+﻿namespace SharpMeasures.SourceGenerators.Providers.Documentation;
 
 using Microsoft.CodeAnalysis;
 

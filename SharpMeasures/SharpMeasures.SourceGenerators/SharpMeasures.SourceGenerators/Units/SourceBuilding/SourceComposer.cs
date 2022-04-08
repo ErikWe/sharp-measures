@@ -1,7 +1,7 @@
-﻿namespace ErikWe.SharpMeasures.SourceGenerators.Units.SourceBuilding;
+﻿namespace SharpMeasures.SourceGenerators.Units.SourceBuilding;
 
-using ErikWe.SharpMeasures.SourceGenerators.Units.Pipeline;
-using ErikWe.SharpMeasures.SourceGenerators.Utility;
+using SharpMeasures.SourceGenerators.Units.Pipeline;
+using SharpMeasures.SourceGenerators.Utility;
 
 using System;
 using System.Text;
@@ -25,7 +25,7 @@ internal static class SourceComposer
 
         SourceBuildingUtility.AppendUsings(source, data.TypeSymbol, new string[]
         {
-            "ErikWe.SharpMeasures.Units"
+            "SharpMeasures.Units"
         });
 
         SourceBuildingUtility.AppendTypeDefinition(source, data.TypeSymbol);

@@ -1,7 +1,7 @@
-﻿namespace ErikWe.SharpMeasures.SourceGenerators.ScalarQuantities;
+﻿namespace SharpMeasures.SourceGenerators.ScalarQuantities;
 
-using ErikWe.SharpMeasures.SourceGenerators.ScalarQuantities.Pipeline;
-using ErikWe.SharpMeasures.SourceGenerators.Utility;
+using SharpMeasures.SourceGenerators.ScalarQuantities.Pipeline;
+using SharpMeasures.SourceGenerators.Utility;
 
 using System.Text;
 using System.Threading;

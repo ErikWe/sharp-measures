@@ -1,4 +1,4 @@
-﻿namespace ErikWe.SharpMeasures;
+﻿namespace SharpMeasures;
 
 //[ScalarQuantity]
 public readonly partial record struct Length

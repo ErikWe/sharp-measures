@@ -1,7 +1,7 @@
-﻿namespace ErikWe.SharpMeasures;
+﻿namespace SharpMeasures;
 
-using ErikWe.SharpMeasures.Attributes;
-using ErikWe.SharpMeasures.Attributes.Utility;
+using SharpMeasures.Attributes;
+using SharpMeasures.Attributes.Utility;
 
 using System;
 

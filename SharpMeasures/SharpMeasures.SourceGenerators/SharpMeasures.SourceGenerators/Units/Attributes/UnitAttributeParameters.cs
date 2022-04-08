@@ -1,7 +1,7 @@
-﻿namespace ErikWe.SharpMeasures.SourceGenerators.Units.Attributes;
+﻿namespace SharpMeasures.SourceGenerators.Units.Attributes;
 
-using ErikWe.SharpMeasures.Attributes;
-using ErikWe.SharpMeasures.SourceGenerators.Utility;
+using SharpMeasures.Attributes;
+using SharpMeasures.SourceGenerators.Utility;
 
 using Microsoft.CodeAnalysis;
 

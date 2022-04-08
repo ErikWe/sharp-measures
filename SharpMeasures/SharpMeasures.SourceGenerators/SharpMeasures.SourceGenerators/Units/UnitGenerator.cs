@@ -1,7 +1,7 @@
-﻿namespace ErikWe.SharpMeasures.SourceGenerators.Units;
+﻿namespace SharpMeasures.SourceGenerators.Units;
 
-using ErikWe.SharpMeasures.SourceGenerators.Units.Pipeline;
-using ErikWe.SharpMeasures.SourceGenerators.Units.SourceBuilding;
+using SharpMeasures.SourceGenerators.Units.Pipeline;
+using SharpMeasures.SourceGenerators.Units.SourceBuilding;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;

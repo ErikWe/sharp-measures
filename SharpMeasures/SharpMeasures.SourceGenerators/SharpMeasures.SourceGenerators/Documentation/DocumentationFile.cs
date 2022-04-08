@@ -1,3 +1,3 @@
-﻿namespace ErikWe.SharpMeasures.SourceGenerators.Documentation;
+﻿namespace SharpMeasures.SourceGenerators.Documentation;
 
 public readonly record struct DocumentationFile(string Name, string Content);

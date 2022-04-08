@@ -1,4 +1,4 @@
-﻿namespace ErikWe.SharpMeasures;
+﻿namespace SharpMeasures;
 
 using System;
 using System.Numerics;

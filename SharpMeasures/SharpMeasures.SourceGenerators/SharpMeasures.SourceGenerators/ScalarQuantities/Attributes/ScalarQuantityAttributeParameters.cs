@@ -1,6 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.SourceGenerators.ScalarQuantities.Attributes;
+﻿namespace SharpMeasures.SourceGenerators.ScalarQuantities.Attributes;
 
-using ErikWe.SharpMeasures.SourceGenerators.Utility;
+using SharpMeasures.SourceGenerators.Utility;
 
 using Microsoft.CodeAnalysis;
 

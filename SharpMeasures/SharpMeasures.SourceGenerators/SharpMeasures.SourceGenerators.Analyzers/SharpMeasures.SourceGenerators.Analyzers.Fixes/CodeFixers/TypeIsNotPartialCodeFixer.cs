@@ -1,6 +1,6 @@
-﻿namespace ErikWe.SharpMeasures.SourceGenerators.Analyzers.CodeFixes.CodeFixers;
+﻿namespace SharpMeasures.SourceGenerators.Analyzers.CodeFixes.CodeFixers;
 
-using ErikWe.SharpMeasures.SourceGenerators.Analyzers;
+using SharpMeasures.SourceGenerators.Analyzers;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
