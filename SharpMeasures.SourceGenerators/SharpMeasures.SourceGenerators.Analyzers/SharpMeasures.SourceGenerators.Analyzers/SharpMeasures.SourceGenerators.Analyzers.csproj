@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<RootNamespace>ErikWe.SharpMeasures.SourceGenerators.Analyzers</RootNamespace>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Title>SharpMeasures.SourceGenerators.Analyzers</Title>
+		<Description>
+			Provides analyzers related to source generators for SharpMeasures.
+		</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
+	  <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes.csproj" PrivateAssets="all" />
+	</ItemGroup>
+
+</Project>

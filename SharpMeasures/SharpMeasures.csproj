@@ -1,31 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<Nullable>enable</Nullable>
-		<AnalysisMode>All</AnalysisMode>
 		<TargetFramework>net6.0</TargetFramework>
-		<LangVersion>10</LangVersion>
 		<RootNamespace>ErikWe.SharpMeasures</RootNamespace>
-		<RepositoryUrl>https://github.com/ErikWe/sharp-measures</RepositoryUrl>
-		<Version>0.1.0-two</Version>
-		<Authors>ErikWe</Authors>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Title>SharpMeasures</Title>
 		<Description>
 			Introduces several physical quantites as explicit types, with support for appropriate mathematical operations.
 			This enforces explicit and correct usage of quantities and units, and prevents many cases of mix-ups.
 		</Description>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<AdditionalFiles Include="Documentation/**" />
-		<AdditionalFiles Include="Definitions/**" />
+		<ProjectReference Include="..\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.Analyzers\SharpMeasures.SourceGenerators.Analyzers.CodeFixes\SharpMeasures.SourceGenerators.Analyzers.CodeFixes.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+		<ProjectReference Include="..\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.Analyzers\SharpMeasures.SourceGenerators.Analyzers\SharpMeasures.SourceGenerators.Analyzers.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+		<ProjectReference Include="..\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<AdditionalFiles Include="Documentation/**" />
 	</ItemGroup>
-
-	<ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
 </Project>
