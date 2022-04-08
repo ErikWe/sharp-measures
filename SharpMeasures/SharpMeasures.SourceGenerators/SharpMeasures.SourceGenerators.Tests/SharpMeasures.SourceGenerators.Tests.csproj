@@ -39,8 +39,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes.csproj" />
-		<ProjectReference Include="..\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.csproj" />
+	  <ProjectReference Include="..\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.csproj" PrivateAssets="all" />
 	</ItemGroup>
 
 </Project>
