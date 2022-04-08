@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<RootNamespace>ErikWe.SharpMeasures.SourceGenerators.Analyzers.CodeFixes</RootNamespace>
+		<RootNamespace>ErikWe.SharpMeasures.SourceGenerators.Analyzers.Fixes</RootNamespace>
 	</PropertyGroup>
 
 	<PropertyGroup>
