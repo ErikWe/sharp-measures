@@ -9,10 +9,6 @@ using System.Collections.Immutable;
 
 public static class AttributeDiagnostics
 {
-    private static string ScalarQuantityAttributeFullName { get; } = typeof(ScalarQuantityAttribute).FullName;
-    private static string UnitAttributeFullName { get; } = typeof(UnitAttribute).FullName;
-    private static string BiasedUnitAttributeFullName { get; } = typeof(BiasedUnitAttribute).FullName;
-
     internal static void Register(AnalysisContext context)
     {
         context.RegisterSymbolAction(SearchForTypeDeclarationWithAttribute, SymbolKind.NamedType);
@@ -39,15 +35,15 @@ public static class AttributeDiagnostics
                 continue;
             }
 
-            if (candidateName == ScalarQuantityAttributeFullName)
+            if (candidateName == typeof(ScalarQuantityAttribute).FullName)
             {
                 ScalarQuantityAttributeDiagnostics.Analyze(context, namedTypeSymbol, attribute);
             }
-            else if (candidateName == UnitAttributeFullName)
+            else if (candidateName == typeof(UnitAttribute).FullName)
             {
                 UnitAttributeDiagnostics.Analyze(context, namedTypeSymbol, attribute);
             }
-            else if (candidateName == BiasedUnitAttributeFullName)
+            else if (candidateName == typeof(BiasedUnitAttribute).FullName)
             {
                 BiasedUnitAttributeDiagnostics.Analyze(context, namedTypeSymbol, attribute);
             }
