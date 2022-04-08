@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<RootNamespace>ErikWe.SharpMeasures</RootNamespace>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Title>SharpMeasures.Base</Title>
+		<Description>
+			Provides the building blocks of SharpMeasures, used to construct various quantities and units.
+		</Description>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+</Project>
