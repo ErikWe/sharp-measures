@@ -8,11 +8,11 @@ using System;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 public sealed class UnitAttribute : Attribute
 {
-    /// <summary>The quantity that the unit describes.</summary>
+    /// <summary>The scalar quantity that the unit describes, which should be marked with <see cref="ScalarQuantityAttribute"/>.</summary>
     public Type Quantity { get; }
 
     /// <summary>Adds additional functionality to a unit through source generation.</summary>
-    /// <param name="quantity">The quantity that the unit describes.</param>
+    /// <param name="quantity">The scalar quantity that the unit describes, which should be marked with <see cref="ScalarQuantityAttribute"/>.</param>
     public UnitAttribute(Type quantity)
     {
         Quantity = quantity;

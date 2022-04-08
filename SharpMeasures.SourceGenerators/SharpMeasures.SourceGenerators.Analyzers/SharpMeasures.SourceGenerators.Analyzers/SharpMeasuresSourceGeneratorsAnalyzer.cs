@@ -12,7 +12,8 @@ using System.Collections.Immutable;
 public class SharpMeasuresSourceGeneratorsAnalyzer : DiagnosticAnalyzer
 {
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(
-        TypeIsNotPartialDiagnostics.Rule
+        DiagnosticRules.TypeIsNotPartial,
+        DiagnosticRules.TypeIsNotScalarQuantity
     );
 
     public override void Initialize(AnalysisContext context)
@@ -25,6 +26,6 @@ public class SharpMeasuresSourceGeneratorsAnalyzer : DiagnosticAnalyzer
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
 
-        TypeIsNotPartialDiagnostics.Register(context);
+        AttributeDiagnostics.Register(context);
     }
 }

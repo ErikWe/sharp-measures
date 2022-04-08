@@ -5,4 +5,5 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
-SharpMeasures001 | Syntax | Error | TypeIsNotPartialDiagnostics
+SharpMeasures001 | Syntax | Warning | TypeIsNotPartialDiagnostics
+SharpMeasures002 | Design | Error | TypeIsNotScalarQuantity
