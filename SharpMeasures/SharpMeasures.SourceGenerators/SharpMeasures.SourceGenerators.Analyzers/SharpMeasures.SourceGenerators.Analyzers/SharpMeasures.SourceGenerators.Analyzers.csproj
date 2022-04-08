@@ -25,7 +25,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes.Meta\SharpMeasures.SourceGenerators.Attributes.Meta.csproj" />
+	  <ProjectReference Include="..\..\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes.Meta\SharpMeasures.SourceGenerators.Attributes.Meta.csproj" PrivateAssets="all" />
 	  <ProjectReference Include="..\..\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes.csproj" />
 	</ItemGroup>
 
