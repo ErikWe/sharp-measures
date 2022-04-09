@@ -1,7 +1,7 @@
-﻿namespace SharpMeasures.SourceGenerators.Units.SourceBuilding;
+﻿namespace SharpMeasures.SourceGeneration.Units.SourceBuilding;
 
-using SharpMeasures.SourceGenerators.Units.Pipeline;
-using SharpMeasures.SourceGenerators.Utility;
+using SharpMeasures.SourceGeneration.Units.Pipeline;
+using SharpMeasures.SourceGeneration.Utility;
 
 using System;
 using System.Text;

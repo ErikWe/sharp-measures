@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Attributes.Parsing.Units;
+﻿namespace SharpMeasures.SourceGeneration.Attributes.Parsing.Units;
 
 using Microsoft.CodeAnalysis;
 
@@ -11,35 +11,35 @@ public readonly record struct DerivedUnitInstanceAttributeParameters(string Name
     ReadOnlyCollection<INamedTypeSymbol?> Signature, ReadOnlyCollection<string> UnitInstanceNames)
     : IUnitInstanceAttributeParameters
 {
+    private static DerivedUnitInstanceAttributeParameters Defaults { get; } = new
+    (
+        Name: string.Empty,
+        Plural: string.Empty,
+        Symbol: string.Empty,
+        IsSIUnit: false,
+        IsConstant: false,
+        Signature: Array.AsReadOnly(Array.Empty<INamedTypeSymbol?>()),
+        UnitInstanceNames: Array.AsReadOnly(Array.Empty<string>())
+    );
+
+    private static Dictionary<string, AttributeProperty<DerivedUnitInstanceAttributeParameters>> ConstructorParameters { get; }
+        = Properties.AllProperties.ToDictionary(static (x) => x.ParameterName);
+
+    private static Dictionary<string, AttributeProperty<DerivedUnitInstanceAttributeParameters>> NamedParameters { get; }
+        = Properties.AllProperties.ToDictionary(static (x) => x.Name);
+
     public static DerivedUnitInstanceAttributeParameters? Parse(AttributeData attributeData)
     {
-        DerivedUnitInstanceAttributeParameters values = Properties.Defaults;
+        DerivedUnitInstanceAttributeParameters values = Defaults;
 
-        (bool success, values) = AttributeDataArgumentParser.Parse(attributeData, values, Properties.ConstructorParameters, Properties.NamedParameters);
+        (bool success, values) = AttributeDataArgumentParser.Parse(attributeData, values, ConstructorParameters, NamedParameters);
 
         return success ? values : null;
     }
 
     private static class Properties
     {
-        public static DerivedUnitInstanceAttributeParameters Defaults { get; } = new
-        (
-            Name: string.Empty,
-            Plural: string.Empty,
-            Symbol: string.Empty,
-            IsSIUnit: false,
-            IsConstant: false,
-            Signature: Array.AsReadOnly(Array.Empty<INamedTypeSymbol?>()),
-            UnitInstanceNames: Array.AsReadOnly(Array.Empty<string>())
-        );
-
-        public static Dictionary<string, AttributeProperty<DerivedUnitInstanceAttributeParameters>> ConstructorParameters { get; }
-        = AllProperties.ToDictionary(static (x) => x.ParameterName);
-
-        public static Dictionary<string, AttributeProperty<DerivedUnitInstanceAttributeParameters>> NamedParameters { get; }
-            = AllProperties.ToDictionary(static (x) => x.Name);
-
-        private static List<AttributeProperty<DerivedUnitInstanceAttributeParameters>> AllProperties => new()
+        public static List<AttributeProperty<DerivedUnitInstanceAttributeParameters>> AllProperties => new()
         {
             Name,
             Plural,

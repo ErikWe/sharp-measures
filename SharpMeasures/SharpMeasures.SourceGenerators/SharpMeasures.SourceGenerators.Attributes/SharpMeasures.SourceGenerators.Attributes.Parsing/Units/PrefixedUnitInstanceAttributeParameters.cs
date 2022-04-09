@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Attributes.Parsing.Units;
+﻿namespace SharpMeasures.SourceGeneration.Attributes.Parsing.Units;
 
 using Microsoft.CodeAnalysis;
 
@@ -11,35 +11,35 @@ public readonly record struct PrefixedUnitInstanceAttributeParameters(string Nam
 {
     string IDerivedUnitInstanceAttributeParameters.DerivedFrom => From;
 
+    private static PrefixedUnitInstanceAttributeParameters Defaults { get; } = new
+    (
+        Name: string.Empty,
+        Plural: string.Empty,
+        Symbol: string.Empty,
+        IsSIUnit: false,
+        IsConstant: false,
+        From: string.Empty,
+        Prefix: string.Empty
+    );
+
+    private static Dictionary<string, AttributeProperty<PrefixedUnitInstanceAttributeParameters>> ConstructorParameters { get; }
+        = Properties.AllProperties.ToDictionary(static (x) => x.ParameterName);
+
+    private static Dictionary<string, AttributeProperty<PrefixedUnitInstanceAttributeParameters>> NamedParameters { get; }
+        = Properties.AllProperties.ToDictionary(static (x) => x.Name);
+
     public static PrefixedUnitInstanceAttributeParameters? Parse(AttributeData attributeData)
     {
-        PrefixedUnitInstanceAttributeParameters values = Properties.Defaults;
+        PrefixedUnitInstanceAttributeParameters values = Defaults;
 
-        (bool success, values) = AttributeDataArgumentParser.Parse(attributeData, values, Properties.ConstructorParameters, Properties.NamedParameters);
+        (bool success, values) = AttributeDataArgumentParser.Parse(attributeData, values, ConstructorParameters, NamedParameters);
 
         return success ? values : null;
     }
 
     private static class Properties
     {
-        public static PrefixedUnitInstanceAttributeParameters Defaults { get; } = new
-        (
-            Name: string.Empty,
-            Plural: string.Empty,
-            Symbol: string.Empty,
-            IsSIUnit: false,
-            IsConstant: false,
-            From: string.Empty,
-            Prefix: string.Empty
-        );
-
-        public static Dictionary<string, AttributeProperty<PrefixedUnitInstanceAttributeParameters>> ConstructorParameters { get; }
-        = AllProperties.ToDictionary(static (x) => x.ParameterName);
-
-        public static Dictionary<string, AttributeProperty<PrefixedUnitInstanceAttributeParameters>> NamedParameters { get; }
-            = AllProperties.ToDictionary(static (x) => x.Name);
-
-        private static List<AttributeProperty<PrefixedUnitInstanceAttributeParameters>> AllProperties => new()
+        public static List<AttributeProperty<PrefixedUnitInstanceAttributeParameters>> AllProperties => new()
         {
             Name,
             Plural,

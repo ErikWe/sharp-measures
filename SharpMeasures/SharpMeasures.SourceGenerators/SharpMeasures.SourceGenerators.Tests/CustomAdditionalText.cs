@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.SourceGenerators.Tests;
+﻿namespace SharpMeasures.SourceGeneration.Tests;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;

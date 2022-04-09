@@ -1,10 +1,10 @@
-﻿namespace SharpMeasures.SourceGenerators.Scalars.Pipeline;
+﻿namespace SharpMeasures.SourceGeneration.Scalars.Pipeline;
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Attributes.Parsing.Scalars;
-using SharpMeasures.SourceGenerators.Documentation;
-using SharpMeasures.SourceGenerators.Providers;
+using SharpMeasures.SourceGeneration.Attributes.Parsing.Scalars;
+using SharpMeasures.SourceGeneration.Documentation;
+using SharpMeasures.SourceGeneration.Providers;
 
 using System.Collections.Generic;
 

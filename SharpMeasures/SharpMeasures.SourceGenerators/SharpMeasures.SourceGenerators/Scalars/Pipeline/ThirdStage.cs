@@ -1,7 +1,7 @@
-﻿namespace SharpMeasures.SourceGenerators.Scalars.Pipeline;
+﻿namespace SharpMeasures.SourceGeneration.Scalars.Pipeline;
 
-using SharpMeasures.SourceGenerators.Documentation;
-using SharpMeasures.SourceGenerators.Providers;
+using SharpMeasures.SourceGeneration.Documentation;
+using SharpMeasures.SourceGeneration.Providers;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

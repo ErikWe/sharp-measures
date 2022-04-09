@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.SourceGenerators.Utility;
+﻿namespace SharpMeasures.SourceGeneration.Utility;
 
 using System;
 using System.Globalization;

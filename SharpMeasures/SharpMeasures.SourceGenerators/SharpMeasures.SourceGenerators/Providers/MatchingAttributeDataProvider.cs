@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.SourceGenerators.Providers;
+﻿namespace SharpMeasures.SourceGeneration.Providers;
 
 using Microsoft.CodeAnalysis;
 

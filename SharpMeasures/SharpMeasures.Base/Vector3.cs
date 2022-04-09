@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures;
 
 using SharpMeasures.Maths;
+using SharpMeasures.Vector3Abstractions;
 
 using System;
 using System.Numerics;

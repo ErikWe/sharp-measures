@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Attributes.Parsing.Units;
+﻿namespace SharpMeasures.SourceGeneration.Attributes.Parsing.Units;
 
 using Microsoft.CodeAnalysis;
 
@@ -11,35 +11,35 @@ public readonly record struct ScaledUnitInstanceAttributeParameters(string Name,
 {
     string IDerivedUnitInstanceAttributeParameters.DerivedFrom => From;
 
+    private static ScaledUnitInstanceAttributeParameters Defaults { get; } = new
+    (
+        Name: string.Empty,
+        Plural: string.Empty,
+        Symbol: string.Empty,
+        IsSIUnit: false,
+        IsConstant: false,
+        From: string.Empty,
+        Scale: 0
+    );
+
+    private static Dictionary<string, AttributeProperty<ScaledUnitInstanceAttributeParameters>> ConstructorParameters { get; }
+        = Properties.AllProperties.ToDictionary(static (x) => x.ParameterName);
+
+    private static Dictionary<string, AttributeProperty<ScaledUnitInstanceAttributeParameters>> NamedParameters { get; }
+        = Properties.AllProperties.ToDictionary(static (x) => x.Name);
+
     public static ScaledUnitInstanceAttributeParameters? Parse(AttributeData attributeData)
     {
-        ScaledUnitInstanceAttributeParameters values = Properties.Defaults;
+        ScaledUnitInstanceAttributeParameters values = Defaults;
 
-        (bool success, values) = AttributeDataArgumentParser.Parse(attributeData, values, Properties.ConstructorParameters, Properties.NamedParameters);
+        (bool success, values) = AttributeDataArgumentParser.Parse(attributeData, values, ConstructorParameters, NamedParameters);
 
         return success ? values : null;
     }
 
     private static class Properties
     {
-        public static ScaledUnitInstanceAttributeParameters Defaults { get; } = new
-        (
-            Name: string.Empty,
-            Plural: string.Empty,
-            Symbol: string.Empty,
-            IsSIUnit: false,
-            IsConstant: false,
-            From: string.Empty,
-            Scale: 0
-        );
-
-        public static Dictionary<string, AttributeProperty<ScaledUnitInstanceAttributeParameters>> ConstructorParameters { get; }
-        = AllProperties.ToDictionary(static (x) => x.ParameterName);
-
-        public static Dictionary<string, AttributeProperty<ScaledUnitInstanceAttributeParameters>> NamedParameters { get; }
-            = AllProperties.ToDictionary(static (x) => x.Name);
-
-        private static List<AttributeProperty<ScaledUnitInstanceAttributeParameters>> AllProperties => new()
+        public static List<AttributeProperty<ScaledUnitInstanceAttributeParameters>> AllProperties => new()
         {
             Name,
             Plural,

@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<RootNamespace>SharpMeasures.Attributes.Parsing</RootNamespace>
+		<RootNamespace>SharpMeasures.SourceGeneration.Attributes.Parsing</RootNamespace>
 	</PropertyGroup>
 
 	<PropertyGroup>

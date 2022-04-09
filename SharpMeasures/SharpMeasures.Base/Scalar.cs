@@ -1,5 +1,7 @@
 ﻿namespace SharpMeasures;
 
+using SharpMeasures.ScalarAbstractions;
+
 using System;
 
 /// <summary>A pure scalar, representing a magnitude.</summary>

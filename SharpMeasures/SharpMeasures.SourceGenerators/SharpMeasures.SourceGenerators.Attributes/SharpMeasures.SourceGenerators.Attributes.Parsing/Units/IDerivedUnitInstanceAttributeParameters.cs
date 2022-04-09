@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Attributes.Parsing.Units;
+﻿namespace SharpMeasures.SourceGeneration.Attributes.Parsing.Units;
 
 public interface IDerivedUnitInstanceAttributeParameters : IUnitInstanceAttributeParameters
 {

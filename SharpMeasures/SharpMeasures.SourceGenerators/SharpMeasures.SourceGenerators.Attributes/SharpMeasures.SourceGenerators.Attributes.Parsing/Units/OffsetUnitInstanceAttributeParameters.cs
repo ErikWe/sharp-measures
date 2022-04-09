@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Attributes.Parsing.Units;
+﻿namespace SharpMeasures.SourceGeneration.Attributes.Parsing.Units;
 
 using Microsoft.CodeAnalysis;
 
@@ -11,35 +11,35 @@ public readonly record struct OffsetUnitInstanceAttributeParameters(string Name,
 {
     string IDerivedUnitInstanceAttributeParameters.DerivedFrom => From;
 
+    private static OffsetUnitInstanceAttributeParameters Defaults { get; } = new
+    (
+        Name: string.Empty,
+        Plural: string.Empty,
+        Symbol: string.Empty,
+        IsSIUnit: false,
+        IsConstant: false,
+        From: string.Empty,
+        Offset: 0
+    );
+
+    private static Dictionary<string, AttributeProperty<OffsetUnitInstanceAttributeParameters>> ConstructorParameters { get; }
+        = Properties.AllProperties.ToDictionary(static (x) => x.ParameterName);
+
+    private static Dictionary<string, AttributeProperty<OffsetUnitInstanceAttributeParameters>> NamedParameters { get; }
+        = Properties.AllProperties.ToDictionary(static (x) => x.Name);
+
     public static OffsetUnitInstanceAttributeParameters? Parse(AttributeData attributeData)
     {
-        OffsetUnitInstanceAttributeParameters values = Properties.Defaults;
+        OffsetUnitInstanceAttributeParameters values = Defaults;
 
-        (bool success, values) = AttributeDataArgumentParser.Parse(attributeData, values, Properties.ConstructorParameters, Properties.NamedParameters);
+        (bool success, values) = AttributeDataArgumentParser.Parse(attributeData, values, ConstructorParameters, NamedParameters);
 
         return success ? values : null;
     }
 
     private static class Properties
     {
-        public static OffsetUnitInstanceAttributeParameters Defaults { get; } = new
-        (
-            Name: string.Empty,
-            Plural: string.Empty,
-            Symbol: string.Empty,
-            IsSIUnit: false,
-            IsConstant: false,
-            From: string.Empty,
-            Offset: 0
-        );
-
-        public static Dictionary<string, AttributeProperty<OffsetUnitInstanceAttributeParameters>> ConstructorParameters { get; }
-        = AllProperties.ToDictionary(static (x) => x.ParameterName);
-
-        public static Dictionary<string, AttributeProperty<OffsetUnitInstanceAttributeParameters>> NamedParameters { get; }
-            = AllProperties.ToDictionary(static (x) => x.Name);
-
-        private static List<AttributeProperty<OffsetUnitInstanceAttributeParameters>> AllProperties => new()
+public static List<AttributeProperty<OffsetUnitInstanceAttributeParameters>> AllProperties => new()
         {
             Name,
             Plural,

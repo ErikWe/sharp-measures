@@ -1,6 +1,6 @@
-﻿namespace SharpMeasures.SourceGenerators.Providers;
+﻿namespace SharpMeasures.SourceGeneration.Providers;
 
-using SharpMeasures.SourceGenerators.Utility;
+using SharpMeasures.SourceGeneration.Utility;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

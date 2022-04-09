@@ -1,5 +1,7 @@
 ﻿namespace SharpMeasures;
 
+using SharpMeasures.ScalarAbstractions;
+
 using System;
 
 /// <summary>A measure of a scalar quantity that is not covered by a designated type.</summary>

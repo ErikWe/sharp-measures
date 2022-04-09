@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Attributes.Parsing.Units;
+﻿namespace SharpMeasures.SourceGeneration.Attributes.Parsing.Units;
 
 using Microsoft.CodeAnalysis;
 
@@ -7,29 +7,29 @@ using System.Linq;
 
 public readonly record struct GeneratedUnitAttributeParameters(INamedTypeSymbol? Quantity)
 {
+    private static GeneratedUnitAttributeParameters Defaults => new
+    (
+        Quantity: null
+    );
+
+    private static Dictionary<string, AttributeProperty<GeneratedUnitAttributeParameters>> ConstructorParameters { get; }
+        = Properties.AllProperties.ToDictionary(static (x) => x.ParameterName);
+
+    private static Dictionary<string, AttributeProperty<GeneratedUnitAttributeParameters>> NamedParameters { get; }
+        = Properties.AllProperties.ToDictionary(static (x) => x.Name);
+
     public static GeneratedUnitAttributeParameters? Parse(AttributeData attributeData)
     {
-        GeneratedUnitAttributeParameters values = Properties.Defaults;
+        GeneratedUnitAttributeParameters values = Defaults;
 
-        (bool success, values) = AttributeDataArgumentParser.Parse(attributeData, values, Properties.ConstructorParameters, Properties.NamedParameters);
+        (bool success, values) = AttributeDataArgumentParser.Parse(attributeData, values, ConstructorParameters, NamedParameters);
 
         return success ? values : null;
     }
 
     private static class Properties
     {
-        public static GeneratedUnitAttributeParameters Defaults { get; } = new
-        (
-            Quantity: null
-        );
-
-        public static Dictionary<string, AttributeProperty<GeneratedUnitAttributeParameters>> ConstructorParameters { get; }
-        = AllProperties.ToDictionary(static (x) => x.ParameterName);
-
-        public static Dictionary<string, AttributeProperty<GeneratedUnitAttributeParameters>> NamedParameters { get; }
-            = AllProperties.ToDictionary(static (x) => x.Name);
-
-        private static List<AttributeProperty<GeneratedUnitAttributeParameters>> AllProperties => new()
+        public static List<AttributeProperty<GeneratedUnitAttributeParameters>> AllProperties => new()
         {
             Quantity
         };

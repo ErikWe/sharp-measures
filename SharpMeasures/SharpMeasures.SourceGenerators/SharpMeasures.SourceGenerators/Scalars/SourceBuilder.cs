@@ -1,7 +1,7 @@
-﻿namespace SharpMeasures.SourceGenerators.Scalars;
+﻿namespace SharpMeasures.SourceGeneration.Scalars;
 
-using SharpMeasures.SourceGenerators.Scalars.Pipeline;
-using SharpMeasures.SourceGenerators.Utility;
+using SharpMeasures.SourceGeneration.Scalars.Pipeline;
+using SharpMeasures.SourceGeneration.Utility;
 
 using System.Text;
 using System.Threading;

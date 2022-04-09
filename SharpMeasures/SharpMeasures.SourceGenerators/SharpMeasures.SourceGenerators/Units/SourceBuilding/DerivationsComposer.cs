@@ -1,8 +1,8 @@
-﻿namespace SharpMeasures.SourceGenerators.Units.SourceBuilding;
+﻿namespace SharpMeasures.SourceGeneration.Units.SourceBuilding;
 
-using SharpMeasures.Attributes.Parsing.Units;
-using SharpMeasures.SourceGenerators.Units.Pipeline;
-using SharpMeasures.SourceGenerators.Utility;
+using SharpMeasures.SourceGeneration.Attributes.Parsing.Units;
+using SharpMeasures.SourceGeneration.Units.Pipeline;
+using SharpMeasures.SourceGeneration.Utility;
 
 using Microsoft.CodeAnalysis;
 

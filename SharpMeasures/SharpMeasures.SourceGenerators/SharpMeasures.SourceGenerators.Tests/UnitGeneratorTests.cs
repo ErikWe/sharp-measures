@@ -1,6 +1,6 @@
-﻿namespace SharpMeasures.SourceGenerators.Tests;
+﻿namespace SharpMeasures.SourceGeneration.Tests;
 
-using SharpMeasures.SourceGenerators.Units;
+using SharpMeasures.SourceGeneration.Units;
 
 using System.Threading.Tasks;
 
@@ -15,8 +15,8 @@ public class UnitGeneratorTests
     public Task UnitGenerator_ShouldBeExactCode()
     {
         string source = @"
-using SharpMeasures.Attributes;
-using SharpMeasures.Attributes.Utility;
+using SharpMeasures.SourceGeneration;
+using SharpMeasures.SourceGeneration.Attributes.Utility;
 
 using System;
 
@@ -28,15 +28,15 @@ namespace Foo
         public readonly record struct Time { }
         public readonly record struct Speed { }
 
-        [Unit(typeof(Length))]
+        [GeneratedUnit(typeof(Length))]
         [FixedUnitInstance(""Metre"", UnitPluralCodes.AppendS, 1)]
         public readonly partial record struct UnitOfLength { }
 
-        [Unit(typeof(Time))]
+        [GeneratedUnit(typeof(Time))]
         [FixedUnitInstance(""Second"", UnitPluralCodes.AppendS, 1)]
         public readonly partial record struct UnitOfTime { }
 
-        [Unit(typeof(Speed))]
+        [GeneratedUnit(typeof(Speed))]
         [DerivedUnit(""{0} / {1}"", typeof(UnitOfLength), typeof(UnitOfTime)]
         [DerivedUnitInstance(""MetrePerSecond"", UnitPluralCodes.InsertSBeforePer, new Type[] { typeof(UnitOfLength), typeof(UnitOfTime) }, new string[] { ""Metre"", ""Second"" })]
         public readonly partial record struct UnitOfSpeed { }

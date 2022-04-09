@@ -1,6 +1,6 @@
-﻿namespace SharpMeasures.SourceGenerators.Tests;
+﻿namespace SharpMeasures.SourceGeneration.Tests;
 
-using SharpMeasures.SourceGenerators.Scalars;
+using SharpMeasures.SourceGeneration.Scalars;
 
 using System.Threading.Tasks;
 

@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.SourceGenerators.Analyzers;
+﻿namespace SharpMeasures.SourceGeneration.Analyzers;
 
 public static class DiagnosticIDs
 {

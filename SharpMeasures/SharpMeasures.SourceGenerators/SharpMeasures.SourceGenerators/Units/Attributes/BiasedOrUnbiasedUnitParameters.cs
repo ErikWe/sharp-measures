@@ -1,6 +1,6 @@
-﻿namespace SharpMeasures.SourceGenerators.Units.Attributes;
+﻿namespace SharpMeasures.SourceGeneration.Units.Attributes;
 
-using SharpMeasures.Attributes.Parsing.Units;
+using SharpMeasures.SourceGeneration.Attributes.Parsing.Units;
 
 internal readonly record struct BiasedOrUnbiasedUnitParameters(GeneratedUnitAttributeParameters? UnbiasedParameters,
     GeneratedBiasedUnitAttributeParameters? BiasedParameters);

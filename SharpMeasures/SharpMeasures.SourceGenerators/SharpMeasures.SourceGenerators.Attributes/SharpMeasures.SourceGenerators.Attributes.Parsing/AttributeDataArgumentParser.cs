@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Attributes.Parsing;
+﻿namespace SharpMeasures.SourceGeneration.Attributes.Parsing;
 
 using Microsoft.CodeAnalysis;
 

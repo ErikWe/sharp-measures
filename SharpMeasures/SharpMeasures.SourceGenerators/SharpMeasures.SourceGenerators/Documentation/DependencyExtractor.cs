@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.SourceGenerators.Documentation;
+﻿namespace SharpMeasures.SourceGeneration.Documentation;
 
 using Microsoft.CodeAnalysis;
 

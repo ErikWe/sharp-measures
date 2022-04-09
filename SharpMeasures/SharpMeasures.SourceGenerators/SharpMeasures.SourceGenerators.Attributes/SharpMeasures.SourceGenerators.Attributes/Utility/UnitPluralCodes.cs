@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Attributes.Utility;
+﻿namespace SharpMeasures.SourceGeneration.Utility;
 
 /// <summary>Some common notation for producing the plural form of the name of a unit.</summary>
 public static class UnitPluralCodes

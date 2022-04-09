@@ -1,6 +1,6 @@
-﻿namespace SharpMeasures.SourceGenerators.Analyzers;
+﻿namespace SharpMeasures.SourceGeneration.Analyzers;
 
-using SharpMeasures.SourceGenerators.Analyzers.Diagnostics;
+using SharpMeasures.SourceGeneration.Analyzers.Diagnostics;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;

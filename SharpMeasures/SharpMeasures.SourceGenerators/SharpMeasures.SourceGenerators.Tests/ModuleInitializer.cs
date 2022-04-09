@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.SourceGenerators.Tests;
+﻿namespace SharpMeasures.SourceGeneration.Tests;
 
 using System.IO;
 using System.Runtime.CompilerServices;

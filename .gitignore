@@ -6,8 +6,6 @@
 **/CoverageReports/
 **/Doxygen/
 
-**/QuantityGeneration/build/
-
 # Verify
 *.received.*
 

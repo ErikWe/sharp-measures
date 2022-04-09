@@ -10,12 +10,8 @@
 		<Description>
 			Provides analyzers related to source generators for SharpMeasures.
 		</Description>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
-	  <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all">
@@ -26,7 +22,23 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes.Parsing\SharpMeasures.SourceGenerators.Attributes.Parsing.csproj" PrivateAssets="all" />
-		<ProjectReference Include="..\..\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes.csproj" />
+		<ProjectReference Include="..\..\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes.csproj" PrivateAssets="all" />
+		<ProjectReference Include="..\..\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.csproj" PrivateAssets="all" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<None Include="$(OutputPath)\SharpMeasures.SourceGenerators.Attributes.dll" Pack="true" PackagePath="lib/netstandard2.0" Visible="true" />
+		<None Include="$(OutputPath)\SharpMeasures.SourceGenerators.Attributes.xml" Pack="true" PackagePath="lib/netstandard2.0" Visible="true" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+		<None Include="$(OutputPath)\SharpMeasures.SourceGenerators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
+	  <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
 	</ItemGroup>
 
 </Project>

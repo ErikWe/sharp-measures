@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures;
+﻿namespace SharpMeasures.SourceGeneration;
 
 using System;
 
@@ -30,10 +30,6 @@ public sealed class FixedUnitInstanceAttribute : Attribute
     /// <param name="name">The name of the instance of the unit, in singular form.</param>
     /// <param name="plural">The name of the instance of the unit, in plural form.</param>
     /// <param name="value">The fixed value of the instance of the unit.</param>
-    /// <param name="symbol">The symbol of the instance of the unit.</param>
-    /// <param name="isSIUnit">Indicates whether this is a SI unit.</param>
-    /// <param name="isConstant">Indicates whether this is a constant.</param>
-    /// <param name="bias">The bias of the instance of the unit.</param>
     public FixedUnitInstanceAttribute(string name, string plural, double value)
     {
         Name = name;

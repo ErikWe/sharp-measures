@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Attributes;
-using SharpMeasures.Attributes.Utility;
+using SharpMeasures.SourceGeneration;
 
 using System;
 

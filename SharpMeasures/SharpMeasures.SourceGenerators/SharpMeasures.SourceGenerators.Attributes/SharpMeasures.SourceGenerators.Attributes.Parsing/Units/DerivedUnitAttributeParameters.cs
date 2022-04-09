@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Attributes.Parsing.Units;
+﻿namespace SharpMeasures.SourceGeneration.Attributes.Parsing.Units;
 
 using Microsoft.CodeAnalysis;
 
@@ -10,31 +10,31 @@ using System.Linq;
 public readonly record struct DerivedUnitAttributeParameters(ReadOnlyCollection<INamedTypeSymbol?> Signature, ReadOnlyCollection<INamedTypeSymbol?> Quantities,
     string Expression)
 {
+    private static DerivedUnitAttributeParameters Defaults { get; } = new
+    (
+        Signature: Array.AsReadOnly(Array.Empty<INamedTypeSymbol?>()),
+        Quantities: Array.AsReadOnly(Array.Empty<INamedTypeSymbol?>()),
+        Expression: string.Empty
+    );
+
+    private static Dictionary<string, AttributeProperty<DerivedUnitAttributeParameters>> ConstructorParameters { get; }
+        = Properties.AllProperties.ToDictionary(static (x) => x.ParameterName);
+
+    private static Dictionary<string, AttributeProperty<DerivedUnitAttributeParameters>> NamedParameters { get; }
+        = Properties.AllProperties.ToDictionary(static (x) => x.Name);
+
     public static DerivedUnitAttributeParameters? Parse(AttributeData attributeData)
     {
-        DerivedUnitAttributeParameters values = Properties.Defaults;
+        DerivedUnitAttributeParameters values = Defaults;
 
-        (bool success, values) = AttributeDataArgumentParser.Parse(attributeData, values, Properties.ConstructorParameters, Properties.NamedParameters);
+        (bool success, values) = AttributeDataArgumentParser.Parse(attributeData, values, ConstructorParameters, NamedParameters);
 
         return success ? values : null;
     }
 
     private static class Properties
     {
-        public static DerivedUnitAttributeParameters Defaults { get; } = new
-        (
-            Signature: Array.AsReadOnly(Array.Empty<INamedTypeSymbol?>()),
-            Quantities: Array.AsReadOnly(Array.Empty<INamedTypeSymbol?>()),
-            Expression: string.Empty
-        );
-
-        public static Dictionary<string, AttributeProperty<DerivedUnitAttributeParameters>> ConstructorParameters { get; }
-        = AllProperties.ToDictionary(static (x) => x.ParameterName);
-
-        public static Dictionary<string, AttributeProperty<DerivedUnitAttributeParameters>> NamedParameters { get; }
-            = AllProperties.ToDictionary(static (x) => x.Name);
-
-        private static List<AttributeProperty<DerivedUnitAttributeParameters>> AllProperties => new()
+        public static List<AttributeProperty<DerivedUnitAttributeParameters>> AllProperties => new()
         {
             Signature,
             Expression

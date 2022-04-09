@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures;
+﻿namespace SharpMeasures.SourceGeneration;
 
 using System;
 

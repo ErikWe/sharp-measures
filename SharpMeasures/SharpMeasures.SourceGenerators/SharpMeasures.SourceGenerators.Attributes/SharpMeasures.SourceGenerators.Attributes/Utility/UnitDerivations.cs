@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Attributes.Utility;
+﻿namespace SharpMeasures.SourceGeneration.Utility;
 
 /// <summary>Some common expressions for unit derivation.</summary>
 public static class UnitDerivations
