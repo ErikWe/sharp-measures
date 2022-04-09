@@ -2,7 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Attributes.Meta.Scalars;
+using SharpMeasures.Attributes.Parsing.Scalars;
 using SharpMeasures.SourceGenerators.Documentation;
 using SharpMeasures.SourceGenerators.Providers;
 

@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.SourceGenerators.Units.Pipeline;
 
-using SharpMeasures.Attributes.Meta.Units;
+using SharpMeasures.Attributes.Parsing.Units;
 using SharpMeasures.SourceGenerators.Documentation;
 using SharpMeasures.SourceGenerators.Providers;
 using SharpMeasures.SourceGenerators.Units.Attributes;

@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.SourceGenerators.Units.SourceBuilding;
 
-using SharpMeasures.Attributes.Meta.Units;
+using SharpMeasures.Attributes.Parsing.Units;
 using SharpMeasures.SourceGenerators.Units.Pipeline;
 using SharpMeasures.SourceGenerators.Utility;
 
@@ -29,7 +29,7 @@ internal static class UnitsComposer
 
     private static void AppendIndependentInstances<T>(StringBuilder source, FifthStage.Result data, HashSet<string> addedInstances, IEnumerable<T> instances,
         Action<StringBuilder, FifthStage.Result, T> expressionAppender, CancellationToken token)
-        where T : IUnitInstanceParameters
+        where T : IUnitInstanceAttributeParameters
     {
         foreach (T parameters in instances)
         {
@@ -52,7 +52,7 @@ internal static class UnitsComposer
     private static void AppendDependantInstances<T>(StringBuilder source, FifthStage.Result data, HashSet<string> addedInstances,
         List<IDerivedUnitInstanceAttributeParameters> unaddedInstances, IEnumerable<T> instances,
         Action<StringBuilder, FifthStage.Result, T> expressionAppender, CancellationToken token)
-        where T : IDerivedUnitInstanceAttributeParameters
+        where T : IDerivedUnitInstanceAttributeParameters, IUnitInstanceAttributeParameters
     {
         foreach (T parameters in instances)
         {
@@ -67,8 +67,9 @@ internal static class UnitsComposer
         }
     }
 
-    private static void AppendUnaddedInstances(StringBuilder source, FifthStage.Result data, HashSet<string> addedInstances,
-        List<IDerivedUnitInstanceAttributeParameters> unaddedInstances, CancellationToken token)
+    private static void AppendUnaddedInstances<T>(StringBuilder source, FifthStage.Result data, HashSet<string> addedInstances,
+        List<T> unaddedInstances, CancellationToken token)
+        where T : IDerivedUnitInstanceAttributeParameters, IUnitInstanceAttributeParameters
     {
         int initialCount = unaddedInstances.Count;
 
@@ -89,7 +90,7 @@ internal static class UnitsComposer
 
     private static void AppendInstance<T>(StringBuilder source, FifthStage.Result data, HashSet<string> addedInstances, T instance,
         Action<StringBuilder, FifthStage.Result, T> expressionAppender, CancellationToken _)
-        where T : IUnitInstanceParameters
+        where T : IUnitInstanceAttributeParameters
     {
         addedInstances.Add(instance.Name);
 
@@ -98,7 +99,7 @@ internal static class UnitsComposer
         source.Append($";{Environment.NewLine}");
     }
 
-    private static void AppendUnitExpression(StringBuilder source, FifthStage.Result data, IDerivedUnitInstanceAttributeParameters parameters)
+    private static void AppendUnitExpression<T>(StringBuilder source, FifthStage.Result data, T parameters)
     {
         switch (parameters)
         {
@@ -139,9 +140,9 @@ internal static class UnitsComposer
 
         IEnumerable<string> arguments()
         {
-            for (int i = 0; i < parameters.Signature.Count && i < parameters.InstanceNames.Count; i++)
+            for (int i = 0; i < parameters.Signature.Count && i < parameters.UnitInstanceNames.Count; i++)
             {
-                yield return $"{parameters.Signature[i]?.ToDisplayString()}.{parameters.InstanceNames[i]}";
+                yield return $"{parameters.Signature[i]?.ToDisplayString()}.{parameters.UnitInstanceNames[i]}";
             }
         }
     }
