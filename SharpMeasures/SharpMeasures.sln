@@ -5,25 +5,25 @@ VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{502ED935-8C0A-4F7B-970F-D4632F731AF0}"
 	ProjectSection(SolutionItems) = preProject
-		Directory.Build.props = Directory.Build.props
-		Directory.Build.targets = Directory.Build.targets
+		..\Directory.Build.props = ..\Directory.Build.props
+		..\Directory.Build.targets = ..\Directory.Build.targets
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.SourceGenerators.Attributes", "SharpMeasures\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes.csproj", "{B30EA9AA-8D5A-4E03-9657-0E490F8E40A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.SourceGenerators.Attributes", "SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes.csproj", "{B30EA9AA-8D5A-4E03-9657-0E490F8E40A1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Base", "SharpMeasures\SharpMeasures.Base\SharpMeasures.Base.csproj", "{9E2FCD61-2A77-4E29-A06A-1C68FBEC59E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Base", "SharpMeasures.Base\SharpMeasures.Base.csproj", "{9E2FCD61-2A77-4E29-A06A-1C68FBEC59E8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.SourceGenerators", "SharpMeasures\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.csproj", "{B2DFF72C-82D6-4D79-B1AF-F55738716F7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.SourceGenerators", "SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.csproj", "{B2DFF72C-82D6-4D79-B1AF-F55738716F7D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.SourceGenerators.Tests", "SharpMeasures\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.Tests\SharpMeasures.SourceGenerators.Tests.csproj", "{5840D10A-B7BC-4144-B657-813C788E8B05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.SourceGenerators.Tests", "SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.Tests\SharpMeasures.SourceGenerators.Tests.csproj", "{5840D10A-B7BC-4144-B657-813C788E8B05}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.SourceGenerators.Analyzers", "SharpMeasures\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.Analyzers\SharpMeasures.SourceGenerators.Analyzers\SharpMeasures.SourceGenerators.Analyzers.csproj", "{D6A778F2-362E-40BF-BB2A-11C2911087D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.SourceGenerators.Analyzers", "SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.Analyzers\SharpMeasures.SourceGenerators.Analyzers\SharpMeasures.SourceGenerators.Analyzers.csproj", "{D6A778F2-362E-40BF-BB2A-11C2911087D6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures", "SharpMeasures\SharpMeasures\SharpMeasures.csproj", "{8DC296AE-6DA4-4DB1-9C83-E06456E5597A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures", "SharpMeasures\SharpMeasures.csproj", "{8DC296AE-6DA4-4DB1-9C83-E06456E5597A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.SourceGenerators.Analyzers.Fixes", "SharpMeasures\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.Analyzers\SharpMeasures.SourceGenerators.Analyzers.Fixes\SharpMeasures.SourceGenerators.Analyzers.Fixes.csproj", "{15DCB84B-3FD5-4CA6-BB77-377225B8CDDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.SourceGenerators.Analyzers.Fixes", "SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.Analyzers\SharpMeasures.SourceGenerators.Analyzers.Fixes\SharpMeasures.SourceGenerators.Analyzers.Fixes.csproj", "{15DCB84B-3FD5-4CA6-BB77-377225B8CDDF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.SourceGenerators.Attributes.Parsing", "SharpMeasures\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes.Parsing\SharpMeasures.SourceGenerators.Attributes.Parsing.csproj", "{03EE0DFD-953D-4BE4-A864-07D25080B440}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.SourceGenerators.Attributes.Parsing", "SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes.Parsing\SharpMeasures.SourceGenerators.Attributes.Parsing.csproj", "{03EE0DFD-953D-4BE4-A864-07D25080B440}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
