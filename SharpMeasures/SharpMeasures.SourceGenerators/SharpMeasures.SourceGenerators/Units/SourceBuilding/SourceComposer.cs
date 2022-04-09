@@ -12,8 +12,8 @@ internal static class SourceComposer
     public static string Compose(FifthStage.Result data, CancellationToken token)
     {
         string typeName = data.TypeSymbol.Name;
-        string? quantityType = data.Parameters.Quantity?.ToDisplayString();
-        string? quantityName = data.Parameters.Quantity?.Name;
+        string? quantityType = data.Parameters.UnbiasedParameters?.Quantity?.ToDisplayString();
+        string? quantityName = data.Parameters.UnbiasedParameters?.Quantity?.Name;
         string? quantityParameterName = quantityName is null ? null : SourceBuildingUtility.ToParameterName(quantityName);
 
         StringBuilder source = new();

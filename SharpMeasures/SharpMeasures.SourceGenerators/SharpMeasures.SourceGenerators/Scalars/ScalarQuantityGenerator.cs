@@ -1,6 +1,6 @@
-﻿namespace SharpMeasures.SourceGenerators.ScalarQuantities;
+﻿namespace SharpMeasures.SourceGenerators.Scalars;
 
-using SharpMeasures.SourceGenerators.ScalarQuantities.Pipeline;
+using SharpMeasures.SourceGenerators.Scalars.Pipeline;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;

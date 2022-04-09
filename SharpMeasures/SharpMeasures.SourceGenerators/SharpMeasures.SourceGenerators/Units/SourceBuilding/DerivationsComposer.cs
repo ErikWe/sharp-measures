@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.SourceGenerators.Units.SourceBuilding;
 
-using SharpMeasures.SourceGenerators.Units.Attributes;
+using SharpMeasures.Attributes.Meta.Units;
 using SharpMeasures.SourceGenerators.Units.Pipeline;
 using SharpMeasures.SourceGenerators.Utility;
 
@@ -27,9 +27,9 @@ internal static class DerivationsComposer
 
             IEnumerable<string> signatureComponents()
             {
-                for (int i = 0; i < derivation.Signature.Length; i++)
+                for (int i = 0; i < derivation.Signature.Count; i++)
                 {
-                    yield return $"{derivation.Signature[i].Unit.ToDisplayString()} {parameterNames[i]}";
+                    yield return $"{derivation.Signature[i]?.ToDisplayString()} {parameterNames[i]}";
                 }
             }
 
@@ -44,7 +44,7 @@ internal static class DerivationsComposer
         }
     }
 
-    private static string[] GetSignatureParameterNames((INamedTypeSymbol Unit, INamedTypeSymbol Quantity)[] signature)
+    private static string[] GetSignatureParameterNames(IReadOnlyList<INamedTypeSymbol?> signature)
     {
         static void incrementCount(Dictionary<INamedTypeSymbol, int> counts, INamedTypeSymbol symbol)
         {
@@ -65,17 +65,23 @@ internal static class DerivationsComposer
             return count > 0 ? count.ToString(CultureInfo.InvariantCulture) : "";
         }
 
-        Dictionary<INamedTypeSymbol, int> counts = new(signature.Length, SymbolEqualityComparer.Default); 
+        Dictionary<INamedTypeSymbol, int> counts = new(signature.Count, SymbolEqualityComparer.Default); 
 
-        foreach ((INamedTypeSymbol unit, INamedTypeSymbol quantity) in signature)
+        foreach (INamedTypeSymbol? unit in signature)
         {
-            incrementCount(counts, unit);
+            if (unit is not null)
+            {
+                incrementCount(counts, unit);
+            }
         }
 
-        string[] names = new string[signature.Length];
-        for (int i = signature.Length - 1; i >= 0; i--)
+        string[] names = new string[signature.Count];
+        for (int i = signature.Count - 1; i >= 0; i--)
         {
-            names[i] = $"{SourceBuildingUtility.ToParameterName(signature[i].Unit.Name)}{getParameterNumber(counts, signature[i].Unit)}";
+            if (signature[i] is INamedTypeSymbol unit)
+            {
+                names[i] = $"{SourceBuildingUtility.ToParameterName(unit.Name)}{getParameterNumber(counts, unit)}";
+            }
         }
 
         return names;
@@ -84,10 +90,10 @@ internal static class DerivationsComposer
     private static string ParseExpression(DerivedUnitAttributeParameters parameters, string[] parameterNames)
     {
         string expression = parameters.Expression;
-        for (int i = 0; i < parameters.Signature.Length; i++)
+        for (int i = 0; i < parameters.Signature.Count; i++)
         {
             Regex regex = new($@"\{{{i}\}}");
-            expression = regex.Replace(expression, $"{parameterNames[i]}.{parameters.Signature[i].Quantity.Name}");
+            expression = regex.Replace(expression, $"{parameterNames[i]}.{parameters.Quantities[i]?.Name}");
         }
 
         return expression;

@@ -12,7 +12,7 @@ using System.Collections.Immutable;
 
 internal static class UnitAttributeDiagnostics
 {
-    private static string AttributeFullName { get; } = typeof(UnitAttribute).FullName;
+    private static string AttributeFullName { get; } = typeof(GeneratedUnitAttribute).FullName;
 
     public static void Analyze(SymbolAnalysisContext context, INamedTypeSymbol namedTypeSymbol, AttributeData attribute)
     {

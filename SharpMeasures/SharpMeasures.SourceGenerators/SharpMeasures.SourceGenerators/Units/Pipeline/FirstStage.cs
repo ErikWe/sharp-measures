@@ -10,7 +10,7 @@ internal static class FirstStage
     public readonly record struct Result(MarkedDeclarationSyntaxProvider.OutputData Declaration);
 
     public static IncrementalValuesProvider<Result> Perform(IncrementalGeneratorInitializationContext context)
-        => MarkedDeclarationSyntaxProvider.Attach(context.SyntaxProvider, OutputTransform, new[] { typeof(UnitAttribute), typeof(BiasedUnitAttribute) });
+        => MarkedDeclarationSyntaxProvider.Attach(context.SyntaxProvider, OutputTransform, new[] { typeof(GeneratedUnitAttribute), typeof(GeneratedBiasedUnitAttribute) });
 
     private static Result OutputTransform(MarkedDeclarationSyntaxProvider.OutputData declaration) => new(declaration);
 }

@@ -15,8 +15,10 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
+		<ProjectReference Include="..\SharpMeasures.Base\SharpMeasures.Base.csproj" />
 		<ProjectReference Include="..\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.Analyzers\SharpMeasures.SourceGenerators.Analyzers.Fixes\SharpMeasures.SourceGenerators.Analyzers.Fixes.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
 		<ProjectReference Include="..\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.Analyzers\SharpMeasures.SourceGenerators.Analyzers\SharpMeasures.SourceGenerators.Analyzers.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+		<ProjectReference Include="..\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes.Meta\SharpMeasures.SourceGenerators.Attributes.Meta.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
 		<ProjectReference Include="..\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
 		<ProjectReference Include="..\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators\SharpMeasures.SourceGenerators.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
 	</ItemGroup>

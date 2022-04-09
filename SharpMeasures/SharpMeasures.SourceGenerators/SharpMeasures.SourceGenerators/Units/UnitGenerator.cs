@@ -23,9 +23,9 @@ public class UnitGenerator : IIncrementalGenerator
 
     private static void Execute(SourceProductionContext context, FifthStage.Result result)
     {
-        string source = result.Parameters.Biased ?
-            BiasedSourceComposer.Compose(result, context.CancellationToken) :
-            SourceComposer.Compose(result, context.CancellationToken);
+        string source = result.Parameters.BiasedParameters is null
+            ? SourceComposer.Compose(result, context.CancellationToken)
+            : BiasedSourceComposer.Compose(result, context.CancellationToken);
 
         context.AddSource($"{result.Declaration.Type.Identifier.Text}.g.cs", SourceText.From(source, Encoding.UTF8));
     }

@@ -1,9 +1,9 @@
-﻿namespace SharpMeasures.Attributes;
+﻿namespace SharpMeasures;
 
 using System;
 
 /// <summary>Defines an instance of the unit as a derivation from instances of other units.</summary>
-/// <remarks>This attribute is expected to be used in conjunction with <see cref="UnitAttribute"/> or <see cref="BiasedUnitAttribute"/>
+/// <remarks>This attribute is expected to be used in conjunction with <see cref="GeneratedUnitAttribute"/> or <see cref="GeneratedBiasedUnitAttribute"/>
 /// - and <see cref="DerivedUnitAttribute"/>.</remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class DerivedUnitInstanceAttribute : Attribute

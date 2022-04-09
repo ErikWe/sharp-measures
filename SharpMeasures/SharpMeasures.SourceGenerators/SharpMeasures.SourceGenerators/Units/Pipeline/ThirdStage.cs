@@ -10,7 +10,8 @@ using System.Collections.Generic;
 
 internal static class ThirdStage
 {
-    public readonly record struct Result(MarkedDeclarationSyntaxProvider.OutputData Declaration, IEnumerable<DocumentationFile> Documentation, INamedTypeSymbol TypeSymbol);
+    public readonly record struct Result(MarkedDeclarationSyntaxProvider.OutputData Declaration, IEnumerable<DocumentationFile> Documentation,
+        INamedTypeSymbol TypeSymbol);
 
     public static IncrementalValuesProvider<Result> Perform(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<SecondStage.Result> provider)
         => TypeSymbolProvider.Attach(provider, context.CompilationProvider, InputTransform, OutputTransform)

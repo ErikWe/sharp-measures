@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.SourceGenerators.Units.Pipeline;
 
-using SharpMeasures.Attributes;
+using SharpMeasures.Attributes.Meta.Units;
 using SharpMeasures.SourceGenerators.Documentation;
 using SharpMeasures.SourceGenerators.Providers;
 using SharpMeasures.SourceGenerators.Units.Attributes;
@@ -18,10 +18,10 @@ internal static class FifthStage
         IEnumerable<PrefixedUnitInstanceAttributeParameters> Prefixed, IEnumerable<OffsetUnitInstanceAttributeParameters> Offset);
 
     public readonly record struct Result(MarkedDeclarationSyntaxProvider.OutputData Declaration, IEnumerable<DocumentationFile> Documentation,
-        INamedTypeSymbol TypeSymbol, UnitAttributeParameters Parameters, IEnumerable<DerivedUnitAttributeParameters> Derivations, UnitInstances Instances);
+        INamedTypeSymbol TypeSymbol, BiasedOrUnbiasedUnitParameters Parameters, IEnumerable<DerivedUnitAttributeParameters> Derivations, UnitInstances Instances);
 
     private readonly record struct IntermediateResult(MarkedDeclarationSyntaxProvider.OutputData Declaration, IEnumerable<DocumentationFile> Documentation,
-        INamedTypeSymbol TypeSymbol, UnitAttributeParameters Parameters, IEnumerable<AttributeData> DerivationData,
+        INamedTypeSymbol TypeSymbol, BiasedOrUnbiasedUnitParameters Parameters, IEnumerable<AttributeData> DerivationData,
         IEnumerable<DerivedUnitAttributeParameters> Derivations, IEnumerable<AttributeData> FixedInstanceData,
         IEnumerable<FixedUnitInstanceAttributeParameters> FixedInstances, IEnumerable<AttributeData> AliasInstanceData,
         IEnumerable<AliasUnitInstanceAttributeParameters> AliasInstances, IEnumerable<AttributeData> DerivedInstanceData,
@@ -70,14 +70,15 @@ internal static class FifthStage
 
     private static IntermediateResult InputTransform(FourthStage.Result input) => new(input.Declaration, input.Documentation, input.TypeSymbol, input.Parameters,
         Array.Empty<AttributeData>(), Array.Empty<DerivedUnitAttributeParameters>(), Array.Empty<AttributeData>(), Array.Empty<FixedUnitInstanceAttributeParameters>(),
-        Array.Empty<AttributeData>(), Array.Empty<AliasUnitInstanceAttributeParameters>(), Array.Empty<AttributeData>(), Array.Empty<DerivedUnitInstanceAttributeParameters>(),
-        Array.Empty<AttributeData>(), Array.Empty<ScaledUnitInstanceAttributeParameters>(), Array.Empty<AttributeData>(),
-        Array.Empty<PrefixedUnitInstanceAttributeParameters>(), Array.Empty<AttributeData>(), Array.Empty<OffsetUnitInstanceAttributeParameters>());
+        Array.Empty<AttributeData>(), Array.Empty<AliasUnitInstanceAttributeParameters>(), Array.Empty<AttributeData>(),
+        Array.Empty<DerivedUnitInstanceAttributeParameters>(), Array.Empty<AttributeData>(), Array.Empty<ScaledUnitInstanceAttributeParameters>(),
+        Array.Empty<AttributeData>(), Array.Empty<PrefixedUnitInstanceAttributeParameters>(), Array.Empty<AttributeData>(),
+        Array.Empty<OffsetUnitInstanceAttributeParameters>());
     private static INamedTypeSymbol InputTransform(IntermediateResult input) => input.TypeSymbol;
 
     private static Result OutputTransform(IntermediateResult input)
-        => new(input.Declaration, input.Documentation, input.TypeSymbol, input.Parameters, input.Derivations, new UnitInstances(input.FixedInstances, input.AliasInstances,
-            input.DerivedInstances, input.ScaledInstances, input.PrefixedInstances, input.OffsetInstances));
+        => new(input.Declaration, input.Documentation, input.TypeSymbol, input.Parameters, input.Derivations, new UnitInstances(input.FixedInstances,
+            input.AliasInstances, input.DerivedInstances, input.ScaledInstances, input.PrefixedInstances, input.OffsetInstances));
 
     private readonly record struct AttributeTransforms<TParameters, TParsedParameters>(
         MatchingAttributeDataProvider.DOutputTransformMultiple<IntermediateResult, IntermediateResult> AttributeAppender,
@@ -86,7 +87,8 @@ internal static class FifthStage
         AttributeParametersProvider.DParameterTransform<TParsedParameters> ParameterParser,
         Type AttributeType);
 
-    private static AttributeTransforms<DerivedUnitAttributeParameters, DerivedUnitAttributeParameters?> DerivationTransforms { get; } = new(
+    private static AttributeTransforms<DerivedUnitAttributeParameters, DerivedUnitAttributeParameters?> DerivationTransforms { get; } = new
+    (
         static (result, data) => result with { DerivationData = data },
         static (result) => result.DerivationData,
         static (result, parameters) => result with { Derivations = parameters },
@@ -94,7 +96,8 @@ internal static class FifthStage
         typeof(DerivedUnitAttribute)
     );
 
-    private static AttributeTransforms<FixedUnitInstanceAttributeParameters, FixedUnitInstanceAttributeParameters?> FixedInstanceTransforms { get; } = new(
+    private static AttributeTransforms<FixedUnitInstanceAttributeParameters, FixedUnitInstanceAttributeParameters?> FixedInstanceTransforms { get; } = new
+    (
         static (result, data) => result with { FixedInstanceData = data },
         static (result) => result.FixedInstanceData,
         static (result, parameters) => result with { FixedInstances = parameters },
@@ -102,7 +105,8 @@ internal static class FifthStage
         typeof(FixedUnitInstanceAttribute)
     );
 
-    private static AttributeTransforms<AliasUnitInstanceAttributeParameters, AliasUnitInstanceAttributeParameters?> AliasInstanceTransforms { get; } = new(
+    private static AttributeTransforms<AliasUnitInstanceAttributeParameters, AliasUnitInstanceAttributeParameters?> AliasInstanceTransforms { get; } = new
+    (
         static (result, data) => result with { AliasInstanceData = data },
         static (result) => result.AliasInstanceData,
         static (result, parameters) => result with { AliasInstances = parameters },
@@ -110,7 +114,8 @@ internal static class FifthStage
         typeof(AliasUnitInstanceAttribute)
     );
 
-    private static AttributeTransforms<DerivedUnitInstanceAttributeParameters, DerivedUnitInstanceAttributeParameters?> DerivedInstanceTransforms { get; } = new(
+    private static AttributeTransforms<DerivedUnitInstanceAttributeParameters, DerivedUnitInstanceAttributeParameters?> DerivedInstanceTransforms { get; } = new
+    (
         static (result, data) => result with { DerivedInstanceData = data },
         static (result) => result.DerivedInstanceData,
         static (result, parameters) => result with { DerivedInstances = parameters },
@@ -118,7 +123,8 @@ internal static class FifthStage
         typeof(DerivedUnitInstanceAttribute)
     );
 
-    private static AttributeTransforms<ScaledUnitInstanceAttributeParameters, ScaledUnitInstanceAttributeParameters?> ScaledInstanceTransforms { get; } = new(
+    private static AttributeTransforms<ScaledUnitInstanceAttributeParameters, ScaledUnitInstanceAttributeParameters?> ScaledInstanceTransforms { get; } = new
+    (
         static (result, data) => result with { ScaledInstanceData = data },
         static (result) => result.ScaledInstanceData,
         static (result, parameters) => result with { ScaledInstances = parameters },
@@ -126,7 +132,8 @@ internal static class FifthStage
         typeof(ScaledUnitInstanceAttribute)
     );
 
-    private static AttributeTransforms<PrefixedUnitInstanceAttributeParameters, PrefixedUnitInstanceAttributeParameters?> PrefixedInstanceTransforms { get; } = new(
+    private static AttributeTransforms<PrefixedUnitInstanceAttributeParameters, PrefixedUnitInstanceAttributeParameters?> PrefixedInstanceTransforms { get; } = new
+    (
         static (result, data) => result with { PrefixedInstanceData = data },
         static (result) => result.PrefixedInstanceData,
         static (result, parameters) => result with { PrefixedInstances = parameters },
@@ -134,7 +141,8 @@ internal static class FifthStage
         typeof(PrefixedUnitInstanceAttribute)
     );
 
-    private static AttributeTransforms<OffsetUnitInstanceAttributeParameters, OffsetUnitInstanceAttributeParameters?> OffsetInstanceTransforms { get; } = new(
+    private static AttributeTransforms<OffsetUnitInstanceAttributeParameters, OffsetUnitInstanceAttributeParameters?> OffsetInstanceTransforms { get; } = new
+    (
         static (result, data) => result with { OffsetInstanceData = data },
         static (result) => result.OffsetInstanceData,
         static (result, parameters) => result with { OffsetInstances = parameters },

@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.Utility;
+using SharpMeasures.Maths;
 
 using System;
 using System.Numerics;

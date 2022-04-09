@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.SourceGenerators.ScalarQuantities.Pipeline;
+﻿namespace SharpMeasures.SourceGenerators.Scalars.Pipeline;
 
 using SharpMeasures.SourceGenerators.Documentation;
 using SharpMeasures.SourceGenerators.Providers;

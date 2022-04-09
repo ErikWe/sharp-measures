@@ -1,11 +1,11 @@
-﻿namespace SharpMeasures.Attributes;
+﻿namespace SharpMeasures;
 
 using System;
 
 /// <summary>Defines an instance of the unit, using a fixed value.</summary>
 /// <remarks>It is recommended to only define the SI unit using <see cref="FixedUnitInstanceAttribute"/>, and then
 /// derive other instances based on that instance - using, for example, <see cref="ScaledUnitInstanceAttribute"/>.
-/// <para>This attribute is expected to be used in conjunction with <see cref="UnitAttribute"/> or <see cref="BiasedUnitAttribute"/>.</para></remarks>
+/// <para>This attribute is expected to be used in conjunction with <see cref="GeneratedUnitAttribute"/> or <see cref="GeneratedBiasedUnitAttribute"/>.</para></remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class FixedUnitInstanceAttribute : Attribute
 {

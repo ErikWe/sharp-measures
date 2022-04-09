@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.SourceGenerators.Analyzers.Diagnostics;
 
-using SharpMeasures.Attributes;
-
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -35,15 +33,15 @@ public static class AttributeDiagnostics
                 continue;
             }
 
-            if (candidateName == typeof(ScalarQuantityAttribute).FullName)
+            if (candidateName == typeof(GeneratedScalarQuantityAttribute).FullName)
             {
                 ScalarQuantityAttributeDiagnostics.Analyze(context, namedTypeSymbol, attribute);
             }
-            else if (candidateName == typeof(UnitAttribute).FullName)
+            else if (candidateName == typeof(GeneratedUnitAttribute).FullName)
             {
                 UnitAttributeDiagnostics.Analyze(context, namedTypeSymbol, attribute);
             }
-            else if (candidateName == typeof(BiasedUnitAttribute).FullName)
+            else if (candidateName == typeof(GeneratedBiasedUnitAttribute).FullName)
             {
                 BiasedUnitAttributeDiagnostics.Analyze(context, namedTypeSymbol, attribute);
             }

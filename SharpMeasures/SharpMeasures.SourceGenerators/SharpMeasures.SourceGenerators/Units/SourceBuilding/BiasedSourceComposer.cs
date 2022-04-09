@@ -13,12 +13,12 @@ internal static class BiasedSourceComposer
     {
         string typeName = data.TypeSymbol.Name;
         
-        string? quantityType = data.Parameters.Quantity?.ToDisplayString();
-        string? quantityName = data.Parameters.Quantity?.Name;
+        string? quantityType = data.Parameters.BiasedParameters?.BiasedQuantity?.ToDisplayString();
+        string? quantityName = data.Parameters.BiasedParameters?.BiasedQuantity?.Name;
         string? quantityParameterName = quantityName is null ? null : SourceBuildingUtility.ToParameterName(quantityName);
 
-        string? unbiasedQuantityType = data.Parameters.BiasedQuantity?.ToDisplayString();
-        string? unbiasedQuantityName = data.Parameters.BiasedQuantity?.Name;
+        string? unbiasedQuantityType = data.Parameters.BiasedParameters?.UnbiasedQuantity?.ToDisplayString();
+        string? unbiasedQuantityName = data.Parameters.BiasedParameters?.UnbiasedQuantity?.Name;
         string? unbiasedQUantityParameterName = unbiasedQuantityName is not null ? SourceBuildingUtility.ToParameterName(unbiasedQuantityName) : null;
 
         StringBuilder source = new();

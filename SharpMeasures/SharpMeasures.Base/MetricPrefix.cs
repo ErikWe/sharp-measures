@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Units;
+﻿namespace SharpMeasures;
 
 using System;
 

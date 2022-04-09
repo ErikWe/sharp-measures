@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.SourceGenerators.Analyzers.Diagnostics;
 
-using SharpMeasures.Attributes;
-
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -12,7 +10,7 @@ using System.Collections.Immutable;
 
 internal static class BiasedUnitAttributeDiagnostics
 {
-    private static string AttributeFullName { get; } = typeof(BiasedUnitAttribute).FullName;
+    private static string AttributeFullName { get; } = typeof(GeneratedBiasedUnitAttribute).FullName;
 
     public static void Analyze(SymbolAnalysisContext context, INamedTypeSymbol namedTypeSymbol, AttributeData attribute)
     {

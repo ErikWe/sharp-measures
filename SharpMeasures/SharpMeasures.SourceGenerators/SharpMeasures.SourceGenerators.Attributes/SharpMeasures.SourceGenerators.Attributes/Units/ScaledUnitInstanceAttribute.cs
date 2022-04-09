@@ -1,9 +1,9 @@
-﻿namespace SharpMeasures.Attributes;
+﻿namespace SharpMeasures;
 
 using System;
 
 /// <summary>Defines an instance of the unit by scaling of another instance of the same unit.</summary>
-/// <remarks>This attribute is expected to be used in conjunction with <see cref="UnitAttribute"/> or <see cref="BiasedUnitAttribute"/>.</remarks>
+/// <remarks>This attribute is expected to be used in conjunction with <see cref="GeneratedUnitAttribute"/> or <see cref="GeneratedBiasedUnitAttribute"/>.</remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class ScaledUnitInstanceAttribute : Attribute
 {

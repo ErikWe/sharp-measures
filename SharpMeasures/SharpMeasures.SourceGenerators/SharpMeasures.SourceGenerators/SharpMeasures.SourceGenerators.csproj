@@ -20,12 +20,6 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-		<None Include="$(OutputPath)\SharpMeasures.SourceGenerators.Attributes.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-		<None Include="$(OutputPath)\SharpMeasures.SourceGenerators.Attributes.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="true" />
-	</ItemGroup>
-	
-	<ItemGroup>
 	  <ProjectReference Include="..\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes.Meta\SharpMeasures.SourceGenerators.Attributes.Meta.csproj" PrivateAssets="all" />
 	  <ProjectReference Include="..\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes\SharpMeasures.SourceGenerators.Attributes.csproj" />
 	</ItemGroup>
