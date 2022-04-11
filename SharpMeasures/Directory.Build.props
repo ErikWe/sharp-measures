@@ -11,7 +11,7 @@
 
 	<PropertyGroup>
 		<Authors>ErikWe</Authors>
-		<Version>0.2.14</Version>
+		<Version>0.2.35</Version>
 		<NeutralLanguage>en</NeutralLanguage>
 		<RepositoryUrl>https://github.com/ErikWe/sharp-measures</RepositoryUrl>
 	</PropertyGroup>

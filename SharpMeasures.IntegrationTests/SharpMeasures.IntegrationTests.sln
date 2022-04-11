@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.IntegrationTe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.IntegrationTests.SourceGenerators", "SharpMeasures.IntegrationTests.SourceGenerators\SharpMeasures.IntegrationTests.SourceGenerators.csproj", "{F3E0F087-C364-4A6A-A206-43BAA1759200}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMeasures.IntegrationTests.Analyzers", "SharpMeasures.IntegrationTests.Analyzers\SharpMeasures.IntegrationTests.Analyzers.csproj", "{25989CA5-5768-4B04-BAA7-94E3AF11258B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.IntegrationTests.Analyzers", "SharpMeasures.IntegrationTests.Analyzers\SharpMeasures.IntegrationTests.Analyzers.csproj", "{25989CA5-5768-4B04-BAA7-94E3AF11258B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMeasures.IntegrationTests.Fixes", "SharpMeasures.IntegrationTests.Fixes\SharpMeasures.IntegrationTests.Fixes.csproj", "{E3663006-EB71-4303-BEFE-5DFF3F468ACC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{25989CA5-5768-4B04-BAA7-94E3AF11258B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25989CA5-5768-4B04-BAA7-94E3AF11258B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25989CA5-5768-4B04-BAA7-94E3AF11258B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3663006-EB71-4303-BEFE-5DFF3F468ACC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3663006-EB71-4303-BEFE-5DFF3F468ACC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3663006-EB71-4303-BEFE-5DFF3F468ACC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3663006-EB71-4303-BEFE-5DFF3F468ACC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

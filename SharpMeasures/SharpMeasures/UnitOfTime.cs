@@ -1,18 +1,14 @@
 ﻿namespace SharpMeasures;
 
-using SharpMeasures.SourceGeneration;
+using SharpMeasures.Generators;
 
 using System;
 
-//[Unit(typeof(Length))]
-//[FixedUnitInstance("Metre", UnitPluralCodes.AppendS, 1)]
+//[GeneratedUnit(typeof(Length))]
 //public readonly partial record struct UnitOfLength { }
 
-//[Unit(typeof(Time))]
-//[FixedUnitInstance("Second", UnitPluralCodes.AppendS, 1)]
+//[GeneratedUnit(typeof(Time))]
 //public readonly partial record struct UnitOfTime { }
 
-//[Unit(typeof(Speed))]
-//[DerivedUnit(UnitDerivations.Division, typeof(UnitOfLength), typeof(UnitOfTime))]
-//[DerivedUnitInstance("MetrePerSecond", UnitPluralCodes.InsertSBeforePer, new Type[] { typeof(UnitOfLength), typeof(UnitOfTime) }, new string[] { "Metre", "Second" })]
+//[GeneratedUnit(typeof(Speed))]
 //public readonly partial record struct UnitOfSpeed { }
