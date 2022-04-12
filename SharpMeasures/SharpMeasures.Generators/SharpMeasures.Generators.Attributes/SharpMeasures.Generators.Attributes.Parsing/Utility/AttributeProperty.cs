@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Attributes.Parsing;
+﻿namespace SharpMeasures.Generators.Attributes.Parsing.Utility;
 
 using System;
 using System.Globalization;

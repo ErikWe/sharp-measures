@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using System.Collections.Generic;
 
-internal static class InterfaceHelpers
+internal static class InterfaceUtility
 {
     public static INamedTypeSymbol? GetInterfaceImplementationSymbol(INamedTypeSymbol typeSymbol, INamedTypeSymbol interfaceSymbol)
     {

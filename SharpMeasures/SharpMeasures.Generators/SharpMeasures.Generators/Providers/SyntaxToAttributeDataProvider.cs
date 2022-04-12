@@ -22,5 +22,5 @@ internal static class SyntaxToAttributeDataProvider
             => input is not null ? outputTransform(input, ExtractAttributeData(inputTransform(input))) : default;
     }
 
-    private static AttributeData? ExtractAttributeData(InputData data) => AttributeHelpers.ExtractAttributeData(data.TypeSymbol, data.Attribute);
+    private static AttributeData? ExtractAttributeData(InputData data) => AttributeUtility.ExtractAttributeData(data.TypeSymbol, data.Attribute);
 }

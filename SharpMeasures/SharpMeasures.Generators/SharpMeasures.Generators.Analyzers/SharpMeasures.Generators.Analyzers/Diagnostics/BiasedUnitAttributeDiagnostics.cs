@@ -10,10 +10,10 @@ using System.Collections.Immutable;
 
 internal static class BiasedUnitAttributeDiagnostics
 {
-    private static string AttributeFullName { get; } = typeof(GeneratedBiasedUnitAttribute).FullName;
+    private static Type BiasedUnitAttributeType { get; } = typeof(GeneratedBiasedUnitAttribute);
 
     public static void Analyze(SymbolAnalysisContext context, INamedTypeSymbol namedTypeSymbol, AttributeData attribute)
     {
-        TypeIsNotPartialDiagnostics.AnalyzeNamedType(context, namedTypeSymbol, AttributeFullName);
+        TypeIsNotPartialDiagnostics.AnalyzeNamedType(context, namedTypeSymbol, BiasedUnitAttributeType);
     }
 }

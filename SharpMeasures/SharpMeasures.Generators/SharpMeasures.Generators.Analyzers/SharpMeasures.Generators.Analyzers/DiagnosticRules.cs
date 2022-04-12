@@ -11,7 +11,7 @@ internal static class DiagnosticRules
         id: DiagnosticIDs.TypeIsNotPartial,
         title: "Source generation requires types to be partial",
         messageFormat: "To enable source generation, as indicated by the attribute {0}, {1} has to be made partial",
-        category: "Syntax",
+        category: "Design",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
@@ -19,9 +19,9 @@ internal static class DiagnosticRules
     public readonly static DiagnosticDescriptor TypeIsNotScalarQuantity = new DiagnosticDescriptor(
         id: DiagnosticIDs.TypeIsNotScalarQuantity,
         title: "Expected a scalar quantity",
-        messageFormat: "Argument has to be a scalar quantity. Add the attribute {0} to {1}.",
+        messageFormat: "Argument should be a scalar quantity. Add the attribute {0} to {1}.",
         category: "Design",
-        defaultSeverity: DiagnosticSeverity.Error,
+        defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
 }

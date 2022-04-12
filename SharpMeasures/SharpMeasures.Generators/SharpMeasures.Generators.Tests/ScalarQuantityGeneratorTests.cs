@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Tests;
 
 using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators.Tests.Utility;
 
 using System.Threading.Tasks;
 
@@ -26,6 +27,6 @@ namespace Foo
     }
 }";
 
-        return Utility.VerifyGenerator<ScalarQuantityGenerator>(source);
+        return VerifyGenerator.FromRawText<ScalarQuantityGenerator>(source);
     }
 }

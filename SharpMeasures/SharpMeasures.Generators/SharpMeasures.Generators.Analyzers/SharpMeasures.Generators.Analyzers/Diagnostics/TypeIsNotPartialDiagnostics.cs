@@ -5,9 +5,11 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
+using System;
+
 internal static class TypeIsNotPartialDiagnostics
 {
-    public static void AnalyzeNamedType(SymbolAnalysisContext context, INamedTypeSymbol namedTypeSymbol, string relevantAttribute)
+    public static void AnalyzeNamedType(SymbolAnalysisContext context, INamedTypeSymbol namedTypeSymbol, Type relevantAttribute)
     {
         if (namedTypeSymbol.DeclaringSyntaxReferences.Length is not 1)
         {
@@ -20,7 +22,9 @@ internal static class TypeIsNotPartialDiagnostics
             return;
         }
 
-        Diagnostic diagnostics = Diagnostic.Create(DiagnosticRules.TypeIsNotPartial, declarationSyntax.Identifier.GetLocation(), relevantAttribute, namedTypeSymbol.Name);
+        Diagnostic diagnostics = Diagnostic.Create(DiagnosticRules.TypeIsNotPartial, declarationSyntax.Identifier.GetLocation(),
+            relevantAttribute.FullName, namedTypeSymbol.Name);
+
         context.ReportDiagnostic(diagnostics);
     }
 

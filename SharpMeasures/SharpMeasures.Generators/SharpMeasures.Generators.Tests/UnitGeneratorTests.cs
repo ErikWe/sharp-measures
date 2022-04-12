@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Tests;
 
 using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Tests.Utility;
 
 using System.Threading.Tasks;
 
@@ -43,6 +44,6 @@ namespace Foo
     }
 }";
 
-        return Utility.VerifyGenerator<UnitGenerator>(source);
+        return VerifyGenerator.FromRawText<UnitGenerator>(source);
     }
 }

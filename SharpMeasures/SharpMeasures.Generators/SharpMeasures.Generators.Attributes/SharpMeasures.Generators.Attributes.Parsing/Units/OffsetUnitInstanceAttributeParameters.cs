@@ -2,7 +2,10 @@
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Generators.Attributes.Parsing.Utility;
+
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 public readonly record struct OffsetUnitInstanceAttributeParameters(string Name, string Plural, string Symbol, bool IsSIUnit, bool IsConstant,
@@ -32,14 +35,24 @@ public readonly record struct OffsetUnitInstanceAttributeParameters(string Name,
     {
         OffsetUnitInstanceAttributeParameters values = Defaults;
 
-        (bool success, values) = AttributeDataArgumentParser.Parse(attributeData, values, ConstructorParameters, NamedParameters);
+        (bool success, values) = ArgumentParser.Parse(attributeData, values, ConstructorParameters, NamedParameters);
 
         return success ? values : null;
     }
 
+    public static IDictionary<string, int> ParseIndices(AttributeData attributeData)
+    {
+        if (attributeData is null)
+        {
+            return ImmutableDictionary<string, int>.Empty;
+        }
+
+        return ArgumentIndexParser.Parse(attributeData, ConstructorParameters, NamedParameters);
+    }
+
     private static class Properties
     {
-public static List<AttributeProperty<OffsetUnitInstanceAttributeParameters>> AllProperties => new()
+        public static List<AttributeProperty<OffsetUnitInstanceAttributeParameters>> AllProperties => new()
         {
             Name,
             Plural,

@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Tests;
+﻿namespace SharpMeasures.Generators.Tests.Utility;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 
 using VerifyXunit;
 
-internal static class Utility
+internal static class VerifyGenerator
 {
-    public static Task VerifyGenerator<T>(string source) where T : IIncrementalGenerator, new()
-        => Verifier.Verify(ConstructDriver(source, new T()));
+    public static Task FromRawText<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new()
+        => Verifier.Verify(ConstructDriver(source, new TGenerator()));
 
     private static GeneratorDriver ConstructDriver(string sourceCode, IIncrementalGenerator generator)
     {

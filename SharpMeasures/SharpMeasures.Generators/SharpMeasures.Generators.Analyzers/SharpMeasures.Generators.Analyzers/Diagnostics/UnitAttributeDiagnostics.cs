@@ -1,19 +1,23 @@
 ﻿namespace SharpMeasures.Generators.Analyzers.Diagnostics;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
+using SharpMeasures.Generators.Attributes.Parsing.Units;
+
 using System;
-using System.Collections.Immutable;
 
 internal static class UnitAttributeDiagnostics
 {
-    private static string AttributeFullName { get; } = typeof(GeneratedUnitAttribute).FullName;
+    private static Type UnitAttributeType { get; } = typeof(GeneratedUnitAttribute);
 
     public static void Analyze(SymbolAnalysisContext context, INamedTypeSymbol namedTypeSymbol, AttributeData attribute)
     {
-        TypeIsNotPartialDiagnostics.AnalyzeNamedType(context, namedTypeSymbol, AttributeFullName);
+        TypeIsNotPartialDiagnostics.AnalyzeNamedType(context, namedTypeSymbol, UnitAttributeType);
+
+        if (GeneratedUnitAttributeParameters.Parse(attribute) is GeneratedUnitAttributeParameters parameters)
+        {
+            TypeIsNotScalarQuantityDiagnostics.AnalyzeNamedType(context, attribute, parameters);
+        }
     }
 }

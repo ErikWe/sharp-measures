@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="SharpMeasures.Base" Version="0.2.16" />
+      <PackageReference Include="SharpMeasures.Base" Version="0.2.35" />
     </ItemGroup>
 
 </Project>

@@ -2,6 +2,6 @@
 
 public static class DiagnosticIDs
 {
-    public const string TypeIsNotPartial = "SharpMeasures001";
-    public const string TypeIsNotScalarQuantity = "SharpMeasures002";
+    public const string TypeIsNotPartial = "SharpMeasures0001";
+    public const string TypeIsNotScalarQuantity = "SharpMeasures0002";
 }

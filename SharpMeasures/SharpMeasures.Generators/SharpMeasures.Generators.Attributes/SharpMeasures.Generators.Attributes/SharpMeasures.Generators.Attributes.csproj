@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<RootNamespace>SharpMeasures.SourceGeneration</RootNamespace>
+		<RootNamespace>SharpMeasures.Generators</RootNamespace>
 	</PropertyGroup>
 
 	<PropertyGroup>

@@ -1,5 +1,7 @@
 ﻿namespace IntegrationTests;
 
+using SharpMeasures.Generators;
+
 internal static class Program
 {
     public static void Main()
@@ -8,5 +10,5 @@ internal static class Program
     }
 }
 
-[SharpMeasures.SourceGeneration.GeneratedUnit(typeof(string))]
-public readonly record struct UnitOfLength();
+[GeneratedUnit(quantity: typeof(Program))]
+public readonly partial record struct UnitOfLength();

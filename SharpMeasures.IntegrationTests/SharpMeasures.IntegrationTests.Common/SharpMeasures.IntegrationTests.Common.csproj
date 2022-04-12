@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SharpMeasures" Version="0.2.34" />
+    <PackageReference Include="SharpMeasures" Version="0.2.35" />
   </ItemGroup>
 
 </Project>

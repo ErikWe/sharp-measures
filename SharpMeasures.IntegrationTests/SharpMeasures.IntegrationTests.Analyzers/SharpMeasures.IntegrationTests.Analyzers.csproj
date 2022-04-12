@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SharpMeasures.Base" Version="0.2.16" />
-    <PackageReference Include="SharpMeasures.Generators.Analyzers" Version="0.2.34" />
+    <PackageReference Include="SharpMeasures.Base" Version="0.2.35" />
+    <PackageReference Include="SharpMeasures.Generators.Analyzers" Version="0.2.35" />
   </ItemGroup>
 
 </Project>

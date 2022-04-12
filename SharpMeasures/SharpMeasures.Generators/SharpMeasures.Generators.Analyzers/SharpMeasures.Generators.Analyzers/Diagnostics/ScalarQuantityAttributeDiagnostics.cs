@@ -10,10 +10,10 @@ using System.Collections.Immutable;
 
 internal static class ScalarQuantityAttributeDiagnostics
 {
-    private static string AttributeFullName { get; } = typeof(GeneratedScalarQuantityAttribute).FullName;
+    private static Type ScalarQuantityAttributeType { get; } = typeof(GeneratedScalarQuantityAttribute);
 
     public static void Analyze(SymbolAnalysisContext context, INamedTypeSymbol namedTypeSymbol, AttributeData attribute)
     {
-        TypeIsNotPartialDiagnostics.AnalyzeNamedType(context, namedTypeSymbol, AttributeFullName);
+        TypeIsNotPartialDiagnostics.AnalyzeNamedType(context, namedTypeSymbol, ScalarQuantityAttributeType);
     }
 }
