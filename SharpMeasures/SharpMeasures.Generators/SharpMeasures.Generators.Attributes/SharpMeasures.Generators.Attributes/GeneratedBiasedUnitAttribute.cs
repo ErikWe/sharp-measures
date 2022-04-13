@@ -3,7 +3,7 @@
 using System;
 
 /// <summary>Marks the type as a biased unit, and enables source generation.</summary>
-/// <remarks>Accompanying attributes, such as <see cref="DerivedUnitAttribute"/> and <see cref="FixedUnitInstanceAttribute"/>, may be used to extend
+/// <remarks>Accompanying attributes, such as <see cref="Units.DerivedUnitAttribute"/> and <see cref="Units.FixedUnitInstanceAttribute"/>, may be used to extend
 /// the source generation.</remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 public sealed class GeneratedBiasedUnitAttribute : Attribute

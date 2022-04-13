@@ -1,24 +1,24 @@
-﻿namespace SharpMeasures.Generators.Units.SourceBuilding;
+﻿namespace SharpMeasures.Generators.BiasedUnits.SourceBuilding;
 
-using SharpMeasures.Generators.Units.Pipeline;
+using SharpMeasures.Generators.BiasedUnits.Pipeline;
 using SharpMeasures.Generators.Utility;
 
 using System;
 using System.Text;
 using System.Threading;
 
-internal static class BiasedSourceComposer
+internal static class SourceComposer
 {
-    public static string Compose(FifthStage.Result data, CancellationToken token)
+    public static string Compose(FourthStage.Result data, CancellationToken token)
     {
         string typeName = data.TypeSymbol.Name;
         
-        string? quantityType = data.Parameters.BiasedParameters?.BiasedQuantity?.ToDisplayString();
-        string? quantityName = data.Parameters.BiasedParameters?.BiasedQuantity?.Name;
-        string? quantityParameterName = quantityName is null ? null : SourceBuildingUtility.ToParameterName(quantityName);
+        string? biasedQuantityType = data.Parameters.BiasedQuantity?.ToDisplayString();
+        string? biasedQuantityName = data.Parameters.BiasedQuantity?.Name;
+        string? biasdeQuantityParameterName = biasedQuantityName is null ? null : SourceBuildingUtility.ToParameterName(biasedQuantityName);
 
-        string? unbiasedQuantityType = data.Parameters.BiasedParameters?.UnbiasedQuantity?.ToDisplayString();
-        string? unbiasedQuantityName = data.Parameters.BiasedParameters?.UnbiasedQuantity?.Name;
+        string? unbiasedQuantityType = data.Parameters.UnbiasedQuantity?.ToDisplayString();
+        string? unbiasedQuantityName = data.Parameters.UnbiasedQuantity?.Name;
         string? unbiasedQUantityParameterName = unbiasedQuantityName is not null ? SourceBuildingUtility.ToParameterName(unbiasedQuantityName) : null;
 
         StringBuilder source = new();
@@ -57,7 +57,7 @@ internal static class BiasedSourceComposer
             source.Append($"{indentation}public {typeName} OffsetBy(double offset) => new({unbiasedQuantityName}, Offset + offset);{Environment.NewLine}");
 
             source.Append($"{Environment.NewLine}{indentation}public override string ToString() " +
-                $"=> $\"{{typeof({quantityType})}}: {{{quantityName}}} + {{Offset}}\";{Environment.NewLine}");
+                $"=> $\"{{typeof({biasedQuantityType})}}: {{{biasedQuantityName}}} + {{Offset}}\";{Environment.NewLine}");
         }
 
         return source.ToString();

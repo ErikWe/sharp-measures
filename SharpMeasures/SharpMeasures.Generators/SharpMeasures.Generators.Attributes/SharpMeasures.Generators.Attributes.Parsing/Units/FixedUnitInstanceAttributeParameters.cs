@@ -3,15 +3,33 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing.Utility;
+using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 
 public readonly record struct FixedUnitInstanceAttributeParameters(string Name, string Plural, string Symbol, bool IsSIUnit, bool IsConstant,
     double Value, double Bias)
     : IUnitInstanceAttributeParameters
 {
+    public static FixedUnitInstanceAttributeParameters? Parse(AttributeData attributeData)
+        => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
+
+    public static IEnumerable<FixedUnitInstanceAttributeParameters> Parse(INamedTypeSymbol symbol)
+        => ParameterParser.Parse(symbol, Defaults, ConstructorParameters, NamedParameters);
+
+    public static IEnumerable<FixedUnitInstanceAttributeParameters> Parse(IEnumerable<AttributeData> attributeData)
+        => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
+
+    public static IDictionary<string, int> ParseIndices(AttributeData attributeData)
+        => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
+
+    public static IEnumerable<IDictionary<string, int>> ParseIndices(INamedTypeSymbol symbol)
+        => ParameterParser.ParseIndices(symbol, ConstructorParameters, NamedParameters);
+
+    public static IEnumerable<IDictionary<string, int>> ParseIndices(IEnumerable<AttributeData> attributeData)
+        => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
+
     private static FixedUnitInstanceAttributeParameters Defaults { get; } = new
     (
         Name: string.Empty,
@@ -28,25 +46,6 @@ public readonly record struct FixedUnitInstanceAttributeParameters(string Name, 
 
     private static Dictionary<string, AttributeProperty<FixedUnitInstanceAttributeParameters>> NamedParameters { get; }
         = Properties.AllProperties.ToDictionary(static (x) => x.Name);
-
-    public static FixedUnitInstanceAttributeParameters? Parse(AttributeData attributeData)
-    {
-        FixedUnitInstanceAttributeParameters values = Defaults;
-
-        (bool success, values) = ArgumentParser.Parse(attributeData, values, ConstructorParameters, NamedParameters);
-
-        return success ? values : null;
-    }
-
-    public static IDictionary<string, int> ParseIndices(AttributeData attributeData)
-    {
-        if (attributeData is null)
-        {
-            return ImmutableDictionary<string, int>.Empty;
-        }
-
-        return ArgumentIndexParser.Parse(attributeData, ConstructorParameters, NamedParameters);
-    }
 
     private static class Properties
     {

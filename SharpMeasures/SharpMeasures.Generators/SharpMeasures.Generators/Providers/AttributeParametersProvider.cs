@@ -7,7 +7,7 @@ using System.Threading;
 
 internal static class AttributeParametersProvider
 {
-    public delegate AttributeData DInputTransformSingle<TIn>(TIn input);
+    public delegate AttributeData? DInputTransformSingle<TIn>(TIn input);
     public delegate IEnumerable<AttributeData> DInputTransformMultiple<TIn>(TIn input);
     public delegate TOut? DOutputTransformSingle<TParameters, TIn, TOut>(TIn input, TParameters parameters);
     public delegate TOut? DOutputTransformMultiple<TParameters, TIn, TOut>(TIn input, IEnumerable<TParameters> parameters);
@@ -20,7 +20,9 @@ internal static class AttributeParametersProvider
         return provider.Select(extractParameters);
 
         TOut? extractParameters(TIn? input, CancellationToken token)
-            => input is not null && parameterTransform(inputTransform(input)) is TParameters parameters ? outputTransform(input, parameters) : default;
+            => input is not null && inputTransform(input) is AttributeData attributeData && parameterTransform(attributeData) is TParameters parameters
+                ? outputTransform(input, parameters)
+                : default;
     }
 
     public static IncrementalValuesProvider<TOut?> Attach<TParameters, TParsedParameters, TIn, TOut>(IncrementalValuesProvider<TIn?> provider,

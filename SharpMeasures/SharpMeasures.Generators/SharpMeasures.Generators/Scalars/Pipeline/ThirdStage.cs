@@ -1,22 +1,27 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Pipeline;
 
-using SharpMeasures.Generators.Documentation;
+using Microsoft.CodeAnalysis;
+
+using SharpMeasures.Generators.Attributes.Parsing.Scalars;
 using SharpMeasures.Generators.Providers;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
-using System.Collections.Generic;
+using System.Threading;
 
 internal static class ThirdStage
 {
-    public readonly record struct Result(MarkedDeclarationSyntaxProvider.OutputData Declaration, IEnumerable<DocumentationFile> Documentation, INamedTypeSymbol TypeSymbol);
+    public readonly record struct Result(MarkedDeclarationSyntaxProvider.OutputData Declaration, INamedTypeSymbol TypeSymbol,
+        GeneratedScalarQuantityAttributeParameters Parameters);
 
-    public static IncrementalValuesProvider<Result> Perform(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<SecondStage.Result> provider)
-        => TypeSymbolProvider.Attach(provider, context.CompilationProvider, InputTransform, OutputTransform)
-            .WhereNotNull();
+    public static IncrementalValuesProvider<Result> Perform(IncrementalValuesProvider<SecondStage.Result> provider)
+        => provider.Select(AddParameters).WhereNotNull();
 
-    private static TypeDeclarationSyntax InputTransform(SecondStage.Result input) => input.Declaration.Type;
-    private static Result? OutputTransform(SecondStage.Result input, INamedTypeSymbol? symbol)
-        => symbol is null ? null : new(input.Declaration, input.Documentation, symbol);
+    private static Result? AddParameters(SecondStage.Result input, CancellationToken _)
+    {
+        if (GeneratedScalarQuantityAttributeParameters.Parse(input.TypeSymbol) is GeneratedScalarQuantityAttributeParameters parameters)
+        {
+            return new(input.Declaration, input.TypeSymbol, parameters);
+        }
+
+        return null;
+    }
 }

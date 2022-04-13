@@ -3,16 +3,34 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing.Utility;
+using SharpMeasures.Generators.Units;
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Linq;
 
 public readonly record struct DerivedUnitAttributeParameters(ReadOnlyCollection<INamedTypeSymbol?> Signature, ReadOnlyCollection<INamedTypeSymbol?> Quantities,
     string Expression)
 {
+    public static DerivedUnitAttributeParameters? Parse(AttributeData attributeData)
+        => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
+
+    public static IEnumerable<DerivedUnitAttributeParameters> Parse(INamedTypeSymbol symbol)
+        => ParameterParser.Parse(symbol, Defaults, ConstructorParameters, NamedParameters);
+
+    public static IEnumerable<DerivedUnitAttributeParameters> Parse(IEnumerable<AttributeData> attributeData)
+        => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
+
+    public static IDictionary<string, int> ParseIndices(AttributeData attributeData)
+        => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
+
+    public static IEnumerable<IDictionary<string, int>> ParseIndices(INamedTypeSymbol symbol)
+        => ParameterParser.ParseIndices(symbol, ConstructorParameters, NamedParameters);
+
+    public static IEnumerable<IDictionary<string, int>> ParseIndices(IEnumerable<AttributeData> attributeData)
+        => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
+
     private static DerivedUnitAttributeParameters Defaults { get; } = new
     (
         Signature: Array.AsReadOnly(Array.Empty<INamedTypeSymbol?>()),
@@ -25,25 +43,6 @@ public readonly record struct DerivedUnitAttributeParameters(ReadOnlyCollection<
 
     private static Dictionary<string, AttributeProperty<DerivedUnitAttributeParameters>> NamedParameters { get; }
         = Properties.AllProperties.ToDictionary(static (x) => x.Name);
-
-    public static DerivedUnitAttributeParameters? Parse(AttributeData attributeData)
-    {
-        DerivedUnitAttributeParameters values = Defaults;
-
-        (bool success, values) = ArgumentParser.Parse(attributeData, values, ConstructorParameters, NamedParameters);
-
-        return success ? values : null;
-    }
-
-    public static IDictionary<string, int> ParseIndices(AttributeData attributeData)
-    {
-        if (attributeData is null)
-        {
-            return ImmutableDictionary<string, int>.Empty;
-        }
-
-        return ArgumentIndexParser.Parse(attributeData, ConstructorParameters, NamedParameters);
-    }
 
     private static class Properties
     {

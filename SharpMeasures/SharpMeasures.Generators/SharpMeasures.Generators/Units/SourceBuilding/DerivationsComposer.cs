@@ -15,7 +15,7 @@ using System.Threading;
 
 internal static class DerivationsComposer
 {
-    public static void Append(StringBuilder source, FifthStage.Result data, CancellationToken _)
+    public static void Append(StringBuilder source, FourthStage.Result data, CancellationToken _)
     {
         bool anyDerivations = false;
 
