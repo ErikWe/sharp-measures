@@ -20,9 +20,14 @@ internal static class BlockBuilding
     public static void AppendBlock(StringBuilder source, string header, Action<StringBuilder, Indentation> blockContentAppender,
         Indentation originalIndentation, bool initialNewLine = true, bool finalNewLine = true)
     {
-        source.Append($"{originalIndentation}{header}{Environment.NewLine}");
+        if (initialNewLine)
+        {
+            source.Append(Environment.NewLine);
+        }
 
-        AppendBlock(source, blockContentAppender, originalIndentation, initialNewLine, finalNewLine);
+        source.Append($"{originalIndentation}{header}");
+
+        AppendBlock(source, blockContentAppender, originalIndentation, initialNewLine: true, finalNewLine);
     }
 
     public static void AppendBlock(StringBuilder source, Action<StringBuilder, Indentation> blockContentAppender,

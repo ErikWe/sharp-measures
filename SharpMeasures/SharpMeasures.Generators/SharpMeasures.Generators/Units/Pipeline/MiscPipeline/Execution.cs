@@ -56,12 +56,11 @@ internal static class Execution
     private static void ComposeUnbiased(StringBuilder source, Indentation indentation, Names names)
     {
         source.Append($"{indentation}public {names.QuantityType} {names.Quantity} {{ get; }}{Environment.NewLine}");
-        source.Append(Environment.NewLine);
 
         BlockBuilding.AppendBlock(source,
             header: $"private {names.Unit}({names.QuantityType} {names.QuantityParameter})",
             blockContentAppender: constructorBlock,
-            originalIndentationLevel: indentation.Level + 1);
+            originalIndentationLevel: indentation.Level);
 
         void constructorBlock(StringBuilder source, Indentation indentation)
         {
@@ -83,12 +82,11 @@ internal static class Execution
     {
         source.Append($"{indentation}public {names.QuantityType} {names.Quantity} {{ get; }}{Environment.NewLine}");
         source.Append($"{indentation}public Scalar Offset {{ get; }}{Environment.NewLine}");
-        source.Append(Environment.NewLine);
 
         BlockBuilding.AppendBlock(source,
             header: $"private {names.Unit}({names.QuantityType} {names.QuantityParameter}, Scalar offset)",
             blockContentAppender: constructorBlock,
-            originalIndentationLevel: indentation.Level + 1);
+            originalIndentationLevel: indentation.Level);
 
         void constructorBlock(StringBuilder source, Indentation indentation)
         {

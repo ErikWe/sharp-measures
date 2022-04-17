@@ -19,6 +19,11 @@ internal static class Execution
     {
         string source = Compose(result, context.CancellationToken);
 
+        if (string.IsNullOrEmpty(source))
+        {
+            return;
+        }
+
         context.AddSource($"{result.TypeDefinition.Name.Name}_Derivable.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
@@ -37,10 +42,14 @@ internal static class Execution
 
         BlockBuilding.AppendBlock(source, typeBlock, originalIndentationLevel: 0);
 
+        bool anyDerivations = false;
+
         void typeBlock(StringBuilder source, Indentation indentation)
         {
             foreach (CachedDerivableUnitAttributeParameters derivation in data.DefinedDerivations)
             {
+                anyDerivations = true;
+
                 IEnumerable<string> parameterNames = GetSignatureParameterNames(derivation.Signature);
                 IEnumerable<string> signatureComponents = GetSignatureNamedTypes(derivation.Signature, parameterNames);
 
@@ -50,7 +59,14 @@ internal static class Execution
             }
         }
 
-        return source.ToString();
+        if (anyDerivations)
+        {
+            return source.ToString();
+        }
+        else
+        {
+            return string.Empty;
+        }
     }
 
     private static IEnumerable<string> GetSignatureParameterNames(IEnumerable<string?> signature)

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 public readonly record struct CachedDerivedUnitAttributeParameters(string Name, string Plural, string Symbol, bool IsSIUnit, bool IsConstant,
-    ReadOnlyCollection<string?> Signature, ReadOnlyCollection<string> UnitInstanceNames)
+    ReadOnlyCollection<string?> Signature, ReadOnlyCollection<string> Units)
     : IUnitAttributeParameters
 {
     public static CachedDerivedUnitAttributeParameters From(Units.DerivedUnitAttributeParameters parameters)

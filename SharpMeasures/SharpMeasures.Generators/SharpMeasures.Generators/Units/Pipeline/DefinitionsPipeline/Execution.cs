@@ -19,6 +19,11 @@ internal static class Execution
     {
         string source = Compose(result, context.CancellationToken);
 
+        if (string.IsNullOrEmpty(source))
+        {
+            return;
+        }
+
         context.AddSource($"{result.TypeDefinition.Name.Name}_Definitions.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
@@ -37,38 +42,54 @@ internal static class Execution
 
         BlockBuilding.AppendBlock(source, typeBlock, originalIndentationLevel: 0);
 
+        bool anyDefinitions = false;
+
         void typeBlock(StringBuilder source, Indentation indentation)
         {
-            List<string> definedInstances = new();
+            List<string> definedUnits = new();
 
-            AppendDerived(source, indentation, data.TypeDefinition.Name, data.DerivedUnits, definedInstances);
-            AppendFixed(source, indentation, data.TypeDefinition.Name, data.Quantity, data.Biased, data.FixedUnits, definedInstances);
-            AppendAliases(source, indentation, data.TypeDefinition.Name, data.UnitAliases, definedInstances);
+            AppendDerived(source, indentation, data.TypeDefinition.Name, data.DerivedUnits, definedUnits);
+            AppendFixed(source, indentation, data.TypeDefinition.Name, data.Quantity, data.Biased, data.FixedUnits, definedUnits);
+            AppendAliases(source, indentation, data.TypeDefinition.Name, data.UnitAliases, definedUnits);
 
-            IList<IDerivedUnitAttributeParameters> dependantInstances
+            IList<IDerivedUnitAttributeParameters> dependantUnits
                 = GetDependantInstances(data.ScaledUnits, data.PrefixedUnits, data.OffsetUnits);
+
+            AppendDependantUnits(source, indentation, data.TypeDefinition.Name, dependantUnits, definedUnits);
+
+            if (definedUnits.Count > 0)
+            {
+                anyDefinitions = true;
+            }
         }
 
-        return source.ToString();
+        if (anyDefinitions)
+        {
+            return source.ToString();
+        }
+        else
+        {
+            return string.Empty;
+        }
     }
 
     private static void AppendDerived(StringBuilder source, Indentation indentation, NamedType unitName,
-        IEnumerable<CachedDerivedUnitAttributeParameters> derivedInstances, IList<string> definedInstances)
+        IEnumerable<CachedDerivedUnitAttributeParameters> derivedUnits, IList<string> definedInstances)
     {
         int initialLength = source.Length;
 
-        foreach (CachedDerivedUnitAttributeParameters derivedInstance in derivedInstances)
+        foreach (CachedDerivedUnitAttributeParameters derivedUnit in derivedUnits)
         {
-            definedInstances.Add(derivedInstance.Name);
+            definedInstances.Add(derivedUnit.Name);
 
-            source.Append($"{indentation}public static {unitName.Name} {derivedInstance.Name} {{ get; }} = ");
+            source.Append($"{indentation}public static {unitName.Name} {derivedUnit.Name} {{ get; }} = ");
 
             IterativeBuilding.AppendEnumerable(source, "From(", arguments(), ", ", $");{Environment.NewLine}");
 
             IEnumerable<string> arguments()
             {
-                IEnumerator<string?> signatureIterator = derivedInstance.Signature.GetEnumerator();
-                IEnumerator<string> unitIterator = derivedInstance.UnitInstanceNames.GetEnumerator();
+                IEnumerator<string?> signatureIterator = derivedUnit.Signature.GetEnumerator();
+                IEnumerator<string> unitIterator = derivedUnit.Units.GetEnumerator();
 
                 while (signatureIterator.MoveNext() && unitIterator.MoveNext())
                 {
@@ -84,7 +105,7 @@ internal static class Execution
     }
 
     private static void AppendFixed(StringBuilder source, Indentation indentation, NamedType unitName, NamedType quantityName, bool biased,
-        IEnumerable<FixedUnitAttributeParameters> fixedUnits, IList<string> definedInstances)
+        IEnumerable<FixedUnitAttributeParameters> fixedUnits, IList<string> definedUnits)
     {
         int initialLength = source.Length;
 
@@ -92,7 +113,7 @@ internal static class Execution
 
         foreach (FixedUnitAttributeParameters fixedUnit in fixedUnits)
         {
-            definedInstances.Add(fixedUnit.Name);
+            definedUnits.Add(fixedUnit.Name);
 
             appender(fixedUnit);
         }
@@ -121,13 +142,13 @@ internal static class Execution
     }
 
     private static void AppendAliases(StringBuilder source, Indentation indentation, NamedType unitName, IEnumerable<UnitAliasAttributeParameters> unitAliases,
-        IList<string> definedInstances)
+        IList<string> definedUnits)
     {
         int initialLength = source.Length;
 
         foreach (UnitAliasAttributeParameters unitAlias in unitAliases)
         {
-            definedInstances.Add(unitAlias.Name);
+            definedUnits.Add(unitAlias.Name);
 
             source.Append($"{indentation}public static {unitName.Name} {unitAlias.Name} => {unitAlias.AliasOf};{Environment.NewLine}");
         }
@@ -161,33 +182,33 @@ internal static class Execution
         return result;
     }
 
-    private static void AppendDependantInstances(StringBuilder source, string indentation, NamedType unitName,
-        IList<IDerivedUnitAttributeParameters> dependantUnits, IList<string> definedInstances)
+    private static void AppendDependantUnits(StringBuilder source, Indentation indentation, NamedType unitName,
+        IList<IDerivedUnitAttributeParameters> dependantUnits, IList<string> definedUnits)
     {
         int initialLength = dependantUnits.Count;
 
         for (int i = 0; i < dependantUnits.Count; i++)
         {
-            if (definedInstances.Contains(dependantUnits[i].DerivedFrom))
+            if (definedUnits.Contains(dependantUnits[i].DerivedFrom))
             {
                 source.Append($"{indentation}public static {unitName.Name} {dependantUnits[i].Name} {{ get; }} = ");
 
-                if (dependantUnits[i] is ScaledUnitAttributeParameters scaledInstance)
+                if (dependantUnits[i] is ScaledUnitAttributeParameters scaledUnit)
                 {
-                    AppendScaled(source, scaledInstance);
+                    AppendScaled(source, scaledUnit);
                 }
-                else if (dependantUnits[i] is PrefixedUnitAttributeParameters prefixedInstance)
+                else if (dependantUnits[i] is PrefixedUnitAttributeParameters prefixedUnit)
                 {
-                    AppendPrefixed(source, prefixedInstance);
+                    AppendPrefixed(source, prefixedUnit);
                 }
-                else if (dependantUnits[i] is OffsetUnitAttributeParameters offsetInstance)
+                else if (dependantUnits[i] is OffsetUnitAttributeParameters offsetUnit)
                 {
-                    AppendOffset(source, offsetInstance);
+                    AppendOffset(source, offsetUnit);
                 }
 
                 source.Append($";{Environment.NewLine}");
              
-                definedInstances.Add(dependantUnits[i].Name);
+                definedUnits.Add(dependantUnits[i].Name);
                 dependantUnits.RemoveAt(i);
                 i--;
             }
@@ -195,7 +216,7 @@ internal static class Execution
 
         if (dependantUnits.Count < initialLength)
         {
-            AppendDependantInstances(source, indentation, unitName, dependantUnits, definedInstances);
+            AppendDependantUnits(source, indentation, unitName, dependantUnits, definedUnits);
         }
     }
 

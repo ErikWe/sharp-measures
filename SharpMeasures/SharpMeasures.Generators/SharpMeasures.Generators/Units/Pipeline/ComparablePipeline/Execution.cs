@@ -46,7 +46,7 @@ internal static class Execution
 
         void typeBlock(StringBuilder source, Indentation indentation)
         {
-            source.Append($"{Environment.NewLine}{indentation}public int CompareTo({unitName} other) => " +
+            source.Append($"{indentation}public int CompareTo({unitName} other) => " +
                 $"{quantityName}.CompareTo(other.{quantityName});{Environment.NewLine}");
 
             source.Append($"{Environment.NewLine}{indentation}public static bool operator <({unitName} x, {unitName} y) " +
