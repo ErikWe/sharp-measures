@@ -29,6 +29,11 @@ internal static class ParameterParser
 
         foreach (AttributeData data in attributeData)
         {
+            if (data.AttributeConstructor is null)
+            {
+                continue;
+            }
+
             if (Parse(data, defaults, constructorParameters, namedParameters) is TParameters parameters)
             {
                 yield return parameters;

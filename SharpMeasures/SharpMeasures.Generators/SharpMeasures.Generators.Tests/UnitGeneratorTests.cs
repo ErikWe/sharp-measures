@@ -17,6 +17,7 @@ public class UnitGeneratorTests
     {
         string source = @"
 using SharpMeasures.Generators;
+using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Utility;
 
 using System;
@@ -31,6 +32,7 @@ namespace Foo
 
         [GeneratedUnit(typeof(Length))]
         [FixedUnit(""Metre"", UnitPluralCodes.AppendS, 1)]
+        [FixedUnit(""Inch"", UnitPluralCodes.AppendEs, 2)]
         public readonly partial record struct UnitOfLength { }
 
         [GeneratedUnit(typeof(Time))]

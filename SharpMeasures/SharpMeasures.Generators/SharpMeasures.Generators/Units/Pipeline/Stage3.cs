@@ -25,7 +25,8 @@ internal static class Stage3
     {
         if (symbol is null
             || GeneratedUnitAttributeParameters.Parse(symbol) is not GeneratedUnitAttributeParameters parameters
-            || parameters.Quantity is not INamedTypeSymbol quantity)
+            || parameters.Quantity is not INamedTypeSymbol quantity
+            || quantity.GetAttributeOfType<GeneratedScalarQuantityAttribute>() is null)
         {
             return null;
         }

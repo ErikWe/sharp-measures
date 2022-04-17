@@ -85,7 +85,8 @@ internal static class MarkedDeclarationSyntaxProvider
             foreach (AttributeSyntax attribute in attributeList.Attributes)
             {
                 if (getAttributeSymbol(attribute) is IMethodSymbol attributeConstructorSymbol
-                    && isValidAttribute(attributeConstructorSymbol.ContainingType))
+                    && isValidAttribute(attributeConstructorSymbol.ContainingType)
+                    && !declaration.Identifier.IsMissing)
                 {
                     return outputTransform(declaration);
                 }
