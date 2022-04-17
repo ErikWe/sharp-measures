@@ -3,13 +3,14 @@
 using SharpMeasures.Generators.Providers;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 internal static class FirstStage
 {
-    public readonly record struct Result(MarkedDeclarationSyntaxProvider.OutputData Declaration);
+    public readonly record struct Result(TypeDeclarationSyntax Declaration);
 
     public static IncrementalValuesProvider<Result> Perform(IncrementalGeneratorInitializationContext context)
         => MarkedDeclarationSyntaxProvider.Attach<GeneratedScalarQuantityAttribute, Result>(context.SyntaxProvider, OutputTransform);
 
-    private static Result OutputTransform(MarkedDeclarationSyntaxProvider.OutputData declaration) => new(declaration);
+    private static Result OutputTransform(TypeDeclarationSyntax declaration) => new(declaration);
 }

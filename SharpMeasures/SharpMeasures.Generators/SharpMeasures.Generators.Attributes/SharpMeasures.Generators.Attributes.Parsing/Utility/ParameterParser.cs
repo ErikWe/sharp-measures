@@ -15,9 +15,9 @@ internal static class ParameterParser
         return success ? values : default;
     }
 
-    public static IEnumerable<TParameters> Parse<TParameters>(INamedTypeSymbol symbol, TParameters defaults,
+    public static IEnumerable<TParameters> Parse<TParameters, TAttribute>(INamedTypeSymbol symbol, TParameters defaults,
         Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
-        => Parse(symbol.GetAttributesOfType<TParameters>(), defaults, constructorParameters, namedParameters);
+        => Parse(symbol.GetAttributesOfType<TAttribute>(), defaults, constructorParameters, namedParameters);
 
     public static IEnumerable<TParameters> Parse<TParameters>(IEnumerable<AttributeData> attributeData, TParameters defaults,
         Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
@@ -36,9 +36,9 @@ internal static class ParameterParser
         }
     }
 
-    public static TParameters? ParseSingle<TParameters>(INamedTypeSymbol symbol, TParameters defaults,
+    public static TParameters? ParseSingle<TParameters, TAttribute>(INamedTypeSymbol symbol, TParameters defaults,
         Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
-        => ParseSingle(symbol.GetAttributesOfType<TParameters>(), defaults, constructorParameters, namedParameters);
+        => ParseSingle(symbol.GetAttributesOfType<TAttribute>(), defaults, constructorParameters, namedParameters);
 
     public static TParameters? ParseSingle<TParameters>(IEnumerable<AttributeData> attributeData, TParameters defaults,
         Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
@@ -70,9 +70,9 @@ internal static class ParameterParser
         return ArgumentIndexParser.Parse(attributeData, constructorParameters, namedParameters);
     }
 
-    public static IEnumerable<IDictionary<string, int>> ParseIndices<TParameters>(INamedTypeSymbol symbol,
+    public static IEnumerable<IDictionary<string, int>> ParseIndices<TParameters, TAttribute>(INamedTypeSymbol symbol,
         Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
-        => ParseIndices(symbol.GetAttributesOfType<TParameters>(), constructorParameters, namedParameters);
+        => ParseIndices(symbol.GetAttributesOfType<TAttribute>(), constructorParameters, namedParameters);
 
     public static IEnumerable<IDictionary<string, int>> ParseIndices<TParameters>(IEnumerable<AttributeData> attributeData,
         Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
@@ -88,9 +88,9 @@ internal static class ParameterParser
         }
     }
 
-    public static IDictionary<string, int> ParseSingleIndices<TParameters>(INamedTypeSymbol symbol,
+    public static IDictionary<string, int> ParseSingleIndices<TParameters, TAttribute>(INamedTypeSymbol symbol,
         Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
-        => ParseSingleIndices(symbol.GetAttributesOfType<TParameters>(), constructorParameters, namedParameters);
+        => ParseSingleIndices(symbol.GetAttributesOfType<TAttribute>(), constructorParameters, namedParameters);
 
     public static IDictionary<string, int> ParseSingleIndices<TParameters>(IEnumerable<AttributeData> attributeData,
         Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)

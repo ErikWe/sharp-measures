@@ -41,10 +41,6 @@ public static class AttributeDiagnostics
             {
                 UnitAttributeDiagnostics.Analyze(context, namedTypeSymbol, attribute);
             }
-            else if (candidateName == typeof(GeneratedBiasedUnitAttribute).FullName)
-            {
-                BiasedUnitAttributeDiagnostics.Analyze(context, namedTypeSymbol, attribute);
-            }
         }
     }
 }

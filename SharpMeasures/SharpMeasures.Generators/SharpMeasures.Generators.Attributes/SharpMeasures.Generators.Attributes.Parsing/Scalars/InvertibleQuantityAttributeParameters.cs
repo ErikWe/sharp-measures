@@ -9,13 +9,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public readonly record struct InvertibleQuantityAttributeParameters(Type? Quantity, IEnumerable<Type> SecondaryQuantities)
+public readonly record struct InvertibleQuantityAttributeParameters(INamedTypeSymbol? Quantity, IEnumerable<INamedTypeSymbol> SecondaryQuantities)
 {
     public static InvertibleQuantityAttributeParameters? Parse(AttributeData attributeData)
         => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
     public static InvertibleQuantityAttributeParameters? Parse(INamedTypeSymbol symbol)
-        => ParameterParser.ParseSingle(symbol, Defaults, ConstructorParameters, NamedParameters);
+        => ParameterParser.ParseSingle<InvertibleQuantityAttributeParameters, InvertibleQuantityAttribute>(symbol, Defaults, ConstructorParameters, NamedParameters);
 
     public static InvertibleQuantityAttributeParameters? Parse(IEnumerable<AttributeData> attributeData)
         => ParameterParser.ParseSingle(attributeData, Defaults, ConstructorParameters, NamedParameters);
@@ -24,7 +24,7 @@ public readonly record struct InvertibleQuantityAttributeParameters(Type? Quanti
         => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
 
     public static IDictionary<string, int> ParseSiIndices(INamedTypeSymbol symbol)
-        => ParameterParser.ParseSingleIndices(symbol, ConstructorParameters, NamedParameters);
+        => ParameterParser.ParseSingleIndices<InvertibleQuantityAttributeParameters, InvertibleQuantityAttribute>(symbol, ConstructorParameters, NamedParameters);
 
     public static IDictionary<string, int> ParseIndices(IEnumerable<AttributeData> attributeData)
         => ParameterParser.ParseSingleIndices(attributeData, ConstructorParameters, NamedParameters);
@@ -32,7 +32,7 @@ public readonly record struct InvertibleQuantityAttributeParameters(Type? Quanti
     private static InvertibleQuantityAttributeParameters Defaults { get; } = new
     (
         Quantity: null,
-        SecondaryQuantities: Array.Empty<Type>()
+        SecondaryQuantities: Array.Empty<INamedTypeSymbol>()
     );
 
     private static Dictionary<string, AttributeProperty<InvertibleQuantityAttributeParameters>> ConstructorParameters { get; }
@@ -52,13 +52,13 @@ public readonly record struct InvertibleQuantityAttributeParameters(Type? Quanti
         private static AttributeProperty<InvertibleQuantityAttributeParameters> Quantity { get; } = new
         (
             name: nameof(InvertibleQuantityAttribute.Quantity),
-            setter: static (parameters, obj) => obj is Type squareRootQuantity ? parameters with { Quantity = squareRootQuantity } : parameters
+            setter: static (parameters, obj) => obj is INamedTypeSymbol squareRootQuantity ? parameters with { Quantity = squareRootQuantity } : parameters
         );
 
         private static AttributeProperty<InvertibleQuantityAttributeParameters> SecondaryQuantities { get; } = new
         (
             name: nameof(InvertibleQuantityAttribute.SecondaryQuantities),
-            setter: static (parameters, obj) => obj is IEnumerable<Type> secondarySquareRootQuantities
+            setter: static (parameters, obj) => obj is IEnumerable<INamedTypeSymbol> secondarySquareRootQuantities
                 ? parameters with { SecondaryQuantities = secondarySquareRootQuantities }
                 : parameters
         );

@@ -15,7 +15,7 @@ public readonly record struct ExcludeUnitsAttributeParameters(IEnumerable<string
         => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
     public static ExcludeUnitsAttributeParameters? Parse(INamedTypeSymbol symbol)
-        => ParameterParser.ParseSingle(symbol, Defaults, ConstructorParameters, NamedParameters);
+        => ParameterParser.ParseSingle<ExcludeUnitsAttributeParameters, ExcludeUnitsAttribute>(symbol, Defaults, ConstructorParameters, NamedParameters);
 
     public static ExcludeUnitsAttributeParameters? Parse(IEnumerable<AttributeData> attributeData)
         => ParameterParser.ParseSingle(attributeData, Defaults, ConstructorParameters, NamedParameters);
@@ -24,7 +24,7 @@ public readonly record struct ExcludeUnitsAttributeParameters(IEnumerable<string
         => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
 
     public static IDictionary<string, int> ParseSiIndices(INamedTypeSymbol symbol)
-        => ParameterParser.ParseSingleIndices(symbol, ConstructorParameters, NamedParameters);
+        => ParameterParser.ParseSingleIndices<ExcludeUnitsAttributeParameters, ExcludeUnitsAttribute>(symbol, ConstructorParameters, NamedParameters);
 
     public static IDictionary<string, int> ParseIndices(IEnumerable<AttributeData> attributeData)
         => ParameterParser.ParseSingleIndices(attributeData, ConstructorParameters, NamedParameters);

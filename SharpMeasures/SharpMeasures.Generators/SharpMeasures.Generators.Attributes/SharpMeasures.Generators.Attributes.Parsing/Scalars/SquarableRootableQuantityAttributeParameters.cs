@@ -9,13 +9,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public readonly record struct SquarableQuantityAttributeParameters(Type? Quantity, IEnumerable<Type> SecondaryQuantities)
+public readonly record struct SquarableQuantityAttributeParameters(INamedTypeSymbol? Quantity, IEnumerable<INamedTypeSymbol> SecondaryQuantities)
 {
     public static SquarableQuantityAttributeParameters? Parse(AttributeData attributeData)
         => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
     public static SquarableQuantityAttributeParameters? Parse(INamedTypeSymbol symbol)
-        => ParameterParser.ParseSingle(symbol, Defaults, ConstructorParameters, NamedParameters);
+        => ParameterParser.ParseSingle<SquarableQuantityAttributeParameters, SquarableQuantityAttribute>(symbol, Defaults, ConstructorParameters, NamedParameters);
 
     public static SquarableQuantityAttributeParameters? Parse(IEnumerable<AttributeData> attributeData)
         => ParameterParser.ParseSingle(attributeData, Defaults, ConstructorParameters, NamedParameters);
@@ -24,7 +24,7 @@ public readonly record struct SquarableQuantityAttributeParameters(Type? Quantit
         => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
 
     public static IDictionary<string, int> ParseSiIndices(INamedTypeSymbol symbol)
-        => ParameterParser.ParseSingleIndices(symbol, ConstructorParameters, NamedParameters);
+        => ParameterParser.ParseSingleIndices<SquarableQuantityAttributeParameters, SquarableQuantityAttribute>(symbol, ConstructorParameters, NamedParameters);
 
     public static IDictionary<string, int> ParseIndices(IEnumerable<AttributeData> attributeData)
         => ParameterParser.ParseSingleIndices(attributeData, ConstructorParameters, NamedParameters);
@@ -32,7 +32,7 @@ public readonly record struct SquarableQuantityAttributeParameters(Type? Quantit
     private static SquarableQuantityAttributeParameters Defaults { get; } = new
     (
         Quantity: null,
-        SecondaryQuantities: Array.Empty<Type>()
+        SecondaryQuantities: Array.Empty<INamedTypeSymbol>()
     );
 
     private static Dictionary<string, AttributeProperty<SquarableQuantityAttributeParameters>> ConstructorParameters { get; }
@@ -52,13 +52,13 @@ public readonly record struct SquarableQuantityAttributeParameters(Type? Quantit
         private static AttributeProperty<SquarableQuantityAttributeParameters> Quantity { get; } = new
         (
             name: nameof(SquarableQuantityAttribute.Quantity),
-            setter: static (parameters, obj) => obj is Type squareRootQuantity ? parameters with { Quantity = squareRootQuantity } : parameters
+            setter: static (parameters, obj) => obj is INamedTypeSymbol squareRootQuantity ? parameters with { Quantity = squareRootQuantity } : parameters
         );
 
         private static AttributeProperty<SquarableQuantityAttributeParameters> SecondaryQuantities { get; } = new
         (
             name: nameof(SquarableQuantityAttribute.SecondaryQuantities),
-            setter: static (parameters, obj) => obj is IEnumerable<Type> secondarySquareRootQuantities
+            setter: static (parameters, obj) => obj is IEnumerable<INamedTypeSymbol> secondarySquareRootQuantities
                 ? parameters with { SecondaryQuantities = secondarySquareRootQuantities }
                 : parameters
         );

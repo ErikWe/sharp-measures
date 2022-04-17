@@ -15,7 +15,7 @@ public readonly record struct IncludeBasesAttributeParameters(IEnumerable<string
         => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
     public static IncludeBasesAttributeParameters? Parse(INamedTypeSymbol symbol)
-        => ParameterParser.ParseSingle(symbol, Defaults, ConstructorParameters, NamedParameters);
+        => ParameterParser.ParseSingle<IncludeBasesAttributeParameters, IncludeBasesAttribute>(symbol, Defaults, ConstructorParameters, NamedParameters);
 
     public static IncludeBasesAttributeParameters? Parse(IEnumerable<AttributeData> attributeData)
         => ParameterParser.ParseSingle(attributeData, Defaults, ConstructorParameters, NamedParameters);
@@ -24,7 +24,7 @@ public readonly record struct IncludeBasesAttributeParameters(IEnumerable<string
         => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
 
     public static IDictionary<string, int> ParseSiIndices(INamedTypeSymbol symbol)
-        => ParameterParser.ParseSingleIndices(symbol, ConstructorParameters, NamedParameters);
+        => ParameterParser.ParseSingleIndices<IncludeBasesAttributeParameters, IncludeBasesAttribute>(symbol, ConstructorParameters, NamedParameters);
 
     public static IDictionary<string, int> ParseIndices(IEnumerable<AttributeData> attributeData)
         => ParameterParser.ParseSingleIndices(attributeData, ConstructorParameters, NamedParameters);

@@ -16,13 +16,13 @@ public class ScalarQuantityGeneratorTests
     public Task ScalarQuantityGenerator_ShouldBeExactCode()
     {
         string source = @"
-using SharpMeasures.Attributes;
+using SharpMeasures.Generators;
 
 namespace Foo
 {
     namespace Bar
     {
-        [ScalarQuantity]
+        [GeneratedScalarQuantity]
         public readonly partial record struct Time() { }
     }
 }";

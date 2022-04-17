@@ -10,14 +10,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-public readonly record struct DerivedUnitAttributeParameters(ReadOnlyCollection<INamedTypeSymbol?> Signature, ReadOnlyCollection<INamedTypeSymbol?> Quantities,
-    string Expression)
+public readonly record struct DerivedUnitAttributeParameters(string Name, string Plural, string Symbol, bool IsSIUnit, bool IsConstant,
+    ReadOnlyCollection<INamedTypeSymbol?> Signature, ReadOnlyCollection<string> Units)
+    : IUnitAttributeParameters
 {
     public static DerivedUnitAttributeParameters? Parse(AttributeData attributeData)
         => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
     public static IEnumerable<DerivedUnitAttributeParameters> Parse(INamedTypeSymbol symbol)
-        => ParameterParser.Parse(symbol, Defaults, ConstructorParameters, NamedParameters);
+        => ParameterParser.Parse<DerivedUnitAttributeParameters, DerivedUnitAttribute>(symbol, Defaults, ConstructorParameters, NamedParameters);
 
     public static IEnumerable<DerivedUnitAttributeParameters> Parse(IEnumerable<AttributeData> attributeData)
         => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
@@ -26,16 +27,20 @@ public readonly record struct DerivedUnitAttributeParameters(ReadOnlyCollection<
         => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
 
     public static IEnumerable<IDictionary<string, int>> ParseIndices(INamedTypeSymbol symbol)
-        => ParameterParser.ParseIndices(symbol, ConstructorParameters, NamedParameters);
+        => ParameterParser.ParseIndices<DerivedUnitAttributeParameters, DerivedUnitAttribute>(symbol, ConstructorParameters, NamedParameters);
 
     public static IEnumerable<IDictionary<string, int>> ParseIndices(IEnumerable<AttributeData> attributeData)
         => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
 
     private static DerivedUnitAttributeParameters Defaults { get; } = new
     (
+        Name: string.Empty,
+        Plural: string.Empty,
+        Symbol: string.Empty,
+        IsSIUnit: false,
+        IsConstant: false,
         Signature: Array.AsReadOnly(Array.Empty<INamedTypeSymbol?>()),
-        Quantities: Array.AsReadOnly(Array.Empty<INamedTypeSymbol?>()),
-        Expression: string.Empty
+        Units: Array.AsReadOnly(Array.Empty<string>())
     );
 
     private static Dictionary<string, AttributeProperty<DerivedUnitAttributeParameters>> ConstructorParameters { get; }
@@ -48,58 +53,59 @@ public readonly record struct DerivedUnitAttributeParameters(ReadOnlyCollection<
     {
         public static List<AttributeProperty<DerivedUnitAttributeParameters>> AllProperties => new()
         {
+            Name,
+            Plural,
+            Symbol,
+            IsSIUnit,
+            IsConstant,
             Signature,
-            Expression
+            Units
         };
+
+        private static AttributeProperty<DerivedUnitAttributeParameters> Name { get; } = new
+        (
+            name: nameof(DerivedUnitAttribute.Name),
+            setter: static (parameters, obj) => obj is string name ? parameters with { Name = name } : parameters
+        );
+
+        private static AttributeProperty<DerivedUnitAttributeParameters> Plural { get; } = new
+        (
+            name: nameof(DerivedUnitAttribute.Plural),
+            setter: static (parameters, obj) => obj is string plural ? parameters with { Plural = plural } : parameters
+        );
+
+        private static AttributeProperty<DerivedUnitAttributeParameters> Symbol { get; } = new
+        (
+            name: nameof(DerivedUnitAttribute.Symbol),
+            setter: static (parameters, obj) => obj is string symbol ? parameters with { Symbol = symbol } : parameters
+        );
+
+        private static AttributeProperty<DerivedUnitAttributeParameters> IsSIUnit { get; } = new
+        (
+            name: nameof(DerivedUnitAttribute.IsSIUnit),
+            setter: static (parameters, obj) => obj is bool isSIUnit ? parameters with { IsSIUnit = isSIUnit } : parameters
+        );
+
+        private static AttributeProperty<DerivedUnitAttributeParameters> IsConstant { get; } = new
+        (
+            name: nameof(DerivedUnitAttribute.IsConstant),
+            setter: static (parameters, obj) => obj is bool isConstant ? parameters with { IsConstant = isConstant } : parameters
+        );
 
         private static AttributeProperty<DerivedUnitAttributeParameters> Signature { get; } = new
         (
             name: nameof(DerivedUnitAttribute.Signature),
-            setter: static (parameters, obj) => obj is object[] signature ? SetSignatureAndQuantities(parameters, signature) : parameters
+            setter: static (parameters, obj) => obj is object?[] signature
+                ? parameters with { Signature = Array.AsReadOnly(Array.ConvertAll(signature, static (x) => x as INamedTypeSymbol)) }
+                : parameters
         );
 
-        private static AttributeProperty<DerivedUnitAttributeParameters> Expression { get; } = new
+        private static AttributeProperty<DerivedUnitAttributeParameters> Units { get; } = new
         (
-            name: nameof(DerivedUnitAttribute.Expression),
-            setter: static (parameters, obj) => obj is string expression ? parameters with { Expression = expression } : parameters
+            name: nameof(DerivedUnitAttribute.Units),
+            setter: static (parameters, obj) => obj is object?[] signature
+                ? parameters with { Units = Array.AsReadOnly(Array.ConvertAll(signature, static (x) => x as string ?? string.Empty)) }
+                : parameters
         );
-
-        private static DerivedUnitAttributeParameters SetSignatureAndQuantities(DerivedUnitAttributeParameters parameters, object[] signature)
-        {
-            ReadOnlyCollection<INamedTypeSymbol?> units = Array.AsReadOnly(Array.ConvertAll(signature, static (x) => x as INamedTypeSymbol));
-            INamedTypeSymbol?[] quantities = new INamedTypeSymbol?[signature.Length];
-
-            for (int i = 0; i < signature.Length; i++)
-            {
-                if (signature[i] is not INamedTypeSymbol symbol)
-                {
-                    continue;
-                }
-
-                if (symbol.GetAttributeOfType<GeneratedUnitAttribute>() is AttributeData unitData)
-                {
-                    if (GeneratedUnitAttributeParameters.Parse(unitData) is GeneratedUnitAttributeParameters { Quantity: INamedTypeSymbol unitQuantity })
-                    {
-                        quantities[i] = unitQuantity;
-                    }
-                }
-                else if (symbol.GetAttributeOfType<GeneratedBiasedUnitAttribute>() is AttributeData biasedUnitData)
-                {
-                    if (GeneratedBiasedUnitAttributeParameters.Parse(biasedUnitData) is GeneratedBiasedUnitAttributeParameters biasedUnitParameters)
-                    {
-                        if (biasedUnitParameters.UnbiasedQuantity is INamedTypeSymbol unbiasedUnitQuantity)
-                        {
-                            quantities[i] = unbiasedUnitQuantity;
-                        }
-                        else if (biasedUnitParameters.BiasedQuantity is INamedTypeSymbol biasedUnitQuantity)
-                        {
-                            quantities[i] = biasedUnitQuantity;
-                        }
-                    }
-                }
-            }
-
-            return parameters with { Signature = units, Quantities = Array.AsReadOnly(quantities) };
-        }
     }
 }

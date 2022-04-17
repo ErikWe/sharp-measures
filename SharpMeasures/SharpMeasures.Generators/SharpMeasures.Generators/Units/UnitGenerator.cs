@@ -1,10 +1,12 @@
 ﻿namespace SharpMeasures.Generators.Units;
 
-using SharpMeasures.Generators.Units.Pipeline;
-using SharpMeasures.Generators.Units.SourceBuilding;
-
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
+
+using SharpMeasures.Generators.Units.Pipeline;
+using SharpMeasures.Generators.Units.Pipeline.ComparablePipeline;
+using SharpMeasures.Generators.Units.Pipeline.DefinitionsPipeline;
+using SharpMeasures.Generators.Units.Pipeline.DerivablePipeline;
+using SharpMeasures.Generators.Units.Pipeline.MiscPipeline;
 
 using System.Text;
 
@@ -13,17 +15,13 @@ public class UnitGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        IncrementalValuesProvider<FirstStage.Result> firstStage = FirstStage.Perform(context);
-        IncrementalValuesProvider<SecondStage.Result> secondStage = SecondStage.Perform(context, firstStage);
-        IncrementalValuesProvider<ThirdStage.Result> thirdStage = ThirdStage.Perform(secondStage);
-        IncrementalValuesProvider<FourthStage.Result> fourthStage = FourthStage.Perform(thirdStage);
-        context.RegisterSourceOutput(fourthStage, Execute);
-    }
+        IncrementalValuesProvider<Stage1.Result> firstStage = Stage1.Perform(context);
+        IncrementalValuesProvider<Stage2.Result> secondStage = Stage2.Perform(context, firstStage);
+        IncrementalValuesProvider<Stage3.Result> thirdStage = Stage3.Perform(context, secondStage);
 
-    private static void Execute(SourceProductionContext context, FourthStage.Result result)
-    {
-        string source = SourceComposer.Compose(result, context.CancellationToken);
-
-        context.AddSource($"{result.Declaration.Type.Identifier.Text}.g.cs", SourceText.From(source, Encoding.UTF8));
+        ComparableGenerator.Initialize(context, thirdStage);
+        DefinitionsGenerator.Initialize(context, thirdStage);
+        DerivableGenerator.Initialize(context, thirdStage);
+        MiscGenerator.Initialize(context, thirdStage);
     }
 }

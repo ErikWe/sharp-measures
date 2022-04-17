@@ -9,8 +9,7 @@ using System.Collections.Generic;
 
 internal static class MarkedDeclarationSyntaxProvider
 {
-    public readonly record struct OutputData(TypeDeclarationSyntax Type, AttributeSyntax Attribute);
-    public delegate TOut DOutputTransform<TOut>(OutputData outputData);
+    public delegate TOut DOutputTransform<TOut>(TypeDeclarationSyntax typeDeclaration);
 
     public static IncrementalValuesProvider<TOut> Attach<TAttribute, TOut>(SyntaxValueProvider syntaxProvider, DOutputTransform<TOut> outputTransform)
         where TOut : struct
@@ -88,7 +87,7 @@ internal static class MarkedDeclarationSyntaxProvider
                 if (getAttributeSymbol(attribute) is IMethodSymbol attributeConstructorSymbol
                     && isValidAttribute(attributeConstructorSymbol.ContainingType))
                 {
-                    return outputTransform(new OutputData(declaration, attribute));
+                    return outputTransform(declaration);
                 }
             }
         }

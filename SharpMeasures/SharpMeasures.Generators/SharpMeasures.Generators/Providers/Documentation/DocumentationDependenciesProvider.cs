@@ -15,8 +15,8 @@ internal static class DocumentationDependenciesProvider
     public delegate TypeDeclarationSyntax DInputTransform<TIn>(TIn input);
     public delegate TOut DOutputTransform<TIn, TOut>(TIn input, List<DocumentationFile> documentation);
 
-    public static IncrementalValuesProvider<TOut> Attach<TIn, TOut>(IncrementalValuesProvider<AdditionalText> fileProvider, IncrementalValuesProvider<TIn> declarationProvider,
-        DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
+    public static IncrementalValuesProvider<TOut> Attach<TIn, TOut>(IncrementalValuesProvider<AdditionalText> fileProvider,
+        IncrementalValuesProvider<TIn> declarationProvider, DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
     {
         return declarationProvider.Combine(fileProvider.Collect()).Select(extractDependencies);
 

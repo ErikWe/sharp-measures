@@ -25,7 +25,7 @@ internal static class VerifyGenerator
                                   .Select(static (assembly) => MetadataReference.CreateFromFile(assembly.Location))
                                   .Cast<MetadataReference>();
 
-        CSharpCompilation compilation = CSharpCompilation.Create("ScalarQuantityGeneratorTests", new[] { syntaxTree }, references,
+        CSharpCompilation compilation = CSharpCompilation.Create("SharpMeasuresTests", new[] { syntaxTree }, references,
                       new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
         ImmutableArray<AdditionalText> additionalFiles = GetAdditionalFiles();
@@ -47,21 +47,9 @@ internal static class VerifyGenerator
             }
         }
 
-        static IEnumerable<string> GetDefinitionFiles()
-        {
-            try
-            {
-                return Directory.GetFiles(@"..\..\..\Definitions", "*.json", SearchOption.AllDirectories);
-            }
-            catch (DirectoryNotFoundException)
-            {
-                return Enumerable.Empty<string>();
-            }
-        }
-
         ImmutableArray<AdditionalText>.Builder builder = ImmutableArray.CreateBuilder<AdditionalText>();
 
-        foreach (string additionalTextPath in GetDocumentationFiles().Concat(GetDefinitionFiles()))
+        foreach (string additionalTextPath in GetDocumentationFiles())
         {
             builder.Add(new CustomAdditionalText(additionalTextPath));
         }

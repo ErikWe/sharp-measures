@@ -9,13 +9,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public readonly record struct SquareRootableQuantityAttributeParameters(Type? Quantity, IEnumerable<Type> SecondaryQuantities)
+public readonly record struct SquareRootableQuantityAttributeParameters(INamedTypeSymbol? Quantity, IEnumerable<INamedTypeSymbol> SecondaryQuantities)
 {
     public static SquareRootableQuantityAttributeParameters? Parse(AttributeData attributeData)
         => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
     public static SquareRootableQuantityAttributeParameters? Parse(INamedTypeSymbol symbol)
-        => ParameterParser.ParseSingle(symbol, Defaults, ConstructorParameters, NamedParameters);
+        => ParameterParser.ParseSingle<SquareRootableQuantityAttributeParameters, SquareRootableQuantityAttribute>(symbol, Defaults,
+            ConstructorParameters, NamedParameters);
 
     public static SquareRootableQuantityAttributeParameters? Parse(IEnumerable<AttributeData> attributeData)
         => ParameterParser.ParseSingle(attributeData, Defaults, ConstructorParameters, NamedParameters);
@@ -24,7 +25,8 @@ public readonly record struct SquareRootableQuantityAttributeParameters(Type? Qu
         => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
 
     public static IDictionary<string, int> ParseSiIndices(INamedTypeSymbol symbol)
-        => ParameterParser.ParseSingleIndices(symbol, ConstructorParameters, NamedParameters);
+        => ParameterParser.ParseSingleIndices<SquareRootableQuantityAttributeParameters, SquareRootableQuantityAttribute>(symbol,
+            ConstructorParameters, NamedParameters);
 
     public static IDictionary<string, int> ParseIndices(IEnumerable<AttributeData> attributeData)
         => ParameterParser.ParseSingleIndices(attributeData, ConstructorParameters, NamedParameters);
@@ -32,7 +34,7 @@ public readonly record struct SquareRootableQuantityAttributeParameters(Type? Qu
     private static SquareRootableQuantityAttributeParameters Defaults { get; } = new
     (
         Quantity: null,
-        SecondaryQuantities: Array.Empty<Type>()
+        SecondaryQuantities: Array.Empty<INamedTypeSymbol>()
     );
 
     private static Dictionary<string, AttributeProperty<SquareRootableQuantityAttributeParameters>> ConstructorParameters { get; }
@@ -52,13 +54,13 @@ public readonly record struct SquareRootableQuantityAttributeParameters(Type? Qu
         private static AttributeProperty<SquareRootableQuantityAttributeParameters> Quantity { get; } = new
         (
             name: nameof(SquareRootableQuantityAttribute.Quantity),
-            setter: static (parameters, obj) => obj is Type squareRootQuantity ? parameters with { Quantity = squareRootQuantity } : parameters
+            setter: static (parameters, obj) => obj is INamedTypeSymbol squareRootQuantity ? parameters with { Quantity = squareRootQuantity } : parameters
         );
 
         private static AttributeProperty<SquareRootableQuantityAttributeParameters> SecondaryQuantities { get; } = new
         (
             name: nameof(SquareRootableQuantityAttribute.SecondaryQuantities),
-            setter: static (parameters, obj) => obj is IEnumerable<Type> secondarySquareRootQuantities
+            setter: static (parameters, obj) => obj is IEnumerable<INamedTypeSymbol> secondarySquareRootQuantities
                 ? parameters with { SecondaryQuantities = secondarySquareRootQuantities }
                 : parameters
         );

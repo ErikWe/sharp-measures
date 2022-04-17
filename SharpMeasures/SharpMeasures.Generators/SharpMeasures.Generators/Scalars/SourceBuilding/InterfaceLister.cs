@@ -1,8 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Scalars.SourceBuilding;
 
-using Microsoft.CodeAnalysis;
-
-using SharpMeasures.Generators.Attributes.Parsing.Scalars;
 using SharpMeasures.Generators.Scalars.Pipeline;
 
 using System;
@@ -10,128 +7,88 @@ using System.Collections.Generic;
 
 internal static class InterfaceLister
 {
-    public static IEnumerable<string> GetAll(INamedTypeSymbol typeSymbol, PowerOperations powerOperations)
+    public static IEnumerable<string> GetAll(FifthStage.Result data)
     {
-        yield return $"System.IComparable<{typeSymbol.Name}>";
-        yield return $"SharpMeasures.ScalarAbstractions.IMultiplicableScalarQuantity<{typeSymbol.Name}, Scalar>";
-        yield return $"SharpMeasures.ScalarAbstractions.IMultiplicableScalarQuantity<Unhandled, Unhandled>";
-        yield return $"SharpMeasures.ScalarAbstractions.IDivisibleScalarQuantity<{typeSymbol.Name}, Scalar>";
-        yield return $"SharpMeasures.ScalarAbstractions.IDivisibleScalarQuantity<Unhandled, Unhandled>";
+        yield return $"System.IComparable<{data.TypeDefinition.Name}>";
+        yield return $"SharpMeasures.ScalarAbstractions.IMultiplicableScalarQuantity<{data.TypeDefinition.Name}, SharpMeasures.Scalar>";
+        yield return $"SharpMeasures.ScalarAbstractions.IMultiplicableScalarQuantity<SharpMeasures.Unhandled, SharpMeasures.Unhandled>";
+        yield return $"SharpMeasures.ScalarAbstractions.IDivisibleScalarQuantity<{data.TypeDefinition.Name}, SharpMeasures.Scalar>";
+        yield return $"SharpMeasures.ScalarAbstractions.IDivisibleScalarQuantity<SharpMeasures.Unhandled, SharpMeasures.Unhandled>";
         yield return "SharpMeasures.ScalarAbstractions.IGenericallyMultiplicableScalarQuantity";
         yield return "SharpMeasures.ScalarAbstractions.IGenericallyDivisibleScalarQuantity";
 
-        foreach (string invertible in GetInvertibleInterfaces(powerOperations))
+        foreach (string invertible in GetInvertibleInterfaces(data.InvertibleOperations))
         {
             yield return invertible;
         }
 
-        foreach (string squarable in GetSquarableInterfaces(powerOperations))
+        foreach (string squarable in GetSquarableInterfaces(data.SquarableOperations))
         {
             yield return squarable;
         }
 
-        foreach (string cubable in GetCubableInterfaces(powerOperations))
+        foreach (string cubable in GetCubableInterfaces(data.CubableOperations))
         {
             yield return cubable;
         }
 
-        foreach (string squareRootable in GetSquareRootableInterfaces(powerOperations))
+        foreach (string squareRootable in GetSquareRootableInterfaces(data.SquareRootableOperations))
         {
             yield return squareRootable;
         }
 
-        foreach (string cubeRootable in GetCubeRootableInterfaces(powerOperations))
+        foreach (string cubeRootable in GetCubeRootableInterfaces(data.CubeRootableOperations))
         {
             yield return cubeRootable;
         }
     }
 
-    private static IEnumerable<string> GetInvertibleInterfaces(PowerOperations powerOperations)
+    public static IEnumerable<string> GetInterfaces(FifthStage.PowerData? operations, Func<string, string> toInterfaceDelegate)
     {
-        if (powerOperations.Invertible is InvertibleQuantityAttributeParameters invertibleParameters)
+        if (operations is null)
         {
-            if (invertibleParameters.Quantity is Type primaryQuantity)
-            {
-                yield return text(primaryQuantity.FullName);
-            }
-
-            foreach (Type secondaryQuantity in invertibleParameters.SecondaryQuantities)
-            {
-                yield return text(secondaryQuantity.FullName);
-            }
+            yield break;
         }
+
+        yield return toInterfaceDelegate(operations.Value.Quantity);
+
+        foreach (string secondaryQuantity in operations.Value.SecondaryQuantities)
+        {
+            yield return toInterfaceDelegate(secondaryQuantity);
+        }
+    }
+
+    private static IEnumerable<string> GetInvertibleInterfaces(FifthStage.PowerData? operations)
+    {
+        return GetInterfaces(operations, text);
 
         static string text(string type) => $"SharpMeasures.ScalarAbstractions.IInvertibleScalarQuantity<{type}>";
     }
 
-    private static IEnumerable<string> GetSquarableInterfaces(PowerOperations powerOperations)
+    private static IEnumerable<string> GetSquarableInterfaces(FifthStage.PowerData? operations)
     {
-        if (powerOperations.Squarable is SquarableQuantityAttributeParameters squarableParameters)
-        {
-            if (squarableParameters.Quantity is Type primaryQuantity)
-            {
-                yield return text(primaryQuantity.FullName);
-            }
-
-            foreach (Type secondaryQuantity in squarableParameters.SecondaryQuantities)
-            {
-                yield return text(secondaryQuantity.FullName);
-            }
-        }
+        return GetInterfaces(operations, text);
 
         static string text(string type) => $"SharpMeasures.ScalarAbstractions.ISquarableScalarQuantity<{type}>";
     }
 
-    private static IEnumerable<string> GetCubableInterfaces(PowerOperations powerOperations)
+    private static IEnumerable<string> GetCubableInterfaces(FifthStage.PowerData? operations)
     {
-        if (powerOperations.Cubable is CubableQuantityAttributeParameters cubableParameters)
-        {
-            if (cubableParameters.Quantity is Type primaryQuantity)
-            {
-                yield return text(primaryQuantity.FullName);
-            }
-
-            foreach (Type secondaryQuantity in cubableParameters.SecondaryQuantities)
-            {
-                yield return text(secondaryQuantity.FullName);
-            }
-        }
+        return GetInterfaces(operations, text);
 
         static string text(string type) => $"SharpMeasures.ScalarAbstractions.ICubableScalarQuantity<{type}>";
     }
 
-    private static IEnumerable<string> GetSquareRootableInterfaces(PowerOperations powerOperations)
+    private static IEnumerable<string> GetSquareRootableInterfaces(FifthStage.PowerData? operations)
     {
-        if (powerOperations.SquareRootable is SquareRootableQuantityAttributeParameters squareRootableParameters)
-        {
-            if (squareRootableParameters.Quantity is Type primaryQuantity)
-            {
-                yield return text(primaryQuantity.FullName);
-            }
-
-            foreach (Type secondaryQuantity in squareRootableParameters.SecondaryQuantities)
-            {
-                yield return text(secondaryQuantity.FullName);
-            }
-        }
+        return GetInterfaces(operations, text);
 
         static string text(string type) => $"SharpMeasures.ScalarAbstractions.ISquareRootableScalarQuantity<{type}>";
     }
 
-    private static IEnumerable<string> GetCubeRootableInterfaces(PowerOperations powerOperations)
+    private static IEnumerable<string> GetCubeRootableInterfaces(FifthStage.PowerData? operations)
     {
-        if (powerOperations.CubeRootable is CubeRootableQuantityAttributeParameters cubeRootableParameters)
-        {
-            if (cubeRootableParameters.Quantity is Type primaryQuantity)
-            {
-                yield return text(primaryQuantity.FullName);
-            }
-
-            foreach (Type secondaryQuantity in cubeRootableParameters.SecondaryQuantities)
-            {
-                yield return text(secondaryQuantity.FullName);
-            }
-        }
+        return GetInterfaces(operations, text);
 
         static string text(string type) => $"SharpMeasures.ScalarAbstractions.ICubeRootableScalarQuantity<{type}>";
     }
