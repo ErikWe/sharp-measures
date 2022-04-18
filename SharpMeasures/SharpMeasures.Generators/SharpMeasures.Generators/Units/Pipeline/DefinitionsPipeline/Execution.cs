@@ -45,7 +45,7 @@ internal static class Execution
 
         void typeBlock(StringBuilder source, Indentation indentation)
         {
-            List<string> definedUnits = new();
+            HashSet<string> definedUnits = new();
 
             AppendDerived(source, indentation, data.TypeDefinition.Name, data.DerivedUnits, definedUnits);
             AppendFixed(source, indentation, data.TypeDefinition.Name, data.Quantity, data.Biased, data.FixedUnits, definedUnits);
@@ -73,10 +73,15 @@ internal static class Execution
     }
 
     private static void AppendDerived(StringBuilder source, Indentation indentation, NamedType unitName,
-        IEnumerable<CachedDerivedUnitAttributeParameters> derivedUnits, IList<string> definedUnits)
+        IEnumerable<CachedDerivedUnitAttributeParameters> derivedUnits, ICollection<string> definedUnits)
     {
         foreach (CachedDerivedUnitAttributeParameters derivedUnit in derivedUnits)
         {
+            if (derivedUnit.Name.Length == 0 || definedUnits.Contains(derivedUnit.Name))
+            {
+                continue;
+            }
+
             definedUnits.Add(derivedUnit.Name);
 
             source.Append($"{indentation}public static {unitName.Name} {derivedUnit.Name} {{ get; }} = ");
@@ -97,13 +102,13 @@ internal static class Execution
     }
 
     private static void AppendFixed(StringBuilder source, Indentation indentation, NamedType unitName, NamedType quantityName, bool biased,
-        IEnumerable<FixedUnitAttributeParameters> fixedUnits, IList<string> definedUnits)
+        IEnumerable<FixedUnitAttributeParameters> fixedUnits, ICollection<string> definedUnits)
     {
         Action<FixedUnitAttributeParameters> appender = biased ? appendBiased : appendUnbiased;
 
         foreach (FixedUnitAttributeParameters fixedUnit in fixedUnits)
         {
-            if (fixedUnit.Name.Length == 0 || fixedUnit.Plural.Length == 0)
+            if (fixedUnit.Name.Length == 0 || definedUnits.Contains(fixedUnit.Name))
             {
                 continue;
             }
@@ -127,15 +132,20 @@ internal static class Execution
         void appendBiased(FixedUnitAttributeParameters fixedUnit)
         {
             appendDeclaration(fixedUnit);
-            source.Append($" = new(new {quantityName.FullyQualifiedName}({fixedUnit.Value}), new SharpMeasures.Scalar({fixedUnit.Bias});{Environment.NewLine}");
+            source.Append($" = new(new {quantityName.FullyQualifiedName}({fixedUnit.Value}), new SharpMeasures.Scalar({fixedUnit.Bias}));{Environment.NewLine}");
         }
     }
 
     private static void AppendAliases(StringBuilder source, Indentation indentation, NamedType unitName, IEnumerable<UnitAliasAttributeParameters> unitAliases,
-        IList<string> definedUnits)
+        HashSet<string> definedUnits)
     {
         foreach (UnitAliasAttributeParameters unitAlias in unitAliases)
         {
+            if (unitAlias.Name.Length == 0 || definedUnits.Contains(unitAlias.Name))
+            {
+                continue;
+            }
+
             definedUnits.Add(unitAlias.Name);
 
             source.Append($"{indentation}public static {unitName.Name} {unitAlias.Name} => {unitAlias.AliasOf};{Environment.NewLine}");
@@ -166,7 +176,7 @@ internal static class Execution
     }
 
     private static void AppendDependantUnits(StringBuilder source, Indentation indentation, NamedType unitName,
-        IList<IDerivedUnitAttributeParameters> dependantUnits, IList<string> definedUnits)
+        IList<IDerivedUnitAttributeParameters> dependantUnits, HashSet<string> definedUnits)
     {
         int initialLength = dependantUnits.Count;
 
@@ -174,6 +184,13 @@ internal static class Execution
         {
             if (definedUnits.Contains(dependantUnits[i].DerivedFrom))
             {
+                if (definedUnits.Contains(dependantUnits[i].Name))
+                {
+                    dependantUnits.RemoveAt(i);
+                    i--;
+                    continue;
+                }
+
                 source.Append($"{indentation}public static {unitName.Name} {dependantUnits[i].Name} {{ get; }} = ");
 
                 if (dependantUnits[i] is ScaledUnitAttributeParameters scaledUnit)

@@ -3,6 +3,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
+using SharpMeasures.Generators.Attributes.Parsing.Scalars;
 using SharpMeasures.Generators.Attributes.Parsing.Units;
 using SharpMeasures.Generators.Documentation;
 using SharpMeasures.Generators.Providers;
@@ -26,7 +27,8 @@ internal static class Stage3
         if (symbol is null
             || GeneratedUnitAttributeParameters.Parse(symbol) is not GeneratedUnitAttributeParameters parameters
             || parameters.Quantity is not INamedTypeSymbol quantity
-            || quantity.GetAttributeOfType<GeneratedScalarQuantityAttribute>() is null)
+            || quantity.GetAttributeOfType<GeneratedScalarQuantityAttribute>() is not AttributeData scalarAttribute
+            || GeneratedScalarQuantityAttributeParameters.Parse(scalarAttribute)?.Biased == true)
         {
             return null;
         }

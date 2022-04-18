@@ -13,7 +13,7 @@ using Xunit;
 public class AbortedCases
 {
     [Fact]
-    public Task IncorrectArguments()
+    public Task NoMatchingConstructor()
     {
         string source = @"
 using SharpMeasures.Generators;
@@ -22,16 +22,16 @@ using SharpMeasures.Generators.Units;
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
 public partial class Length { }
 
-[FixedUnit(""Metre"", 3)]
+[FixedUnit(""Metre"", 1)]
 [GeneratedUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
 
-        return VerifyGenerator.FromRawText<UnitGenerator>(source);
+        return VerifyGenerator.VerifyMatch<UnitGenerator>(source);
     }
 
     [Fact]
-    public Task NullName()
+    public Task NameNull()
     {
         string source = @"
 using SharpMeasures.Generators;
@@ -40,11 +40,48 @@ using SharpMeasures.Generators.Units;
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
 public partial class Length { }
 
-[FixedUnit(null, ""Test"", 3)]
+[FixedUnit(null, ""Metres"", 1)]
 [GeneratedUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
 
-        return VerifyGenerator.FromRawText<UnitGenerator>(source);
+        return VerifyGenerator.VerifyMatch<UnitGenerator>(source);
+    }
+
+    [Fact]
+    public Task ValueNull()
+    {
+        string source = @"
+using SharpMeasures.Generators;
+using SharpMeasures.Generators.Units;
+
+[GeneratedScalarQuantity(typeof(UnitOfLength))]
+public partial class Length { }
+
+[FixedUnit(""Metre"", ""Metres"", null)]
+[GeneratedUnit(typeof(Length))]
+public partial class UnitOfLength { }
+";
+
+        return VerifyGenerator.VerifyMatch<UnitGenerator>(source);
+    }
+
+    [Fact]
+    public Task DuplicateName()
+    {
+        string source = @"
+using SharpMeasures.Generators;
+using SharpMeasures.Generators.Units;
+
+[GeneratedScalarQuantity(typeof(UnitOfLength))]
+public partial class Length { }
+
+[FixedUnit(""Metre"", ""Metres"", 1)]
+[FixedUnit(""Metre"", ""Metres"", 1)]
+[GeneratedUnit(typeof(Length))]
+public partial class UnitOfLength { }
+";
+
+        return VerifyGenerator.VerifyMatch<UnitGenerator>(source);
     }
 }

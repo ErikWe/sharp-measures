@@ -12,21 +12,76 @@ using System.Threading.Tasks;
 
 using VerifyXunit;
 
+using Xunit;
+
 internal static class VerifyGenerator
 {
-    public static Task FromRawText<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new()
-        => Verifier.Verify(ConstructDriver(source, new TGenerator()));
+    public static void AssertNoOutput<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new()
+        => AssertNoOutput(source, new TGenerator());
 
-    private static GeneratorDriver ConstructDriver(string sourceCode, IIncrementalGenerator generator)
+    public static void AssertNoOutput(string source, IIncrementalGenerator generator)
+        => AssertNoOutput(ConstructDriver(source, generator));
+
+    public static void AssertNoOutput(GeneratorDriver driver)
+    {
+        GeneratorDriverRunResult results = driver.GetRunResult();
+
+        foreach (GeneratorRunResult result in results.Results)
+        {
+            Assert.Empty(result.GeneratedSources);
+        }
+    }
+
+    public static void AssertSomeOutput<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new()
+        => AssertSomeOutput(source, new TGenerator());
+
+    public static void AssertSomeOutput(string source, IIncrementalGenerator generator)
+        => AssertSomeOutput(ConstructDriver(source, generator));
+
+    public static void AssertSomeOutput(GeneratorDriver driver)
+    {
+        GeneratorDriverRunResult results = driver.GetRunResult();
+
+        bool anyOutput = false;
+
+        foreach (GeneratorRunResult result in results.Results)
+        {
+            if (result.GeneratedSources.Length > 0)
+            {
+                anyOutput = true;
+                break;
+            }
+        }
+
+        Assert.True(anyOutput);
+    }
+
+    public static Task VerifyMatch<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new()
+        => VerifyMatch(source, new TGenerator());
+
+    public static Task VerifyMatch(string source, IIncrementalGenerator generator)
+        => VerifyMatch(ConstructDriver(source, generator));
+
+    public static Task VerifyMatch(GeneratorDriver driver)
+    {
+        AssertSomeOutput(driver);
+        return Verifier.Verify(driver);
+    }
+
+    public static GeneratorDriver ConstructDriver<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new()
+        => ConstructDriver(source, new TGenerator());
+
+    public static GeneratorDriver ConstructDriver(string sourceCode, IIncrementalGenerator generator)
     {
         SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(sourceCode);
+
         IEnumerable<MetadataReference> references = AppDomain.CurrentDomain.GetAssemblies()
-                                  .Where(static (assembly) => !assembly.IsDynamic)
-                                  .Select(static (assembly) => MetadataReference.CreateFromFile(assembly.Location))
-                                  .Cast<MetadataReference>();
+            .Where(static (assembly) => !assembly.IsDynamic)
+            .Select(static (assembly) => MetadataReference.CreateFromFile(assembly.Location))
+            .Cast<MetadataReference>();
 
         CSharpCompilation compilation = CSharpCompilation.Create("SharpMeasuresTests", new[] { syntaxTree }, references,
-                      new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
         ImmutableArray<AdditionalText> additionalFiles = GetAdditionalFiles();
 

@@ -91,7 +91,7 @@ internal static class Execution
         void constructorBlock(StringBuilder source, Indentation indentation)
         {
             source.Append($"{indentation}{names.Quantity} = {names.QuantityParameter};{Environment.NewLine}");
-            source.Append($"Offset = offset;");
+            source.Append($"{indentation}Offset = offset;");
         }
 
         source.Append(Environment.NewLine);
