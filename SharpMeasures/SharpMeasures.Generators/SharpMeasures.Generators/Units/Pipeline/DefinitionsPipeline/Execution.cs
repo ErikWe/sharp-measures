@@ -77,7 +77,7 @@ internal static class Execution
     {
         foreach (CachedDerivedUnitAttributeParameters derivedUnit in derivedUnits)
         {
-            if (derivedUnit.Name.Length == 0 || definedUnits.Contains(derivedUnit.Name))
+            if (InvalidParameters(derivedUnit) || definedUnits.Contains(derivedUnit.Name))
             {
                 continue;
             }
@@ -108,7 +108,7 @@ internal static class Execution
 
         foreach (FixedUnitAttributeParameters fixedUnit in fixedUnits)
         {
-            if (fixedUnit.Name.Length == 0 || definedUnits.Contains(fixedUnit.Name))
+            if (InvalidParameters(fixedUnit) || definedUnits.Contains(fixedUnit.Name))
             {
                 continue;
             }
@@ -141,7 +141,7 @@ internal static class Execution
     {
         foreach (UnitAliasAttributeParameters unitAlias in unitAliases)
         {
-            if (unitAlias.Name.Length == 0 || definedUnits.Contains(unitAlias.Name))
+            if (InvalidParameters(unitAlias) || definedUnits.Contains(unitAlias.Name))
             {
                 continue;
             }
@@ -182,15 +182,15 @@ internal static class Execution
 
         for (int i = 0; i < dependantUnits.Count; i++)
         {
+            if (InvalidParameters(dependantUnits[i]) || definedUnits.Contains(dependantUnits[i].Name))
+            {
+                dependantUnits.RemoveAt(i);
+                i--;
+                continue;
+            }
+
             if (definedUnits.Contains(dependantUnits[i].DerivedFrom))
             {
-                if (definedUnits.Contains(dependantUnits[i].Name))
-                {
-                    dependantUnits.RemoveAt(i);
-                    i--;
-                    continue;
-                }
-
                 source.Append($"{indentation}public static {unitName.Name} {dependantUnits[i].Name} {{ get; }} = ");
 
                 if (dependantUnits[i] is ScaledUnitAttributeParameters scaledUnit)
@@ -234,4 +234,14 @@ internal static class Execution
     {
         source.Append($"{offsetUnit.From}.ScaledBy({offsetUnit.Offset})");
     }
+
+    private static bool InvalidParameters(IUnitAttributeParameters parameters) => !ValidParameters(parameters);
+
+    private static bool ValidParameters(IUnitAttributeParameters parameters)
+        => parameters.Name.Length > 0 && (parameters.Plural.Length > 0 || parameters.IsConstant);
+
+    private static bool InvalidParameters(IDerivedUnitAttributeParameters parameters) => !ValidParameters(parameters);
+
+    private static bool ValidParameters(IDerivedUnitAttributeParameters parameters)
+        => ValidParameters(parameters as IUnitAttributeParameters) && parameters.DerivedFrom.Length > 0;
 }

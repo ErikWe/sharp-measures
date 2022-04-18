@@ -17,7 +17,7 @@ public class AbortedCases
 using SharpMeasures.Generators;
 
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
-public partial class Length { }
+public class Length { }
 
 [GeneratedUnit(typeof(Length))]
 public class UnitOfLength { }";
@@ -33,7 +33,7 @@ using SharpMeasures.Generators;
 
 [
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
-public partial class Length { }
+public class Length { }
 
 [GeneratedUnit(typeof(Length))]
 public partial class struct { }";
@@ -47,7 +47,7 @@ public partial class struct { }";
         string source = @"
 using SharpMeasures.Generators;
 
-public partial class Length { }
+public class Length { }
 
 [GeneratedUnit(typeof(Length))]
 public partial class UnitOfLength { }";
@@ -62,7 +62,7 @@ public partial class UnitOfLength { }";
 using SharpMeasures.Generators;
 
 [GeneratedScalarQuantity(typeof(UnitOfTemperature), Biased = true)]
-public partial class Temperature { }
+public class Temperature { }
 
 [GeneratedUnit(typeof(Temperature))]
 public partial class UnitOfTemperature { }";
