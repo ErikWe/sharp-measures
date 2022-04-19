@@ -49,10 +49,9 @@ internal static class Execution
 
             AppendDerived(source, indentation, data.TypeDefinition.Name, data.DerivedUnits, definedUnits);
             AppendFixed(source, indentation, data.TypeDefinition.Name, data.Quantity, data.Biased, data.FixedUnits, definedUnits);
-            AppendAliases(source, indentation, data.TypeDefinition.Name, data.UnitAliases, definedUnits);
 
             IList<IDerivedUnitAttributeParameters> dependantUnits
-                = GetDependantInstances(data.ScaledUnits, data.PrefixedUnits, data.OffsetUnits);
+                = GetDependantInstances(data.UnitAliases, data.ScaledUnits, data.PrefixedUnits, data.OffsetUnits);
 
             AppendDependantUnits(source, indentation, data.TypeDefinition.Name, dependantUnits, definedUnits);
 
@@ -136,26 +135,16 @@ internal static class Execution
         }
     }
 
-    private static void AppendAliases(StringBuilder source, Indentation indentation, NamedType unitName, IEnumerable<UnitAliasAttributeParameters> unitAliases,
-        HashSet<string> definedUnits)
-    {
-        foreach (UnitAliasAttributeParameters unitAlias in unitAliases)
-        {
-            if (InvalidParameters(unitAlias) || definedUnits.Contains(unitAlias.Name))
-            {
-                continue;
-            }
-
-            definedUnits.Add(unitAlias.Name);
-
-            source.Append($"{indentation}public static {unitName.Name} {unitAlias.Name} => {unitAlias.AliasOf};{Environment.NewLine}");
-        }
-    }
-
-    private static IList<IDerivedUnitAttributeParameters> GetDependantInstances(IEnumerable<ScaledUnitAttributeParameters> scaledUnits,
-        IEnumerable<PrefixedUnitAttributeParameters> prefixedUnits, IEnumerable<OffsetUnitAttributeParameters> offsetUnits)
+    private static IList<IDerivedUnitAttributeParameters> GetDependantInstances(IEnumerable<UnitAliasAttributeParameters> unitAliases,
+        IEnumerable<ScaledUnitAttributeParameters> scaledUnits, IEnumerable<PrefixedUnitAttributeParameters> prefixedUnits,
+        IEnumerable<OffsetUnitAttributeParameters> offsetUnits)
     {
         List<IDerivedUnitAttributeParameters> result = new();
+
+        foreach (UnitAliasAttributeParameters unitAlias in unitAliases)
+        {
+            result.Add(unitAlias);
+        }
 
         foreach (ScaledUnitAttributeParameters scaledUnit in scaledUnits)
         {
@@ -191,9 +180,13 @@ internal static class Execution
 
             if (definedUnits.Contains(dependantUnits[i].DerivedFrom))
             {
-                source.Append($"{indentation}public static {unitName.Name} {dependantUnits[i].Name} {{ get; }} = ");
+                source.Append($"{indentation}public static {unitName.Name} {dependantUnits[i].Name} ");
 
-                if (dependantUnits[i] is ScaledUnitAttributeParameters scaledUnit)
+                if (dependantUnits[i] is UnitAliasAttributeParameters unitAlias)
+                {
+                    AppendAlias(source, unitAlias);
+                }
+                else if (dependantUnits[i] is ScaledUnitAttributeParameters scaledUnit)
                 {
                     AppendScaled(source, scaledUnit);
                 }
@@ -220,19 +213,24 @@ internal static class Execution
         }
     }
 
+    private static void AppendAlias(StringBuilder source, UnitAliasAttributeParameters unitAlias)
+    {
+        source.Append($"=> {unitAlias.AliasOf}");
+    }
+
     private static void AppendScaled(StringBuilder source, ScaledUnitAttributeParameters scaledUnit)
     {
-        source.Append($"{scaledUnit.From}.ScaledBy({scaledUnit.Scale})");
+        source.Append($"{{ get; }} = {scaledUnit.From}.ScaledBy({scaledUnit.Scale})");
     }
 
     private static void AppendPrefixed(StringBuilder source, PrefixedUnitAttributeParameters prefixedUnit)
     {
-        source.Append($"{prefixedUnit.From}.WithPrefix(SharpMeasures.MetricPrefix.{prefixedUnit.Prefix})");
+        source.Append($"{{ get; }} = {prefixedUnit.From}.WithPrefix(SharpMeasures.MetricPrefix.{prefixedUnit.Prefix})");
     }
 
     private static void AppendOffset(StringBuilder source, OffsetUnitAttributeParameters offsetUnit)
     {
-        source.Append($"{offsetUnit.From}.ScaledBy({offsetUnit.Offset})");
+        source.Append($"{{ get; }} = {offsetUnit.From}.ScaledBy({offsetUnit.Offset})");
     }
 
     private static bool InvalidParameters(IUnitAttributeParameters parameters) => !ValidParameters(parameters);
