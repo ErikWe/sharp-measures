@@ -1,11 +1,11 @@
-﻿namespace SharpMeasures;
+namespace SharpMeasures;
 
 using SharpMeasures.ScalarAbstractions;
 
 using System;
 
-/// <summary>A pure scalar, representing a magnitude.</summary>
-public readonly record struct Scalar :
+/// <summary>A pure scalar.</summary>
+public readonly partial record struct Scalar :
     IComparable<Scalar>,
     IScalarQuantity,
     IScalableScalarQuantity<Scalar>,
@@ -28,65 +28,68 @@ public readonly record struct Scalar :
     /// <summary>The <see cref="Scalar"/> with magnitude 1.</summary>
     public static Scalar One { get; } = new(1);
 
-    /// <summary>The magnitude of the <see cref="Scalar"/>.</summary>
-    public double Magnitude { get; init; }
+    /// <summary>The value of the <see cref="Scalar"/>.</summary>
+    public double Value { get; init; }
 
-    /// <summary>Constructs a new <see cref="Scalar"/> with magnitude <paramref name="magnitude"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Scalar"/>.</param>
-    public Scalar(double magnitude)
+    /// <inheritdoc/>
+    Scalar IScalarQuantity.Magnitude => this;
+
+    /// <summary>Constructs a new <see cref="Scalar"/> with <paramref name="value"/>.</summary>
+    /// <param name="value">The value of the <see cref="Scalar"/>.</param>
+    public Scalar(double value)
     {
-        Magnitude = magnitude;
+        Value = value;
     }
 
-    /// <summary>Indicates whether the magnitude of the <see cref="Scalar"/> is NaN.</summary>
-    public bool IsNaN => double.IsNaN(Magnitude);
-    /// <summary>Indicates whether the magnitude of the <see cref="Scalar"/> is zero.</summary>
-    public bool IsZero => Magnitude == 0;
-    /// <summary>Indicates whether the magnitude of the <see cref="Scalar"/> is positive.</summary>
-    public bool IsPositive => Magnitude > 0;
-    /// <summary>Indicates whether the magnitude of the <see cref="Scalar"/> is negative.</summary>
-    public bool IsNegative => double.IsNegative(Magnitude);
-    /// <summary>Indicates whether the magnitude of the <see cref="Scalar"/> is finite.</summary>
-    public bool IsFinite => double.IsFinite(Magnitude);
-    /// <summary>Indicates whether the magnitude of the <see cref="Scalar"/> is infinite.</summary>
-    public bool IsInfinite => double.IsInfinity(Magnitude);
-    /// <summary>Indicates whether the magnitude of the <see cref="Scalar"/> is infinite, and positive.</summary>
-    public bool IsPositiveInfinity => double.IsPositiveInfinity(Magnitude);
-    /// <summary>Indicates whether the magnitude of the <see cref="Scalar"/> is infinite, and negative.</summary>
-    public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude);
+    /// <summary>Indicates whether the value of the <see cref="Scalar"/> is NaN.</summary>
+    public bool IsNaN => double.IsNaN(Value);
+    /// <summary>Indicates whether the value of the <see cref="Scalar"/> is zero.</summary>
+    public bool IsZero => Value == 0;
+    /// <summary>Indicates whether the value of the <see cref="Scalar"/> is positive.</summary>
+    public bool IsPositive => Value > 0;
+    /// <summary>Indicates whether the value of the <see cref="Scalar"/> is negative.</summary>
+    public bool IsNegative => double.IsNegative(Value);
+    /// <summary>Indicates whether the value of the <see cref="Scalar"/> is finite.</summary>
+    public bool IsFinite => double.IsFinite(Value);
+    /// <summary>Indicates whether the value of the <see cref="Scalar"/> is infinite.</summary>
+    public bool IsInfinite => double.IsInfinity(Value);
+    /// <summary>Indicates whether the value of the <see cref="Scalar"/> is infinite, and positive.</summary>
+    public bool IsPositiveInfinity => double.IsPositiveInfinity(Value);
+    /// <summary>Indicates whether the value of the <see cref="Scalar"/> is infinite, and negative.</summary>
+    public bool IsNegativeInfinity => double.IsNegativeInfinity(Value);
 
     /// <summary>Computes the absolute of the <see cref="Scalar"/>.</summary>
-    public Scalar Absolute() => new(Math.Abs(Magnitude));
+    public Scalar Absolute() => new(Math.Abs(Value));
     /// <summary>Computes the floor of the <see cref="Scalar"/>.</summary>
-    public Scalar Floor() => new(Math.Floor(Magnitude));
+    public Scalar Floor() => new(Math.Floor(Value));
     /// <summary>Computes the ceiling of the <see cref="Scalar"/>.</summary>
-    public Scalar Ceiling() => new(Math.Ceiling(Magnitude));
+    public Scalar Ceiling() => new(Math.Ceiling(Value));
     /// <summary>Rounds the <see cref="Scalar"/> to the nearest integer value.</summary>
-    public Scalar Round() => new(Math.Round(Magnitude));
+    public Scalar Round() => new(Math.Round(Value));
 
     /// <summary>Computes the <see cref="Scalar"/> raised to the power <paramref name="exponent"/>.</summary>
     /// <param name="exponent">The exponent, to which the <see cref="Scalar"/> is raised.</param>
-    public Scalar Power(double exponent) => new(Math.Pow(Magnitude, exponent));
+    public Scalar Power(double exponent) => new(Math.Pow(Value, exponent));
     /// <summary>Computes the inverse of the <see cref="Scalar"/>.</summary>
-    public Scalar Invert() => new(1 / Magnitude);
+    public Scalar Invert() => new(1 / Value);
     /// <summary>Computes the square of the <see cref="Scalar"/>.</summary>
-    public Scalar Square() => new(Magnitude * Magnitude);
+    public Scalar Square() => new(Value * Value);
     /// <summary>Computes the cube of the <see cref="Scalar"/>.</summary>
-    public Scalar Cube() => new(Magnitude * Magnitude * Magnitude);
+    public Scalar Cube() => new(Value * Value * Value);
     /// <summary>Computes the square root of the <see cref="Scalar"/>.</summary>
-    public Scalar SquareRoot() => new(Math.Sqrt(Magnitude));
+    public Scalar SquareRoot() => new(Math.Sqrt(Value));
     /// <summary>Computes the cube root of the <see cref="Scalar"/>.</summary>
-    public Scalar CubeRoot() => new(Math.Cbrt(Magnitude));
+    public Scalar CubeRoot() => new(Math.Cbrt(Value));
 
     /// <inheritdoc/>
-    public int CompareTo(Scalar other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="Scalar"/>.</summary>
-    public override string ToString() => $"{Magnitude}";
+    public int CompareTo(Scalar other) => Value.CompareTo(other.Value);
+    /// <summary>Produces a formatted string from the value of the <see cref="Scalar"/>.</summary>
+    public override string ToString() => $"{Value}";
 
     /// <summary>Unary plus, resulting in the unmodified <see cref="Scalar"/>.</summary>
     public Scalar Plus() => this;
     /// <summary>Negation, resulting in a <see cref="Scalar"/> with negated magnitude.</summary>
-    public Scalar Negate() => new(-Magnitude);
+    public Scalar Negate() => new(-Value);
     /// <summary>Unary plus, resulting in the unmodified <paramref name="x"/>.</summary>
     /// <param name="x">Unary plus is applied to this <see cref="Scalar"/>.</param>
     public static Scalar operator +(Scalar x) => x.Plus();
@@ -96,10 +99,10 @@ public readonly record struct Scalar :
 
     /// <summary>Adds <paramref name="term"/> to the <see cref="Scalar"/>.</summary>
     /// <param name="term">This value is added to the <see cref="Scalar"/>.</param>
-    public Scalar Add(double term) => new(Magnitude + term);
+    public Scalar Add(double term) => new(Value + term);
     /// <summary>Subtracts <paramref name="term"/> from the <see cref="Scalar"/>.</summary>
     /// <param name="term">This value is subtracted from the <see cref="Scalar"/>.</param>
-    public Scalar Subtract(double term) => new(Magnitude - term);
+    public Scalar Subtract(double term) => new(Value - term);
     /// <summary>Addition of <paramref name="x"/> and <paramref name="y"/>.</summary>
     /// <param name="x">The first term of the addition.</param>
     /// <param name="y">The second term of the addition.</param>
@@ -119,10 +122,10 @@ public readonly record struct Scalar :
 
     /// <summary>Adds <paramref name="term"/> to the <see cref="Scalar"/>.</summary>
     /// <param name="term">This value is added to the <see cref="Scalar"/>.</param>
-    public Scalar Add(Scalar term) => new(Magnitude + term.Magnitude);
+    public Scalar Add(Scalar term) => new(Value + term.Value);
     /// <summary>Subtracts <paramref name="term"/> from the <see cref="Scalar"/>.</summary>
     /// <param name="term">This value is subtracted from the <see cref="Scalar"/>.</param>
-    public Scalar Subtract(Scalar term) => new(Magnitude - term.Magnitude);
+    public Scalar Subtract(Scalar term) => new(Value - term.Value);
     /// <summary>Addition of <paramref name="x"/> and <paramref name="y"/>.</summary>
     /// <param name="x">The first term of the addition.</param>
     /// <param name="y">The second term of the addition.</param>
@@ -135,11 +138,11 @@ public readonly record struct Scalar :
     /// <summary>Multiplies the <see cref="Scalar"/> by the <see cref="Unhandled"/> quantity <paramref name="factor"/>
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="factor">The factor by which the <see cref="Scalar"/> is multiplied.</param>
-    public Unhandled Multiply(Unhandled factor) => new(Magnitude * factor.Magnitude);
+    public Unhandled Multiply(Unhandled factor) => new(Value * factor.Magnitude);
     /// <summary>Divides the <see cref="Scalar"/> by the <see cref="Unhandled"/> quantity <paramref name="divisor"/>
     /// - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="divisor">The divisor by which the <see cref="Scalar"/> is divided.</param>
-    public Unhandled Divide(Unhandled divisor) => new(Magnitude / divisor.Magnitude);
+    public Unhandled Divide(Unhandled divisor) => new(Value / divisor.Magnitude);
     /// <summary>Multiplication of the <see cref="Scalar"/> <paramref name="x"/> by the <see cref="Unhandled"/> quantity <paramref name="y"/> -
     /// resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Scalar"/>, which is multiplied by the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
@@ -153,13 +156,13 @@ public readonly record struct Scalar :
 
     /// <summary>Computes the remainder from division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
-    public Scalar Remainder(double divisor) => new(Magnitude % divisor);
+    public Scalar Remainder(double divisor) => new(Value % divisor);
     /// <summary>Multiplies the <see cref="Scalar"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Scalar"/> is multiplied.</param>
-    public Scalar Multiply(double factor) => new(Magnitude * factor);
+    public Scalar Multiply(double factor) => new(Value * factor);
     /// <summary>Divides the <see cref="Scalar"/> by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor by which the <see cref="Scalar"/> is divided.</param>
-    public Scalar Divide(double divisor) => new(Magnitude / divisor);
+    public Scalar Divide(double divisor) => new(Value / divisor);
     /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">This value is divided by <paramref name="y"/> to produce a remainder.</param>
     /// <param name="y">The remainder is produced from division of <paramref name="x"/> by this value.</param>
@@ -179,17 +182,17 @@ public readonly record struct Scalar :
     /// <summary>Division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The numerator, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The denominator, which divides <paramref name="x"/>.</param>
-    public static Scalar operator /(double x, Scalar y) => new(x / y.Magnitude);
+    public static Scalar operator /(double x, Scalar y) => new(x / y.Value);
 
     /// <summary>Computes the remainder from division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, from division by which the remainder is retrieved.</param>
-    public Scalar Remainder(Scalar divisor) => new(Magnitude % divisor.Magnitude);
+    public Scalar Remainder(Scalar divisor) => new(Value % divisor.Value);
     /// <summary>Multiplies the <see cref="Scalar"/> by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Scalar"/> is multiplied.</param>
-    public Scalar Multiply(Scalar factor) => new(Magnitude * factor.Magnitude);
+    public Scalar Multiply(Scalar factor) => new(Value * factor.Value);
     /// <summary>Divides the <see cref="Scalar"/> by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor by which the <see cref="Scalar"/> is divided.</param>
-    public Scalar Divide(Scalar divisor) => new(Magnitude / divisor.Magnitude);
+    public Scalar Divide(Scalar divisor) => new(Value / divisor.Value);
     /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">This value is divided by <paramref name="y"/> to produce a remainder.</param>
     /// <param name="y">The remainder is produced from division of <paramref name="x"/> by this value.</param>
@@ -205,62 +208,62 @@ public readonly record struct Scalar :
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"></exception>
-    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<Scalar, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorScalarQuantity : IScalarQuantity
     {
         ArgumentNullException.ThrowIfNull(factory, nameof(factory));
         ArgumentNullException.ThrowIfNull(factor, nameof(factor));
 
-        return factory(Magnitude * factor.Magnitude);
+        return factory(Value * factor.Magnitude);
     }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"></exception>
-    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<Scalar, TQuotientScalarQuantity> factory)
         where TQuotientScalarQuantity : IScalarQuantity
         where TDivisorScalarQuantity : IScalarQuantity
     {
         ArgumentNullException.ThrowIfNull(factory, nameof(factory));
         ArgumentNullException.ThrowIfNull(divisor, nameof(divisor));
 
-        return factory(Magnitude / divisor.Magnitude);
+        return factory(Value / divisor.Magnitude);
     }
 
     /// <summary>Multiplication of <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Scalar"/>, which is multiplied by <paramref name="y"/>.</param>
     /// <param name="y">This quantity is multiplied by the <see cref="Scalar"/> <paramref name="x"/>.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{double, TProductScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TProductScalarQuantity, TFactorScalarQuantity}(TFactorScalarQuantity, Func{Scalar, TProductScalarQuantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator *(Scalar x, IScalarQuantity y) => x.Multiply(y, (m) => new Unhandled(m));
+    public static Unhandled operator *(Scalar x, IScalarQuantity y) => x.Multiply(y, static (product) => new Unhandled(product));
     /// <summary>Division of <paramref name="x"/> by the quantity <paramref name="y"/> - resulting in an <see cref="Unhandled"/> quantity.</summary>
     /// <param name="x">The <see cref="Scalar"/>, which is divided by <paramref name="y"/>.</param>
     /// <param name="y">The<see cref="Scalar"/> <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{double, TQuotientScalarQuantity})"/>.</remarks>
+    /// <remarks>To avoid boxing, prefer <see cref="Divide{TQuotientScalarQuantity, TDivisorScalarQuantity}(TDivisorScalarQuantity, Func{Scalar, TQuotientScalarQuantity})"/>.</remarks>
     /// <exception cref="ArgumentNullException"/>
-    public static Unhandled operator /(Scalar x, IScalarQuantity y) => x.Divide(y, (m) => new Unhandled(m));
+    public static Unhandled operator /(Scalar x, IScalarQuantity y) => x.Divide(y, static (quotient) => new Unhandled(quotient));
 
     /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
     /// <param name="x">The method determines whether the magnitude of this <see cref="Scalar"/> is less than that of <paramref name="y"/>.</param>
     /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than that of this <see cref="Scalar"/>.</param>
-    public static bool operator <(Scalar x, Scalar y) => x.Magnitude < y.Magnitude;
+    public static bool operator <(Scalar x, Scalar y) => x.Value < y.Value;
     /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than that of <paramref name="y"/>.</summary>
     /// <param name="x">The method determines whether the magnitude of this <see cref="Scalar"/> is greater than that of <paramref name="y"/>.</param>
     /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than that of this <see cref="Scalar"/>.</param>
-    public static bool operator >(Scalar x, Scalar y) => x.Magnitude > y.Magnitude;
+    public static bool operator >(Scalar x, Scalar y) => x.Value > y.Value;
     /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than or equal to that of <paramref name="y"/>.</summary>
     /// <param name="x">The method determines whether the magnitude of this <see cref="Scalar"/> is less than or equal to that of <paramref name="y"/>.</param>
     /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than or equal to that of this <see cref="Scalar"/>.</param>
-    public static bool operator <=(Scalar x, Scalar y) => x.Magnitude <= y.Magnitude;
+    public static bool operator <=(Scalar x, Scalar y) => x.Value <= y.Value;
     /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of <paramref name="y"/>.</summary>
     /// <param name="x">The method determines whether the magnitude of this <see cref="Scalar"/> is greater than or equal to that of <paramref name="y"/>.</param>
     /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of this <see cref="Scalar"/>.</param>
-    public static bool operator >=(Scalar x, Scalar y) => x.Magnitude >= y.Magnitude;
+    public static bool operator >=(Scalar x, Scalar y) => x.Value >= y.Value;
 
-    /// <summary>Converts the <see cref="Scalar"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
-    public double ToDouble() => Magnitude;
-    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
-    public static implicit operator double(Scalar x) => x.Magnitude;
+    /// <summary>Converts the <see cref="Scalar"/> to a <see cref="double"/> with value <see cref="Value"/>.</summary>
+    public double ToDouble() => Value;
+    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Value"/>.</summary>
+    public static implicit operator double(Scalar x) => x.Value;
 
     /// <summary>Constructs the <see cref="Scalar"/> of magnitude <paramref name="x"/>.</summary>
     public static Scalar FromDouble(double x) => new(x);

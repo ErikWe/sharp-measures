@@ -13,7 +13,8 @@ public interface IGenericallyCrossableVector3Quantity :
     /// <typeparam name="TFactorVector3Quantity">The three-dimensional vector quantity by which the original quantity may be cross-multiplied.</typeparam>
     /// <param name="factor">The quantity by which the original quantity is cross-multiplied.</param>
     /// <param name="factory">Delegate for constructing a <typeparamref name="TProductVector3Quantity"/>.</param>
-    public abstract TProductVector3Quantity Cross<TProductVector3Quantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<(double, double, double), TProductVector3Quantity> factory)
+    public abstract TProductVector3Quantity Cross<TProductVector3Quantity, TFactorVector3Quantity>(TFactorVector3Quantity factor,
+        Func<Vector3, TProductVector3Quantity> factory)
         where TProductVector3Quantity : IVector3Quantity
         where TFactorVector3Quantity : IVector3Quantity;
 }

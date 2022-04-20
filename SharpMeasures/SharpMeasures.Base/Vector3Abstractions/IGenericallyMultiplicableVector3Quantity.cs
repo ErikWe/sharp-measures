@@ -13,7 +13,8 @@ public interface IGenericallyMultiplicableVector3Quantity :
     /// <typeparam name="TFactorScalarQuantity">The scalar quantity by which the original quantity may be multiplied.</typeparam>
     /// <param name="factor">The quantity by which the original quantity is multiplied.</param>
     /// <param name="factory">Delegate for constructing a <typeparamref name="TProductVector3Quantity"/>.</param>
-    public abstract TProductVector3Quantity Multiply<TProductVector3Quantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<(double, double, double), TProductVector3Quantity> factory)
+    public abstract TProductVector3Quantity Multiply<TProductVector3Quantity, TFactorScalarQuantity>(TFactorScalarQuantity factor,
+        Func<Vector3, TProductVector3Quantity> factory)
         where TProductVector3Quantity : IVector3Quantity
         where TFactorScalarQuantity : IScalarQuantity;
 }

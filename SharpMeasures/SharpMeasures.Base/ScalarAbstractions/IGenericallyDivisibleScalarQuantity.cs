@@ -14,7 +14,7 @@ public interface IGenericallyDivisibleScalarQuantity :
     /// <param name="divisor">The quantity by which the original quantity is divided.</param>
     /// <param name="factory">Delegate for constructing a <typeparamref name="TQuotientScalarQuantity"/> from a <see langword="double"/>.</param>
     public abstract TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor,
-        Func<double, TQuotientScalarQuantity> factory)
+        Func<Scalar, TQuotientScalarQuantity> factory)
         where TQuotientScalarQuantity : IScalarQuantity
         where TDivisorScalarQuantity : IScalarQuantity;
 }

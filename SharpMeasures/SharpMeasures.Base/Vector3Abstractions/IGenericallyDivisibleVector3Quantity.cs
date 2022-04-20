@@ -13,7 +13,8 @@ public interface IGenericallyDivisibleVector3Quantity :
     /// <typeparam name="TDivisorScalarQuantity">The type of the scalar quantity by which the original quantity may be divided.</typeparam>
     /// <param name="divisor">The quantity by which the original quantity is divided.</param>
     /// <param name="factory">Delegate for constructing a <typeparamref name="TQuotientVector3Quantity"/>.</param>
-    public abstract TQuotientVector3Quantity Divide<TQuotientVector3Quantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<(double, double, double), TQuotientVector3Quantity> factory)
+    public abstract TQuotientVector3Quantity Divide<TQuotientVector3Quantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor,
+        Func<Vector3, TQuotientVector3Quantity> factory)
         where TQuotientVector3Quantity : IVector3Quantity
         where TDivisorScalarQuantity : IScalarQuantity;
 }

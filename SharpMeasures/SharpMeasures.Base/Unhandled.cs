@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures;
+namespace SharpMeasures;
 
 using SharpMeasures.ScalarAbstractions;
 
@@ -29,18 +29,18 @@ public readonly record struct Unhandled :
     public static Unhandled One { get; } = new(1);
 
     /// <summary>The magnitude of the <see cref="Unhandled"/> quantity.</summary>
-    public double Magnitude { get; init; }
+    public Scalar Magnitude { get; }
 
     /// <summary>Constructs a new <see cref="Unhandled"/> quantity with magnitude <paramref name="magnitude"/>.</summary>
     /// <param name="magnitude">The magnitude of the <see cref="Unhandled"/> quantity.</param>
-    public Unhandled(Scalar magnitude) : this(magnitude.Magnitude) { }
-
-    /// <summary>Constructs a new <see cref="Unhandled"/> quantity with magnitude <paramref name="magnitude"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Unhandled"/> quantity.</param>
-    public Unhandled(double magnitude)
+    public Unhandled(Scalar magnitude)
     {
         Magnitude = magnitude;
     }
+
+    /// <summary>Constructs a new <see cref="Unhandled"/> quantity with magnitude <paramref name="magnitude"/>.</summary>
+    /// <param name="magnitude">The magnitude of the <see cref="Unhandled"/> quantity.</param>
+    public Unhandled(double magnitude) : this(Scalar.FromDouble(magnitude)) { }
 
     /// <summary>Indicates whether the magnitude of the <see cref="Unhandled"/> quantity is NaN.</summary>
     public bool IsNaN => double.IsNaN(Magnitude);
@@ -160,13 +160,13 @@ public readonly record struct Unhandled :
 
     /// <summary>Computes the remainder from division of the <see cref="Unhandled"/> quantity by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The remainder is produced from division by this value.</param>
-    public Unhandled Remainder(Scalar divisor) => new(Magnitude % divisor.Magnitude);
+    public Unhandled Remainder(Scalar divisor) => new(Magnitude % divisor.Value);
     /// <summary>Scales the <see cref="Unhandled"/> quantity by <paramref name="factor"/>.</summary>
     /// <param name="factor">The factor by which the <see cref="Unhandled"/> quantity is scaled.</param>
-    public Unhandled Multiply(Scalar factor) => new(Magnitude * factor.Magnitude);
+    public Unhandled Multiply(Scalar factor) => new(Magnitude * factor.Value);
     /// <summary>Scales the <see cref="Unhandled"/> quantity through division by <paramref name="divisor"/>.</summary>
     /// <param name="divisor">The divisor, by which the <see cref="Unhandled"/> quantity is divided.</param>
-    public Unhandled Divide(Scalar divisor) => new(Magnitude / divisor.Magnitude);
+    public Unhandled Divide(Scalar divisor) => new(Magnitude / divisor.Value);
     /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
     /// <param name="x">The <see cref="Unhandled"/> quantity, which is divided by <paramref name="y"/> to produce a remainder.</param>
     /// <param name="y">The remainder is produced from division of the <see cref="Unhandled"/> quantity <paramref name="x"/> by this value.</param>
@@ -182,7 +182,7 @@ public readonly record struct Unhandled :
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"></exception>
-    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<double, TProductScalarQuantity> factory)
+    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<Scalar, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorScalarQuantity : IScalarQuantity
     {
@@ -205,7 +205,7 @@ public readonly record struct Unhandled :
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"></exception>
-    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<double, TQuotientScalarQuantity> factory)
+    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<Scalar, TQuotientScalarQuantity> factory)
         where TQuotientScalarQuantity : IScalarQuantity
         where TDivisorScalarQuantity : IScalarQuantity
     {

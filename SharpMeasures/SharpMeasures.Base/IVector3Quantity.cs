@@ -3,11 +3,14 @@
 public interface IVector3Quantity
 {
     /// <summary>The magnitude of the X-component of the vector quantity.</summary>
-    public abstract double MagnitudeX { get; }
+    public abstract Scalar XMagnitude { get; }
     /// <summary>The magnitude of the Y-component of the vector quantity.</summary>
-    public abstract double MagnitudeY { get; }
+    public abstract Scalar YMagnitude { get; }
     /// <summary>The magnitude of the Z-component of the vector quantity.</summary>
-    public abstract double MagnitudeZ { get; }
+    public abstract Scalar ZMagnitude { get; }
+
+    /// <summary>The components of the vector quantity.</summary>
+    public abstract Vector3 Components { get; }
 
     /// <summary>Computes the magnitude, or norm, of the vector quantity.</summary>
     /// <remarks>For improved performance, consider preferring <see cref="SquaredMagnitude"/> when applicable.</remarks>

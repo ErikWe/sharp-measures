@@ -14,7 +14,7 @@ public static class VectorMaths
         where TLHSVector3 : IVector3Quantity
         where TRHSVector3 : IVector3Quantity
     {
-        return new(lhs.MagnitudeX * rhs.MagnitudeX + lhs.MagnitudeY * rhs.MagnitudeY + lhs.MagnitudeZ * rhs.MagnitudeZ);
+        return new(lhs.XMagnitude * rhs.XMagnitude + lhs.YMagnitude * rhs.YMagnitude + lhs.ZMagnitude * rhs.ZMagnitude);
     }
 
     /// <summary>Computes the cross-product { <paramref name="lhs"/> x <paramref name="rhs"/> }, resulting in a <see cref="SharpMeasures.Vector3"/>.</summary>
@@ -28,9 +28,9 @@ public static class VectorMaths
     {
         return new
         (
-            lhs.MagnitudeY * rhs.MagnitudeZ - lhs.MagnitudeZ * rhs.MagnitudeY,
-            lhs.MagnitudeZ * rhs.MagnitudeX - lhs.MagnitudeX * rhs.MagnitudeZ,
-            lhs.MagnitudeX * rhs.MagnitudeY - lhs.MagnitudeY * rhs.MagnitudeX
+            lhs.YMagnitude * rhs.ZMagnitude - lhs.ZMagnitude * rhs.YMagnitude,
+            lhs.ZMagnitude * rhs.XMagnitude - lhs.XMagnitude * rhs.ZMagnitude,
+            lhs.XMagnitude * rhs.YMagnitude - lhs.YMagnitude * rhs.XMagnitude
         );
     }
 
@@ -43,9 +43,9 @@ public static class VectorMaths
     {
         return new
         (
-            vector.MagnitudeX * transform.M11 + vector.MagnitudeY * transform.M21 + vector.MagnitudeZ * transform.M31 + transform.M41,
-            vector.MagnitudeX * transform.M12 + vector.MagnitudeY * transform.M22 + vector.MagnitudeZ * transform.M32 + transform.M42,
-            vector.MagnitudeX * transform.M13 + vector.MagnitudeY * transform.M23 + vector.MagnitudeZ * transform.M33 + transform.M43
+            vector.XMagnitude * transform.M11 + vector.YMagnitude * transform.M21 + vector.ZMagnitude * transform.M31 + transform.M41,
+            vector.XMagnitude * transform.M12 + vector.YMagnitude * transform.M22 + vector.ZMagnitude * transform.M32 + transform.M42,
+            vector.XMagnitude * transform.M13 + vector.YMagnitude * transform.M23 + vector.ZMagnitude * transform.M33 + transform.M43
         );
     }
 }

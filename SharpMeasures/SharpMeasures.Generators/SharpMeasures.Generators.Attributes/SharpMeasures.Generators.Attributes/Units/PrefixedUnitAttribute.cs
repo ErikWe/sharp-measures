@@ -2,7 +2,7 @@
 
 using System;
 
-/// <summary>Defines an instance of the unit by applying a metric prefix to another instance of the same unit.</summary>
+/// <summary>Defines an instance of the unit by applying a prefix to another instance of the same unit.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class PrefixedUnitAttribute : Attribute
 {
@@ -18,18 +18,18 @@ public sealed class PrefixedUnitAttribute : Attribute
     public bool IsSIUnit { get; init; }
     /// <summary>Indicates whether this is a constant.</summary>
     public bool IsConstant { get; init; }
-    /// <summary>The name of the instance to which the metric prefix is applied.</summary>
+    /// <summary>The name of the instance to which the prefix is applied.</summary>
     public string From { get; }
-    /// <summary>The name of the metric prefix.</summary>
+    /// <summary>The prefix.</summary>
     public string Prefix { get; }
 
-    /// <summary>Constructs a definition of an instance of the unit by applying a metric prefix to another instance of the same unit.</summary>
+    /// <summary>Constructs a definition of an instance of the unit by applying a prefix to another instance of the same unit.</summary>
     /// <param name="name">The name of the instance of the unit, in singular form.</param>
     /// <param name="plural">The name of the instance of the unit, in plural form.
     /// <para>See <see cref="Utility.UnitPluralCodes"/> for some short-hand notations for producing the plural form based on the singular form.</para>
     /// <para>This value is ignored if the unit is a constant.</para></param>
-    /// <param name="from">The name of the instance to which the metric prefix is applied.</param>
-    /// <param name="prefix">The name of the metric prefix.</param>
+    /// <param name="from">The name of the instance to which the prefix is applied.</param>
+    /// <param name="prefix">The prefix.</param>
     public PrefixedUnitAttribute(string name, string plural, string from, string prefix)
     {
         Name = name;

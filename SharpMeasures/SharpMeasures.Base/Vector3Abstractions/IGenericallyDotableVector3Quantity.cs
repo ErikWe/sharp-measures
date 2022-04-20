@@ -13,7 +13,8 @@ public interface IGenericallyDotableVector3Quantity :
     /// <typeparam name="TFactorVector3Quantity">The three-dimensional vector quantity by which the original quantity may be dot-multiplied.</typeparam>
     /// <param name="factor">The quantity by which the original quantity is dot-multiplied.</param>
     /// <param name="factory">Delegate for constructing a <typeparamref name="TProductScalarQuantity"/> from a <see cref="Scalar"/>.</param>
-    public abstract TProductScalarQuantity Dot<TProductScalarQuantity, TFactorVector3Quantity>(TFactorVector3Quantity factor, Func<double, TProductScalarQuantity> factory)
+    public abstract TProductScalarQuantity Dot<TProductScalarQuantity, TFactorVector3Quantity>(TFactorVector3Quantity factor,
+        Func<Scalar, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorVector3Quantity : IVector3Quantity;
 }

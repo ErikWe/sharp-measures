@@ -4,5 +4,5 @@
 public interface IScalarQuantity
 {
     /// <summary>The magnitude of the scalar quantity.</summary>
-    public abstract double Magnitude { get; }
+    public abstract Scalar Magnitude { get; }
 }

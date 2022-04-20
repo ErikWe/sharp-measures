@@ -14,7 +14,7 @@ public interface IGenericallyMultiplicableScalarQuantity :
     /// <param name="factor">The quantity by which the original quantity is multiplied.</param>
     /// <param name="factory">Delegate for constructing a <typeparamref name="TProductScalarQuantity"/> from a <see langword="double"/>.</param>
     public abstract TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor,
-        Func<double, TProductScalarQuantity> factory)
+        Func<Scalar, TProductScalarQuantity> factory)
         where TProductScalarQuantity : IScalarQuantity
         where TFactorScalarQuantity : IScalarQuantity;
 }
