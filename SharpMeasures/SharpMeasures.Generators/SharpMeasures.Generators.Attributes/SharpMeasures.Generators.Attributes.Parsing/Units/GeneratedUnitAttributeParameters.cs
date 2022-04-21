@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
+namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
 using Microsoft.CodeAnalysis;
 
@@ -9,13 +9,13 @@ using System.Linq;
 
 public readonly record struct GeneratedUnitAttributeParameters(INamedTypeSymbol? Quantity, bool Biased)
 {
-    public static GeneratedUnitAttributeParameters? Parse(AttributeData attributeData)
+    public static GeneratedUnitAttributeParameters Parse(AttributeData attributeData)
         => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
-    public static GeneratedUnitAttributeParameters? Parse(INamedTypeSymbol symbol)
+    public static GeneratedUnitAttributeParameters Parse(INamedTypeSymbol symbol)
         => ParameterParser.ParseSingle<GeneratedUnitAttributeParameters, GeneratedUnitAttribute>(symbol, Defaults, ConstructorParameters, NamedParameters);
 
-    public static GeneratedUnitAttributeParameters? Parse(IEnumerable<AttributeData> attributeData)
+    public static GeneratedUnitAttributeParameters Parse(IEnumerable<AttributeData> attributeData)
         => ParameterParser.ParseSingle(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
     public static IDictionary<string, int> ParseIndices(AttributeData attributeData)

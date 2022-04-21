@@ -49,8 +49,8 @@ internal static class Execution
             {
                 anyDerivations = true;
 
-                IEnumerable<string> parameterNames = GetSignatureParameterNames(derivation.Signature);
-                IEnumerable<string> signatureComponents = GetSignatureNamedTypes(derivation.Signature, parameterNames);
+                IEnumerable<string> parameterNames = GetSignatureParameterNames(derivation.Signature!);
+                IEnumerable<string> signatureComponents = GetSignatureNamedTypes(derivation.Signature!, parameterNames);
 
                 source.Append($"{indentation}public static {unitName} From(");
                 IterativeBuilding.AppendEnumerable(source, signatureComponents, ", ");
@@ -86,12 +86,7 @@ internal static class Execution
         {
             foreach (string? fullyQualifiedType in signature)
             {
-                if (fullyQualifiedType is null)
-                {
-                    continue;
-                }
-
-                yield return fullyQualifiedType.Substring(fullyQualifiedType.LastIndexOf('.') + 1);
+                yield return fullyQualifiedType!.Substring(fullyQualifiedType.LastIndexOf('.') + 1);
             }
         }
 
@@ -157,13 +152,8 @@ internal static class Execution
 
         IEnumerable<string> quantitiesWithoutNamespaces()
         {
-            foreach (string? fullyQualifiedType in parameters.Quantities)
+            foreach (string fullyQualifiedType in parameters.Quantities!)
             {
-                if (fullyQualifiedType is null)
-                {
-                    continue;
-                }
-
                 yield return fullyQualifiedType.Substring(fullyQualifiedType.LastIndexOf('.') + 1);
             }
         }

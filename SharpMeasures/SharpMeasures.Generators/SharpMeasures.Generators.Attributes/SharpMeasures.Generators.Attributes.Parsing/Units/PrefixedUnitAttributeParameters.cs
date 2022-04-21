@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
+namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
 using Microsoft.CodeAnalysis;
 
@@ -8,11 +8,15 @@ using SharpMeasures.Generators.Units;
 using System.Collections.Generic;
 using System.Linq;
 
-public readonly record struct PrefixedUnitAttributeParameters(string Name, string Plural, string Symbol, bool IsSIUnit, bool IsConstant,
-    string From, string Prefix)
+public readonly record struct PrefixedUnitAttributeParameters(string Name, string Plural, string From, MetricPrefixName MetricPrefixName,
+    BinaryPrefixName BinaryPrefixName, PrefixedUnitAttributeParameters.PrefixType SpecifiedPrefixType)
     : IUnitAttributeParameters, IDerivedUnitAttributeParameters
 {
-    public static PrefixedUnitAttributeParameters? Parse(AttributeData attributeData)
+    public enum PrefixType { None, Metric, Binary }
+
+    string IDerivedUnitAttributeParameters.DerivedFrom => From;
+
+    public static PrefixedUnitAttributeParameters Parse(AttributeData attributeData)
         => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
     public static IEnumerable<PrefixedUnitAttributeParameters> Parse(INamedTypeSymbol symbol)
@@ -30,17 +34,14 @@ public readonly record struct PrefixedUnitAttributeParameters(string Name, strin
     public static IEnumerable<IDictionary<string, int>> ParseIndices(IEnumerable<AttributeData> attributeData)
         => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
 
-    string IDerivedUnitAttributeParameters.DerivedFrom => From;
-
     private static PrefixedUnitAttributeParameters Defaults { get; } = new
     (
         Name: string.Empty,
         Plural: string.Empty,
-        Symbol: string.Empty,
-        IsSIUnit: false,
-        IsConstant: false,
         From: string.Empty,
-        Prefix: string.Empty
+        MetricPrefixName: MetricPrefixName.Identity,
+        BinaryPrefixName: BinaryPrefixName.Identity,
+        SpecifiedPrefixType: PrefixType.None
     );
 
     private static Dictionary<string, AttributeProperty<PrefixedUnitAttributeParameters>> ConstructorParameters { get; }
@@ -55,11 +56,9 @@ public readonly record struct PrefixedUnitAttributeParameters(string Name, strin
         {
             Name,
             Plural,
-            Symbol,
-            IsSIUnit,
-            IsConstant,
             From,
-            Prefix
+            MetricPrefixName,
+            BinaryPrefixName
         };
 
         private static AttributeProperty<PrefixedUnitAttributeParameters> Name { get; } = new
@@ -74,34 +73,26 @@ public readonly record struct PrefixedUnitAttributeParameters(string Name, strin
             setter: static (parameters, obj) => obj is string plural ? parameters with { Plural = plural } : parameters
         );
 
-        private static AttributeProperty<PrefixedUnitAttributeParameters> Symbol { get; } = new
-        (
-            name: nameof(PrefixedUnitAttribute.Symbol),
-            setter: static (parameters, obj) => obj is string symbol ? parameters with { Symbol = symbol } : parameters
-        );
-
-        private static AttributeProperty<PrefixedUnitAttributeParameters> IsSIUnit { get; } = new
-        (
-            name: nameof(PrefixedUnitAttribute.IsSIUnit),
-            setter: static (parameters, obj) => obj is bool isSIUnit ? parameters with { IsSIUnit = isSIUnit } : parameters
-        );
-
-        private static AttributeProperty<PrefixedUnitAttributeParameters> IsConstant { get; } = new
-        (
-            name: nameof(PrefixedUnitAttribute.IsConstant),
-            setter: static (parameters, obj) => obj is bool isConstant ? parameters with { IsConstant = isConstant } : parameters
-        );
-
         private static AttributeProperty<PrefixedUnitAttributeParameters> From { get; } = new
         (
             name: nameof(PrefixedUnitAttribute.From),
             setter: static (parameters, obj) => obj is string from ? parameters with { From = from } : parameters
         );
 
-        private static AttributeProperty<PrefixedUnitAttributeParameters> Prefix { get; } = new
+        private static AttributeProperty<PrefixedUnitAttributeParameters> MetricPrefixName { get; } = new
         (
-            name: nameof(PrefixedUnitAttribute.Prefix),
-            setter: static (parameters, obj) => obj is string prefix ? parameters with { Prefix = prefix } : parameters
+            name: nameof(PrefixedUnitAttribute.MetricPrefixName),
+            setter: static (parameters, obj) => obj is int metricPrefiName
+                ? parameters with { MetricPrefixName = (MetricPrefixName)metricPrefiName, SpecifiedPrefixType = PrefixType.Metric }
+                : parameters
+        );
+
+        private static AttributeProperty<PrefixedUnitAttributeParameters> BinaryPrefixName { get; } = new
+        (
+            name: nameof(PrefixedUnitAttribute.BinaryPrefixName),
+            setter: static (parameters, obj) => obj is int binaryPrefixName
+                ? parameters with { BinaryPrefixName = (BinaryPrefixName)binaryPrefixName, SpecifiedPrefixType = PrefixType.Binary }
+                : parameters
         );
     }
 }

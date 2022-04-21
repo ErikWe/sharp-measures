@@ -12,12 +12,6 @@ public sealed class ScaledUnitAttribute : Attribute
     /// <remarks>See <see cref="Utility.UnitPluralCodes"/> for some short-hand notations for producing the plural form based on the singular form.
     /// <para>This value is ignored if the unit is a constant.</para></remarks>
     public string Plural { get; }
-    /// <summary>The symbol of the instance of the unit.</summary>
-    public string Symbol { get; init; } = string.Empty;
-    /// <summary>Indicates whether this is a SI unit.</summary>
-    public bool IsSIUnit { get; init; }
-    /// <summary>Indicates whether this is a constant.</summary>
-    public bool IsConstant { get; init; }
     /// <summary>The name of the instance that is scaled.</summary>
     public string From { get; }
     /// <summary>The value by which the original instance is scaled.</summary>

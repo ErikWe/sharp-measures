@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Attributes.Parsing.Scalars;
+namespace SharpMeasures.Generators.Attributes.Parsing.Scalars;
 
 using Microsoft.CodeAnalysis;
 
@@ -11,13 +11,13 @@ using System.Linq;
 
 public readonly record struct ExcludeBasesAttributeParameters(IEnumerable<string> ExcludedBases)
 {
-    public static ExcludeBasesAttributeParameters? Parse(AttributeData attributeData)
+    public static ExcludeBasesAttributeParameters Parse(AttributeData attributeData)
         => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
-    public static ExcludeBasesAttributeParameters? Parse(INamedTypeSymbol symbol)
+    public static ExcludeBasesAttributeParameters Parse(INamedTypeSymbol symbol)
         => ParameterParser.ParseSingle<ExcludeBasesAttributeParameters, ExcludeBasesAttribute>(symbol, Defaults, ConstructorParameters, NamedParameters);
 
-    public static ExcludeBasesAttributeParameters? Parse(IEnumerable<AttributeData> attributeData)
+    public static ExcludeBasesAttributeParameters Parse(IEnumerable<AttributeData> attributeData)
         => ParameterParser.ParseSingle(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
     public static IDictionary<string, int> ParseIndices(AttributeData attributeData)

@@ -12,29 +12,40 @@ public sealed class PrefixedUnitAttribute : Attribute
     /// <remarks>See <see cref="Utility.UnitPluralCodes"/> for some short-hand notations for producing the plural form based on the singular form.
     /// <para>This value is ignored if the unit is a constant.</para></remarks>
     public string Plural { get; }
-    /// <summary>The symbol of the instance of the unit.</summary>
-    public string Symbol { get; init; } = string.Empty;
-    /// <summary>Indicates whether this is a SI unit.</summary>
-    public bool IsSIUnit { get; init; }
-    /// <summary>Indicates whether this is a constant.</summary>
-    public bool IsConstant { get; init; }
     /// <summary>The name of the instance to which the prefix is applied.</summary>
     public string From { get; }
-    /// <summary>The prefix.</summary>
-    public string Prefix { get; }
+    /// <summary>The metric prefix.</summary>
+    public MetricPrefixName MetricPrefixName { get; }
+    /// <summary>The binary prefix.</summary>
+    public BinaryPrefixName BinaryPrefixName { get; }
 
-    /// <summary>Constructs a definition of an instance of the unit by applying a prefix to another instance of the same unit.</summary>
+    /// <summary>Constructs a definition of an instance of the unit by applying a metric prefix to another instance of the same unit.</summary>
     /// <param name="name">The name of the instance of the unit, in singular form.</param>
     /// <param name="plural">The name of the instance of the unit, in plural form.
     /// <para>See <see cref="Utility.UnitPluralCodes"/> for some short-hand notations for producing the plural form based on the singular form.</para>
     /// <para>This value is ignored if the unit is a constant.</para></param>
-    /// <param name="from">The name of the instance to which the prefix is applied.</param>
-    /// <param name="prefix">The prefix.</param>
-    public PrefixedUnitAttribute(string name, string plural, string from, string prefix)
+    /// <param name="from">The name of the instance to which the metric prefix is applied.</param>
+    /// <param name="metricPrefixName">The metric prefix.</param>
+    public PrefixedUnitAttribute(string name, string plural, string from, MetricPrefixName metricPrefixName)
     {
         Name = name;
         Plural = plural;
         From = from;
-        Prefix = prefix;
+        MetricPrefixName = metricPrefixName;
+    }
+
+    /// <summary>Constructs a definition of an instance of the unit by applying a binary prefix to another instance of the same unit.</summary>
+    /// <param name="name">The name of the instance of the unit, in singular form.</param>
+    /// <param name="plural">The name of the instance of the unit, in plural form.
+    /// <para>See <see cref="Utility.UnitPluralCodes"/> for some short-hand notations for producing the plural form based on the singular form.</para>
+    /// <para>This value is ignored if the unit is a constant.</para></param>
+    /// <param name="from">The name of the instance to which the binary prefix is applied.</param>
+    /// <param name="binaryPrefixName">The binary prefix.</param>
+    public PrefixedUnitAttribute(string name, string plural, string from, BinaryPrefixName binaryPrefixName)
+    {
+        Name = name;
+        Plural = plural;
+        From = from;
+        BinaryPrefixName = binaryPrefixName;
     }
 }

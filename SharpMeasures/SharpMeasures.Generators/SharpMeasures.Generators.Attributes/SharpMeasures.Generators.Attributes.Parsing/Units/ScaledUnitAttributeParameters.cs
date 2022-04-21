@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
+namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
 using Microsoft.CodeAnalysis;
 
@@ -8,11 +8,12 @@ using SharpMeasures.Generators.Units;
 using System.Collections.Generic;
 using System.Linq;
 
-public readonly record struct ScaledUnitAttributeParameters(string Name, string Plural, string Symbol, bool IsSIUnit, bool IsConstant,
-    string From, double Scale)
+public readonly record struct ScaledUnitAttributeParameters(string Name, string Plural, string From, double Scale)
     : IUnitAttributeParameters, IDerivedUnitAttributeParameters
 {
-    public static ScaledUnitAttributeParameters? Parse(AttributeData attributeData)
+    string IDerivedUnitAttributeParameters.DerivedFrom => From;
+
+    public static ScaledUnitAttributeParameters Parse(AttributeData attributeData)
         => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
     public static IEnumerable<ScaledUnitAttributeParameters> Parse(INamedTypeSymbol symbol)
@@ -30,15 +31,10 @@ public readonly record struct ScaledUnitAttributeParameters(string Name, string 
     public static IEnumerable<IDictionary<string, int>> ParseIndices(IEnumerable<AttributeData> attributeData)
         => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
 
-    string IDerivedUnitAttributeParameters.DerivedFrom => From;
-
     private static ScaledUnitAttributeParameters Defaults { get; } = new
     (
         Name: string.Empty,
         Plural: string.Empty,
-        Symbol: string.Empty,
-        IsSIUnit: false,
-        IsConstant: false,
         From: string.Empty,
         Scale: 0
     );
@@ -55,9 +51,6 @@ public readonly record struct ScaledUnitAttributeParameters(string Name, string 
         {
             Name,
             Plural,
-            Symbol,
-            IsSIUnit,
-            IsConstant,
             From,
             Scale
         };
@@ -72,24 +65,6 @@ public readonly record struct ScaledUnitAttributeParameters(string Name, string 
         (
             name: nameof(ScaledUnitAttribute.Plural),
             setter: static (parameters, obj) => obj is string plural ? parameters with { Plural = plural } : parameters
-        );
-
-        private static AttributeProperty<ScaledUnitAttributeParameters> Symbol { get; } = new
-        (
-            name: nameof(ScaledUnitAttribute.Symbol),
-            setter: static (parameters, obj) => obj is string symbol ? parameters with { Symbol = symbol } : parameters
-        );
-
-        private static AttributeProperty<ScaledUnitAttributeParameters> IsSIUnit { get; } = new
-        (
-            name: nameof(ScaledUnitAttribute.IsSIUnit),
-            setter: static (parameters, obj) => obj is bool isSIUnit ? parameters with { IsSIUnit = isSIUnit } : parameters
-        );
-
-        private static AttributeProperty<ScaledUnitAttributeParameters> IsConstant { get; } = new
-        (
-            name: nameof(ScaledUnitAttribute.IsConstant),
-            setter: static (parameters, obj) => obj is bool isConstant ? parameters with { IsConstant = isConstant } : parameters
         );
 
         private static AttributeProperty<ScaledUnitAttributeParameters> From { get; } = new

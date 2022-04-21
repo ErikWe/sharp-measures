@@ -40,7 +40,7 @@ using SharpMeasures.Generators.Units;
 public class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
-[PrefixedUnit(""Kilometre"", ""Kilometres"", ""Invalid"", ""Kilo"")]
+[PrefixedUnit(""Kilometre"", ""Kilometres"", ""Invalid"", MetricPrefixName.Kilo)]
 [GeneratedUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
@@ -59,7 +59,7 @@ using SharpMeasures.Generators.Units;
 public class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
-[PrefixedUnit(null, ""Kilometres"", ""Metre"", ""Kilo"")]
+[PrefixedUnit(null, ""Kilometres"", ""Metre"", MetricPrefixNames.Kilo)]
 [GeneratedUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
@@ -78,7 +78,7 @@ using SharpMeasures.Generators.Units;
 public class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
-[PrefixedUnit(""Kilometre"", null, ""Metre"", ""Kilo"")]
+[PrefixedUnit(""Kilometre"", null, ""Metre"", MetricPrefixNames.Kilo)]
 [GeneratedUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
@@ -97,7 +97,7 @@ using SharpMeasures.Generators.Units;
 public class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
-[PrefixedUnit(""Kilometre"", ""Kilometres"", null, ""Kilo"")]
+[PrefixedUnit(""Kilometre"", ""Kilometres"", null, MetricPrefixNames.Kilo)]
 [GeneratedUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
@@ -116,7 +116,7 @@ using SharpMeasures.Generators.Units;
 public class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
-[PrefixedUnit(""Metre"", ""Metres"", ""Metre"", ""Identity"")]
+[PrefixedUnit(""Metre"", ""Metres"", ""Metre"", MetricPrefixNames.Identity)]
 [GeneratedUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
@@ -144,7 +144,7 @@ public partial class UnitOfLength { }
     }
 
     [Fact]
-    public void PrefixMissing()
+    public void PrefixNotDefined()
     {
         string source = @"
 using SharpMeasures.Generators;
@@ -154,7 +154,7 @@ using SharpMeasures.Generators.Units;
 public class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
-[PrefixedUnit(""Foometre"", ""Foometres"", ""Metre"", ""Foo"")]
+[PrefixedUnit(""Foometre"", ""Foometres"", ""Metre"", (MetricPrefixNames)-1)]
 [GeneratedUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";

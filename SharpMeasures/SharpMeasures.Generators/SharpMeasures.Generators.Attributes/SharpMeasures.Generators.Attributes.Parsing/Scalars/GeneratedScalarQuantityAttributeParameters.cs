@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Attributes.Parsing.Scalars;
+namespace SharpMeasures.Generators.Attributes.Parsing.Scalars;
 
 using Microsoft.CodeAnalysis;
 
@@ -9,14 +9,14 @@ using System.Linq;
 
 public readonly record struct GeneratedScalarQuantityAttributeParameters(INamedTypeSymbol? Unit, bool Biased, string MagnitudePropertyName)
 {
-    public static GeneratedScalarQuantityAttributeParameters? Parse(AttributeData attributeData)
+    public static GeneratedScalarQuantityAttributeParameters Parse(AttributeData attributeData)
         => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
-    public static GeneratedScalarQuantityAttributeParameters? Parse(INamedTypeSymbol symbol)
+    public static GeneratedScalarQuantityAttributeParameters Parse(INamedTypeSymbol symbol)
         => ParameterParser.ParseSingle<GeneratedScalarQuantityAttributeParameters, GeneratedScalarQuantityAttribute>(symbol, Defaults,
             ConstructorParameters, NamedParameters);
 
-    public static GeneratedScalarQuantityAttributeParameters? Parse(IEnumerable<AttributeData> attributeData)
+    public static GeneratedScalarQuantityAttributeParameters Parse(IEnumerable<AttributeData> attributeData)
         => ParameterParser.ParseSingle(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
     public static IDictionary<string, int> ParseIndices(AttributeData attributeData)

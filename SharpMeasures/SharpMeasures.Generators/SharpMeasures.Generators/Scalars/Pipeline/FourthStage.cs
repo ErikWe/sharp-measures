@@ -22,7 +22,7 @@ internal static class FourthStage
 
     private static Result? ExtractUnitData(ThirdStage.Result input, CancellationToken _)
     {
-        if (GeneratedUnitAttributeParameters.Parse(input.UnitSymbol)?.Quantity?.ToDisplayString() is not string unitQuantity)
+        if (GeneratedUnitAttributeParameters.Parse(input.UnitSymbol).Quantity?.ToDisplayString() is not string unitQuantity)
         {
             return null;
         }    

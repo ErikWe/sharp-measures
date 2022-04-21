@@ -24,13 +24,13 @@ public readonly record struct MetricPrefix :
     public static MetricPrefix Kilo { get; } = ThousandToThePower(1);
     /// <summary>Denotes that the value should be scaled by one hundred [10^2 = 100]. Usually written as [h].</summary>
     public static MetricPrefix Hecto { get; } = TenToThePower(2);
-    /// <summary>Denotes that the value should be scaled by ten [10^1 = 10]. Written as [da].</summary>
+    /// <summary>Denotes that the value should be scaled by ten [10^1 = 10]. Usually written as [da].</summary>
     public static MetricPrefix Deca { get; } = TenToThePower(1);
-    /// <summary>Denotes that the value should not be scaled, or scaled by one.</summary>
+    /// <summary>Denotes that the value should not be scaled, or scaled by one [10^0 = 1].</summary>
     public static MetricPrefix Identity { get; } = new(1);
     /// <summary>Denotes that the value should be scaled by one tenth [10^(-1) = 0.1]. Usually written as [d].</summary>
     public static MetricPrefix Deci { get; } = TenToThePower(-1);
-    /// <summary>Denotes that the value should be scaled by one hundreth [10^(-2) = 0.01]. Usually written as [d].</summary>
+    /// <summary>Denotes that the value should be scaled by one hundreth [10^(-2) = 0.01]. Usually written as [c].</summary>
     public static MetricPrefix Centi { get; } = TenToThePower(-2);
     /// <summary>Denotes that the value should be scaled by one thousandth [10^(-3) = (1 000)^(-1) = 0.001]. Usually written as [m].</summary>
     public static MetricPrefix Milli { get; } = ThousandToThePower(-1);

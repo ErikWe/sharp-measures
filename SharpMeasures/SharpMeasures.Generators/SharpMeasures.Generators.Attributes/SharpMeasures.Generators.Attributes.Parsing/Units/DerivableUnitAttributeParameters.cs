@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
+namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
 using Microsoft.CodeAnalysis;
 
@@ -10,10 +10,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-public readonly record struct DerivableUnitAttributeParameters(ReadOnlyCollection<INamedTypeSymbol?> Signature, ReadOnlyCollection<INamedTypeSymbol?> Quantities,
+public readonly record struct DerivableUnitAttributeParameters(ReadOnlyCollection<INamedTypeSymbol>? Signature, ReadOnlyCollection<INamedTypeSymbol>? Quantities,
     string Expression)
 {
-    public static DerivableUnitAttributeParameters? Parse(AttributeData attributeData)
+    public static DerivableUnitAttributeParameters Parse(AttributeData attributeData)
         => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
     public static IEnumerable<DerivableUnitAttributeParameters> Parse(INamedTypeSymbol symbol)
@@ -33,8 +33,8 @@ public readonly record struct DerivableUnitAttributeParameters(ReadOnlyCollectio
 
     private static DerivableUnitAttributeParameters Defaults { get; } = new
     (
-        Signature: Array.AsReadOnly(Array.Empty<INamedTypeSymbol?>()),
-        Quantities: Array.AsReadOnly(Array.Empty<INamedTypeSymbol?>()),
+        Signature: null,
+        Quantities: null,
         Expression: string.Empty
     );
 
@@ -66,22 +66,33 @@ public readonly record struct DerivableUnitAttributeParameters(ReadOnlyCollectio
 
         private static DerivableUnitAttributeParameters SetSignatureAndQuantities(DerivableUnitAttributeParameters parameters, object[] signature)
         {
-            ReadOnlyCollection<INamedTypeSymbol?> units = Array.AsReadOnly(Array.ConvertAll(signature, static (x) => x as INamedTypeSymbol));
-            INamedTypeSymbol?[] quantities = new INamedTypeSymbol?[signature.Length];
-
-            for (int i = 0; i < signature.Length; i++)
+            foreach (object unit in signature)
             {
-                if (signature[i] is not INamedTypeSymbol symbol)
+                if (unit is not INamedTypeSymbol)
                 {
-                    continue;
+                    return parameters;
                 }
+            }
 
-                if (symbol.GetAttributeOfType<GeneratedUnitAttribute>() is AttributeData unitData)
+            ReadOnlyCollection<INamedTypeSymbol> units = Array.AsReadOnly(Array.ConvertAll(signature, static (x) => (INamedTypeSymbol)x));
+            INamedTypeSymbol[] quantities = new INamedTypeSymbol[signature.Length];
+
+            for (int i = 0; i < units.Count; i++)
+            {
+                if (units[i].GetAttributeOfType<GeneratedUnitAttribute>() is AttributeData unitData)
                 {
                     if (GeneratedUnitAttributeParameters.Parse(unitData) is GeneratedUnitAttributeParameters { Quantity: INamedTypeSymbol unitQuantity })
                     {
                         quantities[i] = unitQuantity;
                     }
+                    else
+                    {
+                        return parameters;
+                    }
+                }
+                else
+                {
+                    return parameters;
                 }
             }
 

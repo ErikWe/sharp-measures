@@ -18,11 +18,21 @@ internal static class Stage4
     public static IncrementalValuesProvider<Result> Perform(IncrementalValuesProvider<Stage3.Result> provider)
         => provider.Select(ExtractDerivations);
 
-    private static Result ExtractDerivations(Stage3.Result input, CancellationToken _)
+    private static Result ExtractDerivations(Stage3.Result input, CancellationToken token)
+        => new(input.Documentation, input.TypeDefinition, input.Quantity, input.Biased, ExtractValidDerivations(input, token));
+
+    private static IEnumerable<CachedDerivableUnitAttributeParameters> ExtractValidDerivations(Stage3.Result input, CancellationToken _)
     {
         IEnumerable<CachedDerivableUnitAttributeParameters> definedDerivations
             = CachedDerivableUnitAttributeParameters.From(DerivableUnitAttributeParameters.Parse(input.TypeSymbol));
 
-        return new(input.Documentation, input.TypeDefinition, input.Quantity, input.Biased, definedDerivations);
+        foreach (CachedDerivableUnitAttributeParameters definedDerivation in definedDerivations)
+        {
+            if (definedDerivation.Expression.Length > 0 && definedDerivation.Signature is not null && definedDerivation.Quantities is not null
+                && definedDerivation.Signature.Count > 0)
+            {
+                yield return definedDerivation;
+            }
+        }
     }
 }

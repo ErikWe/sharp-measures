@@ -76,7 +76,7 @@ internal static class Execution
     {
         foreach (CachedDerivedUnitAttributeParameters derivedUnit in derivedUnits)
         {
-            if (InvalidParameters(derivedUnit) || definedUnits.Contains(derivedUnit.Name))
+            if (definedUnits.Contains(derivedUnit.Name))
             {
                 continue;
             }
@@ -89,7 +89,7 @@ internal static class Execution
 
             IEnumerable<string> arguments()
             {
-                IEnumerator<string?> signatureIterator = derivedUnit.Signature.GetEnumerator();
+                IEnumerator<string> signatureIterator = derivedUnit.Signature!.GetEnumerator();
                 IEnumerator<string> unitIterator = derivedUnit.Units.GetEnumerator();
 
                 while (signatureIterator.MoveNext() && unitIterator.MoveNext())
@@ -107,7 +107,7 @@ internal static class Execution
 
         foreach (FixedUnitAttributeParameters fixedUnit in fixedUnits)
         {
-            if (InvalidParameters(fixedUnit) || definedUnits.Contains(fixedUnit.Name))
+            if (definedUnits.Contains(fixedUnit.Name))
             {
                 continue;
             }
@@ -171,7 +171,7 @@ internal static class Execution
 
         for (int i = 0; i < dependantUnits.Count; i++)
         {
-            if (InvalidParameters(dependantUnits[i]) || definedUnits.Contains(dependantUnits[i].Name))
+            if (definedUnits.Contains(dependantUnits[i].Name))
             {
                 dependantUnits.RemoveAt(i);
                 i--;
@@ -225,21 +225,21 @@ internal static class Execution
 
     private static void AppendPrefixed(StringBuilder source, PrefixedUnitAttributeParameters prefixedUnit)
     {
-        source.Append($"{{ get; }} = {prefixedUnit.From}.WithPrefix(SharpMeasures.MetricPrefix.{prefixedUnit.Prefix})");
+        source.Append($"{{ get; }} = {prefixedUnit.From}.WithPrefix(SharpMeasures.{prefixText()})");
+
+        string prefixText() => prefixedUnit.SpecifiedPrefixType switch
+        {
+            PrefixedUnitAttributeParameters.PrefixType.Metric => metricText(),
+            PrefixedUnitAttributeParameters.PrefixType.Binary => binaryText(),
+            _ => string.Empty
+        };
+
+        string metricText() => $"MetricPrefix.{prefixedUnit.MetricPrefixName}";
+        string binaryText() => $"BinaryPrefix.{prefixedUnit.BinaryPrefixName}";
     }
 
     private static void AppendOffset(StringBuilder source, OffsetUnitAttributeParameters offsetUnit)
     {
         source.Append($"{{ get; }} = {offsetUnit.From}.ScaledBy({offsetUnit.Offset})");
     }
-
-    private static bool InvalidParameters(IUnitAttributeParameters parameters) => !ValidParameters(parameters);
-
-    private static bool ValidParameters(IUnitAttributeParameters parameters)
-        => parameters.Name.Length > 0 && (parameters.Plural.Length > 0 || parameters.IsConstant);
-
-    private static bool InvalidParameters(IDerivedUnitAttributeParameters parameters) => !ValidParameters(parameters);
-
-    private static bool ValidParameters(IDerivedUnitAttributeParameters parameters)
-        => ValidParameters(parameters as IUnitAttributeParameters) && parameters.DerivedFrom.Length > 0;
 }

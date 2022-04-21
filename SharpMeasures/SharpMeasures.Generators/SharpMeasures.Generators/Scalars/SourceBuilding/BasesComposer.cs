@@ -16,7 +16,7 @@ internal static class BasesComposer
         {
             if (shouldInclude(alias.Name))
             {
-                source.Append($"{indentation}public {data.TypeDefinition.Name} {(alias.IsConstant ? string.Empty : "One")}{alias.Name}");
+                source.Append($"{indentation}public {data.TypeDefinition.Name} One{alias.Name}");
             }
         }
 

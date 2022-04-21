@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Attributes.Parsing.Scalars;
+namespace SharpMeasures.Generators.Attributes.Parsing.Scalars;
 
 using Microsoft.CodeAnalysis;
 
@@ -11,13 +11,13 @@ using System.Linq;
 
 public readonly record struct CubableQuantityAttributeParameters(INamedTypeSymbol? Quantity, IEnumerable<INamedTypeSymbol> SecondaryQuantities)
 {
-    public static CubableQuantityAttributeParameters? Parse(AttributeData attributeData)
+    public static CubableQuantityAttributeParameters Parse(AttributeData attributeData)
         => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
-    public static CubableQuantityAttributeParameters? Parse(INamedTypeSymbol symbol)
+    public static CubableQuantityAttributeParameters Parse(INamedTypeSymbol symbol)
         => ParameterParser.ParseSingle<CubableQuantityAttributeParameters, CubableQuantityAttribute>(symbol, Defaults, ConstructorParameters, NamedParameters);
 
-    public static CubableQuantityAttributeParameters? Parse(IEnumerable<AttributeData> attributeData)
+    public static CubableQuantityAttributeParameters Parse(IEnumerable<AttributeData> attributeData)
         => ParameterParser.ParseSingle(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
     public static IDictionary<string, int> ParseIndices(AttributeData attributeData)

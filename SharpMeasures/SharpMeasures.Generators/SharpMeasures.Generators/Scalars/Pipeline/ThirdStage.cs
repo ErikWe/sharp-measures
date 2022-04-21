@@ -25,8 +25,8 @@ internal static class ThirdStage
     private static Result? OutputTransform(SecondStage.Result input, INamedTypeSymbol? symbol)
     {
         if (symbol is null
-            || GeneratedScalarQuantityAttributeParameters.Parse(symbol) is not GeneratedScalarQuantityAttributeParameters parameters
-            || parameters.Unit is not INamedTypeSymbol unitSymbol)
+            || GeneratedScalarQuantityAttributeParameters.Parse(symbol) is not
+                GeneratedScalarQuantityAttributeParameters { Unit: INamedTypeSymbol unitSymbol } parameters)
         {
             return null;
         }

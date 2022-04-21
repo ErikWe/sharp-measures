@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
+namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
 using Microsoft.CodeAnalysis;
 
@@ -8,11 +8,10 @@ using SharpMeasures.Generators.Units;
 using System.Collections.Generic;
 using System.Linq;
 
-public readonly record struct FixedUnitAttributeParameters(string Name, string Plural, string Symbol, bool IsSIUnit, bool IsConstant,
-    double Value, double Bias)
+public readonly record struct FixedUnitAttributeParameters(string Name, string Plural, double Value, double Bias)
     : IUnitAttributeParameters
 {
-    public static FixedUnitAttributeParameters? Parse(AttributeData attributeData)
+    public static FixedUnitAttributeParameters Parse(AttributeData attributeData)
         => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
     public static IEnumerable<FixedUnitAttributeParameters> Parse(INamedTypeSymbol symbol)
@@ -34,9 +33,6 @@ public readonly record struct FixedUnitAttributeParameters(string Name, string P
     (
         Name: string.Empty,
         Plural: string.Empty,
-        Symbol: string.Empty,
-        IsSIUnit: false,
-        IsConstant: false,
         Value: 0,
         Bias: 0
     );
@@ -53,9 +49,6 @@ public readonly record struct FixedUnitAttributeParameters(string Name, string P
         {
             Name,
             Plural,
-            Symbol,
-            IsSIUnit,
-            IsConstant,
             Value,
             Bias
         };
@@ -70,24 +63,6 @@ public readonly record struct FixedUnitAttributeParameters(string Name, string P
         (
             name: nameof(UnitAliasAttribute.Plural),
             setter: static (parameters, obj) => obj is string plural ? parameters with { Plural = plural } : parameters
-        );
-
-        private static AttributeProperty<FixedUnitAttributeParameters> Symbol { get; } = new
-        (
-            name: nameof(UnitAliasAttribute.Symbol),
-            setter: static (parameters, obj) => obj is string symbol ? parameters with { Symbol = symbol } : parameters
-        );
-
-        private static AttributeProperty<FixedUnitAttributeParameters> IsSIUnit { get; } = new
-        (
-            name: nameof(UnitAliasAttribute.IsSIUnit),
-            setter: static (parameters, obj) => obj is bool isSIUnit ? parameters with { IsSIUnit = isSIUnit } : parameters
-        );
-
-        private static AttributeProperty<FixedUnitAttributeParameters> IsConstant { get; } = new
-        (
-            name: nameof(UnitAliasAttribute.IsConstant),
-            setter: static (parameters, obj) => obj is bool isConstant ? parameters with { IsConstant = isConstant } : parameters
         );
 
         private static AttributeProperty<FixedUnitAttributeParameters> Value { get; } = new

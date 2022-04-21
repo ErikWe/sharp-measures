@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
+namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
 using Microsoft.CodeAnalysis;
 
@@ -10,11 +10,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-public readonly record struct DerivedUnitAttributeParameters(string Name, string Plural, string Symbol, bool IsSIUnit, bool IsConstant,
-    ReadOnlyCollection<INamedTypeSymbol?> Signature, ReadOnlyCollection<string> Units)
+public readonly record struct DerivedUnitAttributeParameters(string Name, string Plural, ReadOnlyCollection<INamedTypeSymbol>? Signature,
+    ReadOnlyCollection<string> Units)
     : IUnitAttributeParameters
 {
-    public static DerivedUnitAttributeParameters? Parse(AttributeData attributeData)
+    public static DerivedUnitAttributeParameters Parse(AttributeData attributeData)
         => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
     public static IEnumerable<DerivedUnitAttributeParameters> Parse(INamedTypeSymbol symbol)
@@ -36,10 +36,7 @@ public readonly record struct DerivedUnitAttributeParameters(string Name, string
     (
         Name: string.Empty,
         Plural: string.Empty,
-        Symbol: string.Empty,
-        IsSIUnit: false,
-        IsConstant: false,
-        Signature: Array.AsReadOnly(Array.Empty<INamedTypeSymbol?>()),
+        Signature: null,
         Units: Array.AsReadOnly(Array.Empty<string>())
     );
 
@@ -55,9 +52,6 @@ public readonly record struct DerivedUnitAttributeParameters(string Name, string
         {
             Name,
             Plural,
-            Symbol,
-            IsSIUnit,
-            IsConstant,
             Signature,
             Units
         };
@@ -74,30 +68,10 @@ public readonly record struct DerivedUnitAttributeParameters(string Name, string
             setter: static (parameters, obj) => obj is string plural ? parameters with { Plural = plural } : parameters
         );
 
-        private static AttributeProperty<DerivedUnitAttributeParameters> Symbol { get; } = new
-        (
-            name: nameof(DerivedUnitAttribute.Symbol),
-            setter: static (parameters, obj) => obj is string symbol ? parameters with { Symbol = symbol } : parameters
-        );
-
-        private static AttributeProperty<DerivedUnitAttributeParameters> IsSIUnit { get; } = new
-        (
-            name: nameof(DerivedUnitAttribute.IsSIUnit),
-            setter: static (parameters, obj) => obj is bool isSIUnit ? parameters with { IsSIUnit = isSIUnit } : parameters
-        );
-
-        private static AttributeProperty<DerivedUnitAttributeParameters> IsConstant { get; } = new
-        (
-            name: nameof(DerivedUnitAttribute.IsConstant),
-            setter: static (parameters, obj) => obj is bool isConstant ? parameters with { IsConstant = isConstant } : parameters
-        );
-
         private static AttributeProperty<DerivedUnitAttributeParameters> Signature { get; } = new
         (
             name: nameof(DerivedUnitAttribute.Signature),
-            setter: static (parameters, obj) => obj is object?[] signature
-                ? parameters with { Signature = Array.AsReadOnly(Array.ConvertAll(signature, static (x) => x as INamedTypeSymbol)) }
-                : parameters
+            setter: SetSignature
         );
 
         private static AttributeProperty<DerivedUnitAttributeParameters> Units { get; } = new
@@ -107,5 +81,24 @@ public readonly record struct DerivedUnitAttributeParameters(string Name, string
                 ? parameters with { Units = Array.AsReadOnly(Array.ConvertAll(signature, static (x) => x as string ?? string.Empty)) }
                 : parameters
         );
+
+        private static DerivedUnitAttributeParameters SetSignature(DerivedUnitAttributeParameters parameters, object? obj)
+        {
+            if (obj is not object[] signature)
+            {
+                return parameters;
+            }
+
+            foreach (object signatureUnit in signature)
+            {
+                if (signatureUnit is not INamedTypeSymbol)
+                {
+                    return parameters;
+                }
+            }
+
+
+            return parameters with { Signature = Array.AsReadOnly(Array.ConvertAll(signature, static (x) => (INamedTypeSymbol)x)) };
+        }
     }
 }

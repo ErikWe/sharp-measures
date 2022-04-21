@@ -25,10 +25,9 @@ internal static class Stage3
     private static Result? OutputTransform(Stage2.Result input, INamedTypeSymbol? symbol)
     {
         if (symbol is null
-            || GeneratedUnitAttributeParameters.Parse(symbol) is not GeneratedUnitAttributeParameters parameters
-            || parameters.Quantity is not INamedTypeSymbol quantity
+            || GeneratedUnitAttributeParameters.Parse(symbol) is not GeneratedUnitAttributeParameters { Quantity: INamedTypeSymbol quantity } parameters
             || quantity.GetAttributeOfType<GeneratedScalarQuantityAttribute>() is not AttributeData scalarAttribute
-            || GeneratedScalarQuantityAttributeParameters.Parse(scalarAttribute)?.Biased == true)
+            || GeneratedScalarQuantityAttributeParameters.Parse(scalarAttribute).Biased == true)
         {
             return null;
         }

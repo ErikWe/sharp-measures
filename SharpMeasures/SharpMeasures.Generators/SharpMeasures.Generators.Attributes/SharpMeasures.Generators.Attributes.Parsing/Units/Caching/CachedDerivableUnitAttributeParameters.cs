@@ -4,29 +4,34 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-public readonly record struct CachedDerivableUnitAttributeParameters(ReadOnlyCollection<string?> Signature, ReadOnlyCollection<string?> Quantities,
+public readonly record struct CachedDerivableUnitAttributeParameters(ReadOnlyCollection<string>? Signature, ReadOnlyCollection<string>? Quantities,
     string Expression)
 {
-    public static CachedDerivableUnitAttributeParameters From(Units.DerivableUnitAttributeParameters parameters)
+    public static CachedDerivableUnitAttributeParameters From(DerivableUnitAttributeParameters parameters)
     {
-        string?[] signature = new string[parameters.Signature.Count];
+        if (parameters.Signature is null || parameters.Quantities is null)
+        {
+            return new(null, null, string.Empty);
+        }
+
+        string[] signature = new string[parameters.Signature.Count];
 
         for (int i = 0; i < parameters.Signature.Count; i++)
         {
-            signature[i] = parameters.Signature[i]?.ToDisplayString();
+            signature[i] = parameters.Signature[i].ToDisplayString();
         }
 
-        string?[] quantities = new string[parameters.Quantities.Count];
+        string[] quantities = new string[parameters.Quantities.Count];
 
         for (int i = 0; i < parameters.Quantities.Count; i++)
         {
-            quantities[i] = parameters.Quantities[i]?.ToDisplayString();
+            quantities[i] = parameters.Quantities[i].ToDisplayString();
         }
 
         return new(Array.AsReadOnly(signature), Array.AsReadOnly(quantities), parameters.Expression);
     }
 
-    public static IEnumerable<CachedDerivableUnitAttributeParameters> From(IEnumerable<Units.DerivableUnitAttributeParameters> parameters)
+    public static IEnumerable<CachedDerivableUnitAttributeParameters> From(IEnumerable<DerivableUnitAttributeParameters> parameters)
     {
         if (parameters is null)
         {

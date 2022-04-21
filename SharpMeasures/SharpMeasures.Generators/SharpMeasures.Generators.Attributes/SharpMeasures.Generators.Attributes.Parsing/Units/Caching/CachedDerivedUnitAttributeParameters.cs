@@ -4,31 +4,35 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-public readonly record struct CachedDerivedUnitAttributeParameters(string Name, string Plural, string Symbol, bool IsSIUnit, bool IsConstant,
-    ReadOnlyCollection<string?> Signature, ReadOnlyCollection<string> Units)
+public readonly record struct CachedDerivedUnitAttributeParameters(string Name, string Plural, ReadOnlyCollection<string>? Signature,
+    ReadOnlyCollection<string> Units)
     : IUnitAttributeParameters
 {
-    public static CachedDerivedUnitAttributeParameters From(Units.DerivedUnitAttributeParameters parameters)
+    public static CachedDerivedUnitAttributeParameters From(DerivedUnitAttributeParameters parameters)
     {
-        string?[] signature = new string[parameters.Signature.Count];
+        if (parameters.Signature is null)
+        {
+            return new(string.Empty, string.Empty, null, Array.AsReadOnly(Array.Empty<string>()));
+        }
+
+        string[] signature = new string[parameters.Signature.Count];
 
         for (int i = 0; i < parameters.Signature.Count; i++)
         {
-            signature[i] = parameters.Signature[i]?.ToDisplayString();
+            signature[i] = parameters.Signature[i].ToDisplayString();
         }
 
-        return new(parameters.Name, parameters.Plural, parameters.Symbol, parameters.IsSIUnit, parameters.IsConstant,
-            Array.AsReadOnly(signature), parameters.Units);
+        return new(parameters.Name, parameters.Plural, Array.AsReadOnly(signature), parameters.Units);
     }
 
-    public static IEnumerable<CachedDerivedUnitAttributeParameters> From(IEnumerable<Units.DerivedUnitAttributeParameters> parameters)
+    public static IEnumerable<CachedDerivedUnitAttributeParameters> From(IEnumerable<DerivedUnitAttributeParameters> parameters)
     {
         if (parameters is null)
         {
             yield break;
         }
 
-        foreach (Units.DerivedUnitAttributeParameters parameterSet in parameters)
+        foreach (DerivedUnitAttributeParameters parameterSet in parameters)
         {
             yield return From(parameterSet);
         }
