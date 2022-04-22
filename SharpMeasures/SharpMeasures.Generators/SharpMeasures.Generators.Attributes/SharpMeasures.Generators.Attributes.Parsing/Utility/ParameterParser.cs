@@ -5,22 +5,35 @@ using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-internal static class ParameterParser
+public sealed class ParameterParser<TParameters, TAttribute>
 {
-    public static TParameters? Parse<TParameters>(AttributeData attributeData, TParameters defaults,
-        Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
+    private IDictionary<string, AttributeProperty<TParameters>> ConstructorParameters { get; }
+    private IDictionary<string, AttributeProperty<TParameters>> NamedParameters { get; }
+    private TParameters Defaults { get; }
+
+    internal ParameterParser(Dictionary<string, AttributeProperty<TParameters>> constructorParameters,
+        Dictionary<string, AttributeProperty<TParameters>> namedParameters, TParameters defaults)
     {
-        (bool success, TParameters values) = ArgumentParser.Parse(attributeData, defaults, constructorParameters, namedParameters);
+        ConstructorParameters = constructorParameters;
+        NamedParameters = namedParameters;
+        Defaults = defaults;
+    }
+
+    internal ParameterParser(IEnumerable<AttributeProperty<TParameters>> parameters, TParameters defaults)
+    {
+        ConstructorParameters = parameters.ToImmutableDictionary(static (property) => property.ParameterName);
+        NamedParameters = parameters.ToImmutableDictionary(static (property) => property.Name);
+        Defaults = defaults;
+    }
+
+    public TParameters? Parse(AttributeData attributeData)
+    {
+        (bool success, TParameters values) = ArgumentParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
 
         return success ? values : default;
     }
 
-    public static IEnumerable<TParameters> Parse<TParameters, TAttribute>(INamedTypeSymbol symbol, TParameters defaults,
-        Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
-        => Parse(symbol.GetAttributesOfType<TAttribute>(), defaults, constructorParameters, namedParameters);
-
-    public static IEnumerable<TParameters> Parse<TParameters>(IEnumerable<AttributeData> attributeData, TParameters defaults,
-        Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
+    public IEnumerable<TParameters> Parse(IEnumerable<AttributeData> attributeData)
     {
         if (attributeData is null)
         {
@@ -34,53 +47,25 @@ internal static class ParameterParser
                 continue;
             }
 
-            if (Parse(data, defaults, constructorParameters, namedParameters) is TParameters parameters)
+            if (Parse(data) is TParameters parameters)
             {
                 yield return parameters;
             }
         }
     }
 
-    public static TParameters? ParseSingle<TParameters, TAttribute>(INamedTypeSymbol symbol, TParameters defaults,
-        Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
-        => ParseSingle(symbol.GetAttributesOfType<TAttribute>(), defaults, constructorParameters, namedParameters);
+    public TParameters? ParseSingle(INamedTypeSymbol symbol)
+        => symbol.GetAttributeOfType<TAttribute>() is AttributeData attributeData ? Parse(attributeData) : default;
 
-    public static TParameters? ParseSingle<TParameters>(IEnumerable<AttributeData> attributeData, TParameters defaults,
-        Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
-    {
-        if (attributeData is null)
-        {
-            return default;
-        }
+    public IEnumerable<TParameters> Parse(INamedTypeSymbol symbol)
+        => Parse(symbol.GetAttributesOfType<TAttribute>());
 
-        foreach (AttributeData data in attributeData)
-        {
-            if (Parse(data, defaults, constructorParameters, namedParameters) is TParameters parameters)
-            {
-                return parameters;
-            }
-        }
+    public IDictionary<string, int> ParseIndices(AttributeData attributeData)
+        => attributeData is not null
+            ? ArgumentIndexParser.Parse(attributeData, ConstructorParameters, NamedParameters)
+            : ImmutableDictionary<string, int>.Empty;
 
-        return default;
-    }
-
-    public static IDictionary<string, int> ParseIndices<TParameters>(AttributeData attributeData,
-        Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
-    {
-        if (attributeData is null)
-        {
-            return ImmutableDictionary<string, int>.Empty;
-        }
-
-        return ArgumentIndexParser.Parse(attributeData, constructorParameters, namedParameters);
-    }
-
-    public static IEnumerable<IDictionary<string, int>> ParseIndices<TParameters, TAttribute>(INamedTypeSymbol symbol,
-        Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
-        => ParseIndices(symbol.GetAttributesOfType<TAttribute>(), constructorParameters, namedParameters);
-
-    public static IEnumerable<IDictionary<string, int>> ParseIndices<TParameters>(IEnumerable<AttributeData> attributeData,
-        Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
+    public IEnumerable<IDictionary<string, int>> ParseIndices(IEnumerable<AttributeData> attributeData)
     {
         if (attributeData is null)
         {
@@ -89,27 +74,16 @@ internal static class ParameterParser
 
         foreach (AttributeData data in attributeData)
         {
-            yield return ParseIndices(data, constructorParameters, namedParameters);
+            yield return ParseIndices(data);
         }
     }
 
-    public static IDictionary<string, int> ParseSingleIndices<TParameters, TAttribute>(INamedTypeSymbol symbol,
-        Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
-        => ParseSingleIndices(symbol.GetAttributesOfType<TAttribute>(), constructorParameters, namedParameters);
+    public IDictionary<string, int> ParseSingleIndices(INamedTypeSymbol symbol)
+        => symbol.GetAttributeOfType<TAttribute>() is AttributeData attributeData ? ParseSingleIndices(attributeData) : ImmutableDictionary<string, int>.Empty;
 
-    public static IDictionary<string, int> ParseSingleIndices<TParameters>(IEnumerable<AttributeData> attributeData,
-        Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
-    {
-        if (attributeData is null)
-        {
-            return ImmutableDictionary<string, int>.Empty;
-        }
+    public IEnumerable<IDictionary<string, int>> ParseIndices(INamedTypeSymbol symbol)
+        => ParseIndices(symbol.GetAttributesOfType<TAttribute>());
 
-        foreach (AttributeData data in attributeData)
-        {
-            return ParseIndices(data, constructorParameters, namedParameters);
-        }
-
-        return ImmutableDictionary<string, int>.Empty;
-    }
+    public IDictionary<string, int> ParseSingleIndices(AttributeData attributeData)
+        => ParseIndices(attributeData);
 }

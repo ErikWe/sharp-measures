@@ -17,15 +17,15 @@ internal static class ThirdStage
     public readonly record struct Settings(string MagnitudePropertyName);
 
     public static IncrementalValuesProvider<Result> Perform(IncrementalGeneratorInitializationContext context,
-        IncrementalValuesProvider<SecondStage.Result> provider)
+        IncrementalValuesProvider<Stage2.Result> provider)
         => TypeSymbolProvider.Attach(provider, context.CompilationProvider, InputTransform, OutputTransform)
             .WhereNotNull();
 
-    private static TypeDeclarationSyntax InputTransform(SecondStage.Result input) => input.Declaration;
-    private static Result? OutputTransform(SecondStage.Result input, INamedTypeSymbol? symbol)
+    private static TypeDeclarationSyntax InputTransform(Stage2.Result input) => input.Declaration;
+    private static Result? OutputTransform(Stage2.Result input, INamedTypeSymbol? symbol)
     {
         if (symbol is null
-            || GeneratedScalarQuantityAttributeParameters.Parse(symbol) is not
+            || GeneratedScalarQuantityAttributeParameters.Parser.ParseSingle(symbol) is not
                 GeneratedScalarQuantityAttributeParameters { Unit: INamedTypeSymbol unitSymbol } parameters)
         {
             return null;

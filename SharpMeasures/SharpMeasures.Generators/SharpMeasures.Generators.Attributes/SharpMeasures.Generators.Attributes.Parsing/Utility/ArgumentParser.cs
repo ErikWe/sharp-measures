@@ -2,14 +2,13 @@
 
 using Microsoft.CodeAnalysis;
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
 internal static class ArgumentParser
 {
     public static (bool success, TParameters values) Parse<TParameters>(AttributeData attributeData, TParameters values,
-        Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
+        IDictionary<string, AttributeProperty<TParameters>> constructorParameters, IDictionary<string, AttributeProperty<TParameters>> namedParameters)
     {
         (bool success, values) = AddConstructorArguments(attributeData, values, constructorParameters);
 
@@ -27,7 +26,7 @@ internal static class ArgumentParser
     }
 
     private static (bool success, TParameters values) AddConstructorArguments<TParameters>(AttributeData attributeData, TParameters values,
-        Dictionary<string, AttributeProperty<TParameters>> constructorParameters)
+        IDictionary<string, AttributeProperty<TParameters>> constructorParameters)
     {
         if (attributeData.ConstructorArguments.IsEmpty)
         {
@@ -78,7 +77,7 @@ internal static class ArgumentParser
     }
 
     private static (bool success, TParameters values) AddNamedArguments<TParameters>(AttributeData attributeData, TParameters values,
-        Dictionary<string, AttributeProperty<TParameters>> namedParameters)
+        IDictionary<string, AttributeProperty<TParameters>> namedParameters)
     {
         if (attributeData.NamedArguments.IsEmpty)
         {

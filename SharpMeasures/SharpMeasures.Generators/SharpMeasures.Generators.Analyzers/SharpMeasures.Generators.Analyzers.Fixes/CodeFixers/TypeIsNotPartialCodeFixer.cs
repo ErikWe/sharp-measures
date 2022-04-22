@@ -18,8 +18,8 @@ internal class TypeIsNotPartialCodeFixer : ICodeFixer
 
     public Task Register(CodeFixContext context, SyntaxNode syntaxRoot, Diagnostic diagnostic)
     {
-        if (syntaxRoot.FindToken(diagnostic.Location.SourceSpan.Start).Parent?.AncestorsAndSelf().OfType<TypeDeclarationSyntax>().First()
-            is not TypeDeclarationSyntax declaration)
+        if (syntaxRoot.FindToken(diagnostic.Location.SourceSpan.Start).Parent?.AncestorsAndSelf().OfType<MemberDeclarationSyntax>().First()
+            is not MemberDeclarationSyntax declaration)
         {
             return Task.CompletedTask;
         }
@@ -28,9 +28,9 @@ internal class TypeIsNotPartialCodeFixer : ICodeFixer
         return Task.CompletedTask;
     }
 
-    private static Task<Document> MakeTypePartial(Document document, SyntaxNode syntaxRoot, TypeDeclarationSyntax declaration, CancellationToken _)
+    private static Task<Document> MakeTypePartial(Document document, SyntaxNode syntaxRoot, MemberDeclarationSyntax declaration, CancellationToken _)
     {
-        TypeDeclarationSyntax newDeclaration = declaration.WithModifiers(declaration.Modifiers.Add(SyntaxFactory.Token(SyntaxKind.PartialKeyword)));
+        MemberDeclarationSyntax newDeclaration = declaration.WithModifiers(declaration.Modifiers.Add(SyntaxFactory.Token(SyntaxKind.PartialKeyword)));
 
         SyntaxNode newRoot = syntaxRoot.ReplaceNode(declaration, newDeclaration);
         Document newDocument = document.WithSyntaxRoot(newRoot);

@@ -8,7 +8,7 @@ using System.Collections.Immutable;
 internal static class ArgumentIndexParser
 {
     public static Dictionary<string, int> Parse<TParameters>(AttributeData attributeData,
-        Dictionary<string, AttributeProperty<TParameters>> constructorParameters, Dictionary<string, AttributeProperty<TParameters>> namedParameters)
+        IDictionary<string, AttributeProperty<TParameters>> constructorParameters, IDictionary<string, AttributeProperty<TParameters>> namedParameters)
     {
         Dictionary<string, int> indices = new();
 
@@ -18,8 +18,8 @@ internal static class ArgumentIndexParser
         return indices;
     }
 
-    private static void AddConstructorArguments<TParameters>(Dictionary<string, int> indices, AttributeData attributeData,
-        Dictionary<string, AttributeProperty<TParameters>> constructorParameters, int offset = 0)
+    private static void AddConstructorArguments<TParameters>(IDictionary<string, int> indices, AttributeData attributeData,
+        IDictionary<string, AttributeProperty<TParameters>> constructorParameters, int offset = 0)
     {
         if (attributeData.ConstructorArguments.IsEmpty
             || attributeData.AttributeConstructor?.Parameters is not ImmutableArray<IParameterSymbol> parameterSymbols)
@@ -39,8 +39,8 @@ internal static class ArgumentIndexParser
         }
     }
 
-    private static void AddNamedArguments<TParameters>(Dictionary<string, int> indices, AttributeData attributeData,
-        Dictionary<string, AttributeProperty<TParameters>> namedParameters, int offset = 0)
+    private static void AddNamedArguments<TParameters>(IDictionary<string, int> indices, AttributeData attributeData,
+        IDictionary<string, AttributeProperty<TParameters>> namedParameters, int offset = 0)
     {
         if (attributeData.NamedArguments.IsEmpty)
         {

@@ -52,11 +52,11 @@ internal static class FifthStage
 
     private static Result ExtractAttributeInformationAndTypeData(FourthStage.Result input, CancellationToken _)
     {
-        InvertibleQuantityAttributeParameters invertible = InvertibleQuantityAttributeParameters.Parse(input.TypeSymbol);
-        SquarableQuantityAttributeParameters squarable = SquarableQuantityAttributeParameters.Parse(input.TypeSymbol);
-        CubableQuantityAttributeParameters cubable = CubableQuantityAttributeParameters.Parse(input.TypeSymbol);
-        SquareRootableQuantityAttributeParameters squareRootable = SquareRootableQuantityAttributeParameters.Parse(input.TypeSymbol);
-        CubeRootableQuantityAttributeParameters cubeRootable = CubeRootableQuantityAttributeParameters.Parse(input.TypeSymbol);
+        InvertibleQuantityAttributeParameters invertible = InvertibleQuantityAttributeParameters.Parser.ParseSingle(input.TypeSymbol);
+        SquarableQuantityAttributeParameters squarable = SquarableQuantityAttributeParameters.Parser.ParseSingle(input.TypeSymbol);
+        CubableQuantityAttributeParameters cubable = CubableQuantityAttributeParameters.Parser.ParseSingle(input.TypeSymbol);
+        SquareRootableQuantityAttributeParameters squareRootable = SquareRootableQuantityAttributeParameters.Parser.ParseSingle(input.TypeSymbol);
+        CubeRootableQuantityAttributeParameters cubeRootable = CubeRootableQuantityAttributeParameters.Parser.ParseSingle(input.TypeSymbol);
 
         PowerData? invertibleParsed = PowerData.Parse(invertible.Quantity, invertible.SecondaryQuantities);
         PowerData? squarableParsed = PowerData.Parse(squarable.Quantity, squarable.SecondaryQuantities);
@@ -64,10 +64,10 @@ internal static class FifthStage
         PowerData? squareRootableParsed = PowerData.Parse(squareRootable.Quantity, squareRootable.SecondaryQuantities);
         PowerData? cubeRootableParsed = PowerData.Parse(cubeRootable.Quantity, cubeRootable.SecondaryQuantities);
 
-        IncludeUnitsAttributeParameters includedUnits = IncludeUnitsAttributeParameters.Parse(input.TypeSymbol);
-        ExcludeUnitsAttributeParameters excludedUnits = ExcludeUnitsAttributeParameters.Parse(input.TypeSymbol);
-        IncludeBasesAttributeParameters includedBases = IncludeBasesAttributeParameters.Parse(input.TypeSymbol);
-        ExcludeBasesAttributeParameters excludedBases = ExcludeBasesAttributeParameters.Parse(input.TypeSymbol);
+        IncludeUnitsAttributeParameters includedUnits = IncludeUnitsAttributeParameters.Parser.ParseSingle(input.TypeSymbol);
+        ExcludeUnitsAttributeParameters excludedUnits = ExcludeUnitsAttributeParameters.Parser.ParseSingle(input.TypeSymbol);
+        IncludeBasesAttributeParameters includedBases = IncludeBasesAttributeParameters.Parser.ParseSingle(input.TypeSymbol);
+        ExcludeBasesAttributeParameters excludedBases = ExcludeBasesAttributeParameters.Parser.ParseSingle(input.TypeSymbol);
 
         return new Result(input.Documentation, DefinedType.FromSymbol(input.TypeSymbol), input.Unit, input.Biased, input.UnitQuantity, input.PrimaryQuantityForUnit,
             input.Settings, input.UnitAliases, input.DerivedUnits, input.FixedUnits, input.OffsetUnits, input.PrefixedUnits, input.ScaledUnits,

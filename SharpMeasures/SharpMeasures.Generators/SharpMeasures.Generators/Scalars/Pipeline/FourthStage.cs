@@ -22,18 +22,18 @@ internal static class FourthStage
 
     private static Result? ExtractUnitData(ThirdStage.Result input, CancellationToken _)
     {
-        if (GeneratedUnitAttributeParameters.Parse(input.UnitSymbol).Quantity?.ToDisplayString() is not string unitQuantity)
+        if (GeneratedUnitAttributeParameters.Parser.ParseSingle(input.UnitSymbol).Quantity?.ToDisplayString() is not string unitQuantity)
         {
             return null;
         }    
 
-        IEnumerable <UnitAliasAttributeParameters> aliasInstances = UnitAliasAttributeParameters.Parse(input.UnitSymbol);
+        IEnumerable <UnitAliasAttributeParameters> aliasInstances = UnitAliasAttributeParameters.Parser.Parse(input.UnitSymbol);
         IEnumerable<CachedDerivedUnitAttributeParameters> derivedInstances
-            = CachedDerivedUnitAttributeParameters.From(DerivedUnitAttributeParameters.Parse(input.UnitSymbol));
-        IEnumerable<FixedUnitAttributeParameters> fixedInstances = FixedUnitAttributeParameters.Parse(input.UnitSymbol);
-        IEnumerable<OffsetUnitAttributeParameters> offsetInstances = OffsetUnitAttributeParameters.Parse(input.UnitSymbol);
-        IEnumerable<PrefixedUnitAttributeParameters> prefixedInstances = PrefixedUnitAttributeParameters.Parse(input.UnitSymbol);
-        IEnumerable<ScaledUnitAttributeParameters> scaledInstances = ScaledUnitAttributeParameters.Parse(input.UnitSymbol);
+            = CachedDerivedUnitAttributeParameters.From(DerivedUnitAttributeParameters.Parser.Parse(input.UnitSymbol));
+        IEnumerable<FixedUnitAttributeParameters> fixedInstances = FixedUnitAttributeParameters.Parser.Parse(input.UnitSymbol);
+        IEnumerable<OffsetUnitAttributeParameters> offsetInstances = OffsetUnitAttributeParameters.Parser.Parse(input.UnitSymbol);
+        IEnumerable<PrefixedUnitAttributeParameters> prefixedInstances = PrefixedUnitAttributeParameters.Parser.Parse(input.UnitSymbol);
+        IEnumerable<ScaledUnitAttributeParameters> scaledInstances = ScaledUnitAttributeParameters.Parser.Parse(input.UnitSymbol);
 
         return new Result(input.Documentation, input.TypeSymbol, input.UnitSymbol.ToDisplayString(), input.Biased, unitQuantity, input.PrimaryQuantityForUnit,
             input.Settings, aliasInstances, derivedInstances, fixedInstances, offsetInstances, prefixedInstances, scaledInstances);

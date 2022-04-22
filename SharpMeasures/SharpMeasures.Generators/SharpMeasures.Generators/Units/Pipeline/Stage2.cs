@@ -13,10 +13,8 @@ internal static class Stage2
     public readonly record struct Result(TypeDeclarationSyntax Declaration, IEnumerable<DocumentationFile> Documentation);
 
     public static IncrementalValuesProvider<Result> Perform(IncrementalGeneratorInitializationContext context,
-        IncrementalValuesProvider<Stage1.Result> firstStage)
-        => DocumentationDependenciesProvider.AttachWithFilterStage(context.AdditionalTextsProvider, firstStage,
-            InputTransform, OutputTransform, "Units");
+        IncrementalValuesProvider<TypeDeclarationSyntax> firstStage)
+        => DocumentationDependenciesProvider.AttachWithFilterStage(context.AdditionalTextsProvider, firstStage, ConstructResult, "Units");
 
-    private static TypeDeclarationSyntax InputTransform(Stage1.Result input) => input.Declaration;
-    private static Result OutputTransform(Stage1.Result input, IEnumerable<DocumentationFile> documentation) => new(input.Declaration, documentation);
+    private static Result ConstructResult(TypeDeclarationSyntax declaration, IEnumerable<DocumentationFile> documentation) => new(declaration, documentation);
 }

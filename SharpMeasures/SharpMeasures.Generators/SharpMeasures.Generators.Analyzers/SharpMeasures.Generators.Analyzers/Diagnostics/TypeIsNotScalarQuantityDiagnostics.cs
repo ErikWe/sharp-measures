@@ -19,7 +19,7 @@ internal static class TypeIsNotScalarQuantityDiagnostics
             return;
         }
 
-        int attributeArgumentIndex = GeneratedUnitAttributeParameters.ParseIndices(attributeData)[nameof(GeneratedUnitAttributeParameters.Quantity)];
+        int attributeArgumentIndex = GeneratedUnitAttributeParameters.Parser.ParseIndices(attributeData)[nameof(GeneratedUnitAttributeParameters.Quantity)];
 
         if (attributeSyntax.ArgumentList?.Arguments[attributeArgumentIndex] is not AttributeArgumentSyntax argumentSyntax)
         {

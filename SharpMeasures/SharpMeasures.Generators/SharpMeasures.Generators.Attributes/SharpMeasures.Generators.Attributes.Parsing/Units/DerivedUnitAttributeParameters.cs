@@ -8,43 +8,21 @@ using SharpMeasures.Generators.Units;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 public readonly record struct DerivedUnitAttributeParameters(string Name, string Plural, ReadOnlyCollection<INamedTypeSymbol>? Signature,
     ReadOnlyCollection<string> Units)
     : IUnitAttributeParameters
 {
-    public static DerivedUnitAttributeParameters Parse(AttributeData attributeData)
-        => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
+    public static ParameterParser<DerivedUnitAttributeParameters, DerivedUnitAttribute> Parser { get; }
+        = new(Properties.AllProperties, Defaults);
 
-    public static IEnumerable<DerivedUnitAttributeParameters> Parse(INamedTypeSymbol symbol)
-        => ParameterParser.Parse<DerivedUnitAttributeParameters, DerivedUnitAttribute>(symbol, Defaults, ConstructorParameters, NamedParameters);
-
-    public static IEnumerable<DerivedUnitAttributeParameters> Parse(IEnumerable<AttributeData> attributeData)
-        => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
-
-    public static IDictionary<string, int> ParseIndices(AttributeData attributeData)
-        => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
-
-    public static IEnumerable<IDictionary<string, int>> ParseIndices(INamedTypeSymbol symbol)
-        => ParameterParser.ParseIndices<DerivedUnitAttributeParameters, DerivedUnitAttribute>(symbol, ConstructorParameters, NamedParameters);
-
-    public static IEnumerable<IDictionary<string, int>> ParseIndices(IEnumerable<AttributeData> attributeData)
-        => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
-
-    private static DerivedUnitAttributeParameters Defaults { get; } = new
+    private static DerivedUnitAttributeParameters Defaults => new
     (
         Name: string.Empty,
         Plural: string.Empty,
         Signature: null,
         Units: Array.AsReadOnly(Array.Empty<string>())
     );
-
-    private static Dictionary<string, AttributeProperty<DerivedUnitAttributeParameters>> ConstructorParameters { get; }
-        = Properties.AllProperties.ToDictionary(static (x) => x.ParameterName);
-
-    private static Dictionary<string, AttributeProperty<DerivedUnitAttributeParameters>> NamedParameters { get; }
-        = Properties.AllProperties.ToDictionary(static (x) => x.Name);
 
     private static class Properties
     {

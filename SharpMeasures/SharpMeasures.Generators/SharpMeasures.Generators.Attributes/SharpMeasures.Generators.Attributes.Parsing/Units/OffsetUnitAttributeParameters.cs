@@ -1,49 +1,25 @@
 namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-using Microsoft.CodeAnalysis;
-
 using SharpMeasures.Generators.Attributes.Parsing.Utility;
 using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;
-using System.Linq;
 
 public readonly record struct OffsetUnitAttributeParameters(string Name, string Plural, string From, double Offset)
     : IUnitAttributeParameters, IDerivedUnitAttributeParameters
 {
+    public static ParameterParser<OffsetUnitAttributeParameters, OffsetUnitAttribute> Parser { get; }
+        = new(Properties.AllProperties, Defaults);
+
     string IDerivedUnitAttributeParameters.DerivedFrom => From;
 
-    public static OffsetUnitAttributeParameters Parse(AttributeData attributeData)
-        => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
-
-    public static IEnumerable<OffsetUnitAttributeParameters> Parse(INamedTypeSymbol symbol)
-        => ParameterParser.Parse<OffsetUnitAttributeParameters, OffsetUnitAttribute>(symbol, Defaults, ConstructorParameters, NamedParameters);
-
-    public static IEnumerable<OffsetUnitAttributeParameters> Parse(IEnumerable<AttributeData> attributeData)
-        => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
-
-    public static IDictionary<string, int> ParseIndices(AttributeData attributeData)
-        => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
-
-    public static IEnumerable<IDictionary<string, int>> ParseIndices(INamedTypeSymbol symbol)
-        => ParameterParser.ParseIndices<OffsetUnitAttributeParameters, OffsetUnitAttribute>(symbol, ConstructorParameters, NamedParameters);
-
-    public static IEnumerable<IDictionary<string, int>> ParseIndices(IEnumerable<AttributeData> attributeData)
-        => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
-
-    private static OffsetUnitAttributeParameters Defaults { get; } = new
+    private static OffsetUnitAttributeParameters Defaults => new
     (
         Name: string.Empty,
         Plural: string.Empty,
         From: string.Empty,
         Offset: 0
     );
-
-    private static Dictionary<string, AttributeProperty<OffsetUnitAttributeParameters>> ConstructorParameters { get; }
-        = Properties.AllProperties.ToDictionary(static (x) => x.ParameterName);
-
-    private static Dictionary<string, AttributeProperty<OffsetUnitAttributeParameters>> NamedParameters { get; }
-        = Properties.AllProperties.ToDictionary(static (x) => x.Name);
 
     private static class Properties
     {

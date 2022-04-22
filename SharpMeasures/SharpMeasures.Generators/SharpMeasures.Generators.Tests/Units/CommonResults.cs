@@ -8,19 +8,19 @@ using SharpMeasures.Generators.Units;
 internal static class CommonResults
 {
     public static GeneratorDriverRunResult Length_OnlyFixedMetre { get; }
-        = VerifyGenerator.ConstructAndRunDriver<UnitGenerator>(Length_OnlyFixedMetre_Source).GetRunResult();
+        = DriverUtility.ConstructAndRunDriver<UnitGenerator>(Length_OnlyFixedMetre_Source).GetRunResult();
 
     public static GeneratorDriverRunResult Length_NoDefinitions { get; }
-        = VerifyGenerator.ConstructAndRunDriver<UnitGenerator>(Length_NoDefinitions_Source).GetRunResult();
+        = DriverUtility.ConstructAndRunDriver<UnitGenerator>(Length_NoDefinitions_Source).GetRunResult();
 
     public static GeneratorDriverRunResult Temperature_OnlyFixedKelvin { get; }
-        = VerifyGenerator.ConstructAndRunDriver<UnitGenerator>(Temperature_OnlyFixedKelvin_Source).GetRunResult();
+        = DriverUtility.ConstructAndRunDriver<UnitGenerator>(Temperature_OnlyFixedKelvin_Source).GetRunResult();
 
     public static GeneratorDriverRunResult Temperature_NoDefinitions { get; }
-        = VerifyGenerator.ConstructAndRunDriver<UnitGenerator>(Temperature_NoDefinitions_Source).GetRunResult();
+        = DriverUtility.ConstructAndRunDriver<UnitGenerator>(Temperature_NoDefinitions_Source).GetRunResult();
 
     public static GeneratorDriverRunResult LengthTimeSpeed_NoDerivable { get; }
-        = VerifyGenerator.ConstructAndRunDriver<UnitGenerator>(LengthTimeSpeed_NoDerivable_Source).GetRunResult();
+        = DriverUtility.ConstructAndRunDriver<UnitGenerator>(LengthTimeSpeed_NoDerivable_Source).GetRunResult();
 
     private const string Length_OnlyFixedMetre_Source = @"
 using SharpMeasures.Generators;

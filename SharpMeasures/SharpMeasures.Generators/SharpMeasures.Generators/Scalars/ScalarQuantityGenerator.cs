@@ -1,10 +1,11 @@
 ﻿namespace SharpMeasures.Generators.Scalars;
 
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
+
 using SharpMeasures.Generators.Scalars.Pipeline;
 using SharpMeasures.Generators.Scalars.SourceBuilding;
-
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 
 using System.Text;
 
@@ -13,8 +14,8 @@ public class ScalarQuantityGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        IncrementalValuesProvider<FirstStage.Result> firstStage = FirstStage.Perform(context);
-        IncrementalValuesProvider<SecondStage.Result> secondStage = SecondStage.Perform(context, firstStage);
+        IncrementalValuesProvider<TypeDeclarationSyntax> firstStage = Stage1.Perform(context);
+        IncrementalValuesProvider<Stage2.Result> secondStage = Stage2.Perform(context, firstStage);
         IncrementalValuesProvider<ThirdStage.Result> thirdStage = ThirdStage.Perform(context, secondStage);
         IncrementalValuesProvider<FourthStage.Result> fourthStage = FourthStage.Perform(thirdStage);
         IncrementalValuesProvider<FifthStage.Result> fifthStage = FifthStage.Perform(fourthStage);

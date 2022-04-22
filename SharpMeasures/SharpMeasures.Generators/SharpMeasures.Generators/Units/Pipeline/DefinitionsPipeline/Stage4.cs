@@ -29,7 +29,7 @@ internal static class Stage4
 
     private static IEnumerable<UnitAliasAttributeParameters> ExtractValidAliasDefinitions(Stage3.Result input, CancellationToken _)
     {
-        IEnumerable<UnitAliasAttributeParameters> unitAliases = UnitAliasAttributeParameters.Parse(input.TypeSymbol);
+        IEnumerable<UnitAliasAttributeParameters> unitAliases = UnitAliasAttributeParameters.Parser.Parse(input.TypeSymbol);
         
         foreach (UnitAliasAttributeParameters unitAlias in unitAliases)
         {
@@ -43,7 +43,7 @@ internal static class Stage4
     private static IEnumerable<CachedDerivedUnitAttributeParameters> ExtractValidDerivedDefinitions(Stage3.Result input, CancellationToken _)
     {
         IEnumerable<CachedDerivedUnitAttributeParameters> derivedUnits
-            = CachedDerivedUnitAttributeParameters.From(DerivedUnitAttributeParameters.Parse(input.TypeSymbol));
+            = CachedDerivedUnitAttributeParameters.From(DerivedUnitAttributeParameters.Parser.Parse(input.TypeSymbol));
 
         foreach (CachedDerivedUnitAttributeParameters derivedUnit in derivedUnits)
         {
@@ -69,7 +69,7 @@ internal static class Stage4
 
     private static IEnumerable<FixedUnitAttributeParameters> ExtractValidFixedDefinitions(Stage3.Result input, CancellationToken _)
     {
-        IEnumerable<FixedUnitAttributeParameters> fixedUnits = FixedUnitAttributeParameters.Parse(input.TypeSymbol);
+        IEnumerable<FixedUnitAttributeParameters> fixedUnits = FixedUnitAttributeParameters.Parser.Parse(input.TypeSymbol);
 
         foreach (FixedUnitAttributeParameters fixedUnit in fixedUnits)
         {
@@ -82,7 +82,7 @@ internal static class Stage4
 
     private static IEnumerable<OffsetUnitAttributeParameters> ExtractValidOffsetDefinitions(Stage3.Result input, CancellationToken _)
     {
-        IEnumerable<OffsetUnitAttributeParameters> offsetUnits = OffsetUnitAttributeParameters.Parse(input.TypeSymbol);
+        IEnumerable<OffsetUnitAttributeParameters> offsetUnits = OffsetUnitAttributeParameters.Parser.Parse(input.TypeSymbol);
 
         foreach (OffsetUnitAttributeParameters offsetUnit in offsetUnits)
         {
@@ -95,7 +95,7 @@ internal static class Stage4
 
     private static IEnumerable<PrefixedUnitAttributeParameters> ExtractValidPrefixedDefinitions(Stage3.Result input, CancellationToken _)
     {
-        IEnumerable<PrefixedUnitAttributeParameters> prefixedUnits = PrefixedUnitAttributeParameters.Parse(input.TypeSymbol);
+        IEnumerable<PrefixedUnitAttributeParameters> prefixedUnits = PrefixedUnitAttributeParameters.Parser.Parse(input.TypeSymbol);
 
         foreach (PrefixedUnitAttributeParameters prefixedUnit in prefixedUnits)
         {
@@ -124,7 +124,7 @@ internal static class Stage4
 
     private static IEnumerable<ScaledUnitAttributeParameters> ExtractValidScaledDefinitions(Stage3.Result input, CancellationToken _)
     {
-        IEnumerable<ScaledUnitAttributeParameters> scaledUnits = ScaledUnitAttributeParameters.Parse(input.TypeSymbol);
+        IEnumerable<ScaledUnitAttributeParameters> scaledUnits = ScaledUnitAttributeParameters.Parser.Parse(input.TypeSymbol);
 
         foreach (ScaledUnitAttributeParameters scaledUnit in scaledUnits)
         {

@@ -16,19 +16,19 @@ internal static class TypeIsNotPartialDiagnostics
             return;
         }
 
-        if (namedTypeSymbol.DeclaringSyntaxReferences[0].GetSyntax() is not TypeDeclarationSyntax declarationSyntax
+        if (namedTypeSymbol.DeclaringSyntaxReferences[0].GetSyntax() is not BaseTypeDeclarationSyntax declarationSyntax
             || IsPartial(declarationSyntax))
         {
             return;
         }
 
-        Diagnostic diagnostics = Diagnostic.Create(DiagnosticRules.TypeIsNotPartial, declarationSyntax.Identifier.GetLocation(),
+        Diagnostic diagnostics = Diagnostic.Create(DiagnosticRules.TypeIsNotPartial, declarationSyntax.GetLocation(),
             relevantAttribute.FullName, namedTypeSymbol.Name);
 
         context.ReportDiagnostic(diagnostics);
     }
 
-    private static bool IsPartial(TypeDeclarationSyntax declarationSyntax)
+    private static bool IsPartial(MemberDeclarationSyntax declarationSyntax)
     {
         foreach (SyntaxToken token in declarationSyntax.Modifiers)
         {

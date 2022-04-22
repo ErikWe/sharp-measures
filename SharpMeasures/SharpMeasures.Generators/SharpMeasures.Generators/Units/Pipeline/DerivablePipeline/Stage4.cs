@@ -24,7 +24,7 @@ internal static class Stage4
     private static IEnumerable<CachedDerivableUnitAttributeParameters> ExtractValidDerivations(Stage3.Result input, CancellationToken _)
     {
         IEnumerable<CachedDerivableUnitAttributeParameters> definedDerivations
-            = CachedDerivableUnitAttributeParameters.From(DerivableUnitAttributeParameters.Parse(input.TypeSymbol));
+            = CachedDerivableUnitAttributeParameters.From(DerivableUnitAttributeParameters.Parser.Parse(input.TypeSymbol));
 
         foreach (CachedDerivableUnitAttributeParameters definedDerivation in definedDerivations)
         {

@@ -1,44 +1,20 @@
 namespace SharpMeasures.Generators.Attributes.Parsing.Scalars;
 
-using Microsoft.CodeAnalysis;
-
 using SharpMeasures.Generators.Attributes.Parsing.Utility;
 using SharpMeasures.Generators.Scalars;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 public readonly record struct IncludeUnitsAttributeParameters(IEnumerable<string> IncludedUnits)
 {
-    public static IncludeUnitsAttributeParameters Parse(AttributeData attributeData)
-        => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
+    public static ParameterParser<IncludeUnitsAttributeParameters, IncludeUnitsAttribute> Parser { get; }
+        = new(Properties.AllProperties, Defaults);
 
-    public static IncludeUnitsAttributeParameters Parse(INamedTypeSymbol symbol)
-        => ParameterParser.ParseSingle<IncludeUnitsAttributeParameters, IncludeUnitsAttribute>(symbol, Defaults, ConstructorParameters, NamedParameters);
-
-    public static IncludeUnitsAttributeParameters Parse(IEnumerable<AttributeData> attributeData)
-        => ParameterParser.ParseSingle(attributeData, Defaults, ConstructorParameters, NamedParameters);
-
-    public static IDictionary<string, int> ParseIndices(AttributeData attributeData)
-        => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
-
-    public static IDictionary<string, int> ParseSiIndices(INamedTypeSymbol symbol)
-        => ParameterParser.ParseSingleIndices<IncludeUnitsAttributeParameters, IncludeUnitsAttribute>(symbol, ConstructorParameters, NamedParameters);
-
-    public static IDictionary<string, int> ParseIndices(IEnumerable<AttributeData> attributeData)
-        => ParameterParser.ParseSingleIndices(attributeData, ConstructorParameters, NamedParameters);
-
-    private static IncludeUnitsAttributeParameters Defaults { get; } = new
+    private static IncludeUnitsAttributeParameters Defaults => new
     (
         IncludedUnits: Array.Empty<string>()
     );
-
-    private static Dictionary<string, AttributeProperty<IncludeUnitsAttributeParameters>> ConstructorParameters { get; }
-        = Properties.AllProperties.ToDictionary(static (x) => x.ParameterName);
-
-    private static Dictionary<string, AttributeProperty<IncludeUnitsAttributeParameters>> NamedParameters { get; }
-        = Properties.AllProperties.ToDictionary(static (x) => x.Name);
 
     private static class Properties
     {

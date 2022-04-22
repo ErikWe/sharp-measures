@@ -1,40 +1,20 @@
 namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-using Microsoft.CodeAnalysis;
-
 using SharpMeasures.Generators.Attributes.Parsing.Utility;
 using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;
-using System.Linq;
 
 public readonly record struct PrefixedUnitAttributeParameters(string Name, string Plural, string From, MetricPrefixName MetricPrefixName,
     BinaryPrefixName BinaryPrefixName, PrefixedUnitAttributeParameters.PrefixType SpecifiedPrefixType)
     : IUnitAttributeParameters, IDerivedUnitAttributeParameters
 {
-    public enum PrefixType { None, Metric, Binary }
+    public static ParameterParser<PrefixedUnitAttributeParameters, PrefixedUnitAttribute> Parser { get; }
+        = new(Properties.AllProperties, Defaults);
 
     string IDerivedUnitAttributeParameters.DerivedFrom => From;
 
-    public static PrefixedUnitAttributeParameters Parse(AttributeData attributeData)
-        => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
-
-    public static IEnumerable<PrefixedUnitAttributeParameters> Parse(INamedTypeSymbol symbol)
-        => ParameterParser.Parse<PrefixedUnitAttributeParameters, PrefixedUnitAttribute>(symbol, Defaults, ConstructorParameters, NamedParameters);
-
-    public static IEnumerable<PrefixedUnitAttributeParameters> Parse(IEnumerable<AttributeData> attributeData)
-        => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
-
-    public static IDictionary<string, int> ParseIndices(AttributeData attributeData)
-        => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
-
-    public static IEnumerable<IDictionary<string, int>> ParseIndices(INamedTypeSymbol symbol)
-        => ParameterParser.ParseIndices<PrefixedUnitAttributeParameters, PrefixedUnitAttribute>(symbol, ConstructorParameters, NamedParameters);
-
-    public static IEnumerable<IDictionary<string, int>> ParseIndices(IEnumerable<AttributeData> attributeData)
-        => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
-
-    private static PrefixedUnitAttributeParameters Defaults { get; } = new
+    private static PrefixedUnitAttributeParameters Defaults => new
     (
         Name: string.Empty,
         Plural: string.Empty,
@@ -44,11 +24,7 @@ public readonly record struct PrefixedUnitAttributeParameters(string Name, strin
         SpecifiedPrefixType: PrefixType.None
     );
 
-    private static Dictionary<string, AttributeProperty<PrefixedUnitAttributeParameters>> ConstructorParameters { get; }
-        = Properties.AllProperties.ToDictionary(static (x) => x.ParameterName);
-
-    private static Dictionary<string, AttributeProperty<PrefixedUnitAttributeParameters>> NamedParameters { get; }
-        = Properties.AllProperties.ToDictionary(static (x) => x.Name);
+    public enum PrefixType { None, Metric, Binary }
 
     private static class Properties
     {

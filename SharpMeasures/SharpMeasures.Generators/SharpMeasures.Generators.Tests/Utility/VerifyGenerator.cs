@@ -1,12 +1,10 @@
 ﻿namespace SharpMeasures.Generators.Tests.Utility;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -22,7 +20,7 @@ internal static class VerifyGenerator
         => AssertNoOutput(source, new TGenerator());
 
     public static void AssertNoOutput(string source, IIncrementalGenerator generator)
-        => AssertNoOutput(ConstructAndRunDriver(source, generator).GetRunResult());
+        => AssertNoOutput(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult());
 
     public static void AssertNoOutput(GeneratorDriverRunResult results)
     {
@@ -38,7 +36,7 @@ internal static class VerifyGenerator
         => AssertSomeOutput(source, new TGenerator());
 
     public static void AssertSomeOutput(string source, IIncrementalGenerator generator)
-        => AssertSomeOutput(ConstructAndRunDriver(source, generator).GetRunResult());
+        => AssertSomeOutput(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult());
 
     public static void AssertSomeOutput(GeneratorDriverRunResult results)
     {
@@ -62,7 +60,7 @@ internal static class VerifyGenerator
         => AssertNumberOfGeneratedFiles(source, new TGenerator(), expected);
 
     public static void AssertNumberOfGeneratedFiles(string source, IIncrementalGenerator generator, int expected)
-        => AssertNumberOfGeneratedFiles(ConstructAndRunDriver(source, generator).GetRunResult(), expected);
+        => AssertNumberOfGeneratedFiles(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult(), expected);
 
     public static void AssertNumberOfGeneratedFiles(GeneratorDriverRunResult results, int expected)
     {
@@ -83,7 +81,7 @@ internal static class VerifyGenerator
         => AssertAllListedFilesGenerated(source, new TGenerator(), files);
 
     public static void AssertAllListedFilesGenerated(string source, IIncrementalGenerator generator, params string[] files)
-        => AssertAllListedFilesGenerated(ConstructAndRunDriver(source, generator).GetRunResult(), files);
+        => AssertAllListedFilesGenerated(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult(), files);
 
     public static void AssertAllListedFilesGenerated(GeneratorDriverRunResult results, params string[] files)
     {
@@ -122,7 +120,7 @@ internal static class VerifyGenerator
         => AssertOnlyListedFilesGenerated(source, new TGenerator(), files);
 
     public static void AssertOnlyListedFilesGenerated(string source, IIncrementalGenerator generator, params string[] files)
-        => AssertOnlyListedFilesGenerated(ConstructAndRunDriver(source, generator).GetRunResult(), files);
+        => AssertOnlyListedFilesGenerated(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult(), files);
 
     public static void AssertOnlyListedFilesGenerated(GeneratorDriverRunResult results, params string[] files)
     {
@@ -144,7 +142,7 @@ internal static class VerifyGenerator
         => AssertNoListedFileGenerated(source, new TGenerator(), files);
 
     public static void AssertNoListedFileGenerated(string source, IIncrementalGenerator generator, params string[] files)
-        => AssertNoListedFileGenerated(ConstructAndRunDriver(source, generator).GetRunResult(), files);
+        => AssertNoListedFileGenerated(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult(), files);
 
     public static void AssertNoListedFileGenerated(GeneratorDriverRunResult results, params string[] files)
     {
@@ -166,7 +164,7 @@ internal static class VerifyGenerator
         => VerifyMatch(source, new TGenerator());
 
     public static Task VerifyMatch(string source, IIncrementalGenerator generator)
-        => VerifyMatch(ConstructAndRunDriver(source, generator).GetRunResult());
+        => VerifyMatch(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult());
 
     public static Task VerifyMatch(GeneratorDriverRunResult results)
     {
@@ -178,7 +176,7 @@ internal static class VerifyGenerator
         => VerifyMatch(source, new TGenerator(), files);
 
     public static Task VerifyMatch(string source, IIncrementalGenerator generator, params string[] files)
-        => VerifyMatch(ConstructAndRunDriver(source, generator).GetRunResult(), files);
+        => VerifyMatch(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult(), files);
 
     public static Task VerifyMatch(GeneratorDriverRunResult results, params string[] files)
     {
@@ -219,24 +217,23 @@ internal static class VerifyGenerator
         => VerifyIdentical(source1, source2, new TGenerator());
 
     public static void VerifyIdentical(string source1, string source2, IIncrementalGenerator generator)
-        => VerifyIdentical(ConstructAndRunDriver(source1, generator).GetRunResult(), source2, generator);
+        => VerifyIdentical(DriverUtility.ConstructAndRunDriver(source1, generator).GetRunResult(), source2, generator);
 
-    public static void VerifyIdentical<TGenerator>(GeneratorDriverRunResult result1, string source2) where TGenerator : IIncrementalGenerator, new()
-        => VerifyIdentical(result1, source2, new TGenerator());
+    public static void VerifyIdentical<TGenerator>(GeneratorDriverRunResult results1, string source2) where TGenerator : IIncrementalGenerator, new()
+        => VerifyIdentical(results1, source2, new TGenerator());
 
-    public static void VerifyIdentical(GeneratorDriverRunResult result1, string source2, IIncrementalGenerator generator)
-        => VerifyIdentical(result1, ConstructAndRunDriver(source2, generator).GetRunResult());
+    public static void VerifyIdentical(GeneratorDriverRunResult results1, string source2, IIncrementalGenerator generator)
+        => VerifyIdentical(results1, DriverUtility.ConstructAndRunDriver(source2, generator).GetRunResult());
 
     public static void VerifyIdentical(GeneratorDriverRunResult results1, GeneratorDriverRunResult results2)
     {
-        IDictionary<string, string> files = new Dictionary<string, string>();
-        int matched = 0;
+        IDictionary<(string, string), string> unmatchedGeneratedSources = new Dictionary<(string, string), string>();
 
         foreach (GeneratorRunResult result in results1.Results)
         {
             foreach (GeneratedSourceResult generatedSource in result.GeneratedSources)
             {
-                files[fileIdentifier(result, generatedSource)] = removeStamp(generatedSource);
+                unmatchedGeneratedSources[(result.Generator.GetGeneratorType().ToString(), generatedSource.HintName)] = removeStamp(generatedSource);
             }
         }
 
@@ -244,95 +241,38 @@ internal static class VerifyGenerator
         {
             foreach (GeneratedSourceResult generatedSource in result.GeneratedSources)
             {
-                string identifier = fileIdentifier(result, generatedSource);
+                (string, string) identifier = (result.Generator.GetGeneratorType().ToString(), generatedSource.HintName);
 
-                matched += 1;
-                Assert.Contains(identifier, files);
-                Assert.Equal(removeStamp(generatedSource), files[identifier]);
+                Assert.Contains(identifier, unmatchedGeneratedSources);
+                Assert.Equal(removeStamp(generatedSource), unmatchedGeneratedSources[identifier]);
+
+                unmatchedGeneratedSources.Remove(identifier);
             }
         }
 
-        Assert.Equal(files.Count, matched);
-
-        static string fileIdentifier(GeneratorRunResult result, GeneratedSourceResult generatedSource)
-            => result.Generator.GetGeneratorType().ToString() + ':' + generatedSource.HintName;
+        Assert.Empty(unmatchedGeneratedSources);
 
         static string removeStamp(GeneratedSourceResult generatedSource) => StampRegex.Replace(generatedSource.SourceText.ToString(), StampReplacement);
     }
 
     public static void VerifyIdentical(GeneratorRunResult result1, GeneratorRunResult result2)
     {
-        IDictionary<string, string> files = new Dictionary<string, string>();
-        int matched = 0;
+        IDictionary<string, string> unmatchedGeneratedSources = new Dictionary<string, string>();
 
         foreach (GeneratedSourceResult generatedSource in result1.GeneratedSources)
         {
-            files[generatedSource.HintName] = generatedSource.SourceText.ToString();
+            unmatchedGeneratedSources[generatedSource.HintName] = generatedSource.SourceText.ToString();
         }
 
         foreach (GeneratedSourceResult generatedSource in result2.GeneratedSources)
         {
-            matched += 1;
-            Assert.Contains(generatedSource.HintName, files);
-            Assert.Equal(generatedSource.SourceText.ToString(), files[generatedSource.HintName]);
+            Assert.Contains(generatedSource.HintName, unmatchedGeneratedSources);
+            Assert.Equal(generatedSource.SourceText.ToString(), unmatchedGeneratedSources[generatedSource.HintName]);
+
+            unmatchedGeneratedSources.Remove(generatedSource.HintName);
         }
 
-        Assert.Equal(files.Count, matched);
-    }
-
-    public static GeneratorDriver ConstructAndRunDriver<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new()
-        => ConstructAndRunDriver(source, new TGenerator());
-
-    public static GeneratorDriver ConstructAndRunDriver(string source, IIncrementalGenerator generator)
-        => RunDriver(source, ConstructDriver(generator));
-
-    public static GeneratorDriver ConstructDriver<TGenerator>() where TGenerator : IIncrementalGenerator, new()
-        => ConstructDriver(new TGenerator());
-
-    public static GeneratorDriver ConstructDriver(IIncrementalGenerator generator)
-    {
-        ImmutableArray<AdditionalText> additionalFiles = GetAdditionalFiles();
-
-        return CSharpGeneratorDriver.Create(generator).AddAdditionalTexts(additionalFiles);
-    }
-
-    public static GeneratorDriver RunDriver(string source, GeneratorDriver driver)
-    {
-        SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source);
-
-        IEnumerable<MetadataReference> references = AppDomain.CurrentDomain.GetAssemblies()
-            .Where(static (assembly) => !assembly.IsDynamic)
-            .Select(static (assembly) => MetadataReference.CreateFromFile(assembly.Location))
-            .Cast<MetadataReference>();
-
-        CSharpCompilation compilation = CSharpCompilation.Create("SharpMeasuresTests", new[] { syntaxTree }, references,
-            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-
-        return driver.RunGenerators(compilation);
-    }
-
-    private static ImmutableArray<AdditionalText> GetAdditionalFiles()
-    {
-        static IEnumerable<string> GetDocumentationFiles()
-        {
-            try
-            {
-                return Directory.GetFiles(@"..\..\..\Documentation", "*.txt", SearchOption.AllDirectories);
-            }
-            catch (DirectoryNotFoundException)
-            {
-                return Enumerable.Empty<string>();
-            }
-        }
-
-        ImmutableArray<AdditionalText>.Builder builder = ImmutableArray.CreateBuilder<AdditionalText>();
-
-        foreach (string additionalTextPath in GetDocumentationFiles())
-        {
-            builder.Add(new CustomAdditionalText(additionalTextPath));
-        }
-
-        return builder.ToImmutable();
+        Assert.Equal(result1.GeneratedSources.Length, result2.GeneratedSources.Length);
     }
 
     private static Regex StampRegex { get; } = new(@"(?<header>This file was generated by SharpMeasures\.Generators ).+", RegexOptions.ExplicitCapture);

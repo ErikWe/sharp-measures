@@ -12,4 +12,4 @@ public readonly partial record struct UnitOfLength { }
 public readonly partial record struct UnitOfTime { }
 
 [GeneratedUnit(typeof(Speed))]
-public readonly partial record struct UnitOfSpeed { }
+public readonly record struct UnitOfSpeed { }

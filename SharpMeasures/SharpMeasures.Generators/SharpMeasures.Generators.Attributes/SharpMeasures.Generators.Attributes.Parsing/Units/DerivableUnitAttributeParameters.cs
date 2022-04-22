@@ -8,41 +8,19 @@ using SharpMeasures.Generators.Units;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 public readonly record struct DerivableUnitAttributeParameters(ReadOnlyCollection<INamedTypeSymbol>? Signature, ReadOnlyCollection<INamedTypeSymbol>? Quantities,
     string Expression)
 {
-    public static DerivableUnitAttributeParameters Parse(AttributeData attributeData)
-        => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
+    public static ParameterParser<DerivableUnitAttributeParameters, DerivableUnitAttribute> Parser { get; }
+        = new(Properties.AllProperties, Defaults);
 
-    public static IEnumerable<DerivableUnitAttributeParameters> Parse(INamedTypeSymbol symbol)
-        => ParameterParser.Parse<DerivableUnitAttributeParameters, DerivableUnitAttribute>(symbol, Defaults, ConstructorParameters, NamedParameters);
-
-    public static IEnumerable<DerivableUnitAttributeParameters> Parse(IEnumerable<AttributeData> attributeData)
-        => ParameterParser.Parse(attributeData, Defaults, ConstructorParameters, NamedParameters);
-
-    public static IDictionary<string, int> ParseIndices(AttributeData attributeData)
-        => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
-
-    public static IEnumerable<IDictionary<string, int>> ParseIndices(INamedTypeSymbol symbol)
-        => ParameterParser.ParseIndices<DerivableUnitAttributeParameters, DerivableUnitAttribute>(symbol, ConstructorParameters, NamedParameters);
-
-    public static IEnumerable<IDictionary<string, int>> ParseIndices(IEnumerable<AttributeData> attributeData)
-        => ParameterParser.ParseIndices(attributeData, ConstructorParameters, NamedParameters);
-
-    private static DerivableUnitAttributeParameters Defaults { get; } = new
+    private static DerivableUnitAttributeParameters Defaults => new
     (
         Signature: null,
         Quantities: null,
         Expression: string.Empty
     );
-
-    private static Dictionary<string, AttributeProperty<DerivableUnitAttributeParameters>> ConstructorParameters { get; }
-        = Properties.AllProperties.ToDictionary(static (x) => x.ParameterName);
-
-    private static Dictionary<string, AttributeProperty<DerivableUnitAttributeParameters>> NamedParameters { get; }
-        = Properties.AllProperties.ToDictionary(static (x) => x.Name);
 
     private static class Properties
     {
@@ -81,7 +59,7 @@ public readonly record struct DerivableUnitAttributeParameters(ReadOnlyCollectio
             {
                 if (units[i].GetAttributeOfType<GeneratedUnitAttribute>() is AttributeData unitData)
                 {
-                    if (GeneratedUnitAttributeParameters.Parse(unitData) is GeneratedUnitAttributeParameters { Quantity: INamedTypeSymbol unitQuantity })
+                    if (GeneratedUnitAttributeParameters.Parser.Parse(unitData) is GeneratedUnitAttributeParameters { Quantity: INamedTypeSymbol unitQuantity })
                     {
                         quantities[i] = unitQuantity;
                     }
