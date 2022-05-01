@@ -14,7 +14,7 @@ public class AbortedCases
     public void NoMatchingConstructor()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfTemperature))]
@@ -33,7 +33,7 @@ public partial class UnitOfTemperature { }
     public void BaseUnitNotFound()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfTemperature))]
@@ -52,7 +52,7 @@ public partial class UnitOfTemperature { }
     public void NameNull()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfTemperature))]
@@ -71,7 +71,7 @@ public partial class UnitOfTemperature { }
     public void PluralNullAndNotConstant()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfTemperature))]
@@ -90,7 +90,7 @@ public partial class UnitOfTemperature { }
     public void BaseUnitNull()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfTemperature))]
@@ -109,7 +109,7 @@ public partial class UnitOfTemperature { }
     public void DuplicateName()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfTemperature))]
@@ -128,7 +128,7 @@ public partial class UnitOfTemperature { }
     public void OffsetNull()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfTemperature))]

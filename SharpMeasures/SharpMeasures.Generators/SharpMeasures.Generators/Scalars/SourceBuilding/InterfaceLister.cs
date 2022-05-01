@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 internal static class InterfaceLister
 {
-    public static IEnumerable<string> GetAll(FifthStage.Result data)
+    public static IEnumerable<string> GetAll(Stage5.Result data)
     {
         yield return $"System.IComparable<{data.TypeDefinition.Name}>";
         yield return $"SharpMeasures.ScalarAbstractions.IMultiplicableScalarQuantity<{data.TypeDefinition.Name}, SharpMeasures.Scalar>";
@@ -43,7 +43,7 @@ internal static class InterfaceLister
         }
     }
 
-    public static IEnumerable<string> GetInterfaces(FifthStage.PowerData? operations, Func<string, string> toInterfaceDelegate)
+    public static IEnumerable<string> GetInterfaces(Stage5.PowerData? operations, Func<string, string> toInterfaceDelegate)
     {
         if (operations is null)
         {
@@ -58,35 +58,35 @@ internal static class InterfaceLister
         }
     }
 
-    private static IEnumerable<string> GetInvertibleInterfaces(FifthStage.PowerData? operations)
+    private static IEnumerable<string> GetInvertibleInterfaces(Stage5.PowerData? operations)
     {
         return GetInterfaces(operations, text);
 
         static string text(string type) => $"SharpMeasures.ScalarAbstractions.IInvertibleScalarQuantity<{type}>";
     }
 
-    private static IEnumerable<string> GetSquarableInterfaces(FifthStage.PowerData? operations)
+    private static IEnumerable<string> GetSquarableInterfaces(Stage5.PowerData? operations)
     {
         return GetInterfaces(operations, text);
 
         static string text(string type) => $"SharpMeasures.ScalarAbstractions.ISquarableScalarQuantity<{type}>";
     }
 
-    private static IEnumerable<string> GetCubableInterfaces(FifthStage.PowerData? operations)
+    private static IEnumerable<string> GetCubableInterfaces(Stage5.PowerData? operations)
     {
         return GetInterfaces(operations, text);
 
         static string text(string type) => $"SharpMeasures.ScalarAbstractions.ICubableScalarQuantity<{type}>";
     }
 
-    private static IEnumerable<string> GetSquareRootableInterfaces(FifthStage.PowerData? operations)
+    private static IEnumerable<string> GetSquareRootableInterfaces(Stage5.PowerData? operations)
     {
         return GetInterfaces(operations, text);
 
         static string text(string type) => $"SharpMeasures.ScalarAbstractions.ISquareRootableScalarQuantity<{type}>";
     }
 
-    private static IEnumerable<string> GetCubeRootableInterfaces(FifthStage.PowerData? operations)
+    private static IEnumerable<string> GetCubeRootableInterfaces(Stage5.PowerData? operations)
     {
         return GetInterfaces(operations, text);
 

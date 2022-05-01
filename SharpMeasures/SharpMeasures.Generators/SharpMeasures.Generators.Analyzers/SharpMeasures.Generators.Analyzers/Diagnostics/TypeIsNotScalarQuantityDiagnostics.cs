@@ -10,7 +10,7 @@ internal static class TypeIsNotScalarQuantityDiagnostics
 {
     private static string AttributeFullName { get; } = typeof(GeneratedScalarQuantityAttribute).FullName;
 
-    public static void AnalyzeNamedType(SymbolAnalysisContext context, AttributeData attributeData, GeneratedUnitAttributeParameters parameters)
+    public static void AnalyzeNamedType(SymbolAnalysisContext context, AttributeData attributeData, GeneratedUnitParameters parameters)
     {
         if (parameters.Quantity is not INamedTypeSymbol argumentSymbol
             || argumentSymbol.GetAttributeOfType<GeneratedScalarQuantityAttribute>() is not null
@@ -19,7 +19,7 @@ internal static class TypeIsNotScalarQuantityDiagnostics
             return;
         }
 
-        int attributeArgumentIndex = GeneratedUnitAttributeParameters.Parser.ParseIndices(attributeData)[nameof(GeneratedUnitAttributeParameters.Quantity)];
+        int attributeArgumentIndex = GeneratedUnitParameters.Parser.ParseIndices(attributeData)[nameof(GeneratedUnitParameters.Quantity)];
 
         if (attributeSyntax.ArgumentList?.Arguments[attributeArgumentIndex] is not AttributeArgumentSyntax argumentSyntax)
         {

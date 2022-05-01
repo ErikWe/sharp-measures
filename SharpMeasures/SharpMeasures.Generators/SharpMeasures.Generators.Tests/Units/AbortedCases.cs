@@ -14,7 +14,8 @@ public class AbortedCases
     public void TypeNotPartial()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
 public class Length { }
@@ -29,9 +30,9 @@ public class UnitOfLength { }";
     public void InvalidTypeName()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators.Units;
 
-[
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
 public class Length { }
 
@@ -45,7 +46,7 @@ public partial class struct { }";
     public void QuantityNotScalarQuantity()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Units;
 
 public class Length { }
 
@@ -59,7 +60,8 @@ public partial class UnitOfLength { }";
     public void QuantityNotUnbiasedScalarQuantity()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfTemperature), Biased = true)]
 public class Temperature { }
@@ -74,7 +76,7 @@ public partial class UnitOfTemperature { }";
     public void QuantityWrongType()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Units;
 
 [GeneratedUnit(3)]
 public partial class UnitOfLength { }";
@@ -86,7 +88,7 @@ public partial class UnitOfLength { }";
     public void ArgumentMissing()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Units;
 
 [GeneratedUnit]
 public partial class UnitOfLength { }";
@@ -98,7 +100,7 @@ public partial class UnitOfLength { }";
     public void QuantityNull()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Units;
 
 [GeneratedUnit(null)]
 public partial class UnitOfLength { }";

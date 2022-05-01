@@ -5,6 +5,7 @@
 
 	<PropertyGroup>
 		<Nullable>enable</Nullable>
+		<WarningsAsErrors>nullable</WarningsAsErrors>
 		<AnalysisMode>all</AnalysisMode>
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 	</PropertyGroup>

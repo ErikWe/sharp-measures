@@ -23,7 +23,7 @@ internal static class CommonResults
         = DriverUtility.ConstructAndRunDriver<UnitGenerator>(LengthTimeSpeed_NoDerivable_Source).GetRunResult();
 
     private const string Length_OnlyFixedMetre_Source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
@@ -35,7 +35,7 @@ public partial class UnitOfLength { }
 ";
 
     private const string Length_NoDefinitions_Source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
@@ -46,7 +46,7 @@ public partial class UnitOfLength { }
 ";
 
     private const string Temperature_OnlyFixedKelvin_Source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfTemperature))]
@@ -58,7 +58,7 @@ public partial class UnitOfTemperature { }
 ";
 
     private const string Temperature_NoDefinitions_Source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfTemperature))]
@@ -70,7 +70,7 @@ public partial class UnitOfTemperature { }
 ";
 
     private const string LengthTimeSpeed_NoDerivable_Source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfLength))]

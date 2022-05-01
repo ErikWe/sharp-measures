@@ -10,20 +10,20 @@ using System.Threading;
 
 internal static class BasesComposer
 {
-    public static void Append(StringBuilder source, Indentation indentation, FifthStage.Result data, CancellationToken _)
+    public static void Append(StringBuilder source, Indentation indentation, Stage5.Result data, CancellationToken _)
     {
-        foreach (UnitAliasAttributeParameters alias in data.UnitAliases)
+        foreach (UnitAliasParameters unitAlias in data.UnitAliases)
         {
-            if (shouldInclude(alias.Name))
+            if (shouldInclude(unitAlias.Name))
             {
-                source.Append($"{indentation}public {data.TypeDefinition.Name} One{alias.Name}");
+                source.Append($"{indentation}public {data.TypeDefinition.Name} One{unitAlias.Name}");
             }
         }
 
         bool shouldInclude(string candidate) => ShouldInclude(candidate, data.IncludedBases, data.ExcludedBases);
     }
 
-    private static bool ShouldInclude(string candidate, IncludeBasesAttributeParameters? included, ExcludeBasesAttributeParameters? excluded)
+    private static bool ShouldInclude(string candidate, IncludeBasesParameters? included, ExcludeBasesParameters? excluded)
     {
         if (included is null)
         {

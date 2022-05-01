@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measure1001,
+    Title: Expected a scalar quantity,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (6,22)-(6,28),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Expected a scalar quantity. Add the attribute SharpMeasures.Generators.Scalars.GeneratedScalarQuantityAttribute to {0} for it to be recognized as a scalar quantity.,
+    Message: Expected a scalar quantity. Add the attribute SharpMeasures.Generators.Scalars.GeneratedScalarQuantityAttribute to Length for it to be recognized as a scalar quantity.,
+    Category: Usage,
+    CustomTags: []
+  }
+]

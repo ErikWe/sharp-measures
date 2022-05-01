@@ -8,7 +8,7 @@ using System.Threading;
 
 internal static class SourceComposer
 {
-    public static string Compose(FifthStage.Result data, CancellationToken token)
+    public static string Compose(Stage5.Result data, CancellationToken token)
     {
         string quantityName = data.TypeDefinition.Name.Name;
 
@@ -29,7 +29,7 @@ internal static class SourceComposer
         {
             BasesComposer.Append(source, indentation, data, token);
 
-            source.Append($"{indentation}public double {data.Settings.MagnitudePropertyName} {{ get; init; }} // TODO: Should this be init-able?");
+            source.Append($"{indentation}public double Magnitude {{ get; }}");
         }
 
         return source.ToString();

@@ -13,7 +13,7 @@ using System.Threading;
 internal static class DocumentationDependenciesProvider
 {
     public delegate TypeDeclarationSyntax DInputTransform<TIn>(TIn input);
-    public delegate TOut DOutputTransform<TIn, TOut>(TIn input, List<DocumentationFile> documentation);
+    public delegate TOut DOutputTransform<TIn, TOut>(TIn input, IReadOnlyCollection<DocumentationFile> documentation);
 
     public static IncrementalValuesProvider<TOut> Attach<TOut>(IncrementalValuesProvider<AdditionalText> fileProvider,
         IncrementalValuesProvider<TypeDeclarationSyntax> declarationProvider, DOutputTransform<TypeDeclarationSyntax, TOut> outputTransform)
@@ -25,7 +25,7 @@ internal static class DocumentationDependenciesProvider
         return declarationProvider.Combine(fileProvider.Collect()).Select(extractDependencies);
 
         TOut extractDependencies((TIn input, ImmutableArray<AdditionalText> files) data, CancellationToken token)
-            => outputTransform(data.input, DependencyExtractor.Extract(inputTransform(data.input).Identifier.Text, data.files, token));
+            => outputTransform(data.input, DependencyExtractor.Run(inputTransform(data.input).Identifier.Text, data.files, token).Dependencies);
     }
 
     public static IncrementalValuesProvider<TOut> AttachWithFilterStage<TOut>(IncrementalValuesProvider<AdditionalText> fileProvider,

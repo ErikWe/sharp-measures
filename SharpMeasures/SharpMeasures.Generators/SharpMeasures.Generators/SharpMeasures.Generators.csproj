@@ -19,8 +19,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <AdditionalFiles Include="Diagnostics\AnalyzerReleases.Shipped.md" />
-	  <AdditionalFiles Include="Diagnostics\AnalyzerReleases.Unshipped.md" />
+	  <AdditionalFiles Include="Diagnostics\Misc\AnalyzerReleases.Shipped.md" />
+	  <AdditionalFiles Include="Diagnostics\Misc\AnalyzerReleases.Unshipped.md" />
 	</ItemGroup>
 
 	<ItemGroup>

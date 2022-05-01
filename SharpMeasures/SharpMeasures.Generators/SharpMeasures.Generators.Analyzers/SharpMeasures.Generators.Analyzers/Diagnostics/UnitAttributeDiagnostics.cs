@@ -15,7 +15,7 @@ internal static class UnitAttributeDiagnostics
     {
         TypeIsNotPartialDiagnostics.AnalyzeNamedType(context, namedTypeSymbol, UnitAttributeType);
 
-        if (GeneratedUnitAttributeParameters.Parse(attribute) is GeneratedUnitAttributeParameters parameters)
+        if (GeneratedUnitParameters.Parse(attribute) is GeneratedUnitParameters parameters)
         {
             TypeIsNotScalarQuantityDiagnostics.AnalyzeNamedType(context, attribute, parameters);
         }

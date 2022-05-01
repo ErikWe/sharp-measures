@@ -14,7 +14,7 @@ public class AbortedCases
     public void ExpressionNull()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
@@ -44,7 +44,7 @@ public partial class UnitOfSpeed { }
     public void TypeNotUnit()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfTime))]
@@ -70,7 +70,7 @@ public partial class UnitOfSpeed { }
     public void NoUnitArguments()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfSpeed))]
@@ -88,7 +88,7 @@ public partial class UnitOfSpeed { }
     public void MoreUnitsThanExpressionExpected()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
@@ -118,7 +118,7 @@ public partial class UnitOfSpeed { }
     public void FewerUnitsThanExpressionExpected()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
@@ -142,7 +142,7 @@ public partial class UnitOfSpeed { }
     public void NullUnit()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfLength))]

@@ -36,8 +36,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
-	  <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
+	  <AdditionalFiles Include="Misc\AnalyzerReleases.Shipped.md" />
+	  <AdditionalFiles Include="Misc\AnalyzerReleases.Unshipped.md" />
 	</ItemGroup>
 
 </Project>

@@ -5,8 +5,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Units.Pipeline;
 using SharpMeasures.Generators.Units.Pipeline.ComparablePipeline;
-using SharpMeasures.Generators.Units.Pipeline.DefinitionsPipeline;
-using SharpMeasures.Generators.Units.Pipeline.DerivablePipeline;
+using SharpMeasures.Generators.Units.Pipeline.UnitDefinitionsPipeline;
+using SharpMeasures.Generators.Units.Pipeline.DerivableUnitPipeline;
 using SharpMeasures.Generators.Units.Pipeline.MiscPipeline;
 
 [Generator]
@@ -19,8 +19,8 @@ public class UnitGenerator : IIncrementalGenerator
         IncrementalValuesProvider<Stage3.Result> thirdStage = Stage3.Perform(context, secondStage);
 
         ComparableGenerator.Initialize(context, thirdStage);
-        DefinitionsGenerator.Initialize(context, thirdStage);
-        DerivableGenerator.Initialize(context, thirdStage);
+        UnitDefinitionsGenerator.Initialize(context, thirdStage);
+        DerivableUnitGenerator.Initialize(context, thirdStage);
         MiscGenerator.Initialize(context, thirdStage);
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SharpMeasures.Generators.Diagnostics;
 
 using System;
+using System.Threading;
 
 internal static class PartialTypeDeclarationSyntaxProvider
 {
@@ -24,9 +25,9 @@ internal static class PartialTypeDeclarationSyntaxProvider
         IncrementalValuesProvider<TDeclarationSyntax> declarationProvider, string attributeName)
         where TDeclarationSyntax : BaseTypeDeclarationSyntax
     {
-        IncrementalValuesProvider<TDeclarationSyntax> offendingDeclarations = declarationProvider.Where(DeclarationIsNotPartial);
+        IncrementalValuesProvider<Diagnostic> diagnostics = declarationProvider.Where(DeclarationIsNotPartial).Select(DiagnosticsCreator(attributeName));
 
-        context.RegisterSourceOutput(offendingDeclarations, (context, declaration) => ReportDiagnostics(context, declaration, attributeName));
+        context.ReportDiagnostics(diagnostics);
         return declarationProvider.Where(DeclarationIsPartial);
     }
 
@@ -36,11 +37,8 @@ internal static class PartialTypeDeclarationSyntaxProvider
 
     private static bool DeclarationIsPartial(MemberDeclarationSyntax declaration) => declaration.HasModifierOfKind(SyntaxKind.PartialKeyword);
     private static bool DeclarationIsNotPartial(MemberDeclarationSyntax declaration) => !DeclarationIsPartial(declaration);
-
-    private static void ReportDiagnostics(SourceProductionContext context, BaseTypeDeclarationSyntax declaration, string attributeName)
-    {
-        Diagnostic diagnostics = TypeNotPartialDiagnostics.Create(declaration, attributeName);
-
-        context.ReportDiagnostic(diagnostics);
-    }
+    private static Func<BaseTypeDeclarationSyntax, CancellationToken, Diagnostic> DiagnosticsCreator(string attributeName)
+        => (declaration, token) => CreateDiagnostics(declaration, attributeName, token);
+    private static Diagnostic CreateDiagnostics(BaseTypeDeclarationSyntax declaration, string attributeName, CancellationToken _)
+        => TypeNotPartialDiagnostics.Create(declaration, attributeName);
 }

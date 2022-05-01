@@ -14,7 +14,7 @@ public class AbortedCases
     public void NoMatchingConstructor()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
@@ -32,7 +32,7 @@ public partial class UnitOfLength { }
     public void NameNull()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
@@ -50,7 +50,7 @@ public partial class UnitOfLength { }
     public void PluralNullAndNotConstant()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
@@ -68,7 +68,7 @@ public partial class UnitOfLength { }
     public void ValueNull()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
@@ -86,7 +86,7 @@ public partial class UnitOfLength { }
     public void DuplicateName()
     {
         string source = @"
-using SharpMeasures.Generators;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfLength))]

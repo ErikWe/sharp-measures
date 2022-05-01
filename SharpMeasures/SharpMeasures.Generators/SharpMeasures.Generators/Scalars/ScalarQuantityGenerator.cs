@@ -16,14 +16,14 @@ public class ScalarQuantityGenerator : IIncrementalGenerator
     {
         IncrementalValuesProvider<TypeDeclarationSyntax> firstStage = Stage1.Perform(context);
         IncrementalValuesProvider<Stage2.Result> secondStage = Stage2.Perform(context, firstStage);
-        IncrementalValuesProvider<ThirdStage.Result> thirdStage = ThirdStage.Perform(context, secondStage);
-        IncrementalValuesProvider<FourthStage.Result> fourthStage = FourthStage.Perform(thirdStage);
-        IncrementalValuesProvider<FifthStage.Result> fifthStage = FifthStage.Perform(fourthStage);
+        IncrementalValuesProvider<Stage3.Result> thirdStage = Stage3.Perform(context, secondStage);
+        IncrementalValuesProvider<Stage4.Result> fourthStage = Stage4.Perform(thirdStage);
+        IncrementalValuesProvider<Stage5.Result> fifthStage = Stage5.Perform(fourthStage);
 
         context.RegisterSourceOutput(fifthStage, Execute);
     }
 
-    private static void Execute(SourceProductionContext context, FifthStage.Result result)
+    private static void Execute(SourceProductionContext context, Stage5.Result result)
     {
         string source = SourceComposer.Compose(result, context.CancellationToken);
 

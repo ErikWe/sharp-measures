@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measure1000,
+    Title: Expected a partial type,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (8,13)-(8,25),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: To enable a source generator, as indicated by the attribute {0}, {1} has to be made partial,
+    Message: To enable a source generator, as indicated by the attribute SharpMeasures.Generators.Units.GeneratedUnitAttribute, UnitOfLength has to be made partial,
+    Category: Usage,
+    CustomTags: []
+  }
+]

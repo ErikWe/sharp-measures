@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measure1002,
+    Title: Expected an unbiased type,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (7,22)-(7,33),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Argument should be an unbiased scalar quantity. Make {0} an unbiased scalar quantity, or use another type.,
+    Message: Argument should be an unbiased scalar quantity. Make Temperature an unbiased scalar quantity, or use another type.,
+    Category: Usage,
+    CustomTags: []
+  }
+]

@@ -17,6 +17,6 @@ internal static class Stage4
 
     private static Result DiscardSymbol(Stage3.Result input, CancellationToken _)
     {
-        return new(input.Documentation, input.TypeDefinition, input.Quantity, input.Biased);
+        return new(input.Documentation, DefinedType.FromSymbol(input.TypeSymbol), input.Quantity, input.Biased);
     }
 }

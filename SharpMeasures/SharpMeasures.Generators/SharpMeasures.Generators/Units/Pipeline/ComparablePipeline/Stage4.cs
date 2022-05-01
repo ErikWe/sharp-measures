@@ -13,15 +13,15 @@ internal static class Stage4
     public readonly record struct Result(IEnumerable<DocumentationFile> Documentation, DefinedType TypeDefinition, NamedType Quantity);
 
     public static IncrementalValuesProvider<Result> Perform(IncrementalValuesProvider<Stage3.Result> provider)
-        => provider.Select(OutputTransform).WhereNotNull();
+        => provider.Select(DiscardBiasedUnits).WhereNotNull();
 
-    private static Result? OutputTransform(Stage3.Result input, CancellationToken _)
+    private static Result? DiscardBiasedUnits(Stage3.Result input, CancellationToken _)
     {
         if (input.Biased)
         {
             return null;
         }
 
-        return new Result(input.Documentation, input.TypeDefinition, input.Quantity);
+        return new Result(input.Documentation, DefinedType.FromSymbol(input.TypeSymbol), input.Quantity);
     }
 }

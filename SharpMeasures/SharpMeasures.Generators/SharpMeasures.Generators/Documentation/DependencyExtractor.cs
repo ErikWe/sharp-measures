@@ -3,59 +3,93 @@
 using Microsoft.CodeAnalysis;
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-internal static class DependencyExtractor
+internal class DependencyExtractor
 {
-    public static List<DocumentationFile> Extract(string root, IEnumerable<AdditionalText> availableFiles, CancellationToken token)
+    public static DependencyExtractor Run(string root, IEnumerable<AdditionalText> availableFiles)
+        => Run(root, availableFiles, CancellationToken.None);
+
+    public static DependencyExtractor Run(string root, IEnumerable<AdditionalText> availableFiles, CancellationToken token)
     {
-        List<string> unresolvedDependencies = new() { root };
-        List<DocumentationFile> resolvedDependencies = new();
-        bool dependenciesModifiedInIteration = false;
+        DependencyExtractor extractor = new(root, availableFiles);
+        extractor.Run(token);
+        return extractor;
+    }
 
-        while (unresolvedDependencies.Count > 0 && !token.IsCancellationRequested)
+    public ReadOnlyCollection<DocumentationFile> Dependencies => DependencyList.AsReadOnly();
+    public ReadOnlyCollection<string> UnresolvedDependencies => UnresolvedDependencyList.AsReadOnly();
+
+    private List<DocumentationFile> DependencyList { get; }
+    private List<string> UnresolvedDependencyList { get; }
+
+    private Dictionary<string, AdditionalText> AvailableFiles { get; }
+
+    private DependencyExtractor(string root, IEnumerable<AdditionalText> availableFiles)
+    {
+        UnresolvedDependencyList = new List<string> { root };
+        DependencyList = new List<DocumentationFile>();
+
+        AvailableFiles = availableFiles.ToDictionary(static (additionalFile) => Path.GetFileNameWithoutExtension(additionalFile.Path));
+    }
+
+    private void Run(CancellationToken token)
+    {
+        while (UnresolvedDependencyList.Count > 0 && !token.IsCancellationRequested)
         {
-            foreach (AdditionalText file in availableFiles)
-            {
-                string fileName = Path.GetFileNameWithoutExtension(file.Path);
+            int initialLength = UnresolvedDependencyList.Count;
 
-                foreach (string requiredFile in unresolvedDependencies)
-                {
-                    if (requiredFile == fileName && file.GetText(token)?.ToString() is string text)
-                    {
-                        resolvedDependencies.Add(new DocumentationFile(fileName, text));
-                        unresolvedDependencies.Remove(text);
-                        AddDependenciesToListOfUnresolvedDependencies(text, resolvedDependencies, unresolvedDependencies, token);
-                        dependenciesModifiedInIteration = true;
-                        break;
-                    }
-                }
+            foreach (string dependency in UnresolvedDependencyList)
+            {
+                AttemptResolveDependency(dependency, token);
 
                 if (token.IsCancellationRequested)
                 {
-                    return resolvedDependencies;
+                    return;
                 }
             }
 
-            if (!dependenciesModifiedInIteration)
+            if (UnresolvedDependencyList.Count == initialLength)
             {
                 break;
             }
         }
-
-        return resolvedDependencies;
     }
 
-    private static void AddDependenciesToListOfUnresolvedDependencies(string text, IEnumerable<DocumentationFile> resolvedDependencies,
-        List<string> unresolvedDependencies, CancellationToken token)
+    private void AttemptResolveDependency(string dependency, CancellationToken token)
     {
+        if (AvailableFiles.ContainsKey(dependency) && AvailableFiles[dependency].GetText(token)?.ToString() is string text)
+        {
+            DependencyList.Add(new DocumentationFile(dependency, text));
+            UnresolvedDependencyList.Remove(text);
+            AddDependencies(text, token);
+        }
+    }
+
+    private void AddDependencies(string text, CancellationToken token)
+    {
+        foreach (string dependency in GetDependencies(text))
+        {
+            if (!isDependencyListed(dependency))
+            {
+                UnresolvedDependencyList.Add(dependency);
+            }
+
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+        }
+
         bool isDependencyListed(string dependency) => isDependencyResolved(dependency) || isDependencyUnresolved(dependency);
 
         bool isDependencyResolved(string dependency)
         {
-            foreach (DocumentationFile resolvedDependency in resolvedDependencies)
+            foreach (DocumentationFile resolvedDependency in DependencyList)
             {
                 if (dependency == resolvedDependency.Name)
                 {
@@ -68,7 +102,7 @@ internal static class DependencyExtractor
 
         bool isDependencyUnresolved(string dependency)
         {
-            foreach (string unresolvedDependency in unresolvedDependencies)
+            foreach (string unresolvedDependency in UnresolvedDependencyList)
             {
                 if (dependency == unresolvedDependency)
                 {
@@ -77,19 +111,6 @@ internal static class DependencyExtractor
             }
 
             return false;
-        }
-
-        foreach (string dependency in GetDependencies(text))
-        {
-            if (!isDependencyListed(dependency))
-            {
-                unresolvedDependencies.Add(dependency);
-            }
-
-            if (token.IsCancellationRequested)
-            {
-                return;
-            }
         }
     }
 
