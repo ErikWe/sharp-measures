@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Tests.Units;
 
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Tests.Utility;
+using SharpMeasures.Generators.Tests.Verify;
 
 using VerifyXunit;
 
@@ -57,7 +57,7 @@ public partial class UnitOfLength { }";
     }
 
     [Fact]
-    public void QuantityNotUnbiasedScalarQuantity()
+    public void Unbiased_QuantityNotUnbiasedScalarQuantity()
     {
         string source = @"
 using SharpMeasures.Generators.Scalars;
@@ -66,7 +66,23 @@ using SharpMeasures.Generators.Units;
 [GeneratedScalarQuantity(typeof(UnitOfTemperature), Biased = true)]
 public class Temperature { }
 
-[GeneratedUnit(typeof(Temperature))]
+[GeneratedUnit(typeof(Temperature), AllowBias = false)]
+public partial class UnitOfTemperature { }";
+
+        VerifyGenerator.AssertNoOutput<UnitGenerator>(source);
+    }
+
+    [Fact]
+    public void Biased_QuantityNotUnbiasedScalarQuantity()
+    {
+        string source = @"
+using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators.Units;
+
+[GeneratedScalarQuantity(typeof(UnitOfTemperature), Biased = true)]
+public class Temperature { }
+
+[GeneratedUnit(typeof(Temperature), AllowBias = true)]
 public partial class UnitOfTemperature { }";
 
         VerifyGenerator.AssertNoOutput<UnitGenerator>(source);

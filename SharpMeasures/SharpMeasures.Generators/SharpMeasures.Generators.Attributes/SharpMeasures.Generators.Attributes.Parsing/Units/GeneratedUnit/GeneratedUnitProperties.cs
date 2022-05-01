@@ -12,7 +12,7 @@ internal static class GeneratedUnitProperties
     public static ReadOnlyCollection<AttributeProperty<GeneratedUnitParameters>> AllProperties => Array.AsReadOnly(new[]
     {
         Quantity,
-        Biased
+        AllowBias
     });
 
     public static AttributeProperty<GeneratedUnitParameters> Quantity { get; } = new
@@ -21,9 +21,9 @@ internal static class GeneratedUnitProperties
         setter: static (parameters, obj) => parameters with { Quantity = obj as INamedTypeSymbol }
     );
 
-    public static AttributeProperty<GeneratedUnitParameters> Biased { get; } = new
+    public static AttributeProperty<GeneratedUnitParameters> AllowBias { get; } = new
     (
-        name: nameof(GeneratedUnitAttribute.Biased),
-        setter: static (parameters, obj) => obj is bool biased ? parameters with { Biased = biased } : parameters
+        name: nameof(GeneratedUnitAttribute.AllowBias),
+        setter: static (parameters, obj) => obj is bool allowBias ? parameters with { AllowBias = allowBias } : parameters
     );
 }

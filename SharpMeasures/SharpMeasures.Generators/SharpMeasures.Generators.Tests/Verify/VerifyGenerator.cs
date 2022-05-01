@@ -1,6 +1,8 @@
-﻿namespace SharpMeasures.Generators.Tests.Utility;
+﻿namespace SharpMeasures.Generators.Tests.Verify;
 
 using Microsoft.CodeAnalysis;
+
+using SharpMeasures.Generators.Tests.Utility;
 
 using System;
 using System.Collections.Generic;
@@ -20,11 +22,11 @@ internal static class VerifyGenerator
         => AssertNoOutput(source, new TGenerator());
 
     public static void AssertNoOutput(string source, IIncrementalGenerator generator)
-        => AssertNoOutput(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult());
+        => AssertNoOutput(GeneratorDriverUtility.ConstructAndRunDriver(source, generator));
 
-    public static void AssertNoOutput(GeneratorDriverRunResult results)
+    public static void AssertNoOutput(GeneratorDriver driver)
     {
-        foreach (GeneratorRunResult result in results.Results)
+        foreach (GeneratorRunResult result in driver.GetRunResult().Results)
         {
             AssertNoOutput(result);
         }
@@ -36,13 +38,13 @@ internal static class VerifyGenerator
         => AssertSomeOutput(source, new TGenerator());
 
     public static void AssertSomeOutput(string source, IIncrementalGenerator generator)
-        => AssertSomeOutput(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult());
+        => AssertSomeOutput(GeneratorDriverUtility.ConstructAndRunDriver(source, generator));
 
-    public static void AssertSomeOutput(GeneratorDriverRunResult results)
+    public static void AssertSomeOutput(GeneratorDriver driver)
     {
         bool anyOutput = false;
 
-        foreach (GeneratorRunResult result in results.Results)
+        foreach (GeneratorRunResult result in driver.GetRunResult().Results)
         {
             if (result.GeneratedSources.Length > 0)
             {
@@ -60,13 +62,13 @@ internal static class VerifyGenerator
         => AssertNumberOfGeneratedFiles(source, new TGenerator(), expected);
 
     public static void AssertNumberOfGeneratedFiles(string source, IIncrementalGenerator generator, int expected)
-        => AssertNumberOfGeneratedFiles(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult(), expected);
+        => AssertNumberOfGeneratedFiles(GeneratorDriverUtility.ConstructAndRunDriver(source, generator), expected);
 
-    public static void AssertNumberOfGeneratedFiles(GeneratorDriverRunResult results, int expected)
+    public static void AssertNumberOfGeneratedFiles(GeneratorDriver driver, int expected)
     {
         int actual = 0;
 
-        foreach (GeneratorRunResult result in results.Results)
+        foreach (GeneratorRunResult result in driver.GetRunResult().Results)
         {
             actual += result.GeneratedSources.Length;
         }
@@ -81,13 +83,13 @@ internal static class VerifyGenerator
         => AssertAllListedFilesGenerated(source, new TGenerator(), files);
 
     public static void AssertAllListedFilesGenerated(string source, IIncrementalGenerator generator, params string[] files)
-        => AssertAllListedFilesGenerated(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult(), files);
+        => AssertAllListedFilesGenerated(GeneratorDriverUtility.ConstructAndRunDriver(source, generator), files);
 
-    public static void AssertAllListedFilesGenerated(GeneratorDriverRunResult results, params string[] files)
+    public static void AssertAllListedFilesGenerated(GeneratorDriver driver, params string[] files)
     {
         int matchingFiles = 0;
 
-        foreach (GeneratorRunResult result in results.Results)
+        foreach (GeneratorRunResult result in driver.GetRunResult().Results)
         {
             foreach (GeneratedSourceResult generatedSource in result.GeneratedSources)
             {
@@ -120,11 +122,11 @@ internal static class VerifyGenerator
         => AssertOnlyListedFilesGenerated(source, new TGenerator(), files);
 
     public static void AssertOnlyListedFilesGenerated(string source, IIncrementalGenerator generator, params string[] files)
-        => AssertOnlyListedFilesGenerated(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult(), files);
+        => AssertOnlyListedFilesGenerated(GeneratorDriverUtility.ConstructAndRunDriver(source, generator), files);
 
-    public static void AssertOnlyListedFilesGenerated(GeneratorDriverRunResult results, params string[] files)
+    public static void AssertOnlyListedFilesGenerated(GeneratorDriver driver, params string[] files)
     {
-        foreach (GeneratorRunResult result in results.Results)
+        foreach (GeneratorRunResult result in driver.GetRunResult().Results)
         {
             AssertOnlyListedFilesGenerated(result, files);
         }
@@ -142,11 +144,11 @@ internal static class VerifyGenerator
         => AssertNoListedFileGenerated(source, new TGenerator(), files);
 
     public static void AssertNoListedFileGenerated(string source, IIncrementalGenerator generator, params string[] files)
-        => AssertNoListedFileGenerated(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult(), files);
+        => AssertNoListedFileGenerated(GeneratorDriverUtility.ConstructAndRunDriver(source, generator), files);
 
-    public static void AssertNoListedFileGenerated(GeneratorDriverRunResult results, params string[] files)
+    public static void AssertNoListedFileGenerated(GeneratorDriver driver, params string[] files)
     {
-        foreach (GeneratorRunResult result in results.Results)
+        foreach (GeneratorRunResult result in driver.GetRunResult().Results)
         {
             AssertNoListedFileGenerated(result, files);
         }
@@ -164,31 +166,31 @@ internal static class VerifyGenerator
         => VerifyMatch(source, new TGenerator());
 
     public static Task VerifyMatch(string source, IIncrementalGenerator generator)
-        => VerifyMatch(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult());
+        => VerifyMatch(GeneratorDriverUtility.ConstructAndRunDriver(source, generator));
 
-    public static Task VerifyMatch(GeneratorDriverRunResult results)
+    public static Task VerifyMatch(GeneratorDriver driver)
     {
-        AssertSomeOutput(results);
-        return Verifier.Verify(results);
+        AssertSomeOutput(driver);
+        return Verifier.Verify(driver);
     }
 
     public static Task VerifyMatch<TGenerator>(string source, params string[] files) where TGenerator : IIncrementalGenerator, new()
         => VerifyMatch(source, new TGenerator(), files);
 
     public static Task VerifyMatch(string source, IIncrementalGenerator generator, params string[] files)
-        => VerifyMatch(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult(), files);
+        => VerifyMatch(GeneratorDriverUtility.ConstructAndRunDriver(source, generator), files);
 
-    public static Task VerifyMatch(GeneratorDriverRunResult results, params string[] files)
+    public static Task VerifyMatch(GeneratorDriver driver, params string[] files)
     {
         List<Task> tasks = new();
 
-        foreach (GeneratorRunResult result in results.Results)
+        foreach (GeneratorRunResult result in driver.GetRunResult().Results)
         {
-            foreach (GeneratedSourceResult generatedSource in result.GeneratedSources)
+            foreach(GeneratedSourceResult generatedSource in result.GeneratedSources)
             {
                 if (files.Contains(generatedSource.HintName))
                 {
-                    tasks.Add(Task.Run(() => Verifier.Verify(generatedSource.SourceText.ToString())));
+                    tasks.Add(Verifier.Verify(generatedSource.SourceText.ToString()));
                 }
             }
         }
@@ -205,7 +207,7 @@ internal static class VerifyGenerator
         {
             if (files.Contains(generatedSource.HintName))
             {
-                tasks.Add(Task.Run(() => Verifier.Verify(generatedSource.SourceText.ToString())));
+                tasks.Add(Verifier.Verify(generatedSource.SourceText.ToString()));
             }
         }
 
@@ -217,19 +219,19 @@ internal static class VerifyGenerator
         => VerifyIdentical(source1, source2, new TGenerator());
 
     public static void VerifyIdentical(string source1, string source2, IIncrementalGenerator generator)
-        => VerifyIdentical(DriverUtility.ConstructAndRunDriver(source1, generator).GetRunResult(), source2, generator);
+        => VerifyIdentical(GeneratorDriverUtility.ConstructAndRunDriver(source1, generator), source2, generator);
 
-    public static void VerifyIdentical<TGenerator>(GeneratorDriverRunResult results1, string source2) where TGenerator : IIncrementalGenerator, new()
-        => VerifyIdentical(results1, source2, new TGenerator());
+    public static void VerifyIdentical<TGenerator>(GeneratorDriver driver1, string source2) where TGenerator : IIncrementalGenerator, new()
+        => VerifyIdentical(driver1, source2, new TGenerator());
 
-    public static void VerifyIdentical(GeneratorDriverRunResult results1, string source2, IIncrementalGenerator generator)
-        => VerifyIdentical(results1, DriverUtility.ConstructAndRunDriver(source2, generator).GetRunResult());
+    public static void VerifyIdentical(GeneratorDriver driver1, string source2, IIncrementalGenerator generator)
+        => VerifyIdentical(driver1, GeneratorDriverUtility.ConstructAndRunDriver(source2, generator).GetRunResult());
 
-    public static void VerifyIdentical(GeneratorDriverRunResult results1, GeneratorDriverRunResult results2)
+    public static void VerifyIdentical(GeneratorDriver driver1, GeneratorDriverRunResult results2)
     {
         IDictionary<(string, string), string> unmatchedGeneratedSources = new Dictionary<(string, string), string>();
 
-        foreach (GeneratorRunResult result in results1.Results)
+        foreach (GeneratorRunResult result in driver1.GetRunResult().Results)
         {
             foreach (GeneratedSourceResult generatedSource in result.GeneratedSources)
             {

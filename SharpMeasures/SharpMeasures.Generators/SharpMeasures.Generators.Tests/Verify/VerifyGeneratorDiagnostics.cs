@@ -1,14 +1,10 @@
-﻿namespace SharpMeasures.Generators.Tests.Utility;
+﻿namespace SharpMeasures.Generators.Tests.Verify;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 
-using System;
+using SharpMeasures.Generators.Tests.Utility;
+
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using VerifyXunit;
@@ -22,7 +18,7 @@ internal class VerifyGeneratorDiagnostics
         => AssertNoDiagnostics(source, new TGenerator());
 
     public static void AssertNoDiagnostics(string source, IIncrementalGenerator generator)
-        => AssertNoDiagnostics(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult());
+        => AssertNoDiagnostics(GeneratorDriverUtility.ConstructAndRunDriver(source, generator).GetRunResult());
 
     public static void AssertNoDiagnostics(GeneratorDriverRunResult results)
     {
@@ -44,7 +40,7 @@ internal class VerifyGeneratorDiagnostics
         => AssertSomeDiagnostics(source, new TGenerator());
 
     public static void AssertSomeDiagnostics(string source, IIncrementalGenerator generator)
-        => AssertSomeDiagnostics(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult());
+        => AssertSomeDiagnostics(GeneratorDriverUtility.ConstructAndRunDriver(source, generator).GetRunResult());
 
     public static void AssertSomeDiagnostics(GeneratorDriverRunResult results)
     {
@@ -79,7 +75,7 @@ internal class VerifyGeneratorDiagnostics
         => AssertNumberOfDiagnostics(source, new TGenerator(), expected);
 
     public static void AssertNumberOfDiagnostics(string source, IIncrementalGenerator generator, int expected)
-        => AssertNumberOfDiagnostics(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult(), expected);
+        => AssertNumberOfDiagnostics(GeneratorDriverUtility.ConstructAndRunDriver(source, generator).GetRunResult(), expected);
 
     public static void AssertNumberOfDiagnostics(GeneratorDriverRunResult results, int expected)
     {
@@ -111,11 +107,51 @@ internal class VerifyGeneratorDiagnostics
         }
     }
 
+    public static void AssertIncludesSpecifiedDiagnostics<TGenerator>(string source, IReadOnlyCollection<string> diagnosticIDs)
+        where TGenerator : IIncrementalGenerator, new()
+        => AssertIncludesSpecifiedDiagnostics(source, new TGenerator(), diagnosticIDs);
+
+    public static void AssertIncludesSpecifiedDiagnostics(string source, IIncrementalGenerator generator, IReadOnlyCollection<string> diagnosticIDs)
+        => AssertIncludesSpecifiedDiagnostics(GeneratorDriverUtility.ConstructAndRunDriver(source, generator).GetRunResult(), diagnosticIDs);
+
+    public static void AssertIncludesSpecifiedDiagnostics(GeneratorDriverRunResult results, IReadOnlyCollection<string> diagnosticIDs)
+    {
+        HashSet<string> generatedIDs = new();
+
+        foreach (GeneratorRunResult result in results.Results)
+        {
+            foreach (Diagnostic diagnostic in result.Diagnostics)
+            {
+                generatedIDs.Add(diagnostic.Id);
+            }
+        }
+
+        foreach (string diagnosticID in diagnosticIDs)
+        {
+            Assert.Contains(diagnosticID, generatedIDs);
+        }
+    }
+
+    public static void AssertIncludesSpecifiedDiagnostics(GeneratorRunResult result, IReadOnlyCollection<string> diagnosticIDs)
+    {
+        HashSet<string> generatedIDs = new(result.Diagnostics.Length);
+
+        foreach (Diagnostic diagnostic in result.Diagnostics)
+        {
+            generatedIDs.Add(diagnostic.Id);
+        }
+
+        foreach (string diagnosticID in diagnosticIDs)
+        {
+            Assert.Contains(diagnosticID, generatedIDs);
+        }
+    }
+
     public static Task VerifyMatch<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new()
         => VerifyMatch(source, new TGenerator());
 
     public static Task VerifyMatch(string source, IIncrementalGenerator generator)
-        => VerifyMatch(DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult());
+        => VerifyMatch(GeneratorDriverUtility.ConstructAndRunDriver(source, generator).GetRunResult());
 
     public static Task VerifyMatch(GeneratorDriverRunResult results)
     {
@@ -123,7 +159,7 @@ internal class VerifyGeneratorDiagnostics
 
         foreach (GeneratorRunResult result in results.Results)
         {
-            tasks.Add(Task.Run(() => VerifyMatch(result)));
+            tasks.Add(VerifyMatch(result));
         }
 
         return Task.WhenAll(tasks);
@@ -135,11 +171,30 @@ internal class VerifyGeneratorDiagnostics
         return Verifier.Verify(result.Diagnostics);
     }
 
+    public static Task VerifyMatchAndIncludesSpecifiedDiagnostics<TGenerator>(string source, IReadOnlyCollection<string> diagnosticIDs)
+        where TGenerator : IIncrementalGenerator, new()
+        => VerifyMatchAndIncludesSpecifiedDiagnostics(source, new TGenerator(), diagnosticIDs);
+
+    public static Task VerifyMatchAndIncludesSpecifiedDiagnostics(string source, IIncrementalGenerator generator, IReadOnlyCollection<string> diagnosticIDs)
+        => VerifyMatchAndIncludesSpecifiedDiagnostics(GeneratorDriverUtility.ConstructAndRunDriver(source, generator).GetRunResult(), diagnosticIDs);
+
+    public static Task VerifyMatchAndIncludesSpecifiedDiagnostics(GeneratorDriverRunResult results, IReadOnlyCollection<string> diagnosticIDs)
+    {
+        AssertIncludesSpecifiedDiagnostics(results, diagnosticIDs);
+        return VerifyMatch(results);
+    }
+
+    public static Task VerifyMatchAndIncludesSpecifiedDiagnostics(GeneratorRunResult result, IReadOnlyCollection<string> diagnosticIDs)
+    {
+        AssertIncludesSpecifiedDiagnostics(result, diagnosticIDs);
+        return VerifyMatch(result);
+    }
+
     public static void VerifyIdentical<TGenerator>(GeneratorDriverRunResult results1, string source) where TGenerator : IIncrementalGenerator, new()
         => VerifyIdentical(results1, source, new TGenerator());
 
     public static void VerifyIdentical(GeneratorDriverRunResult results1, string source, IIncrementalGenerator generator)
-        => VerifyIdentical(results1, DriverUtility.ConstructAndRunDriver(source, generator).GetRunResult());
+        => VerifyIdentical(results1, GeneratorDriverUtility.ConstructAndRunDriver(source, generator).GetRunResult());
 
     public static void VerifyIdentical(GeneratorDriverRunResult results1, GeneratorDriverRunResult results2)
     {

@@ -39,7 +39,7 @@ internal static class Stage3
             return new(null, units.Diagnostics);
         }
 
-        Result result = new(input.Documentation, symbol, NamedType.FromSymbol(quantity), parameters.Biased);
+        Result result = new(input.Documentation, symbol, NamedType.FromSymbol(quantity), parameters.AllowBias);
 
         return new ResultWithDiagnostics<Result?>(result, units.Diagnostics);
     }

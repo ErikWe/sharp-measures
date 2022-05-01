@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measure1002,
+    Title: Expected an unbiased type,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (7,22)-(7,33),
+    Description: The primary quantity described by a unit should always be an unbiased quantity, regardless of whether the unit supportsbiased quantities. As an example: a unit "UnitOfTemperature" should be associated with an unbiased quantity "TemperatureDifference", rather than a biased quantity "Temperature".,
+    HelpLink: ,
+    MessageFormat: Argument should be an unbiased scalar quantity. Make {0} an unbiased scalar quantity, or use another quantity.,
+    Message: Argument should be an unbiased scalar quantity. Make Temperature an unbiased scalar quantity, or use another quantity.,
+    Category: Usage,
+    CustomTags: []
+  }
+]

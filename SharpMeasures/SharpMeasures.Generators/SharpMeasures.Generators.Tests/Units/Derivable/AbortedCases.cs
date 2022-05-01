@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Tests.Units.Derivable;
 
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Tests.Utility;
+using SharpMeasures.Generators.Tests.Verify;
 
 using VerifyXunit;
 

@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Tests.Units.Definitions.Offset;
 
+using SharpMeasures.Generators.Tests.Verify;
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Tests.Utility;
 
 using VerifyXunit;
 

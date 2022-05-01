@@ -32,7 +32,7 @@ internal class GeneratedScalarQuantityValidator : IValidator<GeneratedScalarQuan
             return ExtractionValidity.Invalid(CreateTypeIsNotScalarQuantityDiagnostics(attributeData));
         }
 
-        if (unitParameters.Biased)
+        if (unitParameters.AllowBias)
         {
             return ExtractionValidity.Invalid(CreateTypeIsNotUnbiasedDiagnostics(attributeData));
         }

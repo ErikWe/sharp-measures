@@ -1,7 +1,7 @@
-﻿namespace SharpMeasures.Generators.Tests.Diagnostics.SM1000;
+﻿namespace SharpMeasures.Generators.Tests.Units;
 
-using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Tests.Verify;
 
 using System.Threading.Tasks;
 
@@ -10,22 +10,21 @@ using VerifyXunit;
 using Xunit;
 
 [UsesVerify]
-public class UnitsWithDiagnostics
+public class ValidCases
 {
     [Fact]
-    public Task MarkedTypeNotPartial()
+    public Task Unbiased()
     {
         string source = @"
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
-public partial class Length { }
+public class Length { }
 
 [GeneratedUnit(typeof(Length))]
-public class UnitOfLength { }
-";
+public partial class UnitOfLength { }";
 
-        return VerifyGeneratorDiagnostics.VerifyMatch<UnitGenerator>(source);
+        return VerifyGenerator.VerifyMatch<UnitGenerator>(source);
     }
 }

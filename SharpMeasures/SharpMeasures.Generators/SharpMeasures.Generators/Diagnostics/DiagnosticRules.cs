@@ -35,10 +35,13 @@ internal static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotUnbiasedScalarQuantity,
         title: "Expected an unbiased type",
-        messageFormat: "Argument should be an unbiased scalar quantity. Make {0} an unbiased scalar quantity, or use another type.",
+        messageFormat: "Argument should be an unbiased scalar quantity. Make {0} an unbiased scalar quantity, or use another quantity.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
-        isEnabledByDefault: true
+        isEnabledByDefault: true,
+        description: "The primary quantity described by a unit should always be an unbiased quantity, regardless of whether the unit supports" +
+            "biased quantities. As an example: a unit \"UnitOfTemperature\" should be associated with an unbiased quantity \"TemperatureDifference\", " +
+            "rather than a biased quantity \"Temperature\"."
     );
 
     public readonly static DiagnosticDescriptor TypeNotUnit = new DiagnosticDescriptor

@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Tests.Units.Definitions.Fixed;
 
-using SharpMeasures.Generators.Tests.Utility;
+using SharpMeasures.Generators.Tests.Verify;
 using SharpMeasures.Generators.Units;
 
 using VerifyXunit;

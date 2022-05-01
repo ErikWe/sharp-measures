@@ -9,7 +9,7 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 
-internal static class DriverUtility
+internal static class GeneratorDriverUtility
 {
     public static GeneratorDriver ConstructAndRunDriver<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new()
         => ConstructAndRunDriver(source, new TGenerator());
