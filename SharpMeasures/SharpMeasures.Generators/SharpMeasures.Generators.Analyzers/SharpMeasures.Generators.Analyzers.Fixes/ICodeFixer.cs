@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Analyzers.CodeFixes;
+﻿namespace SharpMeasures.Generators.Analyzers.Fixes;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;

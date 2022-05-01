@@ -1,6 +1,6 @@
-﻿namespace SharpMeasures.Generators.Analyzers.CodeFixes.CodeFixers;
+﻿namespace SharpMeasures.Generators.Analyzers.Fixes.CodeFixers;
 
-using SharpMeasures.Generators.Analyzers;
+using SharpMeasures.Generators.Diagnostics;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -14,7 +14,7 @@ using System.Linq;
 
 internal class TypeIsNotPartialCodeFixer : ICodeFixer
 {
-    public string RuleID { get; } = DiagnosticIDs.TypeIsNotPartial;
+    public string RuleID { get; } = DiagnosticIDs.TypeNotPartial;
 
     public Task Register(CodeFixContext context, SyntaxNode syntaxRoot, Diagnostic diagnostic)
     {

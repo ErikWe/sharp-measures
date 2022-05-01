@@ -5,5 +5,3 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
-SharpMeasures0001 | Design | Warning | TypeIsNotPartial
-SharpMeasures0002 | Design | Warning | TypeIsNotScalarQuantity
