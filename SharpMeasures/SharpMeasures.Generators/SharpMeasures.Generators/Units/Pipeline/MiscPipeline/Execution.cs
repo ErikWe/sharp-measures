@@ -73,6 +73,7 @@ internal static class Execution
 
         source.Append(Environment.NewLine);
         source.Append($"{indentation}public {names.Unit} WithPrefix(SharpMeasures.MetricPrefix prefix) => ScaledBy(prefix.Scale);{Environment.NewLine}");
+        source.Append($"{indentation}public {names.Unit} WithPrefix(SharpMeasures.BinaryPrefix prefix) => ScaledBy(prefix.Scale);{Environment.NewLine}");
 
         source.Append(Environment.NewLine);
         source.Append($"{indentation}public override string ToString() => $\"{{typeof({names.Unit})}}: {{{names.Quantity}}}\";{Environment.NewLine}");
@@ -104,6 +105,7 @@ internal static class Execution
 
         source.Append(Environment.NewLine);
         source.Append($"{indentation}public {names.Unit} WithPrefix(SharpMeasures.MetricPrefix prefix) => ScaledBy(prefix.Scale);{Environment.NewLine}");
+        source.Append($"{indentation}public {names.Unit} WithPrefix(SharpMeasures.BinaryPrefix prefix) => ScaledBy(prefix.Scale);{Environment.NewLine}");
 
         source.Append(Environment.NewLine);
         source.Append($"{indentation}public override string ToString() => $\"{{typeof({names.Unit})}}: ({{{names.Quantity}}} + {{Offset}})\";{Environment.NewLine}");

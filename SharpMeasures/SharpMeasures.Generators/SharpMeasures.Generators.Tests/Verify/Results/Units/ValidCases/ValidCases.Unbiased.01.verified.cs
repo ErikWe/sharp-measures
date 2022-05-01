@@ -22,6 +22,7 @@ public partial class UnitOfLength
 	public UnitOfLength ScaledBy(double scale) => new(Length * scale);
 
 	public UnitOfLength WithPrefix(SharpMeasures.MetricPrefix prefix) => ScaledBy(prefix.Scale);
+	public UnitOfLength WithPrefix(SharpMeasures.BinaryPrefix prefix) => ScaledBy(prefix.Scale);
 
 	public override string ToString() => $"{typeof(UnitOfLength)}: {Length}";
 }
