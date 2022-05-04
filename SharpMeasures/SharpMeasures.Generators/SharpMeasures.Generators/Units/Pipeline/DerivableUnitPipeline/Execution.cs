@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 
 internal static class Execution
@@ -24,7 +23,9 @@ internal static class Execution
             return;
         }
 
-        context.AddSource($"{result.TypeDefinition.Name.Name}_Derivable.g.cs", SourceText.From(source, Encoding.UTF8));
+        string documentedSource = result.Documentation.ResolveTextAndReportDiagnostics(context, source);
+
+        context.AddSource($"{result.TypeDefinition.Name.Name}_Derivable.g.cs", SourceText.From(documentedSource, Encoding.UTF8));
     }
 
     private static string Compose(Stage4.Result data, CancellationToken _)

@@ -17,6 +17,6 @@ Measure1202 | Usage | Warning | InvalidUnitPluralForm
 Measure1203 | Usage | Warning | DerivedUnitSignatureNotRecognized
 Measure1204 | Usage | Warning | UnitListNotMatchingSignature
 Measure1205 | Usage | Warning | UndefinedPrefix
-Measure1900 | Usage | Warning | DocumentationFileDoesNotContainName
-Measure1901 | Usage | Warning | UnresolvedDocumentationDependency
-Measure1902 | Usage | Warning | NoMatchingDocumentationFile
+Measure1900 | Documentation | Info | UnresolvedDocumentationDependency
+Measure1901 | Documentation | Info | NoMatchingDocumentationFile
+Measure1902 | Documentation | Info | DocumentationFileMissingRequestedTag

@@ -9,6 +9,7 @@ using SharpMeasures.Generators.Utility;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -56,7 +57,7 @@ internal class DocumentationFileBuilder
 
         DocumentationFile finalizeBuilders(DocumentationFileBuilder builder)
         {
-            return new DocumentationFile(builder.Name, new ReadOnlyDictionary<string, string>(builder.Content));
+            return new DocumentationFile(builder.File, builder.Name, new ReadOnlyDictionary<string, string>(builder.Content));
         }
     }
 
@@ -74,7 +75,7 @@ internal class DocumentationFileBuilder
     private DocumentationFileBuilder(AdditionalText file, string text)
     {
         File = file;
-        Name = ReadName(text);
+        Name = ReadName(file);
         Dependencies = DocumentationParsing.GetDependencies(text);
         Content = DocumentationParsing.GetParsedDefinitions(text);
     }
@@ -139,6 +140,10 @@ internal class DocumentationFileBuilder
             {
                 text = DocumentationParsing.ResolveInvokation(tag, text, tagText);
             }
+            else
+            {
+                CreateMissingTagDiagnostics(tag);
+            }
         }
 
         if (text == originalText)
@@ -195,29 +200,6 @@ internal class DocumentationFileBuilder
         return null;
     }
 
-    private string ReadName(string text)
-    {
-        Match match = DocumentationParsing.MatchName(text);
-
-        if (match.Success)
-        {
-            return match.Groups["name"].Value;
-        }
-        else
-        {
-            CreateNoNameDiagnostics();
-            return string.Empty;
-        }
-    }
-
-    private void CreateNoNameDiagnostics()
-    {
-        if (File.GetText() is SourceText sourceText)
-        {
-            Diagnostics.Add(DocumentationFileDoesNotContainNameDiagnostics.Create(File, sourceText));
-        }
-    }
-
     private void CreateUnresolvedDependencyDiagnostics(string dependency)
     {
         if (File.GetText() is not SourceText sourceText)
@@ -241,5 +223,22 @@ internal class DocumentationFileBuilder
                 break;
             }
         }
+    }
+
+    private void CreateMissingTagDiagnostics(string tag)
+    {
+        Diagnostics.Add(DocumentationFileMissingRequestedTagDiagnostics.Create(File, tag));
+    }
+
+    private static string ReadName(AdditionalText file)
+    {
+        string fileName = Path.GetFileName(file.Path);
+
+        if (fileName.Split('.') is string[] { Length: > 0 } components)
+        {
+            return components[0];
+        }
+
+        return fileName;
     }
 }

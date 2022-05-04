@@ -14,8 +14,9 @@ internal static class Execution
     public static void Execute(SourceProductionContext context, Stage4.Result result)
     {
         string source = Compose(result, context.CancellationToken);
+        string documentedSource = result.Documentation.ResolveTextAndReportDiagnostics(context, source);
 
-        context.AddSource($"{result.TypeDefinition.Name.Name}_Misc.g.cs", SourceText.From(source, Encoding.UTF8));
+        context.AddSource($"{result.TypeDefinition.Name.Name}_Misc.g.cs", SourceText.From(documentedSource, Encoding.UTF8));
     }
 
     private static string Compose(Stage4.Result data, CancellationToken _)

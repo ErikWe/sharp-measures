@@ -6,9 +6,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SharpMeasures.Generators.Diagnostics.Documentation;
 using SharpMeasures.Generators.Utility;
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Threading;
 
 internal static class DocumentationProvider
@@ -41,9 +41,7 @@ internal static class DocumentationProvider
 
     private static bool IsFileInCorrectDirectoryAndCorrectExtension(AdditionalText file)
     {
-        return Path.GetExtension(file.Path) is ".txt"
-            && Directory.GetParent(file.Path) is DirectoryInfo directory
-            && directory.Parent.Name is "Documentation";
+        return file.Path.EndsWith(".doc.txt", StringComparison.Ordinal);
     }
 
     private static ResultWithDiagnostics<IReadOnlyDictionary<string, DocumentationFile>> ConstructDocumentationFiles(
@@ -79,7 +77,7 @@ internal static class DocumentationProvider
 
             if (data.documentation.TryGetValue(declaration.Identifier.Text, out DocumentationFile file))
             {
-                return new ResultWithDiagnostics<TOut>(OutputTransform(data.input, file));
+                return ResultWithDiagnostics<TOut>.WithoutDiagnostics(OutputTransform(data.input, file));
             }
             else
             {

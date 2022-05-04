@@ -5,15 +5,9 @@ using System.Text.RegularExpressions;
 
 internal static class DocumentationParsing
 {
-    public static Match MatchName(string text)
-    {
-        Regex regex = new(@"^#Name:(?:[ ]*)(?<name>[^ ]+?)(?:#?)$", RegexOptions.ExplicitCapture);
-        return regex.Match(text);
-    }
-
     public static MatchCollection MatchDependencies(string text)
     {
-        Regex regex = new(@"^#Requires:(?:[ ]*)(?<dependency>[^ ]+?)(?:#?)$", RegexOptions.ExplicitCapture);
+        Regex regex = new(@"^#Requires:(?:[ ]*)(?<dependency>[^ ]+?)$", RegexOptions.ExplicitCapture);
         return regex.Matches(text);
     }
 
@@ -32,7 +26,7 @@ internal static class DocumentationParsing
 
     public static MatchCollection MatchDefinitions(string text)
     {
-        Regex regex = new(@"^#Define:(?:[ ]*)(?<tag>.+?)(?:\r\n|\r|\n)+(?<content>[\S\s]+?)(?:\r\n|\r|\n)*/#$", RegexOptions.ExplicitCapture);
+        Regex regex = new(@"^#(?:[ ]*)(?<tag>.+?)(?:\r\n|\r|\n)+(?<content>[\S\s]+?)(?:\r\n|\r|\n)*/#$", RegexOptions.ExplicitCapture);
         return regex.Matches(text);
     }
 

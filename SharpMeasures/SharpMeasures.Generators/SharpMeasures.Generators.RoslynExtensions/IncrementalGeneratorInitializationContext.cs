@@ -28,12 +28,4 @@ public static partial class Extensions
     {
         context.ReportDiagnostic(diagnostics);
     }
-
-    private static void ReportDiagnostics(SourceProductionContext context, IEnumerable<Diagnostic> diagnostics)
-    {
-        foreach (Diagnostic diagnostic in diagnostics)
-        {
-            context.ReportDiagnostic(diagnostic);
-        }
-    }
 }
