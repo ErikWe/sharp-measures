@@ -10,23 +10,18 @@ using SharpMeasures.Generators.Providers;
 using SharpMeasures.Generators.Scalars.Extraction;
 using SharpMeasures.Generators.Utility;
 
-using System.Collections.Generic;
-
 internal static class Stage3
 {
-    public readonly record struct Result(IEnumerable<DocumentationFile> Documentation, INamedTypeSymbol TypeSymbol, INamedTypeSymbol UnitSymbol,
-        bool Biased);
+    public readonly record struct Result(DocumentationFile Documentation, INamedTypeSymbol TypeSymbol, INamedTypeSymbol UnitSymbol, bool Biased);
 
-    public static IncrementalValuesProvider<Result> Perform(IncrementalGeneratorInitializationContext context,
-        IncrementalValuesProvider<Stage2.Result> provider)
+    public static IncrementalValuesProvider<Result> Attach(IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<Stage2.Result> inputProvider)
     {
-        IncrementalValuesProvider<ResultWithDiagnostics<Result?>> resultsWithDiagnostics
-            = TypeSymbolProvider.Attach(provider, context.CompilationProvider, ExtractDeclaration, ExtractQuantityAndDiagnostics);
-
-        IncrementalValuesProvider<Result> validResults = resultsWithDiagnostics.ExtractResult().WhereNotNull();
+        var resultsWithDiagnostics
+            = DeclarationSymbolProvider.AttachToValueType(inputProvider, context.CompilationProvider, ExtractDeclaration, ExtractQuantityAndDiagnostics);
 
         context.ReportDiagnostics(resultsWithDiagnostics);
-        return validResults;
+        return resultsWithDiagnostics.ExtractResult().WhereNotNull();
     }
 
     private static TypeDeclarationSyntax ExtractDeclaration(Stage2.Result input) => input.Declaration;

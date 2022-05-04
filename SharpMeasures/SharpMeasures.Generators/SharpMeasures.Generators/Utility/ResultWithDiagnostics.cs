@@ -2,13 +2,11 @@
 
 using Microsoft.CodeAnalysis;
 
+using System;
 using System.Collections.Generic;
 
 internal readonly record struct ResultWithDiagnostics<T>(T Result, IEnumerable<Diagnostic> Diagnostics)
 {
-    public static IncrementalValuesProvider<T> ExtractResult(IncrementalValuesProvider<ResultWithDiagnostics<T>> provider)
-        => provider.Select(static (result, token) => result.Result);
-
-    public static IncrementalValueProvider<T> ExtractResult(IncrementalValueProvider<ResultWithDiagnostics<T>> provider)
-        => provider.Select(static (result, token) => result.Result);
+    public ResultWithDiagnostics(T result) : this(result, Array.Empty<Diagnostic>()) { }
+    public ResultWithDiagnostics(T result, Diagnostic diagnostic) : this(result, new Diagnostic[] { diagnostic }) { }
 }

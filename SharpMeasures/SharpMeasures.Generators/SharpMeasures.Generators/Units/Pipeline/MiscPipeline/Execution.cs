@@ -68,12 +68,12 @@ internal static class Execution
         }
 
         source.Append(Environment.NewLine);
-        source.Append($"{indentation}public {names.Unit} ScaledBy(SharpMeasures.Scalar scale) => ScaledBy(scale.Magnitude);{Environment.NewLine}");
+        source.Append($"{indentation}public {names.Unit} ScaledBy(SharpMeasures.Scalar scale) => ScaledBy(scale.Value);{Environment.NewLine}");
         source.Append($"{indentation}public {names.Unit} ScaledBy(double scale) => new({names.Quantity} * scale);{Environment.NewLine}");
 
         source.Append(Environment.NewLine);
-        source.Append($"{indentation}public {names.Unit} WithPrefix(SharpMeasures.MetricPrefix prefix) => ScaledBy(prefix.Scale);{Environment.NewLine}");
-        source.Append($"{indentation}public {names.Unit} WithPrefix(SharpMeasures.BinaryPrefix prefix) => ScaledBy(prefix.Scale);{Environment.NewLine}");
+        source.Append($"{indentation}public {names.Unit} WithPrefix(SharpMeasures.MetricPrefix prefix) => ScaledBy(prefix.Factor);{Environment.NewLine}");
+        source.Append($"{indentation}public {names.Unit} WithPrefix(SharpMeasures.BinaryPrefix prefix) => ScaledBy(prefix.Factor);{Environment.NewLine}");
 
         source.Append(Environment.NewLine);
         source.Append($"{indentation}public override string ToString() => $\"{{typeof({names.Unit})}}: {{{names.Quantity}}}\";{Environment.NewLine}");
@@ -96,16 +96,16 @@ internal static class Execution
         }
 
         source.Append(Environment.NewLine);
-        source.Append($"{indentation}public {names.Unit} ScaledBy(SharpMeasures.Scalar scale) => ScaledBy(scale.Magnitude);{Environment.NewLine}");
+        source.Append($"{indentation}public {names.Unit} ScaledBy(SharpMeasures.Scalar scale) => ScaledBy(scale.Value);{Environment.NewLine}");
         source.Append($"{indentation}public {names.Unit} ScaledBy(double scale) => new({names.Quantity} * scale, Offset / scale);{Environment.NewLine}");
 
         source.Append(Environment.NewLine);
-        source.Append($"{indentation}public {names.Unit} OffsetBy(SharpMeasures.Scalar offset) => OffsetBy(offset.Magnitude);{Environment.NewLine}");
+        source.Append($"{indentation}public {names.Unit} OffsetBy(SharpMeasures.Scalar offset) => OffsetBy(offset.Value);{Environment.NewLine}");
         source.Append($"{indentation}public {names.Unit} OffsetBy(double offset) => new({names.Quantity}, Offset + offset);{Environment.NewLine}");
 
         source.Append(Environment.NewLine);
-        source.Append($"{indentation}public {names.Unit} WithPrefix(SharpMeasures.MetricPrefix prefix) => ScaledBy(prefix.Scale);{Environment.NewLine}");
-        source.Append($"{indentation}public {names.Unit} WithPrefix(SharpMeasures.BinaryPrefix prefix) => ScaledBy(prefix.Scale);{Environment.NewLine}");
+        source.Append($"{indentation}public {names.Unit} WithPrefix(SharpMeasures.MetricPrefix prefix) => ScaledBy(prefix.Factor);{Environment.NewLine}");
+        source.Append($"{indentation}public {names.Unit} WithPrefix(SharpMeasures.BinaryPrefix prefix) => ScaledBy(prefix.Factor);{Environment.NewLine}");
 
         source.Append(Environment.NewLine);
         source.Append($"{indentation}public override string ToString() => $\"{{typeof({names.Unit})}}: ({{{names.Quantity}}} + {{Offset}})\";{Environment.NewLine}");

@@ -136,19 +136,25 @@ internal static class Execution
 
     private static string ParseExpression(DerivableUnitParameters parameters, IEnumerable<string> parameterNames)
     {
-        string expression = parameters.Expression;
+        string[] symbols = expressionComponents();
 
-        IEnumerator<string?> quantityIterator = quantitiesWithoutNamespaces().GetEnumerator();
-        IEnumerator<string> parameterIterator = parameterNames.GetEnumerator();
+        return string.Format(CultureInfo.InvariantCulture, parameters.Expression, symbols);
 
-        int index = 0;
-        while (quantityIterator.MoveNext() && parameterIterator.MoveNext())
+        string[] expressionComponents()
         {
-            Regex regex = new($@"\{{{index++}\}}");
-            expression = regex.Replace(expression, $"{parameterIterator.Current}.{quantityIterator.Current}");
-        }
+            string[] symbols = new string[parameters.Signature.Count];
 
-        return expression;
+            IEnumerator<string?> quantityIterator = quantitiesWithoutNamespaces().GetEnumerator();
+            IEnumerator<string> parameterIterator = parameterNames.GetEnumerator();
+
+            int index = 0;
+            while (quantityIterator.MoveNext() && parameterIterator.MoveNext())
+            {
+                symbols[index] = $"{parameterIterator.Current}.{quantityIterator.Current}";
+            }
+
+            return symbols;
+        }
 
         IEnumerable<string> quantitiesWithoutNamespaces()
         {

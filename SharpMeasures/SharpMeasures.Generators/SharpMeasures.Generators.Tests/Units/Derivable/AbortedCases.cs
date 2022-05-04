@@ -27,17 +27,17 @@ public class Time { }
 public class Speed { }
 
 [GeneratedUnit(typeof(Length))]
-public class UnitOfLength { }
+public partial class UnitOfLength { }
 
 [GeneratedUnit(typeof(Time))]
-public class UnitOfTime { }
+public partial class UnitOfTime { }
 
 [DerivableUnit(null, typeof(UnitOfLength), typeof(UnitOfTime))]
 [GeneratedUnit(typeof(Speed))]
 public partial class UnitOfSpeed { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.LengthTimeSpeed_NoDerivable, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.LengthTimeSpeed_NoDerivable);
     }
 
     [Fact]
@@ -47,23 +47,27 @@ public partial class UnitOfSpeed { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
+[GeneratedScalarQuantity(typeof(UnitOfLength))]
+public class Length { }
+
 [GeneratedScalarQuantity(typeof(UnitOfTime))]
 public class Time { }
 
 [GeneratedScalarQuantity(typeof(UnitOfSpeed))]
 public class Speed { }
 
-public class UnitOfLength { }
+[GeneratedUnit(typeof(Length))]
+public partial class UnitOfLength { }
 
 [GeneratedUnit(typeof(Time))]
-public class UnitOfTime { }
+public partial class UnitOfTime { }
 
-[DerivableUnit(""{{0}} / {{1}}"", typeof(UnitOfLength), typeof(UnitOfTime))]
+[DerivableUnit(""{{0}} / {{1}}"", typeof(Length), typeof(UnitOfTime))]
 [GeneratedUnit(typeof(Speed))]
 public partial class UnitOfSpeed { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.LengthTimeSpeed_NoDerivable, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.LengthTimeSpeed_NoDerivable);
     }
 
     [Fact]
@@ -73,15 +77,27 @@ public partial class UnitOfSpeed { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
+[GeneratedScalarQuantity(typeof(UnitOfLength))]
+public class Length { }
+
+[GeneratedScalarQuantity(typeof(UnitOfTime))]
+public class Time { }
+
 [GeneratedScalarQuantity(typeof(UnitOfSpeed))]
 public class Speed { }
 
-[DerivableUnit(""{{0}} / {{1}}"")]
+[GeneratedUnit(typeof(Length))]
+public partial class UnitOfLength { }
+
+[GeneratedUnit(typeof(Time))]
+public partial class UnitOfTime { }
+
+[DerivableUnit(string.Empty)]
 [GeneratedUnit(typeof(Speed))]
 public partial class UnitOfSpeed { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.LengthTimeSpeed_NoDerivable, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.LengthTimeSpeed_NoDerivable);
     }
 
     [Fact]
@@ -101,17 +117,17 @@ public class Time { }
 public class Speed { }
 
 [GeneratedUnit(typeof(Length))]
-public class UnitOfLength { }
+public partial class UnitOfLength { }
 
 [GeneratedUnit(typeof(Time))]
-public class UnitOfTime { }
+public partial class UnitOfTime { }
 
 [DerivableUnit(""{{0}}"", typeof(UnitOfLength), typeof(UnitOfTime))]
 [GeneratedUnit(typeof(Speed))]
 public partial class UnitOfSpeed { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.LengthTimeSpeed_NoDerivable, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.LengthTimeSpeed_NoDerivable);
     }
 
     [Fact]
@@ -124,18 +140,24 @@ using SharpMeasures.Generators.Units;
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
 public class Length { }
 
+[GeneratedScalarQuantity(typeof(UnitOfTime))]
+public class Time { }
+
 [GeneratedScalarQuantity(typeof(UnitOfSpeed))]
 public class Speed { }
 
 [GeneratedUnit(typeof(Length))]
-public class UnitOfLength { }
+public partial class UnitOfLength { }
+
+[GeneratedUnit(typeof(Time))]
+public partial class UnitOfTime { }
 
 [DerivableUnit(""{{0}} / {{1}}"", typeof(UnitOfLength))]
 [GeneratedUnit(typeof(Speed))]
 public partial class UnitOfSpeed { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.LengthTimeSpeed_NoDerivable, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.LengthTimeSpeed_NoDerivable);
     }
 
     [Fact]
@@ -155,16 +177,16 @@ public class Time { }
 public class Speed { }
 
 [GeneratedUnit(typeof(Length))]
-public class UnitOfLength { }
+public partial class UnitOfLength { }
 
 [GeneratedUnit(typeof(Time))]
-public class UnitOfTime { }
+public partial class UnitOfTime { }
 
 [DerivableUnit(""{{0}} / {{1}}"", null, typeof(UnitOfTime))]
 [GeneratedUnit(typeof(Speed))]
 public partial class UnitOfSpeed { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.LengthTimeSpeed_NoDerivable, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.LengthTimeSpeed_NoDerivable);
     }
 }

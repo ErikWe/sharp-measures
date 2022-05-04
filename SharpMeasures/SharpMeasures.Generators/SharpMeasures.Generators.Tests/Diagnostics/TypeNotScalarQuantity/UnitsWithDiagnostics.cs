@@ -27,7 +27,7 @@ public partial class Length { }
 public partial class UnitOfLength { }
 ";
 
-        return VerifyGeneratorDiagnostics.VerifyMatchAndIncludesSpecifiedDiagnostics<UnitGenerator>(source, ExpectedDiagnostics);
+        return GeneratorVerifier.Construct<UnitGenerator>(source).AllListedDiagnosticIDsReported(ExpectedDiagnostics).Verify();
     }
 
     private static IReadOnlyCollection<string> ExpectedDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotScalarQuantity };

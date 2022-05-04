@@ -14,9 +14,9 @@ public class UnitGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        IncrementalValuesProvider<TypeDeclarationSyntax> firstStage = Stage1.Perform(context);
-        IncrementalValuesProvider<Stage2.Result> secondStage = Stage2.Perform(context, firstStage);
-        IncrementalValuesProvider<Stage3.Result> thirdStage = Stage3.Perform(context, secondStage);
+        IncrementalValuesProvider<TypeDeclarationSyntax> firstStage = Stage1.Attach(context);
+        IncrementalValuesProvider<Stage2.Result> secondStage = Stage2.Attach(context, firstStage);
+        IncrementalValuesProvider<Stage3.Result> thirdStage = Stage3.Attach(context, secondStage);
 
         ComparableGenerator.Initialize(context, thirdStage);
         UnitDefinitionsGenerator.Initialize(context, thirdStage);

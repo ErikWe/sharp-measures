@@ -26,7 +26,7 @@ public class TemperatureDifference { }
 public partial class UnitOfTemperature { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Temperature_OnlyFixedKelvin, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Temperature_OnlyFixedKelvin);
     }
 
     [Fact]
@@ -45,7 +45,7 @@ public class TemperatureDifference { }
 public partial class UnitOfTemperature { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Temperature_OnlyFixedKelvin, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Temperature_OnlyFixedKelvin);
     }
 
     [Fact]
@@ -64,7 +64,7 @@ public class TemperatureDifference { }
 public partial class UnitOfTemperature { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Temperature_OnlyFixedKelvin, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Temperature_OnlyFixedKelvin);
     }
 
     [Fact]
@@ -83,7 +83,7 @@ public class TemperatureDifference { }
 public partial class UnitOfTemperature { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Temperature_OnlyFixedKelvin, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Temperature_OnlyFixedKelvin);
     }
 
     [Fact]
@@ -102,7 +102,7 @@ public class TemperatureDifference { }
 public partial class UnitOfTemperature { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Temperature_OnlyFixedKelvin, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Temperature_OnlyFixedKelvin);
     }
 
     [Fact]
@@ -121,7 +121,7 @@ public class TemperatureDifference { }
 public partial class UnitOfTemperature { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Temperature_OnlyFixedKelvin, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Temperature_OnlyFixedKelvin);
     }
 
     [Fact]
@@ -140,6 +140,6 @@ public class TemperatureDifference { }
 public partial class UnitOfTemperature { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Temperature_OnlyFixedKelvin, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Temperature_OnlyFixedKelvin);
     }
 }

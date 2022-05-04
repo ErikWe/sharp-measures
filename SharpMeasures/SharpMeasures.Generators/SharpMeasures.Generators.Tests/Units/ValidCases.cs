@@ -25,6 +25,6 @@ public class Length { }
 [GeneratedUnit(typeof(Length))]
 public partial class UnitOfLength { }";
 
-        return VerifyGenerator.VerifyMatch<UnitGenerator>(source);
+        return GeneratorVerifier.Construct<UnitGenerator>(source).Verify();
     }
 }

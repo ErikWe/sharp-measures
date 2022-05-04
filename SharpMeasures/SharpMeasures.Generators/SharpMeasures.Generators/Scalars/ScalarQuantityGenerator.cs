@@ -14,11 +14,11 @@ public class ScalarQuantityGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        IncrementalValuesProvider<TypeDeclarationSyntax> firstStage = Stage1.Perform(context);
-        IncrementalValuesProvider<Stage2.Result> secondStage = Stage2.Perform(context, firstStage);
-        IncrementalValuesProvider<Stage3.Result> thirdStage = Stage3.Perform(context, secondStage);
-        IncrementalValuesProvider<Stage4.Result> fourthStage = Stage4.Perform(thirdStage);
-        IncrementalValuesProvider<Stage5.Result> fifthStage = Stage5.Perform(fourthStage);
+        IncrementalValuesProvider<TypeDeclarationSyntax> firstStage = Stage1.Attach(context);
+        IncrementalValuesProvider<Stage2.Result> secondStage = Stage2.Attach(context, firstStage);
+        IncrementalValuesProvider<Stage3.Result> thirdStage = Stage3.Attach(context, secondStage);
+        IncrementalValuesProvider<Stage4.Result> fourthStage = Stage4.Attach(thirdStage);
+        IncrementalValuesProvider<Stage5.Result> fifthStage = Stage5.Attach(fourthStage);
 
         context.RegisterSourceOutput(fifthStage, Execute);
     }

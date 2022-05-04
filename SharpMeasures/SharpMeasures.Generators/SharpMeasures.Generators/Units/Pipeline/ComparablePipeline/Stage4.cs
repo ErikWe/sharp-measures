@@ -5,15 +5,14 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Documentation;
 using SharpMeasures.Generators.Utility;
 
-using System.Collections.Generic;
 using System.Threading;
 
 internal static class Stage4
 {
-    public readonly record struct Result(IEnumerable<DocumentationFile> Documentation, DefinedType TypeDefinition, NamedType Quantity);
+    public readonly record struct Result(DocumentationFile Documentation, DefinedType TypeDefinition, NamedType Quantity);
 
-    public static IncrementalValuesProvider<Result> Perform(IncrementalValuesProvider<Stage3.Result> provider)
-        => provider.Select(DiscardBiasedUnits).WhereNotNull();
+    public static IncrementalValuesProvider<Result> Attach(IncrementalValuesProvider<Stage3.Result> inputProvider)
+        => inputProvider.Select(DiscardBiasedUnits).WhereNotNull();
 
     private static Result? DiscardBiasedUnits(Stage3.Result input, CancellationToken _)
     {

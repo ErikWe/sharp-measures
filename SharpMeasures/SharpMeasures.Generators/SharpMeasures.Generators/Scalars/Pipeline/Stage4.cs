@@ -10,14 +10,14 @@ using System.Threading;
 
 internal static class Stage4
 {
-    public readonly record struct Result(IEnumerable<DocumentationFile> Documentation, INamedTypeSymbol TypeSymbol, string Unit, bool Biased,
+    public readonly record struct Result(DocumentationFile Documentation, INamedTypeSymbol TypeSymbol, string Unit, bool Biased,
         string UnitQuantity, IEnumerable<UnitAliasParameters> UnitAliases,
         IEnumerable<DerivedUnitParameters> DerivedUnits, IEnumerable<FixedUnitParameters> FixedUnits,
         IEnumerable<OffsetUnitParameters> OffsetUnits, IEnumerable<PrefixedUnitParameters> PrefixedUnits,
         IEnumerable<ScaledUnitParameters> ScaledUnits);
 
-    public static IncrementalValuesProvider<Result> Perform(IncrementalValuesProvider<Stage3.Result> provider)
-        => provider.Select(ExtractUnitData).WhereNotNull();
+    public static IncrementalValuesProvider<Result> Attach(IncrementalValuesProvider<Stage3.Result> inputProvider)
+        => inputProvider.Select(ExtractUnitData).WhereNotNull();
 
     private static Result? ExtractUnitData(Stage3.Result input, CancellationToken _)
     {

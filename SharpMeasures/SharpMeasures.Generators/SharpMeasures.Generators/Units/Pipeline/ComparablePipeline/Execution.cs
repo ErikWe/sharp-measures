@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.SourceBuilding;
 
-using System;
 using System.Text;
 using System.Threading;
 
@@ -46,17 +45,40 @@ internal static class Execution
 
         void typeBlock(StringBuilder source, Indentation indentation)
         {
-            source.Append($"{indentation}public int CompareTo({unitName} other) => " +
-                $"{quantityName}.CompareTo(other.{quantityName});{Environment.NewLine}");
+            source.Append($@"{indentation}/// <inheritdoc/>
+{indentation}public int CompareTo({unitName} other) => {quantityName}.CompareTo(other.{quantityName});
 
-            source.Append($"{Environment.NewLine}{indentation}public static bool operator <({unitName} x, {unitName} y) " +
-                $"=> x.{quantityName} < y.{quantityName};");
-            source.Append($"{Environment.NewLine}{indentation}public static bool operator >({unitName} x, {unitName} y) " +
-                $"=> x.{quantityName} > y.{quantityName};");
-            source.Append($"{Environment.NewLine}{indentation}public static bool operator <=({unitName} x, {unitName} y) " +
-                $"=> x.{quantityName} <= y.{quantityName};");
-            source.Append($"{Environment.NewLine}{indentation}public static bool operator >=({unitName} x, {unitName} y) " +
-                $"=> x.{quantityName} >= y.{quantityName};");
+{indentation}/// <summary>Determines whether the <see cref=""Quantities.Length""/> represented by <paramref name=""x""/> is
+{indentation}/// less than that of <paramref name=""y""/>.</summary>
+{indentation}/// <param name=""x"">The operator determines whether the <see cref=""Quantities.Length""/> represented by this <see cref=""UnitOfLength""/> is
+{indentation}/// less than that of <paramref name=""y""/>.</param>
+{indentation}/// <param name=""y"">The operator determines whether the <see cref=""Quantities.Length""/> represented by <paramref name=""x""/> is
+{indentation}/// less than that of this <see cref=""UnitOfLength""/>.</param>
+{indentation}public static bool operator <(UnitOfLength x, UnitOfLength y) => x.Length < y.Length;
+
+{indentation}/// <summary>Determines whether the <see cref=""Quantities.Length""/> represented by <paramref name=""x""/> is
+{indentation}/// greater than that of <paramref name=""y""/>.</summary>
+{indentation}/// <param name=""x"">The operator determines whether the <see cref=""Quantities.Length""/> represented by this <see cref=""UnitOfLength""/> is
+{indentation}/// greater than that of <paramref name=""y""/>.</param>
+{indentation}/// <param name=""y"">The operator determines whether the <see cref=""Quantities.Length""/> represented by <paramref name=""x""/> is
+{indentation}/// greater than that of this <see cref=""UnitOfLength""/>.</param>
+{indentation}public static bool operator >(UnitOfLength x, UnitOfLength y) => x.Length > y.Length;
+
+{indentation}/// <summary>Determines whether the <see cref=""Quantities.Length""/> represented by <paramref name=""x""/> is
+{indentation}/// less than or equal to that of <paramref name=""y""/>.</summary>
+{indentation}/// <param name=""x"">The method determines whether the <see cref=""Quantities.Length""/> represented by this <see cref=""UnitOfLength""/> is
+{indentation}/// less than or equal to that of <paramref name=""y""/>.</param>
+{indentation}/// <param name=""y"">The method determines whether the <see cref=""Quantities.Length""/> represented by <paramref name=""x""/> is
+{indentation}/// less than or equal to that of this <see cref=""UnitOfLength""/>.</param>
+{indentation}public static bool operator <=(UnitOfLength x, UnitOfLength y) => x.Length <= y.Length;
+
+{indentation}/// <summary>Determines whether the <see cref=""Quantities.Length""/> represented by <paramref name=""x""/> is
+{indentation}/// greater than or equal to that of <paramref name=""y""/>.</summary>
+{indentation}/// <param name=""x"">The method determines whether the <see cref=""Quantities.Length""/> represented by this <see cref=""UnitOfLength""/> is
+{indentation}/// greater than or equal to that of <paramref name=""y""/>.</param>
+{indentation}/// <param name=""y"">The method determines whether the <see cref=""Quantities.Length""/> represented by <paramref name=""x""/> is
+{indentation}/// greater than or equal to that of this <see cref=""UnitOfLength""/>.</param>
+{indentation}public static bool operator >=(UnitOfLength x, UnitOfLength y) => x.Length >= y.Length;");
         }
 
         return source.ToString();

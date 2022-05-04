@@ -1,20 +1,19 @@
 ﻿namespace SharpMeasures.Generators.Units.Pipeline;
 
-using SharpMeasures.Generators.Documentation;
-using SharpMeasures.Generators.Providers.Documentation;
-
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-using System.Collections.Generic;
+using SharpMeasures.Generators.Documentation;
 
 internal static class Stage2
 {
-    public readonly record struct Result(TypeDeclarationSyntax Declaration, IEnumerable<DocumentationFile> Documentation);
+    public readonly record struct Result(TypeDeclarationSyntax Declaration, DocumentationFile Documentation);
 
-    public static IncrementalValuesProvider<Result> Perform(IncrementalGeneratorInitializationContext context,
-        IncrementalValuesProvider<TypeDeclarationSyntax> firstStage)
-        => DocumentationDependenciesProvider.AttachWithFilterStage(context.AdditionalTextsProvider, firstStage, ConstructResult, "Units");
+    public static IncrementalValuesProvider<Result> Attach(IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<TypeDeclarationSyntax> inputProvider)
+    {
+        return Documentation.DocumentationProvider.Attach(context, inputProvider, ConstructResult);
+    }
 
-    private static Result ConstructResult(TypeDeclarationSyntax declaration, IEnumerable<DocumentationFile> documentation) => new(declaration, documentation);
+    private static Result ConstructResult(TypeDeclarationSyntax declaration, DocumentationFile documentation) => new(declaration, documentation);
 }

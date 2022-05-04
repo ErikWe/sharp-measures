@@ -28,7 +28,7 @@ public class Length { }
 public partial class UnitOfLength { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Length_OnlyFixedMetre, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_OnlyFixedMetre);
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public class Length { }
 public partial class UnitOfLength { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Length_OnlyFixedMetre, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_OnlyFixedMetre);
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class Length { }
 public partial class UnitOfLength { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Length_OnlyFixedMetre, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_OnlyFixedMetre);
     }
 
     [Fact]
@@ -85,7 +85,7 @@ public class Length { }
 public partial class UnitOfLength { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Length_OnlyFixedMetre, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_OnlyFixedMetre);
     }
 
     [Fact]
@@ -104,7 +104,7 @@ public class Length { }
 public partial class UnitOfLength { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Length_OnlyFixedMetre, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_OnlyFixedMetre);
     }
 
     [Fact]
@@ -123,7 +123,7 @@ public class Length { }
 public partial class UnitOfLength { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Length_OnlyFixedMetre, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_OnlyFixedMetre);
     }
 
     [Fact]
@@ -142,6 +142,6 @@ public class Length { }
 public partial class UnitOfLength { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Length_OnlyFixedMetre, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_OnlyFixedMetre);
     }
 }

@@ -1,26 +1,24 @@
 ﻿namespace SharpMeasures.Generators.Tests.Units;
 
-using Microsoft.CodeAnalysis;
-
-using SharpMeasures.Generators.Tests.Utility;
+using SharpMeasures.Generators.Tests.Verify;
 using SharpMeasures.Generators.Units;
 
 internal static class CommonResults
 {
-    public static GeneratorDriver Length_OnlyFixedMetre { get; }
-        = GeneratorDriverUtility.ConstructAndRunDriver<UnitGenerator>(Length_OnlyFixedMetre_Source);
+    public static GeneratorVerifier Length_OnlyFixedMetre { get; }
+        = GeneratorVerifier.Construct<UnitGenerator>(Length_OnlyFixedMetre_Source);
 
-    public static GeneratorDriver Length_NoDefinitions { get; }
-        = GeneratorDriverUtility.ConstructAndRunDriver<UnitGenerator>(Length_NoDefinitions_Source);
+    public static GeneratorVerifier Length_NoDefinitions { get; }
+        = GeneratorVerifier.Construct<UnitGenerator>(Length_NoDefinitions_Source);
 
-    public static GeneratorDriver Temperature_OnlyFixedKelvin { get; }
-        = GeneratorDriverUtility.ConstructAndRunDriver<UnitGenerator>(Temperature_OnlyFixedKelvin_Source);
+    public static GeneratorVerifier Temperature_OnlyFixedKelvin { get; }
+        = GeneratorVerifier.Construct<UnitGenerator>(Temperature_OnlyFixedKelvin_Source);
 
-    public static GeneratorDriver Temperature_NoDefinitions { get; }
-        = GeneratorDriverUtility.ConstructAndRunDriver<UnitGenerator>(Temperature_NoDefinitions_Source);
+    public static GeneratorVerifier Temperature_NoDefinitions { get; }
+        = GeneratorVerifier.Construct<UnitGenerator>(Temperature_NoDefinitions_Source);
 
-    public static GeneratorDriver LengthTimeSpeed_NoDerivable { get; }
-        = GeneratorDriverUtility.ConstructAndRunDriver<UnitGenerator>(LengthTimeSpeed_NoDerivable_Source);
+    public static GeneratorVerifier LengthTimeSpeed_NoDerivable { get; }
+        = GeneratorVerifier.Construct<UnitGenerator>(LengthTimeSpeed_NoDerivable_Source);
 
     private const string Length_OnlyFixedMetre_Source = @"
 using SharpMeasures.Generators.Scalars;
@@ -83,10 +81,10 @@ public class Time { }
 public class Speed { }
 
 [GeneratedUnit(typeof(Length))]
-public class UnitOfLength { }
+public partial class UnitOfLength { }
 
 [GeneratedUnit(typeof(Time))]
-public class UnitOfTime { }
+public partial class UnitOfTime { }
 
 [GeneratedUnit(typeof(Speed))]
 public partial class UnitOfSpeed { }

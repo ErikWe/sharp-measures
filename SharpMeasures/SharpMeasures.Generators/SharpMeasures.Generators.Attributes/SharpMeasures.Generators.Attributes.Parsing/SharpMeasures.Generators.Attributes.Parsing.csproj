@@ -17,6 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\SharpMeasures.Generators.RoslynExtensions\SharpMeasures.Generators.RoslynExtensions.csproj" />
 		<ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.csproj" PrivateAssets="all" />
 	</ItemGroup>
 

@@ -23,7 +23,7 @@ public class Length { }
 [GeneratedUnit(typeof(Length))]
 public class UnitOfLength { }";
 
-        VerifyGenerator.AssertNoOutput<UnitGenerator>(source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).NoOutput();
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public class Length { }
 [GeneratedUnit(typeof(Length))]
 public partial class struct { }";
 
-        VerifyGenerator.AssertNoOutput<UnitGenerator>(source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).NoOutput();
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public class Length { }
 [GeneratedUnit(typeof(Length))]
 public partial class UnitOfLength { }";
 
-        VerifyGenerator.AssertNoOutput<UnitGenerator>(source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).NoOutput();
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class Temperature { }
 [GeneratedUnit(typeof(Temperature), AllowBias = false)]
 public partial class UnitOfTemperature { }";
 
-        VerifyGenerator.AssertNoOutput<UnitGenerator>(source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).NoOutput();
     }
 
     [Fact]
@@ -85,7 +85,7 @@ public class Temperature { }
 [GeneratedUnit(typeof(Temperature), AllowBias = true)]
 public partial class UnitOfTemperature { }";
 
-        VerifyGenerator.AssertNoOutput<UnitGenerator>(source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).NoOutput();
     }
 
     [Fact]
@@ -97,7 +97,7 @@ using SharpMeasures.Generators.Units;
 [GeneratedUnit(3)]
 public partial class UnitOfLength { }";
 
-        VerifyGenerator.AssertNoOutput<UnitGenerator>(source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).NoOutput();
     }
 
     [Fact]
@@ -109,7 +109,7 @@ using SharpMeasures.Generators.Units;
 [GeneratedUnit]
 public partial class UnitOfLength { }";
 
-        VerifyGenerator.AssertNoOutput<UnitGenerator>(source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).NoOutput();
     }
 
     [Fact]
@@ -121,6 +121,6 @@ using SharpMeasures.Generators.Units;
 [GeneratedUnit(null)]
 public partial class UnitOfLength { }";
 
-        VerifyGenerator.AssertNoOutput<UnitGenerator>(source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).NoOutput();
     }
 }

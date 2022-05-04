@@ -10,22 +10,18 @@ using SharpMeasures.Generators.Providers;
 using SharpMeasures.Generators.Units.Extraction;
 using SharpMeasures.Generators.Utility;
 
-using System.Collections.Generic;
-
 internal static class Stage3
 {
-    public readonly record struct Result(IEnumerable<DocumentationFile> Documentation, INamedTypeSymbol TypeSymbol, NamedType Quantity, bool Biased);
+    public readonly record struct Result(DocumentationFile Documentation, INamedTypeSymbol TypeSymbol, NamedType Quantity, bool Biased);
 
-    public static IncrementalValuesProvider<Result> Perform(IncrementalGeneratorInitializationContext context,
-        IncrementalValuesProvider<Stage2.Result> provider)
+    public static IncrementalValuesProvider<Result> Attach(IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<Stage2.Result> inputProvider)
     {
-        IncrementalValuesProvider<ResultWithDiagnostics<Result?>> resultsWithDiagnostics
-            = TypeSymbolProvider.Attach(provider, context.CompilationProvider, ExtractDeclaration, ExtractUnitsAndDiagnostics);
-
-        IncrementalValuesProvider<Result> validResults = resultsWithDiagnostics.ExtractResult().WhereNotNull();
+        var resultsWithDiagnostics
+            = DeclarationSymbolProvider.AttachToValueType(inputProvider, context.CompilationProvider, ExtractDeclaration, ExtractUnitsAndDiagnostics);
 
         context.ReportDiagnostics(resultsWithDiagnostics);
-        return validResults;
+        return resultsWithDiagnostics.ExtractResult().WhereNotNull();
     }
 
     private static TypeDeclarationSyntax ExtractDeclaration(Stage2.Result input) => input.Declaration;
@@ -36,7 +32,7 @@ internal static class Stage3
         if (units.ValidDefinitions.Count is 0
             || units.ValidDefinitions[0] is not GeneratedUnitParameters { Quantity: INamedTypeSymbol quantity } parameters)
         {
-            return new(null, units.Diagnostics);
+            return new ResultWithDiagnostics<Result?>(null, units.Diagnostics);
         }
 
         Result result = new(input.Documentation, symbol, NamedType.FromSymbol(quantity), parameters.AllowBias);

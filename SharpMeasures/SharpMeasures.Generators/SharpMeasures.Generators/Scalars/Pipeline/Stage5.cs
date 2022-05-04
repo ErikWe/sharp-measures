@@ -12,7 +12,7 @@ using System.Threading;
 
 internal static class Stage5
 {
-    public readonly record struct Result(IEnumerable<DocumentationFile> Documentation, DefinedType TypeDefinition, string Unit, bool Biased,
+    public readonly record struct Result(DocumentationFile Documentation, DefinedType TypeDefinition, string Unit, bool Biased,
         string UnitQuantity, IEnumerable<UnitAliasParameters> UnitAliases, IEnumerable<DerivedUnitParameters> DerivedUnits,
         IEnumerable<FixedUnitParameters> FixedUnits, IEnumerable<OffsetUnitParameters> OffsetUnits,
         IEnumerable<PrefixedUnitParameters> PrefixedUnits, IEnumerable<ScaledUnitParameters> ScaledUnits,
@@ -46,8 +46,8 @@ internal static class Stage5
         }
     }
 
-    public static IncrementalValuesProvider<Result> Perform(IncrementalValuesProvider<Stage4.Result> provider)
-        => provider.Select(ExtractAttributeInformationAndTypeData);
+    public static IncrementalValuesProvider<Result> Attach(IncrementalValuesProvider<Stage4.Result> inputProvider)
+        => inputProvider.Select(ExtractAttributeInformationAndTypeData);
 
     private static Result ExtractAttributeInformationAndTypeData(Stage4.Result input, CancellationToken _)
     {

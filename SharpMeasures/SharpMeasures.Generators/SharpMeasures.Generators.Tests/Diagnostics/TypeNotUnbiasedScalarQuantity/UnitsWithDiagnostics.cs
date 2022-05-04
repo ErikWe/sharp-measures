@@ -28,7 +28,7 @@ public partial class Temperature { }
 public partial class UnitOfTemperature { }
 ";
 
-        return VerifyGeneratorDiagnostics.VerifyMatchAndIncludesSpecifiedDiagnostics<UnitGenerator>(source, ExpectedDiagnostics);
+        return GeneratorVerifier.Construct<UnitGenerator>(source).AllListedDiagnosticIDsReported(ExpectedDiagnostics).Verify();
     }
 
     [Fact]
@@ -45,7 +45,7 @@ public partial class Temperature { }
 public partial class UnitOfTemperature { }
 ";
 
-        return VerifyGeneratorDiagnostics.VerifyMatchAndIncludesSpecifiedDiagnostics<UnitGenerator>(source, ExpectedDiagnostics);
+        return GeneratorVerifier.Construct<UnitGenerator>(source).AllListedDiagnosticIDsReported(ExpectedDiagnostics).Verify();
     }
 
     private static IReadOnlyCollection<string> ExpectedDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotUnbiasedScalarQuantity };

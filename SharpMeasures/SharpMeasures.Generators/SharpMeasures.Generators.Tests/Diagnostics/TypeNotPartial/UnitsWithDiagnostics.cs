@@ -28,7 +28,7 @@ public partial class Length { }
 public class UnitOfLength { }
 ";
 
-        return VerifyGeneratorDiagnostics.VerifyMatchAndIncludesSpecifiedDiagnostics<UnitGenerator>(source, ExpectedDiagnostics);
+        return GeneratorVerifier.Construct<UnitGenerator>(source).AllListedDiagnosticIDsReported(ExpectedDiagnostics).Verify();
     }
 
     [Fact]
@@ -45,7 +45,7 @@ public partial class Length { }
 public struct UnitOfLength { }
 ";
 
-        VerifyGeneratorDiagnostics.AssertIncludesSpecifiedDiagnostics<UnitGenerator>(source, ExpectedDiagnostics);
+        GeneratorVerifier.Construct<UnitGenerator>(source).AllListedDiagnosticIDsReported(ExpectedDiagnostics);
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public partial class Length { }
 public record UnitOfLength { }
 ";
 
-        VerifyGeneratorDiagnostics.AssertIncludesSpecifiedDiagnostics<UnitGenerator>(source, ExpectedDiagnostics);
+        GeneratorVerifier.Construct<UnitGenerator>(source).AllListedDiagnosticIDsReported(ExpectedDiagnostics);
     }
 
     [Fact]
@@ -79,7 +79,7 @@ public partial class Length { }
 public record class UnitOfLength { }
 ";
 
-        VerifyGeneratorDiagnostics.AssertIncludesSpecifiedDiagnostics<UnitGenerator>(source, ExpectedDiagnostics);
+        GeneratorVerifier.Construct<UnitGenerator>(source).AllListedDiagnosticIDsReported(ExpectedDiagnostics);
     }
 
     [Fact]
@@ -96,7 +96,7 @@ public partial class Length { }
 public record struct UnitOfLength { }
 ";
 
-        VerifyGeneratorDiagnostics.AssertIncludesSpecifiedDiagnostics<UnitGenerator>(source, ExpectedDiagnostics);
+        GeneratorVerifier.Construct<UnitGenerator>(source).AllListedDiagnosticIDsReported(ExpectedDiagnostics);
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public partial class Length { }
 public readonly record struct UnitOfLength { }
 ";
 
-        VerifyGeneratorDiagnostics.AssertIncludesSpecifiedDiagnostics<UnitGenerator>(source, ExpectedDiagnostics);
+        GeneratorVerifier.Construct<UnitGenerator>(source).AllListedDiagnosticIDsReported(ExpectedDiagnostics);
     }
 
     private static IReadOnlyCollection<string> ExpectedDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotPartial };

@@ -72,15 +72,15 @@ public abstract class AArgumentParser<TParameters>
             return parameters;
         }
 
-        for (int i = 0; i < parameterSymbols.Length; i++)
+        for (int i = 0; i < parameterSymbols.Length && i < attributeData.ConstructorArguments.Length; i++)
         {
-            if (attributeData.ConstructorArguments[i].Kind == TypedConstantKind.Error
+            if (attributeData.ConstructorArguments[i].Kind is TypedConstantKind.Error
                 || !ConstructorParameters.TryGetValue(parameterSymbols[i].Name, out AttributeProperty<TParameters> property))
             {
                 continue;
             }
 
-            if (attributeData.ConstructorArguments[i].Kind == TypedConstantKind.Array)
+            if (attributeData.ConstructorArguments[i].Kind is TypedConstantKind.Array)
             {
                 parameters = property.Setter(parameters, ParseArray(attributeData.ConstructorArguments[i]));
             }
@@ -106,13 +106,13 @@ public abstract class AArgumentParser<TParameters>
 
         foreach (KeyValuePair<string, TypedConstant> argument in attributeData.NamedArguments)
         {
-            if (argument.Value.Kind == TypedConstantKind.Error
+            if (argument.Value.Kind is TypedConstantKind.Error
                 || !NamedParameters.TryGetValue(argument.Key, out AttributeProperty<TParameters> property))
             {
                 continue;
             }
 
-            if (argument.Value.Kind == TypedConstantKind.Array)
+            if (argument.Value.Kind is TypedConstantKind.Array)
             {
                 parameters = property.Setter(parameters, ParseArray(argument.Value));
             }

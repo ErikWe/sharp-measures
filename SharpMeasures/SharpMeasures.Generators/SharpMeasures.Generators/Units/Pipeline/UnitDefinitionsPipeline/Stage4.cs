@@ -14,19 +14,18 @@ using System.Threading;
 
 internal static class Stage4
 {
-    public readonly record struct Result(IEnumerable<DocumentationFile> Documentation, DefinedType TypeDefinition,
+    public readonly record struct Result(DocumentationFile Documentation, DefinedType TypeDefinition,
         NamedType Quantity, bool Biased, IEnumerable<UnitAliasParameters> UnitAliases,
         IEnumerable<DerivedUnitParameters> DerivedUnits, IEnumerable<FixedUnitParameters> FixedUnits,
         IEnumerable<OffsetUnitParameters> OffsetUnits, IEnumerable<PrefixedUnitParameters> PrefixedUnits,
         IEnumerable<ScaledUnitParameters> ScaledUnits);
 
-    public static IncrementalValuesProvider<Result> Perform(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Stage3.Result> provider)
+    public static IncrementalValuesProvider<Result> Attach(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Stage3.Result> inputProvider)
     {
-        IncrementalValuesProvider<ResultWithDiagnostics<Result>> resultsWithDiagnostics = provider.Select(ExtractDefinitionsAndDiagnostics);
-        IncrementalValuesProvider<Result> validResults = resultsWithDiagnostics.ExtractResult();
+        var resultsWithDiagnostics = inputProvider.Select(ExtractDefinitionsAndDiagnostics);
 
         context.ReportDiagnostics(resultsWithDiagnostics);
-        return validResults;
+        return resultsWithDiagnostics.ExtractResult();
     }
 
     private static ResultWithDiagnostics<Result> ExtractDefinitionsAndDiagnostics(Stage3.Result input, CancellationToken token)

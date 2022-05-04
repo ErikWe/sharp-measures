@@ -14,6 +14,7 @@ public static partial class DiagnosticIDs
             public const string Misc = "0";
             public const string Derivable = "1";
             public const string UnitDefinitions = "2";
+            public const string Documentation = "9";
         }
     }
 

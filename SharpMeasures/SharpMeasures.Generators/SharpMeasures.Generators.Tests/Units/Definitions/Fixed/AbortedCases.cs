@@ -25,7 +25,7 @@ public class Length { }
 public partial class UnitOfLength { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Length_NoDefinitions, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_NoDefinitions);
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public class Length { }
 public partial class UnitOfLength { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Length_NoDefinitions, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_NoDefinitions);
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public class Length { }
 public partial class UnitOfLength { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Length_NoDefinitions, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_NoDefinitions);
     }
 
     [Fact]
@@ -79,7 +79,7 @@ public class Length { }
 public partial class UnitOfLength { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Length_NoDefinitions, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_NoDefinitions);
     }
 
     [Fact]
@@ -98,6 +98,6 @@ public class Length { }
 public partial class UnitOfLength { }
 ";
 
-        VerifyGenerator.VerifyIdentical<UnitGenerator>(CommonResults.Length_OnlyFixedMetre, source);
+        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_OnlyFixedMetre);
     }
 }

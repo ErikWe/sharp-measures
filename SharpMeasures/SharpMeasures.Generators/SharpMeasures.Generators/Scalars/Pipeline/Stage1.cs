@@ -7,11 +7,11 @@ using SharpMeasures.Generators.Providers;
 
 internal static class Stage1
 {
-    public static IncrementalValuesProvider<TypeDeclarationSyntax> Perform(IncrementalGeneratorInitializationContext context)
+    public static IncrementalValuesProvider<TypeDeclarationSyntax> Attach(IncrementalGeneratorInitializationContext context)
     {
-        IncrementalValuesProvider<TypeDeclarationSyntax> declarations
-            = MarkedDeclarationSyntaxProvider.Attach<GeneratedScalarQuantityAttribute>(context.SyntaxProvider);
-        declarations = PartialTypeDeclarationSyntaxProvider.AttachAndReport(context, declarations, typeof(GeneratedScalarQuantityAttribute));
+        var declarations = MarkedTypeDeclarationCandidateProvider.Attach<GeneratedScalarQuantityAttribute>(context.SyntaxProvider);
+        declarations = PartialDeclarationProvider.AttachAndReport(context, declarations, typeof(GeneratedScalarQuantityAttribute));
+
         return declarations;
     }
 }
