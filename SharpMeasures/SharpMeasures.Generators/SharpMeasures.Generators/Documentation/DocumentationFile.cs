@@ -37,6 +37,8 @@ internal readonly record struct DocumentationFile
     {
         if (Content.Count is 0)
         {
+            text = DocumentationParsing.RemoveAllInvokations(text);
+
             return ResultWithDiagnostics<string>.WithoutDiagnostics(text);
         }
 
@@ -49,7 +51,7 @@ internal readonly record struct DocumentationFile
 
             if (Content.TryGetValue(tag, out string tagText))
             {
-                text = DocumentationParsing.ResolveInvokation(tag, text, tagText);
+                text = DocumentationParsing.ResolveInvokation(match.Groups["indent"].Value, tag, text, tagText);
             }
             else
             {
@@ -59,6 +61,8 @@ internal readonly record struct DocumentationFile
                 }
             }
         }
+
+        text = DocumentationParsing.RemoveAllInvokations(text);
 
         return new ResultWithDiagnostics<string>(text, diagnostics);
     }

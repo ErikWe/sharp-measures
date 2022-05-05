@@ -1,14 +1,33 @@
 ﻿namespace SharpMeasures.Generators.Documentation;
 
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 internal static class DocumentationParsing
 {
+    private static Regex DependencyRegex { get; }
+        = new(@"^#Requires:(?:[ ]*)(?<dependency>[^ ]+?)(?:\r\n|\r|\n|$)", RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
+
+    private static Regex TagDefinitionRegex { get; }
+        = new(@"^#(?:[ ]*)(?<tag>.+?)(?:\r\n|\r|\n)+(?<content>[\S\s]+?)(?:\r\n|\r|\n)*/#(?:\r\n|\r|\n|$)",
+            RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
+
+    private static Regex InvokationIdentifierRegex { get; }
+        = new(@"^(?<indent>[^\S\r\n]*)#(?<tag>[^#]+?)/#(?:\r\n|\r|\n|$)", RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
+
+    private static Regex AnonymousInvokationRegex { get; }
+        = new (@"^(?:[^\S\r\n]*)#(?:[^#]+?)/#(?:\r\n|\r|\n|$)", RegexOptions.Multiline | RegexOptions.Compiled);
+
+    private static Regex IndentationAndCommentRegex { get; }
+        = new(@"^", RegexOptions.Multiline | RegexOptions.Compiled);
+
+    private static Regex TagInvokationRegex(string tag)
+        => new($@"^(?:[^\S\r\n]*)#{tag}/#(?:\r\n|\r|\n|$)", RegexOptions.Multiline);
+
     public static MatchCollection MatchDependencies(string text)
     {
-        Regex regex = new(@"^#Requires:(?:[ ]*)(?<dependency>[^ ]+?)$", RegexOptions.ExplicitCapture);
-        return regex.Matches(text);
+        return DependencyRegex.Matches(text);
     }
 
     public static IReadOnlyCollection<string> GetDependencies(string text)
@@ -24,15 +43,14 @@ internal static class DocumentationParsing
         return dependencies;
     }
 
-    public static MatchCollection MatchDefinitions(string text)
+    public static MatchCollection MatchTagDefinitions(string text)
     {
-        Regex regex = new(@"^#(?:[ ]*)(?<tag>.+?)(?:\r\n|\r|\n)+(?<content>[\S\s]+?)(?:\r\n|\r|\n)*/#$", RegexOptions.ExplicitCapture);
-        return regex.Matches(text);
+        return TagDefinitionRegex.Matches(text);
     }
 
-    public static Dictionary<string, string> GetParsedDefinitions(string text)
+    public static Dictionary<string, string> GetParsedTagDefinitions(string text)
     {
-        MatchCollection matches = MatchDefinitions(text);
+        MatchCollection matches = MatchTagDefinitions(text);
 
         Dictionary<string, string> content = new(matches.Count);
 
@@ -46,13 +64,23 @@ internal static class DocumentationParsing
 
     public static MatchCollection MatchInvokations(string text)
     {
-        Regex regex = new(@"#(?<tag>[^#]+?)/#", RegexOptions.ExplicitCapture);
-        return regex.Matches(text);
+        return InvokationIdentifierRegex.Matches(text);
+    }
+
+    public static string ResolveInvokation(string indentation, string tag, string text, string tagText)
+    {
+        string indentedAndCommentedTagText = IndentationAndCommentRegex.Replace(tagText, $"{indentation}/// $0");
+
+        return ResolveInvokation(tag, text, indentedAndCommentedTagText);
     }
 
     public static string ResolveInvokation(string tag, string text, string tagText)
     {
-        Regex regex = new($@"#{tag}/#", RegexOptions.ExplicitCapture);
-        return regex.Replace(text, tagText);
+        return TagInvokationRegex(tag).Replace(text, tagText + Environment.NewLine);
+    }
+
+    public static string RemoveAllInvokations(string text)
+    {
+        return AnonymousInvokationRegex.Replace(text, string.Empty);
     }
 }

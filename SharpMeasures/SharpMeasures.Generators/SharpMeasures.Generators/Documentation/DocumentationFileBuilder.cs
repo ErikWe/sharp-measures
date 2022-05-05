@@ -77,7 +77,7 @@ internal class DocumentationFileBuilder
         File = file;
         Name = ReadName(file);
         Dependencies = DocumentationParsing.GetDependencies(text);
-        Content = DocumentationParsing.GetParsedDefinitions(text);
+        Content = DocumentationParsing.GetParsedTagDefinitions(text);
     }
 
     private void ResolveDependencies(Dictionary<string, DocumentationFileBuilder> documentationFiles)
