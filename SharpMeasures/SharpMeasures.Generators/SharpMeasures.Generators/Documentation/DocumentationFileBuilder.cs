@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Documentation;
+namespace SharpMeasures.Generators.Documentation;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -9,7 +9,6 @@ using SharpMeasures.Generators.Utility;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -31,12 +30,17 @@ internal class DocumentationFileBuilder
 
         foreach (DocumentationFileBuilder builder in builders.Values)
         {
+            builder.AddTagsFromDependencies();
+        }
+
+        foreach (DocumentationFileBuilder builder in builders.Values)
+        {
             builder.ResolveTags();
         }
 
         foreach (DocumentationFileBuilder builder in builders.Values)
         {
-            builder.AddTagsFromDependencies();
+            builder.CommentTags();
         }
 
         IReadOnlyDictionary<string, DocumentationFile> documentationFiles = builders.Values.Select(finalizeBuilders).ToDictionary(static (file) => file.Name);
@@ -64,6 +68,7 @@ internal class DocumentationFileBuilder
     private AdditionalText File { get; }
 
     private string Name { get; }
+    private bool IsUtility { get; }
     private Dictionary<string, string> Content { get; set; }
     private HashSet<string> ResolvedTags { get; } = new();
 
@@ -75,7 +80,8 @@ internal class DocumentationFileBuilder
     private DocumentationFileBuilder(AdditionalText file, string text)
     {
         File = file;
-        Name = ReadName(file);
+        Name = DocumentationParsing.ReadName(file);
+        IsUtility = DocumentationParsing.ReadUtilityState(text);
         Dependencies = DocumentationParsing.GetDependencies(text);
         Content = DocumentationParsing.GetParsedTagDefinitions(text);
     }
@@ -95,17 +101,6 @@ internal class DocumentationFileBuilder
         }
     }
 
-    private void ResolveTags()
-    {
-        foreach (string tag in Content.Keys)
-        {
-            if (!ResolvedTags.Contains(tag))
-            {
-                ResolveTag(tag);
-            }
-        }
-    }
-
     private void AddTagsFromDependencies()
     {
         foreach (DocumentationFileBuilder dependency in ResolvedDependencies)
@@ -120,16 +115,33 @@ internal class DocumentationFileBuilder
         }
     }
 
+    private void ResolveTags()
+    {
+        foreach (string tag in Content.Keys)
+        {
+            if (!ResolvedTags.Contains(tag))
+            {
+                ResolveTag(tag);
+            }
+        }
+    }
+
+    private void CommentTags()
+    {
+        foreach (KeyValuePair<string, string> tag in Content)
+        {
+            Content[tag.Key] = DocumentationParsing.CommentText(tag.Value);
+        }
+    }
+
     private void ResolveTag(string tag)
     {
-        ResolvedTags.Add(tag); // This should be done before actually resolving, otherwise recursive tags loop indefinitely
+        ResolvedTags.Add(tag); // This is done before actually resolving, otherwise recursive tags loop indefinitely
         Content[tag] = ResolveText(Content[tag]);
     }
 
     private string ResolveText(string text)
     {
-        string originalText = text;
-
         MatchCollection matches = DocumentationParsing.MatchInvokations(text);
 
         foreach (Match match in matches)
@@ -140,32 +152,17 @@ internal class DocumentationFileBuilder
             {
                 text = DocumentationParsing.ResolveInvokation(tag, text, tagText);
             }
-            else
+            else if (!IsUtility)
             {
                 CreateMissingTagDiagnostics(tag);
             }
         }
 
-        if (text == originalText)
-        {
-            return text;
-        }
-        else
-        {
-            return ResolveText(text);
-        }
+        return text;
     }
 
     private string? ReadTag(string tag)
-        => ReadTag(tag, new HashSet<string>());
-
-    private string? ReadTag(string tag, HashSet<string> searchedFiles)
     {
-        if (searchedFiles.Contains(Name))
-        {
-            return null;
-        }
-
         if (Content.TryGetValue(tag, out string text))
         {
             if (ResolvedTags.Contains(tag))
@@ -175,26 +172,6 @@ internal class DocumentationFileBuilder
 
             ResolveTag(tag);
             return Content[tag];
-        }
-
-        searchedFiles.Add(Name);
-
-        return ReadTagInDependencies(tag, searchedFiles);
-    }
-
-    private string? ReadTagInDependencies(string tag, HashSet<string> searchedFiles)
-    {
-        if (Dependencies.Count is not 0)
-        {
-            throw new NotSupportedException("Documentation dependencies has not yet been resolved.");
-        }
-
-        foreach (DocumentationFileBuilder dependency in ResolvedDependencies)
-        {
-            if (dependency.ReadTag(tag, searchedFiles) is string text)
-            {
-                return text;
-            }
         }
 
         return null;
@@ -228,17 +205,5 @@ internal class DocumentationFileBuilder
     private void CreateMissingTagDiagnostics(string tag)
     {
         Diagnostics.Add(DocumentationFileMissingRequestedTagDiagnostics.Create(File, tag));
-    }
-
-    private static string ReadName(AdditionalText file)
-    {
-        string fileName = Path.GetFileName(file.Path);
-
-        if (fileName.Split('.') is string[] { Length: > 0 } components)
-        {
-            return components[0];
-        }
-
-        return fileName;
     }
 }

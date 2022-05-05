@@ -26,8 +26,7 @@ public class ScalarQuantityGenerator : IIncrementalGenerator
     private static void Execute(SourceProductionContext context, Stage5.Result result)
     {
         string source = SourceComposer.Compose(result, context.CancellationToken);
-        string documentedSource = result.Documentation.ResolveTextAndReportDiagnostics(context, source);
 
-        context.AddSource($"{result.TypeDefinition.Name}.g.cs", SourceText.From(documentedSource, Encoding.UTF8));
+        context.AddSource($"{result.TypeDefinition.Name}.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 }

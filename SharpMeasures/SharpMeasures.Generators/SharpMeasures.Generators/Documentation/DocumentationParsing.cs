@@ -1,29 +1,33 @@
 ﻿namespace SharpMeasures.Generators.Documentation;
 
-using System;
+using Microsoft.CodeAnalysis;
+
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
 
 internal static class DocumentationParsing
 {
     private static Regex DependencyRegex { get; }
-        = new(@"^#Requires:(?:[ ]*)(?<dependency>[^ ]+?)(?:\r\n|\r|\n|$)", RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
+        = new(@"(?:\r\n|\r|\n|^)#(?:[ ]*)Requires:(?:[ ]*)(?<dependency>[^ ]+?)(?:\r\n|\r|\n|$)",
+            RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
+
+    private static Regex UtilityStateRegex { get; }
+        = new(@"(?:\r\n|\r|\n|^)#(?:[ ]*)Utility:(?:[ ]*)(?<state>[^ ]+?)(?:\r\n|\r|\n|$)",
+            RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
 
     private static Regex TagDefinitionRegex { get; }
-        = new(@"^#(?:[ ]*)(?<tag>.+?)(?:\r\n|\r|\n)+(?<content>[\S\s]+?)(?:\r\n|\r|\n)*/#(?:\r\n|\r|\n|$)",
+        = new(@"(?:\r\n|\r|\n|^)#(?:[ ]*)(?<tag>[^:]+?)(?:\r\n|\r|\n)+(?<content>[\S\s]+?)(?:\r\n|\r|\n)+/#(?:\r\n|\r|\n|$)",
             RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
 
     private static Regex InvokationIdentifierRegex { get; }
-        = new(@"^(?<indent>[^\S\r\n]*)#(?<tag>[^#]+?)/#(?:\r\n|\r|\n|$)", RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
-
-    private static Regex AnonymousInvokationRegex { get; }
-        = new (@"^(?:[^\S\r\n]*)#(?:[^#]+?)/#(?:\r\n|\r|\n|$)", RegexOptions.Multiline | RegexOptions.Compiled);
-
-    private static Regex IndentationAndCommentRegex { get; }
-        = new(@"^", RegexOptions.Multiline | RegexOptions.Compiled);
+        = new(@"(?:\r\n|\r|\n|^)(?<indent>[^\S\r\n]*)#(?<tag>[^#]+?)/#(?:\r\n|\r|\n|$)",
+            RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
 
     private static Regex TagInvokationRegex(string tag)
-        => new($@"^(?:[^\S\r\n]*)#{tag}/#(?:\r\n|\r|\n|$)", RegexOptions.Multiline);
+        => new($@"(?:\r\n|\r|\n|^)(?:[^\S\r\n]*)#{tag}/#(?:\r\n|\r|\n|$)", RegexOptions.Multiline);
+
+    private static Regex NewLineRegex { get; } = new(@"(?:\r\n|\r|\n|^)", RegexOptions.Singleline | RegexOptions.Compiled);
 
     public static MatchCollection MatchDependencies(string text)
     {
@@ -67,20 +71,39 @@ internal static class DocumentationParsing
         return InvokationIdentifierRegex.Matches(text);
     }
 
-    public static string ResolveInvokation(string indentation, string tag, string text, string tagText)
-    {
-        string indentedAndCommentedTagText = IndentationAndCommentRegex.Replace(tagText, $"{indentation}/// $0");
-
-        return ResolveInvokation(tag, text, indentedAndCommentedTagText);
-    }
-
     public static string ResolveInvokation(string tag, string text, string tagText)
     {
-        return TagInvokationRegex(tag).Replace(text, tagText + Environment.NewLine);
+        return TagInvokationRegex(tag).Replace(text, tagText);
     }
 
-    public static string RemoveAllInvokations(string text)
+    public static string CommentText(string text)
     {
-        return AnonymousInvokationRegex.Replace(text, string.Empty);
+        return NewLineRegex.Replace(text, "$0/// ");
+    }
+
+    public static string ReadName(AdditionalText file)
+    {
+        string fileName = Path.GetFileName(file.Path);
+
+        if (fileName.Split('.') is string[] { Length: > 0 } components)
+        {
+            return components[0];
+        }
+
+        return fileName;
+    }
+
+    public static bool ReadUtilityState(string text)
+    {
+        Match match = UtilityStateRegex.Match(text);
+
+        if (match.Success)
+        {
+            return match.Groups["state"].Value.ToUpperInvariant() is "TRUE";
+        }
+        else
+        {
+            return false;
+        }
     }
 }

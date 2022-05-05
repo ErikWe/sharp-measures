@@ -7,19 +7,17 @@ using SharpMeasures.Generators.SourceBuilding;
 
 using System;
 using System.Text;
-using System.Threading;
 
 internal static class Execution
 {
     public static void Execute(SourceProductionContext context, Stage4.Result result)
     {
-        string source = Compose(result, context.CancellationToken);
-        string documentedSource = result.Documentation.ResolveTextAndReportDiagnostics(context, source);
+        string source = Compose(context, result);
 
-        context.AddSource($"{result.TypeDefinition.Name.Name}_Misc.g.cs", SourceText.From(documentedSource, Encoding.UTF8));
+        context.AddSource($"{result.TypeDefinition.Name.Name}_Misc.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
-    private static string Compose(Stage4.Result data, CancellationToken _)
+    private static string Compose(SourceProductionContext context, Stage4.Result data)
     {
         StringBuilder source = new();
 
@@ -47,14 +45,14 @@ internal static class Execution
             }
             else
             {
-                ComposeUnbiased(source, indentation, names);
+                ComposeUnbiased(context, source, data, indentation, names);
             }
         }
 
         return source.ToString();
     }
 
-    private static void ComposeUnbiased(StringBuilder source, Indentation indentation, Names names)
+    private static void ComposeUnbiased(SourceProductionContext context, StringBuilder source, Stage4.Result data, Indentation indentation, Names names)
     {
         source.Append($"{indentation}public {names.QuantityType} {names.Quantity} {{ get; }}{Environment.NewLine}");
 
@@ -77,6 +75,7 @@ internal static class Execution
         source.Append($"{indentation}public {names.Unit} WithPrefix(SharpMeasures.BinaryPrefix prefix) => ScaledBy(prefix.Factor);{Environment.NewLine}");
 
         source.Append(Environment.NewLine);
+        DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "ToString");
         source.Append($"{indentation}public override string ToString() => $\"{{typeof({names.Unit})}}: {{{names.Quantity}}}\";{Environment.NewLine}");
     }
 

@@ -7,7 +7,6 @@ using SharpMeasures.Generators.Utility;
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 
 internal readonly record struct DocumentationFile
 {
@@ -33,43 +32,26 @@ internal readonly record struct DocumentationFile
         Content = content;
     }
 
-    public ResultWithDiagnostics<string> ResolveText(string text)
+    public ResultWithDiagnostics<string> ResolveTag(string tag)
     {
-        if (Content.Count is 0)
+        if (Content.TryGetValue(tag, out string tagText))
         {
-            text = DocumentationParsing.RemoveAllInvokations(text);
-
-            return ResultWithDiagnostics<string>.WithoutDiagnostics(text);
+            return ResultWithDiagnostics<string>.WithoutDiagnostics(tagText);
         }
-
-        MatchCollection matches = DocumentationParsing.MatchInvokations(text);
-        List<Diagnostic> diagnostics = new();
-
-        foreach (Match match in matches)
+        else
         {
-            string tag = match.Groups["tag"].Value;
-
-            if (Content.TryGetValue(tag, out string tagText))
+            if (CreateMissingTagDiagnostics(tag) is Diagnostic missingTagDiagnostics)
             {
-                text = DocumentationParsing.ResolveInvokation(match.Groups["indent"].Value, tag, text, tagText);
-            }
-            else
-            {
-                if (CreateMissingTagDiagnostics(tag) is Diagnostic missingTagDiagnostics)
-                {
-                    diagnostics.Add(missingTagDiagnostics);
-                }
+                return new ResultWithDiagnostics<string>(string.Empty, missingTagDiagnostics);
             }
         }
 
-        text = DocumentationParsing.RemoveAllInvokations(text);
-
-        return new ResultWithDiagnostics<string>(text, diagnostics);
+        return ResultWithDiagnostics<string>.WithoutDiagnostics(string.Empty);
     }
 
-    public string ResolveTextAndReportDiagnostics(SourceProductionContext context, string text)
+    public string ResolveTagAndReportDiagnostics(SourceProductionContext context, string tag)
     {
-        ResultWithDiagnostics<string> resultAndDiagnostics = ResolveText(text);
+        ResultWithDiagnostics<string> resultAndDiagnostics = ResolveTag(tag);
 
         context.ReportDiagnostics(resultAndDiagnostics);
 

@@ -23,9 +23,7 @@ internal static class Execution
             return;
         }
 
-        string documentedSource = result.Documentation.ResolveTextAndReportDiagnostics(context, source);
-
-        context.AddSource($"{result.TypeDefinition.Name.Name}_Definitions.g.cs", SourceText.From(documentedSource, Encoding.UTF8));
+        context.AddSource($"{result.TypeDefinition.Name.Name}_Definitions.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private static string Compose(Stage4.Result data, CancellationToken _)

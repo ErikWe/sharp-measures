@@ -6,19 +6,17 @@ using Microsoft.CodeAnalysis.Text;
 using SharpMeasures.Generators.SourceBuilding;
 
 using System.Text;
-using System.Threading;
 
 internal static class Execution
 {
     public static void Execute(SourceProductionContext context, Stage4.Result result)
     {
-        string source = Compose(result, context.CancellationToken);
-        string documentedSource = result.Documentation.ResolveTextAndReportDiagnostics(context, source);
+        string source = Compose(context, result);
 
-        context.AddSource($"{result.TypeDefinition.Name.Name}_Comparable.g.cs", SourceText.From(documentedSource, Encoding.UTF8));
+        context.AddSource($"{result.TypeDefinition.Name.Name}_Comparable.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
-    private static string Compose(Stage4.Result data, CancellationToken _)
+    private static string Compose(SourceProductionContext context, Stage4.Result data)
     {
         StringBuilder source = new();
 
@@ -46,8 +44,9 @@ internal static class Execution
 
         void typeBlock(StringBuilder source, Indentation indentation)
         {
-            source.Append($@"{indentation}/// <inheritdoc/>
-{indentation}public int CompareTo({unitName} other) => {quantityName}.CompareTo(other.{quantityName});
+            DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "CompareToSame");
+
+            source.Append($@"{indentation}public int CompareTo({unitName} other) => {quantityName}.CompareTo(other.{quantityName});
 
 {indentation}/// <summary>Determines whether the <see cref=""Quantities.Length""/> represented by <paramref name=""x""/> is
 {indentation}/// less than that of <paramref name=""y""/>.</summary>
