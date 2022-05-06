@@ -29,7 +29,8 @@ internal static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DocumentationFileMissingRequestedTag,
         title: "Documentation tag not found",
-        messageFormat: "Documentation tag \"{0}\" was not recognized as part of {1}, or in any of it's dependencies",
+        messageFormat: "Documentation tag \"{0}\" was not recognized as part of {1}, or in any of it's dependencies. If this file is " +
+            "only used as a dependency, this message can be suppressed by adding the following line: \"# Utility: True\".",
         category: "Documentation",
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true
