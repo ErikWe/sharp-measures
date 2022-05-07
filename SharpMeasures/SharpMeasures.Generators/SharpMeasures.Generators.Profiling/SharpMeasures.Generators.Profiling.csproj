@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>exe</OutputType>
@@ -20,6 +20,14 @@
 	<ItemGroup>
 		<ProjectReference Include="..\SharpMeasures.Generators.DriverUtility\SharpMeasures.Generators.DriverUtility.csproj" />
 		<ProjectReference Include="..\SharpMeasures.Generators\SharpMeasures.Generators.csproj" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AdditionalFiles Include="Documentation/**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Documentation\Units\BiasedUnitUtility.doc.txt" />
 	</ItemGroup>
 
 </Project>

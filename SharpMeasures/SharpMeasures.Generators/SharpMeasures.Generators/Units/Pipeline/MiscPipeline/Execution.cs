@@ -41,21 +41,23 @@ internal static class Execution
         {
             if (data.Biased)
             {
-                ComposeBiased(source, indentation, names);
+                ComposeBiased(context, data, source, indentation, names);
             }
             else
             {
-                ComposeUnbiased(context, source, data, indentation, names);
+                ComposeUnbiased(context, data, source, indentation, names);
             }
         }
 
         return source.ToString();
     }
 
-    private static void ComposeUnbiased(SourceProductionContext context, StringBuilder source, Stage4.Result data, Indentation indentation, Names names)
+    private static void ComposeUnbiased(SourceProductionContext context, Stage4.Result data, StringBuilder source, Indentation indentation, Names names)
     {
+        DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "Quantity");
         source.Append($"{indentation}public {names.QuantityType} {names.Quantity} {{ get; }}{Environment.NewLine}");
 
+        DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "Constructor");
         BlockBuilding.AppendBlock(source,
             header: $"private {names.Unit}({names.QuantityType} {names.QuantityParameter})",
             blockContentAppender: constructorBlock,
@@ -67,11 +69,15 @@ internal static class Execution
         }
 
         source.Append(Environment.NewLine);
+        DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "ScaledBy_Scalar");
         source.Append($"{indentation}public {names.Unit} ScaledBy(SharpMeasures.Scalar scale) => ScaledBy(scale.Value);{Environment.NewLine}");
+        DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "ScaledBy_Double");
         source.Append($"{indentation}public {names.Unit} ScaledBy(double scale) => new({names.Quantity} * scale);{Environment.NewLine}");
 
         source.Append(Environment.NewLine);
+        DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "WithPrefix_Metric");
         source.Append($"{indentation}public {names.Unit} WithPrefix(SharpMeasures.MetricPrefix prefix) => ScaledBy(prefix.Factor);{Environment.NewLine}");
+        DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "WithPrefix_Binary");
         source.Append($"{indentation}public {names.Unit} WithPrefix(SharpMeasures.BinaryPrefix prefix) => ScaledBy(prefix.Factor);{Environment.NewLine}");
 
         source.Append(Environment.NewLine);
@@ -79,11 +85,14 @@ internal static class Execution
         source.Append($"{indentation}public override string ToString() => $\"{{typeof({names.Unit})}}: {{{names.Quantity}}}\";{Environment.NewLine}");
     }
 
-    private static void ComposeBiased(StringBuilder source, Indentation indentation, Names names)
+    private static void ComposeBiased(SourceProductionContext context, Stage4.Result data, StringBuilder source, Indentation indentation, Names names)
     {
+        DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "Quantity");
         source.Append($"{indentation}public {names.QuantityType} {names.Quantity} {{ get; }}{Environment.NewLine}");
+        DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "Offset");
         source.Append($"{indentation}public Scalar Offset {{ get; }}{Environment.NewLine}");
 
+        DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "Constructor");
         BlockBuilding.AppendBlock(source,
             header: $"private {names.Unit}({names.QuantityType} {names.QuantityParameter}, Scalar offset)",
             blockContentAppender: constructorBlock,
@@ -96,18 +105,25 @@ internal static class Execution
         }
 
         source.Append(Environment.NewLine);
+        DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "ScaledBy_Scalar");
         source.Append($"{indentation}public {names.Unit} ScaledBy(SharpMeasures.Scalar scale) => ScaledBy(scale.Value);{Environment.NewLine}");
+        DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "ScaledBy_Double");
         source.Append($"{indentation}public {names.Unit} ScaledBy(double scale) => new({names.Quantity} * scale, Offset / scale);{Environment.NewLine}");
 
         source.Append(Environment.NewLine);
+        DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "OffsetBy_Scalar");
         source.Append($"{indentation}public {names.Unit} OffsetBy(SharpMeasures.Scalar offset) => OffsetBy(offset.Value);{Environment.NewLine}");
+        DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "OffsetBy_Double");
         source.Append($"{indentation}public {names.Unit} OffsetBy(double offset) => new({names.Quantity}, Offset + offset);{Environment.NewLine}");
 
         source.Append(Environment.NewLine);
+        DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "WithPrefix_Metric");
         source.Append($"{indentation}public {names.Unit} WithPrefix(SharpMeasures.MetricPrefix prefix) => ScaledBy(prefix.Factor);{Environment.NewLine}");
+        DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "WithPrefix_Binary");
         source.Append($"{indentation}public {names.Unit} WithPrefix(SharpMeasures.BinaryPrefix prefix) => ScaledBy(prefix.Factor);{Environment.NewLine}");
 
         source.Append(Environment.NewLine);
+        DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, "ToString");
         source.Append($"{indentation}public override string ToString() => $\"{{typeof({names.Unit})}}: ({{{names.Quantity}}} + {{Offset}})\";{Environment.NewLine}");
     }
 

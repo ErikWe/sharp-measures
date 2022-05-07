@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.Attributes.Parsing.Units;
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Utility;
 
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,7 @@ internal static class Execution
 {
     public static void Execute(SourceProductionContext context, Stage4.Result result)
     {
-        string source = Compose(result, context.CancellationToken);
+        string source = Compose(context, result, context.CancellationToken);
 
         if (string.IsNullOrEmpty(source))
         {
@@ -26,7 +25,7 @@ internal static class Execution
         context.AddSource($"{result.TypeDefinition.Name.Name}_Definitions.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
-    private static string Compose(Stage4.Result data, CancellationToken _)
+    private static string Compose(SourceProductionContext context, Stage4.Result data, CancellationToken _)
     {
         StringBuilder source = new();
 
@@ -46,13 +45,13 @@ internal static class Execution
         {
             HashSet<string> definedUnits = new();
 
-            AppendDerived(source, indentation, data.TypeDefinition.Name, data.DerivedUnits, definedUnits);
-            AppendFixed(source, indentation, data.TypeDefinition.Name, data.Quantity, data.Biased, data.FixedUnits, definedUnits);
+            AppendDerived(context, data, source, indentation, definedUnits);
+            AppendFixed(context, data, source, indentation, definedUnits);
 
             IList<IDependantUnitDefinitionParameters> dependantUnits
                 = GetDependantInstances(data.UnitAliases, data.ScaledUnits, data.PrefixedUnits, data.OffsetUnits);
 
-            AppendDependantUnits(source, indentation, data.TypeDefinition.Name, dependantUnits, definedUnits);
+            AppendDependantUnits(context, data, source, indentation, dependantUnits, definedUnits);
 
             if (definedUnits.Count > 0)
             {
@@ -70,10 +69,10 @@ internal static class Execution
         }
     }
 
-    private static void AppendDerived(StringBuilder source, Indentation indentation, NamedType unitName,
-        IEnumerable<DerivedUnitParameters> derivedUnits, ICollection<string> definedUnits)
+    private static void AppendDerived(SourceProductionContext context, Stage4.Result data, StringBuilder source, Indentation indentation,
+        HashSet<string> definedUnits)
     {
-        foreach (DerivedUnitParameters derivedUnit in derivedUnits)
+        foreach (DerivedUnitParameters derivedUnit in data.DerivedUnits)
         {
             if (definedUnits.Contains(derivedUnit.Name))
             {
@@ -82,7 +81,8 @@ internal static class Execution
 
             definedUnits.Add(derivedUnit.Name);
 
-            source.Append($"{indentation}public static {unitName.Name} {derivedUnit.Name} {{ get; }} = ");
+            DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, $"Definition_{data.TypeDefinition.Name.Name}");
+            source.Append($"{indentation}public static {data.TypeDefinition.Name.Name} {derivedUnit.Name} {{ get; }} = ");
 
             IterativeBuilding.AppendEnumerable(source, "From(", arguments(), ", ", $");{Environment.NewLine}");
 
@@ -99,12 +99,12 @@ internal static class Execution
         }
     }
 
-    private static void AppendFixed(StringBuilder source, Indentation indentation, NamedType unitName, NamedType quantityName, bool biased,
-        IEnumerable<FixedUnitParameters> fixedUnits, ICollection<string> definedUnits)
+    private static void AppendFixed(SourceProductionContext context, Stage4.Result data, StringBuilder source, Indentation indentation,
+        HashSet<string> definedUnits)
     {
-        Action<FixedUnitParameters> appender = biased ? appendBiased : appendUnbiased;
+        Action<FixedUnitParameters> appender = data.Biased ? appendBiased : appendUnbiased;
 
-        foreach (FixedUnitParameters fixedUnit in fixedUnits)
+        foreach (FixedUnitParameters fixedUnit in data.FixedUnits)
         {
             if (definedUnits.Contains(fixedUnit.Name))
             {
@@ -118,53 +118,25 @@ internal static class Execution
 
         void appendDeclaration(FixedUnitParameters fixedUnit)
         {
-            source.Append($"{indentation}public static {unitName.Name} {fixedUnit.Name} {{ get; }}");
+            DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, $"Definition_{data.TypeDefinition.Name.Name}");
+            source.Append($"{indentation}public static {data.TypeDefinition.Name.Name} {fixedUnit.Name} {{ get; }}");
         }
 
         void appendUnbiased(FixedUnitParameters fixedUnit)
         {
             appendDeclaration(fixedUnit);
-            source.Append($" = new(new {quantityName.FullyQualifiedName}({fixedUnit.Value}));{Environment.NewLine}");
+            source.Append($" = new(new {data.Quantity.FullyQualifiedName}({fixedUnit.Value}));{Environment.NewLine}");
         }
 
         void appendBiased(FixedUnitParameters fixedUnit)
         {
             appendDeclaration(fixedUnit);
-            source.Append($" = new(new {quantityName.FullyQualifiedName}({fixedUnit.Value}), new SharpMeasures.Scalar({fixedUnit.Bias}));{Environment.NewLine}");
+            source.Append($" = new(new {data.Quantity.FullyQualifiedName}({fixedUnit.Value}), new SharpMeasures.Scalar({fixedUnit.Bias}));{Environment.NewLine}");
         }
     }
 
-    private static IList<IDependantUnitDefinitionParameters> GetDependantInstances(IEnumerable<UnitAliasParameters> unitAliases,
-        IEnumerable<ScaledUnitParameters> scaledUnits, IEnumerable<PrefixedUnitParameters> prefixedUnits,
-        IEnumerable<OffsetUnitParameters> offsetUnits)
-    {
-        List<IDependantUnitDefinitionParameters> result = new();
-
-        foreach (UnitAliasParameters unitAlias in unitAliases)
-        {
-            result.Add(unitAlias);
-        }
-
-        foreach (ScaledUnitParameters scaledUnit in scaledUnits)
-        {
-            result.Add(scaledUnit);
-        }
-
-        foreach (PrefixedUnitParameters prefixedUnit in prefixedUnits)
-        {
-            result.Add(prefixedUnit);
-        }
-
-        foreach (OffsetUnitParameters offsetUnit in offsetUnits)
-        {
-            result.Add(offsetUnit);
-        }
-
-        return result;
-    }
-
-    private static void AppendDependantUnits(StringBuilder source, Indentation indentation, NamedType unitName,
-        IList<IDependantUnitDefinitionParameters> dependantUnits, HashSet<string> definedUnits)
+    private static void AppendDependantUnits(SourceProductionContext context, Stage4.Result data, StringBuilder source, Indentation indentation,
+         IList<IDependantUnitDefinitionParameters> dependantUnits, HashSet<string> definedUnits)
     {
         int initialLength = dependantUnits.Count;
 
@@ -179,7 +151,8 @@ internal static class Execution
 
             if (definedUnits.Contains(dependantUnits[i].DependantOn))
             {
-                source.Append($"{indentation}public static {unitName.Name} {dependantUnits[i].Name} ");
+                DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, $"Definition_{data.TypeDefinition.Name.Name}");
+                source.Append($"{indentation}public static {data.TypeDefinition.Name.Name} {dependantUnits[i].Name} ");
 
                 if (dependantUnits[i] is UnitAliasParameters unitAlias)
                 {
@@ -208,7 +181,7 @@ internal static class Execution
 
         if (dependantUnits.Count < initialLength)
         {
-            AppendDependantUnits(source, indentation, unitName, dependantUnits, definedUnits);
+            AppendDependantUnits(context, data, source, indentation, dependantUnits, definedUnits);
         }
     }
 
@@ -240,5 +213,34 @@ internal static class Execution
     private static void AppendOffset(StringBuilder source, OffsetUnitParameters offsetUnit)
     {
         source.Append($"{{ get; }} = {offsetUnit.From}.ScaledBy({offsetUnit.Offset})");
+    }
+
+    private static IList<IDependantUnitDefinitionParameters> GetDependantInstances(IEnumerable<UnitAliasParameters> unitAliases,
+        IEnumerable<ScaledUnitParameters> scaledUnits, IEnumerable<PrefixedUnitParameters> prefixedUnits,
+        IEnumerable<OffsetUnitParameters> offsetUnits)
+    {
+        List<IDependantUnitDefinitionParameters> result = new();
+
+        foreach (UnitAliasParameters unitAlias in unitAliases)
+        {
+            result.Add(unitAlias);
+        }
+
+        foreach (ScaledUnitParameters scaledUnit in scaledUnits)
+        {
+            result.Add(scaledUnit);
+        }
+
+        foreach (PrefixedUnitParameters prefixedUnit in prefixedUnits)
+        {
+            result.Add(prefixedUnit);
+        }
+
+        foreach (OffsetUnitParameters offsetUnit in offsetUnits)
+        {
+            result.Add(offsetUnit);
+        }
+
+        return result;
     }
 }

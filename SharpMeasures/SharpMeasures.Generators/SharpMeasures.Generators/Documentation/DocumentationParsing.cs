@@ -21,11 +21,9 @@ internal static class DocumentationParsing
             RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
 
     private static Regex InvokationIdentifierRegex { get; }
-        = new(@"(?:\r\n|\r|\n|^)(?<indent>[^\S\r\n]*)#(?<tag>[^#]+?)/#(?:\r\n|\r|\n|$)",
-            RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
+        = new(@"#(?<tag>[^#\r\n]+?)/#", RegexOptions.ExplicitCapture | RegexOptions.Multiline | RegexOptions.Compiled);
 
-    private static Regex TagInvokationRegex(string tag)
-        => new($@"(?:\r\n|\r|\n|^)(?:[^\S\r\n]*)#{tag}/#(?:\r\n|\r|\n|$)", RegexOptions.Multiline);
+    private static Regex SpecificTagInvokationRegex(string tag) => new($@"#{tag}/#", RegexOptions.Multiline);
 
     private static Regex NewLineRegex { get; } = new(@"(?:\r\n|\r|\n|^)", RegexOptions.Singleline | RegexOptions.Compiled);
 
@@ -73,7 +71,7 @@ internal static class DocumentationParsing
 
     public static string ResolveInvokation(string tag, string text, string tagText)
     {
-        return TagInvokationRegex(tag).Replace(text, tagText);
+        return SpecificTagInvokationRegex(tag).Replace(text, tagText);
     }
 
     public static string CommentText(string text)

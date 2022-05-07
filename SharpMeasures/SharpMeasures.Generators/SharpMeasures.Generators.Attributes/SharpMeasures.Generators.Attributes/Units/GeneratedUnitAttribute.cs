@@ -15,6 +15,11 @@ public sealed class GeneratedUnitAttribute : Attribute
     /// <summary>Dictates whether this unit should include a bias term.</summary>
     public bool AllowBias { get; init; }
 
+    /// <summary>Dictates whether documentation should be generated for this unit.</summary>
+    /// <remarks>If this property is not explicitly set, the global AnalyzerConfig file is used to determine whether documentation is generated -
+    /// which in turn is <see langword="true"/> by default.</remarks>
+    public bool GenerateDocumentation { get; init; }
+
     /// <summary>Marks the type as a unit, and enables source generation.</summary>
     /// <param name="quantity">The scalar quantity that the unit describes.
     /// <para>For biased units, this represents the associated unbiased quantity.</para>

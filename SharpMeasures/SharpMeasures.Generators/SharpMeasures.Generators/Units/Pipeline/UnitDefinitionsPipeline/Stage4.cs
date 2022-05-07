@@ -14,11 +14,10 @@ using System.Threading;
 
 internal static class Stage4
 {
-    public readonly record struct Result(DocumentationFile Documentation, DefinedType TypeDefinition,
-        NamedType Quantity, bool Biased, IEnumerable<UnitAliasParameters> UnitAliases,
-        IEnumerable<DerivedUnitParameters> DerivedUnits, IEnumerable<FixedUnitParameters> FixedUnits,
-        IEnumerable<OffsetUnitParameters> OffsetUnits, IEnumerable<PrefixedUnitParameters> PrefixedUnits,
-        IEnumerable<ScaledUnitParameters> ScaledUnits);
+    public readonly record struct Result(DefinedType TypeDefinition, NamedType Quantity, bool Biased, DocumentationFile Documentation,
+        IEnumerable<UnitAliasParameters> UnitAliases, IEnumerable<DerivedUnitParameters> DerivedUnits,
+        IEnumerable<FixedUnitParameters> FixedUnits, IEnumerable<OffsetUnitParameters> OffsetUnits,
+        IEnumerable<PrefixedUnitParameters> PrefixedUnits, IEnumerable<ScaledUnitParameters> ScaledUnits);
 
     public static IncrementalValuesProvider<Result> Attach(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Stage3.Result> inputProvider)
     {
@@ -37,7 +36,7 @@ internal static class Stage4
         AExtractor<PrefixedUnitParameters> prefixedUnits = PrefixedUnitExtractor.Extract(input.TypeSymbol);
         AExtractor<ScaledUnitParameters> scaledUnits = ScaledUnitExtractor.Extract(input.TypeSymbol);
         
-        Result result = new(input.Documentation, DefinedType.FromSymbol(input.TypeSymbol), input.Quantity, input.Biased, unitAliases.ValidDefinitions,
+        Result result = new(DefinedType.FromSymbol(input.TypeSymbol), input.Quantity, input.Biased, input.Documentation, unitAliases.ValidDefinitions,
             derivedUnits.ValidDefinitions, fixedUnits.ValidDefinitions, offsetUnits.ValidDefinitions,
             prefixedUnits.ValidDefinitions, scaledUnits.ValidDefinitions);
 

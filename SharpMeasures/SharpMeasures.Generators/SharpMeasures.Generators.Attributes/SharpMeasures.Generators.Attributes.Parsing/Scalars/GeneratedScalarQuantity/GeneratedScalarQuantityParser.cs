@@ -44,6 +44,8 @@ public class GeneratedScalarQuantityParser : AArgumentParser<GeneratedScalarQuan
     private static GeneratedScalarQuantityParameters DefaultParameters() => new
     (
         Unit: null,
-        Biased: false
+        Biased: false,
+        GenerateDocumentation: false,
+        ParsingData: new GeneratedScalarQuantityParsingData()
     );
 }

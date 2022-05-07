@@ -1,42 +1,21 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Pipeline;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-using SharpMeasures.Generators.Attributes.Parsing.Extraction;
-using SharpMeasures.Generators.Attributes.Parsing.Scalars;
 using SharpMeasures.Generators.Documentation;
-using SharpMeasures.Generators.Providers;
-using SharpMeasures.Generators.Scalars.Extraction;
-using SharpMeasures.Generators.Utility;
 
 internal static class Stage3
 {
-    public readonly record struct Result(DocumentationFile Documentation, INamedTypeSymbol TypeSymbol, INamedTypeSymbol UnitSymbol, bool Biased);
+    public readonly record struct Result(INamedTypeSymbol TypeSymbol, INamedTypeSymbol UnitSymbol, bool Biased, DocumentationFile Documentation);
 
     public static IncrementalValuesProvider<Result> Attach(IncrementalGeneratorInitializationContext context,
         IncrementalValuesProvider<Stage2.Result> inputProvider)
     {
-        var resultsWithDiagnostics
-            = DeclarationSymbolProvider.AttachToValueType(inputProvider, context.CompilationProvider, ExtractDeclaration, ExtractQuantityAndDiagnostics);
-
-        context.ReportDiagnostics(resultsWithDiagnostics);
-        return resultsWithDiagnostics.ExtractResult().WhereNotNull();
+        return Documentation.DocumentationProvider.Attach(context, inputProvider, ExtractData, ConstructResult);
     }
 
-    private static TypeDeclarationSyntax ExtractDeclaration(Stage2.Result input) => input.Declaration;
-    private static ResultWithDiagnostics<Result?> ExtractQuantityAndDiagnostics(Stage2.Result input, INamedTypeSymbol symbol)
-    {
-        AExtractor<GeneratedScalarQuantityParameters> quantities = GeneratedScalarQuantityExtractor.Extract(symbol);
+    private static Documentation.DocumentationProvider.InputData ExtractData(Stage2.Result input) => new(input.Declaration, input.GenerateDocumentation);
 
-        if (quantities.ValidDefinitions.Count is 0
-            || quantities.ValidDefinitions[0] is not GeneratedScalarQuantityParameters { Unit: INamedTypeSymbol unit } parameters)
-        {
-            return new ResultWithDiagnostics<Result?>(null, quantities.Diagnostics);
-        }
-
-        Result result = new(input.Documentation, symbol, unit, parameters.Biased);
-
-        return new ResultWithDiagnostics<Result?>(result, quantities.Diagnostics);
-    }
+    private static Result ConstructResult(Stage2.Result input, DocumentationFile documentation)
+        => new(input.TypeSymbol, input.UnitSymbol, input.Biased, documentation);
 }

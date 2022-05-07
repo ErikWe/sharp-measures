@@ -9,7 +9,7 @@ using System.Threading;
 
 internal static class Stage4
 {
-    public readonly record struct Result(DocumentationFile Documentation, DefinedType TypeDefinition, NamedType Quantity);
+    public readonly record struct Result(DefinedType TypeDefinition, NamedType Quantity, DocumentationFile Documentation);
 
     public static IncrementalValuesProvider<Result> Attach(IncrementalValuesProvider<Stage3.Result> inputProvider)
         => inputProvider.Select(DiscardBiasedUnits).WhereNotNull();
@@ -21,6 +21,6 @@ internal static class Stage4
             return null;
         }
 
-        return new Result(input.Documentation, DefinedType.FromSymbol(input.TypeSymbol), input.Quantity);
+        return new Result(DefinedType.FromSymbol(input.TypeSymbol), input.Quantity, input.Documentation);
     }
 }

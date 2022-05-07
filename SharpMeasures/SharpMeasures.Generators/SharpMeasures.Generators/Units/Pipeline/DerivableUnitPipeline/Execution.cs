@@ -16,7 +16,7 @@ internal static class Execution
 {
     public static void Execute(SourceProductionContext context, Stage4.Result result)
     {
-        string source = Compose(result, context.CancellationToken);
+        string source = Compose(context, result, context.CancellationToken);
 
         if (string.IsNullOrEmpty(source))
         {
@@ -26,7 +26,7 @@ internal static class Execution
         context.AddSource($"{result.TypeDefinition.Name.Name}_Derivable.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
-    private static string Compose(Stage4.Result data, CancellationToken _)
+    private static string Compose(SourceProductionContext context, Stage4.Result data, CancellationToken _)
     {
         StringBuilder source = new();
 
@@ -51,6 +51,7 @@ internal static class Execution
                 IEnumerable<string> parameterNames = GetSignatureParameterNames(derivation.Signature);
                 IEnumerable<string> signatureComponents = GetSignatureNamedTypes(derivation.Signature, parameterNames);
 
+                DocumentationBuilding.AppendDocumentation(context, source, data.Documentation, indentation, GetDocumentationTag(signatureComponents));
                 source.Append($"{indentation}public static {unitName} From(");
                 IterativeBuilding.AppendEnumerable(source, signatureComponents, ", ");
                 source.Append($") => new({ParseExpression(derivation, parameterNames)});{Environment.NewLine}");
@@ -131,6 +132,18 @@ internal static class Execution
         {
             yield return $"{signatureIterator.Current.Name} {parameterIterator.Current}";
         }
+    }
+
+    private static string GetDocumentationTag(IEnumerable<string> signature)
+    {
+        StringBuilder tag = new("From");
+
+        foreach (string component in signature)
+        {
+            tag.Append($"_{component}");
+        }
+
+        return tag.ToString();
     }
 
     private static string ParseExpression(DerivableUnitParameters parameters, IEnumerable<string> parameterNames)

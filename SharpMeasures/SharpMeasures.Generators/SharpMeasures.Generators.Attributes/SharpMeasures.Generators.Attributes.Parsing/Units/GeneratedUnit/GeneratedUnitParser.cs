@@ -13,6 +13,7 @@ public class GeneratedUnitParser : AArgumentParser<GeneratedUnitParameters>
 
     public static int QuantityIndex(AttributeData attributeData) => IndexOfArgument(GeneratedUnitProperties.Quantity, attributeData);
     public static int AllowBiasIndex(AttributeData attributeData) => IndexOfArgument(GeneratedUnitProperties.AllowBias, attributeData);
+    public static int GenerateDocumentationIndex(AttributeData attributeData) => IndexOfArgument(GeneratedUnitProperties.GenerateDocumentation, attributeData);
 
     protected GeneratedUnitParser() : base(DefaultParameters, GeneratedUnitProperties.AllProperties) { }
 
@@ -44,6 +45,8 @@ public class GeneratedUnitParser : AArgumentParser<GeneratedUnitParameters>
     private static GeneratedUnitParameters DefaultParameters() => new
     (
         Quantity: null,
-        AllowBias: false
+        AllowBias: false,
+        GenerateDocumentation: false,
+        ParsingData: new GeneratedUnitParsingData()
     );
 }

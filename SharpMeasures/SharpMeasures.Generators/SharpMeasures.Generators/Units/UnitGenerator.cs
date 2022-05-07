@@ -14,6 +14,13 @@ public class UnitGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+//#if DEBUG
+//        if (!System.Diagnostics.Debugger.IsAttached)
+//        {
+//            System.Diagnostics.Debugger.Launch();
+//        }
+//#endif 
+
         IncrementalValuesProvider<TypeDeclarationSyntax> firstStage = Stage1.Attach(context);
         IncrementalValuesProvider<Stage2.Result> secondStage = Stage2.Attach(context, firstStage);
         IncrementalValuesProvider<Stage3.Result> thirdStage = Stage3.Attach(context, secondStage);

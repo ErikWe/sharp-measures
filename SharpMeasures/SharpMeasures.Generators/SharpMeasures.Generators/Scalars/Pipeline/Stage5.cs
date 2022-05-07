@@ -12,8 +12,8 @@ using System.Threading;
 
 internal static class Stage5
 {
-    public readonly record struct Result(DocumentationFile Documentation, DefinedType TypeDefinition, string Unit, bool Biased,
-        string UnitQuantity, IEnumerable<UnitAliasParameters> UnitAliases, IEnumerable<DerivedUnitParameters> DerivedUnits,
+    public readonly record struct Result(DefinedType TypeDefinition, string Unit, bool Biased, string UnitQuantity, DocumentationFile Documentation,
+        IEnumerable<UnitAliasParameters> UnitAliases, IEnumerable<DerivedUnitParameters> DerivedUnits,
         IEnumerable<FixedUnitParameters> FixedUnits, IEnumerable<OffsetUnitParameters> OffsetUnits,
         IEnumerable<PrefixedUnitParameters> PrefixedUnits, IEnumerable<ScaledUnitParameters> ScaledUnits,
         PowerData? InvertibleOperations, PowerData? SquarableOperations, PowerData? CubableOperations, PowerData? SquareRootableOperations,
@@ -68,7 +68,7 @@ internal static class Stage5
         IncludeBasesParameters includedBases = IncludeBasesParser.Parser.ParseFirst(input.TypeSymbol) ?? IncludeBasesParameters.Empty;
         ExcludeBasesParameters excludedBases = ExcludeBasesParser.Parser.ParseFirst(input.TypeSymbol) ?? ExcludeBasesParameters.Empty;
 
-        return new Result(input.Documentation, DefinedType.FromSymbol(input.TypeSymbol), input.Unit, input.Biased, input.UnitQuantity,
+        return new Result(DefinedType.FromSymbol(input.TypeSymbol), input.Unit, input.Biased, input.UnitQuantity, input.Documentation,
             input.UnitAliases, input.DerivedUnits, input.FixedUnits, input.OffsetUnits, input.PrefixedUnits, input.ScaledUnits,
             invertibleParsed, squarableParsed, cubableParsed, squareRootableParsed, cubeRootableParsed, includedUnits, excludedUnits, includedBases,
             excludedBases);

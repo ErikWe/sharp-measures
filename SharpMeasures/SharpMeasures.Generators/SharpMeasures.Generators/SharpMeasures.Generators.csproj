@@ -28,7 +28,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.Parsing\SharpMeasures.Generators.Attributes.Parsing.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
 		<ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
-		<ProjectReference Include="..\SharpMeasures.Generators.RoslynExtensions\SharpMeasures.Generators.RoslynExtensions.csproj" />
+		<ProjectReference Include="..\SharpMeasures.Generators.RoslynExtensions\SharpMeasures.Generators.RoslynExtensions.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
 	</ItemGroup>
 	
 	<ItemGroup>

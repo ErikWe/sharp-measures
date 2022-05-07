@@ -12,7 +12,8 @@ internal static class GeneratedUnitProperties
     public static ReadOnlyCollection<AttributeProperty<GeneratedUnitParameters>> AllProperties => Array.AsReadOnly(new[]
     {
         Quantity,
-        AllowBias
+        AllowBias,
+        GenerateDocumentation
     });
 
     public static AttributeProperty<GeneratedUnitParameters> Quantity { get; } = new
@@ -25,5 +26,13 @@ internal static class GeneratedUnitProperties
     (
         name: nameof(GeneratedUnitAttribute.AllowBias),
         setter: static (parameters, obj) => obj is bool allowBias ? parameters with { AllowBias = allowBias } : parameters
+    );
+
+    public static AttributeProperty<GeneratedUnitParameters> GenerateDocumentation { get; } = new
+    (
+        name: nameof(GeneratedUnitAttribute.GenerateDocumentation),
+        setter: static (parameters, obj) => obj is bool generateDocumentation
+            ? parameters with { GenerateDocumentation = generateDocumentation, ParsingData = parameters.ParsingData with { ExplicitGenerateDocumentation = true } }
+            : parameters
     );
 }

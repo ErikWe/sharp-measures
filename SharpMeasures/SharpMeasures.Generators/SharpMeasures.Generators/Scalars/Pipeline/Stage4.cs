@@ -10,11 +10,9 @@ using System.Threading;
 
 internal static class Stage4
 {
-    public readonly record struct Result(DocumentationFile Documentation, INamedTypeSymbol TypeSymbol, string Unit, bool Biased,
-        string UnitQuantity, IEnumerable<UnitAliasParameters> UnitAliases,
-        IEnumerable<DerivedUnitParameters> DerivedUnits, IEnumerable<FixedUnitParameters> FixedUnits,
-        IEnumerable<OffsetUnitParameters> OffsetUnits, IEnumerable<PrefixedUnitParameters> PrefixedUnits,
-        IEnumerable<ScaledUnitParameters> ScaledUnits);
+    public readonly record struct Result(INamedTypeSymbol TypeSymbol, string Unit, bool Biased, string UnitQuantity, DocumentationFile Documentation,
+        IEnumerable<UnitAliasParameters> UnitAliases, IEnumerable<DerivedUnitParameters> DerivedUnits, IEnumerable<FixedUnitParameters> FixedUnits,
+        IEnumerable<OffsetUnitParameters> OffsetUnits, IEnumerable<PrefixedUnitParameters> PrefixedUnits, IEnumerable<ScaledUnitParameters> ScaledUnits);
 
     public static IncrementalValuesProvider<Result> Attach(IncrementalValuesProvider<Stage3.Result> inputProvider)
         => inputProvider.Select(ExtractUnitData).WhereNotNull();
@@ -33,7 +31,7 @@ internal static class Stage4
         IEnumerable<PrefixedUnitParameters> prefixedInstances = PrefixedUnitParser.Parser.Parse(input.UnitSymbol);
         IEnumerable<ScaledUnitParameters> scaledInstances = ScaledUnitParser.Parser.Parse(input.UnitSymbol);
 
-        return new Result(input.Documentation, input.TypeSymbol, input.UnitSymbol.ToDisplayString(), input.Biased, unitQuantity,
+        return new Result(input.TypeSymbol, input.UnitSymbol.ToDisplayString(), input.Biased, unitQuantity, input.Documentation,
             aliasInstances, derivedInstances, fixedInstances, offsetInstances, prefixedInstances, scaledInstances);
     }
 }

@@ -25,22 +25,34 @@ internal class DocumentationFileBuilder
 
         foreach (DocumentationFileBuilder builder in builders.Values)
         {
-            builder.ResolveDependencies(builders);
+            if (!builder.IsUtility)
+            {
+                builder.ResolveDependencies(builders);
+            }
         }
 
         foreach (DocumentationFileBuilder builder in builders.Values)
         {
-            builder.AddTagsFromDependencies();
+            if (!builder.IsUtility)
+            {
+                builder.AddTagsFromDependencies();
+            }
         }
 
         foreach (DocumentationFileBuilder builder in builders.Values)
         {
-            builder.ResolveTags();
+            if (!builder.IsUtility)
+            {
+                builder.ResolveAllTagContents();
+            }
         }
 
         foreach (DocumentationFileBuilder builder in builders.Values)
         {
-            builder.CommentTags();
+            if (!builder.IsUtility)
+            {
+                builder.CommentAllTags();
+            }
         }
 
         IReadOnlyDictionary<string, DocumentationFile> documentationFiles = builders.Values.Select(finalizeBuilders).ToDictionary(static (file) => file.Name);
@@ -115,26 +127,30 @@ internal class DocumentationFileBuilder
         }
     }
 
-    private void ResolveTags()
+    private void ResolveAllTagContents()
     {
-        foreach (string tag in Content.Keys)
+        List<string> keys = new(Content.Keys);
+
+        foreach (string tag in keys)
         {
             if (!ResolvedTags.Contains(tag))
             {
-                ResolveTag(tag);
+                ResolveTagContent(tag);
             }
         }
     }
 
-    private void CommentTags()
+    private void CommentAllTags()
     {
-        foreach (KeyValuePair<string, string> tag in Content)
+        List<string> keys = new(Content.Keys);
+
+        foreach (string tag in keys)
         {
-            Content[tag.Key] = DocumentationParsing.CommentText(tag.Value);
+            Content[tag] = DocumentationParsing.CommentText(Content[tag]);
         }
     }
 
-    private void ResolveTag(string tag)
+    private void ResolveTagContent(string tag)
     {
         ResolvedTags.Add(tag); // This is done before actually resolving, otherwise recursive tags loop indefinitely
         Content[tag] = ResolveText(Content[tag]);
@@ -152,7 +168,7 @@ internal class DocumentationFileBuilder
             {
                 text = DocumentationParsing.ResolveInvokation(tag, text, tagText);
             }
-            else if (!IsUtility)
+            else
             {
                 CreateMissingTagDiagnostics(tag);
             }
@@ -170,7 +186,7 @@ internal class DocumentationFileBuilder
                 return text;
             }
 
-            ResolveTag(tag);
+            ResolveTagContent(tag);
             return Content[tag];
         }
 

@@ -15,19 +15,12 @@ internal static class FullCase
         string source = @"
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
-using Uh = SharpMeasures.Generators.Units.GeneratedUnitAttribute;
 
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
 public class Length { }
 
-[GeneratedScalarQuantity(typeof(UnitOfTime))]
-public class Time { }
-
 [GeneratedUnit(typeof(Length))]
-public partial class UnitOfLength { }
-
-[Uh(typeof(Time))]
-public partial class UnitOfTime { }";
+public readonly partial record struct UnitOfLength { }";
 
         GeneratorDriver driver = DriverConstruction.Construct<UnitGenerator>(ProjectPath.Path);
 

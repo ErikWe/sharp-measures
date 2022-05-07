@@ -12,7 +12,8 @@ internal static class GeneratedScalarQuantityProperties
     public static ReadOnlyCollection<AttributeProperty<GeneratedScalarQuantityParameters>> AllProperties => Array.AsReadOnly(new[]
     {
         Unit,
-        Biased
+        Biased,
+        GenerateDocumentation
     });
 
     public static AttributeProperty<GeneratedScalarQuantityParameters> Unit { get; } = new
@@ -25,5 +26,13 @@ internal static class GeneratedScalarQuantityProperties
     (
         name: nameof(GeneratedScalarQuantityAttribute.Biased),
         setter: static (parameters, obj) => obj is bool biased ? parameters with { Biased = biased } : parameters
+    );
+
+    public static AttributeProperty<GeneratedScalarQuantityParameters> GenerateDocumentation { get; } = new
+    (
+        name: nameof(GeneratedScalarQuantityAttribute.GenerateDocumentation),
+        setter: static (parameters, obj) => obj is bool generateDocumentation
+            ? parameters with { GenerateDocumentation = generateDocumentation, ParsingData = parameters.ParsingData with { ExplicitGenerateDocumentation = true } }
+            : parameters
     );
 }
