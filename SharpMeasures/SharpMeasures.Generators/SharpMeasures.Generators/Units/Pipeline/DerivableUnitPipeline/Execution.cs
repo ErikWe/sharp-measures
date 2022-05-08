@@ -72,35 +72,6 @@ internal static class Execution
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0);
         }
 
-        private void ComposeTypeBlock(StringBuilder source, Indentation indentation)
-        {
-            foreach (DerivableUnitParameters parameters in DefinedDerivations)
-            {
-                ComposeDefinition(parameters, indentation);
-            }
-        }
-
-        private void ComposeDefinition(DerivableUnitParameters parameters, Indentation indentation)
-        {
-            IEnumerable<string> parameterNames = GetSignatureParameterNames(parameters.Signature);
-            IEnumerable<string> signatureComponents = GetSignatureComponents(parameters.Signature, parameterNames);
-
-            string tag = GetDocumentationTag(signatureComponents);
-
-            if (ImplementedDefinitions.Contains(tag))
-            {
-                CreateDuplicateDerivableDefinitionDiagnostics(signatureComponents);
-                return;
-            }
-
-            ImplementedDefinitions.Add(tag);
-
-            DocumentationBuilding.AppendDocumentation(Context, Builder, Documentation, indentation, tag);
-            Builder.Append($"{indentation}public static {UnitType.Name} From(");
-            IterativeBuilding.AppendEnumerable(Builder, signatureComponents, ", ");
-            Builder.Append($") => new({ParseExpression(parameters, parameterNames)});{Environment.NewLine}");
-        }
-
         private void ReportDiagnostics()
         {
             Context.ReportDiagnostics(Diagnostics);
@@ -118,10 +89,39 @@ internal static class Execution
             }
         }
 
+        private void ComposeTypeBlock(StringBuilder source, Indentation indentation)
+        {
+            foreach (DerivableUnitParameters parameters in DefinedDerivations)
+            {
+                ComposeDefinition(parameters, indentation);
+            }
+        }
+
+        private void ComposeDefinition(DerivableUnitParameters parameters, Indentation indentation)
+        {
+            IEnumerable<string> parameterNames = GetSignatureParameterNames(parameters.Signature);
+            IEnumerable<string> signatureComponents = GetSignatureComponents(parameters.Signature, parameterNames);
+
+            string tag = GetUniqueTagForSignature(signatureComponents);
+
+            if (ImplementedDefinitions.Contains(tag))
+            {
+                CreateDuplicateDerivableDefinitionDiagnostics(signatureComponents);
+                return;
+            }
+
+            ImplementedDefinitions.Add(tag);
+
+            DocumentationBuilding.AppendDocumentation(Context, Builder, Documentation, indentation, $"From_{tag}");
+            Builder.Append($"{indentation}public static {UnitType.Name} From(");
+            IterativeBuilding.AppendEnumerable(Builder, signatureComponents, ", ");
+            Builder.Append($") => new({ParseExpression(parameters, parameterNames)});{Environment.NewLine}");
+        }
+
         private void CreateDuplicateDerivableDefinitionDiagnostics(IEnumerable<string> signatureComponents)
         {
             StringBuilder signature = new();
-            IterativeBuilding.AppendEnumerable(signature, "[", signatureComponents, ",", "]");
+            IterativeBuilding.AppendEnumerable(signature, "[", signatureComponents, ", ", "]");
 
             Diagnostics.Add(DuplicateUnitDerivationSignatureDiagnostics.Create(Declaration, signature.ToString()));
         }
@@ -192,14 +192,11 @@ internal static class Execution
             }
         }
 
-        private static string GetDocumentationTag(IEnumerable<string> signature)
+        private static string GetUniqueTagForSignature(IEnumerable<string> signature)
         {
-            StringBuilder tag = new("From");
+            StringBuilder tag = new();
 
-            foreach (string component in signature)
-            {
-                tag.Append($"_{component}");
-            }
+            IterativeBuilding.AppendEnumerable(tag, signature, "_");
 
             return tag.ToString();
         }
