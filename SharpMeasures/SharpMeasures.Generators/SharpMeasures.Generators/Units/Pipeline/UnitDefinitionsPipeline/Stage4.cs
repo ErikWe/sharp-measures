@@ -19,7 +19,8 @@ internal static class Stage4
         IEnumerable<FixedUnitParameters> FixedUnits, IEnumerable<OffsetUnitParameters> OffsetUnits,
         IEnumerable<PrefixedUnitParameters> PrefixedUnits, IEnumerable<ScaledUnitParameters> ScaledUnits);
 
-    public static IncrementalValuesProvider<Result> Attach(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Stage3.Result> inputProvider)
+    public static IncrementalValuesProvider<Result> ExtractDefinitions(IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<Stage3.Result> inputProvider)
     {
         var resultsWithDiagnostics = inputProvider.Select(ExtractDefinitionsAndDiagnostics);
 
@@ -36,8 +37,8 @@ internal static class Stage4
         AExtractor<PrefixedUnitParameters> prefixedUnits = PrefixedUnitExtractor.Extract(input.TypeSymbol);
         AExtractor<ScaledUnitParameters> scaledUnits = ScaledUnitExtractor.Extract(input.TypeSymbol);
         
-        Result result = new(DefinedType.FromSymbol(input.TypeSymbol), input.Quantity, input.Biased, input.Documentation, unitAliases.ValidDefinitions,
-            derivedUnits.ValidDefinitions, fixedUnits.ValidDefinitions, offsetUnits.ValidDefinitions,
+        Result result = new(DefinedType.FromSymbol(input.TypeSymbol), NamedType.FromSymbol(input.QuantitySymbol), input.Biased, input.Documentation,
+            unitAliases.ValidDefinitions, derivedUnits.ValidDefinitions, fixedUnits.ValidDefinitions, offsetUnits.ValidDefinitions,
             prefixedUnits.ValidDefinitions, scaledUnits.ValidDefinitions);
 
         IEnumerable<Diagnostic> allDiagnostics = unitAliases.Diagnostics.Concat(derivedUnits.Diagnostics).Concat(fixedUnits.Diagnostics)

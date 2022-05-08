@@ -1,34 +1,32 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Pipeline;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Attributes.Parsing.Extraction;
 using SharpMeasures.Generators.Attributes.Parsing.Scalars;
 using SharpMeasures.Generators.Documentation;
-using SharpMeasures.Generators.Providers;
 using SharpMeasures.Generators.Scalars.Extraction;
 using SharpMeasures.Generators.Utility;
 
+using System.Threading;
+
 internal static class Stage2
 {
-    public readonly record struct Result(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol, INamedTypeSymbol UnitSymbol, bool Biased,
+    public readonly record struct Result(SharpMeasuresGenerator.DeclarationData Declaration, INamedTypeSymbol TypeSymbol, INamedTypeSymbol UnitSymbol, bool Biased,
         GenerateDocumentationState GenerateDocumentation);
 
-    public static IncrementalValuesProvider<Result> Attach(IncrementalGeneratorInitializationContext context,
-        IncrementalValuesProvider<TypeDeclarationSyntax> inputProvider)
+    public static IncrementalValuesProvider<Result> ParseParameters(IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<SharpMeasuresGenerator.Result> declarationAndSymbolProvider)
     {
-        var resultsWithDiagnostics
-            = DeclarationSymbolProvider.AttachToValueType(inputProvider, context.CompilationProvider, ExtractDeclaration, ExtractQuantityAndDiagnostics);
+        var parametersAndDiagnostics = declarationAndSymbolProvider.Select(ExtractParametersAndDiagnostics);
 
-        context.ReportDiagnostics(resultsWithDiagnostics);
-        return resultsWithDiagnostics.ExtractResult().WhereNotNull();
+        context.ReportDiagnostics(parametersAndDiagnostics);
+        return parametersAndDiagnostics.ExtractResult().WhereNotNull();
     }
 
-    private static TypeDeclarationSyntax ExtractDeclaration(TypeDeclarationSyntax declaration) => declaration;
-    private static ResultWithDiagnostics<Result?> ExtractQuantityAndDiagnostics(TypeDeclarationSyntax declaration, INamedTypeSymbol symbol)
+    private static ResultWithDiagnostics<Result?> ExtractParametersAndDiagnostics(SharpMeasuresGenerator.Result declarationAndSymbol, CancellationToken _)
     {
-        AExtractor<GeneratedScalarQuantityParameters> quantities = GeneratedScalarQuantityExtractor.Extract(symbol);
+        AExtractor<GeneratedScalarQuantityParameters> quantities = GeneratedScalarQuantityExtractor.Extract(declarationAndSymbol.TypeSymbol);
 
         if (quantities.ValidDefinitions.Count is 0
             || quantities.ValidDefinitions[0] is not GeneratedScalarQuantityParameters { Unit: INamedTypeSymbol unit } parameters)
@@ -43,8 +41,10 @@ internal static class Stage2
             (true, false) => GenerateDocumentationState.ExplicitlyDisabled
         };
 
-        Result result = new(declaration, symbol, unit, parameters.Biased, generateDocumentation);
+        Result result = new(declarationAndSymbol.Declaration, declarationAndSymbol.TypeSymbol, unit, parameters.Biased, generateDocumentation);
 
         return new ResultWithDiagnostics<Result?>(result, quantities.Diagnostics);
     }
+
+    private readonly record struct IntermediateResult(SharpMeasuresGenerator.DeclarationData Declaration, INamedTypeSymbol TypeSymbol);
 }

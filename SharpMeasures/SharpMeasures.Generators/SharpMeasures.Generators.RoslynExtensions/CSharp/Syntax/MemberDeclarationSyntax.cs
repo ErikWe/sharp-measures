@@ -1,6 +1,7 @@
 ﻿namespace Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using System;
+using System.Collections.Generic;
 
 public static partial class Extensions
 {
@@ -11,70 +12,88 @@ public static partial class Extensions
             throw new ArgumentNullException(nameof(declarationSyntax));
         }
 
-        foreach (SyntaxToken candidateToken in declarationSyntax.Modifiers)
-        {
-            if (candidateToken.IsKind(token))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return declarationSyntax.Modifiers.ContainsTokenOfKind(token);
     }
 
-    public static bool HasAttributeOfType<TAttribute>(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel)
-        => declarationSyntax.HasAttributeOfType(semanticModel, typeof(TAttribute));
+    public static AttributeSyntax? GetAttributeOfType<TAttribute>(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel)
+    {
+        return declarationSyntax.GetAttributeOfType(typeof(TAttribute), semanticModel);
+    }
 
-    public static bool HasAttributeOfType(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel, Type attributeType)
+    public static AttributeSyntax? GetAttributeOfType(this MemberDeclarationSyntax declarationSyntax, Type attributeType, SemanticModel semanticModel)
     {
         if (attributeType is null)
         {
             throw new ArgumentNullException(nameof(attributeType));
         }
 
-        return declarationSyntax.HasAttributeWithName(semanticModel, attributeType.FullName);
+        return declarationSyntax.GetAttributeWithName(attributeType.FullName, semanticModel);
     }
 
-    public static bool HasAttributeWithName(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel, string attributeName)
+    public static AttributeSyntax? GetAttributeWithName(this MemberDeclarationSyntax declarationSyntax, string attributeName, SemanticModel semanticModel)
     {
         if (declarationSyntax is null)
         {
             throw new ArgumentNullException(nameof(declarationSyntax));
         }
 
-        if (semanticModel is null)
+        foreach (AttributeListSyntax attributeList in declarationSyntax.AttributeLists)
         {
-            throw new ArgumentNullException(nameof(semanticModel));
+            if (attributeList.GetAttributeWithName(attributeName, semanticModel) is AttributeSyntax attributeSyntax)
+            {
+                return attributeSyntax;
+            }
         }
 
-        if (attributeName is null)
+        return null;
+    }
+
+    public static AttributeSyntax? GetFirstAttributeOfTypeIn(this MemberDeclarationSyntax declarationSyntax, IReadOnlyCollection<Type> attributeTypes,
+        SemanticModel semanticModel)
+    {
+        if (attributeTypes is null)
         {
-            return false;
+            throw new ArgumentNullException(nameof(attributeTypes));
+        }
+
+        string[] attributeNames = new string[attributeTypes.Count];
+
+        int index = 0;
+        foreach (Type attributeType in attributeTypes)
+        {
+            attributeNames[index++] = attributeType.FullName;
+        }
+
+        return GetFirstAttributeWithNameIn(declarationSyntax, attributeNames, semanticModel);
+    }
+
+    public static AttributeSyntax? GetFirstAttributeOfTypeIn(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel, params Type[] attributeTypes)
+    {
+        return GetFirstAttributeOfTypeIn(declarationSyntax, attributeTypes, semanticModel);
+    }
+
+    public static AttributeSyntax? GetFirstAttributeWithNameIn(this MemberDeclarationSyntax declarationSyntax, IReadOnlyCollection<string> attributeNames,
+        SemanticModel semanticModel)
+    {
+        if (declarationSyntax is null)
+        {
+            throw new ArgumentNullException(nameof(declarationSyntax));
         }
 
         foreach (AttributeListSyntax attributeList in declarationSyntax.AttributeLists)
         {
-            foreach (AttributeSyntax attribute in attributeList.Attributes)
+            if (attributeList.GetFirstAttributeWithNameIn(attributeNames, semanticModel) is AttributeSyntax attributeSyntax)
             {
-                if (isCorrectAttribute(attribute) || isAliasOfCorrectAttribute(attribute))
-                {
-                    return true;
-                }
+                return attributeSyntax;
             }
         }
 
-        return false;
+        return null;
+    }
 
-        bool isCorrectAttribute(AttributeSyntax syntax)
-            => (attributeName.EndsWith(syntax.Name.ToString(), StringComparison.Ordinal)
-                    || attributeName.EndsWith(syntax.Name.ToString() + "Attribute", StringComparison.Ordinal))
-                && semanticModel.GetSymbolInfo(syntax.Name).Symbol is IMethodSymbol attributeConstructorSymbol
-                && isSymbolCorrectAttribute(attributeConstructorSymbol.ContainingType);
-
-        bool isAliasOfCorrectAttribute(AttributeSyntax syntax)
-            => semanticModel.GetAliasInfo(syntax.Name) is IAliasSymbol { Target: INamedTypeSymbol aliasSymbol }
-                && isSymbolCorrectAttribute(aliasSymbol);
-
-        bool isSymbolCorrectAttribute(INamedTypeSymbol attributeSymbol) => attributeSymbol.ToDisplayString() == attributeName;
+    public static AttributeSyntax? GetFirstAttributeWithNameIn(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel,
+        params string[] attributeNames)
+    {
+        return GetFirstAttributeWithNameIn(declarationSyntax, attributeNames, semanticModel);
     }
 }

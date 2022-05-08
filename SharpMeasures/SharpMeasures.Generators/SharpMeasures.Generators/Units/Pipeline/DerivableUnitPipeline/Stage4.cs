@@ -14,10 +14,11 @@ using System.Threading;
 
 internal static class Stage4
 {
-    public readonly record struct Result(DefinedType TypeDefinition, NamedType Quantity, bool Biased, DocumentationFile Documentation,
-        IEnumerable<DerivableUnitParameters> DefinedDerivations);
+    public readonly record struct Result(SharpMeasuresGenerator.DeclarationData Declaration, DefinedType TypeDefinition, NamedType Quantity, bool Biased,
+        DocumentationFile Documentation, IEnumerable<DerivableUnitParameters> DefinedDerivations);
 
-    public static IncrementalValuesProvider<Result> Attach(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Stage3.Result> inputProvider)
+    public static IncrementalValuesProvider<Result> ExtractDerivableDefinitions(IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<Stage3.Result> inputProvider)
     {
         var resultsWithDiagnostics = inputProvider.Select(ExtractDefinitionsAndDiagnostics);
 
@@ -29,8 +30,8 @@ internal static class Stage4
     {
         AExtractor<DerivableUnitParameters> derivable = DerivableUnitExtractor.Extract(input.TypeSymbol);
 
-        Result result = new(DefinedType.FromSymbol(input.TypeSymbol), input.Quantity, input.Biased, input.Documentation,
-            derivable.ValidDefinitions);
+        Result result = new(input.Declaration, DefinedType.FromSymbol(input.TypeSymbol), NamedType.FromSymbol(input.QuantitySymbol), input.Biased,
+            input.Documentation, derivable.ValidDefinitions);
 
         return new ResultWithDiagnostics<Result>(result, derivable.Diagnostics);
     }

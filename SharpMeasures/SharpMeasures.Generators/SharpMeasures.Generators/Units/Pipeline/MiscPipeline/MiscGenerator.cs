@@ -6,7 +6,7 @@ internal static class MiscGenerator
 {
     public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Stage3.Result> provider)
     {
-        IncrementalValuesProvider<Stage4.Result> fourthStage = Stage4.Attach(provider);
+        IncrementalValuesProvider<Stage4.Result> fourthStage = Stage4.MinimizeData(provider);
 
         context.RegisterSourceOutput(fourthStage, Execution.Execute);
     }

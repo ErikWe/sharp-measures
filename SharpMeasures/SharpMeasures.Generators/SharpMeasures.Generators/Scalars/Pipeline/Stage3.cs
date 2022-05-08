@@ -8,13 +8,14 @@ internal static class Stage3
 {
     public readonly record struct Result(INamedTypeSymbol TypeSymbol, INamedTypeSymbol UnitSymbol, bool Biased, DocumentationFile Documentation);
 
-    public static IncrementalValuesProvider<Result> Attach(IncrementalGeneratorInitializationContext context,
+    public static IncrementalValuesProvider<Result> AttachDocumentation(IncrementalGeneratorInitializationContext context,
         IncrementalValuesProvider<Stage2.Result> inputProvider)
     {
         return Documentation.DocumentationProvider.Attach(context, inputProvider, ExtractData, ConstructResult);
     }
 
-    private static Documentation.DocumentationProvider.InputData ExtractData(Stage2.Result input) => new(input.Declaration, input.GenerateDocumentation);
+    private static Documentation.DocumentationProvider.InputData ExtractData(Stage2.Result input)
+        => new(input.Declaration.TypeDeclaration, input.GenerateDocumentation);
 
     private static Result ConstructResult(Stage2.Result input, DocumentationFile documentation)
         => new(input.TypeSymbol, input.UnitSymbol, input.Biased, documentation);

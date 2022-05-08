@@ -11,16 +11,16 @@ internal static class Stage4
 {
     public readonly record struct Result(DefinedType TypeDefinition, NamedType Quantity, DocumentationFile Documentation);
 
-    public static IncrementalValuesProvider<Result> Attach(IncrementalValuesProvider<Stage3.Result> inputProvider)
-        => inputProvider.Select(DiscardBiasedUnits).WhereNotNull();
+    public static IncrementalValuesProvider<Result> MinimizeData(IncrementalValuesProvider<Stage3.Result> inputProvider)
+        => inputProvider.Select(DiscardBiasedAndMinimizeData).WhereNotNull();
 
-    private static Result? DiscardBiasedUnits(Stage3.Result input, CancellationToken _)
+    private static Result? DiscardBiasedAndMinimizeData(Stage3.Result input, CancellationToken _)
     {
         if (input.Biased)
         {
             return null;
         }
 
-        return new Result(DefinedType.FromSymbol(input.TypeSymbol), input.Quantity, input.Documentation);
+        return new Result(DefinedType.FromSymbol(input.TypeSymbol), NamedType.FromSymbol(input.QuantitySymbol), input.Documentation);
     }
 }

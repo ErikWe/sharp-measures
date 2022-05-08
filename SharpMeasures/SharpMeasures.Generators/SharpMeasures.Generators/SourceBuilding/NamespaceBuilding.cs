@@ -2,6 +2,8 @@
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Generators.Utility;
+
 using System;
 using System.Text;
 
@@ -22,4 +24,7 @@ internal static class NamespaceBuilding
             source.Append($"namespace {namespaceName};{Environment.NewLine}{Environment.NewLine}");
         }
     }
+
+    public static void AppendNamespace(StringBuilder source, NamedType type) => AppendNamespace(source, type.Namespace);
+    public static void AppendNamespace(StringBuilder source, DefinedType type) => AppendNamespace(source, type.Namespace);
 }

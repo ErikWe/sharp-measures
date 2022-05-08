@@ -11,6 +11,7 @@ Measure1002	| Usage | Warning | TypeNotUnbiasedScalarQuantity
 Measure1003 | Usage | Warning | TypeNotUnit
 Measure1100 | Usage | Warning | InvalidUnitDerivationExpression
 Measure1101 | Usage | Warning | EmptyUnitDerivationSignature
+Measure1102 | Usage | Warning | DuplicateUnitDerivationSignature
 Measure1200 | Usage | Warning | InvalidUnitName
 Measure1201 | Usage | Warning | UnitNameNotRecognized
 Measure1202 | Usage | Warning | InvalidUnitPluralForm

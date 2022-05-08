@@ -3,15 +3,18 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-using SharpMeasures.Generators.Providers;
-
 internal static class Stage1
 {
-    public static IncrementalValuesProvider<TypeDeclarationSyntax> Attach(IncrementalGeneratorInitializationContext context)
+    public static IncrementalValuesProvider<SharpMeasuresGenerator.Result> ExtractRelevantDeclarations(IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<SharpMeasuresGenerator.Result> declarationAndSymbolProvider)
     {
-        var declarations = MarkedTypeDeclarationCandidateProvider.Attach<GeneratedScalarQuantityAttribute>(context.SyntaxProvider);
-        declarations = PartialDeclarationProvider.AttachAndReport(context, declarations, typeof(GeneratedScalarQuantityAttribute));
+        return declarationAndSymbolProvider.Combine(context.CompilationProvider).Where(IncludesGeneratedScalarQuantityAttribute).Select((x, _) => x.Left);
+    }
 
-        return declarations;
+    private static bool IncludesGeneratedScalarQuantityAttribute((SharpMeasuresGenerator.Result DeclarationAndSymbol, Compilation Compilation) data)
+    {
+        SemanticModel semanticModel = data.Compilation.GetSemanticModel(data.DeclarationAndSymbol.Declaration.AttributeSyntax.SyntaxTree);
+
+        return data.DeclarationAndSymbol.Declaration.AttributeSyntax.IsDescribedAttributeType<GeneratedScalarQuantityAttribute>(semanticModel);
     }
 }

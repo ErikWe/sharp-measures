@@ -6,7 +6,7 @@ internal static class ComparableGenerator
 {
     public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Stage3.Result> provider)
     {
-        IncrementalValuesProvider<Stage4.Result> fourthStage = Stage4.Attach(provider);
+        var fourthStage = Stage4.MinimizeData(provider);
 
         context.RegisterSourceOutput(fourthStage, Execution.Execute);
     }
