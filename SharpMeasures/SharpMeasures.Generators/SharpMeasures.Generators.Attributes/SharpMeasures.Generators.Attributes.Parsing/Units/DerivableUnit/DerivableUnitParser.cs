@@ -1,13 +1,14 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Units;
 
 using System;
 using System.Collections.Generic;
 
-public class DerivableUnitParser : AArgumentParser<DerivableUnitParameters>
+public class DerivableUnitParser : AArgumentParser<DerivableUnitDefinition>
 {
     public static DerivableUnitParser Parser { get; } = new();
 
@@ -16,7 +17,7 @@ public class DerivableUnitParser : AArgumentParser<DerivableUnitParameters>
 
     protected DerivableUnitParser() : base(DefaultParameters, DerivableUnitProperties.AllProperties) { }
 
-    public override IEnumerable<DerivableUnitParameters> Parse(INamedTypeSymbol typeSymbol)
+    public override IEnumerable<DerivableUnitDefinition> Parse(INamedTypeSymbol typeSymbol)
     {
         if (typeSymbol is null)
         {
@@ -26,11 +27,17 @@ public class DerivableUnitParser : AArgumentParser<DerivableUnitParameters>
         return Parse<DerivableUnitAttribute>(typeSymbol);
     }
 
-    private static DerivableUnitParameters DefaultParameters() => new
+    private protected override DerivableUnitDefinition AddCustomData(DerivableUnitDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax)
+    {
+        return definition with { Locations = definition.Locations.LocateBase(attributeSyntax) };
+    }
+
+    private static DerivableUnitDefinition DefaultParameters() => new
     (
-        Signature: Array.AsReadOnly(Array.Empty<INamedTypeSymbol>()),
-        Quantities: Array.AsReadOnly(Array.Empty<INamedTypeSymbol>()),
+        Signature: Array.Empty<NamedType>(),
+        Quantities: Array.Empty<NamedType>(),
         Expression: string.Empty,
+        Locations: new DerivableUnitLocations(),
         ParsingData: new DerivableUnitParsingData()
     );
 }

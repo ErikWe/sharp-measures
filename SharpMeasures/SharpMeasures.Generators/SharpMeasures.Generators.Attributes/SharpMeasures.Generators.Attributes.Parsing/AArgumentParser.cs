@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using System;
 using System.Collections.Generic;
@@ -32,10 +33,16 @@ public abstract class AArgumentParser<TParameters>
             throw new ArgumentNullException(nameof(attributeData));
         }
 
+        if (attributeData.GetSyntax() is not AttributeSyntax attributeSyntax)
+        {
+            throw new InvalidOperationException("Could not retrieve AttributeSyntax from AttributeData");
+        }
+
         TParameters parameters = DefaultValueConstructor();
 
-        parameters = AddConstructorArguments(parameters, attributeData);
-        parameters = AddNamedArguments(parameters, attributeData);
+        parameters = AddConstructorArguments(parameters, attributeData, attributeSyntax);
+        parameters = AddNamedArguments(parameters, attributeData, attributeSyntax);
+        parameters = AddCustomData(parameters, attributeData, attributeSyntax);
         return parameters;
     }
 
@@ -64,7 +71,7 @@ public abstract class AArgumentParser<TParameters>
 
     public abstract IEnumerable<TParameters> Parse(INamedTypeSymbol typeSymbol);
 
-    private TParameters AddConstructorArguments(TParameters parameters, AttributeData attributeData)
+    private TParameters AddConstructorArguments(TParameters parameters, AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
         if (attributeData.ConstructorArguments.IsEmpty
             || attributeData.AttributeConstructor?.Parameters is not ImmutableArray<IParameterSymbol> parameterSymbols)
@@ -92,38 +99,44 @@ public abstract class AArgumentParser<TParameters>
             {
                 parameters = property.Setter(parameters, attributeData.ConstructorArguments[i].Value);
             }
+
+            parameters = property.SyntaxSetter(parameters, attributeSyntax.ArgumentList!, i);
         }
 
         return parameters;
     }
 
-    private TParameters AddNamedArguments(TParameters parameters, AttributeData attributeData)
+    private TParameters AddNamedArguments(TParameters parameters, AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
         if (attributeData.NamedArguments.IsEmpty)
         {
             return parameters;
         }
 
-        foreach (KeyValuePair<string, TypedConstant> argument in attributeData.NamedArguments)
+        for (int i = 0; i < attributeData.NamedArguments.Length; i++)
         {
-            if (argument.Value.Kind is TypedConstantKind.Error
-                || !NamedParameters.TryGetValue(argument.Key, out AttributeProperty<TParameters> property))
+            if (attributeData.NamedArguments[i].Value.Kind is TypedConstantKind.Error
+                || !NamedParameters.TryGetValue(attributeData.NamedArguments[i].Key, out AttributeProperty<TParameters> property))
             {
                 continue;
             }
 
-            if (argument.Value.Kind is TypedConstantKind.Array)
+            if (attributeData.NamedArguments[i].Value.Kind is TypedConstantKind.Array)
             {
-                parameters = property.Setter(parameters, ParseArray(argument.Value));
+                parameters = property.Setter(parameters, ParseArray(attributeData.NamedArguments[i].Value));
             }
             else
             {
-                parameters = property.Setter(parameters, argument.Value.Value);
+                parameters = property.Setter(parameters, attributeData.NamedArguments[i].Value.Value);
             }
+
+            parameters = property.SyntaxSetter(parameters, attributeSyntax.ArgumentList!, attributeData.ConstructorArguments.Length + i);
         }
 
         return parameters;
     }
+
+    private protected virtual TParameters AddCustomData(TParameters parameters, AttributeData attributeData, AttributeSyntax attributeSyntax) => parameters;
 
     protected static int IndexOfArgument(AttributeProperty<TParameters> property, AttributeData attributeData)
         => ArgumentIndexParser.Parse(property, attributeData);

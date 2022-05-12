@@ -7,139 +7,108 @@ using System.Threading;
 
 internal static class DeclarationSymbolProvider
 {
-    public readonly record struct InputData(TypeDeclarationSyntax TypeDeclaration, Compilation Compilation);
+    public readonly record struct InputData(BaseTypeDeclarationSyntax TypeDeclaration, Compilation Compilation);
 
-    public delegate TIntermediate DInputTransform<TIn, TIntermediate>(TIn input);
-    public delegate TOut DOutputTransform<TIn, TOut>(TIn input, INamedTypeSymbol symbol);
+    public delegate InputData DInputTransform<in TIn>(TIn input);
+    public delegate BaseTypeDeclarationSyntax DPartialInputTransform<in TIn>(TIn input);
+    public delegate TOut DOutputTransform<in TIn, out TOut>(TIn input, INamedTypeSymbol symbol);
 
-    public static IncrementalValuesProvider<TOut> Attach<TIn, TOut>(IncrementalValuesProvider<TIn> inputProvider, DInputTransform<TIn, InputData> inputTransform,
-        DOutputTransform<TIn, TOut> outputTransform)
-        where TOut : class
-    {
-        Provider<TIn, TOut> provider = new(inputTransform, outputTransform);
+    private delegate TOut DNullableEraser<TOut, TNullableOut>(TNullableOut? output);
 
-        return provider.Attach(inputProvider).WhereNotNull();
-    }
-
-    public static IncrementalValuesProvider<TOut> AttachToValueType<TIn, TOut>(IncrementalValuesProvider<TIn> inputProvider,
-        DInputTransform<TIn, InputData> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
+    public static IProviderBuilder<TIn, TOut> ConstructForValueType<TIn, TOut>(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
         where TOut : struct
     {
-        return AttachToValueType(inputProvider, inputTransform, modifiedOutputTransform);
-
-        TOut? modifiedOutputTransform(TIn input, INamedTypeSymbol typeSymbol) => outputTransform(input, typeSymbol);
+        return new ProviderBuilder<TIn, TOut, TOut?>(inputTransform, NullifyOutputTransform(outputTransform), NullableEraser);
     }
 
-    public static IncrementalValuesProvider<TOut> AttachToValueType<TIn, TOut>(IncrementalValuesProvider<TIn> inputProvider,
-        DInputTransform<TIn, InputData> inputTransform, DOutputTransform<TIn, TOut?> outputTransform)
-        where TOut : struct
-    {
-        Provider<TIn, TOut?> provider = new(inputTransform, outputTransform);
-
-        return provider.Attach(inputProvider).WhereNotNull();
-    }
-
-    public static IncrementalValuesProvider<TOut> Attach<TIn, TOut>(IncrementalValuesProvider<TIn> inputProvider,
-        IncrementalValueProvider<Compilation> compilationProvider, DInputTransform<TIn, TypeDeclarationSyntax> inputTransform,
-        DOutputTransform<TIn, TOut> outputTransform)
+    public static IProviderBuilder<TIn, TOut> ConstructForReferenceType<TIn, TOut>(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
         where TOut : class
     {
-        IntermediateProvider<TIn, TOut> intermediateProvider = new(inputTransform, outputTransform);
-
-        return intermediateProvider.Attach(inputProvider, compilationProvider).WhereNotNull();
+        return new ProviderBuilder<TIn, TOut, TOut>(inputTransform, outputTransform, NullableEraser);
     }
 
-    public static IncrementalValuesProvider<TOut> AttachToValueType<TIn, TOut>(IncrementalValuesProvider<TIn> inputProvider,
-        IncrementalValueProvider<Compilation> compilationProvider, DInputTransform<TIn, TypeDeclarationSyntax> inputTransform,
+    public static IPartialProviderBuilder<TIn, TOut> ConstructForValueType<TIn, TOut>(DPartialInputTransform<TIn> inputTransform,
         DOutputTransform<TIn, TOut> outputTransform)
         where TOut : struct
     {
-        return AttachToValueType(inputProvider, compilationProvider, inputTransform, modifiedOutputTransform);
-
-        TOut? modifiedOutputTransform(TIn input, INamedTypeSymbol typeSymbol) => outputTransform(input, typeSymbol);
+        return new PartialProviderBuilder<TIn, TOut, TOut?>(inputTransform, NullifyOutputTransform(outputTransform), NullableEraser);
     }
 
-    public static IncrementalValuesProvider<TOut> AttachToValueType<TIn, TOut>(IncrementalValuesProvider<TIn> inputProvider,
-        IncrementalValueProvider<Compilation> compilationProvider, DInputTransform<TIn, TypeDeclarationSyntax> inputTransform,
-        DOutputTransform<TIn, TOut?> outputTransform)
-        where TOut : struct
-    {
-        IntermediateProvider<TIn, TOut?> intermediateProvider = new(inputTransform, outputTransform);
-
-        return intermediateProvider.Attach(inputProvider, compilationProvider).WhereNotNull();
-    }
-
-    public static IncrementalValuesProvider<TOut> Attach<TIn, TOut>(IncrementalValuesProvider<TIn> inputProvider,
-        IncrementalValueProvider<Compilation> compilationProvider, DOutputTransform<TIn, TOut> outputTransform)
-        where TIn : TypeDeclarationSyntax
+    public static IPartialProviderBuilder<TIn, TOut> ConstructForReferenceType<TIn, TOut>(DPartialInputTransform<TIn> inputTransform,
+        DOutputTransform<TIn, TOut> outputTransform)
         where TOut : class
     {
-        IntermediateProvider<TIn, TOut> intermediateProvider = new(static (x) => x, outputTransform);
-
-        return intermediateProvider.Attach(inputProvider, compilationProvider).WhereNotNull();
+        return new PartialProviderBuilder<TIn, TOut, TOut>(inputTransform, outputTransform, NullableEraser);
     }
 
-    public static IncrementalValuesProvider<TOut> AttachToValueType<TIn, TOut>(IncrementalValuesProvider<TIn> inputProvider,
-        IncrementalValueProvider<Compilation> compilationProvider, DOutputTransform<TIn, TOut> outputTransform)
-        where TIn : TypeDeclarationSyntax
+    public static IPartialProviderBuilder<TDeclaration, TOut> ConstructForValueType<TDeclaration, TOut>(DOutputTransform<TDeclaration, TOut> outputTransform)
+        where TDeclaration : BaseTypeDeclarationSyntax
         where TOut : struct
     {
-        return AttachToValueType(inputProvider, compilationProvider, modifiedOutputTransform);
+        return new PartialProviderBuilder<TDeclaration, TOut, TOut?>(inputTransform, NullifyOutputTransform(outputTransform), NullableEraser);
 
-        TOut? modifiedOutputTransform(TIn input, INamedTypeSymbol typeSymbol) => outputTransform(input, typeSymbol);
+        static BaseTypeDeclarationSyntax inputTransform(TDeclaration declaration) => declaration;
     }
 
-    public static IncrementalValuesProvider<TOut> AttachToValueType<TIn, TOut>(IncrementalValuesProvider<TIn> inputProvider,
-        IncrementalValueProvider<Compilation> compilationProvider, DOutputTransform<TIn, TOut?> outputTransform)
-        where TIn : TypeDeclarationSyntax
+    public static IPartialProviderBuilder<TDeclaration, TOut> ConstructForReferenceType<TDeclaration, TOut>(DOutputTransform<TDeclaration, TOut> outputTransform)
+        where TDeclaration : BaseTypeDeclarationSyntax
+        where TOut : class
+    {
+        return new PartialProviderBuilder<TDeclaration, TOut, TOut>(inputTransform, outputTransform, NullableEraser);
+
+        static BaseTypeDeclarationSyntax inputTransform(TDeclaration declaration) => declaration;
+    }
+
+    private static TOut NullableEraser<TOut>(TOut? result) where TOut : struct
+    {
+        return result!.Value;
+    }
+
+    private static TOut NullableEraser<TOut>(TOut? result) where TOut : class
+    {
+        return result!;
+    }
+
+    private static DOutputTransform<TIn, TOut?> NullifyOutputTransform<TIn, TOut>(DOutputTransform<TIn, TOut> outputTransform)
         where TOut : struct
     {
-        IntermediateProvider<TIn, TOut?> intermediateProvider = new(static (x) => x, outputTransform);
+        return toNullable;
 
-        return intermediateProvider.Attach(inputProvider, compilationProvider).WhereNotNull();
+        TOut? toNullable(TIn input, INamedTypeSymbol symbol) => outputTransform(input, symbol);
     }
 
-    private class IntermediateProvider<TIn, TOut>
+    public interface IProviderBuilder<TIn, TOut>
     {
-        private Provider<(TIn, Compilation), TOut> ActualProvider { get; }
+        public abstract IncrementalValuesProvider<TOut> Attach(IncrementalValuesProvider<TIn> inputProvider);
+    }
 
-        private DInputTransform<TIn, TypeDeclarationSyntax> InputTransform { get; }
-        private DOutputTransform<TIn, TOut> OutputTransform { get; }
+    public interface IPartialProviderBuilder<TIn, TOut>
+    {
+        public abstract IncrementalValuesProvider<TOut> Attach(IncrementalValuesProvider<TIn> inputProvider, IncrementalValueProvider<Compilation> compilationProvider);
+    }
 
-        public IntermediateProvider(DInputTransform<TIn, TypeDeclarationSyntax> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
+    private sealed class ProviderBuilder<TIn, TOut, TNullableOut> : IProviderBuilder<TIn, TOut>
+    {
+        private DInputTransform<TIn> InputTransform { get; }
+        private DOutputTransform<TIn, TNullableOut> OutputTransform { get; }
+
+        private DNullableEraser<TOut, TNullableOut> NullableEraser { get; }
+
+        public ProviderBuilder(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TNullableOut> outputTransform,
+            DNullableEraser<TOut, TNullableOut> nullableEraser)
         {
             InputTransform = inputTransform;
             OutputTransform = outputTransform;
 
-            ActualProvider = new(ConstructInputData, ConstructOutput);
+            NullableEraser = nullableEraser;
         }
 
-        public IncrementalValuesProvider<TOut?> Attach(IncrementalValuesProvider<TIn> inputProvider, IncrementalValueProvider<Compilation> compilationProvider)
+        public IncrementalValuesProvider<TOut> Attach(IncrementalValuesProvider<TIn> inputProvider)
         {
-            return ActualProvider.Attach(inputProvider.Combine(compilationProvider));
+            return inputProvider.Select(ExtractSymbol).Where(IsCorrectlyExtracted).Select(EraseNullable);
         }
 
-        private InputData ConstructInputData((TIn Input, Compilation Compilation) data) => new(InputTransform(data.Input), data.Compilation);
-        private TOut ConstructOutput((TIn Input, Compilation Compilation) data, INamedTypeSymbol symbol) => OutputTransform(data.Input, symbol);
-    }
-
-    private class Provider<TIn, TOut>
-    {
-        private DInputTransform<TIn, InputData> InputTransform { get; }
-        private DOutputTransform<TIn, TOut> OutputTransform { get; }
-
-        public Provider(DInputTransform<TIn, InputData> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
-        {
-            InputTransform = inputTransform;
-            OutputTransform = outputTransform;
-        }
-
-        public IncrementalValuesProvider<TOut?> Attach(IncrementalValuesProvider<TIn> inputProvider)
-        {
-            return inputProvider.Select(ExtractSymbol);
-        }
-
-        private TOut? ExtractSymbol(TIn input, CancellationToken token)
+        private TNullableOut? ExtractSymbol(TIn input, CancellationToken token)
         {
             InputData data = InputTransform(input);
 
@@ -152,5 +121,37 @@ internal static class DeclarationSymbolProvider
                 return default;
             }
         }
+
+        private bool IsCorrectlyExtracted(TNullableOut? result)
+        {
+            return result is not null;
+        }
+
+        private TOut EraseNullable(TNullableOut? result, CancellationToken _) => NullableEraser(result);
+    }
+
+    private sealed class PartialProviderBuilder<TIn, TOut, TNullableOut> : IPartialProviderBuilder<TIn, TOut>
+    {
+        private ProviderBuilder<(TIn, Compilation), TOut, TNullableOut> ActualProvider { get; }
+
+        private DPartialInputTransform<TIn> InputTransform { get; }
+        private DOutputTransform<TIn, TNullableOut> OutputTransform { get; }
+
+        public PartialProviderBuilder(DPartialInputTransform<TIn> inputTransform, DOutputTransform<TIn, TNullableOut> outputTransform,
+            DNullableEraser<TOut, TNullableOut> nullableEraser)
+        {
+            InputTransform = inputTransform;
+            OutputTransform = outputTransform;
+
+            ActualProvider = new(ConstructInputData, ConstructOutput, nullableEraser);
+        }
+
+        public IncrementalValuesProvider<TOut> Attach(IncrementalValuesProvider<TIn> inputProvider, IncrementalValueProvider<Compilation> compilationProvider)
+        {
+            return ActualProvider.Attach(inputProvider.Combine(compilationProvider));
+        }
+
+        private InputData ConstructInputData((TIn Input, Compilation Compilation) data) => new(InputTransform(data.Input), data.Compilation);
+        private TNullableOut ConstructOutput((TIn Input, Compilation Compilation) data, INamedTypeSymbol symbol) => OutputTransform(data.Input, symbol);
     }
 }

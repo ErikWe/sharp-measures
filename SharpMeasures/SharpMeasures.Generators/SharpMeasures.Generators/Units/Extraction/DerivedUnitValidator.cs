@@ -14,7 +14,7 @@ using System.Collections.Generic;
 internal class DerivedUnitValidator : UnitDefinitionValidator<DerivedUnitParameters>
 {
     private INamedTypeSymbol UnitSymbol { get; }
-    private IEnumerable<DerivableUnitParameters> DerivableDefinitions { get; }
+    private IEnumerable<DerivableUnitDefinition> DerivableDefinitions { get; }
     private Dictionary<INamedTypeSymbol, HashSet<string>> UnitDefinitionsOnTypes { get; }
 
     public DerivedUnitValidator(INamedTypeSymbol unitSymbol)
@@ -54,9 +54,9 @@ internal class DerivedUnitValidator : UnitDefinitionValidator<DerivedUnitParamet
         return ExtractionValidity.Valid;
     }
 
-    private static bool ExistsMatchingDerivableSignature(DerivedUnitParameters parameters, IEnumerable<DerivableUnitParameters> derivableDefinitions)
+    private static bool ExistsMatchingDerivableSignature(DerivedUnitParameters parameters, IEnumerable<DerivableUnitDefinition> derivableDefinitions)
     {
-        foreach (DerivableUnitParameters derivable in derivableDefinitions)
+        foreach (DerivableUnitDefinition derivable in derivableDefinitions)
         {
             IEnumerator<INamedTypeSymbol> targetSignatureEnumerator = parameters.Signature.GetEnumerator();
             IEnumerator<INamedTypeSymbol> candidateSignatureEnumerator = derivable.Signature.GetEnumerator();
@@ -169,7 +169,7 @@ internal class DerivedUnitValidator : UnitDefinitionValidator<DerivedUnitParamet
     {
         Dictionary<INamedTypeSymbol, HashSet<string>> unitDefinitionsOnTypes = new(SymbolEqualityComparer.Default);
 
-        foreach (DerivableUnitParameters derivableDefinition in DerivableDefinitions)
+        foreach (DerivableUnitDefinition derivableDefinition in DerivableDefinitions)
         {
             foreach (INamedTypeSymbol originUnitSymbol in derivableDefinition.Signature)
             {

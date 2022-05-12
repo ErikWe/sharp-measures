@@ -9,30 +9,33 @@ using System.Collections.ObjectModel;
 
 internal static class GeneratedUnitProperties
 {
-    public static ReadOnlyCollection<AttributeProperty<GeneratedUnitParameters>> AllProperties => Array.AsReadOnly(new[]
+    public static ReadOnlyCollection<AttributeProperty<GeneratedUnitDefinition>> AllProperties => Array.AsReadOnly(new[]
     {
         Quantity,
         AllowBias,
         GenerateDocumentation
     });
 
-    public static AttributeProperty<GeneratedUnitParameters> Quantity { get; } = new
+    public static AttributeProperty<GeneratedUnitDefinition> Quantity { get; } = new
     (
         name: nameof(GeneratedUnitAttribute.Quantity),
-        setter: static (parameters, obj) => parameters with { Quantity = obj as INamedTypeSymbol }
+        setter: static (definition, obj) => definition with { Quantity = obj as INamedTypeSymbol },
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateQuantity(syntax, index) }
     );
 
-    public static AttributeProperty<GeneratedUnitParameters> AllowBias { get; } = new
+    public static AttributeProperty<GeneratedUnitDefinition> AllowBias { get; } = new
     (
         name: nameof(GeneratedUnitAttribute.AllowBias),
-        setter: static (parameters, obj) => obj is bool allowBias ? parameters with { AllowBias = allowBias } : parameters
+        setter: static (definition, obj) => obj is bool allowBias ? definition with { AllowBias = allowBias } : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateAllowBias(syntax, index) }
     );
 
-    public static AttributeProperty<GeneratedUnitParameters> GenerateDocumentation { get; } = new
+    public static AttributeProperty<GeneratedUnitDefinition> GenerateDocumentation { get; } = new
     (
         name: nameof(GeneratedUnitAttribute.GenerateDocumentation),
-        setter: static (parameters, obj) => obj is bool generateDocumentation
-            ? parameters with { GenerateDocumentation = generateDocumentation, ParsingData = parameters.ParsingData with { ExplicitGenerateDocumentation = true } }
-            : parameters
+        setter: static (definition, obj) => obj is bool generateDocumentation
+            ? definition with { GenerateDocumentation = generateDocumentation, ParsingData = definition.ParsingData with { ExplicitGenerateDocumentation = true } }
+            : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateGenerateDocumentation(syntax, index) }
     );
 }

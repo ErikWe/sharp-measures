@@ -20,9 +20,9 @@ using SharpMeasures.Generators.Units;
 public class Length { }
 
 [GeneratedUnit(typeof(Length))]
-public readonly partial record struct UnitOfLength { }";
+public partial class UnitOfLength { }";
 
-        GeneratorDriver driver = DriverConstruction.Construct<UnitGenerator>(ProjectPath.Path);
+        GeneratorDriver driver = DriverConstruction.Construct<SharpMeasuresGenerator>(ProjectPath.Path);
 
         Stopwatch stopwatch = Stopwatch.StartNew();
 

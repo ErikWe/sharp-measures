@@ -9,13 +9,13 @@ using SharpMeasures.Generators.Attributes.Parsing.Units;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Diagnostics.DerivableUnits;
 
-internal class DerivableUnitValidator : IValidator<DerivableUnitParameters>
+internal class DerivableUnitValidator : IValidator<DerivableUnitDefinition>
 {
     public static DerivableUnitValidator Validator { get; } = new();
 
     private DerivableUnitValidator() { }
 
-    public ExtractionValidity Check(AttributeData attributeData, DerivableUnitParameters parameters)
+    public ExtractionValidity Check(AttributeData attributeData, DerivableUnitDefinition parameters)
     {
         if (CheckExpressionValidity(attributeData, parameters) is ExtractionValidity { IsInvalid: true } invalidExpression)
         {
@@ -30,7 +30,7 @@ internal class DerivableUnitValidator : IValidator<DerivableUnitParameters>
         return ExtractionValidity.Valid;
     }
 
-    private static ExtractionValidity CheckExpressionValidity(AttributeData attributeData, DerivableUnitParameters parameters)
+    private static ExtractionValidity CheckExpressionValidity(AttributeData attributeData, DerivableUnitDefinition parameters)
     {
         if (string.IsNullOrEmpty(parameters.Expression))
         {
@@ -40,7 +40,7 @@ internal class DerivableUnitValidator : IValidator<DerivableUnitParameters>
         return ExtractionValidity.Valid;
     }
 
-    private static ExtractionValidity CheckSignatureValidity(AttributeData attributeData, DerivableUnitParameters parameters)
+    private static ExtractionValidity CheckSignatureValidity(AttributeData attributeData, DerivableUnitDefinition parameters)
     {
         if (parameters.ParsingData.EmptySignature)
         {
@@ -81,7 +81,7 @@ internal class DerivableUnitValidator : IValidator<DerivableUnitParameters>
         return null;
     }
 
-    private static Diagnostic? CreateTypeNotUnitDiagnostics(AttributeData attributeData, DerivableUnitParameters parameters)
+    private static Diagnostic? CreateTypeNotUnitDiagnostics(AttributeData attributeData, DerivableUnitDefinition parameters)
     {
         if (parameters.ParsingData.InvalidIndex < 0 || parameters.ParsingData.InvalidIndex >= parameters.Signature.Count)
         {

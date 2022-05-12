@@ -1,36 +1,19 @@
 ﻿namespace SharpMeasures.Generators.Documentation;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.Diagnostics.Documentation;
 using SharpMeasures.Generators.Utility;
 
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
 
-internal readonly record struct DocumentationFile
+internal readonly record struct DocumentationFile(string Name, MinimalLocation? Location, IReadOnlyDictionary<string, string> Content)
 {
-    public static DocumentationFile Empty => new(string.Empty, new ReadOnlyDictionary<string, string>(new Dictionary<string, string>()));
-
-    private AdditionalText? File { get; }
-
-    public string Name { get; }
-    
-    private ReadOnlyDictionary<string, string> Content { get; }
-
-    private DocumentationFile(string name, ReadOnlyDictionary<string, string> content)
-    {
-        File = null;
-        Name = name;
-        Content = content;
-    }
-
-    public DocumentationFile(AdditionalText file, string name, ReadOnlyDictionary<string, string> content)
-    {
-        File = file;
-        Name = name;
-        Content = content;
-    }
+    public DocumentationFile(AdditionalText file, string name, IReadOnlyDictionary<string, string> content)
+        : this(name, DetermineFileLocation(file), content) { }
 
     public ResultWithDiagnostics<string> ResolveTag(string tag)
     {
@@ -58,13 +41,42 @@ internal readonly record struct DocumentationFile
         return resultAndDiagnostics.Result;
     }
 
-    private Diagnostic? CreateMissingTagDiagnostics(string tag)
+    private static MinimalLocation? DetermineFileLocation(AdditionalText file)
     {
-        if (File is null)
+        if (file.GetText() is not SourceText text)
         {
             return null;
         }
 
-        return DocumentationFileMissingRequestedTagDiagnostics.Create(File, tag);
+        LinePositionSpan span = new(new LinePosition(0, 0), new LinePosition(text.Lines.Count - 1, text.Lines[text.Lines.Count - 1].End));
+        return MinimalLocation.FromLocation(Microsoft.CodeAnalysis.Location.Create(file.Path, TextSpan.FromBounds(0, file.ToString().Length - 1), span));
+    }
+
+    private Diagnostic? CreateMissingTagDiagnostics(string tag)
+    {
+        if (Location is null)
+        {
+            return null;
+        }
+
+        return DocumentationFileMissingRequestedTagDiagnostics.Create(Location.Value.ToLocation(), Name, tag);
+    }
+
+    public bool Equals(DocumentationFile other)
+    {
+        return Name == other.Name && Location == other.Location
+            && Content.OrderBy(static (x) => x.Key).SequenceEqual(other.Content.OrderBy(static (x) => x.Key));
+    }
+
+    public override int GetHashCode()
+    {
+        int hashCode = (Name, Location).GetHashCode();
+
+        foreach (KeyValuePair<string, string> entry in Content)
+        {
+            hashCode ^= entry.GetHashCode();
+        }
+
+        return hashCode;
     }
 }

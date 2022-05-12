@@ -1,13 +1,14 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Units;
 
 using System;
 using System.Collections.Generic;
 
-public class GeneratedUnitParser : AArgumentParser<GeneratedUnitParameters>
+public class GeneratedUnitParser : AArgumentParser<GeneratedUnitDefinition>
 {
     public static GeneratedUnitParser Parser { get; } = new();
 
@@ -17,7 +18,7 @@ public class GeneratedUnitParser : AArgumentParser<GeneratedUnitParameters>
 
     protected GeneratedUnitParser() : base(DefaultParameters, GeneratedUnitProperties.AllProperties) { }
 
-    public override IEnumerable<GeneratedUnitParameters> Parse(INamedTypeSymbol typeSymbol)
+    public override IEnumerable<GeneratedUnitDefinition> Parse(INamedTypeSymbol typeSymbol)
     {
         if (typeSymbol is null)
         {
@@ -27,7 +28,7 @@ public class GeneratedUnitParser : AArgumentParser<GeneratedUnitParameters>
         return Parse<GeneratedUnitAttribute>(typeSymbol);
     }
 
-    public GeneratedUnitParameters? ParseFirst(INamedTypeSymbol typeSymbol)
+    public GeneratedUnitDefinition? ParseFirst(INamedTypeSymbol typeSymbol)
     {
         if (typeSymbol is null)
         {
@@ -42,11 +43,17 @@ public class GeneratedUnitParser : AArgumentParser<GeneratedUnitParameters>
         return null;
     }
 
-    private static GeneratedUnitParameters DefaultParameters() => new
+    private protected override GeneratedUnitDefinition AddCustomData(GeneratedUnitDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax)
+    {
+        return definition with { Locations = definition.Locations.LocateBase(attributeSyntax) };
+    }
+
+    private static GeneratedUnitDefinition DefaultParameters() => new
     (
         Quantity: null,
         AllowBias: false,
         GenerateDocumentation: false,
+        Locations: new GeneratedUnitLocations(),
         ParsingData: new GeneratedUnitParsingData()
     );
 }

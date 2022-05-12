@@ -3,10 +3,19 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-internal readonly record struct DefinedType(string Name, string Namespace, Accessibility Accessibility, bool IsReadOnly, bool IsRecord, bool IsValueType)
+using System;
+
+public readonly record struct DefinedType(string Name, string Namespace, Accessibility Accessibility, bool IsReadOnly, bool IsRecord, bool IsValueType)
 {
+    public static DefinedType Empty { get; } = new(string.Empty, string.Empty, Accessibility.NotApplicable, false, false, false);
+
     public static DefinedType FromSymbol(INamedTypeSymbol symbol)
     {
+        if (symbol is null)
+        {
+            throw new ArgumentNullException(nameof(symbol));
+        }
+
         NamedType namedType = NamedType.FromSymbol(symbol);
 
         return new(namedType.Name, namedType.Namespace, symbol.DeclaredAccessibility, symbol.IsReadOnly, symbol.IsRecord, symbol.IsValueType);

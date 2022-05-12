@@ -27,7 +27,7 @@ internal class GeneratedScalarQuantityValidator : IValidator<GeneratedScalarQuan
     private static ExtractionValidity CheckUnitValidity(AttributeData attributeData, GeneratedScalarQuantityParameters parameters)
     {
         if (parameters.Unit is null
-            || GeneratedUnitParser.Parser.ParseFirst(parameters.Unit) is not GeneratedUnitParameters unitParameters)
+            || GeneratedUnitParser.Parser.ParseFirst(parameters.Unit) is not GeneratedUnitDefinition unitParameters)
         {
             return ExtractionValidity.Invalid(CreateTypeIsNotScalarQuantityDiagnostics(attributeData));
         }

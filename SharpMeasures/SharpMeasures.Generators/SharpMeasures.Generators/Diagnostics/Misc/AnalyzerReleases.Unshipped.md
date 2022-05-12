@@ -14,10 +14,11 @@ Measure1101 | Usage | Warning | EmptyUnitDerivationSignature
 Measure1102 | Usage | Warning | DuplicateUnitDerivationSignature
 Measure1200 | Usage | Warning | InvalidUnitName
 Measure1201 | Usage | Warning | UnitNameNotRecognized
-Measure1202 | Usage | Warning | InvalidUnitPluralForm
-Measure1203 | Usage | Warning | DerivedUnitSignatureNotRecognized
-Measure1204 | Usage | Warning | UnitListNotMatchingSignature
-Measure1205 | Usage | Warning | UndefinedPrefix
+Measure1202 | Usage | Warning | DuplicateUnitName
+Measure1203 | Usage | Warning | InvalidUnitPluralForm
+Measure1204 | Usage | Warning | DerivedUnitSignatureNotRecognized
+Measure1205 | Usage | Warning | UnitListNotMatchingSignature
+Measure1206 | Usage | Warning | UndefinedPrefix
 Measure1900 | Documentation | Info | UnresolvedDocumentationDependency
 Measure1901 | Documentation | Info | NoMatchingDocumentationFile
 Measure1902 | Documentation | Info | DocumentationFileMissingRequestedTag

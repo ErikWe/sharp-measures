@@ -8,18 +8,17 @@ using SharpMeasures.Generators.Units.Pipeline.UnitDefinitionsPipeline;
 using SharpMeasures.Generators.Units.Pipeline.DerivableUnitPipeline;
 using SharpMeasures.Generators.Units.Pipeline.MiscPipeline;
 
-internal static class UnitGenerator
+[Generator]
+public class UnitGenerator : IIncrementalGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context,
-        IncrementalValuesProvider<SharpMeasuresGenerator.Result> declarationAndSymbolProvider)
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var firstStage = Stage1.ExtractRelevantDeclarations(context, declarationAndSymbolProvider);
-        var secondStage = Stage2.ParseParameters(context, firstStage);
-        var thirdStage = Stage3.AttachDocumentation(context, secondStage);
+        var declarationsWithSymbols = DeclarationStage.ExtractRelevantPartialDeclarationsWithSymbols(context);
+        var withParameters = ParameterStage.ParseGeneratedUnitParameters(context, declarationsWithSymbols);
 
-        ComparableGenerator.Initialize(context, thirdStage);
-        UnitDefinitionsGenerator.Initialize(context, thirdStage);
-        DerivableUnitGenerator.Initialize(context, thirdStage);
-        MiscGenerator.Initialize(context, thirdStage);
+        ComparableGenerator.Initialize(context, withParameters);
+        UnitDefinitionsGenerator.Initialize(context, withParameters);
+        DerivableUnitGenerator.Initialize(context, withParameters);
+        MiscGenerator.Initialize(context, withParameters);
     }
 }

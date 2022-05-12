@@ -27,10 +27,8 @@ public static class DriverConstruction
         return CSharpGeneratorDriver.Create(generator).AddAdditionalTexts(additionalFiles);
     }
 
-    public static GeneratorDriver Run(string source, GeneratorDriver driver)
+    public static Compilation CreateCompilation(string source)
     {
-        ArgumentNullException.ThrowIfNull(driver, nameof(driver));
-
         SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source);
 
         IEnumerable<MetadataReference> references = AssemblyLoader.ReferencedAssemblies
@@ -38,10 +36,15 @@ public static class DriverConstruction
             .Select(static (assembly) => MetadataReference.CreateFromFile(assembly.Location))
             .Cast<MetadataReference>();
 
-        CSharpCompilation compilation = CSharpCompilation.Create("SharpMeasuresTesting", new[] { syntaxTree }, references,
+        return CSharpCompilation.Create("SharpMeasuresTesting", new[] { syntaxTree }, references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+    }
 
-        return driver.RunGenerators(compilation);
+    public static GeneratorDriver Run(string source, GeneratorDriver driver)
+    {
+        ArgumentNullException.ThrowIfNull(driver, nameof(driver));
+
+        return driver.RunGenerators(CreateCompilation(source));
     }
 
     private static ImmutableArray<AdditionalText> GetAdditionalFiles(string documentationDirectory)

@@ -28,7 +28,7 @@ internal static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DuplicateUnitDerivationSignature,
         title: "Duplicate derivation signature",
-        messageFormat: "The unit {0} has more than one definition of derivation signature {1}",
+        messageFormat: "The unit {0} has more than one definition of derivation signature [{1}]",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

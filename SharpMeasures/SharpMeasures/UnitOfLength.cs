@@ -8,5 +8,6 @@ using System;
 [GeneratedScalarQuantity(typeof(UnitOfLength))]
 public class Length { }
 
-[GeneratedUnit(typeof(Length))]
+[DerivableUnit("asd", new Type[] { typeof(Length), typeof(Length) })]
+[GeneratedUnit(typeof(Length), AllowBias = false)]
 public readonly partial record struct UnitOfLength { }

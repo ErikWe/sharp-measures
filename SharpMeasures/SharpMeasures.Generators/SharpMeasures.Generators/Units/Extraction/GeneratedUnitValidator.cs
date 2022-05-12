@@ -9,13 +9,13 @@ using SharpMeasures.Generators.Attributes.Parsing.Scalars;
 using SharpMeasures.Generators.Attributes.Parsing.Units;
 using SharpMeasures.Generators.Diagnostics;
 
-internal class GeneratedUnitValidator : IValidator<GeneratedUnitParameters>
+internal class GeneratedUnitValidator : IValidator<GeneratedUnitDefinition>
 {
     public static GeneratedUnitValidator Validator { get; } = new();
 
     private GeneratedUnitValidator() { }
 
-    public ExtractionValidity Check(AttributeData attributeData, GeneratedUnitParameters parameters)
+    public ExtractionValidity Check(AttributeData attributeData, GeneratedUnitDefinition parameters)
     {
         if (CheckQuantityValidity(attributeData, parameters) is ExtractionValidity { IsInvalid: true } invalidQuantity)
         {
@@ -25,7 +25,7 @@ internal class GeneratedUnitValidator : IValidator<GeneratedUnitParameters>
         return ExtractionValidity.Valid;
     }
 
-    private static ExtractionValidity CheckQuantityValidity(AttributeData attributeData, GeneratedUnitParameters parameters)
+    private static ExtractionValidity CheckQuantityValidity(AttributeData attributeData, GeneratedUnitDefinition parameters)
     {
         if (parameters.Quantity is null
             || GeneratedScalarQuantityParser.Parser.ParseFirst(parameters.Quantity) is not GeneratedScalarQuantityParameters quantityParameters)

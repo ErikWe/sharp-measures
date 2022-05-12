@@ -4,132 +4,114 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
 
 internal static class MarkedTypeDeclarationCandidateProvider
 {
-    public delegate TOut DOutputTransform<TOut>(TypeDeclarationSyntax declaration, AttributeSyntax attributeSyntax);
+    public delegate TOut DOutputTransform<out TOut>(TypeDeclarationSyntax declaration, AttributeSyntax attributeSyntax);
 
-    public static IncrementalValuesProvider<TOut> Attach<TOut, TAttribute>(SyntaxValueProvider syntaxProvider, DOutputTransform<TOut> outputTransform)
+    public static IProviderBuilder<TOut> Construct<TOut>(DOutputTransform<TOut> outputTransform)
     {
-        return Attach(syntaxProvider, typeof(TAttribute), outputTransform);
+        return new ProviderBuilder<TOut>(outputTransform);
     }
 
-    public static IncrementalValuesProvider<TOut> Attach<TOut>(SyntaxValueProvider syntaxProvider, Type attributeType,
-        DOutputTransform<TOut> outputTransform)
+    public static IProviderBuilder<TypeDeclarationSyntax> Construct()
     {
-        return Attach(syntaxProvider, attributeType.FullName, outputTransform);
+        return new ProviderBuilder<TypeDeclarationSyntax>(extractDeclaration);
+
+        static TypeDeclarationSyntax extractDeclaration(TypeDeclarationSyntax declaration, AttributeSyntax attributeSyntax) => declaration;
     }
 
-    public static IncrementalValuesProvider<TOut> Attach<TOut>(SyntaxValueProvider syntaxProvider, string attributeName,
-        DOutputTransform<TOut> outputTransform)
+    public interface IProviderBuilder<TOut>
     {
-        Provider<TOut> provider = new(outputTransform, attributeName);
-
-        return provider.Attach(syntaxProvider);
+        public abstract IncrementalValuesProvider<TOut> Attach<TAttribute>(SyntaxValueProvider syntaxProvider);
+        public abstract IncrementalValuesProvider<TOut> Attach(SyntaxValueProvider syntaxProvider, Type attributeType);
+        public abstract IncrementalValuesProvider<TOut> Attach(SyntaxValueProvider syntaxProvider, string attributeName);
     }
 
-    public static IncrementalValuesProvider<TOut> AttachFirst<TOut>(SyntaxValueProvider syntaxProvider, IReadOnlyCollection<Type> attributeTypes,
-        DOutputTransform<TOut> outputTransform)
-    {
-        string[] attributeNames = new string[attributeTypes.Count];
-
-        int index = 0;
-        foreach (Type attributeType in attributeTypes)
-        {
-            attributeNames[index++] = attributeType.FullName;
-        }
-
-        return AttachFirst(syntaxProvider, attributeNames, outputTransform);
-    }
-
-    public static IncrementalValuesProvider<TOut> AttachFirst<TOut>(SyntaxValueProvider syntaxProvider, DOutputTransform<TOut> outputTransform,
-        params Type[] attributeTypes)
-    {
-        return AttachFirst(syntaxProvider, attributeTypes, outputTransform);
-    }
-
-    public static IncrementalValuesProvider<TOut> AttachFirst<TOut>(SyntaxValueProvider syntaxProvider, IReadOnlyCollection<string> attributeNames,
-        DOutputTransform<TOut> outputTransform)
-    {
-        FirstAttributeProvider<TOut> provider = new(outputTransform, attributeNames);
-
-        return provider.Attach(syntaxProvider);
-    }
-
-    public static IncrementalValuesProvider<TOut> AttachFirst<TOut>(SyntaxValueProvider syntaxProvider, DOutputTransform<TOut> outputTransform,
-        params string[] attributeNames)
-    {
-        return AttachFirst(syntaxProvider, attributeNames, outputTransform);
-    }
-
-    private abstract class AProvider<TOut>
+    private sealed class ProviderBuilder<TOut> : IProviderBuilder<TOut>
     {
         private DOutputTransform<TOut> OutputTransform { get; }
 
-        public AProvider(DOutputTransform<TOut> outputTransform)
+        public ProviderBuilder(DOutputTransform<TOut> outputTransform)
         {
             OutputTransform = outputTransform;
         }
 
-        protected abstract AttributeSyntax? GetAttributeSyntax(GeneratorSyntaxContext context, TypeDeclarationSyntax declaration);
-
-        public IncrementalValuesProvider<TOut> Attach(SyntaxValueProvider syntaxProvider)
+        public IncrementalValuesProvider<TOut> Attach<TAttribute>(SyntaxValueProvider syntaxProvider)
         {
-            return syntaxProvider.CreateSyntaxProvider(
-                predicate: SyntaxNodeIsTypeDeclarationWithAttributes,
-                transform: CandidateTypeDeclarationElseNull
-            ).WhereNotNull().Select(ApplyOutputTransform);
+            return Attach(syntaxProvider, typeof(TAttribute));
         }
 
-        private OutputData? CandidateTypeDeclarationElseNull(GeneratorSyntaxContext context, CancellationToken _)
+        public IncrementalValuesProvider<TOut> Attach(SyntaxValueProvider syntaxProvider, Type attributeType)
         {
-            TypeDeclarationSyntax declaration = (TypeDeclarationSyntax)context.Node;
-
-            return GetAttributeSyntax(context, declaration) is AttributeSyntax attributeSyntax ? new OutputData(declaration, attributeSyntax) : null;
+            return Attach(syntaxProvider, attributeType.FullName);
         }
 
-        private TOut ApplyOutputTransform(OutputData result, CancellationToken _)
+        public IncrementalValuesProvider<TOut> Attach(SyntaxValueProvider syntaxProvider, string attributeName)
         {
-            return OutputTransform(result.Declaration, result.AttributeSyntax);
+            Provider outputProvider = new(OutputTransform, attributeName);
+
+            return Attach(syntaxProvider, outputProvider);
         }
 
-        private static bool SyntaxNodeIsTypeDeclarationWithAttributes(SyntaxNode node, CancellationToken _)
+        private static IncrementalValuesProvider<TOut> Attach(SyntaxValueProvider syntaxProvider, AProvider outputProvider)
         {
-            return node is TypeDeclarationSyntax declaration && !declaration.Identifier.IsMissing && declaration.AttributeLists.Count > 0;
+            return outputProvider.Attach(syntaxProvider);
         }
 
-        private readonly record struct OutputData(TypeDeclarationSyntax Declaration, AttributeSyntax AttributeSyntax);
-    }
-
-    private class Provider<TOut> : AProvider<TOut>
-    {
-        private string AttributeName { get; }
-
-        public Provider(DOutputTransform<TOut> outputTransform, string attributeName) : base(outputTransform)
+        private abstract class AProvider
         {
-            AttributeName = attributeName;
+            public DOutputTransform<TOut> OutputTransform { get; }
+
+            public AProvider(DOutputTransform<TOut> outputTransform)
+            {
+                OutputTransform = outputTransform;
+            }
+
+            protected abstract AttributeSyntax? GetAttributeSyntax(GeneratorSyntaxContext context, TypeDeclarationSyntax declaration);
+
+            public IncrementalValuesProvider<TOut> Attach(SyntaxValueProvider syntaxProvider)
+            {
+                return syntaxProvider.CreateSyntaxProvider(
+                    predicate: SyntaxNodeIsTypeDeclarationWithAttributes,
+                    transform: CandidateTypeDeclarationElseNull
+                ).WhereNotNull().Select(ApplyOutputTransform);
+            }
+
+            private OutputData? CandidateTypeDeclarationElseNull(GeneratorSyntaxContext context, CancellationToken _)
+            {
+                TypeDeclarationSyntax declaration = (TypeDeclarationSyntax)context.Node;
+
+                return GetAttributeSyntax(context, declaration) is AttributeSyntax attributeSyntax ? new OutputData(declaration, attributeSyntax) : null;
+            }
+
+            private TOut ApplyOutputTransform(OutputData result, CancellationToken _)
+            {
+                return OutputTransform(result.Declaration, result.AttributeSyntax);
+            }
+
+            private static bool SyntaxNodeIsTypeDeclarationWithAttributes(SyntaxNode node, CancellationToken _)
+            {
+                return node is TypeDeclarationSyntax declaration && !declaration.Identifier.IsMissing && declaration.AttributeLists.Count > 0;
+            }
+
+            private readonly record struct OutputData(TypeDeclarationSyntax Declaration, AttributeSyntax AttributeSyntax);
         }
 
-        protected override AttributeSyntax? GetAttributeSyntax(GeneratorSyntaxContext context, TypeDeclarationSyntax declaration)
+        private class Provider : AProvider
         {
-            return declaration.GetAttributeWithName(AttributeName, context.SemanticModel);
-        }
-    }
+            private string AttributeName { get; }
 
-    private class FirstAttributeProvider<TOut> : AProvider<TOut>
-    {
-        private IReadOnlyCollection<string> AttributeNames { get; }
+            public Provider(DOutputTransform<TOut> outputTransform, string attributeName) : base(outputTransform)
+            {
+                AttributeName = attributeName;
+            }
 
-        public FirstAttributeProvider(DOutputTransform<TOut> outputTransform, IReadOnlyCollection<string> attributeNames) : base(outputTransform)
-        {
-            AttributeNames = attributeNames;
-        }
-
-        protected override AttributeSyntax? GetAttributeSyntax(GeneratorSyntaxContext context, TypeDeclarationSyntax declaration)
-        {
-            return declaration.GetFirstAttributeWithNameIn(AttributeNames, context.SemanticModel);
+            protected override AttributeSyntax? GetAttributeSyntax(GeneratorSyntaxContext context, TypeDeclarationSyntax declaration)
+            {
+                return declaration.GetAttributeWithName(AttributeName, context.SemanticModel);
+            }
         }
     }
 }

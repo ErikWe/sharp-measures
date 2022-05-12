@@ -17,6 +17,16 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
+    public readonly static DiagnosticDescriptor DuplicateUnitName = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.DuplicateUnitName,
+        title: "Duplicate unit name",
+        messageFormat: "The unit {0} already defines a unit with the name {1}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
     public readonly static DiagnosticDescriptor UnitNameNotRecognized = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.UnitNameNotRecognized,

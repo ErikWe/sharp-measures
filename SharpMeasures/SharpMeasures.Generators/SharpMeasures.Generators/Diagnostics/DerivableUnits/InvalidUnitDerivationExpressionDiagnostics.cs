@@ -5,6 +5,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 internal static class InvalidUnitDerivationExpressionDiagnostics
 {
-    public static Diagnostic Create(LiteralExpressionSyntax valueSyntax)
-        => Diagnostic.Create(DiagnosticRules.InvalidUnitDerivationExpression, valueSyntax.GetLocation(), valueSyntax.ToString());
+    public static Diagnostic Create(LiteralExpressionSyntax expressionSyntax)
+        => Diagnostic.Create(DiagnosticRules.InvalidUnitDerivationExpression, expressionSyntax.GetLocation(), expressionSyntax.ToString());
 }

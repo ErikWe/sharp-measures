@@ -21,4 +21,9 @@ internal static class DocumentationFileMissingRequestedTagDiagnostics
             return Diagnostic.Create(DiagnosticRules.DocumentationFileMissingRequestedTag, location, requestedTag, Path.GetFileName(file.Path));
         }
     }
+
+    public static Diagnostic Create(Location location, string fileName, string requestedTag)
+    {
+        return Diagnostic.Create(DiagnosticRules.DocumentationFileMissingRequestedTag, location, requestedTag, $"{fileName}.doc.txt");
+    }
 }

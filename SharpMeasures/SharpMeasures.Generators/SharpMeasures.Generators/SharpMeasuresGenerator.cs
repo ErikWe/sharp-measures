@@ -65,8 +65,9 @@ public class SharpMeasuresGenerator : IIncrementalGenerator
     }
 
 #if DEBUG
-    [SuppressMessage("CodeQuality", "IDE0051: Remove unused private members", Justification = "Non-production code, sporadically relevant")]
-    private static void AttachDebugger()
+    [SuppressMessage("CodeQuality", "IDE0051: Remove unused private members")]
+    [SuppressMessage("CodeQuality", "IDE0079: Remove unnecessary suppression")]
+    public static void AttachDebugger()
     {
         if (!Debugger.IsAttached)
         {
