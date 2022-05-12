@@ -10,10 +10,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-internal readonly record struct DocumentationFile(string Name, MinimalLocation? Location, IReadOnlyDictionary<string, string> Content)
+internal readonly struct DocumentationFile
 {
+    public static DocumentationFile Empty { get; } = new(string.Empty, null, new Dictionary<string, string>());
+
+    private string Name { get; }
+    private MinimalLocation? Location { get; }
+    private IReadOnlyDictionary<string, string> Content { get; }
+    
     public DocumentationFile(AdditionalText file, string name, IReadOnlyDictionary<string, string> content)
         : this(name, DetermineFileLocation(file), content) { }
+
+    public DocumentationFile(string name, MinimalLocation? location, IReadOnlyDictionary<string, string> content)
+    {
+        Name = name;
+        Location = location;
+        Content = content;
+    }
 
     public ResultWithDiagnostics<string> ResolveTag(string tag)
     {
@@ -21,13 +34,12 @@ internal readonly record struct DocumentationFile(string Name, MinimalLocation? 
         {
             return ResultWithDiagnostics<string>.WithoutDiagnostics(tagText);
         }
-        else
+
+        if (CreateMissingTagDiagnostics(tag) is Diagnostic missingTagDiagnostics)
         {
-            if (CreateMissingTagDiagnostics(tag) is Diagnostic missingTagDiagnostics)
-            {
-                return new ResultWithDiagnostics<string>(string.Empty, missingTagDiagnostics);
-            }
+            return new ResultWithDiagnostics<string>(string.Empty, missingTagDiagnostics);
         }
+        
 
         return ResultWithDiagnostics<string>.WithoutDiagnostics(string.Empty);
     }
@@ -64,8 +76,20 @@ internal readonly record struct DocumentationFile(string Name, MinimalLocation? 
 
     public bool Equals(DocumentationFile other)
     {
-        return Name == other.Name && Location == other.Location
-            && Content.OrderBy(static (x) => x.Key).SequenceEqual(other.Content.OrderBy(static (x) => x.Key));
+        return Name == other.Name && Location == other.Location && contentIdenticalKeyValuePairs(Content, other.Content);
+
+        static bool contentIdenticalKeyValuePairs(IReadOnlyDictionary<string, string> content, IReadOnlyDictionary<string, string> otherContent)
+        {
+            foreach (string key in content.Keys)
+            {
+                if (!otherContent.TryGetValue(key, out string value) || value != content[key])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 
     public override int GetHashCode()

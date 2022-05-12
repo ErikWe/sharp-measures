@@ -14,7 +14,7 @@ using System.Text.RegularExpressions;
 
 internal class DocumentationFileBuilder
 {
-    public static ResultWithDiagnostics<IReadOnlyDictionary<string, DocumentationFile>> Build(IEnumerable<AdditionalText> relevantFiles)
+    public static ResultWithDiagnostics<DocumentationDictionary> Build(IEnumerable<AdditionalText> relevantFiles, bool produceDiagnostics = true)
     {
         if (relevantFiles is null)
         {
@@ -55,10 +55,10 @@ internal class DocumentationFileBuilder
             }
         }
 
-        IReadOnlyDictionary<string, DocumentationFile> documentationFiles = builders.Values.Select(finalizeBuilders).ToDictionary(static (file) => file.Name);
+        DocumentationDictionary dictionary = new(builders.Values.ToDictionary(static (file) => file.Name, static (file) => file.Finalize()));
         IEnumerable<Diagnostic> diagnostics = builders.Values.SelectMany(static (file) => file.Diagnostics);
 
-        return new ResultWithDiagnostics<IReadOnlyDictionary<string, DocumentationFile>>(documentationFiles, diagnostics);
+        return new ResultWithDiagnostics<DocumentationDictionary>(dictionary, diagnostics);
 
         IEnumerable<DocumentationFileBuilder> createBuilders()
         {
@@ -66,20 +66,15 @@ internal class DocumentationFileBuilder
             {
                 if (additionalText.GetText() is SourceText text)
                 {
-                    yield return new DocumentationFileBuilder(additionalText, text.ToString());
+                    yield return new DocumentationFileBuilder(additionalText, text.ToString(), produceDiagnostics);
                 }
             }
-        }
-
-        DocumentationFile finalizeBuilders(DocumentationFileBuilder builder)
-        {
-            return new DocumentationFile(builder.File, builder.Name, new ReadOnlyDictionary<string, string>(builder.Content));
         }
     }
 
     private AdditionalText File { get; }
 
-    private string Name { get; }
+    public string Name { get; }
     private bool IsUtility { get; }
     private Dictionary<string, string> Content { get; set; }
     private HashSet<string> ResolvedTags { get; } = new();
@@ -87,15 +82,23 @@ internal class DocumentationFileBuilder
     private List<DocumentationFileBuilder> ResolvedDependencies { get; } = new();
     private IReadOnlyCollection<string> Dependencies { get; }
 
+    private bool ProduceDiagnostics { get; }
     private List<Diagnostic> Diagnostics { get; } = new();
 
-    private DocumentationFileBuilder(AdditionalText file, string text)
+    private DocumentationFileBuilder(AdditionalText file, string text, bool produceDiagnostics)
     {
         File = file;
         Name = DocumentationParsing.ReadName(file);
         IsUtility = DocumentationParsing.ReadUtilityState(text);
         Dependencies = DocumentationParsing.GetDependencies(text);
         Content = DocumentationParsing.GetParsedTagDefinitions(text);
+
+        ProduceDiagnostics = produceDiagnostics;
+    }
+
+    public DocumentationFile Finalize()
+    {
+        return new(File, Name, new ReadOnlyDictionary<string, string>(Content));
     }
 
     private void ResolveDependencies(Dictionary<string, DocumentationFileBuilder> documentationFiles)
@@ -164,14 +167,13 @@ internal class DocumentationFileBuilder
         {
             string tag = match.Groups["tag"].Value;
 
-            if (ReadTag(tag) is string tagText)
-            {
-                text = DocumentationParsing.ResolveInvokation(tag, text, tagText);
-            }
-            else
+            if (ReadTag(tag) is not string tagText)
             {
                 CreateMissingTagDiagnostics(tag);
+                continue;
             }
+
+            text = DocumentationParsing.ResolveInvokation(tag, text, tagText);
         }
 
         return text;
@@ -195,7 +197,7 @@ internal class DocumentationFileBuilder
 
     private void CreateUnresolvedDependencyDiagnostics(string dependency)
     {
-        if (File.GetText() is not SourceText sourceText)
+        if (!ProduceDiagnostics || File.GetText() is not SourceText sourceText)
         {
             return;
         }

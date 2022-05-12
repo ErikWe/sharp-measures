@@ -132,7 +132,7 @@ internal static class DeclarationSymbolProvider
 
     private sealed class PartialProviderBuilder<TIn, TOut, TNullableOut> : IPartialProviderBuilder<TIn, TOut>
     {
-        private ProviderBuilder<(TIn, Compilation), TOut, TNullableOut> ActualProvider { get; }
+        private ProviderBuilder<(TIn, Compilation), TOut, TNullableOut> ActualBuilder { get; }
 
         private DPartialInputTransform<TIn> InputTransform { get; }
         private DOutputTransform<TIn, TNullableOut> OutputTransform { get; }
@@ -143,12 +143,12 @@ internal static class DeclarationSymbolProvider
             InputTransform = inputTransform;
             OutputTransform = outputTransform;
 
-            ActualProvider = new(ConstructInputData, ConstructOutput, nullableEraser);
+            ActualBuilder = new(ConstructInputData, ConstructOutput, nullableEraser);
         }
 
         public IncrementalValuesProvider<TOut> Attach(IncrementalValuesProvider<TIn> inputProvider, IncrementalValueProvider<Compilation> compilationProvider)
         {
-            return ActualProvider.Attach(inputProvider.Combine(compilationProvider));
+            return ActualBuilder.Attach(inputProvider.Combine(compilationProvider));
         }
 
         private InputData ConstructInputData((TIn Input, Compilation Compilation) data) => new(InputTransform(data.Input), data.Compilation);
