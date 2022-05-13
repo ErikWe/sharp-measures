@@ -15,46 +15,46 @@ internal static class DeclarationSymbolProvider
 
     private delegate TOut DNullableEraser<TOut, TNullableOut>(TNullableOut? output);
 
-    public static IProviderBuilder<TIn, TOut> ConstructForValueType<TIn, TOut>(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
+    public static IProvider<TIn, TOut> ConstructForValueType<TIn, TOut>(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
         where TOut : struct
     {
-        return new ProviderBuilder<TIn, TOut, TOut?>(inputTransform, NullifyOutputTransform(outputTransform), NullableEraser);
+        return new Provider<TIn, TOut, TOut?>(inputTransform, NullifyOutputTransform(outputTransform), NullableEraser);
     }
 
-    public static IProviderBuilder<TIn, TOut> ConstructForReferenceType<TIn, TOut>(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
+    public static IProvider<TIn, TOut> ConstructForReferenceType<TIn, TOut>(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
         where TOut : class
     {
-        return new ProviderBuilder<TIn, TOut, TOut>(inputTransform, outputTransform, NullableEraser);
+        return new Provider<TIn, TOut, TOut>(inputTransform, outputTransform, NullableEraser);
     }
 
-    public static IPartialProviderBuilder<TIn, TOut> ConstructForValueType<TIn, TOut>(DPartialInputTransform<TIn> inputTransform,
+    public static IPartialProvider<TIn, TOut> ConstructForValueType<TIn, TOut>(DPartialInputTransform<TIn> inputTransform,
         DOutputTransform<TIn, TOut> outputTransform)
         where TOut : struct
     {
-        return new PartialProviderBuilder<TIn, TOut, TOut?>(inputTransform, NullifyOutputTransform(outputTransform), NullableEraser);
+        return new PartialProvider<TIn, TOut, TOut?>(inputTransform, NullifyOutputTransform(outputTransform), NullableEraser);
     }
 
-    public static IPartialProviderBuilder<TIn, TOut> ConstructForReferenceType<TIn, TOut>(DPartialInputTransform<TIn> inputTransform,
+    public static IPartialProvider<TIn, TOut> ConstructForReferenceType<TIn, TOut>(DPartialInputTransform<TIn> inputTransform,
         DOutputTransform<TIn, TOut> outputTransform)
         where TOut : class
     {
-        return new PartialProviderBuilder<TIn, TOut, TOut>(inputTransform, outputTransform, NullableEraser);
+        return new PartialProvider<TIn, TOut, TOut>(inputTransform, outputTransform, NullableEraser);
     }
 
-    public static IPartialProviderBuilder<TDeclaration, TOut> ConstructForValueType<TDeclaration, TOut>(DOutputTransform<TDeclaration, TOut> outputTransform)
+    public static IPartialProvider<TDeclaration, TOut> ConstructForValueType<TDeclaration, TOut>(DOutputTransform<TDeclaration, TOut> outputTransform)
         where TDeclaration : BaseTypeDeclarationSyntax
         where TOut : struct
     {
-        return new PartialProviderBuilder<TDeclaration, TOut, TOut?>(inputTransform, NullifyOutputTransform(outputTransform), NullableEraser);
+        return new PartialProvider<TDeclaration, TOut, TOut?>(inputTransform, NullifyOutputTransform(outputTransform), NullableEraser);
 
         static BaseTypeDeclarationSyntax inputTransform(TDeclaration declaration) => declaration;
     }
 
-    public static IPartialProviderBuilder<TDeclaration, TOut> ConstructForReferenceType<TDeclaration, TOut>(DOutputTransform<TDeclaration, TOut> outputTransform)
+    public static IPartialProvider<TDeclaration, TOut> ConstructForReferenceType<TDeclaration, TOut>(DOutputTransform<TDeclaration, TOut> outputTransform)
         where TDeclaration : BaseTypeDeclarationSyntax
         where TOut : class
     {
-        return new PartialProviderBuilder<TDeclaration, TOut, TOut>(inputTransform, outputTransform, NullableEraser);
+        return new PartialProvider<TDeclaration, TOut, TOut>(inputTransform, outputTransform, NullableEraser);
 
         static BaseTypeDeclarationSyntax inputTransform(TDeclaration declaration) => declaration;
     }
@@ -77,24 +77,24 @@ internal static class DeclarationSymbolProvider
         TOut? toNullable(TIn input, INamedTypeSymbol symbol) => outputTransform(input, symbol);
     }
 
-    public interface IProviderBuilder<TIn, TOut>
+    public interface IProvider<TIn, TOut>
     {
         public abstract IncrementalValuesProvider<TOut> Attach(IncrementalValuesProvider<TIn> inputProvider);
     }
 
-    public interface IPartialProviderBuilder<TIn, TOut>
+    public interface IPartialProvider<TIn, TOut>
     {
         public abstract IncrementalValuesProvider<TOut> Attach(IncrementalValuesProvider<TIn> inputProvider, IncrementalValueProvider<Compilation> compilationProvider);
     }
 
-    private sealed class ProviderBuilder<TIn, TOut, TNullableOut> : IProviderBuilder<TIn, TOut>
+    private class Provider<TIn, TOut, TNullableOut> : IProvider<TIn, TOut>
     {
         private DInputTransform<TIn> InputTransform { get; }
         private DOutputTransform<TIn, TNullableOut> OutputTransform { get; }
 
         private DNullableEraser<TOut, TNullableOut> NullableEraser { get; }
 
-        public ProviderBuilder(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TNullableOut> outputTransform,
+        public Provider(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TNullableOut> outputTransform,
             DNullableEraser<TOut, TNullableOut> nullableEraser)
         {
             InputTransform = inputTransform;
@@ -130,14 +130,14 @@ internal static class DeclarationSymbolProvider
         private TOut EraseNullable(TNullableOut? result, CancellationToken _) => NullableEraser(result);
     }
 
-    private sealed class PartialProviderBuilder<TIn, TOut, TNullableOut> : IPartialProviderBuilder<TIn, TOut>
+    private sealed class PartialProvider<TIn, TOut, TNullableOut> : IPartialProvider<TIn, TOut>
     {
-        private ProviderBuilder<(TIn, Compilation), TOut, TNullableOut> ActualBuilder { get; }
+        private Provider<(TIn, Compilation), TOut, TNullableOut> ActualBuilder { get; }
 
         private DPartialInputTransform<TIn> InputTransform { get; }
         private DOutputTransform<TIn, TNullableOut> OutputTransform { get; }
 
-        public PartialProviderBuilder(DPartialInputTransform<TIn> inputTransform, DOutputTransform<TIn, TNullableOut> outputTransform,
+        public PartialProvider(DPartialInputTransform<TIn> inputTransform, DOutputTransform<TIn, TNullableOut> outputTransform,
             DNullableEraser<TOut, TNullableOut> nullableEraser)
         {
             InputTransform = inputTransform;

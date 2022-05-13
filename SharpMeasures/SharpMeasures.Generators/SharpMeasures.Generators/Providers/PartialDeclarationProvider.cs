@@ -13,62 +13,66 @@ internal static class PartialDeclarationProvider
 {
     public delegate BaseTypeDeclarationSyntax DInputTransform<in TData>(TData input);
 
-    public static IProviderBuilder<TData> Construct<TData>(DInputTransform<TData> inputTransform)
+    public delegate Type DAttributeTypeTransform<in TData>(TData input);
+    public delegate string DAttributeNameTransform<in TData>(TData input);
+
+    public static IImmediateProvider<TData> Construct<TData>(DInputTransform<TData> inputTransform)
     {
-        return new ProviderBuilder<TData>(inputTransform);
+        return new ImmediateProvider<TData>(inputTransform);
     }
 
-    public static IProviderBuilder<TDeclaration> Construct<TDeclaration>()
+    public static IImmediateProvider<TDeclaration> Construct<TDeclaration>()
         where TDeclaration : BaseTypeDeclarationSyntax
     {
-        return new ProviderBuilder<TDeclaration>(extractDeclaration);
-
-        static BaseTypeDeclarationSyntax extractDeclaration(TDeclaration declaration) => declaration;
+        return new ImmediateProvider<TDeclaration>(ExtractDeclaration);
     }
 
-    public static IncrementalValuesProvider<TData> Attach<TData>(IncrementalValuesProvider<TData> inputProvider, DInputTransform<TData> inputTransform)
+    public static IDelegatedProvider<TData> Construct<TData>(DInputTransform<TData> inputTransform, DAttributeTypeTransform<TData> attributeTypeDelegate)
     {
-        return Construct(inputTransform).Attach(inputProvider);
+        return new DelegatedProvider<TData>(inputTransform, WrapAttributeTypeDelegate(attributeTypeDelegate));
     }
 
-    public static IncrementalValuesProvider<TDeclaration> Attach<TDeclaration>(IncrementalValuesProvider<TDeclaration> inputProvider)
-        where TDeclaration : BaseTypeDeclarationSyntax
+    public static IDelegatedProvider<TData> Construct<TData>(DInputTransform<TData> inputTransform, DAttributeNameTransform<TData> attributeNameDelegate)
     {
-        return Construct<TDeclaration>().Attach(inputProvider);
+        return new DelegatedProvider<TData>(inputTransform, attributeNameDelegate);
     }
 
-    public interface IProviderBuilder<TData>
-    {
-        public delegate Type DAttributeTypeTransform(TData input);
-        public delegate string DAttributeNameTransform(TData input);
+    private static BaseTypeDeclarationSyntax ExtractDeclaration<TDeclaration>(TDeclaration declaration) where TDeclaration : BaseTypeDeclarationSyntax => declaration;
 
-        IncrementalValuesProvider<TData> Attach(IncrementalValuesProvider<TData> inputProvider);
-        IncrementalValuesProvider<TData> AttachAndReport<TAttribute>(IncrementalGeneratorInitializationContext context,
+    private static DAttributeNameTransform<TData> WrapAttributeTypeDelegate<TData>(DAttributeTypeTransform<TData> attributeTypeDelegate)
+    {
+        return (data) => attributeTypeDelegate(data).FullName;
+    }
+
+    public interface IImmediateProvider<TData>
+    {
+        public abstract IncrementalValuesProvider<TData> AttachWithoutDiagnostics(IncrementalValuesProvider<TData> inputProvider);
+        public abstract IncrementalValuesProvider<TData> AttachAndReport<TAttribute>(IncrementalGeneratorInitializationContext context,
             IncrementalValuesProvider<TData> inputProvider);
-        IncrementalValuesProvider<TData> AttachAndReport(IncrementalGeneratorInitializationContext context,
+        public abstract IncrementalValuesProvider<TData> AttachAndReport(IncrementalGeneratorInitializationContext context,
             IncrementalValuesProvider<TData> inputProvider, Type attributeType);
-        IncrementalValuesProvider<TData> AttachAndReport(IncrementalGeneratorInitializationContext context,
+        public abstract IncrementalValuesProvider<TData> AttachAndReport(IncrementalGeneratorInitializationContext context,
             IncrementalValuesProvider<TData> inputProvider, string attributeName);
-        IncrementalValuesProvider<TData> AttachAndReport(IncrementalGeneratorInitializationContext context,
-            IncrementalValuesProvider<TData> inputProvider, DAttributeTypeTransform attributeType);
-        IncrementalValuesProvider<TData> AttachAndReport(IncrementalGeneratorInitializationContext context,
-            IncrementalValuesProvider<TData> inputProvider, DAttributeNameTransform attributeName);
     }
 
-    private sealed class ProviderBuilder<TData> : IProviderBuilder<TData>
+    public interface IDelegatedProvider<TData> : IImmediateProvider<TData>
+    {
+        public abstract IncrementalValuesProvider<TData> AttachAndReport(IncrementalGeneratorInitializationContext context,
+            IncrementalValuesProvider<TData> inputProvider);
+    }
+
+    private class ImmediateProvider<TData> : IImmediateProvider<TData>
     {
         private DInputTransform<TData> InputTransform { get; }
 
-        public ProviderBuilder(DInputTransform<TData> inputTransform)
+        public ImmediateProvider(DInputTransform<TData> inputTransform)
         {
             InputTransform = inputTransform;
         }
 
-        public IncrementalValuesProvider<TData> Attach(IncrementalValuesProvider<TData> inputProvider)
+        public IncrementalValuesProvider<TData> AttachWithoutDiagnostics(IncrementalValuesProvider<TData> inputProvider)
         {
-            AttachOnlyProvider outputProvider = new(InputTransform);
-
-            return outputProvider.Attach(inputProvider);
+            return Attach(inputProvider);
         }
 
         public IncrementalValuesProvider<TData> AttachAndReport<TAttribute>(IncrementalGeneratorInitializationContext context,
@@ -86,110 +90,90 @@ internal static class PartialDeclarationProvider
         public IncrementalValuesProvider<TData> AttachAndReport(IncrementalGeneratorInitializationContext context,
             IncrementalValuesProvider<TData> inputProvider, string attributeName)
         {
-            Provider outputProvider = new(InputTransform, attributeName);
+            IAttributeNameStrategy attributeNameStrategy = new ImmediateAttributeName(attributeName);
 
-            return AttachAndReport(context, inputProvider, outputProvider);
+            return AttachAndReport(attributeNameStrategy, context, inputProvider);
         }
 
-        public IncrementalValuesProvider<TData> AttachAndReport(IncrementalGeneratorInitializationContext context,
-            IncrementalValuesProvider<TData> inputProvider, IProviderBuilder<TData>.DAttributeTypeTransform attributeType)
+        public IncrementalValuesProvider<TData> Attach(IncrementalValuesProvider<TData> inputProvider)
         {
-            return AttachAndReport(context, inputProvider, attributeName);
-
-            string attributeName(TData input)
-            {
-                return attributeType(input).FullName;
-            }
+            return inputProvider.Where(DeclarationIsPartial);
         }
 
-        public IncrementalValuesProvider<TData> AttachAndReport(IncrementalGeneratorInitializationContext context,
-            IncrementalValuesProvider<TData> inputProvider, IProviderBuilder<TData>.DAttributeNameTransform attributeName)
+        protected interface IAttributeNameStrategy
         {
-            DelegatedProvider outputProvider = new(InputTransform, attributeName);
-
-            return AttachAndReport(context, inputProvider, outputProvider);
+            public abstract string GetAttributeName(TData data);
         }
 
-        private static IncrementalValuesProvider<TData> AttachAndReport(IncrementalGeneratorInitializationContext context,
-            IncrementalValuesProvider<TData> inputProvider, AProvider outputProvider)
+        private class ImmediateAttributeName : IAttributeNameStrategy
         {
-            return outputProvider.AttachAndReport(context, inputProvider);
-        }
+            private string AttributeName { get; }
 
-        private abstract class AProvider
-        {
-            private DInputTransform<TData> InputTransform { get; }
-
-            public AProvider(DInputTransform<TData> inputTransform)
-            {
-                InputTransform = inputTransform;
-            }
-
-            public IncrementalValuesProvider<TData> Attach(IncrementalValuesProvider<TData> inputProvider)
-            {
-                return inputProvider.Where(DeclarationIsPartial);
-            }
-
-            public IncrementalValuesProvider<TData> AttachAndReport(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<TData> inputProvider)
-            {
-                IncrementalValuesProvider<LabeledInput> labeledInput = inputProvider.Select(AddLabel);
-
-                IncrementalValuesProvider<Diagnostic> diagnostics = labeledInput.Where(DeclarationIsNotPartial).Select(CreateDiagnostics);
-
-                context.ReportDiagnostics(diagnostics);
-                return labeledInput.Where(DeclarationIsPartial).Select(RemoveLabel);
-            }
-
-            protected abstract string GetAttributeName(TData input);
-
-            private bool DeclarationIsPartial(TData input) => InputTransform(input).HasModifierOfKind(SyntaxKind.PartialKeyword);
-            private static bool DeclarationIsPartial(LabeledInput labeledInput) => labeledInput.IsPartial;
-
-            private static bool DeclarationIsNotPartial(LabeledInput labeledInput) => !DeclarationIsPartial(labeledInput);
-
-            private LabeledInput AddLabel(TData input, CancellationToken _) => new(DeclarationIsPartial(input), input);
-            private TData RemoveLabel(LabeledInput labeledInput, CancellationToken _) => labeledInput.Input;
-
-            private Diagnostic CreateDiagnostics(TData input, CancellationToken _)
-                    => TypeNotPartialDiagnostics.Create(InputTransform(input), GetAttributeName(input));
-            private Diagnostic CreateDiagnostics(LabeledInput labeledInput, CancellationToken token)
-                    => CreateDiagnostics(labeledInput.Input, token);
-
-            private readonly record struct LabeledInput(bool IsPartial, TData Input);
-        }
-
-        private class AttachOnlyProvider : AProvider
-        {
-            public AttachOnlyProvider(DInputTransform<TData> inputTransform) : base(inputTransform) { }
-
-            protected override string GetAttributeName(TData input)
-            {
-                throw new NotSupportedException();
-            }
-        }
-
-        private class Provider : AProvider
-        {
-            private string AttributeName { get; } = string.Empty;
-
-            public Provider(DInputTransform<TData> inputTransform, string attributeName) : base(inputTransform)
+            public ImmediateAttributeName(string attributeName)
             {
                 AttributeName = attributeName;
             }
 
-            protected override string GetAttributeName(TData input) => AttributeName;
+            public string GetAttributeName(TData data) => AttributeName;
         }
 
-        private class DelegatedProvider : AProvider
+        protected IncrementalValuesProvider<TData> AttachAndReport(IAttributeNameStrategy attributeNameStrategy, IncrementalGeneratorInitializationContext context,
+            IncrementalValuesProvider<TData> inputProvider)
         {
-            private IProviderBuilder<TData>.DAttributeNameTransform AttributeName { get; }
+            IncrementalValuesProvider<LabeledInput> labeledInput = inputProvider.Select(AddLabel);
 
-            public DelegatedProvider(DInputTransform<TData> inputTransform, IProviderBuilder<TData>.DAttributeNameTransform attributeName) : base(inputTransform)
+            IncrementalValuesProvider<Diagnostic> diagnostics = labeledInput.Where(DeclarationIsNotPartial).Select(createDiagnostics);
+
+            context.ReportDiagnostics(diagnostics);
+            return labeledInput.Where(DeclarationIsPartial).Select(RemoveLabel);
+
+            Diagnostic createDiagnostics(LabeledInput labeledInput, CancellationToken _) => CreateDiagnostics(labeledInput, attributeNameStrategy);
+        }
+
+        protected bool DeclarationIsPartial(TData input) => InputTransform(input).HasModifierOfKind(SyntaxKind.PartialKeyword);
+        private static bool DeclarationIsPartial(LabeledInput labeledInput) => labeledInput.IsPartial;
+
+        private static bool DeclarationIsNotPartial(LabeledInput labeledInput) => !DeclarationIsPartial(labeledInput);
+
+        private LabeledInput AddLabel(TData input, CancellationToken _) => new(DeclarationIsPartial(input), input);
+        private TData RemoveLabel(LabeledInput labeledInput, CancellationToken _) => labeledInput.Input;
+
+        private Diagnostic CreateDiagnostics(TData input, IAttributeNameStrategy attributeNameStrategy)
+                => TypeNotPartialDiagnostics.Create(InputTransform(input), attributeNameStrategy.GetAttributeName(input));
+        private Diagnostic CreateDiagnostics(LabeledInput labeledInput, IAttributeNameStrategy attributeNameStrategy)
+                => CreateDiagnostics(labeledInput.Input, attributeNameStrategy);
+
+        private readonly record struct LabeledInput(bool IsPartial, TData Input);
+    }
+
+    private class DelegatedProvider<TData> : ImmediateProvider<TData>, IDelegatedProvider<TData>
+    {
+        private IAttributeNameStrategy AttributeNameStrategy { get; }
+
+        public DelegatedProvider(DInputTransform<TData> inputTransform, DAttributeNameTransform<TData> attributeNameDelegate) : base(inputTransform)
+        {
+            AttributeNameStrategy = new DelegatedAttributeName(attributeNameDelegate);
+        }
+
+        public IncrementalValuesProvider<TData> AttachAndReport(IncrementalGeneratorInitializationContext context,
+            IncrementalValuesProvider<TData> inputProvider)
+        {
+            return AttachAndReport(AttributeNameStrategy, context, inputProvider);
+        }
+
+        private class DelegatedAttributeName : IAttributeNameStrategy
+        {
+            private DAttributeNameTransform<TData> AttributeNameDelegate { get; }
+
+            public DelegatedAttributeName(DAttributeNameTransform<TData> attributeNameDelegate)
             {
-                AttributeName = attributeName;
+                AttributeNameDelegate = attributeNameDelegate;
             }
 
-            protected override string GetAttributeName(TData input) => AttributeName(input);
+            public string GetAttributeName(TData data)
+            {
+                return AttributeNameDelegate(data);
+            }
         }
     }
 }
