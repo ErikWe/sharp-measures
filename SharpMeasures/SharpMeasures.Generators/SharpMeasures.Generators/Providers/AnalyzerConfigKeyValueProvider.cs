@@ -8,17 +8,43 @@ using System.Threading;
 
 internal static class AnalyzerConfigKeyValueProvider
 {
-    public delegate TOut DSingleOutputTransform<TOut>(string? value);
-    public delegate TOut DMultiOutputTransform<TOut>(IReadOnlyDictionary<string, string?> keyValuePairs);
+    public delegate TOut DSingleOutputTransform<out TOut>(string? value);
+    public delegate TOut DMultiOutputTransform<out TOut>(IReadOnlyDictionary<string, string?> keyValuePairs);
 
-    public static IProviderBuilder<TOut> Construct<TOut>(DSingleOutputTransform<TOut> outputTransform, string key)
+    public delegate TData DInputTransform<in TIn, out TData>(TIn input);
+
+    public static IProvider<TOut> Construct<TOut>(DSingleOutputTransform<TOut> outputTransform, string key)
     {
-        return new ProviderBuilder<TOut>(outputTransform, key);
+        return new Provider<TOut>(outputTransform, key);
     }
 
-    public static IProviderBuilder<TOut> Construct<TOut>(DMultiOutputTransform<TOut> outputTransform, IEnumerable<string> keys)
+    public static IProvider<TOut> Construct<TOut>(DMultiOutputTransform<TOut> outputTransform, IEnumerable<string> keys)
     {
-        return new ProviderBuilder<TOut>(outputTransform, keys);
+        return new Provider<TOut>(outputTransform, keys);
+    }
+
+    public static ITransformedProvider<TIn, TOut> Construct<TIn, TOut>(DInputTransform<TIn, SyntaxTree> inputTransform,
+        DSingleOutputTransform<TOut> outputTransform, string key)
+    {
+        return TransformedProvider<TIn, TOut, SyntaxTree>.Construct(inputTransform, outputTransform, key);
+    }
+
+    public static ITransformedProvider<TIn, TOut> Construct<TIn, TOut>(DInputTransform<TIn, SyntaxTree> inputTransform,
+        DMultiOutputTransform<TOut> outputTransform, IEnumerable<string> keys)
+    {
+        return TransformedProvider<TIn, TOut, SyntaxTree>.Construct(inputTransform, outputTransform, keys);
+    }
+
+    public static ITransformedProvider<TIn, TOut> Construct<TIn, TOut>(DInputTransform<TIn, AdditionalText> inputTransform,
+        DSingleOutputTransform<TOut> outputTransform, string key)
+    {
+        return TransformedProvider<TIn, TOut, AdditionalText>.Construct(inputTransform, outputTransform, key);
+    }
+
+    public static ITransformedProvider<TIn, TOut> Construct<TIn, TOut>(DInputTransform<TIn, AdditionalText> inputTransform,
+        DMultiOutputTransform<TOut> outputTransform, IEnumerable<string> keys)
+    {
+        return TransformedProvider<TIn, TOut, AdditionalText>.Construct(inputTransform, outputTransform, keys);
     }
 
     public static class BooleanTransforms
@@ -46,7 +72,7 @@ internal static class AnalyzerConfigKeyValueProvider
         };
     }
 
-    public interface IProviderBuilder<TOut>
+    public interface IProvider<TOut>
     {
         public IncrementalValueProvider<TOut> Attach(IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider);
         public IncrementalValueProvider<TOut> Attach(IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider,
@@ -55,111 +81,130 @@ internal static class AnalyzerConfigKeyValueProvider
             IncrementalValueProvider<AdditionalText> additionalTextProvider);
     }
 
-    private sealed class ProviderBuilder<TOut> : IProviderBuilder<TOut>
+    public interface ITransformedProvider<TIn, TOut> : IProvider<TOut>
     {
-        private delegate TOut DOutputTransform(AnalyzerConfigOptions options);
+        public IncrementalValueProvider<TOut> Attach(IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider,
+            IncrementalValueProvider<TIn> inputProvider);
+    }
 
-        private DOutputTransform OutputTransform { get; }
+    private class Provider<TOut> : IProvider<TOut>
+    {
+        protected delegate TOut DOutputTransform(AnalyzerConfigOptions options);
 
-        public ProviderBuilder(DSingleOutputTransform<TOut> outputTransform, string key)
+        protected DOutputTransform OutputTransform { get; }
+
+        public Provider(DSingleOutputTransform<TOut> outputTransform, string key)
         {
             OutputTransform = WrapOutputTransform(outputTransform, key);
         }
 
-        public ProviderBuilder(DMultiOutputTransform<TOut> outputTransform, IEnumerable<string> keys)
+        public Provider(DMultiOutputTransform<TOut> outputTransform, IEnumerable<string> keys)
         {
             OutputTransform = WrapOutputTransform(outputTransform, keys);
         }
 
         public IncrementalValueProvider<TOut> Attach(IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider)
         {
-            GlobalOptionsProvider outputProvider = new(OutputTransform);
-
-            return outputProvider.Attach(optionsProvider);
+            return Attach(new GlobalOptionsStrategy(), optionsProvider);
         }
 
         public IncrementalValueProvider<TOut> Attach(IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider,
             IncrementalValueProvider<SyntaxTree> syntaxTreeProvider)
         {
-            SyntaxTreeOptionsProvider outputProvider = new(OutputTransform);
+            IOptionsProviderStrategy optionsProviderStrategy
+                = new StrategizedOptionsProvider<SyntaxTree>(new SyntaxTreeOptionsStrategy(), OutputTransform, syntaxTreeProvider);
 
-            return outputProvider.Attach(optionsProvider, syntaxTreeProvider);
+            return Attach(optionsProviderStrategy, optionsProvider);
         }
 
         public IncrementalValueProvider<TOut> Attach(IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider,
             IncrementalValueProvider<AdditionalText> additionalTextProvider)
         {
-            AdditionalTextOptionsProvider outputProvider = new(OutputTransform);
+            IOptionsProviderStrategy optionsProviderStrategy
+                = new StrategizedOptionsProvider<AdditionalText>(new AdditionalTextOptionsStrategy(), OutputTransform, additionalTextProvider);
 
-            return outputProvider.Attach(optionsProvider, additionalTextProvider);
+            return Attach(optionsProviderStrategy, optionsProvider);
         }
 
-        private abstract class AProvider<TData>
+        protected IncrementalValueProvider<TOut> Attach(IOptionsStrategy optionsStrategy,
+            IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider)
         {
-            private DOutputTransform OutputTransform { get; }
+            return optionsProvider.Select(extractData);
 
-            public AProvider(DOutputTransform outputTransform)
+            TOut extractData(AnalyzerConfigOptionsProvider options, CancellationToken _)
             {
-                OutputTransform = outputTransform;
-            }
-
-            public AProvider(DMultiOutputTransform<TOut> outputTransform, IEnumerable<string> keys)
-            {
-                OutputTransform = WrapOutputTransform(outputTransform, keys);
-            }
-
-            public IncrementalValueProvider<TOut> Attach(IncrementalValueProvider<TData> optionsProvider)
-            {
-                return optionsProvider.Select(ExtractValue);
-            }
-
-            protected abstract AnalyzerConfigOptions GetOptions(TData optionsProvider);
-
-            private TOut ExtractValue(TData optionsProvider, CancellationToken _)
-            {
-                return OutputTransform(GetOptions(optionsProvider));
+                return OutputTransform(optionsStrategy.ExtractOptions(options));
             }
         }
 
-        private class GlobalOptionsProvider : AProvider<AnalyzerConfigOptionsProvider>
+        protected static IncrementalValueProvider<TOut> Attach(IOptionsProviderStrategy optionsProviderStrategy,
+            IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider)
         {
-            public GlobalOptionsProvider(DOutputTransform outputTransform) : base(outputTransform) { }
+            return optionsProviderStrategy.Attach(optionsProvider);
+        }
 
-            protected override AnalyzerConfigOptions GetOptions(AnalyzerConfigOptionsProvider optionsProvider)
+        protected interface IOptionsStrategy
+        {
+            public abstract AnalyzerConfigOptions ExtractOptions(AnalyzerConfigOptionsProvider optionsProvider);
+        }
+
+        protected interface IOptionsStrategy<TData>
+        {
+            public abstract AnalyzerConfigOptions ExtractOptions(AnalyzerConfigOptionsProvider optionsProvider, TData data);
+        }
+
+        protected interface IOptionsProviderStrategy
+        {
+            public abstract IncrementalValueProvider<TOut> Attach(IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider);
+        }
+
+        protected class GlobalOptionsStrategy : IOptionsStrategy
+        {
+            public AnalyzerConfigOptions ExtractOptions(AnalyzerConfigOptionsProvider optionsProvider)
             {
                 return optionsProvider.GlobalOptions;
             }
         }
 
-        private class SyntaxTreeOptionsProvider : AProvider<(AnalyzerConfigOptionsProvider Options, SyntaxTree SyntaxTree)>
+        protected class SyntaxTreeOptionsStrategy : IOptionsStrategy<SyntaxTree>
         {
-            public SyntaxTreeOptionsProvider(DOutputTransform outputTransform) : base(outputTransform) { }
-
-            public IncrementalValueProvider<TOut> Attach(IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider,
-                IncrementalValueProvider<SyntaxTree> syntaxTreeProvider)
+            public AnalyzerConfigOptions ExtractOptions(AnalyzerConfigOptionsProvider optionsProvider, SyntaxTree syntaxTree)
             {
-                return Attach(optionsProvider.Combine(syntaxTreeProvider));
-            }
-
-            protected override AnalyzerConfigOptions GetOptions((AnalyzerConfigOptionsProvider Options, SyntaxTree SyntaxTree) inputProviders)
-            {
-                return inputProviders.Options.GetOptions(inputProviders.SyntaxTree);
+                return optionsProvider.GetOptions(syntaxTree);
             }
         }
 
-        private class AdditionalTextOptionsProvider : AProvider<(AnalyzerConfigOptionsProvider Options, AdditionalText AdditionalText)>
+        protected class AdditionalTextOptionsStrategy : IOptionsStrategy<AdditionalText>
         {
-            public AdditionalTextOptionsProvider(DOutputTransform outputTransform) : base(outputTransform) { }
-
-            public IncrementalValueProvider<TOut> Attach(IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider,
-                IncrementalValueProvider<AdditionalText> syntaxTreeProvider)
+            public AnalyzerConfigOptions ExtractOptions(AnalyzerConfigOptionsProvider optionsProvider, AdditionalText additionalText)
             {
-                return Attach(optionsProvider.Combine(syntaxTreeProvider));
+                return optionsProvider.GetOptions(additionalText);
+            }
+        }
+
+        protected class StrategizedOptionsProvider<TData> : IOptionsProviderStrategy
+        {
+            private IOptionsStrategy<TData> OptionsStrategy { get; }
+            private DOutputTransform OutputTransform { get; }
+
+            private IncrementalValueProvider<TData> InputProvider { get; }
+
+            public StrategizedOptionsProvider(IOptionsStrategy<TData> optionsStrategy, DOutputTransform outputTransform, IncrementalValueProvider<TData> inputProvider)
+            {
+                OptionsStrategy = optionsStrategy;
+                OutputTransform = outputTransform;
+
+                InputProvider = inputProvider;
             }
 
-            protected override AnalyzerConfigOptions GetOptions((AnalyzerConfigOptionsProvider Options, AdditionalText AdditionalText) inputProviders)
+            public IncrementalValueProvider<TOut> Attach(IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider)
             {
-                return inputProviders.Options.GetOptions(inputProviders.AdditionalText);
+                return optionsProvider.Combine(InputProvider).Select(ExtractOptions);
+            }
+
+            private TOut ExtractOptions((AnalyzerConfigOptionsProvider Options, TData Input) data, CancellationToken _)
+            {
+                return OutputTransform(OptionsStrategy.ExtractOptions(data.Options, data.Input));
             }
         }
 
@@ -191,6 +236,72 @@ internal static class AnalyzerConfigKeyValueProvider
                 }
 
                 return multiTransform(keyValuePairs);
+            }
+        }
+    }
+
+    private class TransformedProvider<TIn, TOut, TData> : Provider<TOut>, ITransformedProvider<TIn, TOut>
+    {
+        public static TransformedProvider<TIn, TOut, SyntaxTree> Construct(DInputTransform<TIn, SyntaxTree> inputTransform,
+            DSingleOutputTransform<TOut> outputTransform, string key)
+        {
+            return new(new SyntaxTreeOptionsStrategy(), inputTransform, outputTransform, key);
+        }
+
+        public static TransformedProvider<TIn, TOut, SyntaxTree> Construct(DInputTransform<TIn, SyntaxTree> inputTransform,
+            DMultiOutputTransform<TOut> outputTransform, IEnumerable<string> keys)
+        {
+            return new(new SyntaxTreeOptionsStrategy(), inputTransform, outputTransform, keys);
+        }
+
+        public static TransformedProvider<TIn, TOut, AdditionalText> Construct(DInputTransform<TIn, AdditionalText> inputTransform,
+            DSingleOutputTransform<TOut> outputTransform, string key)
+        {
+            return new(new AdditionalTextOptionsStrategy(), inputTransform, outputTransform, key);
+        }
+
+        public static TransformedProvider<TIn, TOut, AdditionalText> Construct(DInputTransform<TIn, AdditionalText> inputTransform,
+            DMultiOutputTransform<TOut> outputTransform, IEnumerable<string> keys)
+        {
+            return new(new AdditionalTextOptionsStrategy(), inputTransform, outputTransform, keys);
+        }
+
+        private TransformedOptionsStrategy OptionsStrategy { get; }
+
+        private TransformedProvider(IOptionsStrategy<TData> optionsStrategy, DInputTransform<TIn, TData> inputTransform,
+            DSingleOutputTransform<TOut> outputTransform, string key) : base(outputTransform, key)
+        {
+            OptionsStrategy = new(optionsStrategy, inputTransform);
+        }
+
+        private TransformedProvider(IOptionsStrategy<TData> optionsStrategy, DInputTransform<TIn, TData> inputTransform,
+            DMultiOutputTransform<TOut> outputTransform, IEnumerable<string> keys)
+            : base(outputTransform, keys)
+        {
+            OptionsStrategy = new(optionsStrategy, inputTransform);
+        }
+
+        public IncrementalValueProvider<TOut> Attach(IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider, IncrementalValueProvider<TIn> inputProvider)
+        {
+            IOptionsProviderStrategy optionsProviderStrategy = new StrategizedOptionsProvider<TIn>(OptionsStrategy, OutputTransform, inputProvider);
+
+            return Attach(optionsProviderStrategy, optionsProvider);
+        }
+
+        protected class TransformedOptionsStrategy : IOptionsStrategy<TIn>
+        {
+            private IOptionsStrategy<TData> BackboneStrategy { get; }
+            private DInputTransform<TIn, TData> InputTransform { get; }
+
+            public TransformedOptionsStrategy(IOptionsStrategy<TData> backboneStrategy, DInputTransform<TIn, TData> inputTransform)
+            {
+                BackboneStrategy = backboneStrategy;
+                InputTransform = inputTransform;
+            }
+
+            public AnalyzerConfigOptions ExtractOptions(AnalyzerConfigOptionsProvider optionsProvider, TIn input)
+            {
+                return BackboneStrategy.ExtractOptions(optionsProvider, InputTransform(input));
             }
         }
     }
