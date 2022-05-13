@@ -1,8 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Units.Extraction;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Attributes.Parsing.Extraction;
 using SharpMeasures.Generators.Attributes.Parsing.Units;
@@ -15,14 +13,14 @@ internal class DerivableUnitValidator : IValidator<DerivableUnitDefinition>
 
     private DerivableUnitValidator() { }
 
-    public ExtractionValidity Check(AttributeData attributeData, DerivableUnitDefinition parameters)
+    public ExtractionValidity Check(AttributeData attributeData, DerivableUnitDefinition definition)
     {
-        if (CheckExpressionValidity(attributeData, parameters) is ExtractionValidity { IsInvalid: true } invalidExpression)
+        if (CheckExpressionValidity(definition) is ExtractionValidity { IsInvalid: true } invalidExpression)
         {
             return invalidExpression;
         }
 
-        if (CheckSignatureValidity(attributeData, parameters) is ExtractionValidity { IsInvalid: true } invalidSignature)
+        if (CheckSignatureValidity(definition) is ExtractionValidity { IsInvalid: true } invalidSignature)
         {
             return invalidSignature;
         }
@@ -30,88 +28,51 @@ internal class DerivableUnitValidator : IValidator<DerivableUnitDefinition>
         return ExtractionValidity.Valid;
     }
 
-    private static ExtractionValidity CheckExpressionValidity(AttributeData attributeData, DerivableUnitDefinition parameters)
+    private static ExtractionValidity CheckExpressionValidity(DerivableUnitDefinition definition)
     {
-        if (string.IsNullOrEmpty(parameters.Expression))
+        if (string.IsNullOrEmpty(definition.Expression))
         {
-            return ExtractionValidity.Invalid(CreateInvalidExpressionDiagnostics(attributeData));
+            return ExtractionValidity.Invalid(CreateInvalidExpressionDiagnostics(definition));
         }
 
         return ExtractionValidity.Valid;
     }
 
-    private static ExtractionValidity CheckSignatureValidity(AttributeData attributeData, DerivableUnitDefinition parameters)
+    private static ExtractionValidity CheckSignatureValidity(DerivableUnitDefinition definition)
     {
-        if (parameters.ParsingData.EmptySignature)
+        if (definition.ParsingData.SignatureValid)
         {
-            return ExtractionValidity.Invalid(CreateEmptySignatureDiagnostics(attributeData));
+            return ExtractionValidity.Invalid(CreateEmptySignatureDiagnostics(definition));
         }
 
-        if (parameters.ParsingData.InvalidIndex != -1)
+        if (definition.ParsingData.SignatureComponentNotUnitIndex != -1)
         {
-            return ExtractionValidity.Invalid(CreateTypeNotUnitDiagnostics(attributeData, parameters));
+            return ExtractionValidity.Invalid(CreateTypeNotUnitDiagnostics(definition));
         }
 
         return ExtractionValidity.Valid;
     }
 
-    private static Diagnostic? CreateInvalidExpressionDiagnostics(AttributeData attributeData)
+    private static Diagnostic CreateInvalidExpressionDiagnostics(DerivableUnitDefinition definition)
     {
-        int expressionArgumentIndex = DerivableUnitParser.ExpressionIndex(attributeData);
-
-        if (attributeData.GetArgumentSyntax(expressionArgumentIndex)?.GetFirstChildOfKind<LiteralExpressionSyntax>(SyntaxKind.StringLiteralExpression)
-            is LiteralExpressionSyntax expressionSyntax)
-        {
-            return InvalidUnitDerivationExpressionDiagnostics.Create(expressionSyntax);
-        }
-
-        return null;
+        return InvalidUnitDerivationExpressionDiagnostics.Create(definition.Locations.Expression, definition.Expression);
     }
 
-    private static Diagnostic? CreateEmptySignatureDiagnostics(AttributeData attributeData)
+    private static Diagnostic CreateEmptySignatureDiagnostics(DerivableUnitDefinition definition)
     {
-        int signatureArgumentIndex = DerivableUnitParser.SignatureIndex(attributeData);
-
-        if (attributeData.GetArgumentSyntax(signatureArgumentIndex)?.GetFirstChildOfKind<InitializerExpressionSyntax>(SyntaxKind.ArrayInitializerExpression)
-            is InitializerExpressionSyntax initializerSyntax)
-        {
-            return EmptyUnitDerivationSignatureDiagnostics.Create(initializerSyntax);
-        }
-
-        return null;
+        return EmptyUnitDerivationSignatureDiagnostics.Create(definition.Locations.Signature);
     }
 
-    private static Diagnostic? CreateTypeNotUnitDiagnostics(AttributeData attributeData, DerivableUnitDefinition parameters)
+    private static Diagnostic? CreateTypeNotUnitDiagnostics(DerivableUnitDefinition parameters)
     {
-        if (parameters.ParsingData.InvalidIndex < 0 || parameters.ParsingData.InvalidIndex >= parameters.Signature.Count)
+        if (parameters.ParsingData.SignatureComponentNotUnitIndex < 0 || parameters.ParsingData.SignatureComponentNotUnitIndex >= parameters.Signature.Count)
         {
             return null;
         }
 
-        INamedTypeSymbol invalidSymbol = parameters.Signature[parameters.ParsingData.InvalidIndex];
+        INamedTypeSymbol invalidSymbol = parameters.Signature[parameters.ParsingData.SignatureComponentNotUnitIndex];
+        Location invalidLocation = parameters.Locations.SignatureComponents[parameters.ParsingData.SignatureComponentNotUnitIndex];
 
-        if (invalidSymbol.GetAttributeOfType<GeneratedUnitAttribute>() is null)
-        {
-            int signatureArgumentIndex = DerivableUnitParser.SignatureIndex(attributeData);
-
-            if (attributeData.GetArgumentSyntax(signatureArgumentIndex)?.GetFirstChildOfKind<InitializerExpressionSyntax>(SyntaxKind.ArrayInitializerExpression)
-                is InitializerExpressionSyntax arraySyntax)
-            {
-                if (arraySyntax.Expressions[parameters.ParsingData.InvalidIndex] is TypeOfExpressionSyntax arrayTypeofSyntax)
-                {
-                    return TypeNotUnitDiagnostics.Create(arrayTypeofSyntax);
-                }
-
-                return null;
-            }
-
-            if (attributeData.GetArgumentSyntax(signatureArgumentIndex + parameters.ParsingData.InvalidIndex)?.GetFirstChildOfType<TypeOfExpressionSyntax>()
-                is TypeOfExpressionSyntax paramsTypeofSyntax)
-            {
-                return TypeNotUnitDiagnostics.Create(paramsTypeofSyntax);
-            }
-        }
-
-        return null;
+        return TypeNotUnitDiagnostics.Create(invalidLocation, invalidSymbol);
     }
 }

@@ -1,10 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Diagnostics.DerivableUnits;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 internal static class EmptyUnitDerivationSignatureDiagnostics
 {
-    public static Diagnostic Create(InitializerExpressionSyntax initializerSyntax)
-        => Diagnostic.Create(DiagnosticRules.InvalidUnitDerivationExpression, initializerSyntax.GetLocation());
+    public static Diagnostic Create(Location location) => Diagnostic.Create(DiagnosticRules.InvalidUnitDerivationExpression, location);
+    public static Diagnostic Create(MinimalLocation location) => Create(location.ToLocation());
 }

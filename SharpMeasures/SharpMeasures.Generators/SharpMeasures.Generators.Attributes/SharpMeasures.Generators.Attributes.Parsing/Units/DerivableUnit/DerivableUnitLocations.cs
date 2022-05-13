@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 public readonly record struct DerivableUnitLocations(Location Attribute, Location AttributeName, Location Expression, Location Signature,
-    IReadOnlyList<Location> SignatureComponent)
+    IReadOnlyList<Location> SignatureComponents)
 {
     internal CacheableDerivableUnitLocations ToCacheable() => CacheableDerivableUnitLocations.Construct(this);
 
@@ -51,7 +51,7 @@ public readonly record struct DerivableUnitLocations(Location Attribute, Locatio
             return this with
             { 
                 Signature = initializerExpression.GetLocation(),
-                SignatureComponent = componentLocations
+                SignatureComponents = componentLocations
             };
         }
         else
@@ -68,7 +68,7 @@ public readonly record struct DerivableUnitLocations(Location Attribute, Locatio
 
             Location signatureLocation = firstLocation.ExtendToInclude(lastLocation);
 
-            return this with { Signature = signatureLocation, SignatureComponent = componentLocations };
+            return this with { Signature = signatureLocation, SignatureComponents = componentLocations };
         }
     }
 
@@ -80,14 +80,14 @@ public readonly record struct DerivableUnitLocations(Location Attribute, Locatio
             return false;
         }
 
-        return SignatureComponent.SequenceEqual(other.SignatureComponent);
+        return SignatureComponents.SequenceEqual(other.SignatureComponents);
     }
 
     public override int GetHashCode()
     {
         int hashCode = (Attribute, AttributeName, Expression, Signature).GetHashCode();
 
-        foreach (Location location in SignatureComponent)
+        foreach (Location location in SignatureComponents)
         {
             hashCode ^= location.GetHashCode();
         }

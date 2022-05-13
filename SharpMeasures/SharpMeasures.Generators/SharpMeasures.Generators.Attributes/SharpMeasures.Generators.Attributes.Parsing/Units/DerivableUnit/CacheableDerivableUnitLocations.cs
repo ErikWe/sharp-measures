@@ -7,11 +7,11 @@ public readonly record struct CacheableDerivableUnitLocations(MinimalLocation At
 {
     internal static CacheableDerivableUnitLocations Construct(DerivableUnitLocations originalLocations)
     {
-        MinimalLocation[] signatureComponents = new MinimalLocation[originalLocations.SignatureComponent.Count];
+        MinimalLocation[] signatureComponents = new MinimalLocation[originalLocations.SignatureComponents.Count];
 
         for (int i = 0; i < signatureComponents.Length; i++)
         {
-            signatureComponents[i] = MinimalLocation.FromLocation(originalLocations.SignatureComponent[i]);
+            signatureComponents[i] = MinimalLocation.FromLocation(originalLocations.SignatureComponents[i]);
         }
 
         return new(MinimalLocation.FromLocation(originalLocations.Attribute), MinimalLocation.FromLocation(originalLocations.AttributeName),

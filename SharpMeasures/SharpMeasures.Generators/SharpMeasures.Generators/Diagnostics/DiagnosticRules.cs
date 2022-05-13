@@ -31,6 +31,16 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
+    public readonly static DiagnosticDescriptor TypeNotScalarQuantity_Null = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.TypeNotScalarQuantity,
+        title: "Expected a scalar quantity",
+        messageFormat: $"Expected a type marked with the attribute {typeof(GeneratedScalarQuantityAttribute).FullName}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
     public readonly static DiagnosticDescriptor TypeNotUnbiasedScalarQuantity = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.TypeNotUnbiasedScalarQuantity,
@@ -49,6 +59,16 @@ internal static partial class DiagnosticRules
         id: DiagnosticIDs.TypeNotUnit,
         title: "Expected a unit",
         messageFormat: $"Expected a unit. Add the attribute {typeof(GeneratedUnitAttribute).FullName} to {{0}} for it to be recognized as a unit.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public readonly static DiagnosticDescriptor TypeNotUnit_Null = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.TypeNotUnit,
+        title: "Expected a unit",
+        messageFormat: $"Expected a type marked with the attribute {typeof(GeneratedUnitAttribute).FullName}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
