@@ -24,17 +24,17 @@ internal static class PartialDeclarationProvider
     public static IImmediateProvider<TDeclaration> Construct<TDeclaration>()
         where TDeclaration : BaseTypeDeclarationSyntax
     {
-        return new ImmediateProvider<TDeclaration>(ExtractDeclaration);
-    }
-
-    public static IDelegatedProvider<TData> Construct<TData>(DInputTransform<TData> inputTransform, DAttributeTypeTransform<TData> attributeTypeDelegate)
-    {
-        return new DelegatedProvider<TData>(inputTransform, WrapAttributeTypeDelegate(attributeTypeDelegate));
+        return Construct<TDeclaration>(ExtractDeclaration);
     }
 
     public static IDelegatedProvider<TData> Construct<TData>(DInputTransform<TData> inputTransform, DAttributeNameTransform<TData> attributeNameDelegate)
     {
         return new DelegatedProvider<TData>(inputTransform, attributeNameDelegate);
+    }
+
+    public static IDelegatedProvider<TData> Construct<TData>(DInputTransform<TData> inputTransform, DAttributeTypeTransform<TData> attributeTypeDelegate)
+    {
+        return Construct(inputTransform, WrapAttributeTypeDelegate(attributeTypeDelegate));
     }
 
     private static BaseTypeDeclarationSyntax ExtractDeclaration<TDeclaration>(TDeclaration declaration) where TDeclaration : BaseTypeDeclarationSyntax => declaration;

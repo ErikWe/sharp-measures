@@ -4,15 +4,15 @@ using Microsoft.CodeAnalysis;
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 public abstract class AExtractor<TParameters>
 {
-    public ReadOnlyCollection<TParameters> ValidDefinitions => new(ValidDefinitionsList);
+    public IReadOnlyList<TParameters> ValidDefinitions => ValidDefinitionsContainer;
     public IEnumerable<Diagnostic> Diagnostics { get; protected set; } = Enumerable.Empty<Diagnostic>();
 
-    protected IList<TParameters> ValidDefinitionsList { get; } = new List<TParameters>();
+    protected IList<TParameters> ValidDefinitionsList => ValidDefinitionsContainer;
+    private List<TParameters> ValidDefinitionsContainer { get; } = new();
 }
 
 public abstract class AExtractor<TParameters, TAttribute> : AExtractor<TParameters>

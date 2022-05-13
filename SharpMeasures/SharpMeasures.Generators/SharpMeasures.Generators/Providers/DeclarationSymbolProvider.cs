@@ -18,7 +18,13 @@ internal static class DeclarationSymbolProvider
     public static IProvider<TIn, TOut> ConstructForValueType<TIn, TOut>(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
         where TOut : struct
     {
-        return new Provider<TIn, TOut, TOut?>(inputTransform, NullifyOutputTransform(outputTransform), NullableEraser);
+        return ConstructForValueType(inputTransform, NullifyOutputTransform(outputTransform));
+    }
+
+    public static IProvider<TIn, TOut> ConstructForValueType<TIn, TOut>(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut?> outputTransform)
+        where TOut : struct
+    {
+        return new Provider<TIn, TOut, TOut?>(inputTransform, outputTransform, NullableEraser);
     }
 
     public static IProvider<TIn, TOut> ConstructForReferenceType<TIn, TOut>(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
@@ -31,7 +37,14 @@ internal static class DeclarationSymbolProvider
         DOutputTransform<TIn, TOut> outputTransform)
         where TOut : struct
     {
-        return new PartialProvider<TIn, TOut, TOut?>(inputTransform, NullifyOutputTransform(outputTransform), NullableEraser);
+        return ConstructForValueType(inputTransform, NullifyOutputTransform(outputTransform));
+    }
+
+    public static IPartialProvider<TIn, TOut> ConstructForValueType<TIn, TOut>(DPartialInputTransform<TIn> inputTransform,
+        DOutputTransform<TIn, TOut?> outputTransform)
+        where TOut : struct
+    {
+        return new PartialProvider<TIn, TOut, TOut?>(inputTransform, outputTransform, NullableEraser);
     }
 
     public static IPartialProvider<TIn, TOut> ConstructForReferenceType<TIn, TOut>(DPartialInputTransform<TIn> inputTransform,
@@ -45,7 +58,14 @@ internal static class DeclarationSymbolProvider
         where TDeclaration : BaseTypeDeclarationSyntax
         where TOut : struct
     {
-        return new PartialProvider<TDeclaration, TOut, TOut?>(inputTransform, NullifyOutputTransform(outputTransform), NullableEraser);
+        return ConstructForValueType(NullifyOutputTransform(outputTransform));
+    }
+
+    public static IPartialProvider<TDeclaration, TOut> ConstructForValueType<TDeclaration, TOut>(DOutputTransform<TDeclaration, TOut?> outputTransform)
+        where TDeclaration : BaseTypeDeclarationSyntax
+        where TOut : struct
+    {
+        return new PartialProvider<TDeclaration, TOut, TOut?>(inputTransform, outputTransform, NullableEraser);
 
         static BaseTypeDeclarationSyntax inputTransform(TDeclaration declaration) => declaration;
     }

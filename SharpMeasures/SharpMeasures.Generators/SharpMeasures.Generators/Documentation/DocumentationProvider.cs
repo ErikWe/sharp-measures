@@ -30,32 +30,23 @@ internal static class DocumentationProvider
         return new UndiagnosableProvider<TIn, TOut, TIdentifier>(inputTransform, outputTransform, identifierNameDelegate);
     }
 
-    public static IUndiagnosableProvider<TIn, TOut, TDeclaration> Construct<TIn, TOut, TDeclaration>(DInputTransform<TIn, TDeclaration> inputTransform,
-        DOutputTransform<TIn, TOut> outputTransform)
-        where TDeclaration : BaseTypeDeclarationSyntax
-    {
-        return new UndiagnosableProvider<TIn, TOut, TDeclaration>(inputTransform, outputTransform, DeclarationIdentifier<TDeclaration>());
-    }
-
     public static IUndiagnosableProvider<TIn, TOut, string> Construct<TIn, TOut>(DInputTransform<TIn, string> inputTransform,
         DOutputTransform<TIn, TOut> outputTransform)
     {
-        return new UndiagnosableProvider<TIn, TOut, string>(inputTransform, outputTransform, StringIdentifier);
+        return Construct(inputTransform, outputTransform, StringIdentifier);
     }
 
-    public static IDiagnosableProvider<TIn, TOut, TIdentifier> Construct<TIn, TOut, TIdentifier>(IncrementalGeneratorInitializationContext context,
-        DInputTransform<TIn, TIdentifier> inputTransform, DOutputTransform<TIn, TOut> outputTransform, DIdentifierName<TIdentifier> identifierName,
-        DIdentifierDeclaration<TIdentifier> identifierDeclaration)
+    public static IDiagnosableProvider<TIn, TOut, TIdentifier> Construct<TIn, TOut, TIdentifier>(DInputTransform<TIn, TIdentifier> inputTransform,
+        DOutputTransform<TIn, TOut> outputTransform, DIdentifierDeclaration<TIdentifier> identifierDeclarationDelegate)
     {
-        return new DiagnosableProvider<TIn, TOut, TIdentifier>(context, inputTransform, outputTransform, identifierName, identifierDeclaration);
+        return new DiagnosableProvider<TIn, TOut, TIdentifier>(inputTransform, outputTransform, identifierDeclarationDelegate);
     }
 
-    public static IDiagnosableProvider<TIn, TOut, TDeclaration> Construct<TIn, TOut, TDeclaration>(IncrementalGeneratorInitializationContext context,
-        DInputTransform<TIn, TDeclaration> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
+    public static IDiagnosableProvider<TIn, TOut, TDeclaration> Construct<TIn, TOut, TDeclaration>(DInputTransform<TIn, TDeclaration> inputTransform,
+        DOutputTransform<TIn, TOut> outputTransform)
         where TDeclaration : BaseTypeDeclarationSyntax
     {
-        return new DiagnosableProvider<TIn, TOut, TDeclaration>(context, inputTransform, outputTransform,
-            DeclarationIdentifier<TDeclaration>(), DeclarationDelegate<TDeclaration>());
+        return Construct(inputTransform, outputTransform, DeclarationDelegate<TDeclaration>());
     }
 
     private static DIdentifierName<TDeclaration> DeclarationIdentifier<TDeclaration>() where TDeclaration : BaseTypeDeclarationSyntax
@@ -78,14 +69,14 @@ internal static class DocumentationProvider
 
     public interface IDiagnosableProvider<TIn, TOut, TIdentifier>
     {
-        public abstract IncrementalValuesProvider<TOut> AttachAndReport(IncrementalValuesProvider<TIn> inputProvider,
+        public abstract IncrementalValuesProvider<TOut> AttachAndReport(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<TIn> inputProvider,
             IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider, IncrementalValuesProvider<AdditionalText> additionalTextProvider);
 
         public abstract IncrementalValuesProvider<TOut> AttachWithoutDiagnostics(IncrementalValuesProvider<TIn> inputProvider,
             IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider, IncrementalValuesProvider<AdditionalText> additionalTextProvider);
     }
 
-    protected abstract class AProvider<TIn, TOut, TIdentifier>
+    private abstract class AProvider<TIn, TOut, TIdentifier>
     {
         private DInputTransform<TIn, TIdentifier> InputTransform { get; }
         private DOutputTransform<TIn, TOut> OutputTransform { get; }
@@ -100,116 +91,137 @@ internal static class DocumentationProvider
             IdentifierNameDelegate = identifierNameDelegate;
         }
 
-        public IncrementalValuesProvider<TOut> Attach(IncrementalValuesProvider<TIn> inputProvider,
+        protected IncrementalValuesProvider<TOut> Attach(IDiagnosticsStrategy diagnosticsStrategy, IncrementalValuesProvider<TIn> inputProvider,
             IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider, IncrementalValuesProvider<AdditionalText> additionalTextProvider)
         {
             var defaultSettings = DefaultSettingsProvider.Attach(optionsProvider);
-            var documentation = AttachDocumentationProvider(additionalTextProvider);
+            var documentation = diagnosticsStrategy.AttachDocumentationProvider(additionalTextProvider);
 
             var settingsAndDocumentation = defaultSettings.Combine(documentation);
 
-            var resultAndDiagnostics = inputProvider.Combine(settingsAndDocumentation).Select(ExtractCorrectFile);
+            var resultAndDiagnostics = inputProvider.Combine(settingsAndDocumentation).Select(extractCorrectFile);
 
-            ReportDiagnostics(resultAndDiagnostics);
+            diagnosticsStrategy.ReportDiagnostics(resultAndDiagnostics);
             return resultAndDiagnostics.ExtractResult();
+
+            ResultWithDiagnostics<TOut> extractCorrectFile((TIn Input, (DefaultSettingsProvider.Result DefaultSettings, DocumentationDictionary Documentation) State) data,
+                CancellationToken _) => ExtractCorrectFile(diagnosticsStrategy, data.Input, data.State.DefaultSettings, data.State.Documentation);
         }
 
-        protected abstract Diagnostic? CreateNoMatchingDocumentationFileDiagnostics(TIdentifier identifier);
-        protected abstract IncrementalValueProvider<DocumentationDictionary> AttachDocumentationProvider(
-            IncrementalValuesProvider<AdditionalText> additionalTextProvider);
-        protected abstract void ReportDiagnostics(IncrementalValuesProvider<ResultWithDiagnostics<TOut>> diagnostics);
-
-        private ResultWithDiagnostics<TOut> ExtractCorrectFile((TIn Input,
-            (DefaultSettingsProvider.Result DefaultSettings, DocumentationDictionary Documentation) State) data, CancellationToken _)
+        protected interface IDiagnosticsStrategy
         {
-            InputData<TIdentifier> inputData = InputTransform(data.Input);
+            public abstract IncrementalValueProvider<DocumentationDictionary> AttachDocumentationProvider(IncrementalValuesProvider<AdditionalText> additionalTextProvider);
+            public abstract Diagnostic? CreateNoMatchingDocumentationFileDiagnostics(TIdentifier identifier);
+            public abstract void ReportDiagnostics(IncrementalValuesProvider<ResultWithDiagnostics<TOut>> diagnostics);
+        }
+
+        private ResultWithDiagnostics<TOut> ExtractCorrectFile(IDiagnosticsStrategy diagnosticsStrategy, TIn input,
+            DefaultSettingsProvider.Result defaultSettings, DocumentationDictionary documentation)
+        {
+            InputData<TIdentifier> inputData = InputTransform(input);
 
             if (inputData.GenerateDocumentation is GenerateDocumentationState.ExplicitlyDisabled
-                || inputData.GenerateDocumentation is GenerateDocumentationState.Default && data.State.DefaultSettings.GenerateDocumentationByDefault is false)
+                || inputData.GenerateDocumentation is GenerateDocumentationState.Default && defaultSettings.GenerateDocumentationByDefault is false)
             {
-                return ResultWithDiagnostics<TOut>.WithoutDiagnostics(OutputTransform(data.Input, DocumentationFile.Empty));
+                return ResultWithDiagnostics<TOut>.WithoutDiagnostics(OutputTransform(input, DocumentationFile.Empty));
             }
 
-            if (data.State.Documentation.TryGetValue(IdentifierNameDelegate(inputData.Identifier), out DocumentationFile file))
+            if (documentation.TryGetValue(IdentifierNameDelegate(inputData.Identifier), out DocumentationFile file))
             {
-                return ResultWithDiagnostics<TOut>.WithoutDiagnostics(OutputTransform(data.Input, file));
+                return ResultWithDiagnostics<TOut>.WithoutDiagnostics(OutputTransform(input, file));
             }
 
-            if (CreateNoMatchingDocumentationFileDiagnostics(inputData.Identifier) is not Diagnostic diagnostics)
+            if (diagnosticsStrategy.CreateNoMatchingDocumentationFileDiagnostics(inputData.Identifier) is not Diagnostic diagnostics)
             {
-                return ResultWithDiagnostics<TOut>.WithoutDiagnostics(OutputTransform(data.Input, DocumentationFile.Empty));
+                return ResultWithDiagnostics<TOut>.WithoutDiagnostics(OutputTransform(input, DocumentationFile.Empty));
             }
 
-            return new ResultWithDiagnostics<TOut>(OutputTransform(data.Input, DocumentationFile.Empty), diagnostics);
+            return new ResultWithDiagnostics<TOut>(OutputTransform(input, DocumentationFile.Empty), diagnostics);
         }
     }
 
     private class UndiagnosableProvider<TIn, TOut, TIdentifier> : AProvider<TIn, TOut, TIdentifier>, IUndiagnosableProvider<TIn, TOut, TIdentifier>
     {
         public UndiagnosableProvider(DInputTransform<TIn, TIdentifier> inputTransform, DOutputTransform<TIn, TOut> outputTransform,
-            DIdentifierName<TIdentifier> identifierNameDelegate) : base(inputTransform, outputTransform, identifierNameDelegate) { }
+            DIdentifierName<TIdentifier> identifierNameDelegate)
+            : base(inputTransform, outputTransform, identifierNameDelegate) { }
 
-        protected override Diagnostic? CreateNoMatchingDocumentationFileDiagnostics(TIdentifier identifier)
-        {
-            return null;
-        }
-
-        protected override IncrementalValueProvider<DocumentationDictionary> AttachDocumentationProvider(
+        public IncrementalValuesProvider<TOut> Attach(IncrementalValuesProvider<TIn> inputProvider, IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider,
             IncrementalValuesProvider<AdditionalText> additionalTextProvider)
         {
-            return DocumentationDictionaryProvider.AttachWithoutDiagnostics(additionalTextProvider);
+            IDiagnosticsStrategy diagnosticsStrategy = new NoDiagnosticsStrategy();
+
+            return Attach(diagnosticsStrategy, inputProvider, optionsProvider, additionalTextProvider);
         }
 
-        protected override void ReportDiagnostics(IncrementalValuesProvider<ResultWithDiagnostics<TOut>> diagnostics) { }
+        private class NoDiagnosticsStrategy : IDiagnosticsStrategy
+        {
+            public IncrementalValueProvider<DocumentationDictionary> AttachDocumentationProvider(IncrementalValuesProvider<AdditionalText> additionalTextProvider)
+            {
+                return DocumentationDictionaryProvider.AttachWithoutDiagnostics(additionalTextProvider);
+            }
+
+            public Diagnostic? CreateNoMatchingDocumentationFileDiagnostics(TIdentifier identifier) => null;
+            public void ReportDiagnostics(IncrementalValuesProvider<ResultWithDiagnostics<TOut>> diagnostics) { }
+        }
     }
 
-    private class DiagnosableProvider<TIn, TOut, TIdentifier> : AProvider<TIn, TOut, TIdentifier>, IDiagnosableProvider<TIn, TOut, TIdentifier>
+    private class DiagnosableProvider<TIn, TOut, TIdentifier> : UndiagnosableProvider<TIn, TOut, TIdentifier>, IDiagnosableProvider<TIn, TOut, TIdentifier>
     {
-        private bool ProduceDiagnostics { get; set; }
-
-        private IncrementalGeneratorInitializationContext Context { get; }
         private DIdentifierDeclaration<TIdentifier> IdentifierDeclarationDelegate { get; }
 
-        public DiagnosableProvider(IncrementalGeneratorInitializationContext context, DInputTransform<TIn, TIdentifier> inputTransform,
-            DOutputTransform<TIn, TOut> outputTransform, DIdentifierName<TIdentifier> identifierNameDelegate,
+        public DiagnosableProvider(DInputTransform<TIn, TIdentifier> inputTransform, DOutputTransform<TIn, TOut> outputTransform,
             DIdentifierDeclaration<TIdentifier> identifierDeclarationDelegate)
-            : base(inputTransform, outputTransform, identifierNameDelegate)
+            : base(inputTransform, outputTransform, DeclarationNameDelegate(identifierDeclarationDelegate))
         {
-            Context = context;
             IdentifierDeclarationDelegate = identifierDeclarationDelegate;
         }
 
         public IncrementalValuesProvider<TOut> AttachWithoutDiagnostics(IncrementalValuesProvider<TIn> inputProvider,
             IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider, IncrementalValuesProvider<AdditionalText> additionalTextProvider)
         {
-            ProduceDiagnostics = false;
             return Attach(inputProvider, optionsProvider, additionalTextProvider);
         }
 
-        public IncrementalValuesProvider<TOut> AttachAndReport(IncrementalValuesProvider<TIn> inputProvider,
+        public IncrementalValuesProvider<TOut> AttachAndReport(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<TIn> inputProvider,
             IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider, IncrementalValuesProvider<AdditionalText> additionalTextProvider)
         {
-            ProduceDiagnostics = true;
-            return Attach(inputProvider, optionsProvider, additionalTextProvider);
+            IDiagnosticsStrategy diagnosticsStrategy = new DiagnosticsStrategy(context, IdentifierDeclarationDelegate);
+
+            return Attach(diagnosticsStrategy, inputProvider, optionsProvider, additionalTextProvider);
         }
 
-        protected override Diagnostic? CreateNoMatchingDocumentationFileDiagnostics(TIdentifier identifier)
+        private class DiagnosticsStrategy : IDiagnosticsStrategy
         {
-            return NoMatchingDocumentationFileDiagnostics.Create(IdentifierDeclarationDelegate(identifier));
-        }
+            private IncrementalGeneratorInitializationContext Context { get; }
+            private DIdentifierDeclaration<TIdentifier> IdentifierDeclarationDelegate { get; }
 
-        protected override IncrementalValueProvider<DocumentationDictionary> AttachDocumentationProvider(
-            IncrementalValuesProvider<AdditionalText> additionalTextProvider)
-        {
-            return DocumentationDictionaryProvider.AttachAndReport(Context, additionalTextProvider);
-        }
+            public DiagnosticsStrategy(IncrementalGeneratorInitializationContext context, DIdentifierDeclaration<TIdentifier> identifierDeclarationDelegate)
+            {
+                Context = context;
+                IdentifierDeclarationDelegate = identifierDeclarationDelegate;
+            }
 
-        protected override void ReportDiagnostics(IncrementalValuesProvider<ResultWithDiagnostics<TOut>> diagnostics)
-        {
-            if (ProduceDiagnostics)
+            public Diagnostic? CreateNoMatchingDocumentationFileDiagnostics(TIdentifier identifier)
+            {
+                return NoMatchingDocumentationFileDiagnostics.Create(IdentifierDeclarationDelegate(identifier));
+            }
+
+            public IncrementalValueProvider<DocumentationDictionary> AttachDocumentationProvider(
+                IncrementalValuesProvider<AdditionalText> additionalTextProvider)
+            {
+                return DocumentationDictionaryProvider.AttachAndReport(Context, additionalTextProvider);
+            }
+
+            public void ReportDiagnostics(IncrementalValuesProvider<ResultWithDiagnostics<TOut>> diagnostics)
             {
                 Context.ReportDiagnostics(diagnostics);
             }
+        }
+
+        private static DIdentifierName<TIdentifier> DeclarationNameDelegate(DIdentifierDeclaration<TIdentifier> identifierDeclarationDelegate)
+        {
+            return (identifier) => DeclarationIdentifier<BaseTypeDeclarationSyntax>().Invoke(identifierDeclarationDelegate(identifier));
         }
     }
 

@@ -14,7 +14,7 @@ using System.Text;
 
 internal static class Execution
 {
-    public static void Execute(SourceProductionContext context, Stage4.Result result)
+    public static void Execute(SourceProductionContext context, DefinitionsStage.Result result)
     {
         if (result.DerivedUnits.Count is 0 || result.FixedUnits.Count is 0 || result.UnitAliases.Count is 0 || result.OffsetUnits.Count is 0
             || result.PrefixedUnits.Count is 0 || result.ScaledUnits.Count is 0)
@@ -29,7 +29,7 @@ internal static class Execution
 
     private class Composer
     {
-        public static string Compose(SourceProductionContext context, Stage4.Result data)
+        public static string Compose(SourceProductionContext context, DefinitionsStage.Result data)
         {
             Composer composer = new(context, data);
             composer.Compose();
@@ -52,7 +52,7 @@ internal static class Execution
 
         private HashSet<string> ImplementedDefinitions { get; } = new();
 
-        private Composer(SourceProductionContext context, Stage4.Result data)
+        private Composer(SourceProductionContext context, DefinitionsStage.Result data)
         {
             Context = context;
             Documentation = data.Documentation;

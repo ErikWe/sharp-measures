@@ -27,8 +27,7 @@ internal static class ParameterStage
     {
         AExtractor<GeneratedUnitDefinition> units = GeneratedUnitExtractor.Extract(input.TypeSymbol);
 
-        if (units.ValidDefinitions.Count is 0
-            || units.ValidDefinitions[0] is not GeneratedUnitDefinition { Quantity: INamedTypeSymbol } parameters)
+        if (units.ValidDefinitions.Count is 0 || units.ValidDefinitions[0] is not GeneratedUnitDefinition { Quantity: INamedTypeSymbol } parameters)
         {
             return new ResultWithDiagnostics<Result?>(null, units.Diagnostics);
         }

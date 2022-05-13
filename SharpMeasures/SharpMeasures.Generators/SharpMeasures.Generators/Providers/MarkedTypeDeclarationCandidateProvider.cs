@@ -17,7 +17,7 @@ internal static class MarkedTypeDeclarationCandidateProvider
 
     public static IProvider<TypeDeclarationSyntax> Construct()
     {
-        return new Provider<TypeDeclarationSyntax>(extractDeclaration);
+        return Construct(extractDeclaration);
 
         static TypeDeclarationSyntax extractDeclaration(TypeDeclarationSyntax declaration, AttributeSyntax attributeSyntax) => declaration;
     }

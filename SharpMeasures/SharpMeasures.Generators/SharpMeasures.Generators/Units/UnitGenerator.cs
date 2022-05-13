@@ -15,10 +15,11 @@ public class UnitGenerator : IIncrementalGenerator
     {
         var declarationsWithSymbols = DeclarationStage.ExtractRelevantPartialDeclarationsWithSymbols(context);
         var withParameters = ParameterStage.ParseGeneratedUnitParameters(context, declarationsWithSymbols);
+        var withDocumentation = DocumentationStage.AppendDocumentation(context, withParameters);
 
-        ComparableGenerator.Initialize(context, withParameters);
-        UnitDefinitionsGenerator.Initialize(context, withParameters);
-        DerivableUnitGenerator.Initialize(context, withParameters);
-        MiscGenerator.Initialize(context, withParameters);
+        ComparableGenerator.Initialize(context, withDocumentation);
+        UnitDefinitionsGenerator.Initialize(context, withDocumentation);
+        DerivableUnitGenerator.Initialize(context, withDocumentation);
+        MiscGenerator.Initialize(context, withDocumentation);
     }
 }

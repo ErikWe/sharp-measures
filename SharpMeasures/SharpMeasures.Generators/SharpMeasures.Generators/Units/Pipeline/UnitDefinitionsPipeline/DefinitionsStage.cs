@@ -13,15 +13,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-internal static class Stage4
+internal static class DefinitionsStage
 {
-    public readonly record struct Result(SharpMeasuresGenerator.DeclarationData Declaration, DefinedType TypeDefinition, NamedType Quantity, bool Biased,
-        DocumentationFile Documentation, IReadOnlyList<UnitAliasParameters> UnitAliases, IReadOnlyList<DerivedUnitParameters> DerivedUnits,
-        IReadOnlyList<FixedUnitParameters> FixedUnits, IReadOnlyList<OffsetUnitParameters> OffsetUnits,
-        IReadOnlyList<PrefixedUnitParameters> PrefixedUnits, IReadOnlyList<ScaledUnitParameters> ScaledUnits);
-
-    public static IncrementalValuesProvider<Result> ExtractDefinitions(IncrementalGeneratorInitializationContext context,
-        IncrementalValuesProvider<Stage3.Result> inputProvider)
+    public static IncrementalValuesProvider<DataModel> ExtractDefinitions(IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<DocumentationStage.Result> inputProvider)
     {
         var resultsWithDiagnostics = inputProvider.Select(ExtractDefinitionsAndDiagnostics);
 
@@ -29,7 +24,7 @@ internal static class Stage4
         return resultsWithDiagnostics.ExtractResult();
     }
 
-    private static ResultWithDiagnostics<Result> ExtractDefinitionsAndDiagnostics(Stage3.Result input, CancellationToken token)
+    private static ResultWithDiagnostics<DataModel> ExtractDefinitionsAndDiagnostics(DocumentationStage.Result input, CancellationToken token)
     {
         AExtractor<UnitAliasParameters> unitAliases = UnitAliasExtractor.Extract(input.TypeSymbol);
         AExtractor<DerivedUnitParameters> derivedUnits = DerivedUnitExtractor.Extract(input.TypeSymbol);
@@ -38,7 +33,7 @@ internal static class Stage4
         AExtractor<PrefixedUnitParameters> prefixedUnits = PrefixedUnitExtractor.Extract(input.TypeSymbol);
         AExtractor<ScaledUnitParameters> scaledUnits = ScaledUnitExtractor.Extract(input.TypeSymbol);
         
-        Result result = new(input.Declaration, DefinedType.FromSymbol(input.TypeSymbol), NamedType.FromSymbol(input.QuantitySymbol), input.Biased,
+        DataModel result = new(DefinedType.FromSymbol(input.TypeSymbol), NamedType.FromSymbol(input.Definition.Quantity!), input.Definition.AllowBias,
             input.Documentation, unitAliases.ValidDefinitions, derivedUnits.ValidDefinitions, fixedUnits.ValidDefinitions, offsetUnits.ValidDefinitions,
             prefixedUnits.ValidDefinitions, scaledUnits.ValidDefinitions);
 
@@ -47,17 +42,17 @@ internal static class Stage4
         IEnumerable<Diagnostic> allDiagnostics = unitAliases.Diagnostics.Concat(derivedUnits.Diagnostics).Concat(fixedUnits.Diagnostics)
             .Concat(offsetUnits.Diagnostics).Concat(prefixedUnits.Diagnostics).Concat(scaledUnits.Diagnostics).Concat(filteredResultAndDiagnostics.Diagnostics);
 
-        return new ResultWithDiagnostics<Result>(filteredResultAndDiagnostics.Result, allDiagnostics);
+        return new ResultWithDiagnostics<DataModel>(filteredResultAndDiagnostics.Result, allDiagnostics);
     }
 
     private class Filterer
     {
-        public static ResultWithDiagnostics<Result> Filter(Result input)
+        public static ResultWithDiagnostics<DataModel> Filter(DataModel input)
         {
             Filterer filterer = new(input);
             filterer.Filter();
 
-            Result filtered = input with
+            DataModel filtered = input with
             {
                 DerivedUnits = filterer.DerivedUnits,
                 FixedUnits = filterer.FixedUnits,
@@ -89,7 +84,7 @@ internal static class Stage4
         private HashSet<string> DefinedNames { get; } = new();
         private List<Diagnostic> Diagnostics { get; } = new();
 
-        private Filterer(Result input)
+        private Filterer(DataModel input)
         {
             Declaration = input.Declaration.TypeDeclaration;
 

@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Units.Pipeline.DerivableUnitPipeline;
 
-using Microsoft.CodeAnalysis;
-
 using SharpMeasures.Generators.Attributes.Parsing.Units;
 using SharpMeasures.Generators.Documentation;
 using SharpMeasures.Generators.Utility;
@@ -10,12 +8,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-internal readonly record struct DataModel(DefinedType Unit, NamedType Quantity, Location UnitLocation,
+internal readonly record struct DataModel(DefinedType Unit, NamedType Quantity, MinimalLocation UnitLocation,
     IReadOnlyList<CacheableDerivableUnitDefinition> DefinedDerivations, DocumentationFile Documentation)
 {
     public bool Equals(DataModel other)
     {
-        return Unit == other.Unit && Quantity == other.Quantity && UnitLocation == other.UnitLocation && Documentation == other.Documentation
+        return Unit == other.Unit && Quantity == other.Quantity && UnitLocation == other.UnitLocation && Documentation.Equals(other.Documentation)
             && DefinedDerivations.SequenceEqual(other.DefinedDerivations);
     }
 

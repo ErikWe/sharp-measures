@@ -9,6 +9,7 @@ using SharpMeasures.Generators.SourceBuilding;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 internal static class Execution
@@ -64,13 +65,13 @@ internal static class Execution
 
         private void ComposeTypeBlock(StringBuilder source, Indentation indentation)
         {
-            foreach (DerivableUnitDefinition definition in Data.DefinedDerivations)
+            foreach (CacheableDerivableUnitDefinition definition in Data.DefinedDerivations)
             {
                 ComposeDefinition(definition, indentation);
             }
         }
 
-        private void ComposeDefinition(DerivableUnitDefinition definition, Indentation indentation)
+        private void ComposeDefinition(CacheableDerivableUnitDefinition definition, Indentation indentation)
         {
             IEnumerable<string> parameterNames = GetSignatureParameterNames(definition.Signature);
             IEnumerable<string> signatureComponents = GetSignatureComponents(definition.Signature, parameterNames);
@@ -80,40 +81,32 @@ internal static class Execution
             DocumentationBuilding.AppendDocumentation(Context, Builder, Data.Documentation, indentation, $"From_{documentationTag}");
             Builder.Append($"{indentation}public static {Data.Unit.Name} From(");
             IterativeBuilding.AppendEnumerable(Builder, signatureComponents, ", ");
-            Builder.Append($") => new({definition.Expression});{Environment.NewLine}");
+            Builder.Append($") => new({ParseExpression(definition, parameterNames)});{Environment.NewLine}");
         }
 
-        private static IEnumerable<string> GetSignatureParameterNames(IEnumerable<INamedTypeSymbol> signature)
+        private static IEnumerable<string> GetSignatureParameterNames(IEnumerable<NamedType> signature)
         {
             Dictionary<string, int> counts = new();
 
-            foreach (string signatureComponentName in signatureWithoutNamespaces())
+            foreach (NamedType signatureComponent in signature)
             {
-                countParameter(signatureComponentName);
+                countParameter(signatureComponent);
             }
 
-            foreach (string signatureComponentName in signatureWithoutNamespaces())
+            foreach (NamedType signatureComponent in signature)
             {
-                yield return $"{SourceBuildingUtility.ToParameterName(signatureComponentName)}{getParameterNumber(signatureComponentName)}";
+                yield return $"{SourceBuildingUtility.ToParameterName(signatureComponent.Name)}{getParameterNumber(signatureComponent.Name)}";
             }
 
-            IEnumerable<string> signatureWithoutNamespaces()
+            void countParameter(NamedType signatureComponent)
             {
-                foreach (INamedTypeSymbol signatureComponent in signature)
+                if (counts.TryGetValue(signatureComponent.Name, out int count))
                 {
-                    yield return signatureComponent.Name.Substring(signatureComponent.Name.LastIndexOf('.') + 1);
-                }
-            }
-
-            void countParameter(string signatureComponentName)
-            {
-                if (counts.TryGetValue(signatureComponentName, out int count))
-                {
-                    counts[signatureComponentName] = count - 1;
+                    counts[signatureComponent.Name] = count - 1;
                 }
                 else
                 {
-                    counts[signatureComponentName] = -1;
+                    counts[signatureComponent.Name] = -1;
                 }
             }
 
@@ -138,14 +131,14 @@ internal static class Execution
             }
         }
 
-        private static IEnumerable<string> GetSignatureComponents(IEnumerable<INamedTypeSymbol> signature, IEnumerable<string> parameterNames)
+        private static IEnumerable<string> GetSignatureComponents(IEnumerable<NamedType> signature, IEnumerable<string> parameterNames)
         {
-            IEnumerator<INamedTypeSymbol> signatureIterator = signature.GetEnumerator();
+            IEnumerator<NamedType> signatureIterator = signature.GetEnumerator();
             IEnumerator<string> parameterIterator = parameterNames.GetEnumerator();
 
             while (parameterIterator.MoveNext() && signatureIterator.MoveNext())
             {
-                yield return $"{signatureIterator.Current.Name} {parameterIterator.Current}";
+                yield return $"{signatureIterator.Current.Namespace}.{signatureIterator.Current.Name} {parameterIterator.Current}";
             }
         }
 
@@ -158,35 +151,9 @@ internal static class Execution
             return tag.ToString();
         }
 
-        private static string ParseExpression(DerivableUnitDefinition definition, IEnumerable<string> parameterNames)
+        private static string ParseExpression(CacheableDerivableUnitDefinition definition, IEnumerable<string> parameterNames)
         {
-            string[] symbols = expressionComponents();
-
-            return string.Format(CultureInfo.InvariantCulture, definition.Expression, symbols);
-
-            string[] expressionComponents()
-            {
-                string[] symbols = new string[definition.Signature.Count];
-
-                IEnumerator<string?> quantityIterator = quantitiesWithoutNamespaces().GetEnumerator();
-                IEnumerator<string> parameterIterator = parameterNames.GetEnumerator();
-
-                int index = 0;
-                while (quantityIterator.MoveNext() && parameterIterator.MoveNext())
-                {
-                    symbols[index] = $"{parameterIterator.Current}.{quantityIterator.Current}";
-                }
-
-                return symbols;
-            }
-
-            IEnumerable<string> quantitiesWithoutNamespaces()
-            {
-                foreach (INamedTypeSymbol signatureComponentQuantity in definition.Quantities)
-                {
-                    yield return signatureComponentQuantity.Name.Substring(signatureComponentQuantity.Name.LastIndexOf('.') + 1);
-                }
-            }
+            return string.Format(CultureInfo.InvariantCulture, definition.Expression, parameterNames.ToArray());
         }
     }
 }

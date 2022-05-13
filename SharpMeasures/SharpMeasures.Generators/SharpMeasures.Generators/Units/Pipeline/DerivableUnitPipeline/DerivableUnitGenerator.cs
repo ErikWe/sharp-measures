@@ -4,10 +4,11 @@ using Microsoft.CodeAnalysis;
 
 internal static class DerivableUnitGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Stage3.Result> provider)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<DocumentationStage.Result> inputProvider)
     {
-        IncrementalValuesProvider<Stage4.Result> fourthStage = Stage4.ExtractDerivableDefinitions(context, provider);
+        var withDefinitions = DerivableStage.ExtractDerivableDefinitions(context, inputProvider);
+        var filtered = FilterStage.FilterDuplicates(context, withDefinitions);
 
-        context.RegisterSourceOutput(fourthStage, Execution.Execute);
+        context.RegisterSourceOutput(withDefinitions, Execution.Execute);
     }
 }

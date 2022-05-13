@@ -4,9 +4,9 @@ using Microsoft.CodeAnalysis;
 
 internal static class UnitDefinitionsGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Stage3.Result> provider)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<DocumentationStage.Result> inputProvider)
     {
-        IncrementalValuesProvider<Stage4.Result> fourthStage = Stage4.ExtractDefinitions(context, provider);
+        IncrementalValuesProvider<DefinitionsStage.Result> fourthStage = DefinitionsStage.ExtractDefinitions(context, inputProvider);
 
         context.RegisterSourceOutput(fourthStage, Execution.Execute);
     }
