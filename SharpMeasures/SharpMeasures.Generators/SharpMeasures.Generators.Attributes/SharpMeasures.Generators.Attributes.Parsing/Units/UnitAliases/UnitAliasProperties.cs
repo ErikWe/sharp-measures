@@ -2,33 +2,35 @@
 
 using SharpMeasures.Generators.Units;
 
-using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 internal static class UnitAliasProperties
 {
-    public static ReadOnlyCollection<AttributeProperty<UnitAliasParameters>> AllProperties => Array.AsReadOnly(new[]
+    public static IReadOnlyList<AttributeProperty<UnitAliasDefinition>> AllProperties => new[]
     {
         Name,
         Plural,
         AliasOf
-    });
+    };
 
-    public static AttributeProperty<UnitAliasParameters> Name { get; } = new
+    public static AttributeProperty<UnitAliasDefinition> Name { get; } = new
     (
         name: nameof(UnitAliasAttribute.Name),
-        setter: static (parameters, obj) => obj is string name ? parameters with { Name = name } : parameters
+        setter: static (parameters, obj) => obj is string name ? parameters with { Name = name } : parameters,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateName(syntax, index) }
     );
 
-    public static AttributeProperty<UnitAliasParameters> Plural { get; } = new
+    public static AttributeProperty<UnitAliasDefinition> Plural { get; } = new
     (
         name: nameof(UnitAliasAttribute.Plural),
-        setter: static (parameters, obj) => obj is string plural ? parameters with { Plural = plural } : parameters
+        setter: static (parameters, obj) => obj is string plural ? parameters with { Plural = plural } : parameters,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocatePlural(syntax, index) }
     );
 
-    public static AttributeProperty<UnitAliasParameters> AliasOf { get; } = new
+    public static AttributeProperty<UnitAliasDefinition> AliasOf { get; } = new
     (
         name: nameof(UnitAliasAttribute.AliasOf),
-        setter: static (parameters, obj) => obj is string aliasOf ? parameters with { AliasOf = aliasOf } : parameters
+        setter: static (parameters, obj) => obj is string aliasOf ? parameters with { AliasOf = aliasOf } : parameters,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateAliasOf(syntax, index) }
     );
 }

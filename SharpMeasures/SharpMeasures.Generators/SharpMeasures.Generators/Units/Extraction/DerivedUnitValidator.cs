@@ -1,17 +1,15 @@
 ﻿namespace SharpMeasures.Generators.Units.Extraction;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Attributes.Parsing.Extraction;
 using SharpMeasures.Generators.Attributes.Parsing.Units;
-using SharpMeasures.Generators.Diagnostics.DerivableUnits;
-using SharpMeasures.Generators.Diagnostics.UnitDefinitions;
+using SharpMeasures.Generators.Diagnostics;
 
 using System.Collections.Generic;
+using System.Globalization;
 
-internal class DerivedUnitValidator : UnitDefinitionValidator<DerivedUnitParameters>
+internal class DerivedUnitValidator : UnitDefinitionValidator<DerivedUnitDefinition>
 {
     private INamedTypeSymbol UnitSymbol { get; }
     private IEnumerable<DerivableUnitDefinition> DerivableDefinitions { get; }
@@ -24,37 +22,42 @@ internal class DerivedUnitValidator : UnitDefinitionValidator<DerivedUnitParamet
         UnitDefinitionsOnTypes = PreComputeUnitsOnRelevantTypes();
     }
 
-    public override ExtractionValidity Check(AttributeData attributeData, DerivedUnitParameters parameters)
+    public override ExtractionValidity Check(AttributeData attributeData, DerivedUnitDefinition definition)
     {
-        if (base.Check(attributeData, parameters) is ExtractionValidity { IsInvalid: true } invalidUnit)
+        if (base.Check(attributeData, definition) is ExtractionValidity { IsInvalid: true } invalidUnit)
         {
             return invalidUnit;
         }
 
-        if (parameters.ParsingData.EmptySignature)
+        if (definition.ParsingData.SignatureCouldBeParsed is false)
         {
-            return ExtractionValidity.Invalid(CreateEmptySignatureDiagnostics(attributeData));
+            return ExtractionValidity.InvalidWithoutDiagnostics;
         }
 
-        if (parameters.Signature.Count != parameters.Units.Count)
+        if (definition.Signature.Count is 0)
         {
-            return ExtractionValidity.Invalid(CreateUnitListNotMatchingSignatureDiagnostics(attributeData, parameters));
+            return ExtractionValidity.Invalid(CreateEmptySignatureDiagnostics(definition));
         }
 
-        if (!ExistsMatchingDerivableSignature(parameters, DerivableDefinitions))
+        if (definition.Signature.Count != definition.Units.Count)
         {
-            return ExtractionValidity.Invalid(CreateSignatureNotRecognizedDiagnostics(attributeData, UnitSymbol));
+            return ExtractionValidity.Invalid(CreateUnitListNotMatchingSignatureDiagnostics(definition));
         }
 
-        if (CheckForMissingUnit(parameters, UnitDefinitionsOnTypes) is int missing and >= 0)
+        if (!ExistsMatchingDerivableSignature(definition, DerivableDefinitions))
         {
-            return ExtractionValidity.Invalid(CreateUnitNameNotRecognizedDiagnostics(attributeData, missing, UnitSymbol));
+            return ExtractionValidity.Invalid(CreateSignatureNotRecognizedDiagnostics(definition, UnitSymbol));
+        }
+
+        if (GetMissingUnitIndex(definition, UnitDefinitionsOnTypes) is int missingIndex and >= 0)
+        {
+            return ExtractionValidity.Invalid(CreateUnitNameNotRecognizedDiagnostics(definition, missingIndex, UnitSymbol));
         }
 
         return ExtractionValidity.Valid;
     }
 
-    private static bool ExistsMatchingDerivableSignature(DerivedUnitParameters parameters, IEnumerable<DerivableUnitDefinition> derivableDefinitions)
+    private static bool ExistsMatchingDerivableSignature(DerivedUnitDefinition parameters, IEnumerable<DerivableUnitDefinition> derivableDefinitions)
     {
         foreach (DerivableUnitDefinition derivable in derivableDefinitions)
         {
@@ -85,7 +88,7 @@ internal class DerivedUnitValidator : UnitDefinitionValidator<DerivedUnitParamet
         return false;
     }
 
-    private static int CheckForMissingUnit(DerivedUnitParameters parameters, IDictionary<INamedTypeSymbol, HashSet<string>> unitDefinitionsOnTarget)
+    private static int GetMissingUnitIndex(DerivedUnitDefinition parameters, IDictionary<INamedTypeSymbol, HashSet<string>> unitDefinitionsOnTarget)
     {
         IEnumerator<INamedTypeSymbol> typeEnumerator = parameters.Signature.GetEnumerator();
         IEnumerator<string> unitEnumerator = parameters.Units.GetEnumerator();
@@ -113,57 +116,26 @@ internal class DerivedUnitValidator : UnitDefinitionValidator<DerivedUnitParamet
         return -1;
     }
 
-    private static Diagnostic? CreateEmptySignatureDiagnostics(AttributeData attributeData)
+    private static Diagnostic CreateEmptySignatureDiagnostics(DerivedUnitDefinition definition)
     {
-        if (SignatureArgumentSyntax(attributeData)?.GetFirstChildOfKind<InitializerExpressionSyntax>(SyntaxKind.ArrayInitializerExpression)
-            is InitializerExpressionSyntax initializerSyntax)
-        {
-            return EmptyUnitDerivationSignatureDiagnostics.Create(initializerSyntax);
-        }
-
-        return null;
+        return Diagnostic.Create(DiagnosticRules.EmptyUnitDerivationSignature, definition.Locations.Units);
     }
 
-    private static Diagnostic? CreateUnitListNotMatchingSignatureDiagnostics(AttributeData attributeData, DerivedUnitParameters parameters)
+    private static Diagnostic CreateUnitListNotMatchingSignatureDiagnostics(DerivedUnitDefinition definition)
     {
-        if (UnitsArgumentSyntax(attributeData) is AttributeArgumentSyntax argumentSyntax)
-        {
-            return UnitListNotMatchingSignatureDiagnostics.Create(argumentSyntax, parameters.Signature.Count, parameters.Units.Count);
-        }
-
-        return null;
+        return Diagnostic.Create(DiagnosticRules.UnitListNotMatchingSignature, definition.Locations.Units,
+            definition.Signature.Count.ToString(CultureInfo.InvariantCulture), definition.Units.Count.ToString(CultureInfo.InvariantCulture));
     }
 
-    private static Diagnostic? CreateSignatureNotRecognizedDiagnostics(AttributeData attributeData, INamedTypeSymbol unitSymbol)
+    private static Diagnostic? CreateSignatureNotRecognizedDiagnostics(DerivedUnitDefinition definition, INamedTypeSymbol unitSymbol)
     {
-        if (SignatureArgumentSyntax(attributeData) is AttributeArgumentSyntax argumentSyntax)
-        {
-            return SignatureNotRecognizedDiagnostics.Create(argumentSyntax, unitSymbol);
-        }
-
-        return null;
+        return Diagnostic.Create(DiagnosticRules.DerivedUnitSignatureNotRecognized, definition.Locations.Signature, unitSymbol.Name);
     }
 
-    private static Diagnostic? CreateUnitNameNotRecognizedDiagnostics(AttributeData attributeData, int index, INamedTypeSymbol unitSymbol)
+    private static Diagnostic? CreateUnitNameNotRecognizedDiagnostics(DerivedUnitDefinition definition, int index, INamedTypeSymbol unitSymbol)
     {
-        if (UnitsArgumentSyntax(attributeData)?.GetFirstChildOfKind<InitializerExpressionSyntax>(SyntaxKind.ArrayInitializerExpression)?.Expressions[index]
-            is LiteralExpressionSyntax { RawKind: (int)SyntaxKind.StringLiteralExpression } stringLiteralExpression)
-        {
-            return UnitNameNotRecognizedDiagnostics.Create(stringLiteralExpression, unitSymbol);
-        }
-
-        return null;
+        return Diagnostic.Create(DiagnosticRules.InvalidUnitName, definition.Locations.UnitComponents[index], definition.Units[index], unitSymbol.Name);
     }
-
-    protected static AttributeArgumentSyntax? SignatureArgumentSyntax(AttributeData attributeData)
-        => attributeData.GetArgumentSyntax(SignatureArgumentIndex(attributeData));
-    protected static AttributeArgumentSyntax? UnitsArgumentSyntax(AttributeData attributeData)
-        => attributeData.GetArgumentSyntax(UnitsArgumentIndex(attributeData));
-
-    protected override int NameArgumentIndex(AttributeData attributeData) => DerivedUnitParser.NameIndex(attributeData);
-    protected override int PluralArgumentIndex(AttributeData attributeData) => DerivedUnitParser.PluralIndex(attributeData);
-    protected static int SignatureArgumentIndex(AttributeData attributeData) => DerivedUnitParser.SignatureIndex(attributeData);
-    protected static int UnitsArgumentIndex(AttributeData attributeData) => DerivedUnitParser.UnitsIndex(attributeData);
 
     private Dictionary<INamedTypeSymbol, HashSet<string>> PreComputeUnitsOnRelevantTypes()
     {

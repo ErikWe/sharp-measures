@@ -4,11 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing.Units;
 
-internal class ScaledUnitValidator : DependantUnitDefinitionValidator<ScaledUnitParameters>
+internal class ScaledUnitValidator : DependantUnitDefinitionValidator<ScaledUnitDefinition>
 {
     public ScaledUnitValidator(INamedTypeSymbol unitType) : base(unitType) { }
-
-    protected override int NameArgumentIndex(AttributeData attributeData) => ScaledUnitParser.NameIndex(attributeData);
-    protected override int PluralArgumentIndex(AttributeData attributeData) => ScaledUnitParser.PluralIndex(attributeData);
-    protected override int DependantOnArgumentIndex(AttributeData attributeData) => ScaledUnitParser.FromIndex(attributeData);
 }

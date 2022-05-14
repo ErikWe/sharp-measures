@@ -1,24 +1,20 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Units;
 
 using System;
 using System.Collections.Generic;
 
-public class FixedUnitParser : AArgumentParser<FixedUnitParameters>
+public class FixedUnitParser : AArgumentParser<FixedUnitDefinition>
 {
     public static FixedUnitParser Parser { get; } = new();
 
-    public static int NameIndex(AttributeData attributeData) => IndexOfArgument(FixedUnitProperties.Name, attributeData);
-    public static int PluralIndex(AttributeData attributeData) => IndexOfArgument(FixedUnitProperties.Plural, attributeData);
-    public static int ValueIndex(AttributeData attributeData) => IndexOfArgument(FixedUnitProperties.Value, attributeData);
-    public static int BiasIndex(AttributeData attributeData) => IndexOfArgument(FixedUnitProperties.Bias, attributeData);
-
     protected FixedUnitParser() : base(DefaultParameters, FixedUnitProperties.AllProperties) { }
 
-    public override IEnumerable<FixedUnitParameters> Parse(INamedTypeSymbol typeSymbol)
+    public override IEnumerable<FixedUnitDefinition> Parse(INamedTypeSymbol typeSymbol)
     {
         if (typeSymbol is null)
         {
@@ -28,11 +24,17 @@ public class FixedUnitParser : AArgumentParser<FixedUnitParameters>
         return Parse<FixedUnitAttribute>(typeSymbol);
     }
 
-    private static FixedUnitParameters DefaultParameters() => new
+    private protected override FixedUnitDefinition AddCustomData(FixedUnitDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax)
+    {
+        return definition with { Locations = definition.Locations.LocateBase(attributeSyntax) };
+    }
+
+    private static FixedUnitDefinition DefaultParameters() => new
     (
         Name: string.Empty,
         Plural: string.Empty,
         Value: 0,
-        Bias: 0
+        Bias: 0,
+        Locations: new FixedUnitLocations()
     );
 }

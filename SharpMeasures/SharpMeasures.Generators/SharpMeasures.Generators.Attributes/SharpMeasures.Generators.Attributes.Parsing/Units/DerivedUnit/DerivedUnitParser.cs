@@ -1,24 +1,20 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Units;
 
 using System;
 using System.Collections.Generic;
 
-public class DerivedUnitParser : AArgumentParser<DerivedUnitParameters>
+public class DerivedUnitParser : AArgumentParser<DerivedUnitDefinition>
 {
     public static DerivedUnitParser Parser { get; } = new();
 
-    public static int NameIndex(AttributeData attributeData) => IndexOfArgument(DerivedUnitProperties.Name, attributeData);
-    public static int PluralIndex(AttributeData attributeData) => IndexOfArgument(DerivedUnitProperties.Plural, attributeData);
-    public static int SignatureIndex(AttributeData attributeData) => IndexOfArgument(DerivedUnitProperties.Signature, attributeData);
-    public static int UnitsIndex(AttributeData attributeData) => IndexOfArgument(DerivedUnitProperties.Units, attributeData);
-
     protected DerivedUnitParser() : base(DefaultParameters, DerivedUnitProperties.AllProperties) { }
 
-    public override IEnumerable<DerivedUnitParameters> Parse(INamedTypeSymbol typeSymbol)
+    public override IEnumerable<DerivedUnitDefinition> Parse(INamedTypeSymbol typeSymbol)
     {
         if (typeSymbol is null)
         {
@@ -28,12 +24,18 @@ public class DerivedUnitParser : AArgumentParser<DerivedUnitParameters>
         return Parse<DerivableUnitAttribute>(typeSymbol);
     }
 
-    private static DerivedUnitParameters DefaultParameters() => new
+    private protected override DerivedUnitDefinition AddCustomData(DerivedUnitDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax)
+    {
+        return definition with { Locations = definition.Locations.LocateBase(attributeSyntax) };
+    }
+
+    private static DerivedUnitDefinition DefaultParameters() => new
     (
         Name: string.Empty,
         Plural: string.Empty,
         Signature: Array.AsReadOnly(Array.Empty<INamedTypeSymbol>()),
         Units: Array.AsReadOnly(Array.Empty<string>()),
+        Locations: new DerivedUnitLocations(),
         ParsingData: new DerivedUnitParsingData()
     );
 }

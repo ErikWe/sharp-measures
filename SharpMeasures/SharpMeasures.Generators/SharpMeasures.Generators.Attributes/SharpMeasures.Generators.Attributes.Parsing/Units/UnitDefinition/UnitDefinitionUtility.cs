@@ -17,9 +17,9 @@ public static class UnitDefinitionUtility
             .Concat(getNames(ScaledUnitParser.Parser));
 
         IEnumerable<string> getNames<TParameters>(AArgumentParser<TParameters> parser)
-            where TParameters : IUnitDefinitionParameters
+            where TParameters : IUnitDefinition
         {
-            foreach (IUnitDefinitionParameters unit in parser.Parse(typeSymbol))
+            foreach (IUnitDefinition unit in parser.Parse(typeSymbol))
             {
                 yield return unit.Name;
             }

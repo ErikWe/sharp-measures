@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing.Extraction;
 using SharpMeasures.Generators.Attributes.Parsing.Units;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Diagnostics.DerivableUnits;
 
 internal class DerivableUnitValidator : IValidator<DerivableUnitDefinition>
 {
@@ -40,7 +39,12 @@ internal class DerivableUnitValidator : IValidator<DerivableUnitDefinition>
 
     private static ExtractionValidity CheckSignatureValidity(DerivableUnitDefinition definition)
     {
-        if (definition.ParsingData.SignatureValid)
+        if (definition.ParsingData.SignatureCouldBeParsed is false)
+        {
+            return ExtractionValidity.InvalidWithoutDiagnostics;
+        }
+
+        if (definition.Signature.Count is 0)
         {
             return ExtractionValidity.Invalid(CreateEmptySignatureDiagnostics(definition));
         }
@@ -55,12 +59,12 @@ internal class DerivableUnitValidator : IValidator<DerivableUnitDefinition>
 
     private static Diagnostic CreateInvalidExpressionDiagnostics(DerivableUnitDefinition definition)
     {
-        return InvalidUnitDerivationExpressionDiagnostics.Create(definition.Locations.Expression, definition.Expression);
+        return Diagnostic.Create(DiagnosticRules.InvalidUnitDerivationExpression, definition.Locations.Expression, definition.Expression);
     }
 
     private static Diagnostic CreateEmptySignatureDiagnostics(DerivableUnitDefinition definition)
     {
-        return EmptyUnitDerivationSignatureDiagnostics.Create(definition.Locations.Signature);
+        return Diagnostic.Create(DiagnosticRules.InvalidUnitDerivationExpression, definition.Locations.Signature);
     }
 
     private static Diagnostic? CreateTypeNotUnitDiagnostics(DerivableUnitDefinition parameters)
@@ -70,9 +74,9 @@ internal class DerivableUnitValidator : IValidator<DerivableUnitDefinition>
             return null;
         }
 
-        INamedTypeSymbol invalidSymbol = parameters.Signature[parameters.ParsingData.SignatureComponentNotUnitIndex];
+        string invalidName = parameters.Signature[parameters.ParsingData.SignatureComponentNotUnitIndex].Name;
         Location invalidLocation = parameters.Locations.SignatureComponents[parameters.ParsingData.SignatureComponentNotUnitIndex];
 
-        return TypeNotUnitDiagnostics.Create(invalidLocation, invalidSymbol);
+        return Diagnostic.Create(DiagnosticRules.TypeNotUnit, invalidLocation, invalidName);
     }
 }

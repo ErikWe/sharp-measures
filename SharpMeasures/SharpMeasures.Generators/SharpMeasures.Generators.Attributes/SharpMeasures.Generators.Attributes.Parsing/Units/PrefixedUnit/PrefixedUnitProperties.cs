@@ -2,51 +2,51 @@
 
 using SharpMeasures.Generators.Units;
 
-using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 internal static class PrefixedUnitProperties
 {
-    public static ReadOnlyCollection<AttributeProperty<PrefixedUnitParameters>> AllProperties => Array.AsReadOnly(new[]
+    public static IReadOnlyList<AttributeProperty<PrefixedUnitDefinition>> AllProperties =>new[]
     {
         Name,
         Plural,
         From,
         MetricPrefixName,
         BinaryPrefixName
-    });
+    };
 
-    public static AttributeProperty<PrefixedUnitParameters> Name { get; } = new
+    public static AttributeProperty<PrefixedUnitDefinition> Name { get; } = new
     (
         name: nameof(PrefixedUnitAttribute.Name),
-        setter: static (parameters, obj) => obj is string name ? parameters with { Name = name } : parameters
+        setter: static (definition, obj) => obj is string name ? definition with { Name = name } : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateName(syntax, index) }
     );
 
-    public static AttributeProperty<PrefixedUnitParameters> Plural { get; } = new
+    public static AttributeProperty<PrefixedUnitDefinition> Plural { get; } = new
     (
         name: nameof(PrefixedUnitAttribute.Plural),
-        setter: static (parameters, obj) => obj is string plural ? parameters with { Plural = plural } : parameters
+        setter: static (definition, obj) => obj is string plural ? definition with { Plural = plural } : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocatePlural(syntax, index) }
     );
 
-    public static AttributeProperty<PrefixedUnitParameters> From { get; } = new
+    public static AttributeProperty<PrefixedUnitDefinition> From { get; } = new
     (
         name: nameof(PrefixedUnitAttribute.From),
-        setter: static (parameters, obj) => obj is string from ? parameters with { From = from } : parameters
+        setter: static (definition, obj) => obj is string from ? definition with { From = from } : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateFrom(syntax, index) }
     );
 
-    public static AttributeProperty<PrefixedUnitParameters> MetricPrefixName { get; } = new
+    public static AttributeProperty<PrefixedUnitDefinition> MetricPrefixName { get; } = new
     (
         name: nameof(PrefixedUnitAttribute.MetricPrefixName),
-        setter: static (parameters, obj) => obj is int metricPrefiName
-            ? parameters with { MetricPrefixName = (MetricPrefixName)metricPrefiName, SpecifiedPrefixType = PrefixedUnitParameters.PrefixType.Metric }
-            : parameters
+        setter: static (definition, obj) => obj is int metricPrefixName ? definition.ParseMetricPrefix((MetricPrefixName)metricPrefixName) : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateMetricPrefixName(syntax, index) }
     );
 
-    public static AttributeProperty<PrefixedUnitParameters> BinaryPrefixName { get; } = new
+    public static AttributeProperty<PrefixedUnitDefinition> BinaryPrefixName { get; } = new
     (
         name: nameof(PrefixedUnitAttribute.BinaryPrefixName),
-        setter: static (parameters, obj) => obj is int binaryPrefixName
-            ? parameters with { BinaryPrefixName = (BinaryPrefixName)binaryPrefixName, SpecifiedPrefixType = PrefixedUnitParameters.PrefixType.Binary }
-            : parameters
+        setter: static (definition, obj) => obj is int binaryPrefixName ? definition.ParseBinaryPrefix((BinaryPrefixName)binaryPrefixName) : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateBinaryPrefixName(syntax, index) }
     );
 }

@@ -4,17 +4,16 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Units;
 
-using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 internal static class GeneratedUnitProperties
 {
-    public static ReadOnlyCollection<AttributeProperty<GeneratedUnitDefinition>> AllProperties => Array.AsReadOnly(new[]
+    public static IReadOnlyList<AttributeProperty<GeneratedUnitDefinition>> AllProperties => new[]
     {
         Quantity,
         AllowBias,
         GenerateDocumentation
-    });
+    };
 
     public static AttributeProperty<GeneratedUnitDefinition> Quantity { get; } = new
     (

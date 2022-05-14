@@ -26,12 +26,12 @@ internal static class DefinitionsStage
 
     private static ResultWithDiagnostics<DataModel> ExtractDefinitionsAndDiagnostics(DocumentationStage.Result input, CancellationToken token)
     {
-        AExtractor<UnitAliasParameters> unitAliases = UnitAliasExtractor.Extract(input.TypeSymbol);
-        AExtractor<DerivedUnitParameters> derivedUnits = DerivedUnitExtractor.Extract(input.TypeSymbol);
-        AExtractor<FixedUnitParameters> fixedUnits = FixedUnitExtractor.Extract(input.TypeSymbol);
-        AExtractor<OffsetUnitParameters> offsetUnits = OffsetUnitExtractor.Extract(input.TypeSymbol);
-        AExtractor<PrefixedUnitParameters> prefixedUnits = PrefixedUnitExtractor.Extract(input.TypeSymbol);
-        AExtractor<ScaledUnitParameters> scaledUnits = ScaledUnitExtractor.Extract(input.TypeSymbol);
+        AExtractor<UnitAliasDefinition> unitAliases = UnitAliasExtractor.Extract(input.TypeSymbol);
+        AExtractor<DerivedUnitDefinition> derivedUnits = DerivedUnitExtractor.Extract(input.TypeSymbol);
+        AExtractor<FixedUnitDefinition> fixedUnits = FixedUnitExtractor.Extract(input.TypeSymbol);
+        AExtractor<OffsetUnitDefinition> offsetUnits = OffsetUnitExtractor.Extract(input.TypeSymbol);
+        AExtractor<PrefixedUnitDefinition> prefixedUnits = PrefixedUnitExtractor.Extract(input.TypeSymbol);
+        AExtractor<ScaledUnitDefinition> scaledUnits = ScaledUnitExtractor.Extract(input.TypeSymbol);
         
         DataModel result = new(DefinedType.FromSymbol(input.TypeSymbol), NamedType.FromSymbol(input.Definition.Quantity!), input.Definition.AllowBias,
             input.Documentation, unitAliases.ValidDefinitions, derivedUnits.ValidDefinitions, fixedUnits.ValidDefinitions, offsetUnits.ValidDefinitions,
@@ -67,19 +67,19 @@ internal static class DefinitionsStage
 
         private TypeDeclarationSyntax Declaration { get; }
 
-        private IReadOnlyList<DerivedUnitParameters> DerivedUnits { get; }
-        private IReadOnlyList<FixedUnitParameters> FixedUnits { get; }
-        private IReadOnlyList<UnitAliasParameters> UnitAliases { get; }
-        private IReadOnlyList<OffsetUnitParameters> OffsetUnits { get; }
-        private IReadOnlyList<PrefixedUnitParameters> PrefixedUnits { get; }
-        private IReadOnlyList<ScaledUnitParameters> ScaledUnits { get; }
+        private IReadOnlyList<DerivedUnitDefinition> DerivedUnits { get; }
+        private IReadOnlyList<FixedUnitDefinition> FixedUnits { get; }
+        private IReadOnlyList<UnitAliasDefinition> UnitAliases { get; }
+        private IReadOnlyList<OffsetUnitDefinition> OffsetUnits { get; }
+        private IReadOnlyList<PrefixedUnitDefinition> PrefixedUnits { get; }
+        private IReadOnlyList<ScaledUnitDefinition> ScaledUnits { get; }
 
-        private List<DerivedUnitParameters> FilteredDerivedUnits { get; } = new();
-        private List<FixedUnitParameters> FilteredFixedUnits { get; } = new();
-        private List<UnitAliasParameters> FilteredUnitAliases { get; } = new();
-        private List<OffsetUnitParameters> FilteredOffsetUnits { get; } = new();
-        private List<PrefixedUnitParameters> FilteredPrefixedUnits { get; } = new();
-        private List<ScaledUnitParameters> FilteredScaledUnits { get; } = new();
+        private List<DerivedUnitDefinition> FilteredDerivedUnits { get; } = new();
+        private List<FixedUnitDefinition> FilteredFixedUnits { get; } = new();
+        private List<UnitAliasDefinition> FilteredUnitAliases { get; } = new();
+        private List<OffsetUnitDefinition> FilteredOffsetUnits { get; } = new();
+        private List<PrefixedUnitDefinition> FilteredPrefixedUnits { get; } = new();
+        private List<ScaledUnitDefinition> FilteredScaledUnits { get; } = new();
 
         private HashSet<string> DefinedNames { get; } = new();
         private List<Diagnostic> Diagnostics { get; } = new();

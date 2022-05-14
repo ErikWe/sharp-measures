@@ -4,16 +4,15 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Units;
 
-using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 internal static class DerivableUnitProperties
 {
-    public static ReadOnlyCollection<AttributeProperty<DerivableUnitDefinition>> AllProperties => Array.AsReadOnly(new[]
+    public static IReadOnlyList<AttributeProperty<DerivableUnitDefinition>> AllProperties => new[]
     {
         Expression,
         Signature
-    });
+    };
 
     public static AttributeProperty<DerivableUnitDefinition> Expression { get; } = new
     (

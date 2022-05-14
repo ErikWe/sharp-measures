@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing.Extraction;
 using SharpMeasures.Generators.Attributes.Parsing.Units;
 
-internal class OffsetUnitExtractor : AExtractor<OffsetUnitParameters, OffsetUnitAttribute>
+internal class OffsetUnitExtractor : AExtractor<OffsetUnitDefinition, OffsetUnitAttribute>
 {
     public static OffsetUnitExtractor Extract(INamedTypeSymbol typeSymbol)
     {

@@ -4,9 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 public readonly record struct DerivableUnitLocations(Location Attribute, Location AttributeName, Location Expression, Location Signature,
     IReadOnlyList<Location> SignatureComponents)
@@ -24,12 +22,7 @@ public readonly record struct DerivableUnitLocations(Location Attribute, Locatio
 
     internal DerivableUnitLocations LocateExpression(AttributeArgumentListSyntax argumentList, int index)
     {
-        if (argumentList.Arguments[index].Expression is LiteralExpressionSyntax expression)
-        {
-            return this with { Expression = expression.GetLocation() };
-        }
-
-        return this;
+        return this with { Expression = argumentList.Arguments[index].Expression.GetLocation() };
     }
 
     internal DerivableUnitLocations LocateSignature(AttributeArgumentListSyntax argumentList, int index)
@@ -41,57 +34,42 @@ public readonly record struct DerivableUnitLocations(Location Attribute, Locatio
                 return this;
             }
 
-            Location[] componentLocations = new Location[initializerExpression.Expressions.Count];
-
-            for (int i = 0; i < componentLocations.Length; i++)
-            {
-                componentLocations[i] = initializerExpression.Expressions[i].GetLocation();
-            }
-
-            return this with
-            { 
-                Signature = initializerExpression.GetLocation(),
-                SignatureComponents = componentLocations
-            };
+            return LocateSignatureArray(initializerExpression);
         }
-        else
-        {
-            Location[] componentLocations = new Location[argumentList.Arguments.Count - index];
 
-            for (int i = 0; i < componentLocations.Length; i++)
-            {
-                componentLocations[i] = argumentList.Arguments[i].GetLocation();
-            }
-
-            Location firstLocation = argumentList.Arguments[index].GetLocation();
-            Location lastLocation = argumentList.Arguments[argumentList.Arguments.Count - 1].GetLocation();
-
-            Location signatureLocation = firstLocation.ExtendToInclude(lastLocation);
-
-            return this with { Signature = signatureLocation, SignatureComponents = componentLocations };
-        }
+        return LocateSignatureParams(argumentList, index);
     }
 
-    public bool Equals(DerivableUnitLocations other)
+    private DerivableUnitLocations LocateSignatureArray(InitializerExpressionSyntax initializerExpression)
     {
-        if (Attribute != other.Attribute || AttributeName != other.AttributeName || Expression != other.Expression ||
-            Signature != other.Signature)
+        Location[] componentLocations = new Location[initializerExpression.Expressions.Count];
+
+        for (int i = 0; i < componentLocations.Length; i++)
         {
-            return false;
+            componentLocations[i] = initializerExpression.Expressions[i].GetLocation();
         }
 
-        return SignatureComponents.SequenceEqual(other.SignatureComponents);
+        return this with
+        {
+            Signature = initializerExpression.GetLocation(),
+            SignatureComponents = componentLocations
+        };
     }
 
-    public override int GetHashCode()
+    private DerivableUnitLocations LocateSignatureParams(AttributeArgumentListSyntax argumentList, int startIndex)
     {
-        int hashCode = (Attribute, AttributeName, Expression, Signature).GetHashCode();
+        Location[] componentLocations = new Location[argumentList.Arguments.Count - startIndex];
 
-        foreach (Location location in SignatureComponents)
+        for (int i = 0; i < componentLocations.Length; i++)
         {
-            hashCode ^= location.GetHashCode();
+            componentLocations[i] = argumentList.Arguments[i].GetLocation();
         }
 
-        return hashCode;
+        Location firstLocation = argumentList.Arguments[startIndex].GetLocation();
+        Location lastLocation = argumentList.Arguments[argumentList.Arguments.Count - 1].GetLocation();
+
+        Location signatureLocation = firstLocation.ExtendToInclude(lastLocation);
+
+        return this with { Signature = signatureLocation, SignatureComponents = componentLocations };
     }
 }

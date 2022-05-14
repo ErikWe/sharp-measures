@@ -13,9 +13,9 @@ using System.Threading;
 internal static class Stage5
 {
     public readonly record struct Result(DefinedType TypeDefinition, string Unit, bool Biased, string UnitQuantity, DocumentationFile Documentation,
-        IEnumerable<UnitAliasParameters> UnitAliases, IEnumerable<DerivedUnitParameters> DerivedUnits,
-        IEnumerable<FixedUnitParameters> FixedUnits, IEnumerable<OffsetUnitParameters> OffsetUnits,
-        IEnumerable<PrefixedUnitParameters> PrefixedUnits, IEnumerable<ScaledUnitParameters> ScaledUnits,
+        IEnumerable<UnitAliasDefinition> UnitAliases, IEnumerable<DerivedUnitDefinition> DerivedUnits,
+        IEnumerable<FixedUnitDefinition> FixedUnits, IEnumerable<OffsetUnitDefinition> OffsetUnits,
+        IEnumerable<PrefixedUnitDefinition> PrefixedUnits, IEnumerable<ScaledUnitDefinition> ScaledUnits,
         PowerData? InvertibleOperations, PowerData? SquarableOperations, PowerData? CubableOperations, PowerData? SquareRootableOperations,
         PowerData? CubeRootableOperations, IncludeUnitsParameters IncludedUnits, ExcludeUnitsParameters ExcludedUnits,
         IncludeBasesParameters IncludedBases, ExcludeBasesParameters ExcludedBases);

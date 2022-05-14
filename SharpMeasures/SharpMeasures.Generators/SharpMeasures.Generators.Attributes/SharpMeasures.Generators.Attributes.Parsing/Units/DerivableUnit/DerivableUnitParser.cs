@@ -12,9 +12,6 @@ public class DerivableUnitParser : AArgumentParser<DerivableUnitDefinition>
 {
     public static DerivableUnitParser Parser { get; } = new();
 
-    public static int SignatureIndex(AttributeData attributeData) => IndexOfArgument(DerivableUnitProperties.Signature, attributeData);
-    public static int ExpressionIndex(AttributeData attributeData) => IndexOfArgument(DerivableUnitProperties.Expression, attributeData);
-
     protected DerivableUnitParser() : base(DefaultParameters, DerivableUnitProperties.AllProperties) { }
 
     public override IEnumerable<DerivableUnitDefinition> Parse(INamedTypeSymbol typeSymbol)
@@ -34,8 +31,8 @@ public class DerivableUnitParser : AArgumentParser<DerivableUnitDefinition>
 
     private static DerivableUnitDefinition DefaultParameters() => new
     (
-        Signature: Array.Empty<NamedType>(),
-        Quantities: Array.Empty<NamedType>(),
+        Signature: Array.Empty<INamedTypeSymbol>(),
+        Quantities: Array.Empty<INamedTypeSymbol>(),
         Expression: string.Empty,
         Locations: new DerivableUnitLocations(),
         ParsingData: new DerivableUnitParsingData()

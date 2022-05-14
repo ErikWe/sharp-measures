@@ -11,8 +11,8 @@ using System.Threading;
 internal static class Stage4
 {
     public readonly record struct Result(INamedTypeSymbol TypeSymbol, string Unit, bool Biased, string UnitQuantity, DocumentationFile Documentation,
-        IEnumerable<UnitAliasParameters> UnitAliases, IEnumerable<DerivedUnitParameters> DerivedUnits, IEnumerable<FixedUnitParameters> FixedUnits,
-        IEnumerable<OffsetUnitParameters> OffsetUnits, IEnumerable<PrefixedUnitParameters> PrefixedUnits, IEnumerable<ScaledUnitParameters> ScaledUnits);
+        IEnumerable<UnitAliasDefinition> UnitAliases, IEnumerable<DerivedUnitDefinition> DerivedUnits, IEnumerable<FixedUnitDefinition> FixedUnits,
+        IEnumerable<OffsetUnitDefinition> OffsetUnits, IEnumerable<PrefixedUnitDefinition> PrefixedUnits, IEnumerable<ScaledUnitDefinition> ScaledUnits);
 
     public static IncrementalValuesProvider<Result> Attach(IncrementalValuesProvider<Stage3.Result> inputProvider)
         => inputProvider.Select(ExtractUnitData).WhereNotNull();
@@ -24,12 +24,12 @@ internal static class Stage4
             return null;
         }    
 
-        IEnumerable<UnitAliasParameters> aliasInstances = UnitAliasParser.Parser.Parse(input.UnitSymbol);
-        IEnumerable<DerivedUnitParameters> derivedInstances = DerivedUnitParser.Parser.Parse(input.UnitSymbol);
-        IEnumerable<FixedUnitParameters> fixedInstances = FixedUnitParser.Parser.Parse(input.UnitSymbol);
-        IEnumerable<OffsetUnitParameters> offsetInstances = OffsetUnitParser.Parser.Parse(input.UnitSymbol);
-        IEnumerable<PrefixedUnitParameters> prefixedInstances = PrefixedUnitParser.Parser.Parse(input.UnitSymbol);
-        IEnumerable<ScaledUnitParameters> scaledInstances = ScaledUnitParser.Parser.Parse(input.UnitSymbol);
+        IEnumerable<UnitAliasDefinition> aliasInstances = UnitAliasParser.Parser.Parse(input.UnitSymbol);
+        IEnumerable<DerivedUnitDefinition> derivedInstances = DerivedUnitParser.Parser.Parse(input.UnitSymbol);
+        IEnumerable<FixedUnitDefinition> fixedInstances = FixedUnitParser.Parser.Parse(input.UnitSymbol);
+        IEnumerable<OffsetUnitDefinition> offsetInstances = OffsetUnitParser.Parser.Parse(input.UnitSymbol);
+        IEnumerable<PrefixedUnitDefinition> prefixedInstances = PrefixedUnitParser.Parser.Parse(input.UnitSymbol);
+        IEnumerable<ScaledUnitDefinition> scaledInstances = ScaledUnitParser.Parser.Parse(input.UnitSymbol);
 
         return new Result(input.TypeSymbol, input.UnitSymbol.ToDisplayString(), input.Biased, unitQuantity, input.Documentation,
             aliasInstances, derivedInstances, fixedInstances, offsetInstances, prefixedInstances, scaledInstances);

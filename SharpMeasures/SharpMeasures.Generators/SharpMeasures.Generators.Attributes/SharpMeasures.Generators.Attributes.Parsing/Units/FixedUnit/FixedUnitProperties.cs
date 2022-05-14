@@ -2,40 +2,43 @@
 
 using SharpMeasures.Generators.Units;
 
-using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 internal static class FixedUnitProperties
 {
-    public static ReadOnlyCollection<AttributeProperty<FixedUnitParameters>> AllProperties => Array.AsReadOnly(new[]
+    public static IReadOnlyList<AttributeProperty<FixedUnitDefinition>> AllProperties => new[]
     {
         Name,
         Plural,
         Value,
         Bias
-    });
+    };
 
-    public static AttributeProperty<FixedUnitParameters> Name { get; } = new
+    public static AttributeProperty<FixedUnitDefinition> Name { get; } = new
     (
         name: nameof(UnitAliasAttribute.Name),
-        setter: static (parameters, obj) => obj is string name ? parameters with { Name = name } : parameters
+        setter: static (definition, obj) => obj is string name ? definition with { Name = name } : definition,
+        syntaxSetter: static(definition, syntax, index) => definition with { Locations = definition.Locations.LocateName(syntax, index) }
     );
 
-    public static AttributeProperty<FixedUnitParameters> Plural { get; } = new
+    public static AttributeProperty<FixedUnitDefinition> Plural { get; } = new
     (
         name: nameof(UnitAliasAttribute.Plural),
-        setter: static (parameters, obj) => obj is string plural ? parameters with { Plural = plural } : parameters
+        setter: static (definition, obj) => obj is string plural ? definition with { Plural = plural } : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocatePlural(syntax, index) }
     );
 
-    public static AttributeProperty<FixedUnitParameters> Value { get; } = new
+    public static AttributeProperty<FixedUnitDefinition> Value { get; } = new
     (
         name: nameof(FixedUnitAttribute.Value),
-        setter: static (parameters, obj) => obj is double value ? parameters with { Value = value } : parameters
+        setter: static (definition, obj) => obj is double value ? definition with { Value = value } : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateValue(syntax, index) }
     );
 
-    public static AttributeProperty<FixedUnitParameters> Bias { get; } = new
+    public static AttributeProperty<FixedUnitDefinition> Bias { get; } = new
     (
         name: nameof(FixedUnitAttribute.Bias),
-        setter: static (parameters, obj) => obj is double bias ? parameters with { Bias = bias } : parameters
+        setter: static (definition, obj) => obj is double bias ? definition with { Bias = bias } : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateBias(syntax, index) }
     );
 }

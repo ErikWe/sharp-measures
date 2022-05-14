@@ -7,15 +7,15 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-public abstract class AArgumentParser<TParameters>
+public abstract class AArgumentParser<TDefinition>
 {
-    private Func<TParameters> DefaultValueConstructor { get; }
+    private Func<TDefinition> DefaultValueConstructor { get; }
 
-    private IReadOnlyDictionary<string, AttributeProperty<TParameters>> ConstructorParameters { get; }
-    private IReadOnlyDictionary<string, AttributeProperty<TParameters>> NamedParameters { get; }
+    private IReadOnlyDictionary<string, AttributeProperty<TDefinition>> ConstructorParameters { get; }
+    private IReadOnlyDictionary<string, AttributeProperty<TDefinition>> NamedParameters { get; }
 
-    protected AArgumentParser(Func<TParameters> defaultValueConstructor, IReadOnlyDictionary<string, AttributeProperty<TParameters>> constructorParameters,
-        IReadOnlyDictionary<string, AttributeProperty<TParameters>> namedParameters)
+    protected AArgumentParser(Func<TDefinition> defaultValueConstructor, IReadOnlyDictionary<string, AttributeProperty<TDefinition>> constructorParameters,
+        IReadOnlyDictionary<string, AttributeProperty<TDefinition>> namedParameters)
     {
         DefaultValueConstructor = defaultValueConstructor;
 
@@ -23,10 +23,10 @@ public abstract class AArgumentParser<TParameters>
         NamedParameters = namedParameters;
     }
 
-    protected AArgumentParser(Func<TParameters> defaultValueConstructor, IEnumerable<AttributeProperty<TParameters>> properties)
+    protected AArgumentParser(Func<TDefinition> defaultValueConstructor, IEnumerable<AttributeProperty<TDefinition>> properties)
         : this(defaultValueConstructor, properties.ToImmutableDictionary(static (x) => x.ParameterName), properties.ToImmutableDictionary(static (x) => x.Name)) { }
 
-    public TParameters Parse(AttributeData attributeData)
+    public TDefinition Parse(AttributeData attributeData)
     {
         if (attributeData is null)
         {
@@ -38,7 +38,7 @@ public abstract class AArgumentParser<TParameters>
             throw new InvalidOperationException("Could not retrieve AttributeSyntax from AttributeData");
         }
 
-        TParameters parameters = DefaultValueConstructor();
+        TDefinition parameters = DefaultValueConstructor();
 
         parameters = AddConstructorArguments(parameters, attributeData, attributeSyntax);
         parameters = AddNamedArguments(parameters, attributeData, attributeSyntax);
@@ -46,7 +46,7 @@ public abstract class AArgumentParser<TParameters>
         return parameters;
     }
 
-    public IEnumerable<TParameters> Parse(IEnumerable<AttributeData> attributeDataIterator)
+    public IEnumerable<TDefinition> Parse(IEnumerable<AttributeData> attributeDataIterator)
     {
         if (attributeDataIterator is null)
         {
@@ -59,7 +59,7 @@ public abstract class AArgumentParser<TParameters>
         }
     }
 
-    public IEnumerable<TParameters> Parse<TAttribute>(INamedTypeSymbol typeSymbol)
+    public IEnumerable<TDefinition> Parse<TAttribute>(INamedTypeSymbol typeSymbol)
     {
         if (typeSymbol is null)
         {
@@ -69,9 +69,9 @@ public abstract class AArgumentParser<TParameters>
         return Parse(typeSymbol.GetAttributesOfType<TAttribute>());
     }
 
-    public abstract IEnumerable<TParameters> Parse(INamedTypeSymbol typeSymbol);
+    public abstract IEnumerable<TDefinition> Parse(INamedTypeSymbol typeSymbol);
 
-    private TParameters AddConstructorArguments(TParameters parameters, AttributeData attributeData, AttributeSyntax attributeSyntax)
+    private TDefinition AddConstructorArguments(TDefinition parameters, AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
         if (attributeData.ConstructorArguments.IsEmpty
             || attributeData.AttributeConstructor?.Parameters is not ImmutableArray<IParameterSymbol> parameterSymbols)
@@ -82,7 +82,7 @@ public abstract class AArgumentParser<TParameters>
         for (int i = 0; i < parameterSymbols.Length && i < attributeData.ConstructorArguments.Length; i++)
         {
             if (attributeData.ConstructorArguments[i].Kind is TypedConstantKind.Error
-                || !ConstructorParameters.TryGetValue(parameterSymbols[i].Name, out AttributeProperty<TParameters> property))
+                || !ConstructorParameters.TryGetValue(parameterSymbols[i].Name, out AttributeProperty<TDefinition> property))
             {
                 continue;
             }
@@ -106,7 +106,7 @@ public abstract class AArgumentParser<TParameters>
         return parameters;
     }
 
-    private TParameters AddNamedArguments(TParameters parameters, AttributeData attributeData, AttributeSyntax attributeSyntax)
+    private TDefinition AddNamedArguments(TDefinition parameters, AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
         if (attributeData.NamedArguments.IsEmpty)
         {
@@ -116,7 +116,7 @@ public abstract class AArgumentParser<TParameters>
         for (int i = 0; i < attributeData.NamedArguments.Length; i++)
         {
             if (attributeData.NamedArguments[i].Value.Kind is TypedConstantKind.Error
-                || !NamedParameters.TryGetValue(attributeData.NamedArguments[i].Key, out AttributeProperty<TParameters> property))
+                || !NamedParameters.TryGetValue(attributeData.NamedArguments[i].Key, out AttributeProperty<TDefinition> property))
             {
                 continue;
             }
@@ -136,9 +136,9 @@ public abstract class AArgumentParser<TParameters>
         return parameters;
     }
 
-    private protected virtual TParameters AddCustomData(TParameters parameters, AttributeData attributeData, AttributeSyntax attributeSyntax) => parameters;
+    private protected virtual TDefinition AddCustomData(TDefinition parameters, AttributeData attributeData, AttributeSyntax attributeSyntax) => parameters;
 
-    protected static int IndexOfArgument(AttributeProperty<TParameters> property, AttributeData attributeData)
+    protected static int IndexOfArgument(AttributeProperty<TDefinition> property, AttributeData attributeData)
         => ArgumentIndexParser.Parse(property, attributeData);
 
     private static object?[] ParseArray(TypedConstant value)

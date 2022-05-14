@@ -1,25 +1,20 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Units;
 
 using System;
 using System.Collections.Generic;
 
-public class PrefixedUnitParser : AArgumentParser<PrefixedUnitParameters>
+public class PrefixedUnitParser : AArgumentParser<PrefixedUnitDefinition>
 {
     public static PrefixedUnitParser Parser { get; } = new();
 
-    public static int NameIndex(AttributeData attributeData) => IndexOfArgument(PrefixedUnitProperties.Name, attributeData);
-    public static int PluralIndex(AttributeData attributeData) => IndexOfArgument(PrefixedUnitProperties.Plural, attributeData);
-    public static int FromIndex(AttributeData attributeData) => IndexOfArgument(PrefixedUnitProperties.From, attributeData);
-    public static int MetricPrefixNameIndex(AttributeData attributeData) => IndexOfArgument(PrefixedUnitProperties.MetricPrefixName, attributeData);
-    public static int BinaryPrefixNameindex(AttributeData attributeData) => IndexOfArgument(PrefixedUnitProperties.BinaryPrefixName, attributeData);
-
     protected PrefixedUnitParser() : base(DefaultParameters, PrefixedUnitProperties.AllProperties) { }
 
-    public override IEnumerable<PrefixedUnitParameters> Parse(INamedTypeSymbol typeSymbol)
+    public override IEnumerable<PrefixedUnitDefinition> Parse(INamedTypeSymbol typeSymbol)
     {
         if (typeSymbol is null)
         {
@@ -29,13 +24,19 @@ public class PrefixedUnitParser : AArgumentParser<PrefixedUnitParameters>
         return Parse<PrefixedUnitAttribute>(typeSymbol);
     }
 
-    private static PrefixedUnitParameters DefaultParameters() => new
+    private protected override PrefixedUnitDefinition AddCustomData(PrefixedUnitDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax)
+    {
+        return definition with { Locations = definition.Locations.LocateBase(attributeSyntax) };
+    }
+
+    private static PrefixedUnitDefinition DefaultParameters() => new
     (
         Name: string.Empty,
         Plural: string.Empty,
         From: string.Empty,
         MetricPrefixName: MetricPrefixName.Identity,
         BinaryPrefixName: BinaryPrefixName.Identity,
-        SpecifiedPrefixType: PrefixedUnitParameters.PrefixType.None
+        Locations: new PrefixedUnitLocations(),
+        ParsingData: new PrefixedUnitParsingData()
     );
 }

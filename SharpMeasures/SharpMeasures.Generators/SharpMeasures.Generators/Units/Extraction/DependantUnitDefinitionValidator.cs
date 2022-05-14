@@ -1,15 +1,13 @@
 ﻿namespace SharpMeasures.Generators.Units.Extraction;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Attributes.Parsing.Extraction;
 using SharpMeasures.Generators.Attributes.Parsing.Units;
-using SharpMeasures.Generators.Diagnostics.UnitDefinitions;
+using SharpMeasures.Generators.Diagnostics;
 
-internal abstract class DependantUnitDefinitionValidator<TParameters> : UnitDefinitionValidator<TParameters>
-    where TParameters : IDependantUnitDefinitionParameters
+internal abstract class DependantUnitDefinitionValidator<TDefinition> : UnitDefinitionValidator<TDefinition>
+    where TDefinition : IDependantUnitDefinition
 {
     protected INamedTypeSymbol UnitType { get; }
 
@@ -18,34 +16,23 @@ internal abstract class DependantUnitDefinitionValidator<TParameters> : UnitDefi
         UnitType = unitType;
     }
 
-    public override ExtractionValidity Check(AttributeData attributeData, TParameters parameters)
+    public override ExtractionValidity Check(AttributeData attributeData, TDefinition definition)
     {
-        if (base.Check(attributeData, parameters) is ExtractionValidity { IsInvalid: true } invalidUnit)
+        if (base.Check(attributeData, definition) is ExtractionValidity { IsInvalid: true } invalidUnit)
         {
             return invalidUnit;
         }
 
-        if (string.IsNullOrEmpty(parameters.DependantOn))
+        if (string.IsNullOrEmpty(definition.DependantOn))
         {
-            return ExtractionValidity.Invalid(CreateUnitNameNotRecognizedDiagnostics(attributeData));
+            return ExtractionValidity.Invalid(CreateUnitNameNotRecognizedDiagnostics(definition));
         }
 
         return ExtractionValidity.Valid;
     }
 
-    private Diagnostic? CreateUnitNameNotRecognizedDiagnostics(AttributeData attributeData)
+    private Diagnostic? CreateUnitNameNotRecognizedDiagnostics(TDefinition definition)
     {
-        if (DependantOnArgumentSyntax(attributeData)?.GetFirstChildOfKind<LiteralExpressionSyntax>(SyntaxKind.StringLiteralExpression)
-            is LiteralExpressionSyntax expressionSyntax)
-        {
-            return UnitNameNotRecognizedDiagnostics.Create(expressionSyntax, UnitType);
-        }
-
-        return null;
+        return Diagnostic.Create(DiagnosticRules.InvalidUnitName, definition.Locations.DependantOn, definition.DependantOn, UnitType.Name);
     }
-
-    protected AttributeArgumentSyntax? DependantOnArgumentSyntax(AttributeData attributeData)
-        => attributeData.GetArgumentSyntax(DependantOnArgumentIndex(attributeData));
-
-    protected abstract int DependantOnArgumentIndex(AttributeData attributeData);
 }

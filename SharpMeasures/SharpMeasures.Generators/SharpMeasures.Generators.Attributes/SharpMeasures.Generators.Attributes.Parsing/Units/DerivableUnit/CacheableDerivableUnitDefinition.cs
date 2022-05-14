@@ -33,7 +33,7 @@ public readonly record struct CacheableDerivableUnitDefinition(string Expression
 
     public override int GetHashCode()
     {
-        int hashCode = (Expression, Locations).GetHashCode();
+        int hashCode = (Expression, Locations, ParsingData).GetHashCode();
 
         foreach (NamedType signature in Signature)
         {

@@ -139,9 +139,9 @@ internal static class PartialDeclarationProvider
         private TData RemoveLabel(LabeledInput labeledInput, CancellationToken _) => labeledInput.Input;
 
         private Diagnostic CreateDiagnostics(TData input, IAttributeNameStrategy attributeNameStrategy)
-                => TypeNotPartialDiagnostics.Create(InputTransform(input), attributeNameStrategy.GetAttributeName(input));
+            => Diagnostic.Create(DiagnosticRules.TypeNotPartial, InputTransform(input).GetLocation(), attributeNameStrategy.GetAttributeName(input));
         private Diagnostic CreateDiagnostics(LabeledInput labeledInput, IAttributeNameStrategy attributeNameStrategy)
-                => CreateDiagnostics(labeledInput.Input, attributeNameStrategy);
+            => CreateDiagnostics(labeledInput.Input, attributeNameStrategy);
 
         private readonly record struct LabeledInput(bool IsPartial, TData Input);
     }

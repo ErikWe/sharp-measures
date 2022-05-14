@@ -1,58 +1,35 @@
 ﻿namespace SharpMeasures.Generators.Units.Extraction;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Attributes.Parsing.Extraction;
 using SharpMeasures.Generators.Attributes.Parsing.Units;
-using SharpMeasures.Generators.Diagnostics.UnitDefinitions;
+using SharpMeasures.Generators.Diagnostics;
 
-internal abstract class UnitDefinitionValidator<TParameters> : IValidator<TParameters> where TParameters : IUnitDefinitionParameters
+internal abstract class UnitDefinitionValidator<TDefinition> : IValidator<TDefinition> where TDefinition : IUnitDefinition
 {
-    public virtual ExtractionValidity Check(AttributeData attributeData, TParameters parameters)
+    public virtual ExtractionValidity Check(AttributeData attributeData, TDefinition definition)
     {
-        if (string.IsNullOrEmpty(parameters.Name))
+        if (string.IsNullOrEmpty(definition.Name))
         {
-            return ExtractionValidity.Invalid(CreateInvalidUnitNameDiagnostics(attributeData));
+            return ExtractionValidity.Invalid(CreateInvalidUnitNameDiagnostics(definition));
         }
 
-        if (string.IsNullOrEmpty(parameters.Plural))
+        if (string.IsNullOrEmpty(definition.Plural))
         {
-            return ExtractionValidity.Invalid(CreateInvalidUnitPluralFormDiagnostics(attributeData));
+            return ExtractionValidity.Invalid(CreateInvalidUnitPluralFormDiagnostics(definition));
         }
 
         return ExtractionValidity.Valid;
     }
 
-    private Diagnostic? CreateInvalidUnitNameDiagnostics(AttributeData attributeData)
+    private static Diagnostic CreateInvalidUnitNameDiagnostics(TDefinition definition)
     {
-        if (NameArgumentSyntax(attributeData)?.GetFirstChildOfKind<LiteralExpressionSyntax>(SyntaxKind.StringLiteralExpression)
-            is LiteralExpressionSyntax expressionSyntax)
-        {
-            return InvalidUnitNameDiagnostics.Create(expressionSyntax);
-        }
-
-        return null;
+        return Diagnostic.Create(DiagnosticRules.InvalidUnitName, definition.Locations.Name, definition.Name);
     }
 
-    private Diagnostic? CreateInvalidUnitPluralFormDiagnostics(AttributeData attributeData)
+    private static Diagnostic CreateInvalidUnitPluralFormDiagnostics(TDefinition definition)
     {
-        if (PluralArgumentSyntax(attributeData)?.GetFirstChildOfKind<LiteralExpressionSyntax>(SyntaxKind.StringLiteralExpression)
-            is LiteralExpressionSyntax expressionSyntax)
-        {
-            return InvalidUnitPluralFormDiagnostics.Create(expressionSyntax);
-        }
-
-        return null;
+        return Diagnostic.Create(DiagnosticRules.InvalidUnitPluralForm, definition.Locations.Plural, definition.Plural);
     }
-
-    protected AttributeArgumentSyntax? NameArgumentSyntax(AttributeData attributeData)
-        => attributeData.GetArgumentSyntax(NameArgumentIndex(attributeData));
-
-    protected AttributeArgumentSyntax? PluralArgumentSyntax(AttributeData attributeData)
-        => attributeData.GetArgumentSyntax(PluralArgumentIndex(attributeData));
-
-    protected abstract int NameArgumentIndex(AttributeData attributeData);
-    protected abstract int PluralArgumentIndex(AttributeData attributeData);
 }

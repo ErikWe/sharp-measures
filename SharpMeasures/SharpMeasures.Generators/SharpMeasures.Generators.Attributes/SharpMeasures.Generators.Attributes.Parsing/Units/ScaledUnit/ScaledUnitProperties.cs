@@ -2,40 +2,43 @@
 
 using SharpMeasures.Generators.Units;
 
-using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 internal static class ScaledUnitProperties
 {
-    public static ReadOnlyCollection<AttributeProperty<ScaledUnitParameters>> AllProperties => Array.AsReadOnly(new[]
+    public static IReadOnlyList<AttributeProperty<ScaledUnitDefinition>> AllProperties => new[]
     {
         Name,
         Plural,
         From,
         Scale
-    });
+    };
 
-    public static AttributeProperty<ScaledUnitParameters> Name { get; } = new
+    public static AttributeProperty<ScaledUnitDefinition> Name { get; } = new
     (
         name: nameof(ScaledUnitAttribute.Name),
-        setter: static (parameters, obj) => obj is string name ? parameters with { Name = name } : parameters
+        setter: static (definition, obj) => obj is string name ? definition with { Name = name } : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateName(syntax, index) }
     );
 
-    public static AttributeProperty<ScaledUnitParameters> Plural { get; } = new
+    public static AttributeProperty<ScaledUnitDefinition> Plural { get; } = new
     (
         name: nameof(ScaledUnitAttribute.Plural),
-        setter: static (parameters, obj) => obj is string plural ? parameters with { Plural = plural } : parameters
+        setter: static (definition, obj) => obj is string plural ? definition with { Plural = plural } : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocatePlural(syntax, index) }
     );
 
-    public static AttributeProperty<ScaledUnitParameters> From { get; } = new
+    public static AttributeProperty<ScaledUnitDefinition> From { get; } = new
     (
         name: nameof(ScaledUnitAttribute.From),
-        setter: static (parameters, obj) => obj is string from ? parameters with { From = from } : parameters
+        setter: static (definition, obj) => obj is string from ? definition with { From = from } : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateFrom(syntax, index) }
     );
 
-    public static AttributeProperty<ScaledUnitParameters> Scale { get; } = new
+    public static AttributeProperty<ScaledUnitDefinition> Scale { get; } = new
     (
         name: nameof(ScaledUnitAttribute.Scale),
-        setter: static (parameters, obj) => obj is double scale ? parameters with { Scale = scale } : parameters
+        setter: static (definition, obj) => obj is double scale ? definition with { Scale = scale } : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateScale(syntax, index) }
     );
 }

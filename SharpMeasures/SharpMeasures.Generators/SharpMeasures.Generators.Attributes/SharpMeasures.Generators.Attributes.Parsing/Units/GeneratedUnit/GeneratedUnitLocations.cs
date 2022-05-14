@@ -19,31 +19,16 @@ public readonly record struct GeneratedUnitLocations(Location Attribute, Locatio
 
     internal GeneratedUnitLocations LocateQuantity(AttributeArgumentListSyntax argumentList, int index)
     {
-        if (argumentList.Arguments[index].Expression is TypeOfExpressionSyntax typeofExpression)
-        {
-            return this with { Quantity = typeofExpression.Type.GetLocation() };
-        }
-
-        return this;
+        return this with { Quantity = argumentList.Arguments[index].Expression.GetLocation() };
     }
 
     internal GeneratedUnitLocations LocateAllowBias(AttributeArgumentListSyntax argumentList, int index)
     {
-        if (argumentList.Arguments[index].Expression is LiteralExpressionSyntax literalExpression)
-        {
-            return this with { AllowBias = literalExpression.GetLocation() };
-        }
-
-        return this;
+        return this with { AllowBias = argumentList.Arguments[index].Expression.GetLocation() };
     }
 
     internal GeneratedUnitLocations LocateGenerateDocumentation(AttributeArgumentListSyntax argumentList, int index)
     {
-        if (argumentList.Arguments[index].Expression is LiteralExpressionSyntax literalExpression)
-        {
-            return this with { GenerateDocumentation = literalExpression.GetLocation() };
-        }
-
-        return this;
+        return this with { GenerateDocumentation = argumentList.Arguments[index].Expression.GetLocation() };
     }
 }

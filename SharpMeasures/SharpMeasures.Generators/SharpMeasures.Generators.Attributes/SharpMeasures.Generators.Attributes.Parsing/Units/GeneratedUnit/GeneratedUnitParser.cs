@@ -12,10 +12,6 @@ public class GeneratedUnitParser : AArgumentParser<GeneratedUnitDefinition>
 {
     public static GeneratedUnitParser Parser { get; } = new();
 
-    public static int QuantityIndex(AttributeData attributeData) => IndexOfArgument(GeneratedUnitProperties.Quantity, attributeData);
-    public static int AllowBiasIndex(AttributeData attributeData) => IndexOfArgument(GeneratedUnitProperties.AllowBias, attributeData);
-    public static int GenerateDocumentationIndex(AttributeData attributeData) => IndexOfArgument(GeneratedUnitProperties.GenerateDocumentation, attributeData);
-
     protected GeneratedUnitParser() : base(DefaultParameters, GeneratedUnitProperties.AllProperties) { }
 
     public override IEnumerable<GeneratedUnitDefinition> Parse(INamedTypeSymbol typeSymbol)

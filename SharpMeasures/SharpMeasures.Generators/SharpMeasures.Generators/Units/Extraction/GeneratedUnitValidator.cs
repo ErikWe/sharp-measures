@@ -26,12 +26,12 @@ internal class GeneratedUnitValidator : IValidator<GeneratedUnitDefinition>
     private static ExtractionValidity CheckQuantityValidity(GeneratedUnitDefinition definition)
     {
         if (definition.Quantity is null
-            || GeneratedScalarQuantityParser.Parser.ParseFirst(definition.Quantity) is not GeneratedScalarQuantityParameters quantityParameters)
+            || GeneratedScalarQuantityParser.Parser.ParseFirst(definition.Quantity) is not GeneratedScalarQuantityParameters quantityDefinition)
         {
             return ExtractionValidity.Invalid(CreateTypeNotScalarQuantityDiagnostics(definition));
         }
 
-        if (quantityParameters.Biased)
+        if (quantityDefinition.Biased)
         {
             return ExtractionValidity.Invalid(CreateTypeNotUnbiasedDiagnostics(definition));
         }
@@ -43,10 +43,10 @@ internal class GeneratedUnitValidator : IValidator<GeneratedUnitDefinition>
     {
         if (definition.Quantity is null)
         {
-            return TypeNotScalarQuantityDiagnostics.CreateForNull(definition.Locations.Quantity);
+            return Diagnostic.Create(DiagnosticRules.TypeNotScalarQuantity, definition.Locations.Quantity);
         }
 
-        return TypeNotScalarQuantityDiagnostics.Create(definition.Locations.Quantity, definition.Quantity);
+        return Diagnostic.Create(DiagnosticRules.TypeNotScalarQuantity, definition.Locations.Quantity, definition.Quantity);
     }
 
     private static Diagnostic? CreateTypeNotUnbiasedDiagnostics(GeneratedUnitDefinition definition)
@@ -56,6 +56,6 @@ internal class GeneratedUnitValidator : IValidator<GeneratedUnitDefinition>
             return null;
         }
 
-        return TypeNotUnbiasedScalarQuantityDiagnostics.Create(definition.Locations.Quantity, definition.Quantity);
+        return Diagnostic.Create(DiagnosticRules.TypeNotUnbiasedScalarQuantity, definition.Locations.Quantity, definition.Quantity);
     }
 }

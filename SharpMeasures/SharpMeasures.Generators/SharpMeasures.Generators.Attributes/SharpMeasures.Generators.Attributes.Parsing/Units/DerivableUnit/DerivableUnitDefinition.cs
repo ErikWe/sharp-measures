@@ -14,6 +14,8 @@ public record class DerivableUnitDefinition(string Expression, IReadOnlyList<INa
 
     internal DerivableUnitDefinition ParseSignature(INamedTypeSymbol[] signature)
     {
+        DerivableUnitDefinition definition = this with { ParsingData = ParsingData with { SignatureCouldBeParsed = true } };
+
         if (signature is null)
         {
             throw new ArgumentNullException(nameof(signature));
@@ -21,11 +23,7 @@ public record class DerivableUnitDefinition(string Expression, IReadOnlyList<INa
 
         if (signature.Length is 0)
         {
-            return this with
-            {
-                Signature = signature,
-                ParsingData = ParsingData with { SignatureValid = true }
-            };
+            return definition with { Signature = signature };
         }
 
         INamedTypeSymbol[] quantities = new INamedTypeSymbol[signature.Length];
@@ -34,30 +32,29 @@ public record class DerivableUnitDefinition(string Expression, IReadOnlyList<INa
         {
             if (signature[i].GetAttributeOfType<GeneratedUnitAttribute>() is not AttributeData unitData)
             {
-                return this with
+                return definition with
                 {
                     Signature = signature,
-                    ParsingData = ParsingData with { SignatureValid = true, SignatureComponentNotUnitIndex = i }
+                    ParsingData = ParsingData with { SignatureComponentNotUnitIndex = i }
                 };
             }
 
             if (GeneratedUnitParser.Parser.Parse(unitData) is not GeneratedUnitDefinition { Quantity: INamedTypeSymbol unitQuantity })
             {
-                return this with
+                return definition with
                 {
                     Signature = signature,
-                    ParsingData = ParsingData with { SignatureValid = true, SignatureComponentNotUnitIndex = i }
+                    ParsingData = ParsingData with { SignatureComponentNotUnitIndex = i }
                 };
             }
                     
             quantities[i] = unitQuantity;
         }
 
-        return this with
+        return definition with
         {
             Signature = signature,
-            Quantities = quantities,
-            ParsingData = ParsingData with { SignatureValid = true }
+            Quantities = quantities
         };
     }
 }

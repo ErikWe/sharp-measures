@@ -4,57 +4,43 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Units;
 
-using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 internal static class DerivedUnitProperties
 {
-    public static ReadOnlyCollection<AttributeProperty<DerivedUnitParameters>> AllProperties => Array.AsReadOnly(new[]
+    public static IReadOnlyList<AttributeProperty<DerivedUnitDefinition>> AllProperties => new[]
     {
         Name,
         Plural,
         Signature,
         Units
-    });
+    };
 
-    public static AttributeProperty<DerivedUnitParameters> Name { get; } = new
+    public static AttributeProperty<DerivedUnitDefinition> Name { get; } = new
     (
         name: nameof(DerivedUnitAttribute.Name),
-        setter: static (parameters, obj) => obj is string name ? parameters with { Name = name } : parameters
+        setter: static (definition, obj) => obj is string name ? definition with { Name = name } : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateName(syntax, index) }
     );
 
-    public static AttributeProperty<DerivedUnitParameters> Plural { get; } = new
+    public static AttributeProperty<DerivedUnitDefinition> Plural { get; } = new
     (
         name: nameof(DerivedUnitAttribute.Plural),
-        setter: static (parameters, obj) => obj is string plural ? parameters with { Plural = plural } : parameters
+        setter: static (definition, obj) => obj is string plural ? definition with { Plural = plural } : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocatePlural(syntax, index) }
     );
 
-    public static AttributeProperty<DerivedUnitParameters> Signature { get; } = new
+    public static AttributeProperty<DerivedUnitDefinition> Signature { get; } = new
     (
         name: nameof(DerivedUnitAttribute.Signature),
-        setter: SetSignature
+        setter: static (definition, obj) => obj is INamedTypeSymbol[] signature ? definition.ParseSignature(signature) : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateSignature(syntax, index) }
     );
 
-    public static AttributeProperty<DerivedUnitParameters> Units { get; } = new
+    public static AttributeProperty<DerivedUnitDefinition> Units { get; } = new
     (
         name: nameof(DerivedUnitAttribute.Units),
-        setter: static (parameters, obj) => obj is string[] units
-            ? parameters with { Units = Array.AsReadOnly(units) }
-            : parameters
+        setter: static (definition, obj) => obj is string[] units ? definition with { Units = units } : definition,
+        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateUnits(syntax, index) }
     );
-
-    private static DerivedUnitParameters SetSignature(DerivedUnitParameters parameters, object? obj)
-    {
-        if (obj is not INamedTypeSymbol[] signature)
-        {
-            return parameters;
-        }
-
-        if (signature.Length == 0)
-        {
-            return parameters with { ParsingData = parameters.ParsingData with { EmptySignature = true } };
-        }
-
-        return parameters with { Signature = Array.AsReadOnly(signature) };
-    }
 }

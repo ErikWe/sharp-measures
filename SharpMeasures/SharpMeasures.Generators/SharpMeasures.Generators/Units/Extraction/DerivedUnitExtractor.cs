@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing.Extraction;
 using SharpMeasures.Generators.Attributes.Parsing.Units;
 
-internal class DerivedUnitExtractor : AExtractor<DerivedUnitParameters, DerivedUnitAttribute>
+internal class DerivedUnitExtractor : AExtractor<DerivedUnitDefinition, DerivedUnitAttribute>
 {
     public static DerivedUnitExtractor Extract(INamedTypeSymbol typeSymbol)
     {

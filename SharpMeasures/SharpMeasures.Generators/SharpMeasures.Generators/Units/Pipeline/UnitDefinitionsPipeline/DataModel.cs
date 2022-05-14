@@ -7,6 +7,6 @@ using SharpMeasures.Generators.Utility;
 using System.Collections.Generic;
 
 internal readonly record struct DataModel(DefinedType TypeDefinition, NamedType Quantity, bool Biased, DocumentationFile Documentation,
-    IReadOnlyList<UnitAliasParameters> UnitAliases, IReadOnlyList<DerivedUnitParameters> DerivedUnits,
-    IReadOnlyList<FixedUnitParameters> FixedUnits, IReadOnlyList<OffsetUnitParameters> OffsetUnits,
-    IReadOnlyList<PrefixedUnitParameters> PrefixedUnits, IReadOnlyList<ScaledUnitParameters> ScaledUnits);
+    IReadOnlyList<UnitAliasDefinition> UnitAliases, IReadOnlyList<DerivedUnitDefinition> DerivedUnits,
+    IReadOnlyList<FixedUnitDefinition> FixedUnits, IReadOnlyList<OffsetUnitDefinition> OffsetUnits,
+    IReadOnlyList<PrefixedUnitDefinition> PrefixedUnits, IReadOnlyList<ScaledUnitDefinition> ScaledUnits);

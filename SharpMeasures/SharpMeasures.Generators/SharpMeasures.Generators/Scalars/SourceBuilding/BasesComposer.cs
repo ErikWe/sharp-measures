@@ -12,7 +12,7 @@ internal static class BasesComposer
 {
     public static void Append(StringBuilder source, Indentation indentation, Stage5.Result data, CancellationToken _)
     {
-        foreach (UnitAliasParameters unitAlias in data.UnitAliases)
+        foreach (UnitAliasDefinition unitAlias in data.UnitAliases)
         {
             if (shouldInclude(unitAlias.Name))
             {
