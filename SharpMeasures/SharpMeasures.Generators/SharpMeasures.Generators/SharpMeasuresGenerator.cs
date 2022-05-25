@@ -1,78 +1,37 @@
 ﻿namespace SharpMeasures.Generators;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-using SharpMeasures.Generators.Providers;
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators.AnalyzerConfig;
+using SharpMeasures.Generators.Documentation;
+using SharpMeasures.Generators.Parsing.Scalars;
+using SharpMeasures.Generators.Parsing.Units;
+using SharpMeasures.Generators.Parsing.Vectors;
 using SharpMeasures.Generators.Units;
 
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 
 [Generator]
 public class SharpMeasuresGenerator : IIncrementalGenerator
 {
-    internal readonly record struct Result(DeclarationData Declaration, INamedTypeSymbol TypeSymbol)
-    {
-        public static Result Construct(DeclarationData declaration, INamedTypeSymbol typeSymbol) => new(declaration, typeSymbol);
-    }
-
-    internal readonly record struct DeclarationData(TypeDeclarationSyntax TypeDeclaration, AttributeSyntax AttributeSyntax)
-    {
-        public static TypeDeclarationSyntax ExtractTypeDeclaration(DeclarationData declaration) => declaration.TypeDeclaration;
-        public static AttributeSyntax ExtractAttributeSyntax(DeclarationData declaration) => declaration.AttributeSyntax;
-    }
-
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-#if DEBUG
-        //AttachDebugger();
-#endif
+        var globalAnalyzerConfig = GlobalAnalyzerConfigProvider.Attach(context.AnalyzerConfigOptionsProvider);
+        var documentationDictionary = DocumentationDictionaryProvider.AttachAndReport(context, context.AdditionalTextsProvider);
 
-        var declarations = AttachDeclarationProvider(context);
-        declarations = FilterPartialDeclarations(context, declarations);
+        var unitParsingResult = UnitParsingStage.Attach(context);
+        var scalarParsingResult = ScalarParsingStage.Attach(context);
+        var vectorParsingResult = VectorParsingStage.Attach(context);
 
-        var declarationsAndSymbols = DeclarationSymbolProvider.AttachToValueType(declarations, context.CompilationProvider,
-            DeclarationData.ExtractTypeDeclaration, Result.Construct);
+        var population = unitParsingResult.UnitPopulationProvider.Combine(scalarParsingResult.ScalarPopulationProvider)
+            .Combine(vectorParsingResult.VectorPopulationProvider).Select(CombinePopulations);
 
-        UnitGenerator.Initialize(context, declarationsAndSymbols);
-        ScalarQuantityGenerator.Initialize(context, declarationsAndSymbols);
+        UnitGenerator.Attach(context, unitParsingResult.ParsedUnitProvider, scalarParsingResult.ScalarPopulationProvider, globalAnalyzerConfig, documentationDictionary);
     }
 
-    private static IncrementalValuesProvider<DeclarationData> AttachDeclarationProvider(IncrementalGeneratorInitializationContext context)
+    private static SharpMeasuresPopulation CombinePopulations
+        (((NamedTypePopulation<UnitInterface>, NamedTypePopulation<ScalarInterface>), NamedTypePopulation<VectorInterface>) populations, CancellationToken _)
     {
-        var declarations = MarkedTypeDeclarationCandidateProvider.AttachFirst(context.SyntaxProvider, markedDeclarationProviderOutputTransform,
-            typeof(GeneratedUnitAttribute), typeof(GeneratedScalarQuantityAttribute));
-
-        return declarations;
-
-        static DeclarationData markedDeclarationProviderOutputTransform(TypeDeclarationSyntax declaration, AttributeSyntax attributeSyntax)
-            => new(declaration, attributeSyntax);
+        return new(populations.Item1.Item1, populations.Item1.Item2, populations.Item2);
     }
-
-    private static IncrementalValuesProvider<DeclarationData> FilterPartialDeclarations(IncrementalGeneratorInitializationContext context,
-        IncrementalValuesProvider<DeclarationData> declarationProvider)
-    {
-        return PartialDeclarationProvider.AttachAndReport(context, declarationProvider, partialProviderInputTransform, declarationToAttributeName);
-
-        static TypeDeclarationSyntax partialProviderInputTransform(DeclarationData declaration) => declaration.TypeDeclaration;
-
-        static string declarationToAttributeName(DeclarationData declaration)
-        {
-            return declaration.AttributeSyntax.Name.ToString();
-        }
-    }
-
-#if DEBUG
-    [SuppressMessage("CodeQuality", "IDE0051: Remove unused private members")]
-    [SuppressMessage("CodeQuality", "IDE0079: Remove unnecessary suppression")]
-    public static void AttachDebugger()
-    {
-        if (!Debugger.IsAttached)
-        {
-            Debugger.Launch();
-        }
-    }
-#endif
 }

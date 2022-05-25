@@ -6,39 +6,18 @@ using System.Collections.Generic;
 
 internal static class OffsetUnitProperties
 {
-    public static IReadOnlyList<AttributeProperty<OffsetUnitDefinition>> AllProperties => new[]
+    public static IReadOnlyList<IAttributeProperty<OffsetUnitDefinition>> AllProperties => new IAttributeProperty<OffsetUnitDefinition>[]
     {
-        Name,
-        Plural,
-        From,
+        CommonProperties.Name<OffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations>(nameof(OffsetUnitAttribute.Name)),
+        CommonProperties.Plural<OffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations>(nameof(OffsetUnitAttribute.Plural)),
+        CommonProperties.DependantOn<OffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations>(nameof(OffsetUnitAttribute.From)),
         Offset
     };
 
-    public static AttributeProperty<OffsetUnitDefinition> Name { get; } = new
-    (
-        name: nameof(OffsetUnitAttribute.Name),
-        setter: static (definition, obj) => obj is string name ? definition with { Name = name } : definition,
-        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateName(syntax, index) }
-    );
-
-    public static AttributeProperty<OffsetUnitDefinition> Plural { get; } = new
-    (
-        name: nameof(OffsetUnitAttribute.Plural),
-        setter: static (definition, obj) => obj is string plural ? definition with { Plural = plural } : definition,
-        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocatePlural(syntax, index) }
-    );
-
-    public static AttributeProperty<OffsetUnitDefinition> From { get; } = new
-    (
-        name: nameof(OffsetUnitAttribute.From),
-        setter: static (definition, obj) => obj is string from ? definition with { From = from } : definition,
-        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateFrom(syntax, index) }
-    );
-
-    public static AttributeProperty<OffsetUnitDefinition> Offset { get; } = new
+    private static OffsetUnitProperty<double> Offset { get; } = new
     (
         name: nameof(OffsetUnitAttribute.Offset),
-        setter: static (definition, obj) => obj is double offset ? definition with { Offset = offset } : definition,
-        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateOffset(syntax, index) }
+        setter: static (definition, offset) => definition with { Offset = offset },
+        locator: static (locations, offsetLocation) => locations with { Offset = offsetLocation }
     );
 }

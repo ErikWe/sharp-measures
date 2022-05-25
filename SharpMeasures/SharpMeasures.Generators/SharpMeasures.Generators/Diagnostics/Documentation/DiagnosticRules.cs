@@ -18,7 +18,7 @@ internal static partial class DiagnosticRules
     (
         id: DiagnosticIDs.NoMatchingDocumentationFile,
         title: "No matching documentation file",
-        messageFormat: "No matching documentation file was found for {0}. Add a file with the name \"{0}.doc.txt\", or disable documentation " +
+        messageFormat: "No matching documentation file was found for {0}. Add a file with the name \"{0}.doc.txt\" to the project, or disable documentation " +
             "through the relevant attribute.",
         category: "Documentation",
         defaultSeverity: DiagnosticSeverity.Info,
@@ -29,7 +29,7 @@ internal static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DocumentationFileMissingRequestedTag,
         title: "Documentation tag not found",
-        messageFormat: "Documentation tag \"{0}\" was not recognized as part of {1}, or in any of it's dependencies. If this file is " +
+        messageFormat: "Documentation tag \"{1}\" was not recognized as part of {0} or any of its dependencies. If this file is " +
             "only used as a dependency, this message can be suppressed by adding the following line: \"# Utility: True\".",
         category: "Documentation",
         defaultSeverity: DiagnosticSeverity.Info,

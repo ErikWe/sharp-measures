@@ -1,45 +1,76 @@
 ﻿namespace SharpMeasures.Generators.SourceBuilding;
 
-using Microsoft.CodeAnalysis;
-
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 internal static class UsingsBuilding
 {
-    public static void AppendUsings(StringBuilder source, ISymbol symbol, IEnumerable<string> usingsNames)
-        => AppendUsings(source, symbol.ContainingNamespace?.ToDisplayString() ?? string.Empty, usingsNames);
-
-    public static void AppendUsings(StringBuilder source, string namespaceName, IEnumerable<string> usingsNames)
+    public static void AppendUsings(StringBuilder source, string fromNamespace, IEnumerable<string> usingsNames)
     {
-        IterativeBuilding.AppendEnumerable(source, toLines(), string.Empty, Environment.NewLine);
+        AppendUsings(source, implicitlyUsed, usingsNames);
 
-        IEnumerable<string> toLines()
-        {
-            foreach (string usingName in usingsNames)
-            {
-                if (!namespaceName.StartsWith(usingName, StringComparison.Ordinal))
-                {
-                    yield return $"using {usingName};{Environment.NewLine}";
-                }
-            }
-        }
+        bool implicitlyUsed(string name) => fromNamespace.StartsWith(name, StringComparison.Ordinal);
+    }
+
+    public static void AppendUsings(StringBuilder source, string fromNamespace, params string[] usingsNames)
+    {
+        AppendUsings(source, fromNamespace, usingsNames as IEnumerable<string>);
     }
 
     public static void AppendUsings(StringBuilder source, IEnumerable<string> usingsNames)
     {
-        bool anyUsings = false;
+        AppendUsings(source, ignoreUsing, usingsNames);
 
-        foreach (string usingName in usingsNames)
-        {
-            anyUsings = true;
-            source.Append($"using {usingName};{Environment.NewLine}");
-        }
+        static bool ignoreUsing(string name) => false;
+    }
 
-        if (anyUsings)
+    public static void InsertUsings(StringBuilder source, string fromNamespace, int startIndex, IEnumerable<string> usingsNames)
+    {
+        StringBuilder usings = new();
+
+        AppendUsings(usings, fromNamespace, usingsNames);
+
+        source.Insert(startIndex, usings);
+    }
+
+    public static void InsertUsings(StringBuilder source, string fromNamespace, int startIndex, params string[] usingsNames)
+    {
+        InsertUsings(source, fromNamespace, startIndex, usingsNames as IEnumerable<string>);
+    }
+
+    public static void InsertUsings(StringBuilder source, int startIndex, IEnumerable<string> usingsNames)
+    {
+        StringBuilder usings = new();
+
+        AppendUsings(usings, usingsNames);
+
+        source.Insert(startIndex, usings);
+    }
+
+    public static void InsertUsings(StringBuilder source, int startIndex, params string[] usingsNames)
+    {
+        InsertUsings(source, startIndex, usingsNames as IEnumerable<string>);
+    }
+
+    private static void AppendUsings(StringBuilder source, Func<string, bool> ignoreDelegate, IEnumerable<string> usingsNames)
+    {
+        HashSet<string> definedUsings = new();
+
+        IterativeBuilding.AppendEnumerable(source, usings(), Environment.NewLine, Environment.NewLine);
+
+        IEnumerable<string> usings()
         {
-            source.Append(Environment.NewLine);
+            foreach (string usingsName in usingsNames)
+            {
+                if (definedUsings.Contains(usingsName) || ignoreDelegate(usingsName))
+                {
+                    continue;
+                }
+
+                definedUsings.Add(usingsName);
+                yield return $"using {usingsName};";
+            }
         }
     }
 }

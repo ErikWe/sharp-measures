@@ -6,39 +6,18 @@ using System.Collections.Generic;
 
 internal static class ScaledUnitProperties
 {
-    public static IReadOnlyList<AttributeProperty<ScaledUnitDefinition>> AllProperties => new[]
+    public static IReadOnlyList<IAttributeProperty<ScaledUnitDefinition>> AllProperties => new IAttributeProperty<ScaledUnitDefinition>[]
     {
-        Name,
-        Plural,
-        From,
+        CommonProperties.Name<ScaledUnitDefinition, ScaledUnitParsingData, ScaledUnitLocations>(nameof(ScaledUnitAttribute.Name)),
+        CommonProperties.Plural<ScaledUnitDefinition, ScaledUnitParsingData, ScaledUnitLocations>(nameof(ScaledUnitAttribute.Plural)),
+        CommonProperties.DependantOn<ScaledUnitDefinition, ScaledUnitParsingData, ScaledUnitLocations>(nameof(ScaledUnitAttribute.From)),
         Scale
     };
 
-    public static AttributeProperty<ScaledUnitDefinition> Name { get; } = new
-    (
-        name: nameof(ScaledUnitAttribute.Name),
-        setter: static (definition, obj) => obj is string name ? definition with { Name = name } : definition,
-        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateName(syntax, index) }
-    );
-
-    public static AttributeProperty<ScaledUnitDefinition> Plural { get; } = new
-    (
-        name: nameof(ScaledUnitAttribute.Plural),
-        setter: static (definition, obj) => obj is string plural ? definition with { Plural = plural } : definition,
-        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocatePlural(syntax, index) }
-    );
-
-    public static AttributeProperty<ScaledUnitDefinition> From { get; } = new
-    (
-        name: nameof(ScaledUnitAttribute.From),
-        setter: static (definition, obj) => obj is string from ? definition with { From = from } : definition,
-        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateFrom(syntax, index) }
-    );
-
-    public static AttributeProperty<ScaledUnitDefinition> Scale { get; } = new
+    private static ScaledUnitProperty<double> Scale { get; } = new
     (
         name: nameof(ScaledUnitAttribute.Scale),
-        setter: static (definition, obj) => obj is double scale ? definition with { Scale = scale } : definition,
-        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateScale(syntax, index) }
+        setter: static (definition, scale) => definition with { Scale = scale },
+        locator: static (locations, scaleLocation) => locations with { Scale = scaleLocation }
     );
 }

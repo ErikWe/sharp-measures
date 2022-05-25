@@ -1,40 +1,15 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
 using SharpMeasures.Generators.Units;
 
-using System;
-using System.Collections.Generic;
-
-public class OffsetUnitParser : AArgumentParser<OffsetUnitDefinition>
+public static class OffsetUnitParser
 {
-    public static OffsetUnitParser Parser { get; } = new();
+    public static IAttributeParser<OffsetUnitDefinition> Parser { get; } = new AttributeParser();
 
-     protected OffsetUnitParser() : base(DefaultParameters, OffsetUnitProperties.AllProperties) { }
+    private static OffsetUnitDefinition DefaultDefinition() => OffsetUnitDefinition.Empty;
 
-    public override IEnumerable<OffsetUnitDefinition> Parse(INamedTypeSymbol typeSymbol)
+    private class AttributeParser : AUnitParser<OffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations, OffsetUnitAttribute>
     {
-        if (typeSymbol is null)
-        {
-            throw new ArgumentNullException(nameof(typeSymbol));
-        }
-
-        return Parse<OffsetUnitAttribute>(typeSymbol);
+        public AttributeParser() : base(DefaultDefinition, OffsetUnitProperties.AllProperties) { }
     }
-
-    private protected override OffsetUnitDefinition AddCustomData(OffsetUnitDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax)
-    {
-        return definition with { Locations = definition.Locations.LocateBase(attributeSyntax) };
-    }
-
-    private static OffsetUnitDefinition DefaultParameters() => new
-    (
-        Name: string.Empty,
-        Plural: string.Empty,
-        From: string.Empty,
-        Offset: 0,
-        Locations : new OffsetUnitLocations()
-    );
 }

@@ -1,9 +1,14 @@
-namespace SharpMeasures.Generators.Attributes.Parsing.Units;
+﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-using Microsoft.CodeAnalysis;
-
-public record class GeneratedUnitDefinition(INamedTypeSymbol? Quantity, bool AllowBias, bool GenerateDocumentation,
-    GeneratedUnitLocations Locations, GeneratedUnitParsingData ParsingData)
+public record class GeneratedUnitDefinition : AAttributeDefinition<GeneratedUnitParsingData, GeneratedUnitLocations>
 {
-    public CacheableGeneratedUnitDefinition ToCacheable() => CacheableGeneratedUnitDefinition.Construct(this);
+    internal static GeneratedUnitDefinition Empty { get; } = new();
+
+    public NamedType Quantity { get; init; }
+
+    public bool AllowBias { get; init; }
+
+    public bool GenerateDocumentation { get; init; }
+
+    private GeneratedUnitDefinition() : base(GeneratedUnitParsingData.Empty) { }
 }

@@ -1,34 +1,14 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
-public readonly record struct GeneratedUnitLocations(Location Attribute, Location AttributeName, Location Quantity, Location AllowBias,
-    Location GenerateDocumentation)
+public record class GeneratedUnitLocations : AAttributeLocations
 {
-    internal CacheableGeneratedUnitLocations ToCacheable() => CacheableGeneratedUnitLocations.Construct(this);
+    internal static GeneratedUnitLocations Empty { get; } = new();
 
-    internal GeneratedUnitLocations LocateBase(AttributeSyntax attribute)
-    {
-        return this with
-        {
-            Attribute = attribute.GetLocation(),
-            AttributeName = attribute.Name.GetLocation()
-        };
-    }
+    public MinimalLocation Quantity { get; init; }
 
-    internal GeneratedUnitLocations LocateQuantity(AttributeArgumentListSyntax argumentList, int index)
-    {
-        return this with { Quantity = argumentList.Arguments[index].Expression.GetLocation() };
-    }
+    public MinimalLocation AllowBias { get; init; }
 
-    internal GeneratedUnitLocations LocateAllowBias(AttributeArgumentListSyntax argumentList, int index)
-    {
-        return this with { AllowBias = argumentList.Arguments[index].Expression.GetLocation() };
-    }
+    public MinimalLocation GenerateDocumentation { get; init; }
 
-    internal GeneratedUnitLocations LocateGenerateDocumentation(AttributeArgumentListSyntax argumentList, int index)
-    {
-        return this with { GenerateDocumentation = argumentList.Arguments[index].Expression.GetLocation() };
-    }
+    private GeneratedUnitLocations() { }
 }

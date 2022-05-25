@@ -41,7 +41,7 @@ internal static class PartialDeclarationProvider
 
     private static DAttributeNameTransform<TData> WrapAttributeTypeDelegate<TData>(DAttributeTypeTransform<TData> attributeTypeDelegate)
     {
-        return (data) => attributeTypeDelegate(data).FullName;
+        return (data) => attributeTypeDelegate(data).Name;
     }
 
     public interface IImmediateProvider<TData>
@@ -133,15 +133,22 @@ internal static class PartialDeclarationProvider
         protected bool DeclarationIsPartial(TData input) => InputTransform(input).HasModifierOfKind(SyntaxKind.PartialKeyword);
         private static bool DeclarationIsPartial(LabeledInput labeledInput) => labeledInput.IsPartial;
 
-        private static bool DeclarationIsNotPartial(LabeledInput labeledInput) => !DeclarationIsPartial(labeledInput);
+        private static bool DeclarationIsNotPartial(LabeledInput labeledInput) => DeclarationIsPartial(labeledInput) is false;
 
         private LabeledInput AddLabel(TData input, CancellationToken _) => new(DeclarationIsPartial(input), input);
         private TData RemoveLabel(LabeledInput labeledInput, CancellationToken _) => labeledInput.Input;
 
         private Diagnostic CreateDiagnostics(TData input, IAttributeNameStrategy attributeNameStrategy)
-            => Diagnostic.Create(DiagnosticRules.TypeNotPartial, InputTransform(input).GetLocation(), attributeNameStrategy.GetAttributeName(input));
+        {
+            var declaration = InputTransform(input);
+
+            return DiagnosticConstruction.TypeNotPartial(declaration.GetLocation(), attributeNameStrategy.GetAttributeName(input), declaration.Identifier.Text);
+        }
+
         private Diagnostic CreateDiagnostics(LabeledInput labeledInput, IAttributeNameStrategy attributeNameStrategy)
-            => CreateDiagnostics(labeledInput.Input, attributeNameStrategy);
+        {
+            return CreateDiagnostics(labeledInput.Input, attributeNameStrategy);
+        }
 
         private readonly record struct LabeledInput(bool IsPartial, TData Input);
     }

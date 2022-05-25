@@ -1,23 +1,30 @@
 namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-using Microsoft.CodeAnalysis;
-
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
-public record class DerivedUnitDefinition(string Name, string Plural, IReadOnlyList<INamedTypeSymbol> Signature,
-    IReadOnlyList<string> Units, DerivedUnitLocations Locations, DerivedUnitParsingData ParsingData)
-    : IUnitDefinition
+public record class DerivedUnitDefinition : AUnitDefinition<DerivedUnitParsingData, DerivedUnitLocations>
 {
-    IUnitLocations IUnitDefinition.Locations => Locations;
+    internal static DerivedUnitDefinition Empty { get; } = new();
 
-    public CacheableDerivedUnitDefinition ToCacheable() => CacheableDerivedUnitDefinition.Construct(this);
+    public IReadOnlyList<NamedType> Signature { get; init; } = Array.Empty<NamedType>();
+    public IReadOnlyList<string> Units { get; init; } = Array.Empty<string>();
 
-    internal DerivedUnitDefinition ParseSignature(INamedTypeSymbol[] signature)
+    private DerivedUnitDefinition() : base(DerivedUnitParsingData.Empty) { }
+
+    public virtual bool Equals(DerivedUnitDefinition other)
     {
-        return this with
+        if (other is null)
         {
-            Signature = signature,
-            ParsingData = ParsingData with { SignatureCouldBeParsed = true }
-        };
+            return false;
+        }
+
+        return base.Equals(other) && Signature.SequenceEqual(other.Signature) && Units.SequenceEqual(other.Units);
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode() ^ Signature.GetSequenceHashCode() ^ Units.GetSequenceHashCode();
     }
 }

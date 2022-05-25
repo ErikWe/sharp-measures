@@ -23,6 +23,8 @@ public class Length { }
 [GeneratedUnit(typeof(Length))]
 public class UnitOfLength { }";
 
+        int eh = 9;
+
         GeneratorVerifier.Construct<UnitGenerator>(source).NoOutput();
     }
 

@@ -48,5 +48,5 @@ public partial class UnitOfTemperature { }
         return GeneratorVerifier.Construct<UnitGenerator>(source).AllListedDiagnosticIDsReported(ExpectedDiagnostics).Verify();
     }
 
-    private static IReadOnlyCollection<string> ExpectedDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotUnbiasedScalarQuantity };
+    private static IReadOnlyCollection<string> ExpectedDiagnostics { get; } = new string[] { DiagnosticIDs.ScalarNotUnbiased };
 }

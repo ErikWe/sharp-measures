@@ -1,12 +1,11 @@
 namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-public record class OffsetUnitDefinition(string Name, string Plural, string From, double Offset, OffsetUnitLocations Locations)
-    : IUnitDefinition, IDependantUnitDefinition
+public record class OffsetUnitDefinition : ADependantUnitDefinition<OffsetUnitParsingData, OffsetUnitLocations>
 {
-    public string DependantOn => From;
+    internal static OffsetUnitDefinition Empty { get; } = new();
 
-    IUnitLocations IUnitDefinition.Locations => Locations;
-    IDependantUnitLocations IDependantUnitDefinition.Locations => Locations;
+    public string From => DependantOn;
+    public double Offset { get; init; }
 
-    public CacheableOffsetUnitDefinition ToCacheable() => CacheableOffsetUnitDefinition.Construct(this);
+    private OffsetUnitDefinition() : base(OffsetUnitParsingData.Empty) { }
 }

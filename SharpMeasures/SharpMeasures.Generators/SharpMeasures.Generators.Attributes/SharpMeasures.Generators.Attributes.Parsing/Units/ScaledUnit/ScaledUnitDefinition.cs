@@ -1,12 +1,11 @@
 namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-public record class ScaledUnitDefinition(string Name, string Plural, string From, double Scale, ScaledUnitLocations Locations)
-    : IUnitDefinition, IDependantUnitDefinition
+public record class ScaledUnitDefinition : ADependantUnitDefinition<ScaledUnitParsingData, ScaledUnitLocations>
 {
-    public string DependantOn => From;
+    internal static ScaledUnitDefinition Empty { get; } = new();
 
-    IUnitLocations IUnitDefinition.Locations => Locations;
-    IDependantUnitLocations IDependantUnitDefinition.Locations => Locations;
+    public string From => DependantOn;
+    public double Scale { get; init; }
 
-    public CacheableScaledUnitDefinition ToCacheable() => CacheableScaledUnitDefinition.Construct(this);
+    private ScaledUnitDefinition() : base(ScaledUnitParsingData.Empty) { }
 }

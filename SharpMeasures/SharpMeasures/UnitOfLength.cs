@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Units;
 
 using System;
 
-[GeneratedScalarQuantity(typeof(UnitOfLength))]
+[GeneratedScalar(typeof(UnitOfLength))]
 public class Length { }
 
 [DerivableUnit("asd", new Type[] { typeof(Length), typeof(Length) })]

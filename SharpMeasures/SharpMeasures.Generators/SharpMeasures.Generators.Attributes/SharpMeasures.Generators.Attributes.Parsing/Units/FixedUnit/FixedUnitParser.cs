@@ -1,40 +1,15 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
 using SharpMeasures.Generators.Units;
 
-using System;
-using System.Collections.Generic;
-
-public class FixedUnitParser : AArgumentParser<FixedUnitDefinition>
+public static class FixedUnitParser
 {
-    public static FixedUnitParser Parser { get; } = new();
+    public static IAttributeParser<FixedUnitDefinition> Parser { get; } = new AttributeParser();
 
-    protected FixedUnitParser() : base(DefaultParameters, FixedUnitProperties.AllProperties) { }
+    private static FixedUnitDefinition DefaultDefinition() => FixedUnitDefinition.Empty;
 
-    public override IEnumerable<FixedUnitDefinition> Parse(INamedTypeSymbol typeSymbol)
+    private class AttributeParser : AUnitParser<FixedUnitDefinition, FixedUnitParsingData, FixedUnitLocations, FixedUnitAttribute>
     {
-        if (typeSymbol is null)
-        {
-            throw new ArgumentNullException(nameof(typeSymbol));
-        }
-
-        return Parse<FixedUnitAttribute>(typeSymbol);
+        public AttributeParser() : base(DefaultDefinition, FixedUnitProperties.AllProperties) { }
     }
-
-    private protected override FixedUnitDefinition AddCustomData(FixedUnitDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax)
-    {
-        return definition with { Locations = definition.Locations.LocateBase(attributeSyntax) };
-    }
-
-    private static FixedUnitDefinition DefaultParameters() => new
-    (
-        Name: string.Empty,
-        Plural: string.Empty,
-        Value: 0,
-        Bias: 0,
-        Locations: new FixedUnitLocations()
-    );
 }

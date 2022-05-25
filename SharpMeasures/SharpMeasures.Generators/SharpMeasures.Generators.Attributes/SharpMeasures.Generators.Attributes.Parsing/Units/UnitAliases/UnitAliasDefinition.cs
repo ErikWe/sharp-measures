@@ -1,12 +1,10 @@
 namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-public record class UnitAliasDefinition(string Name, string Plural, string AliasOf, UnitAliasLocations Locations)
-    : IUnitDefinition, IDependantUnitDefinition
+public record class UnitAliasDefinition : ADependantUnitDefinition<UnitAliasParsingData, UnitAliasLocations>
 {
-    public string DependantOn => AliasOf;
+    internal static UnitAliasDefinition Empty { get; } = new();
 
-    IUnitLocations IUnitDefinition.Locations => Locations;
-    IDependantUnitLocations IDependantUnitDefinition.Locations => Locations;
+    public string AliasOf => DependantOn;
 
-    public CacheableUnitAliasDefinition ToCacheable() => CacheableUnitAliasDefinition.Construct(this);
+    private UnitAliasDefinition() : base(UnitAliasParsingData.Empty) { }
 }

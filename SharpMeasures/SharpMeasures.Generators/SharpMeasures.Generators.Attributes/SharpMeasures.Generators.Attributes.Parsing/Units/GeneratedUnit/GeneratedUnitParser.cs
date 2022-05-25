@@ -1,55 +1,15 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
 using SharpMeasures.Generators.Units;
 
-using System;
-using System.Collections.Generic;
-
-public class GeneratedUnitParser : AArgumentParser<GeneratedUnitDefinition>
+public static class GeneratedUnitParser
 {
-    public static GeneratedUnitParser Parser { get; } = new();
+    public static IAttributeParser<GeneratedUnitDefinition> Parser { get; } = new AttributeParser();
 
-    protected GeneratedUnitParser() : base(DefaultParameters, GeneratedUnitProperties.AllProperties) { }
+    private static GeneratedUnitDefinition DefaultDefiniton() => GeneratedUnitDefinition.Empty;
 
-    public override IEnumerable<GeneratedUnitDefinition> Parse(INamedTypeSymbol typeSymbol)
+    private class AttributeParser : AAttributeParser<GeneratedUnitDefinition, GeneratedUnitParsingData, GeneratedUnitLocations, GeneratedUnitAttribute>
     {
-        if (typeSymbol is null)
-        {
-            throw new ArgumentNullException(nameof(typeSymbol));
-        }
-
-        return Parse<GeneratedUnitAttribute>(typeSymbol);
+        public AttributeParser() : base(DefaultDefiniton, GeneratedUnitProperties.AllProperties) { }
     }
-
-    public GeneratedUnitDefinition? ParseFirst(INamedTypeSymbol typeSymbol)
-    {
-        if (typeSymbol is null)
-        {
-            throw new ArgumentNullException(nameof(typeSymbol));
-        }
-
-        if (typeSymbol.GetAttributeOfType<GeneratedUnitAttribute>() is AttributeData attributeData)
-        {
-            return Parse(attributeData);
-        }
-
-        return null;
-    }
-
-    private protected override GeneratedUnitDefinition AddCustomData(GeneratedUnitDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax)
-    {
-        return definition with { Locations = definition.Locations.LocateBase(attributeSyntax) };
-    }
-
-    private static GeneratedUnitDefinition DefaultParameters() => new
-    (
-        Quantity: null,
-        AllowBias: false,
-        GenerateDocumentation: false,
-        Locations: new GeneratedUnitLocations(),
-        ParsingData: new GeneratedUnitParsingData()
-    );
 }

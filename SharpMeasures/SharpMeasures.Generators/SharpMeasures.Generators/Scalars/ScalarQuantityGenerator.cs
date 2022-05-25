@@ -1,31 +1,29 @@
 ﻿namespace SharpMeasures.Generators.Scalars;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.Scalars.Pipeline;
-using SharpMeasures.Generators.Scalars.SourceBuilding;
+using SharpMeasures.Generators.Scalars.Pipeline.ComparablePipeline;
+using SharpMeasures.Generators.Scalars.Pipeline.MiscPipeline;
+using SharpMeasures.Generators.Scalars.Pipeline.StandardMathsPipeline;
 
-using System.Text;
-
-internal static class ScalarQuantityGenerator
+[Generator]
+public class ScalarQuantityGenerator : IIncrementalGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context,
-        IncrementalValuesProvider<SharpMeasuresGenerator.Result> declarationAndSymbolProvider)
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var firstStage = Stage1.ExtractRelevantDeclarations(context, declarationAndSymbolProvider);
-        var secondStage = Stage2.ParseParameters(context, firstStage);
-        var thirdStage = Stage3.AttachDocumentation(context, secondStage);
-        var fourthStage = Stage4.Attach(thirdStage);
-        var fifthStage = Stage5.Attach(fourthStage);
+        var declarationsWithSymbols = DeclarationStage.ExtractRelevantPartialDeclarationsWithSymbols(context);
+        var withParameters = ParameterStage.ParseGeneratedUnitParameters(context, declarationsWithSymbols);
+        var withDocumentation = DocumentationStage.AppendDocumentation(context, withParameters);
 
-        context.RegisterSourceOutput(fifthStage, Execute);
-    }
+        ComparableGenerator.Initialize(context, withDocumentation);
+        MiscGenerator.Initialize(context, withDocumentation);
+        StandardMathsGenerator.Initialize(context, withDocumentation);
 
-    private static void Execute(SourceProductionContext context, Stage5.Result result)
-    {
-        string source = SourceComposer.Compose(result, context.CancellationToken);
-
-        context.AddSource($"{result.TypeDefinition.Name}.g.cs", SourceText.From(source, Encoding.UTF8));
+        -> Todo:
+        Units + ToString
+        bases
+        square root / square etc
+        toVector
     }
 }

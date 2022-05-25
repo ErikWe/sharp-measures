@@ -2,32 +2,13 @@ namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
 using SharpMeasures.Generators.Units;
 
-public record class PrefixedUnitDefinition(string Name, string Plural, string From, MetricPrefixName MetricPrefixName,
-    BinaryPrefixName BinaryPrefixName, PrefixedUnitLocations Locations, PrefixedUnitParsingData ParsingData)
-    : IUnitDefinition, IDependantUnitDefinition
+public record class PrefixedUnitDefinition : ADependantUnitDefinition<PrefixedUnitParsingData, PrefixedUnitLocations>
 {
-    public string DependantOn => From;
+    internal static PrefixedUnitDefinition Empty { get; } = new();
 
-    IUnitLocations IUnitDefinition.Locations => Locations;
-    IDependantUnitLocations IDependantUnitDefinition.Locations => Locations;
+    public string From => DependantOn;
+    public MetricPrefixName MetricPrefixName { get; init; }
+    public BinaryPrefixName BinaryPrefixName { get; init; }
 
-    public CacheablePrefixedUnitDefinition ToCacheable() => CacheablePrefixedUnitDefinition.Construct(this);
-
-    internal PrefixedUnitDefinition ParseMetricPrefix(MetricPrefixName metricPrefixName)
-    {
-        return this with
-        {
-            MetricPrefixName = metricPrefixName,
-            ParsingData = ParsingData with { SpecifiedPrefixType = PrefixedUnitParsingData.PrefixType.Metric }
-        };
-    }
-
-    internal PrefixedUnitDefinition ParseBinaryPrefix(BinaryPrefixName binaryPrefixName)
-    {
-        return this with
-        {
-            BinaryPrefixName = binaryPrefixName,
-            ParsingData = ParsingData with { SpecifiedPrefixType = PrefixedUnitParsingData.PrefixType.Binary }
-        };
-    }
+    private PrefixedUnitDefinition() : base(PrefixedUnitParsingData.Empty) { }
 }

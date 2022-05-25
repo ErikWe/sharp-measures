@@ -33,7 +33,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Pr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.DriverUtility", "SharpMeasures.Generators\SharpMeasures.Generators.DriverUtility\SharpMeasures.Generators.DriverUtility.csproj", "{0DA36382-DB37-4C19-B941-FF951AB73BFF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.RoslynExtensions", "SharpMeasures.Generators\SharpMeasures.Generators.RoslynExtensions\SharpMeasures.Generators.RoslynExtensions.csproj", "{2976DE30-F313-4836-8014-DC17FB70E3EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.RoslynUtility", "SharpMeasures.Generators\SharpMeasures.Generators.RoslynUtility\SharpMeasures.Generators.RoslynUtility.csproj", "{FC261826-1AB6-4011-9A67-A84E9386E555}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMeasures.Utility", "SharpMeasures.Utility\SharpMeasures.Utility.csproj", "{6E2735A9-05FD-4051-8A60-5C359A5874C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,10 +91,14 @@ Global
 		{0DA36382-DB37-4C19-B941-FF951AB73BFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DA36382-DB37-4C19-B941-FF951AB73BFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DA36382-DB37-4C19-B941-FF951AB73BFF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2976DE30-F313-4836-8014-DC17FB70E3EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2976DE30-F313-4836-8014-DC17FB70E3EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2976DE30-F313-4836-8014-DC17FB70E3EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2976DE30-F313-4836-8014-DC17FB70E3EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC261826-1AB6-4011-9A67-A84E9386E555}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC261826-1AB6-4011-9A67-A84E9386E555}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC261826-1AB6-4011-9A67-A84E9386E555}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC261826-1AB6-4011-9A67-A84E9386E555}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E2735A9-05FD-4051-8A60-5C359A5874C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E2735A9-05FD-4051-8A60-5C359A5874C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E2735A9-05FD-4051-8A60-5C359A5874C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E2735A9-05FD-4051-8A60-5C359A5874C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

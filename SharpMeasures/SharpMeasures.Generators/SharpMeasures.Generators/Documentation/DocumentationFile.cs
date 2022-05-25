@@ -3,12 +3,9 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-using SharpMeasures.Generators.Diagnostics.Documentation;
-using SharpMeasures.Generators.Utility;
+using SharpMeasures.Generators.Diagnostics;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 internal readonly struct DocumentationFile
 {
@@ -18,7 +15,7 @@ internal readonly struct DocumentationFile
     private MinimalLocation? Location { get; }
     private IReadOnlyDictionary<string, string> Content { get; }
     
-    public DocumentationFile(AdditionalText file, string name, IReadOnlyDictionary<string, string> content)
+    public DocumentationFile(string name, AdditionalText file, IReadOnlyDictionary<string, string> content)
         : this(name, DetermineFileLocation(file), content) { }
 
     public DocumentationFile(string name, MinimalLocation? location, IReadOnlyDictionary<string, string> content)
@@ -28,25 +25,29 @@ internal readonly struct DocumentationFile
         Content = content;
     }
 
-    public ResultWithDiagnostics<string> ResolveTag(string tag)
+    public IResultWithDiagnostics<string> ResolveTag(string tag)
     {
+        if (string.IsNullOrEmpty(Name))
+        {
+            return ResultWithDiagnostics.WithoutDiagnostics(string.Empty);
+        }
+
         if (Content.TryGetValue(tag, out string tagText))
         {
-            return ResultWithDiagnostics<string>.WithoutDiagnostics(tagText);
+            return ResultWithDiagnostics.WithoutDiagnostics(tagText);
         }
 
         if (CreateMissingTagDiagnostics(tag) is Diagnostic missingTagDiagnostics)
         {
-            return new ResultWithDiagnostics<string>(string.Empty, missingTagDiagnostics);
+            return ResultWithDiagnostics.Construct(string.Empty, missingTagDiagnostics);
         }
-        
 
-        return ResultWithDiagnostics<string>.WithoutDiagnostics(string.Empty);
+        return ResultWithDiagnostics.WithoutDiagnostics(string.Empty);
     }
 
     public string ResolveTagAndReportDiagnostics(SourceProductionContext context, string tag)
     {
-        ResultWithDiagnostics<string> resultAndDiagnostics = ResolveTag(tag);
+        IResultWithDiagnostics<string> resultAndDiagnostics = ResolveTag(tag);
 
         context.ReportDiagnostics(resultAndDiagnostics);
 
@@ -61,7 +62,7 @@ internal readonly struct DocumentationFile
         }
 
         LinePositionSpan span = new(new LinePosition(0, 0), new LinePosition(text.Lines.Count - 1, text.Lines[text.Lines.Count - 1].End));
-        return MinimalLocation.FromLocation(Microsoft.CodeAnalysis.Location.Create(file.Path, TextSpan.FromBounds(0, file.ToString().Length - 1), span));
+        return Microsoft.CodeAnalysis.Location.Create(file.Path, TextSpan.FromBounds(0, file.ToString().Length - 1), span).Minimize();
     }
 
     private Diagnostic? CreateMissingTagDiagnostics(string tag)
@@ -71,7 +72,7 @@ internal readonly struct DocumentationFile
             return null;
         }
 
-        return DocumentationFileMissingRequestedTagDiagnostics.Create(Location.Value.ToLocation(), Name, tag);
+        return DiagnosticConstruction.DocumentationFileMissingRequestedTag(Location.Value.AsRoslynLocation(), Name, tag);
     }
 
     public bool Equals(DocumentationFile other)
@@ -82,7 +83,7 @@ internal readonly struct DocumentationFile
         {
             foreach (string key in content.Keys)
             {
-                if (!otherContent.TryGetValue(key, out string value) || value != content[key])
+                if (otherContent.TryGetValue(key, out string value) is false || value != content[key])
                 {
                     return false;
                 }

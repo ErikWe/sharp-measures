@@ -1,3 +1,8 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-public readonly record struct DerivedUnitParsingData(bool SignatureCouldBeParsed = false);
+public record class DerivedUnitParsingData : AUnitParsingData<DerivedUnitLocations>
+{
+    internal static DerivedUnitParsingData Empty { get; } = new();
+
+    private DerivedUnitParsingData() : base(DerivedUnitLocations.Empty) { }
+}

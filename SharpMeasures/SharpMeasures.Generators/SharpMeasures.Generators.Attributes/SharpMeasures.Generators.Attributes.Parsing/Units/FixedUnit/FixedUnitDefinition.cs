@@ -1,9 +1,11 @@
 namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-public record class FixedUnitDefinition(string Name, string Plural, double Value, double Bias, FixedUnitLocations Locations)
-    : IUnitDefinition
+public record class FixedUnitDefinition : AUnitDefinition<FixedUnitParsingData, FixedUnitLocations>
 {
-    IUnitLocations IUnitDefinition.Locations => Locations;
+    internal static FixedUnitDefinition Empty { get; } = new();
+    
+    public double Value { get; init; }
+    public double Bias { get; init; }
 
-    public CacheableFixedUnitDefinition ToCacheable() => CacheableFixedUnitDefinition.Construct(this);
+    private FixedUnitDefinition() : base(FixedUnitParsingData.Empty) { }
 }

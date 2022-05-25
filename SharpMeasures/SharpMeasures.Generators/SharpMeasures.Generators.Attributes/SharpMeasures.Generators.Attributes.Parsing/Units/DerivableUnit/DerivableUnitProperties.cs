@@ -8,23 +8,27 @@ using System.Collections.Generic;
 
 internal static class DerivableUnitProperties
 {
-    public static IReadOnlyList<AttributeProperty<DerivableUnitDefinition>> AllProperties => new[]
+    public static IReadOnlyList<IAttributeProperty<DerivableUnitDefinition>> AllProperties => new IAttributeProperty<DerivableUnitDefinition>[]
     {
         Expression,
         Signature
     };
 
-    public static AttributeProperty<DerivableUnitDefinition> Expression { get; } = new
+    private static DerivableUnitProperty<string> Expression { get; } = new
     (
         name: nameof(DerivableUnitAttribute.Expression),
-        setter: static (definition, obj) => obj is string expression ? definition with { Expression = expression } : definition,
-        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateExpression(syntax, index) }
+        setter: static (definition, expression) => definition with { Expression = expression },
+        locator: static(locations, expressionLocation) => locations with { Expression = expressionLocation }
     );
 
-    public static AttributeProperty<DerivableUnitDefinition> Signature { get; } = new
+    private static DerivableUnitProperty<INamedTypeSymbol[]> Signature { get; } = new
     (
         name: nameof(DerivableUnitAttribute.Signature),
-        setter: static (definition, obj) => obj is INamedTypeSymbol[] signature ? definition.ParseSignature(signature) : definition,
-        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateSignature(syntax, index) }
+        setter: static (definition, signature) => definition with { Signature = signature.AsNamedTypes() },
+        locator: static (locations, collectionLocation, elementLocations) => locations with
+        {
+            SignatureCollection = collectionLocation,
+            SignatureElements = elementLocations
+        }
     );
 }

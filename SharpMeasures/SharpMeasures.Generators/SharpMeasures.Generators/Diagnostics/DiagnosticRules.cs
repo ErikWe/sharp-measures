@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Vectors;
 
 using System.Diagnostics.CodeAnalysis;
 
@@ -20,38 +21,46 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor TypeNotScalarQuantity = new DiagnosticDescriptor
+    public readonly static DiagnosticDescriptor TypeNotScalar = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.TypeNotScalarQuantity,
+        id: DiagnosticIDs.TypeNotScalar,
         title: "Expected a scalar quantity",
-        messageFormat: $"Expected a scalar quantity. Add the attribute {typeof(GeneratedScalarQuantityAttribute).FullName} to {{0}} " +
+        messageFormat: $"Expected a scalar quantity. Add the attribute {typeof(GeneratedScalarAttribute).FullName} to {{0}} " +
             $"for it to be recognized as a scalar quantity.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor TypeNotScalarQuantity_Null = new DiagnosticDescriptor
+    public readonly static DiagnosticDescriptor TypeNotScalar_Null = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.TypeNotScalarQuantity,
+        id: DiagnosticIDs.TypeNotScalar,
         title: "Expected a scalar quantity",
-        messageFormat: $"Expected a type marked with the attribute {typeof(GeneratedScalarQuantityAttribute).FullName}",
+        messageFormat: $"Expected a type marked with the attribute {typeof(GeneratedScalarAttribute).FullName}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor TypeNotUnbiasedScalarQuantity = new DiagnosticDescriptor
+    public readonly static DiagnosticDescriptor TypeNotVector = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.TypeNotUnbiasedScalarQuantity,
-        title: "Expected an unbiased type",
-        messageFormat: "Argument should be an unbiased scalar quantity. Make {0} an unbiased scalar quantity, or use another quantity.",
+        id: DiagnosticIDs.TypeNotVector,
+        title: "Expected a vector quantity",
+        messageFormat: $"Expected a vector quantity. Add the attribute {typeof(GeneratedVectorAttribute).FullName} to {{0}} " +
+            $"for it to be recognized as a vector quantity.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
-        isEnabledByDefault: true,
-        description: "The primary quantity described by a unit should always be an unbiased quantity, regardless of whether the unit supports" +
-            "biased quantities. As an example: a unit \"UnitOfTemperature\" should be associated with an unbiased quantity \"TemperatureDifference\", " +
-            "rather than a biased quantity \"Temperature\"."
+        isEnabledByDefault: true
+    );
+
+    public readonly static DiagnosticDescriptor TypeNotVector_Null = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.TypeNotVector,
+        title: "Expected a vector quantity",
+        messageFormat: $"Expected a type marked with the attribute {typeof(GeneratedVectorAttribute).FullName}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
     );
 
     public readonly static DiagnosticDescriptor TypeNotUnit = new DiagnosticDescriptor
@@ -71,6 +80,49 @@ internal static partial class DiagnosticRules
         messageFormat: $"Expected a type marked with the attribute {typeof(GeneratedUnitAttribute).FullName}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public readonly static DiagnosticDescriptor TypeAlreadyDefined = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.TypeAlreadyDefined,
+        title: "Type already defined",
+        messageFormat: "{0} cannot be defined as a {1}, as it was already defined as a {2}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public readonly static DiagnosticDescriptor ScalarNotUnbiased = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.ScalarNotUnbiased,
+        title: "Expected an unbiased scalar quantity",
+        messageFormat: "Argument should be an unbiased scalar quantity. Make {0} an unbiased scalar quantity, or use another quantity.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "The primary quantity described by a unit should always be an unbiased quantity, regardless of whether the unit supports " +
+            "biased quantities. As an example: a unit \"UnitOfTemperature\" should be associated with the unbiased quantity \"TemperatureDifference\", " +
+            "rather than the biased quantity \"Temperature\"."
+    );
+
+    public readonly static DiagnosticDescriptor UnitNotSupportingBias = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.UnitNotSupportingBias,
+        title: "Unit does not support bias",
+        messageFormat: "The unit {0} does not support biased quantities",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public readonly static DiagnosticDescriptor DuplicateListing = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.DuplicateListing,
+        title: "Item has already been listed",
+        messageFormat: "The {0} {1} has already been listed",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true
     );
 }

@@ -6,47 +6,44 @@ using System.Collections.Generic;
 
 internal static class PrefixedUnitProperties
 {
-    public static IReadOnlyList<AttributeProperty<PrefixedUnitDefinition>> AllProperties =>new[]
+    public static IReadOnlyList<IAttributeProperty<PrefixedUnitDefinition>> AllProperties => new IAttributeProperty<PrefixedUnitDefinition>[]
     {
-        Name,
-        Plural,
-        From,
+        CommonProperties.Name<PrefixedUnitDefinition, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.Name)),
+        CommonProperties.Plural<PrefixedUnitDefinition, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.Plural)),
+        CommonProperties.DependantOn<PrefixedUnitDefinition, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.From)),
         MetricPrefixName,
         BinaryPrefixName
     };
 
-    public static AttributeProperty<PrefixedUnitDefinition> Name { get; } = new
-    (
-        name: nameof(PrefixedUnitAttribute.Name),
-        setter: static (definition, obj) => obj is string name ? definition with { Name = name } : definition,
-        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateName(syntax, index) }
-    );
-
-    public static AttributeProperty<PrefixedUnitDefinition> Plural { get; } = new
-    (
-        name: nameof(PrefixedUnitAttribute.Plural),
-        setter: static (definition, obj) => obj is string plural ? definition with { Plural = plural } : definition,
-        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocatePlural(syntax, index) }
-    );
-
-    public static AttributeProperty<PrefixedUnitDefinition> From { get; } = new
-    (
-        name: nameof(PrefixedUnitAttribute.From),
-        setter: static (definition, obj) => obj is string from ? definition with { From = from } : definition,
-        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateFrom(syntax, index) }
-    );
-
-    public static AttributeProperty<PrefixedUnitDefinition> MetricPrefixName { get; } = new
+    private static PrefixedUnitProperty<int> MetricPrefixName { get; } = new
     (
         name: nameof(PrefixedUnitAttribute.MetricPrefixName),
-        setter: static (definition, obj) => obj is int metricPrefixName ? definition.ParseMetricPrefix((MetricPrefixName)metricPrefixName) : definition,
-        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateMetricPrefixName(syntax, index) }
+        setter: static (definition, metricPrefixName) =>
+        {
+            var modifiedParsingData = definition.ParsingData with { SpecifiedPrefixType = PrefixedUnitParsingData.PrefixType.Metric };
+
+            return definition with
+            {
+                MetricPrefixName = (MetricPrefixName)metricPrefixName,
+                ParsingData = modifiedParsingData
+            };
+        },
+        locator: static (locations, metricPrefixNameLocation) => locations with { MetricPrefixName = metricPrefixNameLocation }
     );
 
-    public static AttributeProperty<PrefixedUnitDefinition> BinaryPrefixName { get; } = new
+    private static PrefixedUnitProperty<int> BinaryPrefixName { get; } = new
     (
         name: nameof(PrefixedUnitAttribute.BinaryPrefixName),
-        setter: static (definition, obj) => obj is int binaryPrefixName ? definition.ParseBinaryPrefix((BinaryPrefixName)binaryPrefixName) : definition,
-        syntaxSetter: static (definition, syntax, index) => definition with { Locations = definition.Locations.LocateBinaryPrefixName(syntax, index) }
+        setter: static (definition, binaryPrefixName) =>
+        {
+            var modifiedParsingData = definition.ParsingData with { SpecifiedPrefixType = PrefixedUnitParsingData.PrefixType.Binary };
+
+            return definition with
+            {
+                BinaryPrefixName = (BinaryPrefixName)binaryPrefixName,
+                ParsingData = modifiedParsingData
+            };
+        },
+        locator: static (locations, binaryPrefixNameLocation) => locations with { BinaryPrefixName = binaryPrefixNameLocation }
     );
 }

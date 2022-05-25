@@ -3,8 +3,7 @@ namespace SharpMeasures.Generators.Documentation;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-using SharpMeasures.Generators.Diagnostics.Documentation;
-using SharpMeasures.Generators.Utility;
+using SharpMeasures.Generators.Diagnostics;
 
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,7 @@ using System.Text.RegularExpressions;
 
 internal class DocumentationFileBuilder
 {
-    public static ResultWithDiagnostics<DocumentationDictionary> Build(IEnumerable<AdditionalText> relevantFiles, bool produceDiagnostics = true)
+    public static IResultWithDiagnostics<DocumentationDictionary> Build(IEnumerable<AdditionalText> relevantFiles, bool produceDiagnostics = true)
     {
         if (relevantFiles is null)
         {
@@ -25,7 +24,7 @@ internal class DocumentationFileBuilder
 
         foreach (DocumentationFileBuilder builder in builders.Values)
         {
-            if (!builder.IsUtility)
+            if (builder.IsUtility is false)
             {
                 builder.ResolveDependencies(builders);
             }
@@ -33,7 +32,7 @@ internal class DocumentationFileBuilder
 
         foreach (DocumentationFileBuilder builder in builders.Values)
         {
-            if (!builder.IsUtility)
+            if (builder.IsUtility is false)
             {
                 builder.AddTagsFromDependencies();
             }
@@ -41,7 +40,7 @@ internal class DocumentationFileBuilder
 
         foreach (DocumentationFileBuilder builder in builders.Values)
         {
-            if (!builder.IsUtility)
+            if (builder.IsUtility is false)
             {
                 builder.ResolveAllTagContents();
             }
@@ -49,7 +48,7 @@ internal class DocumentationFileBuilder
 
         foreach (DocumentationFileBuilder builder in builders.Values)
         {
-            if (!builder.IsUtility)
+            if (builder.IsUtility is false)
             {
                 builder.CommentAllTags();
             }
@@ -58,21 +57,22 @@ internal class DocumentationFileBuilder
         DocumentationDictionary dictionary = new(builders.Values.ToDictionary(static (file) => file.Name, static (file) => file.Finalize()));
         IEnumerable<Diagnostic> diagnostics = builders.Values.SelectMany(static (file) => file.Diagnostics);
 
-        return new ResultWithDiagnostics<DocumentationDictionary>(dictionary, diagnostics);
+        return ResultWithDiagnostics.Construct(dictionary, diagnostics);
 
         IEnumerable<DocumentationFileBuilder> createBuilders()
         {
             foreach (AdditionalText additionalText in relevantFiles)
             {
-                if (additionalText.GetText() is SourceText text)
+                if (additionalText.GetText() is SourceText fileText)
                 {
-                    yield return new DocumentationFileBuilder(additionalText, text.ToString(), produceDiagnostics);
+                    yield return new DocumentationFileBuilder(additionalText, fileText, produceDiagnostics);
                 }
             }
         }
     }
 
     private AdditionalText File { get; }
+    private SourceText FileText { get; }
 
     public string Name { get; }
     private bool IsUtility { get; }
@@ -85,9 +85,13 @@ internal class DocumentationFileBuilder
     private bool ProduceDiagnostics { get; }
     private List<Diagnostic> Diagnostics { get; } = new();
 
-    private DocumentationFileBuilder(AdditionalText file, string text, bool produceDiagnostics)
+    private DocumentationFileBuilder(AdditionalText file, SourceText fileText, bool produceDiagnostics)
     {
         File = file;
+        FileText = fileText;
+
+        string text = fileText.ToString();
+
         Name = DocumentationParsing.ReadName(file);
         IsUtility = DocumentationParsing.ReadUtilityState(text);
         Dependencies = DocumentationParsing.GetDependencies(text);
@@ -98,7 +102,7 @@ internal class DocumentationFileBuilder
 
     public DocumentationFile Finalize()
     {
-        return new(File, Name, new ReadOnlyDictionary<string, string>(Content));
+        return new(Name, File, new ReadOnlyDictionary<string, string>(Content));
     }
 
     private void ResolveDependencies(Dictionary<string, DocumentationFileBuilder> documentationFiles)
@@ -108,10 +112,12 @@ internal class DocumentationFileBuilder
             if (documentationFiles.TryGetValue(dependency, out DocumentationFileBuilder file))
             {
                 ResolvedDependencies.Add(file);
+                continue;
             }
-            else
+
+            if (CreateUnresolvedDependencyDiagnostics(dependency) is Diagnostic diagnostics)
             {
-                CreateUnresolvedDependencyDiagnostics(dependency);
+                Diagnostics.Add(diagnostics);
             }
         }
     }
@@ -122,7 +128,7 @@ internal class DocumentationFileBuilder
         {
             foreach (KeyValuePair<string, string> tag in dependency.Content)
             {
-                if (!Content.ContainsKey(tag.Key))
+                if (Content.ContainsKey(tag.Key) is false)
                 {
                     Content[tag.Key] = tag.Value;
                 }
@@ -136,7 +142,7 @@ internal class DocumentationFileBuilder
 
         foreach (string tag in keys)
         {
-            if (!ResolvedTags.Contains(tag))
+            if (ResolvedTags.Contains(tag) is false)
             {
                 ResolveTagContent(tag);
             }
@@ -169,7 +175,11 @@ internal class DocumentationFileBuilder
 
             if (ReadTag(tag) is not string tagText)
             {
-                CreateMissingTagDiagnostics(tag);
+                if (CreateMissingTagDiagnostics(tag) is Diagnostic diagnostics)
+                {
+                    Diagnostics.Add(diagnostics);
+                }
+
                 continue;
             }
 
@@ -195,33 +205,48 @@ internal class DocumentationFileBuilder
         return null;
     }
 
-    private void CreateUnresolvedDependencyDiagnostics(string dependency)
+    private Diagnostic? CreateUnresolvedDependencyDiagnostics(string dependency)
     {
-        if (!ProduceDiagnostics || File.GetText() is not SourceText sourceText)
+        if (ProduceDiagnostics is false)
         {
-            return;
+            return null;
         }
 
-        MatchCollection matches = DocumentationParsing.MatchDependencies(sourceText.ToString());
+        MatchCollection matches = DocumentationParsing.MatchDependencies(FileText.ToString());
 
         foreach (Match match in matches)
         {
             if (match.Groups["dependency"].Value == dependency)
             {
-                int line = sourceText.ToString().Take(match.Index).Count(static (character) => character is '\n');
+                int line = FileText.ToString().Take(match.Index).Count(static (character) => character is '\n');
 
-                LinePositionSpan span = new(new LinePosition(line, 0), new LinePosition(line, sourceText.Lines[line].Span.Length));
-                Location location = Location.Create(File.Path, new TextSpan(match.Index, match.Length), span);
+                if (line is 0)
+                {
+                    line = FileText.ToString().Take(match.Index).Count(static (character) => character is '\r');
+                }
 
-                Diagnostics.Add(UnresolvedDocumentationDependencyDiagnostics.Create(File, location, dependency));
+                TextSpan textSpan = FileText.Lines[line].Span;
+                LinePositionSpan lineSpan = new(new LinePosition(line, 0), new LinePosition(line, textSpan.Length - 1));
+                Location location = Location.Create(File.Path, new TextSpan(match.Index, match.Length), lineSpan);
 
-                break;
+                return DiagnosticConstruction.UnresolvedDocumentationDependency(location, Name, dependency);
             }
         }
+
+        return null;
     }
 
-    private void CreateMissingTagDiagnostics(string tag)
+    private Diagnostic? CreateMissingTagDiagnostics(string tag)
     {
-        Diagnostics.Add(DocumentationFileMissingRequestedTagDiagnostics.Create(File, tag));
+        if (FileText.Lines.Count is 0)
+        {
+            return DiagnosticConstruction.DocumentationFileMissingRequestedTag(Location.None, Name, tag);
+        }
+
+        TextSpan textSpan = FileText.Lines[0].Span;
+        LinePositionSpan lineSpan = new(new LinePosition(0, 0), new LinePosition(0, textSpan.Length - 1));
+        Location location = Location.Create(File.Path, textSpan, lineSpan);
+
+        return DiagnosticConstruction.DocumentationFileMissingRequestedTag(location, Name, tag);
     }
 }

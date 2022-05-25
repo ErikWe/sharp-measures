@@ -14,8 +14,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <AdditionalFiles Include="Diagnostics\Misc\AnalyzerReleases.Shipped.md" />
-	  <AdditionalFiles Include="Diagnostics\Misc\AnalyzerReleases.Unshipped.md" />
+	  <AdditionalFiles Include="Diagnostics\AnalyzerReleases.Shipped.md" />
+	  <AdditionalFiles Include="Diagnostics\AnalyzerReleases.Unshipped.md" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -28,7 +28,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.Parsing\SharpMeasures.Generators.Attributes.Parsing.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
 		<ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
-		<ProjectReference Include="..\SharpMeasures.Generators.RoslynExtensions\SharpMeasures.Generators.RoslynExtensions.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
+		<ProjectReference Include="..\SharpMeasures.Generators.RoslynUtility\SharpMeasures.Generators.RoslynUtility.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
+		<ProjectReference Include="..\..\SharpMeasures.Utility\SharpMeasures.Utility.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
 	</ItemGroup>
 	
 	<ItemGroup>

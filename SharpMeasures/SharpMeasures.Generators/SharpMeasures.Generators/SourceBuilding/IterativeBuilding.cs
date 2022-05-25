@@ -5,16 +5,16 @@ using System.Text;
 
 internal static class IterativeBuilding
 {
-    public static void AppendEnumerable(StringBuilder source, IEnumerable<string> texts, string separator)
-        => AppendEnumerable(source, string.Empty, texts, separator, string.Empty);
+    public static void AppendEnumerable(StringBuilder source, IEnumerable<string> texts, string separator, bool removeFixedIfEmpty = true)
+        => AppendEnumerable(source, string.Empty, texts, separator, string.Empty, removeFixedIfEmpty);
 
-    public static void AppendEnumerable(StringBuilder source, string prefix, IEnumerable<string> texts, string separator)
-        => AppendEnumerable(source, prefix, texts, separator, string.Empty);
+    public static void AppendEnumerable(StringBuilder source, string prefix, IEnumerable<string> texts, string separator, bool removeFixedIfEmpty = true)
+        => AppendEnumerable(source, prefix, texts, separator, string.Empty, removeFixedIfEmpty);
 
-    public static void AppendEnumerable(StringBuilder source, IEnumerable<string> texts, string separator, string postfix)
-        => AppendEnumerable(source, string.Empty, texts, separator, postfix);
+    public static void AppendEnumerable(StringBuilder source, IEnumerable<string> texts, string separator, string postfix, bool removeFixedIfEmpty = true)
+        => AppendEnumerable(source, string.Empty, texts, separator, postfix, removeFixedIfEmpty);
 
-    public static void AppendEnumerable(StringBuilder source, string prefix, IEnumerable<string> texts, string separator, string postfix)
+    public static void AppendEnumerable(StringBuilder source, string prefix, IEnumerable<string> texts, string separator, string postfix, bool removeFixedIfEmpty = true)
     {
         source.Append(prefix);
 
@@ -32,7 +32,14 @@ internal static class IterativeBuilding
         }
         else
         {
-            source.Remove(source.Length - prefix.Length, prefix.Length);
+            if (removeFixedIfEmpty)
+            {
+                source.Remove(source.Length - prefix.Length, prefix.Length);
+            }
+            else
+            {
+                source.Append(postfix);
+            }
         }
     }
 }

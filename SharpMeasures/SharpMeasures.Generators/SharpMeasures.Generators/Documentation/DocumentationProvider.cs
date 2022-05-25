@@ -2,22 +2,14 @@
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 
-using SharpMeasures.Generators.Diagnostics.Documentation;
-using SharpMeasures.Generators.Providers;
-using SharpMeasures.Generators.Utility;
+using SharpMeasures.Generators.Diagnostics;
 
-using System;
-using System.Collections.Immutable;
 using System.Threading;
 
 internal static class DocumentationProvider
 {
-    private const string AnalyzerKey = "SharpMeasures_GenerateDocumentation";
-    private const string DocumentationExtension = ".doc.txt";
-
-    public readonly record struct InputData<TIdentifier>(TIdentifier Identifier, GenerateDocumentationState GenerateDocumentation);
+    public readonly record struct InputData<TIdentifier>(TIdentifier Identifier, bool GenerateDocumentation);
     public delegate InputData<TIdentifier> DInputTransform<in TIn, TIdentifier>(TIn input);
     public delegate TOut DOutputTransform<in TIn, out TOut>(TIn input, DocumentationFile documentationFile);
 
@@ -64,16 +56,16 @@ internal static class DocumentationProvider
     public interface IUndiagnosableProvider<TIn, TOut, TIdentifier>
     {
         public abstract IncrementalValuesProvider<TOut> Attach(IncrementalValuesProvider<TIn> inputProvider,
-            IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider, IncrementalValuesProvider<AdditionalText> additionalTextProvider);
+            IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider);
     }
 
     public interface IDiagnosableProvider<TIn, TOut, TIdentifier>
     {
         public abstract IncrementalValuesProvider<TOut> AttachAndReport(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<TIn> inputProvider,
-            IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider, IncrementalValuesProvider<AdditionalText> additionalTextProvider);
+            IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider);
 
         public abstract IncrementalValuesProvider<TOut> AttachWithoutDiagnostics(IncrementalValuesProvider<TIn> inputProvider,
-            IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider, IncrementalValuesProvider<AdditionalText> additionalTextProvider);
+            IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider);
     }
 
     private abstract class AProvider<TIn, TOut, TIdentifier>
@@ -92,51 +84,39 @@ internal static class DocumentationProvider
         }
 
         protected IncrementalValuesProvider<TOut> Attach(IDiagnosticsStrategy diagnosticsStrategy, IncrementalValuesProvider<TIn> inputProvider,
-            IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider, IncrementalValuesProvider<AdditionalText> additionalTextProvider)
+            IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
         {
-            var defaultSettings = DefaultSettingsProvider.Attach(optionsProvider);
-            var documentation = diagnosticsStrategy.AttachDocumentationProvider(additionalTextProvider);
-
-            var settingsAndDocumentation = defaultSettings.Combine(documentation);
-
-            var resultAndDiagnostics = inputProvider.Combine(settingsAndDocumentation).Select(extractCorrectFile);
+            var resultAndDiagnostics = inputProvider.Combine(documentationDictionaryProvider).Select(extractCorrectFile);
 
             diagnosticsStrategy.ReportDiagnostics(resultAndDiagnostics);
-            return resultAndDiagnostics.ExtractResult();
+            return resultAndDiagnostics.ExtractResults();
 
-            ResultWithDiagnostics<TOut> extractCorrectFile((TIn Input, (DefaultSettingsProvider.Result DefaultSettings, DocumentationDictionary Documentation) State) data,
-                CancellationToken _) => ExtractCorrectFile(diagnosticsStrategy, data.Input, data.State.DefaultSettings, data.State.Documentation);
+            IResultWithDiagnostics<TOut> extractCorrectFile((TIn Input, DocumentationDictionary Dictionary) data,
+                CancellationToken _) => ExtractCorrectFile(diagnosticsStrategy, data.Input, data.Dictionary);
         }
 
         protected interface IDiagnosticsStrategy
         {
             public abstract IncrementalValueProvider<DocumentationDictionary> AttachDocumentationProvider(IncrementalValuesProvider<AdditionalText> additionalTextProvider);
             public abstract Diagnostic? CreateNoMatchingDocumentationFileDiagnostics(TIdentifier identifier);
-            public abstract void ReportDiagnostics(IncrementalValuesProvider<ResultWithDiagnostics<TOut>> diagnostics);
+            public abstract void ReportDiagnostics(IncrementalValuesProvider<IResultWithDiagnostics<TOut>> diagnostics);
         }
 
-        private ResultWithDiagnostics<TOut> ExtractCorrectFile(IDiagnosticsStrategy diagnosticsStrategy, TIn input,
-            DefaultSettingsProvider.Result defaultSettings, DocumentationDictionary documentation)
+        private IResultWithDiagnostics<TOut> ExtractCorrectFile(IDiagnosticsStrategy diagnosticsStrategy, TIn input, DocumentationDictionary dictionary)
         {
             InputData<TIdentifier> inputData = InputTransform(input);
 
-            if (inputData.GenerateDocumentation is GenerateDocumentationState.ExplicitlyDisabled
-                || inputData.GenerateDocumentation is GenerateDocumentationState.Default && defaultSettings.GenerateDocumentationByDefault is false)
+            if (dictionary.TryGetValue(IdentifierNameDelegate(inputData.Identifier), out DocumentationFile documentationFile))
             {
-                return ResultWithDiagnostics<TOut>.WithoutDiagnostics(OutputTransform(input, DocumentationFile.Empty));
-            }
-
-            if (documentation.TryGetValue(IdentifierNameDelegate(inputData.Identifier), out DocumentationFile file))
-            {
-                return ResultWithDiagnostics<TOut>.WithoutDiagnostics(OutputTransform(input, file));
+                return ResultWithDiagnostics.WithoutDiagnostics(OutputTransform(input, documentationFile));
             }
 
             if (diagnosticsStrategy.CreateNoMatchingDocumentationFileDiagnostics(inputData.Identifier) is not Diagnostic diagnostics)
             {
-                return ResultWithDiagnostics<TOut>.WithoutDiagnostics(OutputTransform(input, DocumentationFile.Empty));
+                return ResultWithDiagnostics.WithoutDiagnostics(OutputTransform(input, DocumentationFile.Empty));
             }
 
-            return new ResultWithDiagnostics<TOut>(OutputTransform(input, DocumentationFile.Empty), diagnostics);
+            return ResultWithDiagnostics.Construct(OutputTransform(input, DocumentationFile.Empty), diagnostics);
         }
     }
 
@@ -146,12 +126,12 @@ internal static class DocumentationProvider
             DIdentifierName<TIdentifier> identifierNameDelegate)
             : base(inputTransform, outputTransform, identifierNameDelegate) { }
 
-        public IncrementalValuesProvider<TOut> Attach(IncrementalValuesProvider<TIn> inputProvider, IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider,
-            IncrementalValuesProvider<AdditionalText> additionalTextProvider)
+        public IncrementalValuesProvider<TOut> Attach(IncrementalValuesProvider<TIn> inputProvider,
+            IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
         {
             IDiagnosticsStrategy diagnosticsStrategy = new NoDiagnosticsStrategy();
 
-            return Attach(diagnosticsStrategy, inputProvider, optionsProvider, additionalTextProvider);
+            return Attach(diagnosticsStrategy, inputProvider, documentationDictionaryProvider);
         }
 
         private class NoDiagnosticsStrategy : IDiagnosticsStrategy
@@ -162,7 +142,7 @@ internal static class DocumentationProvider
             }
 
             public Diagnostic? CreateNoMatchingDocumentationFileDiagnostics(TIdentifier identifier) => null;
-            public void ReportDiagnostics(IncrementalValuesProvider<ResultWithDiagnostics<TOut>> diagnostics) { }
+            public void ReportDiagnostics(IncrementalValuesProvider<IResultWithDiagnostics<TOut>> diagnostics) { }
         }
     }
 
@@ -178,17 +158,17 @@ internal static class DocumentationProvider
         }
 
         public IncrementalValuesProvider<TOut> AttachWithoutDiagnostics(IncrementalValuesProvider<TIn> inputProvider,
-            IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider, IncrementalValuesProvider<AdditionalText> additionalTextProvider)
+            IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
         {
-            return Attach(inputProvider, optionsProvider, additionalTextProvider);
+            return Attach(inputProvider, documentationDictionaryProvider);
         }
 
         public IncrementalValuesProvider<TOut> AttachAndReport(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<TIn> inputProvider,
-            IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider, IncrementalValuesProvider<AdditionalText> additionalTextProvider)
+            IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
         {
             IDiagnosticsStrategy diagnosticsStrategy = new DiagnosticsStrategy(context, IdentifierDeclarationDelegate);
 
-            return Attach(diagnosticsStrategy, inputProvider, optionsProvider, additionalTextProvider);
+            return Attach(diagnosticsStrategy, inputProvider, documentationDictionaryProvider);
         }
 
         private class DiagnosticsStrategy : IDiagnosticsStrategy
@@ -204,7 +184,8 @@ internal static class DocumentationProvider
 
             public Diagnostic? CreateNoMatchingDocumentationFileDiagnostics(TIdentifier identifier)
             {
-                return NoMatchingDocumentationFileDiagnostics.Create(IdentifierDeclarationDelegate(identifier));
+                var declaration = IdentifierDeclarationDelegate(identifier);
+                return DiagnosticConstruction.NoMatchingDocumentationFile(declaration.GetLocation(), declaration.Identifier.Text);
             }
 
             public IncrementalValueProvider<DocumentationDictionary> AttachDocumentationProvider(
@@ -213,7 +194,7 @@ internal static class DocumentationProvider
                 return DocumentationDictionaryProvider.AttachAndReport(Context, additionalTextProvider);
             }
 
-            public void ReportDiagnostics(IncrementalValuesProvider<ResultWithDiagnostics<TOut>> diagnostics)
+            public void ReportDiagnostics(IncrementalValuesProvider<IResultWithDiagnostics<TOut>> diagnostics)
             {
                 Context.ReportDiagnostics(diagnostics);
             }
@@ -222,66 +203,6 @@ internal static class DocumentationProvider
         private static DIdentifierName<TIdentifier> DeclarationNameDelegate(DIdentifierDeclaration<TIdentifier> identifierDeclarationDelegate)
         {
             return (identifier) => DeclarationIdentifier<BaseTypeDeclarationSyntax>().Invoke(identifierDeclarationDelegate(identifier));
-        }
-    }
-
-    private sealed class DocumentationDictionaryProvider
-    {
-        public static IncrementalValueProvider<DocumentationDictionary> AttachWithoutDiagnostics(IncrementalValuesProvider<AdditionalText> additionalTextProvider)
-        {
-            DocumentationDictionaryProvider outputProvider = new(false);
-
-            return Construct(outputProvider, additionalTextProvider).ExtractResult();
-        }
-
-        public static IncrementalValueProvider<DocumentationDictionary> AttachAndReport(IncrementalGeneratorInitializationContext context,
-            IncrementalValuesProvider<AdditionalText> additionalTextProvider)
-        {
-            DocumentationDictionaryProvider outputProvider = new(true);
-
-            var documentationAndDiagnostics = Construct(outputProvider, additionalTextProvider);
-
-            context.ReportDiagnostics(documentationAndDiagnostics);
-            return documentationAndDiagnostics.ExtractResult();
-        }
-
-        private bool ProduceDiagnostics { get; }
-
-        private DocumentationDictionaryProvider(bool produceDiagnostics)
-        {
-            ProduceDiagnostics = produceDiagnostics;
-        }
-
-        private ResultWithDiagnostics<DocumentationDictionary> ConstructDocumentationDictionary(ImmutableArray<AdditionalText> additionalTexts,
-            CancellationToken _)
-        {
-            return DocumentationFileBuilder.Build(additionalTexts, ProduceDiagnostics);
-        }
-
-        private static bool FileHasCorrectExtension(AdditionalText file)
-        {
-            return file.Path.EndsWith(DocumentationExtension, StringComparison.Ordinal);
-        }
-
-        private static IncrementalValueProvider<ResultWithDiagnostics<DocumentationDictionary>> Construct(DocumentationDictionaryProvider documentationProvider,
-            IncrementalValuesProvider<AdditionalText> additionalTextProvider)
-        {
-            return additionalTextProvider.Where(FileHasCorrectExtension).Collect().Select(documentationProvider.ConstructDocumentationDictionary);
-        }
-    }
-
-    private static class DefaultSettingsProvider
-    {
-        public readonly record struct Result(bool GenerateDocumentationByDefault);
-
-        public static IncrementalValueProvider<Result> Attach(IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider)
-        {
-            return AnalyzerConfigKeyValueProvider.Construct(ConstructResult, AnalyzerKey).Attach(optionsProvider);
-        }
-
-        private static Result ConstructResult(string? value)
-        {
-            return new(AnalyzerConfigKeyValueProvider.BooleanTransforms.FalseByDefault(value));
         }
     }
 }

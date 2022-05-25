@@ -1,3 +1,10 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-public readonly record struct GeneratedUnitParsingData(bool ExplicitGenerateDocumentation = false);
+public record class GeneratedUnitParsingData : AAttributeParsingData<GeneratedUnitLocations>
+{
+    internal static GeneratedUnitParsingData Empty { get; } = new();
+
+    public bool ExplicitlySetGenerateDocumentation { get; init; }
+
+    private GeneratedUnitParsingData() : base(GeneratedUnitLocations.Empty) { }
+}

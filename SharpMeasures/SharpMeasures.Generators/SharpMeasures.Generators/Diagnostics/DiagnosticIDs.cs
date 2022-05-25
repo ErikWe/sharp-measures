@@ -11,17 +11,25 @@ public static partial class DiagnosticIDs
 
         public static class Hundreds
         {
-            public const string Misc = "0";
-            public const string Derivable = "1";
-            public const string UnitDefinitions = "2";
-            public const string Documentation = "9";
+            public const string Misc = $"{Thousands.SourceGenerators}0";
+            public const string Units = $"{Thousands.SourceGenerators}1";
+            public const string Quantities = $"{Thousands.SourceGenerators}2";
+            public const string Scalars = $"{Thousands.SourceGenerators}3";
+            public const string Vectors = $"{Thousands.SourceGenerators}4";
+            public const string Documentation = $"{Thousands.SourceGenerators}9";
         }
     }
 
-    private const string Prefix = "Measure";
+    private const string Prefix = "Measures";
 
-    public const string TypeNotPartial = $"{Prefix}{Numbering.Thousands.SourceGenerators}{Numbering.Hundreds.Misc}00";
-    public const string TypeNotScalarQuantity = $"{Prefix}{Numbering.Thousands.SourceGenerators}{Numbering.Hundreds.Misc}01";
-    public const string TypeNotUnbiasedScalarQuantity = $"{Prefix}{Numbering.Thousands.SourceGenerators}{Numbering.Hundreds.Misc}02";
-    public const string TypeNotUnit = $"{Prefix}{Numbering.Thousands.SourceGenerators}{Numbering.Hundreds.Misc}03";
+    public const string TypeNotPartial = $"{Prefix}{Numbering.Hundreds.Misc}00";
+    public const string TypeNotScalar = $"{Prefix}{Numbering.Hundreds.Misc}01";
+    public const string TypeNotVector = $"{Prefix}{Numbering.Hundreds.Misc}02";
+    public const string TypeNotUnit = $"{Prefix}{Numbering.Hundreds.Misc}03";
+    public const string TypeAlreadyDefined = $"{Prefix}{Numbering.Hundreds.Misc}04";
+
+    public const string ScalarNotUnbiased = $"{Prefix}{Numbering.Hundreds.Misc}20";
+    public const string UnitNotSupportingBias = $"{Prefix}{Numbering.Hundreds.Misc}21";
+
+    public const string DuplicateListing = $"{Prefix}{Numbering.Hundreds.Misc}80";
 }

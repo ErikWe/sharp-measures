@@ -1,77 +1,35 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
-public readonly record struct DerivedUnitLocations(Location Attribute, Location AttributeName, Location Name, Location Plural, Location Signature,
-    Location Units, IReadOnlyList<Location> SignatureComponents, IReadOnlyList<Location> UnitComponents)
-    : IUnitLocations
+public record class DerivedUnitLocations : AUnitLocations
 {
-    internal CacheableDerivedUnitLocations ToCacheable() => CacheableDerivedUnitLocations.Construct(this);
+    internal static DerivedUnitLocations Empty { get; } = new();
 
-    internal DerivedUnitLocations LocateBase(AttributeSyntax attribute)
+    public MinimalLocation SignatureCollection { get; init; }
+    public IReadOnlyList<MinimalLocation> SignatureElements { get; init; } = Array.Empty<MinimalLocation>();
+
+    public MinimalLocation UnitsCollection { get; init; }
+    public IReadOnlyList<MinimalLocation> UnitsElements { get; init; } = Array.Empty<MinimalLocation>();
+
+    private DerivedUnitLocations() { }
+
+    public virtual bool Equals(DerivedUnitLocations other)
     {
-        return this with
+        if (other is null)
         {
-            Attribute = attribute.GetLocation(),
-            AttributeName = attribute.Name.GetLocation()
-        };
-    }
-
-    internal DerivedUnitLocations LocateName(AttributeArgumentListSyntax argumentList, int index)
-    {
-        return this with { Name = argumentList.Arguments[index].Expression.GetLocation() };
-    }
-
-    internal DerivedUnitLocations LocatePlural(AttributeArgumentListSyntax argumentList, int index)
-    {
-        return this with { Plural = argumentList.Arguments[index].Expression.GetLocation() };
-    }
-
-    internal DerivedUnitLocations LocateSignature(AttributeArgumentListSyntax argumentList, int index)
-    {
-        if (argumentList.Arguments[index].Expression is not InitializerExpressionSyntax arrayExpression
-            || arrayExpression.IsKind(SyntaxKind.ArrayInitializerExpression))
-        {
-            return this;
+            return false;
         }
 
-        Location[] componentLocations = new Location[arrayExpression.Expressions.Count];
-
-        for (int i = 0; i < componentLocations.Length; i++)
-        {
-            componentLocations[i] = arrayExpression.Expressions[i].GetLocation();
-        }
-
-        return this with
-        {
-            Signature = arrayExpression.GetLocation(),
-            SignatureComponents = componentLocations
-        };
+        return base.Equals(other) && SignatureCollection == other.SignatureCollection && UnitsCollection == other.UnitsCollection
+            && SignatureElements.SequenceEqual(other.SignatureElements) && UnitsElements.SequenceEqual(other.UnitsElements);
     }
 
-    internal DerivedUnitLocations LocateUnits(AttributeArgumentListSyntax argumentList, int index)
+    public override int GetHashCode()
     {
-        if (argumentList.Arguments[index].Expression is not InitializerExpressionSyntax arrayExpression
-            || arrayExpression.IsKind(SyntaxKind.ArrayInitializerExpression))
-        {
-            return this;
-        }
-
-        Location[] componentLocations = new Location[arrayExpression.Expressions.Count];
-
-        for (int i = 0; i < componentLocations.Length; i++)
-        {
-            componentLocations[i] = arrayExpression.Expressions[i].GetLocation();
-        }
-
-        return this with
-        {
-            Units = arrayExpression.GetLocation(),
-            UnitComponents = componentLocations
-        };
+        return base.GetHashCode() ^ (SignatureCollection, UnitsCollection).GetHashCode()
+            ^ SignatureElements.GetSequenceHashCode() ^ UnitsElements.GetSequenceHashCode();
     }
 }

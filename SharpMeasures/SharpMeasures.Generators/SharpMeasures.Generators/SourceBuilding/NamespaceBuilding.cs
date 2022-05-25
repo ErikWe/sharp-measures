@@ -19,7 +19,7 @@ internal static class NamespaceBuilding
 
     public static void AppendNamespace(StringBuilder source, string namespaceName)
     {
-        if (!string.IsNullOrEmpty(namespaceName))
+        if (string.IsNullOrEmpty(namespaceName) is false)
         {
             source.Append($"namespace {namespaceName};{Environment.NewLine}{Environment.NewLine}");
         }

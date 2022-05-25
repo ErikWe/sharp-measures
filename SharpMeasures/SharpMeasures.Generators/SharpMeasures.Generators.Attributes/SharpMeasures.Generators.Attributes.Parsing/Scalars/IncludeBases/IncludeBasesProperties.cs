@@ -2,21 +2,12 @@
 
 using SharpMeasures.Generators.Scalars;
 
-using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 internal static class IncludeBasesProperties
 {
-    public static ReadOnlyCollection<AttributeProperty<IncludeBasesParameters>> AllProperties => Array.AsReadOnly(new[]
+    public static IReadOnlyList<IAttributeProperty<IncludeBasesDefinition>> AllProperties => new IAttributeProperty<IncludeBasesDefinition>[]
     {
-        IncludedBases
-    });
-
-    public static AttributeProperty<IncludeBasesParameters> IncludedBases { get; } = new
-    (
-        name: nameof(IncludeBasesAttribute.IncludedBases),
-        setter: static (parameters, obj) => obj is string[] includedUnits
-            ? parameters with { IncludedBases = Array.AsReadOnly(includedUnits) }
-            : parameters
-    );
+        ItemLists.CommonProperties.ItemNames<IncludeBasesDefinition, IncludeBasesParsingData, IncludeBasesLocations>(nameof(IncludeBasesAttribute.IncludedBases))
+    };
 }

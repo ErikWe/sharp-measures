@@ -23,7 +23,7 @@ internal static class BasesComposer
         bool shouldInclude(string candidate) => ShouldInclude(candidate, data.IncludedBases, data.ExcludedBases);
     }
 
-    private static bool ShouldInclude(string candidate, IncludeBasesParameters? included, ExcludeBasesParameters? excluded)
+    private static bool ShouldInclude(string candidate, IncludeBasesDefinition? included, ExcludeBasesDefinition? excluded)
     {
         if (included is null)
         {

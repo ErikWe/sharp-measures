@@ -1,40 +1,15 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
 using SharpMeasures.Generators.Units;
 
-using System;
-using System.Collections.Generic;
-
-public class DerivableUnitParser : AArgumentParser<DerivableUnitDefinition>
+public static class DerivableUnitParser
 {
-    public static DerivableUnitParser Parser { get; } = new();
+    public static IAttributeParser<DerivableUnitDefinition> Parser { get; } = new AttributeParser();
 
-    protected DerivableUnitParser() : base(DefaultParameters, DerivableUnitProperties.AllProperties) { }
+    private static DerivableUnitDefinition DefaultDefinition() => DerivableUnitDefinition.Empty;
 
-    public override IEnumerable<DerivableUnitDefinition> Parse(INamedTypeSymbol typeSymbol)
+    private class AttributeParser : AAttributeParser<DerivableUnitDefinition, DerivableUnitParsingData, DerivableUnitLocations, DerivableUnitAttribute>
     {
-        if (typeSymbol is null)
-        {
-            throw new ArgumentNullException(nameof(typeSymbol));
-        }
-
-        return Parse<DerivableUnitAttribute>(typeSymbol);
+        public AttributeParser() : base(DefaultDefinition, DerivableUnitProperties.AllProperties) { }
     }
-
-    private protected override DerivableUnitDefinition AddCustomData(DerivableUnitDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax)
-    {
-        return definition with { Locations = definition.Locations.LocateBase(attributeSyntax) };
-    }
-
-    private static DerivableUnitDefinition DefaultParameters() => new
-    (
-        Signature: Array.Empty<INamedTypeSymbol>(),
-        Quantities: Array.Empty<INamedTypeSymbol>(),
-        Expression: string.Empty,
-        Locations: new DerivableUnitLocations(),
-        ParsingData: new DerivableUnitParsingData()
-    );
 }

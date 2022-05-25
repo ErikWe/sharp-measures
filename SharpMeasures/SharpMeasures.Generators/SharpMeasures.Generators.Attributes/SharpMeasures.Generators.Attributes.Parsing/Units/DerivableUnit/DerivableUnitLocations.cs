@@ -1,75 +1,33 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
-public readonly record struct DerivableUnitLocations(Location Attribute, Location AttributeName, Location Expression, Location Signature,
-    IReadOnlyList<Location> SignatureComponents)
+public record class DerivableUnitLocations : AAttributeLocations
 {
-    internal CacheableDerivableUnitLocations ToCacheable() => CacheableDerivableUnitLocations.Construct(this);
+    internal static DerivableUnitLocations Empty { get; } = new();
 
-    internal DerivableUnitLocations LocateBase(AttributeSyntax attribute)
+    public MinimalLocation Expression { get; init; }
+
+    public MinimalLocation SignatureCollection { get; init; }
+    public IReadOnlyList<MinimalLocation> SignatureElements { get; init; } = Array.Empty<MinimalLocation>();
+
+    private DerivableUnitLocations() { }
+
+    public virtual bool Equals(DerivableUnitLocations other)
     {
-        return this with
+        if (other is null)
         {
-            Attribute = attribute.GetLocation(),
-            AttributeName = attribute.Name.GetLocation()
-        };
-    }
-
-    internal DerivableUnitLocations LocateExpression(AttributeArgumentListSyntax argumentList, int index)
-    {
-        return this with { Expression = argumentList.Arguments[index].Expression.GetLocation() };
-    }
-
-    internal DerivableUnitLocations LocateSignature(AttributeArgumentListSyntax argumentList, int index)
-    {
-        if (argumentList.Arguments[index].Expression is InitializerExpressionSyntax initializerExpression)
-        {
-            if (!initializerExpression.IsKind(SyntaxKind.ArrayInitializerExpression))
-            {
-                return this;
-            }
-
-            return LocateSignatureArray(initializerExpression);
+            return false;
         }
 
-        return LocateSignatureParams(argumentList, index);
+        return base.Equals(other) && Expression == other.Expression && SignatureCollection == other.SignatureCollection
+            && SignatureElements.SequenceEqual(other.SignatureElements);
     }
 
-    private DerivableUnitLocations LocateSignatureArray(InitializerExpressionSyntax initializerExpression)
+    public override int GetHashCode()
     {
-        Location[] componentLocations = new Location[initializerExpression.Expressions.Count];
-
-        for (int i = 0; i < componentLocations.Length; i++)
-        {
-            componentLocations[i] = initializerExpression.Expressions[i].GetLocation();
-        }
-
-        return this with
-        {
-            Signature = initializerExpression.GetLocation(),
-            SignatureComponents = componentLocations
-        };
-    }
-
-    private DerivableUnitLocations LocateSignatureParams(AttributeArgumentListSyntax argumentList, int startIndex)
-    {
-        Location[] componentLocations = new Location[argumentList.Arguments.Count - startIndex];
-
-        for (int i = 0; i < componentLocations.Length; i++)
-        {
-            componentLocations[i] = argumentList.Arguments[i].GetLocation();
-        }
-
-        Location firstLocation = argumentList.Arguments[startIndex].GetLocation();
-        Location lastLocation = argumentList.Arguments[argumentList.Arguments.Count - 1].GetLocation();
-
-        Location signatureLocation = firstLocation.ExtendToInclude(lastLocation);
-
-        return this with { Signature = signatureLocation, SignatureComponents = componentLocations };
+        return base.GetHashCode() ^ (Expression, SignatureCollection).GetHashCode() ^ SignatureElements.GetSequenceHashCode();
     }
 }

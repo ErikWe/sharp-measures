@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 internal static class MarkedTypeDeclarationCandidateProvider
@@ -27,6 +28,15 @@ internal static class MarkedTypeDeclarationCandidateProvider
         public abstract IncrementalValuesProvider<TOut> Attach<TAttribute>(SyntaxValueProvider syntaxProvider);
         public abstract IncrementalValuesProvider<TOut> Attach(SyntaxValueProvider syntaxProvider, Type attributeType);
         public abstract IncrementalValuesProvider<TOut> Attach(SyntaxValueProvider syntaxProvider, string attributeName);
+
+        public abstract IncrementalValuesProvider<TOut> AttachAnyOf<TAttribute1, TAttribute2>(SyntaxValueProvider syntaxProvider);
+        public abstract IncrementalValuesProvider<TOut> AttachAnyOf<TAttribute1, TAttribute2, TAttribute3>(SyntaxValueProvider syntaxProvider);
+
+        public abstract IncrementalValuesProvider<TOut> AttachAnyOf(SyntaxValueProvider syntaxProvider, IEnumerable<Type> candidateTypes);
+        public abstract IncrementalValuesProvider<TOut> AttachAnyOf(SyntaxValueProvider syntaxProvider, params Type[] candidateTypes);
+
+        public abstract IncrementalValuesProvider<TOut> AttachAnyOf(SyntaxValueProvider syntaxProvider, IEnumerable<string> candidateNames);
+        public abstract IncrementalValuesProvider<TOut> AttachAnyOf(SyntaxValueProvider syntaxProvider, params string[] candidateNames);
     }
 
     private class Provider<TOut> : IProvider<TOut>
@@ -55,6 +65,46 @@ internal static class MarkedTypeDeclarationCandidateProvider
             return Attach(attributeStrategy, syntaxProvider);
         }
 
+        public IncrementalValuesProvider<TOut> AttachAnyOf<TAttribute1, TAttribute2>(SyntaxValueProvider syntaxProvider)
+        {
+            return AttachAnyOf(syntaxProvider, typeof(TAttribute1), typeof(TAttribute2));
+        }
+
+        public IncrementalValuesProvider<TOut> AttachAnyOf<TAttribute1, TAttribute2, TAttribute3>(SyntaxValueProvider syntaxProvider)
+        {
+            return AttachAnyOf(syntaxProvider, typeof(TAttribute1), typeof(TAttribute2), typeof(TAttribute3));
+        }
+
+        public IncrementalValuesProvider<TOut> AttachAnyOf(SyntaxValueProvider syntaxProvider, IEnumerable<Type> candidateTypes)
+        {
+            return AttachAnyOf(syntaxProvider, candidateNames());
+
+            IEnumerable<string> candidateNames()
+            {
+                foreach (Type candidateType in candidateTypes)
+                {
+                    yield return candidateType.FullName;
+                }
+            }
+        }
+
+        public IncrementalValuesProvider<TOut> AttachAnyOf(SyntaxValueProvider syntaxProvider, params Type[] candidateTypes)
+        {
+            return AttachAnyOf(syntaxProvider, candidateTypes as IEnumerable<Type>);
+        }
+
+        public IncrementalValuesProvider<TOut> AttachAnyOf(SyntaxValueProvider syntaxProvider, IEnumerable<string> candidateNames)
+        {
+            IAttributeSyntaxStrategy attributeStrategy = new AttributeSyntaxFromFirstName(candidateNames);
+
+            return Attach(attributeStrategy, syntaxProvider);
+        }
+
+        public IncrementalValuesProvider<TOut> AttachAnyOf(SyntaxValueProvider syntaxProvider, params string[] candidateNames)
+        {
+            return AttachAnyOf(syntaxProvider, candidateNames as IEnumerable<string>);
+        }
+
         private interface IAttributeSyntaxStrategy
         {
             public abstract AttributeSyntax? GetAttributeSyntax(GeneratorSyntaxContext context, TypeDeclarationSyntax declaration);
@@ -71,7 +121,22 @@ internal static class MarkedTypeDeclarationCandidateProvider
 
             public AttributeSyntax? GetAttributeSyntax(GeneratorSyntaxContext context, TypeDeclarationSyntax declaration)
             {
-                return declaration.GetAttributeWithName(AttributeName, context.SemanticModel);
+                return declaration.GetAttributeWithName(context.SemanticModel, AttributeName);
+            }
+        }
+
+        private class AttributeSyntaxFromFirstName : IAttributeSyntaxStrategy
+        {
+            private IEnumerable<string> CandidateNames { get; }
+
+            public AttributeSyntaxFromFirstName(IEnumerable<string> candidateNames)
+            {
+                CandidateNames = candidateNames;
+            }
+
+            public AttributeSyntax? GetAttributeSyntax(GeneratorSyntaxContext context, TypeDeclarationSyntax declaration)
+            {
+                return declaration.GetFirstAttributeWithName(context.SemanticModel, CandidateNames);
             }
         }
 
@@ -93,7 +158,7 @@ internal static class MarkedTypeDeclarationCandidateProvider
 
         private static bool SyntaxNodeIsTypeDeclarationWithAttributes(SyntaxNode node, CancellationToken _)
         {
-            return node is TypeDeclarationSyntax declaration && !declaration.Identifier.IsMissing && declaration.AttributeLists.Count > 0;
+            return node is TypeDeclarationSyntax declaration &&!declaration.Identifier.IsMissing is false && declaration.AttributeLists.Count > 0;
         }
 
         private static OutputData? CandidateTypeDeclarationElseNull(IAttributeSyntaxStrategy attributeStrategy, GeneratorSyntaxContext context)

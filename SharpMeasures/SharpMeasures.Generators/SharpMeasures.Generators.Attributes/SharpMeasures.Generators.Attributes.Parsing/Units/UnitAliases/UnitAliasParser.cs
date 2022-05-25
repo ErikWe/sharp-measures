@@ -1,39 +1,15 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
 using SharpMeasures.Generators.Units;
 
-using System;
-using System.Collections.Generic;
-
-public class UnitAliasParser : AArgumentParser<UnitAliasDefinition>
+public static class UnitAliasParser
 {
-    public static UnitAliasParser Parser { get; } = new();
+    public static IAttributeParser<UnitAliasDefinition> Parser { get; } = new AttributeParser();
 
-    protected UnitAliasParser() : base(DefaultParameters, UnitAliasProperties.AllProperties) { }
+    private static UnitAliasDefinition DefaultDefinition() => UnitAliasDefinition.Empty;
 
-    public override IEnumerable<UnitAliasDefinition> Parse(INamedTypeSymbol typeSymbol)
+    private class AttributeParser : AUnitParser<UnitAliasDefinition, UnitAliasParsingData, UnitAliasLocations, UnitAliasAttribute>
     {
-        if (typeSymbol is null)
-        {
-            throw new ArgumentNullException(nameof(typeSymbol));
-        }
-
-        return Parse<UnitAliasAttribute>(typeSymbol);
+        public AttributeParser() : base(DefaultDefinition, UnitAliasProperties.AllProperties) { }
     }
-
-    private protected override UnitAliasDefinition AddCustomData(UnitAliasDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax)
-    {
-        return definition with { Locations = definition.Locations.LocateBase(attributeSyntax) };
-    }
-
-    private static UnitAliasDefinition DefaultParameters() => new
-    (
-        Name: string.Empty,
-        Plural: string.Empty,
-        AliasOf: string.Empty,
-        Locations: new UnitAliasLocations()
-    );
 }
