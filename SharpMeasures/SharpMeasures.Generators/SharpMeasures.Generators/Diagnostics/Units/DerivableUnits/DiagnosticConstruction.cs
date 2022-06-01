@@ -9,6 +9,11 @@ internal static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.InvalidUnitDerivationExpression, location, expression);
     }
 
+    public static Diagnostic InvalidUnitDerivationExpression_Null(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.InvalidUnitDerivationExpression_Null, location);
+    }
+
     public static Diagnostic EmptyUnitDerivationSignature(Location? location)
     {
         return Diagnostic.Create(DiagnosticRules.EmptyUnitDerivationSignature, location);

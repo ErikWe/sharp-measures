@@ -12,8 +12,8 @@ internal class GeneratedUnitDiagnostics : IGeneratedUnitDiagnostics
 
     private GeneratedUnitDiagnostics() { }
 
-    public Diagnostic InvalidQuantity(IValidatorContext context, GeneratedUnitDefinition definition)
+    public Diagnostic NullQuantity(IProcessingContext context, RawGeneratedUnitDefinition definition)
     {
-        return DiagnosticConstruction.TypeNotScalar_Null(definition.ParsingData.Locations.Quantity.AsRoslynLocation());
+        return DiagnosticConstruction.TypeNotScalar_Null(definition.Locations.Quantity?.AsRoslynLocation());
     }
 }

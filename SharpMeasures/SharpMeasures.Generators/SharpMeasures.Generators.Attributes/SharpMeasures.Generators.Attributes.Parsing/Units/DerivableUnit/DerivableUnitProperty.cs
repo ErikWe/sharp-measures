@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-internal record class DerivableUnitProperty<TPropertyType> : AttributeProperty<DerivableUnitDefinition, DerivableUnitParsingData, DerivableUnitLocations, TPropertyType>
+internal record class DerivableUnitProperty<TPropertyType> : AttributeProperty<RawDerivableUnitDefinition, DerivableUnitLocations, TPropertyType>
 {
     public DerivableUnitProperty(string name, string parameterName, DTypeSetter setter, DSingleLocationSetter locator) : base(name, parameterName, setter, locator) { }
     public DerivableUnitProperty(string name, DTypeSetter setter, DSingleLocationSetter locator) : base(name, setter, locator) { }

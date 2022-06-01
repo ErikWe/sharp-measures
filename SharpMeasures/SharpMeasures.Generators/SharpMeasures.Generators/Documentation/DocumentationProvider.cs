@@ -108,12 +108,12 @@ internal static class DocumentationProvider
 
             if (dictionary.TryGetValue(IdentifierNameDelegate(inputData.Identifier), out DocumentationFile documentationFile))
             {
-                return ResultWithDiagnostics.WithoutDiagnostics(OutputTransform(input, documentationFile));
+                return ResultWithDiagnostics.Construct(OutputTransform(input, documentationFile));
             }
 
             if (diagnosticsStrategy.CreateNoMatchingDocumentationFileDiagnostics(inputData.Identifier) is not Diagnostic diagnostics)
             {
-                return ResultWithDiagnostics.WithoutDiagnostics(OutputTransform(input, DocumentationFile.Empty));
+                return ResultWithDiagnostics.Construct(OutputTransform(input, DocumentationFile.Empty));
             }
 
             return ResultWithDiagnostics.Construct(OutputTransform(input, DocumentationFile.Empty), diagnostics);

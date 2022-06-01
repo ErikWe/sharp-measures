@@ -2,9 +2,11 @@ namespace SharpMeasures.Generators.Attributes.Parsing.Quantities;
 
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 
-public record class IncludeUnitsDefinition : AItemListDefinition<IncludeUnitsParsingData, IncludeUnitsLocations>
-{
-    internal static IncludeUnitsDefinition Empty => new();
+using System.Collections.Generic;
 
-    private IncludeUnitsDefinition() : base(IncludeUnitsParsingData.Empty) { }
+public record class IncludeUnitsDefinition : AItemListDefinition<string, IncludeUnitsLocations>
+{
+    public IReadOnlyList<string> IncludedUnits => Items;
+
+    public IncludeUnitsDefinition(IReadOnlyList<string> includedUnits, IncludeUnitsLocations locations) : base(includedUnits, locations) { }
 }

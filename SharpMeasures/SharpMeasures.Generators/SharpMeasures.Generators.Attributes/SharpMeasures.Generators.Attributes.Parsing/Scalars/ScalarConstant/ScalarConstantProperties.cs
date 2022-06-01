@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 internal static class ScalarConstantProperties
 {
-    public static IReadOnlyList<IAttributeProperty<ScalarConstantDefinition>> AllProperties => new IAttributeProperty<ScalarConstantDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawScalarConstantDefinition>> AllProperties => new IAttributeProperty<RawScalarConstantDefinition>[]
     {
         Name,
         Value,

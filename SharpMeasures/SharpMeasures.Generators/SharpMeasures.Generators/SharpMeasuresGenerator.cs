@@ -4,12 +4,11 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.AnalyzerConfig;
 using SharpMeasures.Generators.Documentation;
-using SharpMeasures.Generators.Parsing.Scalars;
-using SharpMeasures.Generators.Parsing.Units;
-using SharpMeasures.Generators.Parsing.Vectors;
+using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators.Scalars.Parsing;
 using SharpMeasures.Generators.Units;
-
-using System.Threading;
+using SharpMeasures.Generators.Units.Parsing;
+using SharpMeasures.Generators.Vectors.Parsing;
 
 [Generator]
 public class SharpMeasuresGenerator : IIncrementalGenerator
@@ -23,15 +22,10 @@ public class SharpMeasuresGenerator : IIncrementalGenerator
         var scalarParsingResult = ScalarParsingStage.Attach(context);
         var vectorParsingResult = VectorParsingStage.Attach(context);
 
-        var population = unitParsingResult.UnitPopulationProvider.Combine(scalarParsingResult.ScalarPopulationProvider)
-            .Combine(vectorParsingResult.VectorPopulationProvider).Select(CombinePopulations);
+        UnitGenerator.Attach(context, unitParsingResult.UnitProvider, unitParsingResult.UnitPopulationProvider,
+            scalarParsingResult.ScalarPopulationProvider, globalAnalyzerConfig, documentationDictionary);
 
-        UnitGenerator.Attach(context, unitParsingResult.ParsedUnitProvider, scalarParsingResult.ScalarPopulationProvider, globalAnalyzerConfig, documentationDictionary);
-    }
-
-    private static SharpMeasuresPopulation CombinePopulations
-        (((NamedTypePopulation<UnitInterface>, NamedTypePopulation<ScalarInterface>), NamedTypePopulation<VectorInterface>) populations, CancellationToken _)
-    {
-        return new(populations.Item1.Item1, populations.Item1.Item2, populations.Item2);
+        ScalarQuantityGenerator.Attach(context, scalarParsingResult.ScalarProvider, unitParsingResult.UnitPopulationProvider,
+            scalarParsingResult.ScalarPopulationProvider, vectorParsingResult.VectorPopulationProvider, globalAnalyzerConfig, documentationDictionary);
     }
 }

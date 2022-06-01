@@ -3,11 +3,15 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.AnalyzerConfig;
-using SharpMeasures.Generators.Documentation;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Parsing.Scalars;
+using SharpMeasures.Generators.Documentation;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units.Parsing;
-using SharpMeasures.Generators.Units.Validation;
+using SharpMeasures.Generators.Units.Pipelines.Comparable;
+using SharpMeasures.Generators.Units.Pipelines.Derivable;
+using SharpMeasures.Generators.Units.Pipelines.Misc;
+using SharpMeasures.Generators.Units.Pipelines.UnitDefinitions;
+using SharpMeasures.Generators.Units.Processing;
 
 using System.Threading;
 
@@ -19,30 +23,35 @@ internal static class UnitGenerator
     {
         var defaultGenerateDocumentation = globalAnalyzerConfig.Select(ExtractDefaultGenerateDocumentation);
 
-        var populations = unitPopulation.Combine(scalarPopulation);
+        var minimized = units.Combine(unitPopulation, scalarPopulation).Select(ReduceToDataModel).ReportDiagnostics(context)
+            .Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionary).Flatten()
+            .Select(AppendDocumentationFile).ReportDiagnostics(context);
 
-        var minimized = units.Combine(populations).Select(ValidateAndReduceToDataModel).ReportDiagnostics(context).Combine(defaultGenerateDocumentation)
-            .Select(InterpretGenerateDocumentation).Combine(documentationDictionary).Select(AppendDocumentationFile).ReportDiagnostics(context);
+        ComparableGenerator.Initialize(context, minimized);
+        DerivableUnitGenerator.Initialize(context, minimized);
+        MiscGenerator.Initialize(context, minimized);
+        UnitDefinitionsGenerator.Initialize(context, minimized);
     }
 
-    private static IOptionalWithDiagnostics<DataModel> ValidateAndReduceToDataModel
-        ((ParsedUnit Unit, (NamedTypePopulation<UnitInterface> Unit, NamedTypePopulation<ScalarInterface> Scalar) Populations) data, CancellationToken _)
+    private static IOptionalWithDiagnostics<DataModel> ReduceToDataModel
+        ((ParsedUnit Unit, NamedTypePopulation<UnitInterface> UnitPopulation, NamedTypePopulation<ScalarInterface> ScalarPopulation) input, CancellationToken _)
     {
-        GeneratedUnitValidatorContext context = new(data.Unit.UnitType, data.Populations.Scalar);
+        GeneratedUnitProcessingContext context = new(input.Unit.UnitType, input.ScalarPopulation);
+        var processedGeneratedUnit = GeneratedUnitProcesser.Instance.Process(context, input.Unit.UnitDefinition);
 
-        if (ExternalGeneratedUnitValidator.Instance.CheckValidity(context, data.Unit.UnitDefinition) is IValidityWithDiagnostics { IsInvalid: true } invalid)
+        if (processedGeneratedUnit.LacksResult)
         {
-            return OptionalWithDiagnostics.Empty<DataModel>(invalid.Diagnostics);
+            return OptionalWithDiagnostics.Empty<DataModel>(processedGeneratedUnit.Diagnostics);
         }
 
-        var quantity = data.Populations.Scalar.Population[data.Unit.UnitDefinition.Quantity];
+        DataModel model = new(input.Unit, processedGeneratedUnit.Result.Quantity, input.UnitPopulation);
 
-        return OptionalWithDiagnostics.Result(new DataModel(data.Unit, quantity, data.Populations.Unit));
+        return OptionalWithDiagnostics.Result(model, processedGeneratedUnit.Diagnostics);
     }
 
     private static (DataModel Model, bool GenerateDocumentation) InterpretGenerateDocumentation((DataModel Model, bool Default) data, CancellationToken _)
     {
-        if (data.Model.Unit.UnitDefinition.ParsingData.ExplicitlySetGenerateDocumentation)
+        if (data.Model.Unit.UnitDefinition.Locations.ExplicitlySetGenerateDocumentation)
         {
             return (data.Model, data.Model.Unit.UnitDefinition.GenerateDocumentation);
         }
@@ -51,23 +60,23 @@ internal static class UnitGenerator
     }
 
     private static IResultWithDiagnostics<DataModel> AppendDocumentationFile
-        (((DataModel Model, bool GenerateDocumentation) State, DocumentationDictionary DocumentationDictionary) data, CancellationToken _)
+        ((DataModel Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
     {
-        if (data.State.GenerateDocumentation)
+        if (input.GenerateDocumentation)
         {
-            if (data.DocumentationDictionary.TryGetValue(data.State.Model.Unit.UnitType.Name, out DocumentationFile documentationFile))
+            if (input.DocumentationDictionary.TryGetValue(input.Model.Unit.UnitType.Name, out DocumentationFile documentationFile))
             {
-                DataModel modifiedModel = data.State.Model with { Documentation = documentationFile };
-                return ResultWithDiagnostics.WithoutDiagnostics(modifiedModel);
+                DataModel modifiedModel = input.Model with { Documentation = documentationFile };
+                return ResultWithDiagnostics.Construct(modifiedModel);
             }
 
-            Diagnostic diagnostics = DiagnosticConstruction.NoMatchingDocumentationFile(data.State.Model.Unit.UnitLocation.AsRoslynLocation(),
-                data.State.Model.Unit.UnitType.Name);
+            Diagnostic diagnostics = DiagnosticConstruction.NoMatchingDocumentationFile(input.Model.Unit.UnitLocation.AsRoslynLocation(),
+                input.Model.Unit.UnitType.Name);
 
-            return ResultWithDiagnostics.Construct(data.State.Model, diagnostics);
+            return ResultWithDiagnostics.Construct(input.Model, diagnostics);
         }
 
-        return ResultWithDiagnostics.WithoutDiagnostics(data.State.Model);
+        return ResultWithDiagnostics.Construct(input.Model);
     }
 
     private static bool ExtractDefaultGenerateDocumentation(GlobalAnalyzerConfig config, CancellationToken _) => config.GenerateDocumentationByDefault;

@@ -11,6 +11,21 @@ internal static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.InvalidUnitName, location, unitName);
     }
 
+    public static Diagnostic InvalidUnitName_Null(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.InvalidUnitName_Null, location);
+    }
+
+    public static Diagnostic InvalidUnitPluralForm(Location? location, string pluralCode, string singularForm)
+    {
+        return Diagnostic.Create(DiagnosticRules.InvalidUnitPluralForm, location, pluralCode, singularForm);
+    }
+
+    public static Diagnostic InvalidUnitPluralForm_Null(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.InvalidUnitPluralForm_Null, location);
+    }
+
     public static Diagnostic DuplicateUnitName(Location? location, string unitName, string unitTypeName)
     {
         return Diagnostic.Create(DiagnosticRules.DuplicateUnitName, location, unitTypeName, unitName);
@@ -26,9 +41,9 @@ internal static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.UnrecognizedUnitName, location, unitName, unitTypeName);
     }
 
-    public static Diagnostic InvalidUnitPluralForm(Location? location, string pluralCode, string singularForm)
+    public static Diagnostic UnrecognizedUnitName_Null(Location? location, string unitTypeName)
     {
-        return Diagnostic.Create(DiagnosticRules.InvalidUnitPluralForm, location, pluralCode, singularForm);
+        return Diagnostic.Create(DiagnosticRules.UnrecognizedUnitName_Null, location, unitTypeName);
     }
 
     public static Diagnostic CyclicDependency(Location? location, string unitName, string unitTypeName)

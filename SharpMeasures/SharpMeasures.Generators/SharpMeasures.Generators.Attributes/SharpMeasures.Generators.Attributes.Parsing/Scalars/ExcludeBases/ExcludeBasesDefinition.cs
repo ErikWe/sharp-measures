@@ -2,9 +2,11 @@ namespace SharpMeasures.Generators.Attributes.Parsing.Scalars;
 
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 
-public record class ExcludeBasesDefinition : AItemListDefinition<ExcludeBasesParsingData, ExcludeBasesLocations>
-{
-    internal static ExcludeBasesDefinition Empty => new();
+using System.Collections.Generic;
 
-    private ExcludeBasesDefinition() : base(ExcludeBasesParsingData.Empty) { }
+public record class ExcludeBasesDefinition : AItemListDefinition<string, ExcludeBasesLocations>
+{
+    public IReadOnlyList<string> ExcludedBases => Items;
+
+    public ExcludeBasesDefinition(IReadOnlyList<string> excludedBases, ExcludeBasesLocations locations) : base(excludedBases, locations) { }
 }

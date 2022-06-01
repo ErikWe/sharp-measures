@@ -8,9 +8,9 @@ using SharpMeasures.Generators.Attributes.Parsing.Utility;
 using System;
 using System.Collections.Generic;
 
-internal abstract class AUnitParser<TDefinition, TParsingData, TLocations, TAttribute> : AAttributeParser<TDefinition, TParsingData, TLocations, TAttribute>
-    where TDefinition : AUnitDefinition<TParsingData, TLocations>
-    where TParsingData : AUnitParsingData<TLocations>
+internal abstract class AUnitParser<TDefinition, TParsingData, TLocations, TAttribute> : AAttributeParser<TDefinition, TLocations, TAttribute>
+    where TDefinition : ARawUnitDefinition<TParsingData, TLocations>
+    where TParsingData : AUnitParsingData
     where TLocations : AUnitLocations
 {
     protected AUnitParser(Func<TDefinition> defaultValueConstructor, IReadOnlyDictionary<string, IAttributeProperty<TDefinition>> constructorParameters,
@@ -22,6 +22,11 @@ internal abstract class AUnitParser<TDefinition, TParsingData, TLocations, TAttr
 
     protected override TDefinition AddCustomData(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax)
     {
+        if (definition.Name is null || definition.Plural is null)
+        {
+            return definition;
+        }
+
         var modifiedParsingData = definition.ParsingData with { InterpretedPlural = SimpleTextExpression.Interpret(definition.Name, definition.Plural) };
         definition = definition with { ParsingData = modifiedParsingData };
 

@@ -6,8 +6,8 @@ using System.Collections.Generic;
 
 internal static class IncludeUnitsProperties
 {
-    public static IReadOnlyList<IAttributeProperty<IncludeUnitsDefinition>> AllProperties => new IAttributeProperty<IncludeUnitsDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawIncludeUnitsDefinition>> AllProperties => new IAttributeProperty<RawIncludeUnitsDefinition>[]
     {
-        ItemLists.CommonProperties.ItemNames<IncludeUnitsDefinition, IncludeUnitsParsingData, IncludeUnitsLocations>(nameof(IncludeUnitsAttribute.IncludedUnits))
+        ItemLists.CommonProperties.Items<string?, RawIncludeUnitsDefinition, IncludeUnitsLocations>(nameof(IncludeUnitsAttribute.IncludedUnits))
     };
 }

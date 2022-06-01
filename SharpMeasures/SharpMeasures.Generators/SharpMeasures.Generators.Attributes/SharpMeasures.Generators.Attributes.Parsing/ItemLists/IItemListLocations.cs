@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public interface IItemListLocations : IAttributeLocations
 {
-    public abstract MinimalLocation ItemNamesCollection { get; }
-    public abstract IReadOnlyList<MinimalLocation> ItemNamesElements { get; }
+    public abstract MinimalLocation? ItemsCollection { get; }
+    public abstract IReadOnlyList<MinimalLocation> ItemsElements { get; }
+
+    public abstract bool ExplicitlySetItems { get; }
 }

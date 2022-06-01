@@ -63,9 +63,19 @@ internal static partial class DiagnosticConstruction
     public static Diagnostic TypeAlreadyDefined_AsVector_Unit(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "unit", "vector");
     public static Diagnostic TypeAlreadyDefined_AsVector_Scalar(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "scalar", "vector");
 
+    public static Diagnostic ScalarNotUnbiased_UnitDefinition(Location? location, string scalarName)
+    {
+        return Diagnostic.Create(DiagnosticRules.ScalarNotUnbiased_UnitDefinition, location, scalarName);
+    }
+
     public static Diagnostic ScalarNotUnbiased(Location? location, string scalarName)
     {
         return Diagnostic.Create(DiagnosticRules.ScalarNotUnbiased, location, scalarName);
+    }
+
+    public static Diagnostic ScalarNotBiased(Location? location, string scalarName)
+    {
+        return Diagnostic.Create(DiagnosticRules.ScalarNotBiased, location, scalarName);
     }
 
     public static Diagnostic UnitNotSupportingBias(Location? location, string unitName)
@@ -73,12 +83,19 @@ internal static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.UnitNotSupportingBias, location, unitName);
     }
 
+    public static Diagnostic EmptyList(Location? location, string objectType)
+    {
+        return Diagnostic.Create(DiagnosticRules.EmptyList, location, objectType);
+    }
+
+    public static Diagnostic EmptyList_Unit(Location? location) => EmptyList(location, "unit");
+    public static Diagnostic EmptyList_Quantity(Location? location) => EmptyList(location, "quantity");
+
     public static Diagnostic DuplicateListing(Location? location, string objectType, string objectName)
     {
         return Diagnostic.Create(DiagnosticRules.DuplicateListing, location, objectType, objectName);
     }
 
     public static Diagnostic DuplicateListing_Unit(Location? location, string unitName) => DuplicateListing(location, "unit", unitName);
-    public static Diagnostic DuplicateListing_Scalar(Location? location, string scalarName) => DuplicateListing(location, "scalar", scalarName);
-    public static Diagnostic DuplicateListing_Vector(Location? location, string vectorName) => DuplicateListing(location, "vector", vectorName);
+    public static Diagnostic DuplicateListing_Quantity(Location? location, string quantityName) => DuplicateListing(location, "quantity", quantityName);
 }

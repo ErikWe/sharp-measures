@@ -7,7 +7,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Attributes.Parsing.Units;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Providers;
-using SharpMeasures.Generators.Parsing.Units.Diagnostics;
+using SharpMeasures.Generators.Units.Parsing.Diagnostics;
 using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ using System.Linq;
 
 internal static class UnitParsingStage
 {
-    public readonly record struct Output(IncrementalValuesProvider<ParsedUnit> ParsedUnitProvider,
+    public readonly record struct Output(IncrementalValuesProvider<ParsedUnit> UnitProvider,
         IncrementalValueProvider<NamedTypePopulation<UnitInterface>> UnitPopulationProvider);
 
     public static Output Attach(IncrementalGeneratorInitializationContext context)
@@ -26,25 +26,25 @@ internal static class UnitParsingStage
         var partialDeclarations = PartialDeclarationProvider.Construct<TypeDeclarationSyntax>().AttachAndReport<GeneratedUnitAttribute>(context, declarations);
         var symbols = DeclarationSymbolProvider.ConstructForValueType(ConstructIntermediateResult).Attach(partialDeclarations, context.CompilationProvider);
 
-        var parsed = symbols.Select(ExtractUnitInformation).ReportDiagnostics(context).Select(FitUnitInformation).ReportDiagnostics(context);
+        var parsed = symbols.Select(ExtractUnitInformation).ReportDiagnostics(context).Select(ProcessUnitInformation).ReportDiagnostics(context);
         var population = parsed.Select(ConstructInterface).Collect().Select(CreatePopulation);
 
         return new(parsed, population);
     }
 
-    private static IOptionalWithDiagnostics<ParsedUnit> ExtractUnitInformation(IntermediateResult input, CancellationToken _)
+    private static IOptionalWithDiagnostics<RawParsedUnit> ExtractUnitInformation(IntermediateResult input, CancellationToken _)
     {
-        if (GeneratedUnitParser.Parser.ParseFirstOccurrence(input.TypeSymbol) is not GeneratedUnitDefinition generatedUnit)
+        if (GeneratedUnitParser.Parser.ParseFirstOccurrence(input.TypeSymbol) is not RawGeneratedUnitDefinition generatedUnit)
         {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<ParsedUnit>();
+            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<RawParsedUnit>();
         }
 
-        ValidatorContext context = new(input.TypeSymbol.AsDefinedType());
-        var unitValidity = Validators.GeneratedUnitValidator.CheckValidity(context, generatedUnit);
+        ProcessingContext context = new(input.TypeSymbol.AsDefinedType());
+        var processedUnit = Processers.GeneratedUnitProcesser.Process(context, generatedUnit);
 
-        if (unitValidity.IsInvalid)
+        if (processedUnit.LacksResult)
         {
-            return OptionalWithDiagnostics.Empty<ParsedUnit>(unitValidity);
+            return OptionalWithDiagnostics.Empty<RawParsedUnit>(processedUnit);
         }
 
         var definedType = input.TypeSymbol.AsDefinedType();
@@ -59,45 +59,47 @@ internal static class UnitParsingStage
         var prefixedUnitDefinitions = PrefixedUnitParser.Parser.ParseAllOccurrences(input.TypeSymbol);
         var scaledUnitDefinitions = ScaledUnitParser.Parser.ParseAllOccurrences(input.TypeSymbol);
 
-        ParsedUnit result = new(definedType, typeLocation, generatedUnit, derivableUnitDefinitions, unitAliasDefinitions, derivedUnitDefinitions, fixedUnitDefinitions,
-            offsetUnitDefinitions, prefixedUnitDefinitions, scaledUnitDefinitions);
+        RawParsedUnit result = new(definedType, typeLocation, processedUnit.Result, derivableUnitDefinitions, unitAliasDefinitions, derivedUnitDefinitions,
+            fixedUnitDefinitions, offsetUnitDefinitions, prefixedUnitDefinitions, scaledUnitDefinitions);
 
-        return OptionalWithDiagnostics.Result(result, unitValidity.Diagnostics);
+        return OptionalWithDiagnostics.Result(result, processedUnit.Diagnostics);
     }
 
-    private static IResultWithDiagnostics<ParsedUnit> FitUnitInformation(ParsedUnit input, CancellationToken _)
+    private static IResultWithDiagnostics<ParsedUnit> ProcessUnitInformation(RawParsedUnit input, CancellationToken _)
     {
-        ValidatorContext context = new(input.UnitType);
+        ProcessingContext context = new(input.UnitType);
 
-        foreach (IUnitDefinition unitDefinition in input.GetUnitList())
+        foreach (IRawUnitDefinition unitDefinition in input.GetUnitList())
         {
-            context.AvailableUnitDependencies.Add(unitDefinition.Name);
+            context.AvailableUnitDependencies.Add(unitDefinition.Name!);
         }
 
-        var filteredDerivableUnitDefinitions = ValidityFilter.Create(Validators.DerivableUnitValidator).Filter(context, input.DerivableUnitDefinitions);
+        var derivableUnitDefinitions = ProcessingFilter.Create(Processers.DerivableUnitProcesser).Filter(context, input.DerivableUnitDefinitions);
 
-        var filteredUnitAliasDefinitions = ValidityFilter.Create(Validators.UnitAliasValidator).Filter(context, input.UnitAliasDefinitions);
-        var filteredDerivedUnitDefinitions = ValidityFilter.Create(Validators.DerivedUnitValidator).Filter(context, input.DerivedUnitDefinitions);
-        var filteredFixedUnitDefinitions = ValidityFilter.Create(Validators.FixedUnitValidator).Filter(context, input.FixedUnitDefinitions);
-        var filteredOffsetUnitDefinitions = ValidityFilter.Create(Validators.OffsetUnitValidator).Filter(context, input.OffsetUnitDefinitions);
-        var filteredPrefixedUnitDefinitions = ValidityFilter.Create(Validators.PrefixedUnitValidator).Filter(context, input.PrefixedUnitDefinitions);
-        var filteredScaledUnitDefinitions = ValidityFilter.Create(Validators.ScaledUnitValidator).Filter(context, input.ScaledUnitDefinitions);
+        var unitAliasDefinitions = ProcessingFilter.Create(Processers.UnitAliasProcesser).Filter(context, input.UnitAliasDefinitions);
+        var derivedUnitDefinitions = ProcessingFilter.Create(Processers.DerivedUnitProcesser).Filter(context, input.DerivedUnitDefinitions);
+        var fixedUnitDefinitions = ProcessingFilter.Create(Processers.FixedUnitProcesser).Filter(context, input.FixedUnitDefinitions);
+        var offsetUnitDefinitions = ProcessingFilter.Create(Processers.OffsetUnitProcesser).Filter(context, input.OffsetUnitDefinitions);
+        var prefixedUnitDefinitions = ProcessingFilter.Create(Processers.PrefixedUnitProcesser).Filter(context, input.PrefixedUnitDefinitions);
+        var scaledUnitDefinitions = ProcessingFilter.Create(Processers.ScaledUnitProcesser).Filter(context, input.ScaledUnitDefinitions);
 
-        var allDiagnostics = filteredDerivableUnitDefinitions.Diagnostics.Concat(filteredUnitAliasDefinitions.Diagnostics).Concat(filteredDerivedUnitDefinitions.Diagnostics)
-            .Concat(filteredFixedUnitDefinitions.Diagnostics).Concat(filteredOffsetUnitDefinitions.Diagnostics).Concat(filteredPrefixedUnitDefinitions.Diagnostics)
-            .Concat(filteredScaledUnitDefinitions.Diagnostics);
+        var allDiagnostics = derivableUnitDefinitions.Diagnostics.Concat(unitAliasDefinitions.Diagnostics)
+            .Concat(derivedUnitDefinitions.Diagnostics).Concat(fixedUnitDefinitions.Diagnostics).Concat(offsetUnitDefinitions.Diagnostics)
+            .Concat(prefixedUnitDefinitions.Diagnostics).Concat(scaledUnitDefinitions.Diagnostics);
 
-        ParsedUnit filteredResult = new(input.UnitType, input.UnitLocation, input.UnitDefinition, filteredDerivableUnitDefinitions.Result, filteredUnitAliasDefinitions.Result,
-            filteredDerivedUnitDefinitions.Result, filteredFixedUnitDefinitions.Result, filteredOffsetUnitDefinitions.Result, filteredPrefixedUnitDefinitions.Result,
-            filteredScaledUnitDefinitions.Result);
+        ParsedUnit processedResult = new(input.UnitType, input.UnitLocation, input.UnitDefinition, derivableUnitDefinitions.Result,
+            unitAliasDefinitions.Result, derivedUnitDefinitions.Result, fixedUnitDefinitions.Result, offsetUnitDefinitions.Result,
+            prefixedUnitDefinitions.Result, scaledUnitDefinitions.Result);
 
-        return ResultWithDiagnostics.Construct(filteredResult, allDiagnostics);
+        return ResultWithDiagnostics.Construct(processedResult, allDiagnostics);
     }
 
     private static UnitInterface ConstructInterface(ParsedUnit unit, CancellationToken _)
     {
-        HashSet<UnitName> allUnits = new(unit.GetUnitList().Select(static (unit) => new UnitName(unit.Name, unit.ParsingData.InterpretedPlural)));
-        return new(unit.UnitType.AsNamedType(), unit.UnitDefinition.Quantity, unit.UnitDefinition.AllowBias, allUnits);
+        Dictionary<string, UnitInstance> allUnits = unit.GetUnitList()
+            .ToDictionary(static (unit) => unit.Name!, static (unit) => new UnitInstance(unit.Name, unit.Plural));
+
+        return new(unit.UnitType, unit.UnitDefinition.Quantity, unit.UnitDefinition.SupportsBiasedQuantities, allUnits);
     }
 
     private static DeclarationSymbolProvider.DOutputTransform<TypeDeclarationSyntax, IntermediateResult> ConstructIntermediateResult
@@ -105,39 +107,39 @@ internal static class UnitParsingStage
 
     private static NamedTypePopulation<UnitInterface> CreatePopulation(ImmutableArray<UnitInterface> units, CancellationToken _)
     {
-        return new(units, static (unit) => unit.UnitType);
+        return new(units, static (unit) => unit.UnitType.AsNamedType());
     }
 
-    private readonly record struct ValidatorContext : IDependantUnitValidatorContext, IDerivableUnitValidatorContext, IDerivedUnitValidatorContext
+    private readonly record struct ProcessingContext : IDependantUnitProcessingContext, IDerivableUnitProcessingContext, IDerivedUnitProcessingContext
     {
         public DefinedType Type { get; }
 
         public HashSet<DerivableSignature> ReservedSignatures { get; } = new();
-        HashSet<DerivableSignature> IDerivedUnitValidatorContext.AvailableSignatures => ReservedSignatures;
+        HashSet<DerivableSignature> IDerivedUnitProcessingContext.AvailableSignatures => ReservedSignatures;
 
         public HashSet<string> AvailableUnitDependencies { get; } = new();
 
         public HashSet<string> ReservedUnits { get; } = new();
         public HashSet<string> ReservedUnitPlurals { get; } = new();
 
-        public ValidatorContext(DefinedType type)
+        public ProcessingContext(DefinedType type)
         {
             Type = type;
         }
     }
 
-    private static class Validators
+    private static class Processers
     {
-        public static GeneratedUnitValidator GeneratedUnitValidator { get; } = new(GeneratedUnitDiagnostics.Instance);
+        public static GeneratedUnitProcesser GeneratedUnitProcesser { get; } = new(GeneratedUnitDiagnostics.Instance);
 
-        public static DerivableUnitValidator DerivableUnitValidator { get; } = new(DerivableUnitDiagnostics.Instance);
+        public static DerivableUnitProcesser DerivableUnitProcesser { get; } = new(DerivableUnitDiagnostics.Instance);
 
-        public static UnitAliasValidator UnitAliasValidator { get; } = new(UnitAliasDiagnostics.Instance);
-        public static DerivedUnitValidator DerivedUnitValidator { get; } = new(DerivedUnitDiagnostics.Instance);
-        public static FixedUnitValidator FixedUnitValidator { get; } = new(FixedUnitDiagnostics.Instance);
-        public static OffsetUnitValidator OffsetUnitValidator { get; } = new(OffsetUnitDiagnostics.Instance);
-        public static PrefixedUnitValidator PrefixedUnitValidator { get; } = new(PrefixedUnitDiagnostics.Instance);
-        public static ScaledUnitValidator ScaledUnitValidator { get; } = new(ScaledUnitDiagnostics.Instance);
+        public static UnitAliasProcesser UnitAliasProcesser { get; } = new(UnitAliasDiagnostics.Instance);
+        public static DerivedUnitProcesser DerivedUnitProcesser { get; } = new(DerivedUnitDiagnostics.Instance);
+        public static FixedUnitProcesser FixedUnitProcesser { get; } = new(FixedUnitDiagnostics.Instance);
+        public static OffsetUnitProcesser OffsetUnitProcesser { get; } = new(OffsetUnitDiagnostics.Instance);
+        public static PrefixedUnitProcesser PrefixedUnitProcesser { get; } = new(PrefixedUnitDiagnostics.Instance);
+        public static ScaledUnitProcesser ScaledUnitProcesser { get; } = new(ScaledUnitDiagnostics.Instance);
     }
 
     private readonly record struct IntermediateResult(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol);

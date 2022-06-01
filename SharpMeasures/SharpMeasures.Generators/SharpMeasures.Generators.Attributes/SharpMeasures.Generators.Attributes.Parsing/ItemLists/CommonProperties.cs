@@ -1,20 +1,47 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 
+using System;
+
 internal static class CommonProperties
 {
-    public static IAttributeProperty<TDefinition> ItemNames<TDefinition, TParsingData, TLocations>(string name)
-        where TDefinition : AItemListDefinition<TParsingData, TLocations>
-        where TParsingData : AItemListParsingData<TLocations>
+    public static IAttributeProperty<TDefinition> Items<TItem, TDefinition, TLocations>(string name)
+        where TDefinition : ARawItemListDefinition<TItem, TLocations>
         where TLocations : AItemListLocations
     {
-        return new AttributeProperty<TDefinition, TParsingData, TLocations, string[]>
+        return new AttributeProperty<TDefinition, TLocations, TItem[]>
         (
             name: name,
-            setter: static (definition, itemNames) => definition with { ItemNames = itemNames },
+            setter: static (definition, items) => definition with { Items = items },
             locator: static (locations, collectionLocation, elementLocations) => locations with
             {
-                ItemNamesCollection = collectionLocation,
-                ItemNamesElements = elementLocations
+                ItemsCollection = collectionLocation,
+                ItemsElements = elementLocations
+            }
+        );
+    }
+
+    public static IAttributeProperty<TDefinition> Items<TRawItem, TItem, TDefinition, TLocations>(string name, Func<TRawItem, TItem> transform)
+        where TDefinition : ARawItemListDefinition<TItem, TLocations>
+        where TLocations : AItemListLocations
+    {
+        return new AttributeProperty<TDefinition, TLocations, TRawItem[]>
+        (
+            name: name,
+            setter: (definition, items) =>
+            {
+                TItem[] transformedItems = new TItem[items.Length];
+
+                for (int i = 0; i < transformedItems.Length; i++)
+                {
+                    transformedItems[i] = transform(items[i]);
+                }
+
+                return definition with { Items = transformedItems };
+            },
+            locator: static (locations, collectionLocation, elementLocations) => locations with
+            {
+                ItemsCollection = collectionLocation,
+                ItemsElements = elementLocations
             }
         );
     }

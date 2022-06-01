@@ -8,9 +8,9 @@ public record class DerivableUnitLocations : AAttributeLocations
 {
     internal static DerivableUnitLocations Empty { get; } = new();
 
-    public MinimalLocation Expression { get; init; }
+    public MinimalLocation? Expression { get; init; }
 
-    public MinimalLocation SignatureCollection { get; init; }
+    public MinimalLocation? SignatureCollection { get; init; }
     public IReadOnlyList<MinimalLocation> SignatureElements { get; init; } = Array.Empty<MinimalLocation>();
 
     private DerivableUnitLocations() { }

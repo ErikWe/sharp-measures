@@ -10,30 +10,30 @@ public static partial class RoslynUtilityExtensions
     public static NamedType AsNamedType(this INamedTypeSymbol typeSymbol) => NamedType.FromSymbol(typeSymbol);
     public static DefinedType AsDefinedType(this INamedTypeSymbol typeSymbol) => DefinedType.FromSymbol(typeSymbol);
 
-    public static IReadOnlyList<NamedType> AsNamedTypes<TCollection>(this TCollection typeSymbols) where TCollection : IReadOnlyCollection<INamedTypeSymbol>
+    public static IReadOnlyList<NamedType?> AsNamedTypes<TCollection>(this TCollection typeSymbols) where TCollection : IReadOnlyCollection<INamedTypeSymbol?>
     {
         return typeSymbols.AsTransformed(transform);
 
-        static NamedType transform(INamedTypeSymbol typeSymbol)
+        static NamedType? transform(INamedTypeSymbol? typeSymbol)
         {
             if (typeSymbol is null)
             {
-                return NamedType.Empty;
+                return null;
             }
 
             return typeSymbol.AsNamedType();
         }
     }
 
-    public static IReadOnlyList<DefinedType> AsDefinedTypes<TCollection>(this TCollection typeSymbols) where TCollection : IReadOnlyCollection<INamedTypeSymbol>
+    public static IReadOnlyList<DefinedType?> AsDefinedTypes<TCollection>(this TCollection typeSymbols) where TCollection : IReadOnlyCollection<INamedTypeSymbol?>
     {
         return typeSymbols.AsTransformed(transform);
 
-        static DefinedType transform(INamedTypeSymbol typeSymbol)
+        static DefinedType? transform(INamedTypeSymbol? typeSymbol)
         {
             if (typeSymbol is null)
             {
-                return DefinedType.Empty;
+                return null;
             }
 
             return typeSymbol.AsDefinedType();
@@ -130,18 +130,18 @@ public static partial class RoslynUtilityExtensions
         return null;
     }
 
-    private static IReadOnlyList<TResult> AsTransformed<TResult, TCollection>(this TCollection typeSymbols, Func<INamedTypeSymbol, TResult> transform)
-        where TCollection : IReadOnlyCollection<INamedTypeSymbol>
+    private static IReadOnlyList<TResult?> AsTransformed<TResult, TCollection>(this TCollection typeSymbols, Func<INamedTypeSymbol?, TResult?> transform)
+        where TCollection : IReadOnlyCollection<INamedTypeSymbol?>
     {
         if (typeSymbols is null)
         {
             throw new ArgumentNullException(nameof(typeSymbols));
         }
 
-        TResult[] result = new TResult[typeSymbols.Count];
+        TResult?[] result = new TResult?[typeSymbols.Count];
 
         int index = 0;
-        foreach (INamedTypeSymbol typeSymbol in typeSymbols)
+        foreach (INamedTypeSymbol? typeSymbol in typeSymbols)
         {
             result[index++] = transform(typeSymbol);
         }

@@ -11,23 +11,25 @@ internal class DerivableUnitDiagnostics : IDerivableUnitDiagnostics
 
     private DerivableUnitDiagnostics() { }
 
-    public Diagnostic MissingExpression(IDerivableUnitValidatorContext context, DerivableUnitDefinition definition)
+    public Diagnostic NullExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
-        return DiagnosticConstruction.InvalidUnitDerivationExpression(definition.ParsingData.Locations.Expression.AsRoslynLocation(), definition.Expression);
+        return DiagnosticConstruction.InvalidUnitDerivationExpression_Null(definition.Locations.Expression?.AsRoslynLocation());
     }
 
-    public Diagnostic EmptySignature(IDerivableUnitValidatorContext context, DerivableUnitDefinition definition)
+    public Diagnostic EmptyExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => NullExpression(context, definition);
+
+    public Diagnostic EmptySignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
-        return DiagnosticConstruction.EmptyUnitDerivationSignature(definition.ParsingData.Locations.SignatureCollection.AsRoslynLocation());
+        return DiagnosticConstruction.EmptyUnitDerivationSignature(definition.Locations.SignatureCollection?.AsRoslynLocation());
     }
 
-    public Diagnostic SignatureElementNull(IDerivableUnitValidatorContext context, DerivableUnitDefinition definition, int index)
+    public Diagnostic NullSignatureElement(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int index)
     {
-        return DiagnosticConstruction.TypeNotUnit_Null(definition.ParsingData.Locations.SignatureElements[index].AsRoslynLocation());
+        return DiagnosticConstruction.TypeNotUnit_Null(definition.Locations.SignatureElements[index].AsRoslynLocation());
     }
 
-    public Diagnostic DuplicateSignature(IDerivableUnitValidatorContext context, DerivableUnitDefinition definition)
+    public Diagnostic DuplicateSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
-        return DiagnosticConstruction.DuplicateUnitDerivationSignature(definition.ParsingData.Locations.SignatureCollection.AsRoslynLocation(), context.Type.Name);
+        return DiagnosticConstruction.DuplicateUnitDerivationSignature(definition.Locations.SignatureCollection?.AsRoslynLocation(), context.Type.Name);
     }
 }

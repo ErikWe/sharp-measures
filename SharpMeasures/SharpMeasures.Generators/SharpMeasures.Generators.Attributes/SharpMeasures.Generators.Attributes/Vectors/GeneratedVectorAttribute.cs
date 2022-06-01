@@ -15,6 +15,10 @@ public sealed class GeneratedVectorAttribute : Attribute
     /// <para>There may be multiple such quantities, in which case the most similar or most fundamental quantity should be used.</para></remarks>
     public Type? Scalar { get; init; }
 
+    /// <summary>The dimension of the vector quantity that this type represents.
+    /// <para>If the name of the type ends with the dimension this property can be ignored - such as for <i>Position3</i>.</para></summary>
+    public int Dimension { get; init; }
+
     /// <summary>The name of the default unit.</summary>
     /// <remarks>This is used by ToString(), together with <see cref="DefaultUnitSymbol"/>.</remarks>
     public string? DefaultUnitName { get; init; }

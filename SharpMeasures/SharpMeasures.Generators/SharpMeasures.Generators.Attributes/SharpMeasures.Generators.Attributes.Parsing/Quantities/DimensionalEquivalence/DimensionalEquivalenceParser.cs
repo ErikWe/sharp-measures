@@ -4,12 +4,11 @@ using SharpMeasures.Generators.Quantities;
 
 public static class DimensionalEquivalenceParser
 {
-    public static IAttributeParser<DimensionalEquivalenceDefinition> Parser { get; } = new AttributeParser();
+    public static IAttributeParser<RawDimensionalEquivalenceDefinition> Parser { get; } = new AttributeParser();
 
-    private static DimensionalEquivalenceDefinition DefaultDefinition() => DimensionalEquivalenceDefinition.Empty;
+    private static RawDimensionalEquivalenceDefinition DefaultDefinition() => RawDimensionalEquivalenceDefinition.Empty;
 
-    private class AttributeParser
-        : AAttributeParser<DimensionalEquivalenceDefinition, DimensionalEquivalenceParsingData, DimensionalEquivalenceLocations, DimensionalEquivalenceAttribute>
+    private class AttributeParser : AAttributeParser<RawDimensionalEquivalenceDefinition, DimensionalEquivalenceLocations, DimensionalEquivalenceAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, DimensionalEquivalenceProperties.AllProperties) { }
     }

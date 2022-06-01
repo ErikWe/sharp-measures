@@ -2,5 +2,7 @@
 
 public interface IDependantUnitLocations : IUnitLocations
 {
-    public abstract MinimalLocation DependantOn { get; }
+    public abstract MinimalLocation? DependantOn { get; }
+
+    public abstract bool ExplicitlySetDependantOn { get; }
 }

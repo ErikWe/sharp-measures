@@ -16,11 +16,32 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
+    public readonly static DiagnosticDescriptor InvalidUnitName_Null = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InvalidUnitName,
+        title: "Invalid unit name",
+        messageFormat: "The name of the unit must be defined",
+        category: "Naming",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
     public readonly static DiagnosticDescriptor InvalidUnitPluralForm = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidUnitPluralForm,
         title: "Invalid plural form of unit name",
         messageFormat: $"\"{{0}}\" could not be used to construct the plural form of \"{{1}}\". Try writing the plural form in full, or use a suitable notation" +
+            $"from {typeof(UnitPluralCodes).FullName}.",
+        category: "Naming",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public readonly static DiagnosticDescriptor InvalidUnitPluralForm_Null = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InvalidUnitPluralForm,
+        title: "Invalid plural form of unit name",
+        messageFormat: $"The plural form of the unit must be defined. Try writing the plural form in full, or use a suitable notation" +
             $"from {typeof(UnitPluralCodes).FullName}.",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
@@ -52,6 +73,16 @@ internal static partial class DiagnosticRules
         id: DiagnosticIDs.UnrecognizedUnitName,
         title: "Expected the name of a unit",
         messageFormat: "\"{0}\" was not recognized as the name of a unit of {1}. The referenced unit must be defined in an attribute on {1}.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public readonly static DiagnosticDescriptor UnrecognizedUnitName_Null = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.UnrecognizedUnitName,
+        title: "Expected the name of a unit",
+        messageFormat: "Expected the name of a unit of {0}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

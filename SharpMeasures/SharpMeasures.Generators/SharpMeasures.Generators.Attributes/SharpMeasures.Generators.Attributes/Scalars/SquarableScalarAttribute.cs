@@ -13,14 +13,6 @@ public sealed class SquarableScalarAttribute : Attribute
     public Type[] SecondaryQuantities { get; }
 
     /// <summary>Marks the scalar quantity as supporting the square operation.</summary>
-    /// <param name="quantity">The scalar quantity that represents the square of this quantity.</param>
-    public SquarableScalarAttribute(Type quantity)
-    {
-        Quantity = quantity;
-        SecondaryQuantities = Array.Empty<Type>();
-    }
-
-    /// <summary>Marks the scalar quantity as supporting the square operation.</summary>
     /// <param name="quantity">The primary scalar quantity that represents the square of this quantity.</param>
     /// <param name="secondaryQuantities">Additional scalar quantities that also represents the square of this quantity.</param>
     public SquarableScalarAttribute(Type quantity, params Type[] secondaryQuantities)

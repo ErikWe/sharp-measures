@@ -1,18 +1,41 @@
-namespace SharpMeasures.Generators.Attributes.Parsing.Scalars;
+﻿namespace SharpMeasures.Generators.Attributes.Parsing.Scalars;
 
-public record class GeneratedScalarDefinition : AAttributeDefinition<GeneratedScalarParsingData, GeneratedScalarLocations>
+public record class GeneratedScalarDefinition : AAttributeDefinition<GeneratedScalarLocations>
 {
-    internal static GeneratedScalarDefinition Empty => new();
+    public NamedType Unit { get; }
+    public NamedType? Vector { get; }
 
-    public NamedType Unit { get; init; }
-    public NamedType Vector { get; init; }
+    public bool Biased { get; }
 
-    public bool Biased { get; init; }
+    public string? DefaultUnitName { get; }
+    public string? DefaultUnitSymbol { get; }
 
-    public string DefaultUnitName { get; init; } = string.Empty;
-    public string DefaultUnitSymbol { get; init; } = string.Empty;
+    public NamedType? Reciprocal { get; }
+    public NamedType? Square { get; }
+    public NamedType? Cube { get; }
+    public NamedType? SquareRoot { get; }
+    public NamedType? CubeRoot { get; }
 
-    public bool GenerateDocumentation { get; init; }
+    public bool GenerateDocumentation { get; }
 
-    private GeneratedScalarDefinition() : base(GeneratedScalarParsingData.Empty) { }
+    public GeneratedScalarDefinition(NamedType unit, NamedType? vector, bool biased, string? defaultUnitName, string? defaultUnitSymbol, NamedType? reciprocal,
+        NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot, bool generateDocumentation, GeneratedScalarLocations locations)
+        : base(locations)
+    {
+        Unit = unit;
+        Vector = vector;
+
+        Biased = biased;
+
+        DefaultUnitName = defaultUnitName;
+        DefaultUnitSymbol = defaultUnitSymbol;
+
+        Reciprocal = reciprocal;
+        Square = square;
+        Cube = cube;
+        SquareRoot = squareRoot;
+        CubeRoot = cubeRoot;
+
+        GenerateDocumentation = generateDocumentation;
+    }
 }

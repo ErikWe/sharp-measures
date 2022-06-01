@@ -16,6 +16,16 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
+    public readonly static DiagnosticDescriptor InvalidUnitDerivationExpression_Null = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InvalidUnitDerivationExpression,
+        title: "Invalid unit derivation expression",
+        messageFormat: "Expected an expression describing the derivation",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
     public readonly static DiagnosticDescriptor EmptyUnitDerivationSignature = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.EmptyUnitDerivationSignature,

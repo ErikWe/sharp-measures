@@ -14,7 +14,7 @@ public sealed class GeneratedUnitAttribute : Attribute
     public Type Quantity { get; }
     
     /// <summary>Dictates whether this unit should include a bias term.</summary>
-    public bool AllowBias { get; init; }
+    public bool SupportsBiasedQuantities { get; init; }
 
     /// <summary>Dictates whether documentation should be generated for this unit.</summary>
     /// <remarks>If this property is not explicitly set, the entry [<i>SharpMeasures_GenerateDocumentation</i>] in the global AnalyzerConfig

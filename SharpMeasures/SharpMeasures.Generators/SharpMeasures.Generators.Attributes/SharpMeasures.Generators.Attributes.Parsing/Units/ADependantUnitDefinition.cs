@@ -1,12 +1,14 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-public abstract record class ADependantUnitDefinition<TParsingData, TLocations> : AUnitDefinition<TParsingData, TLocations>, IDependantUnitDefinition
-    where TParsingData : ADependantUnitParsingData<TLocations>
+public abstract record class ADependantUnitDefinition<TLocations> : AUnitDefinition<TLocations>, IDependantUnitDefinition
     where TLocations : ADependantUnitLocations
 {
-    public string DependantOn { get; init; } = string.Empty;
+    public string DependantOn { get; }
 
-    IDependantUnitParsingData IDependantUnitDefinition.ParsingData => ParsingData;
+    IDependantUnitLocations IDependantUnitDefinition.Locations => Locations;
 
-    protected ADependantUnitDefinition(TParsingData parsingData) : base(parsingData) { }
+    protected ADependantUnitDefinition(string name, string plural, string dependantOn, TLocations locations) : base(name, plural, locations)
+    {
+        DependantOn = dependantOn;
+    }
 }

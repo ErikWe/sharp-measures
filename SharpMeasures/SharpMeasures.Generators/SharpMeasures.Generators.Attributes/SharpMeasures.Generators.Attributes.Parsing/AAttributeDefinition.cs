@@ -1,14 +1,13 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing;
 
-public abstract record class AAttributeDefinition<TParsingData, TLocations> : IAttributeDefinition
-    where TParsingData : IAttributeParsingData
+public abstract record class AAttributeDefinition<TLocations> : IAttributeDefinition
     where TLocations : IAttributeLocations
 {
-    public TParsingData ParsingData { get; init; }
-    IAttributeParsingData IAttributeDefinition.ParsingData => ParsingData;
+    public TLocations Locations { get; }
+    IAttributeLocations IAttributeDefinition.Locations => Locations;
 
-    protected AAttributeDefinition(TParsingData parsingData)
+    protected AAttributeDefinition(TLocations locations)
     {
-        ParsingData = parsingData;
+        Locations = locations;
     }
 }

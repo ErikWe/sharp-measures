@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 internal readonly struct DocumentationFile
 {
-    public static DocumentationFile Empty { get; } = new(string.Empty, null, new Dictionary<string, string>());
+    public static DocumentationFile Empty { get; } = new(string.Empty, null as MinimalLocation?, new Dictionary<string, string>());
 
     private string Name { get; }
     private MinimalLocation? Location { get; }
@@ -29,12 +29,12 @@ internal readonly struct DocumentationFile
     {
         if (string.IsNullOrEmpty(Name))
         {
-            return ResultWithDiagnostics.WithoutDiagnostics(string.Empty);
+            return ResultWithDiagnostics.Construct(string.Empty);
         }
 
         if (Content.TryGetValue(tag, out string tagText))
         {
-            return ResultWithDiagnostics.WithoutDiagnostics(tagText);
+            return ResultWithDiagnostics.Construct(tagText);
         }
 
         if (CreateMissingTagDiagnostics(tag) is Diagnostic missingTagDiagnostics)
@@ -42,7 +42,7 @@ internal readonly struct DocumentationFile
             return ResultWithDiagnostics.Construct(string.Empty, missingTagDiagnostics);
         }
 
-        return ResultWithDiagnostics.WithoutDiagnostics(string.Empty);
+        return ResultWithDiagnostics.Construct(string.Empty);
     }
 
     public string ResolveTagAndReportDiagnostics(SourceProductionContext context, string tag)

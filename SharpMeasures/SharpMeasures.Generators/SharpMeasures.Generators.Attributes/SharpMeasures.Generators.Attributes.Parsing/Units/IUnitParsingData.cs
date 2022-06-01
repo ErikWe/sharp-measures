@@ -1,8 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-public interface IUnitParsingData : IAttributeParsingData
+public interface IUnitParsingData
 {
-    public abstract string InterpretedPlural { get; }
-
-    new public abstract IUnitLocations Locations { get; }
+    public abstract string? InterpretedPlural { get; }
 }

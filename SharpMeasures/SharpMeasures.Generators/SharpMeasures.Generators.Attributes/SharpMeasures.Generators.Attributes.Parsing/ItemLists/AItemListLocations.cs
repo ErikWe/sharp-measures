@@ -6,8 +6,10 @@ using System.Linq;
 
 public abstract record class AItemListLocations : AAttributeLocations, IItemListLocations
 {
-    public MinimalLocation ItemNamesCollection { get; init; }
-    public IReadOnlyList<MinimalLocation> ItemNamesElements { get; init; } = Array.Empty<MinimalLocation>();
+    public MinimalLocation? ItemsCollection { get; init; }
+    public IReadOnlyList<MinimalLocation> ItemsElements { get; init; } = Array.Empty<MinimalLocation>();
+
+    public bool ExplicitlySetItems => ItemsCollection is not null;
 
     public virtual bool Equals(AItemListLocations other)
     {
@@ -16,11 +18,11 @@ public abstract record class AItemListLocations : AAttributeLocations, IItemList
             return false;
         }
 
-        return base.Equals(other) && ItemNamesCollection == other.ItemNamesCollection && ItemNamesElements.SequenceEqual(other.ItemNamesElements);
+        return base.Equals(other) && ItemsCollection == other.ItemsCollection && ItemsElements.SequenceEqual(other.ItemsElements);
     }
 
     public override int GetHashCode()
     {
-        return base.GetHashCode() ^ ItemNamesCollection.GetHashCode() ^ ItemNamesElements.GetSequenceHashCode();
+        return base.GetHashCode() ^ ItemsCollection.GetHashCode() ^ ItemsElements.GetSequenceHashCode();
     }
 }

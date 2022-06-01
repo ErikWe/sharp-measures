@@ -6,11 +6,11 @@ using System.Collections.Generic;
 
 internal static class PrefixedUnitProperties
 {
-    public static IReadOnlyList<IAttributeProperty<PrefixedUnitDefinition>> AllProperties => new IAttributeProperty<PrefixedUnitDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawPrefixedUnitDefinition>> AllProperties => new IAttributeProperty<RawPrefixedUnitDefinition>[]
     {
-        CommonProperties.Name<PrefixedUnitDefinition, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.Name)),
-        CommonProperties.Plural<PrefixedUnitDefinition, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.Plural)),
-        CommonProperties.DependantOn<PrefixedUnitDefinition, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.From)),
+        CommonProperties.Name<RawPrefixedUnitDefinition, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.Name)),
+        CommonProperties.Plural<RawPrefixedUnitDefinition, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.Plural)),
+        CommonProperties.DependantOn<RawPrefixedUnitDefinition, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.From)),
         MetricPrefixName,
         BinaryPrefixName
     };
@@ -18,32 +18,14 @@ internal static class PrefixedUnitProperties
     private static PrefixedUnitProperty<int> MetricPrefixName { get; } = new
     (
         name: nameof(PrefixedUnitAttribute.MetricPrefixName),
-        setter: static (definition, metricPrefixName) =>
-        {
-            var modifiedParsingData = definition.ParsingData with { SpecifiedPrefixType = PrefixedUnitParsingData.PrefixType.Metric };
-
-            return definition with
-            {
-                MetricPrefixName = (MetricPrefixName)metricPrefixName,
-                ParsingData = modifiedParsingData
-            };
-        },
+        setter: static (definition, metricPrefixName) => definition with { MetricPrefixName = (MetricPrefixName)metricPrefixName },
         locator: static (locations, metricPrefixNameLocation) => locations with { MetricPrefixName = metricPrefixNameLocation }
     );
 
     private static PrefixedUnitProperty<int> BinaryPrefixName { get; } = new
     (
         name: nameof(PrefixedUnitAttribute.BinaryPrefixName),
-        setter: static (definition, binaryPrefixName) =>
-        {
-            var modifiedParsingData = definition.ParsingData with { SpecifiedPrefixType = PrefixedUnitParsingData.PrefixType.Binary };
-
-            return definition with
-            {
-                BinaryPrefixName = (BinaryPrefixName)binaryPrefixName,
-                ParsingData = modifiedParsingData
-            };
-        },
+        setter: static (definition, binaryPrefixName) => definition with { BinaryPrefixName = (BinaryPrefixName)binaryPrefixName },
         locator: static (locations, binaryPrefixNameLocation) => locations with { BinaryPrefixName = binaryPrefixNameLocation }
     );
 }

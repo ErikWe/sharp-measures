@@ -2,18 +2,40 @@
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Generators.Quantities.Utility;
+
 using System;
 
 internal static partial class DiagnosticConstruction
 {
+    public static Diagnostic DefineQuantityUnitAndSymbol_MissingUnit(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.DefineQuantityUnitAndSymbol_MissingUnit, location);
+    }
+
+    public static Diagnostic DefineQuantityUnitAndSymbol_MissingSymbol(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.DefineQuantityUnitAndSymbol_MissingSymbol, location);
+    }
+
     public static Diagnostic InvalidConstantName(Location? location, string constantName)
     {
         return Diagnostic.Create(DiagnosticRules.InvalidConstantName, location, constantName);
     }
 
+    public static Diagnostic InvalidConstantName_Null(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.InvalidConstantName_Null, location);
+    }
+
     public static Diagnostic InvalidConstantMultiplesName(Location? location, string constantName, string multiplesName)
     {
         return Diagnostic.Create(DiagnosticRules.InvalidConstantMultiplesName, location, multiplesName, constantName);
+    }
+
+    public static Diagnostic InvalidConstantMultiplesName_Null(Location? location, string constantName)
+    {
+        return Diagnostic.Create(DiagnosticRules.InvalidConstantMultiplesName_Null, location, constantName);
     }
 
     public static Diagnostic DuplicateConstantName(Location? location, string constantName, string quantityTypeName)
@@ -26,23 +48,33 @@ internal static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.DuplicateConstantMultiplesName, location, quantityTypeName, constantMultiplesName);
     }
 
-    public static Diagnostic DuplicateConstantMultiplesName_Unit(Location? location, string constantMultiplesName, string quantityTypeName)
+    public static Diagnostic ConstantSharesNameWithUnit(Location? location, string sharedName, string quantityTypeName)
     {
-        return Diagnostic.Create(DiagnosticRules.DuplicateConstantMultiplesName_Unit, location, quantityTypeName, constantMultiplesName);
+        return Diagnostic.Create(DiagnosticRules.ConstantSharesNameWithUnit, location, quantityTypeName, sharedName);
     }
 
-    public static Diagnostic ExcessiveExclusion<TInclusionAttribute, TExclusionAttribute>(Location? location)
+    public static Diagnostic UnrecognizedConversionOperationBehaviour(Location? location, ConversionOperationBehaviour conversionOperationBehaviour)
     {
-        return ExcessiveExclusion(location, typeof(TInclusionAttribute), typeof(TExclusionAttribute));
+        return Diagnostic.Create(DiagnosticRules.UnrecognizedCastOperatorBehaviour, location, conversionOperationBehaviour.ToString());
     }
 
-    public static Diagnostic ExcessiveExclusion(Location? location, Type inclusionAttributeType, Type exclusionAttributeType)
+    public static Diagnostic ContradictoryAttributes<TInclusionAttribute, TExclusionAttribute>(Location? location)
     {
-        return ExcessiveExclusion(location, inclusionAttributeType.Name, exclusionAttributeType.Name);
+        return ContradictoryAttributes(location, typeof(TInclusionAttribute), typeof(TExclusionAttribute));
     }
 
-    public static Diagnostic ExcessiveExclusion(Location? location, string inclusionAttributeName, string exclusionAttributeName)
+    public static Diagnostic ContradictoryAttributes(Location? location, Type inclusionAttributeType, Type exclusionAttributeType)
     {
-        return Diagnostic.Create(DiagnosticRules.ExcessiveExclusion, location, inclusionAttributeName, exclusionAttributeName);
+        return ContradictoryAttributes(location, inclusionAttributeType.Name, exclusionAttributeType.Name);
+    }
+
+    public static Diagnostic ContradictoryAttributes(Location? location, string inclusionAttributeName, string exclusionAttributeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.ContradictoryAttributes, location, inclusionAttributeName, exclusionAttributeName);
+    }
+
+    public static Diagnostic QuantityGroupMissingBase(Location? location, string baseAttributeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.QuantityGroupMissingBase, location, baseAttributeName);
     }
 }

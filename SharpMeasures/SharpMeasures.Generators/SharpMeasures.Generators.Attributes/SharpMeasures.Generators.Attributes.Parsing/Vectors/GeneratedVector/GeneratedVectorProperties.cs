@@ -8,10 +8,11 @@ using System.Collections.Generic;
 
 internal static class GeneratedVectorProperties
 {
-    public static IReadOnlyList<IAttributeProperty<GeneratedVectorDefinition>> AllProperties => new IAttributeProperty<GeneratedVectorDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawGeneratedVectorDefinition>> AllProperties => new IAttributeProperty<RawGeneratedVectorDefinition>[]
     {
         Unit,
         Scalar,
+        Dimension,
         DefaultUnitName,
         DefaultUnitSymbol,
         GenerateDocumentation
@@ -27,12 +28,15 @@ internal static class GeneratedVectorProperties
     private static GeneratedVectorProperty<INamedTypeSymbol> Scalar { get; } = new
     (
         name: nameof(GeneratedVectorAttribute.Scalar),
-        setter: static (definition, scalar) => definition with
-        {
-            Scalar = scalar.AsNamedType(),
-            ParsingData = definition.ParsingData with { SpecifiedScalar = true }
-        },
+        setter: static (definition, scalar) => definition with { Scalar = scalar.AsNamedType() },
         locator: static (locations, scalarLocation) => locations with { Scalar = scalarLocation }
+    );
+
+    private static GeneratedVectorProperty<int> Dimension { get; } = new
+    (
+        name: nameof(GeneratedVectorAttribute.Dimension),
+        setter: static (definition, dimension) => definition with { Dimension = dimension },
+        locator: static (locations, dimensionLocation) => locations with { Dimension = dimensionLocation }
     );
 
     private static GeneratedVectorProperty<string> DefaultUnitName { get; } = new
@@ -52,11 +56,7 @@ internal static class GeneratedVectorProperties
     private static GeneratedVectorProperty<bool> GenerateDocumentation { get; } = new
     (
         name: nameof(GeneratedVectorAttribute.GenerateDocumentation),
-        setter: static (definition, generateDocumentation) => definition with
-        {
-            GenerateDocumentation = generateDocumentation,
-            ParsingData = definition.ParsingData with { ExplicitlyDisabledDocumentation = generateDocumentation is false }
-        },
+        setter: static (definition, generateDocumentation) => definition with { GenerateDocumentation = generateDocumentation },
         locator: static (locations, generateDocumentationLocation) => locations with { GenerateDocumentation = generateDocumentationLocation }
     );
 }

@@ -1,25 +1,24 @@
 ﻿namespace SharpMeasures.Generators.SourceBuilding;
 
-using Microsoft.CodeAnalysis;
-
 using System.Collections.Generic;
 using System.Text;
 
 internal static class InterfaceBuilding
 {
-    public static void AppendInterfaceImplementation(StringBuilder source, IEnumerable<INamedTypeSymbol> interfaceSymbols)
-    {
-        AppendInterfaceImplementation(source, symbolsToDisplayStrings());
+    public static void AppendInterfaceImplementation(StringBuilder source, IEnumerable<string> interfaceNames)
+        => IterativeBuilding.AppendEnumerable(source, " : ", interfaceNames, ", ");
 
-        IEnumerable<string> symbolsToDisplayStrings()
-        {
-            foreach (INamedTypeSymbol interfaceSymbol in interfaceSymbols)
-            {
-                yield return interfaceSymbol.ToDisplayString();
-            }
-        }
+    public static void InsertInterfaceImplementation(StringBuilder source, int startIndex, IEnumerable<string> interfaceNames)
+    {
+        StringBuilder interfaces = new();
+
+        AppendInterfaceImplementation(interfaces, interfaceNames);
+
+        source.Insert(startIndex, interfaces);
     }
 
-    public static void AppendInterfaceImplementation(StringBuilder source, IEnumerable<string> interfaceStrings)
-        => IterativeBuilding.AppendEnumerable(source, " : ", interfaceStrings, ", ");
+    public static void InsertInterfaceImplementation(StringBuilder source, int startIndex, params string[] usingsNames)
+    {
+        InsertInterfaceImplementation(source, startIndex, usingsNames as IEnumerable<string>);
+    }
 }

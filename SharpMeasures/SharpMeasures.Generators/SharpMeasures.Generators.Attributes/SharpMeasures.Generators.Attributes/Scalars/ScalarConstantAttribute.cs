@@ -15,10 +15,10 @@ public sealed class ScalarConstantAttribute : Attribute
     /// <summary>The name of the unit in which the value was specified.</summary>
     public string Unit { get; }
 
-    /// <summary>Whether to also generate a property for retrieving the magnitude of the scalar in terms of multiples of this constant. The
-    /// default behaviour is <see langword="false"/>.</summary>
+    /// <summary>Determines whether to generate a property for retrieving the magnitude of the scalar in terms of multiples of this constant. The
+    /// default behaviour is <see langword="true"/>.</summary>
     /// <remarks>If set to <see langword="true"/>, <see cref="MultiplesName"/> is used to determine the name of the property.</remarks>
-    public bool GenerateMultiplesProperty { get; init; }
+    public bool GenerateMultiplesProperty { get; init; } = true;
 
     /// <summary>If <see cref="GenerateMultiplesProperty"/> is set to <see langword="true"/>, this value is used as the name of the property.
     /// <para>The default behaviour is prepending "InMultiplesOf" to the name of the constant.</para></summary>

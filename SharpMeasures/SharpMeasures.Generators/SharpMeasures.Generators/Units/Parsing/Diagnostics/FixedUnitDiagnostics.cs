@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing.Units;
 
-internal class FixedUnitDiagnostics : AUnitDiagnostics<FixedUnitDefinition>
+internal class FixedUnitDiagnostics : AUnitDiagnostics<RawFixedUnitDefinition>
 {
     public static FixedUnitDiagnostics Instance { get; } = new();
 

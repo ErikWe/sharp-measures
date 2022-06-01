@@ -1,10 +1,19 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Quantities;
 
-using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
+using SharpMeasures.Generators.Quantities.Utility;
 
-public record class DimensionalEquivalenceDefinition : AItemListDefinition<DimensionalEquivalenceParsingData, DimensionalEquivalenceLocations>
+using System.Collections.Generic;
+
+public record class DimensionalEquivalenceDefinition : AAttributeDefinition<DimensionalEquivalenceLocations>
 {
-    internal static DimensionalEquivalenceDefinition Empty => new();
+    public IReadOnlyList<NamedType> Quantities { get; }
 
-    private DimensionalEquivalenceDefinition() : base(DimensionalEquivalenceParsingData.Empty) { }
+    public ConversionOperationBehaviour CastOperatorBehaviour { get; }
+
+    public DimensionalEquivalenceDefinition(IReadOnlyList<NamedType> quantities, ConversionOperationBehaviour castOperatorBehaviour,
+        DimensionalEquivalenceLocations locations) : base(locations)
+    {
+        Quantities = quantities;
+        CastOperatorBehaviour = castOperatorBehaviour;
+    }
 }

@@ -16,9 +16,8 @@ public interface IAttributeParser<TDefinition>
     public abstract IEnumerable<TDefinition> ParseAllOccurrences(INamedTypeSymbol typeSymbol);
 }
 
-internal abstract class AAttributeParser<TDefinition, TParsingData, TLocations, TAttribute> : AAttributeParser<TDefinition, TParsingData, TLocations>
-    where TDefinition : AAttributeDefinition<TParsingData, TLocations>
-    where TParsingData : AAttributeParsingData<TLocations>
+internal abstract class AAttributeParser<TDefinition, TLocations, TAttribute> : AAttributeParser<TDefinition, TLocations>
+    where TDefinition : ARawAttributeDefinition<TLocations>
     where TLocations : AAttributeLocations
 {
     protected override Type AttributeType { get; } = typeof(TAttribute);
@@ -31,9 +30,8 @@ internal abstract class AAttributeParser<TDefinition, TParsingData, TLocations, 
         : base(defaultValueConstructor, properties) { }
 }
 
-internal abstract class AAttributeParser<TDefinition, TParsingData, TLocations> : IAttributeParser<TDefinition>
-    where TDefinition : AAttributeDefinition<TParsingData, TLocations>
-    where TParsingData : AAttributeParsingData<TLocations>
+internal abstract class AAttributeParser<TDefinition, TLocations> : IAttributeParser<TDefinition>
+    where TDefinition : ARawAttributeDefinition<TLocations>
     where TLocations : AAttributeLocations
 {
     protected abstract Type AttributeType { get; }
@@ -135,7 +133,6 @@ internal abstract class AAttributeParser<TDefinition, TParsingData, TLocations> 
 
             definition = SetConstructorArgument(definition, property, parameterSymbols[i], attributeData.ConstructorArguments, i);
             definition = property.Locator(definition, attributeSyntax.ArgumentList!, i);
-
         }
 
         return definition;
@@ -193,12 +190,9 @@ internal abstract class AAttributeParser<TDefinition, TParsingData, TLocations> 
     {
         return definition with
         {
-            ParsingData = definition.ParsingData with
+            Locations = definition.Locations with
             {
-                Locations = definition.ParsingData.Locations with
-                {
-                    Attribute = attributeLocation
-                }
+                Attribute = attributeLocation
             }
         };
     }

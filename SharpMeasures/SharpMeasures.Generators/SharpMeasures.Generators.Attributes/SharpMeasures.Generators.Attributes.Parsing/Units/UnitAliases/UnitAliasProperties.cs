@@ -6,10 +6,10 @@ using System.Collections.Generic;
 
 internal static class UnitAliasProperties
 {
-    public static IReadOnlyList<IAttributeProperty<UnitAliasDefinition>> AllProperties => new IAttributeProperty<UnitAliasDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawUnitAliasDefinition>> AllProperties => new IAttributeProperty<RawUnitAliasDefinition>[]
     {
-        CommonProperties.Name<UnitAliasDefinition, UnitAliasParsingData, UnitAliasLocations>(nameof(UnitAliasAttribute.Name)),
-        CommonProperties.Plural<UnitAliasDefinition, UnitAliasParsingData, UnitAliasLocations>(nameof(UnitAliasAttribute.Plural)),
-        CommonProperties.DependantOn<UnitAliasDefinition, UnitAliasParsingData, UnitAliasLocations>(nameof(UnitAliasAttribute.AliasOf)),
+        CommonProperties.Name<RawUnitAliasDefinition, UnitAliasParsingData, UnitAliasLocations>(nameof(UnitAliasAttribute.Name)),
+        CommonProperties.Plural<RawUnitAliasDefinition, UnitAliasParsingData, UnitAliasLocations>(nameof(UnitAliasAttribute.Plural)),
+        CommonProperties.DependantOn<RawUnitAliasDefinition, UnitAliasParsingData, UnitAliasLocations>(nameof(UnitAliasAttribute.AliasOf)),
     };
 }

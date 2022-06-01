@@ -2,9 +2,9 @@
 
 using System.Collections.Generic;
 
-public interface IItemListDefinition : IAttributeDefinition
+public interface IItemListDefinition<TItem> : IAttributeDefinition
 {
-    public abstract IReadOnlyList<string> ItemNames { get; }
+    public abstract IReadOnlyList<TItem> Items { get; }
 
-    new public abstract IItemListParsingData ParsingData { get; }
+    new public abstract IItemListLocations Locations { get; }
 }

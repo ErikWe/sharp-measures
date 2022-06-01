@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 internal static class DerivableUnitProperties
 {
-    public static IReadOnlyList<IAttributeProperty<DerivableUnitDefinition>> AllProperties => new IAttributeProperty<DerivableUnitDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawDerivableUnitDefinition>> AllProperties => new IAttributeProperty<RawDerivableUnitDefinition>[]
     {
         Expression,
         Signature

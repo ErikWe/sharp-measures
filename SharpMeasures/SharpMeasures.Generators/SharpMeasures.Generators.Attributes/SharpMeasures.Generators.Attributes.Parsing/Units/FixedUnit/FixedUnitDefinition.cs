@@ -1,11 +1,13 @@
 namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-public record class FixedUnitDefinition : AUnitDefinition<FixedUnitParsingData, FixedUnitLocations>
+public record class FixedUnitDefinition : AUnitDefinition<FixedUnitLocations>
 {
-    internal static FixedUnitDefinition Empty { get; } = new();
-    
-    public double Value { get; init; }
-    public double Bias { get; init; }
+    public double Value { get; }
+    public double Bias { get; }
 
-    private FixedUnitDefinition() : base(FixedUnitParsingData.Empty) { }
+    public FixedUnitDefinition(string name, string plural, double value, double bias, FixedUnitLocations locations) : base(name, plural, locations)
+    {
+        Value = value;
+        Bias = bias;
+    }
 }

@@ -6,26 +6,35 @@ using SharpMeasures.Generators.Attributes.Parsing.Units;
 using SharpMeasures.Generators.Diagnostics;
 
 internal abstract class AUnitDiagnostics<TDefinition> : IUnitDiagnostics<TDefinition>
-    where TDefinition : IUnitDefinition
+    where TDefinition : IRawUnitDefinition
 {
-    public Diagnostic UnitNameNullOrEmpty(IUnitValidatorContext context, TDefinition definition)
+    public Diagnostic NullUnitName(IUnitProcessingContext context, TDefinition definition)
     {
-        return DiagnosticConstruction.InvalidUnitName(definition.ParsingData.Locations.Name.AsRoslynLocation(), definition.Name);
+        return DiagnosticConstruction.InvalidUnitName_Null(definition.Locations.Name?.AsRoslynLocation());
     }
 
-    public Diagnostic DuplicateUnitName(IUnitValidatorContext context, TDefinition definition)
+    public Diagnostic EmptyUnitName(IUnitProcessingContext context, TDefinition definition) => NullUnitName(context, definition);
+
+    public Diagnostic DuplicateUnitName(IUnitProcessingContext context, TDefinition definition)
     {
-        return DiagnosticConstruction.DuplicateUnitName(definition.ParsingData.Locations.Name.AsRoslynLocation(), definition.Name, context.Type.Name);
+        return DiagnosticConstruction.DuplicateUnitName(definition.Locations.Name?.AsRoslynLocation(), definition.Name!, context.Type.Name);
     }
 
-    public Diagnostic InvalidUnitPluralForm(IUnitValidatorContext context, TDefinition definition)
+    public Diagnostic NullUnitPluralForm(IUnitProcessingContext context, TDefinition definition)
     {
-        return DiagnosticConstruction.InvalidUnitPluralForm(definition.ParsingData.Locations.Plural.AsRoslynLocation(), definition.Plural, definition.Name);
+        return DiagnosticConstruction.InvalidUnitPluralForm_Null(definition.Locations.Plural?.AsRoslynLocation());
     }
 
-    public Diagnostic DuplicateUnitPluralForm(IUnitValidatorContext context, TDefinition definition)
+    public Diagnostic EmptyUnitPluralForm(IUnitProcessingContext context, TDefinition definition) => NullUnitPluralForm(context, definition);
+
+    public Diagnostic InvalidUnitPluralForm(IUnitProcessingContext context, TDefinition definition)
     {
-        return DiagnosticConstruction.DuplicateUnitPluralForm(definition.ParsingData.Locations.Plural.AsRoslynLocation(),
-            definition.ParsingData.InterpretedPlural, context.Type.Name);
+        return DiagnosticConstruction.InvalidUnitPluralForm(definition.Locations.Plural?.AsRoslynLocation(), definition.Plural!, definition.Name!);
+    }
+
+    public Diagnostic DuplicateUnitPluralForm(IUnitProcessingContext context, TDefinition definition)
+    {
+        return DiagnosticConstruction.DuplicateUnitPluralForm(definition.Locations.Plural?.AsRoslynLocation(),
+            definition.ParsingData.InterpretedPlural!, context.Type.Name);
     }
 }

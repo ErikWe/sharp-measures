@@ -1,13 +1,16 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-public abstract record class AUnitDefinition<TParsingData, TLocations> : AAttributeDefinition<TParsingData, TLocations>, IUnitDefinition
-    where TParsingData : AUnitParsingData<TLocations>
+public abstract record class AUnitDefinition<TLocations> : AAttributeDefinition<TLocations>, IUnitDefinition
     where TLocations : AUnitLocations
 {
-    public string Name { get; init; } = string.Empty;
-    public string Plural { get; init; } = string.Empty;
+    public string Name { get; }
+    public string Plural { get; }
 
-    IUnitParsingData IUnitDefinition.ParsingData => ParsingData;
+    IUnitLocations IUnitDefinition.Locations => Locations;
 
-    protected AUnitDefinition(TParsingData parsingData) : base(parsingData) { }
+    protected AUnitDefinition(string name, string plural, TLocations locations) : base(locations)
+    {
+        Name = name;
+        Plural = plural;
+    }
 }

@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Units;
 
 using SharpMeasures.Generators.Documentation;
-using SharpMeasures.Generators.Parsing.Scalars;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units.Parsing;
 
 internal record class DataModel

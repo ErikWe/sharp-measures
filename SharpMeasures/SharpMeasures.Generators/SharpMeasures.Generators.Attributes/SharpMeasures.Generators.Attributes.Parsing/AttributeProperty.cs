@@ -98,9 +98,8 @@ internal record class AttributeProperty<TDefinition, TPropertyType> : AttributeP
     }
 }
 
-internal record class AttributeProperty<TDefinition, TParsingData, TLocations, TPropertyType> : AttributeProperty<TDefinition, TPropertyType>
-    where TDefinition : AAttributeDefinition<TParsingData, TLocations>
-    where TParsingData : AAttributeParsingData<TLocations>
+internal record class AttributeProperty<TDefinition, TLocations, TPropertyType> : AttributeProperty<TDefinition, TPropertyType>
+    where TDefinition : ARawAttributeDefinition<TLocations>
     where TLocations : AAttributeLocations
 {
     public delegate TLocations DSingleLocationSetter(TLocations definition, MinimalLocation location);
@@ -122,10 +121,9 @@ internal record class AttributeProperty<TDefinition, TParsingData, TLocations, T
 
         TDefinition wrapper(TDefinition definition, MinimalLocation location)
         {
-            var modifiedLocations = locator(definition.ParsingData.Locations, location);
-            var modifiedParsingData = definition.ParsingData with { Locations = modifiedLocations };
+            var modifiedLocations = locator(definition.Locations, location);
 
-            return definition with { ParsingData = modifiedParsingData };
+            return definition with { Locations = modifiedLocations };
         }
     }
 
@@ -135,10 +133,9 @@ internal record class AttributeProperty<TDefinition, TParsingData, TLocations, T
 
         TDefinition wrapper(TDefinition definition, MinimalLocation collectionLocation, IReadOnlyList<MinimalLocation> elementLocations)
         {
-            var modifiedLocations = locator(definition.ParsingData.Locations, collectionLocation, elementLocations);
-            var modifiedParsingData = definition.ParsingData with { Locations = modifiedLocations };
+            var modifiedLocations = locator(definition.Locations, collectionLocation, elementLocations);
 
-            return definition with { ParsingData = modifiedParsingData };
+            return definition with { Locations = modifiedLocations };
         }
     }
 }

@@ -8,11 +8,14 @@ public record class DerivedUnitLocations : AUnitLocations
 {
     internal static DerivedUnitLocations Empty { get; } = new();
 
-    public MinimalLocation SignatureCollection { get; init; }
+    public MinimalLocation? SignatureCollection { get; init; }
     public IReadOnlyList<MinimalLocation> SignatureElements { get; init; } = Array.Empty<MinimalLocation>();
 
-    public MinimalLocation UnitsCollection { get; init; }
+    public MinimalLocation? UnitsCollection { get; init; }
     public IReadOnlyList<MinimalLocation> UnitsElements { get; init; } = Array.Empty<MinimalLocation>();
+
+    public bool ExplicitlySetSignature => SignatureCollection is not null;
+    public bool ExplicitlySetUnits => UnitsCollection is not null;
 
     private DerivedUnitLocations() { }
 

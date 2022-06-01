@@ -8,10 +8,10 @@ using System.Collections.Generic;
 
 internal static class DerivedUnitProperties
 {
-    public static IReadOnlyList<IAttributeProperty<DerivedUnitDefinition>> AllProperties => new IAttributeProperty<DerivedUnitDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawDerivedUnitDefinition>> AllProperties => new IAttributeProperty<RawDerivedUnitDefinition>[]
     {
-        CommonProperties.Name<DerivedUnitDefinition, DerivedUnitParsingData, DerivedUnitLocations>(nameof(DerivedUnitAttribute.Name)),
-        CommonProperties.Plural<DerivedUnitDefinition, DerivedUnitParsingData, DerivedUnitLocations>(nameof(DerivedUnitAttribute.Plural)),
+        CommonProperties.Name<RawDerivedUnitDefinition, DerivedUnitParsingData, DerivedUnitLocations>(nameof(DerivedUnitAttribute.Name)),
+        CommonProperties.Plural<RawDerivedUnitDefinition, DerivedUnitParsingData, DerivedUnitLocations>(nameof(DerivedUnitAttribute.Plural)),
         Signature,
         Units
     };

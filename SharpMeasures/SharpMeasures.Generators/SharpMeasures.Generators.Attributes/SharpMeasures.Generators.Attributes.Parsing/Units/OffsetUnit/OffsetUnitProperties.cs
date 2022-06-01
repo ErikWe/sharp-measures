@@ -6,11 +6,11 @@ using System.Collections.Generic;
 
 internal static class OffsetUnitProperties
 {
-    public static IReadOnlyList<IAttributeProperty<OffsetUnitDefinition>> AllProperties => new IAttributeProperty<OffsetUnitDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawOffsetUnitDefinition>> AllProperties => new IAttributeProperty<RawOffsetUnitDefinition>[]
     {
-        CommonProperties.Name<OffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations>(nameof(OffsetUnitAttribute.Name)),
-        CommonProperties.Plural<OffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations>(nameof(OffsetUnitAttribute.Plural)),
-        CommonProperties.DependantOn<OffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations>(nameof(OffsetUnitAttribute.From)),
+        CommonProperties.Name<RawOffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations>(nameof(OffsetUnitAttribute.Name)),
+        CommonProperties.Plural<RawOffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations>(nameof(OffsetUnitAttribute.Plural)),
+        CommonProperties.DependantOn<RawOffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations>(nameof(OffsetUnitAttribute.From)),
         Offset
     };
 

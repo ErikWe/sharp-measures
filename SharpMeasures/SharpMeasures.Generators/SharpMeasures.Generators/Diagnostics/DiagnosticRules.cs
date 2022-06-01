@@ -93,7 +93,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor ScalarNotUnbiased = new DiagnosticDescriptor
+    public readonly static DiagnosticDescriptor ScalarNotUnbiased_UnitDefinition = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.ScalarNotUnbiased,
         title: "Expected an unbiased scalar quantity",
@@ -101,18 +101,48 @@ internal static partial class DiagnosticRules
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "The primary quantity described by a unit should always be an unbiased quantity, regardless of whether the unit supports " +
-            "biased quantities. As an example: a unit \"UnitOfTemperature\" should be associated with the unbiased quantity \"TemperatureDifference\", " +
+        description: "The quantity associated with a unit should always be an unbiased quantity, regardless of whether the unit supports " +
+            "biased quantities. As an example; \"UnitOfTemperature\" should be associated with the unbiased quantity \"TemperatureDifference\", " +
             "rather than the biased quantity \"Temperature\"."
+    );
+
+    public readonly static DiagnosticDescriptor ScalarNotUnbiased = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.ScalarNotUnbiased,
+        title: "Expected an unbiased scalar quantity",
+        messageFormat: "Expected an unbiased scalar quantity. Make {0} an unbiased scalar quantity, or use another quantity.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public readonly static DiagnosticDescriptor ScalarNotBiased = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.ScalarNotBiased,
+        title: "Expected a biased scalar quantity",
+        messageFormat: "Expected a biased scalar quantity. Make {0} a biased scalar quantity, or use another quantity.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
     );
 
     public readonly static DiagnosticDescriptor UnitNotSupportingBias = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.UnitNotSupportingBias,
-        title: "Unit does not support bias",
+        title: "Unit does not support biased quantities",
         messageFormat: "The unit {0} does not support biased quantities",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public readonly static DiagnosticDescriptor EmptyList = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.EmptyList,
+        title: "Expected a non-empty list",
+        messageFormat: "Expected at least one {0}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true
     );
 

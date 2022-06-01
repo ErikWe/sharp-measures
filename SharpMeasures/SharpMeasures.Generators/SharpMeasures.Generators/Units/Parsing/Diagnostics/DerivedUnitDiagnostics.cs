@@ -5,35 +5,38 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing.Units;
 using SharpMeasures.Generators.Diagnostics;
 
-internal class DerivedUnitDiagnostics : AUnitDiagnostics<DerivedUnitDefinition>, IDerivedUnitDiagnostics
+internal class DerivedUnitDiagnostics : AUnitDiagnostics<RawDerivedUnitDefinition>, IDerivedUnitDiagnostics
 {
     public static DerivedUnitDiagnostics Instance { get; } = new();
 
     private DerivedUnitDiagnostics() { }
 
-    public Diagnostic EmptySignature(IDerivedUnitValidatorContext context, DerivedUnitDefinition definition)
+    public Diagnostic EmptySignature(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
     {
-        return DiagnosticConstruction.EmptyUnitDerivationSignature(definition.ParsingData.Locations.SignatureCollection.AsRoslynLocation());
+        return DiagnosticConstruction.EmptyUnitDerivationSignature(definition.Locations.SignatureCollection?.AsRoslynLocation());
     }
 
-    public Diagnostic IncompatibleSignatureAndUnitLists(IDerivedUnitValidatorContext context, DerivedUnitDefinition definition)
+    public Diagnostic IncompatibleSignatureAndUnitLists(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
     {
-        return DiagnosticConstruction.UnitListNotMatchingSignature(definition.ParsingData.Locations.Attribute.AsRoslynLocation(),
+        return DiagnosticConstruction.UnitListNotMatchingSignature(definition.Locations.Attribute.AsRoslynLocation(),
             definition.Signature.Count, definition.Units.Count);
     }
 
-    public Diagnostic UnrecognizedSignature(IDerivedUnitValidatorContext context, DerivedUnitDefinition definition)
+    public Diagnostic UnrecognizedSignature(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
     {
-        return DiagnosticConstruction.UnrecognizedUnitDerivationSignature(definition.ParsingData.Locations.SignatureCollection.AsRoslynLocation(), context.Type.Name);
+        return DiagnosticConstruction.UnrecognizedUnitDerivationSignature(definition.Locations.SignatureCollection?.AsRoslynLocation(), context.Type.Name);
     }
 
-    public Diagnostic SignatureElementNull(IDerivedUnitValidatorContext context, DerivedUnitDefinition definition, int index)
+    public Diagnostic NullSignatureElement(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition, int index)
     {
-        return DiagnosticConstruction.TypeNotUnit_Null(definition.ParsingData.Locations.SignatureElements[index].AsRoslynLocation());
+        return DiagnosticConstruction.TypeNotUnit_Null(definition.Locations.SignatureElements[index].AsRoslynLocation());
     }
 
-    public Diagnostic UnitElementNullOrEmpty(IDerivedUnitValidatorContext context, DerivedUnitDefinition definition, int index)
+    public Diagnostic NullUnitElement(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition, int index)
     {
-        return DiagnosticConstruction.TypeNotUnit_Null(definition.ParsingData.Locations.UnitsElements[index].AsRoslynLocation());
+        return DiagnosticConstruction.TypeNotUnit_Null(definition.Locations.UnitsElements[index].AsRoslynLocation());
     }
+
+    public Diagnostic EmptyUnitElement(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition, int index)
+        => NullUnitElement(context, definition, index);
 }

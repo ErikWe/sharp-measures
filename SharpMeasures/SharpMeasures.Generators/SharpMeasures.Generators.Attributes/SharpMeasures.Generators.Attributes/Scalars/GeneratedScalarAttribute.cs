@@ -11,8 +11,9 @@ public sealed class GeneratedScalarAttribute : Attribute
 
     /// <summary>The quantity that is considered the "vector version" of the scalar, if one exists. This is often the vector for which
     /// this scalar represents the magnitude.</summary>
-    /// <remarks>For example, <i>Velocity</i> is considered the vector for <i>Speed</i>.
-    /// <para>There may be multiple such quantities, in which case the most similar or most fundamental quantity should be used.</para></remarks>
+    /// <remarks>For example, <i>Velocity</i> could be considered the "vector version" of <i>Speed</i>.
+    /// <para>There may be multiple such quantities, in which case the most similar or most fundamental quantity should be used.</para>
+    /// <para>If the vector quantity is associated with multiple types representing different dimensions, any of the associated types can be specified.</para></remarks>
     public Type? Vector { get; init; }
 
     /// <summary>Dictates whether this quantity requires a bias term.</summary>
@@ -25,6 +26,17 @@ public sealed class GeneratedScalarAttribute : Attribute
     /// <summary>The symbol of the default unit.</summary>
     /// <remarks>This is used by ToString(), together with <see cref="DefaultUnitName"/>.</remarks>
     public string? DefaultUnitSymbol { get; init; }
+
+    /// <summary>The scalar quantity that is considered the reciprocal, or inverse, of this quantity, if one exists.</summary>
+    public Type? Reciprocal { get; init; }
+    /// <summary>The scalar quantity that is considered the square of this quantity, if one exists.</summary>
+    public Type? Square { get; init; }
+    /// <summary>The scalar quantity that is considered the cube of this quantity, if one exists.</summary>
+    public Type? Cube { get; init; }
+    /// <summary>The scalar quantity that is considered the square root of this quantity, if one exists.</summary>
+    public Type? SquareRoot { get; init; }
+    /// <summary>The scalar quantity that is considered the cube root of this quantity, if one exists.</summary>
+    public Type? CubeRoot { get; init; }
 
     /// <summary>Dictates whether documentation should be generated for this quantity.</summary>
     /// <remarks>If this property is not explicitly set, the entry [<i>SharpMeasures_GenerateDocumentation</i>] in the global AnalyzerConfig

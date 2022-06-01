@@ -29,7 +29,9 @@ public static partial class DiagnosticIDs
     public const string TypeAlreadyDefined = $"{Prefix}{Numbering.Hundreds.Misc}04";
 
     public const string ScalarNotUnbiased = $"{Prefix}{Numbering.Hundreds.Misc}20";
-    public const string UnitNotSupportingBias = $"{Prefix}{Numbering.Hundreds.Misc}21";
+    public const string ScalarNotBiased = $"{Prefix}{Numbering.Hundreds.Misc}21";
+    public const string UnitNotSupportingBias = $"{Prefix}{Numbering.Hundreds.Misc}22";
 
-    public const string DuplicateListing = $"{Prefix}{Numbering.Hundreds.Misc}80";
+    public const string EmptyList = $"{Prefix}{Numbering.Hundreds.Misc}80";
+    public const string DuplicateListing = $"{Prefix}{Numbering.Hundreds.Misc}81";
 }

@@ -9,7 +9,10 @@ using System.Linq;
 
 public interface IResultWithDiagnostics<T> : IOptionalWithDiagnostics<T>
 {
-    new public abstract IResultWithDiagnostics<T> Update(IOptionalWithDiagnostics<T> potentialUpdate);
+    new public abstract IResultWithDiagnostics<T> AddDiagnostics(IEnumerable<Diagnostic> diagnostics);
+    new public abstract IResultWithDiagnostics<T> AddDiagnostics(params Diagnostic[] diagnostics);
+    new public abstract IResultWithDiagnostics<T> ReplaceDiagnostics(IEnumerable<Diagnostic> diagnostics);
+    new public abstract IResultWithDiagnostics<T> ReplaceDiagnostics(params Diagnostic[] diagnostics);
 }
 
 public static class ResultWithDiagnostics
@@ -24,9 +27,14 @@ public static class ResultWithDiagnostics
         return Construct(result, diagnostics as IEnumerable<Diagnostic>);
     }
 
-    public static IResultWithDiagnostics<T> WithoutDiagnostics<T>(T result)
+    public static IResultWithDiagnostics<T> Construct<T>(T result, Diagnostic? diagnostics)
     {
-        return Construct(result, Array.Empty<Diagnostic>());
+        if (diagnostics is null)
+        {
+            return Construct(result);
+        }
+
+        return Construct(result, new[] { diagnostics });
     }
 
     private class SimpleResultWithDiagnostics<T> : IResultWithDiagnostics<T>
@@ -40,32 +48,37 @@ public static class ResultWithDiagnostics
             Diagnostics = diagnostics;
         }
 
-        public IResultWithDiagnostics<T> Update(T result)
+        public SimpleResultWithDiagnostics<T> AddDiagnostics(IEnumerable<Diagnostic> diagnostics)
         {
-            return new SimpleResultWithDiagnostics<T>(result, Diagnostics);
+            return new SimpleResultWithDiagnostics<T>(Result, Diagnostics.Concat(diagnostics));
         }
 
-        public IResultWithDiagnostics<T> Update(IResultWithDiagnostics<T> update)
+        public SimpleResultWithDiagnostics<T> AddDiagnostics(params Diagnostic[] diagnostics) => AddDiagnostics(diagnostics as IEnumerable<Diagnostic>);
+
+        public SimpleResultWithDiagnostics<T> ReplaceDiagnostics(IEnumerable<Diagnostic> diagnostics)
         {
-            return new SimpleResultWithDiagnostics<T>(update.Result, Diagnostics.Concat(update.Diagnostics));
+            return new SimpleResultWithDiagnostics<T>(Result, diagnostics);
         }
 
-        public IResultWithDiagnostics<T> Update(IOptionalWithDiagnostics<T> update)
-        {
-            if (update.HasResult)
-            {
-                return new SimpleResultWithDiagnostics<T>(update.Result, Diagnostics.Concat(update.Diagnostics));
-            }
+        public SimpleResultWithDiagnostics<T> ReplaceDiagnostics(params Diagnostic[] diagnostics) => ReplaceDiagnostics(diagnostics as IEnumerable<Diagnostic>);
 
-            return new SimpleResultWithDiagnostics<T>(Result, Diagnostics.Concat(update.Diagnostics));
-        }
+        IOptionalWithDiagnostics IOptionalWithDiagnostics.AddDiagnostics(IEnumerable<Diagnostic> diagnostics) => AddDiagnostics(diagnostics);
+        IOptionalWithDiagnostics IOptionalWithDiagnostics.AddDiagnostics(params Diagnostic[] diagnostics) => AddDiagnostics(diagnostics);
+        IOptionalWithDiagnostics<T> IOptionalWithDiagnostics<T>.AddDiagnostics(IEnumerable<Diagnostic> diagnostics) => AddDiagnostics(diagnostics);
+        IOptionalWithDiagnostics<T> IOptionalWithDiagnostics<T>.AddDiagnostics(params Diagnostic[] diagnostics) => AddDiagnostics(diagnostics);
+        IResultWithDiagnostics<T> IResultWithDiagnostics<T>.AddDiagnostics(IEnumerable<Diagnostic> diagnostics) => AddDiagnostics(diagnostics);
+        IResultWithDiagnostics<T> IResultWithDiagnostics<T>.AddDiagnostics(params Diagnostic[] diagnostics) => AddDiagnostics(diagnostics);
+        IOptionalWithDiagnostics IOptionalWithDiagnostics.ReplaceDiagnostics(IEnumerable<Diagnostic> diagnostics) => ReplaceDiagnostics(diagnostics);
+        IOptionalWithDiagnostics IOptionalWithDiagnostics.ReplaceDiagnostics(params Diagnostic[] diagnostics) => ReplaceDiagnostics(diagnostics);
+        IOptionalWithDiagnostics<T> IOptionalWithDiagnostics<T>.ReplaceDiagnostics(IEnumerable<Diagnostic> diagnostics) => ReplaceDiagnostics(diagnostics);
+        IOptionalWithDiagnostics<T> IOptionalWithDiagnostics<T>.ReplaceDiagnostics(params Diagnostic[] diagnostics) => ReplaceDiagnostics(diagnostics);
+        IResultWithDiagnostics<T> IResultWithDiagnostics<T>.ReplaceDiagnostics(IEnumerable<Diagnostic> diagnostics) => ReplaceDiagnostics(diagnostics);
+        IResultWithDiagnostics<T> IResultWithDiagnostics<T>.ReplaceDiagnostics(params Diagnostic[] diagnostics) => ReplaceDiagnostics(diagnostics);
 
         public IEnumerator<Diagnostic> GetEnumerator() => Diagnostics.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         bool IOptionalWithDiagnostics.HasResult => true;
         bool IOptionalWithDiagnostics.LacksResult => false;
-
-        IOptionalWithDiagnostics<T> IOptionalWithDiagnostics<T>.Update(IOptionalWithDiagnostics<T> update) => Update(update);
     }
 }

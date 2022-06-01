@@ -2,5 +2,5 @@
 
 public interface IAttributeDefinition
 {
-    public abstract IAttributeParsingData ParsingData { get; }
+    public abstract IAttributeLocations Locations { get; }
 }

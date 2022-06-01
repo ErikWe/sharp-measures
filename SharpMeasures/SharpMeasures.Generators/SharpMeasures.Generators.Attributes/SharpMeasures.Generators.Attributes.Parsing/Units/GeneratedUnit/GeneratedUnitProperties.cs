@@ -8,10 +8,10 @@ using System.Collections.Generic;
 
 internal static class GeneratedUnitProperties
 {
-    public static IReadOnlyList<IAttributeProperty<GeneratedUnitDefinition>> AllProperties => new IAttributeProperty<GeneratedUnitDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawGeneratedUnitDefinition>> AllProperties => new IAttributeProperty<RawGeneratedUnitDefinition>[]
     {
         Quantity,
-        AllowBias,
+        SupportsBiasedQuantities,
         GenerateDocumentation
     };
 
@@ -22,24 +22,17 @@ internal static class GeneratedUnitProperties
         locator: static (locations, quantityLocation) => locations with { Quantity = quantityLocation }
     );
 
-    private static GeneratedUnitProperty<bool> AllowBias { get; } = new
+    private static GeneratedUnitProperty<bool> SupportsBiasedQuantities { get; } = new
     (
-        name: nameof(GeneratedUnitAttribute.AllowBias),
-        setter: static (definition, allowBias) => definition with { AllowBias = allowBias },
-        locator: static (locations, allowBiasLocation) => locations with { AllowBias = allowBiasLocation }
+        name: nameof(GeneratedUnitAttribute.SupportsBiasedQuantities),
+        setter: static (definition, allowBias) => definition with { SupportsBiasedQuantities = allowBias },
+        locator: static (locations, allowBiasLocation) => locations with { SupportsBiasedQuantities = allowBiasLocation }
     );
 
     private static GeneratedUnitProperty<bool> GenerateDocumentation { get; } = new
     (
         name: nameof(GeneratedUnitAttribute.GenerateDocumentation),
-        setter: static (definition, generateDocumentation) =>
-        {
-            return definition with
-            {
-                GenerateDocumentation = generateDocumentation,
-                ParsingData = definition.ParsingData with { ExplicitlySetGenerateDocumentation = true }
-            };
-        },
+        setter: static (definition, generateDocumentation) => definition with { GenerateDocumentation = generateDocumentation },
         locator: static (locations, generateDocumentationLocation) => locations with { GenerateDocumentation = generateDocumentationLocation }
     );
 }

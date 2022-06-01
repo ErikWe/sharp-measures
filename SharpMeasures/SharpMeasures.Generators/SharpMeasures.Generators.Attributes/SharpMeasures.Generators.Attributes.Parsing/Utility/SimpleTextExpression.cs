@@ -2,25 +2,30 @@
 
 internal static class SimpleTextExpression
 {
-    public static string Interpret(string original, string expression)
+    public static string? Interpret(string? original, string? expression)
     {
-        if (string.IsNullOrEmpty(expression))
+        if (original is null || expression is null || expression.Length is 0)
         {
-            return string.Empty;
+            return null;
         }
 
         string[] splitByOpenBracket = expression.Split('[');
 
+        if (splitByOpenBracket.Length is 0)
+        {
+            return expression;
+        }
+
         if (splitByOpenBracket.Length is not 2)
         {
-            return string.Empty;
+            return null;
         }
 
         string[] splitByCloseBracket = splitByOpenBracket[1].Split(']');
 
         if (splitByCloseBracket.Length is not 2)
         {
-            return string.Empty;
+            return null;
         }
 
         string targetText = splitByCloseBracket[0];
@@ -31,7 +36,7 @@ internal static class SimpleTextExpression
         }    
         else if (original.Contains(targetText) is false)
         {
-            return string.Empty;
+            return null;
         }
 
         string newText = splitByOpenBracket[0] + targetText + splitByCloseBracket[1];

@@ -5,19 +5,19 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing.Units;
 using SharpMeasures.Generators.Diagnostics;
 
-internal class PrefixedUnitDiagnostics : ADependantUnitDiagnostics<PrefixedUnitDefinition>, IPrefixedUnitDiagnostics
+internal class PrefixedUnitDiagnostics : ADependantUnitDiagnostics<RawPrefixedUnitDefinition>, IPrefixedUnitDiagnostics
 {
     public static PrefixedUnitDiagnostics Instance { get; } = new();
 
     private PrefixedUnitDiagnostics() { }
 
-    public Diagnostic UnrecognizedMetricPrefix(IDependantUnitValidatorContext context, PrefixedUnitDefinition definition)
+    public Diagnostic UnrecognizedMetricPrefix(IDependantUnitProcessingContext context, RawPrefixedUnitDefinition definition)
     {
-        return DiagnosticConstruction.UnrecognizedPrefix(definition.ParsingData.Locations.MetricPrefixName.AsRoslynLocation(), definition.MetricPrefixName);
+        return DiagnosticConstruction.UnrecognizedPrefix(definition.Locations.MetricPrefixName?.AsRoslynLocation(), definition.MetricPrefixName);
     }
 
-    public Diagnostic UnrecognizedBinaryPrefix(IDependantUnitValidatorContext context, PrefixedUnitDefinition definition)
+    public Diagnostic UnrecognizedBinaryPrefix(IDependantUnitProcessingContext context, RawPrefixedUnitDefinition definition)
     {
-        return DiagnosticConstruction.UnrecognizedPrefix(definition.ParsingData.Locations.BinaryPrefixName.AsRoslynLocation(), definition.BinaryPrefixName);
+        return DiagnosticConstruction.UnrecognizedPrefix(definition.Locations.BinaryPrefixName?.AsRoslynLocation(), definition.BinaryPrefixName);
     }
 }

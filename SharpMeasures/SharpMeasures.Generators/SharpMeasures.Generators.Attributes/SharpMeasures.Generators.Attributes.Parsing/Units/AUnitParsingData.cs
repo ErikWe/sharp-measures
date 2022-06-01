@@ -1,14 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-using System;
-using System.Text.RegularExpressions;
-
-public abstract record class AUnitParsingData<TLocations> : AAttributeParsingData<TLocations>, IUnitParsingData
-    where TLocations : AUnitLocations
+public abstract record class AUnitParsingData : IUnitParsingData
 {
-    IUnitLocations IUnitParsingData.Locations => Locations;
-
-    public string InterpretedPlural { get; init; } = string.Empty;
-
-    protected AUnitParsingData(TLocations locations) : base(locations) { }
+    public string? InterpretedPlural { get; init; }
 }

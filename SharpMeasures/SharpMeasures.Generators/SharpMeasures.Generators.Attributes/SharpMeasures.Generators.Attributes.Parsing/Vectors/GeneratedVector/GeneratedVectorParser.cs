@@ -4,11 +4,11 @@ using SharpMeasures.Generators.Vectors;
 
 public static class GeneratedUnitParser
 {
-    public static IAttributeParser<GeneratedVectorDefinition> Parser { get; } = new AttributeParser();
+    public static IAttributeParser<RawGeneratedVectorDefinition> Parser { get; } = new AttributeParser();
 
-    private static GeneratedVectorDefinition DefaultDefiniton() => GeneratedVectorDefinition.Empty;
+    private static RawGeneratedVectorDefinition DefaultDefiniton() => RawGeneratedVectorDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<GeneratedVectorDefinition, GeneratedVectorParsingData, GeneratedVectorLocations, GeneratedVectorAttribute>
+    private class AttributeParser : AAttributeParser<RawGeneratedVectorDefinition, GeneratedVectorLocations, GeneratedVectorAttribute>
     {
         public AttributeParser() : base(DefaultDefiniton, GeneratedVectorProperties.AllProperties) { }
     }

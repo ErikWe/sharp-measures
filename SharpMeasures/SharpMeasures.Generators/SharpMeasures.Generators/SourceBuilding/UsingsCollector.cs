@@ -38,6 +38,19 @@ internal class UsingsCollector
         CollectedUsings.Add(name);
     }
 
+    public void AddUsings(IEnumerable<string> names)
+    {
+        foreach (string name in names)
+        {
+            AddUsing(name);
+        }
+    }
+
+    public void AddUsings(params string[] names)
+    {
+        AddUsings(names as IEnumerable<string>);
+    }
+
     public void InsertUsings()
     {
         if (CollectedUsings.Count > 0)

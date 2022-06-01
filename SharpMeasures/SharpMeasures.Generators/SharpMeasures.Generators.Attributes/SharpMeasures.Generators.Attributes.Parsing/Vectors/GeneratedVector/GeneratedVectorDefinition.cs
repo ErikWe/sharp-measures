@@ -1,16 +1,29 @@
-namespace SharpMeasures.Generators.Attributes.Parsing.Vectors;
+﻿namespace SharpMeasures.Generators.Attributes.Parsing.Vectors;
 
-public record class GeneratedVectorDefinition : AAttributeDefinition<GeneratedVectorParsingData, GeneratedVectorLocations>
+public record class GeneratedVectorDefinition : AAttributeDefinition<GeneratedVectorLocations>
 {
-    internal static GeneratedVectorDefinition Empty => new();
+    public NamedType Unit { get; }
+    public NamedType? Scalar { get; }
 
-    public NamedType Unit { get; init; }
-    public NamedType Scalar { get; init; }
+    public int Dimension { get; }
 
-    public string DefaultUnitName { get; init; } = string.Empty;
-    public string DefaultUnitSymbol { get; init; } = string.Empty;
+    public string? DefaultUnitName { get; }
+    public string? DefaultUnitSymbol { get; }
 
-    public bool GenerateDocumentation { get; init; }
+    public bool GenerateDocumentation { get; }
 
-    private GeneratedVectorDefinition() : base(GeneratedVectorParsingData.Empty) { }
+    public GeneratedVectorDefinition(NamedType unit, NamedType? scalar, int dimension, string? defaultUnitName,
+        string? defaultUnitSymbol, bool generateDocumentation, GeneratedVectorLocations locations)
+        : base(locations)
+    {
+        Unit = unit;
+        Scalar = scalar;
+
+        Dimension = dimension;
+
+        DefaultUnitName = defaultUnitName;
+        DefaultUnitSymbol = defaultUnitSymbol;
+
+        GenerateDocumentation = generateDocumentation;
+    }
 }

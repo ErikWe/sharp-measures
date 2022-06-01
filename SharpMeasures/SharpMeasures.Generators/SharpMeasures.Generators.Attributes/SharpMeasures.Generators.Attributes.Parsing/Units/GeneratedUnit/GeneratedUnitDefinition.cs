@@ -1,14 +1,19 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Units;
 
-public record class GeneratedUnitDefinition : AAttributeDefinition<GeneratedUnitParsingData, GeneratedUnitLocations>
+public record class GeneratedUnitDefinition : AAttributeDefinition<GeneratedUnitLocations>
 {
-    internal static GeneratedUnitDefinition Empty { get; } = new();
+    public NamedType Quantity { get; }
 
-    public NamedType Quantity { get; init; }
+    public bool SupportsBiasedQuantities { get; }
 
-    public bool AllowBias { get; init; }
+    public bool GenerateDocumentation { get; }
 
-    public bool GenerateDocumentation { get; init; }
+    public GeneratedUnitDefinition(NamedType quantity, bool supportsBiasedQuantities, bool generateDocumentation, GeneratedUnitLocations locations)
+        : base(locations)
+    {
+        Quantity = quantity;
 
-    private GeneratedUnitDefinition() : base(GeneratedUnitParsingData.Empty) { }
+        SupportsBiasedQuantities = supportsBiasedQuantities;
+        GenerateDocumentation = generateDocumentation;
+    }
 }

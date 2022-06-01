@@ -3,11 +3,11 @@
 internal static class CommonProperties
 {
     public static IAttributeProperty<TDefinition> Name<TDefinition, TParsingData, TLocations>(string name)
-        where TDefinition : AUnitDefinition<TParsingData, TLocations>
-        where TParsingData : AUnitParsingData<TLocations>
+        where TDefinition : ARawUnitDefinition<TParsingData, TLocations>
+        where TParsingData : AUnitParsingData
         where TLocations : AUnitLocations
     {
-        return new AttributeProperty<TDefinition, TParsingData, TLocations, string>
+        return new AttributeProperty<TDefinition, TLocations, string>
         (
             name: name,
             setter: static (definition, name) => definition with { Name = name },
@@ -16,11 +16,11 @@ internal static class CommonProperties
     }
 
     public static IAttributeProperty<TDefinition> Plural<TDefinition, TParsingData, TLocations>(string name)
-        where TDefinition : AUnitDefinition<TParsingData, TLocations>
-        where TParsingData : AUnitParsingData<TLocations>
+        where TDefinition : ARawUnitDefinition<TParsingData, TLocations>
+        where TParsingData : AUnitParsingData
         where TLocations : AUnitLocations
     {
-        return new AttributeProperty<TDefinition, TParsingData, TLocations, string>
+        return new AttributeProperty<TDefinition, TLocations, string>
         (
             name: name,
             setter: static (definition, plural) => definition with { Plural = plural },
@@ -29,11 +29,11 @@ internal static class CommonProperties
     }
 
     public static IAttributeProperty<TDefinition> DependantOn<TDefinition, TParsingData, TLocations>(string name)
-        where TDefinition : ADependantUnitDefinition<TParsingData, TLocations>
-        where TParsingData : ADependantUnitParsingData<TLocations>
+        where TDefinition : ARawDependantUnitDefinition<TParsingData, TLocations>
+        where TParsingData : AUnitParsingData
         where TLocations : ADependantUnitLocations
     {
-        return new AttributeProperty<TDefinition, TParsingData, TLocations, string>
+        return new AttributeProperty<TDefinition, TLocations, string>
         (
             name: name,
             setter: static (definition, dependantOn) => definition with { DependantOn = dependantOn },

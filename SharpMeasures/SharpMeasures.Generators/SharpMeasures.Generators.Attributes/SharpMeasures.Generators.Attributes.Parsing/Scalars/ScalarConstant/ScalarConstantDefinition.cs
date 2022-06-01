@@ -1,15 +1,22 @@
 namespace SharpMeasures.Generators.Attributes.Parsing.Scalars;
 
-public record class ScalarConstantDefinition : AAttributeDefinition<ScalarConstantParsingData, ScalarConstantLocations>
+public record class ScalarConstantDefinition : AAttributeDefinition<ScalarConstantLocations>
 {
-    internal static ScalarConstantDefinition Empty { get; } = new();
+    public string Name { get; }
+    public double Value { get; }
+    public string Unit { get; }
 
-    public string Name { get; init; } = string.Empty;
-    public double Value { get; init; }
-    public string Unit { get; init; } = string.Empty;
+    public bool GenerateMultiplesProperty { get; }
+    public string? MultiplesName { get; }
 
-    public bool GenerateMultiplesProperty { get; init; }
-    public string MultiplesName { get; init; } = string.Empty;
+    public ScalarConstantDefinition(string name, double value, string unit, bool generateMultiplesProperty, string? multiplesName, ScalarConstantLocations locations)
+        : base(locations)
+    {
+        Name = name;
+        Value = value;
+        Unit = unit;
 
-    private ScalarConstantDefinition() : base(ScalarConstantParsingData.Empty) { }
+        GenerateMultiplesProperty = generateMultiplesProperty;
+        MultiplesName = multiplesName;
+    }
 }
