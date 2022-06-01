@@ -36,6 +36,12 @@ internal class GeneratedScalarProcesser : IProcesser<GeneratedScalarProcessingCo
 
     public IOptionalWithDiagnostics<ProcessedGeneratedScalar> Process(GeneratedScalarProcessingContext context, GeneratedScalarDefinition input)
     {
+        if (context.UnitPopulation.Population.ContainsKey(context.Type.AsNamedType()))
+        {
+            var diagnostics = GeneratedScalarDiagnostics.TypeAlreadyUnit(input.Locations.Attribute, context.Type.AsNamedType());
+            return OptionalWithDiagnostics.Empty<ProcessedGeneratedScalar>(diagnostics);
+        }
+
         var processedUnit = ProcessUnit(context, input);
         var allDiagnostics = processedUnit.Diagnostics;
 

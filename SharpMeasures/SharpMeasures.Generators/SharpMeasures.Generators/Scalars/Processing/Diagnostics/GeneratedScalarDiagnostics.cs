@@ -8,6 +8,11 @@ using SharpMeasures.Generators.Units;
 
 internal static class GeneratedScalarDiagnostics
 {
+    public static Diagnostic TypeAlreadyUnit(MinimalLocation? location, NamedType type)
+    {
+        return DiagnosticConstruction.TypeAlreadyDefined_AsUnit_Scalar(location?.AsRoslynLocation(), type.Name);
+    }
+
     public static Diagnostic TypeNotUnit(GeneratedScalarDefinition definition)
     {
         return DiagnosticConstruction.TypeNotUnit(definition.Locations.Unit?.AsRoslynLocation(), definition.Unit.Name);
