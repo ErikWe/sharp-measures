@@ -72,19 +72,19 @@ internal static class Execution
             foreach (ScalarInterface quantity in Data.DimensionallyEquivalentScalars.EquivalentQuantities)
             {
                 ComposeInstanceConversion(quantity, indentation);
-                Builder.Append(Environment.NewLine);
+                Builder.AppendLine();
             }
 
             foreach (ScalarInterface quantity in Data.DimensionallyEquivalentScalars.EquivalentQuantitiesWithImplicitCast)
             {
                 ComposeOperatorConversion(quantity, indentation, "implicit");
-                Builder.Append(Environment.NewLine);
+                Builder.AppendLine();
             }
 
             foreach (ScalarInterface quantity in Data.DimensionallyEquivalentScalars.EquivalentQuantitiesWithExplicitCast)
             {
                 ComposeOperatorConversion(quantity, indentation, "explicit");
-                Builder.Append(Environment.NewLine);
+                Builder.AppendLine();
             }
 
             SourceBuildingUtility.RemoveOneNewLine(Builder);

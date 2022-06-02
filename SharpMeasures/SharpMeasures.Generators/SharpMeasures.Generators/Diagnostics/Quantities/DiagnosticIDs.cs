@@ -13,5 +13,5 @@ public static partial class DiagnosticIDs
     public const string UnrecognizedCastOperatorBehaviour = $"{Prefix}{Numbering.Hundreds.Quantities}40";
 
     public const string ContradictoryAttributes = $"{Prefix}{Numbering.Hundreds.Quantities}60";
-    public const string QuantityGroupMissingBase = $"{Prefix}{Numbering.Hundreds.Quantities}61";
+    public const string QuantityGroupMissingRoot = $"{Prefix}{Numbering.Hundreds.Quantities}61";
 }

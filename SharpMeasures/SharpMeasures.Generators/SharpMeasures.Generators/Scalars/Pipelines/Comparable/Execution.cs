@@ -69,7 +69,7 @@ internal static class Execution
             AppendDocumentation(indentation, ScalarDocumentationTags.Comparable.CompareTo_SameType);
             Builder.Append($"{indentation}public int CompareTo({Data.Scalar.Name} other) => Magnitude.Value.CompareTo(other.Magnitude.Value);{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.Comparable.Operators.LessThan_SameType);
             Builder.Append($"{indentation}public static bool operator <({Data.Scalar.Name} x, {Data.Scalar.Name} y) " +

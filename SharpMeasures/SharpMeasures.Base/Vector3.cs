@@ -40,13 +40,6 @@ public readonly record struct Vector3 :
     public Scalar Z { get; }
 
     /// <inheritdoc/>
-    Scalar IVector3Quantity.XMagnitude => X;
-    /// <inheritdoc/>
-    Scalar IVector3Quantity.YMagnitude => Y;
-    /// <inheritdoc/>
-    Scalar IVector3Quantity.ZMagnitude => Z;
-
-    /// <inheritdoc/>
     Vector3 IVector3Quantity.Components => this;
 
     /// <summary>Constructs a new <see cref="Vector3"/> with components (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>).</summary>

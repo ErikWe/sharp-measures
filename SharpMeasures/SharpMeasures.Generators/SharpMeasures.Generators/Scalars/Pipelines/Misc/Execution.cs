@@ -55,7 +55,7 @@ internal static class Execution
 
             InterfaceBuilding.AppendInterfaceImplementation(Builder, new string[]
             {
-                $"IScalar"
+                "IScalar"
             });
 
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0);
@@ -71,12 +71,12 @@ internal static class Execution
             AppendDocumentation(indentation, ScalarDocumentationTags.Zero);
             Builder.Append($"{indentation}public static {Data.Scalar.Name} Zero {{ get; }} = new(0);{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.Magnitude);
             Builder.Append($"{indentation}public Scalar Magnitude {{ get; }}{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.Constructor_Scalar);
             Builder.Append($@"{indentation}public {Data.Scalar.Name}(Scalar magnitude)
@@ -85,56 +85,56 @@ internal static class Execution
 {indentation}}}
 ");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.Constructor_Double);
             Builder.Append($"{indentation}public {Data.Scalar.Name}(double magnitude){Environment.NewLine}");
             Builder.Append($"{indentation.Increased}: this(new Scalar(magnitude)) {{ }}{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.Constructor_DoubleUnit);
             Builder.Append($"{indentation}public {Data.Scalar.Name}(double magnitude, {Data.Unit.Name} {Data.Unit.ParameterName}){Environment.NewLine}");
             Builder.Append($"{indentation.Increased}: this({ConstructorComputeMagnitude()}) {{ }}{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.Constructor_ScalarUnit);
             Builder.Append($"{indentation}public {Data.Scalar.Name}(Scalar magnitude, {Data.Unit.Name} {Data.Unit.ParameterName}){Environment.NewLine}");
             Builder.Append($"{indentation.Increased}: this(magnitude.Value, {Data.Unit.ParameterName}) {{ }}{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.InUnit);
             Builder.Append($"{indentation}public Scalar InUnit({Data.Unit.Name} {Data.Unit.ParameterName}){Environment.NewLine}");
             Builder.Append($"{indentation.Increased}=> new({InUnitComputeMagnitude()});{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendToString(indentation);
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.ToScalar);
             Builder.Append($"{indentation}public Scalar ToScalar() => Magnitude;{Environment.NewLine}");
             AppendDocumentation(indentation, ScalarDocumentationTags.Operators.ToScalar);
             Builder.Append($"{indentation}public static explicit operator Scalar({Data.Scalar.Name} x) => x.Magnitude;{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.ToDouble);
             Builder.Append($"{indentation}public double ToDouble() => Magnitude.Value;{Environment.NewLine}");
             AppendDocumentation(indentation, ScalarDocumentationTags.Operators.ToDouble);
             Builder.Append($"{indentation}public static explicit operator double({Data.Scalar.Name} x) => x.Magnitude.Value;{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.FromScalar);
             Builder.Append($"{indentation}public static {Data.Scalar.Name} FromScalar(Scalar x) => new(x);{Environment.NewLine}");
             AppendDocumentation(indentation, ScalarDocumentationTags.Operators.FromScalar);
             Builder.Append($"{indentation}public static explicit operator {Data.Scalar.Name}(Scalar x) => new(x);{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.FromDouble);
             Builder.Append($"{indentation}public static {Data.Scalar.Name} FromDouble(double x) => new(x);{Environment.NewLine}");

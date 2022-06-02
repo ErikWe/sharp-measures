@@ -70,7 +70,7 @@ internal static class Execution
             Builder.Append($"{indentation}public int CompareTo({Data.Unit.Name} other) " +
                 $"=> {Data.Quantity.Name}.Magnitude.Value.CompareTo(other.{Data.Quantity.Name}.Magnitude.Value);{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, UnitDocumentationTags.Comparable.Operators.LessThan_SameType);
             Builder.Append($"{indentation}public static bool operator <({Data.Unit.Name} x, {Data.Unit.Name} y) " +

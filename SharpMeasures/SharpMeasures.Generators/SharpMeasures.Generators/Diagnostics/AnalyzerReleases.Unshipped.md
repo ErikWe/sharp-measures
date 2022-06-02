@@ -35,9 +35,10 @@ Measures1223 | Naming | Warning | Duplicate name for multiples of constant
 Measures1224 | Naming | Warning | Constant shares name with unit
 Measures1240 | Usage | Warning | Unrecognized cast operator behaviour
 Measures1260 | Usage | Warning | Contradictory attributes
-Measures1261 | Usage | Warning | Quantity group missing base quantity
+Measures1261 | Usage | Warning | Quantity group missing root quantity
 Measures1420 | Usage | Warning | Invalid vector dimension
 Measures1421 | Usage | Warning | Missing vector dimension
+Measures1422 | Usage | Warning | Duplicate vector dimension
 Measures1900 | Documentation | Info | Unresolved documentation dependency
 Measures1901 | Documentation | Info | No matching documentation file
 Measures1902 | Documentation | Info | Documentation tag not found

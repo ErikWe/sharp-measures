@@ -37,6 +37,9 @@ internal static class Execution
         private UsingsCollector UsingsCollector { get; }
         private List<Diagnostic> Diagnostics { get; } = new();
 
+        private static VectorTexts DoubleTupleText { get; } = VectorTexts.CommaSeparatedElements_LowerCased("double");
+        private static VectorTexts ScalarTupleText { get; } = VectorTexts.CommaSeparatedElements_LowerCased("Scalar");
+
         private Composer(SourceProductionContext context, DataModel data)
         {
             Context = context;
@@ -79,14 +82,14 @@ internal static class Execution
                 UsingsCollector.AddUsing(vector.VectorType.Namespace);
 
                 ComposeForVector(indentation, vector);
-                Builder.Append(Environment.NewLine);
+                Builder.AppendLine();
             }
         }
 
         private void ComposeForVector(Indentation indentation, VectorInterface vector)
         {
-            string doubleTuple = TupleTexts.GetDoubleTupleText(vector.Dimension);
-            string scalarTuple = TupleTexts.GetScalarTupleText(vector.Dimension);
+            string doubleTuple = $"({DoubleTupleText.GetText(vector.Dimension)}";
+            string scalarTuple = $"({ScalarTupleText.GetText(vector.Dimension)}";
 
             AppendDocumentation(indentation, ScalarDocumentationTags.Vectors.Multiply_Vector(vector.Dimension));
             Builder.Append($"{indentation}public {vector.VectorType.Name} Multiply(Vector{vector.Dimension} factor) => new(Magnitude.Value * factor);{Environment.NewLine}");
@@ -97,7 +100,7 @@ internal static class Execution
             AppendDocumentation(indentation, ScalarDocumentationTags.Vectors.Multiply_ScalarTuple(vector.Dimension));
             Builder.Append($"{indentation}public {vector.VectorType.Name} Multiply({scalarTuple} components) => new(Magnitude * components);{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.Vectors.Operators.Multiply_Vector_LHS(vector.Dimension));
             Builder.Append($"{indentation}public static {vector.VectorType.Name} operator *({Data.Scalar.Name} x, Vector{vector.Dimension} y) => new(x.Magnitude.Value * y);{Environment.NewLine}");
@@ -121,42 +124,6 @@ internal static class Execution
         private void AppendDocumentation(Indentation indentation, string tag)
         {
             DocumentationBuilding.AppendDocumentation(Context, Builder, Data.Documentation, indentation, tag);
-        }
-
-        private static class TupleTexts
-        {
-            private static Dictionary<int, string> DoubleTupleTexts { get; } = new();
-            private static Dictionary<int, string> ScalarTupleTexts { get; } = new();
-
-            public static string GetDoubleTupleText(int cardinality) => GetOrComposeTupleText(cardinality, "double", DoubleTupleTexts);
-            public static string GetScalarTupleText(int cardinality) => GetOrComposeTupleText(cardinality, "Scalar", ScalarTupleTexts);
-
-            private static string GetOrComposeTupleText(int cardinality, string type, Dictionary<int, string> cache)
-            {
-                if (cache.TryGetValue(cardinality, out var text))
-                {
-                    return text;
-                }
-
-                text = ComposeTupleText(type, cardinality);
-                cache.Add(cardinality, text);
-                return text;
-            }
-
-            private static string ComposeTupleText(string type, int cardinality)
-            {
-                StringBuilder source = new();
-                IterativeBuilding.AppendEnumerable(source, "(", components(), ", ", ")");
-                return source.ToString();
-
-                IEnumerable<string> components()
-                {
-                    for (int i = 0; i < cardinality; i++)
-                    {
-                        yield return type;
-                    }
-                }
-            }
         }
     }
 }

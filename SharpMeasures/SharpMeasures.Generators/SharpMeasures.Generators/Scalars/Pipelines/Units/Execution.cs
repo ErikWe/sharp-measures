@@ -71,7 +71,7 @@ internal static class Execution
                     $"new({constant.Value}, {Data.Unit.Name}.{constant.Unit.Name});{Environment.NewLine}");
             }
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             foreach (UnitInstance includedBase in Data.Bases)
             {
@@ -80,7 +80,7 @@ internal static class Execution
                     $"{Data.Unit.Name}.{includedBase.Name}.{Data.UnitQuantity.Name};{Environment.NewLine}");
             }
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             foreach (ProcessedScalarConstant constant in Data.Constants)
             {
@@ -91,7 +91,7 @@ internal static class Execution
                 }
             }
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             foreach (UnitInstance includedUnit in Data.Units)
             {

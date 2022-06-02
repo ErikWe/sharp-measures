@@ -119,11 +119,11 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor QuantityGroupMissingBase = new DiagnosticDescriptor
+    public readonly static DiagnosticDescriptor QuantityGroupMissingRoot = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.QuantityGroupMissingBase,
-        title: "Quantity group missing base quantity",
-        messageFormat: "Could not identify the base quantity of the associated group of quantities. Exactly one quantity in the group should be decorated " +
+        id: DiagnosticIDs.QuantityGroupMissingRoot,
+        title: "Quantity group missing root quantity",
+        messageFormat: "Could not identify the root of the group of associated quantities. Exactly one quantity in the group should be decorated " +
             "with the attribute {0}.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,

@@ -43,11 +43,11 @@ public readonly record struct Unhandled3 :
     public Vector3 Components => new(X.Magnitude, Y.Magnitude, Z.Magnitude);
 
     /// <summary>The magnitude of the X-component of the <see cref="Unhandled3"/>.</summary>
-    Scalar IVector3Quantity.XMagnitude => X.Magnitude;
+    Scalar IVector3Quantity.X => X.Magnitude;
     /// <summary>The magnitude of the Y-component of the <see cref="Unhandled3"/>.</summary>
-    Scalar IVector3Quantity.YMagnitude => Y.Magnitude;
+    Scalar IVector3Quantity.Y => Y.Magnitude;
     /// <summary>The magnitude of the Z-component of the <see cref="Unhandled3"/>.</summary>
-    Scalar IVector3Quantity.ZMagnitude => Z.Magnitude;
+    Scalar IVector3Quantity.Z => Z.Magnitude;
 
     /// <summary>Constructs a new <see cref="Unhandled3"/> with components (<paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/>).</summary>
     /// <param name="x">The X-component of the <see cref="Unhandled3"/>.</param>

@@ -138,7 +138,12 @@ internal static class VectorParsingStage
                     continue;
                 }
 
-                ungroupedResizedVectors.Add(resizedVector);
+                if (vectors.Resized.Population.ContainsKey(resizedVector.AssociatedTo))
+                {
+                    ungroupedResizedVectors.Add(resizedVector);
+                    continue;
+                }
+
                 continue;
             }
 

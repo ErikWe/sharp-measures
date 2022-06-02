@@ -9,9 +9,9 @@ public sealed class GeneratedVectorAttribute : Attribute
     /// <summary>The unit that describes the scalar quantity.</summary>
     public Type Unit { get; }
 
-    /// <summary>The quantity that is considered the "scalar version" of the vector, if one exists. This is often the scalar that describes the
-    /// magnitude of the vector.</summary>
-    /// <remarks>For example, <i>Speed</i> is considered the scalar for <i>Velocity</i>.
+    /// <summary>The quantity that is considered the "scalar version" of the vector, if one exists. This is the scalar that describes the
+    /// magnitude and components of the vector.</summary>
+    /// <remarks>For example, <i>Length</i> could be considered the "scalar version" of <i>Position3</i>.
     /// <para>There may be multiple such quantities, in which case the most similar or most fundamental quantity should be used.</para></remarks>
     public Type? Scalar { get; init; }
 

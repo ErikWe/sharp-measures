@@ -18,7 +18,18 @@ internal static partial class DiagnosticRules
     (
         id: DiagnosticIDs.MissingVectorDimension,
         title: "Missing vector dimension",
-        messageFormat: "Could not interpret the dimension for vector {0}. Specify the dimension manually, or rename the type to \"{0}X\", where X is the dimension.",
+        messageFormat: "Could not interpret the dimension for vector {0}. Specify the dimension manually, or change the name of the type to \"{0}X\", " +
+            "where X is the dimension.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public readonly static DiagnosticDescriptor DuplicateVectorDimension = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.DuplicateVectorDimension,
+        title: "Duplicate vector dimension",
+        messageFormat: "The group of resized vectors already contains a vector of dimension {0}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

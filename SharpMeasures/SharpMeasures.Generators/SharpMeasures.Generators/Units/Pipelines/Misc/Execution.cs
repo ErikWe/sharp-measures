@@ -89,21 +89,21 @@ internal static class Execution
                 Builder.Append($"{indentation}{Data.Quantity.Name} = {Data.Quantity.ParameterName};");
             }
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, UnitDocumentationTags.ScaledBy_Scalar);
             Builder.Append($"{indentation}public {Data.Unit.Name} ScaledBy(Scalar scale) => ScaledBy(scale.Value);{Environment.NewLine}");
             AppendDocumentation(indentation, UnitDocumentationTags.ScaledBy_Double);
             Builder.Append($"{indentation}public {Data.Unit.Name} ScaledBy(double scale) => new({Data.Quantity.Name} * scale);{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, UnitDocumentationTags.WithPrefix_Metric);
             Builder.Append($"{indentation}public {Data.Unit.Name} WithPrefix(MetricPrefix prefix) => ScaledBy(prefix.Factor);{Environment.NewLine}");
             AppendDocumentation(indentation, UnitDocumentationTags.WithPrefix_Binary);
             Builder.Append($"{indentation}public {Data.Unit.Name} WithPrefix(BinaryPrefix prefix) => ScaledBy(prefix.Factor);{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, UnitDocumentationTags.ToString);
             Builder.Append($@"{indentation}public override string ToString() => $""{{typeof({Data.Unit.Name})}}: [{{{Data.Quantity.Name}}}]"";{Environment.NewLine}");
@@ -131,25 +131,25 @@ internal static class Execution
                 Builder.Append($"{indentation}Offset = offset;");
             }
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
             AppendDocumentation(indentation, UnitDocumentationTags.ScaledBy_Scalar);
             Builder.Append($"{indentation}public {Data.Unit.Name} ScaledBy(Scalar scale) => ScaledBy(scale.Value);{Environment.NewLine}");
             AppendDocumentation(indentation, UnitDocumentationTags.ScaledBy_Double);
             Builder.Append($"{indentation}public {Data.Unit.Name} ScaledBy(double scale) => new({Data.Quantity.Name} * scale, Offset / scale);{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
             AppendDocumentation(indentation, UnitDocumentationTags.OffsetBy_Scalar);
             Builder.Append($"{indentation}public {Data.Unit.Name} OffsetBy(Scalar offset) => OffsetBy(offset.Value);{Environment.NewLine}");
             AppendDocumentation(indentation, UnitDocumentationTags.OffsetBy_Double);
             Builder.Append($"{indentation}public {Data.Unit.Name} OffsetBy(double offset) => new({Data.Quantity.Name}, Offset + offset);{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
             AppendDocumentation(indentation, UnitDocumentationTags.WithPrefix_Metric);
             Builder.Append($"{indentation}public {Data.Unit.Name} WithPrefix(MetricPrefix prefix) => ScaledBy(prefix.Factor);{Environment.NewLine}");
             AppendDocumentation(indentation, UnitDocumentationTags.WithPrefix_Binary);
             Builder.Append($"{indentation}public {Data.Unit.Name} WithPrefix(BinaryPrefix prefix) => ScaledBy(prefix.Factor);{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
             AppendDocumentation(indentation, UnitDocumentationTags.ToString);
             Builder.Append($"{indentation}public override string ToString() " +
                 $@"=> $""{{typeof({Data.Unit.Name})}}: ({{{Data.Quantity.Name}}} + {{Offset}})"";{Environment.NewLine}");

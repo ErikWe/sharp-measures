@@ -73,8 +73,8 @@ internal static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.ContradictoryAttributes, location, inclusionAttributeName, exclusionAttributeName);
     }
 
-    public static Diagnostic QuantityGroupMissingBase(Location? location, string baseAttributeName)
+    public static Diagnostic QuantityGroupMissingRoot<TAttribute>(Location? location)
     {
-        return Diagnostic.Create(DiagnosticRules.QuantityGroupMissingBase, location, baseAttributeName);
+        return Diagnostic.Create(DiagnosticRules.QuantityGroupMissingRoot, location, typeof(TAttribute).Name);
     }
 }

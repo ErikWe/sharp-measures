@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Units.Validation;
+using SharpMeasures.Generators.Units.Processing;
 
 using System.Threading;
 

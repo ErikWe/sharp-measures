@@ -1,9 +1,9 @@
-﻿namespace SharpMeasures.Generators.Units.Validation;
+﻿namespace SharpMeasures.Generators.Units.Processing;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Attributes.Parsing.Units;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Units.Validation.Diagnostics;
+using SharpMeasures.Generators.Units.Processing.Diagnostics;
 
 using System.Collections.Generic;
 

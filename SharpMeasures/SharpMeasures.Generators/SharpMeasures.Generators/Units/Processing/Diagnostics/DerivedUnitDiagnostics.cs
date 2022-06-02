@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Units.Validation.Diagnostics;
+﻿namespace SharpMeasures.Generators.Units.Processing.Diagnostics;
 
 using Microsoft.CodeAnalysis;
 

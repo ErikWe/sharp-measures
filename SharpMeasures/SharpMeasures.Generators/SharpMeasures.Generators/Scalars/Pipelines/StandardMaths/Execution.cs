@@ -99,7 +99,7 @@ internal static class Execution
             AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.IsNegativeInfinity);
             Builder.Append($"{indentation}public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude.Value);{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Absolute);
             Builder.Append($"{indentation}public {Data.Scalar.Name} Absolute() => new(Math.Abs(Magnitude.Value));{Environment.NewLine}");
@@ -112,12 +112,12 @@ internal static class Execution
             AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Truncate);
             Builder.Append($"{indentation}public {Data.Scalar.Name} Truncate() => new(Math.Truncate(Magnitude.Value));{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Sign);
             Builder.Append($"public int Sign() => Math.Sign(Magnitude.Value);{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendPowerFunctions(indentation);
 
@@ -132,7 +132,7 @@ internal static class Execution
             AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Operators.Negate);
             Builder.Append($"{indentation}public static {Data.Scalar.Name} operator -({Data.Scalar.Name} x) => -x;{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             if (Data.Square is not null)
             {
@@ -143,7 +143,7 @@ internal static class Execution
                 AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Operators.Multiply_SameType);
                 Builder.Append($"{indentation}public static {Data.Square.Value.Name} operator *({Data.Scalar.Name} x, {Data.Scalar.Name} y) => new(x.Magnitude.Value * y.Magnitude.Value);{Environment.NewLine}");
                 
-                Builder.Append(Environment.NewLine);
+                Builder.AppendLine();
             }
 
             AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Divide_SameType);
@@ -151,7 +151,7 @@ internal static class Execution
             AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Operators.Divide_SameType);
             Builder.Append($"{indentation}public static Scalar operator /({Data.Scalar.Name} x, {Data.Scalar.Name} y) => new(x.Magnitude.Value / y.Magnitude.Value);{Environment.NewLine}");
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Remainder_Scalar);
             Builder.Append($"{indentation}public {Data.Scalar.Name} Remainder(Scalar divisor) => new(Magnitude.Value % divisor.Value);{Environment.NewLine}");
@@ -172,7 +172,7 @@ internal static class Execution
                 Builder.Append($"{indentation}public static {Data.Reciprocal.Value.Name} operator /(Scalar x, {Data.Scalar.Name} y) => new(x.Value / y.Magnitude.Value);{Environment.NewLine}");
             }
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Remainder_Double);
             Builder.Append($"{indentation}public {Data.Scalar.Name} Remainder(double divisor) => new(Magnitude.Value % divisor);{Environment.NewLine}");
@@ -193,7 +193,7 @@ internal static class Execution
                 Builder.Append($"{indentation}public static {Data.Reciprocal.Value.Name} operator /(double x, {Data.Scalar.Name} y) => new(x / y.Magnitude.Value);{Environment.NewLine}");
             }
 
-            Builder.Append(Environment.NewLine);
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Multiply_Generic);
             Builder.Append($@"{indentation}public TProductScalar Multiply<TProductScalar, TFactorScalar>(TFactorScalar factor, Func<double, TProductScalar> factory)
@@ -293,7 +293,7 @@ internal static class Execution
 
             if (Builder.Length > startLength)
             {
-                Builder.Append(Environment.NewLine);
+                Builder.AppendLine();
             }
         }
 
@@ -348,7 +348,7 @@ internal static class Execution
 
             if (Builder.Length > startLength)
             {
-                Builder.Append(Environment.NewLine);
+                Builder.AppendLine();
             }
         }
 
