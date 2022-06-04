@@ -24,4 +24,7 @@ internal static class VectorDocumentationTags
     public const string Constructor_Unit_Doubles = nameof(Constructor_Unit_Doubles);
     public const string Constructor_Unit_DoubleTuple = nameof(Constructor_Unit_DoubleTuple);
     public const string Constructor_Unit_Vector = nameof(Constructor_Unit_Vector);
+
+    public const string Magnitude = nameof(Magnitude);
+    public const string SquaredMagnitude = nameof(SquaredMagnitude);
 }

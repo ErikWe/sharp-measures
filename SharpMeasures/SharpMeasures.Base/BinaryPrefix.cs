@@ -25,47 +25,35 @@ public readonly record struct BinaryPrefix :
     /// <summary>Denotes that the value should not be scaled, or scaled by one.</summary>
     public static BinaryPrefix Identity { get; } = new(1);
 
-    /// <summary>Constructs a custom <see cref="BinaryPrefix"/>, with factor 2^(<paramref name="power"/>).</summary>
-    /// <param name="power">The factor of the constructed <see cref="BinaryPrefix"/> will be 2 raised to this power.</param>
-    public static BinaryPrefix TwoToThePower(double power) => new(Math.Pow(2, power));
+    /// <summary>Constructs a custom <see cref="BinaryPrefix"/>, describing a factor { 2 ^ <paramref name="exponent"/> }.</summary>
+    /// <param name="exponent">The exponent of { 2 ^ <paramref name="exponent"/> }.</param>
+    public static BinaryPrefix TwoToThePower(Scalar exponent) => new(Math.Pow(2, exponent));
 
-    /// <summary>Constructs a custom <see cref="BinaryPrefix"/>, with factor (1 024)^(<paramref name="power"/>).</summary>
-    /// <param name="power">The factor of the constructed <see cref="BinaryPrefix"/> will be [1 024] raised to this power.</param>
-    public static BinaryPrefix ThousandTwentyFourToThePower(double power) => new(Math.Pow(1024, power));
+    /// <summary>Constructs a custom <see cref="BinaryPrefix"/>, describing a factor { 1 024 ^ <paramref name="exponent"/> }.</summary>
+    /// <param name="exponent">The exponent of { 1 024 ^ <paramref name="exponent"/> }.</param>
+    public static BinaryPrefix ThousandTwentyFourToThePower(Scalar exponent) => new(Math.Pow(1024, exponent));
 
-    /// <summary>The amount that values should be scaled by.</summary>
-    public Scalar Factor { get; init; }
+    /// <summary>The scale-factor of <see langword="this"/>.</summary>
+    public Scalar Factor { get; }
 
-    /// <summary>Constructs a new <see cref="BinaryPrefix"/> with <paramref name="factor"/>.</summary>
-    /// <param name="factor">The amount that values should be scaled by.</param>
+    /// <summary>Constructs a <see cref="BinaryPrefix"/> representing { <paramref name="factor"/> }.</summary>
+    /// <param name="factor">The scale-factor represented by the constructed <see cref="BinaryPrefix"/>.</param>
     public BinaryPrefix(Scalar factor)
     {
         Factor = factor;
     }
 
-    /// <summary>Constructs a new <see cref="BinaryPrefix"/> with <paramref name="factor"/>.</summary>
-    /// <param name="factor">The amount that values should be scaled by.</param>
-    public BinaryPrefix(double factor) : this(Scalar.FromDouble(factor)) { }
-
-    /// <inheritdoc/>
+    /// <inheritdoc cref="MetricPrefix.CompareTo(MetricPrefix)"/>
     public int CompareTo(BinaryPrefix other) => Factor.CompareTo(other.Factor);
-    /// <summary>Produces a formatted string from the factor of the <see cref="BinaryPrefix"/> - followed by 'x', to indicate scaling.</summary>
+    /// <inheritdoc cref="MetricPrefix.ToString"/>
     public override string ToString() => $"{Factor}x";
 
-    /// <summary>Determines whether the factor of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
-    /// <param name="x">The method determines whether the factor of this <see cref="BinaryPrefix"/> is less than that of <paramref name="y"/>.</param>
-    /// <param name="y">The method determines whether the factor of <paramref name="x"/> is less than that of this <see cref="BinaryPrefix"/>.</param>
+    /// <inheritdoc cref="MetricPrefix.operator &lt;"/>
     public static bool operator <(BinaryPrefix x, BinaryPrefix y) => x.Factor < y.Factor;
-    /// <summary>Determines whether the factor of <paramref name="x"/> is greater than that of <paramref name="y"/>.</summary>
-    /// <param name="x">The method determines whether the factor of this <see cref="BinaryPrefix"/> is greater than that of <paramref name="y"/>.</param>
-    /// <param name="y">The method determines whether the factor of <paramref name="x"/> is greater than that of this <see cref="BinaryPrefix"/>.</param>
+    /// <inheritdoc cref="MetricPrefix.operator &gt;"/>
     public static bool operator >(BinaryPrefix x, BinaryPrefix y) => x.Factor > y.Factor;
-    /// <summary>Determines whether the factor of <paramref name="x"/> is less than or equal to that of <paramref name="y"/>.</summary>
-    /// <param name="x">The method determines whether the factor of this <see cref="BinaryPrefix"/> is less than or equal to that of <paramref name="y"/>.</param>
-    /// <param name="y">The method determines whether the factor of <paramref name="x"/> is less than or equal to that of this <see cref="BinaryPrefix"/>.</param>
+    /// <inheritdoc cref="MetricPrefix.operator &lt;="/>
     public static bool operator <=(BinaryPrefix x, BinaryPrefix y) => x.Factor <= y.Factor;
-    /// <summary>Determines whether the factor of <paramref name="x"/> is greater than or equal to that of <paramref name="y"/>.</summary>
-    /// <param name="x">The method determines whether the factor of this <see cref="BinaryPrefix"/> is greater than or equal to that of <paramref name="y"/>.</param>
-    /// <param name="y">The method determines whether the factor of <paramref name="x"/> is greater than or equal to that of this <see cref="BinaryPrefix"/>.</param>
+    /// <inheritdoc cref="MetricPrefix.operator &gt;="/>
     public static bool operator >=(BinaryPrefix x, BinaryPrefix y) => x.Factor >= y.Factor;
 }

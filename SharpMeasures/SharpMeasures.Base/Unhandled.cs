@@ -1,309 +1,384 @@
-namespace SharpMeasures;
+﻿namespace SharpMeasures;
 
+using SharpMeasures.Maths;
 using SharpMeasures.ScalarAbstractions;
+using SharpMeasures.Vector3Abstractions;
 
 using System;
 
 /// <summary>A measure of a scalar quantity that is not covered by a designated type.</summary>
 public readonly record struct Unhandled :
     IComparable<Unhandled>,
-    IScalarQuantity,
-    IScalableScalarQuantity<Unhandled>,
-    IInvertibleScalarQuantity<Unhandled>,
-    ISquarableScalarQuantity<Unhandled>,
-    ICubableScalarQuantity<Unhandled>,
-    ISquareRootableScalarQuantity<Unhandled>,
-    ICubeRootableScalarQuantity<Unhandled>,
-    IAddableScalarQuantity<Unhandled, Unhandled>,
-    ISubtractableScalarQuantity<Unhandled, Unhandled>,
-    IMultiplicableScalarQuantity<Unhandled, Scalar>,
-    IDivisibleScalarQuantity<Unhandled, Scalar>,
-    IMultiplicableScalarQuantity<Unhandled, Unhandled>,
-    IDivisibleScalarQuantity<Unhandled, Unhandled>,
-    IGenericallyMultiplicableScalarQuantity,
-    IGenericallyDivisibleScalarQuantity
+    IScalarQuantity<Unhandled>,
+    IReciprocalScalarQuantity<Unhandled>,
+    ISquareScalarQuantity<Unhandled>,
+    ICubeScalarQuantity<Unhandled>,
+    ISquareRootScalarQuantity<Unhandled>,
+    ICubeRootScalarQuantity<Unhandled>,
+    IAddendScalarQuantity<Unhandled>,
+    IMinuendScalarQuantity<Unhandled>,
+    ISubtrahendScalarQuantity<Unhandled>,
+    IFactorScalarQuantity<Unhandled, Unhandled, Unhandled>,
+    IDividendScalarQuantity<Unhandled, Unhandled, Unhandled>,
+    IDivisorScalarQuantity<Unhandled, Unhandled, Unhandled>,
+    ISumScalarQuantity<Unhandled>,
+    IDifferenceScalarQuantity<Unhandled>,
+    IProductScalarQuantity<Unhandled, Unhandled, Unhandled>,
+    IQuotientScalarQuantity<Unhandled, Unhandled, Unhandled>,
+    IFactor3ScalarQuantity<Unhandled, Unhandled3, Unhandled3>,
+    IDivisor3ScalarQuantity<Unhandled, Unhandled3, Unhandled3>,
+    IDot3ProductScalarQuantity<Unhandled, Unhandled3, Unhandled3>,
+    IAddendScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
+    IMinuendScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
+    ISubtrahendScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
+    IFactorScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
+    IDividendScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
+    IDivisorScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
+    ISumScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
+    ISumScalarQuantity<Unhandled, IScalarQuantity, Unhandled>,
+    IDifferenceScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
+    IDifferenceScalarQuantity<Unhandled, IScalarQuantity, Unhandled>,
+    IProductScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
+    IProductScalarQuantity<Unhandled, IScalarQuantity, Unhandled>,
+    IQuotientScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
+    IQuotientScalarQuantity<Unhandled, IScalarQuantity, Unhandled>,
+    IFactor3ScalarQuantity<Unhandled, Unhandled3, IVector3Quantity>,
+    IDivisor3ScalarQuantity<Unhandled, Unhandled3, IVector3Quantity>,
+    IDot3ProductScalarQuantity<Unhandled, Unhandled3, IVector3Quantity>,
+    IDot3ProductScalarQuantity<Unhandled, IVector3Quantity, Unhandled3>
 {
-    /// <summary>A zero-magnitude <see cref="Unhandled"/> quantity.</summary>
+    /// <summary>The <see cref="Unhandled"/> representing { 0 }.</summary>
     public static Unhandled Zero { get; } = new(0);
-    /// <summary>An <see cref="Unhandled"/> quantity of magnitude 1.</summary>
+    /// <summary>The <see cref="Unhandled"/> representing { 1 }.</summary>
     public static Unhandled One { get; } = new(1);
 
-    /// <summary>The magnitude of the <see cref="Unhandled"/> quantity.</summary>
+    /// <inheritdoc/>
+    static Unhandled IScalarQuantity<Unhandled>.WithMagnitude(Scalar magnitude) => new(magnitude);
+
+    /// <summary>The magnitude of <see langword="this"/>.</summary>
     public Scalar Magnitude { get; }
 
-    /// <summary>Constructs a new <see cref="Unhandled"/> quantity with magnitude <paramref name="magnitude"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Unhandled"/> quantity.</param>
+    /// <summary>Constructs a new <see cref="Unhandled"/> representing { <paramref name="magnitude"/> }.</summary>
+    /// <param name="magnitude">The magnitude represented by the constructed <see cref="Unhandled"/>.</param>
     public Unhandled(Scalar magnitude)
     {
         Magnitude = magnitude;
     }
 
-    /// <summary>Constructs a new <see cref="Unhandled"/> quantity with magnitude <paramref name="magnitude"/>.</summary>
-    /// <param name="magnitude">The magnitude of the <see cref="Unhandled"/> quantity.</param>
-    public Unhandled(double magnitude) : this(Scalar.FromDouble(magnitude)) { }
+    /// <summary>Converts <see langword="this"/> to a scalar quantity <typeparamref name="TScalar"/> representing the same magnitude.</summary>
+    /// <typeparam name="TScalar"><see langword="this"/> is converted to a scalar quantity of this type.</typeparam>
+    public TScalar As<TScalar>() where TScalar : IScalarQuantity<TScalar> => TScalar.WithMagnitude(Magnitude);
 
-    /// <summary>Indicates whether the magnitude of the <see cref="Unhandled"/> quantity is NaN.</summary>
-    public bool IsNaN => double.IsNaN(Magnitude);
-    /// <summary>Indicates whether the magnitude of the <see cref="Unhandled"/> quantity is zero.</summary>
-    public bool IsZero => Magnitude == 0;
-    /// <summary>Indicates whether the magnitude of the <see cref="Unhandled"/> quantity is positive.</summary>
-    public bool IsPositive => Magnitude > 0;
-    /// <summary>Indicates whether the magnitude of the <see cref="Unhandled"/> quantity is negative.</summary>
-    public bool IsNegative => double.IsNegative(Magnitude);
-    /// <summary>Indicates whether the magnitude of the <see cref="Unhandled"/> quantity is finite.</summary>
-    public bool IsFinite => double.IsFinite(Magnitude);
-    /// <summary>Indicates whether the magnitude of the <see cref="Unhandled"/> quantity is infinite.</summary>
-    public bool IsInfinite => IsPositiveInfinity || IsNegativeInfinity;
-    /// <summary>Indicates whether the magnitude of the <see cref="Unhandled"/> quantity is infinite, and positive.</summary>
-    public bool IsPositiveInfinity => double.IsPositiveInfinity(Magnitude);
-    /// <summary>Indicates whether the magnitude of the <see cref="Unhandled"/> quantity is infinite, and negative.</summary>
-    public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude);
+    /// <inheritdoc cref="Scalar.IsNaN"/>
+    public bool IsNaN => Magnitude.IsNaN;
+    /// <inheritdoc cref="Scalar.IsZero"/>
+    public bool IsZero => Magnitude.IsZero;
+    /// <inheritdoc cref="Scalar.IsPositive"/>
+    public bool IsPositive => Magnitude.IsPositive;
+    /// <inheritdoc cref="Scalar.IsNegative"/>
+    public bool IsNegative => Magnitude.IsNegative;
+    /// <inheritdoc cref="Scalar.IsFinite"/>
+    public bool IsFinite => Magnitude.IsFinite;
+    /// <inheritdoc cref="Scalar.IsInfinite"/>
+    public bool IsInfinite => Magnitude.IsInfinite;
+    /// <inheritdoc cref="Scalar.IsPositiveInfinity"/>
+    public bool IsPositiveInfinity => Magnitude.IsPositiveInfinity;
+    /// <inheritdoc cref="Scalar.IsNegativeInfinity"/>v
+    public bool IsNegativeInfinity => Magnitude.IsNegativeInfinity;
 
-    /// <summary>Produces a <see cref="Unhandled"/> quantity, with magnitude equal to the absolute of the original magnitude.</summary>
-    public Unhandled Absolute() => new(Math.Abs(Magnitude));
-    /// <summary>Produces a <see cref="Unhandled"/>, with magnitude equal to the floor of the original magnitude.</summary>
-    public Unhandled Floor() => new(Math.Floor(Magnitude));
-    /// <summary>Produces a <see cref="Unhandled"/>, with magnitude equal to the ceiling of the original magnitude.</summary>
-    public Unhandled Ceiling() => new(Math.Ceiling(Magnitude));
-    /// <summary>Produces a <see cref="Unhandled"/>, with magnitude equal to the original magnitude, rounded to the nearest integer.</summary>
-    public Unhandled Round() => new(Math.Round(Magnitude));
+    /// <inheritdoc cref="Scalar.Absolute"/>
+    public Unhandled Absolute() => ScalarMaths.Absolute(this);
 
-    /// <summary>Computes the <see cref="Unhandled"/> quantity raised to the power <paramref name="exponent"/>.</summary>
-    /// <param name="exponent">The exponent, to which the <see cref="Unhandled"/> quantity is raised.</param>
-    public Unhandled Power(double exponent) => new(Math.Pow(Magnitude, exponent));
-    /// <summary>Computes the inverse of the <see cref="Unhandled"/> quantity.</summary>
-    public Unhandled Invert() => new(1 / Magnitude);
-    /// <summary>Computes the square of the <see cref="Unhandled"/> quantity.</summary>
-    public Unhandled Square() => new(Magnitude * Magnitude);
-    /// <summary>Computes the cube of the <see cref="Unhandled"/> quantity.</summary>
-    public Unhandled Cube() => new(Magnitude * Magnitude * Magnitude);
-    /// <summary>Computes the square root of the <see cref="Unhandled"/> quantity.</summary>
-    public Unhandled SquareRoot() => new(Math.Sqrt(Magnitude));
-    /// <summary>Computes the cube root of the <see cref="Unhandled"/> quantity.</summary>
-    public Unhandled CubeRoot() => new(Math.Cbrt(Magnitude));
+    /// <inheritdoc cref="Scalar.Power(Scalar)"/>
+    public Unhandled Power(Scalar exponent) => new(Magnitude.Power(exponent));
+    /// <inheritdoc cref="Scalar.Reciprocal"/>
+    public Unhandled Reciprocal() => ScalarMaths.Reciprocal(this);
+    /// <inheritdoc cref="Scalar.Square"/>
+    public Unhandled Square() => ScalarMaths.Square(this);
+    /// <inheritdoc cref="Scalar.Cube"/>
+    public Unhandled Cube() => ScalarMaths.Cube(this);
+    /// <inheritdoc cref="Scalar.SquareRoot"/>
+    public Unhandled SquareRoot() => ScalarMaths.SquareRoot(this);
+    /// <inheritdoc cref="Scalar.CubeRoot"/>
+    public Unhandled CubeRoot() => ScalarMaths.CubeRoot(this);
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Scalar.CompareTo(Scalar)"/>
     public int CompareTo(Unhandled other) => Magnitude.CompareTo(other.Magnitude);
-    /// <summary>Produces a formatted string from the magnitude of the <see cref="Unhandled"/> quantity, followed by the symbol '[undef]'.</summary>
-    public override string ToString() => $"{Magnitude} [undef]";
+    /// <inheritdoc cref="Scalar.ToString"/>
+    public override string ToString() => $"{nameof(Unhandled)}: {Magnitude.Value}";
 
-    /// <summary>Unary plus, resulting in the unmodified <see cref="Unhandled"/> quantity.</summary>
+    /// <inheritdoc/>
+    static Unhandled ISumScalarQuantity<Unhandled, Unhandled, Unhandled>.From(Unhandled x, Unhandled y) => x + y;
+    /// <inheritdoc/>
+    static Unhandled IDifferenceScalarQuantity<Unhandled, Unhandled, Unhandled>.From(Unhandled x, Unhandled y) => x - y;
+    /// <inheritdoc/>
+    static Unhandled IProductScalarQuantity<Unhandled, Unhandled, Unhandled>.From(Unhandled x, Unhandled y) => x * y;
+    /// <inheritdoc/>
+    static Unhandled IQuotientScalarQuantity<Unhandled, Unhandled, Unhandled>.From(Unhandled x, Unhandled y) => x / y;
+    /// <inheritdoc/>
+    static Unhandled IDot3ProductScalarQuantity<Unhandled, Unhandled3, Unhandled3>.From(Unhandled3 a, Unhandled3 b) => ScalarMaths.Dot3(a, b);
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    static Unhandled ISumScalarQuantity<Unhandled, Unhandled, IScalarQuantity>.From(Unhandled x, IScalarQuantity y) => x + y;
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    static Unhandled ISumScalarQuantity<Unhandled, IScalarQuantity, Unhandled>.From(IScalarQuantity x, Unhandled y) => x + y;
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    static Unhandled IDifferenceScalarQuantity<Unhandled, Unhandled, IScalarQuantity>.From(Unhandled x, IScalarQuantity y) => x - y;
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    static Unhandled IDifferenceScalarQuantity<Unhandled, IScalarQuantity, Unhandled>.From(IScalarQuantity x, Unhandled y) => x - y;
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    static Unhandled IProductScalarQuantity<Unhandled, Unhandled, IScalarQuantity>.From(Unhandled x, IScalarQuantity y) => x * y;
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    static Unhandled IProductScalarQuantity<Unhandled, IScalarQuantity, Unhandled>.From(IScalarQuantity x, Unhandled y) => x * y;
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    static Unhandled IQuotientScalarQuantity<Unhandled, Unhandled, IScalarQuantity>.From(Unhandled x, IScalarQuantity y) => x / y;
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    static Unhandled IQuotientScalarQuantity<Unhandled, IScalarQuantity, Unhandled>.From(IScalarQuantity x, Unhandled y) => x / y;
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    static Unhandled IDot3ProductScalarQuantity<Unhandled, Unhandled3, IVector3Quantity>.From(Unhandled3 a, IVector3Quantity b)
+    {
+        ArgumentNullException.ThrowIfNull(b);
+
+        return ScalarMaths.Dot3(a, b);
+    }
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    static Unhandled IDot3ProductScalarQuantity<Unhandled, IVector3Quantity, Unhandled3>.From(IVector3Quantity a, Unhandled3 b)
+    {
+        ArgumentNullException.ThrowIfNull(a);
+
+        return ScalarMaths.Dot3(a, b);
+    }
+
+    /// <inheritdoc/>
     public Unhandled Plus() => this;
-    /// <summary>Negation, resulting in a <see cref="Unhandled"/> quantity with negated magnitude.</summary>
-    public Unhandled Negate() => new(-Magnitude);
-    /// <summary>Unary plus, resulting in the unmodified <paramref name="x"/>.</summary>
-    /// <param name="x">Unary plus is applied to this <see cref="Unhandled"/> quantity.</param>
-    public static Unhandled operator +(Unhandled x) => x.Plus();
-    /// <summary>Negation, resulting in an <see cref="Unhandled"/> quantity with negated magnitude from that of <paramref name="x"/>.</summary>
-    /// <param name="x">Negation is applied to this <see cref="Unhandled"/> quantity.</param>
-    public static Unhandled operator -(Unhandled x) => x.Negate();
-
-    /// <summary>Adds <paramref name="term"/> to the <see cref="Unhandled"/> quantity.</summary>
-    /// <param name="term">This value is added to the <see cref="Unhandled"/> quantity.</param>
-    public Unhandled Add(Unhandled term) => new(Magnitude + term.Magnitude);
-    /// <summary>Subtracts <paramref name="term"/> from the <see cref="Unhandled"/> quantity.</summary>
-    /// <param name="term">This value is subtracted from the <see cref="Unhandled"/> quantity.</param>
-    public Unhandled Subtract(Unhandled term) => new(Magnitude - term.Magnitude);
-    /// <summary>Addition of <paramref name="x"/> and <paramref name="y"/>.</summary>
-    /// <param name="x">The first term of the addition.</param>
-    /// <param name="y">The second term of the addition.</param>
-    public static Unhandled operator +(Unhandled x, Unhandled y) => x.Add(y);
-    /// <summary>Subtraction of <paramref name="y"/> from <paramref name="x"/>.</summary>
-    /// <param name="x">The original value, from which <paramref name="y"/> is subtracted.</param>
-    /// <param name="y">This value is subtracted from <paramref name="x"/>.</param>
-    public static Unhandled operator -(Unhandled x, Unhandled y) => x.Subtract(y);
-
-    /// <summary>Multiplies this <see cref="Unhandled"/> quantity by another <see cref="Unhandled"/> quantity <paramref name="factor"/>.</summary>
-    /// <param name="factor">The factor by which the original <see cref="Unhandled"/> quantity is multiplied.</param>
-    public Unhandled Multiply(Unhandled factor) => new(Magnitude * factor.Magnitude);
-    /// <summary>Divides this <see cref="Unhandled"/> quantity by another <see cref="Unhandled"/> quantity <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor by which the original <see cref="Unhandled"/> quantity is divided.</param>
-    public Unhandled Divide(Unhandled divisor) => new(Magnitude / divisor.Magnitude);
-    /// <summary>Multiplication of the <see cref="Unhandled"/> quantities <paramref name="x"/> and <paramref name="y"/>.</summary>
-    /// <param name="x">The first factor of the multiplication.</param>
-    /// <param name="y">The second factor of the multiplication.</param>
-    public static Unhandled operator *(Unhandled x, Unhandled y) => x.Multiply(y);
-    /// <summary>Division of the <see cref="Unhandled"/> quantities <paramref name="x"/> by <paramref name="y"/>.</summary>
-    /// <param name="x">The numerator, which is divided by <paramref name="y"/>.</param>
-    /// <param name="y">The denominator, which divides <paramref name="x"/>.</param>
-    public static Unhandled operator /(Unhandled x, Unhandled y) => x.Divide(y);
-
-    /// <summary>Computes the remainder from division of the <see cref="Unhandled"/> quantity by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The remainder is produced from division by this value.</param>
-    public Unhandled Remainder(double divisor) => new(Magnitude % divisor);
-    /// <summary>Scales the <see cref="Unhandled"/> quantity by <paramref name="factor"/>.</summary>
-    /// <param name="factor">The factor by which the <see cref="Unhandled"/> quantity is scaled.</param>
-    public Unhandled Multiply(double factor) => new(Magnitude * factor);
-    /// <summary>Scales the <see cref="Unhandled"/> quantity through division by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, by which the <see cref="Unhandled"/> quantity is divided.</param>
-    public Unhandled Divide(double divisor) => new(Magnitude / divisor);
-    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
-    /// <param name="x">The <see cref="Unhandled"/> quantity, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is produced from division of the <see cref="Unhandled"/> quantity <paramref name="x"/> by this value.</param>
-    public static Unhandled operator %(Unhandled x, double y) => x.Remainder(y);
-    /// <summary>Scales the <see cref="Unhandled"/> quantity <paramref name="x"/> by <paramref name="y"/>.</summary>
-    /// <param name="x">The <see cref="Unhandled"/> quantity, which is scaled by <paramref name="y"/>.</param>
-    /// <param name="y">This value is used to scale the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
-    public static Unhandled operator *(Unhandled x, double y) => x.Multiply(y);
-    /// <summary>Scales the <see cref="Unhandled"/> quantity <paramref name="y"/> by <paramref name="x"/>.</summary>
-    /// <param name="x">This value is used to scale the <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity, which is scaled by <paramref name="x"/>.</param>
-    public static Unhandled operator *(double x, Unhandled y) => y.Multiply(x);
-    /// <summary>Scales the <see cref="Unhandled"/> quantity <paramref name="x"/> through division by <paramref name="y"/>.</summary>
-    /// <param name="x">The <see cref="Unhandled"/> quantity, which is divided by <paramref name="y"/>.</param>
-    /// <param name="y">This value is used to divide the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
-    public static Unhandled operator /(Unhandled x, double y) => x.Divide(y);
-    /// <summary>Inverts the <see cref="Unhandled"/> quantity <paramref name="y"/>, and then scales it by <paramref name="x"/>.</summary>
-    /// <param name="x">This value is used to scale the inverted <see cref="Unhandled"/> quantity <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity, which is inverted and then scaled by <paramref name="x"/>.</param>
-    public static Unhandled operator /(double x, Unhandled y) => new(x / y.Magnitude);
-
-    /// <summary>Computes the remainder from division of the <see cref="Unhandled"/> quantity by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The remainder is produced from division by this value.</param>
-    public Unhandled Remainder(Scalar divisor) => new(Magnitude % divisor.Value);
-    /// <summary>Scales the <see cref="Unhandled"/> quantity by <paramref name="factor"/>.</summary>
-    /// <param name="factor">The factor by which the <see cref="Unhandled"/> quantity is scaled.</param>
-    public Unhandled Multiply(Scalar factor) => new(Magnitude * factor.Value);
-    /// <summary>Scales the <see cref="Unhandled"/> quantity through division by <paramref name="divisor"/>.</summary>
-    /// <param name="divisor">The divisor, by which the <see cref="Unhandled"/> quantity is divided.</param>
-    public Unhandled Divide(Scalar divisor) => new(Magnitude / divisor.Value);
-    /// <summary>Computes the remainder from division of <paramref name="x"/> by <paramref name="y"/>.</summary>
-    /// <param name="x">The <see cref="Unhandled"/> quantity, which is divided by <paramref name="y"/> to produce a remainder.</param>
-    /// <param name="y">The remainder is produced from division of the <see cref="Unhandled"/> quantity <paramref name="x"/> by this value.</param>
-    public static Unhandled operator %(Unhandled x, Scalar y) => x.Remainder(y);
-    /// <summary>Scales the <see cref="Unhandled"/> quantity <paramref name="x"/> by <paramref name="y"/>.</summary>
-    /// <param name="x">The <see cref="Unhandled"/> quantity, which is scaled by <paramref name="y"/>.</param>
-    /// <param name="y">This value is used to scale the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
-    public static Unhandled operator *(Unhandled x, Scalar y) => x.Multiply(y);
-    /// <summary>Scales the <see cref="Unhandled"/> quantity <paramref name="x"/> through division by <paramref name="y"/>.</summary>
-    /// <param name="x">The <see cref="Unhandled"/> quantity, which is divided by <paramref name="y"/>.</param>
-    /// <param name="y">This value is used to divide the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
-    public static Unhandled operator /(Unhandled x, Scalar y) => x.Divide(y);
+    /// <inheritdoc/>
+    public Unhandled Negate() => -this;
 
     /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"></exception>
-    public TProductScalarQuantity Multiply<TProductScalarQuantity, TFactorScalarQuantity>(TFactorScalarQuantity factor, Func<Scalar, TProductScalarQuantity> factory)
-        where TProductScalarQuantity : IScalarQuantity
-        where TFactorScalarQuantity : IScalarQuantity
-    {
-        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
-        ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+    public Unhandled Add(Unhandled addend) => this + addend;
+    /// <inheritdoc/>
+    public Unhandled Subtract(Unhandled subtrahend) => this - subtrahend;
+    /// <inheritdoc/>
+    Unhandled ISubtrahendScalarQuantity<Unhandled, Unhandled>.SubtractFrom(Unhandled minuend) => minuend - this;
+    /// <inheritdoc/>
+    public Unhandled Multiply(Unhandled factor) => this * factor;
+    /// <inheritdoc/>
+    public Unhandled Divide(Unhandled divisor) => this / divisor;
+    /// <inheritdoc/>
+    Unhandled IDivisorScalarQuantity<Unhandled, Unhandled>.DivideInto(Unhandled dividend) => dividend / this;
 
-        return factory(Magnitude * factor.Magnitude);
-    }
+    /// <inheritdoc/>
+    public Unhandled Remainder(Scalar divisor) => this % divisor;
+    /// <inheritdoc/>
+    public Unhandled Multiply(Scalar factor) => this * factor;
+    /// <inheritdoc/>
+    public Unhandled Divide(Scalar divisor) => this / divisor;
 
-    /// <summary>Multiplies the <see cref="Unhandled"/> quantity by <paramref name="factor"/> of type <typeparamref name="TFactorScalarQuantity"/>.</summary>
-    /// <typeparam name="TFactorScalarQuantity">The type of the quantity by which this <see cref="Unhandled"/> quantity is multiplied.</typeparam>
-    /// <param name="factor">The <see cref="Unhandled"/> quantity is multiplied by this quantity.</param>
+    /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
-    public Unhandled Multiply<TFactorScalarQuantity>(TFactorScalarQuantity factor) where TFactorScalarQuantity : IScalarQuantity
-    {
-        ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+    Unhandled IAddendScalarQuantity<Unhandled, IScalarQuantity>.Add(IScalarQuantity addend) => this + addend;
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    Unhandled IMinuendScalarQuantity<Unhandled, IScalarQuantity>.Subtract(IScalarQuantity subtrahend) => this - subtrahend;
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    Unhandled ISubtrahendScalarQuantity<Unhandled, IScalarQuantity>.SubtractFrom(IScalarQuantity minuend) => minuend - this;
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    Unhandled IFactorScalarQuantity<Unhandled, IScalarQuantity>.Multiply(IScalarQuantity factor) => this * factor;
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    Unhandled IDividendScalarQuantity<Unhandled, IScalarQuantity>.Divide(IScalarQuantity divisor) => this / divisor;
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    Unhandled IDivisorScalarQuantity<Unhandled, IScalarQuantity>.DivideInto(IScalarQuantity dividend) => dividend / this;
 
-        return new(Magnitude * factor.Magnitude);
+    /// <inheritdoc/>
+    Unhandled3 IFactor3ScalarQuantity<Unhandled3, Unhandled3>.Multiply(Unhandled3 factor) => this * factor;
+    /// <inheritdoc/>
+    Unhandled3 IDivisor3ScalarQuantity<Unhandled3, Unhandled3>.DivideInto(Unhandled3 dividend) => dividend / this;
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    Unhandled3 IFactor3ScalarQuantity<Unhandled3, IVector3Quantity>.Multiply(IVector3Quantity factor) => this * factor;
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    Unhandled3 IDivisor3ScalarQuantity<Unhandled3, IVector3Quantity>.DivideInto(IVector3Quantity dividend) => dividend / this;
+
+    /// <inheritdoc cref="IAddendScalarQuantity{TSum, TAddend}.Add(TAddend)"/>
+    /// <typeparam name="TAddend">The scalar quantity that represents the second addend of { <see langword="this"/> + <typeparamref name="TAddend"/> }.</typeparam>
+    public Unhandled Add<TAddend>(TAddend addend) where TAddend : IScalarQuantity => new(Magnitude + addend.Magnitude);
+
+    /// <inheritdoc cref="IMinuendScalarQuantity{TSum, TSubtrahend}.Subtract(TSubtrahend)"/>
+    /// <typeparam name="TSubtrahend">The scalar quantity that represents the subtrahend of { <see langword="this"/> - <typeparamref name="TSubtrahend"/> }.</typeparam>
+    public Unhandled Subtract<TSubtrahend>(TSubtrahend subtrahend) where TSubtrahend : IScalarQuantity => new(Magnitude - subtrahend.Magnitude);
+
+    /// <inheritdoc cref="ISubtrahendScalarQuantity{TSum, TMinuend}.SubtractFrom(TMinuend)"/>
+    /// <typeparam name="TMinuend">The scalar quantity that represents the minuend of { <typeparamref name="TMinuend"/> - <see langword="this"/> }.</typeparam>
+    public Unhandled SubtractFrom<TMinuend>(TMinuend minuend) where TMinuend : IScalarQuantity => new(minuend.Magnitude - Magnitude);
+
+    /// <inheritdoc cref="IFactorScalarQuantity{TSum, TFactor}.Multiply(TFactor)"/>
+    /// <typeparam name="TFactor">The scalar quantity that represents the second factor of { <see langword="this"/> ∙ <typeparamref name="TFactor"/> }.</typeparam>
+    public Unhandled Multiply<TFactor>(TFactor factor) where TFactor : IScalarQuantity => new(Magnitude * factor.Magnitude);
+
+    /// <inheritdoc cref="IDividendScalarQuantity{TSum, TDivisor}.Divide(TDivisor)"/>
+    /// <typeparam name="TDivisor">The scalar quantity that represents the divisor of { <see langword="this"/> / <typeparamref name="TDivisor"/> }.</typeparam>
+    public Unhandled Divide<TDivisor>(TDivisor divisor) where TDivisor : IScalarQuantity => new(Magnitude / divisor.Magnitude);
+
+    /// <inheritdoc cref="IDivisorScalarQuantity{TSum, TDividend}.DivideInto(TDividend)"/>
+    /// <typeparam name="TDividend">The scalar quantity that represents the dividend of { <typeparamref name="TDividend"/> / <see langword="this"/> }.</typeparam>
+    public Unhandled DivideInto<TDividend>(TDividend dividend) where TDividend : IScalarQuantity => new(dividend.Magnitude / Magnitude);
+
+    /// <inheritdoc/>
+    public static Unhandled operator +(Unhandled x) => x;
+    /// <inheritdoc/>
+    public static Unhandled operator -(Unhandled x) => new(-x.Magnitude);
+
+    /// <inheritdoc/>
+    public static Unhandled operator +(Unhandled x, Unhandled y) => new(x.Magnitude + y.Magnitude);
+    /// <inheritdoc/>
+    public static Unhandled operator -(Unhandled x, Unhandled y) => new(x.Magnitude - y.Magnitude);
+    /// <inheritdoc/>
+    public static Unhandled operator *(Unhandled x, Unhandled y) => new(x.Magnitude * y.Magnitude);
+    /// <inheritdoc/>
+    public static Unhandled operator /(Unhandled x, Unhandled y) => new(x.Magnitude / y.Magnitude);
+
+    /// <inheritdoc/>
+    public static Unhandled operator %(Unhandled x, Scalar y) => new(x.Magnitude % y);
+    /// <inheritdoc/>
+    public static Unhandled operator *(Unhandled x, Scalar y) => new(x.Magnitude * y);
+    /// <inheritdoc/>
+    public static Unhandled operator *(Scalar x, Unhandled y) => new(x * y.Magnitude);
+    /// <inheritdoc/>
+    public static Unhandled operator /(Unhandled x, Scalar y) => new(x.Magnitude / y);
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled operator +(Unhandled x, IScalarQuantity y)
+    {
+        ArgumentNullException.ThrowIfNull(y);
+
+        return new(x.Magnitude + y.Magnitude);
     }
 
     /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"></exception>
-    public TQuotientScalarQuantity Divide<TQuotientScalarQuantity, TDivisorScalarQuantity>(TDivisorScalarQuantity divisor, Func<Scalar, TQuotientScalarQuantity> factory)
-        where TQuotientScalarQuantity : IScalarQuantity
-        where TDivisorScalarQuantity : IScalarQuantity
-    {
-        ArgumentNullException.ThrowIfNull(factory, nameof(factory));
-        ArgumentNullException.ThrowIfNull(divisor, nameof(divisor));
-
-        return factory(Magnitude / divisor.Magnitude);
-    }
-
-    /// <summary>Divides the <see cref="Unhandled"/> quantity by <paramref name="divisor"/> of type <typeparamref name="TFactorScalarQuantity"/>.</summary>
-    /// <typeparam name="TFactorScalarQuantity">The type of the quantity by which this <see cref="Unhandled"/> quantity is divided.</typeparam>
-    /// <param name="divisor">The <see cref="Unhandled"/> quantity is divided by this quantity.</param>
     /// <exception cref="ArgumentNullException"/>
-    public Unhandled Divide<TFactorScalarQuantity>(TFactorScalarQuantity divisor) where TFactorScalarQuantity : IScalarQuantity
+    public static Unhandled operator +(IScalarQuantity x, Unhandled y)
     {
-        ArgumentNullException.ThrowIfNull(divisor, nameof(divisor));
+        ArgumentNullException.ThrowIfNull(x);
 
-        return new(Magnitude / divisor.Magnitude);
+        return new(x.Magnitude + y.Magnitude);
     }
 
-    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="x"/> by the quantity <paramref name="y"/>.</summary>
-    /// <param name="x">The <see cref="Unhandled"/> quantity, which is multiplied by <paramref name="y"/>.</param>
-    /// <param name="y">This quantity is multiplied by the <see cref="Unhandled"/> quantity <paramref name="x"/>.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TFactorScalarQuantity}(TFactorScalarQuantity)"/>.</remarks>
-    public static Unhandled operator *(Unhandled x, IScalarQuantity y) => x.Multiply(y);
-    /// <summary>Division of the <see cref="Unhandled"/> quantity <paramref name="x"/> by the quantity <paramref name="y"/>.</summary>
-    /// <param name="x">The <see cref="Unhandled"/> quantity, which is divided by <paramref name="y"/>.</param>
-    /// <param name="y">The <see cref="Unhandled"/> quantity <paramref name="x"/> is divided by this quantity.</param>
-    /// <remarks>To avoid boxing, prefer <see cref="Multiply{TFactorScalarQuantity}(TFactorScalarQuantity)"/>.</remarks>
-    public static Unhandled operator /(Unhandled x, IScalarQuantity y) => x.Divide(y);
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled operator -(Unhandled x, IScalarQuantity y)
+    {
+        ArgumentNullException.ThrowIfNull(y);
 
-    /// <summary>Multiplicates the <see cref="Unhandled"/> quantity with the <see cref="Vector3"/> <paramref name="factor"/> to produce
-    /// an <see cref="Unhandled3"/>.</summary>
-    /// <param name="factor">This <see cref="Vector3"/> is multiplied by the <see cref="Unhandled"/> quantity.</param>
-    public Unhandled3 Multiply(Vector3 factor) => new(factor * Magnitude);
-    /// <summary>Multiplicates the <see cref="Unhandled"/> quantity with the values of <paramref name="components"/> to produce
-    /// an <see cref="Unhandled3"/>.</summary>
-    /// <param name="components">These values are multiplied by the <see cref="Unhandled"/> quantity.</param>
-    public Unhandled3 Multiply((double x, double y, double z) components) => Multiply(new Vector3(components));
-    /// <summary>Multiplicates the <see cref="Unhandled"/> quantity with the values of <paramref name="components"/> to produce
-    /// an <see cref="Unhandled3"/>.</summary>
-    /// <param name="components">These values are multiplied by the <see cref="Unhandled"/>.</param>
-    public Unhandled3 Multiply((Scalar x, Scalar y, Scalar z) components) => Multiply(new Vector3(components));
-    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="a"/> with the <see cref="Vector3"/> <paramref name="b"/>
-    /// to produce an <see cref="Unhandled3"/>.</summary>
-    /// <param name="a">This <see cref="Unhandled"/> quantity is multiplied by the <see cref="Vector3"/> <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="Vector3"/> is multiplied by the <see cref="Unhandled"/> quantity <paramref name="a"/>.</param>
-    public static Unhandled3 operator *(Unhandled a, (double x, double y, double z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="b"/> with the values of <paramref name="a"/>
-    /// to produce an <see cref="Unhandled3"/>.</summary>
-    /// <param name="a">These values are multiplied by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="Unhandled"/> quantity is multiplied by the values of <paramref name="a"/>.</param>
-    public static Unhandled3 operator *((double x, double y, double z) a, Unhandled b) => b.Multiply(a);
-    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="a"/> with the values of <paramref name="b"/>
-    /// to produce an <see cref="Unhandled3"/>.</summary>
-    /// <param name="a">This <see cref="Unhandled"/> quantity is multiplied by the values of <paramref name="b"/>.</param>
-    /// <param name="b">These values are multiplied by the <see cref="Unhandled"/> quantity <paramref name="a"/>.</param>
-    public static Unhandled3 operator *(Unhandled a, (Scalar x, Scalar y, Scalar z) b) => a.Multiply(b);
-    /// <summary>Multiplication of the <see cref="Unhandled"/> quantity <paramref name="b"/> with the values of <paramref name="a"/>
-    /// to produce an <see cref="Unhandled3"/>.</summary>
-    /// <param name="a">These values are multiplied by the <see cref="Unhandled"/> quantity <paramref name="b"/>.</param>
-    /// <param name="b">This <see cref="Unhandled"/> quantity is multiplied by the values of <paramref name="a"/>.</param>
-    public static Unhandled3 operator *((Scalar x, Scalar y, Scalar z) a, Unhandled b) => b.Multiply(a);
+        return new(x.Magnitude - y.Magnitude);
+    }
 
-    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
-    /// <param name="x">The method determines whether the magnitude of this <see cref="Unhandled"/> is less than that of <paramref name="y"/>.</param>
-    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than that of this <see cref="Unhandled"/>.</param>
-    public static bool operator <(Unhandled x, Unhandled y) => x.Magnitude < y.Magnitude;
-    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than that of <paramref name="y"/>.</summary>
-    /// <param name="x">The method determines whether the magnitude of this <see cref="Unhandled"/> is greater than that of <paramref name="y"/>.</param>
-    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than that of this <see cref="Unhandled"/>.</param>
-    public static bool operator >(Unhandled x, Unhandled y) => x.Magnitude > y.Magnitude;
-    /// <summary>Determines whether the magnitude of <paramref name="x"/> is less than or equal to that of <paramref name="y"/>.</summary>
-    /// <param name="x">The method determines whether the magnitude of this <see cref="Unhandled"/> is less than or equal to that of <paramref name="y"/>.</param>
-    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is less than or equal to that of this <see cref="Unhandled"/>.</param>
-    public static bool operator <=(Unhandled x, Unhandled y) => x.Magnitude <= y.Magnitude;
-    /// <summary>Determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of <paramref name="y"/>.</summary>
-    /// <param name="x">The method determines whether the magnitude of this <see cref="Unhandled"/> is greater than or equal to that of <paramref name="y"/>.</param>
-    /// <param name="y">The method determines whether the magnitude of <paramref name="x"/> is greater than or equal to that of this <see cref="Unhandled"/>.</param>
-    public static bool operator >=(Unhandled x, Unhandled y) => x.Magnitude >= y.Magnitude;
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled operator -(IScalarQuantity x, Unhandled y)
+    {
+        ArgumentNullException.ThrowIfNull(x);
 
-    /// <summary>Converts the <see cref="Unhandled"/> quantity to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
-    public double ToDouble() => Magnitude;
-    /// <summary>Converts <paramref name="x"/> to a <see cref="double"/> with value <see cref="Magnitude"/>.</summary>
-    public static explicit operator double(Unhandled x) => x.Magnitude;
+        return new(x.Magnitude - y.Magnitude);
+    }
 
-    /// <summary>Converts the <see cref="Unhandled"/> quantity to a <see cref="Scalar"/> of equivalent magnitude.</summary>
-    public Scalar ToScalar() => new(Magnitude);
-    /// <summary>Converts <paramref name="x"/> to the <see cref="Scalar"/> of equivalent magnitude.</summary>
-    public static explicit operator Scalar(Unhandled x) => new(x.Magnitude);
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled operator *(Unhandled x, IScalarQuantity y)
+    {
+        ArgumentNullException.ThrowIfNull(y);
 
-    /// <summary>Constructs the <see cref="Unhandled"/> quantity of magnitude <paramref name="x"/>.</summary>
-    public static Unhandled FromDouble(double x) => new(x);
-    /// <summary>Constructs the <see cref="Unhandled"/> quantity of magnitude <paramref name="x"/>.</summary>
-    public static explicit operator Unhandled(double x) => new(x);
+        return new(x.Magnitude * y.Magnitude);
+    }
 
-    /// <summary>Constructs the <see cref="Unhandled"/> quantity of magnitude <paramref name="x"/>.</summary>
-    public static Unhandled FromScalar(Scalar x) => new(x);
-    /// <summary>Constructs the <see cref="Unhandled"/> quantity of magnitude <paramref name="x"/>.</summary>
-    public static explicit operator Unhandled(Scalar x) => new(x);
+    /// <inheritdoc cref="operator *(Unhandled, IScalarQuantity)"/>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled operator *(IScalarQuantity x, Unhandled y)
+    {
+        ArgumentNullException.ThrowIfNull(x);
+
+        return new(x.Magnitude * y.Magnitude);
+    }
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled operator /(Unhandled x, IScalarQuantity y)
+    {
+        ArgumentNullException.ThrowIfNull(y);
+
+        return new(x.Magnitude / y.Magnitude);
+    }
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled operator /(IScalarQuantity x, Unhandled y)
+    {
+        ArgumentNullException.ThrowIfNull(x);
+
+        return new(x.Magnitude / y.Magnitude);
+    }
+
+    /// <inheritdoc/>
+    public static Unhandled3 operator *(Unhandled a, Unhandled3 b) => new(a * b.X, a * b.Y, a * b.Z);
+    /// <inheritdoc/>
+    public static Unhandled3 operator *(Unhandled3 a, Unhandled b) => new(a.X * b, a.Y * b, a.Z * b);
+    /// <inheritdoc/>
+    public static Unhandled3 operator /(Unhandled3 a, Unhandled b) => new(a.X / b, a.Y / b, a.Z / b);
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled3 operator *(Unhandled a, IVector3Quantity b)
+    {
+        ArgumentNullException.ThrowIfNull(b);
+
+        return new(a * b.X, a * b.Y, a * b.Z);
+    }
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled3 operator *(IVector3Quantity a, Unhandled b)
+    {
+        ArgumentNullException.ThrowIfNull(a);
+
+        return new(a.X * b, a.Y * b, a.Z * b);
+    }
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled3 operator /(IVector3Quantity a, Unhandled b)
+    {
+        ArgumentNullException.ThrowIfNull(a);
+
+        return new(a.X / b, a.Y / b, a.Z / b);
+    }
+
+    /// <inheritdoc cref="Scalar.operator &lt;(Scalar, Scalar)"/>
+    public static bool operator <(Unhandled x, Unhandled y) => x.Magnitude.Value < y.Magnitude.Value;
+    /// <inheritdoc cref="Scalar.operator &gt;(Scalar, Scalar)"/>
+    public static bool operator >(Unhandled x, Unhandled y) => x.Magnitude.Value > y.Magnitude.Value;
+    /// <inheritdoc cref="Scalar.operator &lt;=(Scalar, Scalar)"/>
+    public static bool operator <=(Unhandled x, Unhandled y) => x.Magnitude.Value <= y.Magnitude.Value;
+    /// <inheritdoc cref="Scalar.operator &gt;=(Scalar, Scalar)"/>
+    public static bool operator >=(Unhandled x, Unhandled y) => x.Magnitude.Value >= y.Magnitude.Value;
+
+    /// <summary>Describes mathematical operations that result in a pure <see cref="Scalar"/>.</summary>
+    private static IScalarResultingMaths<Unhandled> ScalarMaths { get; } = MathFactory.ScalarResult<Unhandled>();
 }

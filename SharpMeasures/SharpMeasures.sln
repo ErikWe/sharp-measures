@@ -5,6 +5,7 @@ VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{502ED935-8C0A-4F7B-970F-D4632F731AF0}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
 	EndProjectSection
@@ -35,7 +36,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Dr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.RoslynUtility", "SharpMeasures.Generators\SharpMeasures.Generators.RoslynUtility\SharpMeasures.Generators.RoslynUtility.csproj", "{FC261826-1AB6-4011-9A67-A84E9386E555}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMeasures.Utility", "SharpMeasures.Utility\SharpMeasures.Utility.csproj", "{6E2735A9-05FD-4051-8A60-5C359A5874C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Utility", "SharpMeasures.Utility\SharpMeasures.Utility.csproj", "{6E2735A9-05FD-4051-8A60-5C359A5874C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

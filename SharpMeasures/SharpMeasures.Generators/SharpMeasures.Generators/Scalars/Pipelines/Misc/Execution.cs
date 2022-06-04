@@ -55,7 +55,7 @@ internal static class Execution
 
             InterfaceBuilding.AppendInterfaceImplementation(Builder, new string[]
             {
-                "IScalar"
+                "IScalarQuantity"
             });
 
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0);

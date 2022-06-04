@@ -46,11 +46,16 @@ internal static class Execution
             NewComponentType_LowerCased = Texts.NewComponentType_LowerCased(Data.Scalar is null ? "Scalar" : Data.Scalar.Value.Name);
 
             UsingsCollector = UsingsCollector.Delayed(Builder, Data.Vector.Namespace);
-            UsingsCollector.AddUsings("SharpMeasures", Data.Unit.Namespace);
+            UsingsCollector.AddUsings("SharpMeasures", "SharpMeasures.Maths", Data.Unit.Namespace);
 
             if (Data.Scalar is not null)
             {
                 UsingsCollector.AddUsing(Data.Scalar.Value.Namespace);
+            }
+
+            if (Data.Dimension is 3)
+            {
+                UsingsCollector.AddUsing("System.Numerics");
             }
         }
 
@@ -64,7 +69,7 @@ internal static class Execution
             UsingsCollector.MarkInsertionPoint();
 
             AppendDocumentation(new Indentation(0), VectorDocumentationTags.VectorHeader);
-            Builder.Append(Data.Vector.ComposeDeclaration());
+            Builder.AppendLine(Data.Vector.ComposeDeclaration());
 
             InterfaceBuilding.AppendInterfaceImplementation(Builder, new string[]
             {
@@ -84,7 +89,7 @@ internal static class Execution
         private void ComposeTypeBlock(Indentation indentation)
         {
             AppendDocumentation(indentation, VectorDocumentationTags.Zero);
-            Builder.Append($"{indentation}public static {Data.Vector.Name} Zero {{ get; }} = new({Texts.Zeros.GetText(Data.Dimension)});{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public static {Data.Vector.Name} Zero {{ get; }} = new({Texts.Zeros.GetText(Data.Dimension)});");
 
             Builder.AppendLine();
 
@@ -94,7 +99,23 @@ internal static class Execution
 
             ComposeConstructors(indentation);
 
-            // TODO: for SquaredMagnitude(), we could gain access to the square of the component through ScalarInterface.
+            Builder.AppendLine();
+
+            ComposeMagnitude(indentation);
+
+            Builder.AppendLine();
+
+            AppendDocumentation(indentation, VectorDocumentationTags.Normalize);
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name} Normalize() => this / {(Data.Scalar is null ? "Magnitude()" : "Magnitude().Magnitude")};");
+
+            if (Data.Dimension is 3)
+            {
+                AppendDocumentation(indentation, VectorDocumentationTags.Transform);
+                Builder.AppendLine($"{indentation}public {Data.Vector.Name} Transform(Matrix4x4 transform) => VectorMaths.Transform(this, transform);");
+            }
+
+            AppendDocumentation(indentation, VectorDocumentationTags.Dot_Vector);
+            Builder.Append($"{indentation}public {Data.}")
         }
 
         private void ComposeComponents(Indentation indentation)
@@ -124,18 +145,51 @@ internal static class Execution
             ComposeCommonConstructors(indentation);
         }
 
+        private void ComposeMagnitude(Indentation indentation)
+        {
+            if (Data.Scalar is null)
+            {
+                AppendDocumentation(indentation, VectorDocumentationTags.Magnitude);
+                Builder.AppendLine($"{indentation}public Scalar Magnitude() => VectorMaths.Dot(this, this).SquareRoot();");
+            }
+            else
+            {
+                AppendDocumentation(indentation, VectorDocumentationTags.Magnitude);
+                Builder.AppendLine($"{indentation}public {Data.Scalar.Value.Name} Magnitude() => new(VectorMaths.Dot(this, this).SquareRoot());");
+
+                Builder.AppendLine($"{indentation}/// <inheritdoc/>");
+                Builder.AppendLine($"{indentation}Scalar IVector{Data.Dimension}.Magnitude() => VectorMaths.Dot(this, this).SquareRoot());");
+            }
+
+            Builder.AppendLine();
+
+            if (Data.SquaredScalar is null)
+            {
+                AppendDocumentation(indentation, VectorDocumentationTags.SquaredMagnitude);
+                Builder.AppendLine($"{indentation}public Scalar SquaredMagnitude() => VectorMaths.Dot(this, this);");
+            }
+            else
+            {
+                AppendDocumentation(indentation, VectorDocumentationTags.SquaredMagnitude);
+                Builder.AppendLine($"{indentation}public {Data.SquaredScalar} SquaredMagnitude() => new(VectorMaths.Dot(this, this));");
+
+                Builder.AppendLine($"{indentation}/// <inheritdoc/>");
+                Builder.AppendLine($"{indentation}Scalar IVector{Data.Dimension}.SquaredMagnitude() => VectorMaths.Dot(this, this);");
+            }
+        }
+
         private void ComposeComponentsAsScalars(Indentation indentation)
         {
             for (int i = 0; i < Data.Dimension; i++)
             {
                 AppendDocumentation(indentation, VectorDocumentationTags.Component(i, Data.Dimension));
-                Builder.Append($"{indentation}public Scalar {VectorTexts.GetUpperCasedComponentName(i, Data.Dimension)} {{ get; }}{Environment.NewLine}");
+                Builder.AppendLine($"{indentation}public Scalar {VectorTexts.GetUpperCasedComponentName(i, Data.Dimension)} {{ get; }}");
             }
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, VectorDocumentationTags.Components);
-            Builder.Append($"{indentation}public Vector{Data.Dimension} Components => new({VectorTexts.CommaSeparatedNames_UpperCased.GetText(Data.Dimension)});{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public Vector{Data.Dimension} Components => new({VectorTexts.CommaSeparatedNames_UpperCased.GetText(Data.Dimension)});");
         }
 
         private void ComposeComponentsAsTypes(Indentation indentation, NamedType scalar)
@@ -143,112 +197,112 @@ internal static class Execution
             for (int i = 0; i < Data.Dimension; i++)
             {
                 AppendDocumentation(indentation, VectorDocumentationTags.Component(i, Data.Dimension));
-                Builder.Append($"{indentation}public {scalar.Name} {VectorTexts.GetUpperCasedComponentName(i, Data.Dimension)} {{ get; }}{Environment.NewLine}");
+                Builder.AppendLine($"{indentation}public {scalar.Name} {VectorTexts.GetUpperCasedComponentName(i, Data.Dimension)} {{ get; }}");
             }
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, VectorDocumentationTags.Components);
-            Builder.Append($"{indentation}public Vector{Data.Dimension} Components => new({VectorTexts.CommaSeparatedNames_UpperCased.GetText(Data.Dimension)});{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public Vector{Data.Dimension} Components => new({VectorTexts.CommaSeparatedNames_UpperCased.GetText(Data.Dimension)});");
 
             Builder.AppendLine();
 
             for (int i = 0; i < Data.Dimension; i++)
             {
-                Builder.Append($"{indentation}/// <inheritdoc/>{Environment.NewLine}");
-                Builder.Append($"{indentation}Scalar IVector{Data.Dimension}.{VectorTexts.GetUpperCasedComponentName(i, Data.Dimension)}Magnitude => {VectorTexts.GetUpperCasedComponentName(i, Data.Dimension)}.Magnitude;{Environment.NewLine}");
+                Builder.AppendLine($"{indentation}/// <inheritdoc/>");
+                Builder.AppendLine($"{indentation}Scalar IVector{Data.Dimension}.{VectorTexts.GetUpperCasedComponentName(i, Data.Dimension)}Magnitude => {VectorTexts.GetUpperCasedComponentName(i, Data.Dimension)}.Magnitude;");
             }
         }
 
         private void ComposeConstructorsToScalars(Indentation indentation)
         {
             AppendDocumentation(indentation, VectorDocumentationTags.Constructor_Scalars);
-            Builder.Append($"{indentation}public {Data.Vector.Name}({Texts.ScalarTupleElements_LowerCased.GetText(Data.Dimension)}){Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name}({Texts.ScalarTupleElements_LowerCased.GetText(Data.Dimension)})");
             BlockBuilding.AppendBlock(Builder, ComposeConstructorBlock, indentation);
         }
 
         private void ComposeConstructorsToTypes(Indentation indentation)
         {
             AppendDocumentation(indentation, VectorDocumentationTags.Constructor_Components);
-            Builder.Append($"{indentation}public {Data.Vector.Name}({ComponentTypeTupleElements_LowerCased.GetText(Data.Dimension)}){Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name}({ComponentTypeTupleElements_LowerCased.GetText(Data.Dimension)})");
             BlockBuilding.AppendBlock(Builder, ComposeConstructorBlock, indentation);
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, VectorDocumentationTags.Constructor_ComponentTuple);
-            Builder.Append($"{indentation}public {Data.Vector.Name}(({ComponentTypeTupleElements_UpperCased.GetText(Data.Dimension)}) components){Environment.NewLine}");
-            Builder.Append($"{indentation.Increased}: this({VectorTexts.ComponentTupleAccess_UpperCased.GetText(Data.Dimension)}) {{ }}{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name}(({ComponentTypeTupleElements_UpperCased.GetText(Data.Dimension)}) components)");
+            Builder.AppendLine($"{indentation.Increased}: this({VectorTexts.ComponentTupleAccess_UpperCased.GetText(Data.Dimension)}) {{ }}");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, VectorDocumentationTags.Constructor_Scalars);
-            Builder.Append($"{indentation}public {Data.Vector.Name}({Texts.ScalarTupleElements_LowerCased.GetText(Data.Dimension)}){Environment.NewLine}");
-            Builder.Append($"{indentation.Increased}: this({NewComponentType_LowerCased.GetText(Data.Dimension)}) {{ }}{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name}({Texts.ScalarTupleElements_LowerCased.GetText(Data.Dimension)})");
+            Builder.AppendLine($"{indentation.Increased}: this({NewComponentType_LowerCased.GetText(Data.Dimension)}) {{ }}");
         }
 
         private void ComposeConstructorBlock(Indentation indentation)
         {
             for (int i = 0; i < Data.Dimension; i++)
             {
-                Builder.Append($"{indentation}{VectorTexts.GetUpperCasedComponentName(i, Data.Dimension)} = {VectorTexts.GetLowerCasedComponentName(i, Data.Dimension)};{Environment.NewLine}");
+                Builder.AppendLine($"{indentation}{VectorTexts.GetUpperCasedComponentName(i, Data.Dimension)} = {VectorTexts.GetLowerCasedComponentName(i, Data.Dimension)};");
             }
         }
 
         private void ComposeCommonConstructors(Indentation indentation)
         {
             AppendDocumentation(indentation, VectorDocumentationTags.Constructor_ScalarTuple);
-            Builder.Append($"{indentation}public {Data.Vector.Name}(({Texts.ScalarTupleElements_UpperCased.GetText(Data.Dimension)}) components){Environment.NewLine}");
-            Builder.Append($"{indentation.Increased}: this({VectorTexts.ComponentTupleAccess_UpperCased.GetText(Data.Dimension)}) {{ }}{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name}(({Texts.ScalarTupleElements_UpperCased.GetText(Data.Dimension)}) components)");
+            Builder.AppendLine($"{indentation.Increased}: this({VectorTexts.ComponentTupleAccess_UpperCased.GetText(Data.Dimension)}) {{ }}");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, VectorDocumentationTags.Constructor_Doubles);
-            Builder.Append($"{indentation}public {Data.Vector.Name}({Texts.DoubleTupleElements_LowerCased.GetText(Data.Dimension)}){Environment.NewLine}");
-            Builder.Append($"{indentation.Increased}: this({Texts.NewScalar_LowerCased.GetText(Data.Dimension)}) {{ }}{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name}({Texts.DoubleTupleElements_LowerCased.GetText(Data.Dimension)})");
+            Builder.AppendLine($"{indentation.Increased}: this({Texts.NewScalar_LowerCased.GetText(Data.Dimension)}) {{ }}");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, VectorDocumentationTags.Constructor_DoubleTuple);
-            Builder.Append($"{indentation}public {Data.Vector.Name}(({Texts.DoubleTupleElements_UpperCased.GetText(Data.Dimension)}) components){Environment.NewLine}");
-            Builder.Append($"{indentation.Increased}: this({VectorTexts.ComponentTupleAccess_UpperCased.GetText(Data.Dimension)}) {{ }}{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name}(({Texts.DoubleTupleElements_UpperCased.GetText(Data.Dimension)}) components)");
+            Builder.AppendLine($"{indentation.Increased}: this({VectorTexts.ComponentTupleAccess_UpperCased.GetText(Data.Dimension)}) {{ }}");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, VectorDocumentationTags.Constructor_Vector);
-            Builder.Append($"{indentation}public {Data.Vector.Name}(Vector{Data.Dimension}) components){Environment.NewLine}");
-            Builder.Append($"{indentation.Increased}: this({VectorTexts.ComponentTupleAccess_UpperCased.GetText(Data.Dimension)}) {{ }}{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name}(Vector{Data.Dimension}) components)");
+            Builder.AppendLine($"{indentation.Increased}: this({VectorTexts.ComponentTupleAccess_UpperCased.GetText(Data.Dimension)}) {{ }}");
 
             Builder.AppendLine();
 
             string unitParameterName = SourceBuildingUtility.ToParameterName(Data.Unit.Name);
 
             AppendDocumentation(indentation, VectorDocumentationTags.Constructor_Unit_ScalarTuple);
-            Builder.Append($"{indentation}public {Data.Vector.Name}(({Texts.ScalarTupleElements_UpperCased.GetText(Data.Dimension)}) components, {Data.Unit.Name} {unitParameterName}){Environment.NewLine}");
-            Builder.Append($"{indentation.Increased}: this(components * {unitParameterName}.{Data.UnitQuantity.Name}.Magnitude) {{ }}{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name}(({Texts.ScalarTupleElements_UpperCased.GetText(Data.Dimension)}) components, {Data.Unit.Name} {unitParameterName})");
+            Builder.AppendLine($"{indentation.Increased}: this(components * {unitParameterName}.{Data.UnitQuantity.Name}.Magnitude) {{ }}");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, VectorDocumentationTags.Constructor_Unit_Scalars);
-            Builder.Append($"{indentation}public {Data.Vector.Name}({Texts.ScalarTupleElements_LowerCased.GetText(Data.Dimension)}, {Data.Unit.Name} {unitParameterName}){Environment.NewLine}");
-            Builder.Append($"{indentation.Increased}: this(({VectorTexts.CommaSeparatedNames_LowerCased.GetText(Data.Dimension)}), {unitParameterName}) {{ }}{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name}({Texts.ScalarTupleElements_LowerCased.GetText(Data.Dimension)}, {Data.Unit.Name} {unitParameterName})");
+            Builder.AppendLine($"{indentation.Increased}: this(({VectorTexts.CommaSeparatedNames_LowerCased.GetText(Data.Dimension)}), {unitParameterName}) {{ }}");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, VectorDocumentationTags.Constructor_Unit_Doubles);
-            Builder.Append($"{indentation}public {Data.Vector.Name}({Texts.ScalarTupleElements_LowerCased.GetText(Data.Dimension)}, {Data.Unit.Name} {unitParameterName}){Environment.NewLine}");
-            Builder.Append($"{indentation.Increased}: this(({Texts.NewScalar_LowerCased.GetText(Data.Dimension)}), {unitParameterName}) {{ }}{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name}({Texts.ScalarTupleElements_LowerCased.GetText(Data.Dimension)}, {Data.Unit.Name} {unitParameterName})");
+            Builder.AppendLine($"{indentation.Increased}: this(({Texts.NewScalar_LowerCased.GetText(Data.Dimension)}), {unitParameterName}) {{ }}");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, VectorDocumentationTags.Constructor_Unit_DoubleTuple);
-            Builder.Append($"{indentation}public {Data.Vector.Name}(({Texts.ScalarTupleElements_UpperCased.GetText(Data.Dimension)}) components, {Data.Unit.Name} {unitParameterName}){Environment.NewLine}");
-            Builder.Append($"{indentation.Increased}: this({VectorTexts.ComponentTupleAccess_UpperCased.GetText(Data.Dimension)}, {unitParameterName}) {{ }}{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name}(({Texts.ScalarTupleElements_UpperCased.GetText(Data.Dimension)}) components, {Data.Unit.Name} {unitParameterName})");
+            Builder.AppendLine($"{indentation.Increased}: this({VectorTexts.ComponentTupleAccess_UpperCased.GetText(Data.Dimension)}, {unitParameterName}) {{ }}");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, VectorDocumentationTags.Constructor_Unit_Vector);
-            Builder.Append($"{indentation}public {Data.Vector.Name}(Vector{Data.Dimension} components, {Data.Unit.Name} {unitParameterName}){Environment.NewLine}");
-            Builder.Append($"{indentation.Increased}: this(({VectorTexts.ComponentTupleAccess_UpperCased.GetText(Data.Dimension)}), {unitParameterName}) {{ }}{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name}(Vector{Data.Dimension} components, {Data.Unit.Name} {unitParameterName})");
+            Builder.AppendLine($"{indentation.Increased}: this(({VectorTexts.ComponentTupleAccess_UpperCased.GetText(Data.Dimension)}), {unitParameterName}) {{ }}");
         }
 
         private void AppendDocumentation(Indentation indentation, string tag)

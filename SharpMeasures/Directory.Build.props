@@ -1,6 +1,7 @@
 <Project>
 	<PropertyGroup>
-		<LangVersion>10</LangVersion>
+		<LangVersion>preview</LangVersion>
+		<EnablePreviewFeatures>True</EnablePreviewFeatures>
 	</PropertyGroup>
 
 	<PropertyGroup>

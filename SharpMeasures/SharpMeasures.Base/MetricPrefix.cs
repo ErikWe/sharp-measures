@@ -49,47 +49,35 @@ public readonly record struct MetricPrefix :
     /// <summary>Denotes that the value should be scaled by one septillionth [10^(-24) = (1 000)^(-8)]. Usually written as [y].</summary>
     public static MetricPrefix Yocto { get; } = ThousandToThePower(-8);
 
-    /// <summary>Constructs a custom <see cref="MetricPrefix"/>, with factor 10^(<paramref name="power"/>).</summary>
-    /// <param name="power">The factor of the constructed <see cref="MetricPrefix"/> will be 10 raised to this power.</param>
-    public static MetricPrefix TenToThePower(double power) => new(Math.Pow(10, power));
+    /// <summary>Constructs a custom <see cref="MetricPrefix"/>, describing a factor { 10 ^ <paramref name="exponent"/> }.</summary>
+    /// <param name="exponent">The exponent of { 10 ^ <paramref name="exponent"/> }.</param>
+    public static MetricPrefix TenToThePower(Scalar exponent) => new(Math.Pow(10, exponent));
 
-    /// <summary>Constructs a custom <see cref="MetricPrefix"/>, with factor (1 000)^(<paramref name="power"/>).</summary>
-    /// <param name="power">The factor of the constructed <see cref="MetricPrefix"/> will be [1 000] raised to this power.</param>
-    public static MetricPrefix ThousandToThePower(double power) => new(Math.Pow(1000, power));
+    /// <summary>Constructs a custom <see cref="MetricPrefix"/>, describing a factor { 1 000 ^ <paramref name="exponent"/> }.</summary>
+    /// <param name="exponent">The exponent of { 1 000 ^ <paramref name="exponent"/> }.</param>
+    public static MetricPrefix ThousandToThePower(Scalar exponent) => new(Math.Pow(1000, exponent));
 
-    /// <summary>The amount that values should be scaled by.</summary>
-    public Scalar Factor { get; init; }
+    /// <summary>The scale-factor of <see langword="this"/>.</summary>
+    public Scalar Factor { get; }
 
-    /// <summary>Constructs a new <see cref="MetricPrefix"/> with <paramref name="factor"/>.</summary>
-    /// <param name="factor">The amount that values should be scaled by.</param>
+    /// <summary>Constructs a <see cref="MetricPrefix"/> representing { <paramref name="factor"/> }.</summary>
+    /// <param name="factor">The scale-factor represented by the constructed <see cref="MetricPrefix"/>.</param>
     public MetricPrefix(Scalar factor)
     {
         Factor = factor;
     }
 
-    /// <summary>Constructs a new <see cref="MetricPrefix"/> with <paramref name="factor"/>.</summary>
-    /// <param name="factor">The amount that values should be scaled by.</param>
-    public MetricPrefix(double factor) : this(Scalar.FromDouble(factor)) { }
-
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Scalar.CompareTo(Scalar)"/>
     public int CompareTo(MetricPrefix other) => Factor.CompareTo(other.Factor);
-    /// <summary>Produces a formatted string from the factor of the <see cref="MetricPrefix"/> - followed by 'x', to indicate scaling.</summary>
-    public override string ToString() => $"{Factor}x";
+    /// <summary>Produces a description of <see langword="this"/> containing the scale-factor, followed by 'x'.</summary>
+    public override string ToString() => $"{Factor.Value}x";
 
-    /// <summary>Determines whether the factor of <paramref name="x"/> is less than that of <paramref name="y"/>.</summary>
-    /// <param name="x">The method determines whether the factor of this <see cref="MetricPrefix"/> is less than that of <paramref name="y"/>.</param>
-    /// <param name="y">The method determines whether the factor of <paramref name="x"/> is less than that of this <see cref="MetricPrefix"/>.</param>
+    /// <inheritdoc cref="Scalar.operator &lt;"/>
     public static bool operator <(MetricPrefix x, MetricPrefix y) => x.Factor < y.Factor;
-    /// <summary>Determines whether the factor of <paramref name="x"/> is greater than that of <paramref name="y"/>.</summary>
-    /// <param name="x">The method determines whether the factor of this <see cref="MetricPrefix"/> is greater than that of <paramref name="y"/>.</param>
-    /// <param name="y">The method determines whether the factor of <paramref name="x"/> is greater than that of this <see cref="MetricPrefix"/>.</param>
+    /// <inheritdoc cref="Scalar.operator &gt;"/>
     public static bool operator >(MetricPrefix x, MetricPrefix y) => x.Factor > y.Factor;
-    /// <summary>Determines whether the factor of <paramref name="x"/> is less than or equal to that of <paramref name="y"/>.</summary>
-    /// <param name="x">The method determines whether the factor of this <see cref="MetricPrefix"/> is less than or equal to that of <paramref name="y"/>.</param>
-    /// <param name="y">The method determines whether the factor of <paramref name="x"/> is less than or equal to that of this <see cref="MetricPrefix"/>.</param>
+    /// <inheritdoc cref="Scalar.operator &lt;="/>
     public static bool operator <=(MetricPrefix x, MetricPrefix y) => x.Factor <= y.Factor;
-    /// <summary>Determines whether the factor of <paramref name="x"/> is greater than or equal to that of <paramref name="y"/>.</summary>
-    /// <param name="x">The method determines whether the factor of this <see cref="MetricPrefix"/> is greater than or equal to that of <paramref name="y"/>.</param>
-    /// <param name="y">The method determines whether the factor of <paramref name="x"/> is greater than or equal to that of this <see cref="MetricPrefix"/>.</param>
+    /// <inheritdoc cref="Scalar.operator &gt;="/>
     public static bool operator >=(MetricPrefix x, MetricPrefix y) => x.Factor >= y.Factor;
 }

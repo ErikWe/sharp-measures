@@ -147,7 +147,8 @@ internal static class ScalarParsingStage
 
     private static ScalarInterface ConstructInterface(ParsedScalar scalar, CancellationToken _)
     {
-        return new(scalar.ScalarType, scalar.ScalarDefinition.Unit, scalar.ScalarDefinition.Biased);
+        return new(scalar.ScalarType, scalar.ScalarDefinition.Unit, scalar.ScalarDefinition.Biased, scalar.ScalarDefinition.Reciprocal, scalar.ScalarDefinition.Square,
+            scalar.ScalarDefinition.Cube, scalar.ScalarDefinition.SquareRoot, scalar.ScalarDefinition.CubeRoot);
     }
 
     private static NamedTypePopulation<ScalarInterface> CreatePopulation(ImmutableArray<ScalarInterface> scalars, CancellationToken _)
