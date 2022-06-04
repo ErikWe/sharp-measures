@@ -22,12 +22,7 @@ public readonly partial record struct Scalar :
     IFactorScalarQuantity<Scalar, Scalar, Scalar>,
     IDividendScalarQuantity<Scalar, Scalar, Scalar>,
     IDivisorScalarQuantity<Scalar, Scalar, Scalar>,
-    ISumScalarQuantity<Scalar>,
-    IDifferenceScalarQuantity<Scalar>,
-    IProductScalarQuantity<Scalar, Scalar, Scalar>,
-    IQuotientScalarQuantity<Scalar, Scalar, Scalar>,
-    IFactor3ScalarQuantity<Vector3, Vector3>,
-    IDot3ProductScalarQuantity<Scalar, Vector3, Vector3>
+    IFactor3ScalarQuantity<Vector3, Vector3>
 {
     /// <summary>The <see cref="Scalar"/> representing { 0 }.</summary>
     public static Scalar Zero { get; } = 0;
@@ -101,17 +96,6 @@ public readonly partial record struct Scalar :
     public int CompareTo(Scalar other) => Value.CompareTo(other.Value);
     /// <summary>Produces a description of <see langword="this"/> containing the type and the represented value.</summary>
     public override string ToString() => $"{nameof(Scalar)}: {Value}";
-
-    /// <inheritdoc/>
-    static Scalar ISumScalarQuantity<Scalar, Scalar, Scalar>.From(Scalar x, Scalar y) => x + y;
-    /// <inheritdoc/>
-    static Scalar IDifferenceScalarQuantity<Scalar, Scalar, Scalar>.From(Scalar x, Scalar y) => x - y;
-    /// <inheritdoc/>
-    static Scalar IProductScalarQuantity<Scalar, Scalar, Scalar>.From(Scalar x, Scalar y) => x * y;
-    /// <inheritdoc/>
-    static Scalar IQuotientScalarQuantity<Scalar, Scalar, Scalar>.From(Scalar x, Scalar y) => x / y;
-    /// <inheritdoc/>
-    static Scalar IDot3ProductScalarQuantity<Scalar, Vector3, Vector3>.From(Vector3 a, Vector3 b) => a.Dot(b);
 
     /// <inheritdoc/>
     public Scalar Plus() => this;

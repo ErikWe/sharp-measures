@@ -21,31 +21,16 @@ public readonly record struct Unhandled :
     IFactorScalarQuantity<Unhandled, Unhandled, Unhandled>,
     IDividendScalarQuantity<Unhandled, Unhandled, Unhandled>,
     IDivisorScalarQuantity<Unhandled, Unhandled, Unhandled>,
-    ISumScalarQuantity<Unhandled>,
-    IDifferenceScalarQuantity<Unhandled>,
-    IProductScalarQuantity<Unhandled, Unhandled, Unhandled>,
-    IQuotientScalarQuantity<Unhandled, Unhandled, Unhandled>,
     IFactor3ScalarQuantity<Unhandled, Unhandled3, Unhandled3>,
     IDivisor3ScalarQuantity<Unhandled, Unhandled3, Unhandled3>,
-    IDot3ProductScalarQuantity<Unhandled, Unhandled3, Unhandled3>,
     IAddendScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
     IMinuendScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
     ISubtrahendScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
     IFactorScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
     IDividendScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
     IDivisorScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
-    ISumScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
-    ISumScalarQuantity<Unhandled, IScalarQuantity, Unhandled>,
-    IDifferenceScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
-    IDifferenceScalarQuantity<Unhandled, IScalarQuantity, Unhandled>,
-    IProductScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
-    IProductScalarQuantity<Unhandled, IScalarQuantity, Unhandled>,
-    IQuotientScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
-    IQuotientScalarQuantity<Unhandled, IScalarQuantity, Unhandled>,
     IFactor3ScalarQuantity<Unhandled, Unhandled3, IVector3Quantity>,
-    IDivisor3ScalarQuantity<Unhandled, Unhandled3, IVector3Quantity>,
-    IDot3ProductScalarQuantity<Unhandled, Unhandled3, IVector3Quantity>,
-    IDot3ProductScalarQuantity<Unhandled, IVector3Quantity, Unhandled3>
+    IDivisor3ScalarQuantity<Unhandled, Unhandled3, IVector3Quantity>
 {
     /// <summary>The <see cref="Unhandled"/> representing { 0 }.</summary>
     public static Unhandled Zero { get; } = new(0);
@@ -106,60 +91,6 @@ public readonly record struct Unhandled :
     public int CompareTo(Unhandled other) => Magnitude.CompareTo(other.Magnitude);
     /// <inheritdoc cref="Scalar.ToString"/>
     public override string ToString() => $"{nameof(Unhandled)}: {Magnitude.Value}";
-
-    /// <inheritdoc/>
-    static Unhandled ISumScalarQuantity<Unhandled, Unhandled, Unhandled>.From(Unhandled x, Unhandled y) => x + y;
-    /// <inheritdoc/>
-    static Unhandled IDifferenceScalarQuantity<Unhandled, Unhandled, Unhandled>.From(Unhandled x, Unhandled y) => x - y;
-    /// <inheritdoc/>
-    static Unhandled IProductScalarQuantity<Unhandled, Unhandled, Unhandled>.From(Unhandled x, Unhandled y) => x * y;
-    /// <inheritdoc/>
-    static Unhandled IQuotientScalarQuantity<Unhandled, Unhandled, Unhandled>.From(Unhandled x, Unhandled y) => x / y;
-    /// <inheritdoc/>
-    static Unhandled IDot3ProductScalarQuantity<Unhandled, Unhandled3, Unhandled3>.From(Unhandled3 a, Unhandled3 b) => ScalarMaths.Dot3(a, b);
-
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    static Unhandled ISumScalarQuantity<Unhandled, Unhandled, IScalarQuantity>.From(Unhandled x, IScalarQuantity y) => x + y;
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    static Unhandled ISumScalarQuantity<Unhandled, IScalarQuantity, Unhandled>.From(IScalarQuantity x, Unhandled y) => x + y;
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    static Unhandled IDifferenceScalarQuantity<Unhandled, Unhandled, IScalarQuantity>.From(Unhandled x, IScalarQuantity y) => x - y;
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    static Unhandled IDifferenceScalarQuantity<Unhandled, IScalarQuantity, Unhandled>.From(IScalarQuantity x, Unhandled y) => x - y;
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    static Unhandled IProductScalarQuantity<Unhandled, Unhandled, IScalarQuantity>.From(Unhandled x, IScalarQuantity y) => x * y;
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    static Unhandled IProductScalarQuantity<Unhandled, IScalarQuantity, Unhandled>.From(IScalarQuantity x, Unhandled y) => x * y;
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    static Unhandled IQuotientScalarQuantity<Unhandled, Unhandled, IScalarQuantity>.From(Unhandled x, IScalarQuantity y) => x / y;
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    static Unhandled IQuotientScalarQuantity<Unhandled, IScalarQuantity, Unhandled>.From(IScalarQuantity x, Unhandled y) => x / y;
-
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    static Unhandled IDot3ProductScalarQuantity<Unhandled, Unhandled3, IVector3Quantity>.From(Unhandled3 a, IVector3Quantity b)
-    {
-        ArgumentNullException.ThrowIfNull(b);
-
-        return ScalarMaths.Dot3(a, b);
-    }
-
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    static Unhandled IDot3ProductScalarQuantity<Unhandled, IVector3Quantity, Unhandled3>.From(IVector3Quantity a, Unhandled3 b)
-    {
-        ArgumentNullException.ThrowIfNull(a);
-
-        return ScalarMaths.Dot3(a, b);
-    }
 
     /// <inheritdoc/>
     public Unhandled Plus() => this;
@@ -339,9 +270,9 @@ public readonly record struct Unhandled :
     /// <inheritdoc/>
     public static Unhandled3 operator *(Unhandled a, Unhandled3 b) => new(a * b.X, a * b.Y, a * b.Z);
     /// <inheritdoc/>
-    public static Unhandled3 operator *(Unhandled3 a, Unhandled b) => new(a.X * b, a.Y * b, a.Z * b);
+    static Unhandled3 IFactor3ScalarQuantity<Unhandled, Unhandled3, Unhandled3>.operator *(Unhandled3 a, Unhandled b) => new(a.X * b, a.Y * b, a.Z * b);
     /// <inheritdoc/>
-    public static Unhandled3 operator /(Unhandled3 a, Unhandled b) => new(a.X / b, a.Y / b, a.Z / b);
+    static Unhandled3 IDivisor3ScalarQuantity<Unhandled, Unhandled3, Unhandled3>.operator /(Unhandled3 a, Unhandled b) => new(a.X / b, a.Y / b, a.Z / b);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
