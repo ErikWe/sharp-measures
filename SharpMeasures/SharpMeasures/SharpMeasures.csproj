@@ -1,34 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<RootNamespace>SharpMeasures</RootNamespace>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace>SharpMeasures</RootNamespace>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<Title>SharpMeasures</Title>
-		<Description>
-			Introduces several physical quantites as explicit types, with support for appropriate mathematical operations.
-			This enforces explicit and correct usage of quantities and units, and prevents many cases of mix-ups.
-		</Description>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	</PropertyGroup>
-	
-	<ItemGroup>
-		<ProjectReference Include="..\SharpMeasures.Base\SharpMeasures.Base.csproj" />
-		<ProjectReference Include="..\SharpMeasures.Generators\SharpMeasures.Generators.Analyzers\SharpMeasures.Generators.Analyzers.Fixes\SharpMeasures.Generators.Analyzers.Fixes.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-		<ProjectReference Include="..\SharpMeasures.Generators\SharpMeasures.Generators.Analyzers\SharpMeasures.Generators.Analyzers\SharpMeasures.Generators.Analyzers.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-		<ProjectReference Include="..\SharpMeasures.Generators\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
-		<ProjectReference Include="..\SharpMeasures.Generators\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.Parsing\SharpMeasures.Generators.Attributes.Parsing.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
-		<ProjectReference Include="..\SharpMeasures.Generators\SharpMeasures.Generators\SharpMeasures.Generators.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-	</ItemGroup>
+    <PropertyGroup>
+        <Title>SharpMeasures</Title>
+        <Description>
+            Introduces several physical quantites as explicit types, with support for appropriate mathematical operations.
+            This enforces explicit and correct usage of quantities and units, and prevents many cases of mix-ups.
+        </Description>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<AdditionalFiles Include="Documentation/**" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SharpMeasures.Base\SharpMeasures.Base.csproj" />
+        <ProjectReference Include="..\SharpMeasures.Generators\SharpMeasures.Generators.Analyzers\SharpMeasures.Generators.Analyzers.Fixes\SharpMeasures.Generators.Analyzers.Fixes.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators\SharpMeasures.Generators.Analyzers\SharpMeasures.Generators.Analyzers\SharpMeasures.Generators.Analyzers.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.Parsing\SharpMeasures.Generators.Attributes.Parsing.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators\SharpMeasures.Generators\SharpMeasures.Generators.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    </ItemGroup>
 
-	<ItemGroup>
-		<GlobalAnalyzerConfigFiles Include="SharpMeasures.globalconfig" />
-	</ItemGroup>
+    <ItemGroup>
+        <AdditionalFiles Include="Documentation/**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <GlobalAnalyzerConfigFiles Include="SharpMeasures.globalconfig" />
+    </ItemGroup>
 
 </Project>

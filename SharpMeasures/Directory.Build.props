@@ -1,20 +1,20 @@
 <Project>
-	<PropertyGroup>
-		<LangVersion>preview</LangVersion>
-		<EnablePreviewFeatures>True</EnablePreviewFeatures>
-	</PropertyGroup>
+    <PropertyGroup>
+        <LangVersion>preview</LangVersion>
+        <EnablePreviewFeatures>True</EnablePreviewFeatures>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<Nullable>enable</Nullable>
-		<WarningsAsErrors>nullable</WarningsAsErrors>
-		<AnalysisMode>all</AnalysisMode>
-		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-	</PropertyGroup>
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>nullable</WarningsAsErrors>
+        <AnalysisMode>all</AnalysisMode>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<Authors>ErikWe</Authors>
-		<Version>0.2.36</Version>
-		<NeutralLanguage>en</NeutralLanguage>
-		<RepositoryUrl>https://github.com/ErikWe/sharp-measures</RepositoryUrl>
-	</PropertyGroup>
+    <PropertyGroup>
+        <Authors>ErikWe</Authors>
+        <Version>0.2.36</Version>
+        <NeutralLanguage>en</NeutralLanguage>
+        <RepositoryUrl>https://github.com/ErikWe/sharp-measures</RepositoryUrl>
+    </PropertyGroup>
 </Project>
