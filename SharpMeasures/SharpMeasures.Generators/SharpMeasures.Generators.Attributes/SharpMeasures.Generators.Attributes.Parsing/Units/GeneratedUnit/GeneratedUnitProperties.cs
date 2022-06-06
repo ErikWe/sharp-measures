@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 internal static class GeneratedUnitProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawGeneratedUnitDefinition>> AllProperties => new IAttributeProperty<RawGeneratedUnitDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawGeneratedUnit>> AllProperties => new IAttributeProperty<RawGeneratedUnit>[]
     {
         Quantity,
         SupportsBiasedQuantities,

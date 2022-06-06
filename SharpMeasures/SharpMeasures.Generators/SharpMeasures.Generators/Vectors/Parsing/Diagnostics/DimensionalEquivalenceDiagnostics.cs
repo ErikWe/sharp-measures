@@ -12,7 +12,7 @@ internal class DimensionalEquivalenceDiagnostics : ADimensionalEquivalenceDiagno
 
     private DimensionalEquivalenceDiagnostics() { }
 
-    public override Diagnostic NullQuantity(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalenceDefinition definition, int index)
+    public override Diagnostic NullQuantity(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalence definition, int index)
     {
         return DiagnosticConstruction.TypeNotVector_Null(definition.Locations.QuantitiesElements[index].AsRoslynLocation());
     }

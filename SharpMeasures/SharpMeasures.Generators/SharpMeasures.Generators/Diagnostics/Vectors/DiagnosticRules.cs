@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 internal static partial class DiagnosticRules
 {
-    public readonly static DiagnosticDescriptor InvalidVectorDimension = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor InvalidVectorDimension = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidVectorDimension,
         title: "Invalid vector dimension",
@@ -14,7 +14,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor MissingVectorDimension = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor MissingVectorDimension = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.MissingVectorDimension,
         title: "Missing vector dimension",
@@ -25,11 +25,21 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor DuplicateVectorDimension = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor DuplicateVectorDimension = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DuplicateVectorDimension,
         title: "Duplicate vector dimension",
         messageFormat: "The group of resized vectors already contains a vector of dimension {0}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor VectorConstantInvalidDimension = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.VectorConstantInvalidDimension,
+        title: "Invalid dimension of vector constant",
+        messageFormat: "Expected {0} elements, as {1} has dimension {0}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

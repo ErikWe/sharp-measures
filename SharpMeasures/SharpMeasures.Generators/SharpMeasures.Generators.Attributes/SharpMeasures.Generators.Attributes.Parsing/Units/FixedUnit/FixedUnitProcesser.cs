@@ -4,11 +4,11 @@ using SharpMeasures.Generators.Diagnostics;
 
 using System;
 
-public class FixedUnitProcesser : AUnitProcesser<IUnitProcessingContext, RawFixedUnitDefinition, FixedUnitDefinition>
+public class FixedUnitProcesser : AUnitProcesser<IUnitProcessingContext, RawFixedUnit, FixedUnit>
 {
-    public FixedUnitProcesser(IUnitDiagnostics<RawFixedUnitDefinition> diagnostics) : base(diagnostics) { }
+    public FixedUnitProcesser(IUnitDiagnostics<RawFixedUnit> diagnostics) : base(diagnostics) { }
 
-    public override IOptionalWithDiagnostics<FixedUnitDefinition> Process(IUnitProcessingContext context, RawFixedUnitDefinition definition)
+    public override IOptionalWithDiagnostics<FixedUnit> Process(IUnitProcessingContext context, RawFixedUnit definition)
     {
         if (context is null)
         {
@@ -24,10 +24,10 @@ public class FixedUnitProcesser : AUnitProcesser<IUnitProcessingContext, RawFixe
 
         if (validity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<FixedUnitDefinition>(validity.Diagnostics);
+            return OptionalWithDiagnostics.Empty<FixedUnit>(validity.Diagnostics);
         }
 
-        FixedUnitDefinition product = new(definition.Name!, definition.ParsingData.InterpretedPlural!, definition.Value, definition.Bias, definition.Locations);
+        FixedUnit product = new(definition.Name!, definition.ParsingData.InterpretedPlural!, definition.Value, definition.Bias, definition.Locations);
         return OptionalWithDiagnostics.Result(product, validity.Diagnostics);
     }
 }

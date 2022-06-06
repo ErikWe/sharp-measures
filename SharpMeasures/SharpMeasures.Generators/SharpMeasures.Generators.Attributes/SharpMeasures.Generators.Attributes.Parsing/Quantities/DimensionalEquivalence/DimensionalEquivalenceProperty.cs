@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Quantities;
 
-internal record class DimensionalEquivalenceProperty<TPropertyType> : AttributeProperty<RawDimensionalEquivalenceDefinition,
+internal record class DimensionalEquivalenceProperty<TPropertyType> : AttributeProperty<RawDimensionalEquivalence,
     DimensionalEquivalenceLocations, TPropertyType>
 {
     public DimensionalEquivalenceProperty(string name, string parameterName, DTypeSetter setter, DSingleLocationSetter locator)

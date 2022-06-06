@@ -10,16 +10,16 @@ using System.Linq;
 
 public interface IGeneratedScalarDiagnostics
 {
-    public abstract Diagnostic? NullUnit(IProcessingContext context, RawGeneratedScalarDefinition definition);
-    public abstract Diagnostic? NullVector(IProcessingContext context, RawGeneratedScalarDefinition definition);
-    public abstract Diagnostic? NullDefaultUnit(IProcessingContext context, RawGeneratedScalarDefinition definition);
-    public abstract Diagnostic? EmptyDefaultUnit(IProcessingContext context, RawGeneratedScalarDefinition definition);
-    public abstract Diagnostic? SetDefaultSymbolButNotUnit(IProcessingContext context, RawGeneratedScalarDefinition definition);
+    public abstract Diagnostic? NullUnit(IProcessingContext context, RawGeneratedScalar definition);
+    public abstract Diagnostic? NullVector(IProcessingContext context, RawGeneratedScalar definition);
+    public abstract Diagnostic? NullDefaultUnit(IProcessingContext context, RawGeneratedScalar definition);
+    public abstract Diagnostic? EmptyDefaultUnit(IProcessingContext context, RawGeneratedScalar definition);
+    public abstract Diagnostic? SetDefaultSymbolButNotUnit(IProcessingContext context, RawGeneratedScalar definition);
 
     public abstract Diagnostic? NullPowerQuantity(MinimalLocation? location);
 }
 
-public class GeneratedScalarProcesser : AProcesser<IProcessingContext, RawGeneratedScalarDefinition, GeneratedScalarDefinition>
+public class GeneratedScalarProcesser : AProcesser<IProcessingContext, RawGeneratedScalar, GeneratedScalar>
 {
     private IGeneratedScalarDiagnostics Diagnostics { get; }
 
@@ -28,7 +28,7 @@ public class GeneratedScalarProcesser : AProcesser<IProcessingContext, RawGenera
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<GeneratedScalarDefinition> Process(IProcessingContext context, RawGeneratedScalarDefinition definition)
+    public override IOptionalWithDiagnostics<GeneratedScalar> Process(IProcessingContext context, RawGeneratedScalar definition)
     {
         if (context is null)
         {
@@ -45,7 +45,7 @@ public class GeneratedScalarProcesser : AProcesser<IProcessingContext, RawGenera
 
         if (validity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<GeneratedScalarDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<GeneratedScalar>(allDiagnostics);
         }
 
         var product = ProcessDefinition(context, definition);
@@ -54,21 +54,21 @@ public class GeneratedScalarProcesser : AProcesser<IProcessingContext, RawGenera
         return product.ReplaceDiagnostics(allDiagnostics);
     }
 
-    private IResultWithDiagnostics<GeneratedScalarDefinition> ProcessDefinition(IProcessingContext context, RawGeneratedScalarDefinition definition)
+    private IResultWithDiagnostics<GeneratedScalar> ProcessDefinition(IProcessingContext context, RawGeneratedScalar definition)
     {
         IEnumerable<Diagnostic> allDiagnostics = Array.Empty<Diagnostic>();
 
         var processedDefaultUnitData = ProcessDefaultUnitData(context, definition);
         allDiagnostics = allDiagnostics.Concat(processedDefaultUnitData);
 
-        GeneratedScalarDefinition product = new(definition.Unit!.Value, definition.Vector, definition.Biased, processedDefaultUnitData.Result.Name,
+        GeneratedScalar product = new(definition.Unit!.Value, definition.Vector, definition.Biased, processedDefaultUnitData.Result.Name,
             processedDefaultUnitData.Result.Symbol, definition.Reciprocal, definition.Square, definition.Cube, definition.SquareRoot, definition.CubeRoot,
             definition.GenerateDocumentation, definition.Locations);
 
         return ResultWithDiagnostics.Construct(product, allDiagnostics);
     }
 
-    private IResultWithDiagnostics<(string? Name, string? Symbol)> ProcessDefaultUnitData(IProcessingContext context, RawGeneratedScalarDefinition definition)
+    private IResultWithDiagnostics<(string? Name, string? Symbol)> ProcessDefaultUnitData(IProcessingContext context, RawGeneratedScalar definition)
     {
         if (definition.Locations.ExplicitlySetDefaultUnitName is false && definition.DefaultUnitSymbol is not null)
         {
@@ -91,7 +91,7 @@ public class GeneratedScalarProcesser : AProcesser<IProcessingContext, RawGenera
         return ResultWithDiagnostics.Construct<(string?, string?)>((definition.DefaultUnitName, definition.DefaultUnitSymbol));
     }
 
-    private IValidityWithDiagnostics CheckValidity(IProcessingContext context, RawGeneratedScalarDefinition definition)
+    private IValidityWithDiagnostics CheckValidity(IProcessingContext context, RawGeneratedScalar definition)
     {
         return IterativeValidity.DiagnoseAndMergeWhileValid(validities);
 
@@ -106,7 +106,7 @@ public class GeneratedScalarProcesser : AProcesser<IProcessingContext, RawGenera
         }
     }
 
-    private IValidityWithDiagnostics CheckUnitValidity(IProcessingContext context, RawGeneratedScalarDefinition definition)
+    private IValidityWithDiagnostics CheckUnitValidity(IProcessingContext context, RawGeneratedScalar definition)
     {
         if (definition.Unit is null)
         {
@@ -116,7 +116,7 @@ public class GeneratedScalarProcesser : AProcesser<IProcessingContext, RawGenera
         return ValidityWithDiagnostics.Valid;
     }
 
-    private IValidityWithDiagnostics CheckVectorValidity(IProcessingContext context, RawGeneratedScalarDefinition definition)
+    private IValidityWithDiagnostics CheckVectorValidity(IProcessingContext context, RawGeneratedScalar definition)
     {
         if (definition.Locations.ExplicitlySetVector is false)
         {

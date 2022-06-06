@@ -4,11 +4,11 @@ using SharpMeasures.Generators.Quantities;
 
 public static class ExcludeUnitsParser
 {
-    public static IAttributeParser<RawExcludeUnitsDefinition> Parser { get; } = new AttributeParser();
+    public static IAttributeParser<RawExcludeUnits> Parser { get; } = new AttributeParser();
 
-    private static RawExcludeUnitsDefinition DefaultDefinition() => RawExcludeUnitsDefinition.Empty;
+    private static RawExcludeUnits DefaultDefinition() => RawExcludeUnits.Empty;
 
-    private class AttributeParser : AAttributeParser<RawExcludeUnitsDefinition, ExcludeUnitsLocations, ExcludeUnitsAttribute>
+    private class AttributeParser : AAttributeParser<RawExcludeUnits, ExcludeUnitsLocations, ExcludeUnitsAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, ExcludeUnitsProperties.AllProperties) { }
     }

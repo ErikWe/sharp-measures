@@ -2,65 +2,43 @@
 
 using SharpMeasures.Generators.Attributes.Parsing.Scalars;
 using SharpMeasures.Generators.Attributes.Parsing.Quantities;
+using SharpMeasures.Equatables;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 internal record class RawParsedScalar
 {
     public DefinedType ScalarType { get; }
     public MinimalLocation ScalarLocation { get; }
-    public GeneratedScalarDefinition ScalarDefinition { get; }
+    public GeneratedScalar ScalarDefinition { get; }
 
-    public IEnumerable<RawIncludeBasesDefinition> IncludeBasesDefinitions { get; }
-    public IEnumerable<RawExcludeBasesDefinition> ExcludeBasesDefinitions { get; }
+    public EquatableEnumerable<RawIncludeBases> IncludeBases { get; }
+    public EquatableEnumerable<RawExcludeBases> ExcludeBases { get; }
 
-    public IEnumerable<RawIncludeUnitsDefinition> IncludeUnitsDefinitions { get; }
-    public IEnumerable<RawExcludeUnitsDefinition> ExcludeUnitsDefinitions { get; }
+    public EquatableEnumerable<RawIncludeUnits> IncludeUnits { get; }
+    public EquatableEnumerable<RawExcludeUnits> ExcludeUnits { get; }
 
-    public IEnumerable<RawScalarConstantDefinition> ScalarConstantDefinitions { get; }
+    public EquatableEnumerable<RawScalarConstant> ScalarConstants { get; }
 
-    public IEnumerable<RawDimensionalEquivalenceDefinition> DimensionalEquivalenceDefinitions { get; }
+    public EquatableEnumerable<RawDimensionalEquivalence> DimensionalEquivalences { get; }
 
-    public RawParsedScalar(DefinedType scalarType, MinimalLocation scalarLocation, GeneratedScalarDefinition scalarDefinition,
-        IEnumerable<RawIncludeBasesDefinition> includeBasesDefinitions, IEnumerable<RawExcludeBasesDefinition> excludeBasesDefinitions,
-        IEnumerable<RawIncludeUnitsDefinition> includeUnitsDefinitions, IEnumerable<RawExcludeUnitsDefinition> excludeUnitsDefinitions,
-        IEnumerable<RawScalarConstantDefinition> scalarConstantDefinitions, IEnumerable<RawDimensionalEquivalenceDefinition> dimensionalEquivalenceDefinitions)
+    public RawParsedScalar(DefinedType scalarType, MinimalLocation scalarLocation, GeneratedScalar scalarDefinition,
+        IEnumerable<RawIncludeBases> includeBases, IEnumerable<RawExcludeBases> excludeBases,
+        IEnumerable<RawIncludeUnits> includeUnits, IEnumerable<RawExcludeUnits> excludeUnits,
+        IEnumerable<RawScalarConstant> scalarConstants, IEnumerable<RawDimensionalEquivalence> dimensionalEquivalences)
     {
         ScalarType = scalarType;
         ScalarLocation = scalarLocation;
         ScalarDefinition = scalarDefinition;
 
-        IncludeBasesDefinitions = includeBasesDefinitions;
-        ExcludeBasesDefinitions = excludeBasesDefinitions;
+        IncludeBases = new(includeBases);
+        ExcludeBases = new(excludeBases);
 
-        IncludeUnitsDefinitions = includeUnitsDefinitions;
-        ExcludeUnitsDefinitions = excludeUnitsDefinitions;
+        IncludeUnits = new(includeUnits);
+        ExcludeUnits = new(excludeUnits);
 
-        ScalarConstantDefinitions = scalarConstantDefinitions;
+        ScalarConstants = new(scalarConstants);
 
-        DimensionalEquivalenceDefinitions = dimensionalEquivalenceDefinitions;
-    }
-
-    public virtual bool Equals(RawParsedScalar other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
-
-        return ScalarType == other.ScalarType && ScalarLocation == other.ScalarLocation && ScalarDefinition == other.ScalarDefinition
-            && IncludeBasesDefinitions.SequenceEqual(other.IncludeBasesDefinitions) && ExcludeBasesDefinitions.SequenceEqual(other.ExcludeBasesDefinitions)
-            && IncludeUnitsDefinitions.SequenceEqual(other.IncludeUnitsDefinitions) && ExcludeUnitsDefinitions.SequenceEqual(other.ExcludeUnitsDefinitions)
-            && ScalarConstantDefinitions.SequenceEqual(other.ScalarConstantDefinitions)
-            && DimensionalEquivalenceDefinitions.SequenceEqual(other.DimensionalEquivalenceDefinitions);
-    }
-
-    public override int GetHashCode()
-    {
-        return (ScalarType, ScalarLocation, ScalarDefinition).GetHashCode() ^ ExcludeBasesDefinitions.GetSequenceHashCode()
-            ^ IncludeBasesDefinitions.GetSequenceHashCode() ^ ExcludeUnitsDefinitions.GetSequenceHashCode() ^ IncludeUnitsDefinitions.GetSequenceHashCode()
-            ^ ScalarConstantDefinitions.GetSequenceHashCode() ^ DimensionalEquivalenceDefinitions.GetSequenceHashCode();
+        DimensionalEquivalences = new(dimensionalEquivalences);
     }
 }

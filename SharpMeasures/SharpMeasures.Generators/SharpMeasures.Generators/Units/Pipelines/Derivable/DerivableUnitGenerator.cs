@@ -21,7 +21,7 @@ internal static class DerivableUnitGenerator
     private static IResultWithDiagnostics<DataModel> FilterAndReduceToDataModel(Units.DataModel input, CancellationToken _)
     {
         DerivableUnitProcessingContext context = new(input.Unit.UnitType, input.UnitPopulation);
-        var processed = ProcessingFilter.Create(DerivableUnitProcesser.Instance).Filter(context, input.Unit.DerivableUnitDefinitions);
+        var processed = ProcessingFilter.Create(DerivableUnitProcesser.Instance).Filter(context, input.Unit.UnitDerivations);
 
         DataModel model = new(input.Unit.UnitType, input.Quantity.ScalarType.AsNamedType(), input.Documentation, processed.Result);
         return ResultWithDiagnostics.Construct(model, processed.Diagnostics);

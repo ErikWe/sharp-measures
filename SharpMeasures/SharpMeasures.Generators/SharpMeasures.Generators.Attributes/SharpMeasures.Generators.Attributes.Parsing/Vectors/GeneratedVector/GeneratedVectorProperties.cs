@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 internal static class GeneratedVectorProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawGeneratedVectorDefinition>> AllProperties => new IAttributeProperty<RawGeneratedVectorDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawGeneratedVector>> AllProperties => new IAttributeProperty<RawGeneratedVector>[]
     {
         Unit,
         Scalar,

@@ -56,12 +56,15 @@ internal static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.TypeAlreadyDefined, location, typeName, attemptedDefinition, existingDefinition);
     }
 
+    public static Diagnostic TypeAlreadyDefined_AsUnit_Unit(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "unit", "unit");
     public static Diagnostic TypeAlreadyDefined_AsUnit_Scalar(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "scalar", "unit");
     public static Diagnostic TypeAlreadyDefined_AsUnit_Vector(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "vector", "unit");
     public static Diagnostic TypeAlreadyDefined_AsScalar_Unit(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "unit", "scalar");
+    public static Diagnostic TypeAlreadyDefined_AsScalar_Scalar(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "scalar", "scalar");
     public static Diagnostic TypeAlreadyDefined_AsScalar_Vector(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "vector", "scalar");
     public static Diagnostic TypeAlreadyDefined_AsVector_Unit(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "unit", "vector");
     public static Diagnostic TypeAlreadyDefined_AsVector_Scalar(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "scalar", "vector");
+    public static Diagnostic TypeAlreadyDefined_AsVector_Vector(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "vector", "vector");
 
     public static Diagnostic ScalarNotUnbiased_UnitDefinition(Location? location, string scalarName)
     {

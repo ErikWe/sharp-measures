@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 internal static class ResizedVectorProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawResizedVectorDefinition>> AllProperties => new IAttributeProperty<RawResizedVectorDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawResizedVector>> AllProperties => new IAttributeProperty<RawResizedVector>[]
     {
         AssociatedVector,
         Dimension,

@@ -12,7 +12,7 @@ internal class GeneratedUnitDiagnostics : IGeneratedUnitDiagnostics
 
     private GeneratedUnitDiagnostics() { }
 
-    public Diagnostic NullQuantity(IProcessingContext context, RawGeneratedUnitDefinition definition)
+    public Diagnostic NullQuantity(IProcessingContext context, RawGeneratedUnit definition)
     {
         return DiagnosticConstruction.TypeNotScalar_Null(definition.Locations.Quantity?.AsRoslynLocation());
     }

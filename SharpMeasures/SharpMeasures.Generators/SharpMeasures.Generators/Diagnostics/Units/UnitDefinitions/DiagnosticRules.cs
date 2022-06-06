@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Units.Utility;
 
 internal static partial class DiagnosticRules
 {
-    public readonly static DiagnosticDescriptor InvalidUnitName = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor InvalidUnitName = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidUnitName,
         title: "Invalid unit name",
@@ -16,7 +16,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor InvalidUnitName_Null = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor InvalidUnitName_Null = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidUnitName,
         title: "Invalid unit name",
@@ -26,7 +26,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor InvalidUnitPluralForm = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor InvalidUnitPluralForm = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidUnitPluralForm,
         title: "Invalid plural form of unit name",
@@ -37,7 +37,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor InvalidUnitPluralForm_Null = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor InvalidUnitPluralForm_Null = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidUnitPluralForm,
         title: "Invalid plural form of unit name",
@@ -48,7 +48,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor DuplicateUnitName = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor DuplicateUnitName = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DuplicateUnitName,
         title: "Duplicate unit name",
@@ -58,7 +58,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor DuplicateUnitPluralForm = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor DuplicateUnitPluralForm = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DuplicateUnitPluralForm,
         title: "Duplicate unit plural form",
@@ -68,7 +68,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor UnrecognizedUnitName = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor UnrecognizedUnitName = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.UnrecognizedUnitName,
         title: "Expected the name of a unit",
@@ -78,7 +78,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor UnrecognizedUnitName_Null = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor UnrecognizedUnitName_Null = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.UnrecognizedUnitName,
         title: "Expected the name of a unit",
@@ -88,7 +88,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor CyclicUnitDependency = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor CyclicUnitDependency = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.CyclicUnitDependency,
         title: "Cyclic unit dependency",
@@ -98,7 +98,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor UnrecognizedPrefix = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor UnrecognizedPrefix = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.UnrecognizedPrefix,
         title: "Prefix not recognized",

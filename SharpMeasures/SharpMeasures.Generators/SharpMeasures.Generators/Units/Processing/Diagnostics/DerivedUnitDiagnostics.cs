@@ -7,7 +7,7 @@ using SharpMeasures.Generators.Diagnostics;
 
 internal static class DerivedUnitDiagnostics
 {
-    public static Diagnostic UnrecognizedUnit(DerivedUnitDefinition definition, int index, NamedType unit)
+    public static Diagnostic UnrecognizedUnit(DerivedUnit definition, int index, NamedType unit)
     {
         return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.UnitsElements[index].AsRoslynLocation(), definition.Units[index],
             unit.Name);

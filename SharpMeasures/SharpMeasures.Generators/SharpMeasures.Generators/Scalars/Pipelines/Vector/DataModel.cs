@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Scalars.Pipelines.Vector;
+﻿namespace SharpMeasures.Generators.Scalars.Pipelines.Vectors;
 
 using SharpMeasures.Generators.Documentation;
 using SharpMeasures.Generators.Vectors;

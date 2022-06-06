@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 internal static partial class DiagnosticRules
 {
-    public readonly static DiagnosticDescriptor UnresolvedDocumentationDependency = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor UnresolvedDocumentationDependency = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.UnresolvedDocumentationDependency,
         title: "Unresolved documentation dependency",
@@ -14,7 +14,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor NoMatchingDocumentationFile = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor NoMatchingDocumentationFile = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.NoMatchingDocumentationFile,
         title: "No matching documentation file",
@@ -25,7 +25,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor DocumentationFileMissingRequestedTag = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor DocumentationFileMissingRequestedTag = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DocumentationFileMissingRequestedTag,
         title: "Documentation tag not found",

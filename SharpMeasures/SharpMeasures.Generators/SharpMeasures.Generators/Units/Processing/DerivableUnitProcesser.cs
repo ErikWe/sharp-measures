@@ -14,29 +14,29 @@ internal class DerivableUnitProcessingContext : IProcessingContext
 {
     public DefinedType Type { get; }
 
-    public NamedTypePopulation<UnitInterface> UnitPopulation { get; }
+    public UnitPopulation UnitPopulation { get; }
 
-    public DerivableUnitProcessingContext(DefinedType type, NamedTypePopulation<UnitInterface> unitPopulation)
+    public DerivableUnitProcessingContext(DefinedType type, UnitPopulation unitPopulation)
     {
         Type = type;
         UnitPopulation = unitPopulation;
     }
 }
 
-internal class DerivableUnitProcesser : IProcesser<DerivableUnitProcessingContext, DerivableUnitDefinition, ProcessedDerivableUnit>
+internal class DerivableUnitProcesser : IProcesser<DerivableUnitProcessingContext, DerivableUnit, ProcessedDerivableUnit>
 {
     public static DerivableUnitProcesser Instance { get; } = new();
 
     private DerivableUnitProcesser() { }
 
-    public IOptionalWithDiagnostics<ProcessedDerivableUnit> Process(DerivableUnitProcessingContext context, DerivableUnitDefinition input)
+    public IOptionalWithDiagnostics<ProcessedDerivableUnit> Process(DerivableUnitProcessingContext context, DerivableUnit input)
     {
         NamedType[] quantitiesOfSignatureUnits = new NamedType[input.Signature.Types.Count];
 
         int index = 0;
         foreach (NamedType type in input.Signature.Types)
         {
-            if (context.UnitPopulation.Population.TryGetValue(type, out UnitInterface unit) is false)
+            if (context.UnitPopulation.TryGetValue(type, out UnitInterface unit) is false)
             {
                 return OptionalWithDiagnostics.Empty<ProcessedDerivableUnit>(DerivableUnitDiagnostics.TypeNotUnit(input, index, type));
             }
@@ -108,7 +108,7 @@ internal class DerivableUnitProcesser : IProcesser<DerivableUnitProcessingContex
         }
     }
 
-    private static string ProcessExpression(DerivableUnitDefinition definition, IReadOnlyCollection<string> parameterNames,
+    private static string ProcessExpression(DerivableUnit definition, IReadOnlyCollection<string> parameterNames,
         IReadOnlyCollection<NamedType> quantitiesOfSignatureUnits)
     {
         string[] parameterNameAndQuantity = new string[parameterNames.Count];

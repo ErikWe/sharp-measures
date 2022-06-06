@@ -4,11 +4,11 @@ using SharpMeasures.Generators.Diagnostics;
 
 using System;
 
-public class ScaledUnitProcesser : ADependantUnitProcesser<IDependantUnitProcessingContext, RawScaledUnitDefinition, ScaledUnitDefinition>
+public class ScaledUnitProcesser : ADependantUnitProcesser<IDependantUnitProcessingContext, RawScaledUnit, ScaledUnit>
 {
-    public ScaledUnitProcesser(IDependantUnitDiagnostics<RawScaledUnitDefinition> diagnostics) : base(diagnostics) { }
+    public ScaledUnitProcesser(IDependantUnitDiagnostics<RawScaledUnit> diagnostics) : base(diagnostics) { }
 
-    public override IOptionalWithDiagnostics<ScaledUnitDefinition> Process(IDependantUnitProcessingContext context, RawScaledUnitDefinition definition)
+    public override IOptionalWithDiagnostics<ScaledUnit> Process(IDependantUnitProcessingContext context, RawScaledUnit definition)
     {
         if (context is null)
         {
@@ -24,10 +24,10 @@ public class ScaledUnitProcesser : ADependantUnitProcesser<IDependantUnitProcess
         
         if (validity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<ScaledUnitDefinition>(validity.Diagnostics);
+            return OptionalWithDiagnostics.Empty<ScaledUnit>(validity.Diagnostics);
         }
 
-        ScaledUnitDefinition product = new(definition.Name!, definition.ParsingData.InterpretedPlural!, definition.From!, definition.Scale, definition.Locations);
+        ScaledUnit product = new(definition.Name!, definition.ParsingData.InterpretedPlural!, definition.From!, definition.Scale, definition.Locations);
         return OptionalWithDiagnostics.Result(product, validity.Diagnostics);
     }
 }

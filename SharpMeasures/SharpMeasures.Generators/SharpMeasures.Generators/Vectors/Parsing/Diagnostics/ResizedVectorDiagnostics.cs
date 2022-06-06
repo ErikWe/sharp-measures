@@ -12,17 +12,17 @@ internal class ResizedVectorDiagnostics : IResizedVectorDiagnostics
 
     private ResizedVectorDiagnostics() { }
 
-    public Diagnostic NullAssociatedVector(IProcessingContext context, RawResizedVectorDefinition definition)
+    public Diagnostic NullAssociatedVector(IProcessingContext context, RawResizedVector definition)
     {
         return DiagnosticConstruction.TypeNotVector_Null(definition.Locations.AssociatedVector?.AsRoslynLocation());
     }
 
-    public Diagnostic InvalidDimension(IProcessingContext context, RawResizedVectorDefinition definition)
+    public Diagnostic InvalidDimension(IProcessingContext context, RawResizedVector definition)
     {
         return DiagnosticConstruction.InvalidVectorDimension(definition.Locations.Dimension?.AsRoslynLocation(), definition.Dimension);
     }
 
-    public Diagnostic MissingDimension(IProcessingContext context, RawResizedVectorDefinition definition)
+    public Diagnostic MissingDimension(IProcessingContext context, RawResizedVector definition)
     {
         return DiagnosticConstruction.MissingVectorDimension(definition.Locations.Attribute.AsRoslynLocation(), context.Type.Name);
     }

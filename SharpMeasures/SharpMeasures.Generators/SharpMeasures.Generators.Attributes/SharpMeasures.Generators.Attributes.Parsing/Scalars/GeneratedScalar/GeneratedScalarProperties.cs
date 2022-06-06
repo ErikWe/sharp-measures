@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 internal static class GeneratedScalarProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawGeneratedScalarDefinition>> AllProperties => new IAttributeProperty<RawGeneratedScalarDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawGeneratedScalar>> AllProperties => new IAttributeProperty<RawGeneratedScalar>[]
     {
         Unit,
         Vector,

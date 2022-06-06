@@ -109,7 +109,7 @@ public readonly record struct Vector3 :
     /// <inheritdoc cref="Cross(Vector3)"/>
     /// <typeparam name="TFactor">The three-dimensional vector quantity that represents the second factor of { <see langword="this"/> ⨯ <paramref name="factor"/> }.</typeparam>
     public TFactor Cross<TFactor>(TFactor factor) where TFactor : IVector3Quantity<TFactor> => MathFactory.Vector3Result<TFactor>().Cross(this, factor);
-    /// <inheritdoc cref="CrossInto(Vector3)"/>
+    /// <inheritdoc cref="ICrossFactorVector3Quantity{TProduct, TFactor}.CrossInto(TFactor)"/>
     /// <typeparam name="TFactor">The three-dimensional vector quantity that represents the first factor of { <paramref name="factor"/> ⨯ <see langword="this"/> }.</typeparam>
     public TFactor CrossInto<TFactor>(TFactor factor) where TFactor : IVector3Quantity<TFactor> => MathFactory.Vector3Result<TFactor>().Cross(this, factor);
 

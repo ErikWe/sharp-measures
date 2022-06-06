@@ -15,9 +15,9 @@ internal class DimensionalEquivalenceProcessingContext : IProcessingContext
 {
     public DefinedType Type { get; }
 
-    public NamedTypePopulation<ScalarInterface> ScalarPopulation { get; }
+    public ScalarPopulation ScalarPopulation { get; }
 
-    public DimensionalEquivalenceProcessingContext(DefinedType type, NamedTypePopulation<ScalarInterface> scalarPopulation)
+    public DimensionalEquivalenceProcessingContext(DefinedType type, ScalarPopulation scalarPopulation)
     {
         Type = type;
 
@@ -25,14 +25,14 @@ internal class DimensionalEquivalenceProcessingContext : IProcessingContext
     }
 }
 
-internal class DimensionalEquivalenceReprocesser : IReprocesser<DimensionalEquivalenceProcessingContext, DimensionalEquivalenceDefinition,
+internal class DimensionalEquivalenceReprocesser : IReprocesser<DimensionalEquivalenceProcessingContext, DimensionalEquivalence,
     ProcessedDimensionalEquivalence>
 {
     public static DimensionalEquivalenceReprocesser Instance { get; } = new();
 
     private DimensionalEquivalenceReprocesser() { }
 
-    public IOptionalWithDiagnostics<ProcessedDimensionalEquivalence> Reprocess(DimensionalEquivalenceProcessingContext context, DimensionalEquivalenceDefinition definition,
+    public IOptionalWithDiagnostics<ProcessedDimensionalEquivalence> Reprocess(DimensionalEquivalenceProcessingContext context, DimensionalEquivalence definition,
         ProcessedDimensionalEquivalence product)
     {
         List<Diagnostic> allDiagnostics = new();
@@ -45,14 +45,14 @@ internal class DimensionalEquivalenceReprocesser : IReprocesser<DimensionalEquiv
             _ => product.EquivalentQuantitiesWithoutCast.Add
         };
 
-        if (context.ScalarPopulation.Population.TryGetValue(context.Type.AsNamedType(), out ScalarInterface equivalentTo) is false)
+        if (context.ScalarPopulation.TryGetValue(context.Type.AsNamedType(), out ScalarInterface equivalentTo) is false)
         {
             return OptionalWithDiagnostics.Empty<ProcessedDimensionalEquivalence>();
         }
 
         for (int i = 0; i < definition.Quantities.Count; i++)
         {
-            if (context.ScalarPopulation.Population.TryGetValue(definition.Quantities[i], out ScalarInterface quantity) is false)
+            if (context.ScalarPopulation.TryGetValue(definition.Quantities[i], out ScalarInterface quantity) is false)
             {
                 allDiagnostics.Add(DimensionalEquivalenceDiagnostics.TypeNotScalar(definition, i));
                 continue;

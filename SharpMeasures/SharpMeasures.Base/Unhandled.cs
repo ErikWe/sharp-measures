@@ -310,6 +310,6 @@ public readonly record struct Unhandled :
     /// <inheritdoc cref="Scalar.operator &gt;=(Scalar, Scalar)"/>
     public static bool operator >=(Unhandled x, Unhandled y) => x.Magnitude.Value >= y.Magnitude.Value;
 
-    /// <summary>Describes mathematical operations that result in a pure <see cref="Scalar"/>.</summary>
+    /// <summary>Describes mathematical operations that result in <see cref="Unhandled"/>.</summary>
     private static IScalarResultingMaths<Unhandled> ScalarMaths { get; } = MathFactory.ScalarResult<Unhandled>();
 }

@@ -67,8 +67,8 @@ internal static class Execution
             foreach (ProcessedScalarConstant constant in Data.Constants)
             {
                 AppendDocumentation(indentation, ScalarDocumentationTags.Units.ConstantWithName(constant.Name));
-                Builder.Append($"{indentation}public static {Data.Scalar.Name} {constant.Name} => " +
-                    $"new({constant.Value}, {Data.Unit.Name}.{constant.Unit.Name});{Environment.NewLine}");
+                Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} {constant.Name} => " +
+                    $"new({constant.Value}, {Data.Unit.Name}.{constant.Unit.Name});");
             }
 
             Builder.AppendLine();
@@ -76,8 +76,8 @@ internal static class Execution
             foreach (UnitInstance includedBase in Data.Bases)
             {
                 AppendDocumentation(indentation, ScalarDocumentationTags.Units.BaseWithName(includedBase));
-                Builder.Append($"{indentation}public static {Data.Scalar.Name} One{includedBase} => " +
-                    $"{Data.Unit.Name}.{includedBase.Name}.{Data.UnitQuantity.Name};{Environment.NewLine}");
+                Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} One{includedBase} => " +
+                    $"{Data.Unit.Name}.{includedBase.Name}.{Data.UnitQuantity.Name};");
             }
 
             Builder.AppendLine();
@@ -87,7 +87,7 @@ internal static class Execution
                 if (constant.GenerateMultiplesProperty)
                 {
                     AppendDocumentation(indentation, ScalarDocumentationTags.Units.ConstantMultiples(constant.Name));
-                    Builder.Append($"{indentation}public Scalar {constant.MultiplesName!} => Magnitude.Value / {constant.Name}.Magnitude.Value;{Environment.NewLine}");
+                    Builder.AppendLine($"{indentation}public Scalar {constant.MultiplesName!} => Magnitude.Value / {constant.Name}.Magnitude.Value;");
                 }
             }
 
@@ -96,7 +96,7 @@ internal static class Execution
             foreach (UnitInstance includedUnit in Data.Units)
             {
                 AppendDocumentation(indentation, ScalarDocumentationTags.Units.UnitWithName(includedUnit));
-                Builder.Append($"{indentation}public static Scalar {includedUnit.Plural} => InUnit({Data.Unit.Name}.{includedUnit.Name});{Environment.NewLine}");
+                Builder.AppendLine($"{indentation}public static Scalar {includedUnit.Plural} => InUnit({Data.Unit.Name}.{includedUnit.Name});");
             }
         }
 

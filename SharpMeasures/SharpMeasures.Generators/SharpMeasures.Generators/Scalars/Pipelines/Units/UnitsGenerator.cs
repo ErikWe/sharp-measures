@@ -33,7 +33,7 @@ internal static class UnitsGenerator
 
         Processing.ScalarConstantProcessingContext scalarConstantContext = new(input.Scalar.ScalarType, input.Unit, unitNames, unitPlurals);
         var processedConstants = ProcessingFilter.Create(Processing.ScalarConstantProcesser.Instance).Filter(scalarConstantContext,
-            input.Scalar.ScalarConstantDefinitions);
+            input.Scalar.ScalarConstants);
 
         DataModel model = new(input.Scalar.ScalarType, input.Unit.UnitType.AsNamedType(), input.Unit.QuantityType, processedBases.Result, processedUnits.Result,
             processedConstants.Result, input.Documentation);
@@ -47,17 +47,17 @@ internal static class UnitsGenerator
     {
         UnitListProcessingContext context = new(input.Scalar.ScalarType, input.Unit);
 
-        if (input.Scalar.IncludeBasesDefinitions.Any())
+        if (input.Scalar.IncludeBases.Any())
         {
-            var processedIncludeBases = ProcessingFilter.Create(UnitListProcesser<IncludeBasesDefinition>.Instance).Filter(context,
-                input.Scalar.IncludeBasesDefinitions, new ProcessedUnitList());
+            var processedIncludeBases = ProcessingFilter.Create(UnitListProcesser<IncludeBases>.Instance).Filter(context,
+                input.Scalar.IncludeBases, new ProcessedUnitList());
 
             var includedBases = processedIncludeBases.Result.UnitList as IReadOnlyCollection<UnitInstance> ?? Array.Empty<UnitInstance>();
             return ResultWithDiagnostics.Construct(includedBases, processedIncludeBases.Diagnostics);
         }
 
-        var processedExcludBases = ProcessingFilter.Create(UnitListProcesser<ExcludeBasesDefinition>.Instance).Filter(context,
-            input.Scalar.ExcludeBasesDefinitions, new ProcessedUnitList());
+        var processedExcludBases = ProcessingFilter.Create(UnitListProcesser<ExcludeBases>.Instance).Filter(context,
+            input.Scalar.ExcludeBases, new ProcessedUnitList());
 
         List<UnitInstance> bases = input.Unit.UnitsByName.Values.ToList();
 
@@ -73,17 +73,17 @@ internal static class UnitsGenerator
     {
         UnitListProcessingContext context = new(input.Scalar.ScalarType, input.Unit);
 
-        if (input.Scalar.IncludeUnitsDefinitions.Any())
+        if (input.Scalar.IncludeUnits.Any())
         {
-            var processedIncludeUnits = ProcessingFilter.Create(UnitListProcesser<IncludeUnitsDefinition>.Instance).Filter(context,
-                input.Scalar.IncludeUnitsDefinitions, new ProcessedUnitList());
+            var processedIncludeUnits = ProcessingFilter.Create(UnitListProcesser<IncludeUnits>.Instance).Filter(context,
+                input.Scalar.IncludeUnits, new ProcessedUnitList());
 
             var includedUnits = processedIncludeUnits.Result.UnitList as IReadOnlyCollection<UnitInstance> ?? Array.Empty<UnitInstance>();
             return ResultWithDiagnostics.Construct(includedUnits, processedIncludeUnits.Diagnostics);
         }
 
-        var processedExcludUnits = ProcessingFilter.Create(UnitListProcesser<ExcludeUnitsDefinition>.Instance).Filter(context,
-            input.Scalar.ExcludeUnitsDefinitions, new ProcessedUnitList());
+        var processedExcludUnits = ProcessingFilter.Create(UnitListProcesser<ExcludeUnits>.Instance).Filter(context,
+            input.Scalar.ExcludeUnits, new ProcessedUnitList());
 
         List<UnitInstance> units = input.Unit.UnitsByName.Values.ToList();
 

@@ -2,51 +2,33 @@
 
 using SharpMeasures.Generators.Attributes.Parsing.Vectors;
 using SharpMeasures.Generators.Attributes.Parsing.Quantities;
+using SharpMeasures.Equatables;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 internal record class ParsedVector
 {
     public DefinedType VectorType { get; }
     public MinimalLocation VectorLocation { get; }
-    public GeneratedVectorDefinition VectorDefinition { get; }
+    public GeneratedVector VectorDefinition { get; }
 
-    public IEnumerable<IncludeUnitsDefinition> IncludeUnitsDefinitions { get; }
-    public IEnumerable<ExcludeUnitsDefinition> ExcludeUnitsDefinitions { get; }
+    public EquatableEnumerable<IncludeUnits> IncludeUnits { get; }
+    public EquatableEnumerable<ExcludeUnits> ExcludeUnits { get; }
 
-    public IEnumerable<DimensionalEquivalenceDefinition> DimensionalEquivalenceDefinitions { get; }
+    public EquatableEnumerable<VectorConstant> VectorConstants { get; }
+    public EquatableEnumerable<DimensionalEquivalence> DimensionalEquivalences { get; }
 
-    public ParsedVector(DefinedType vectorType, MinimalLocation vectorLocation, GeneratedVectorDefinition vectorDefinition,
-        IEnumerable<IncludeUnitsDefinition> includeUnitsDefinitions, IEnumerable<ExcludeUnitsDefinition> excludeUnitsDefinitions,
-        IEnumerable<DimensionalEquivalenceDefinition> dimensionalEquivalenceDefinitions)
+    public ParsedVector(DefinedType vectorType, MinimalLocation vectorLocation, GeneratedVector vectorDefinition, IEnumerable<IncludeUnits> includeUnits,
+        IEnumerable<ExcludeUnits> excludeUnits, IEnumerable<VectorConstant> vectorConstants, IEnumerable<DimensionalEquivalence> dimensionalEquivalences)
     {
         VectorType = vectorType;
         VectorLocation = vectorLocation;
         VectorDefinition = vectorDefinition;
 
-        IncludeUnitsDefinitions = includeUnitsDefinitions;
-        ExcludeUnitsDefinitions = excludeUnitsDefinitions;
+        IncludeUnits = new(includeUnits);
+        ExcludeUnits = new(excludeUnits);
 
-        DimensionalEquivalenceDefinitions = dimensionalEquivalenceDefinitions;
-    }
-
-    public virtual bool Equals(ParsedVector other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
-
-        return VectorType == other.VectorType && VectorLocation == other.VectorLocation && VectorDefinition == other.VectorDefinition
-            && IncludeUnitsDefinitions.SequenceEqual(other.IncludeUnitsDefinitions) && ExcludeUnitsDefinitions.SequenceEqual(other.ExcludeUnitsDefinitions)
-            && DimensionalEquivalenceDefinitions.SequenceEqual(other.DimensionalEquivalenceDefinitions);
-    }
-
-    public override int GetHashCode()
-    {
-        return (VectorType, VectorLocation, VectorDefinition).GetHashCode() ^ IncludeUnitsDefinitions.GetSequenceHashCode() ^ ExcludeUnitsDefinitions.GetSequenceHashCode()
-            ^ DimensionalEquivalenceDefinitions.GetSequenceHashCode();
+        VectorConstants = new(vectorConstants);
+        DimensionalEquivalences = new(dimensionalEquivalences);
     }
 }

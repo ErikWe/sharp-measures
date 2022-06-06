@@ -12,24 +12,24 @@ internal class GeneratedScalarDiagnostics : IGeneratedScalarDiagnostics
 
     private GeneratedScalarDiagnostics() { }
 
-    public Diagnostic NullUnit(IProcessingContext context, RawGeneratedScalarDefinition definition)
+    public Diagnostic NullUnit(IProcessingContext context, RawGeneratedScalar definition)
     {
         return DiagnosticConstruction.TypeNotScalar_Null(definition.Locations.Unit?.AsRoslynLocation());
     }
 
-    public Diagnostic NullVector(IProcessingContext context, RawGeneratedScalarDefinition definition)
+    public Diagnostic NullVector(IProcessingContext context, RawGeneratedScalar definition)
     {
         return DiagnosticConstruction.TypeNotVector_Null(definition.Locations.Vector?.AsRoslynLocation());
     }
 
-    public Diagnostic NullDefaultUnit(IProcessingContext context, RawGeneratedScalarDefinition definition)
+    public Diagnostic NullDefaultUnit(IProcessingContext context, RawGeneratedScalar definition)
     {
         return DiagnosticConstruction.TypeNotUnit_Null(definition.Locations.DefaultUnitName?.AsRoslynLocation());
     }
 
-    public Diagnostic EmptyDefaultUnit(IProcessingContext context, RawGeneratedScalarDefinition definition) => NullDefaultUnit(context, definition);
+    public Diagnostic EmptyDefaultUnit(IProcessingContext context, RawGeneratedScalar definition) => NullDefaultUnit(context, definition);
 
-    public Diagnostic SetDefaultSymbolButNotUnit(IProcessingContext context, RawGeneratedScalarDefinition definition)
+    public Diagnostic SetDefaultSymbolButNotUnit(IProcessingContext context, RawGeneratedScalar definition)
     {
         return DiagnosticConstruction.DefineQuantityUnitAndSymbol_MissingSymbol(definition.Locations.DefaultUnitName?.AsRoslynLocation());
     }

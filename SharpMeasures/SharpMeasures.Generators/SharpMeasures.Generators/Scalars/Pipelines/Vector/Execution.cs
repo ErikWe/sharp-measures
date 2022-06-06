@@ -1,10 +1,11 @@
-﻿namespace SharpMeasures.Generators.Scalars.Pipelines.Vector;
+﻿namespace SharpMeasures.Generators.Scalars.Pipelines.Vectors;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Vectors;
+using SharpMeasures.Generators.Vectors.Pipelines;
 
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ internal static class Execution
     {
         string source = Composer.Compose(context, data);
 
-        context.AddSource($"{data.Scalar.Name}_Vector.g.cs", SourceText.From(source, Encoding.UTF8));
+        context.AddSource($"{data.Scalar.Name}_Vectors.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer
@@ -37,8 +38,7 @@ internal static class Execution
         private UsingsCollector UsingsCollector { get; }
         private List<Diagnostic> Diagnostics { get; } = new();
 
-        private static VectorTexts DoubleTupleText { get; } = VectorTexts.CommaSeparatedElements_LowerCased("double");
-        private static VectorTexts ScalarTupleText { get; } = VectorTexts.CommaSeparatedElements_LowerCased("Scalar");
+        private static VectorTextBuilder ScalarTupleText { get; } = ConstantTexts.Builders.Lower.Scalar;
 
         private Composer(SourceProductionContext context, DataModel data)
         {
@@ -88,37 +88,27 @@ internal static class Execution
 
         private void ComposeForVector(Indentation indentation, VectorInterface vector)
         {
-            string doubleTuple = $"({DoubleTupleText.GetText(vector.Dimension)}";
             string scalarTuple = $"({ScalarTupleText.GetText(vector.Dimension)}";
 
             AppendDocumentation(indentation, ScalarDocumentationTags.Vectors.Multiply_Vector(vector.Dimension));
-            Builder.Append($"{indentation}public {vector.VectorType.Name} Multiply(Vector{vector.Dimension} factor) => new(Magnitude.Value * factor);{Environment.NewLine}");
-
-            AppendDocumentation(indentation, ScalarDocumentationTags.Vectors.Multiply_DoubleTuple(vector.Dimension));
-            Builder.Append($"{indentation}public {vector.VectorType.Name} Multiply({doubleTuple} components) => new(Magnitude * components);{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public {vector.VectorType.Name} Multiply(Vector{vector.Dimension} factor) => new(Magnitude.Value * factor);");
 
             AppendDocumentation(indentation, ScalarDocumentationTags.Vectors.Multiply_ScalarTuple(vector.Dimension));
-            Builder.Append($"{indentation}public {vector.VectorType.Name} Multiply({scalarTuple} components) => new(Magnitude * components);{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public {vector.VectorType.Name} Multiply({scalarTuple} components) => new(Magnitude * components);");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.Vectors.Operators.Multiply_Vector_LHS(vector.Dimension));
-            Builder.Append($"{indentation}public static {vector.VectorType.Name} operator *({Data.Scalar.Name} x, Vector{vector.Dimension} y) => new(x.Magnitude.Value * y);{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public static {vector.VectorType.Name} operator *({Data.Scalar.Name} x, Vector{vector.Dimension} y) => new(x.Magnitude.Value * y);");
 
             AppendDocumentation(indentation, ScalarDocumentationTags.Vectors.Operators.Multiply_Vector_RHS(vector.Dimension));
-            Builder.Append($"{indentation}public static {vector.VectorType.Name} operator *(Vector{vector.Dimension} x, {Data.Scalar.Name} y) => new(x * y.Magnitude.Value);{Environment.NewLine}");
-
-            AppendDocumentation(indentation, ScalarDocumentationTags.Vectors.Operators.Multiply_DoubleTuple_LHS(vector.Dimension));
-            Builder.Append($"{indentation}public static {vector.VectorType.Name} operator *({Data.Scalar.Name} x, {doubleTuple} y) => new(x.Magnitude * y);{Environment.NewLine}");
-
-            AppendDocumentation(indentation, ScalarDocumentationTags.Vectors.Operators.Multiply_DoubleTuple_RHS(vector.Dimension));
-            Builder.Append($"{indentation}public static {vector.VectorType.Name} operator *({doubleTuple} x, {Data.Scalar.Name} y) => new(x * y.Magnitude);{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public static {vector.VectorType.Name} operator *(Vector{vector.Dimension} x, {Data.Scalar.Name} y) => new(x * y.Magnitude.Value);");
 
             AppendDocumentation(indentation, ScalarDocumentationTags.Vectors.Operators.Multiply_ScalarTuple_LHS(vector.Dimension));
-            Builder.Append($"{indentation}public static {vector.VectorType.Name} operator *({Data.Scalar.Name} x, {scalarTuple} y) => new(x.Magnitude * y);{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public static {vector.VectorType.Name} operator *({Data.Scalar.Name} x, {scalarTuple} y) => new(x.Magnitude * y);");
 
             AppendDocumentation(indentation, ScalarDocumentationTags.Vectors.Operators.Multiply_ScalarTuple_RHS(vector.Dimension));
-            Builder.Append($"{indentation}public static {vector.VectorType.Name} operator *({scalarTuple} x, {Data.Scalar.Name} y) => new(x * y.Magnitude);{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public static {vector.VectorType.Name} operator *({scalarTuple} x, {Data.Scalar.Name} y) => new(x * y.Magnitude);");
         }
 
         private void AppendDocumentation(Indentation indentation, string tag)

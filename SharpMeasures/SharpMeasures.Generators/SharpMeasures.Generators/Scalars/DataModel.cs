@@ -12,12 +12,12 @@ internal record class DataModel
     public UnitInterface Unit { get; }
     public VectorCollection VectorCollection { get; }
 
-    public NamedTypePopulation<ScalarInterface> ScalarPopulation { get; }
+    public ScalarPopulation ScalarPopulation { get; }
     public VectorPopulation VectorPopulation { get; }
 
     public DocumentationFile Documentation { get; init; }
 
-    public DataModel(ParsedScalar scalar, UnitInterface unit, VectorCollection vectorCollection, NamedTypePopulation<ScalarInterface> scalarPopulation,
+    public DataModel(ParsedScalar scalar, UnitInterface unit, VectorCollection vectorCollection, ScalarPopulation scalarPopulation,
         VectorPopulation vectorPopulation)
     {
         Scalar = scalar;

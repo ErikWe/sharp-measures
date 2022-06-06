@@ -11,7 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 [SuppressMessage("Style", "IDE0090", Justification = "Roslyn-analyzers related to analyzer releases does not consider target-typed new expressions.")]
 internal static partial class DiagnosticRules
 {
-    public readonly static DiagnosticDescriptor TypeNotPartial = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor TypeNotPartial = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.TypeNotPartial,
         title: "Expected a partial type",
@@ -21,7 +21,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor TypeNotScalar = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor TypeNotScalar = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.TypeNotScalar,
         title: "Expected a scalar quantity",
@@ -32,7 +32,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor TypeNotScalar_Null = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor TypeNotScalar_Null = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.TypeNotScalar,
         title: "Expected a scalar quantity",
@@ -42,7 +42,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor TypeNotVector = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor TypeNotVector = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.TypeNotVector,
         title: "Expected a vector quantity",
@@ -53,7 +53,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor TypeNotVector_Null = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor TypeNotVector_Null = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.TypeNotVector,
         title: "Expected a vector quantity",
@@ -63,7 +63,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor TypeNotUnit = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor TypeNotUnit = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.TypeNotUnit,
         title: "Expected a unit",
@@ -73,7 +73,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor TypeNotUnit_Null = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor TypeNotUnit_Null = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.TypeNotUnit,
         title: "Expected a unit",
@@ -83,7 +83,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor TypeAlreadyDefined = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor TypeAlreadyDefined = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.TypeAlreadyDefined,
         title: "Type already defined",
@@ -93,7 +93,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor ScalarNotUnbiased_UnitDefinition = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor ScalarNotUnbiased_UnitDefinition = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.ScalarNotUnbiased,
         title: "Expected an unbiased scalar quantity",
@@ -106,7 +106,7 @@ internal static partial class DiagnosticRules
             "rather than the biased quantity \"Temperature\"."
     );
 
-    public readonly static DiagnosticDescriptor ScalarNotUnbiased = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor ScalarNotUnbiased = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.ScalarNotUnbiased,
         title: "Expected an unbiased scalar quantity",
@@ -116,7 +116,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor ScalarNotBiased = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor ScalarNotBiased = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.ScalarNotBiased,
         title: "Expected a biased scalar quantity",
@@ -126,7 +126,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor UnitNotSupportingBias = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor UnitNotSupportingBias = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.UnitNotSupportingBias,
         title: "Unit does not support biased quantities",
@@ -136,7 +136,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor EmptyList = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor EmptyList = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.EmptyList,
         title: "Expected a non-empty list",
@@ -146,7 +146,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor DuplicateListing = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor DuplicateListing = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DuplicateListing,
         title: "Item has already been listed",

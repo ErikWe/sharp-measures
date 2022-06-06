@@ -20,4 +20,9 @@ internal static partial class DiagnosticConstruction
     {
         return Diagnostic.Create(DiagnosticRules.DuplicateVectorDimension, location, dimension.ToString(CultureInfo.InvariantCulture));
     }
+
+    public static Diagnostic VectorConstantInvalidDimension(Location? location, int dimension, string vectorName)
+    {
+        return Diagnostic.Create(DiagnosticRules.VectorConstantInvalidDimension, location, dimension.ToString(CultureInfo.InvariantCulture), vectorName);
+    }
 }

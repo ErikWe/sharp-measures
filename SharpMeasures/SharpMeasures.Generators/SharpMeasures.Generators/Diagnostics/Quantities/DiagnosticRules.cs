@@ -3,11 +3,10 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Quantities.Utility;
-using SharpMeasures.Generators.Scalars.Utility;
 
 internal static partial class DiagnosticRules
 {
-    public readonly static DiagnosticDescriptor DefineQuantityUnitAndSymbol_MissingUnit = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor DefineQuantityUnitAndSymbol_MissingUnit = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DefineQuantityUnitAndSymbol,
         title: "Expected both unit name and symbol",
@@ -17,7 +16,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor DefineQuantityUnitAndSymbol_MissingSymbol = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor DefineQuantityUnitAndSymbol_MissingSymbol = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DefineQuantityUnitAndSymbol,
         title: "Expected both unit name and symbol",
@@ -27,7 +26,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor InvalidConstantName = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor InvalidConstantName = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidConstantName,
         title: "Invalid name of constant",
@@ -37,7 +36,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor InvalidConstantName_Null = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor InvalidConstantName_Null = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidConstantName,
         title: "Invalid name of constant",
@@ -47,7 +46,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor InvalidConstantMultiplesName = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor InvalidConstantMultiplesName = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidConstantMultiplesName,
         title: "Invalid name for multiples of constant",
@@ -58,7 +57,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor InvalidConstantMultiplesName_Null = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor InvalidConstantMultiplesName_Null = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidConstantMultiplesName,
         title: "Invalid name for multiples of constant",
@@ -69,7 +68,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor DuplicateConstantName = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor DuplicateConstantName = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DuplicateConstantName,
         title: "Duplicate name of constant",
@@ -79,7 +78,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor DuplicateConstantMultiplesName = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor DuplicateConstantMultiplesName = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DuplicateConstantMultiplesName,
         title: "Duplicate name for multiples of constant",
@@ -89,7 +88,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor ConstantSharesNameWithUnit = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor ConstantSharesNameWithUnit = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.ConstantSharesNameWithUnit,
         title: "Constant shares name with unit",
@@ -99,7 +98,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor UnrecognizedCastOperatorBehaviour = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor UnrecognizedCastOperatorBehaviour = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.UnrecognizedCastOperatorBehaviour,
         title: "Unrecognized cast operator behaviour",
@@ -109,7 +108,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor ContradictoryAttributes = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor ContradictoryAttributes = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.ContradictoryAttributes,
         title: "Contradictory attributes",
@@ -119,7 +118,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor QuantityGroupMissingRoot = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor QuantityGroupMissingRoot = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.QuantityGroupMissingRoot,
         title: "Quantity group missing root quantity",

@@ -8,10 +8,10 @@ using System;
 
 public interface IGeneratedUnitDiagnostics
 {
-    public abstract Diagnostic? NullQuantity(IProcessingContext context, RawGeneratedUnitDefinition definition);
+    public abstract Diagnostic? NullQuantity(IProcessingContext context, RawGeneratedUnit definition);
 }
 
-public class GeneratedUnitProcesser : AProcesser<IProcessingContext, RawGeneratedUnitDefinition, GeneratedUnitDefinition>
+public class GeneratedUnitProcesser : AProcesser<IProcessingContext, RawGeneratedUnit, GeneratedUnit>
 {
     private IGeneratedUnitDiagnostics Diagnostics { get; }
 
@@ -20,7 +20,7 @@ public class GeneratedUnitProcesser : AProcesser<IProcessingContext, RawGenerate
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<GeneratedUnitDefinition> Process(IProcessingContext context, RawGeneratedUnitDefinition definition)
+    public override IOptionalWithDiagnostics<GeneratedUnit> Process(IProcessingContext context, RawGeneratedUnit definition)
     {
         if (context is null)
         {
@@ -34,10 +34,10 @@ public class GeneratedUnitProcesser : AProcesser<IProcessingContext, RawGenerate
 
         if (definition.Quantity is null)
         {
-            return OptionalWithDiagnostics.Empty<GeneratedUnitDefinition>(Diagnostics.NullQuantity(context, definition));
+            return OptionalWithDiagnostics.Empty<GeneratedUnit>(Diagnostics.NullQuantity(context, definition));
         }
 
-        GeneratedUnitDefinition product = new(definition.Quantity.Value, definition.SupportsBiasedQuantities, definition.GenerateDocumentation, definition.Locations);
+        GeneratedUnit product = new(definition.Quantity.Value, definition.SupportsBiasedQuantities, definition.GenerateDocumentation, definition.Locations);
         return OptionalWithDiagnostics.Result(product);
     }
 }

@@ -42,7 +42,16 @@ public static partial class UtilityExtensions
             throw new ArgumentNullException(nameof(dictionary));
         }
 
-        return dictionary.OrderBy(static (x) => x).GetSequenceHashCode();
+        return orderAndFlattenDictionary().GetSequenceHashCode();
+
+        IEnumerable orderAndFlattenDictionary()
+        {
+            foreach (KeyValuePair<TKey, TValue> pair in dictionary.OrderBy(static (x) => x))
+            {
+                yield return pair.Key;
+                yield return pair.Value;
+            }
+        }
     }
 
     public static int GetOrderIndependentHashCode<TKey>(this HashSet<TKey> hashSet)
@@ -65,12 +74,7 @@ public static partial class UtilityExtensions
             return other is null;
         }
 
-        if (other is null)
-        {
-            return false;
-        }
-
-        if (dictionary.Count != other.Count)
+        if (other is null || dictionary.Count != other.Count)
         {
             return false;
         }
@@ -78,34 +82,6 @@ public static partial class UtilityExtensions
         foreach (var keyValuePair in dictionary)
         {
             if ((other.TryGetValue(keyValuePair.Key, out var value) && keyValuePair.Equals(value)) is false)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public static bool OrderIndependentSequenceEquals<TKey>(this HashSet<TKey> hashSet, HashSet<TKey> other)
-    {
-        if (hashSet is null)
-        {
-            return other is null;
-        }
-
-        if (other is null)
-        {
-            return false;
-        }
-
-        if (hashSet.Count != other.Count)
-        {
-            return false;
-        }
-
-        foreach (var entry in hashSet)
-        {
-            if (other.Contains(entry) is false)
             {
                 return false;
             }

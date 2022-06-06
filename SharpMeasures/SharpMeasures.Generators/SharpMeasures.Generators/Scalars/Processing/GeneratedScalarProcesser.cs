@@ -13,11 +13,11 @@ internal class GeneratedScalarProcessingContext : IProcessingContext
 {
     public DefinedType Type { get; }
 
-    public NamedTypePopulation<UnitInterface> UnitPopulation { get; }
-    public NamedTypePopulation<ScalarInterface> ScalarPopulation { get; }
+    public UnitPopulation UnitPopulation { get; }
+    public ScalarPopulation ScalarPopulation { get; }
     public VectorPopulation VectorPopulation { get; }
 
-    public GeneratedScalarProcessingContext(DefinedType type, NamedTypePopulation<UnitInterface> unitPopulation, NamedTypePopulation<ScalarInterface> scalarPopulation,
+    public GeneratedScalarProcessingContext(DefinedType type, UnitPopulation unitPopulation, ScalarPopulation scalarPopulation,
         VectorPopulation vectorPopulation)
     {
         Type = type;
@@ -28,15 +28,15 @@ internal class GeneratedScalarProcessingContext : IProcessingContext
     }
 }
 
-internal class GeneratedScalarProcesser : IProcesser<GeneratedScalarProcessingContext, GeneratedScalarDefinition, ProcessedGeneratedScalar>
+internal class GeneratedScalarProcesser : IProcesser<GeneratedScalarProcessingContext, GeneratedScalar, ProcessedGeneratedScalar>
 {
     public static GeneratedScalarProcesser Instance { get; } = new();
 
     private GeneratedScalarProcesser() { }
 
-    public IOptionalWithDiagnostics<ProcessedGeneratedScalar> Process(GeneratedScalarProcessingContext context, GeneratedScalarDefinition input)
+    public IOptionalWithDiagnostics<ProcessedGeneratedScalar> Process(GeneratedScalarProcessingContext context, GeneratedScalar input)
     {
-        if (context.UnitPopulation.Population.ContainsKey(context.Type.AsNamedType()))
+        if (context.UnitPopulation.ContainsKey(context.Type.AsNamedType()))
         {
             var diagnostics = GeneratedScalarDiagnostics.TypeAlreadyUnit(input.Locations.Attribute, context.Type.AsNamedType());
             return OptionalWithDiagnostics.Empty<ProcessedGeneratedScalar>(diagnostics);
@@ -75,9 +75,9 @@ internal class GeneratedScalarProcesser : IProcesser<GeneratedScalarProcessingCo
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static IOptionalWithDiagnostics<UnitInterface> ProcessUnit(GeneratedScalarProcessingContext context, GeneratedScalarDefinition input)
+    private static IOptionalWithDiagnostics<UnitInterface> ProcessUnit(GeneratedScalarProcessingContext context, GeneratedScalar input)
     {
-        if (context.UnitPopulation.Population.TryGetValue(input.Unit, out UnitInterface unit) is false)
+        if (context.UnitPopulation.TryGetValue(input.Unit, out UnitInterface unit) is false)
         {
             return OptionalWithDiagnostics.Empty<UnitInterface>(GeneratedScalarDiagnostics.TypeNotUnit(input));
         }
@@ -90,19 +90,19 @@ internal class GeneratedScalarProcesser : IProcesser<GeneratedScalarProcessingCo
         return OptionalWithDiagnostics.Result(unit);
     }
 
-    private static IOptionalWithDiagnostics<VectorCollection> ProcessVector(GeneratedScalarProcessingContext context, GeneratedScalarDefinition input)
+    private static IOptionalWithDiagnostics<VectorCollection> ProcessVector(GeneratedScalarProcessingContext context, GeneratedScalar input)
     {
         if (input.Vector is null)
         {
             return OptionalWithDiagnostics.Result(VectorCollection.Empty);
         }
 
-        if (context.VectorPopulation.VectorGroups.Population.TryGetValue(input.Vector.Value, out ResizedVectorGroup group))
+        if (context.VectorPopulation.VectorGroups.TryGetValue(input.Vector.Value, out ResizedVectorGroup group))
         {
             return OptionalWithDiagnostics.Result(VectorCollection.FromGroup(group));
         }
 
-        if (context.VectorPopulation.UnresolvedVectors.Population.TryGetValue(input.Vector.Value, out VectorInterface unresolvedVector))
+        if (context.VectorPopulation.UnresolvedVectors.TryGetValue(input.Vector.Value, out VectorInterface unresolvedVector))
         {
             return OptionalWithDiagnostics.Result(new VectorCollection(unresolvedVector));
         }
@@ -110,7 +110,7 @@ internal class GeneratedScalarProcesser : IProcesser<GeneratedScalarProcessingCo
         return OptionalWithDiagnostics.Empty<VectorCollection>(GeneratedScalarDiagnostics.TypeNotVector(input));
     }
 
-    private static IResultWithDiagnostics<string?> ProcessDefaultUnitName(GeneratedScalarDefinition input, UnitInterface unit)
+    private static IResultWithDiagnostics<string?> ProcessDefaultUnitName(GeneratedScalar input, UnitInterface unit)
     {
         if (input.DefaultUnitName is null)
         {
@@ -132,7 +132,7 @@ internal class GeneratedScalarProcesser : IProcesser<GeneratedScalarProcessingCo
             return ResultWithDiagnostics.Construct<ScalarInterface?>(null);
         }
 
-        if (context.ScalarPopulation.Population.TryGetValue(quantity.Value, out ScalarInterface scalar) is false)
+        if (context.ScalarPopulation.TryGetValue(quantity.Value, out ScalarInterface scalar) is false)
         {
             return ResultWithDiagnostics.Construct<ScalarInterface?>(null, GeneratedScalarDiagnostics.TypeNotScalar(location, quantity.Value));
         }

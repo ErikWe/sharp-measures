@@ -11,11 +11,11 @@ using System.Linq;
 
 public interface IDimensionalEquivalenceDiagnostics
 {
-    public abstract Diagnostic? EmptyQuantityList(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalenceDefinition definition);
-    public abstract Diagnostic? NullQuantity(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalenceDefinition definition, int index);
-    public abstract Diagnostic? DuplicateQuantity(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalenceDefinition definition, int index);
+    public abstract Diagnostic? EmptyQuantityList(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalence definition);
+    public abstract Diagnostic? NullQuantity(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalence definition, int index);
+    public abstract Diagnostic? DuplicateQuantity(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalence definition, int index);
 
-    public abstract Diagnostic? UnrecognizedCastOperatorBehaviour(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalenceDefinition definition);
+    public abstract Diagnostic? UnrecognizedCastOperatorBehaviour(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalence definition);
 }
 
 public interface IDimensionalEquivalenceProcessingContext : IProcessingContext
@@ -23,8 +23,8 @@ public interface IDimensionalEquivalenceProcessingContext : IProcessingContext
     public abstract HashSet<NamedType> ListedQuantities { get; }
 }
 
-public class DimensionalEquivalenceProcesser : AActionableProcesser<IDimensionalEquivalenceProcessingContext, RawDimensionalEquivalenceDefinition,
-    DimensionalEquivalenceDefinition>
+public class DimensionalEquivalenceProcesser : AActionableProcesser<IDimensionalEquivalenceProcessingContext, RawDimensionalEquivalence,
+    DimensionalEquivalence>
 {
     private IDimensionalEquivalenceDiagnostics Diagnostics { get; }
 
@@ -33,8 +33,8 @@ public class DimensionalEquivalenceProcesser : AActionableProcesser<IDimensional
         Diagnostics = diagnostics;
     }
 
-    public override void OnSuccessfulProcess(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalenceDefinition definition,
-        DimensionalEquivalenceDefinition product)
+    public override void OnSuccessfulProcess(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalence definition,
+        DimensionalEquivalence product)
     {
         if (context is null)
         {
@@ -52,8 +52,8 @@ public class DimensionalEquivalenceProcesser : AActionableProcesser<IDimensional
         }
     }
 
-    public override IOptionalWithDiagnostics<DimensionalEquivalenceDefinition> Process(IDimensionalEquivalenceProcessingContext context,
-        RawDimensionalEquivalenceDefinition definition)
+    public override IOptionalWithDiagnostics<DimensionalEquivalence> Process(IDimensionalEquivalenceProcessingContext context,
+        RawDimensionalEquivalence definition)
     {
         if (context is null)
         {
@@ -70,7 +70,7 @@ public class DimensionalEquivalenceProcesser : AActionableProcesser<IDimensional
 
         if (validity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<DimensionalEquivalenceDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<DimensionalEquivalence>(allDiagnostics);
         }
 
         var processed = ProcessQuantities(context, definition);
@@ -78,14 +78,14 @@ public class DimensionalEquivalenceProcesser : AActionableProcesser<IDimensional
 
         if (processed.Result.Quantities.Count is 0)
         {
-            return OptionalWithDiagnostics.Empty<DimensionalEquivalenceDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<DimensionalEquivalence>(allDiagnostics);
         }
 
         return processed.ReplaceDiagnostics(allDiagnostics);
     }
 
-    private IResultWithDiagnostics<DimensionalEquivalenceDefinition> ProcessQuantities(IDimensionalEquivalenceProcessingContext context,
-        RawDimensionalEquivalenceDefinition definition)
+    private IResultWithDiagnostics<DimensionalEquivalence> ProcessQuantities(IDimensionalEquivalenceProcessingContext context,
+        RawDimensionalEquivalence definition)
     {
         HashSet<NamedType> quantities = new();
         List<Diagnostic> allDiagnostics = new();
@@ -113,16 +113,16 @@ public class DimensionalEquivalenceProcesser : AActionableProcesser<IDimensional
             }
         }
 
-        DimensionalEquivalenceDefinition product = new(quantities.ToList(), definition.CastOperatorBehaviour, definition.Locations);
+        DimensionalEquivalence product = new(quantities.ToList(), definition.CastOperatorBehaviour, definition.Locations);
         return ResultWithDiagnostics.Construct(product, allDiagnostics);
     }
 
-    private IValidityWithDiagnostics CheckValidity(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalenceDefinition definition)
+    private IValidityWithDiagnostics CheckValidity(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalence definition)
     {
         return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckQuantitiesValidity, CheckCastOperatorBehaviourValidity);
     }
 
-    private IValidityWithDiagnostics CheckQuantitiesValidity(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalenceDefinition definition)
+    private IValidityWithDiagnostics CheckQuantitiesValidity(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalence definition)
     {
         if (definition.Quantities.Count is 0)
         {
@@ -132,7 +132,7 @@ public class DimensionalEquivalenceProcesser : AActionableProcesser<IDimensional
         return ValidityWithDiagnostics.Valid;
     }
 
-    private IValidityWithDiagnostics CheckCastOperatorBehaviourValidity(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalenceDefinition definition)
+    private IValidityWithDiagnostics CheckCastOperatorBehaviourValidity(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalence definition)
     {
         if (Enum.IsDefined(typeof(ConversionOperationBehaviour), definition.CastOperatorBehaviour) is false)
         {

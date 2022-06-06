@@ -6,10 +6,10 @@ using System.Collections.Generic;
 
 internal static class FixedUnitProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawFixedUnitDefinition>> AllProperties => new IAttributeProperty<RawFixedUnitDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawFixedUnit>> AllProperties => new IAttributeProperty<RawFixedUnit>[]
     {
-        CommonProperties.Name<RawFixedUnitDefinition, FixedUnitParsingData, FixedUnitLocations>(nameof(FixedUnitAttribute.Name)),
-        CommonProperties.Plural<RawFixedUnitDefinition, FixedUnitParsingData, FixedUnitLocations>(nameof(FixedUnitAttribute.Plural)),
+        CommonProperties.Name<RawFixedUnit, FixedUnitParsingData, FixedUnitLocations>(nameof(FixedUnitAttribute.Name)),
+        CommonProperties.Plural<RawFixedUnit, FixedUnitParsingData, FixedUnitLocations>(nameof(FixedUnitAttribute.Plural)),
         Value,
         Bias
     };

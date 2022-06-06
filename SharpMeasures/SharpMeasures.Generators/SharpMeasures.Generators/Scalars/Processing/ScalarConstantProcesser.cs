@@ -26,13 +26,13 @@ internal class ScalarConstantProcessingContext : IProcessingContext
     }
 }
 
-internal class ScalarConstantProcesser : IProcesser<ScalarConstantProcessingContext, ScalarConstantDefinition, ProcessedScalarConstant>
+internal class ScalarConstantProcesser : IProcesser<ScalarConstantProcessingContext, ScalarConstant, ProcessedScalarConstant>
 {
     public static ScalarConstantProcesser Instance { get; } = new();
 
     private ScalarConstantProcesser() { }
 
-    public IOptionalWithDiagnostics<ProcessedScalarConstant> Process(ScalarConstantProcessingContext context, ScalarConstantDefinition definition)
+    public IOptionalWithDiagnostics<ProcessedScalarConstant> Process(ScalarConstantProcessingContext context, ScalarConstant definition)
     {
         if (context.Unit.UnitsByName.TryGetValue(definition.Unit, out UnitInstance unit) is false)
         {
@@ -50,7 +50,7 @@ internal class ScalarConstantProcesser : IProcesser<ScalarConstantProcessingCont
         return OptionalWithDiagnostics.Result(product, processedMultiples.Diagnostics);
     }
 
-    private static IResultWithDiagnostics<(bool Generate, string? Name)> ProcessMultiples(ScalarConstantProcessingContext context, ScalarConstantDefinition definition)
+    private static IResultWithDiagnostics<(bool Generate, string? Name)> ProcessMultiples(ScalarConstantProcessingContext context, ScalarConstant definition)
     {
         if (definition.GenerateMultiplesProperty is false)
         {

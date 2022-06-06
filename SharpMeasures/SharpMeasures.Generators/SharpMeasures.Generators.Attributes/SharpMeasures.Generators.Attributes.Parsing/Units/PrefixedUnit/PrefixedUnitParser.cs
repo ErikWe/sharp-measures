@@ -4,11 +4,11 @@ using SharpMeasures.Generators.Units;
 
 public static class PrefixedUnitParser
 {
-    public static IAttributeParser<RawPrefixedUnitDefinition> Parser { get; } = new AttributeParser();
+    public static IAttributeParser<RawPrefixedUnit> Parser { get; } = new AttributeParser();
 
-    private static RawPrefixedUnitDefinition DefaultDefinition() => RawPrefixedUnitDefinition.Empty;
+    private static RawPrefixedUnit DefaultDefinition() => RawPrefixedUnit.Empty;
 
-    private class AttributeParser : AUnitParser<RawPrefixedUnitDefinition, PrefixedUnitParsingData, PrefixedUnitLocations, PrefixedUnitAttribute>
+    private class AttributeParser : AUnitParser<RawPrefixedUnit, PrefixedUnitParsingData, PrefixedUnitLocations, PrefixedUnitAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, PrefixedUnitProperties.AllProperties) { }
     }

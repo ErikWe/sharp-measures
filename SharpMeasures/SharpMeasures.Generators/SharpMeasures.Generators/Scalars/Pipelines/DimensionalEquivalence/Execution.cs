@@ -13,7 +13,7 @@ internal static class Execution
 {
     public static void Execute(SourceProductionContext context, DataModel data)
     {
-        if (data.DimensionallyEquivalentScalars.EquivalentQuantities.Any() is false)
+        if (data.DimensionalEquivalences.EquivalentQuantities.Any() is false)
         {
             return;
         }
@@ -69,19 +69,19 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
-            foreach (ScalarInterface quantity in Data.DimensionallyEquivalentScalars.EquivalentQuantities)
+            foreach (ScalarInterface quantity in Data.DimensionalEquivalences.EquivalentQuantities)
             {
                 ComposeInstanceConversion(quantity, indentation);
                 Builder.AppendLine();
             }
 
-            foreach (ScalarInterface quantity in Data.DimensionallyEquivalentScalars.EquivalentQuantitiesWithImplicitCast)
+            foreach (ScalarInterface quantity in Data.DimensionalEquivalences.EquivalentQuantitiesWithImplicitCast)
             {
                 ComposeOperatorConversion(quantity, indentation, "implicit");
                 Builder.AppendLine();
             }
 
-            foreach (ScalarInterface quantity in Data.DimensionallyEquivalentScalars.EquivalentQuantitiesWithExplicitCast)
+            foreach (ScalarInterface quantity in Data.DimensionalEquivalences.EquivalentQuantitiesWithExplicitCast)
             {
                 ComposeOperatorConversion(quantity, indentation, "explicit");
                 Builder.AppendLine();
@@ -95,13 +95,13 @@ internal static class Execution
             UsingsCollector.AddUsing(quantity.ScalarType.Namespace);
 
             AppendDocumentation(indentation, ScalarDocumentationTags.DimensionallyEquivalentTo(quantity.ScalarType.Name));
-            Builder.Append($"{indentation}public {quantity.ScalarType.Name} As{quantity.ScalarType.Name} => new(Magnitude);{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public {quantity.ScalarType.Name} As{quantity.ScalarType.Name} => new(Magnitude);");
         }
 
         private void ComposeOperatorConversion(ScalarInterface quantity, Indentation indentation, string behaviour)
         {
             AppendDocumentation(indentation, ScalarDocumentationTags.Operators.DimensionallyEquivalentTo(quantity.ScalarType.Name));
-            Builder.Append($"{indentation}public static {behaviour} operator {quantity.ScalarType.Name}({Data.Scalar.Name} x) => new(x.Magnitude);{Environment.NewLine}");
+            Builder.AppendLine($"{indentation}public static {behaviour} operator {quantity.ScalarType.Name}({Data.Scalar.Name} x) => new(x.Magnitude);");
         }
 
         private void AppendDocumentation(Indentation indentation, string tag)

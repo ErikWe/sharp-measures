@@ -11,13 +11,13 @@ using System.Text.RegularExpressions;
 
 public interface IResizedVectorDiagnostics
 {
-    public abstract Diagnostic? NullAssociatedVector(IProcessingContext context, RawResizedVectorDefinition definition);
+    public abstract Diagnostic? NullAssociatedVector(IProcessingContext context, RawResizedVector definition);
 
-    public abstract Diagnostic? MissingDimension(IProcessingContext context, RawResizedVectorDefinition definition);
-    public abstract Diagnostic? InvalidDimension(IProcessingContext context, RawResizedVectorDefinition definition);
+    public abstract Diagnostic? MissingDimension(IProcessingContext context, RawResizedVector definition);
+    public abstract Diagnostic? InvalidDimension(IProcessingContext context, RawResizedVector definition);
 }
 
-public class ResizedVectorProcesser : AProcesser<IProcessingContext, RawResizedVectorDefinition, ResizedVectorDefinition>
+public class ResizedVectorProcesser : AProcesser<IProcessingContext, RawResizedVector, ResizedVector>
 {
     private IResizedVectorDiagnostics Diagnostics { get; }
 
@@ -26,7 +26,7 @@ public class ResizedVectorProcesser : AProcesser<IProcessingContext, RawResizedV
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<ResizedVectorDefinition> Process(IProcessingContext context, RawResizedVectorDefinition definition)
+    public override IOptionalWithDiagnostics<ResizedVector> Process(IProcessingContext context, RawResizedVector definition)
     {
         if (context is null)
         {
@@ -43,7 +43,7 @@ public class ResizedVectorProcesser : AProcesser<IProcessingContext, RawResizedV
 
         if (validity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<ResizedVectorDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<ResizedVector>(allDiagnostics);
         }
 
         var product = ProcessDefinition(context, definition);
@@ -52,22 +52,22 @@ public class ResizedVectorProcesser : AProcesser<IProcessingContext, RawResizedV
         return product.ReplaceDiagnostics(allDiagnostics);
     }
 
-    private IOptionalWithDiagnostics<ResizedVectorDefinition> ProcessDefinition(IProcessingContext context, RawResizedVectorDefinition definition)
+    private IOptionalWithDiagnostics<ResizedVector> ProcessDefinition(IProcessingContext context, RawResizedVector definition)
     {
         var processedDimensionality = ProcessDimension(context, definition);
         var allDiagnostics = processedDimensionality.Diagnostics;
 
         if (processedDimensionality.LacksResult)
         {
-            return OptionalWithDiagnostics.Empty<ResizedVectorDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<ResizedVector>(allDiagnostics);
         }
 
-        ResizedVectorDefinition product = new(definition.AssociatedVector!.Value, processedDimensionality.Result, definition.GenerateDocumentation, definition.Locations);
+        ResizedVector product = new(definition.AssociatedVector!.Value, processedDimensionality.Result, definition.GenerateDocumentation, definition.Locations);
 
         return ResultWithDiagnostics.Construct(product, allDiagnostics);
     }
 
-    private IOptionalWithDiagnostics<int> ProcessDimension(IProcessingContext context, RawResizedVectorDefinition definition)
+    private IOptionalWithDiagnostics<int> ProcessDimension(IProcessingContext context, RawResizedVector definition)
     {
         if (definition.Locations.ExplicitlySetDimension)
         {
@@ -93,7 +93,7 @@ public class ResizedVectorProcesser : AProcesser<IProcessingContext, RawResizedV
         return OptionalWithDiagnostics.Empty<int>(Diagnostics.MissingDimension(context, definition));
     }
 
-    private IValidityWithDiagnostics CheckValidity(IProcessingContext context, RawResizedVectorDefinition definition)
+    private IValidityWithDiagnostics CheckValidity(IProcessingContext context, RawResizedVector definition)
     {
         if (definition is null)
         {
@@ -103,7 +103,7 @@ public class ResizedVectorProcesser : AProcesser<IProcessingContext, RawResizedV
         return CheckVectorValidity(context, definition);
     }
 
-    private IValidityWithDiagnostics CheckVectorValidity(IProcessingContext context, RawResizedVectorDefinition definition)
+    private IValidityWithDiagnostics CheckVectorValidity(IProcessingContext context, RawResizedVector definition)
     {
         if (definition.AssociatedVector is null)
         {

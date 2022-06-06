@@ -6,11 +6,11 @@ using System.Collections.Generic;
 
 internal static class PrefixedUnitProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawPrefixedUnitDefinition>> AllProperties => new IAttributeProperty<RawPrefixedUnitDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawPrefixedUnit>> AllProperties => new IAttributeProperty<RawPrefixedUnit>[]
     {
-        CommonProperties.Name<RawPrefixedUnitDefinition, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.Name)),
-        CommonProperties.Plural<RawPrefixedUnitDefinition, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.Plural)),
-        CommonProperties.DependantOn<RawPrefixedUnitDefinition, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.From)),
+        CommonProperties.Name<RawPrefixedUnit, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.Name)),
+        CommonProperties.Plural<RawPrefixedUnit, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.Plural)),
+        CommonProperties.DependantOn<RawPrefixedUnit, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.From)),
         MetricPrefixName,
         BinaryPrefixName
     };

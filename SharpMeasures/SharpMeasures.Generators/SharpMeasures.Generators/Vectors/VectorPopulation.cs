@@ -1,14 +1,16 @@
 ﻿namespace SharpMeasures.Generators.Vectors;
 
+using SharpMeasures.Equatables;
+
 internal class VectorPopulation
 {
-    public NamedTypePopulation<ResizedVectorGroup> VectorGroups { get; }
+    public EquatableDictionary<NamedType, ResizedVectorGroup> VectorGroups { get; }
 
-    public NamedTypePopulation<VectorInterface> UnresolvedVectors { get; }
-    public NamedTypePopulation<VectorInterface> DuplicateDimensionVectors { get; }
+    public EquatableDictionary<NamedType, VectorInterface> UnresolvedVectors { get; }
+    public EquatableDictionary<NamedType, VectorInterface> DuplicateDimensionVectors { get; }
 
-    public VectorPopulation(NamedTypePopulation<ResizedVectorGroup> resolvedVectors, NamedTypePopulation<VectorInterface> unresolvedVectors,
-        NamedTypePopulation<VectorInterface> duplicateDimensionVectors)
+    public VectorPopulation(EquatableDictionary<NamedType, ResizedVectorGroup> resolvedVectors,
+        EquatableDictionary<NamedType, VectorInterface> unresolvedVectors, EquatableDictionary<NamedType, VectorInterface> duplicateDimensionVectors)
     {
         VectorGroups = resolvedVectors;
 

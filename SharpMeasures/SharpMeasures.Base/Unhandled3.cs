@@ -74,9 +74,9 @@ public readonly record struct Unhandled3 :
     public Unhandled3(Vector3 components) : this(components.X, components.Y, components.Z) { }
 
     /// <inheritdoc/>
-    Scalar IVector3Quantity.Magnitude() => ScalarMaths.Magnitude3(this).Magnitude;
+    Scalar IVector3Quantity.Magnitude() => PureScalarMaths.Magnitude3(this);
     /// <inheritdoc/>
-    Scalar IVector3Quantity.SquaredMagnitude() => ScalarMaths.SquaredMagnitude3(this).Magnitude;
+    Scalar IVector3Quantity.SquaredMagnitude() => PureScalarMaths.SquaredMagnitude3(this);
 
     /// <summary>Computes the magnitude / norm / length of <see langword="this"/>.</summary>
     /// <remarks>For improved performance, consider preferring <see cref="SquaredMagnitude"/> when applicable.</remarks>
@@ -186,7 +186,7 @@ public readonly record struct Unhandled3 :
     /// <typeparam name="TFactor">The three-dimensional vector quantity that represents the second factor of { <see langword="this"/> ⨯ <typeparamref name="TFactor"/> }.</typeparam>
     public Unhandled3 Cross<TFactor>(TFactor factor) where TFactor : IVector3Quantity => VectorMaths.Cross(this, factor);
 
-    /// <inheritdoc cref="ICrossFactorVector3Quantity{TProduct, TFactor}.Cross(TFactor)"/>
+    /// <inheritdoc cref="ICrossFactorVector3Quantity{TProduct, TFactor}.CrossInto(TFactor)"/>
     /// <typeparam name="TFactor">The three-dimensional vector quantity that represents the first factor of { <typeparamref name="TFactor"/> ⨯ <see langword="this"/> }.</typeparam>
     public Unhandled3 CrossInto<TFactor>(TFactor factor) where TFactor : IVector3Quantity => VectorMaths.Cross(this, factor);
 
@@ -220,7 +220,7 @@ public readonly record struct Unhandled3 :
     {
         ArgumentNullException.ThrowIfNull(b);
 
-        return new(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+        return (a.X + b.X, a.Y + b.Y, a.Z + b.Z);
     }
 
     /// <inheritdoc/>
@@ -229,7 +229,7 @@ public readonly record struct Unhandled3 :
     {
         ArgumentNullException.ThrowIfNull(a);
 
-        return new(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+        return (a.X + b.X, a.Y + b.Y, a.Z + b.Z);
     }
 
     /// <inheritdoc/>
@@ -238,7 +238,7 @@ public readonly record struct Unhandled3 :
     {
         ArgumentNullException.ThrowIfNull(b);
 
-        return new(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+        return (a.X - b.X, a.Y - b.Y, a.Z - b.Z);
     }
 
     /// <inheritdoc/>
@@ -247,7 +247,7 @@ public readonly record struct Unhandled3 :
     {
         ArgumentNullException.ThrowIfNull(a);
 
-        return new(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+        return (a.X - b.X, a.Y - b.Y, a.Z - b.Z);
     }
 
     /// <inheritdoc/>
@@ -256,7 +256,7 @@ public readonly record struct Unhandled3 :
     {
         ArgumentNullException.ThrowIfNull(b);
 
-        return new(a.X * b, a.Y * b, a.Z * b);
+        return (a.X * b, a.Y * b, a.Z * b);
     }
 
     /// <inheritdoc/>
@@ -265,7 +265,7 @@ public readonly record struct Unhandled3 :
     {
         ArgumentNullException.ThrowIfNull(a);
 
-        return new(a * b.X, a * b.Y, a * b.Z);
+        return (a * b.X, a * b.Y, a * b.Z);
     }
 
     /// <inheritdoc/>
@@ -274,7 +274,7 @@ public readonly record struct Unhandled3 :
     {
         ArgumentNullException.ThrowIfNull(b);
 
-        return new(a.X / b, a.Y / b, a.Z / b);
+        return (a.X / b, a.Y / b, a.Z / b);
     }
 
     /// <summary>Constructs the <see cref="Vector3"/> with components equal to the values of <paramref name="components"/>.</summary>
@@ -282,7 +282,9 @@ public readonly record struct Unhandled3 :
     public static implicit operator Unhandled3((Unhandled X, Unhandled Y, Unhandled Z) components) => new(components.X, components.Y, components.Z);
 
     /// <summary>Describes mathematical operations that result in a pure <see cref="Scalar"/>.</summary>
+    private static IScalarResultingMaths<Scalar> PureScalarMaths { get; } = MathFactory.ScalarResult();
+    /// <summary>Describes mathematical operations that result in <see cref="Unhandled"/>.</summary>
     private static IScalarResultingMaths<Unhandled> ScalarMaths { get; } = MathFactory.ScalarResult<Unhandled>();
-    /// <summary>Describes mathematical operations that result in a pure <see cref="Vector3"/>.</summary>
+    /// <summary>Describes mathematical operations that result in <see cref="Unhandled3"/>.</summary>
     private static IVector3ResultingMaths<Unhandled3> VectorMaths { get; } = MathFactory.Vector3Result<Unhandled3>();
 }

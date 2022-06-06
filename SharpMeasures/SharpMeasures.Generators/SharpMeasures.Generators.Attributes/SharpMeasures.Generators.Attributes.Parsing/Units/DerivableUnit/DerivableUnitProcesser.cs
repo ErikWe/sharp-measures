@@ -10,11 +10,11 @@ using System.Linq;
 
 public interface IDerivableUnitDiagnostics
 {
-    public abstract Diagnostic? NullExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
-    public abstract Diagnostic? EmptyExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
-    public abstract Diagnostic? EmptySignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
-    public abstract Diagnostic? NullSignatureElement(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int index);
-    public abstract Diagnostic? DuplicateSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
+    public abstract Diagnostic? NullExpression(IDerivableUnitProcessingContext context, RawDerivableUnit definition);
+    public abstract Diagnostic? EmptyExpression(IDerivableUnitProcessingContext context, RawDerivableUnit definition);
+    public abstract Diagnostic? EmptySignature(IDerivableUnitProcessingContext context, RawDerivableUnit definition);
+    public abstract Diagnostic? NullSignatureElement(IDerivableUnitProcessingContext context, RawDerivableUnit definition, int index);
+    public abstract Diagnostic? DuplicateSignature(IDerivableUnitProcessingContext context, RawDerivableUnit definition);
 }
 
 public interface IDerivableUnitProcessingContext : IProcessingContext
@@ -22,7 +22,7 @@ public interface IDerivableUnitProcessingContext : IProcessingContext
     public abstract HashSet<DerivableSignature> ReservedSignatures { get; }
 }
 
-public class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProcessingContext, RawDerivableUnitDefinition, DerivableUnitDefinition>
+public class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProcessingContext, RawDerivableUnit, DerivableUnit>
 {
     private IDerivableUnitDiagnostics Diagnostics { get; }
 
@@ -31,7 +31,7 @@ public class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProcess
         Diagnostics = diagnostics;
     }
 
-    public override void OnSuccessfulProcess(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, DerivableUnitDefinition product)
+    public override void OnSuccessfulProcess(IDerivableUnitProcessingContext context, RawDerivableUnit definition, DerivableUnit product)
     {
         if (context is null)
         {
@@ -46,7 +46,7 @@ public class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProcess
         context.ReservedSignatures.Add(product.Signature);
     }
 
-    public override IOptionalWithDiagnostics<DerivableUnitDefinition> Process(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
+    public override IOptionalWithDiagnostics<DerivableUnit> Process(IDerivableUnitProcessingContext context, RawDerivableUnit definition)
     {
         if (context is null)
         {
@@ -63,7 +63,7 @@ public class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProcess
 
         if (expressionValidity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<DerivableUnitDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<DerivableUnit>(allDiagnostics);
         }
 
         var processedSignature = ProcessSignature(context, definition);
@@ -71,14 +71,14 @@ public class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProcess
 
         if (processedSignature.LacksResult)
         {
-            return OptionalWithDiagnostics.Empty<DerivableUnitDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<DerivableUnit>(allDiagnostics);
         }
 
-        DerivableUnitDefinition product = new(definition.Expression!, processedSignature.Result, definition.Locations);
+        DerivableUnit product = new(definition.Expression!, processedSignature.Result, definition.Locations);
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private IValidityWithDiagnostics CheckExpressionValidity(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
+    private IValidityWithDiagnostics CheckExpressionValidity(IDerivableUnitProcessingContext context, RawDerivableUnit definition)
     {
         if (definition.Expression is null)
         {
@@ -93,7 +93,7 @@ public class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProcess
         return ValidityWithDiagnostics.Valid;
     }
 
-    private IOptionalWithDiagnostics<DerivableSignature> ProcessSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
+    private IOptionalWithDiagnostics<DerivableSignature> ProcessSignature(IDerivableUnitProcessingContext context, RawDerivableUnit definition)
     {
         if (definition.Signature.Count is 0)
         {

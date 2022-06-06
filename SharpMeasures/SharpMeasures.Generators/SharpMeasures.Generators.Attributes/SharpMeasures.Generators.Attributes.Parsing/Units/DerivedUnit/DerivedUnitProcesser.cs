@@ -8,14 +8,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public interface IDerivedUnitDiagnostics : IUnitDiagnostics<RawDerivedUnitDefinition>
+public interface IDerivedUnitDiagnostics : IUnitDiagnostics<RawDerivedUnit>
 {
-    public abstract Diagnostic? EmptySignature(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition);
-    public abstract Diagnostic? IncompatibleSignatureAndUnitLists(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition);
-    public abstract Diagnostic? UnrecognizedSignature(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition);
-    public abstract Diagnostic? NullSignatureElement(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition, int index);
-    public abstract Diagnostic? NullUnitElement(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition, int index);
-    public abstract Diagnostic? EmptyUnitElement(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition, int index);
+    public abstract Diagnostic? EmptySignature(IDerivedUnitProcessingContext context, RawDerivedUnit definition);
+    public abstract Diagnostic? IncompatibleSignatureAndUnitLists(IDerivedUnitProcessingContext context, RawDerivedUnit definition);
+    public abstract Diagnostic? UnrecognizedSignature(IDerivedUnitProcessingContext context, RawDerivedUnit definition);
+    public abstract Diagnostic? NullSignatureElement(IDerivedUnitProcessingContext context, RawDerivedUnit definition, int index);
+    public abstract Diagnostic? NullUnitElement(IDerivedUnitProcessingContext context, RawDerivedUnit definition, int index);
+    public abstract Diagnostic? EmptyUnitElement(IDerivedUnitProcessingContext context, RawDerivedUnit definition, int index);
 }
 
 public interface IDerivedUnitProcessingContext : IUnitProcessingContext
@@ -23,7 +23,7 @@ public interface IDerivedUnitProcessingContext : IUnitProcessingContext
     public abstract HashSet<DerivableSignature> AvailableSignatures { get; }
 }
 
-public class DerivedUnitProcesser : AUnitProcesser<IDerivedUnitProcessingContext, RawDerivedUnitDefinition, DerivedUnitDefinition>
+public class DerivedUnitProcesser : AUnitProcesser<IDerivedUnitProcessingContext, RawDerivedUnit, DerivedUnit>
 {
     private IDerivedUnitDiagnostics Diagnostics { get; }
 
@@ -32,7 +32,7 @@ public class DerivedUnitProcesser : AUnitProcesser<IDerivedUnitProcessingContext
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<DerivedUnitDefinition> Process(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
+    public override IOptionalWithDiagnostics<DerivedUnit> Process(IDerivedUnitProcessingContext context, RawDerivedUnit definition)
     {
         if (context is null)
         {
@@ -49,7 +49,7 @@ public class DerivedUnitProcesser : AUnitProcesser<IDerivedUnitProcessingContext
 
         if (validity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<DerivedUnitDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<DerivedUnit>(allDiagnostics);
         }
 
         var processedUnits = ProcessUnits(context, definition);
@@ -57,7 +57,7 @@ public class DerivedUnitProcesser : AUnitProcesser<IDerivedUnitProcessingContext
 
         if (processedUnits.LacksResult)
         {
-            return OptionalWithDiagnostics.Empty<DerivedUnitDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<DerivedUnit>(allDiagnostics);
         }
 
         var processedSignature = ProcessSignature(context, definition);
@@ -65,16 +65,16 @@ public class DerivedUnitProcesser : AUnitProcesser<IDerivedUnitProcessingContext
 
         if (processedSignature.LacksResult)
         {
-            return OptionalWithDiagnostics.Empty<DerivedUnitDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<DerivedUnit>(allDiagnostics);
         }
 
-        DerivedUnitDefinition product = new(definition.Name!, definition.ParsingData.InterpretedPlural!, processedSignature.Result,
+        DerivedUnit product = new(definition.Name!, definition.ParsingData.InterpretedPlural!, processedSignature.Result,
             processedUnits.Result, definition.Locations);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private IOptionalWithDiagnostics<DerivableSignature> ProcessSignature(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
+    private IOptionalWithDiagnostics<DerivableSignature> ProcessSignature(IDerivedUnitProcessingContext context, RawDerivedUnit definition)
     {
         var signature = DerivableSignature.ConstructFromDefinite(definition.Signature);
 
@@ -86,7 +86,7 @@ public class DerivedUnitProcesser : AUnitProcesser<IDerivedUnitProcessingContext
         return OptionalWithDiagnostics.Result(signature);
     }
 
-    private IOptionalWithDiagnostics<IReadOnlyList<string>> ProcessUnits(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
+    private IOptionalWithDiagnostics<IReadOnlyList<string>> ProcessUnits(IDerivedUnitProcessingContext context, RawDerivedUnit definition)
     {
         string[] units = new string[definition.Units.Count];
 
@@ -108,7 +108,7 @@ public class DerivedUnitProcesser : AUnitProcesser<IDerivedUnitProcessingContext
         return OptionalWithDiagnostics.Result(units as IReadOnlyList<string>);
     }
 
-    private IValidityWithDiagnostics CheckSignatureValidity(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
+    private IValidityWithDiagnostics CheckSignatureValidity(IDerivedUnitProcessingContext context, RawDerivedUnit definition)
     {
         if (definition.Signature.Count is 0)
         {

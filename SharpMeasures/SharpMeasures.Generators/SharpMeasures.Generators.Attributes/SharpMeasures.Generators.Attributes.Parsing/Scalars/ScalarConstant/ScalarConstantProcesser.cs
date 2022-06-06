@@ -10,15 +10,15 @@ using System.Linq;
 
 public interface IScalarConstantDiagnostics
 {
-    public abstract Diagnostic? NullName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
-    public abstract Diagnostic? EmptyName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
-    public abstract Diagnostic? DuplicateName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
-    public abstract Diagnostic? NullUnit(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
-    public abstract Diagnostic? EmptyUnit(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
-    public abstract Diagnostic? NullMultiplesName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
-    public abstract Diagnostic? EmptyMultiplesName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
-    public abstract Diagnostic? InvalidMultiplesName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
-    public abstract Diagnostic? DuplicateMultiplesName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
+    public abstract Diagnostic? NullName(IScalarConstantProcessingContext context, RawScalarConstant definition);
+    public abstract Diagnostic? EmptyName(IScalarConstantProcessingContext context, RawScalarConstant definition);
+    public abstract Diagnostic? DuplicateName(IScalarConstantProcessingContext context, RawScalarConstant definition);
+    public abstract Diagnostic? NullUnit(IScalarConstantProcessingContext context, RawScalarConstant definition);
+    public abstract Diagnostic? EmptyUnit(IScalarConstantProcessingContext context, RawScalarConstant definition);
+    public abstract Diagnostic? NullMultiplesName(IScalarConstantProcessingContext context, RawScalarConstant definition);
+    public abstract Diagnostic? EmptyMultiplesName(IScalarConstantProcessingContext context, RawScalarConstant definition);
+    public abstract Diagnostic? InvalidMultiplesName(IScalarConstantProcessingContext context, RawScalarConstant definition);
+    public abstract Diagnostic? DuplicateMultiplesName(IScalarConstantProcessingContext context, RawScalarConstant definition);
 }
 
 public interface IScalarConstantProcessingContext : IProcessingContext
@@ -29,7 +29,7 @@ public interface IScalarConstantProcessingContext : IProcessingContext
     public abstract HashSet<string> ReservedConstantMultiples { get; }
 }
 
-public class ScalarConstantProcesser : AActionableProcesser<IScalarConstantProcessingContext, RawScalarConstantDefinition, ScalarConstantDefinition>
+public class ScalarConstantProcesser : AActionableProcesser<IScalarConstantProcessingContext, RawScalarConstant, ScalarConstant>
 {
     private IScalarConstantDiagnostics Diagnostics { get; }
 
@@ -38,7 +38,7 @@ public class ScalarConstantProcesser : AActionableProcesser<IScalarConstantProce
         Diagnostics = diagnostics;
     }
 
-    public override void OnSuccessfulProcess(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition, ScalarConstantDefinition product)
+    public override void OnSuccessfulProcess(IScalarConstantProcessingContext context, RawScalarConstant definition, ScalarConstant product)
     {
         if (context is null)
         {
@@ -58,7 +58,7 @@ public class ScalarConstantProcesser : AActionableProcesser<IScalarConstantProce
         }
     }
 
-    public override IOptionalWithDiagnostics<ScalarConstantDefinition> Process(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
+    public override IOptionalWithDiagnostics<ScalarConstant> Process(IScalarConstantProcessingContext context, RawScalarConstant definition)
     {
         if (context is null)
         {
@@ -75,7 +75,7 @@ public class ScalarConstantProcesser : AActionableProcesser<IScalarConstantProce
 
         if (validity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<ScalarConstantDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<ScalarConstant>(allDiagnostics);
         }
 
         var product = ProcessDefinition(context, definition);
@@ -84,18 +84,18 @@ public class ScalarConstantProcesser : AActionableProcesser<IScalarConstantProce
         return product.ReplaceDiagnostics(allDiagnostics);
     }
 
-    private IResultWithDiagnostics<ScalarConstantDefinition> ProcessDefinition(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
+    private IResultWithDiagnostics<ScalarConstant> ProcessDefinition(IScalarConstantProcessingContext context, RawScalarConstant definition)
     {
         var processedMultiplesPropertyData = ProcessMultiplesPropertyData(context, definition);
 
-        ScalarConstantDefinition product = new(definition.Name!, definition.Value, definition.Unit!, processedMultiplesPropertyData.Result.Generate,
+        ScalarConstant product = new(definition.Name!, definition.Unit!, definition.Value, processedMultiplesPropertyData.Result.Generate,
             processedMultiplesPropertyData.Result.Name, definition.Locations);
 
         return ResultWithDiagnostics.Construct(product, processedMultiplesPropertyData.Diagnostics);
     }
 
     private IResultWithDiagnostics<(bool Generate, string? Name)> ProcessMultiplesPropertyData(IScalarConstantProcessingContext context,
-        RawScalarConstantDefinition definition)
+        RawScalarConstant definition)
     {
         var processedMultiplesName = ProcessMultiplesName(context, definition);
 
@@ -107,7 +107,7 @@ public class ScalarConstantProcesser : AActionableProcesser<IScalarConstantProce
         return ResultWithDiagnostics.Construct<(bool, string?)>((true, processedMultiplesName.Result), processedMultiplesName.Diagnostics);
     }
 
-    private IOptionalWithDiagnostics<string> ProcessMultiplesName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
+    private IOptionalWithDiagnostics<string> ProcessMultiplesName(IScalarConstantProcessingContext context, RawScalarConstant definition)
     {
         if (definition.Locations.ExplicitlySetMultiplesName is false || definition.GenerateMultiplesProperty is false)
         {
@@ -137,12 +137,12 @@ public class ScalarConstantProcesser : AActionableProcesser<IScalarConstantProce
         return OptionalWithDiagnostics.Result(definition.ParsingData.InterpretedMultiplesName);
     }
 
-    private IValidityWithDiagnostics CheckValidity(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
+    private IValidityWithDiagnostics CheckValidity(IScalarConstantProcessingContext context, RawScalarConstant definition)
     {
         return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckNameValidity, CheckUnitValidity);
     }
 
-    private IValidityWithDiagnostics CheckNameValidity(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
+    private IValidityWithDiagnostics CheckNameValidity(IScalarConstantProcessingContext context, RawScalarConstant definition)
     {
         if (definition.Name is null)
         {
@@ -162,7 +162,7 @@ public class ScalarConstantProcesser : AActionableProcesser<IScalarConstantProce
         return ValidityWithDiagnostics.Valid;
     }
 
-    private IValidityWithDiagnostics CheckUnitValidity(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
+    private IValidityWithDiagnostics CheckUnitValidity(IScalarConstantProcessingContext context, RawScalarConstant definition)
     {
         if (definition.Unit is null)
         {

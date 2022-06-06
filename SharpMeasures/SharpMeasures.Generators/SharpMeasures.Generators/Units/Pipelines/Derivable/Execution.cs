@@ -85,7 +85,7 @@ internal static class Execution
             AppendDocumentation(indentation, UnitDocumentationTags.Derivable.WithSignature(documentationTag));
             Builder.Append($"{indentation}public static {Data.Unit.Name} From(");
             IterativeBuilding.AppendEnumerable(Builder, signatureComponents, ", ");
-            Builder.Append($") => new({definition.Expression});{Environment.NewLine}");
+            Builder.AppendLine($") => new({definition.Expression});");
         }
 
         private IEnumerable<string> GetSignatureComponents(ProcessedDerivableUnit definition)

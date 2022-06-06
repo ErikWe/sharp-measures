@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Units;
 
 internal static partial class DiagnosticRules
 {
-    public readonly static DiagnosticDescriptor InvalidUnitDerivationExpression = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor InvalidUnitDerivationExpression = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidUnitDerivationExpression,
         title: "Invalid unit derivation expression",
@@ -16,7 +16,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor InvalidUnitDerivationExpression_Null = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor InvalidUnitDerivationExpression_Null = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidUnitDerivationExpression,
         title: "Invalid unit derivation expression",
@@ -26,7 +26,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor EmptyUnitDerivationSignature = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor EmptyUnitDerivationSignature = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.EmptyUnitDerivationSignature,
         title: "Expected a non-empty signature",
@@ -36,7 +36,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor DuplicateUnitDerivationSignature = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor DuplicateUnitDerivationSignature = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DuplicateUnitDerivationSignature,
         title: "Duplicate derivation signature",
@@ -46,7 +46,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor UnrecognizedUnitDerivationSignature = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor UnrecognizedUnitDerivationSignature = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.UnrecognizedDerivedUnitSignature,
         title: "Derivation signature not recognized",
@@ -56,7 +56,7 @@ internal static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public readonly static DiagnosticDescriptor UnitListNotMatchingSignature = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor UnitListNotMatchingSignature = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.UnitListNotMatchingSignature,
         title: "Unit list not matching signature",

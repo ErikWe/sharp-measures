@@ -93,7 +93,7 @@ internal static class Execution
 
         private void AppendDerived(Indentation indentation)
         {
-            foreach (DerivedUnitDefinition derivedUnit in Data.DerivedUnits)
+            foreach (DerivedUnit derivedUnit in Data.DerivedUnits)
             {
                 ImplementedDefinitions.Add(derivedUnit.Name);
 
@@ -118,31 +118,31 @@ internal static class Execution
 
         private void AppendFixed(Indentation indentation)
         {
-            Action<FixedUnitDefinition> appender = Data.Biased ? appendBiased : appendUnbiased;
+            Action<FixedUnit> appender = Data.Biased ? appendBiased : appendUnbiased;
 
-            foreach (FixedUnitDefinition fixedUnit in Data.FixedUnits)
+            foreach (FixedUnit fixedUnit in Data.FixedUnits)
             {
                 ImplementedDefinitions.Add(fixedUnit.Name);
 
                 appender(fixedUnit);
             }
 
-            void appendDeclaration(FixedUnitDefinition fixedUnit)
+            void appendDeclaration(FixedUnit fixedUnit)
             {
                 AppendDocumentation(indentation, fixedUnit);
                 Builder.Append($"{indentation}public static {Data.Unit.Name} {fixedUnit.Name} {{ get; }}");
             }
 
-            void appendUnbiased(FixedUnitDefinition fixedUnit)
+            void appendUnbiased(FixedUnit fixedUnit)
             {
                 appendDeclaration(fixedUnit);
-                Builder.Append($" = new(new {Data.Quantity.Name}({fixedUnit.Value}));{Environment.NewLine}");
+                Builder.AppendLine($" = new(new {Data.Quantity.Name}({fixedUnit.Value}));");
             }
 
-            void appendBiased(FixedUnitDefinition fixedUnit)
+            void appendBiased(FixedUnit fixedUnit)
             {
                 appendDeclaration(fixedUnit);
-                Builder.Append($" = new(new {Data.Quantity.Name}({fixedUnit.Value}), new Scalar({fixedUnit.Bias}));{Environment.NewLine}");
+                Builder.AppendLine($" = new(new {Data.Quantity.Name}({fixedUnit.Value}), new Scalar({fixedUnit.Bias}));");
             }
         }
 
@@ -159,24 +159,24 @@ internal static class Execution
                     AppendDocumentation(indentation, dependantUnits[i]);
                     Builder.Append($"{indentation}public static {Data.Unit.Name} {dependantUnits[i].Name} ");
 
-                    if (dependantUnits[i] is UnitAliasDefinition unitAlias)
+                    if (dependantUnits[i] is UnitAlias unitAlias)
                     {
                         AppendAlias(unitAlias);
                     }
-                    else if (dependantUnits[i] is ScaledUnitDefinition scaledUnit)
+                    else if (dependantUnits[i] is ScaledUnit scaledUnit)
                     {
                         AppendScaled(scaledUnit);
                     }
-                    else if (dependantUnits[i] is PrefixedUnitDefinition prefixedUnit)
+                    else if (dependantUnits[i] is PrefixedUnit prefixedUnit)
                     {
                         AppendPrefixed(prefixedUnit);
                     }
-                    else if (dependantUnits[i] is OffsetUnitDefinition offsetUnit)
+                    else if (dependantUnits[i] is OffsetUnit offsetUnit)
                     {
                         AppendOffset(offsetUnit);
                     }
 
-                    Builder.Append($";{Environment.NewLine}");
+                    Builder.AppendLine($";");
 
                     ImplementedDefinitions.Add(dependantUnits[i].Name);
                     dependantUnits.RemoveAt(i);
@@ -198,17 +198,17 @@ internal static class Execution
             CreateCyclicDependencyDiagnostics(dependantUnits);
         }
 
-        private void AppendAlias(UnitAliasDefinition unitAlias)
+        private void AppendAlias(UnitAlias unitAlias)
         {
             Builder.Append($"=> {unitAlias.AliasOf}");
         }
 
-        private void AppendScaled(ScaledUnitDefinition scaledUnit)
+        private void AppendScaled(ScaledUnit scaledUnit)
         {
             Builder.Append($"{{ get; }} = {scaledUnit.From}.ScaledBy({scaledUnit.Scale})");
         }
 
-        private void AppendPrefixed(PrefixedUnitDefinition prefixedUnit)
+        private void AppendPrefixed(PrefixedUnit prefixedUnit)
         {
             string prefixText = prefixedUnit.Locations.ExplicitlySetMetricPrefixName
                 ? $"MetricPrefix.{prefixedUnit.MetricPrefixName}"
@@ -217,7 +217,7 @@ internal static class Execution
             Builder.Append($"{{ get; }} = {prefixedUnit.From}.WithPrefix({prefixText})");
         }
 
-        private void AppendOffset(OffsetUnitDefinition offsetUnit)
+        private void AppendOffset(OffsetUnit offsetUnit)
         {
             Builder.Append($"{{ get; }} = {offsetUnit.From}.ScaledBy({offsetUnit.Offset})");
         }
@@ -226,22 +226,22 @@ internal static class Execution
         {
             List<IDependantUnitDefinition> result = new();
 
-            foreach (UnitAliasDefinition unitAlias in Data.UnitAliases)
+            foreach (UnitAlias unitAlias in Data.UnitAliases)
             {
                 result.Add(unitAlias);
             }
 
-            foreach (OffsetUnitDefinition offsetUnit in Data.OffsetUnits)
+            foreach (OffsetUnit offsetUnit in Data.OffsetUnits)
             {
                 result.Add(offsetUnit);
             }
 
-            foreach (PrefixedUnitDefinition prefixedUnit in Data.PrefixedUnits)
+            foreach (PrefixedUnit prefixedUnit in Data.PrefixedUnits)
             {
                 result.Add(prefixedUnit);
             }
 
-            foreach (ScaledUnitDefinition scaledUnit in Data.ScaledUnits)
+            foreach (ScaledUnit scaledUnit in Data.ScaledUnits)
             {
                 result.Add(scaledUnit);
             }

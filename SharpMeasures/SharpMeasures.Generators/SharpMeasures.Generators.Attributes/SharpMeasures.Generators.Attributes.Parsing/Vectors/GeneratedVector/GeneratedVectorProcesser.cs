@@ -11,18 +11,18 @@ using System.Text.RegularExpressions;
 
 public interface IGeneratedVectorDiagnostics
 {
-    public abstract Diagnostic? NullUnit(IProcessingContext context, RawGeneratedVectorDefinition definition);
-    public abstract Diagnostic? NullScalar(IProcessingContext context, RawGeneratedVectorDefinition definition);
+    public abstract Diagnostic? NullUnit(IProcessingContext context, RawGeneratedVector definition);
+    public abstract Diagnostic? NullScalar(IProcessingContext context, RawGeneratedVector definition);
 
-    public abstract Diagnostic? MissingDimension(IProcessingContext context, RawGeneratedVectorDefinition definition);
-    public abstract Diagnostic? InvalidDimension(IProcessingContext context, RawGeneratedVectorDefinition definition);
+    public abstract Diagnostic? MissingDimension(IProcessingContext context, RawGeneratedVector definition);
+    public abstract Diagnostic? InvalidDimension(IProcessingContext context, RawGeneratedVector definition);
 
-    public abstract Diagnostic? NullDefaultUnit(IProcessingContext context, RawGeneratedVectorDefinition definition);
-    public abstract Diagnostic? EmptyDefaultUnit(IProcessingContext context, RawGeneratedVectorDefinition definition);
-    public abstract Diagnostic? SetDefaultSymbolButNotUnit(IProcessingContext context, RawGeneratedVectorDefinition definition);
+    public abstract Diagnostic? NullDefaultUnit(IProcessingContext context, RawGeneratedVector definition);
+    public abstract Diagnostic? EmptyDefaultUnit(IProcessingContext context, RawGeneratedVector definition);
+    public abstract Diagnostic? SetDefaultSymbolButNotUnit(IProcessingContext context, RawGeneratedVector definition);
 }
 
-public class GeneratedVectorProcesser : AProcesser<IProcessingContext, RawGeneratedVectorDefinition, GeneratedVectorDefinition>
+public class GeneratedVectorProcesser : AProcesser<IProcessingContext, RawGeneratedVector, GeneratedVector>
 {
     private IGeneratedVectorDiagnostics Diagnostics { get; }
 
@@ -31,7 +31,7 @@ public class GeneratedVectorProcesser : AProcesser<IProcessingContext, RawGenera
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<GeneratedVectorDefinition> Process(IProcessingContext context, RawGeneratedVectorDefinition definition)
+    public override IOptionalWithDiagnostics<GeneratedVector> Process(IProcessingContext context, RawGeneratedVector definition)
     {
         if (context is null)
         {
@@ -48,7 +48,7 @@ public class GeneratedVectorProcesser : AProcesser<IProcessingContext, RawGenera
 
         if (validity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<GeneratedVectorDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<GeneratedVector>(allDiagnostics);
         }
 
         var product = ProcessDefinition(context, definition);
@@ -57,7 +57,7 @@ public class GeneratedVectorProcesser : AProcesser<IProcessingContext, RawGenera
         return product.ReplaceDiagnostics(allDiagnostics);
     }
 
-    private IOptionalWithDiagnostics<GeneratedVectorDefinition> ProcessDefinition(IProcessingContext context, RawGeneratedVectorDefinition definition)
+    private IOptionalWithDiagnostics<GeneratedVector> ProcessDefinition(IProcessingContext context, RawGeneratedVector definition)
     {
         var processedDefaultUnitData = ProcessDefaultUnitData(context, definition);
         var allDiagnostics = processedDefaultUnitData.Diagnostics;
@@ -67,16 +67,16 @@ public class GeneratedVectorProcesser : AProcesser<IProcessingContext, RawGenera
 
         if (processedDimensionality.LacksResult)
         {
-            return OptionalWithDiagnostics.Empty<GeneratedVectorDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<GeneratedVector>(allDiagnostics);
         }
 
-        GeneratedVectorDefinition product = new(definition.Unit!.Value, definition.Scalar, processedDimensionality.Result, processedDefaultUnitData.Result.Name,
+        GeneratedVector product = new(definition.Unit!.Value, definition.Scalar, processedDimensionality.Result, processedDefaultUnitData.Result.Name,
             processedDefaultUnitData.Result.Symbol, definition.GenerateDocumentation, definition.Locations);
 
         return ResultWithDiagnostics.Construct(product, allDiagnostics);
     }
 
-    private IOptionalWithDiagnostics<int> ProcessDimension(IProcessingContext context, RawGeneratedVectorDefinition definition)
+    private IOptionalWithDiagnostics<int> ProcessDimension(IProcessingContext context, RawGeneratedVector definition)
     {
         if (definition.Locations.ExplicitlySetDimension)
         {
@@ -102,7 +102,7 @@ public class GeneratedVectorProcesser : AProcesser<IProcessingContext, RawGenera
         return OptionalWithDiagnostics.Empty<int>(Diagnostics.MissingDimension(context, definition));
     }
 
-    private IResultWithDiagnostics<(string? Name, string? Symbol)> ProcessDefaultUnitData(IProcessingContext context, RawGeneratedVectorDefinition definition)
+    private IResultWithDiagnostics<(string? Name, string? Symbol)> ProcessDefaultUnitData(IProcessingContext context, RawGeneratedVector definition)
     {
         if (definition.Locations.ExplicitlySetDefaultUnitName is false && definition.DefaultUnitSymbol is not null)
         {
@@ -125,7 +125,7 @@ public class GeneratedVectorProcesser : AProcesser<IProcessingContext, RawGenera
         return ResultWithDiagnostics.Construct<(string?, string?)>((definition.DefaultUnitName, definition.DefaultUnitSymbol));
     }
 
-    private IValidityWithDiagnostics CheckValidity(IProcessingContext context, RawGeneratedVectorDefinition definition)
+    private IValidityWithDiagnostics CheckValidity(IProcessingContext context, RawGeneratedVector definition)
     {
         if (definition is null)
         {
@@ -135,7 +135,7 @@ public class GeneratedVectorProcesser : AProcesser<IProcessingContext, RawGenera
         return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckUnitValidity, CheckScalarValidity);
     }
 
-    private IValidityWithDiagnostics CheckUnitValidity(IProcessingContext context, RawGeneratedVectorDefinition definition)
+    private IValidityWithDiagnostics CheckUnitValidity(IProcessingContext context, RawGeneratedVector definition)
     {
         if (definition.Unit is null)
         {
@@ -145,7 +145,7 @@ public class GeneratedVectorProcesser : AProcesser<IProcessingContext, RawGenera
         return ValidityWithDiagnostics.Valid;
     }
 
-    private IValidityWithDiagnostics CheckScalarValidity(IProcessingContext context, RawGeneratedVectorDefinition definition)
+    private IValidityWithDiagnostics CheckScalarValidity(IProcessingContext context, RawGeneratedVector definition)
     {
         if (definition.Locations.ExplicitlySetScalar is false)
         {

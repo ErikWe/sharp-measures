@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Scalars;
 
-using SharpMeasures.Generators.Scalars.Utility;
+using SharpMeasures.Generators.Quantities.Utility;
 
 using System;
 
@@ -10,10 +10,10 @@ public sealed class ScalarConstantAttribute : Attribute
 {
     /// <summary>The name of the constant.</summary>
     public string Name { get; }
+    /// <summary>The name of the unit in which the value is specified.</summary>
+    public string Unit { get; }
     /// <summary>The value of the constant, in the specified unit.</summary>
     public double Value { get; }
-    /// <summary>The name of the unit in which the value was specified.</summary>
-    public string Unit { get; }
 
     /// <summary>Determines whether to generate a property for retrieving the magnitude of the scalar in terms of multiples of this constant. The
     /// default behaviour is <see langword="true"/>.</summary>
@@ -27,12 +27,12 @@ public sealed class ScalarConstantAttribute : Attribute
 
     /// <summary>Defines a constant.</summary>
     /// <param name="name">The name of the constant.</param>
-    /// <param name="value">The value of the constnat, in the specified unit.</param>
     /// <param name="unit">The name of the unit in which the value was specified.</param>
-    public ScalarConstantAttribute(string name, double value, string unit)
+    /// <param name="value">The value of the constant, in the specified unit.</param>
+    public ScalarConstantAttribute(string name, string unit, double value)
     {
         Name = name;
-        Value = value;
         Unit = unit;
+        Value = value;
     }
 }

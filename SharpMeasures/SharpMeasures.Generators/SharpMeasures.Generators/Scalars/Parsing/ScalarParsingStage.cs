@@ -23,7 +23,7 @@ using System.Linq;
 internal static class ScalarParsingStage
 {
     public readonly record struct Output(IncrementalValuesProvider<ParsedScalar> ScalarProvider,
-        IncrementalValueProvider<NamedTypePopulation<ScalarInterface>> ScalarPopulationProvider);
+        IncrementalValueProvider<ScalarPopulation> ScalarPopulationProvider);
 
     public static Output Attach(IncrementalGeneratorInitializationContext context)
     {
@@ -39,7 +39,7 @@ internal static class ScalarParsingStage
 
     private static IOptionalWithDiagnostics<RawParsedScalar> ExtractScalarInformation(IntermediateResult input, CancellationToken _)
     {
-        if (GeneratedUnitParser.Parser.ParseFirstOccurrence(input.TypeSymbol) is not RawGeneratedScalarDefinition generatedScalar)
+        if (GeneratedUnitParser.Parser.ParseFirstOccurrence(input.TypeSymbol) is not RawGeneratedScalar generatedScalar)
         {
             return OptionalWithDiagnostics.EmptyWithoutDiagnostics<RawParsedScalar>();
         }
@@ -55,18 +55,17 @@ internal static class ScalarParsingStage
         var definedType = input.TypeSymbol.AsDefinedType();
         var typeLocation = input.Declaration.GetLocation().Minimize();
 
-        var includeBasesDefinitions = IncludeBasesParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-        var excludeBasesDefinitions = ExcludeBasesParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+        var includeBases = IncludeBasesParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+        var excludeBases = ExcludeBasesParser.Parser.ParseAllOccurrences(input.TypeSymbol);
 
-        var includeUnitsDefinitions = IncludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-        var excludeUnitsDefinitions = ExcludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+        var includeUnits = IncludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+        var excludeUnits = ExcludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
 
-        var scalarConstantDefinitions = ScalarConstantParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+        var scalarConstant = ScalarConstantParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+        var dimensionalEquivalence = DimensionalEquivalenceParser.Parser.ParseAllOccurrences(input.TypeSymbol);
 
-        var dimensionalEquivalenceDefinitions = DimensionalEquivalenceParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-
-        RawParsedScalar result = new(definedType, typeLocation, processedScalar.Result, includeBasesDefinitions, excludeBasesDefinitions, includeUnitsDefinitions,
-            excludeUnitsDefinitions, scalarConstantDefinitions, dimensionalEquivalenceDefinitions);
+        RawParsedScalar result = new(definedType, typeLocation, processedScalar.Result, includeBases, excludeBases, includeUnits, excludeUnits, scalarConstant,
+            dimensionalEquivalence);
 
         return OptionalWithDiagnostics.Result(result, processedScalar.Diagnostics);
     }
@@ -77,33 +76,33 @@ internal static class ScalarParsingStage
         ScalarConstantProcessingContext scalarConstantContext = new(input.ScalarType, input.ScalarDefinition.Unit);
         DimensionalEquivalenceProcessingContext dimensionalEquivalenceContext = new(input.ScalarType);
 
-        var includeBasesDefinitions = ProcessingFilter.Create(Processers.IncludeBasesProcesser).Filter(unitListContext, input.IncludeBasesDefinitions);
+        var includeBasesDefinitions = ProcessingFilter.Create(Processers.IncludeBasesProcesser).Filter(unitListContext, input.IncludeBases);
         unitListContext.ListedItems.Clear();
 
         var excludeBasesDefinitions = ProcessExcludeBases(unitListContext, input);
         unitListContext.ListedItems.Clear();
 
-        var includeUnitsDefinitions = ProcessingFilter.Create(Processers.IncludeUnitsProcesser).Filter(unitListContext, input.IncludeUnitsDefinitions);
+        var includeUnitsDefinitions = ProcessingFilter.Create(Processers.IncludeUnitsProcesser).Filter(unitListContext, input.IncludeUnits);
         unitListContext.ListedItems.Clear();
 
         var excludeUnitsDefinitions = ProcessExcludeUnits(unitListContext, input);
         unitListContext.ListedItems.Clear();
 
-        var scalarConstantDefinitions = ProcessingFilter.Create(Processers.ScalarConstantValidator).Filter(scalarConstantContext, input.ScalarConstantDefinitions);
+        var scalarConstantDefinitions = ProcessingFilter.Create(Processers.ScalarConstantProcesser).Filter(scalarConstantContext, input.ScalarConstants);
         var dimensionalEquivalenceDefinitions = ProcessingFilter.Create(Processers.DimensionalEquivalenceValidator).Filter(dimensionalEquivalenceContext,
-            input.DimensionalEquivalenceDefinitions);
+            input.DimensionalEquivalences);
 
         var allDiagnostics = includeBasesDefinitions.Diagnostics.Concat(excludeBasesDefinitions.Diagnostics).Concat(includeUnitsDefinitions.Diagnostics)
             .Concat(excludeUnitsDefinitions.Diagnostics).Concat(scalarConstantDefinitions.Diagnostics).Concat(dimensionalEquivalenceDefinitions.Diagnostics);
 
-        if (input.IncludeBasesDefinitions.Any() && input.ExcludeBasesDefinitions.Any())
+        if (input.IncludeBases.Any() && input.ExcludeBases.Any())
         {
-            allDiagnostics = allDiagnostics.Concat(CreateExcessiveExclusionDiagnostics<IncludeBasesAttribute, ExcludeBasesAttribute>(input.ExcludeBasesDefinitions));
+            allDiagnostics = allDiagnostics.Concat(CreateExcessiveExclusionDiagnostics<IncludeBasesAttribute, ExcludeBasesAttribute>(input.ExcludeBases));
         }
 
-        if (input.IncludeUnitsDefinitions.Any() && input.ExcludeUnitsDefinitions.Any())
+        if (input.IncludeUnits.Any() && input.ExcludeUnits.Any())
         {
-            allDiagnostics = allDiagnostics.Concat(CreateExcessiveExclusionDiagnostics<IncludeUnitsAttribute, ExcludeUnitsAttribute>(input.ExcludeUnitsDefinitions));
+            allDiagnostics = allDiagnostics.Concat(CreateExcessiveExclusionDiagnostics<IncludeUnitsAttribute, ExcludeUnitsAttribute>(input.ExcludeUnits));
         }
 
         ParsedScalar processed = new(input.ScalarType, input.ScalarLocation, input.ScalarDefinition, includeBasesDefinitions.Result, excludeBasesDefinitions.Result,
@@ -112,28 +111,28 @@ internal static class ScalarParsingStage
         return ResultWithDiagnostics.Construct(processed, allDiagnostics);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ExcludeBasesDefinition>> ProcessExcludeBases(UnitListProcessingContext context, RawParsedScalar input)
+    private static IResultWithDiagnostics<IReadOnlyList<ExcludeBases>> ProcessExcludeBases(UnitListProcessingContext context, RawParsedScalar input)
     {
-        if (input.IncludeBasesDefinitions.Any())
+        if (input.IncludeBases.Any())
         {
-            var allDiagnostics = CreateExcessiveExclusionDiagnostics<IncludeBasesAttribute, ExcludeBasesAttribute>(input.ExcludeBasesDefinitions);
+            var allDiagnostics = CreateExcessiveExclusionDiagnostics<IncludeBasesAttribute, ExcludeBasesAttribute>(input.ExcludeBases);
 
-            return ResultWithDiagnostics.Construct(Array.Empty<ExcludeBasesDefinition>() as IReadOnlyList<ExcludeBasesDefinition>, allDiagnostics);
+            return ResultWithDiagnostics.Construct(Array.Empty<ExcludeBases>() as IReadOnlyList<ExcludeBases>, allDiagnostics);
         }
 
-        return ProcessingFilter.Create(Processers.ExcludeBasesProcesser).Filter(context, input.ExcludeBasesDefinitions);
+        return ProcessingFilter.Create(Processers.ExcludeBasesProcesser).Filter(context, input.ExcludeBases);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ProcessExcludeUnits(UnitListProcessingContext context, RawParsedScalar input)
+    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnits>> ProcessExcludeUnits(UnitListProcessingContext context, RawParsedScalar input)
     {
-        if (input.IncludeUnitsDefinitions.Any())
+        if (input.IncludeUnits.Any())
         {
-            var allDiagnostics = CreateExcessiveExclusionDiagnostics<IncludeUnitsAttribute, ExcludeUnitsAttribute>(input.ExcludeUnitsDefinitions);
+            var allDiagnostics = CreateExcessiveExclusionDiagnostics<IncludeUnitsAttribute, ExcludeUnitsAttribute>(input.ExcludeUnits);
 
-            return ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>, allDiagnostics);
+            return ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnits>() as IReadOnlyList<ExcludeUnits>, allDiagnostics);
         }
 
-        return ProcessingFilter.Create(Processers.ExcludeUnitsProcesser).Filter(context, input.ExcludeUnitsDefinitions);
+        return ProcessingFilter.Create(Processers.ExcludeUnitsProcesser).Filter(context, input.ExcludeUnits);
     }
 
     private static IEnumerable<Diagnostic> CreateExcessiveExclusionDiagnostics<TInclusionAttribute, TExclusionAttribute>
@@ -151,9 +150,9 @@ internal static class ScalarParsingStage
             scalar.ScalarDefinition.Cube, scalar.ScalarDefinition.SquareRoot, scalar.ScalarDefinition.CubeRoot);
     }
 
-    private static NamedTypePopulation<ScalarInterface> CreatePopulation(ImmutableArray<ScalarInterface> scalars, CancellationToken _)
+    private static ScalarPopulation CreatePopulation(ImmutableArray<ScalarInterface> scalars, CancellationToken _)
     {
-        return new(scalars, static (scalar) => scalar.ScalarType.AsNamedType());
+        return new(scalars.ToDictionary(static (scalar) => scalar.ScalarType.AsNamedType()));
     }
 
     private readonly record struct ProcessingContext : IProcessingContext
@@ -209,12 +208,12 @@ internal static class ScalarParsingStage
     {
         public static GeneratedScalarProcesser GeneratedScalarProcesser { get; } = new(GeneratedScalarDiagnostics.Instance);
 
-        public static IncludeBasesProcesser IncludeBasesProcesser { get; } = new(UnitListDiagnostics<RawIncludeBasesDefinition>.Instance);
-        public static ExcludeBasesProcesser ExcludeBasesProcesser { get; } = new(UnitListDiagnostics<RawExcludeBasesDefinition>.Instance);
-        public static IncludeUnitsProcesser IncludeUnitsProcesser { get; } = new(UnitListDiagnostics<RawIncludeUnitsDefinition>.Instance);
-        public static ExcludeUnitsProcesser ExcludeUnitsProcesser { get; } = new(UnitListDiagnostics<RawExcludeUnitsDefinition>.Instance);
+        public static IncludeBasesProcesser IncludeBasesProcesser { get; } = new(UnitListDiagnostics<RawIncludeBases>.Instance);
+        public static ExcludeBasesProcesser ExcludeBasesProcesser { get; } = new(UnitListDiagnostics<RawExcludeBases>.Instance);
+        public static IncludeUnitsProcesser IncludeUnitsProcesser { get; } = new(UnitListDiagnostics<RawIncludeUnits>.Instance);
+        public static ExcludeUnitsProcesser ExcludeUnitsProcesser { get; } = new(UnitListDiagnostics<RawExcludeUnits>.Instance);
 
-        public static ScalarConstantProcesser ScalarConstantValidator { get; } = new(ScalarConstantDiagnostics.Instance);
+        public static ScalarConstantProcesser ScalarConstantProcesser { get; } = new(ScalarConstantDiagnostics.Instance);
         public static DimensionalEquivalenceProcesser DimensionalEquivalenceValidator { get; } = new(DimensionalEquivalenceDiagnostics.Instance);
     }
 

@@ -19,7 +19,7 @@ internal static class DocumentationBuilding
         {
             string indentedTagContent = NewLineRegex.Replace(tagContent, $"$0{indentation}");
 
-            source.Append(indentedTagContent + Environment.NewLine);
+            source.AppendLine(indentedTagContent);
         }
     }
 }

@@ -6,11 +6,11 @@ using System.Collections.Generic;
 
 internal static class ScaledUnitProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawScaledUnitDefinition>> AllProperties => new IAttributeProperty<RawScaledUnitDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawScaledUnit>> AllProperties => new IAttributeProperty<RawScaledUnit>[]
     {
-        CommonProperties.Name<RawScaledUnitDefinition, ScaledUnitParsingData, ScaledUnitLocations>(nameof(ScaledUnitAttribute.Name)),
-        CommonProperties.Plural<RawScaledUnitDefinition, ScaledUnitParsingData, ScaledUnitLocations>(nameof(ScaledUnitAttribute.Plural)),
-        CommonProperties.DependantOn<RawScaledUnitDefinition, ScaledUnitParsingData, ScaledUnitLocations>(nameof(ScaledUnitAttribute.From)),
+        CommonProperties.Name<RawScaledUnit, ScaledUnitParsingData, ScaledUnitLocations>(nameof(ScaledUnitAttribute.Name)),
+        CommonProperties.Plural<RawScaledUnit, ScaledUnitParsingData, ScaledUnitLocations>(nameof(ScaledUnitAttribute.Plural)),
+        CommonProperties.DependantOn<RawScaledUnit, ScaledUnitParsingData, ScaledUnitLocations>(nameof(ScaledUnitAttribute.From)),
         Scale
     };
 

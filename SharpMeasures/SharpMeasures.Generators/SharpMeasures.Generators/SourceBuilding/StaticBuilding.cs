@@ -21,6 +21,7 @@ internal static class StaticBuilding
 
     public static void AppendNullableDirective(StringBuilder source)
     {
-        source.Append($"#nullable enable{Environment.NewLine}{Environment.NewLine}");
+        source.AppendLine($"#nullable enable");
+        source.AppendLine();
     }
 }

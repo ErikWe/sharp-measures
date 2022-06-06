@@ -7,13 +7,13 @@ using SharpMeasures.Generators.Units;
 
 using System;
 
-public interface IPrefixedUnitDiagnostics : IDependantUnitDiagnostics<RawPrefixedUnitDefinition>
+public interface IPrefixedUnitDiagnostics : IDependantUnitDiagnostics<RawPrefixedUnit>
 {
-    public abstract Diagnostic? UnrecognizedMetricPrefix(IDependantUnitProcessingContext context, RawPrefixedUnitDefinition definition);
-    public abstract Diagnostic? UnrecognizedBinaryPrefix(IDependantUnitProcessingContext context, RawPrefixedUnitDefinition definition);
+    public abstract Diagnostic? UnrecognizedMetricPrefix(IDependantUnitProcessingContext context, RawPrefixedUnit definition);
+    public abstract Diagnostic? UnrecognizedBinaryPrefix(IDependantUnitProcessingContext context, RawPrefixedUnit definition);
 }
 
-public class PrefixedUnitProcesser : ADependantUnitProcesser<IDependantUnitProcessingContext, RawPrefixedUnitDefinition, PrefixedUnitDefinition>
+public class PrefixedUnitProcesser : ADependantUnitProcesser<IDependantUnitProcessingContext, RawPrefixedUnit, PrefixedUnit>
 {
     private IPrefixedUnitDiagnostics Diagnostics { get; }
 
@@ -22,7 +22,7 @@ public class PrefixedUnitProcesser : ADependantUnitProcesser<IDependantUnitProce
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<PrefixedUnitDefinition> Process(IDependantUnitProcessingContext context, RawPrefixedUnitDefinition definition)
+    public override IOptionalWithDiagnostics<PrefixedUnit> Process(IDependantUnitProcessingContext context, RawPrefixedUnit definition)
     {
         if (context is null)
         {
@@ -38,14 +38,14 @@ public class PrefixedUnitProcesser : ADependantUnitProcesser<IDependantUnitProce
 
         if (validity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<PrefixedUnitDefinition>(validity.Diagnostics);
+            return OptionalWithDiagnostics.Empty<PrefixedUnit>(validity.Diagnostics);
         }
 
-        PrefixedUnitDefinition product = CreateResult(definition);
+        PrefixedUnit product = CreateResult(definition);
         return OptionalWithDiagnostics.Result(product, validity.Diagnostics);
     }
 
-    private IValidityWithDiagnostics CheckValidity(IDependantUnitProcessingContext context, RawPrefixedUnitDefinition definition)
+    private IValidityWithDiagnostics CheckValidity(IDependantUnitProcessingContext context, RawPrefixedUnit definition)
     {
         if (definition is null)
         {
@@ -55,7 +55,7 @@ public class PrefixedUnitProcesser : ADependantUnitProcesser<IDependantUnitProce
         return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckDependantUnitValidity, CheckPrefixValidity);
     }
 
-    private IValidityWithDiagnostics CheckPrefixValidity(IDependantUnitProcessingContext context, RawPrefixedUnitDefinition definition)
+    private IValidityWithDiagnostics CheckPrefixValidity(IDependantUnitProcessingContext context, RawPrefixedUnit definition)
     {
         if (definition.Locations.ExplicitlySetMetricPrefixName)
         {
@@ -65,7 +65,7 @@ public class PrefixedUnitProcesser : ADependantUnitProcesser<IDependantUnitProce
         return CheckBinaryPrefixValidity(context, definition);
     }
 
-    private IValidityWithDiagnostics CheckMetricPrefixValidity(IDependantUnitProcessingContext context, RawPrefixedUnitDefinition definition)
+    private IValidityWithDiagnostics CheckMetricPrefixValidity(IDependantUnitProcessingContext context, RawPrefixedUnit definition)
     {
         if (Enum.IsDefined(typeof(MetricPrefixName), definition.MetricPrefixName) is false)
         {
@@ -75,7 +75,7 @@ public class PrefixedUnitProcesser : ADependantUnitProcesser<IDependantUnitProce
         return ValidityWithDiagnostics.Valid;
     }
 
-    private IValidityWithDiagnostics CheckBinaryPrefixValidity(IDependantUnitProcessingContext context, RawPrefixedUnitDefinition definition)
+    private IValidityWithDiagnostics CheckBinaryPrefixValidity(IDependantUnitProcessingContext context, RawPrefixedUnit definition)
     {
         if (Enum.IsDefined(typeof(BinaryPrefixName), definition.BinaryPrefixName) is false)
         {
@@ -85,7 +85,7 @@ public class PrefixedUnitProcesser : ADependantUnitProcesser<IDependantUnitProce
         return ValidityWithDiagnostics.Valid;
     }
 
-    private static PrefixedUnitDefinition CreateResult(RawPrefixedUnitDefinition definition)
+    private static PrefixedUnit CreateResult(RawPrefixedUnit definition)
     {
         if (definition.Locations.ExplicitlySetMetricPrefixName)
         {

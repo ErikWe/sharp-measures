@@ -11,27 +11,27 @@ internal class DerivedUnitValidatorContext : IValidatorContext
 {
     public DefinedType Type { get; }
 
-    public NamedTypePopulation<UnitInterface> UnitPopulation { get; }
+    public UnitPopulation UnitPopulation { get; }
 
-    public DerivedUnitValidatorContext(DefinedType type, NamedTypePopulation<UnitInterface> unitPopulation)
+    public DerivedUnitValidatorContext(DefinedType type, UnitPopulation unitPopulation)
     {
         Type = type;
         UnitPopulation = unitPopulation;
     }
 }
 
-internal class DerivedUnitValidator : AValidator<DerivedUnitValidatorContext, DerivedUnitDefinition>
+internal class DerivedUnitValidator : AValidator<DerivedUnitValidatorContext, DerivedUnit>
 {
     public static DerivedUnitValidator Instance { get; } = new();
 
     private DerivedUnitValidator() { }
 
-    public override IValidityWithDiagnostics CheckValidity(DerivedUnitValidatorContext context, DerivedUnitDefinition definition)
+    public override IValidityWithDiagnostics CheckValidity(DerivedUnitValidatorContext context, DerivedUnit definition)
     {
         return CheckSignatureValidity(context, definition);
     }
 
-    private static IValidityWithDiagnostics CheckSignatureValidity(DerivedUnitValidatorContext context, DerivedUnitDefinition definition)
+    private static IValidityWithDiagnostics CheckSignatureValidity(DerivedUnitValidatorContext context, DerivedUnit definition)
     {
         IEnumerator<NamedType> signatureEnumerator = definition.Signature.Types.GetEnumerator();
         IEnumerator<string> unitEnumerator = definition.Units.GetEnumerator();
@@ -39,7 +39,7 @@ internal class DerivedUnitValidator : AValidator<DerivedUnitValidatorContext, De
         int index = 0;
         while (signatureEnumerator.MoveNext() && unitEnumerator.MoveNext())
         {
-            if (context.UnitPopulation.Population.TryGetValue(signatureEnumerator.Current, out UnitInterface unit) is false)
+            if (context.UnitPopulation.TryGetValue(signatureEnumerator.Current, out UnitInterface unit) is false)
             {
                 return ValidityWithDiagnostics.InvalidWithoutDiagnostics;
             }

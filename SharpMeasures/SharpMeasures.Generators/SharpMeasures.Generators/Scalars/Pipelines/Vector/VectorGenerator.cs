@@ -1,10 +1,10 @@
-﻿namespace SharpMeasures.Generators.Scalars.Pipelines.Vector;
+﻿namespace SharpMeasures.Generators.Scalars.Pipelines.Vectors;
 
 using Microsoft.CodeAnalysis;
 
 using System.Threading;
 
-internal static class VectorGenerator
+internal static class VectorsGenerator
 {
     public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Scalars.DataModel> inputProvider)
     {

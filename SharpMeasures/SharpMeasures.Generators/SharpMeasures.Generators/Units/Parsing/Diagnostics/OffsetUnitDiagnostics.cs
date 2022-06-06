@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing.Units;
 
-internal class OffsetUnitDiagnostics : ADependantUnitDiagnostics<RawOffsetUnitDefinition>
+internal class OffsetUnitDiagnostics : ADependantUnitDiagnostics<RawOffsetUnit>
 {
     public static OffsetUnitDiagnostics Instance { get; } = new();
 

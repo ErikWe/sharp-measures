@@ -13,12 +13,12 @@ internal static class GeneratedScalarDiagnostics
         return DiagnosticConstruction.TypeAlreadyDefined_AsUnit_Scalar(location?.AsRoslynLocation(), type.Name);
     }
 
-    public static Diagnostic TypeNotUnit(GeneratedScalarDefinition definition)
+    public static Diagnostic TypeNotUnit(GeneratedScalar definition)
     {
         return DiagnosticConstruction.TypeNotUnit(definition.Locations.Unit?.AsRoslynLocation(), definition.Unit.Name);
     }
 
-    public static Diagnostic UnitNotSupportingBiasedQuantities(GeneratedScalarDefinition definition)
+    public static Diagnostic UnitNotSupportingBiasedQuantities(GeneratedScalar definition)
     {
         return DiagnosticConstruction.UnitNotSupportingBias(definition.Locations.Unit?.AsRoslynLocation(), definition.Unit.Name);
     }
@@ -28,7 +28,7 @@ internal static class GeneratedScalarDiagnostics
         return DiagnosticConstruction.TypeNotScalar(location?.AsRoslynLocation(), type.Name);
     }
 
-    public static Diagnostic? TypeNotVector(GeneratedScalarDefinition definition)
+    public static Diagnostic? TypeNotVector(GeneratedScalar definition)
     {
         if (definition.Vector is null)
         {
@@ -38,7 +38,7 @@ internal static class GeneratedScalarDiagnostics
         return DiagnosticConstruction.TypeNotVector(definition.Locations.Vector?.AsRoslynLocation(), definition.Vector.Value.Name);
     }
 
-    public static Diagnostic UnrecognizedUnit(GeneratedScalarDefinition definition, UnitInterface unit)
+    public static Diagnostic UnrecognizedUnit(GeneratedScalar definition, UnitInterface unit)
     {
         return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.DefaultUnitName?.AsRoslynLocation(), definition.DefaultUnitName!, unit.UnitType.Name);
     }

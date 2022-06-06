@@ -9,9 +9,9 @@ using System.Collections.Generic;
 
 internal static class DimensionalEquivalenceProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawDimensionalEquivalenceDefinition>> AllProperties => new IAttributeProperty<RawDimensionalEquivalenceDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawDimensionalEquivalence>> AllProperties => new IAttributeProperty<RawDimensionalEquivalence>[]
     {
-        ItemLists.CommonProperties.Items<INamedTypeSymbol, NamedType?, RawDimensionalEquivalenceDefinition, DimensionalEquivalenceLocations>
+        ItemLists.CommonProperties.Items<INamedTypeSymbol, NamedType?, RawDimensionalEquivalence, DimensionalEquivalenceLocations>
             (nameof(DimensionalEquivalenceAttribute.Quantities), static (x) => x.AsNamedType()),
         CastOperatorBehaviour
     };

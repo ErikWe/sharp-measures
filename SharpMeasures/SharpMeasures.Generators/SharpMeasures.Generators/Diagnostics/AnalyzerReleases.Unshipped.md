@@ -39,6 +39,7 @@ Measures1261 | Usage | Warning | Quantity group missing root quantity
 Measures1420 | Usage | Warning | Invalid vector dimension
 Measures1421 | Usage | Warning | Missing vector dimension
 Measures1422 | Usage | Warning | Duplicate vector dimension
+Measures1440 | Usage | Warning | Invalid dimension of vector constant
 Measures1900 | Documentation | Info | Unresolved documentation dependency
 Measures1901 | Documentation | Info | No matching documentation file
 Measures1902 | Documentation | Info | Documentation tag not found

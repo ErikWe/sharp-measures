@@ -4,11 +4,11 @@ using SharpMeasures.Generators.Scalars;
 
 public static class IncludeBasesParser
 {
-    public static IAttributeParser<RawIncludeBasesDefinition> Parser { get; } = new AttributeParser();
+    public static IAttributeParser<RawIncludeBases> Parser { get; } = new AttributeParser();
 
-    private static RawIncludeBasesDefinition DefaultDefinition() => RawIncludeBasesDefinition.Empty;
+    private static RawIncludeBases DefaultDefinition() => RawIncludeBases.Empty;
 
-    private class AttributeParser : AAttributeParser<RawIncludeBasesDefinition, IncludeBasesLocations, IncludeBasesAttribute>
+    private class AttributeParser : AAttributeParser<RawIncludeBases, IncludeBasesLocations, IncludeBasesAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, IncludeBasesProperties.AllProperties) { }
     }

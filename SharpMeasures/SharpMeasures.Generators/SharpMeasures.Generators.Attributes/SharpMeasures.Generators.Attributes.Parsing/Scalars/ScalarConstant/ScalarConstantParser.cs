@@ -8,15 +8,15 @@ using SharpMeasures.Generators.Scalars;
 
 public static class ScalarConstantParser
 {
-    public static IAttributeParser<RawScalarConstantDefinition> Parser { get; } = new AttributeParser();
+    public static IAttributeParser<RawScalarConstant> Parser { get; } = new AttributeParser();
 
-    private static RawScalarConstantDefinition DefaultDefiniton() => RawScalarConstantDefinition.Empty;
+    private static RawScalarConstant DefaultDefiniton() => RawScalarConstant.Empty;
 
-    private class AttributeParser : AAttributeParser<RawScalarConstantDefinition, ScalarConstantLocations, GeneratedScalarAttribute>
+    private class AttributeParser : AAttributeParser<RawScalarConstant, ScalarConstantLocations, GeneratedScalarAttribute>
     {
         public AttributeParser() : base(DefaultDefiniton, ScalarConstantProperties.AllProperties) { }
 
-        protected override RawScalarConstantDefinition AddCustomData(RawScalarConstantDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax)
+        protected override RawScalarConstant AddCustomData(RawScalarConstant definition, AttributeData attributeData, AttributeSyntax attributeSyntax)
         {
             var modifiedParsingData = definition.ParsingData with
             {

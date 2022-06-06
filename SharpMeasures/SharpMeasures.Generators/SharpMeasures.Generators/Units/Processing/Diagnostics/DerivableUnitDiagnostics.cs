@@ -7,7 +7,7 @@ using SharpMeasures.Generators.Diagnostics;
 
 internal static class DerivableUnitDiagnostics
 {
-    public static Diagnostic TypeNotUnit(DerivableUnitDefinition definition, int index, NamedType type)
+    public static Diagnostic TypeNotUnit(DerivableUnit definition, int index, NamedType type)
     {
         return DiagnosticConstruction.TypeNotUnit(definition.Locations.SignatureElements[index].AsRoslynLocation(), type.Name);
     }

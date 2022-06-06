@@ -21,11 +21,11 @@ internal static class UnitDefinitionsGenerator
     {
         var context = new DerivedUnitValidatorContext(input.Unit.UnitType, input.UnitPopulation);
 
-        var filteredDerivedUnits = ValidityFilter.Create(DerivedUnitValidator.Instance).Filter(context, input.Unit.DerivedUnitDefinitions);
+        var filteredDerivedUnits = ValidityFilter.Create(DerivedUnitValidator.Instance).Filter(context, input.Unit.DerivedUnits);
 
         DataModel model = new(input.Unit.UnitType, input.Quantity.ScalarType.AsNamedType(), input.Unit.UnitDefinition.SupportsBiasedQuantities, input.Documentation,
-            input.Unit.UnitAliasDefinitions, filteredDerivedUnits.Result, input.Unit.FixedUnitDefinitions, input.Unit.OffsetUnitDefinitions,
-            input.Unit.PrefixedUnitDefinitions, input.Unit.ScaledUnitDefinitions);
+            input.Unit.UnitAliases, filteredDerivedUnits.Result, input.Unit.FixedUnits, input.Unit.OffsetUnits,
+            input.Unit.PrefixedUnits, input.Unit.ScaledUnits);
 
         return ResultWithDiagnostics.Construct(model, filteredDerivedUnits.Diagnostics);
     }

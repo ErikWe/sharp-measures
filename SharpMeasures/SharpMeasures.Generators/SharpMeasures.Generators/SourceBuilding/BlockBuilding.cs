@@ -24,7 +24,7 @@ internal static class BlockBuilding
     {
         if (initialNewLine)
         {
-            source.Append(Environment.NewLine);
+            source.AppendLine();
         }
 
         source.Append($"{originalIndentation}{header}");
@@ -70,14 +70,14 @@ internal static class BlockBuilding
     {
         if (initialNewLine)
         {
-            source.Append(Environment.NewLine);
+            source.AppendLine();
         }
 
         source.Append($"{indentation}{{");
 
         if (finalNewLine)
         {
-            source.Append(Environment.NewLine);
+            source.AppendLine();
         }
     }
 
@@ -85,14 +85,14 @@ internal static class BlockBuilding
     {
         if (initialNewLine)
         {
-            source.Append(Environment.NewLine);
+            source.AppendLine();
         }
 
         source.Append($"{indentation}}}");
 
         if (finalNewLine)
         {
-            source.Append(Environment.NewLine);
+            source.AppendLine();
         }
     }
 }

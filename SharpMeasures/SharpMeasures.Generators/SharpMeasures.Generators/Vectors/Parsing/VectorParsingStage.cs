@@ -13,6 +13,7 @@ using SharpMeasures.Generators.Vectors.Parsing.Diagnostics;
 using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics;
 using SharpMeasures.Generators.Vectors;
+using SharpMeasures.Equatables;
 
 using System;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ internal static class VectorParsingStage
 
     private static IOptionalWithDiagnostics<RawParsedVector> ExtractVectorInformation(IntermediateResult input, CancellationToken _)
     {
-        if (GeneratedUnitParser.Parser.ParseFirstOccurrence(input.TypeSymbol) is not RawGeneratedVectorDefinition generatedVector)
+        if (GeneratedUnitParser.Parser.ParseFirstOccurrence(input.TypeSymbol) is not RawGeneratedVector generatedVector)
         {
             return OptionalWithDiagnostics.EmptyWithoutDiagnostics<RawParsedVector>();
         }
@@ -59,54 +60,57 @@ internal static class VectorParsingStage
         var definedType = input.TypeSymbol.AsDefinedType();
         var typeLocation = input.Declaration.GetLocation().Minimize();
 
-        var includeUnitsDefinitions = IncludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-        var excludeUnitsDefinitions = ExcludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+        var includeUnits = IncludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+        var excludeUnits = ExcludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
 
-        var dimensionalEquivalenceDefinitions = DimensionalEquivalenceParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+        var vectorConstants = VectorConstantParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+        var dimensionalEquivalences = DimensionalEquivalenceParser.Parser.ParseAllOccurrences(input.TypeSymbol);
 
-        RawParsedVector result = new(definedType, typeLocation, processedVector.Result, includeUnitsDefinitions, excludeUnitsDefinitions,
-            dimensionalEquivalenceDefinitions);
+        RawParsedVector result = new(definedType, typeLocation, processedVector.Result, includeUnits, excludeUnits, vectorConstants, dimensionalEquivalences);
 
         return OptionalWithDiagnostics.Result(result, processedVector.Diagnostics);
     }
 
     private static IResultWithDiagnostics<ParsedVector> ProcessVectorInformation(RawParsedVector input, CancellationToken _)
     {
-        ProcessingContext context = new(input.VectorType);
         UnitListProcessingContext unitListContext = new(input.VectorType);
+        VectorConstantProcessingContext vectorConstantContext = new(input.VectorType, input.VectorDefinition.Dimension, input.VectorDefinition.Unit);
+        DimensionalEquivalenceProcessingContext dimensionalEquivalenceContext = new(input.VectorType);
 
-        var includeUnitsDefinitions = ProcessingFilter.Create(Processers.IncludeUnitsProcesser).Filter(unitListContext, input.IncludeUnitsDefinitions);
+        var includeUnitsDefinitions = ProcessingFilter.Create(Processers.IncludeUnitsProcesser).Filter(unitListContext, input.IncludeUnits);
         unitListContext.ListedItems.Clear();
 
         var excludeUnitsDefinitions = ProcessExcludeUnits(unitListContext, input);
         unitListContext.ListedItems.Clear();
 
-        var dimensionalEquivalenceDefinitions = ProcessingFilter.Create(Processers.DimensionalEquivalenceValidator).Filter(context,
-            input.DimensionalEquivalenceDefinitions);
+        var vectorConstantDefinitions = ProcessingFilter.Create(Processers.VectorConstantProcesser).Filter(vectorConstantContext, input.VectorConstants);
+        var dimensionalEquivalenceDefinitions = ProcessingFilter.Create(Processers.DimensionalEquivalenceValidator).Filter(dimensionalEquivalenceContext,
+            input.DimensionalEquivalences);
 
-        var allDiagnostics = includeUnitsDefinitions.Diagnostics.Concat(excludeUnitsDefinitions.Diagnostics).Concat(dimensionalEquivalenceDefinitions.Diagnostics);
+        var allDiagnostics = includeUnitsDefinitions.Diagnostics.Concat(excludeUnitsDefinitions.Diagnostics).Concat(vectorConstantDefinitions.Diagnostics)
+            .Concat(dimensionalEquivalenceDefinitions.Diagnostics);
 
         ParsedVector processed = new(input.VectorType, input.VectorLocation, input.VectorDefinition, includeUnitsDefinitions.Result, excludeUnitsDefinitions.Result,
-            dimensionalEquivalenceDefinitions.Result);
+            vectorConstantDefinitions.Result, dimensionalEquivalenceDefinitions.Result);
 
         return ResultWithDiagnostics.Construct(processed, allDiagnostics);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ProcessExcludeUnits(UnitListProcessingContext context, RawParsedVector input)
+    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnits>> ProcessExcludeUnits(UnitListProcessingContext context, RawParsedVector input)
     {
-        if (input.IncludeUnitsDefinitions.Any())
+        if (input.IncludeUnits.Any())
         {
             List<Diagnostic> allDiagnostics = new();
 
-            foreach (var excludeUnits in input.ExcludeUnitsDefinitions)
+            foreach (var excludeUnits in input.ExcludeUnits)
             {
                 allDiagnostics.Add(GeneralDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(excludeUnits));
             }
 
-            return ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>, allDiagnostics);
+            return ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnits>() as IReadOnlyList<ExcludeUnits>, allDiagnostics);
         }
 
-        return ProcessingFilter.Create(Processers.ExcludeUnitsProcesser).Filter(context, input.ExcludeUnitsDefinitions);
+        return ProcessingFilter.Create(Processers.ExcludeUnitsProcesser).Filter(context, input.ExcludeUnits);
     }
 
     private static GeneratedVectorInterface ConstructInterface(ParsedVector vector, CancellationToken _)
@@ -115,7 +119,7 @@ internal static class VectorParsingStage
     }
 
     private static VectorPopulation CreatePopulation
-        ((ImmutableArray<GeneratedVectorInterface> Roots, NamedTypePopulation<ResizedVectorInterface> Resized) vectors, CancellationToken _)
+        ((ImmutableArray<GeneratedVectorInterface> Roots, EquatableDictionary<NamedType, ResizedVectorInterface> Resized) vectors, CancellationToken _)
     {
         Dictionary<NamedType, ResizedVectorGroup.IBuilder> groupBuilders = new();
         Dictionary<NamedType, ResizedVectorInterface> duplicateDimensionVectors = new();
@@ -126,9 +130,9 @@ internal static class VectorParsingStage
             groupBuilders.Add(rootVector.VectorType, ResizedVectorGroup.StartBuilder(root));
         }
 
-        List<ResizedVectorInterface> ungroupedResizedVectors = new(vectors.Resized.Population.Count);
+        List<ResizedVectorInterface> ungroupedResizedVectors = new(vectors.Resized.Count);
 
-        foreach (ResizedVectorInterface resizedVector in vectors.Resized.Population.Values)
+        foreach (ResizedVectorInterface resizedVector in vectors.Resized.Values)
         {
             if (groupBuilders.TryGetValue(resizedVector.AssociatedTo, out var builder) is false)
             {
@@ -138,7 +142,7 @@ internal static class VectorParsingStage
                     continue;
                 }
 
-                if (vectors.Resized.Population.ContainsKey(resizedVector.AssociatedTo))
+                if (vectors.Resized.ContainsKey(resizedVector.AssociatedTo))
                 {
                     ungroupedResizedVectors.Add(resizedVector);
                     continue;
@@ -160,9 +164,13 @@ internal static class VectorParsingStage
 
         ungroupedResizedVectors = AddRecursivelyResizedVectors(groupBuilders, ungroupedResizedVectors, duplicateDimensionVectors);
 
-        var groupsPopulation = groupBuilders.AsNamedTypePopulation(static (x) => x.Target);
-        var unresolvedPopulation = ungroupedResizedVectors.ToDictionary(static (x) => x.VectorType, VectorInterface.From).AsNamedTypePopulation();
-        var duplicatePopulation = duplicateDimensionVectors.AsNamedTypePopulation(VectorInterface.From);
+        EquatableDictionary<NamedType, ResizedVectorGroup> groupsPopulation = new(groupBuilders.ToDictionary(static (x) => x.Key, static (x) => x.Value.Target));
+
+        EquatableDictionary<NamedType, VectorInterface> duplicatePopulation
+            = new(duplicateDimensionVectors.ToDictionary(static (x) => x.Key, static (x) => VectorInterface.From(x.Value)));
+
+        EquatableDictionary<NamedType, VectorInterface> unresolvedPopulation
+            = new(ungroupedResizedVectors.ToDictionary(static (x) => x.VectorType, VectorInterface.From));
 
         return new(groupsPopulation, unresolvedPopulation, duplicatePopulation);
     }
@@ -243,16 +251,30 @@ internal static class VectorParsingStage
         return ungroupedVectors;
     }
 
-    private readonly record struct ProcessingContext : IProcessingContext, IDimensionalEquivalenceProcessingContext
+    private readonly record struct ProcessingContext : IProcessingContext
     {
         public DefinedType Type { get; }
-
-        public HashSet<NamedType> DimensionallyEquivalentQuantities { get; } = new();
-        HashSet<NamedType> IDimensionalEquivalenceProcessingContext.ListedQuantities => DimensionallyEquivalentQuantities;
 
         public ProcessingContext(DefinedType type)
         {
             Type = type;
+        }
+    }
+
+    private readonly record struct VectorConstantProcessingContext : IVectorConstantProcessingContext
+    {
+        public DefinedType Type { get; }
+        public int Dimension { get; }
+        public NamedType Unit { get; }
+
+        public HashSet<string> ReservedConstants { get; } = new();
+        public HashSet<string> ReservedConstantMultiples { get; } = new();
+
+        public VectorConstantProcessingContext(DefinedType type, int dimension, NamedType unit)
+        {
+            Type = type;
+            Dimension = dimension;
+            Unit = unit;
         }
     }
 
@@ -268,13 +290,27 @@ internal static class VectorParsingStage
         }
     }
 
+    private readonly record struct DimensionalEquivalenceProcessingContext : IDimensionalEquivalenceProcessingContext
+    {
+        public DefinedType Type { get; }
+
+        public HashSet<NamedType> DimensionallyEquivalentQuantities { get; } = new();
+        HashSet<NamedType> IDimensionalEquivalenceProcessingContext.ListedQuantities => DimensionallyEquivalentQuantities;
+
+        public DimensionalEquivalenceProcessingContext(DefinedType type)
+        {
+            Type = type;
+        }
+    }
+
     private static class Processers
     {
         public static GeneratedVectorProcesser GeneratedVectorProcesser { get; } = new(GeneratedVectorDiagnostics.Instance);
 
-        public static IncludeUnitsProcesser IncludeUnitsProcesser { get; } = new(UnitListDiagnostics<RawIncludeUnitsDefinition>.Instance);
-        public static ExcludeUnitsProcesser ExcludeUnitsProcesser { get; } = new(UnitListDiagnostics<RawExcludeUnitsDefinition>.Instance);
+        public static IncludeUnitsProcesser IncludeUnitsProcesser { get; } = new(UnitListDiagnostics<RawIncludeUnits>.Instance);
+        public static ExcludeUnitsProcesser ExcludeUnitsProcesser { get; } = new(UnitListDiagnostics<RawExcludeUnits>.Instance);
 
+        public static VectorConstantProcesser VectorConstantProcesser { get; } = new(VectorConstantDiagnostics.Instance);
         public static DimensionalEquivalenceProcesser DimensionalEquivalenceValidator { get; } = new(DimensionalEquivalenceDiagnostics.Instance);
     }
 

@@ -6,12 +6,11 @@ using SharpMeasures.Generators.AnalyzerConfig;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Documentation;
 using SharpMeasures.Generators.Scalars.Parsing;
-using SharpMeasures.Generators.Scalars.Pipelines.Comparable;
+using SharpMeasures.Generators.Scalars.Pipelines.Common;
 using SharpMeasures.Generators.Scalars.Pipelines.DimensionalEquivalence;
-using SharpMeasures.Generators.Scalars.Pipelines.Misc;
-using SharpMeasures.Generators.Scalars.Pipelines.StandardMaths;
+using SharpMeasures.Generators.Scalars.Pipelines.Maths;
 using SharpMeasures.Generators.Scalars.Pipelines.Units;
-using SharpMeasures.Generators.Scalars.Pipelines.Vector;
+using SharpMeasures.Generators.Scalars.Pipelines.Vectors;
 using SharpMeasures.Generators.Scalars.Processing;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors;
@@ -21,7 +20,7 @@ using System.Threading;
 internal static class ScalarQuantityGenerator
 {
     public static void Attach(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<ParsedScalar> scalars,
-        IncrementalValueProvider<NamedTypePopulation<UnitInterface>> unitPopulation, IncrementalValueProvider<NamedTypePopulation<ScalarInterface>> scalarPopulation,
+        IncrementalValueProvider<UnitPopulation> unitPopulation, IncrementalValueProvider<ScalarPopulation> scalarPopulation,
         IncrementalValueProvider<VectorPopulation> vectorPopulation, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfig,
         IncrementalValueProvider<DocumentationDictionary> documentationDictionary)
     {
@@ -31,16 +30,15 @@ internal static class ScalarQuantityGenerator
             .Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionary).Flatten().Select(AppendDocumentationFile)
             .ReportDiagnostics(context);
 
-        ComparableGenerator.Initialize(context, minimized);
+        CommonGenerator.Initialize(context, minimized);
         DimensionalEquivalenceGenerator.Initialize(context, minimized);
-        MiscGenerator.Initialize(context, minimized);
-        StandardMathsGenerator.Initialize(context, minimized);
+        MathsGenerator.Initialize(context, minimized);
         UnitsGenerator.Initialize(context, minimized);
-        VectorGenerator.Initialize(context, minimized);
+        VectorsGenerator.Initialize(context, minimized);
     }
 
     private static IOptionalWithDiagnostics<DataModel> ReduceToDataModel
-        ((ParsedScalar Scalar, NamedTypePopulation<UnitInterface> UnitPopulation, NamedTypePopulation<ScalarInterface> ScalarPopulation,
+        ((ParsedScalar Scalar, UnitPopulation UnitPopulation, ScalarPopulation ScalarPopulation,
         VectorPopulation VectorPopulation) input, CancellationToken _)
     {
         GeneratedScalarProcessingContext context = new(input.Scalar.ScalarType, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);

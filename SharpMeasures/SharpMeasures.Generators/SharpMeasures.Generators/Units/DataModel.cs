@@ -9,11 +9,11 @@ internal record class DataModel
     public ParsedUnit Unit { get; }
     public ScalarInterface Quantity { get; }
 
-    public NamedTypePopulation<UnitInterface> UnitPopulation { get; }
+    public UnitPopulation UnitPopulation { get; }
 
     public DocumentationFile Documentation { get; init; }
 
-    public DataModel(ParsedUnit unit, ScalarInterface quantity, NamedTypePopulation<UnitInterface> unitPopulation)
+    public DataModel(ParsedUnit unit, ScalarInterface quantity, UnitPopulation unitPopulation)
     {
         Unit = unit;
         Quantity = quantity;

@@ -5,11 +5,11 @@ using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 using System;
 using System.Collections.Generic;
 
-public class IncludeUnitsProcesser : AItemListProcesser<string?, string, IItemListProcessingContext<string>, RawIncludeUnitsDefinition, IncludeUnitsDefinition>
+public class IncludeUnitsProcesser : AItemListProcesser<string?, string, IItemListProcessingContext<string>, RawIncludeUnits, IncludeUnits>
 {
-    public IncludeUnitsProcesser(IItemListDiagnostics<string, RawIncludeUnitsDefinition> diagnostics) : base(diagnostics) { }
+    public IncludeUnitsProcesser(IItemListDiagnostics<string, RawIncludeUnits> diagnostics) : base(diagnostics) { }
 
-    protected override IncludeUnitsDefinition ConstructProduct(IReadOnlyList<string> items, RawIncludeUnitsDefinition definition)
+    protected override IncludeUnits ConstructProduct(IReadOnlyList<string> items, RawIncludeUnits definition)
     {
         if (definition is null)
         {

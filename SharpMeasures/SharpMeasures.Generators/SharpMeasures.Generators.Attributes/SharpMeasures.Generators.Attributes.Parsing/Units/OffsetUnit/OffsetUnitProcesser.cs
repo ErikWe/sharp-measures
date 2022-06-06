@@ -4,11 +4,11 @@ using SharpMeasures.Generators.Diagnostics;
 
 using System;
 
-public class OffsetUnitProcesser : ADependantUnitProcesser<IDependantUnitProcessingContext, RawOffsetUnitDefinition, OffsetUnitDefinition>
+public class OffsetUnitProcesser : ADependantUnitProcesser<IDependantUnitProcessingContext, RawOffsetUnit, OffsetUnit>
 {
-    public OffsetUnitProcesser(IDependantUnitDiagnostics<RawOffsetUnitDefinition> diagnostics) : base(diagnostics) { }
+    public OffsetUnitProcesser(IDependantUnitDiagnostics<RawOffsetUnit> diagnostics) : base(diagnostics) { }
 
-    public override IOptionalWithDiagnostics<OffsetUnitDefinition> Process(IDependantUnitProcessingContext context, RawOffsetUnitDefinition definition)
+    public override IOptionalWithDiagnostics<OffsetUnit> Process(IDependantUnitProcessingContext context, RawOffsetUnit definition)
     {
         if (context is null)
         {
@@ -24,10 +24,10 @@ public class OffsetUnitProcesser : ADependantUnitProcesser<IDependantUnitProcess
 
         if (validity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<OffsetUnitDefinition>(validity.Diagnostics);
+            return OptionalWithDiagnostics.Empty<OffsetUnit>(validity.Diagnostics);
         }
 
-        OffsetUnitDefinition product = new(definition.Name!, definition.ParsingData.InterpretedPlural!, definition.From!, definition.Offset, definition.Locations);
+        OffsetUnit product = new(definition.Name!, definition.ParsingData.InterpretedPlural!, definition.From!, definition.Offset, definition.Locations);
         return OptionalWithDiagnostics.Result(product, validity.Diagnostics);
     }
 }

@@ -10,24 +10,24 @@ internal class GeneratedUnitProcessingContext : IProcessingContext
 {
     public DefinedType Type { get; }
 
-    public NamedTypePopulation<ScalarInterface> ScalarPopulation { get; }
+    public ScalarPopulation ScalarPopulation { get; }
 
-    public GeneratedUnitProcessingContext(DefinedType type, NamedTypePopulation<ScalarInterface> scalarPopulation)
+    public GeneratedUnitProcessingContext(DefinedType type, ScalarPopulation scalarPopulation)
     {
         Type = type;
         ScalarPopulation = scalarPopulation;
     }
 }
 
-internal class GeneratedUnitProcesser : IProcesser<GeneratedUnitProcessingContext, GeneratedUnitDefinition, ProcessedGeneratedUnit>
+internal class GeneratedUnitProcesser : IProcesser<GeneratedUnitProcessingContext, GeneratedUnit, ProcessedGeneratedUnit>
 {
     public static GeneratedUnitProcesser Instance { get; } = new();
 
     private GeneratedUnitProcesser() { }
 
-    public IOptionalWithDiagnostics<ProcessedGeneratedUnit> Process(GeneratedUnitProcessingContext context, GeneratedUnitDefinition input)
+    public IOptionalWithDiagnostics<ProcessedGeneratedUnit> Process(GeneratedUnitProcessingContext context, GeneratedUnit input)
     {
-        if (context.ScalarPopulation.Population.TryGetValue(input.Quantity, out ScalarInterface quantity) is false)
+        if (context.ScalarPopulation.TryGetValue(input.Quantity, out ScalarInterface quantity) is false)
         {
             return OptionalWithDiagnostics.Empty<ProcessedGeneratedUnit>(GeneratedScalarDiagnostics.QuantityNotScalar(input));
         }
