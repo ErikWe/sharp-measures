@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Utility;
 
-internal static class SimpleTextExpression
+public static class SimpleTextExpression
 {
     public static string? Interpret(string? original, string? expression)
     {

@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>SharpMeasures.Equatables</RootNamespace>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SharpMeasures.Utility\SharpMeasures.Utility.csproj" PrivateAssets="all" />
+    </ItemGroup>
+
+</Project>

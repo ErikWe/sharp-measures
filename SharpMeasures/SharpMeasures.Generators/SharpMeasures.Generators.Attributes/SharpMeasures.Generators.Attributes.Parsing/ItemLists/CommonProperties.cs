@@ -2,7 +2,7 @@
 
 using System;
 
-internal static class CommonProperties
+public static class CommonProperties
 {
     public static IAttributeProperty<TDefinition> Items<TItem, TDefinition, TLocations>(string name)
         where TDefinition : ARawItemListDefinition<TItem, TLocations>
@@ -11,7 +11,7 @@ internal static class CommonProperties
         return new AttributeProperty<TDefinition, TLocations, TItem[]>
         (
             name: name,
-            setter: static (definition, items) => definition with { Items = items },
+            setter: static (definition, items) => definition with { Items = new(items) },
             locator: static (locations, collectionLocation, elementLocations) => locations with
             {
                 ItemsCollection = collectionLocation,
@@ -36,7 +36,7 @@ internal static class CommonProperties
                     transformedItems[i] = transform(items[i]);
                 }
 
-                return definition with { Items = transformedItems };
+                return definition with { Items = new(transformedItems) };
             },
             locator: static (locations, collectionLocation, elementLocations) => locations with
             {

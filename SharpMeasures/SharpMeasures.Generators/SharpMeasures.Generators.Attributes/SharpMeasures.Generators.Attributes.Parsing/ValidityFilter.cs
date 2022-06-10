@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 public interface IValidityFilter<in TContext, TDefinition>
-    where TContext : IValidatorContext
+    where TContext : IValidationContext
 {
     public abstract IResultWithDiagnostics<IReadOnlyList<TDefinition>> Filter(TContext context, IEnumerable<TDefinition> definitions);
 }
@@ -17,19 +17,19 @@ public interface IValidityFilter<in TContext, TDefinition>
 public static class ValidityFilter
 {
     public static IValidityFilter<TContext, TDefinition> Create<TContext, TDefinition>(IValidator<TContext, TDefinition> validator)
-        where TContext : IValidatorContext
+        where TContext : IValidationContext
     {
         return new SimpleFilter<TContext, TDefinition>(validator);
     }
 
     public static IValidityFilter<TContext, TDefinition> Create<TContext, TDefinition>(IActionableValidator<TContext, TDefinition> validator)
-        where TContext : IValidatorContext
+        where TContext : IValidationContext
     {
         return new ActionableFilter<TContext, TDefinition>(validator);
     }
 
     private class SimpleFilter<TContext, TDefinition> : IValidityFilter<TContext, TDefinition>
-        where TContext : IValidatorContext
+        where TContext : IValidationContext
     {
         private IValidator<TContext, TDefinition> Validator { get; }
 
@@ -65,7 +65,7 @@ public static class ValidityFilter
     }
 
     private class ActionableFilter<TContext, TDefinition> : SimpleFilter<TContext, TDefinition>
-        where TContext : IValidatorContext
+        where TContext : IValidationContext
     {
         private IActionableValidator<TContext, TDefinition> Validator { get; }
 

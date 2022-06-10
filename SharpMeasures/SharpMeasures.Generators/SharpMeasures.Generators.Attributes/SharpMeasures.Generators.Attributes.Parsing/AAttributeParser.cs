@@ -16,7 +16,7 @@ public interface IAttributeParser<TDefinition>
     public abstract IEnumerable<TDefinition> ParseAllOccurrences(INamedTypeSymbol typeSymbol);
 }
 
-internal abstract class AAttributeParser<TDefinition, TLocations, TAttribute> : AAttributeParser<TDefinition, TLocations>
+public abstract class AAttributeParser<TDefinition, TLocations, TAttribute> : AAttributeParser<TDefinition, TLocations>
     where TDefinition : ARawAttributeDefinition<TLocations>
     where TLocations : AAttributeLocations
 {
@@ -30,7 +30,7 @@ internal abstract class AAttributeParser<TDefinition, TLocations, TAttribute> : 
         : base(defaultValueConstructor, properties) { }
 }
 
-internal abstract class AAttributeParser<TDefinition, TLocations> : IAttributeParser<TDefinition>
+public abstract class AAttributeParser<TDefinition, TLocations> : IAttributeParser<TDefinition>
     where TDefinition : ARawAttributeDefinition<TLocations>
     where TLocations : AAttributeLocations
 {

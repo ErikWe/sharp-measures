@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public interface IItemListDiagnostics<TItem, TDefinition>
+public interface IItemListProcessingDiagnostics<TItem, TDefinition>
 {
     public abstract Diagnostic? EmptyItemList(IItemListProcessingContext<TItem> context, TDefinition definition);
     public abstract Diagnostic? NullItem(IItemListProcessingContext<TItem> context, TDefinition definition, int index);
@@ -25,9 +25,9 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
     where TDefinition : IItemListDefinition<TDefinitionItem>
     where TProduct : IItemListDefinition<TProductItem>
 {
-    private IItemListDiagnostics<TProductItem, TDefinition> Diagnostics { get; }
+    private IItemListProcessingDiagnostics<TProductItem, TDefinition> Diagnostics { get; }
 
-    protected AItemListProcesser(IItemListDiagnostics<TProductItem, TDefinition> diagnostics)
+    protected AItemListProcesser(IItemListProcessingDiagnostics<TProductItem, TDefinition> diagnostics)
     {
         Diagnostics = diagnostics;
     }

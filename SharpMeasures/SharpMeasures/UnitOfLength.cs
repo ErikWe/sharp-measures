@@ -6,10 +6,12 @@ using SharpMeasures.Generators.Units;
 
 using System;
 
-[DimensionalEquivalence(typeof(string), typeof(int), ImplicitCastOperator = false)]
-[GeneratedScalar(typeof(UnitOfLength))]
-public class Length { }
+// TODO: SharpMeasures should probably use Nuget packages rather than project references
 
-[DerivableUnit("asd", new Type[] { typeof(Length), typeof(Length) })]
-[GeneratedUnit(typeof(Length), SupportsBiasedQuantities = false)]
-public readonly partial record struct UnitOfLength { }
+//[DimensionalEquivalence(typeof(string), typeof(int), ImplicitCastOperator = false)]
+//[GeneratedScalar(typeof(UnitOfLength))]
+//public class Length { }
+
+//[DerivableUnit("asd", new Type[] { typeof(Length), typeof(Length) })]
+//[GeneratedUnit(typeof(Length), SupportsBiasedQuantities = false)]
+//public readonly partial record struct UnitOfLength { }

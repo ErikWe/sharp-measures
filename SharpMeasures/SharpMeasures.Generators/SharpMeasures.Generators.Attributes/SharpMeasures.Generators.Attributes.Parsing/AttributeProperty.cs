@@ -2,16 +2,17 @@
 
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-using System.Collections.Generic;
+using SharpMeasures.Equatables;
+
 using System.Globalization;
 
-internal interface IAttributeProperty
+public interface IAttributeProperty
 {
     public abstract string Name { get; }
     public abstract string ParameterName { get; }
 }
 
-internal interface IAttributeProperty<TDefinition> : IAttributeProperty
+public interface IAttributeProperty<TDefinition> : IAttributeProperty
 {
     public delegate TDefinition DSetter(TDefinition definition, object? obj);
     public delegate TDefinition DLocator(TDefinition definition, AttributeArgumentListSyntax argumentList, int index);
@@ -20,10 +21,10 @@ internal interface IAttributeProperty<TDefinition> : IAttributeProperty
     public abstract DLocator Locator { get; }
 }
 
-internal record class AttributeProperty<TDefinition> : IAttributeProperty<TDefinition>
+public record class AttributeProperty<TDefinition> : IAttributeProperty<TDefinition>
 {
     public delegate TDefinition DSingleLocator(TDefinition definition, MinimalLocation location);
-    public delegate TDefinition DMultiLocator(TDefinition definition, MinimalLocation collection, IReadOnlyList<MinimalLocation> elements);
+    public delegate TDefinition DMultiLocator(TDefinition definition, MinimalLocation collection, ReadOnlyEquatableList<MinimalLocation> elements);
 
     public string Name { get; init; }
     public string ParameterName { get; init; }
@@ -66,14 +67,14 @@ internal record class AttributeProperty<TDefinition> : IAttributeProperty<TDefin
         {
             (var collection, var elements) = ArgumentLocator.FromArrayOrParamsList(argumentList, index);
 
-            return locator(definition, collection, elements);
+            return locator(definition, collection, new(elements));
         }
     }
 
     private static string ToParameterName(string propertyName) => propertyName.Substring(0, 1).ToLower(CultureInfo.CurrentCulture) + propertyName.Substring(1);
 }
 
-internal record class AttributeProperty<TDefinition, TPropertyType> : AttributeProperty<TDefinition>
+public record class AttributeProperty<TDefinition, TPropertyType> : AttributeProperty<TDefinition>
 {
     public delegate TDefinition DTypeSetter(TDefinition definition, TPropertyType value);
 
@@ -98,12 +99,12 @@ internal record class AttributeProperty<TDefinition, TPropertyType> : AttributeP
     }
 }
 
-internal record class AttributeProperty<TDefinition, TLocations, TPropertyType> : AttributeProperty<TDefinition, TPropertyType>
+public record class AttributeProperty<TDefinition, TLocations, TPropertyType> : AttributeProperty<TDefinition, TPropertyType>
     where TDefinition : ARawAttributeDefinition<TLocations>
     where TLocations : AAttributeLocations
 {
     public delegate TLocations DSingleLocationSetter(TLocations definition, MinimalLocation location);
-    public delegate TLocations DMultiLocationSetter(TLocations definition, MinimalLocation collectionLocation, IReadOnlyList<MinimalLocation> elementLocations);
+    public delegate TLocations DMultiLocationSetter(TLocations definition, MinimalLocation collectionLocation, ReadOnlyEquatableList<MinimalLocation> elementLocations);
 
     public AttributeProperty(string name, string parameterName, DTypeSetter setter, DSingleLocationSetter locator)
         : base(name, parameterName, setter, WrapLocator(locator)) { }
@@ -131,7 +132,7 @@ internal record class AttributeProperty<TDefinition, TLocations, TPropertyType> 
     {
         return wrapper;
 
-        TDefinition wrapper(TDefinition definition, MinimalLocation collectionLocation, IReadOnlyList<MinimalLocation> elementLocations)
+        TDefinition wrapper(TDefinition definition, MinimalLocation collectionLocation, ReadOnlyEquatableList<MinimalLocation> elementLocations)
         {
             var modifiedLocations = locator(definition.Locations, collectionLocation, elementLocations);
 

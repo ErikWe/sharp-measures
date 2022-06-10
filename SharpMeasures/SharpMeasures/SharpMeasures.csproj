@@ -16,8 +16,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\SharpMeasures.Base\SharpMeasures.Base.csproj" />
-        <ProjectReference Include="..\SharpMeasures.Generators\SharpMeasures.Generators.Analyzers\SharpMeasures.Generators.Analyzers.Fixes\SharpMeasures.Generators.Analyzers.Fixes.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-        <ProjectReference Include="..\SharpMeasures.Generators\SharpMeasures.Generators.Analyzers\SharpMeasures.Generators.Analyzers\SharpMeasures.Generators.Analyzers.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
         <ProjectReference Include="..\SharpMeasures.Generators\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
         <ProjectReference Include="..\SharpMeasures.Generators\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.Parsing\SharpMeasures.Generators.Attributes.Parsing.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
         <ProjectReference Include="..\SharpMeasures.Generators\SharpMeasures.Generators\SharpMeasures.Generators.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
