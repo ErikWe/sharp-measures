@@ -24,13 +24,9 @@ using System.Collections.Immutable;
 using System.Threading;
 using System.Linq;
 
-internal static class VectorParsingStage
+public static class VectorParsingStage
 {
-    public readonly record struct Output(IncrementalValuesProvider<ParsedVector> VectorProvider,
-        IncrementalValuesProvider<ParsedResizedVector> ResizedVectorProvider,
-        IncrementalValueProvider<VectorPopulation> VectorPopulationProvider);
-
-    public static Output Attach(IncrementalGeneratorInitializationContext context)
+    public static VectorGenerator Attach(IncrementalGeneratorInitializationContext context)
     {
         var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<GeneratedVectorAttribute>(context.SyntaxProvider);
         var partialDeclarations = PartialDeclarationProvider.Construct<TypeDeclarationSyntax>().AttachAndReport(context, declarations, VectorDiagnostics.Instance);
@@ -42,7 +38,7 @@ internal static class VectorParsingStage
 
         var population = parsed.Select(ConstructInterface).Collect().Combine(resizedVectors.VectorPopulationProvider).Select(CreatePopulation);
 
-        return new(parsed, resizedVectors.VectorProvider, population);
+        return new(population, parsed, resizedVectors.VectorProvider);
     }
 
     private static IOptionalWithDiagnostics<RawParsedVector> ExtractVectorInformation(IntermediateResult input, CancellationToken _)

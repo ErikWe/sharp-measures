@@ -33,7 +33,6 @@ internal static class VectorDocumentationTags
     public const string Negate = nameof(Negate);
     public const string Multiply_Scalar = nameof(Multiply_Scalar);
     public const string Divide_Scalar = nameof(Divide_Scalar);
-    public const string Remainder_Scalar = nameof(Remainder_Scalar);
 
     public static class Units
     {
@@ -49,7 +48,6 @@ internal static class VectorDocumentationTags
         public const string Multiply_Scalar_LHS = $"Operator_{nameof(Multiply_Scalar_LHS)}";
         public const string Multiply_Scalar_RHS = $"Operator_{nameof(Multiply_Scalar_RHS)}";
         public const string Divide_Scalar = $"Operator_{nameof(Divide_Scalar)}";
-        public const string Remainder_Scalar = $"Operator_{nameof(Remainder_Scalar)}";
 
         public const string Cast_ComponentTuple = $"Operator_{nameof(Cast_ComponentTuple)}";
     }

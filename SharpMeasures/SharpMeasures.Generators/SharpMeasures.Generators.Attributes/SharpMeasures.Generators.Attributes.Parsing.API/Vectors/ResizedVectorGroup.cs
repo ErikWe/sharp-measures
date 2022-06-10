@@ -18,7 +18,7 @@ public record class ResizedVectorGroup
     {
         Root = root;
 
-        VectorsByDimensionBuilder.Add(root.Dimension, new ResizedVectorInterface(root.VectorType, root.VectorType, root.Dimension, root.Constants));
+        VectorsByDimensionBuilder.Add(root.Dimension, new ResizedVectorInterface(root.VectorType, root.VectorType, root.Dimension));
     }
 
     [SuppressMessage("Design", "CA1034", Justification = "Builder")]

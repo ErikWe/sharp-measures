@@ -25,7 +25,7 @@ using System.Collections.Immutable;
 using System.Threading;
 using System.Linq;
 
-internal static class ScalarParsingStage
+public static class ScalarParsingStage
 {
     public static ScalarGenerator Attach(IncrementalGeneratorInitializationContext context)
     {

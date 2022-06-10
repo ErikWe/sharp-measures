@@ -100,14 +100,6 @@ internal static class Execution
 
             AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Absolute);
             Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Absolute() => new(Math.Abs(Magnitude.Value));");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Floor);
-            Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Floor() => new(Math.Floor(Magnitude.Value));");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Ceiling);
-            Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Ceiling() => new(Math.Ceiling(Magnitude.Value));");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Round);
-            Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Round() => new(Math.Round(Magnitude.Value));");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Truncate);
-            Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Truncate() => new(Math.Truncate(Magnitude.Value));");
 
             Builder.AppendLine();
 
@@ -150,8 +142,6 @@ internal static class Execution
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Remainder_Scalar);
-            Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Remainder(Scalar divisor) => new(Magnitude.Value % divisor.Value);");
             AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Multiply_Scalar);
             Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Multiply(Scalar factor) => new(Magnitude.Value * factor.Value);");
             AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Divide_Scalar);

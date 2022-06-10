@@ -75,7 +75,7 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
-            foreach (VectorInterface vector in Data.VectorCollection)
+            foreach (ResizedVectorInterface vector in Data.Vectors.VectorsByDimension.Values)
             {
                 UsingsCollector.AddUsing(vector.VectorType.Namespace);
 
@@ -84,7 +84,7 @@ internal static class Execution
             }
         }
 
-        private void ComposeForVector(Indentation indentation, VectorInterface vector)
+        private void ComposeForVector(Indentation indentation, ResizedVectorInterface vector)
         {
             string scalarTuple = $"({ScalarTupleText.GetText(vector.Dimension)}";
 

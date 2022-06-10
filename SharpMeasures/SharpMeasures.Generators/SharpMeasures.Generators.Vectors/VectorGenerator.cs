@@ -8,6 +8,8 @@ using SharpMeasures.Generators.Providers.AnalyzerConfig;
 using SharpMeasures.Generators.Vectors.Diagnostics;
 using SharpMeasures.Generators.Vectors.Parsing;
 using SharpMeasures.Generators.Vectors.Pipelines.Common;
+using SharpMeasures.Generators.Vectors.Pipelines.Maths;
+using SharpMeasures.Generators.Vectors.Pipelines.Units;
 using SharpMeasures.Generators.Vectors.Refinement;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
@@ -43,6 +45,8 @@ public class VectorGenerator
             .ReportDiagnostics(context);
 
         CommonGenerator.Initialize(context, minimized, minimizedResized);
+        MathsGenerator.Initialize(context, minimized, minimizedResized);
+        UnitsGenerator.Initialize(context, minimized, minimizedResized);
     }
 
     private static IOptionalWithDiagnostics<DataModel> ReduceToDataModel

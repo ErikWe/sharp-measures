@@ -71,10 +71,6 @@ internal static class ScalarDocumentationTags
         public const string IsNegativeInfinity = nameof(IsNegativeInfinity);
 
         public const string Absolute = nameof(Absolute);
-        public const string Floor = nameof(Floor);
-        public const string Ceiling = nameof(Ceiling);
-        public const string Round = nameof(Round);
-        public const string Truncate = nameof(Truncate);
 
         public const string Sign = nameof(Sign);
 
@@ -96,7 +92,6 @@ internal static class ScalarDocumentationTags
         public const string Multiply_SameType = nameof(Multiply_SameType);
         public const string Divide_SameType = nameof(Divide_SameType);
 
-        public const string Remainder_Scalar = nameof(Remainder_Scalar);
         public const string Multiply_Scalar = nameof(Multiply_Scalar);
         public const string Divide_Scalar = nameof(Divide_Scalar);
 
@@ -114,7 +109,6 @@ internal static class ScalarDocumentationTags
             public const string Multiply_SameType = $"Operator_{nameof(Multiply_SameType)}";
             public const string Divide_SameType = $"Operator_{nameof(Divide_SameType)}";
 
-            public const string Remainder_Scalar = $"Operator_{nameof(Remainder_Scalar)}";
             public const string Multiply_Scalar_LHS = $"Operator_{nameof(Multiply_Scalar_LHS)}";
             public const string Multiply_Scalar_RHS = $"Operator_{nameof(Multiply_Scalar_RHS)}";
             public const string Divide_Scalar_LHS = $"Operator_{nameof(Divide_Scalar_LHS)}";

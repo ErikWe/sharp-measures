@@ -22,6 +22,7 @@ public interface IOptionalWithDiagnostics : IEnumerable<Diagnostic>
 public interface IOptionalWithDiagnostics<T> : IOptionalWithDiagnostics
 {
     public abstract T Result { get; }
+    public abstract T? NullableResult { get; }
 
     new public abstract IOptionalWithDiagnostics<T> AddDiagnostics(IEnumerable<Diagnostic> diagnostics);
     new public abstract IOptionalWithDiagnostics<T> AddDiagnostics(params Diagnostic[] diagnostics);
@@ -84,6 +85,19 @@ public static class OptionalWithDiagnostics
                 if (LacksResult)
                 {
                     throw new OptionalLacksResultException();
+                }
+
+                return Optional.Value;
+            }
+        }
+
+        public T? NullableResult
+        {
+            get
+            {
+                if (LacksResult)
+                {
+                    return default;
                 }
 
                 return Optional.Value;

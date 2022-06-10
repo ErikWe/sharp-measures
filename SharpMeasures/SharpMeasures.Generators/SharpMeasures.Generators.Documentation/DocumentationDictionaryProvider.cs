@@ -8,7 +8,7 @@ using System;
 using System.Collections.Immutable;
 using System.Threading;
 
-internal class DocumentationDictionaryProvider
+public class DocumentationDictionaryProvider
 {
     private const string DocumentationExtension = ".doc.txt";
 

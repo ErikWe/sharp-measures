@@ -76,7 +76,7 @@ internal class GeneratedScalarRefiner : IProcesser<IGeneratedScalarRefinementCon
         allDiagnostics = allDiagnostics.Concat(processedDefaultUnitName.Diagnostics).Concat(processedReciprocal.Diagnostics).Concat(processedSquare.Diagnostics)
             .Concat(processedCube.Diagnostics).Concat(processedSquareRoot.Diagnostics).Concat(processedCubeRoot.Diagnostics);
 
-        RefinedGeneratedScalarDefinition product = new(processedUnit.Result, processedVector.Result, definition.Biased, processedDefaultUnitName.Result,
+        RefinedGeneratedScalarDefinition product = new(processedUnit.Result, processedVector.NullableResult, definition.Biased, processedDefaultUnitName.Result,
             definition.DefaultUnitSymbol, processedReciprocal.Result, processedSquare.Result, processedCube.Result, processedSquareRoot.Result, processedCubeRoot.Result);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
@@ -97,24 +97,24 @@ internal class GeneratedScalarRefiner : IProcesser<IGeneratedScalarRefinementCon
         return OptionalWithDiagnostics.Result(unit);
     }
 
-    private IOptionalWithDiagnostics<VectorCollection> ProcessVector(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition)
+    private IOptionalWithDiagnostics<ResizedVectorGroup> ProcessVector(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition)
     {
         if (definition.Vector is null)
         {
-            return OptionalWithDiagnostics.Result(VectorCollection.Empty);
+            return OptionalWithDiagnostics.Empty<ResizedVectorGroup>();
         }
 
-        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.Vector.Value, out ResizedVectorGroup group))
+        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.Vector.Value, out ResizedVectorGroup group) is false)
         {
-            return OptionalWithDiagnostics.Result(VectorCollection.FromGroup(group));
+            if (context.VectorPopulation.UnresolvedVectors.ContainsKey(definition.Vector.Value))
+            {
+                return OptionalWithDiagnostics.Empty<ResizedVectorGroup>();
+            }
+
+            return OptionalWithDiagnostics.Empty<ResizedVectorGroup>(Diagnostics.TypeNotVector(context, definition));
         }
 
-        if (context.VectorPopulation.UnresolvedVectors.TryGetValue(definition.Vector.Value, out VectorInterface unresolvedVector))
-        {
-            return OptionalWithDiagnostics.Result(new VectorCollection(unresolvedVector));
-        }
-
-        return OptionalWithDiagnostics.Empty<VectorCollection>(Diagnostics.TypeNotVector(context, definition));
+        return OptionalWithDiagnostics.Result(group);
     }
 
     private IResultWithDiagnostics<string?> ProcessDefaultUnitName(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition, UnitInterface unit)
