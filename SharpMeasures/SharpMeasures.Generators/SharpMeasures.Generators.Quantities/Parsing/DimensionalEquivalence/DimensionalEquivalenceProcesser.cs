@@ -37,16 +37,6 @@ public class DimensionalEquivalenceProcesser : AActionableProcesser<IDimensional
     public override void OnSuccessfulProcess(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalenceDefinition definition,
         DimensionalEquivalenceDefinition product)
     {
-        if (context is null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        if (product is null)
-        {
-            throw new ArgumentNullException(nameof(product));
-        }
-
         foreach (var quantity in product.Quantities)
         {
             context.ListedQuantities.Add(quantity);
@@ -56,16 +46,6 @@ public class DimensionalEquivalenceProcesser : AActionableProcesser<IDimensional
     public override IOptionalWithDiagnostics<DimensionalEquivalenceDefinition> Process(IDimensionalEquivalenceProcessingContext context,
         RawDimensionalEquivalenceDefinition definition)
     {
-        if (context is null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        if (definition is null)
-        {
-            throw new ArgumentNullException(nameof(definition));
-        }
-
         var validity = CheckValidity(context, definition);
         IEnumerable<Diagnostic> allDiagnostics = validity.Diagnostics;
 

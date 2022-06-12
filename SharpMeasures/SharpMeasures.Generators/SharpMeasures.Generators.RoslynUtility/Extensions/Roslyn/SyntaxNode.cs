@@ -3,7 +3,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,11 +30,6 @@ public static partial class RoslynUtilityExtensions
 
     public static IEnumerable<TNode> GetChildrenOfType<TNode>(this SyntaxNode node) where TNode : SyntaxNode
     {
-        if (node is null)
-        {
-            throw new ArgumentNullException(nameof(node));
-        }
-
         foreach (SyntaxNode childNode in node.DescendantNodes())
         {
             if (childNode is TNode matchingNode)

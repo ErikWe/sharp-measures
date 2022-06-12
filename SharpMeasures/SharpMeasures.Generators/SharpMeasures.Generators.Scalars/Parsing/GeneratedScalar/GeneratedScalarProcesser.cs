@@ -35,16 +35,6 @@ internal class GeneratedScalarProcesser : AProcesser<IProcessingContext, RawGene
 
     public override IOptionalWithDiagnostics<GeneratedScalarDefinition> Process(IProcessingContext context, RawGeneratedScalarDefinition definition)
     {
-        if (context is null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        if (definition is null)
-        {
-            throw new ArgumentNullException(nameof(definition));
-        }
-
         var validity = CheckValidity(context, definition);
         IEnumerable<Diagnostic> allDiagnostics = validity.Diagnostics;
 

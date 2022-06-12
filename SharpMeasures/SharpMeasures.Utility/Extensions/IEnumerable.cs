@@ -1,6 +1,5 @@
 ﻿namespace SharpMeasures;
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +8,6 @@ public static partial class UtilityExtensions
 {
     public static int GetSequenceHashCode(this IEnumerable enumerable)
     {
-        if (enumerable is null)
-        {
-            throw new ArgumentNullException(nameof(enumerable));
-        }
-
         unchecked
         {
             int hashCode = (int)2166136261;
@@ -37,11 +31,6 @@ public static partial class UtilityExtensions
 
     public static int GetOrderIndependentHashCode<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary)
     {
-        if (dictionary is null)
-        {
-            throw new ArgumentNullException(nameof(dictionary));
-        }
-
         return orderAndFlattenDictionary().GetSequenceHashCode();
 
         IEnumerable orderAndFlattenDictionary()
@@ -56,11 +45,6 @@ public static partial class UtilityExtensions
 
     public static int GetOrderIndependentHashCode<TKey>(this HashSet<TKey> hashSet)
     {
-        if (hashSet is null)
-        {
-            throw new ArgumentNullException(nameof(hashSet));
-        }
-
         return hashSet.OrderBy(static (x) => x).GetSequenceHashCode();
     }
 
@@ -69,12 +53,7 @@ public static partial class UtilityExtensions
 
     public static bool OrderIndependentSequenceEquals<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, IReadOnlyDictionary<TKey, TValue> other)
     {
-        if (dictionary is null)
-        {
-            return other is null;
-        }
-
-        if (other is null || dictionary.Count != other.Count)
+        if (dictionary.Count != other.Count)
         {
             return false;
         }

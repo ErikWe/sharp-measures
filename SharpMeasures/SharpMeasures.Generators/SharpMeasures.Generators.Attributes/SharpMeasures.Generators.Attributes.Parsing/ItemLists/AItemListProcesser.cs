@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,7 +21,7 @@ public interface IItemListProcessingContext<TItem> : IProcessingContext
 
 public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext, TDefinition, TProduct> : AActionableProcesser<TContext, TDefinition, TProduct>
     where TContext : IItemListProcessingContext<TProductItem>
-    where TDefinition : IItemListDefinition<TDefinitionItem>
+    where TDefinition : IItemListDefinition<TDefinitionItem?>
     where TProduct : IItemListDefinition<TProductItem>
 {
     private IItemListProcessingDiagnostics<TProductItem, TDefinition> Diagnostics { get; }
@@ -39,16 +38,6 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
             return;
         }
 
-        if (context is null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        if (product is null)
-        {
-            throw new ArgumentNullException(nameof(product));
-        }
-
         foreach (var item in product.Items)
         {
             context.ListedItems.Add(item);
@@ -57,16 +46,6 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
 
     public override IOptionalWithDiagnostics<TProduct> Process(TContext context, TDefinition definition)
     {
-        if (context is null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        if (definition is null)
-        {
-            throw new ArgumentNullException(nameof(definition));
-        }
-
         var validity = CheckValidity(context, definition);
         IEnumerable<Diagnostic> allDiagnostics = validity.Diagnostics;
 
@@ -88,6 +67,7 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
 
     protected abstract TProduct ConstructProduct(IReadOnlyList<TProductItem> items, TDefinition definition);
     protected abstract TProductItem UpgradeItem(TDefinitionItem item);
+    protected abstract TProductItem UpgradeNullItem(TDefinitionItem? item);
     protected virtual bool DisallowNull => true;
     protected virtual bool DisallowEmpty => true;
     protected virtual bool DisallowDuplicate => true;
@@ -109,7 +89,13 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
                 continue;
             }
 
-            listedItems.Add(UpgradeItem(definition.Items[i]));
+            if (definition.Items[i] is not TDefinitionItem definiteItem)
+            {
+                listedItems.Add(UpgradeNullItem(definition.Items[i]));
+                continue;
+            }
+
+            listedItems.Add(UpgradeItem(definiteItem));
         }
 
         TProduct product = ConstructProduct(listedItems, definition);
@@ -133,7 +119,9 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
                 continue;
             }
 
-            TProductItem upgradedItem = UpgradeItem(definition.Items[i]);
+            TProductItem upgradedItem = definition.Items[i] is TDefinitionItem definiteItem
+                ? UpgradeItem(definiteItem)
+                : UpgradeNullItem(definition.Items[i]);
 
             if (context.ListedItems.Contains(upgradedItem) || locallyListedItems.Add(upgradedItem) is false)
             {

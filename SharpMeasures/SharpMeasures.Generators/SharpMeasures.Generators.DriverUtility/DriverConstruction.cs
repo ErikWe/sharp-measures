@@ -3,7 +3,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
@@ -42,8 +41,6 @@ public static class DriverConstruction
 
     public static GeneratorDriver Run(string source, GeneratorDriver driver)
     {
-        ArgumentNullException.ThrowIfNull(driver, nameof(driver));
-
         return driver.RunGenerators(CreateCompilation(source));
     }
 

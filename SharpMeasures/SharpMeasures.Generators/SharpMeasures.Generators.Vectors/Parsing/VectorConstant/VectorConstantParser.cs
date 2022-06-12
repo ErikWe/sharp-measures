@@ -13,7 +13,7 @@ internal static class VectorConstantParser
 
     private static RawVectorConstantDefinition DefaultDefiniton() => RawVectorConstantDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawVectorConstantDefinition, VectorConstantLocations, GeneratedScalarAttribute>
+    private class AttributeParser : AAttributeParser<RawVectorConstantDefinition, VectorConstantLocations, VectorConstantAttribute>
     {
         public AttributeParser() : base(DefaultDefiniton, VectorConstantProperties.AllProperties) { }
 

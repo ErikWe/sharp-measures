@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis.Text;
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Diagnostics;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -15,11 +14,6 @@ internal class DocumentationFileBuilder
 {
     public static IResultWithDiagnostics<DocumentationDictionary> Build(IEnumerable<AdditionalText> relevantFiles, IDiagnosticsStrategy diagnosticsStrategy)
     {
-        if (relevantFiles is null)
-        {
-            throw new ArgumentNullException(nameof(relevantFiles));
-        }
-
         Dictionary<string, DocumentationFileBuilder> builders = createBuilders().ToDictionary(static (builder) => builder.Name);
 
         foreach (DocumentationFileBuilder builder in builders.Values)

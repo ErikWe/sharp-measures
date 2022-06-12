@@ -55,11 +55,6 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
 
     public TDefinition Parse(AttributeData attributeData)
     {
-        if (attributeData is null)
-        {
-            throw new ArgumentNullException(nameof(attributeData));
-        }
-
         if (attributeData.GetSyntax() is not AttributeSyntax attributeSyntax)
         {
             throw new InvalidOperationException("Could not retrieve AttributeSyntax from AttributeData");
@@ -77,11 +72,6 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
 
     public IEnumerable<TDefinition> Parse(IEnumerable<AttributeData> attributeData)
     {
-        if (attributeData is null)
-        {
-            throw new ArgumentNullException(nameof(attributeData));
-        }
-
         foreach (AttributeData data in attributeData)
         {
             yield return Parse(data);
@@ -90,11 +80,6 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
 
     public TDefinition? ParseFirstOccurrence(INamedTypeSymbol typeSymbol)
     {
-        if (typeSymbol is null)
-        {
-            throw new ArgumentNullException(nameof(typeSymbol));
-        }
-
         if (typeSymbol.GetAttributeOfType(AttributeType) is AttributeData attributeData)
         {
             return Parse(attributeData);
@@ -105,11 +90,6 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
 
     public IEnumerable<TDefinition> ParseAllOccurrences(INamedTypeSymbol typeSymbol)
     {
-        if (typeSymbol is null)
-        {
-            throw new ArgumentNullException(nameof(typeSymbol));
-        }
-
         return Parse(typeSymbol.GetAttributesOfType(AttributeType));
     }
 

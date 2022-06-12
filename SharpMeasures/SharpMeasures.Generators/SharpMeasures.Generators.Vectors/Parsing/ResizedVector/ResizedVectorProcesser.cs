@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 
-using System;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -29,16 +28,6 @@ internal class ResizedVectorProcesser : AProcesser<IProcessingContext, RawResize
 
     public override IOptionalWithDiagnostics<ResizedVectorDefinition> Process(IProcessingContext context, RawResizedVectorDefinition definition)
     {
-        if (context is null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        if (definition is null)
-        {
-            throw new ArgumentNullException(nameof(definition));
-        }
-
         var validity = CheckValidity(context, definition);
         var allDiagnostics = validity.Diagnostics;
 
@@ -96,11 +85,6 @@ internal class ResizedVectorProcesser : AProcesser<IProcessingContext, RawResize
 
     private IValidityWithDiagnostics CheckValidity(IProcessingContext context, RawResizedVectorDefinition definition)
     {
-        if (definition is null)
-        {
-            throw new ArgumentNullException(nameof(definition));
-        }
-
         return CheckVectorValidity(context, definition);
     }
 

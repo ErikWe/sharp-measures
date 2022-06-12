@@ -60,11 +60,6 @@ internal class GeneratedScalarRefiner : IProcesser<IGeneratedScalarRefinementCon
         var processedVector = ProcessVector(context, definition);
         allDiagnostics = allDiagnostics.Concat(processedVector.Diagnostics);
 
-        if (processedVector.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<RefinedGeneratedScalarDefinition>(allDiagnostics);
-        }
-
         var processedDefaultUnitName = ProcessDefaultUnitName(context, definition, processedUnit.Result);
 
         var processedReciprocal = ProcessPowerQuantity(context, definition, definition.Reciprocal, Diagnostics.ReciprocalNotScalar);

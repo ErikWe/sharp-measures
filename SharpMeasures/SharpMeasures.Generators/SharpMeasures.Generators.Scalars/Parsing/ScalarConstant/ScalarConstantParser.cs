@@ -12,7 +12,7 @@ internal static class ScalarConstantParser
 
     private static RawScalarConstantDefinition DefaultDefiniton() => RawScalarConstantDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawScalarConstantDefinition, ScalarConstantLocations, GeneratedScalarAttribute>
+    private class AttributeParser : AAttributeParser<RawScalarConstantDefinition, ScalarConstantLocations, ScalarConstantAttribute>
     {
         public AttributeParser() : base(DefaultDefiniton, ScalarConstantProperties.AllProperties) { }
 

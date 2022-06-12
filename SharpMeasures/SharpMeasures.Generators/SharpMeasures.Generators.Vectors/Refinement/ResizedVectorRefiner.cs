@@ -9,8 +9,6 @@ using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Parsing;
 using SharpMeasures.Generators.Vectors.Parsing.ResizedVector;
 
-using System;
-
 internal interface IResizedVectorRefinementDiagnostics
 {
     public abstract Diagnostic? TypeAlreadyUnit(IResizedVectorRefinementContext context, ResizedVectorDefinition definition);
@@ -41,16 +39,6 @@ internal class ResizedVectorRefiner : IProcesser<IResizedVectorRefinementContext
 
     public IOptionalWithDiagnostics<RefinedResizedVectorDefinition> Process(IResizedVectorRefinementContext context, ResizedVectorDefinition definition)
     {
-        if (context is null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        if (definition is null)
-        {
-            throw new ArgumentNullException(nameof(definition));
-        }
-
         if (context.UnitPopulation.ContainsKey(context.Type.AsNamedType()))
         {
             return OptionalWithDiagnostics.Empty<RefinedResizedVectorDefinition>(Diagnostics.TypeAlreadyUnit(context, definition));

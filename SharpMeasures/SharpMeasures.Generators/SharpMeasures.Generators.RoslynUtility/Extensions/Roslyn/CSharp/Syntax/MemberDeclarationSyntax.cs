@@ -11,11 +11,6 @@ public static partial class Extensions
 {
     public static bool HasModifierOfKind(this MemberDeclarationSyntax declarationSyntax, SyntaxKind token)
     {
-        if (declarationSyntax is null)
-        {
-            throw new ArgumentNullException(nameof(declarationSyntax));
-        }
-
         return declarationSyntax.Modifiers.ContainsTokenOfKind(token);
     }
 
@@ -26,21 +21,11 @@ public static partial class Extensions
 
     public static AttributeSyntax? GetAttributeOfType(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel, Type attributeType)
     {
-        if (attributeType is null)
-        {
-            throw new ArgumentNullException(nameof(attributeType));
-        }
-
         return declarationSyntax.GetAttributeWithName(semanticModel, attributeType.FullName);
     }
 
     public static AttributeSyntax? GetAttributeWithName(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel, string attributeName)
     {
-        if (declarationSyntax is null)
-        {
-            throw new ArgumentNullException(nameof(declarationSyntax));
-        }
-
         foreach (AttributeListSyntax attributeList in declarationSyntax.AttributeLists)
         {
             if (attributeList.GetAttributeWithName(semanticModel, attributeName) is AttributeSyntax attributeSyntax)
@@ -66,11 +51,6 @@ public static partial class Extensions
     public static AttributeSyntax? GetFirstAttributeOfType(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel,
         IEnumerable<Type> candidateTypes)
     {
-        if (candidateTypes is null)
-        {
-            throw new ArgumentNullException(nameof(candidateTypes));
-        }
-
         return declarationSyntax.GetFirstAttributeWithName(semanticModel, candidateNames());
 
         IEnumerable<string> candidateNames()
@@ -90,11 +70,6 @@ public static partial class Extensions
     public static AttributeSyntax? GetFirstAttributeWithName(this MemberDeclarationSyntax declarationSyntax, SemanticModel semanticModel,
         IEnumerable<string> candidateNames)
     {
-        if (declarationSyntax is null)
-        {
-            throw new ArgumentNullException(nameof(declarationSyntax));
-        }
-
         foreach (AttributeListSyntax attributeList in declarationSyntax.AttributeLists)
         {
             if (attributeList.GetFirstAttributeWithName(semanticModel, candidateNames) is AttributeSyntax attributeSyntax)

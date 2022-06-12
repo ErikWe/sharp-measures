@@ -2,7 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.DriverUtility;
 
 using System;
@@ -16,8 +15,8 @@ internal static class FullCase
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfLength))]
-public class Length { }
+[GeneratedScalar(typeof(UnitOfLength))]
+public partial class Length { }
 
 [GeneratedUnit(typeof(Length))]
 public partial class UnitOfLength { }";
@@ -31,7 +30,9 @@ public partial class UnitOfLength { }";
         stopwatch.Stop();
         Console.WriteLine(stopwatch.ElapsedMilliseconds);
 
-        foreach (GeneratorRunResult result in driver.GetRunResult().Results)
+        var runResult = driver.GetRunResult();
+
+        foreach (GeneratorRunResult result in runResult.Results)
         {
             foreach (GeneratedSourceResult output in result.GeneratedSources)
             {

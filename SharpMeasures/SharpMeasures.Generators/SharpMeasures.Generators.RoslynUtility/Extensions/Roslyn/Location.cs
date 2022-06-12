@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 using System;
-using System.Collections.Generic;
 
 public static partial class RoslynUtilityExtensions
 {
@@ -12,16 +11,6 @@ public static partial class RoslynUtilityExtensions
 
     public static Location ExtendToInclude(this Location originalLocation, Location otherLocation)
     {
-        if (originalLocation is null)
-        {
-            throw new ArgumentNullException(nameof(originalLocation));
-        }
-
-        if (otherLocation is null)
-        {
-            throw new ArgumentNullException(nameof(otherLocation));
-        }
-
         FileLinePositionSpan originalLineSpan = originalLocation.GetLineSpan();
         FileLinePositionSpan otherLineSpan = otherLocation.GetLineSpan();
 

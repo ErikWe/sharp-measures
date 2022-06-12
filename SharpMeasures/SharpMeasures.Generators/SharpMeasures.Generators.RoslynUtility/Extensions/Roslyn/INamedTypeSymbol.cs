@@ -44,26 +44,11 @@ public static partial class RoslynUtilityExtensions
 
     public static bool HasAttributeOfType(this INamedTypeSymbol typeSymbol, Type attributeType)
     {
-        if (attributeType is null)
-        {
-            throw new ArgumentNullException(nameof(attributeType));
-        }
-
         return typeSymbol.HasAttributeOfName(attributeType.FullName);
     }
 
     public static bool HasAttributeOfName(this INamedTypeSymbol typeSymbol, string attributeName)
     {
-        if (typeSymbol is null)
-        {
-            throw new ArgumentNullException(nameof(typeSymbol));
-        }
-
-        if (attributeName is null)
-        {
-            return false;
-        }
-
         foreach (AttributeData attributeData in typeSymbol.GetAttributes())
         {
             if (attributeData.AttributeClass?.ToDisplayString() == attributeName)
@@ -79,21 +64,11 @@ public static partial class RoslynUtilityExtensions
 
     public static IEnumerable<AttributeData> GetAttributesOfType(this INamedTypeSymbol typeSymbol, Type attributeType)
     {
-        if (attributeType is null)
-        {
-            throw new ArgumentNullException(nameof(attributeType));
-        }
-
         return typeSymbol.GetAttributesOfName(attributeType.FullName);
     }
 
     public static IEnumerable<AttributeData> GetAttributesOfName(this INamedTypeSymbol typeSymbol, string attributeName)
     {
-        if (typeSymbol is null)
-        {
-            throw new ArgumentNullException(nameof(typeSymbol));
-        }
-
         if (attributeName is null)
         {
             yield break;
@@ -112,11 +87,6 @@ public static partial class RoslynUtilityExtensions
 
     public static AttributeData? GetAttributeOfType(this INamedTypeSymbol typeSymbol, Type attributeType)
     {
-        if (attributeType is null)
-        {
-            throw new ArgumentNullException(nameof(attributeType));
-        }
-
         return typeSymbol.GetAttributeOfName(attributeType.FullName);
     }
 
@@ -133,11 +103,6 @@ public static partial class RoslynUtilityExtensions
     private static IReadOnlyList<TResult?> AsTransformed<TResult, TCollection>(this TCollection typeSymbols, Func<INamedTypeSymbol?, TResult?> transform)
         where TCollection : IReadOnlyCollection<INamedTypeSymbol?>
     {
-        if (typeSymbols is null)
-        {
-            throw new ArgumentNullException(nameof(typeSymbols));
-        }
-
         TResult?[] result = new TResult?[typeSymbols.Count];
 
         int index = 0;

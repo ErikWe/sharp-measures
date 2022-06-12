@@ -15,26 +15,11 @@ public static partial class Extensions
 
     public static bool RepresentsAttributeOfType(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, Type attributeType)
     {
-        if (attributeType is null)
-        {
-            throw new ArgumentNullException(nameof(attributeType));
-        }
-
         return attributeSyntax.RepresentsAttributeWithName(semanticModel, attributeType.FullName);
     }
 
     public static bool RepresentsAttributeWithName(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, string attributeName)
     {
-        if (attributeSyntax is null)
-        {
-            throw new ArgumentNullException(nameof(attributeSyntax));
-        }
-
-        if (attributeName is null)
-        {
-            return false;
-        }
-
         if (attributeName.EndsWith(attributeSyntax.Name.ToString(), StringComparison.Ordinal)
             || attributeName.EndsWith($"{attributeSyntax.Name}Attribute", StringComparison.Ordinal))
         {
@@ -65,11 +50,6 @@ public static partial class Extensions
 
     public static bool RepresentsAttributeOfType(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, IEnumerable<Type> candidateTypes)
     {
-        if (candidateTypes is null)
-        {
-            throw new ArgumentNullException(nameof(candidateTypes));
-        }
-
         return attributeSyntax.RepresentsAttributeWithName(semanticModel, candidateNames());
 
         IEnumerable<string> candidateNames()
@@ -88,11 +68,6 @@ public static partial class Extensions
 
     public static bool RepresentsAttributeWithName(this AttributeSyntax attributeSyntax, SemanticModel semanticModel, IEnumerable<string> candidateNames)
     {
-        if (candidateNames is null)
-        {
-            throw new ArgumentNullException(nameof(candidateNames));
-        }
-
         foreach (string attributeName in candidateNames)
         {
             if (attributeSyntax.RepresentsAttributeWithName(semanticModel, attributeName))

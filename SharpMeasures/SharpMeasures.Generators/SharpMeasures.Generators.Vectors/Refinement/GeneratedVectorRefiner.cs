@@ -38,16 +38,6 @@ internal class GeneratedVectorRefiner : IProcesser<IGeneratedVectorRefinementCon
 
     public IOptionalWithDiagnostics<RefinedGeneratedVectorDefinition> Process(IGeneratedVectorRefinementContext context, GeneratedVectorDefinition definition)
     {
-        if (context is null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        if (definition is null)
-        {
-            throw new ArgumentNullException(nameof(definition));
-        }
-
         if (context.UnitPopulation.ContainsKey(context.Type.AsNamedType()))
         {
             return OptionalWithDiagnostics.Empty<RefinedGeneratedVectorDefinition>(Diagnostics.TypeAlreadyUnit(context, definition));

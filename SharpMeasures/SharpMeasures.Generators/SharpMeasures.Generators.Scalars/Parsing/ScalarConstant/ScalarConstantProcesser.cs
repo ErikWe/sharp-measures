@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -41,16 +40,6 @@ internal class ScalarConstantProcesser : AActionableProcesser<IScalarConstantPro
 
     public override void OnSuccessfulProcess(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition, ScalarConstantDefinition product)
     {
-        if (context is null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        if (product is null)
-        {
-            throw new ArgumentNullException(nameof(product));
-        }
-
         context.ReservedConstants.Add(product.Name);
 
         if (product.MultiplesName is not null)
@@ -61,16 +50,6 @@ internal class ScalarConstantProcesser : AActionableProcesser<IScalarConstantPro
 
     public override IOptionalWithDiagnostics<ScalarConstantDefinition> Process(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
     {
-        if (context is null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        if (definition is null)
-        {
-            throw new ArgumentNullException(nameof(definition));
-        }
-
         var validity = CheckValidity(context, definition);
         IEnumerable<Diagnostic> allDiagnostics = validity.Diagnostics;
 

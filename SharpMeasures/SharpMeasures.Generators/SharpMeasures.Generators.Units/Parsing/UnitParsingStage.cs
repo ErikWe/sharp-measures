@@ -74,7 +74,7 @@ public static class UnitParsingStage
     {
         ProcessingContext context = new(input.UnitType);
 
-        foreach (Abstractions.IRawUnitDefinition unitDefinition in input.GetUnitList())
+        foreach (IRawUnitDefinition unitDefinition in input.GetUnitList())
         {
             context.AvailableUnitDependencies.Add(unitDefinition.Name!);
         }

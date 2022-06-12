@@ -2,7 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using System;
 using System.Globalization;
 
 public readonly record struct NamedType(string Name, string Namespace)
@@ -11,11 +10,6 @@ public readonly record struct NamedType(string Name, string Namespace)
 
     internal static NamedType FromSymbol(INamedTypeSymbol symbol)
     {
-        if (symbol is null)
-        {
-            throw new ArgumentNullException(nameof(symbol));
-        }
-
         return new(symbol.Name, symbol.ContainingNamespace?.Name ?? string.Empty);
     }
 

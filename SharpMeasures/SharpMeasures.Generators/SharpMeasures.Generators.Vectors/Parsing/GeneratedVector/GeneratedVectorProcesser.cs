@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 
-using System;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -37,16 +36,6 @@ internal class GeneratedVectorProcesser : AProcesser<IProcessingContext, RawGene
 
     public override IOptionalWithDiagnostics<GeneratedVectorDefinition> Process(IProcessingContext context, RawGeneratedVectorDefinition definition)
     {
-        if (context is null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        if (definition is null)
-        {
-            throw new ArgumentNullException(nameof(definition));
-        }
-
         var validity = CheckValidity(context, definition);
         var allDiagnostics = validity.Diagnostics;
 
@@ -148,11 +137,6 @@ internal class GeneratedVectorProcesser : AProcesser<IProcessingContext, RawGene
 
     private IValidityWithDiagnostics CheckValidity(IProcessingContext context, RawGeneratedVectorDefinition definition)
     {
-        if (definition is null)
-        {
-            throw new ArgumentNullException(nameof(definition));
-        }
-
         return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckUnitValidity, CheckScalarValidity);
     }
 

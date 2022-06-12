@@ -72,11 +72,6 @@ public static partial class IterativeValidity
     private static IValidityWithDiagnostics DiagnoseAndMergeAll<T>(IValidityWithDiagnostics.DMergeOperation mergeOperation, T argument,
         IEnumerable<DValidity<T>> delegatedValidity)
     {
-        if (delegatedValidity is null)
-        {
-            throw new ArgumentNullException(nameof(delegatedValidity));
-        }
-
         return DiagnoseAndMergeAll(mergeOperation, wrappedDelegates());
 
         IEnumerable<DValidity> wrappedDelegates()
@@ -91,11 +86,6 @@ public static partial class IterativeValidity
     private static IValidityWithDiagnostics DiagnoseAndMergeAll<T1, T2>(IValidityWithDiagnostics.DMergeOperation mergeOperation, T1 argument1, T2 argument2,
         IEnumerable<DValidity<T1, T2>> delegatedValidity)
     {
-        if (delegatedValidity is null)
-        {
-            throw new ArgumentNullException(nameof(delegatedValidity));
-        }
-
         return DiagnoseAndMergeAll(mergeOperation, wrappedDelegates());
 
         IEnumerable<DValidity> wrappedDelegates()
@@ -109,11 +99,6 @@ public static partial class IterativeValidity
 
     private static IValidityWithDiagnostics DiagnoseAndMergeAll(IValidityWithDiagnostics.DMergeOperation mergeOperation, IEnumerable<DValidity> delegatedValidity)
     {
-        if (delegatedValidity is null)
-        {
-            throw new ArgumentNullException(nameof(delegatedValidity));
-        }
-
         IValidityWithDiagnostics result = ValidityWithDiagnostics.Valid;
 
         foreach (DValidity delegatedDiagnosis in delegatedValidity)

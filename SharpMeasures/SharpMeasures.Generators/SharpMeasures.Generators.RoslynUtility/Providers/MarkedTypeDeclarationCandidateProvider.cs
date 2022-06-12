@@ -158,7 +158,7 @@ public static class MarkedTypeDeclarationCandidateProvider
 
         private static bool SyntaxNodeIsTypeDeclarationWithAttributes(SyntaxNode node, CancellationToken _)
         {
-            return node is TypeDeclarationSyntax declaration &&!declaration.Identifier.IsMissing is false && declaration.AttributeLists.Count > 0;
+            return node is TypeDeclarationSyntax declaration && declaration.Identifier.IsMissing is false && declaration.AttributeLists.Count > 0;
         }
 
         private static OutputData? CandidateTypeDeclarationElseNull(IAttributeSyntaxStrategy attributeStrategy, GeneratorSyntaxContext context)

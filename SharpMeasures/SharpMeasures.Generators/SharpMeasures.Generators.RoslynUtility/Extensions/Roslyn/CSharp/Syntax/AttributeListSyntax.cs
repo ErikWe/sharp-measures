@@ -15,21 +15,11 @@ public static partial class Extensions
 
     public static AttributeSyntax? GetAttributeOfType(this AttributeListSyntax attributeList, SemanticModel semanticModel, Type attributeType)
     {
-        if (attributeType is null)
-        {
-            throw new ArgumentNullException(nameof(attributeType));
-        }
-
         return attributeList.GetAttributeWithName(semanticModel, attributeType.FullName);
     }
 
     public static AttributeSyntax? GetAttributeWithName(this AttributeListSyntax attributeList, SemanticModel semanticModel, string attributeName)
     {
-        if (attributeList is null)
-        {
-            throw new ArgumentNullException(nameof(attributeList));
-        }
-
         foreach (AttributeSyntax attributeSyntax in attributeList.Attributes)
         {
             if (attributeSyntax.RepresentsAttributeWithName(semanticModel, attributeName))
@@ -53,11 +43,6 @@ public static partial class Extensions
 
     public static AttributeSyntax? GetFirstAttributeOfType(this AttributeListSyntax attributeList, SemanticModel semanticModel, IEnumerable<Type> candidateTypes)
     {
-        if (candidateTypes is null)
-        {
-            throw new ArgumentNullException(nameof(candidateTypes));
-        }
-
         return attributeList.GetFirstAttributeWithName(semanticModel, candidateNames());
 
         IEnumerable<string> candidateNames()
@@ -76,11 +61,6 @@ public static partial class Extensions
 
     public static AttributeSyntax? GetFirstAttributeWithName(this AttributeListSyntax attributeList, SemanticModel semanticModel, IEnumerable<string> candidateNames)
     {
-        if (candidateNames is null)
-        {
-            throw new ArgumentNullException(nameof(candidateNames));
-        }
-
         foreach (string attributeName in candidateNames)
         {
             if (attributeList.GetAttributeWithName(semanticModel, attributeName) is AttributeSyntax attributeSyntax)
