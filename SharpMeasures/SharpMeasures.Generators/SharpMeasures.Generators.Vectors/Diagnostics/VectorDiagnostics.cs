@@ -15,7 +15,7 @@ internal class VectorDiagnostics : IPartialDeclarationProviderDiagnostics
 
     public Diagnostic TypeNotPartial(BaseTypeDeclarationSyntax declaration)
     {
-        return DiagnosticConstruction.TypeNotPartial<GeneratedVectorAttribute>(declaration.GetLocation(), declaration.Identifier.Text);
+        return DiagnosticConstruction.TypeNotPartial<GeneratedVectorAttribute>(declaration.Identifier.GetLocation(), declaration.Identifier.Text);
     }
 
     public static Diagnostic ContradictoryAttributes<TInclusionAttribute, TExclusionAttribute>(IItemListDefinition<string?> definition)

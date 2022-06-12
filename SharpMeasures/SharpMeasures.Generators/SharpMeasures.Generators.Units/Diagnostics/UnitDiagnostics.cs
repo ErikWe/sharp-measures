@@ -14,6 +14,6 @@ internal class UnitDiagnostics : IPartialDeclarationProviderDiagnostics
 
     public Diagnostic TypeNotPartial(BaseTypeDeclarationSyntax declaration)
     {
-        return DiagnosticConstruction.TypeNotPartial<GeneratedUnitAttribute>(declaration.GetLocation(), declaration.Identifier.Text);
+        return DiagnosticConstruction.TypeNotPartial<GeneratedUnitAttribute>(declaration.Identifier.GetLocation(), declaration.Identifier.Text);
     }
 }
