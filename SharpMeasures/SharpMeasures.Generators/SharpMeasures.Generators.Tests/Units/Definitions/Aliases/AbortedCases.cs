@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Tests.Units.Definitions.Aliases;
 
 using SharpMeasures.Generators.Tests.Verify;
-using SharpMeasures.Generators.Units;
 
 using VerifyXunit;
 
@@ -11,32 +10,32 @@ using Xunit;
 public class AbortedCases
 {
     [Fact]
-    public void NoMatchingConstructor()
+    public void NoMatchingConstructor_NoAdditionalSource()
     {
         string source = @"
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfLength))]
-public class Length { }
+[GeneratedScalar(typeof(UnitOfLength))]
+public partial class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
 [UnitAlias(""Meter"", ""Meters"")]
 [GeneratedUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
-        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_OnlyFixedMetre);
+        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_OnlyFixedMetre);
     }
 
     [Fact]
-    public void BaseUnitNotFound()
+    public void BaseUnitNotFound_NoAdditionalSource()
     {
         string source = @"
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfLength))]
-public class Length { }
+[GeneratedScalar(typeof(UnitOfLength))]
+public partial class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
 [UnitAlias(""Meter"", ""Meters"", ""Invalid"")]
@@ -44,18 +43,18 @@ public class Length { }
 public partial class UnitOfLength { }
 ";
 
-        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_OnlyFixedMetre);
+        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_OnlyFixedMetre);
     }
 
     [Fact]
-    public void NameNull()
+    public void NameNull_NoAdditionalSource()
     {
         string source = @"
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfLength))]
-public class Length { }
+[GeneratedScalar(typeof(UnitOfLength))]
+public partial class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
 [UnitAlias(null, ""Meters"", ""Metre"")]
@@ -63,18 +62,18 @@ public class Length { }
 public partial class UnitOfLength { }
 ";
 
-        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_OnlyFixedMetre);
+        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_OnlyFixedMetre);
     }
 
     [Fact]
-    public void PluralNullAndNotConstant()
+    public void PluralNull_NoAdditionalSource()
     {
         string source = @"
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfLength))]
-public class Length { }
+[GeneratedScalar(typeof(UnitOfLength))]
+public partial class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
 [UnitAlias(""Meter"", null, ""Metre"")]
@@ -82,18 +81,18 @@ public class Length { }
 public partial class UnitOfLength { }
 ";
 
-        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_OnlyFixedMetre);
+        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_OnlyFixedMetre);
     }
 
     [Fact]
-    public void BaseUnitNull()
+    public void BaseUnitNull_NoAdditionalSource()
     {
         string source = @"
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfLength))]
-public class Length { }
+[GeneratedScalar(typeof(UnitOfLength))]
+public partial class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
 [UnitAlias(""Meter"", ""Meters"", null)]
@@ -101,25 +100,44 @@ public class Length { }
 public partial class UnitOfLength { }
 ";
 
-        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_OnlyFixedMetre);
+        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_OnlyFixedMetre);
     }
 
     [Fact]
-    public void DuplicateName()
+    public void NameDuplicate_NoAdditionalSource()
     {
         string source = @"
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfLength))]
+[GeneratedScalar(typeof(UnitOfLength))]
 public class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
-[UnitAlias(""Metre"", ""Metres"", ""Metre"")]
+[UnitAlias(""Metre"", ""Meters"", ""Metre"")]
 [GeneratedUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
 
-        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Length_OnlyFixedMetre);
+        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_OnlyFixedMetre);
+    }
+
+    [Fact]
+    public void PluralDuplicate_NoAdditionalSource()
+    {
+        string source = @"
+using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators.Units;
+
+[GeneratedScalar(typeof(UnitOfLength))]
+public class Length { }
+
+[FixedUnit(""Metre"", ""Metres"", 1)]
+[UnitAlias(""Meter"", ""Metres"", ""Metre"")]
+[GeneratedUnit(typeof(Length))]
+public partial class UnitOfLength { }
+";
+
+        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_OnlyFixedMetre);
     }
 }

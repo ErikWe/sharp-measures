@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Tests.Units.Definitions.Offset;
 
 using SharpMeasures.Generators.Tests.Verify;
-using SharpMeasures.Generators.Units;
 
 using VerifyXunit;
 
@@ -11,14 +10,14 @@ using Xunit;
 public class AbortedCases
 {
     [Fact]
-    public void NoMatchingConstructor()
+    public void NoMatchingConstructor_NoAdditionalSource()
     {
         string source = @"
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfTemperature))]
-public class TemperatureDifference { }
+[GeneratedScalar(typeof(UnitOfTemperature))]
+public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
 [OffsetUnit(""Celsius"", ""Celsius"", ""Kelvin"")]
@@ -26,18 +25,18 @@ public class TemperatureDifference { }
 public partial class UnitOfTemperature { }
 ";
 
-        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Temperature_OnlyFixedKelvin);
+        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Temperature_OnlyFixedKelvin);
     }
 
     [Fact]
-    public void BaseUnitNotFound()
+    public void BaseUnitNotFound_NoAdditionalSource()
     {
         string source = @"
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfTemperature))]
-public class TemperatureDifference { }
+[GeneratedScalar(typeof(UnitOfTemperature))]
+public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
 [OffsetUnit(""Celsius"", ""Celsius"", ""Invalid"", -273.15)]
@@ -45,18 +44,18 @@ public class TemperatureDifference { }
 public partial class UnitOfTemperature { }
 ";
 
-        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Temperature_OnlyFixedKelvin);
+        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Temperature_OnlyFixedKelvin);
     }
 
     [Fact]
-    public void NameNull()
+    public void NameNull_NoAdditionalSource()
     {
         string source = @"
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfTemperature))]
-public class TemperatureDifference { }
+[GeneratedScalar(typeof(UnitOfTemperature))]
+public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
 [OffsetUnit(null, ""Celsius"", ""Kelvin"", -273.15)]
@@ -64,18 +63,18 @@ public class TemperatureDifference { }
 public partial class UnitOfTemperature { }
 ";
 
-        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Temperature_OnlyFixedKelvin);
+        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Temperature_OnlyFixedKelvin);
     }
 
     [Fact]
-    public void PluralNullAndNotConstant()
+    public void PluralNull_NoAdditionalSource()
     {
         string source = @"
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfTemperature))]
-public class TemperatureDifference { }
+[GeneratedScalar(typeof(UnitOfTemperature))]
+public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
 [OffsetUnit(""Celcius"", null, ""Kelvin"", -273.15)]
@@ -83,18 +82,18 @@ public class TemperatureDifference { }
 public partial class UnitOfTemperature { }
 ";
 
-        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Temperature_OnlyFixedKelvin);
+        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Temperature_OnlyFixedKelvin);
     }
 
     [Fact]
-    public void BaseUnitNull()
+    public void BaseUnitNull_NoAdditionalSource()
     {
         string source = @"
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfTemperature))]
-public class TemperatureDifference { }
+[GeneratedScalar(typeof(UnitOfTemperature))]
+public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
 [OffsetUnit(""Celcius"", ""Celcius"", null, -273.15)]
@@ -102,37 +101,56 @@ public class TemperatureDifference { }
 public partial class UnitOfTemperature { }
 ";
 
-        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Temperature_OnlyFixedKelvin);
+        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Temperature_OnlyFixedKelvin);
     }
 
     [Fact]
-    public void DuplicateName()
+    public void NameDuplicate_NoAdditionalSource()
     {
         string source = @"
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfTemperature))]
-public class TemperatureDifference { }
+[GeneratedScalar(typeof(UnitOfTemperature))]
+public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
-[OffsetUnit(""Kelvin"", ""Kelvin"", ""Kelvin"", -273.15)]
+[OffsetUnit(""Kelvin"", ""Kelvins"", ""Kelvin"", -273.15)]
 [GeneratedUnit(typeof(TemperatureDifference), Biased = true)]
 public partial class UnitOfTemperature { }
 ";
 
-        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Temperature_OnlyFixedKelvin);
+        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Temperature_OnlyFixedKelvin);
     }
 
     [Fact]
-    public void OffsetNull()
+    public void PluralDuplicate_NoAdditionalSource()
     {
         string source = @"
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfTemperature))]
-public class TemperatureDifference { }
+[GeneratedScalar(typeof(UnitOfTemperature))]
+public partial class TemperatureDifference { }
+
+[FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
+[OffsetUnit(""OneKelvin"", ""Kelvin"", ""Kelvin"", -273.15)]
+[GeneratedUnit(typeof(TemperatureDifference), Biased = true)]
+public partial class UnitOfTemperature { }
+";
+
+        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Temperature_OnlyFixedKelvin);
+    }
+
+    [Fact]
+    public void OffsetNull_NoAdditionalSource()
+    {
+        string source = @"
+using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators.Units;
+
+[GeneratedScalar(typeof(UnitOfTemperature))]
+public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
 [OffsetUnit(""Celsius"", ""Celsius"", ""Kelvin"", null)]
@@ -140,6 +158,6 @@ public class TemperatureDifference { }
 public partial class UnitOfTemperature { }
 ";
 
-        GeneratorVerifier.Construct<UnitGenerator>(source).IdenticalOutputTo(CommonResults.Temperature_OnlyFixedKelvin);
+        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Temperature_OnlyFixedKelvin);
     }
 }

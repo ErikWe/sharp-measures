@@ -39,50 +39,50 @@ internal class GeneratorVerifier
         OutputCount = Output.Count();
     }
 
-    public GeneratorVerifier NoOutput()
+    public GeneratorVerifier AssertNoSourceGenerated()
     {
         Assert.Empty(Output);
 
         return this;
     }
-    public GeneratorVerifier NoDiagnostics()
+    public GeneratorVerifier AssertNoDiagnosticsReported()
     {
         Assert.Empty(Diagnostics);
 
         return this;
     }
 
-    public GeneratorVerifier SomeOutput()
+    public GeneratorVerifier AssertSomeSourceGenerated()
     {
         Assert.NotEmpty(Output);
 
         return this;
     }
 
-    public GeneratorVerifier SomeDiagnostics()
+    public GeneratorVerifier AssertSomeDiagnosticsReported()
     {
         Assert.NotEmpty(Diagnostics);
 
         return this;
     }
 
-    public GeneratorVerifier ExactOutputCount(int expected)
+    public GeneratorVerifier AssertSourceCount(int expectedSourceCount)
     {
-        Assert.Equal(expected, OutputCount);
+        Assert.Equal(expectedSourceCount, OutputCount);
 
         return this;
     }
 
-    public GeneratorVerifier ExactDiagnosticsCount(int expected)
+    public GeneratorVerifier AssertDiagnosticsCount(int expectedDiagnosticsCount)
     {
-        Assert.Equal(expected, Diagnostics.Length);
+        Assert.Equal(expectedDiagnosticsCount, Diagnostics.Length);
 
         return this;
     }
 
-    public GeneratorVerifier AllListedFilesGenerated(IEnumerable<string> files)
+    public GeneratorVerifier AssertAllListedSourcesNamesGenerated(IEnumerable<string> expectedSourceNames)
     {
-        foreach (string file in files)
+        foreach (string file in expectedSourceNames)
         {
             Assert.Contains(file, Output.Select(static (result) => result.HintName));
         }
@@ -90,9 +90,9 @@ internal class GeneratorVerifier
         return this;
     }
 
-    public GeneratorVerifier AllListedDiagnosticIDsReported(IEnumerable<string> diagnosticIDs)
+    public GeneratorVerifier AssertAllListedDiagnosticsIDsReported(IEnumerable<string> expectedDiagnosticIDs)
     {
-        foreach (string diagnosticID in diagnosticIDs)
+        foreach (string diagnosticID in expectedDiagnosticIDs)
         {
             Assert.Contains(diagnosticID, Diagnostics.Select(static (diagnostic) => diagnostic.Id));
         }
@@ -100,9 +100,9 @@ internal class GeneratorVerifier
         return this;
     }
 
-    public GeneratorVerifier NoListedFileGenerated(IEnumerable<string> files)
+    public GeneratorVerifier AssertNoListedSourceNameGenerated(IEnumerable<string> forbiddenSourceNames)
     {
-        foreach (string file in files)
+        foreach (string file in forbiddenSourceNames)
         {
             Assert.DoesNotContain(file, Output.Select(static (result) => result.HintName));
         }
@@ -110,9 +110,9 @@ internal class GeneratorVerifier
         return this;
     }
 
-    public GeneratorVerifier NoListedDiagnosticIDReported(IEnumerable<string> diagnosticIDs)
+    public GeneratorVerifier AssertNoListedDiagnosticIDsReported(IEnumerable<string> forbiddenDiagnosticIDs)
     {
-        foreach (string diagnosticID in diagnosticIDs)
+        foreach (string diagnosticID in forbiddenDiagnosticIDs)
         {
             Assert.DoesNotContain(diagnosticID, Diagnostics.Select(static (diagnostic) => diagnostic.Id));
         }
@@ -120,23 +120,23 @@ internal class GeneratorVerifier
         return this;
     }
 
-    public GeneratorVerifier AllAndOnlyListedFilesGenerated(IEnumerable<string> files)
+    public GeneratorVerifier AssertExactlyListedSourceNamesGenerated(IEnumerable<string> expectedSourceNames)
     {
-        AllListedFilesGenerated(files);
-        Assert.Equal(OutputCount, files.Count());
+        AssertAllListedSourcesNamesGenerated(expectedSourceNames);
+        Assert.Equal(OutputCount, expectedSourceNames.Count());
 
         return this;
     }
 
-    public GeneratorVerifier AllAndOnlyListedDiagnosticIDsReported(IEnumerable<string> diagnosticIDs)
+    public GeneratorVerifier AssertExactlyListedDiagnosticsIDsReported(IEnumerable<string> expectedDiagnosticIDs)
     {
-        AllListedDiagnosticIDsReported(diagnosticIDs);
-        Assert.Equal(Diagnostics.Length, diagnosticIDs.Count());
+        AssertAllListedDiagnosticsIDsReported(expectedDiagnosticIDs);
+        Assert.Equal(Diagnostics.Length, expectedDiagnosticIDs.Count());
 
         return this;
     }
 
-    public GeneratorVerifier IdenticalOutputTo(GeneratorVerifier expected)
+    public GeneratorVerifier AssertIdenticalSources(GeneratorVerifier expectedSources)
     {
         HashSet<(string, string, string)> unmatchedOutput = new();
 
@@ -148,7 +148,7 @@ internal class GeneratorVerifier
             }
         }
 
-        foreach (GeneratorRunResult result in expected.RunResult.Results)
+        foreach (GeneratorRunResult result in expectedSources.RunResult.Results)
         {
             foreach (GeneratedSourceResult output in result.GeneratedSources)
             {
@@ -170,7 +170,7 @@ internal class GeneratorVerifier
         static string removeStamp(GeneratedSourceResult generatedSource) => StampRegex.Replace(generatedSource.SourceText.ToString(), StampReplacement);
     }
 
-    public GeneratorVerifier IdenticalDiagnosticsTo(GeneratorVerifier expected)
+    public GeneratorVerifier AssertIdenticalDiagnostics(GeneratorVerifier expectedDiagnostics)
     {
         HashSet<(string, Diagnostic)> unmatchedDiagnostic = new();
 
@@ -182,7 +182,7 @@ internal class GeneratorVerifier
             }
         }
 
-        foreach (GeneratorRunResult result in expected.RunResult.Results)
+        foreach (GeneratorRunResult result in expectedDiagnostics.RunResult.Results)
         {
             foreach (Diagnostic diagnostic in result.Diagnostics)
             {
@@ -202,10 +202,10 @@ internal class GeneratorVerifier
             => (result.Generator.GetGeneratorType().ToString(), diagnostic);
     }
 
-    public GeneratorVerifier IdenticalTo(GeneratorVerifier expected)
+    public GeneratorVerifier AssertIdenticalSourcesAndDiagnostics(GeneratorVerifier expected)
     {
-        IdenticalOutputTo(expected);
-        IdenticalDiagnosticsTo(expected);
+        AssertIdenticalSources(expected);
+        AssertIdenticalDiagnostics(expected);
 
         return this;
     }

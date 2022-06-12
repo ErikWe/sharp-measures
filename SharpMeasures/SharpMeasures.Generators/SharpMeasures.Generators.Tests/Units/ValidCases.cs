@@ -1,6 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Tests.Units;
 
-using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Tests.Verify;
 
 using System.Threading.Tasks;
@@ -13,18 +12,18 @@ using Xunit;
 public class ValidCases
 {
     [Fact]
-    public Task Unbiased()
+    public Task UnbiasedUnit_Verify()
     {
         string source = @"
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfLength))]
-public class Length { }
+[GeneratedScalar(typeof(UnitOfLength))]
+public partial class Length { }
 
 [GeneratedUnit(typeof(Length))]
 public partial class UnitOfLength { }";
 
-        return GeneratorVerifier.Construct<UnitGenerator>(source).Verify();
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).Verify();
     }
 }

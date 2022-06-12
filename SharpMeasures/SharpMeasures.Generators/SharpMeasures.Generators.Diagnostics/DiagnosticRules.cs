@@ -15,7 +15,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotPartial,
         title: "Expected a partial type",
-        messageFormat: "To enable a source generator, as indicated by the attribute {0}, {1} has to be made partial",
+        messageFormat: "To apply a SharpMeasures source generator, as suggested by the attribute {0}, {1} should be made partial",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -25,8 +25,8 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotScalar,
         title: "Expected a scalar quantity",
-        messageFormat: $"Expected a scalar quantity. Add the attribute {typeof(GeneratedScalarAttribute).FullName} to {{0}} " +
-            $"for it to be recognized as a scalar quantity.",
+        messageFormat: $"Expected a scalar quantity. Decorate {{0}} with the attribute {typeof(GeneratedScalarAttribute).FullName}, " +
+            $"or use another type.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -46,8 +46,8 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotVector,
         title: "Expected a vector quantity",
-        messageFormat: $"Expected a vector quantity. Add the attribute {typeof(GeneratedVectorAttribute).FullName} to {{0}} " +
-            $"for it to be recognized as a vector quantity.",
+        messageFormat: $"Expected a vector quantity. Decorate {{0}} with the attribute {typeof(GeneratedVectorAttribute).FullName}, " +
+            $"or use another type.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -67,7 +67,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotUnit,
         title: "Expected a unit",
-        messageFormat: $"Expected a unit. Add the attribute {typeof(GeneratedUnitAttribute).FullName} to {{0}} for it to be recognized as a unit.",
+        messageFormat: $"Expected a unit. Decorate {{0}} with the attribute {typeof(GeneratedUnitAttribute).FullName}, or use another type.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -97,7 +97,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.ScalarNotUnbiased,
         title: "Expected an unbiased scalar quantity",
-        messageFormat: "Argument should be an unbiased scalar quantity. Make {0} an unbiased scalar quantity, or use another quantity.",
+        messageFormat: "Expected an unbiased scalar quantity. Make {0} an unbiased scalar quantity, or use another quantity.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,

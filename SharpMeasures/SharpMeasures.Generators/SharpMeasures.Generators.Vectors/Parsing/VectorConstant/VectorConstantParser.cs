@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Attributes.Parsing.Utility;
-using SharpMeasures.Generators.Scalars;
 
 internal static class VectorConstantParser
 {

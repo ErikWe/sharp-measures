@@ -1,8 +1,7 @@
-﻿namespace SharpMeasures.Generators.Tests.Diagnostics.TypeNotScalarQuantity;
+﻿namespace SharpMeasures.Generators.Tests.Diagnostics.TypeNotScalar;
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Verify;
-using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,10 +11,10 @@ using VerifyXunit;
 using Xunit;
 
 [UsesVerify]
-public class UnitsWithDiagnostics
+public class GeneratedUnit
 {
     [Fact]
-    public Task QuantityArgumentNotScalar()
+    public Task QuantityArgumentNotScalar_VerifyAndDiagnosticsList()
     {
         string source = @"
 using SharpMeasures.Generators.Scalars;
@@ -27,7 +26,7 @@ public partial class Length { }
 public partial class UnitOfLength { }
 ";
 
-        return GeneratorVerifier.Construct<UnitGenerator>(source).AllListedDiagnosticIDsReported(ExpectedDiagnostics).Verify();
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertAllListedDiagnosticsIDsReported(ExpectedDiagnostics).Verify();
     }
 
     private static IReadOnlyCollection<string> ExpectedDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotScalar };

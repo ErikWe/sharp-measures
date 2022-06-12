@@ -1,31 +1,30 @@
 ﻿namespace SharpMeasures.Generators.Tests.Units;
 
 using SharpMeasures.Generators.Tests.Verify;
-using SharpMeasures.Generators.Units;
 
 internal static class CommonResults
 {
     public static GeneratorVerifier Length_OnlyFixedMetre { get; }
-        = GeneratorVerifier.Construct<UnitGenerator>(Length_OnlyFixedMetre_Source);
+        = GeneratorVerifier.Construct<SharpMeasuresGenerator>(Length_OnlyFixedMetre_Source);
 
     public static GeneratorVerifier Length_NoDefinitions { get; }
-        = GeneratorVerifier.Construct<UnitGenerator>(Length_NoDefinitions_Source);
+        = GeneratorVerifier.Construct<SharpMeasuresGenerator>(Length_NoDefinitions_Source);
 
     public static GeneratorVerifier Temperature_OnlyFixedKelvin { get; }
-        = GeneratorVerifier.Construct<UnitGenerator>(Temperature_OnlyFixedKelvin_Source);
+        = GeneratorVerifier.Construct<SharpMeasuresGenerator>(Temperature_OnlyFixedKelvin_Source);
 
     public static GeneratorVerifier Temperature_NoDefinitions { get; }
-        = GeneratorVerifier.Construct<UnitGenerator>(Temperature_NoDefinitions_Source);
+        = GeneratorVerifier.Construct<SharpMeasuresGenerator>(Temperature_NoDefinitions_Source);
 
     public static GeneratorVerifier LengthTimeSpeed_NoDerivable { get; }
-        = GeneratorVerifier.Construct<UnitGenerator>(LengthTimeSpeed_NoDerivable_Source);
+        = GeneratorVerifier.Construct<SharpMeasuresGenerator>(LengthTimeSpeed_NoDerivable_Source);
 
     private const string Length_OnlyFixedMetre_Source = @"
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfLength))]
-public class Length { }
+[GeneratedScalar(typeof(UnitOfLength))]
+public partial class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
 [GeneratedUnit(typeof(Length))]
@@ -36,8 +35,8 @@ public partial class UnitOfLength { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfLength))]
-public class Length { }
+[GeneratedScalar(typeof(UnitOfLength))]
+public partial class Length { }
 
 [GeneratedUnit(typeof(Length))]
 public partial class UnitOfLength { }
@@ -47,8 +46,8 @@ public partial class UnitOfLength { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfTemperature))]
-public class TemperatureDifference { }
+[GeneratedScalar(typeof(UnitOfTemperature))]
+public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
 [GeneratedUnit(typeof(TemperatureDifference), Biased = true)]
@@ -59,8 +58,8 @@ public partial class UnitOfTemperature { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfTemperature))]
-public class TemperatureDifference { }
+[GeneratedScalar(typeof(UnitOfTemperature))]
+public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
 [GeneratedUnit(typeof(TemperatureDifference), Biased = true)]
@@ -71,14 +70,14 @@ public partial class UnitOfTemperature { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfLength))]
-public class Length { }
+[GeneratedScalar(typeof(UnitOfLength))]
+public partial class Length { }
 
-[GeneratedScalarQuantity(typeof(UnitOfTime))]
-public class Time { }
+[GeneratedScalar(typeof(UnitOfTime))]
+public partial class Time { }
 
-[GeneratedScalarQuantity(typeof(UnitOfSpeed))]
-public class Speed { }
+[GeneratedScalar(typeof(UnitOfSpeed))]
+public partial class Speed { }
 
 [GeneratedUnit(typeof(Length))]
 public partial class UnitOfLength { }

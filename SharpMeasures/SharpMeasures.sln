@@ -46,7 +46,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Sc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Quantities", "SharpMeasures.Generators\SharpMeasures.Generators.Quantities\SharpMeasures.Generators.Quantities.csproj", "{5353782E-5753-427F-859C-1527F12966EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMeasures.Generators.Vectors", "SharpMeasures.Generators\SharpMeasures.Generators.Vectors\SharpMeasures.Generators.Vectors.csproj", "{283191D4-5757-4823-A794-D2128F8D5DA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Vectors", "SharpMeasures.Generators\SharpMeasures.Generators.Vectors\SharpMeasures.Generators.Vectors.csproj", "{283191D4-5757-4823-A794-D2128F8D5DA0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

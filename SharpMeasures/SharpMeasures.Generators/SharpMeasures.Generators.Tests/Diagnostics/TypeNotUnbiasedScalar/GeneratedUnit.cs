@@ -1,8 +1,7 @@
-﻿namespace SharpMeasures.Generators.Tests.Diagnostics.TypeNotUnbiasedScalarQuantity;
+﻿namespace SharpMeasures.Generators.Tests.Diagnostics.TypeNotUnbiasedScalar;
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Verify;
-using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,7 +11,7 @@ using VerifyXunit;
 using Xunit;
 
 [UsesVerify]
-public class UnitsWithDiagnostics
+public class GeneratedUnit
 {
     [Fact]
     public Task UnbiasedUnit_QuantityArgumentBiased()
@@ -21,14 +20,14 @@ public class UnitsWithDiagnostics
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfTemperature), Biased = true)]
+[GeneratedScalar(typeof(UnitOfTemperature), Biased = true)]
 public partial class Temperature { }
 
 [GeneratedUnit(typeof(Temperature))]
 public partial class UnitOfTemperature { }
 ";
 
-        return GeneratorVerifier.Construct<UnitGenerator>(source).AllListedDiagnosticIDsReported(ExpectedDiagnostics).Verify();
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertAllListedDiagnosticsIDsReported(ExpectedDiagnostics).Verify();
     }
 
     [Fact]
@@ -38,14 +37,14 @@ public partial class UnitOfTemperature { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalarQuantity(typeof(UnitOfTemperature), Biased = true)]
+[GeneratedScalar(typeof(UnitOfTemperature), Biased = true)]
 public partial class Temperature { }
 
 [GeneratedUnit(typeof(Temperature), AllowBias = true)]
 public partial class UnitOfTemperature { }
 ";
 
-        return GeneratorVerifier.Construct<UnitGenerator>(source).AllListedDiagnosticIDsReported(ExpectedDiagnostics).Verify();
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertAllListedDiagnosticsIDsReported(ExpectedDiagnostics).Verify();
     }
 
     private static IReadOnlyCollection<string> ExpectedDiagnostics { get; } = new string[] { DiagnosticIDs.ScalarNotUnbiased };
