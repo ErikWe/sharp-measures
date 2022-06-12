@@ -4,10 +4,11 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 using SharpMeasures.Generators.Diagnostics;
+using SharpMeasures.Generators.Quantities.Parsing.Abstractions;
 
 using System.Diagnostics.CodeAnalysis;
 
-public class UnitListProcessingDiagnostics<TDefinition> : IItemListProcessingDiagnostics<string, TDefinition>
+public class UnitListProcessingDiagnostics<TDefinition> : IUnitInclusionOrExclusionListProcessingDiagnostics<TDefinition>
     where TDefinition : IItemListDefinition<string?>
 {
     [SuppressMessage("Design", "CA1000", Justification = "Property")]
@@ -27,6 +28,6 @@ public class UnitListProcessingDiagnostics<TDefinition> : IItemListProcessingDia
 
     public Diagnostic DuplicateItem(IItemListProcessingContext<string> context, TDefinition definition, int index)
     {
-        return DiagnosticConstruction.DuplicateUnitListing(definition.Locations.ItemsElements[index].AsRoslynLocation(), definition.Items[index]!);
+        return DiagnosticConstruction.UnitAlreadyListed(definition.Locations.ItemsElements[index].AsRoslynLocation(), definition.Items[index]!);
     }
 }

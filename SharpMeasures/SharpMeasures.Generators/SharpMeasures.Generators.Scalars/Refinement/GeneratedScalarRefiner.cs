@@ -77,7 +77,8 @@ internal class GeneratedScalarRefiner : IProcesser<IGeneratedScalarRefinementCon
             .Concat(processedCube.Diagnostics).Concat(processedSquareRoot.Diagnostics).Concat(processedCubeRoot.Diagnostics);
 
         RefinedGeneratedScalarDefinition product = new(processedUnit.Result, processedVector.NullableResult, definition.Biased, processedDefaultUnitName.Result,
-            definition.DefaultUnitSymbol, processedReciprocal.Result, processedSquare.Result, processedCube.Result, processedSquareRoot.Result, processedCubeRoot.Result);
+            definition.DefaultUnitSymbol, processedReciprocal.Result, processedSquare.Result, processedCube.Result, processedSquareRoot.Result, processedCubeRoot.Result,
+            definition.GenerateDocumentation);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
@@ -104,17 +105,17 @@ internal class GeneratedScalarRefiner : IProcesser<IGeneratedScalarRefinementCon
             return OptionalWithDiagnostics.Empty<ResizedVectorGroup>();
         }
 
-        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.Vector.Value, out ResizedVectorGroup group) is false)
+        if (context.VectorPopulation.ResizedVectorGroups.TryGetValue(definition.Vector.Value, out var vectorGroup) is false)
         {
-            if (context.VectorPopulation.UnresolvedVectors.ContainsKey(definition.Vector.Value))
+            if (context.VectorPopulation.AllVectors.ContainsKey(definition.Vector.Value) is false)
             {
-                return OptionalWithDiagnostics.Empty<ResizedVectorGroup>();
+                return OptionalWithDiagnostics.Empty<ResizedVectorGroup>(Diagnostics.TypeNotVector(context, definition));
             }
 
-            return OptionalWithDiagnostics.Empty<ResizedVectorGroup>(Diagnostics.TypeNotVector(context, definition));
+            return OptionalWithDiagnostics.Empty<ResizedVectorGroup>();
         }
 
-        return OptionalWithDiagnostics.Result(group);
+        return OptionalWithDiagnostics.Result(vectorGroup);
     }
 
     private IResultWithDiagnostics<string?> ProcessDefaultUnitName(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition, UnitInterface unit)

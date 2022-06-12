@@ -15,7 +15,8 @@ internal static class MathsGenerator
 
     private static DataModel Reduce(Scalars.DataModel input, CancellationToken _)
     {
-        return new(input.Scalar.ScalarType, input.Unit.UnitType.AsNamedType(), input.Scalar.ScalarDefinition.Reciprocal, input.Scalar.ScalarDefinition.Square,
-            input.Scalar.ScalarDefinition.Cube, input.Scalar.ScalarDefinition.SquareRoot, input.Scalar.ScalarDefinition.CubeRoot, input.Documentation);
+        return new(input.ScalarData.ScalarType, input.ScalarDefinition.Unit.UnitType.AsNamedType(), input.ScalarDefinition.Reciprocal?.ScalarType.AsNamedType(),
+            input.ScalarDefinition.Square?.ScalarType.AsNamedType(), input.ScalarDefinition.Cube?.ScalarType.AsNamedType(),
+            input.ScalarDefinition.SquareRoot?.ScalarType.AsNamedType(), input.ScalarDefinition.CubeRoot?.ScalarType.AsNamedType(), input.Documentation);
     }
 }

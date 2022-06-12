@@ -4,6 +4,9 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Documentation;
+using SharpMeasures.Generators.Quantities.Parsing;
+using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Providers.AnalyzerConfig;
 using SharpMeasures.Generators.Vectors.Diagnostics;
 using SharpMeasures.Generators.Vectors.Parsing;
@@ -11,21 +14,26 @@ using SharpMeasures.Generators.Vectors.Pipelines.Common;
 using SharpMeasures.Generators.Vectors.Pipelines.Maths;
 using SharpMeasures.Generators.Vectors.Pipelines.Units;
 using SharpMeasures.Generators.Vectors.Refinement;
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
 
 using System.Threading;
 
 public class VectorGenerator
 {
     public IncrementalValueProvider<VectorPopulation> PopulationProvider { get; }
-    private IncrementalValuesProvider<ParsedVector> VectorProvider { get; }
+    private IncrementalValueProvider<VectorPopulationData> PopulationDataProvider { get; }
+    private IncrementalValueProvider<UnitInclusionPopulation> UnitInclusionPopulationProvider { get; }
+
+    private IncrementalValuesProvider<ParsedGeneratedVector> VectorProvider { get; }
     private IncrementalValuesProvider<ParsedResizedVector> ResizedVectorProvider { get; }
 
-    internal VectorGenerator(IncrementalValueProvider<VectorPopulation> populationProvider, IncrementalValuesProvider<ParsedVector> vectorProvider,
+    internal VectorGenerator(IncrementalValueProvider<VectorPopulation> populationProvider, IncrementalValueProvider<VectorPopulationData> populationDataProvider,
+        IncrementalValueProvider<UnitInclusionPopulation> unitInclusionPopulationProvider, IncrementalValuesProvider<ParsedGeneratedVector> vectorProvider,
         IncrementalValuesProvider<ParsedResizedVector> resizedVectorProvider)
     {
         PopulationProvider = populationProvider;
+        PopulationDataProvider = populationDataProvider;
+        UnitInclusionPopulationProvider = unitInclusionPopulationProvider;
+
         VectorProvider = vectorProvider;
         ResizedVectorProvider = resizedVectorProvider;
     }
@@ -36,23 +44,23 @@ public class VectorGenerator
     {
         var defaultGenerateDocumentation = globalAnalyzerConfig.Select(ExtractDefaultGenerateDocumentation);
 
-        var minimized = VectorProvider.Combine(unitPopulation, scalarPopulation, PopulationProvider).Select(ReduceToDataModel).ReportDiagnostics(context)
-            .Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionary).Flatten().Select(AppendDocumentationFile)
-            .ReportDiagnostics(context);
+        var minimized = VectorProvider.Combine(unitPopulation, scalarPopulation, PopulationProvider, PopulationDataProvider).Select(ReduceToDataModel)
+            .ReportDiagnostics(context).Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionary)
+            .Flatten().Select(AppendDocumentationFile).ReportDiagnostics(context);
 
-        var minimizedResized = ResizedVectorProvider.Combine(unitPopulation, scalarPopulation, PopulationProvider).Select(ReduceToDataModel).ReportDiagnostics(context)
-            .Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionary).Flatten().Select(AppendDocumentationFile)
-            .ReportDiagnostics(context);
+        var minimizedResized = ResizedVectorProvider.Combine(unitPopulation, scalarPopulation, PopulationProvider, PopulationDataProvider)
+            .Select(ReduceToDataModel).ReportDiagnostics(context).Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation)
+            .Combine(documentationDictionary).Flatten().Select(AppendDocumentationFile).ReportDiagnostics(context);
 
         CommonGenerator.Initialize(context, minimized, minimizedResized);
         MathsGenerator.Initialize(context, minimized, minimizedResized);
-        UnitsGenerator.Initialize(context, minimized, minimizedResized);
+        UnitsGenerator.Initialize(context, minimized, minimizedResized, UnitInclusionPopulationProvider);
     }
 
-    private static IOptionalWithDiagnostics<DataModel> ReduceToDataModel
-        ((ParsedVector Vector, UnitPopulation UnitPopulation, ScalarPopulation ScalarPopulation, VectorPopulation VectorPopulation) input, CancellationToken _)
+    private static IOptionalWithDiagnostics<DataModel> ReduceToDataModel((ParsedGeneratedVector Vector, UnitPopulation UnitPopulation, ScalarPopulation ScalarPopulation,
+        VectorPopulation VectorPopulation, VectorPopulationData VectorPopulationData) input, CancellationToken _)
     {
-        GeneratedVectorRefinementContext context = new(input.Vector.VectorType, input.UnitPopulation, input.ScalarPopulation);
+        GeneratedVectorRefinementContext context = new(input.Vector.VectorType, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
         GeneratedVectorRefiner refiner = new(GeneratedVectorDiagnostics.Instance);
 
         var processedGeneratedVector = refiner.Process(context, input.Vector.VectorDefinition);
@@ -62,15 +70,17 @@ public class VectorGenerator
             return OptionalWithDiagnostics.Empty<DataModel>(processedGeneratedVector.Diagnostics);
         }
 
-        DataModel model = new(input.Vector, processedGeneratedVector.Result.Unit, processedGeneratedVector.Result.Scalar);
+        DataModel model = new(processedGeneratedVector.Result, input.Vector, input.VectorPopulation, input.VectorPopulationData);
 
         return OptionalWithDiagnostics.Result(model, processedGeneratedVector.Diagnostics);
     }
 
-    private static IOptionalWithDiagnostics<ResizedDataModel> ReduceToDataModel
-        ((ParsedResizedVector Vector, UnitPopulation UnitPopulation, ScalarPopulation ScalarPopulation, VectorPopulation VectorPopulation) input, CancellationToken _)
+    private static IOptionalWithDiagnostics<ResizedDataModel> ReduceToDataModel((ParsedResizedVector Vector, UnitPopulation UnitPopulation,
+        ScalarPopulation ScalarPopulation, VectorPopulation VectorPopulation, VectorPopulationData VectorPopulationData) input, CancellationToken _)
     {
-        ResizedVectorRefinementContext context = new(input.Vector.VectorType, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        ResizedVectorRefinementContext context
+            = new(input.Vector.VectorType, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation, input.VectorPopulationData);
+
         ResizedVectorRefiner refiner = new(ResizedVectorDiagnostics.Instance);
 
         var processedResizedVector = refiner.Process(context, input.Vector.VectorDefinition);
@@ -80,8 +90,7 @@ public class VectorGenerator
             return OptionalWithDiagnostics.Empty<ResizedDataModel>(processedResizedVector.Diagnostics);
         }
 
-        ResizedDataModel model = new(input.Vector, processedResizedVector.Result.AssociatedVector.VectorType, processedResizedVector.Result.Unit,
-            processedResizedVector.Result.Scalar);
+        ResizedDataModel model = new(processedResizedVector.Result, input.Vector, input.VectorPopulation, input.VectorPopulationData);
 
         return OptionalWithDiagnostics.Result(model, processedResizedVector.Diagnostics);
     }
@@ -125,13 +134,15 @@ public class VectorGenerator
 
         public UnitPopulation UnitPopulation { get; }
         public ScalarPopulation ScalarPopulation { get; }
+        public VectorPopulation VectorPopulation { get; }
 
-        public GeneratedVectorRefinementContext(DefinedType type, UnitPopulation unitPopulation, ScalarPopulation scalarPopulation)
+        public GeneratedVectorRefinementContext(DefinedType type, UnitPopulation unitPopulation, ScalarPopulation scalarPopulation, VectorPopulation vectorPopulation)
         {
             Type = type;
 
             UnitPopulation = unitPopulation;
             ScalarPopulation = scalarPopulation;
+            VectorPopulation = vectorPopulation;
         }
     }
 
@@ -143,13 +154,18 @@ public class VectorGenerator
         public ScalarPopulation ScalarPopulation { get; }
         public VectorPopulation VectorPopulation { get; }
 
-        public ResizedVectorRefinementContext(DefinedType type, UnitPopulation unitPopulation, ScalarPopulation scalarPopulation, VectorPopulation vectorPopulation)
+        public VectorPopulationData VectorPopulationData { get; }
+
+        public ResizedVectorRefinementContext(DefinedType type, UnitPopulation unitPopulation, ScalarPopulation scalarPopulation, VectorPopulation vectorPopulation,
+            VectorPopulationData vectorPopulationData)
         {
             Type = type;
 
             UnitPopulation = unitPopulation;
             ScalarPopulation = scalarPopulation;
             VectorPopulation = vectorPopulation;
+
+            VectorPopulationData = vectorPopulationData;
         }
     }
 }

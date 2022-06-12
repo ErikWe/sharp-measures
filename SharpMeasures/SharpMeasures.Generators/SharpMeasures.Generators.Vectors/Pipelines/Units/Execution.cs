@@ -50,7 +50,7 @@ internal static class Execution
             UsingsBuilding.AppendUsings(Builder, Data.Vector.Namespace, new string[]
             {
                 "SharpMeasures",
-                Data.Unit.Namespace
+                Data.Unit.UnitType.Namespace
             });
 
             Builder.Append(Data.Vector.ComposeDeclaration());
@@ -69,7 +69,7 @@ internal static class Execution
             {
                 AppendDocumentation(indentation, VectorDocumentationTags.Units.ConstantWithName(constant.Name));
                 Builder.AppendLine($"{indentation}public static {Data.Vector.Name} {constant.Name} => " +
-                    $"new(({ComposeConstant(constant)}), {Data.Unit.Name}.{constant.Unit.Name});");
+                    $"new(({ComposeConstant(constant)}), {Data.Unit.UnitType.Name}.{constant.Unit.Name});");
             }
 
             Builder.AppendLine();
@@ -88,7 +88,7 @@ internal static class Execution
             foreach (UnitInstance includedUnit in Data.Units)
             {
                 AppendDocumentation(indentation, VectorDocumentationTags.Units.UnitWithName(includedUnit));
-                Builder.AppendLine($"{indentation}public static Vector{Data.Dimension} {includedUnit.Plural} => InUnit({Data.Unit.Name}.{includedUnit.Name});");
+                Builder.AppendLine($"{indentation}public static Vector{Data.Dimension} {includedUnit.Plural} => InUnit({Data.Unit.UnitType.Name}.{includedUnit.Name});");
             }
         }
 

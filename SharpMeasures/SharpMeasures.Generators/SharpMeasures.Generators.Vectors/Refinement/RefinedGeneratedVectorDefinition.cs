@@ -7,23 +7,25 @@ internal readonly record struct RefinedGeneratedVectorDefinition
 {
     public UnitInterface Unit { get; }
     public ScalarInterface? Scalar { get; }
+    public ResizedVectorGroup VectorGroup { get; }
 
     public int Dimension { get; }
 
-    public string? DefaultUnit { get; }
+    public string? DefaultUnitName { get; }
     public string? DefaultUnitSymbol { get; }
 
     public bool GenerateDocumentation { get; }
 
-    public RefinedGeneratedVectorDefinition(UnitInterface unit, ScalarInterface? scalar, int dimension, string? defaultUnit, string? defaultUnitSymbol,
-        bool generateDocumentation)
+    public RefinedGeneratedVectorDefinition(UnitInterface unit, ScalarInterface? scalar, ResizedVectorGroup vectorGroup, int dimension, string? defaultUnitName,
+        string? defaultUnitSymbol, bool generateDocumentation)
     {
         Unit = unit;
         Scalar = scalar;
+        VectorGroup = vectorGroup;
 
         Dimension = dimension;
 
-        DefaultUnit = defaultUnit;
+        DefaultUnitName = defaultUnitName;
         DefaultUnitSymbol = defaultUnitSymbol;
 
         GenerateDocumentation = generateDocumentation;

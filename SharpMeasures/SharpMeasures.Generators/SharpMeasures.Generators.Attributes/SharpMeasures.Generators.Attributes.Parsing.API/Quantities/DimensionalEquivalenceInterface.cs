@@ -13,7 +13,7 @@ public class DimensionalEquivalenceInterface
 
     public DimensionalEquivalenceInterface(IReadOnlyList<NamedType> quantities, ConversionOperationBehaviour castOperatorBehaviour)
     {
-        Quantities = new(quantities);
+        Quantities = quantities.AsReadOnlyEquatable();
 
         CastOperatorBehaviour = castOperatorBehaviour;
     }

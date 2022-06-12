@@ -8,7 +8,7 @@ using System.Linq;
 public class ReadOnlyEquatableCollection<T> : EquatableEnumerable<T>, IReadOnlyCollection<T>, IEquatable<ReadOnlyEquatableCollection<T>>
 {
     [SuppressMessage("Design", "CA1000", Justification = "Property")]
-    public static ReadOnlyEquatableCollection<T> Empty => new(Array.Empty<T>());
+    new public static ReadOnlyEquatableCollection<T> Empty => new(Array.Empty<T>());
 
     public int Count => Items.Count;
 

@@ -4,12 +4,13 @@ using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+using SharpMeasures.Generators.Vectors.Parsing.Abstractions;
 using SharpMeasures.Generators.Vectors.Parsing.GeneratedVector;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System.Collections.Generic;
 
-internal record class RawParsedVector
+internal record class RawParsedGeneratedVector : IRawParsedVector<GeneratedVectorDefinition>
 {
     public DefinedType VectorType { get; }
     public MinimalLocation VectorLocation { get; }
@@ -21,7 +22,12 @@ internal record class RawParsedVector
     public EquatableEnumerable<RawVectorConstantDefinition> VectorConstants { get; }
     public EquatableEnumerable<RawDimensionalEquivalenceDefinition> DimensionalEquivalences { get; }
 
-    public RawParsedVector(DefinedType vectorType, MinimalLocation vectorLocation, GeneratedVectorDefinition vectorDefinition,
+    IEnumerable<RawIncludeUnitsDefinition> IRawParsedVector<GeneratedVectorDefinition>.IncludeUnits => IncludeUnits;
+    IEnumerable<RawExcludeUnitsDefinition> IRawParsedVector<GeneratedVectorDefinition>.ExcludeUnits => ExcludeUnits;
+    IEnumerable<RawVectorConstantDefinition> IRawParsedVector<GeneratedVectorDefinition>.VectorConstants => VectorConstants;
+    IEnumerable<RawDimensionalEquivalenceDefinition> IRawParsedVector<GeneratedVectorDefinition>.DimensionalEquivalences => DimensionalEquivalences;
+
+    public RawParsedGeneratedVector(DefinedType vectorType, MinimalLocation vectorLocation, GeneratedVectorDefinition vectorDefinition,
         IEnumerable<RawIncludeUnitsDefinition> includeUnits, IEnumerable<RawExcludeUnitsDefinition> excludeUnits, IEnumerable<RawVectorConstantDefinition> vectorConstants,
         IEnumerable<RawDimensionalEquivalenceDefinition> dimensionalEquivalences)
     {
@@ -29,10 +35,10 @@ internal record class RawParsedVector
         VectorLocation = vectorLocation;
         VectorDefinition = vectorDefinition;
 
-        IncludeUnits = new(includeUnits);
-        ExcludeUnits = new(excludeUnits);
+        IncludeUnits = includeUnits.AsEquatable();
+        ExcludeUnits = excludeUnits.AsEquatable();
 
-        VectorConstants = new(vectorConstants);
-        DimensionalEquivalences = new(dimensionalEquivalences);
+        VectorConstants = vectorConstants.AsEquatable();
+        DimensionalEquivalences = dimensionalEquivalences.AsEquatable();
     }
 }

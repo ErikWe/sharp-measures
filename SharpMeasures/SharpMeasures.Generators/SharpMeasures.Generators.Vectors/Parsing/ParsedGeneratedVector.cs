@@ -9,7 +9,7 @@ using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System.Collections.Generic;
 
-internal record class ParsedVector
+internal record class ParsedGeneratedVector
 {
     public DefinedType VectorType { get; }
     public MinimalLocation VectorLocation { get; }
@@ -21,7 +21,7 @@ internal record class ParsedVector
     public EquatableEnumerable<VectorConstantDefinition> VectorConstants { get; }
     public EquatableEnumerable<DimensionalEquivalenceDefinition> DimensionalEquivalences { get; }
 
-    public ParsedVector(DefinedType vectorType, MinimalLocation vectorLocation, GeneratedVectorDefinition vectorDefinition,
+    public ParsedGeneratedVector(DefinedType vectorType, MinimalLocation vectorLocation, GeneratedVectorDefinition vectorDefinition,
         IEnumerable<IncludeUnitsDefinition> includeUnits, IEnumerable<ExcludeUnitsDefinition> excludeUnits, IEnumerable<VectorConstantDefinition> vectorConstants,
         IEnumerable<DimensionalEquivalenceDefinition> dimensionalEquivalences)
     {
@@ -29,10 +29,10 @@ internal record class ParsedVector
         VectorLocation = vectorLocation;
         VectorDefinition = vectorDefinition;
 
-        IncludeUnits = new(includeUnits);
-        ExcludeUnits = new(excludeUnits);
+        IncludeUnits = includeUnits.AsEquatable();
+        ExcludeUnits = excludeUnits.AsEquatable();
 
-        VectorConstants = new(vectorConstants);
-        DimensionalEquivalences = new(dimensionalEquivalences);
+        VectorConstants = vectorConstants.AsEquatable();
+        DimensionalEquivalences = dimensionalEquivalences.AsEquatable();
     }
 }

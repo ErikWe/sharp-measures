@@ -60,16 +60,16 @@ public class ScalarGenerator
             return OptionalWithDiagnostics.Empty<DataModel>(processedGeneratedScalar.Diagnostics);
         }
 
-        DataModel model = new(input.Scalar, processedGeneratedScalar.Result.Unit, processedGeneratedScalar.Result.Vectors, input.ScalarPopulation, input.VectorPopulation);
+        DataModel model = new(processedGeneratedScalar.Result, input.Scalar, input.ScalarPopulation, input.VectorPopulation);
 
         return OptionalWithDiagnostics.Result(model, processedGeneratedScalar.Diagnostics);
     }
 
     private static (DataModel Model, bool GenerateDocumentation) InterpretGenerateDocumentation((DataModel Model, bool Default) data, CancellationToken _)
     {
-        if (data.Model.Scalar.ScalarDefinition.Locations.ExplicitlySetGenerateDocumentation)
+        if (data.Model.ScalarData.ScalarDefinition.Locations.ExplicitlySetGenerateDocumentation)
         {
-            return (data.Model, data.Model.Scalar.ScalarDefinition.GenerateDocumentation);
+            return (data.Model, data.Model.ScalarData.ScalarDefinition.GenerateDocumentation);
         }
 
         return (data.Model, data.Default);
@@ -80,14 +80,14 @@ public class ScalarGenerator
     {
         if (input.GenerateDocumentation)
         {
-            if (input.DocumentationDictionary.TryGetValue(input.Model.Scalar.ScalarType.Name, out DocumentationFile documentationFile))
+            if (input.DocumentationDictionary.TryGetValue(input.Model.ScalarData.ScalarType.Name, out DocumentationFile documentationFile))
             {
                 DataModel modifiedModel = input.Model with { Documentation = documentationFile };
                 return ResultWithDiagnostics.Construct(modifiedModel);
             }
 
-            Diagnostic diagnostics = DiagnosticConstruction.NoMatchingDocumentationFile(input.Model.Scalar.ScalarLocation.AsRoslynLocation(),
-                input.Model.Scalar.ScalarType.Name);
+            Diagnostic diagnostics = DiagnosticConstruction.NoMatchingDocumentationFile(input.Model.ScalarData.ScalarLocation.AsRoslynLocation(),
+                input.Model.ScalarData.ScalarType.Name);
 
             return ResultWithDiagnostics.Construct(input.Model, diagnostics);
         }

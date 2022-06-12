@@ -6,11 +6,11 @@ using SharpMeasures.Generators.Vectors;
 internal readonly record struct RefinedGeneratedScalarDefinition
 {
     public UnitInterface Unit { get; }
-    public ResizedVectorGroup? Vectors { get; }
+    public ResizedVectorGroup? VectorGroup { get; }
 
     public bool Biased { get; }
 
-    public string? DefaultUnit { get; }
+    public string? DefaultUnitName { get; }
     public string? DefaultUnitSymbol { get; }
 
     public ScalarInterface? Reciprocal { get; }
@@ -19,14 +19,16 @@ internal readonly record struct RefinedGeneratedScalarDefinition
     public ScalarInterface? SquareRoot { get; }
     public ScalarInterface? CubeRoot { get; }
 
-    public RefinedGeneratedScalarDefinition(UnitInterface unit, ResizedVectorGroup? vectors, bool biased, string? defaultUnit, string? defaultUnitSymbol,
-        ScalarInterface? reciprocal, ScalarInterface? square, ScalarInterface? cube, ScalarInterface? squareRoot, ScalarInterface? cubeRoot)
+    public bool GenerateDocumentation { get; }
+
+    public RefinedGeneratedScalarDefinition(UnitInterface unit, ResizedVectorGroup? vectorGroup, bool biased, string? defaultUnitName, string? defaultUnitSymbol,
+        ScalarInterface? reciprocal, ScalarInterface? square, ScalarInterface? cube, ScalarInterface? squareRoot, ScalarInterface? cubeRoot, bool generateDocumetnation)
     {
         Unit = unit;
-        Vectors = vectors;
+        VectorGroup = vectorGroup;
 
         Biased = biased;
-        DefaultUnit = defaultUnit;
+        DefaultUnitName = defaultUnitName;
         DefaultUnitSymbol = defaultUnitSymbol;
 
         Reciprocal = reciprocal;
@@ -34,5 +36,7 @@ internal readonly record struct RefinedGeneratedScalarDefinition
         Cube = cube;
         SquareRoot = squareRoot;
         CubeRoot = cubeRoot;
+
+        GenerateDocumentation = generateDocumetnation;
     }
 }

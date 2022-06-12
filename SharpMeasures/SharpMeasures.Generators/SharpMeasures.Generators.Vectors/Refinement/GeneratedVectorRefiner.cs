@@ -24,6 +24,7 @@ internal interface IGeneratedVectorRefinementContext : IProcessingContext
 {
     public abstract UnitPopulation UnitPopulation { get; }
     public abstract ScalarPopulation ScalarPopulation { get; }
+    public abstract VectorPopulation VectorPopulation { get; }
 }
 
 internal class GeneratedVectorRefiner : IProcesser<IGeneratedVectorRefinementContext, GeneratedVectorDefinition, RefinedGeneratedVectorDefinition>
@@ -57,6 +58,11 @@ internal class GeneratedVectorRefiner : IProcesser<IGeneratedVectorRefinementCon
             return OptionalWithDiagnostics.Empty<RefinedGeneratedVectorDefinition>(Diagnostics.TypeAlreadyScalar(context, definition));
         }
 
+        if (context.VectorPopulation.ResizedVectorGroups.TryGetValue(context.Type.AsNamedType(), out var vectorGroup) is false)
+        {
+            return OptionalWithDiagnostics.Empty<RefinedGeneratedVectorDefinition>();
+        }
+
         var processedUnit = ProcessUnit(context, definition);
         var allDiagnostics = processedUnit.Diagnostics;
 
@@ -71,7 +77,7 @@ internal class GeneratedVectorRefiner : IProcesser<IGeneratedVectorRefinementCon
         var processedDefaultUnitName = ProcessDefaultUnitName(context, definition, processedUnit.Result);
         allDiagnostics = allDiagnostics.Concat(processedDefaultUnitName.Diagnostics);
 
-        RefinedGeneratedVectorDefinition product = new(processedUnit.Result, processedScalar.Result, definition.Dimension, processedDefaultUnitName.Result,
+        RefinedGeneratedVectorDefinition product = new(processedUnit.Result, processedScalar.Result, vectorGroup, definition.Dimension, processedDefaultUnitName.Result,
             definition.DefaultUnitSymbol, definition.GenerateDocumentation);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);

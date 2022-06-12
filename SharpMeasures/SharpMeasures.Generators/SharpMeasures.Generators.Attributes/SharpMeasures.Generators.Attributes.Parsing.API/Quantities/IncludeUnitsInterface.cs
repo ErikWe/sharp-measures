@@ -10,6 +10,6 @@ public class ExcludeUnitsInterface
 
     public ExcludeUnitsInterface(IReadOnlyList<string> excludedUnits)
     {
-        ExcludedUnits = new(excludedUnits);
+        ExcludedUnits = excludedUnits.AsReadOnlyEquatable();
     }
 }

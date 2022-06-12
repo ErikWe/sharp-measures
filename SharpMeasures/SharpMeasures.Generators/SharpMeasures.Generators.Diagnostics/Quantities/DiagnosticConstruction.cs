@@ -77,4 +77,29 @@ public static partial class DiagnosticConstruction
     {
         return Diagnostic.Create(DiagnosticRules.QuantityGroupMissingRoot, location, typeof(TAttribute).Name);
     }
+
+    public static Diagnostic UnitAlreadyIncluded(Location? location, string unitName)
+    {
+        return Diagnostic.Create(DiagnosticRules.UnitAlreadyIncluded, location, unitName);
+    }
+
+    public static Diagnostic UnitNotIncluded(Location? location, string unitName)
+    {
+        return Diagnostic.Create(DiagnosticRules.UnitNotIncluded, location, unitName);
+    }
+
+    public static Diagnostic UnitAlreadyExcluded(Location? location, string unitName)
+    {
+        return Diagnostic.Create(DiagnosticRules.UnitAlreadyExcluded, location, unitName);
+    }
+
+    public static Diagnostic UnitNotExcluded(Location? location, string unitName)
+    {
+        return Diagnostic.Create(DiagnosticRules.UnitNotExcluded, location, unitName);
+    }
+
+    public static Diagnostic UnitAlreadyListed(Location? location, string unitName)
+    {
+        return Diagnostic.Create(DiagnosticRules.UnitAlreadyListed, location, unitName);
+    }
 }

@@ -1,13 +1,14 @@
 ﻿namespace SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
+using SharpMeasures.Generators.Quantities.Parsing.Abstractions;
 
 using System;
 using System.Collections.Generic;
 
 public class IncludeUnitsProcesser : AItemListProcesser<string?, string, IItemListProcessingContext<string>, RawIncludeUnitsDefinition, IncludeUnitsDefinition>
 {
-    public IncludeUnitsProcesser(IItemListProcessingDiagnostics<string, RawIncludeUnitsDefinition> diagnostics) : base(diagnostics) { }
+    public IncludeUnitsProcesser(IUnitInclusionOrExclusionListProcessingDiagnostics<RawIncludeUnitsDefinition> diagnostics) : base(diagnostics) { }
 
     protected override IncludeUnitsDefinition ConstructProduct(IReadOnlyList<string> items, RawIncludeUnitsDefinition definition)
     {

@@ -26,7 +26,7 @@ public class DocumentationFile : IEquatable<DocumentationFile>
     {
         Name = name;
         Location = location;
-        Content = new(content);
+        Content = content.AsReadOnlyEquatable();
 
         DiagnosticsStrategy = diagnosticsStrategy;
     }

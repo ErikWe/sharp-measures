@@ -1,136 +1,62 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Providers;
+using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
-using SharpMeasures.Generators.Vectors;
+using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Vectors.Diagnostics;
+using SharpMeasures.Generators.Vectors.Parsing.Abstractions;
 using SharpMeasures.Generators.Vectors.Parsing.ResizedVector;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
-using SharpMeasures.Equatables;
 
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Threading;
 using System.Linq;
+using System.Threading;
 
-internal static class ResizedVectorParsingStage
+internal class ResizedVectorParsingStage : AVectorParsingStage<ResizedVectorAttribute, RawResizedVectorDefinition, ResizedVectorDefinition,
+    RawParsedResizedVector, ParsedResizedVector>
 {
-    public readonly record struct Output(IncrementalValuesProvider<ParsedResizedVector> VectorProvider,
-        IncrementalValueProvider<ReadOnlyEquatableDictionary<NamedType, ResizedVectorInterface>> VectorPopulationProvider);
+    public IncrementalValuesProvider<ResizedVectorInterface> InterfaceProvider { get; }
 
-    public static Output Attach(IncrementalGeneratorInitializationContext context)
+    public ResizedVectorParsingStage(IncrementalGeneratorInitializationContext context) : base(context)
     {
-        var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<ResizedVectorAttribute>(context.SyntaxProvider);
-        var partialDeclarations = PartialDeclarationProvider.Construct<TypeDeclarationSyntax>().AttachAndReport(context, declarations, VectorDiagnostics.Instance);
-        var symbols = DeclarationSymbolProvider.ConstructForValueType(ConstructIntermediateResult).Attach(partialDeclarations, context.CompilationProvider);
-
-        var parsed = symbols.Select(ExtractVectorInformation).ReportDiagnostics(context).Select(ProcessVectorInformation).ReportDiagnostics(context);
-        
-        var population = parsed.Select(ConstructInterface).Collect().Select(CreatePopulation);
-
-        return new(parsed, population);
+        InterfaceProvider = ConstructInterfaces();
     }
 
-    private static IOptionalWithDiagnostics<RawParsedResizedVector> ExtractVectorInformation(IntermediateResult input, CancellationToken _)
+    protected override IProcesser<IProcessingContext, RawResizedVectorDefinition, ResizedVectorDefinition> Processer
+        => new ResizedVectorProcesser(ResizedVectorDiagnostics.Instance);
+
+    protected override RawResizedVectorDefinition? Parse(INamedTypeSymbol typeSymbol) => ResizedVectorParser.Parser.ParseFirstOccurrence(typeSymbol);
+
+    protected override RawParsedResizedVector ConstructParsed(DefinedType type, MinimalLocation location, ResizedVectorDefinition definition,
+        IEnumerable<RawIncludeUnitsDefinition> includeUnits, IEnumerable<RawExcludeUnitsDefinition> excludeUnits,
+        IEnumerable<RawVectorConstantDefinition> vectorConstants, IEnumerable<RawDimensionalEquivalenceDefinition> dimensionalEquivalences)
     {
-        if (ResizedVectorParser.Parser.ParseFirstOccurrence(input.TypeSymbol) is not RawResizedVectorDefinition resizedVector)
-        {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<RawParsedResizedVector>();
-        }
-
-        ProcessingContext context = new(input.TypeSymbol.AsDefinedType());
-        var processedVector = Processers.ResizedVectorProcesser.Process(context, resizedVector);
-
-        if (processedVector.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<RawParsedResizedVector>(processedVector);
-        }
-
-        var definedType = input.TypeSymbol.AsDefinedType();
-        var typeLocation = input.Declaration.GetLocation().Minimize();
-
-        var vectorConstants = VectorConstantParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-
-        RawParsedResizedVector result = new(definedType, typeLocation, processedVector.Result, vectorConstants);
-
-        return OptionalWithDiagnostics.Result(result, processedVector.Diagnostics);
+        return new(type, location, definition, includeUnits, excludeUnits, vectorConstants, dimensionalEquivalences);
     }
 
-    private static IResultWithDiagnostics<ParsedResizedVector> ProcessVectorInformation(RawParsedResizedVector input, CancellationToken _)
+    protected override ParsedResizedVector ConstructProcessed(DefinedType type, MinimalLocation location, ResizedVectorDefinition definition,
+        IEnumerable<IncludeUnitsDefinition> includeUnits, IEnumerable<ExcludeUnitsDefinition> excludeUnits,
+        IEnumerable<VectorConstantDefinition> vectorConstants, IEnumerable<DimensionalEquivalenceDefinition> dimensionalEquivalences)
     {
-        VectorConstantProcessingContext vectorConstantContext = new(input.VectorType, input.VectorDefinition.Dimension);
-
-        var processedVectorConstants = ProcessingFilter.Create(Processers.VectorConstantProcesser).Filter(vectorConstantContext, input.VectorConstants);
-
-        var allDiagnostics = processedVectorConstants.Diagnostics;
-
-        ParsedResizedVector processed = new(input.VectorType, input.VectorLocation, input.VectorDefinition, processedVectorConstants.Result);
-
-        return ResultWithDiagnostics.Construct(processed, allDiagnostics);
+        return new(type, location, definition, includeUnits, excludeUnits, vectorConstants, dimensionalEquivalences);
     }
 
-    private static ResizedVectorInterface ConstructInterface(ParsedResizedVector vector, CancellationToken _)
+    private IncrementalValuesProvider<ResizedVectorInterface> ConstructInterfaces()
     {
-        return new(vector.VectorType.AsNamedType(), vector.VectorDefinition.AssociatedVector, vector.VectorDefinition.Dimension);
+        return ProcessedProvider.Select(ConstructInterface);
     }
 
-    private static ReadOnlyEquatableDictionary<NamedType, ResizedVectorInterface> CreatePopulation(ImmutableArray<ResizedVectorInterface> vectors, CancellationToken _)
+    private ResizedVectorInterface ConstructInterface(ParsedResizedVector input, CancellationToken _)
     {
-        return new(vectors.ToDictionary(static (vector) => vector.VectorType));
+        var includedUnits = input.IncludeUnits.Select(static (x) => new IncludeUnitsInterface(x.IncludedUnits));
+        var excludedUnits = input.ExcludeUnits.Select(static (x) => new ExcludeUnitsInterface(x.ExcludedUnits));
+        var dimensionalEquivalences = input.DimensionalEquivalences.Select(static (x) => new DimensionalEquivalenceInterface(x.Quantities, x.CastOperatorBehaviour));
+
+        return new(input.VectorType.AsNamedType(), input.VectorDefinition.AssociatedVector, input.VectorDefinition.Dimension, includedUnits,
+            excludedUnits, dimensionalEquivalences);
     }
-
-    private readonly record struct ProcessingContext : IProcessingContext
-    {
-        public DefinedType Type { get; }
-
-        public ProcessingContext(DefinedType type)
-        {
-            Type = type;
-        }
-    }
-
-    private readonly record struct DimensionalEquivalenceProcessingContext : IDimensionalEquivalenceProcessingContext
-    {
-        public DefinedType Type { get; }
-
-        public HashSet<NamedType> DimensionallyEquivalentQuantities { get; } = new();
-        HashSet<NamedType> IDimensionalEquivalenceProcessingContext.ListedQuantities => DimensionallyEquivalentQuantities;
-
-        public DimensionalEquivalenceProcessingContext(DefinedType type)
-        {
-            Type = type;
-        }
-    }
-
-    private readonly record struct VectorConstantProcessingContext : IVectorConstantProcessingContext
-    {
-        public DefinedType Type { get; }
-        public int Dimension { get; }
-
-        public HashSet<string> ReservedConstants { get; } = new();
-        public HashSet<string> ReservedConstantMultiples { get; } = new();
-
-        public VectorConstantProcessingContext(DefinedType type, int dimension)
-        {
-            Type = type;
-            Dimension = dimension;
-        }
-    }
-
-    private static class Processers
-    {
-        public static ResizedVectorProcesser ResizedVectorProcesser { get; } = new(ResizedVectorDiagnostics.Instance);
-
-        public static VectorConstantProcesser VectorConstantProcesser { get; } = new(VectorConstantDiagnostics.Instance);
-    }
-
-    private readonly record struct IntermediateResult(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol);
-
-    private static DeclarationSymbolProvider.DOutputTransform<TypeDeclarationSyntax, IntermediateResult> ConstructIntermediateResult
-        => (declaration, symbol) => new IntermediateResult(declaration, symbol);
 }

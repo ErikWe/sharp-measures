@@ -19,6 +19,6 @@ internal readonly record struct DataModel(DefinedType Unit, NamedType Quantity, 
     public DataModel(DefinedType unit, NamedType quantity, bool biased, DocumentationFile documentation, IEnumerable<UnitAliasDefinition> unitAliases,
         IEnumerable<DerivedUnitDefinition> derivedUnits, IEnumerable<FixedUnitDefinition> fixedUnits, IEnumerable<OffsetUnitDefinition> offsetUnits,
         IEnumerable<PrefixedUnitDefinition> prefixedUnits, IEnumerable<ScaledUnitDefinition> scaledUnits)
-        : this(unit, quantity, biased, documentation, new(unitAliases), new(derivedUnits), new(fixedUnits), new(offsetUnits), new(prefixedUnits),
-              new(scaledUnits)) { }
+        : this(unit, quantity, biased, documentation, unitAliases.AsEquatable(), derivedUnits.AsEquatable(), fixedUnits.AsEquatable(), offsetUnits.AsEquatable(),
+              prefixedUnits.AsEquatable(), scaledUnits.AsEquatable()) { }
 }

@@ -15,7 +15,7 @@ internal static class CommonGenerator
 
     private static DataModel Reduce(Scalars.DataModel input, CancellationToken _)
     {
-        return new(input.Scalar.ScalarType, input.Unit.UnitType.AsNamedType(), input.Unit.QuantityType, input.Scalar.ScalarDefinition.Biased,
-            input.Scalar.ScalarDefinition.DefaultUnitName, input.Scalar.ScalarDefinition.DefaultUnitSymbol, input.Documentation);
+        return new(input.ScalarData.ScalarType, input.ScalarDefinition.Unit.UnitType.AsNamedType(), input.ScalarDefinition.Unit.QuantityType,
+            input.ScalarDefinition.Biased, input.ScalarDefinition.DefaultUnitName, input.ScalarDefinition.DefaultUnitSymbol, input.Documentation);
     }
 }

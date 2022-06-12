@@ -18,7 +18,7 @@ internal readonly record struct RefinedVectorConstantDefinition
     {
         Name = name;
         Unit = unit;
-        Value = new(value);
+        Value = value.AsReadOnlyEquatable();
 
         GenerateMultiplesProperty = generateMultiplesProperty;
         MultiplesName = multiplesName;

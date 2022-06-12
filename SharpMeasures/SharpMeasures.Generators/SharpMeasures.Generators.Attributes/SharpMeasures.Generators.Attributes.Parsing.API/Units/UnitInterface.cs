@@ -20,6 +20,6 @@ public record class UnitInterface
 
         SupportsBiasedQuantities = supportsBiasedQuantities;
 
-        UnitsByName = new(unitsByName);
+        UnitsByName = unitsByName.AsReadOnlyEquatable();
     }
 }

@@ -6,11 +6,13 @@ using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Diagnostics;
+using SharpMeasures.Generators.Quantities.Parsing;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Quantities.Refinement;
 using SharpMeasures.Generators.Vectors.Diagnostics;
 using SharpMeasures.Generators.Vectors.Refinement;
+using SharpMeasures.Generators.Vectors.Parsing;
 using SharpMeasures.Generators.Units;
 
 using System;
@@ -21,17 +23,17 @@ using System.Threading;
 
 internal static class UnitsGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Vectors.DataModel> vectorProvider,
-        IncrementalValuesProvider<ResizedDataModel> resizedVectorProvider)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Vectors.DataModel> generatedVectorProvider,
+        IncrementalValuesProvider<ResizedDataModel> resizedVectorProvider, IncrementalValueProvider<UnitInclusionPopulation> unitInclusionProvider)
     {
-        var reduced = vectorProvider.Select(ReduceToDataModel).ReportDiagnostics(context);
+        var reducedGeneratedVectors = generatedVectorProvider.Select(ReduceToDataModel).ReportDiagnostics(context);
 
-        var rootModels = reduced.Collect().Select(ExposeRootDataModels);
+        var rootModels = reducedGeneratedVectors.Collect().Select(ExposeRootDataModels);
 
-        var associatedReduced = resizedVectorProvider.Combine(rootModels).Select(ReduceThroughAssociatedDataModel).ReportDiagnostics(context);
+        var reducedResizedVectors = resizedVectorProvider.Combine(rootModels, unitInclusionProvider).Select(ReduceThroughRootDataModel).ReportDiagnostics(context);
 
-        context.RegisterSourceOutput(reduced, Execution.Execute);
-        context.RegisterSourceOutput(associatedReduced, Execution.Execute);
+        context.RegisterSourceOutput(reducedGeneratedVectors, Execution.Execute);
+        context.RegisterSourceOutput(reducedResizedVectors, Execution.Execute);
     }
 
     private static IResultWithDiagnostics<DataModel> ReduceToDataModel(Vectors.DataModel input, CancellationToken _)
@@ -40,13 +42,13 @@ internal static class UnitsGenerator
 
         HashSet<string> includedUnits = new(processedUnits.Result.Select(static (x) => x.Plural));
 
-        VectorConstantRefinementContext vectorConstantContext = new(input.Vector.VectorType, input.Unit, includedUnits);
+        VectorConstantRefinementContext vectorConstantContext = new(input.VectorData.VectorType, input.VectorDefinition.Unit, includedUnits);
         VectorConstantRefiner vectorConstantRefiner = new(VectorConstantDiagnostics.Instance);
 
-        var processedConstants = ProcessingFilter.Create(vectorConstantRefiner).Filter(vectorConstantContext, input.Vector.VectorConstants);
+        var processedConstants = ProcessingFilter.Create(vectorConstantRefiner).Filter(vectorConstantContext, input.VectorData.VectorConstants);
 
-        DataModel model = new(input.Vector.VectorType, input.Vector.VectorDefinition.Dimension, input.Unit.UnitType.AsNamedType(), input.Unit.QuantityType,
-            processedUnits.Result, processedConstants.Result, input.Documentation);
+        DataModel model = new(input.VectorData.VectorType, input.VectorDefinition.Dimension, input.VectorDefinition.Scalar?.ScalarType.AsNamedType(),
+            input.VectorDefinition.Unit, input.VectorDefinition.Unit.QuantityType, processedUnits.Result, processedConstants.Result, input.Documentation);
 
         var allDiagnostics = processedUnits.Diagnostics.Concat(processedConstants.Diagnostics);
 
@@ -55,13 +57,13 @@ internal static class UnitsGenerator
 
     private static IResultWithDiagnostics<IReadOnlyCollection<UnitInstance>> GetIncludedUnits(Vectors.DataModel input)
     {
-        UnitListRefinementContext context = new(input.Vector.VectorType, input.Unit);
+        UnitListRefinementContext context = new(input.VectorData.VectorType, input.VectorDefinition.Unit);
 
         UnitListRefiner<IncludeUnitsDefinition> inclusionRefiner = new(UnitListRefinementDiagnostics<IncludeUnitsDefinition>.Instance);
 
-        if (input.Vector.IncludeUnits.Any())
+        if (input.VectorData.IncludeUnits.Any())
         {
-            var processedInclusions = ProcessingFilter.Create(inclusionRefiner).Filter(context, input.Vector.IncludeUnits, RefinedUnitListDefinition.StartBuilder());
+            var processedInclusions = ProcessingFilter.Create(inclusionRefiner).Filter(context, input.VectorData.IncludeUnits, RefinedUnitListDefinition.StartBuilder());
 
             var includedUnits = processedInclusions.Result.Target.UnitList as IReadOnlyCollection<UnitInstance> ?? Array.Empty<UnitInstance>();
             return ResultWithDiagnostics.Construct(includedUnits, processedInclusions.Diagnostics);
@@ -69,9 +71,9 @@ internal static class UnitsGenerator
 
         UnitListRefiner<ExcludeUnitsDefinition> exclusionRefiner = new(UnitListRefinementDiagnostics<ExcludeUnitsDefinition>.Instance);
 
-        var processedExclusions = ProcessingFilter.Create(exclusionRefiner).Filter(context, input.Vector.ExcludeUnits, RefinedUnitListDefinition.StartBuilder());
+        var processedExclusions = ProcessingFilter.Create(exclusionRefiner).Filter(context, input.VectorData.ExcludeUnits, RefinedUnitListDefinition.StartBuilder());
 
-        List<UnitInstance> allUnits = input.Unit.UnitsByName.Values.ToList();
+        List<UnitInstance> allUnits = input.VectorDefinition.Unit.UnitsByName.Values.ToList();
 
         foreach (UnitInstance excludedUnit in processedExclusions.Result.Target.UnitList)
         {
@@ -90,26 +92,35 @@ internal static class UnitsGenerator
             dictionary.Add(dataModel.Vector.AsNamedType(), dataModel);
         }
 
-        return new(dictionary);
+        return dictionary.AsReadOnlyEquatable();
     }
 
-    private static IOptionalWithDiagnostics<DataModel> ReduceThroughAssociatedDataModel
-        ((ResizedDataModel Model, ReadOnlyEquatableDictionary<NamedType, DataModel> Dictionary) input, CancellationToken _)
+    private static IOptionalWithDiagnostics<DataModel> ReduceThroughRootDataModel
+        ((ResizedDataModel Model, ReadOnlyEquatableDictionary<NamedType, DataModel> RootModels, UnitInclusionPopulation UnitInclusionPopulation) input,
+        CancellationToken _)
     {
-        if (input.Dictionary.TryGetValue(input.Model.AssociatedRootVector, out var associatedModel) is false)
+        if (input.RootModels.TryGetValue(input.Model.VectorDefinition.AssociatedVector.VectorType, out var associatedModel) is false)
         {
             return OptionalWithDiagnostics.Empty<DataModel>();
         }
 
-        HashSet<string> includedUnits = new(associatedModel.Units.Select(static (x) => x.Plural));
+        AssociatedUnitInclusionRefinementContext unitInclusionContext = new(input.Model.VectorData.VectorType, input.Model.VectorData.VectorDefinition.AssociatedVector,
+            associatedModel.Unit, input.UnitInclusionPopulation);
 
-        VectorConstantRefinementContext vectorConstantContext = new(input.Model.Vector.VectorType, input.Model.Unit, includedUnits);
+        AssociatedUnitInclusionRefiner<ParsedResizedVector, IncludeUnitsDefinition, ExcludeUnitsDefinition> unitInclusionRefiner
+            = new(AssociatedUnitInclusionRefinementDiagnostics<IncludeUnitsDefinition, ExcludeUnitsDefinition>.Instance);
+
+        var processedUnitInclusion = unitInclusionRefiner.Process(unitInclusionContext, input.Model.VectorData);
+
+        HashSet<string> includedUnitsHashSet = new(processedUnitInclusion.Result.UnitList.Select(static (x) => x.Plural));
+
+        VectorConstantRefinementContext vectorConstantContext = new(input.Model.VectorData.VectorType, associatedModel.Unit, includedUnitsHashSet);
         VectorConstantRefiner vectorConstantRefiner = new(VectorConstantDiagnostics.Instance);
 
-        var processedConstants = ProcessingFilter.Create(vectorConstantRefiner).Filter(vectorConstantContext, input.Model.Vector.VectorConstants);
+        var processedConstants = ProcessingFilter.Create(vectorConstantRefiner).Filter(vectorConstantContext, input.Model.VectorData.VectorConstants);
 
-        DataModel model = new(input.Model.Vector.VectorType, input.Model.Vector.VectorDefinition.Dimension, associatedModel.Unit, associatedModel.UnitQuantity,
-             associatedModel.Units, processedConstants.Result, input.Model.Documentation);
+        DataModel model = new(input.Model.VectorData.VectorType, input.Model.VectorDefinition.Dimension, associatedModel.Scalar, associatedModel.Unit,
+            associatedModel.UnitQuantity, associatedModel.Units, processedConstants.Result, input.Model.Documentation);
 
         return OptionalWithDiagnostics.Result(model, processedConstants.Diagnostics);
     }
@@ -141,6 +152,24 @@ internal static class UnitsGenerator
             Unit = unit;
             
             IncludedUnits = includedUnits;
+        }
+    }
+
+    private class AssociatedUnitInclusionRefinementContext : IAssociatedUnitInclusionRefinementContext
+    {
+        public DefinedType Type { get; }
+        public NamedType AssociatedType { get; }
+        public UnitInterface Unit { get; }
+
+        public UnitInclusionPopulation UnitInclusionPopulation { get; }
+
+        public AssociatedUnitInclusionRefinementContext(DefinedType type, NamedType associatedType, UnitInterface unit, UnitInclusionPopulation unitInclusionPopulation)
+        {
+            Type = type;
+            AssociatedType = associatedType;
+            Unit = unit;
+
+            UnitInclusionPopulation = unitInclusionPopulation;
         }
     }
 }

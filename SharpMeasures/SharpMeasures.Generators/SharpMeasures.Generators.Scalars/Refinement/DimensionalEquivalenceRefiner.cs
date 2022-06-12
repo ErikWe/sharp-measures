@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
 
 using System.Collections.Generic;

@@ -2,7 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +40,8 @@ public static class ResultWithDiagnostics
     {
         public T Result { get; }
         public IEnumerable<Diagnostic> Diagnostics { get; }
+
+        T? IOptionalWithDiagnostics<T>.NullableResult => Result;
 
         public SimpleResultWithDiagnostics(T result, IEnumerable<Diagnostic> diagnostics)
         {

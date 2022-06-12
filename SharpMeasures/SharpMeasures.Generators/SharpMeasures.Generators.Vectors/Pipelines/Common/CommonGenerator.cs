@@ -10,24 +10,24 @@ using System.Collections.Immutable;
 
 internal static class CommonGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Vectors.DataModel> vectorProvider,
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Vectors.DataModel> generatedVectorProvider,
         IncrementalValuesProvider<ResizedDataModel> resizedVectorProvider)
     {
-        var reduced = vectorProvider.Select(ReduceToDataModel);
+        var reducedGeneratedVectors = generatedVectorProvider.Select(ReduceToDataModel);
 
-        var rootModels = reduced.Collect().Select(ExposeRootDataModels);
+        var rootModels = reducedGeneratedVectors.Collect().Select(ExposeRootDataModels);
 
-        var associatedReduced = resizedVectorProvider.Combine(rootModels).Select(ReduceThroughAssociatedDataModel).WhereNotNull();
+        var reducedResizedVectors = resizedVectorProvider.Combine(rootModels).Select(ReduceThroughRootDataModel).WhereNotNull();
 
-        context.RegisterSourceOutput(reduced, Execution.Execute);
-        context.RegisterSourceOutput(associatedReduced, Execution.Execute);
+        context.RegisterSourceOutput(reducedGeneratedVectors, Execution.Execute);
+        context.RegisterSourceOutput(reducedResizedVectors, Execution.Execute);
     }
 
     private static DataModel ReduceToDataModel(Vectors.DataModel input, CancellationToken _)
     {
-        return new(input.Vector.VectorType, input.Vector.VectorDefinition.Dimension, input.Scalar?.ScalarType.AsNamedType(), input.Scalar?.Square,
-            input.Unit.UnitType.AsNamedType(), input.Unit.QuantityType, input.Vector.VectorDefinition.DefaultUnitName, input.Vector.VectorDefinition.DefaultUnitSymbol,
-            input.Documentation);
+        return new(input.VectorData.VectorType, input.VectorDefinition.Dimension, input.VectorDefinition.Scalar?.ScalarType.AsNamedType(),
+            input.VectorDefinition.Scalar?.Square, input.VectorDefinition.Unit.UnitType.AsNamedType(), input.VectorDefinition.Unit.QuantityType,
+            input.VectorDefinition.DefaultUnitName, input.VectorDefinition.DefaultUnitSymbol, input.Documentation);
     }
 
     private static ReadOnlyEquatableDictionary<NamedType, DataModel> ExposeRootDataModels(ImmutableArray<DataModel> dataModels, CancellationToken _)
@@ -39,18 +39,18 @@ internal static class CommonGenerator
             dictionary.Add(dataModel.Vector.AsNamedType(), dataModel);
         }
 
-        return new(dictionary);
+        return dictionary.AsReadOnlyEquatable();
     }
 
-    private static DataModel? ReduceThroughAssociatedDataModel((ResizedDataModel Model, ReadOnlyEquatableDictionary<NamedType, DataModel> Dictionary) input,
+    private static DataModel? ReduceThroughRootDataModel((ResizedDataModel Model, ReadOnlyEquatableDictionary<NamedType, DataModel> Dictionary) input,
         CancellationToken _)
     {
-        if (input.Dictionary.TryGetValue(input.Model.AssociatedRootVector, out var associatedModel) is false)
+        if (input.Dictionary.TryGetValue(input.Model.VectorDefinition.VectorGroup.Root.VectorType, out var rootModel) is false)
         {
             return null;
         }
 
-       return new(input.Model.Vector.VectorType, input.Model.Vector.VectorDefinition.Dimension, associatedModel.Scalar, associatedModel.SquaredScalar,
-            associatedModel.Unit, associatedModel.UnitQuantity, associatedModel.DefaultUnitName, associatedModel.DefaultUnitSymbol, input.Model.Documentation);
+       return new(input.Model.VectorData.VectorType, input.Model.VectorDefinition.Dimension, rootModel.Scalar, rootModel.SquaredScalar,
+            rootModel.Unit, rootModel.UnitQuantity, rootModel.DefaultUnitName, rootModel.DefaultUnitSymbol, input.Model.Documentation);
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
+using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Attributes.Parsing;
 
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ internal static class VectorConstantProperties
     private static VectorConstantProperty<double[]> Value { get; } = new
     (
         name: nameof(VectorConstantAttribute.Value),
-        setter: static (definition, value) => definition with { Value = new(value) },
+        setter: static (definition, value) => definition with { Value = value.AsReadOnlyEquatable() },
         locator: static (locations, collectionLocation, elementLocations) => locations with
         {
             ValueCollection = collectionLocation,

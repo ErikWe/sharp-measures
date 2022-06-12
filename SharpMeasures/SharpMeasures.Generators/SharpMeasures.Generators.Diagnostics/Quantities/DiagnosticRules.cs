@@ -128,4 +128,54 @@ public static partial class DiagnosticRules
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
+
+    public static readonly DiagnosticDescriptor UnitAlreadyIncluded = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
+        title: "Inclusion or exclusion had no effect",
+        messageFormat: "Including {0} had no effect, as {0} was already included",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Info,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor UnitNotIncluded = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
+        title: "Inclusion or exclusion had no effect",
+        messageFormat: "Excluding {0} had no effect, as {0} was not included",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Info,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor UnitAlreadyExcluded = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
+        title: "Inclusion or exclusion had no effect",
+        messageFormat: "Excluding {0} had no effect, as {0} was already excluded",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Info,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor UnitNotExcluded = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
+        title: "Inclusion or exclusion had no effect",
+        messageFormat: "Including {0} had no effect, as {0} was not excluded",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Info,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor UnitAlreadyListed = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
+        title: "Inclusion or exclusion had no effect",
+        messageFormat: "Including or excluding {0} had no effect, as {0} was already listed",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Info,
+        isEnabledByDefault: true
+    );
 }

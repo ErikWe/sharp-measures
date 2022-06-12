@@ -10,6 +10,6 @@ public class IncludeUnitsInterface
 
     public IncludeUnitsInterface(IReadOnlyList<string> includedUnits)
     {
-        IncludedUnits = new(includedUnits);
+        IncludedUnits = includedUnits.AsReadOnlyEquatable();
     }
 }

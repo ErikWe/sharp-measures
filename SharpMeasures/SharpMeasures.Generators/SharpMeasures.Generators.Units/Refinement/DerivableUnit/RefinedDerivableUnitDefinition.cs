@@ -16,6 +16,6 @@ internal readonly record struct RefinedDerivableUnitDefinition
         Expression = expression;
 
         Signature = signature;
-        ParameterNames = new(parameterNames);
+        ParameterNames = parameterNames.AsReadOnlyEquatable();
     }
 }

@@ -34,6 +34,8 @@ internal static class VectorDocumentationTags
     public const string Multiply_Scalar = nameof(Multiply_Scalar);
     public const string Divide_Scalar = nameof(Divide_Scalar);
 
+    public static string DimensionallyEquivalentTo(string quantityName) => $"As_{quantityName}";
+
     public static class Units
     {
         public static string ConstantWithName(string name) => $"Constant_{name}";
@@ -50,5 +52,7 @@ internal static class VectorDocumentationTags
         public const string Divide_Scalar = $"Operator_{nameof(Divide_Scalar)}";
 
         public const string Cast_ComponentTuple = $"Operator_{nameof(Cast_ComponentTuple)}";
+
+        public static string DimensionallyEquivalentTo(string quantityName) => $"Operator_As_{quantityName}";
     }
 }

@@ -35,13 +35,13 @@ internal record class ParsedScalar
         ScalarLocation = scalarLocation;
         ScalarDefinition = scalarDefinition;
 
-        IncludeBases = new(includeBases);
-        ExcludeBases = new(excludeBases);
+        IncludeBases = includeBases.AsEquatable();
+        ExcludeBases = excludeBases.AsEquatable();
 
-        IncludeUnits = new(includeUnits);
-        ExcludeUnits = new(excludeUnits);
+        IncludeUnits = includeUnits.AsEquatable();
+        ExcludeUnits = excludeUnits.AsEquatable();
 
-        ScalarConstants = new(scalarConstants);
-        DimensionalEquivalences = new(dimensionalEquivalences);
+        ScalarConstants = scalarConstants.AsEquatable();
+        DimensionalEquivalences = dimensionalEquivalences.AsEquatable();
     }
 }

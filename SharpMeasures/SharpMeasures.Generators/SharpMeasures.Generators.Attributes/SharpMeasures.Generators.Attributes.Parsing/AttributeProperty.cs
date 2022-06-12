@@ -67,7 +67,7 @@ public record class AttributeProperty<TDefinition> : IAttributeProperty<TDefinit
         {
             (var collection, var elements) = ArgumentLocator.FromArrayOrParamsList(argumentList, index);
 
-            return locator(definition, collection, new(elements));
+            return locator(definition, collection, elements.AsReadOnlyEquatable());
         }
     }
 

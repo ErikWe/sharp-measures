@@ -15,7 +15,7 @@ public record class DimensionalEquivalenceDefinition : AAttributeDefinition<Dime
     public DimensionalEquivalenceDefinition(IReadOnlyList<NamedType> quantities, ConversionOperationBehaviour castOperatorBehaviour,
         DimensionalEquivalenceLocations locations) : base(locations)
     {
-        Quantities = new(quantities);
+        Quantities = quantities.AsReadOnlyEquatable();
         CastOperatorBehaviour = castOperatorBehaviour;
     }
 }

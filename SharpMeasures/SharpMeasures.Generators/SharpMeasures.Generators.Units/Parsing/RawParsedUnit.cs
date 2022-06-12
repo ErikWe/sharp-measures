@@ -39,13 +39,13 @@ internal record class RawParsedUnit
         UnitLocation = unitLocation;
         UnitDefinition = unitDefinition;
 
-        UnitDerivations = new(derivableUnitDefinitions);
-        UnitAliases = new(unitAliasDefinitions);
-        DerivedUnits = new(derivedUnitDefinitions);
-        FixedUnits = new(fixedUnitDefinitions);
-        OffsetUnits = new(offsetUnitDefinitions);
-        PrefixedUnits = new(prefixedUnitDefinitions);
-        ScaledUnits = new(scaledUnitDefinitions);
+        UnitDerivations = derivableUnitDefinitions.AsEquatable();
+        UnitAliases = unitAliasDefinitions.AsEquatable();
+        DerivedUnits = derivedUnitDefinitions.AsEquatable();
+        FixedUnits = fixedUnitDefinitions.AsEquatable();
+        OffsetUnits = offsetUnitDefinitions.AsEquatable();
+        PrefixedUnits = prefixedUnitDefinitions.AsEquatable();
+        ScaledUnits = scaledUnitDefinitions.AsEquatable();
     }
 
     public IEnumerable<IRawUnitDefinition> GetUnitList()

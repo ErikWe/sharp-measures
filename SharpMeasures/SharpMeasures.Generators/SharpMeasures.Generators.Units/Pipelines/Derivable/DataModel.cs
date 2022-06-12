@@ -10,5 +10,5 @@ internal readonly record struct DataModel(DefinedType Unit, NamedType Quantity, 
     ReadOnlyEquatableCollection<RefinedDerivableUnitDefinition> Derivations)
 {
     public DataModel(DefinedType unit, NamedType quantity, DocumentationFile documentation, IReadOnlyCollection<RefinedDerivableUnitDefinition> derivations)
-        : this(unit, quantity, documentation, new(derivations)) { }
+        : this(unit, quantity, documentation, derivations.AsReadOnlyEquatable()) { }
 }

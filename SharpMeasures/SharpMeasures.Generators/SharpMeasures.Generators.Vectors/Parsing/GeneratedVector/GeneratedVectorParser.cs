@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal static class GeneratedUnitParser
+internal static class GeneratedVectorParser
 {
     public static IAttributeParser<RawGeneratedVectorDefinition> Parser { get; } = new AttributeParser();
 

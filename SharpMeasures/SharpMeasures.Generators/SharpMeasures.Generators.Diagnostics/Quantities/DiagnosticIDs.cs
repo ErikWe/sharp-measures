@@ -14,4 +14,5 @@ public static partial class DiagnosticIDs
 
     public const string ContradictoryAttributes = $"{Prefix}{Numbering.Hundreds.Quantities}60";
     public const string QuantityGroupMissingRoot = $"{Prefix}{Numbering.Hundreds.Quantities}61";
+    public const string InclusionOrExclusionHadNoEffect = $"{Prefix}{Numbering.Hundreds.Quantities}62";
 }

@@ -10,5 +10,5 @@ internal readonly record struct DataModel(DefinedType Scalar, EquatableEnumerabl
     DocumentationFile Documentation)
 {
     public DataModel(DefinedType scalar, IEnumerable<RefinedDimensionalEquivalenceDefinition> dimensionalEquivalences, DocumentationFile documentation)
-        : this(scalar, new(dimensionalEquivalences), documentation) { }
+        : this(scalar, dimensionalEquivalences.AsEquatable(), documentation) { }
 }

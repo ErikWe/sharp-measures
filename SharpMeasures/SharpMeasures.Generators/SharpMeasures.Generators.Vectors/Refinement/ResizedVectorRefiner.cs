@@ -6,6 +6,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Vectors.Parsing;
 using SharpMeasures.Generators.Vectors.Parsing.ResizedVector;
 
 using System;
@@ -25,6 +26,8 @@ internal interface IResizedVectorRefinementContext : IProcessingContext
     public abstract UnitPopulation UnitPopulation { get; }
     public abstract ScalarPopulation ScalarPopulation { get; }
     public abstract VectorPopulation VectorPopulation { get; }
+
+    public abstract VectorPopulationData VectorPopulationData { get; }
 }
 
 internal class ResizedVectorRefiner : IProcesser<IResizedVectorRefinementContext, ResizedVectorDefinition, RefinedResizedVectorDefinition>
@@ -58,19 +61,24 @@ internal class ResizedVectorRefiner : IProcesser<IResizedVectorRefinementContext
             return OptionalWithDiagnostics.Empty<RefinedResizedVectorDefinition>(Diagnostics.TypeAlreadyScalar(context, definition));
         }
 
-        if (context.VectorPopulation.VectorGroups.TryGetValue(context.Type.AsNamedType(), out var vectorGroup) is false)
+        if (context.VectorPopulation.ResizedVectorGroups.TryGetValue(context.Type.AsNamedType(), out var vectorGroup) is false)
         {
-            if (context.VectorPopulation.UnresolvedVectors.ContainsKey(context.Type.AsNamedType()))
+            if (context.VectorPopulationData.UnresolvedVectors.ContainsKey(context.Type.AsNamedType()))
             {
                 return OptionalWithDiagnostics.Empty<RefinedResizedVectorDefinition>(Diagnostics.UnresolvedVectorGroup(context, definition));
             }
 
-            if (context.VectorPopulation.DuplicateDimensionVectors.ContainsKey(context.Type.AsNamedType()))
+            if (context.VectorPopulationData.ResizedVectorsWithDuplicateDimension.ContainsKey(context.Type.AsNamedType()))
             {
                 return OptionalWithDiagnostics.Empty<RefinedResizedVectorDefinition>(Diagnostics.DuplicateDimension(context, definition));
             }
             
             return OptionalWithDiagnostics.Empty<RefinedResizedVectorDefinition>(Diagnostics.TypeNotVector(context, definition));
+        }
+
+        if (context.VectorPopulation.AllVectors.TryGetValue(definition.AssociatedVector, out var associatedVector) is false)
+        {
+            return OptionalWithDiagnostics.Empty<RefinedResizedVectorDefinition>();
         }
 
         if (context.UnitPopulation.TryGetValue(vectorGroup.Root.UnitType, out var unit) is false)
@@ -85,7 +93,7 @@ internal class ResizedVectorRefiner : IProcesser<IResizedVectorRefinementContext
             return OptionalWithDiagnostics.Empty<RefinedResizedVectorDefinition>();
         }
 
-        RefinedResizedVectorDefinition product = new(vectorGroup.Root, unit, scalar, definition.Dimension, definition.GenerateDocumentation);
+        RefinedResizedVectorDefinition product = new(associatedVector, vectorGroup, unit, scalar, definition.Dimension, definition.GenerateDocumentation);
         return OptionalWithDiagnostics.Result(product);
     }
 }

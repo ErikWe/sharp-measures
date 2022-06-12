@@ -20,7 +20,7 @@ internal record class VectorConstantDefinition : AAttributeDefinition<VectorCons
     {
         Name = name;
         Unit = unit;
-        Value = new(value);
+        Value = value.AsReadOnlyEquatable();
 
         GenerateMultiplesProperty = generateMultiplesProperty;
         MultiplesName = multiplesName;

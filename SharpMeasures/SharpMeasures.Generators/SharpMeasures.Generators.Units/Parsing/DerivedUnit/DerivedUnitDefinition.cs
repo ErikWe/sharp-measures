@@ -14,6 +14,6 @@ internal record class DerivedUnitDefinition : AUnitDefinition<DerivedUnitLocatio
         : base(name, plural, locations)
     {
         Signature = signature;
-        Units = new(units);
+        Units = units.AsReadOnlyEquatable();
     }
 }

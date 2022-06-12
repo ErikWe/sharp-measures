@@ -12,5 +12,5 @@ internal readonly record struct DataModel(DefinedType Scalar, NamedType Unit, Na
 {
     public DataModel(DefinedType scalar, NamedType unit, NamedType unitQuantity, IReadOnlyCollection<UnitInstance> bases, IReadOnlyCollection<UnitInstance> units,
         IReadOnlyCollection<RefinedScalarConstantDefinition> constants, DocumentationFile documentation)
-        : this(scalar, unit, unitQuantity, new(bases), new(units), new(constants), documentation) { }
+        : this(scalar, unit, unitQuantity, bases.AsReadOnlyEquatable(), units.AsReadOnlyEquatable(), constants.AsReadOnlyEquatable(), documentation) { }
 }

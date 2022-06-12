@@ -27,19 +27,19 @@ internal static class UnitsGenerator
 
     private static IResultWithDiagnostics<DataModel> ReduceToDataModel(Scalars.DataModel input, CancellationToken _)
     {
-        var processedBases = GetIncludedUnits(input, input.Scalar.IncludeBases, input.Scalar.ExcludeBases);
-        var processedUnits = GetIncludedUnits(input, input.Scalar.IncludeUnits, input.Scalar.ExcludeUnits);
+        var processedBases = GetIncludedUnits(input, input.ScalarData.IncludeBases, input.ScalarData.ExcludeBases);
+        var processedUnits = GetIncludedUnits(input, input.ScalarData.IncludeUnits, input.ScalarData.ExcludeUnits);
 
         HashSet<string> includedBases = new(processedBases.Result.Select(static (x) => x.Name));
         HashSet<string> includedUnits = new(processedUnits.Result.Select(static (x) => x.Plural));
 
-        ScalarConstantRefinementContext scalarConstantContext = new(input.Scalar.ScalarType, input.Unit, includedBases, includedUnits);
+        ScalarConstantRefinementContext scalarConstantContext = new(input.ScalarData.ScalarType, input.ScalarDefinition.Unit, includedBases, includedUnits);
         ScalarConstantRefiner scalarConstantRefiner = new(ScalarConstantDiagnostics.Instance);
 
-        var processedConstants = ProcessingFilter.Create(scalarConstantRefiner).Filter(scalarConstantContext, input.Scalar.ScalarConstants);
+        var processedConstants = ProcessingFilter.Create(scalarConstantRefiner).Filter(scalarConstantContext, input.ScalarData.ScalarConstants);
 
-        DataModel model = new(input.Scalar.ScalarType, input.Unit.UnitType.AsNamedType(), input.Unit.QuantityType, processedBases.Result, processedUnits.Result,
-            processedConstants.Result, input.Documentation);
+        DataModel model = new(input.ScalarData.ScalarType, input.ScalarDefinition.Unit.UnitType.AsNamedType(), input.ScalarDefinition.Unit.QuantityType,
+            processedBases.Result, processedUnits.Result, processedConstants.Result, input.Documentation);
 
         var allDiagnostics = processedBases.Diagnostics.Concat(processedUnits.Diagnostics).Concat(processedConstants.Diagnostics);
 
@@ -51,7 +51,7 @@ internal static class UnitsGenerator
         where TInclusion : IItemListDefinition<string>
         where TExclusion : IItemListDefinition<string>
     {
-        UnitListRefinementContext context = new(input.Scalar.ScalarType, input.Unit);
+        UnitListRefinementContext context = new(input.ScalarData.ScalarType, input.ScalarDefinition.Unit);
 
         UnitListRefiner<TInclusion> inclusionRefiner = new(UnitListRefinementDiagnostics<TInclusion>.Instance);
 
@@ -67,7 +67,7 @@ internal static class UnitsGenerator
 
         var processedExclusions = ProcessingFilter.Create(exclusionRefiner).Filter(context, exclusions, RefinedUnitListDefinition.StartBuilder());
 
-        List<UnitInstance> allUnits = input.Unit.UnitsByName.Values.ToList();
+        List<UnitInstance> allUnits = input.ScalarDefinition.Unit.UnitsByName.Values.ToList();
 
         foreach (UnitInstance excludedUnit in processedExclusions.Result.Target.UnitList)
         {

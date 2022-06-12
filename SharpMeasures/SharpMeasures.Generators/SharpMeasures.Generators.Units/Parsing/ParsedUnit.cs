@@ -38,13 +38,13 @@ internal class ParsedUnit
         UnitLocation = unitLocation;
         UnitDefinition = unitDefinition;
 
-        UnitDerivations = new(unitDerivations);
-        UnitAliases = new(unitAliases);
-        DerivedUnits = new(derivedUnits);
-        FixedUnits = new(fixedUnits);
-        OffsetUnits = new(offsetUnits);
-        PrefixedUnits = new(prefixedUnits);
-        ScaledUnits = new(scaledUnits);
+        UnitDerivations = unitDerivations.AsEquatable();
+        UnitAliases = unitAliases.AsEquatable();
+        DerivedUnits = derivedUnits.AsEquatable();
+        FixedUnits = fixedUnits.AsEquatable();
+        OffsetUnits = offsetUnits.AsEquatable();
+        PrefixedUnits = prefixedUnits.AsEquatable();
+        ScaledUnits = scaledUnits.AsEquatable();
     }
 
     public IEnumerable<IUnitDefinition> GetUnitList()

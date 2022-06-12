@@ -1,8 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.GeneratedVector;
 
 using SharpMeasures.Generators.Attributes.Parsing;
+using SharpMeasures.Generators.Vectors.Parsing.Abstractions;
 
-internal record class GeneratedVectorDefinition : AAttributeDefinition<GeneratedVectorLocations>
+internal record class GeneratedVectorDefinition : AAttributeDefinition<GeneratedVectorLocations>, IVectorDefinition
 {
     public NamedType Unit { get; }
     public NamedType? Scalar { get; }

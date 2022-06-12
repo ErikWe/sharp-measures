@@ -13,7 +13,7 @@ internal readonly record struct RefinedDimensionalEquivalenceDefinition
 
     public RefinedDimensionalEquivalenceDefinition(IReadOnlyList<ScalarInterface> quantities, ConversionOperationBehaviour castOperatorBehaviour)
     {
-        Quantities = new(quantities);
+        Quantities = quantities.AsReadOnlyEquatable();
         CastOperatorBehaviour = castOperatorBehaviour;
     }
 }

@@ -2,6 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
@@ -20,7 +21,7 @@ internal static class DerivedUnitProperties
     private static DerivedUnitProperty<INamedTypeSymbol[]> Signature { get; } = new
     (
         name: nameof(DerivedUnitAttribute.Signature),
-        setter: static (definition, signature) => definition with { Signature = new(signature.AsNamedTypes()) },
+        setter: static (definition, signature) => definition with { Signature = signature.AsNamedTypes().AsReadOnlyEquatable() },
         locator: static (locations, collectionLocation, elementLocations) => locations with
         {
             SignatureCollection = collectionLocation,
@@ -28,10 +29,10 @@ internal static class DerivedUnitProperties
         }
     );
 
-    private static DerivedUnitProperty<string[]> Units { get; } = new
+    private static DerivedUnitProperty<string?[]> Units { get; } = new
     (
         name: nameof(DerivedUnitAttribute.Units),
-        setter: static (definition, units) => definition with { Units = new(units) },
+        setter: static (definition, units) => definition with { Units = units.AsReadOnlyEquatable() },
         locator: static (locations, collectionLocation, elementLocations) => locations with
         {
             UnitsCollection = collectionLocation,

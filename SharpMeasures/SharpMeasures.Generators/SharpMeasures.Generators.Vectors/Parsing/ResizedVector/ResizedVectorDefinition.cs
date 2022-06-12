@@ -1,8 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.ResizedVector;
 
 using SharpMeasures.Generators.Attributes.Parsing;
+using SharpMeasures.Generators.Vectors.Parsing.Abstractions;
 
-internal record class ResizedVectorDefinition : AAttributeDefinition<ResizedVectorLocations>
+internal record class ResizedVectorDefinition : AAttributeDefinition<ResizedVectorLocations>, IVectorDefinition
 {
     public NamedType AssociatedVector { get; }
 

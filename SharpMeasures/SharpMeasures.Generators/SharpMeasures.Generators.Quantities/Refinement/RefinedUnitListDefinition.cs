@@ -16,9 +16,9 @@ public readonly record struct RefinedUnitListDefinition
 
     public RefinedUnitListDefinition(ICollection<UnitInstance> unitList)
     {
-        UnitListBuilder = new(unitList);
+        UnitListBuilder = unitList.AsEquatable();
 
-        UnitList = new(UnitListBuilder);
+        UnitList = UnitListBuilder.AsReadOnlyEquatable();
     }
 
     public RefinedUnitListDefinition() : this(EquatableCollection<UnitInstance>.Empty) { }

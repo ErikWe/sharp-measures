@@ -102,7 +102,7 @@ internal class DocumentationFileBuilder
 
     public DocumentationFile Finalize(IDiagnosticsStrategy diagnosticsStrategy)
     {
-        return new(Name, File, new ReadOnlyEquatableDictionary<string, string>(Content), diagnosticsStrategy);
+        return new(Name, File, Content.AsReadOnlyEquatable(), diagnosticsStrategy);
     }
 
     private void ResolveDependencies(Dictionary<string, DocumentationFileBuilder> documentationFiles)

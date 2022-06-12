@@ -3,33 +3,42 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Documentation;
+using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
 using SharpMeasures.Generators.Vectors.Parsing;
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Vectors.Refinement;
+
+using System.Collections.Generic;
 
 internal record class ResizedDataModel : IDataModel<ResizedDataModel>
 {
-    public ParsedResizedVector Vector { get; }
-    public NamedType AssociatedRootVector { get; }
+    public RefinedResizedVectorDefinition VectorDefinition { get; }
+    public ParsedResizedVector VectorData { get; }
 
-    public UnitInterface Unit { get; }
-    public ScalarInterface? Scalar { get; }
+    public VectorPopulation VectorPopulation { get; }
+    public VectorPopulationData VectorPopulationData { get; }
 
     public DocumentationFile Documentation { get; init; } = DocumentationFile.Empty;
 
-    public ResizedDataModel(ParsedResizedVector vector, NamedType associatedRootVector, UnitInterface unit, ScalarInterface? scalar)
+    public ResizedDataModel(RefinedResizedVectorDefinition vectorDefinition, ParsedResizedVector vectorData, VectorPopulation vectorPopulation,
+        VectorPopulationData vectorPopulationData)
     {
-        Vector = vector;
-        AssociatedRootVector = associatedRootVector;
-        Unit = unit;
-        Scalar = scalar;
+        VectorDefinition = vectorDefinition;
+        VectorData = vectorData;
+
+        VectorPopulation = vectorPopulation;
+        VectorPopulationData = vectorPopulationData;
     }
 
-    string IDataModel<ResizedDataModel>.Identifier => Vector.VectorType.Name;
-    Location IDataModel<ResizedDataModel>.IdentifierLocation => Vector.VectorLocation.AsRoslynLocation();
+    DefinedType IDataModel.VectorType => VectorData.VectorType;
+    int IDataModel.Dimension => VectorDefinition.Dimension;
 
-    bool IDataModel<ResizedDataModel>.GenerateDocumentation => Vector.VectorDefinition.GenerateDocumentation;
-    bool IDataModel<ResizedDataModel>.ExplicitlySetGenerateDocumentation => Vector.VectorDefinition.Locations.ExplicitlySetGenerateDocumentation;
+    IEnumerable<DimensionalEquivalenceDefinition> IDataModel.DimensionalEquivalences => VectorData.DimensionalEquivalences;
+
+    string IDataModel.Identifier => VectorData.VectorType.Name;
+    Location IDataModel.IdentifierLocation => VectorData.VectorLocation.AsRoslynLocation();
+
+    bool IDataModel.GenerateDocumentation => VectorData.VectorDefinition.GenerateDocumentation;
+    bool IDataModel.ExplicitlySetGenerateDocumentation => VectorData.VectorDefinition.Locations.ExplicitlySetGenerateDocumentation;
 
     ResizedDataModel IDataModel<ResizedDataModel>.WithDocumentation(DocumentationFile documentation) => this with { Documentation = documentation };
 }

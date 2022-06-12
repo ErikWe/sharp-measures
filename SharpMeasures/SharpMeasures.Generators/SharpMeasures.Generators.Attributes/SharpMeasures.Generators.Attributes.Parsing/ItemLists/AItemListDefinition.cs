@@ -14,6 +14,6 @@ public abstract record class AItemListDefinition<TItem, TLocations> : AAttribute
 
     protected AItemListDefinition(IReadOnlyList<TItem> items, TLocations locations) : base(locations)
     {
-        Items = new(items);
+        Items = items.AsReadOnlyEquatable();
     }
 }

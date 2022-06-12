@@ -6,17 +6,12 @@ using System.Collections.Generic;
 
 public class VectorPopulation
 {
-    public ReadOnlyEquatableDictionary<NamedType, ResizedVectorGroup> VectorGroups { get; }
+    public ReadOnlyEquatableDictionary<NamedType, IVectorInterface> AllVectors { get; }
+    public ReadOnlyEquatableDictionary<NamedType, ResizedVectorGroup> ResizedVectorGroups { get; }
 
-    public ReadOnlyEquatableDictionary<NamedType, ResizedVectorInterface> UnresolvedVectors { get; }
-    public ReadOnlyEquatableDictionary<NamedType, ResizedVectorInterface> DuplicateDimensionVectors { get; }
-
-    public VectorPopulation(IReadOnlyDictionary<NamedType, ResizedVectorGroup> resolvedVectors,
-        IReadOnlyDictionary<NamedType, ResizedVectorInterface> unresolvedVectors, IReadOnlyDictionary<NamedType, ResizedVectorInterface> duplicateDimensionVectors)
+    public VectorPopulation(IReadOnlyDictionary<NamedType, IVectorInterface> allVectors, IReadOnlyDictionary<NamedType, ResizedVectorGroup> resizedVectorGroups)
     {
-        VectorGroups = new(resolvedVectors);
-
-        UnresolvedVectors = new(unresolvedVectors);
-        DuplicateDimensionVectors = new(duplicateDimensionVectors);
+        AllVectors = allVectors.AsReadOnlyEquatable();
+        ResizedVectorGroups = resizedVectorGroups.AsReadOnlyEquatable();
     }
 }
