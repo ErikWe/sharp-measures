@@ -68,7 +68,7 @@ internal abstract class AVectorParsingStage<TAttribute, TRawDefinition, TDefinit
         }
 
         var definedType = input.TypeSymbol.AsDefinedType();
-        var typeLocation = input.Declaration.GetLocation().Minimize();
+        var typeLocation = input.Declaration.Identifier.GetLocation().Minimize();
 
         var includeUnits = IncludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
         var excludeUnits = ExcludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);

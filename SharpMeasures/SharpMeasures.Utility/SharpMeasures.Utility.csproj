@@ -5,8 +5,4 @@
         <RootNamespace>SharpMeasures</RootNamespace>
     </PropertyGroup>
 
-    <PropertyGroup>
-        <IsPackable>false</IsPackable>
-    </PropertyGroup>
-
 </Project>

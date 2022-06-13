@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="SharpMeasures.Base" Version="0.2.35" />
-    <PackageReference Include="SharpMeasures.Generators" Version="0.2.35" />
+    <PackageReference Include="SharpMeasures.Generators" Version="0.2.44" />
   </ItemGroup>
 
 </Project>

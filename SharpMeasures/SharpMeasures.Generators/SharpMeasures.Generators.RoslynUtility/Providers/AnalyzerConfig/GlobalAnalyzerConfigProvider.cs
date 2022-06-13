@@ -3,6 +3,8 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
+using SharpMeasures.Generators.Configuration;
+
 using System.Threading;
 
 public static class GlobalAnalyzerConfigProvider
@@ -16,21 +18,27 @@ public static class GlobalAnalyzerConfigProvider
     {
         public static GlobalAnalyzerConfig Parse(AnalyzerConfigOptionsProvider provider, CancellationToken _)
         {
-            bool generateDocumentationByDefault = GenerateDocumentationByDefault(provider);
+            bool generateDocumentationByDefault = ParseGenerateDocumentationByDefault(provider);
+            bool limitOneErrorPerDocumentationFile = ParseLimitOneErrorPerDocumentationFile(provider);
 
-            return new(generateDocumentationByDefault);
+            return new(generateDocumentationByDefault, limitOneErrorPerDocumentationFile);
         }
 
-        private static class Keys
+        private static bool ParseGenerateDocumentationByDefault(AnalyzerConfigOptionsProvider provider)
         {
-            public const string GenerateDocumentationByDefault = "SharpMeasures_GenerateDocumentation";
-        }
-
-        private static bool GenerateDocumentationByDefault(AnalyzerConfigOptionsProvider provider)
-        {
-            if (provider.GlobalOptions.TryGetValue(Keys.GenerateDocumentationByDefault, out string? value))
+            if (provider.GlobalOptions.TryGetValue(ConfigKeys.GenerateDocumentationByDefault, out string? value))
             {
-                return BooleanTransforms.FalseByDefault(value);
+                return BooleanTransforms.TrueByDefault(value);
+            }
+
+            return true;
+        }
+
+        private static bool ParseLimitOneErrorPerDocumentationFile(AnalyzerConfigOptionsProvider provider)
+        {
+            if (provider.GlobalOptions.TryGetValue(ConfigKeys.LimitOneErrorPerDocumentationFile, out string? value))
+            {
+                return BooleanTransforms.TrueByDefault(value);
             }
 
             return true;

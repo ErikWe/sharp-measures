@@ -53,7 +53,7 @@ public static class UnitParsingStage
         }
 
         var definedType = input.TypeSymbol.AsDefinedType();
-        var typeLocation = input.Declaration.GetLocation().Minimize();
+        var typeLocation = input.Declaration.Identifier.GetLocation().Minimize();
 
         var únitDerivations = DerivableUnitParser.Instance.ParseAllOccurrences(input.TypeSymbol);
 

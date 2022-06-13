@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Equatables;
+using SharpMeasures.Generators.Configuration;
 using SharpMeasures.Generators.Diagnostics;
 
 using System.Collections.Generic;
@@ -12,7 +13,8 @@ using System.Text.RegularExpressions;
 
 internal class DocumentationFileBuilder
 {
-    public static IResultWithDiagnostics<DocumentationDictionary> Build(IEnumerable<AdditionalText> relevantFiles, IDiagnosticsStrategy diagnosticsStrategy)
+    public static IResultWithDiagnostics<DocumentationDictionary> Build(IEnumerable<AdditionalText> relevantFiles, IDiagnosticsStrategy diagnosticsStrategy,
+        GlobalAnalyzerConfig configuration)
     {
         Dictionary<string, DocumentationFileBuilder> builders = createBuilders().ToDictionary(static (builder) => builder.Name);
 
@@ -48,7 +50,7 @@ internal class DocumentationFileBuilder
             }
         }
 
-        DocumentationDictionary dictionary = new(builders.Values.ToDictionary(static (file) => file.Name, (file) => file.Finalize(diagnosticsStrategy)));
+        DocumentationDictionary dictionary = new(builders.Values.ToDictionary(static (file) => file.Name, (file) => file.Finalize()));
         IEnumerable<Diagnostic> diagnostics = builders.Values.SelectMany(static (file) => file.Diagnostics);
 
         return ResultWithDiagnostics.Construct(dictionary, diagnostics);
@@ -59,7 +61,7 @@ internal class DocumentationFileBuilder
             {
                 if (additionalText.GetText() is SourceText fileText)
                 {
-                    yield return new DocumentationFileBuilder(additionalText, fileText, diagnosticsStrategy);
+                    yield return new DocumentationFileBuilder(additionalText, fileText, diagnosticsStrategy, configuration);
                 }
             }
         }
@@ -79,7 +81,11 @@ internal class DocumentationFileBuilder
     private IDiagnosticsStrategy DiagnosticsStrategy { get; }
     private List<Diagnostic> Diagnostics { get; } = new();
 
-    private DocumentationFileBuilder(AdditionalText file, SourceText fileText, IDiagnosticsStrategy diagnosticsStrategy)
+    private GlobalAnalyzerConfig Configuration { get; }
+    private bool HasReportedOneUnresolvedDependency { get; set; }
+    private bool HasReportedOneMissingTag { get; set; }
+
+    private DocumentationFileBuilder(AdditionalText file, SourceText fileText, IDiagnosticsStrategy diagnosticsStrategy, GlobalAnalyzerConfig configuration)
     {
         File = file;
         FileText = fileText;
@@ -92,11 +98,12 @@ internal class DocumentationFileBuilder
         Content = DocumentationParsing.GetParsedTagDefinitions(text);
 
         DiagnosticsStrategy = diagnosticsStrategy;
+        Configuration = configuration;
     }
 
-    public DocumentationFile Finalize(IDiagnosticsStrategy diagnosticsStrategy)
+    public DocumentationFile Finalize()
     {
-        return new(Name, File, Content.AsReadOnlyEquatable(), diagnosticsStrategy);
+        return new(Name, File, Content.AsReadOnlyEquatable(), DiagnosticsStrategy, Configuration, HasReportedOneMissingTag);
     }
 
     private void ResolveDependencies(Dictionary<string, DocumentationFileBuilder> documentationFiles)
@@ -201,7 +208,7 @@ internal class DocumentationFileBuilder
 
     private Diagnostic? CreateUnresolvedDependencyDiagnostics(string dependency)
     {
-        if (DiagnosticsStrategy.GenerateDiagnostics is false)
+        if (DiagnosticsStrategy.GenerateDiagnostics is false || Configuration.LimitOneErrorPerDocumentationFile && HasReportedOneUnresolvedDependency) 
         {
             return null;
         }
@@ -223,6 +230,7 @@ internal class DocumentationFileBuilder
                 LinePositionSpan lineSpan = new(new LinePosition(line, 0), new LinePosition(line, textSpan.Length - 1));
                 Location location = Location.Create(File.Path, new TextSpan(match.Index, match.Length), lineSpan);
 
+                HasReportedOneUnresolvedDependency = true;
                 return DiagnosticsStrategy.UnresolvedDocumentationDependency(location, Name, dependency);
             }
         }
@@ -232,6 +240,13 @@ internal class DocumentationFileBuilder
 
     private Diagnostic? CreateMissingTagDiagnostics(string tag)
     {
+        if (DiagnosticsStrategy.GenerateDiagnostics is false || Configuration.LimitOneErrorPerDocumentationFile && HasReportedOneMissingTag)
+        {
+            return null;
+        }
+
+        HasReportedOneMissingTag = true;
+
         if (FileText.Lines.Count is 0)
         {
             return DiagnosticsStrategy.DocumentationFileMissingRequestedTag(Location.None, Name, tag);

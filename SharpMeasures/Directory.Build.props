@@ -1,4 +1,5 @@
 <Project>
+
     <PropertyGroup>
         <LangVersion>preview</LangVersion>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>
@@ -12,9 +13,22 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <Owners>ErikWe</Owners>
         <Authors>ErikWe</Authors>
-        <Version>0.2.36</Version>
-        <NeutralLanguage>en</NeutralLanguage>
+        <Version>0.2.44</Version>
+        <PackageProjectUrl>https://github.com/ErikWe/sharp-measures</PackageProjectUrl>
         <RepositoryUrl>https://github.com/ErikWe/sharp-measures</RepositoryUrl>
     </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <NeutralLanguage>en</NeutralLanguage>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <IsPublishable>false</IsPublishable>
+    </PropertyGroup>
+
 </Project>

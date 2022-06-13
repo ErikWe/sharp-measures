@@ -2,9 +2,9 @@
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Generators.Configuration;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Documentation;
-using SharpMeasures.Generators.Providers.AnalyzerConfig;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing;

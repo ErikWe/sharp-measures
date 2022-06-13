@@ -57,7 +57,10 @@ public static class UsingsBuilding
     {
         HashSet<string> definedUsings = new();
 
-        IterativeBuilding.AppendEnumerable(source, usings(), Environment.NewLine, Environment.NewLine);
+        IterativeBuilding.AppendEnumerable(source, usings(), Environment.NewLine);
+
+        source.AppendLine();
+        source.AppendLine();
 
         IEnumerable<string> usings()
         {

@@ -6,9 +6,6 @@ internal static class Program
 {
     public static void Main()
     {
-
+        SharpMeasures.Generators.Units.GeneratedUnitAttribute
     }
 }
-
-[GeneratedUnit(typeof(string))]
-public readonly partial record struct UnitOfLength();

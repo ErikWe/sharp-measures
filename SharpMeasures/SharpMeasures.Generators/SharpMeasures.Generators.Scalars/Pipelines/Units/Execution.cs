@@ -13,6 +13,11 @@ internal static class Execution
 {
     public static void Execute(SourceProductionContext context, DataModel data)
     {
+        if (data.Constants.Count is 0 && data.Bases.Count is 0 && data.Units.Count is 0)
+        {
+            return;
+        }
+
         string source = Composer.Compose(context, data);
 
         context.AddSource($"{data.Scalar.Name}_Units.g.cs", SourceText.From(source, Encoding.UTF8));

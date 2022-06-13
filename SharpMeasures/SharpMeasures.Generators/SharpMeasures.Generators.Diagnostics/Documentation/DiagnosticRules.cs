@@ -2,6 +2,8 @@
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Generators.Configuration;
+
 public static partial class DiagnosticRules
 {
     public static readonly DiagnosticDescriptor UnresolvedDocumentationDependency = new DiagnosticDescriptor
@@ -19,7 +21,7 @@ public static partial class DiagnosticRules
         id: DiagnosticIDs.NoMatchingDocumentationFile,
         title: "No matching documentation file",
         messageFormat: "No matching documentation file was found for {0}. Add a file with the name \"{0}.doc.txt\" to the project, or disable generation of " +
-            "documentation through the relevant attribute or through the global AnalyzerConfig using the entry \"SharpMeasures_GenerateDocumentation\".",
+            $"documentation through the relevant attribute or through the global AnalyzerConfig using the entry \"{ConfigKeys.GenerateDocumentationByDefault}\".",
         category: "Documentation",
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true

@@ -55,7 +55,7 @@ public static class ScalarParsingStage
         }
 
         var definedType = input.TypeSymbol.AsDefinedType();
-        var typeLocation = input.Declaration.GetLocation().Minimize();
+        var typeLocation = input.Declaration.Identifier.GetLocation().Minimize();
 
         var includeBases = IncludeBasesParser.Parser.ParseAllOccurrences(input.TypeSymbol);
         var excludeBases = ExcludeBasesParser.Parser.ParseAllOccurrences(input.TypeSymbol);

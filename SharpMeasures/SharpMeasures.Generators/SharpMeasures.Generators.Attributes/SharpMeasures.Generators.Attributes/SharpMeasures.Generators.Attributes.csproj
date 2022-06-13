@@ -6,7 +6,6 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <IsPackable>false</IsPackable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 

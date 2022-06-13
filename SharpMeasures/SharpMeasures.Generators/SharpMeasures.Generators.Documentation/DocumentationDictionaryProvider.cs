@@ -2,6 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Generators.Configuration;
 using SharpMeasures.Generators.Diagnostics;
 
 using System;
@@ -20,11 +21,12 @@ public class DocumentationDictionaryProvider
     }
 
     public static IncrementalValueProvider<DocumentationDictionary> AttachAndReport(IncrementalGeneratorInitializationContext context,
-        IncrementalValuesProvider<AdditionalText> additionalTextProvider, IDiagnosticsStrategy diagnosticsStrategy)
+        IncrementalValuesProvider<AdditionalText> additionalTextProvider, IncrementalValueProvider<GlobalAnalyzerConfig> configurationProvider,
+        IDiagnosticsStrategy diagnosticsStrategy)
     {
         DocumentationDictionaryProvider outputProvider = new(diagnosticsStrategy);
 
-        var documentationAndDiagnostics = Construct(outputProvider, additionalTextProvider);
+        var documentationAndDiagnostics = Construct(outputProvider, additionalTextProvider, configurationProvider);
 
         context.ReportDiagnostics(documentationAndDiagnostics);
         return documentationAndDiagnostics.ExtractResult();
@@ -37,10 +39,10 @@ public class DocumentationDictionaryProvider
         DiagnosticsStrategy = diagnosticsStrategy;
     }
 
-    private IResultWithDiagnostics<DocumentationDictionary> ConstructDocumentationDictionary(ImmutableArray<AdditionalText> additionalTexts,
-        CancellationToken _)
+    private IResultWithDiagnostics<DocumentationDictionary> ConstructDocumentationDictionary((ImmutableArray<AdditionalText> AdditionalTexts,
+        GlobalAnalyzerConfig Configuration) data, CancellationToken _)
     {
-        return DocumentationFileBuilder.Build(additionalTexts, DiagnosticsStrategy);
+        return DocumentationFileBuilder.Build(data.AdditionalTexts, DiagnosticsStrategy, data.Configuration);
     }
 
     private static bool FileHasCorrectExtension(AdditionalText file)
@@ -51,6 +53,17 @@ public class DocumentationDictionaryProvider
     private static IncrementalValueProvider<IResultWithDiagnostics<DocumentationDictionary>> Construct(DocumentationDictionaryProvider documentationProvider,
         IncrementalValuesProvider<AdditionalText> additionalTextProvider)
     {
-        return additionalTextProvider.Where(FileHasCorrectExtension).Collect().Select(documentationProvider.ConstructDocumentationDictionary);
+        return additionalTextProvider.Where(FileHasCorrectExtension).Collect().Select(addDefaultConfiguration)
+            .Select(documentationProvider.ConstructDocumentationDictionary);
+
+        static (ImmutableArray<AdditionalText>, GlobalAnalyzerConfig) addDefaultConfiguration(ImmutableArray<AdditionalText> input, CancellationToken _)
+            => (input, GlobalAnalyzerConfig.Default);
+    }
+
+    private static IncrementalValueProvider<IResultWithDiagnostics<DocumentationDictionary>> Construct(DocumentationDictionaryProvider documentationProvider,
+        IncrementalValuesProvider<AdditionalText> additionalTextProvider, IncrementalValueProvider<GlobalAnalyzerConfig> configurationProvider)
+    {
+        return additionalTextProvider.Where(FileHasCorrectExtension).Collect().Combine(configurationProvider)
+            .Select(documentationProvider.ConstructDocumentationDictionary);
     }
 }

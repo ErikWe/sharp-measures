@@ -104,7 +104,7 @@ internal static class Execution
             Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Sign);
-            Builder.AppendLine($"public int Sign() => Math.Sign(Magnitude.Value);");
+            Builder.AppendLine($"{indentation}public int Sign() => Math.Sign(Magnitude.Value);");
 
             Builder.AppendLine();
 
@@ -162,7 +162,7 @@ internal static class Execution
             Builder.AppendLine();
 
             AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Multiply_IScalar);
-            Builder.AppendLine($"{indentation}public static Unhandled operator *({Data.Scalar.Name} x, IScalar y)");
+            Builder.Append($"{indentation}public static Unhandled operator *({Data.Scalar.Name} x, IScalar y)");
             BlockBuilding.AppendBlock(Builder, composeIScalarMultiplicationBlock, indentation);
 
             void composeIScalarMultiplicationBlock(Indentation indentation)
@@ -172,8 +172,10 @@ internal static class Execution
                 Builder.AppendLine($"{indentation}return new Unhandled(x.Magnitude.Value * y.Magnitude.Value);");
             }
 
+            Builder.AppendLine();
+
             AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Divide_IScalar);
-            Builder.AppendLine($"{indentation}public static Unhandled operator /({Data.Scalar.Name} x, IScalar y)");
+            Builder.Append($"{indentation}public static Unhandled operator /({Data.Scalar.Name} x, IScalar y)");
             BlockBuilding.AppendBlock(Builder, composeIScalarDivisionBlock, indentation);
 
             void composeIScalarDivisionBlock(Indentation indentation)

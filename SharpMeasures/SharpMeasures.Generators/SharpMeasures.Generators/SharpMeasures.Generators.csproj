@@ -8,28 +8,40 @@
     <PropertyGroup>
         <Title>SharpMeasures.Generators</Title>
         <Description>
-            Source generators for constructing the quantities and units in SharpMeasures.
+            Provides source generators related to SharpMeasures.
         </Description>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <IsPackable>true</IsPackable>
+        <IsPublishable>true</IsPublishable>
+    </PropertyGroup>
+
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.Parsing.API\SharpMeasures.Generators.Attributes.Parsing.API.csproj" PrivateAsset="all" />
-        <ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.Parsing\SharpMeasures.Generators.Attributes.Parsing.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
-        <ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
-        <ProjectReference Include="..\SharpMeasures.Generators.Diagnostics\SharpMeasures.Generators.Diagnostics.csproj" PrivateAssets="all" />
-        <ProjectReference Include="..\SharpMeasures.Generators.Documentation\SharpMeasures.Generators.Documentation.csproj" PrivateAsset="all" />
-        <ProjectReference Include="..\SharpMeasures.Generators.RoslynUtility\SharpMeasures.Generators.RoslynUtility.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
-        <ProjectReference Include="..\..\SharpMeasures.Utility\SharpMeasures.Utility.csproj" PrivateAssets="all" OutputItemType="Analyzer" />
-        <ProjectReference Include="..\SharpMeasures.Generators.Scalars\SharpMeasures.Generators.Scalars.csproj" PrivateAssets="all" />
-        <ProjectReference Include="..\SharpMeasures.Generators.Units\SharpMeasures.Generators.Units.csproj" PrivateAssets="all" />
-        <ProjectReference Include="..\SharpMeasures.Generators.Vectors\SharpMeasures.Generators.Vectors.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\..\SharpMeasures.Equatables\SharpMeasures.Equatables.csproj" PrivateAssets="all" OutputItemType="analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.Parsing.API\SharpMeasures.Generators.Attributes.Parsing.API.csproj" PrivateAssets="all" OutputItemType="analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.Parsing\SharpMeasures.Generators.Attributes.Parsing.csproj" PrivateAssets="all" OutputItemType="analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.csproj" PrivateAssets="all" OutputItemType="analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Configuration\SharpMeasures.Generators.Configuration.csproj" PrivateAssets="all" OutputItemType="analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Diagnostics\SharpMeasures.Generators.Diagnostics.csproj" PrivateAssets="all" OutputItemType="analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Documentation\SharpMeasures.Generators.Documentation.csproj" PrivateAssets="all" OutputItemType="analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Quantities\SharpMeasures.Generators.Quantities.csproj" PrivateAssets="all" OutputItemType="analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators.RoslynUtility\SharpMeasures.Generators.RoslynUtility.csproj" PrivateAssets="all" OutputItemType="analyzer" />
+        <ProjectReference Include="..\..\SharpMeasures.Utility\SharpMeasures.Utility.csproj" PrivateAssets="all" OutputItemType="analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Scalars\SharpMeasures.Generators.Scalars.csproj" PrivateAssets="all" OutputItemType="analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators.SourceBuilding\SharpMeasures.Generators.SourceBuilding.csproj" PrivateAssets="all" OutputItemType="analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Units\SharpMeasures.Generators.Units.csproj" PrivateAssets="all" OutputItemType="analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Vectors\SharpMeasures.Generators.Vectors.csproj" PrivateAssets="all" OutputItemType="analyzer" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
 
     <ItemGroup>

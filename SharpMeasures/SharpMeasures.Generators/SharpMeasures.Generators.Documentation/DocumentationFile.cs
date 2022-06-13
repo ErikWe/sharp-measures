@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Equatables;
+using SharpMeasures.Generators.Configuration;
 using SharpMeasures.Generators.Diagnostics;
 
 using System;
@@ -11,7 +12,8 @@ using System.Collections.Generic;
 
 public class DocumentationFile : IEquatable<DocumentationFile>
 {
-    public static DocumentationFile Empty { get; } = new(string.Empty, null as MinimalLocation?, new Dictionary<string, string>(), new EmptyDiagnosticsStrategy());
+    public static DocumentationFile Empty { get; } = new(string.Empty, null as MinimalLocation?, new Dictionary<string, string>(), new EmptyDiagnosticsStrategy(),
+        GlobalAnalyzerConfig.Default, false);
 
     public string Name { get; }
     public MinimalLocation? Location { get; }
@@ -19,16 +21,24 @@ public class DocumentationFile : IEquatable<DocumentationFile>
 
     private IDiagnosticsStrategy DiagnosticsStrategy { get; }
 
-    internal DocumentationFile(string name, AdditionalText file, IReadOnlyDictionary<string, string> content, IDiagnosticsStrategy diagnosticsStrategy)
-        : this(name, DetermineFileLocation(file), content, diagnosticsStrategy) { }
+    private GlobalAnalyzerConfig Configuration { get; }
+    private bool HasReportedOneMissingTag { get; set; }
 
-    internal DocumentationFile(string name, MinimalLocation? location, IReadOnlyDictionary<string, string> content, IDiagnosticsStrategy diagnosticsStrategy)
+    internal DocumentationFile(string name, AdditionalText file, IReadOnlyDictionary<string, string> content, IDiagnosticsStrategy diagnosticsStrategy,
+        GlobalAnalyzerConfig configuration, bool hasReportedOneMissingTag)
+        : this(name, DetermineFileLocation(file), content, diagnosticsStrategy, configuration, hasReportedOneMissingTag) { }
+
+    internal DocumentationFile(string name, MinimalLocation? location, IReadOnlyDictionary<string, string> content, IDiagnosticsStrategy diagnosticsStrategy,
+        GlobalAnalyzerConfig configuration, bool hasReportedOneMissingTag)
     {
         Name = name;
         Location = location;
         Content = content.AsReadOnlyEquatable();
 
         DiagnosticsStrategy = diagnosticsStrategy;
+
+        Configuration = configuration;
+        HasReportedOneMissingTag = hasReportedOneMissingTag;
     }
 
     public IResultWithDiagnostics<string> ResolveTag(string tag)
@@ -38,13 +48,12 @@ public class DocumentationFile : IEquatable<DocumentationFile>
             return ResultWithDiagnostics.Construct(string.Empty);
         }
 
-        if (Content.TryGetValue(tag, out string tagText))
+        if (Content.TryGetValue(tag, out string tagText) is false)
         {
-            return ResultWithDiagnostics.Construct(tagText);
+            return ResultWithDiagnostics.Construct(string.Empty, CreateMissingTagDiagnostics(tag));
         }
 
-        var diagnostics = DiagnosticsStrategy.DocumentationFileMissingRequestedTag((Location ?? MinimalLocation.None).AsRoslynLocation(), Name, tag);
-        return ResultWithDiagnostics.Construct(string.Empty, diagnostics);
+        return ResultWithDiagnostics.Construct(tagText);
     }
 
     public string ResolveTagAndReportDiagnostics(SourceProductionContext context, string tag)
@@ -54,6 +63,17 @@ public class DocumentationFile : IEquatable<DocumentationFile>
         context.ReportDiagnostics(resultAndDiagnostics);
 
         return resultAndDiagnostics.Result;
+    }
+
+    private Diagnostic? CreateMissingTagDiagnostics(string tag)
+    {
+        if (DiagnosticsStrategy.GenerateDiagnostics is false || Configuration.LimitOneErrorPerDocumentationFile && HasReportedOneMissingTag)
+        {
+            return null;
+        }
+
+        HasReportedOneMissingTag = true;
+        return DiagnosticsStrategy.DocumentationFileMissingRequestedTag((Location ?? MinimalLocation.None).AsRoslynLocation(), Name, tag);
     }
 
     private static MinimalLocation? DetermineFileLocation(AdditionalText file)

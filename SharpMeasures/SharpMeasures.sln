@@ -48,6 +48,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Qu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Vectors", "SharpMeasures.Generators\SharpMeasures.Generators.Vectors\SharpMeasures.Generators.Vectors.csproj", "{283191D4-5757-4823-A794-D2128F8D5DA0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMeasures.Generators.Configuration", "SharpMeasures.Generators\SharpMeasures.Generators.Configuration\SharpMeasures.Generators.Configuration.csproj", "{EFF17FB1-EE34-40CB-B573-3B18F5898BA0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -130,6 +132,10 @@ Global
 		{283191D4-5757-4823-A794-D2128F8D5DA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{283191D4-5757-4823-A794-D2128F8D5DA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{283191D4-5757-4823-A794-D2128F8D5DA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFF17FB1-EE34-40CB-B573-3B18F5898BA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFF17FB1-EE34-40CB-B573-3B18F5898BA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFF17FB1-EE34-40CB-B573-3B18F5898BA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFF17FB1-EE34-40CB-B573-3B18F5898BA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

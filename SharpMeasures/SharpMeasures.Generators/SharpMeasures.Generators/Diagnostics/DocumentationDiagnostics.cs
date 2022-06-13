@@ -2,7 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Documentation;
 
 internal class DocumentationDiagnostics : IDiagnosticsStrategy

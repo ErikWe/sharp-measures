@@ -5,9 +5,10 @@
         <RootNamespace>SharpMeasures.Generators.Scalars</RootNamespace>
     </PropertyGroup>
 
-    <PropertyGroup>
-        <IsPackable>false</IsPackable>
-    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\SharpMeasures.Equatables\SharpMeasures.Equatables.csproj" PrivateAssets="all" />
@@ -15,9 +16,10 @@
         <ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.Parsing.API\SharpMeasures.Generators.Attributes.Parsing.API.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.Parsing\SharpMeasures.Generators.Attributes.Parsing.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Configuration\SharpMeasures.Generators.Configuration.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.Diagnostics\SharpMeasures.Generators.Diagnostics.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.Documentation\SharpMeasures.Generators.Documentation.csproj" PrivateAssets="all" />
-        <ProjectReference Include="..\SharpMeasures.Generators.Quantities\SharpMeasures.Generators.Quantities.csproj" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Quantities\SharpMeasures.Generators.Quantities.csproj" PrivateAsset="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.RoslynUtility\SharpMeasures.Generators.RoslynUtility.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.SourceBuilding\SharpMeasures.Generators.SourceBuilding.csproj" PrivateAssets="all" />
     </ItemGroup>
