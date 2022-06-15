@@ -25,7 +25,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotScalar,
         title: "Expected a scalar quantity",
-        messageFormat: $"Expected a scalar quantity. Decorate {{0}} with the attribute {typeof(GeneratedScalarAttribute).FullName}, " +
+        messageFormat: $"Expected a scalar quantity. Decorate {{0}} with the attribute {typeof(SharpMeasuresScalarAttribute).FullName}, " +
             $"or use another type.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
@@ -36,7 +36,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotScalar,
         title: "Expected a scalar quantity",
-        messageFormat: $"Expected a type marked with the attribute {typeof(GeneratedScalarAttribute).FullName}",
+        messageFormat: $"Expected a type marked with the attribute {typeof(SharpMeasuresScalarAttribute).FullName}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -46,7 +46,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotVector,
         title: "Expected a vector quantity",
-        messageFormat: $"Expected a vector quantity. Decorate {{0}} with the attribute {typeof(GeneratedVectorAttribute).FullName}, " +
+        messageFormat: $"Expected a vector quantity. Decorate {{0}} with the attribute {typeof(SharpMeasuresVectorAttribute).FullName}, " +
             $"or use another type.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
@@ -57,7 +57,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotVector,
         title: "Expected a vector quantity",
-        messageFormat: $"Expected a type marked with the attribute {typeof(GeneratedVectorAttribute).FullName}",
+        messageFormat: $"Expected a type marked with the attribute {typeof(SharpMeasuresVectorAttribute).FullName}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -67,7 +67,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotUnit,
         title: "Expected a unit",
-        messageFormat: $"Expected a unit. Decorate {{0}} with the attribute {typeof(GeneratedUnitAttribute).FullName}, or use another type.",
+        messageFormat: $"Expected a unit. Decorate {{0}} with the attribute {typeof(SharpMeasuresUnitAttribute).FullName}, or use another type.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -77,7 +77,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotUnit,
         title: "Expected a unit",
-        messageFormat: $"Expected a type marked with the attribute {typeof(GeneratedUnitAttribute).FullName}",
+        messageFormat: $"Expected a type marked with the attribute {typeof(SharpMeasuresUnitAttribute).FullName}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

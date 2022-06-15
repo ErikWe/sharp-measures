@@ -55,6 +55,6 @@ internal class ResizedVectorDiagnostics : Parsing.ResizedVector.IResizedVectorPr
 
     public Diagnostic UnresolvedVectorGroup(IResizedVectorRefinementContext context, ResizedVectorDefinition definition)
     {
-        return DiagnosticConstruction.QuantityGroupMissingRoot<GeneratedVectorAttribute>(definition.Locations.AssociatedVector?.AsRoslynLocation());
+        return DiagnosticConstruction.QuantityGroupMissingRoot<SharpMeasuresVectorAttribute>(definition.Locations.AssociatedVector?.AsRoslynLocation());
     }
 }

@@ -29,7 +29,7 @@ public static class ScalarParsingStage
 {
     public static ScalarGenerator Attach(IncrementalGeneratorInitializationContext context)
     {
-        var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<GeneratedScalarAttribute>(context.SyntaxProvider);
+        var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<SharpMeasuresScalarAttribute>(context.SyntaxProvider);
         var partialDeclarations = PartialDeclarationProvider.Construct<TypeDeclarationSyntax>().AttachAndReport(context, declarations, ScalarDiagnostics.Instance);
         var symbols = DeclarationSymbolProvider.ConstructForValueType(ConstructIntermediateResult).Attach(partialDeclarations, context.CompilationProvider);
 

@@ -15,7 +15,7 @@ internal class ScalarDiagnostics : IPartialDeclarationProviderDiagnostics
 
     public Diagnostic TypeNotPartial(BaseTypeDeclarationSyntax declaration)
     {
-        return DiagnosticConstruction.TypeNotPartial<GeneratedScalarAttribute>(declaration.Identifier.GetLocation(), declaration.Identifier.Text);
+        return DiagnosticConstruction.TypeNotPartial<SharpMeasuresScalarAttribute>(declaration.Identifier.GetLocation(), declaration.Identifier.Text);
     }
 
     public static Diagnostic ContradictoryAttributes<TInclusionAttribute, TExclusionAttribute>(IItemListDefinition<string?> definition)

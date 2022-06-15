@@ -8,7 +8,7 @@ internal static class GeneratedVectorParser
 
     private static RawGeneratedVectorDefinition DefaultDefiniton() => RawGeneratedVectorDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawGeneratedVectorDefinition, GeneratedVectorLocations, GeneratedVectorAttribute>
+    private class AttributeParser : AAttributeParser<RawGeneratedVectorDefinition, GeneratedVectorLocations, SharpMeasuresVectorAttribute>
     {
         public AttributeParser() : base(DefaultDefiniton, GeneratedVectorProperties.AllProperties) { }
     }

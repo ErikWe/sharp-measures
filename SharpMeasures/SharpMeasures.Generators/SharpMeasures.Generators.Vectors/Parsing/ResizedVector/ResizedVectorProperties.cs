@@ -17,21 +17,21 @@ internal static class ResizedVectorProperties
 
     private static ResizedVectorProperty<INamedTypeSymbol> AssociatedVector { get; } = new
     (
-        name: nameof(ResizedVectorAttribute.AssociatedVector),
+        name: nameof(ResizedSharpMeasuresVectorAttribute.AssociatedVector),
         setter: static (definition, associatedVector) => definition with { AssociatedVector = associatedVector.AsNamedType() },
         locator: static (locations, associatedVectorLocation) => locations with { AssociatedVector = associatedVectorLocation }
     );
 
     private static ResizedVectorProperty<int> Dimension { get; } = new
     (
-        name: nameof(ResizedVectorAttribute.Dimension),
+        name: nameof(ResizedSharpMeasuresVectorAttribute.Dimension),
         setter: static (definition, dimension) => definition with { Dimension = dimension },
         locator: static (locations, dimensionLocation) => locations with { Dimension = dimensionLocation }
     );
 
     private static ResizedVectorProperty<bool> Resizedocumentation { get; } = new
     (
-        name: nameof(ResizedVectorAttribute.GenerateDocumentation),
+        name: nameof(ResizedSharpMeasuresVectorAttribute.GenerateDocumentation),
         setter: static (definition, generateDocumentation) => definition with { GenerateDocumentation = generateDocumentation },
         locator: static (locations, generateDocumentationLocation) => locations with { GenerateDocumentation = generateDocumentationLocation }
     );

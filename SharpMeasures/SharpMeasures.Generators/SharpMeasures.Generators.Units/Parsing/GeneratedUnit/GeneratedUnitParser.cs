@@ -8,7 +8,7 @@ internal static class GeneratedUnitParser
 
     private static RawGeneratedUnitDefinition DefaultDefiniton() => RawGeneratedUnitDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawGeneratedUnitDefinition, GeneratedUnitLocations, GeneratedUnitAttribute>
+    private class AttributeParser : AAttributeParser<RawGeneratedUnitDefinition, GeneratedUnitLocations, SharpMeasuresUnitAttribute>
     {
         public AttributeParser() : base(DefaultDefiniton, GeneratedUnitProperties.AllProperties) { }
     }

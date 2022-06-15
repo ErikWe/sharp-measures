@@ -17,21 +17,21 @@ internal static class GeneratedUnitProperties
 
     private static GeneratedUnitProperty<INamedTypeSymbol> Quantity { get; } = new
     (
-        name: nameof(GeneratedUnitAttribute.Quantity),
+        name: nameof(SharpMeasuresUnitAttribute.Quantity),
         setter: static (definition, quantitySymbol) => definition with { Quantity = quantitySymbol.AsNamedType() },
         locator: static (locations, quantityLocation) => locations with { Quantity = quantityLocation }
     );
 
     private static GeneratedUnitProperty<bool> SupportsBiasedQuantities { get; } = new
     (
-        name: nameof(GeneratedUnitAttribute.SupportsBiasedQuantities),
+        name: nameof(SharpMeasuresUnitAttribute.SupportsBiasedQuantities),
         setter: static (definition, allowBias) => definition with { SupportsBiasedQuantities = allowBias },
         locator: static (locations, allowBiasLocation) => locations with { SupportsBiasedQuantities = allowBiasLocation }
     );
 
     private static GeneratedUnitProperty<bool> GenerateDocumentation { get; } = new
     (
-        name: nameof(GeneratedUnitAttribute.GenerateDocumentation),
+        name: nameof(SharpMeasuresUnitAttribute.GenerateDocumentation),
         setter: static (definition, generateDocumentation) => definition with { GenerateDocumentation = generateDocumentation },
         locator: static (locations, generateDocumentationLocation) => locations with { GenerateDocumentation = generateDocumentationLocation }
     );

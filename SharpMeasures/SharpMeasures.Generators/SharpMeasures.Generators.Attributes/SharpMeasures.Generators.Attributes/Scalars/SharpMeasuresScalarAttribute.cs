@@ -4,7 +4,7 @@ using System;
 
 /// <summary>Marks the type as a scalar quantity, and allows a source generator to implement relevant functionality.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public sealed class GeneratedScalarAttribute : Attribute
+public sealed class SharpMeasuresScalarAttribute : Attribute
 {
     /// <summary>The unit that describes the scalar quantity.</summary>
     public Type Unit { get; }
@@ -45,7 +45,7 @@ public sealed class GeneratedScalarAttribute : Attribute
 
     /// <summary>Marks the type as a scalar quantity, and allows a source generator to implement relevant functionality.</summary>
     /// <param name="unit">The unit that describes the scalar quantity.</param>
-    public GeneratedScalarAttribute(Type unit)
+    public SharpMeasuresScalarAttribute(Type unit)
     {
         Unit = unit;
     }

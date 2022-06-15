@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-internal class ResizedVectorParsingStage : AVectorParsingStage<ResizedVectorAttribute, RawResizedVectorDefinition, ResizedVectorDefinition,
+internal class ResizedVectorParsingStage : AVectorParsingStage<ResizedSharpMeasuresVectorAttribute, RawResizedVectorDefinition, ResizedVectorDefinition,
     RawParsedResizedVector, ParsedResizedVector>
 {
     public IncrementalValuesProvider<ResizedVectorInterface> InterfaceProvider { get; }

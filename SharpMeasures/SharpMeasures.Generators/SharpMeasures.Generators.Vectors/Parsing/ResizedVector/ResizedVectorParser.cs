@@ -8,7 +8,7 @@ internal static class ResizedVectorParser
 
     private static RawResizedVectorDefinition DefaultDefiniton() => RawResizedVectorDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawResizedVectorDefinition, ResizedVectorLocations, ResizedVectorAttribute>
+    private class AttributeParser : AAttributeParser<RawResizedVectorDefinition, ResizedVectorLocations, ResizedSharpMeasuresVectorAttribute>
     {
         public AttributeParser() : base(DefaultDefiniton, ResizedVectorProperties.AllProperties) { }
     }

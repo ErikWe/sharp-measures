@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-internal class GeneratedVectorParsingStage : AVectorParsingStage<GeneratedVectorAttribute, RawGeneratedVectorDefinition, GeneratedVectorDefinition,
+internal class GeneratedVectorParsingStage : AVectorParsingStage<SharpMeasuresVectorAttribute, RawGeneratedVectorDefinition, GeneratedVectorDefinition,
     RawParsedGeneratedVector, ParsedGeneratedVector>
 {
     public IncrementalValuesProvider<GeneratedVectorInterface> InterfaceProvider { get; }

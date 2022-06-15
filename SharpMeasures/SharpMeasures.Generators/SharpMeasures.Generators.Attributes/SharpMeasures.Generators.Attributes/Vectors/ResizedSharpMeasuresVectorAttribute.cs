@@ -5,7 +5,7 @@ using System;
 /// <summary>Marks the type as a vector quantity associated with another vector quantity, but of another dimension.
 /// <para> If SharpMeasures source generators are used, this attribute is also used to identify targets for generation.</para></summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public sealed class ResizedVectorAttribute : Attribute
+public sealed class ResizedSharpMeasuresVectorAttribute : Attribute
 {
     /// <summary>The vector quantity that this quantity is associated with.</summary>
     public Type AssociatedVector { get; }
@@ -22,7 +22,7 @@ public sealed class ResizedVectorAttribute : Attribute
     /// <summary>Marks the type as a vector quantity associated with another vector quantity, but of another dimension.
     /// <para> If SharpMeasures source generators are used, this attribute is also used to identify targets for generation.</para></summary>
     /// <param name="associatedVector">The vector quantity that this quantity is associated with.</param>
-    public ResizedVectorAttribute(Type associatedVector)
+    public ResizedSharpMeasuresVectorAttribute(Type associatedVector)
     {
         AssociatedVector = associatedVector;
     }

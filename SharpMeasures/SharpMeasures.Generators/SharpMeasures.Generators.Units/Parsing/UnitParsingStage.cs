@@ -27,7 +27,7 @@ public static class UnitParsingStage
 {
     public static UnitGenerator Attach(IncrementalGeneratorInitializationContext context)
     {
-        var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<GeneratedUnitAttribute>(context.SyntaxProvider);
+        var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<SharpMeasuresUnitAttribute>(context.SyntaxProvider);
         var partialDeclarations = PartialDeclarationProvider.Construct<TypeDeclarationSyntax>().AttachAndReport(context, declarations, UnitDiagnostics.Instance);
         var symbols = DeclarationSymbolProvider.ConstructForValueType(ConstructIntermediateResult).Attach(partialDeclarations, context.CompilationProvider);
 

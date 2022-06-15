@@ -4,7 +4,7 @@ using System;
 
 /// <summary>Marks the type as a vector quantity, and allows a source generator to implement relevant functionality.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public sealed class GeneratedVectorAttribute : Attribute
+public sealed class SharpMeasuresVectorAttribute : Attribute
 {
     /// <summary>The unit that describes the scalar quantity.</summary>
     public Type Unit { get; }
@@ -34,7 +34,7 @@ public sealed class GeneratedVectorAttribute : Attribute
 
     /// <summary>Marks the type as a vector quantity, and allows a source generator to implement relevant functionality.</summary>
     /// <param name="unit">The unit that describes the vector quantity.</param>
-    public GeneratedVectorAttribute(Type unit)
+    public SharpMeasuresVectorAttribute(Type unit)
     {
         Unit = unit;
     }

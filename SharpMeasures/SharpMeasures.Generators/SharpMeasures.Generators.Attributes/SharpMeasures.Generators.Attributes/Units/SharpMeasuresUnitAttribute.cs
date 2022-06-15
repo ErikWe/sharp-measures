@@ -6,7 +6,7 @@ using System;
 /// <remarks>Accompanying attributes, such as <see cref="Units.DerivableUnitAttribute"/> and <see cref="Units.FixedUnitAttribute"/>, may be used to extend
 /// the source generation.</remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public sealed class GeneratedUnitAttribute : Attribute
+public sealed class SharpMeasuresUnitAttribute : Attribute
 {
     /// <summary>The scalar quantity that the unit describes.</summary>
     /// <remarks>For units that support biased quantities, this should represent an associated unbiased quantity.</remarks>
@@ -23,7 +23,7 @@ public sealed class GeneratedUnitAttribute : Attribute
     /// <summary>Marks the type as a unit, and allows a source generator to implement relevant functionality.</summary>
     /// <param name="quantity">The scalar quantity that the unit describes.
     /// <para>For units that support biased quantities, this should represent an associated unbiased quantity.</para></param>
-    public GeneratedUnitAttribute(Type quantity)
+    public SharpMeasuresUnitAttribute(Type quantity)
     {
         Quantity = quantity;
     }
