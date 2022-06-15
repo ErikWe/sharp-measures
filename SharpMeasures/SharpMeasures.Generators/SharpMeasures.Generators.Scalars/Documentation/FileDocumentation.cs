@@ -1,0 +1,145 @@
+﻿namespace SharpMeasures.Generators.Scalars.Documentation;
+
+using SharpMeasures.Generators.Documentation;
+using SharpMeasures.Generators.Scalars.Refinement.ScalarConstant;
+using SharpMeasures.Generators.Units;
+
+using System;
+
+internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocumentation>
+{
+    private DocumentationFile DocumentationFile { get; }
+    private IDocumentationStrategy DefaultDocumentationStrategy { get; }
+
+    public FileDocumentation(DocumentationFile documentationFile, IDocumentationStrategy defaultDocumentationStrategy)
+    {
+        DocumentationFile = documentationFile;
+        DefaultDocumentationStrategy = defaultDocumentationStrategy;
+    }
+
+    public string Header() => FromFileOrDefault(static (strategy) => strategy.Header());
+
+    public string Zero() => FromFileOrDefault(static (strategy) => strategy.Zero());
+    public string Constant(RefinedScalarConstantDefinition definition) => FromFileOrDefault((strategy) => strategy.Constant(definition));
+    public string UnitBase(UnitInstance unitInstance) => FromFileOrDefault((strategy) => strategy.UnitBase(unitInstance));
+
+    public string WithMagnitude() => FromFileOrDefault(static (strategy) => strategy.WithMagnitude());
+
+    public string FromReciprocal() => FromFileOrDefault(static (strategy) => strategy.FromReciprocal());
+    public string FromSquare() => FromFileOrDefault(static (strategy) => strategy.FromSquare());
+    public string FromCube() => FromFileOrDefault(static (strategy) => strategy.FromCube());
+    public string FromSquareRoot() => FromFileOrDefault(static (strategy) => strategy.FromSquareRoot());
+    public string FromCubeRoot() => FromFileOrDefault(static (strategy) => strategy.FromCubeRoot());
+
+    public string Magnitude() => FromFileOrDefault(static (strategy) => strategy.Magnitude());
+
+    public string ScalarConstructor() => FromFileOrDefault(static (strategy) => strategy.ScalarConstructor());
+    public string ScalarAndUnitConstructor() => FromFileOrDefault(static (strategy) => strategy.ScalarAndUnitConstructor());
+
+    public string InUnit() => FromFileOrDefault(static (strategy) => strategy.InUnit());
+    public string InConstantMultiples(RefinedScalarConstantDefinition definition) => FromFileOrDefault((strategy) => strategy.InConstantMultiples(definition));
+    public string InSpecifiedUnit(UnitInstance unitInstance) => FromFileOrDefault((strategy) => strategy.InSpecifiedUnit(unitInstance));
+
+    public string AsDimensionallyEquivalent(ScalarInterface scalar) => FromFileOrDefault((strategy) => strategy.AsDimensionallyEquivalent(scalar));
+    public string CastToDimensionallyEquivalent(ScalarInterface scalar) => FromFileOrDefault((strategy) => strategy.CastToDimensionallyEquivalent(scalar));
+
+    public string IsNaN() => FromFileOrDefault(static (strategy) => strategy.IsNaN());
+    public string IsZero() => FromFileOrDefault(static (strategy) => strategy.IsZero());
+    public string IsPositive() => FromFileOrDefault(static (strategy) => strategy.IsPositive());
+    public string IsNegative() => FromFileOrDefault(static (strategy) => strategy.IsNegative());
+    public string IsFinite() => FromFileOrDefault(static (strategy) => strategy.IsFinite());
+    public string IsInfinity() => FromFileOrDefault(static (strategy) => strategy.IsInfinity());
+    public string IsPositiveInfinity() => FromFileOrDefault(static (strategy) => strategy.IsPositiveInfinity());
+    public string IsNegativeInfinity() => FromFileOrDefault(static (strategy) => strategy.IsNegativeInfinity());
+
+    public string Absolute() => FromFileOrDefault(static (strategy) => strategy.Absolute());
+    public string Sign() => FromFileOrDefault(static (strategy) => strategy.Sign());
+
+    public string Reciprocal() => FromFileOrDefault(static (strategy) => strategy.Reciprocal());
+    public string Square() => FromFileOrDefault(static (strategy) => strategy.Square());
+    public string Cube() => FromFileOrDefault(static (strategy) => strategy.Cube());
+    public string SquareRoot() => FromFileOrDefault(static (strategy) => strategy.SquareRoot());
+    public string CubeRoot() => FromFileOrDefault(static (strategy) => strategy.CubeRoot());
+
+    public string ToStringDocumentation() => FromFileOrDefault(static (strategy) => strategy.ToStringDocumentation());
+
+    public string UnaryPlusMethod() => FromFileOrDefault(static (strategy) => strategy.UnaryPlusMethod());
+    public string NegateMethod() => FromFileOrDefault(static (strategy) => strategy.NegateMethod());
+
+    public string MultiplyScalarMethod() => FromFileOrDefault(static (strategy) => strategy.MultiplyScalarMethod());
+    public string DivideScalarMethod() => FromFileOrDefault(static (strategy) => strategy.DivideScalarMethod());
+
+    public string MultiplySameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.MultiplySameTypeMethod());
+    public string DivideSameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.DivideSameTypeMethod());
+
+    public string MultiplyGenericScalarToUnhandledMethod() => FromFileOrDefault(static (strategy) => strategy.MultiplyGenericScalarToUnhandledMethod());
+    public string DivideGenericScalarToUnhandledMethod() => FromFileOrDefault(static (strategy) => strategy.DivideGenericScalarToUnhandledMethod());
+
+    public string MultiplyGenericScalarMethod() => FromFileOrDefault(static (strategy) => strategy.MultiplyGenericScalarMethod());
+    public string DivideGenericScalarMethod() => FromFileOrDefault(static (strategy) => strategy.DivideGenericScalarMethod());
+
+    public string MultiplyVectorMethod(int dimension) => FromFileOrDefault((strategy) => strategy.MultiplyVectorMethod(dimension));
+
+    public string UnaryPlusOperator() => FromFileOrDefault(static (strategy) => strategy.UnaryPlusOperator());
+    public string NegateOperator() => FromFileOrDefault(static (strategy) => strategy.NegateOperator());
+
+    public string MultiplyScalarOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyScalarOperatorLHS());
+    public string MultiplyScalarOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyScalarOperatorRHS());
+
+    public string DivideScalarOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.DivideScalarOperatorLHS());
+    public string DivideScalarOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.DivideScalarOperatorRHS());
+
+    public string MultiplySameTypeOperator() => FromFileOrDefault(static (strategy) => strategy.MultiplySameTypeOperator());
+    public string DivideSameTypeOperator() => FromFileOrDefault(static (strategy) => strategy.DivideSameTypeOperator());
+
+    public string MultiplyIScalarOperator() => FromFileOrDefault(static (strategy) => strategy.MultiplyIScalarOperator());
+    public string DivideIScalarOperator() => FromFileOrDefault(static (strategy) => strategy.DivideIScalarOperator());
+
+    public string MultiplyVectorOperatorLHS(int dimension) => FromFileOrDefault((strategy) => strategy.MultiplyVectorOperatorLHS(dimension));
+    public string MultiplyVectorOperatorRHS(int dimension) => FromFileOrDefault((strategy) => strategy.MultiplyVectorOperatorRHS(dimension));
+    public string DivideVectorOperatorRHS(int dimension) => FromFileOrDefault((strategy) => strategy.DivideVectorOperatorRHS(dimension));
+
+    public string CompareToSameType() => FromFileOrDefault(static (strategy) => strategy.CompareToSameType());
+
+    public string LessThanSameType() => FromFileOrDefault(static (strategy) => strategy.LessThanSameType());
+    public string GreaterThanSameType() => FromFileOrDefault(static (strategy) => strategy.GreaterThanSameType());
+    public string LessThanOrEqualSameType() => FromFileOrDefault(static (strategy) => strategy.LessThanOrEqualSameType());
+    public string GreaterThanOrEqualSameType() => FromFileOrDefault(static (strategy) => strategy.GreaterThanOrEqualSameType());
+
+    private string FromFileOrDefault(Func<IDocumentationStrategy, string> defaultDelegate)
+    {
+        string tag = defaultDelegate(DocumentationTags.Instance);
+
+        if (DocumentationFile.OptionallyResolveTag(tag) is not string { Length: > 0 } tagContent)
+        {
+            tagContent = defaultDelegate(DefaultDocumentationStrategy);
+        }
+
+        return tagContent;
+    }
+
+    public virtual bool Equals(FileDocumentation? other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        return DocumentationFile == other.DocumentationFile && DefaultDocumentationStrategy.Equals(other.DefaultDocumentationStrategy);
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj is FileDocumentation other)
+        {
+            return Equals(other);
+        }
+
+        return false;
+    }
+
+    public static bool operator ==(FileDocumentation? lhs, FileDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;
+    public static bool operator !=(FileDocumentation? lhs, FileDocumentation? rhs) => (lhs == rhs) is false;
+
+    public override int GetHashCode() => (DocumentationFile, DefaultDocumentationStrategy).GetHashCode();
+}

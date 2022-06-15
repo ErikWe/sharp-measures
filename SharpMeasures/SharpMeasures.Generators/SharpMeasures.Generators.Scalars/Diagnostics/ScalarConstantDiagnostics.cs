@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
-using SharpMeasures.Generators.Scalars.Refinement;
+using SharpMeasures.Generators.Scalars.Refinement.ScalarConstant;
 
 internal class ScalarConstantDiagnostics : IScalarConstantDiagnostics, IScalarConstantRefinementDiagnostics
 {

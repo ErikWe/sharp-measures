@@ -1,10 +1,11 @@
-﻿namespace SharpMeasures.Generators.Scalars.Refinement;
+﻿namespace SharpMeasures.Generators.Scalars.Refinement.DimensionalEquivalence;
 
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
+using SharpMeasures.Generators.Scalars;
 
 using System.Collections.Generic;
 
@@ -37,7 +38,7 @@ internal class DimensionalEquivalenceRefiner : IProcesser<IDimensionalEquivalenc
         List<ScalarInterface> quantities = new(definition.Quantities.Count);
         List<Diagnostic> allDiagnostics = new();
 
-        int index = 0;
+        var index = 0;
         foreach (var quantity in definition.Quantities)
         {
             if (context.ScalarPopulation.TryGetValue(quantity, out var scalar) is false)

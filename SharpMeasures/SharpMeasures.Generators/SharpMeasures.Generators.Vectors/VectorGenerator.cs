@@ -9,11 +9,13 @@ using SharpMeasures.Generators.Quantities.Parsing;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Diagnostics;
+using SharpMeasures.Generators.Vectors.Documentation;
 using SharpMeasures.Generators.Vectors.Parsing;
 using SharpMeasures.Generators.Vectors.Pipelines.Common;
 using SharpMeasures.Generators.Vectors.Pipelines.Maths;
 using SharpMeasures.Generators.Vectors.Pipelines.Units;
-using SharpMeasures.Generators.Vectors.Refinement;
+using SharpMeasures.Generators.Vectors.Refinement.GeneratedVector;
+using SharpMeasures.Generators.Vectors.Refinement.ResizedVector;
 
 using System.Threading;
 
@@ -46,11 +48,11 @@ public class VectorGenerator
 
         var minimized = VectorProvider.Combine(unitPopulation, scalarPopulation, PopulationProvider, PopulationDataProvider).Select(ReduceToDataModel)
             .ReportDiagnostics(context).Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionary)
-            .Flatten().Select(AppendDocumentationFile).ReportDiagnostics(context);
+            .Flatten().Select(AppendDocumentationFile);
 
         var minimizedResized = ResizedVectorProvider.Combine(unitPopulation, scalarPopulation, PopulationProvider, PopulationDataProvider)
             .Select(ReduceToDataModel).ReportDiagnostics(context).Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation)
-            .Combine(documentationDictionary).Flatten().Select(AppendDocumentationFile).ReportDiagnostics(context);
+            .Combine(documentationDictionary).Flatten().Select(AppendDocumentationFile);
 
         CommonGenerator.Initialize(context, minimized, minimizedResized);
         MathsGenerator.Initialize(context, minimized, minimizedResized);
@@ -106,24 +108,25 @@ public class VectorGenerator
         return (data.Model, data.Default);
     }
 
-    private static IResultWithDiagnostics<TDataModel> AppendDocumentationFile<TDataModel>
+    private static TDataModel AppendDocumentationFile<TDataModel>
         ((TDataModel Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
         where TDataModel : IDataModel<TDataModel>
     {
         if (input.GenerateDocumentation)
         {
-            if (input.DocumentationDictionary.TryGetValue(input.Model.Identifier, out DocumentationFile documentationFile))
+            DefaultDocumentation<TDataModel> defaultDocumentation = new(input.Model);
+
+            if (input.DocumentationDictionary.TryGetValue(input.Model.VectorType.Name, out DocumentationFile documentationFile))
             {
-                TDataModel modifiedModel = input.Model.WithDocumentation(documentationFile);
-                return ResultWithDiagnostics.Construct(modifiedModel);
+                input.Model = input.Model.WithDocumentation(new FileDocumentation(input.Model.Dimension, documentationFile, defaultDocumentation));
             }
-
-            Diagnostic diagnostics = DiagnosticConstruction.NoMatchingDocumentationFile(input.Model.IdentifierLocation, input.Model.Identifier);
-
-            return ResultWithDiagnostics.Construct(input.Model, diagnostics);
+            else
+            {
+                input.Model = input.Model.WithDocumentation(defaultDocumentation);
+            }
         }
 
-        return ResultWithDiagnostics.Construct(input.Model);
+        return input.Model;
     }
 
     private static bool ExtractDefaultGenerateDocumentation(GlobalAnalyzerConfig config, CancellationToken _) => config.GenerateDocumentationByDefault;

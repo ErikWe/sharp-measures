@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Vectors.Refinement;
+﻿namespace SharpMeasures.Generators.Vectors.Refinement.GeneratedVector;
 
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;

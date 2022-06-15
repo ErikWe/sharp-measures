@@ -4,12 +4,12 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.Quantities.Utility;
-using SharpMeasures.Generators.Scalars.Refinement;
 using SharpMeasures.Generators.SourceBuilding;
 
 using System;
 using System.Text;
 using System.Linq;
+using SharpMeasures.Generators.Scalars.Refinement.DimensionalEquivalence;
 
 internal static class Execution
 {
@@ -20,29 +20,27 @@ internal static class Execution
             return;
         }
 
-        string source = Composer.Compose(context, data);
+        string source = Composer.Compose(data);
 
         context.AddSource($"{data.Scalar.Name}_DimensionalEquivalence.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer
     {
-        public static string Compose(SourceProductionContext context, DataModel data)
+        public static string Compose(DataModel data)
         {
-            Composer composer = new(context, data);
+            Composer composer = new(data);
             composer.Compose();
             return composer.Retrieve();
         }
 
-        private SourceProductionContext Context { get; }
         private StringBuilder Builder { get; } = new();
         private UsingsCollector UsingsCollector { get; }
 
         private DataModel Data { get; }
 
-        private Composer(SourceProductionContext context, DataModel data)
+        private Composer(DataModel data)
         {
-            Context = context;
             Data = data;
 
             UsingsCollector = UsingsCollector.Delayed(Builder, data.Scalar.Namespace);
@@ -108,7 +106,7 @@ internal static class Execution
         {
             UsingsCollector.AddUsing(scalar.ScalarType.Namespace);
 
-            AppendDocumentation(indentation, ScalarDocumentationTags.DimensionallyEquivalentTo(scalar.ScalarType.Name));
+            AppendDocumentation(indentation, Data.Documentation.AsDimensionallyEquivalent(scalar));
             Builder.AppendLine($"{indentation}public {scalar.ScalarType.Name} As{scalar.ScalarType.Name} => new(Magnitude);");
         }
 
@@ -120,13 +118,13 @@ internal static class Execution
 
         private void ComposeOperatorConversion(ScalarInterface scalar, Indentation indentation, string behaviour)
         {
-            AppendDocumentation(indentation, ScalarDocumentationTags.Operators.DimensionallyEquivalentTo(scalar.ScalarType.Name));
+            AppendDocumentation(indentation, Data.Documentation.CastToDimensionallyEquivalent(scalar));
             Builder.AppendLine($"{indentation}public static {behaviour} operator {scalar.ScalarType.Name}({Data.Scalar.Name} x) => new(x.Magnitude);");
         }
 
-        private void AppendDocumentation(Indentation indentation, string tag)
+        private void AppendDocumentation(Indentation indentation, string text)
         {
-            DocumentationBuilding.AppendDocumentation(Context, Builder, Data.Documentation, indentation, tag);
+            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
         }
     }
 }

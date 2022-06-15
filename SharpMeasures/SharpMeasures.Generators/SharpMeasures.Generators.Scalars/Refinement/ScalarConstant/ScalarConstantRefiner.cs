@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Scalars.Refinement;
+﻿namespace SharpMeasures.Generators.Scalars.Refinement.ScalarConstant;
 
 using Microsoft.CodeAnalysis;
 
@@ -35,7 +35,7 @@ internal class ScalarConstantRefiner : IProcesser<IScalarConstantRefinementConte
 
     public IOptionalWithDiagnostics<RefinedScalarConstantDefinition> Process(IScalarConstantRefinementContext context, ScalarConstantDefinition definition)
     {
-        if (context.Unit.UnitsByName.TryGetValue(definition.Unit, out UnitInstance unit) is false)
+        if (context.Unit.UnitsByName.TryGetValue(definition.Unit, out var unit) is false)
         {
             return OptionalWithDiagnostics.Empty<RefinedScalarConstantDefinition>(Diagnostics.UnrecognizedUnit(context, definition));
         }

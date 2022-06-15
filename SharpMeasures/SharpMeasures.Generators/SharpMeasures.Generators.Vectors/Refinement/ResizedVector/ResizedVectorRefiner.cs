@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Vectors.Refinement;
+﻿namespace SharpMeasures.Generators.Vectors.Refinement.ResizedVector;
 
 using Microsoft.CodeAnalysis;
 
@@ -6,6 +6,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Vectors;
 using SharpMeasures.Generators.Vectors.Parsing;
 using SharpMeasures.Generators.Vectors.Parsing.ResizedVector;
 
@@ -60,7 +61,7 @@ internal class ResizedVectorRefiner : IProcesser<IResizedVectorRefinementContext
             {
                 return OptionalWithDiagnostics.Empty<RefinedResizedVectorDefinition>(Diagnostics.DuplicateDimension(context, definition));
             }
-            
+
             return OptionalWithDiagnostics.Empty<RefinedResizedVectorDefinition>(Diagnostics.TypeNotVector(context, definition));
         }
 
@@ -81,7 +82,8 @@ internal class ResizedVectorRefiner : IProcesser<IResizedVectorRefinementContext
             return OptionalWithDiagnostics.Empty<RefinedResizedVectorDefinition>();
         }
 
-        RefinedResizedVectorDefinition product = new(associatedVector, vectorGroup, unit, scalar, definition.Dimension, definition.GenerateDocumentation);
+        RefinedResizedVectorDefinition product = new(associatedVector, vectorGroup, unit, scalar, definition.Dimension,
+            vectorGroup.Root.DefaultUnitName, vectorGroup.Root.DefaultUnitSymbol, definition.GenerateDocumentation);
         return OptionalWithDiagnostics.Result(product);
     }
 }

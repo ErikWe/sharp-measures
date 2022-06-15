@@ -8,7 +8,7 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Diagnostics;
 using SharpMeasures.Generators.Quantities.Refinement;
 using SharpMeasures.Generators.Scalars.Diagnostics;
-using SharpMeasures.Generators.Scalars.Refinement;
+using SharpMeasures.Generators.Scalars.Refinement.ScalarConstant;
 using SharpMeasures.Generators.Units;
 
 using System;

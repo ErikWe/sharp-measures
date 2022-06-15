@@ -5,11 +5,11 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Vectors.Diagnostics;
-using SharpMeasures.Generators.Vectors.Refinement;
 
 using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
+using SharpMeasures.Generators.Vectors.Refinement.DimensionalEquivalence;
 
 internal static class DimensionEquivalenceGenerator
 {

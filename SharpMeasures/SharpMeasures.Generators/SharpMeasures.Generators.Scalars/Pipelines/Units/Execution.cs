@@ -4,10 +4,10 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Scalars.Refinement;
 using SharpMeasures.Generators.Units;
 
 using System.Text;
+using SharpMeasures.Generators.Scalars.Refinement.ScalarConstant;
 
 internal static class Execution
 {
@@ -18,28 +18,26 @@ internal static class Execution
             return;
         }
 
-        string source = Composer.Compose(context, data);
+        string source = Composer.Compose(data);
 
         context.AddSource($"{data.Scalar.Name}_Units.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer
     {
-        public static string Compose(SourceProductionContext context, DataModel data)
+        public static string Compose(DataModel data)
         {
-            Composer composer = new(context, data);
+            Composer composer = new(data);
             composer.Compose();
             return composer.Retrieve();
         }
 
-        private SourceProductionContext Context { get; }
         private StringBuilder Builder { get; } = new();
 
         private DataModel Data { get; }
 
-        private Composer(SourceProductionContext context, DataModel data)
+        private Composer(DataModel data)
         {
-            Context = context;
             Data = data;
         }
 
@@ -70,7 +68,7 @@ internal static class Execution
         {
             foreach (RefinedScalarConstantDefinition constant in Data.Constants)
             {
-                AppendDocumentation(indentation, ScalarDocumentationTags.Units.ConstantWithName(constant.Name));
+                AppendDocumentation(indentation, Data.Documentation.Constant(constant));
                 Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} {constant.Name} => " +
                     $"new({constant.Value}, {Data.Unit.Name}.{constant.Unit.Name});");
             }
@@ -79,7 +77,7 @@ internal static class Execution
 
             foreach (UnitInstance includedBase in Data.Bases)
             {
-                AppendDocumentation(indentation, ScalarDocumentationTags.Units.BaseWithName(includedBase));
+                AppendDocumentation(indentation, Data.Documentation.UnitBase(includedBase));
                 Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} One{includedBase} => " +
                     $"{Data.Unit.Name}.{includedBase.Name}.{Data.UnitQuantity.Name};");
             }
@@ -90,7 +88,7 @@ internal static class Execution
             {
                 if (constant.GenerateMultiplesProperty)
                 {
-                    AppendDocumentation(indentation, ScalarDocumentationTags.Units.ConstantMultiples(constant.Name));
+                    AppendDocumentation(indentation, Data.Documentation.InConstantMultiples(constant));
                     Builder.AppendLine($"{indentation}public Scalar {constant.MultiplesName!} => Magnitude.Value / {constant.Name}.Magnitude.Value;");
                 }
             }
@@ -99,14 +97,14 @@ internal static class Execution
 
             foreach (UnitInstance includedUnit in Data.Units)
             {
-                AppendDocumentation(indentation, ScalarDocumentationTags.Units.UnitWithName(includedUnit));
+                AppendDocumentation(indentation, Data.Documentation.InSpecifiedUnit(includedUnit));
                 Builder.AppendLine($"{indentation}public static Scalar {includedUnit.Plural} => InUnit({Data.Unit.Name}.{includedUnit.Name});");
             }
         }
 
-        private void AppendDocumentation(Indentation indentation, string tag)
+        private void AppendDocumentation(Indentation indentation, string text)
         {
-            DocumentationBuilding.AppendDocumentation(Context, Builder, Data.Documentation, indentation, tag);
+            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
         }
     }
 }

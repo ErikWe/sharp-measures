@@ -11,14 +11,10 @@ public static class DocumentationBuilding
 {
     private static Regex NewLineRegex { get; } = new(@"(?:\r\n|\r|\n|^)", RegexOptions.Singleline | RegexOptions.Compiled);
 
-    public static void AppendDocumentation(SourceProductionContext context, StringBuilder source, DocumentationFile documentation,
-        Indentation indentation, string tag)
+    public static void AppendDocumentation(StringBuilder source, Indentation indentation, string text)
     {
-        if (documentation.ResolveTagAndReportDiagnostics(context, tag) is string { Length: > 0 } tagContent)
-        {
-            string indentedTagContent = NewLineRegex.Replace(tagContent, $"$0{indentation}");
+        string indentedTagContent = NewLineRegex.Replace(text, $"$0{indentation}");
 
-            source.AppendLine(indentedTagContent);
-        }
+        source.AppendLine(indentedTagContent);
     }
 }

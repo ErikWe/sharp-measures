@@ -12,21 +12,20 @@ internal static class Execution
 {
     public static void Execute(SourceProductionContext context, DataModel data)
     {
-        string source = Composer.Compose(context, data);
+        string source = Composer.Compose(data);
 
         context.AddSource($"{data.Unit.Name}_Common.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer
     {
-        public static string Compose(SourceProductionContext context, DataModel data)
+        public static string Compose(DataModel data)
         {
-            Composer composer = new(context, data);
+            Composer composer = new(data);
             composer.Compose();
             return composer.Retrieve();
         }
 
-        private SourceProductionContext Context { get; }
         private StringBuilder Builder { get; } = new();
 
         private DataModel Data { get; }
@@ -34,9 +33,8 @@ internal static class Execution
         private UsingsCollector UsingsCollector { get; }
         private InterfaceCollector InterfaceCollector { get; }
 
-        private Composer(SourceProductionContext context, DataModel data)
+        private Composer(DataModel data)
         {
-            Context = context;
             Data = data;
 
             UsingsCollector = UsingsCollector.Delayed(Builder, Data.Unit.Namespace);
@@ -62,7 +60,7 @@ internal static class Execution
 
             UsingsCollector.MarkInsertionPoint();
 
-            AppendDocumentation(new Indentation(0), UnitDocumentationTags.UnitHeader);
+            AppendDocumentation(new Indentation(0), Data.Documentation.Header());
             Builder.Append(Data.Unit.ComposeDeclaration());
 
             InterfaceCollector.MarkInsertionPoint();
@@ -92,10 +90,10 @@ internal static class Execution
 
         private void ComposeUnbiasedTypeBlock(Indentation indentation)
         {
-            AppendDocumentation(indentation, UnitDocumentationTags.Quantity);
+            AppendDocumentation(indentation, Data.Documentation.RepresentedQuantity());
             Builder.AppendLine($"{indentation}public {Data.Quantity.Name} {Data.Quantity.Name} {{ get; }}");
 
-            AppendDocumentation(indentation, UnitDocumentationTags.Constructor);
+            AppendDocumentation(indentation, Data.Documentation.Constructor());
             BlockBuilding.AppendBlock(Builder,
                 header: $"private {Data.Unit.Name}({Data.Quantity.Name} {Data.Quantity.ParameterName})",
                 blockContentAppender: constructorBlock,
@@ -108,53 +106,49 @@ internal static class Execution
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, UnitDocumentationTags.ScaledBy_Scalar);
+            AppendDocumentation(indentation, Data.Documentation.ScaledBy());
             Builder.AppendLine($"{indentation}public {Data.Unit.Name} ScaledBy(Scalar scale) => ScaledBy(scale.Value);");
-            AppendDocumentation(indentation, UnitDocumentationTags.ScaledBy_Double);
-            Builder.AppendLine($"{indentation}public {Data.Unit.Name} ScaledBy(double scale) => new({Data.Quantity.Name} * scale);");
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, UnitDocumentationTags.WithPrefix_Metric);
-            Builder.AppendLine($"{indentation}public {Data.Unit.Name} WithPrefix(MetricPrefix prefix) => ScaledBy(prefix.Factor);");
-            AppendDocumentation(indentation, UnitDocumentationTags.WithPrefix_Binary);
-            Builder.AppendLine($"{indentation}public {Data.Unit.Name} WithPrefix(BinaryPrefix prefix) => ScaledBy(prefix.Factor);");
+            AppendDocumentation(indentation, Data.Documentation.WithPrefix());
+            Builder.AppendLine($"{indentation}public {Data.Unit.Name} WithPrefix(IPrefix prefix) => ScaledBy(prefix.Factor);");
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, UnitDocumentationTags.ToString);
+            AppendDocumentation(indentation, Data.Documentation.ToStringDocumentation());
             Builder.AppendLine($@"{indentation}public override string ToString() => $""{{typeof({Data.Unit.Name})}}: [{{{Data.Quantity.Name}}}]"";");
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, UnitDocumentationTags.Comparable.CompareTo_SameType);
+            AppendDocumentation(indentation, Data.Documentation.CompareToSameType());
             Builder.AppendLine($"{indentation}public int CompareTo({Data.Unit.Name} other) " +
                 $"=> {Data.Quantity.Name}.Magnitude.Value.CompareTo(other.{Data.Quantity.Name}.Magnitude.Value);");
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, UnitDocumentationTags.Comparable.Operators.LessThan_SameType);
+            AppendDocumentation(indentation, Data.Documentation.LessThanSameType());
             Builder.AppendLine($"{indentation}public static bool operator <({Data.Unit.Name} x, {Data.Unit.Name} y) " +
                 $"=> x.{Data.Quantity.Name}.Magnitude.Value < y.{Data.Quantity.Name}.Magnitude.Value;");
-            AppendDocumentation(indentation, UnitDocumentationTags.Comparable.Operators.GreaterThan_SameType);
+            AppendDocumentation(indentation, Data.Documentation.GreaterThanSameType());
             Builder.AppendLine($"{indentation}public static bool operator >({Data.Unit.Name} x, {Data.Unit.Name} y) " +
                 $"=> x.{Data.Quantity.Name}.Magnitude.Value > y.{Data.Quantity.Name}.Magnitude.Value;");
-            AppendDocumentation(indentation, UnitDocumentationTags.Comparable.Operators.LessThanOrEqual_SameType);
+            AppendDocumentation(indentation, Data.Documentation.LessThanOrEqualSameType());
             Builder.AppendLine($"{indentation}public static bool operator <=({Data.Unit.Name} x, {Data.Unit.Name} y) " +
                 $"=> x.{Data.Quantity.Name}.Magnitude.Value <= y.{Data.Quantity.Name}.Magnitude.Value;");
-            AppendDocumentation(indentation, UnitDocumentationTags.Comparable.Operators.GreaterThanOrEqual_SameType);
+            AppendDocumentation(indentation, Data.Documentation.GreaterThanOrEqualSameType());
             Builder.AppendLine($"{indentation}public static bool operator >=({Data.Unit.Name} x, {Data.Unit.Name} y) " +
                 $"=> x.{Data.Quantity.Name}.Magnitude.Value >= y.{Data.Quantity.Name}.Magnitude.Value;");
         }
 
         private void ComposeBiasedTypeBlock(Indentation indentation)
         {
-            AppendDocumentation(indentation, UnitDocumentationTags.Quantity);
+            AppendDocumentation(indentation, Data.Documentation.RepresentedQuantity());
             Builder.AppendLine($"{indentation}public {Data.Quantity.Name} {Data.Quantity.Name} {{ get; }}");
-            AppendDocumentation(indentation, UnitDocumentationTags.Offset);
+            AppendDocumentation(indentation, Data.Documentation.Offset());
             Builder.AppendLine($"{indentation}public Scalar Offset {{ get; }}");
 
-            AppendDocumentation(indentation, UnitDocumentationTags.Constructor);
+            AppendDocumentation(indentation, Data.Documentation.Constructor());
             BlockBuilding.AppendBlock
             (
                 source: Builder,
@@ -170,31 +164,25 @@ internal static class Execution
             }
 
             Builder.AppendLine();
-            AppendDocumentation(indentation, UnitDocumentationTags.ScaledBy_Scalar);
+            AppendDocumentation(indentation, Data.Documentation.ScaledBy());
             Builder.AppendLine($"{indentation}public {Data.Unit.Name} ScaledBy(Scalar scale) => ScaledBy(scale.Value);");
-            AppendDocumentation(indentation, UnitDocumentationTags.ScaledBy_Double);
-            Builder.AppendLine($"{indentation}public {Data.Unit.Name} ScaledBy(double scale) => new({Data.Quantity.Name} * scale, Offset / scale);");
 
             Builder.AppendLine();
-            AppendDocumentation(indentation, UnitDocumentationTags.OffsetBy_Scalar);
+            AppendDocumentation(indentation, Data.Documentation.OffsetBy());
             Builder.AppendLine($"{indentation}public {Data.Unit.Name} OffsetBy(Scalar offset) => OffsetBy(offset.Value);");
-            AppendDocumentation(indentation, UnitDocumentationTags.OffsetBy_Double);
-            Builder.AppendLine($"{indentation}public {Data.Unit.Name} OffsetBy(double offset) => new({Data.Quantity.Name}, Offset + offset);");
 
             Builder.AppendLine();
-            AppendDocumentation(indentation, UnitDocumentationTags.WithPrefix_Metric);
-            Builder.AppendLine($"{indentation}public {Data.Unit.Name} WithPrefix(MetricPrefix prefix) => ScaledBy(prefix.Factor);");
-            AppendDocumentation(indentation, UnitDocumentationTags.WithPrefix_Binary);
-            Builder.AppendLine($"{indentation}public {Data.Unit.Name} WithPrefix(BinaryPrefix prefix) => ScaledBy(prefix.Factor);");
+            AppendDocumentation(indentation, Data.Documentation.WithPrefix());
+            Builder.AppendLine($"{indentation}public {Data.Unit.Name} WithPrefix(IPrefix prefix) => ScaledBy(prefix.Factor);");
 
             Builder.AppendLine();
-            AppendDocumentation(indentation, UnitDocumentationTags.ToString);
+            AppendDocumentation(indentation, Data.Documentation.ToStringDocumentation());
             Builder.AppendLine($"{indentation}public override string ToString() => \"{{typeof({Data.Unit.Name})}}: ({{{Data.Quantity.Name}}} + {{Offset}})\";");
         }
 
-        private void AppendDocumentation(Indentation indentation, string tag)
+        private void AppendDocumentation(Indentation indentation, string text)
         {
-            DocumentationBuilding.AppendDocumentation(Context, Builder, Data.Documentation, indentation, tag);
+            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
         }
     }
 }

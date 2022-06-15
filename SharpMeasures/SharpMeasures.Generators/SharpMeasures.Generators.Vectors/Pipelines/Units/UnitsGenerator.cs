@@ -11,7 +11,6 @@ using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Quantities.Refinement;
 using SharpMeasures.Generators.Vectors.Diagnostics;
-using SharpMeasures.Generators.Vectors.Refinement;
 using SharpMeasures.Generators.Vectors.Parsing;
 using SharpMeasures.Generators.Units;
 
@@ -20,6 +19,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
+using SharpMeasures.Generators.Vectors.Refinement.VectorConstant;
 
 internal static class UnitsGenerator
 {

@@ -108,7 +108,9 @@ public readonly partial record struct Scalar :
     public Scalar Subtract(Scalar subtrahend) => this - subtrahend;
     /// <inheritdoc/>
     Scalar ISubtrahendScalarQuantity<Scalar, Scalar>.SubtractFrom(Scalar minuend) => minuend - this;
-    /// <inheritdoc/>
+
+    /// <summary>Computes { <see langword="this"/> % <paramref name="divisor"/> }.</summary>
+    /// <param name="divisor">The divisor of { <see langword="this"/> % <paramref name="divisor"/> }.</param>
     public Scalar Remainder(Scalar divisor) => this % divisor;
     /// <inheritdoc/>
     public Scalar Multiply(Scalar factor) => this * factor;
@@ -116,6 +118,31 @@ public readonly partial record struct Scalar :
     public Scalar Divide(Scalar divisor) => this / divisor;
     /// <inheritdoc/>
     Scalar IDivisorScalarQuantity<Scalar, Scalar>.DivideInto(Scalar dividend) => dividend / this;
+
+    /// <inheritdoc cref="IScalarQuantity.Multiply{TFactor}(TFactor)"/>
+    public TFactor Multiply<TFactor>(TFactor factor) where TFactor : IScalarQuantity<TFactor> => TFactor.WithMagnitude(this * factor.Magnitude);
+
+    /// <inheritdoc/>
+    Unhandled IScalarQuantity.Multiply<TFactor>(TFactor factor) => new(this * factor.Magnitude);
+
+    /// <inheritdoc/>
+    TProduct IScalarQuantity.Multiply<TProduct, TFactor>(TFactor factor) => TProduct.WithMagnitude(this * factor.Magnitude);
+
+    /// <inheritdoc/>
+    TQuotient IScalarQuantity.DivideInto<TQuotient, TDividend>(TDividend dividend) => TQuotient.WithMagnitude(dividend.Magnitude / this);
+
+    /// <inheritdoc cref="Divide(Scalar)"/>
+    /// <typeparam name="TQuotient">The scalar quantity that represents the result of { <see langword="this"/> / <paramref name="divisor"/> }.</typeparam>
+    /// <typeparam name="TDivisor">The scalar quantity that represents the divisor of { <see langword="this"/> / <paramref name="divisor"/> }.</typeparam>
+    public TQuotient Divide<TQuotient, TDivisor>(TDivisor divisor)
+        where TQuotient : IScalarQuantity<TQuotient>
+        where TDivisor : IScalarQuantity
+        => TQuotient.WithMagnitude(this / divisor.Magnitude);
+
+    /// <inheritdoc/>
+    Unhandled IScalarQuantity.Divide<TDivisor>(TDivisor divisor) => new(this / divisor.Magnitude);
+    /// <inheritdoc/>
+    Unhandled IScalarQuantity.DivideInto<TDividend>(TDividend dividend) => new(dividend.Magnitude / this);
 
     /// <inheritdoc/>
     public Vector3 Multiply(Vector3 factor) => this * factor;
@@ -130,7 +157,9 @@ public readonly partial record struct Scalar :
     /// <inheritdoc/>
     public static Scalar operator -(Scalar x, Scalar y) => x.Value - y.Value;
 
-    /// <inheritdoc/>
+    /// <summary>Computes { <paramref name="x"/> % <paramref name="y"/> }.</summary>
+    /// <param name="x">The dividend of { <paramref name="x"/> % <paramref name="y"/> }.</param>
+    /// <param name="y">The divisor of { <paramref name="x"/> % <paramref name="y"/> }.</param>
     public static Scalar operator %(Scalar x, Scalar y) => x.Value % y.Value;
     /// <inheritdoc/>
     public static Scalar operator *(Scalar x, Scalar y) => x.Value * y.Value;

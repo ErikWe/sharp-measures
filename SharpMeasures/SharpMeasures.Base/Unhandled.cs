@@ -74,17 +74,15 @@ public readonly record struct Unhandled :
     /// <inheritdoc cref="Scalar.Absolute"/>
     public Unhandled Absolute() => ScalarMaths.Absolute(this);
 
-    /// <inheritdoc cref="Scalar.Power(Scalar)"/>
-    public Unhandled Power(Scalar exponent) => new(Magnitude.Power(exponent));
-    /// <inheritdoc cref="Scalar.Reciprocal"/>
+    /// <inheritdoc/>
     public Unhandled Reciprocal() => ScalarMaths.Reciprocal(this);
-    /// <inheritdoc cref="Scalar.Square"/>
+    /// <inheritdoc/>
     public Unhandled Square() => ScalarMaths.Square(this);
-    /// <inheritdoc cref="Scalar.Cube"/>
+    /// <inheritdoc/>
     public Unhandled Cube() => ScalarMaths.Cube(this);
-    /// <inheritdoc cref="Scalar.SquareRoot"/>
+    /// <inheritdoc/>
     public Unhandled SquareRoot() => ScalarMaths.SquareRoot(this);
-    /// <inheritdoc cref="Scalar.CubeRoot"/>
+    /// <inheritdoc/>
     public Unhandled CubeRoot() => ScalarMaths.CubeRoot(this);
 
     /// <inheritdoc cref="Scalar.CompareTo(Scalar)"/>
@@ -111,8 +109,6 @@ public readonly record struct Unhandled :
     Unhandled IDivisorScalarQuantity<Unhandled, Unhandled>.DivideInto(Unhandled dividend) => dividend / this;
 
     /// <inheritdoc/>
-    public Unhandled Remainder(Scalar divisor) => this % divisor;
-    /// <inheritdoc/>
     public Unhandled Multiply(Scalar factor) => this * factor;
     /// <inheritdoc/>
     public Unhandled Divide(Scalar divisor) => this / divisor;
@@ -135,6 +131,13 @@ public readonly record struct Unhandled :
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
     Unhandled IDivisorScalarQuantity<Unhandled, IScalarQuantity>.DivideInto(IScalarQuantity dividend) => dividend / this;
+
+    /// <inheritdoc/>
+    TProduct IScalarQuantity.Multiply<TProduct, TFactor>(TFactor factor) => TProduct.WithMagnitude(Magnitude * factor.Magnitude);
+    /// <inheritdoc/>
+    TQuotient IScalarQuantity.Divide<TQuotient, TFactor>(TFactor divisor) => TQuotient.WithMagnitude(Magnitude / divisor.Magnitude);
+    /// <inheritdoc/>
+    TQuotient IScalarQuantity.DivideInto<TQuotient, TDividend>(TDividend dividend) => TQuotient.WithMagnitude(dividend.Magnitude / Magnitude);
 
     /// <inheritdoc/>
     Unhandled3 IFactor3ScalarQuantity<Unhandled3, Unhandled3>.Multiply(Unhandled3 factor) => this * factor;
@@ -186,8 +189,6 @@ public readonly record struct Unhandled :
     /// <inheritdoc/>
     public static Unhandled operator /(Unhandled x, Unhandled y) => new(x.Magnitude / y.Magnitude);
 
-    /// <inheritdoc/>
-    public static Unhandled operator %(Unhandled x, Scalar y) => new(x.Magnitude % y);
     /// <inheritdoc/>
     public static Unhandled operator *(Unhandled x, Scalar y) => new(x.Magnitude * y);
     /// <inheritdoc/>

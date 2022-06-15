@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Scalars.Refinement;
+﻿namespace SharpMeasures.Generators.Scalars.Refinement.GeneratedScalar;
 
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors;
@@ -22,7 +22,7 @@ internal readonly record struct RefinedGeneratedScalarDefinition
     public bool GenerateDocumentation { get; }
 
     public RefinedGeneratedScalarDefinition(UnitInterface unit, ResizedVectorGroup? vectorGroup, bool biased, string? defaultUnitName, string? defaultUnitSymbol,
-        ScalarInterface? reciprocal, ScalarInterface? square, ScalarInterface? cube, ScalarInterface? squareRoot, ScalarInterface? cubeRoot, bool generateDocumetnation)
+        ScalarInterface? reciprocal, ScalarInterface? square, ScalarInterface? cube, ScalarInterface? squareRoot, ScalarInterface? cubeRoot, bool generateDocumentation)
     {
         Unit = unit;
         VectorGroup = vectorGroup;
@@ -37,6 +37,6 @@ internal readonly record struct RefinedGeneratedScalarDefinition
         SquareRoot = squareRoot;
         CubeRoot = cubeRoot;
 
-        GenerateDocumentation = generateDocumetnation;
+        GenerateDocumentation = generateDocumentation;
     }
 }

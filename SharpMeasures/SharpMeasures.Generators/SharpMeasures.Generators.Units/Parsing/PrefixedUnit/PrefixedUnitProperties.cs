@@ -2,6 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
+using SharpMeasures.Generators.Units.Utility;
 
 using System.Collections.Generic;
 

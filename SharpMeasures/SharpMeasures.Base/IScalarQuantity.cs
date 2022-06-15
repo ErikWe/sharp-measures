@@ -7,6 +7,39 @@ public interface IScalarQuantity
 {
     /// <summary>The magnitude of <see langword="this"/>.</summary>
     public abstract Scalar Magnitude { get; }
+
+    /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
+    /// <typeparam name="TFactor">The scalar quantity that represents the second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</typeparam>
+    /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
+    public abstract Unhandled Multiply<TFactor>(TFactor factor) where TFactor : IScalarQuantity;
+
+    /// <summary>Computes { <see langword="this"/> / <paramref name="divisor"/> }.</summary>
+    /// <typeparam name="TDivisor">The scalar quantity that represents the divisor of { <see langword="this"/> / <paramref name="divisor"/> }.</typeparam>
+    /// <param name="divisor">The divisor of { <see langword="this"/> / <paramref name="divisor"/> }.</param>
+    public abstract Unhandled Divide<TDivisor>(TDivisor divisor) where TDivisor : IScalarQuantity;
+
+    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
+    /// <typeparam name="TDividend">The scalar quantity that represents the dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</typeparam>
+    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
+    public abstract Unhandled DivideInto<TDividend>(TDividend dividend) where TDividend : IScalarQuantity;
+
+    /// <inheritdoc cref="Multiply{TFactor}(TFactor)"/>
+    /// <typeparam name="TProduct">The scalar quantity that represents the result of { <see langword="this"/> ∙ <paramref name="factor"/> }.</typeparam>
+    /// <typeparam name="TFactor">The scalar quantity that represents the second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</typeparam>
+    /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
+    public abstract TProduct Multiply<TProduct, TFactor>(TFactor factor) where TProduct : IScalarQuantity<TProduct> where TFactor : IScalarQuantity;
+
+    /// <inheritdoc cref="Divide{TDivisor}(TDivisor)"/>
+    /// <typeparam name="TQuotient">The scalar quantity that represents the result of { <see langword="this"/> / <paramref name="divisor"/> }.</typeparam>
+    /// <typeparam name="TDivisor">The scalar quantity that represents the divisor of { <see langword="this"/> / <paramref name="divisor"/> }.</typeparam>
+    /// <param name="divisor">The divisor of { <see langword="this"/> / <paramref name="divisor"/> }.</param>
+    public abstract TQuotient Divide<TQuotient, TDivisor>(TDivisor divisor) where TQuotient : IScalarQuantity<TQuotient> where TDivisor : IScalarQuantity;
+
+    /// <inheritdoc cref="DivideInto{TDividend}(TDividend)"/>
+    /// <typeparam name="TQuotient">The scalar quantity that represents the result of { <paramref name="dividend"/> / <see langword="this"/> }.</typeparam>
+    /// <typeparam name="TDividend">The scalar quantity that represents the dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</typeparam>
+    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
+    public abstract TQuotient DivideInto<TQuotient, TDividend>(TDividend dividend) where TQuotient : IScalarQuantity<TQuotient> where TDividend : IScalarQuantity;
 }
 
 /// <inheritdoc cref="IScalarQuantity" path="/summary"/>
@@ -25,17 +58,11 @@ public interface IScalarQuantity<TSelf>
     /// <summary>Computes { -<see langword="this"/> }.</summary>
     public abstract TSelf Negate();
 
-    /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
-    /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
+    /// <inheritdoc cref="IScalarQuantity.Multiply{TFactor}(TFactor)"/>
     public abstract TSelf Multiply(Scalar factor);
 
-    /// <summary>Computes { <see langword="this"/> / <paramref name="divisor"/> }.</summary>
-    /// <param name="divisor">The divisor of { <see langword="this"/> / <paramref name="divisor"/> }.</param>
+    /// <inheritdoc cref="IScalarQuantity.Divide{TDivisor}(TDivisor)"/>
     public abstract TSelf Divide(Scalar divisor);
-
-    /// <summary>Computes { <see langword="this"/> % <paramref name="divisor"/> }.</summary>
-    /// <param name="divisor">The divisor of { <see langword="this"/> % <paramref name="divisor"/> }.</param>
-    public abstract TSelf Remainder(Scalar divisor);
 
     /// <summary>Computes { +<paramref name="x"/> }.</summary>
     /// <param name="x">The factor of { +<paramref name="x"/> }.</param>
@@ -55,9 +82,4 @@ public interface IScalarQuantity<TSelf>
     /// <param name="x">The dividend of { <paramref name="x"/> / <paramref name="y"/> }.</param>
     /// <param name="y">The divisor of { <paramref name="x"/> / <paramref name="y"/> }.</param>
     public static abstract TSelf operator /(TSelf x, Scalar y);
-
-    /// <summary>Computes { <paramref name="x"/> % <paramref name="y"/> }.</summary>
-    /// <param name="x">The dividend of { <paramref name="x"/> % <paramref name="y"/> }.</param>
-    /// <param name="y">The divisor of { <paramref name="x"/> % <paramref name="y"/> }.</param>
-    public static abstract TSelf operator %(TSelf x, Scalar y);
 }

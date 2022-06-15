@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Vectors.Refinement;
+﻿namespace SharpMeasures.Generators.Vectors.Refinement.VectorConstant;
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Units;

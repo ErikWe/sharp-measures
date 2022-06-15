@@ -1,22 +1,22 @@
 ﻿namespace SharpMeasures.Generators.Units;
 
-using SharpMeasures.Generators.Documentation;
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators.Units.Documentation;
 using SharpMeasures.Generators.Units.Parsing;
+using SharpMeasures.Generators.Units.Refinement.GeneratedUnit;
 
 internal record class DataModel
 {
-    public ParsedUnit Unit { get; }
-    public ScalarInterface Quantity { get; }
+    public RefinedGeneratedUnitDefinition UnitDefinition { get; }
+    public ParsedUnit UnitData { get; }
 
     public UnitPopulation UnitPopulation { get; }
 
-    public DocumentationFile Documentation { get; init; } = DocumentationFile.Empty;
+    public IDocumentationStrategy Documentation { get; init; } = EmptyDocumentation.Instance;
 
-    public DataModel(ParsedUnit unit, ScalarInterface quantity, UnitPopulation unitPopulation)
+    public DataModel(RefinedGeneratedUnitDefinition unitDefinition, ParsedUnit unitData, UnitPopulation unitPopulation)
     {
-        Unit = unit;
-        Quantity = quantity;
+        UnitDefinition = unitDefinition;
+        UnitData = unitData;
 
         UnitPopulation = unitPopulation;
     }

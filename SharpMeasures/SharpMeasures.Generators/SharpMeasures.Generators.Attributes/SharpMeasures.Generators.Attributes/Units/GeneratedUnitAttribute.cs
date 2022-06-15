@@ -9,8 +9,7 @@ using System;
 public sealed class GeneratedUnitAttribute : Attribute
 {
     /// <summary>The scalar quantity that the unit describes.</summary>
-    /// <remarks>For biased units, this should represent the associated unbiased quantity.
-    /// <para>There may be multiple such quantities, in which case the most fundamental quantity is expected.</para></remarks>
+    /// <remarks>For units that support biased quantities, this should represent an associated unbiased quantity.</remarks>
     public Type Quantity { get; }
     
     /// <summary>Dictates whether this unit should include a bias term.</summary>
@@ -23,8 +22,7 @@ public sealed class GeneratedUnitAttribute : Attribute
 
     /// <summary>Marks the type as a unit, and allows a source generator to implement relevant functionality.</summary>
     /// <param name="quantity">The scalar quantity that the unit describes.
-    /// <para>For biased units, this represents the associated unbiased quantity.</para>
-    /// <para>There may be multiple such quantities, in which case the most fundamental quantity is expected.</para></param>
+    /// <para>For units that support biased quantities, this should represent an associated unbiased quantity.</para></param>
     public GeneratedUnitAttribute(Type quantity)
     {
         Quantity = quantity;

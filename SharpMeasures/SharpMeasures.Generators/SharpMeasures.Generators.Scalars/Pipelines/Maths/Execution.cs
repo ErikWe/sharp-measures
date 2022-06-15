@@ -11,21 +11,20 @@ internal static class Execution
 {
     public static void Execute(SourceProductionContext context, DataModel data)
     {
-        string source = Composer.Compose(context, data);
+        string source = Composer.Compose(data);
 
         context.AddSource($"{data.Scalar.Name}_Maths.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer
     {
-        public static string Compose(SourceProductionContext context, DataModel data)
+        public static string Compose(DataModel data)
         {
-            Composer composer = new(context, data);
+            Composer composer = new(data);
             composer.Compose();
             return composer.Retrieve();
         }
 
-        private SourceProductionContext Context { get; }
         private StringBuilder Builder { get; } = new();
 
         private DataModel Data { get; }
@@ -33,9 +32,8 @@ internal static class Execution
         private UsingsCollector UsingsCollector { get; }
         private InterfaceCollector InterfaceCollector { get; }
 
-        private Composer(SourceProductionContext context, DataModel data)
+        private Composer(DataModel data)
         {
-            Context = context;
             Data = data;
 
             UsingsCollector = UsingsCollector.Delayed(Builder, data.Scalar.Namespace);
@@ -79,31 +77,31 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.IsNaN);
+            AppendDocumentation(indentation, Data.Documentation.IsNaN());
             Builder.AppendLine($"{indentation}public bool IsNaN => double.IsNaN(Magnitude.Value)");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.IsZero);
+            AppendDocumentation(indentation, Data.Documentation.IsZero());
             Builder.AppendLine($"{indentation}public bool IsZero => Magnitude.Value is 0;");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.IsPositive);
+            AppendDocumentation(indentation, Data.Documentation.IsPositive());
             Builder.AppendLine($"{indentation}public bool IsPositive => Magnitude.Value > 0;");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.IsNegative);
+            AppendDocumentation(indentation, Data.Documentation.IsNegative());
             Builder.AppendLine($"{indentation}public bool IsNegative => Magnitude.Value < 0;");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.IsFinite);
+            AppendDocumentation(indentation, Data.Documentation.IsFinite());
             Builder.AppendLine($"{indentation}public bool IsFinite => double.IsFinite(Magnitude.Value);");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.IsInfinity);
+            AppendDocumentation(indentation, Data.Documentation.IsInfinity());
             Builder.AppendLine($"{indentation}public bool IsInfinite => double.IsInfinity(Magnitude.Value);");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.IsPositiveInfinity);
+            AppendDocumentation(indentation, Data.Documentation.IsPositiveInfinity());
             Builder.AppendLine($"{indentation}public bool IsPositiveInfinity => double.IsPositiveInfinity(Magnitude.Value);");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.IsNegativeInfinity);
+            AppendDocumentation(indentation, Data.Documentation.IsNegativeInfinity());
             Builder.AppendLine($"{indentation}public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude.Value);");
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Absolute);
+            AppendDocumentation(indentation, Data.Documentation.Absolute());
             Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Absolute() => new(Math.Abs(Magnitude.Value));");
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Sign);
+            AppendDocumentation(indentation, Data.Documentation.Sign());
             Builder.AppendLine($"{indentation}public int Sign() => Math.Sign(Magnitude.Value);");
 
             Builder.AppendLine();
@@ -112,14 +110,17 @@ internal static class Execution
 
             AppendFromPowerFunctions(indentation);
 
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.UnaryPlus);
+            AppendDocumentation(indentation, Data.Documentation.UnaryPlusMethod());
             Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Plus() => this;");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Negate);
+            AppendDocumentation(indentation, Data.Documentation.NegateMethod());
             Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Negate() => this;");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Operators.UnaryPlus);
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} operator +({Data.Scalar.Name} x) => x;");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Operators.Negate);
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} operator -({Data.Scalar.Name} x) => -x;");
+
+            Builder.AppendLine();
+
+            AppendDocumentation(indentation, Data.Documentation.MultiplyScalarMethod());
+            Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Multiply(Scalar factor) => new(Magnitude.Value * factor.Value);");
+            AppendDocumentation(indentation, Data.Documentation.DivideScalarMethod());
+            Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Divide(Scalar divisor) => new(Magnitude.Value / divisor.Value);");
 
             Builder.AppendLine();
 
@@ -127,45 +128,105 @@ internal static class Execution
             {
                 InterfaceCollector.AddInterfaces($"IMultiplicableScalar<{Data.Square.Value.Name}, {Data.Scalar.Name}>");
 
-                AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Multiply_SameType);
+                AppendDocumentation(indentation, Data.Documentation.MultiplySameTypeMethod());
                 Builder.AppendLine($"{indentation}public {Data.Square.Value.Name} Multiply({Data.Scalar.Name} factor) => new(Magnitude.Value * factor.Magnitude.Value);");
-                AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Operators.Multiply_SameType);
-                Builder.AppendLine($"{indentation}public static {Data.Square.Value.Name} operator *({Data.Scalar.Name} x, {Data.Scalar.Name} y) => new(x.Magnitude.Value * y.Magnitude.Value);");
-                
-                Builder.AppendLine();
             }
 
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Divide_SameType);
+            AppendDocumentation(indentation, Data.Documentation.DivideSameTypeMethod());
             Builder.AppendLine($"{indentation}public Scalar Divide({Data.Scalar.Name} divisor) => new(Magnitude.Value / divisor.Magnitude.Value);");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Operators.Divide_SameType);
+
+            Builder.AppendLine();
+
+            AppendDocumentation(indentation, Data.Documentation.MultiplyGenericScalarToUnhandledMethod());
+            Builder.Append($"{indentation}public Unhandled Multiply<TFactor>(TFactor factor) where TFactor : IScalarQuantity");
+            BlockBuilding.AppendBlock(Builder, composeGenericScalarMultiplicationBlock, indentation);
+
+            void composeGenericScalarMultiplicationBlock(Indentation indentation)
+            {
+                Builder.AppendLine($"{indentation}ArgumentNullException.ThrowIfNull(factor, nameof(factor));");
+                Builder.AppendLine();
+                Builder.AppendLine($"{indentation}return new Unhandled(Magnitude.Value * factor.Magnitude.Value);");
+            }
+
+            Builder.AppendLine();
+
+            AppendDocumentation(indentation, Data.Documentation.DivideGenericScalarToUnhandledMethod());
+            Builder.Append($"{indentation}public Unhandled Divide<TDivisor>(TDivisor divisor) where TDivisor : IScalarQuantity");
+            BlockBuilding.AppendBlock(Builder, composeGenericScalarDivisionBlock, indentation);
+
+            void composeGenericScalarDivisionBlock(Indentation indentation)
+            {
+                Builder.AppendLine($"{indentation}ArgumentNullException.ThrowIfNull(divisor, nameof(divisor));");
+                Builder.AppendLine();
+                Builder.AppendLine($"{indentation}return new Unhandled(Magnitude.Value / divisor.Magnitude.Value);");
+            }
+
+            Builder.AppendLine();
+
+            AppendDocumentation(indentation, Data.Documentation.MultiplyGenericScalarMethod());
+            Builder.Append($$"""
+                {{indentation}}public TProduct Multiply<TProduct, TFactor>(TFactor factor)
+                    {{indentation}}where TProduct : IScalarQuantity<TProduct>
+                    {{indentation}}where TFactor : IScalarQuantity
+                {{indentation}}{
+                    {{indentation}}ArgumentNullException.ThrowIfNull(factor, nameof(factor));
+
+                    {{indentation}}return TProduct.WithMagnitude(Magnitude.Value * factor.Magnitude.Value);
+                {{indentation}}}
+                """);
+
+            Builder.AppendLine();
+
+            AppendDocumentation(indentation, Data.Documentation.DivideGenericScalarToUnhandledMethod());
+            Builder.Append($$"""
+                {{indentation}}public TQuotient Divide<TQuotient, TDivisor>(TDivisor divisor)
+                    {{indentation}}where TQuotient : IScalarQuantity<TQuotient>
+                    {{indentation}}where TDivisor : IScalarQuantity
+                {{indentation}}{
+                    {{indentation}}ArgumentNullException.ThrowIfNull(factor, nameof(divisor));
+
+                    {{indentation}}return TQuotient.WithMagnitude(Magnitude.Value / factor.Magnitude.Value);
+                {{indentation}}}
+                """);
+
+            Builder.AppendLine();
+
+            AppendDocumentation(indentation, Data.Documentation.UnaryPlusOperator());
+            Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} operator +({Data.Scalar.Name} x) => x;");
+            AppendDocumentation(indentation, Data.Documentation.NegateOperator());
+            Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} operator -({Data.Scalar.Name} x) => -x;");
+
+            if (Data.Square is not null)
+            {
+                AppendDocumentation(indentation, Data.Documentation.MultiplySameTypeOperator());
+                Builder.AppendLine($"{indentation}public static {Data.Square.Value.Name} operator *({Data.Scalar.Name} x, {Data.Scalar.Name} y) => new(x.Magnitude.Value * y.Magnitude.Value);");
+            }
+
+            AppendDocumentation(indentation, Data.Documentation.DivideSameTypeOperator());
             Builder.AppendLine($"{indentation}public static Scalar operator /({Data.Scalar.Name} x, {Data.Scalar.Name} y) => new(x.Magnitude.Value / y.Magnitude.Value);");
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Multiply_Scalar);
-            Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Multiply(Scalar factor) => new(Magnitude.Value * factor.Value);");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Divide_Scalar);
-            Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Divide(Scalar divisor) => new(Magnitude.Value / divisor.Value);");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Operators.Multiply_Scalar_LHS);
+            AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorLHS());
             Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} operator *({Data.Scalar.Name} x, Scalar y) => new(x.Magnitude.Value * y.Value);");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Operators.Multiply_Scalar_RHS);
+            AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorRHS());
             Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} operator *(Scalar x, {Data.Scalar.Name} y) => new(x.Value * y.Magnitude.Value);");
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Operators.Divide_Scalar_LHS);
+            AppendDocumentation(indentation, Data.Documentation.DivideScalarOperatorLHS());
             Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} operator /({Data.Scalar.Name} x, Scalar y) => new(x.Magnitude.Value / y.Value);");
 
             if (Data.Reciprocal is not null)
             {
-                AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Operators.Divide_Scalar_RHS);
+                AppendDocumentation(indentation, Data.Documentation.DivideScalarOperatorRHS());
                 Builder.AppendLine($"{indentation}public static {Data.Reciprocal.Value.Name} operator /(Scalar x, {Data.Scalar.Name} y) => new(x.Value / y.Magnitude.Value);");
             }
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Multiply_IScalar);
+            AppendDocumentation(indentation, Data.Documentation.MultiplyIScalarOperator());
             Builder.Append($"{indentation}public static Unhandled operator *({Data.Scalar.Name} x, IScalar y)");
-            BlockBuilding.AppendBlock(Builder, composeIScalarMultiplicationBlock, indentation);
+            BlockBuilding.AppendBlock(Builder, composeIScalarOperatorMultiplicationBlock, indentation);
 
-            void composeIScalarMultiplicationBlock(Indentation indentation)
+            void composeIScalarOperatorMultiplicationBlock(Indentation indentation)
             {
                 Builder.AppendLine($"{indentation}ArgumentNullException.ThrowIfNull(y, nameof(y))");
                 Builder.AppendLine();
@@ -174,11 +235,11 @@ internal static class Execution
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Divide_IScalar);
+            AppendDocumentation(indentation, Data.Documentation.DivideIScalarOperator());
             Builder.Append($"{indentation}public static Unhandled operator /({Data.Scalar.Name} x, IScalar y)");
-            BlockBuilding.AppendBlock(Builder, composeIScalarDivisionBlock, indentation);
+            BlockBuilding.AppendBlock(Builder, composeIScalarOperatorDivisionBlock, indentation);
 
-            void composeIScalarDivisionBlock(Indentation indentation)
+            void composeIScalarOperatorDivisionBlock(Indentation indentation)
             {
                 Builder.AppendLine($"{indentation}ArgumentNullException.ThrowIfNull(y, nameof(y))");
                 Builder.AppendLine();
@@ -194,7 +255,7 @@ internal static class Execution
             {
                 UsingsCollector.AddUsing(Data.Reciprocal.Value.Namespace);
 
-                AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Reciprocal);
+                AppendDocumentation(indentation, Data.Documentation.Reciprocal());
                 Builder.AppendLine($"{indentation}public {Data.Reciprocal.Value.Name} Reciprocal() => new(1 / Magnitude.Value);");
             }
 
@@ -203,7 +264,7 @@ internal static class Execution
                 UsingsCollector.AddUsing(Data.Square.Value.Namespace);
                 UsingsCollector.AddUsing("System");
 
-                AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Square);
+                AppendDocumentation(indentation, Data.Documentation.Square());
                 Builder.AppendLine($"{indentation}public {Data.Square.Value.Name} Square() => new(Math.Pow(Magnitude.Value, 2));");
             }
 
@@ -212,7 +273,7 @@ internal static class Execution
                 UsingsCollector.AddUsing(Data.Cube.Value.Namespace);
                 UsingsCollector.AddUsing("System");
 
-                AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.Cube);
+                AppendDocumentation(indentation, Data.Documentation.Cube());
                 Builder.AppendLine($"{indentation}public {Data.Cube.Value.Name} Cube() => new(Math.Pow(Magnitude.Value, 3));");
             }
 
@@ -221,7 +282,7 @@ internal static class Execution
                 UsingsCollector.AddUsing(Data.SquareRoot.Value.Namespace);
                 UsingsCollector.AddUsing("System");
 
-                AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.SquareRoot);
+                AppendDocumentation(indentation, Data.Documentation.SquareRoot());
                 Builder.AppendLine($"{indentation}public {Data.SquareRoot.Value.Name} SquareRoot() => new(Math.Sqrt(Magnitude.Value));");
             }
 
@@ -230,7 +291,7 @@ internal static class Execution
                 UsingsCollector.AddUsing(Data.CubeRoot.Value.Namespace);
                 UsingsCollector.AddUsing("System");
 
-                AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.CubeRoot);
+                AppendDocumentation(indentation, Data.Documentation.CubeRoot());
                 Builder.AppendLine($"{indentation}public {Data.CubeRoot.Value.Name} CubeRoot() => new(Math.Cbrt(Magnitude.Value));");
             }
 
@@ -248,7 +309,7 @@ internal static class Execution
             {
                 string parameterName = SourceBuildingUtility.ToParameterName(Data.Reciprocal.Value.Name);
 
-                AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.FromReciprocal);
+                AppendDocumentation(indentation, Data.Documentation.FromReciprocal());
                 Builder.AppendLine($"{indentation}public {Data.Scalar.Name} From({Data.Reciprocal.Value.Name} {parameterName}) => " +
                     $"new(1 / {parameterName}.Magnitude.Value);");
             }
@@ -257,7 +318,7 @@ internal static class Execution
             {
                 string parameterName = SourceBuildingUtility.ToParameterName(Data.Square.Value.Name);
 
-                AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.FromSquare);
+                AppendDocumentation(indentation, Data.Documentation.FromSquare());
                 Builder.AppendLine($"{indentation}public {Data.Scalar.Name} From({Data.Square.Value.Name} {parameterName}) => " +
                     $"new(Math.Sqrt({parameterName}.Magnitude.Value));");
             }
@@ -266,7 +327,7 @@ internal static class Execution
             {
                 string parameterName = SourceBuildingUtility.ToParameterName(Data.Cube.Value.Name);
 
-                AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.FromCube);
+                AppendDocumentation(indentation, Data.Documentation.FromCube());
                 Builder.AppendLine($"{indentation}public {Data.Scalar.Name} From({Data.Cube.Value.Name} {parameterName}) => " +
                     $"new(Math.Cbrt({parameterName}.Magnitude.Value));");
             }
@@ -275,7 +336,7 @@ internal static class Execution
             {
                 string parameterName = SourceBuildingUtility.ToParameterName(Data.SquareRoot.Value.Name);
 
-                AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.FromSquareRoot);
+                AppendDocumentation(indentation, Data.Documentation.FromSquareRoot());
                 Builder.AppendLine($"{indentation}public {Data.Scalar.Name} From({Data.SquareRoot.Value.Name} {parameterName}) => " +
                     $"new(Math.Pow({parameterName}.Magnitude.Value, 2));");
             }
@@ -284,7 +345,7 @@ internal static class Execution
             {
                 string parameterName = SourceBuildingUtility.ToParameterName(Data.CubeRoot.Value.Name);
 
-                AppendDocumentation(indentation, ScalarDocumentationTags.StandardMaths.FromCubeRoot);
+                AppendDocumentation(indentation, Data.Documentation.FromCubeRoot());
                 Builder.AppendLine($"{indentation}public {Data.Scalar.Name} From({Data.CubeRoot.Value.Name} {parameterName}) => " +
                     $"new(Math.Pow({parameterName}.Magnitude.Value, 3));");
             }
@@ -295,9 +356,9 @@ internal static class Execution
             }
         }
 
-        private void AppendDocumentation(Indentation indentation, string tag)
+        private void AppendDocumentation(Indentation indentation, string text)
         {
-            DocumentationBuilding.AppendDocumentation(Context, Builder, Data.Documentation, indentation, tag);
+            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
         }
     }
 }

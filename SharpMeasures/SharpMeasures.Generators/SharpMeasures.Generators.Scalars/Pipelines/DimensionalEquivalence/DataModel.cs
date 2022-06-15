@@ -2,13 +2,14 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Documentation;
-using SharpMeasures.Generators.Scalars.Refinement;
+using SharpMeasures.Generators.Scalars.Documentation;
+using SharpMeasures.Generators.Scalars.Refinement.DimensionalEquivalence;
 
 using System.Collections.Generic;
 
 internal readonly record struct DataModel(DefinedType Scalar, EquatableEnumerable<RefinedDimensionalEquivalenceDefinition> DimensionalEquivalences,
-    DocumentationFile Documentation)
+    IDocumentationStrategy Documentation)
 {
-    public DataModel(DefinedType scalar, IEnumerable<RefinedDimensionalEquivalenceDefinition> dimensionalEquivalences, DocumentationFile documentation)
+    public DataModel(DefinedType scalar, IEnumerable<RefinedDimensionalEquivalenceDefinition> dimensionalEquivalences, IDocumentationStrategy documentation)
         : this(scalar, dimensionalEquivalences.AsEquatable(), documentation) { }
 }

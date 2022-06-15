@@ -53,7 +53,7 @@ public readonly record struct Unhandled3 :
     public Vector3 Components => (X.Magnitude, Y.Magnitude, Z.Magnitude);
 
     /// <summary>Constructs a new <see cref="Unhandled3"/> representing { <paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/> }.</summary>
-    /// <param name="x">The X-component by the constructed <see cref="Unhandled3"/>.</param>
+    /// <param name="x">The X-component of the constructed <see cref="Unhandled3"/>.</param>
     /// <param name="y">The Y-component of the constructed <see cref="Unhandled3"/>.</param>
     /// <param name="z">The Z-component of the constructed <see cref="Unhandled3"/>.</param>
     public Unhandled3(Unhandled x, Unhandled y, Unhandled z)
@@ -72,6 +72,15 @@ public readonly record struct Unhandled3 :
     /// <summary>Constructs a new <see cref="Unhandled3"/> with components of magnitudes <paramref name="components"/>.</summary>
     /// <param name="components">The magnitudes of the components of the constructed <see cref="Unhandled3"/>.</param>
     public Unhandled3(Vector3 components) : this(components.X, components.Y, components.Z) { }
+
+    /// <inheritdoc cref="Vector3.IsNaN"/>
+    public bool IsNaN => X.IsNaN || Y.IsNaN || Z.IsNaN;
+    /// <inheritdoc cref="Vector3.IsZero"/>
+    public bool IsZero => (X.Magnitude.Value, Y.Magnitude.Value, Z.Magnitude.Value) is (0, 0, 0);
+    /// <inheritdoc cref="Vector3.IsFinite"/>
+    public bool IsFinite => X.IsFinite && Y.IsFinite && Z.IsFinite;
+    /// <inheritdoc cref="Vector3.IsInfinite"/>
+    public bool IsInfinite => X.IsInfinite || Y.IsInfinite || Z.IsInfinite;
 
     /// <inheritdoc/>
     Scalar IVector3Quantity.Magnitude() => PureScalarMaths.Magnitude3(this);
@@ -129,8 +138,12 @@ public readonly record struct Unhandled3 :
     public Unhandled3 Multiply(Scalar factor) => this * factor;
     /// <inheritdoc/>
     public Unhandled3 Divide(Scalar divisor) => this / divisor;
+
     /// <inheritdoc/>
-    public Unhandled3 Remainder(Scalar divisor) => this % divisor;
+    public Unhandled3 Cross(Vector3 factor) => VectorMaths.Cross(this, factor);
+
+    /// <inheritdoc/>
+    public Unhandled3 CrossInto(Vector3 factor) => VectorMaths.Cross(factor, this);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
@@ -170,25 +183,31 @@ public readonly record struct Unhandled3 :
     /// <typeparam name="TMinuend">The three-dimensional vector quantity that represents the minuend of { <typeparamref name="TMinuend"/> - <see langword="this"/> }.</typeparam>
     public Unhandled3 SubtractFrom<TMinuend>(TMinuend minuend) where TMinuend : IVector3Quantity => new(minuend.Components - Components);
 
-    /// <inheritdoc cref="IFactorVector3Quantity{TSum, TFactor}.Multiply(TFactor)"/>
-    /// <typeparam name="TFactor">The scalar quantity that represents the second factor of { <see langword="this"/> ∙ <typeparamref name="TFactor"/> }.</typeparam>
+    /// <inheritdoc/>
     public Unhandled3 Multiply<TFactor>(TFactor factor) where TFactor : IScalarQuantity => this * factor.Magnitude;
 
-    /// <inheritdoc cref="IDividendVector3Quantity{TSum, TDivisor}.Divide(TDivisor)"/>
-    /// <typeparam name="TDivisor">The scalar quantity that represents the divisor of { <see langword="this"/> / <typeparamref name="TDivisor"/> }.</typeparam>
+    /// <inheritdoc/>
     public Unhandled3 Divide<TDivisor>(TDivisor divisor) where TDivisor : IScalarQuantity => this / divisor.Magnitude;
 
-    /// <inheritdoc cref="IDotFactorVector3Quantity{TProduct, TFactor}.Dot(TFactor)"/>
-    /// <typeparam name="TFactor">The three-dimensional vector quantity that represents the second factor of { <see langword="this"/> ∙ <typeparamref name="TFactor"/> }.</typeparam>
+    /// <inheritdoc/>
     public Unhandled Dot<TFactor>(TFactor factor) where TFactor : IVector3Quantity => ScalarMaths.Dot3(this, factor);
 
-    /// <inheritdoc cref="ICrossFactorVector3Quantity{TProduct, TFactor}.Cross(TFactor)"/>
-    /// <typeparam name="TFactor">The three-dimensional vector quantity that represents the second factor of { <see langword="this"/> ⨯ <typeparamref name="TFactor"/> }.</typeparam>
+    /// <inheritdoc/>
     public Unhandled3 Cross<TFactor>(TFactor factor) where TFactor : IVector3Quantity => VectorMaths.Cross(this, factor);
 
-    /// <inheritdoc cref="ICrossFactorVector3Quantity{TProduct, TFactor}.CrossInto(TFactor)"/>
-    /// <typeparam name="TFactor">The three-dimensional vector quantity that represents the first factor of { <typeparamref name="TFactor"/> ⨯ <see langword="this"/> }.</typeparam>
+    /// <inheritdoc/>
     public Unhandled3 CrossInto<TFactor>(TFactor factor) where TFactor : IVector3Quantity => VectorMaths.Cross(this, factor);
+
+    /// <inheritdoc/>
+    TProduct IVector3Quantity.Multiply<TProduct, TFactor>(TFactor factor) => TProduct.WithComponents(Components * factor.Magnitude);
+    /// <inheritdoc/>
+    TQuotient IVector3Quantity.Divide<TQuotient, TDivisor>(TDivisor divisor) => TQuotient.WithComponents(Components / divisor.Magnitude);
+    /// <inheritdoc/>
+    TProduct IVector3Quantity.Dot<TProduct, TFactor>(TFactor factor) => MathFactory.ScalarResult<TProduct>().Dot3(this, factor);
+    /// <inheritdoc/>
+    TProduct IVector3Quantity.Cross<TProduct, TFactor>(TFactor factor) => MathFactory.Vector3Result<TProduct>().Cross(this, factor);
+    /// <inheritdoc/>
+    TProduct IVector3Quantity.CrossInto<TProduct, TFactor>(TFactor factor) => MathFactory.Vector3Result<TProduct>().Cross(factor, this);
 
     /// <inheritdoc/>
     public static Unhandled3 operator +(Unhandled3 a) => a;
@@ -211,8 +230,6 @@ public readonly record struct Unhandled3 :
     public static Unhandled3 operator *(Scalar a, Unhandled3 b) => (a * b.X, a * b.Y, a * b.Z);
     /// <inheritdoc/>
     public static Unhandled3 operator /(Unhandled3 a, Scalar b) => (a.X / b, a.Y / b, a.Z / b);
-    /// <inheritdoc/>
-    public static Unhandled3 operator %(Unhandled3 a, Scalar b) => (a.X % b, a.Y % b, a.Z % b);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
@@ -277,7 +294,7 @@ public readonly record struct Unhandled3 :
         return (a.X / b, a.Y / b, a.Z / b);
     }
 
-    /// <summary>Constructs the <see cref="Vector3"/> with components equal to the values of <paramref name="components"/>.</summary>
+    /// <summary>Constructs the <see cref="Vector3"/> with the elements of <paramref name="components"/> as components.</summary>
     [SuppressMessage("Usage", "CA2225", Justification = "Behaviour can be achieved through a constructor")]
     public static implicit operator Unhandled3((Unhandled X, Unhandled Y, Unhandled Z) components) => new(components.X, components.Y, components.Z);
 

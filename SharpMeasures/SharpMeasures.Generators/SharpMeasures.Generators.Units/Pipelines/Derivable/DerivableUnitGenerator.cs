@@ -21,12 +21,12 @@ internal static class DerivableUnitGenerator
 
     private static IResultWithDiagnostics<DataModel> FilterAndReduceToDataModel(Units.DataModel input, CancellationToken _)
     {
-        DerivableUnitRefinementContext context = new(input.Unit.UnitType, input.UnitPopulation);
+        DerivableUnitRefinementContext context = new(input.UnitData.UnitType, input.UnitPopulation);
         DerivableUnitRefiner refiner = new(DerivableUnitDiagnostics.Instance);
 
-        var processed = ProcessingFilter.Create(refiner).Filter(context, input.Unit.UnitDerivations);
+        var processed = ProcessingFilter.Create(refiner).Filter(context, input.UnitData.UnitDerivations);
 
-        DataModel model = new(input.Unit.UnitType, input.Quantity.ScalarType.AsNamedType(), input.Documentation, processed.Result);
+        DataModel model = new(input.UnitData.UnitType, input.UnitDefinition.Quantity.ScalarType.AsNamedType(), input.Documentation, processed.Result);
         return ResultWithDiagnostics.Construct(model, processed.Diagnostics);
     }
 

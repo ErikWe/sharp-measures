@@ -5,9 +5,9 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Vectors.Parsing.ResizedVector;
-using SharpMeasures.Generators.Vectors.Refinement;
+using SharpMeasures.Generators.Vectors.Refinement.ResizedVector;
 
-internal class ResizedVectorDiagnostics : Parsing.ResizedVector.IResizedVectorProcessingDiagnostics, Refinement.IResizedVectorRefinementDiagnostics
+internal class ResizedVectorDiagnostics : Parsing.ResizedVector.IResizedVectorProcessingDiagnostics, IResizedVectorRefinementDiagnostics
 {
     public static ResizedVectorDiagnostics Instance { get; } = new();
 

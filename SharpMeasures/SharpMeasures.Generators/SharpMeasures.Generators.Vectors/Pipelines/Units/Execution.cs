@@ -4,8 +4,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Vectors.Refinement;
 using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Vectors.Refinement.VectorConstant;
 
 using System.Collections.Generic;
 using System.Globalization;
@@ -15,28 +15,26 @@ internal static class Execution
 {
     public static void Execute(SourceProductionContext context, DataModel data)
     {
-        string source = Composer.Compose(context, data);
+        string source = Composer.Compose(data);
 
         context.AddSource($"{data.Vector.Name}_Units.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer
     {
-        public static string Compose(SourceProductionContext context, DataModel data)
+        public static string Compose(DataModel data)
         {
-            Composer composer = new(context, data);
+            Composer composer = new(data);
             composer.Compose();
             return composer.Retrieve();
         }
 
-        private SourceProductionContext Context { get; }
         private StringBuilder Builder { get; } = new();
 
         private DataModel Data { get; }
 
-        private Composer(SourceProductionContext context, DataModel data)
+        private Composer(DataModel data)
         {
-            Context = context;
             Data = data;
         }
 
@@ -67,7 +65,7 @@ internal static class Execution
         {
             foreach (RefinedVectorConstantDefinition constant in Data.Constants)
             {
-                AppendDocumentation(indentation, VectorDocumentationTags.Units.ConstantWithName(constant.Name));
+                AppendDocumentation(indentation, Data.Documentation.Constant(constant));
                 Builder.AppendLine($"{indentation}public static {Data.Vector.Name} {constant.Name} => " +
                     $"new(({ComposeConstant(constant)}), {Data.Unit.UnitType.Name}.{constant.Unit.Name});");
             }
@@ -78,7 +76,7 @@ internal static class Execution
             {
                 if (constant.GenerateMultiplesProperty)
                 {
-                    AppendDocumentation(indentation, VectorDocumentationTags.Units.ConstantMultiples(constant.Name));
+                    AppendDocumentation(indentation, Data.Documentation.InConstantMultiples(constant));
                     Builder.AppendLine($"{indentation}public Vector{Data.Dimension} {constant.MultiplesName!} => new({ComposeConstantElementwiseDivision(constant)});");
                 }
             }
@@ -87,7 +85,7 @@ internal static class Execution
 
             foreach (UnitInstance includedUnit in Data.Units)
             {
-                AppendDocumentation(indentation, VectorDocumentationTags.Units.UnitWithName(includedUnit));
+                AppendDocumentation(indentation, Data.Documentation.InSpecifiedUnit(includedUnit));
                 Builder.AppendLine($"{indentation}public static Vector{Data.Dimension} {includedUnit.Plural} => InUnit({Data.Unit.UnitType.Name}.{includedUnit.Name});");
             }
         }
@@ -134,9 +132,9 @@ internal static class Execution
             }
         }
 
-        private void AppendDocumentation(Indentation indentation, string tag)
+        private void AppendDocumentation(Indentation indentation, string text)
         {
-            DocumentationBuilding.AppendDocumentation(Context, Builder, Data.Documentation, indentation, tag);
+            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
         }
     }
 }

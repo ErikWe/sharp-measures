@@ -13,29 +13,27 @@ internal static class Execution
 {
     public static void Execute(SourceProductionContext context, DataModel data)
     {
-        string source = Composer.Compose(context, data);
+        string source = Composer.Compose(data);
 
         context.AddSource($"{data.Vector.Name}_{data.Dimension}_DimensionalEquivalence.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer
     {
-        public static string Compose(SourceProductionContext context, DataModel data)
+        public static string Compose(DataModel data)
         {
-            Composer composer = new(context, data);
+            Composer composer = new(data);
             composer.Compose();
             return composer.Retrieve();
         }
 
-        private SourceProductionContext Context { get; }
         private StringBuilder Builder { get; } = new();
 
         private DataModel Data { get; }
         private UsingsCollector UsingsCollector { get; }
 
-        private Composer(SourceProductionContext context, DataModel data)
+        private Composer(DataModel data)
         {
-            Context = context;
             Data = data;
 
             UsingsCollector = UsingsCollector.Delayed(Builder, Data.Vector.Namespace);
@@ -51,7 +49,6 @@ internal static class Execution
 
             UsingsCollector.MarkInsertionPoint();
 
-            AppendDocumentation(new Indentation(0), VectorDocumentationTags.VectorHeader);
             Builder.AppendLine(Data.Vector.ComposeDeclaration());
 
             InterfaceBuilding.AppendInterfaceImplementation(Builder, new string[]
@@ -104,7 +101,7 @@ internal static class Execution
         {
             UsingsCollector.AddUsing(vector.VectorType.Namespace);
 
-            AppendDocumentation(indentation, VectorDocumentationTags.DimensionallyEquivalentTo(vector.VectorType.Name));
+            AppendDocumentation(indentation, Data.Documentation.AsDimensionallyEquivalent(vector));
             Builder.AppendLine($"{indentation}public {vector.VectorType.Name} As{vector.VectorType.Name} => new(Components);");
         }
 
@@ -116,13 +113,13 @@ internal static class Execution
 
         private void ComposeOperatorConversion(ResizedVectorInterface vector, Indentation indentation, string behaviour)
         {
-            AppendDocumentation(indentation, VectorDocumentationTags.Operators.DimensionallyEquivalentTo(vector.VectorType.Name));
+            AppendDocumentation(indentation, Data.Documentation.CastToDimensionallyEquivalent(vector));
             Builder.AppendLine($"{indentation}public static {behaviour} operator {vector.VectorType.Name}({Data.Vector.Name} x) => new(x.Components);");
         }
 
-        private void AppendDocumentation(Indentation indentation, string tag)
+        private void AppendDocumentation(Indentation indentation, string text)
         {
-            DocumentationBuilding.AppendDocumentation(Context, Builder, Data.Documentation, indentation, tag);
+            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
         }
     }
 }

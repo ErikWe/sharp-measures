@@ -41,6 +41,17 @@ public class DocumentationFile : IEquatable<DocumentationFile>
         HasReportedOneMissingTag = hasReportedOneMissingTag;
     }
 
+    public string? OptionallyResolveTag(string tag)
+    {
+        if (string.IsNullOrEmpty(Name))
+        {
+            return null;
+        }
+
+        Content.TryGetValue(tag, out string? tagText);
+        return tagText;
+    }
+
     public IResultWithDiagnostics<string> ResolveTag(string tag)
     {
         if (string.IsNullOrEmpty(Name))
@@ -48,7 +59,7 @@ public class DocumentationFile : IEquatable<DocumentationFile>
             return ResultWithDiagnostics.Construct(string.Empty);
         }
 
-        if (Content.TryGetValue(tag, out string tagText) is false)
+        if (OptionallyResolveTag(tag) is not string tagText)
         {
             return ResultWithDiagnostics.Construct(string.Empty, CreateMissingTagDiagnostics(tag));
         }
@@ -87,8 +98,13 @@ public class DocumentationFile : IEquatable<DocumentationFile>
         return Microsoft.CodeAnalysis.Location.Create(file.Path, TextSpan.FromBounds(0, file.ToString().Length - 1), span).Minimize();
     }
 
-    public virtual bool Equals(DocumentationFile other)
+    public virtual bool Equals(DocumentationFile? other)
     {
+        if (other is null)
+        {
+            return false;
+        }
+
         return Name == other.Name && Location == other.Location && Content == other.Content;
     }
 
@@ -102,8 +118,8 @@ public class DocumentationFile : IEquatable<DocumentationFile>
         return false;
     }
 
-    public override int GetHashCode()
-    {
-        return (Name, Location, Content).GetHashCode();
-    }
+    public static bool operator ==(DocumentationFile? lhs, DocumentationFile? rhs) => lhs?.Equals(rhs) ?? rhs is null;
+    public static bool operator !=(DocumentationFile? lhs, DocumentationFile? rhs) => (lhs == rhs) is false;
+
+    public override int GetHashCode() => (Name, Location, Content).GetHashCode();
 }

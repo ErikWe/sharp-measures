@@ -146,10 +146,19 @@ public static class ScalarParsingStage
         }
     }
 
-    private static ScalarInterface ConstructInterface(ParsedScalar scalar, CancellationToken _)
+    private static ScalarInterface ConstructInterface(ParsedScalar input, CancellationToken _)
     {
-        return new(scalar.ScalarType, scalar.ScalarDefinition.Unit, scalar.ScalarDefinition.Biased, scalar.ScalarDefinition.Reciprocal, scalar.ScalarDefinition.Square,
-            scalar.ScalarDefinition.Cube, scalar.ScalarDefinition.SquareRoot, scalar.ScalarDefinition.CubeRoot);
+        var includedBases = input.IncludeBases.Select(static (x) => new IncludeBasesInterface(x.IncludedBases));
+        var excludedBases = input.ExcludeBases.Select(static (x) => new ExcludeBasesInterface(x.ExcludedBases));
+
+        var includedUnits = input.IncludeUnits.Select(static (x) => new IncludeUnitsInterface(x.IncludedUnits));
+        var excludedUnits = input.ExcludeUnits.Select(static (x) => new ExcludeUnitsInterface(x.ExcludedUnits));
+
+        var dimensionalEquivalences = input.DimensionalEquivalences.Select(static (x) => new DimensionalEquivalenceInterface(x.Quantities, x.CastOperatorBehaviour));
+
+        return new(input.ScalarType, input.ScalarDefinition.Unit, input.ScalarDefinition.Biased, input.ScalarDefinition.Reciprocal, input.ScalarDefinition.Square,
+            input.ScalarDefinition.Cube, input.ScalarDefinition.SquareRoot, input.ScalarDefinition.CubeRoot, includedBases, excludedBases, includedUnits,
+            excludedUnits, dimensionalEquivalences);
     }
 
     private static ScalarPopulation CreatePopulation(ImmutableArray<ScalarInterface> scalars, CancellationToken _)

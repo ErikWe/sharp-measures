@@ -3,6 +3,7 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Units.Utility;
 
 public static partial class DiagnosticConstruction
 {

@@ -21,6 +21,52 @@ public interface IVector3Quantity
     public abstract Scalar Magnitude();
     /// <summary>Computes the square of the magnitude / norm / length of <see langword="this"/>.</summary>
     public abstract Scalar SquaredMagnitude();
+
+    /// <inheritdoc cref="IScalarQuantity.Multiply{TFactor}(TFactor)"/>
+    public abstract Unhandled3 Multiply<TFactor>(TFactor factor) where TFactor : IScalarQuantity;
+
+    /// <inheritdoc cref="IScalarQuantity.Divide{TDivisor}(TDivisor)"/>
+    public abstract Unhandled3 Divide<TDivisor>(TDivisor divisor) where TDivisor : IScalarQuantity;
+
+    /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
+    /// <typeparam name="TFactor">The three-dimensional vector quantity that represents the second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</typeparam>
+    /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
+    public abstract Unhandled Dot<TFactor>(TFactor factor) where TFactor : IVector3Quantity;
+
+    /// <summary>Computes { <see langword="this"/> ⨯ <paramref name="factor"/> }.</summary>
+    /// <typeparam name="TFactor">The three-dimensional vector quantity that represents the second factor of { <see langword="this"/> ⨯ <paramref name="factor"/> }.</typeparam>
+    /// <param name="factor">The second factor of { <see langword="this"/> ⨯ <paramref name="factor"/> }.</param>
+    public abstract Unhandled3 Cross<TFactor>(TFactor factor) where TFactor : IVector3Quantity;
+
+    /// <summary>Computes { <paramref name="factor"/> ⨯ <see langword="this"/> }.</summary>
+    /// <typeparam name="TFactor">The three-dimensional vector quantity that represents the first factor of { <paramref name="factor"/> ⨯ <see langword="this"/> }.</typeparam>
+    /// <param name="factor">The first factor of { <paramref name="factor"/> ⨯ <see langword="this"/> }.</param>
+    public abstract Unhandled3 CrossInto<TFactor>(TFactor factor) where TFactor : IVector3Quantity;
+
+    /// <inheritdoc cref="Multiply{TFactor}(TFactor)"/>
+    /// <typeparam name="TProduct">The three-dimensional vector quantity that represents the result of { <see langword="this"/> ∙ <paramref name="factor"/> }.</typeparam>
+    /// <typeparam name="TFactor">The scalar quantity that represents the second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</typeparam>
+    public abstract TProduct Multiply<TProduct, TFactor>(TFactor factor) where TProduct : IVector3Quantity<TProduct> where TFactor : IScalarQuantity;
+
+    /// <inheritdoc cref="Divide{TDivisor}(TDivisor)"/>
+    /// <typeparam name="TQuotient">The three-dimensional vector quantity that represents the result of { <see langword="this"/> / <paramref name="divisor"/> }.</typeparam>
+    /// <typeparam name="TDivisor">The scalar quantity that represents the divisor of { <see langword="this"/> / <paramref name="divisor"/> }.</typeparam>
+    public abstract TQuotient Divide<TQuotient, TDivisor>(TDivisor divisor) where TQuotient : IVector3Quantity<TQuotient> where TDivisor : IScalarQuantity;
+
+    /// <inheritdoc cref="Dot{TFactor}(TFactor)"/>
+    /// <typeparam name="TProduct">The scalar quantity that represents the result of { <see langword="this"/> ∙ <paramref name="factor"/> }.</typeparam>
+    /// <typeparam name="TFactor">The three-dimensional vector quantity that represents the second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</typeparam>
+    public abstract TProduct Dot<TProduct, TFactor>(TFactor factor) where TProduct : IScalarQuantity<TProduct> where TFactor : IVector3Quantity;
+
+    /// <inheritdoc cref="Cross{TFactor}(TFactor)"/>
+    /// <typeparam name="TProduct">The three-dimensional vector quantity that represents the result of { <see langword="this"/> ⨯ <paramref name="factor"/> }.</typeparam>
+    /// <typeparam name="TFactor">The three-dimensional vector quantity that represents the second factor of { <see langword="this"/> ⨯ <paramref name="factor"/> }.</typeparam>
+    public abstract TProduct Cross<TProduct, TFactor>(TFactor factor) where TProduct : IVector3Quantity<TProduct> where TFactor : IVector3Quantity;
+
+    /// <inheritdoc cref="CrossInto{TFactor}(TFactor)"/>
+    /// <typeparam name="TProduct">The three-dimensional vector quantity that represents the result of { <paramref name="factor"/> ⨯ <see langword="this"/> }.</typeparam>
+    /// <typeparam name="TFactor">The three-dimensional vector quantity that represents the second factor of { <paramref name="factor"/> ⨯ <see langword="this"/> }.</typeparam>
+    public abstract TProduct CrossInto<TProduct, TFactor>(TFactor factor) where TProduct : IVector3Quantity<TProduct> where TFactor : IVector3Quantity;
 }
 
 /// <inheritdoc cref="IVector3Quantity" path="/summary"/>
@@ -53,14 +99,17 @@ public interface IVector3Quantity<TSelf> :
     /// <inheritdoc cref="IScalarQuantity{TSelf}.Negate"/>
     public abstract TSelf Negate();
 
-    /// <inheritdoc cref="IScalarQuantity{TSelf}.Multiply(Scalar)"/>
+    /// <inheritdoc cref="IVector3Quantity.Multiply{TFactor}(TFactor)"/>
     public abstract TSelf Multiply(Scalar factor);
 
-    /// <inheritdoc cref="IScalarQuantity{TSelf}.Divide(Scalar)"/>
+    /// <inheritdoc cref="IVector3Quantity.Divide{TDivisor}(TDivisor)"/>
     public abstract TSelf Divide(Scalar divisor);
 
-    /// <inheritdoc cref="IScalarQuantity{TSelf}.Remainder(Scalar)"/>
-    public abstract TSelf Remainder(Scalar divisor);
+    /// <inheritdoc cref="IVector3Quantity.Cross{TFactor}(TFactor)"/>
+    public abstract TSelf Cross(Vector3 factor);
+
+    /// <inheritdoc cref="IVector3Quantity.CrossInto{TFactor}(TFactor)"/>
+    public abstract TSelf CrossInto(Vector3 factor);
 
     /// <summary>Computes { +<paramref name="a"/> }.</summary>
     /// <param name="a">The factor of { +<paramref name="a"/> }.</param>
@@ -80,9 +129,4 @@ public interface IVector3Quantity<TSelf> :
     /// <param name="a">The dividend of { <paramref name="a"/> / <paramref name="b"/> }.</param>
     /// <param name="b">The divisor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
     public static abstract TSelf operator /(TSelf a, Scalar b);
-
-    /// <summary>Computes { <paramref name = "a" /> % <paramref name="b"/> }.</summary>
-    /// <param name="a">The dividend of { <paramref name="a"/> % <paramref name="b"/> }.</param>
-    /// <param name="b">The divisor of { <paramref name="a"/> % <paramref name="b"/> }.</param>
-    public static abstract TSelf operator %(TSelf a, Scalar b);
 }

@@ -20,14 +20,14 @@ internal static class UnitDefinitionsGenerator
 
     private static IResultWithDiagnostics<DataModel> FilterAndReduceToDataModel(Units.DataModel input, CancellationToken _)
     {
-        var context = new DerivedUnitValidatorContext(input.Unit.UnitType, input.UnitPopulation);
+        var context = new DerivedUnitValidatorContext(input.UnitData.UnitType, input.UnitPopulation);
         DerivedUnitValidator validator = new(DerivedUnitDiagnostics.Instance);
 
-        var filteredDerivedUnits = ValidityFilter.Create(validator).Filter(context, input.Unit.DerivedUnits);
+        var filteredDerivedUnits = ValidityFilter.Create(validator).Filter(context, input.UnitData.DerivedUnits);
 
-        DataModel model = new(input.Unit.UnitType, input.Quantity.ScalarType.AsNamedType(), input.Unit.UnitDefinition.SupportsBiasedQuantities, input.Documentation,
-            input.Unit.UnitAliases, filteredDerivedUnits.Result, input.Unit.FixedUnits, input.Unit.OffsetUnits,
-            input.Unit.PrefixedUnits, input.Unit.ScaledUnits);
+        DataModel model = new(input.UnitData.UnitType, input.UnitDefinition.Quantity.ScalarType.AsNamedType(), input.UnitDefinition.SupportsBiasedQuantities,
+            input.Documentation, input.UnitData.UnitAliases, filteredDerivedUnits.Result, input.UnitData.FixedUnits, input.UnitData.OffsetUnits,
+            input.UnitData.PrefixedUnits, input.UnitData.ScaledUnits);
 
         return ResultWithDiagnostics.Construct(model, filteredDerivedUnits.Diagnostics);
     }

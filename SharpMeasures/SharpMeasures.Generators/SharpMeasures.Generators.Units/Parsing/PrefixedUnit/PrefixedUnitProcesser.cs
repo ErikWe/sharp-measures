@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
+using SharpMeasures.Generators.Units.Utility;
 
 using System;
 

@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Vectors.Parsing.GeneratedVector;
-using SharpMeasures.Generators.Vectors.Refinement;
+using SharpMeasures.Generators.Vectors.Refinement.GeneratedVector;
 
 internal class GeneratedVectorDiagnostics : IGeneratedVectorProcessingDiagnostics, IGeneratedVectorRefinementDiagnostics
 {

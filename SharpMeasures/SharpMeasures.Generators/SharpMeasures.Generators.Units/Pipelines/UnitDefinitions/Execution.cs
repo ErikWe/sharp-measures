@@ -103,7 +103,7 @@ internal static class Execution
             {
                 ImplementedDefinitions.Add(derivedUnit.Name);
 
-                AppendDocumentation(indentation, derivedUnit);
+                AppendDocumentation(indentation, Data.Documentation.Definition(derivedUnit));
                 Builder.Append($"{indentation}public static {Data.Unit.Name} {derivedUnit.Name} {{ get; }} = ");
 
                 IterativeBuilding.AppendEnumerable(Builder, "From(", arguments(), ", ", $");{Environment.NewLine}");
@@ -135,7 +135,7 @@ internal static class Execution
 
             void appendDeclaration(FixedUnitDefinition fixedUnit)
             {
-                AppendDocumentation(indentation, fixedUnit);
+                AppendDocumentation(indentation, Data.Documentation.Definition(fixedUnit));
                 Builder.Append($"{indentation}public static {Data.Unit.Name} {fixedUnit.Name} {{ get; }}");
             }
 
@@ -162,7 +162,7 @@ internal static class Execution
             {
                 if (ImplementedDefinitions.Contains(dependantUnits[i].DependantOn))
                 {
-                    AppendDocumentation(indentation, dependantUnits[i]);
+                    AppendDocumentation(indentation, Data.Documentation.Definition(dependantUnits[i]));
                     Builder.Append($"{indentation}public static {Data.Unit.Name} {dependantUnits[i].Name} ");
 
                     if (dependantUnits[i] is UnitAliasDefinition unitAlias)
@@ -255,9 +255,9 @@ internal static class Execution
             return result;
         }
 
-        private void AppendDocumentation(Indentation indentation, IUnitDefinition definition)
+        private void AppendDocumentation(Indentation indentation, string text)
         {
-            DocumentationBuilding.AppendDocumentation(Context, Builder, Data.Documentation, indentation, UnitDocumentationTags.Definition.WithName(definition.Name));
+            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
         }
 
         private void CreateCyclicDependencyDiagnostics(IList<IDependantUnitDefinition> dependantUnits)

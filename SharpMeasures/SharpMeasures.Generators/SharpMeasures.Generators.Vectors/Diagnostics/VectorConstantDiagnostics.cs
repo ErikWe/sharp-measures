@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
-using SharpMeasures.Generators.Vectors.Refinement;
+using SharpMeasures.Generators.Vectors.Refinement.VectorConstant;
 
 internal class VectorConstantDiagnostics : IVectorConstantProcessingDiagnostics, IVectorConstantRefinementDiagnostics
 {

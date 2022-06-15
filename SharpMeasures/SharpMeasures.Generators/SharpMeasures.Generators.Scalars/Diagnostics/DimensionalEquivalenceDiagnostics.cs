@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Quantities.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Scalars.Refinement;
+using SharpMeasures.Generators.Scalars.Refinement.DimensionalEquivalence;
 
 internal class DimensionalEquivalenceDiagnostics : ADimensionalEquivalenceProcessingDiagnostics, IDimensionalEquivalenceRefinementDiagnostics
 {

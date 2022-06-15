@@ -1,10 +1,13 @@
 ﻿namespace SharpMeasures.Generators.SourceBuilding;
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 public static class ConstantVectorTexts
 {
     public static string Zeros(int dimension) => Builders.Zeros.GetText(dimension);
+    public static string UnnamedScalars(int dimension) => Builders.UnnamedScalars.GetText(dimension);
+    public static string SampleValues(int dimension) => Builders.SampleValues.GetText(dimension);
     public static string DeconstructScalarHeader(int dimension) => Builders.DeconstructScalarHeader.GetText(dimension);
     public static string MultiplyScalarLHS(int dimension) => Builders.MultiplyScalarLHS.GetText(dimension);
 
@@ -36,6 +39,8 @@ public static class ConstantVectorTexts
     public static class Builders
     {
         public static VectorTextBuilder Zeros { get; } = new("0", ", ");
+        public static VectorTextBuilder UnnamedScalars { get; } = new("Scalar", ", ");
+        public static VectorTextBuilder SampleValues { get; } = new(SampleValuesDelegate, ", ");
         public static VectorTextBuilder DeconstructScalarHeader { get; } = new(DeconstructScalarHeaderDelegate, ", ");
         public static VectorTextBuilder MultiplyScalarLHS { get; } = new(MultiplyScalarLHSDelegate, ", ");
         public static VectorTextBuilder MultiplyScalarRHS { get; } = new(MultiplyScalarRHSDelegate, ", ");
@@ -142,6 +147,11 @@ public static class ConstantVectorTexts
             }
 
             private static string GetComponentName(int componentIndex, int dimension) => VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
+        }
+
+        private static string SampleValuesDelegate(int componentIndex, int _)
+        {
+            return $"{2.3 * (componentIndex + 1) * Math.Sign(componentIndex)}";
         }
 
         private static string DeconstructScalarHeaderDelegate(int componentIndex, int dimension)

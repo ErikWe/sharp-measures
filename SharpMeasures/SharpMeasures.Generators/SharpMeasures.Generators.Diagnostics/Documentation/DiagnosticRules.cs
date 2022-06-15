@@ -16,17 +16,6 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor NoMatchingDocumentationFile = new DiagnosticDescriptor
-    (
-        id: DiagnosticIDs.NoMatchingDocumentationFile,
-        title: "No matching documentation file",
-        messageFormat: "No matching documentation file was found for {0}. Add a file with the name \"{0}.doc.txt\" to the project, or disable generation of " +
-            $"documentation through the relevant attribute or through the global AnalyzerConfig using the entry \"{ConfigKeys.GenerateDocumentationByDefault}\".",
-        category: "Documentation",
-        defaultSeverity: DiagnosticSeverity.Info,
-        isEnabledByDefault: true
-    );
-
     public static readonly DiagnosticDescriptor DocumentationFileMissingRequestedTag = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DocumentationFileMissingRequestedTag,

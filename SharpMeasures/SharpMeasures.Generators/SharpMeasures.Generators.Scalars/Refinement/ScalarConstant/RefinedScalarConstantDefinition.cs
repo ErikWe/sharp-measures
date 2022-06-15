@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Scalars.Refinement;
+﻿namespace SharpMeasures.Generators.Scalars.Refinement.ScalarConstant;
 
 using SharpMeasures.Generators.Units;
 

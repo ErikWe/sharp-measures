@@ -6,13 +6,14 @@ using SharpMeasures.Generators.Configuration;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Documentation;
 using SharpMeasures.Generators.Scalars.Diagnostics;
+using SharpMeasures.Generators.Scalars.Documentation;
 using SharpMeasures.Generators.Scalars.Parsing;
 using SharpMeasures.Generators.Scalars.Pipelines.Common;
 using SharpMeasures.Generators.Scalars.Pipelines.DimensionalEquivalence;
 using SharpMeasures.Generators.Scalars.Pipelines.Maths;
 using SharpMeasures.Generators.Scalars.Pipelines.Units;
 using SharpMeasures.Generators.Scalars.Pipelines.Vectors;
-using SharpMeasures.Generators.Scalars.Refinement;
+using SharpMeasures.Generators.Scalars.Refinement.GeneratedScalar;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors;
 
@@ -37,7 +38,7 @@ public class ScalarGenerator
 
         var minimized = ScalarProvider.Combine(unitPopulationProvider, PopulationProvider, vectorPopulationProvider).Select(ReduceToDataModel).ReportDiagnostics(context)
             .Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionaryProvider).Flatten()
-            .Select(AppendDocumentationFile).ReportDiagnostics(context);
+            .Select(AppendDocumentation);
 
         CommonGenerator.Initialize(context, minimized);
         DimensionalEquivalenceGenerator.Initialize(context, minimized);
@@ -75,24 +76,30 @@ public class ScalarGenerator
         return (data.Model, data.Default);
     }
 
-    private static IResultWithDiagnostics<DataModel> AppendDocumentationFile
+    private static DataModel AppendDocumentation
         ((DataModel Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
     {
         if (input.GenerateDocumentation)
         {
+            DefaultDocumentation defaultDocumentation = new(input.Model);
+
             if (input.DocumentationDictionary.TryGetValue(input.Model.ScalarData.ScalarType.Name, out DocumentationFile documentationFile))
             {
-                DataModel modifiedModel = input.Model with { Documentation = documentationFile };
-                return ResultWithDiagnostics.Construct(modifiedModel);
+                input.Model = input.Model with
+                {
+                    Documentation = new FileDocumentation(documentationFile, defaultDocumentation)
+                };
             }
-
-            Diagnostic diagnostics = DiagnosticConstruction.NoMatchingDocumentationFile(input.Model.ScalarData.ScalarLocation.AsRoslynLocation(),
-                input.Model.ScalarData.ScalarType.Name);
-
-            return ResultWithDiagnostics.Construct(input.Model, diagnostics);
+            else
+            {
+                input.Model = input.Model with
+                {
+                    Documentation = defaultDocumentation
+                };
+            }
         }
 
-        return ResultWithDiagnostics.Construct(input.Model);
+        return input.Model;
     }
 
     private static bool ExtractDefaultGenerateDocumentation(GlobalAnalyzerConfig config, CancellationToken _) => config.GenerateDocumentationByDefault;

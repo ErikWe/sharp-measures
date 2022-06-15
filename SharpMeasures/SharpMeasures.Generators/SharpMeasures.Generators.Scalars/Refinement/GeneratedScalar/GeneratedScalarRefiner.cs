@@ -1,9 +1,11 @@
-﻿namespace SharpMeasures.Generators.Scalars.Refinement;
+﻿namespace SharpMeasures.Generators.Scalars.Refinement.GeneratedScalar;
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Generators;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
+using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Scalars.Parsing.GeneratedScalar;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors;
@@ -80,7 +82,7 @@ internal class GeneratedScalarRefiner : IProcesser<IGeneratedScalarRefinementCon
 
     private IOptionalWithDiagnostics<UnitInterface> ProcessUnit(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition)
     {
-        if (context.UnitPopulation.TryGetValue(definition.Unit, out UnitInterface unit) is false)
+        if (context.UnitPopulation.TryGetValue(definition.Unit, out var unit) is false)
         {
             return OptionalWithDiagnostics.Empty<UnitInterface>(Diagnostics.TypeNotUnit(context, definition));
         }
@@ -136,7 +138,7 @@ internal class GeneratedScalarRefiner : IProcesser<IGeneratedScalarRefinementCon
             return ResultWithDiagnostics.Construct<ScalarInterface?>(null);
         }
 
-        if (context.ScalarPopulation.TryGetValue(quantity.Value, out ScalarInterface scalar) is false)
+        if (context.ScalarPopulation.TryGetValue(quantity.Value, out var scalar) is false)
         {
             return ResultWithDiagnostics.Construct<ScalarInterface?>(null, typeNotScalarDiagnosticsDelegate(context, definition));
         }

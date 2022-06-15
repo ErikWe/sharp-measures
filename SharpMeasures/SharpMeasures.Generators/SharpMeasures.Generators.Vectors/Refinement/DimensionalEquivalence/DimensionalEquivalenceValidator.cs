@@ -1,10 +1,12 @@
-﻿namespace SharpMeasures.Generators.Vectors.Refinement;
+﻿namespace SharpMeasures.Generators.Vectors.Refinement.DimensionalEquivalence;
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Generators;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
+using SharpMeasures.Generators.Vectors;
 
 using System.Collections.Generic;
 
@@ -34,7 +36,7 @@ internal class DimensionalEquivalenceValidator : IValidator<IDimensionalEquivale
     {
         List<Diagnostic> allDiagnostics = new();
 
-        for (int i = 0; i < definition.Quantities.Count; i++)
+        for (var i = 0; i < definition.Quantities.Count; i++)
         {
             if (context.ExcessiveQuantities.Contains(definition.Quantities[i]))
             {

@@ -3,7 +3,6 @@
 using SharpMeasures.Maths;
 using SharpMeasures.Vector3Abstractions;
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 
@@ -49,13 +48,13 @@ public readonly record struct Vector3 :
         Z = z;
     }
 
-    /// <summary>Indicates whether the X, Y, or Z component represented by <see langword="this"/> represents { <see cref="double.NaN"/> }.</summary>
+    /// <summary>Indicates whether any of the X, Y, and Z components represented by <see langword="this"/> represents { <see cref="double.NaN"/> }.</summary>
     public bool IsNaN => X.IsNaN || Y.IsNaN || Z.IsNaN;
     /// <summary>Indicates whether <see langword="this"/> represents { 0, 0, 0 }.</summary>
     public bool IsZero => (X.Value, Y.Value, Z.Value) is (0, 0, 0);
     /// <summary>Indicates whether the X, Y, and Z components represented by <see langword="this"/> represent finite values.</summary>
     public bool IsFinite => X.IsFinite && Y.IsFinite && Z.IsFinite;
-    /// <summary>Indicates whether the X, Y, or Z component represented by <see langword="this"/> represents an infinite value.</summary>
+    /// <summary>Indicates whether any of the X, Y, and Z components represented by <see langword="this"/> represents an infinite value.</summary>
     public bool IsInfinite => X.IsInfinite || Y.IsInfinite || Z.IsInfinite;
 
     /// <inheritdoc/>
@@ -97,21 +96,62 @@ public readonly record struct Vector3 :
     public Vector3 Multiply(Scalar factor) => this * factor;
     /// <inheritdoc/>
     public Vector3 Divide(Scalar divisor) => this / divisor;
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Scalar.Remainder(Scalar)"/>
     public Vector3 Remainder(Scalar divisor) => this % divisor;
     /// <inheritdoc/>
     public Scalar Dot(Vector3 factor) => ScalarMaths.Dot3(this, factor);
     /// <inheritdoc/>
     public Vector3 Cross(Vector3 factor) => VectorMaths.Cross(this, factor);
     /// <inheritdoc/>
+    Vector3 IVector3Quantity<Vector3>.CrossInto(Vector3 factor) => VectorMaths.Cross(factor, this);
+    /// <inheritdoc/>
     Vector3 ICrossFactorVector3Quantity<Vector3, Vector3>.CrossInto(Vector3 factor) => VectorMaths.Cross(factor, this);
 
-    /// <inheritdoc cref="Cross(Vector3)"/>
-    /// <typeparam name="TFactor">The three-dimensional vector quantity that represents the second factor of { <see langword="this"/> ⨯ <paramref name="factor"/> }.</typeparam>
+    /// <inheritdoc/>
+    public Unhandled3 Multiply<TFactor>(TFactor factor)
+        where TFactor : IScalarQuantity
+        => new(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+
+    /// <inheritdoc/>
+    public TProduct Multiply<TProduct, TFactor>(TFactor factor)
+        where TProduct : IVector3Quantity<TProduct>
+        where TFactor : IScalarQuantity
+        => TProduct.WithComponents(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
+
+    /// <inheritdoc/>
+    public Unhandled3 Divide<TDivisor>(TDivisor divisor)
+        where TDivisor : IScalarQuantity
+        => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
+
+    /// <inheritdoc/>
+    public TQuotient Divide<TQuotient, TDivisor>(TDivisor divisor)
+        where TQuotient : IVector3Quantity<TQuotient>
+        where TDivisor : IScalarQuantity
+        => TQuotient.WithComponents(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
+
+    /// <inheritdoc/>
+    public TProduct Dot<TProduct, TFactor>(TFactor factor)
+        where TProduct : IScalarQuantity<TProduct>
+        where TFactor : IVector3Quantity
+        => MathFactory.ScalarResult<TProduct>().Dot3(this, factor);
+
+    /// <inheritdoc/>
+    Unhandled IVector3Quantity.Dot<TFactor>(TFactor factor) => UnhandledMaths.Dot3(this, factor);
+
+    /// <inheritdoc cref="IVector3Quantity.Cross{TProduct, TFactor}(TFactor)"/>
     public TFactor Cross<TFactor>(TFactor factor) where TFactor : IVector3Quantity<TFactor> => MathFactory.Vector3Result<TFactor>().Cross(this, factor);
-    /// <inheritdoc cref="ICrossFactorVector3Quantity{TProduct, TFactor}.CrossInto(TFactor)"/>
-    /// <typeparam name="TFactor">The three-dimensional vector quantity that represents the first factor of { <paramref name="factor"/> ⨯ <see langword="this"/> }.</typeparam>
+    /// <inheritdoc cref="IVector3Quantity.CrossInto{TProduct, TFactor}(TFactor)"/>
     public TFactor CrossInto<TFactor>(TFactor factor) where TFactor : IVector3Quantity<TFactor> => MathFactory.Vector3Result<TFactor>().Cross(this, factor);
+
+    /// <inheritdoc/>
+    Unhandled3 IVector3Quantity.Cross<TFactor>(TFactor factor) => Unhandled3Maths.Cross(this, factor);
+    /// <inheritdoc/>
+    Unhandled3 IVector3Quantity.CrossInto<TFactor>(TFactor factor) => Unhandled3Maths.Cross(factor, this);
+
+    /// <inheritdoc/>
+    TProduct IVector3Quantity.Cross<TProduct, TFactor>(TFactor factor) => MathFactory.Vector3Result<TProduct>().Cross(this, factor);
+    /// <inheritdoc/>
+    TProduct IVector3Quantity.CrossInto<TProduct, TFactor>(TFactor factor) => MathFactory.Vector3Result<TProduct>().Cross(factor, this);
 
     /// <inheritdoc/>
     public static Vector3 operator +(Vector3 a) => a;
@@ -128,15 +168,19 @@ public readonly record struct Vector3 :
     public static Vector3 operator *(Scalar a, Vector3 b) => (a * b.X, a * b.Y, a * b.Z);
     /// <inheritdoc/>
     public static Vector3 operator /(Vector3 a, Scalar b) => (a.X / b, a.Y / b, a.Z / b);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Scalar.operator %(Scalar, Scalar)"/>
     public static Vector3 operator %(Vector3 a, Scalar b) => (a.X % b, a.Y % b, a.Z % b);
 
-    /// <summary>Constructs the <see cref="Vector3"/> with components equal to the values of <paramref name="components"/>.</summary>
+    /// <summary>Constructs the <see cref="Vector3"/> with the elements of <paramref name="components"/> as components.</summary>
     [SuppressMessage("Usage", "CA2225", Justification = "Behaviour can be achieved through a constructor")]
     public static implicit operator Vector3((Scalar X, Scalar Y, Scalar Z) components) => new(components.X, components.Y, components.Z);
 
     /// <summary>Describes mathematical operations that result in a pure <see cref="Scalar"/>.</summary>
     private static IScalarResultingMaths<Scalar> ScalarMaths { get; } = MathFactory.ScalarResult();
+    /// <summary>Describes mathematical operations that result in a <see cref="Unhandled"/>.</summary>
+    private static IScalarResultingMaths<Unhandled> UnhandledMaths { get; } = MathFactory.ScalarResult<Unhandled>();
     /// <summary>Describes mathematical operations that result in a pure <see cref="Vector3"/>.</summary>
     private static IVector3ResultingMaths<Vector3> VectorMaths { get; } = MathFactory.Vector3Result();
+    /// <summary>Describes mathematical operations that result in a pure <see cref="Unhandled3"/>.</summary>
+    private static IVector3ResultingMaths<Unhandled3> Unhandled3Maths { get; } = MathFactory.Vector3Result<Unhandled3>();
 }

@@ -1,5 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Units;
 
+using SharpMeasures.Generators.Units.Utility;
+
 using System;
 
 /// <summary>Defines an instance of the unit by applying a prefix to another instance of the same unit.</summary>

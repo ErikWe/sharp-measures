@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Scalars.Refinement;
+﻿namespace SharpMeasures.Generators.Scalars.Refinement.DimensionalEquivalence;
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities.Utility;

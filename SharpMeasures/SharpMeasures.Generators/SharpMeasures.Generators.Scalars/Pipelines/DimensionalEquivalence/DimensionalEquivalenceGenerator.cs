@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars.Diagnostics;
-using SharpMeasures.Generators.Scalars.Refinement;
+using SharpMeasures.Generators.Scalars.Refinement.DimensionalEquivalence;
 
 using System.Threading;
 using System.Linq;

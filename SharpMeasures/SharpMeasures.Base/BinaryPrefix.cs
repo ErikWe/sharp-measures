@@ -2,8 +2,9 @@
 
 using System;
 
-/// <summary>Describes a binary prefix. Common <see cref="BinaryPrefix"/> exists as static properties</summary>
+/// <summary>Describes a binary prefix. Common <see cref="BinaryPrefix"/> exists as static properties.</summary>
 public readonly record struct BinaryPrefix :
+    IPrefix,
     IComparable<BinaryPrefix>
 {
     /// <summary>Denotes that the value should be scaled by [2^80 = (1 024)^8]. Usually written as [Yi].</summary>
@@ -33,7 +34,7 @@ public readonly record struct BinaryPrefix :
     /// <param name="exponent">The exponent of { 1 024 ^ <paramref name="exponent"/> }.</param>
     public static BinaryPrefix ThousandTwentyFourToThePower(Scalar exponent) => new(Math.Pow(1024, exponent));
 
-    /// <summary>The scale-factor of <see langword="this"/>.</summary>
+    /// <inheritdoc/>
     public Scalar Factor { get; }
 
     /// <summary>Constructs a <see cref="BinaryPrefix"/> representing { <paramref name="factor"/> }.</summary>

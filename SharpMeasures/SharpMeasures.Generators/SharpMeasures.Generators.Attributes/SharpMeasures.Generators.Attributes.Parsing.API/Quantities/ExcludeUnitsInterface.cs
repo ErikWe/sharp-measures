@@ -4,12 +4,12 @@ using SharpMeasures.Equatables;
 
 using System.Collections.Generic;
 
-public class IncludeUnitsInterface
+public class ExcludeUnitsInterface
 {
-    public ReadOnlyEquatableList<string> IncludedUnits { get; }
+    public ReadOnlyEquatableList<string> ExcludedUnits { get; }
 
-    public IncludeUnitsInterface(IReadOnlyList<string> includedUnits)
+    public ExcludeUnitsInterface(IReadOnlyList<string> excludedUnits)
     {
-        IncludedUnits = includedUnits.AsReadOnlyEquatable();
+        ExcludedUnits = excludedUnits.AsReadOnlyEquatable();
     }
 }

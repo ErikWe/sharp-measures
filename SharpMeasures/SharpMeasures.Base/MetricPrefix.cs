@@ -2,8 +2,9 @@
 
 using System;
 
-/// <summary>Describes a metric prefix. Common <see cref="MetricPrefix"/> exists as static properties</summary>
+/// <summary>Describes a metric prefix. Common <see cref="MetricPrefix"/> exists as static properties.</summary>
 public readonly record struct MetricPrefix :
+    IPrefix,
     IComparable<MetricPrefix>
 {
     /// <summary>Denotes that the value should be scaled by one septillion [10^24 = (1 000)^8]. Usually written as [Y].</summary>
@@ -57,7 +58,7 @@ public readonly record struct MetricPrefix :
     /// <param name="exponent">The exponent of { 1 000 ^ <paramref name="exponent"/> }.</param>
     public static MetricPrefix ThousandToThePower(Scalar exponent) => new(Math.Pow(1000, exponent));
 
-    /// <summary>The scale-factor of <see langword="this"/>.</summary>
+    /// <inheritdoc/>
     public Scalar Factor { get; }
 
     /// <summary>Constructs a <see cref="MetricPrefix"/> representing { <paramref name="factor"/> }.</summary>

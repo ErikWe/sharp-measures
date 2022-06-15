@@ -11,39 +11,31 @@ internal static class Execution
 {
     public static void Execute(SourceProductionContext context, DataModel data)
     {
-        string source = Composer.Compose(context, data);
+        string source = Composer.Compose(data);
 
         context.AddSource($"{data.Vector.Name}_{data.Dimension}_Maths.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer
     {
-        public static string Compose(SourceProductionContext context, DataModel data)
+        public static string Compose(DataModel data)
         {
-            Composer composer = new(context, data);
+            Composer composer = new(data);
             composer.Compose();
             return composer.Retrieve();
         }
 
-        private SourceProductionContext Context { get; }
         private StringBuilder Builder { get; } = new();
 
         private DataModel Data { get; }
         private UsingsCollector UsingsCollector { get; }
 
-        private string UnitParameterName { get; }
-        private SpecificTexts Texts { get; }
-
-        private Composer(SourceProductionContext context, DataModel data)
+        private Composer(DataModel data)
         {
-            Context = context;
             Data = data;
 
             UsingsCollector = UsingsCollector.Delayed(Builder, Data.Vector.Namespace);
             UsingsCollector.AddUsings("SharpMeasures", "SharpMeasures.Maths", Data.Unit.Namespace);
-
-            UnitParameterName = SourceBuildingUtility.ToParameterName(Data.Unit.Name);
-            Texts = new(data.Dimension, data.Scalar, data.UnitQuantity, UnitParameterName);
 
             if (Data.Scalar is not null)
             {
@@ -65,7 +57,6 @@ internal static class Execution
 
             UsingsCollector.MarkInsertionPoint();
 
-            AppendDocumentation(new Indentation(0), VectorDocumentationTags.VectorHeader);
             Builder.AppendLine(Data.Vector.ComposeDeclaration());
 
             InterfaceBuilding.AppendInterfaceImplementation(Builder, new string[]
@@ -85,41 +76,32 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
-            AppendDocumentation(indentation, VectorDocumentationTags.Plus);
+            AppendDocumentation(indentation, Data.Documentation.UnaryPlusMethod());
             Builder.AppendLine($"{indentation}public {Data.Vector.Name} Plus() => this;");
-            AppendDocumentation(indentation, VectorDocumentationTags.Negate);
+            AppendDocumentation(indentation, Data.Documentation.NegateMethod());
             Builder.AppendLine($"{indentation}public {Data.Vector.Name} Negate() => this;");
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, VectorDocumentationTags.Multiply_Scalar);
+            AppendDocumentation(indentation, Data.Documentation.MultiplyScalarMethod());
             Builder.AppendLine($"{indentation}public {Data.Vector.Name} Multiply(Scalar factor) => this * factor;");
-            AppendDocumentation(indentation, VectorDocumentationTags.Divide_Scalar);
+            AppendDocumentation(indentation, Data.Documentation.DivideScalarMethod());
             Builder.AppendLine($"{indentation}public {Data.Vector.Name} Divide(Scalar divisor) => this / divisor;");
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, VectorDocumentationTags.Operators.Plus);
+            AppendDocumentation(indentation, Data.Documentation.UnaryPlusOperator());
             Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator +({Data.Vector.Name} a) => a;");
-            AppendDocumentation(indentation, VectorDocumentationTags.Operators.Negate);
+            AppendDocumentation(indentation, Data.Documentation.NegateOperator());
             Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator -({Data.Vector.Name} a) => ({ConstantVectorTexts.Upper.NegateA(Data.Dimension)});");
-            AppendDocumentation(indentation, VectorDocumentationTags.Operators.Multiply_Scalar_LHS);
+            AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorLHS());
             Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator *({Data.Vector.Name} a, Scalar b) => ({ConstantVectorTexts.Upper.MultiplyAScalar(Data.Dimension)});");
-            AppendDocumentation(indentation, VectorDocumentationTags.Operators.Multiply_Scalar_RHS);
+            AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorRHS());
             Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator *(Scalar a, {Data.Vector.Name} b) => ({ConstantVectorTexts.Upper.MultiplyBScalar(Data.Dimension)});");
-            AppendDocumentation(indentation, VectorDocumentationTags.Operators.Divide_Scalar);
+            AppendDocumentation(indentation, Data.Documentation.DivideScalarOperatorRHS());
             Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator /({Data.Vector.Name} a, Scalar b) => ({ConstantVectorTexts.Upper.DivideAScalar(Data.Dimension)});");
 
             Builder.AppendLine();
-
-            if (Data.Scalar is not null)
-            {
-                AppendDocumentation(indentation, VectorDocumentationTags.Operators.Cast_ComponentTuple);
-                Builder.AppendLine("[SuppressMessage(\"Usage\", \"CA2225\", Justification = \"Behaviour can be achieved through a constructor\")]");
-                Builder.AppendLine($"public static implicit operator {Data.Vector.Name}(({Texts.Upper.Component}) components) => new({ConstantVectorTexts.Upper.ComponentsAccess(Data.Dimension)});");
-
-                Builder.AppendLine();
-            }
 
             ComposeMathUtility(indentation);
         }
@@ -154,87 +136,14 @@ internal static class Execution
 
             Builder.AppendLine();
 
+            Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in <see cref=\"{Data.Vector.Name}\"/>.</summary>");
             Builder.AppendLine($"{indentation}private static IVector{Data.Dimension}ResultingMaths<{Data.Vector.Name}> VectorMaths {{ get; }} " +
                 $"= MathFactory.Vector{Data.Dimension}Result<{Data.Vector.Name}>();");
         }
 
-        private void AppendDocumentation(Indentation indentation, string tag)
+        private void AppendDocumentation(Indentation indentation, string text)
         {
-            DocumentationBuilding.AppendDocumentation(Context, Builder, Data.Documentation, indentation, tag);
-        }
-    }
-
-    private class SpecificTexts
-    {
-        public UpperTexts Upper { get; }
-        public LowerTexts Lower { get; }
-
-        public string DeconstructHeader => DeconstructHeaderBuilder.GetText(Dimension);
-
-        private int Dimension { get; }
-
-        private VectorTextBuilder DeconstructHeaderBuilder { get; }
-
-        public SpecificTexts(int dimension, NamedType? scalar, NamedType unitQuantity, string unitParameterName)
-        {
-            Dimension = dimension;
-
-            Upper = new(dimension, scalar);
-            Lower = new(dimension, scalar, unitQuantity, unitParameterName);
-
-            DeconstructHeaderBuilder = scalar is null
-                ? ConstantVectorTexts.Builders.DeconstructScalarHeader
-                : CommonTextBuilders.DeconstructComponents(scalar.Value.Name);
-        }
-
-        public class UpperTexts
-        {
-            public string ComponentName(int index) => VectorTextBuilder.GetUpperCasedComponentName(index, Dimension);
-
-            public string Component => ComponentBuilder.GetText(Dimension);
-
-            public int Dimension { get; }
-
-            private VectorTextBuilder ComponentBuilder { get; }
-
-            public UpperTexts(int dimension, NamedType? scalar)
-            {
-                Dimension = dimension;
-
-                ComponentBuilder = scalar is null
-                    ? ConstantVectorTexts.Builders.Upper.Scalar
-                    : CommonTextBuilders.Upper.Component(scalar.Value.Name);
-            }
-        }
-
-        public class LowerTexts
-        {
-            public string ComponentName(int index) => VectorTextBuilder.GetLowerCasedComponentName(index, Dimension);
-
-            public string Component => ComponentBuilder.GetText(Dimension);
-            public string NewComponent => NewComponentBuilder.GetText(Dimension);
-            public string ScalarMultiplyUnit => ScalarMultiplyUnitBuilder.GetText(Dimension);
-
-            private int Dimension { get; }
-
-            private VectorTextBuilder ComponentBuilder { get; }
-            private VectorTextBuilder NewComponentBuilder { get; }
-            private VectorTextBuilder ScalarMultiplyUnitBuilder { get; }
-
-            public LowerTexts(int dimension, NamedType? scalar, NamedType unitQuantity, string unitParameterName)
-            {
-                Dimension = dimension;
-
-                ComponentBuilder = scalar is null
-                    ? ConstantVectorTexts.Builders.Lower.Scalar
-                    : CommonTextBuilders.Lower.Component(scalar.Value.Name);
-
-                NewComponentBuilder = scalar is null
-                    ? ConstantVectorTexts.Builders.Lower.NewScalar
-                    : CommonTextBuilders.Lower.NewComponent(scalar.Value.Name);
-
-                ScalarMultiplyUnitBuilder = CommonTextBuilders.Lower.ScalarMultiplyUnit(unitParameterName, unitQuantity.Name);
-            }
+            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
         }
     }
 }

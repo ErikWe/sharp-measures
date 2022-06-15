@@ -43,5 +43,4 @@ Measures1422 | Usage | Warning | Duplicate vector dimension
 Measures1440 | Usage | Warning | Invalid dimension of vector constant
 Measures1460 | Usage | Info | Vector group already specified
 Measures1900 | Documentation | Info | Unresolved documentation dependency
-Measures1901 | Documentation | Info | No matching documentation file
-Measures1902 | Documentation | Info | Documentation tag not found
+Measures1901 | Documentation | Info | Documentation tag not found

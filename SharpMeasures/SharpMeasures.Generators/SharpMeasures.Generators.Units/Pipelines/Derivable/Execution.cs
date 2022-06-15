@@ -19,30 +19,29 @@ internal static class Execution
             return;
         }
 
-        string source = Composer.ComposeAndReportDiagnostics(context, data);
+        string source = Composer.ComposeAndReportDiagnostics(data);
 
         context.AddSource($"{data.Unit.Name}_Derivable.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer
     {
-        public static string ComposeAndReportDiagnostics(SourceProductionContext context, DataModel data)
+        public static string ComposeAndReportDiagnostics(DataModel data)
         {
-            Composer composer = new(context, data);
+            Composer composer = new(data);
             composer.Compose();
             return composer.Retrieve();
         }
 
-        private SourceProductionContext Context { get; }
         private StringBuilder Builder { get; } = new();
         private UsingsCollector UsingsCollector { get; }
 
         private DataModel Data { get; }
 
-        private Composer(SourceProductionContext context, DataModel data)
+        private Composer(DataModel data)
         {
-            Context = context;
             Data = data;
+
             UsingsCollector = UsingsCollector.Delayed(Builder, data.Unit.Namespace);
         }
 
@@ -79,9 +78,7 @@ internal static class Execution
         {
             IEnumerable<string> signatureComponents = GetSignatureComponents(definition);
 
-            string documentationTag = GetDocumentationTagForSignature(signatureComponents);
-
-            AppendDocumentation(indentation, UnitDocumentationTags.Derivable.WithSignature(documentationTag));
+            AppendDocumentation(indentation, Data.Documentation.Derivation(definition.Signature));
             Builder.Append($"{indentation}public static {Data.Unit.Name} From(");
             IterativeBuilding.AppendEnumerable(Builder, signatureComponents, ", ");
             Builder.AppendLine($") => new({definition.Expression});");
@@ -99,18 +96,9 @@ internal static class Execution
             }
         }
 
-        private void AppendDocumentation(Indentation indentation, string tag)
+        private void AppendDocumentation(Indentation indentation, string text)
         {
-            DocumentationBuilding.AppendDocumentation(Context, Builder, Data.Documentation, indentation, tag);
-        }
-
-        private static string GetDocumentationTagForSignature(IEnumerable<string> signature)
-        {
-            StringBuilder tag = new();
-
-            IterativeBuilding.AppendEnumerable(tag, signature, "_");
-
-            return tag.ToString();
+            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
         }
     }
 }

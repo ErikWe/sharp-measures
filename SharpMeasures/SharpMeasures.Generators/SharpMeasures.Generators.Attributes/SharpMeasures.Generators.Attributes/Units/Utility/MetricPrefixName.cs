@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Units;
+﻿namespace SharpMeasures.Generators.Units.Utility;
 
 /// <summary>Represents the names of available metric prefixes.</summary>
 public enum MetricPrefixName

@@ -8,7 +8,7 @@
     <PropertyGroup>
         <Title>SharpMeasures.Generators</Title>
         <Description>
-            Provides source generators related to SharpMeasures.
+            Provides source generators related to the creation of units and quantities within SharpMeasures.
         </Description>
     </PropertyGroup>
 
