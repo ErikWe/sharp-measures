@@ -2,18 +2,18 @@
 
 using SharpMeasures.Generators.Units.Documentation;
 using SharpMeasures.Generators.Units.Parsing;
-using SharpMeasures.Generators.Units.Refinement.GeneratedUnit;
+using SharpMeasures.Generators.Units.Refinement.SharpMeasuresUnit;
 
 internal record class DataModel
 {
-    public RefinedGeneratedUnitDefinition UnitDefinition { get; }
+    public RefinedSharpMeasuresUnitDefinition UnitDefinition { get; }
     public ParsedUnit UnitData { get; }
 
     public UnitPopulation UnitPopulation { get; }
 
     public IDocumentationStrategy Documentation { get; init; } = EmptyDocumentation.Instance;
 
-    public DataModel(RefinedGeneratedUnitDefinition unitDefinition, ParsedUnit unitData, UnitPopulation unitPopulation)
+    public DataModel(RefinedSharpMeasuresUnitDefinition unitDefinition, ParsedUnit unitData, UnitPopulation unitPopulation)
     {
         UnitDefinition = unitDefinition;
         UnitData = unitData;

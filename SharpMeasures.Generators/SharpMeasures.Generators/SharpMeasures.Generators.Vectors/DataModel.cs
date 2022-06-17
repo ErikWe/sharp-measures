@@ -8,22 +8,22 @@ using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Vectors.Documentation;
 using SharpMeasures.Generators.Vectors.Parsing;
-using SharpMeasures.Generators.Vectors.Refinement.GeneratedVector;
+using SharpMeasures.Generators.Vectors.Refinement.SharpMeasuresVector;
 using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;
 
 internal record class DataModel : IDataModel<DataModel>
 {
-    public RefinedGeneratedVectorDefinition VectorDefinition { get; }
-    public ParsedGeneratedVector VectorData { get; }
+    public RefinedSharpMeasuresVectorDefinition VectorDefinition { get; }
+    public ParsedVector VectorData { get; }
 
     public VectorPopulation VectorPopulation { get; }
     public VectorPopulationData VectorPopulationData { get; }
 
     public IDocumentationStrategy Documentation { get; init; } = EmptyDocumentation.Instance;
 
-    public DataModel(RefinedGeneratedVectorDefinition vectorDefinition, ParsedGeneratedVector vectorData, VectorPopulation vectorPopulation,
+    public DataModel(RefinedSharpMeasuresVectorDefinition vectorDefinition, ParsedVector vectorData, VectorPopulation vectorPopulation,
         VectorPopulationData vectorPopulationData)
     {
         VectorDefinition = vectorDefinition;

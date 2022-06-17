@@ -13,7 +13,7 @@ using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Vectors.Diagnostics;
-using SharpMeasures.Generators.Vectors.Parsing.GeneratedVector;
+using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System;
@@ -179,7 +179,7 @@ internal abstract class AVectorParsingStage<TAttribute, TRawDefinition, TDefinit
 
     private static class Processers
     {
-        public static GeneratedVectorProcesser GeneratedVectorProcesser { get; } = new(GeneratedVectorDiagnostics.Instance);
+        public static SharpMeasuresVectorProcesser SharpMeasuresVectorProcesser { get; } = new(SharpMeasuresVectorDiagnostics.Instance);
 
         public static IncludeUnitsProcesser IncludeUnitsProcesser { get; } = new(UnitListProcessingDiagnostics<RawIncludeUnitsDefinition>.Instance);
         public static ExcludeUnitsProcesser ExcludeUnitsProcesser { get; } = new(UnitListProcessingDiagnostics<RawExcludeUnitsDefinition>.Instance);

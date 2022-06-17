@@ -12,7 +12,7 @@ using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 using SharpMeasures.Generators.Units.Parsing.DerivedUnit;
 using SharpMeasures.Generators.Units.Parsing.FixedUnit;
-using SharpMeasures.Generators.Units.Parsing.GeneratedUnit;
+using SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
 using SharpMeasures.Generators.Units.Parsing.OffsetUnit;
 using SharpMeasures.Generators.Units.Parsing.PrefixedUnit;
 using SharpMeasures.Generators.Units.Parsing.ScaledUnit;
@@ -39,13 +39,13 @@ public static class UnitParsingStage
 
     private static IOptionalWithDiagnostics<RawParsedUnit> ExtractUnitInformation(IntermediateResult input, CancellationToken _)
     {
-        if (GeneratedUnitParser.Instance.ParseFirstOccurrence(input.TypeSymbol) is not RawGeneratedUnitDefinition generatedUnit)
+        if (SharpMeasuresUnitParser.Instance.ParseFirstOccurrence(input.TypeSymbol) is not RawSharpMeasuresUnitDefinition unit)
         {
             return OptionalWithDiagnostics.EmptyWithoutDiagnostics<RawParsedUnit>();
         }
 
         ProcessingContext context = new(input.TypeSymbol.AsDefinedType());
-        var processedUnit = Processers.GeneratedUnitProcesser.Process(context, generatedUnit);
+        var processedUnit = Processers.SharpMeasuresUnitProcesser.Process(context, unit);
 
         if (processedUnit.LacksResult)
         {
@@ -115,7 +115,7 @@ public static class UnitParsingStage
         return new(units.ToDictionary(static (unit) => unit.UnitType.AsNamedType()));
     }
 
-    private readonly record struct ProcessingContext : IDependantUnitProcessingContext, IDerivableUnitProcessingContext, IDerivedUnitProcessingContext
+    private readonly record struct ProcessingContext : IProcessingContext, IDependantUnitProcessingContext, IDerivableUnitProcessingContext, IDerivedUnitProcessingContext
     {
         public DefinedType Type { get; }
 
@@ -135,7 +135,7 @@ public static class UnitParsingStage
 
     private static class Processers
     {
-        public static GeneratedUnitProcesser GeneratedUnitProcesser { get; } = new(GeneratedUnitDiagnostics.Instance);
+        public static SharpMeasuresUnitProcesser SharpMeasuresUnitProcesser { get; } = new(SharpMeasuresUnitDiagnostics.Instance);
 
         public static DerivableUnitProcesser DerivableUnitProcesser { get; } = new(DerivableUnitDiagnostics.Instance);
 

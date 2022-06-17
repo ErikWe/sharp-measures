@@ -23,16 +23,16 @@ using SharpMeasures.Generators.Vectors.Refinement.VectorConstant;
 
 internal static class UnitsGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Vectors.DataModel> generatedVectorProvider,
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Vectors.DataModel> vectorProvider,
         IncrementalValuesProvider<ResizedDataModel> resizedVectorProvider, IncrementalValueProvider<UnitInclusionPopulation> unitInclusionProvider)
     {
-        var reducedGeneratedVectors = generatedVectorProvider.Select(ReduceToDataModel).ReportDiagnostics(context);
+        var reducedVectors = vectorProvider.Select(ReduceToDataModel).ReportDiagnostics(context);
 
-        var rootModels = reducedGeneratedVectors.Collect().Select(ExposeRootDataModels);
+        var rootModels = reducedVectors.Collect().Select(ExposeRootDataModels);
 
         var reducedResizedVectors = resizedVectorProvider.Combine(rootModels, unitInclusionProvider).Select(ReduceThroughRootDataModel).ReportDiagnostics(context);
 
-        context.RegisterSourceOutput(reducedGeneratedVectors, Execution.Execute);
+        context.RegisterSourceOutput(reducedVectors, Execution.Execute);
         context.RegisterSourceOutput(reducedResizedVectors, Execution.Execute);
     }
 

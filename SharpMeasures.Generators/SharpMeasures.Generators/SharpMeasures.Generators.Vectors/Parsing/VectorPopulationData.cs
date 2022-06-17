@@ -11,14 +11,14 @@ internal class VectorPopulationData
     public ReadOnlyEquatableDictionary<NamedType, ReadOnlyEquatableList<NamedType>> ExcessiveDimensionalEquivalences { get; }
 
     public ReadOnlyEquatableDictionary<NamedType, IVectorInterface> UnresolvedVectors { get; }
-    public ReadOnlyEquatableDictionary<NamedType, ResizedVectorInterface> ResizedVectorsWithDuplicateDimension { get; }
+    public ReadOnlyEquatableDictionary<NamedType, ResizedSharpMeasuresVectorInterface> ResizedVectorsWithDuplicateDimension { get; }
 
     public VectorPopulationData
     (
         IReadOnlyDictionary<ResizedVectorGroup, ReadOnlyEquatableDictionary<ResizedVectorGroup, ConversionOperationBehaviour>> dimensionalEquivalences,
         IReadOnlyDictionary<NamedType, ReadOnlyEquatableList<NamedType>> excessiveDimensionalEquivalences,
         IReadOnlyDictionary<NamedType, IVectorInterface> unresolvedVectors,
-        IReadOnlyDictionary<NamedType, ResizedVectorInterface> resizedVectorsWithDuplicateDimension)
+        IReadOnlyDictionary<NamedType, ResizedSharpMeasuresVectorInterface> resizedVectorsWithDuplicateDimension)
     {
         DimensionalEquivalences = dimensionalEquivalences.AsReadOnlyEquatable();
         ExcessiveDimensionalEquivalences = excessiveDimensionalEquivalences.AsReadOnlyEquatable();

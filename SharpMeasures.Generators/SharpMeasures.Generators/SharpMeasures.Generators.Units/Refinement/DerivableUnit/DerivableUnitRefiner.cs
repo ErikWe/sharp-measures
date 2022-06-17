@@ -15,7 +15,7 @@ internal interface IDerivableUnitRefinementDiagnostics
     public abstract Diagnostic? SignatureElementNotUnit(IDerivableUnitRefinementContext context, DerivableUnitDefinition definition, int index);
 }
 
-internal interface IDerivableUnitRefinementContext : Attributes.Parsing.IProcessingContext
+internal interface IDerivableUnitRefinementContext : IProcessingContext
 {
     public abstract UnitPopulation UnitPopulation { get; }
 }

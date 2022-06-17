@@ -18,7 +18,7 @@ internal interface IDerivableUnitProcessingDiagnostics
     public abstract Diagnostic? DuplicateSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
 }
 
-internal interface IDerivableUnitProcessingContext : Attributes.Parsing.IProcessingContext
+internal interface IDerivableUnitProcessingContext : IProcessingContext
 {
     public abstract HashSet<DerivableSignature> ReservedSignatures { get; }
 }

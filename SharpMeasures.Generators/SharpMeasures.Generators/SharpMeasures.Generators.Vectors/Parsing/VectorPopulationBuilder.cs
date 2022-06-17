@@ -12,29 +12,29 @@ using System.Linq;
 internal static class VectorPopulationBuilder
 {
     public static (VectorPopulation, VectorPopulationData) Build
-        ((ImmutableArray<GeneratedVectorInterface> Generated, ImmutableArray<ResizedVectorInterface> Resized) vectors, CancellationToken _)
+        ((ImmutableArray<SharpMeasuresVectorInterface> Base, ImmutableArray<ResizedSharpMeasuresVectorInterface> Resized) vectors, CancellationToken _)
     {
         Dictionary<NamedType, IVectorInterface> allVectors = new();
 
-        foreach (GeneratedVectorInterface generatedVector in vectors.Generated)
+        foreach (SharpMeasuresVectorInterface vector in vectors.Base)
         {
-            allVectors.Add(generatedVector.VectorType, generatedVector);
+            allVectors.Add(vector.VectorType, vector);
         }
 
-        foreach (ResizedVectorInterface resizedVector in vectors.Resized)
+        foreach (ResizedSharpMeasuresVectorInterface resizedVector in vectors.Resized)
         {
             allVectors.Add(resizedVector.VectorType, resizedVector);
         }
 
         Dictionary<NamedType, ResizedVectorGroup.IBuilder> groupBuilders = new();
-        Dictionary<NamedType, ResizedVectorInterface> duplicatePopulation = new();
+        Dictionary<NamedType, ResizedSharpMeasuresVectorInterface> duplicatePopulation = new();
 
-        foreach (GeneratedVectorInterface generatedVector in vectors.Generated)
+        foreach (SharpMeasuresVectorInterface vector in vectors.Base)
         {
-            groupBuilders.Add(generatedVector.VectorType, ResizedVectorGroup.StartBuilder(generatedVector));
+            groupBuilders.Add(vector.VectorType, ResizedVectorGroup.StartBuilder(vector));
         }
 
-        List<ResizedVectorInterface> ungroupedResizedVectors = new(vectors.Resized);
+        List<ResizedSharpMeasuresVectorInterface> ungroupedResizedVectors = new(vectors.Resized);
         AddResizedVectors(groupBuilders, ungroupedResizedVectors, duplicatePopulation);
 
         ReadOnlyEquatableDictionary<NamedType, ResizedVectorGroup> resizedVectorGroups
@@ -91,7 +91,7 @@ internal static class VectorPopulationBuilder
     }
 
     private static void AddResizedVectors(Dictionary<NamedType, ResizedVectorGroup.IBuilder> groupBuilders,
-        List<ResizedVectorInterface> ungroupedVectors, Dictionary<NamedType, ResizedVectorInterface> duplicateDimensionVectors)
+        List<ResizedSharpMeasuresVectorInterface> ungroupedVectors, Dictionary<NamedType, ResizedSharpMeasuresVectorInterface> duplicateDimensionVectors)
     {
         while (true)
         {
@@ -138,8 +138,8 @@ internal static class VectorPopulationBuilder
         }
     }
 
-    private static void AddResizedVectorWithDuplicateParent(ResizedVectorInterface vector, ResizedVectorInterface parent,
-        Dictionary<NamedType, ResizedVectorGroup.IBuilder> groupBuilders, Dictionary<NamedType, ResizedVectorInterface> duplicateDimensionVectors)
+    private static void AddResizedVectorWithDuplicateParent(ResizedSharpMeasuresVectorInterface vector, ResizedSharpMeasuresVectorInterface parent,
+        Dictionary<NamedType, ResizedVectorGroup.IBuilder> groupBuilders, Dictionary<NamedType, ResizedSharpMeasuresVectorInterface> duplicateDimensionVectors)
     {
         if (groupBuilders.TryGetValue(parent.AssociatedVector, out var builder) is false)
         {

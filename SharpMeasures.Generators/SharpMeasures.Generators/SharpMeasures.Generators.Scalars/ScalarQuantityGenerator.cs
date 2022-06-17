@@ -13,7 +13,7 @@ using SharpMeasures.Generators.Scalars.Pipelines.DimensionalEquivalence;
 using SharpMeasures.Generators.Scalars.Pipelines.Maths;
 using SharpMeasures.Generators.Scalars.Pipelines.Units;
 using SharpMeasures.Generators.Scalars.Pipelines.Vectors;
-using SharpMeasures.Generators.Scalars.Refinement.GeneratedScalar;
+using SharpMeasures.Generators.Scalars.Refinement.SharpMeasuresScalar;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors;
 
@@ -51,19 +51,19 @@ public class ScalarGenerator
         ((ParsedScalar Scalar, UnitPopulation UnitPopulation, ScalarPopulation ScalarPopulation,
         VectorPopulation VectorPopulation) input, CancellationToken _)
     {
-        GeneratedScalarRefinementContext context = new(input.Scalar.ScalarType, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
-        GeneratedScalarRefiner refiner = new(GeneratedScalarDiagnostics.Instance);
+        SharpMeasuresScalarRefinementContext context = new(input.Scalar.ScalarType, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        SharpMeasuresScalarRefiner refiner = new(SharpMeasuresScalarDiagnostics.Instance);
 
-        var processedGeneratedScalar = refiner.Process(context, input.Scalar.ScalarDefinition);
+        var processedSharpMeasuresScalar = refiner.Process(context, input.Scalar.ScalarDefinition);
 
-        if (processedGeneratedScalar.LacksResult)
+        if (processedSharpMeasuresScalar.LacksResult)
         {
-            return OptionalWithDiagnostics.Empty<DataModel>(processedGeneratedScalar.Diagnostics);
+            return OptionalWithDiagnostics.Empty<DataModel>(processedSharpMeasuresScalar.Diagnostics);
         }
 
-        DataModel model = new(processedGeneratedScalar.Result, input.Scalar, input.ScalarPopulation, input.VectorPopulation);
+        DataModel model = new(processedSharpMeasuresScalar.Result, input.Scalar, input.ScalarPopulation, input.VectorPopulation);
 
-        return OptionalWithDiagnostics.Result(model, processedGeneratedScalar.Diagnostics);
+        return OptionalWithDiagnostics.Result(model, processedSharpMeasuresScalar.Diagnostics);
     }
 
     private static (DataModel Model, bool GenerateDocumentation) InterpretGenerateDocumentation((DataModel Model, bool Default) data, CancellationToken _)
@@ -104,7 +104,7 @@ public class ScalarGenerator
 
     private static bool ExtractDefaultGenerateDocumentation(GlobalAnalyzerConfig config, CancellationToken _) => config.GenerateDocumentationByDefault;
 
-    private readonly record struct GeneratedScalarRefinementContext : IGeneratedScalarRefinementContext
+    private readonly record struct SharpMeasuresScalarRefinementContext : ISharpMeasuresScalarRefinementContext
     {
         public DefinedType Type { get; }
 
@@ -112,7 +112,7 @@ public class ScalarGenerator
         public ScalarPopulation ScalarPopulation { get; }
         public VectorPopulation VectorPopulation { get; }
 
-        public GeneratedScalarRefinementContext(DefinedType type, UnitPopulation unitPopulation, ScalarPopulation scalarPopulation, VectorPopulation vectorPopulation)
+        public SharpMeasuresScalarRefinementContext(DefinedType type, UnitPopulation unitPopulation, ScalarPopulation scalarPopulation, VectorPopulation vectorPopulation)
         {
             Type = type;
 

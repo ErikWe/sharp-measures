@@ -8,14 +8,13 @@ using System.Threading;
 
 internal static class CommonGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Vectors.DataModel> generatedVectorProvider,
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Vectors.DataModel> vectorProvider,
         IncrementalValuesProvider<ResizedDataModel> resizedVectorProvider)
     {
-        var reducedGeneratedVectors = generatedVectorProvider.Select(ReduceToDataModel);
-
+        var reducedVectors = vectorProvider.Select(ReduceToDataModel);
         var reducedResizedVectors = resizedVectorProvider.Select(ReduceToDataModel);
 
-        context.RegisterSourceOutput(reducedGeneratedVectors, Execution.Execute);
+        context.RegisterSourceOutput(reducedVectors, Execution.Execute);
         context.RegisterSourceOutput(reducedResizedVectors, Execution.Execute);
     }
 

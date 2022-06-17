@@ -7,21 +7,21 @@ using System.Diagnostics.CodeAnalysis;
 
 public record class ResizedVectorGroup
 {
-    public static IBuilder StartBuilder(GeneratedVectorInterface root) => new Builder(root);
+    public static IBuilder StartBuilder(SharpMeasuresVectorInterface root) => new Builder(root);
     
-    public GeneratedVectorInterface Root { get; }
+    public SharpMeasuresVectorInterface Root { get; }
 
-    public IReadOnlyDictionary<int, ResizedVectorInterface> VectorsByDimension => VectorsByDimensionBuilder;
-    private EquatableDictionary<int, ResizedVectorInterface> VectorsByDimensionBuilder { get; } = EquatableDictionary<int, ResizedVectorInterface>.Empty;
+    public IReadOnlyDictionary<int, ResizedSharpMeasuresVectorInterface> VectorsByDimension => VectorsByDimensionBuilder;
+    private EquatableDictionary<int, ResizedSharpMeasuresVectorInterface> VectorsByDimensionBuilder { get; } = EquatableDictionary<int, ResizedSharpMeasuresVectorInterface>.Empty;
 
     private bool Built { get; set; }
     private int? CachedHashCode { get; set; }
 
-    private ResizedVectorGroup(GeneratedVectorInterface root)
+    private ResizedVectorGroup(SharpMeasuresVectorInterface root)
     {
         Root = root;
 
-        VectorsByDimensionBuilder.Add(root.Dimension, new ResizedVectorInterface(root.VectorType, root.VectorType, root.Dimension, root.IncludedUnits,
+        VectorsByDimensionBuilder.Add(root.Dimension, new ResizedSharpMeasuresVectorInterface(root.VectorType, root.VectorType, root.Dimension, root.IncludedUnits,
             root.ExcludedUnits, root.DimensionalEquivalences));
     }
 
@@ -55,7 +55,7 @@ public record class ResizedVectorGroup
     [SuppressMessage("Design", "CA1034", Justification = "Builder")]
     public interface IBuilder
     {
-        public abstract void AddResizedVector(ResizedVectorInterface vector);
+        public abstract void AddResizedVector(ResizedSharpMeasuresVectorInterface vector);
         public abstract bool HasVectorOfDimension(int dimension);
 
         public abstract ResizedVectorGroup Build();
@@ -65,12 +65,12 @@ public record class ResizedVectorGroup
     {
         private ResizedVectorGroup Target { get; }
 
-        public Builder(GeneratedVectorInterface root)
+        public Builder(SharpMeasuresVectorInterface root)
         {
             Target = new(root);
         }
 
-        public void AddResizedVector(ResizedVectorInterface vector)
+        public void AddResizedVector(ResizedSharpMeasuresVectorInterface vector)
         {
             Target.VectorsByDimensionBuilder.Add(vector.Dimension, vector);
         }

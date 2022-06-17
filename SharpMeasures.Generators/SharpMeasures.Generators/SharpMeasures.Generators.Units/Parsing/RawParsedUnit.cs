@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 using SharpMeasures.Generators.Units.Parsing.DerivedUnit;
 using SharpMeasures.Generators.Units.Parsing.FixedUnit;
-using SharpMeasures.Generators.Units.Parsing.GeneratedUnit;
+using SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
 using SharpMeasures.Generators.Units.Parsing.OffsetUnit;
 using SharpMeasures.Generators.Units.Parsing.PrefixedUnit;
 using SharpMeasures.Generators.Units.Parsing.ScaledUnit;
@@ -18,7 +18,7 @@ internal record class RawParsedUnit
 {
     public DefinedType UnitType { get; }
     public MinimalLocation UnitLocation { get; }
-    public GeneratedUnitDefinition UnitDefinition { get; }
+    public SharpMeasuresUnitDefinition UnitDefinition { get; }
 
     public EquatableEnumerable<RawDerivableUnitDefinition> UnitDerivations { get; }
 
@@ -29,7 +29,7 @@ internal record class RawParsedUnit
     public EquatableEnumerable<RawPrefixedUnitDefinition> PrefixedUnits { get; }
     public EquatableEnumerable<RawScaledUnitDefinition> ScaledUnits { get; }
 
-    public RawParsedUnit(DefinedType unitType, MinimalLocation unitLocation, GeneratedUnitDefinition unitDefinition,
+    public RawParsedUnit(DefinedType unitType, MinimalLocation unitLocation, SharpMeasuresUnitDefinition unitDefinition,
         IEnumerable<RawDerivableUnitDefinition> derivableUnitDefinitions, IEnumerable<RawUnitAliasDefinition> unitAliasDefinitions,
         IEnumerable<RawDerivedUnitDefinition> derivedUnitDefinitions, IEnumerable<RawFixedUnitDefinition> fixedUnitDefinitions,
         IEnumerable<RawOffsetUnitDefinition> offsetUnitDefinitions, IEnumerable<RawPrefixedUnitDefinition> prefixedUnitDefinitions,

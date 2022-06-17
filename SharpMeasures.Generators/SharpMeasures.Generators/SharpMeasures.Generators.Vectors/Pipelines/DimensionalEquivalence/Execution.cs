@@ -83,7 +83,7 @@ internal static class Execution
                     continue;
                 }
 
-                Action<ResizedVectorInterface, Indentation> composer = dimensionallyEquivalentVectorGroup.Value switch
+                Action<ResizedSharpMeasuresVectorInterface, Indentation> composer = dimensionallyEquivalentVectorGroup.Value switch
                 {
                     ConversionOperationBehaviour.Explicit => ComposeExplicitOperatorConversion,
                     ConversionOperationBehaviour.Implicit => ComposeImplicitOperatorConversion,
@@ -97,7 +97,7 @@ internal static class Execution
             }
         }
 
-        private void ComposeInstanceConversion(ResizedVectorInterface vector, Indentation indentation)
+        private void ComposeInstanceConversion(ResizedSharpMeasuresVectorInterface vector, Indentation indentation)
         {
             UsingsCollector.AddUsing(vector.VectorType.Namespace);
 
@@ -105,13 +105,13 @@ internal static class Execution
             Builder.AppendLine($"{indentation}public {vector.VectorType.Name} As{vector.VectorType.Name} => new(Components);");
         }
 
-        private void ComposeExplicitOperatorConversion(ResizedVectorInterface vector, Indentation indentation)
+        private void ComposeExplicitOperatorConversion(ResizedSharpMeasuresVectorInterface vector, Indentation indentation)
             => ComposeOperatorConversion(vector, indentation, "explicit");
 
-        private void ComposeImplicitOperatorConversion(ResizedVectorInterface vector, Indentation indentation)
+        private void ComposeImplicitOperatorConversion(ResizedSharpMeasuresVectorInterface vector, Indentation indentation)
             => ComposeOperatorConversion(vector, indentation, "implicit");
 
-        private void ComposeOperatorConversion(ResizedVectorInterface vector, Indentation indentation, string behaviour)
+        private void ComposeOperatorConversion(ResizedSharpMeasuresVectorInterface vector, Indentation indentation, string behaviour)
         {
             AppendDocumentation(indentation, Data.Documentation.CastToDimensionallyEquivalent(vector));
             

@@ -10,42 +10,42 @@ using System.Linq;
 
 public static class UnitInclusionPopulationBuilder
 {
-    public static UnitInclusionPopulation Build((ImmutableArray<GeneratedVectorInterface> Generated, ImmutableArray<ResizedVectorInterface> Resized) vectors,
+    public static UnitInclusionPopulation Build((ImmutableArray<SharpMeasuresVectorInterface> Base, ImmutableArray<ResizedSharpMeasuresVectorInterface> Resized) vectors,
         CancellationToken _)
     {
-        Dictionary<NamedType, UnitInclusion> unitInclusionPopulation = new(vectors.Generated.Length + vectors.Resized.Length);
+        Dictionary<NamedType, UnitInclusion> unitInclusionPopulation = new(vectors.Base.Length + vectors.Resized.Length);
 
-        AddGeneratedVectors(unitInclusionPopulation, vectors.Generated);
-        AddResizedVectors(unitInclusionPopulation, vectors.Resized);
+        AddSharpMeasuresVectors(unitInclusionPopulation, vectors.Base);
+        AddResizedSharpMeasuresVectors(unitInclusionPopulation, vectors.Resized);
 
         return new(unitInclusionPopulation);
     }
 
-    private static void AddGeneratedVectors(Dictionary<NamedType, UnitInclusion> population, ImmutableArray<GeneratedVectorInterface> generatedVectors)
+    private static void AddSharpMeasuresVectors(Dictionary<NamedType, UnitInclusion> population, ImmutableArray<SharpMeasuresVectorInterface> vectors)
     {
-        foreach (GeneratedVectorInterface generatedVector in generatedVectors)
+        foreach (SharpMeasuresVectorInterface vector in vectors)
         {
             HashSet<string> listedUnits = new();
 
-            if (generatedVector.IncludedUnits.Any())
+            if (vector.IncludedUnits.Any())
             {
-                AddListedUnits(listedUnits, generatedVector.IncludedUnits);
+                AddListedUnits(listedUnits, vector.IncludedUnits);
             }
             else
             {
-                AddListedUnits(listedUnits, generatedVector.ExcludedUnits);
+                AddListedUnits(listedUnits, vector.ExcludedUnits);
             }
 
-            UnitInclusion.InclusionMode mode = generatedVector.IncludedUnits.Any() ? UnitInclusion.InclusionMode.Include : UnitInclusion.InclusionMode.Exclude;
+            UnitInclusion.InclusionMode mode = vector.IncludedUnits.Any() ? UnitInclusion.InclusionMode.Include : UnitInclusion.InclusionMode.Exclude;
             UnitInclusion unitInclusion = new(mode, listedUnits);
 
-            population.Add(generatedVector.VectorType, unitInclusion);
+            population.Add(vector.VectorType, unitInclusion);
         }
     }
 
-    private static void AddResizedVectors(Dictionary<NamedType, UnitInclusion> population, ImmutableArray<ResizedVectorInterface> resizedVectors)
+    private static void AddResizedSharpMeasuresVectors(Dictionary<NamedType, UnitInclusion> population, ImmutableArray<ResizedSharpMeasuresVectorInterface> vectors)
     {
-        List<ResizedVectorInterface> unpairedVectors = new(resizedVectors);
+        List<ResizedSharpMeasuresVectorInterface> unpairedVectors = new(vectors);
 
         while (true)
         {

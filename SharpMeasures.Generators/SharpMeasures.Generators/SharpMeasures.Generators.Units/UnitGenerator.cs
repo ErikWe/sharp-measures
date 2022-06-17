@@ -12,7 +12,7 @@ using SharpMeasures.Generators.Units.Parsing;
 using SharpMeasures.Generators.Units.Pipelines.Common;
 using SharpMeasures.Generators.Units.Pipelines.Derivable;
 using SharpMeasures.Generators.Units.Pipelines.UnitDefinitions;
-using SharpMeasures.Generators.Units.Refinement.GeneratedUnit;
+using SharpMeasures.Generators.Units.Refinement.SharpMeasuresUnit;
 
 using System.Threading;
 
@@ -44,19 +44,19 @@ public class UnitGenerator
     private static IOptionalWithDiagnostics<DataModel> ReduceToDataModel
         ((ParsedUnit Unit, UnitPopulation UnitPopulation, ScalarPopulation ScalarPopulation) input, CancellationToken _)
     {
-        GeneratedUnitRefinementContext context = new(input.Unit.UnitType, input.ScalarPopulation);
-        GeneratedUnitRefiner refiner = new(GeneratedUnitDiagnostics.Instance);
+        SharpMeasuresUnitRefinementContext context = new(input.Unit.UnitType, input.ScalarPopulation);
+        SharpMeasuresUnitRefiner refiner = new(SharpMeasuresUnitDiagnostics.Instance);
 
-        var processedGeneratedUnit = refiner.Process(context, input.Unit.UnitDefinition);
+        var processedSharpMeasuresUnit = refiner.Process(context, input.Unit.UnitDefinition);
 
-        if (processedGeneratedUnit.LacksResult)
+        if (processedSharpMeasuresUnit.LacksResult)
         {
-            return OptionalWithDiagnostics.Empty<DataModel>(processedGeneratedUnit.Diagnostics);
+            return OptionalWithDiagnostics.Empty<DataModel>(processedSharpMeasuresUnit.Diagnostics);
         }
 
-        DataModel model = new(processedGeneratedUnit.Result, input.Unit, input.UnitPopulation);
+        DataModel model = new(processedSharpMeasuresUnit.Result, input.Unit, input.UnitPopulation);
 
-        return OptionalWithDiagnostics.Result(model, processedGeneratedUnit.Diagnostics);
+        return OptionalWithDiagnostics.Result(model, processedSharpMeasuresUnit.Diagnostics);
     }
 
     private static (DataModel Model, bool GenerateDocumentation) InterpretGenerateDocumentation((DataModel Model, bool Default) data, CancellationToken _)
@@ -97,13 +97,13 @@ public class UnitGenerator
 
     private static bool ExtractDefaultGenerateDocumentation(GlobalAnalyzerConfig config, CancellationToken _) => config.GenerateDocumentationByDefault;
 
-    private readonly record struct GeneratedUnitRefinementContext : IGeneratedUnitRefinementContext
+    private readonly record struct SharpMeasuresUnitRefinementContext : ISharpMeasuresUnitRefinementContext
     {
         public DefinedType Type { get; }
 
         public ScalarPopulation ScalarPopulation { get; }
 
-        public GeneratedUnitRefinementContext(DefinedType type, ScalarPopulation scalarPopulation)
+        public SharpMeasuresUnitRefinementContext(DefinedType type, ScalarPopulation scalarPopulation)
         {
             Type = type;
             ScalarPopulation = scalarPopulation;

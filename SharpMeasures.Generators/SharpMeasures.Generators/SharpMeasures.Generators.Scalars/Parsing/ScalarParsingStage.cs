@@ -12,7 +12,7 @@ using SharpMeasures.Generators.Quantities.Diagnostics;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Scalars.Diagnostics;
 using SharpMeasures.Generators.Scalars.Parsing.ExcludeBases;
-using SharpMeasures.Generators.Scalars.Parsing.GeneratedScalar;
+using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 using SharpMeasures.Generators.Scalars.Parsing.IncludeBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
@@ -41,13 +41,13 @@ public static class ScalarParsingStage
 
     private static IOptionalWithDiagnostics<RawParsedScalar> ExtractScalarInformation(IntermediateResult input, CancellationToken _)
     {
-        if (GeneratedUnitParser.Parser.ParseFirstOccurrence(input.TypeSymbol) is not RawGeneratedScalarDefinition generatedScalar)
+        if (SharpMeasuresScalarParser.Parser.ParseFirstOccurrence(input.TypeSymbol) is not RawSharpMeasuresScalarDefinition scalar)
         {
             return OptionalWithDiagnostics.EmptyWithoutDiagnostics<RawParsedScalar>();
         }
 
         ProcessingContext context = new(input.TypeSymbol.AsDefinedType());
-        var processedScalar = Processers.GeneratedScalarProcesser.Process(context, generatedScalar);
+        var processedScalar = Processers.SharpMeasuresScalarProcesser.Process(context, scalar);
 
         if (processedScalar.LacksResult)
         {
@@ -217,7 +217,7 @@ public static class ScalarParsingStage
 
     private static class Processers
     {
-        public static GeneratedScalarProcesser GeneratedScalarProcesser { get; } = new(GeneratedScalarDiagnostics.Instance);
+        public static SharpMeasuresScalarProcesser SharpMeasuresScalarProcesser { get; } = new(SharpMeasuresScalarDiagnostics.Instance);
 
         public static IncludeBasesProcesser IncludeBasesProcesser { get; } = new(UnitListProcessingDiagnostics<RawIncludeBasesDefinition>.Instance);
         public static ExcludeBasesProcesser ExcludeBasesProcesser { get; } = new(UnitListProcessingDiagnostics<RawExcludeBasesDefinition>.Instance);

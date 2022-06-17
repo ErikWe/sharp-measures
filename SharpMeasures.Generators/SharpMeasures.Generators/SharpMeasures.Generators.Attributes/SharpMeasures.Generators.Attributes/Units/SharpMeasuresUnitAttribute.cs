@@ -3,7 +3,7 @@
 using System;
 
 /// <summary>Marks the type as a unit, and allows a source generator to implement relevant functionality.</summary>
-/// <remarks>Accompanying attributes, such as <see cref="Units.DerivableUnitAttribute"/> and <see cref="Units.FixedUnitAttribute"/>, may be used to extend
+/// <remarks>Accompanying attributes, such as <see cref="DerivableUnitAttribute"/> and <see cref="FixedUnitAttribute"/>, may be used to extend
 /// the source generation.</remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 public sealed class SharpMeasuresUnitAttribute : Attribute

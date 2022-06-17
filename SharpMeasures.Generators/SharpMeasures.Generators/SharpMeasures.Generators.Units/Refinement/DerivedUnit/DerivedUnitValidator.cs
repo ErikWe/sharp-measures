@@ -13,7 +13,7 @@ internal interface IDerivedUnitValidatorDiagnostics
     public abstract Diagnostic? UnrecognizedUnit(IDerivedUnitValidatorContext context, DerivedUnitDefinition definition, int index);
 }
 
-internal interface IDerivedUnitValidatorContext : Attributes.Parsing.IValidationContext
+internal interface IDerivedUnitValidatorContext : IValidationContext
 {
     public abstract UnitPopulation UnitPopulation { get; }
 }

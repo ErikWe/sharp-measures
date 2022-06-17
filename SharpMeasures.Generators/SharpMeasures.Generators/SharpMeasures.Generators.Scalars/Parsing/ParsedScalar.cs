@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars.Parsing.ExcludeBases;
-using SharpMeasures.Generators.Scalars.Parsing.GeneratedScalar;
+using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 using SharpMeasures.Generators.Scalars.Parsing.IncludeBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 
@@ -15,7 +15,7 @@ internal record class ParsedScalar
 {
     public DefinedType ScalarType { get; }
     public MinimalLocation ScalarLocation { get; }
-    public GeneratedScalarDefinition ScalarDefinition { get; }
+    public SharpMeasuresScalarDefinition ScalarDefinition { get; }
 
     public EquatableEnumerable<IncludeBasesDefinition> IncludeBases { get; }
     public EquatableEnumerable<ExcludeBasesDefinition> ExcludeBases { get; }
@@ -26,7 +26,7 @@ internal record class ParsedScalar
     public EquatableEnumerable<ScalarConstantDefinition> ScalarConstants { get; }
     public EquatableEnumerable<DimensionalEquivalenceDefinition> DimensionalEquivalences { get; }
 
-    public ParsedScalar(DefinedType scalarType, MinimalLocation scalarLocation, GeneratedScalarDefinition scalarDefinition,
+    public ParsedScalar(DefinedType scalarType, MinimalLocation scalarLocation, SharpMeasuresScalarDefinition scalarDefinition,
         IEnumerable<IncludeBasesDefinition> includeBases, IEnumerable<ExcludeBasesDefinition> excludeBases, IEnumerable<IncludeUnitsDefinition> includeUnits,
         IEnumerable<ExcludeUnitsDefinition> excludeUnits, IEnumerable<ScalarConstantDefinition> scalarConstants,
         IEnumerable<DimensionalEquivalenceDefinition> dimensionalEquivalences)

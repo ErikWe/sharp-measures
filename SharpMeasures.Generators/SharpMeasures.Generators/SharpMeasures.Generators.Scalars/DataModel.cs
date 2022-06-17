@@ -2,12 +2,12 @@
 
 using SharpMeasures.Generators.Scalars.Documentation;
 using SharpMeasures.Generators.Scalars.Parsing;
-using SharpMeasures.Generators.Scalars.Refinement.GeneratedScalar;
+using SharpMeasures.Generators.Scalars.Refinement.SharpMeasuresScalar;
 using SharpMeasures.Generators.Vectors;
 
 internal record class DataModel
 {
-    public RefinedGeneratedScalarDefinition ScalarDefinition { get; }
+    public RefinedSharpMeasuresScalarDefinition ScalarDefinition { get; }
     public ParsedScalar ScalarData { get; }
 
     public ScalarPopulation ScalarPopulation { get; }
@@ -15,7 +15,7 @@ internal record class DataModel
 
     public IDocumentationStrategy Documentation { get; init; } = EmptyDocumentation.Instance;
 
-    public DataModel(RefinedGeneratedScalarDefinition scalarDefinition, ParsedScalar scalarData, ScalarPopulation scalarPopulation, VectorPopulation vectorPopulation)
+    public DataModel(RefinedSharpMeasuresScalarDefinition scalarDefinition, ParsedScalar scalarData, ScalarPopulation scalarPopulation, VectorPopulation vectorPopulation)
     {
         ScalarDefinition = scalarDefinition;
         ScalarData = scalarData;

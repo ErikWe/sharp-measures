@@ -41,7 +41,7 @@ public static class OptionalWithDiagnostics
 
     public static IOptionalWithDiagnostics<T> Result<T>(T result, params Diagnostic[] diagnostics)
     {
-        return Result<T>(result, diagnostics as IEnumerable<Diagnostic>);
+        return Result(result, diagnostics as IEnumerable<Diagnostic>);
     }
 
     public static IOptionalWithDiagnostics<T> Result<T>(T result, Diagnostic? diagnostics)

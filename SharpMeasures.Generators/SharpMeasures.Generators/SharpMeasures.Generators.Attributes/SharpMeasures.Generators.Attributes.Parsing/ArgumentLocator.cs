@@ -11,7 +11,22 @@ internal static class ArgumentLocator
 {
     public static MinimalLocation SimpleArgument(AttributeArgumentListSyntax argumentList, int index)
     {
+        if (argumentList.Arguments[index].Expression is TypeOfExpressionSyntax typeofExpression)
+        {
+            return typeofExpression.Type.GetLocation().Minimize();
+        }
+
         return argumentList.Arguments[index].Expression.GetLocation().Minimize();
+    }
+
+    public static MinimalLocation SimpleArgument(SeparatedSyntaxList<ExpressionSyntax> expressions, int index)
+    {
+        if (expressions[index] is TypeOfExpressionSyntax typeofExpression)
+        {
+            return typeofExpression.Type.GetLocation().Minimize();
+        }
+
+        return expressions[index].GetLocation().Minimize();
     }
 
     public static (MinimalLocation Collection, IReadOnlyList<MinimalLocation> Elements) FromArrayOrParamsList(AttributeArgumentListSyntax argumentList, int index)
@@ -35,6 +50,7 @@ internal static class ArgumentLocator
 
         for (int i = 0; i < elements.Length; i++)
         {
+            elements[i] = SimpleArgument(initializerExpression.Expressions, i);
             elements[i] = initializerExpression.Expressions[i].GetLocation().Minimize();
         }
 

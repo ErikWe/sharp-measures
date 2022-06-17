@@ -13,13 +13,13 @@ using SharpMeasures.Generators.Vectors.Refinement.DimensionalEquivalence;
 
 internal static class DimensionEquivalenceGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Vectors.DataModel> generatedVectorProvider,
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Vectors.DataModel> vectorProvider,
         IncrementalValuesProvider<ResizedDataModel> resizedVectorProvider)
     {
-        var reducedGeneratedVectors = generatedVectorProvider.Select(ReduceToDataModel).ReportDiagnostics(context);
+        var reducedVectors = vectorProvider.Select(ReduceToDataModel).ReportDiagnostics(context);
         var reducedResizedVectors = resizedVectorProvider.Select(ReduceToDataModel).ReportDiagnostics(context);
 
-        context.RegisterSourceOutput(reducedGeneratedVectors, Execution.Execute);
+        context.RegisterSourceOutput(reducedVectors, Execution.Execute);
         context.RegisterSourceOutput(reducedResizedVectors, Execution.Execute);
     }
 
