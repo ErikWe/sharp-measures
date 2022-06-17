@@ -136,7 +136,8 @@ public static partial class DiagnosticRules
         messageFormat: "Including {0} had no effect, as {0} was already included",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
-        isEnabledByDefault: true
+        isEnabledByDefault: true,
+        customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
     public static readonly DiagnosticDescriptor UnitNotIncluded = new DiagnosticDescriptor
@@ -146,7 +147,8 @@ public static partial class DiagnosticRules
         messageFormat: "Excluding {0} had no effect, as {0} was not included",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
-        isEnabledByDefault: true
+        isEnabledByDefault: true,
+        customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
     public static readonly DiagnosticDescriptor UnitAlreadyExcluded = new DiagnosticDescriptor
@@ -156,7 +158,8 @@ public static partial class DiagnosticRules
         messageFormat: "Excluding {0} had no effect, as {0} was already excluded",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
-        isEnabledByDefault: true
+        isEnabledByDefault: true,
+        customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
     public static readonly DiagnosticDescriptor UnitNotExcluded = new DiagnosticDescriptor
@@ -166,7 +169,8 @@ public static partial class DiagnosticRules
         messageFormat: "Including {0} had no effect, as {0} was not excluded",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
-        isEnabledByDefault: true
+        isEnabledByDefault: true,
+        customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
     public static readonly DiagnosticDescriptor UnitAlreadyListed = new DiagnosticDescriptor
@@ -176,7 +180,8 @@ public static partial class DiagnosticRules
         messageFormat: "Including or excluding {0} had no effect, as {0} was already listed",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
-        isEnabledByDefault: true
+        isEnabledByDefault: true,
+        customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
     public static readonly DiagnosticDescriptor DifferenceDisabledButQuantitySpecified = new DiagnosticDescriptor
@@ -186,6 +191,7 @@ public static partial class DiagnosticRules
         messageFormat: "Difference is disabled, but a quantity that represents difference was specified. Enable difference or do not specify a quantity.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
-        isEnabledByDefault: true
+        isEnabledByDefault: true,
+        customTags: WellKnownDiagnosticTags.Unnecessary
     );
 }

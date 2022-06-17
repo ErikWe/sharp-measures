@@ -50,6 +50,11 @@ internal class ScalarConstantProcesser : AActionableProcesser<IScalarConstantPro
 
     public override IOptionalWithDiagnostics<ScalarConstantDefinition> Process(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
     {
+        if (VerifyRequiredPropertiesSet(definition) is false)
+        {
+            return OptionalWithDiagnostics.Empty<ScalarConstantDefinition>();
+        }
+
         var validity = CheckValidity(context, definition);
         IEnumerable<Diagnostic> allDiagnostics = validity.Diagnostics;
 
@@ -62,6 +67,11 @@ internal class ScalarConstantProcesser : AActionableProcesser<IScalarConstantPro
         allDiagnostics = allDiagnostics.Concat(product);
 
         return product.ReplaceDiagnostics(allDiagnostics);
+    }
+
+    private static bool VerifyRequiredPropertiesSet(RawScalarConstantDefinition definition)
+    {
+        return definition.Locations.ExplicitlySetName && definition.Locations.ExplicitlySetUnit && definition.Locations.ExplicitlySetValue;
     }
 
     private IResultWithDiagnostics<ScalarConstantDefinition> ProcessDefinition(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)

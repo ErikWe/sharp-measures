@@ -49,6 +49,11 @@ internal class VectorConstantProcesser : AActionableProcesser<IVectorConstantPro
 
     public override IOptionalWithDiagnostics<VectorConstantDefinition> Process(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
     {
+        if (VerifyRequiredPropertiesSet(definition) is false)
+        {
+            return OptionalWithDiagnostics.Empty<VectorConstantDefinition>();
+        }
+
         var validity = CheckValidity(context, definition);
         IEnumerable<Diagnostic> allDiagnostics = validity.Diagnostics;
 
@@ -61,6 +66,11 @@ internal class VectorConstantProcesser : AActionableProcesser<IVectorConstantPro
         allDiagnostics = allDiagnostics.Concat(product);
 
         return product.ReplaceDiagnostics(allDiagnostics);
+    }
+
+    private static bool VerifyRequiredPropertiesSet(RawVectorConstantDefinition definition)
+    {
+        return definition.Locations.ExplicitlySetName && definition.Locations.ExplicitlySetUnit && definition.Locations.ExplicitlySetValue;
     }
 
     private IResultWithDiagnostics<VectorConstantDefinition> ProcessDefinition(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)

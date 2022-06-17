@@ -9,6 +9,11 @@ internal class OffsetUnitProcesser : ADependantUnitProcesser<IDependantUnitProce
 
     public override IOptionalWithDiagnostics<OffsetUnitDefinition> Process(IDependantUnitProcessingContext context, RawOffsetUnitDefinition definition)
     {
+        if (VerifyRequiredPropertiesSet(definition) is false)
+        {
+            return OptionalWithDiagnostics.Empty<OffsetUnitDefinition>();
+        }
+
         var validity = CheckDependantUnitValidity(context, definition);
 
         if (validity.IsInvalid)

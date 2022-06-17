@@ -44,6 +44,11 @@ internal abstract class AUnitProcesser<TContext, TDefinition, TProduct> : AActio
         context.ReservedUnitPlurals.Add(definition.ParsingData.InterpretedPlural!);
     }
 
+    protected virtual bool VerifyRequiredPropertiesSet(TDefinition definition)
+    {
+        return definition.Locations.ExplicitlySetName && definition.Locations.ExplicitlySetPlural;
+    }
+
     protected IValidityWithDiagnostics CheckUnitValidity(TContext context, TDefinition definition)
     {
         return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckNameValidity, CheckPluralValidity);

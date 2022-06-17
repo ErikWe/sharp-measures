@@ -12,5 +12,8 @@ internal record class DerivableUnitLocations : AAttributeLocations
     public MinimalLocation? SignatureCollection { get; init; }
     public ReadOnlyEquatableList<MinimalLocation> SignatureElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
 
+    public bool ExplicitlySetExpression => Expression is not null;
+    public bool ExplicitlySetSignature => SignatureCollection is not null;
+
     private DerivableUnitLocations() { }
 }

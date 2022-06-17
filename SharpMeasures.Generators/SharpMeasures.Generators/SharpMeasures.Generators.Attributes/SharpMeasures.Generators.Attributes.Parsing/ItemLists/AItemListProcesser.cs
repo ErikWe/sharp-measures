@@ -46,6 +46,11 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
 
     public override IOptionalWithDiagnostics<TProduct> Process(TContext context, TDefinition definition)
     {
+        if (VerifyRequiredPropertiesSet(definition) is false)
+        {
+            return OptionalWithDiagnostics.Empty<TProduct>();
+        }
+
         var validity = CheckValidity(context, definition);
         IEnumerable<Diagnostic> allDiagnostics = validity.Diagnostics;
 
@@ -63,6 +68,11 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
         }
 
         return processed.ReplaceDiagnostics(allDiagnostics);
+    }
+
+    protected virtual bool VerifyRequiredPropertiesSet(TDefinition definition)
+    {
+        return definition.Locations.ExplicitlySetItems;
     }
 
     protected abstract TProduct ConstructProduct(IReadOnlyList<TProductItem> items, TDefinition definition);

@@ -39,6 +39,11 @@ internal class SharpMeasuresScalarProcesser : AProcesser<IProcessingContext, Raw
 
     public override IOptionalWithDiagnostics<SharpMeasuresScalarDefinition> Process(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
     {
+        if (VerifyRequiredPropertiesSet(definition) is false)
+        {
+            return OptionalWithDiagnostics.Empty<SharpMeasuresScalarDefinition>();
+        }
+
         var validity = CheckValidity(context, definition);
         IEnumerable<Diagnostic> allDiagnostics = validity.Diagnostics;
 
@@ -51,6 +56,11 @@ internal class SharpMeasuresScalarProcesser : AProcesser<IProcessingContext, Raw
         allDiagnostics = allDiagnostics.Concat(product);
 
         return product.ReplaceDiagnostics(allDiagnostics);
+    }
+
+    private static bool VerifyRequiredPropertiesSet(RawSharpMeasuresScalarDefinition definition)
+    {
+        return definition.Locations.ExplicitlySetUnit;
     }
 
     private IResultWithDiagnostics<SharpMeasuresScalarDefinition> ProcessDefinition(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)

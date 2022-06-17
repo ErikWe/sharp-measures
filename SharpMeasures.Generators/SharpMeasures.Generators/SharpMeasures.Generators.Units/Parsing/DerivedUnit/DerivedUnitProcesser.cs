@@ -34,6 +34,11 @@ internal class DerivedUnitProcesser : AUnitProcesser<IDerivedUnitProcessingConte
 
     public override IOptionalWithDiagnostics<DerivedUnitDefinition> Process(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
     {
+        if (VerifyRequiredPropertiesSet(definition) is false)
+        {
+            return OptionalWithDiagnostics.Empty<DerivedUnitDefinition>();
+        }
+
         var validity = IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckUnitValidity, CheckSignatureValidity);
         IEnumerable<Diagnostic> allDiagnostics = validity.Diagnostics;
 
@@ -62,6 +67,11 @@ internal class DerivedUnitProcesser : AUnitProcesser<IDerivedUnitProcessingConte
             processedUnits.Result, definition.Locations);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
+    }
+
+    protected override bool VerifyRequiredPropertiesSet(RawDerivedUnitDefinition definition)
+    {
+        return base.VerifyRequiredPropertiesSet(definition) && definition.Locations.ExplicitlySetSignature && definition.Locations.ExplicitlySetUnits;
     }
 
     private IOptionalWithDiagnostics<DerivableSignature> ProcessSignature(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)

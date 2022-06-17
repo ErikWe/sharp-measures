@@ -5,14 +5,14 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|--------------------
-Measures1000 | Usage | Warning | Expected a partial type
-Measures1001 | Usage | Warning | Expected a scalar quantity
-Measures1002 | Usage | Warning | Expected a vector quantity
-Measures1003 | Usage | Warning | Expected a unit
-Measures1004 | Usage | Warning | Type already defined
-Measures1020 | Usage | Warning | Expected a strictly unbiased scalar quantity
-Measures1021 | Usage | Warning | Expected a biased scalar quantity
-Measures1022 | Usage | Warning | Unit does not support biased quantities
+Measures1000 | Usage | Error | Expected a partial type
+Measures1001 | Usage | Error | Expected a scalar quantity
+Measures1002 | Usage | Error | Expected a vector quantity
+Measures1003 | Usage | Error | Expected a unit
+Measures1004 | Usage | Error | Type already defined
+Measures1020 | Usage | Error | Expected a strictly unbiased scalar quantity
+Measures1021 | Usage | Error | Expected a biased scalar quantity
+Measures1022 | Usage | Error | Unit does not support biased quantities
 Measures1080 | Usage | Info | Expected a non-empty list
 Measures1081 | Usage | Info | Item has already been listed
 Measures1100 | Naming | Warning | Invalid unit name
@@ -43,5 +43,5 @@ Measures1421 | Usage | Warning | Missing vector dimension
 Measures1422 | Usage | Warning | Duplicate vector dimension
 Measures1440 | Usage | Warning | Invalid dimension of vector constant
 Measures1460 | Usage | Info | Vector group already specified
-Measures1900 | Documentation | Info | Unresolved documentation dependency
-Measures1901 | Documentation | Info | Documentation tag not found
+Measures1900 | Documentation | Warning | Unresolved documentation dependency
+Measures1901 | Documentation | Warning | Documentation tag not found

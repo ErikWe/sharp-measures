@@ -36,6 +36,11 @@ internal class PrefixedUnitProcesser : ADependantUnitProcesser<IDependantUnitPro
         return OptionalWithDiagnostics.Result(product, validity.Diagnostics);
     }
 
+    protected override bool VerifyRequiredPropertiesSet(RawPrefixedUnitDefinition definition)
+    {
+        return base.VerifyRequiredPropertiesSet(definition) && (definition.Locations.ExplicitlySetMetricPrefixName || definition.Locations.ExplicitlySetBinaryPrefixName);
+    }
+
     private IValidityWithDiagnostics CheckValidity(IDependantUnitProcessingContext context, RawPrefixedUnitDefinition definition)
     {
         return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckDependantUnitValidity, CheckPrefixValidity);
@@ -47,8 +52,12 @@ internal class PrefixedUnitProcesser : ADependantUnitProcesser<IDependantUnitPro
         {
             return CheckMetricPrefixValidity(context, definition);
         }
+        else if (definition.Locations.ExplicitlySetBinaryPrefixName)
+        {
+            return CheckBinaryPrefixValidity(context, definition);
+        }
 
-        return CheckBinaryPrefixValidity(context, definition);
+        return ValidityWithDiagnostics.InvalidWithoutDiagnostics;
     }
 
     private IValidityWithDiagnostics CheckMetricPrefixValidity(IDependantUnitProcessingContext context, RawPrefixedUnitDefinition definition)

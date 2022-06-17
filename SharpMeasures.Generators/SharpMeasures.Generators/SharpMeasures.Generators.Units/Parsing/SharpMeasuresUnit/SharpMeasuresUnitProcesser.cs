@@ -21,6 +21,11 @@ internal class SharpMeasuresUnitProcesser : AProcesser<IProcessingContext, RawSh
 
     public override IOptionalWithDiagnostics<SharpMeasuresUnitDefinition> Process(IProcessingContext context, RawSharpMeasuresUnitDefinition definition)
     {
+        if (VerifyRequiredPropertiesSet(definition) is false)
+        {
+            return OptionalWithDiagnostics.Empty<SharpMeasuresUnitDefinition>();
+        }
+
         if (definition.Quantity is null)
         {
             return OptionalWithDiagnostics.Empty<SharpMeasuresUnitDefinition>(Diagnostics.NullQuantity(context, definition));
@@ -28,5 +33,10 @@ internal class SharpMeasuresUnitProcesser : AProcesser<IProcessingContext, RawSh
 
         SharpMeasuresUnitDefinition product = new(definition.Quantity.Value, definition.BiasTerm, definition.GenerateDocumentation, definition.Locations);
         return OptionalWithDiagnostics.Result(product);
+    }
+
+    private static bool VerifyRequiredPropertiesSet(RawSharpMeasuresUnitDefinition definition)
+    {
+        return definition.Locations.ExplicitlySetQuantity;
     }
 }

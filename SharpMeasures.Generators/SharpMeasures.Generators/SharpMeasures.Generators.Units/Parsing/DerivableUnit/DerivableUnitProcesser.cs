@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -39,6 +38,11 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
 
     public override IOptionalWithDiagnostics<DerivableUnitDefinition> Process(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
+        if (VerifyRequiredPropertiesSet(definition) is false)
+        {
+            return OptionalWithDiagnostics.Empty<DerivableUnitDefinition>();
+        }
+
         var expressionValidity = CheckExpressionValidity(context, definition);
         IEnumerable<Diagnostic> allDiagnostics = expressionValidity.Diagnostics;
 
@@ -101,5 +105,10 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
         }
 
         return OptionalWithDiagnostics.Result(derivableSignature);
+    }
+
+    private static bool VerifyRequiredPropertiesSet(RawDerivableUnitDefinition definition)
+    {
+        return definition.Locations.ExplicitlySetExpression && definition.Locations.ExplicitlySetSignature;
     }
 }

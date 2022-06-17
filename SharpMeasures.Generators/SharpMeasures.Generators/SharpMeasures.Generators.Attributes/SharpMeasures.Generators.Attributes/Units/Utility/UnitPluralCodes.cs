@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Units.Utility;
 
-/// <summary>Contains common notation for producing the plural form of a unit name.</summary>
+/// <summary>Contains common notation for producing the plural form of a unit name, based on the unit name itself.</summary>
 public static class UnitPluralCodes
 {
     /// <summary>Uses the unmodified singular form.</summary>

@@ -9,6 +9,11 @@ internal class UnitAliasProcesser : ADependantUnitProcesser<IDependantUnitProces
 
     public override IOptionalWithDiagnostics<UnitAliasDefinition> Process(IDependantUnitProcessingContext context, RawUnitAliasDefinition definition)
     {
+        if (VerifyRequiredPropertiesSet(definition) is false)
+        {
+            return OptionalWithDiagnostics.Empty<UnitAliasDefinition>();
+        }
+
         var validity = CheckUnitValidity(context, definition);
 
         if (validity.IsInvalid)

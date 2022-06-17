@@ -36,6 +36,11 @@ internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, Raw
 
     public override IOptionalWithDiagnostics<SharpMeasuresVectorDefinition> Process(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)
     {
+        if (VerifyRequiredPropertiesSet(definition) is false)
+        {
+            return OptionalWithDiagnostics.Empty<SharpMeasuresVectorDefinition>();
+        }
+
         var validity = CheckValidity(context, definition);
         var allDiagnostics = validity.Diagnostics;
 
@@ -48,6 +53,11 @@ internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, Raw
         allDiagnostics = allDiagnostics.Concat(product);
 
         return product.ReplaceDiagnostics(allDiagnostics);
+    }
+
+    private static bool VerifyRequiredPropertiesSet(RawSharpMeasuresVectorDefinition definition)
+    {
+        return definition.Locations.ExplicitlySetUnit;
     }
 
     private IOptionalWithDiagnostics<SharpMeasuresVectorDefinition> ProcessDefinition(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)

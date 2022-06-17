@@ -57,10 +57,15 @@ public static class UsingsBuilding
     {
         HashSet<string> definedUsings = new();
 
+        bool anyUsings = false;
+
         IterativeBuilding.AppendEnumerable(source, usings(), Environment.NewLine);
 
-        source.AppendLine();
-        source.AppendLine();
+        if (anyUsings)
+        {
+            source.AppendLine();
+            source.AppendLine();
+        }
 
         IEnumerable<string> usings()
         {
@@ -71,6 +76,7 @@ public static class UsingsBuilding
                     continue;
                 }
 
+                anyUsings = true;
                 definedUsings.Add(usingsName);
                 yield return $"using {usingsName};";
             }

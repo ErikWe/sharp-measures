@@ -20,10 +20,12 @@ public sealed class ScalarConstantAttribute : Attribute
     /// <remarks>If set to <see langword="true"/>, <see cref="MultiplesName"/> is used to determine the name of the property.</remarks>
     public bool GenerateMultiplesProperty { get; init; } = true;
 
-    /// <summary>If <see cref="GenerateMultiplesProperty"/> is set to <see langword="true"/>, this value is used as the name of the property.
-    /// <para>The default behaviour is prepending "InMultiplesOf" to the name of the constant.</para></summary>
-    /// <remarks>See <see cref="ConstantMultiplesCodes"/> for some short-hand notations for producing this name based on the name of the constant.</remarks>
-    public string MultiplesName { get; init; } = ConstantMultiplesCodes.InMultiplesOfConstant;
+    /// <summary>If <see cref="GenerateMultiplesProperty"/> is set to <see langword="true"/>, this value is used as the name of the property. The name of this
+    /// property must differ from the name of the constant.
+    /// <para>The default behaviour is prepending "MultiplesOf" to the name of the constant.</para></summary>
+    /// <remarks>See <see cref="ConstantMultiplesCodes"/> for some short-hand notations for producing a name for multiples of the constant, based on the
+    /// name of the constant.</remarks>
+    public string MultiplesName { get; init; } = ConstantMultiplesCodes.MultiplesOfConstant;
 
     /// <summary>Defines a constant.</summary>
     /// <param name="name">The name of the constant.</param>

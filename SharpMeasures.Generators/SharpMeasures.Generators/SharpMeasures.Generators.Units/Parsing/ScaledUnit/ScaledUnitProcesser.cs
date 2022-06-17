@@ -9,6 +9,11 @@ internal class ScaledUnitProcesser : ADependantUnitProcesser<IDependantUnitProce
 
     public override IOptionalWithDiagnostics<ScaledUnitDefinition> Process(IDependantUnitProcessingContext context, RawScaledUnitDefinition definition)
     {
+        if (VerifyRequiredPropertiesSet(definition) is false)
+        {
+            return OptionalWithDiagnostics.Empty<ScaledUnitDefinition>();
+        }
+
         var validity = CheckUnitValidity(context, definition);
         
         if (validity.IsInvalid)

@@ -32,6 +32,11 @@ internal abstract class ADependantUnitProcesser<TContext, TDefinition, TProduct>
         Diagnostics = diagnostics;
     }
 
+    protected override bool VerifyRequiredPropertiesSet(TDefinition definition)
+    {
+        return base.VerifyRequiredPropertiesSet(definition) && definition.Locations.ExplicitlySetDependantOn;
+    }
+
     protected IValidityWithDiagnostics CheckDependantUnitValidity(TContext context, TDefinition definition)
     {
         return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckUnitValidity, CheckDependantOnValidity);

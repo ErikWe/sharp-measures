@@ -28,6 +28,11 @@ internal class ResizedSharpMeasuresVectorProcesser : AProcesser<IProcessingConte
 
     public override IOptionalWithDiagnostics<ResizedSharpMeasuresVectorDefinition> Process(IProcessingContext context, RawResizedSharpMeasuresVectorDefinition definition)
     {
+        if (VerifyRequiredPropertiesSet(definition) is false)
+        {
+            return OptionalWithDiagnostics.Empty<ResizedSharpMeasuresVectorDefinition>();
+        }
+
         var validity = CheckValidity(context, definition);
         var allDiagnostics = validity.Diagnostics;
 
@@ -40,6 +45,11 @@ internal class ResizedSharpMeasuresVectorProcesser : AProcesser<IProcessingConte
         allDiagnostics = allDiagnostics.Concat(product);
 
         return product.ReplaceDiagnostics(allDiagnostics);
+    }
+
+    private static bool VerifyRequiredPropertiesSet(RawResizedSharpMeasuresVectorDefinition definition)
+    {
+        return definition.Locations.ExplicitlySetAssociatedVector;
     }
 
     private IOptionalWithDiagnostics<ResizedSharpMeasuresVectorDefinition> ProcessDefinition(IProcessingContext context, RawResizedSharpMeasuresVectorDefinition definition)

@@ -54,7 +54,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         return $$"""/// <summary>The {{ScalarReference}} representing the constant {{definition.Name}}, with value { {{value}} [{{definition.Unit.Plural}}] }.</summary>""";
     }
 
-    public string UnitBase(UnitInstance unitInstance) => $$"""/// <summary>The {{ScalarReference}} representing { 1 [{{unitInstance.Name}}] }.</summary>""";
+    public string UnitBase(UnitInstance unitInstance) => $$"""/// <summary>The {{ScalarReference}} representing { 1 [<see cref="{{Unit.UnitType.Name}}.{{unitInstance.Name}}"/>] }.</summary>""";
 
     public string WithMagnitude() => "/// <inheritdoc/>";
 
@@ -74,7 +74,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
 
         if (ExampleUnit is not null)
         {
-            return $"""{commonText} or an associated property - such as <see cref="In{ExampleUnit.Value.Plural}"/>""";
+            commonText = $"""{commonText} or an associated property - such as <see cref="{ExampleUnit.Value.Plural}"/>""";
         }
 
         return $"{commonText}.</remarks>";
@@ -114,11 +114,11 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         """;
 
     public string InConstantMultiples(RefinedScalarConstantDefinition definition) => $"""
-        /// <summary>The magnitude of <see langword="this", expressed in multiples of <see cref="{ScalarReference}.{definition.Name}"/>.</summary>
+        /// <summary>The magnitude of <see langword="this", expressed in multiples of <see cref="{ScalarType.Name}.{definition.Name}"/>.</summary>
         """;
 
     public string InSpecifiedUnit(UnitInstance unitInstance) => $"""
-        /// <summary>The magnitude of <see langword="this"/>, expressed in <see cref="{UnitReference}.{unitInstance.Name}"/>.</summary>
+        /// <summary>The magnitude of <see langword="this"/>, expressed in <see cref="{Unit.UnitType.Name}.{unitInstance.Name}"/>.</summary>
         """;
 
     public string AsDimensionallyEquivalent(ScalarInterface scalar) => $"""

@@ -52,6 +52,7 @@ public static partial class DiagnosticRules
         messageFormat: "The vector group to which {0} belongs has already been specified",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
-        isEnabledByDefault: true
+        isEnabledByDefault: true,
+        customTags: WellKnownDiagnosticTags.Unnecessary
     );
 }

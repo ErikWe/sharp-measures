@@ -9,6 +9,11 @@ internal class FixedUnitProcesser : AUnitProcesser<IUnitProcessingContext, RawFi
 
     public override IOptionalWithDiagnostics<FixedUnitDefinition> Process(IUnitProcessingContext context, RawFixedUnitDefinition definition)
     {
+        if (VerifyRequiredPropertiesSet(definition) is false)
+        {
+            return OptionalWithDiagnostics.Empty<FixedUnitDefinition>();
+        }
+
         var validity = CheckUnitValidity(context, definition);
 
         if (validity.IsInvalid)
