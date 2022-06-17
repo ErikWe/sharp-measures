@@ -16,10 +16,10 @@ public class AbortedCases
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public class UnitOfLength { }";
 
         GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoSourceGenerated();
@@ -32,10 +32,10 @@ public class UnitOfLength { }";
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class struct { }";
 
         GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoSourceGenerated();
@@ -49,7 +49,7 @@ using SharpMeasures.Generators.Units;
 
 public partial class Length { }
 
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }";
 
         GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoSourceGenerated();
@@ -62,10 +62,10 @@ public partial class UnitOfLength { }";
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfTemperature), Biased = true)]
+[SharpMeasuresScalar(typeof(UnitOfTemperature), Biased = true)]
 public partial class Temperature { }
 
-[GeneratedUnit(typeof(Temperature), AllowBias = false)]
+[SharpMeasuresUnit(typeof(Temperature), AllowBias = false)]
 public partial class UnitOfTemperature { }";
 
         GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoSourceGenerated();
@@ -78,10 +78,10 @@ public partial class UnitOfTemperature { }";
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfTemperature), Biased = true)]
+[SharpMeasuresScalar(typeof(UnitOfTemperature), Biased = true)]
 public partial class Temperature { }
 
-[GeneratedUnit(typeof(Temperature), AllowBias = true)]
+[SharpMeasuresUnit(typeof(Temperature), AllowBias = true)]
 public partial class UnitOfTemperature { }";
 
         GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoSourceGenerated();
@@ -93,7 +93,7 @@ public partial class UnitOfTemperature { }";
         string source = @"
 using SharpMeasures.Generators.Units;
 
-[GeneratedUnit(3)]
+[SharpMeasuresUnit(3)]
 public partial class UnitOfLength { }";
 
         GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoSourceGenerated();
@@ -105,7 +105,7 @@ public partial class UnitOfLength { }";
         string source = @"
 using SharpMeasures.Generators.Units;
 
-[GeneratedUnit]
+[SharpMeasuresUnit]
 public partial class UnitOfLength { }";
 
         GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoSourceGenerated();
@@ -117,7 +117,7 @@ public partial class UnitOfLength { }";
         string source = @"
 using SharpMeasures.Generators.Units;
 
-[GeneratedUnit(null)]
+[SharpMeasuresUnit(null)]
 public partial class UnitOfLength { }";
 
         GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoSourceGenerated();

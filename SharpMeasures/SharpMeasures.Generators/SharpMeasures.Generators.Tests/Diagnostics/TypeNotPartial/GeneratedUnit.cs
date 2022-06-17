@@ -11,7 +11,7 @@ using VerifyXunit;
 using Xunit;
 
 [UsesVerify]
-public class GeneratedUnit
+public class SharpMeasuresUnit
 {
     [Fact]
     public Task Class_ExactListAndVerify()
@@ -20,10 +20,10 @@ public class GeneratedUnit
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public class UnitOfLength { }
 ";
 
@@ -37,10 +37,10 @@ public class UnitOfLength { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public struct UnitOfLength { }
 ";
 
@@ -54,10 +54,10 @@ public struct UnitOfLength { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public record UnitOfLength { }
 ";
 
@@ -71,10 +71,10 @@ public record UnitOfLength { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public record class UnitOfLength { }
 ";
 
@@ -88,10 +88,10 @@ public record class UnitOfLength { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public record struct UnitOfLength { }
 ";
 
@@ -105,10 +105,10 @@ public record struct UnitOfLength { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public readonly record struct UnitOfLength { }
 ";
 

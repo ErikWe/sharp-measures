@@ -9,15 +9,15 @@ internal static class OffsetUnitProperties
 {
     public static IReadOnlyList<IAttributeProperty<RawOffsetUnitDefinition>> AllProperties => new IAttributeProperty<RawOffsetUnitDefinition>[]
     {
-        CommonProperties.Name<RawOffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations>(nameof(OffsetUnitAttribute.Name)),
-        CommonProperties.Plural<RawOffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations>(nameof(OffsetUnitAttribute.Plural)),
-        CommonProperties.DependantOn<RawOffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations>(nameof(OffsetUnitAttribute.From)),
+        CommonProperties.Name<RawOffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations>(nameof(BiasedUnitAttribute.Name)),
+        CommonProperties.Plural<RawOffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations>(nameof(BiasedUnitAttribute.Plural)),
+        CommonProperties.DependantOn<RawOffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations>(nameof(BiasedUnitAttribute.From)),
         Offset
     };
 
     private static OffsetUnitProperty<double> Offset { get; } = new
     (
-        name: nameof(OffsetUnitAttribute.Offset),
+        name: nameof(BiasedUnitAttribute.Bias),
         setter: static (definition, offset) => definition with { Offset = offset },
         locator: static (locations, offsetLocation) => locations with { Offset = offsetLocation }
     );

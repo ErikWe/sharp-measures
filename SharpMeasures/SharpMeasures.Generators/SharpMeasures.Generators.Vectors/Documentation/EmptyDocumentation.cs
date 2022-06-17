@@ -41,25 +41,21 @@ internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocu
     string IDocumentationStrategy.Normalize() => string.Empty;
     string IDocumentationStrategy.Transform() => string.Empty;
     string IDocumentationStrategy.ToStringDocumentation() => string.Empty;
+    string IDocumentationStrategy.EqualsSameTypeMethod() => string.Empty;
+    string IDocumentationStrategy.EqualsObjectMethod() => string.Empty;
+    string IDocumentationStrategy.EqualitySameTypeOperator() => string.Empty;
+    string IDocumentationStrategy.InequalitySameTypeOperator() => string.Empty;
+    string IDocumentationStrategy.GetHashCodeDocumentation() => string.Empty;
     string IDocumentationStrategy.Deconstruct() => string.Empty;
     string IDocumentationStrategy.UnaryPlusMethod() => string.Empty;
     string IDocumentationStrategy.NegateMethod() => string.Empty;
     string IDocumentationStrategy.MultiplyScalarMethod() => string.Empty;
     string IDocumentationStrategy.DivideScalarMethod() => string.Empty;
-    string IDocumentationStrategy.MultiplyGenericScalarMethod() => string.Empty;
-    string IDocumentationStrategy.DivideGenericScalarMethod() => string.Empty;
-    string IDocumentationStrategy.DotVector() => string.Empty;
-    string IDocumentationStrategy.CrossVector() => string.Empty;
-    string IDocumentationStrategy.DotGenericVector() => string.Empty;
-    string IDocumentationStrategy.CrossGenericVector() => string.Empty;
     string IDocumentationStrategy.UnaryPlusOperator() => string.Empty;
     string IDocumentationStrategy.NegateOperator() => string.Empty;
     string IDocumentationStrategy.MultiplyScalarOperatorLHS() => string.Empty;
     string IDocumentationStrategy.MultiplyScalarOperatorRHS() => string.Empty;
-    string IDocumentationStrategy.DivideScalarOperatorRHS() => string.Empty;
-    string IDocumentationStrategy.MultiplyIScalarOperatorLHS() => string.Empty;
-    string IDocumentationStrategy.MultiplyIScalarOperatorRHS() => string.Empty;
-    string IDocumentationStrategy.DivideIScalarOperatorRHS() => string.Empty;
+    string IDocumentationStrategy.DivideScalarOperatorLHS() => string.Empty;
 
     public virtual bool Equals(EmptyDocumentation? other)
     {

@@ -178,4 +178,14 @@ public static partial class DiagnosticRules
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true
     );
+
+    public static readonly DiagnosticDescriptor DifferenceDisabledButQuantitySpecified = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.DifferenceDisabledButQuantitySpecified,
+        title: "Difference is disabled but a quantity was specified",
+        messageFormat: "Difference is disabled, but a quantity that represents difference was specified. Enable difference or do not specify a quantity.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
 }

@@ -16,23 +16,23 @@ public class AbortedCases
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
-[GeneratedScalar(typeof(UnitOfTime))]
+[SharpMeasuresScalar(typeof(UnitOfTime))]
 public partial class Time { }
 
-[GeneratedScalar(typeof(UnitOfSpeed))]
+[SharpMeasuresScalar(typeof(UnitOfSpeed))]
 public partial class Speed { }
 
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 
-[GeneratedUnit(typeof(Time))]
+[SharpMeasuresUnit(typeof(Time))]
 public partial class UnitOfTime { }
 
 [DerivableUnit(7)]
-[GeneratedUnit(typeof(Speed))]
+[SharpMeasuresUnit(typeof(Speed))]
 public partial class UnitOfSpeed { }
 ";
 
@@ -46,23 +46,23 @@ public partial class UnitOfSpeed { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
-[GeneratedScalar(typeof(UnitOfTime))]
+[SharpMeasuresScalar(typeof(UnitOfTime))]
 public partial class Time { }
 
-[GeneratedScalar(typeof(UnitOfSpeed))]
+[SharpMeasuresScalar(typeof(UnitOfSpeed))]
 public partial class Speed { }
 
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 
-[GeneratedUnit(typeof(Time))]
+[SharpMeasuresUnit(typeof(Time))]
 public partial class UnitOfTime { }
 
 [DerivableUnit(null, typeof(UnitOfLength), typeof(UnitOfTime))]
-[GeneratedUnit(typeof(Speed))]
+[SharpMeasuresUnit(typeof(Speed))]
 public partial class UnitOfSpeed { }
 ";
 
@@ -76,23 +76,23 @@ public partial class UnitOfSpeed { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
-[GeneratedScalar(typeof(UnitOfTime))]
+[SharpMeasuresScalar(typeof(UnitOfTime))]
 public partial class Time { }
 
-[GeneratedScalar(typeof(UnitOfSpeed))]
+[SharpMeasuresScalar(typeof(UnitOfSpeed))]
 public partial class Speed { }
 
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 
-[GeneratedUnit(typeof(Time))]
+[SharpMeasuresUnit(typeof(Time))]
 public partial class UnitOfTime { }
 
 [DerivableUnit(""{{0}} / {{1}}"", typeof(Length), typeof(UnitOfTime))]
-[GeneratedUnit(typeof(Speed))]
+[SharpMeasuresUnit(typeof(Speed))]
 public partial class UnitOfSpeed { }
 ";
 
@@ -106,23 +106,23 @@ public partial class UnitOfSpeed { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
-[GeneratedScalar(typeof(UnitOfTime))]
+[SharpMeasuresScalar(typeof(UnitOfTime))]
 public partial class Time { }
 
-[GeneratedScalar(typeof(UnitOfSpeed))]
+[SharpMeasuresScalar(typeof(UnitOfSpeed))]
 public partial class Speed { }
 
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 
-[GeneratedUnit(typeof(Time))]
+[SharpMeasuresUnit(typeof(Time))]
 public partial class UnitOfTime { }
 
 [DerivableUnit(string.Empty)]
-[GeneratedUnit(typeof(Speed))]
+[SharpMeasuresUnit(typeof(Speed))]
 public partial class UnitOfSpeed { }
 ";
 
@@ -136,23 +136,23 @@ public partial class UnitOfSpeed { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
-[GeneratedScalar(typeof(UnitOfTime))]
+[SharpMeasuresScalar(typeof(UnitOfTime))]
 public partial class Time { }
 
-[GeneratedScalar(typeof(UnitOfSpeed))]
+[SharpMeasuresScalar(typeof(UnitOfSpeed))]
 public partial class Speed { }
 
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 
-[GeneratedUnit(typeof(Time))]
+[SharpMeasuresUnit(typeof(Time))]
 public partial class UnitOfTime { }
 
 [DerivableUnit(""{{0}} / {{1}}"", null, typeof(UnitOfTime))]
-[GeneratedUnit(typeof(Speed))]
+[SharpMeasuresUnit(typeof(Speed))]
 public partial class UnitOfSpeed { }
 ";
 

@@ -9,7 +9,12 @@ internal record class GeneratedScalarLocations : AAttributeLocations
     public MinimalLocation? Unit { get; init; }
     public MinimalLocation? Vector { get; init; }
 
-    public MinimalLocation? Biased { get; init; }
+    public MinimalLocation? UseUnitBias { get; init; }
+
+    public MinimalLocation? ImplementSum { get; init; }
+    public MinimalLocation? ImplementDifference { get; init; }
+
+    public MinimalLocation? Difference { get; init; }
 
     public MinimalLocation? DefaultUnitName { get; init; }
     public MinimalLocation? DefaultUnitSymbol { get; init; }
@@ -24,7 +29,10 @@ internal record class GeneratedScalarLocations : AAttributeLocations
 
     public bool ExplicitlySetUnit => Unit is not null;
     public bool ExplicitlySetVector => Vector is not null;
-    public bool ExplicitlySetBiased => Biased is not null;
+    public bool ExplicitlySetBiased => UseUnitBias is not null;
+    public bool ExplicitlySetImplementSum => ImplementSum is not null;
+    public bool ExplicitlySetImplementDifference => ImplementDifference is not null;
+    public bool ExplicitlySetDifference => Difference is not null;
     public bool ExplicitlySetDefaultUnitName => DefaultUnitName is not null;
     public bool ExplicitlySetDefaultUnitSymbol => DefaultUnitSymbol is not null;
     public bool ExplicitlySetReciprocal => Reciprocal is not null;

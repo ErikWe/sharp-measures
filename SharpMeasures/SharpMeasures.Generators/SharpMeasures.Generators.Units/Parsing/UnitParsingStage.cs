@@ -104,7 +104,7 @@ public static class UnitParsingStage
         Dictionary<string, UnitInstance> allUnits = unit.GetUnitList()
             .ToDictionary(static (unit) => unit.Name!, static (unit) => new UnitInstance(unit.Name, unit.Plural));
 
-        return new(unit.UnitType, unit.UnitDefinition.Quantity, unit.UnitDefinition.SupportsBiasedQuantities, allUnits);
+        return new(unit.UnitType, unit.UnitDefinition.Quantity, unit.UnitDefinition.BiasTerm, allUnits);
     }
 
     private static DeclarationSymbolProvider.DOutputTransform<TypeDeclarationSyntax, IntermediateResult> ConstructIntermediateResult

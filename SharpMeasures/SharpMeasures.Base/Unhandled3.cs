@@ -170,45 +170,6 @@ public readonly record struct Unhandled3 :
     /// <exception cref="ArgumentNullException"/>
     Unhandled3 ICrossFactorVector3Quantity<Unhandled3, IVector3Quantity>.CrossInto(IVector3Quantity factor) => VectorMaths.Cross(factor, this);
 
-    /// <inheritdoc cref="IAddendVector3Quantity{TSum, TAddend}.Add(TAddend)"/>
-    /// <typeparam name="TAddend">The three-dimensional vector quantity that represents the second addend of { <see langword="this"/> + <typeparamref name="TAddend"/> }.</typeparam>
-    public Unhandled3 Add<TAddend>(TAddend addend) where TAddend : IVector3Quantity => new(Components + addend.Components);
-
-    /// <inheritdoc cref="IMinuendVector3Quantity{TSum, TSubtrahend}.Subtract(TSubtrahend)"/>
-    /// <typeparam name="TSubtrahend">The three-dimensional vector quantity that represents the subtrahend of { <see langword="this"/> -
-    /// <typeparamref name="TSubtrahend"/> }.</typeparam>
-    public Unhandled3 Subtract<TSubtrahend>(TSubtrahend subtrahend) where TSubtrahend : IVector3Quantity => new(Components - subtrahend.Components);
-
-    /// <inheritdoc cref="ISubtrahendVector3Quantity{TSum, TMinuend}.SubtractFrom(TMinuend)"/>
-    /// <typeparam name="TMinuend">The three-dimensional vector quantity that represents the minuend of { <typeparamref name="TMinuend"/> - <see langword="this"/> }.</typeparam>
-    public Unhandled3 SubtractFrom<TMinuend>(TMinuend minuend) where TMinuend : IVector3Quantity => new(minuend.Components - Components);
-
-    /// <inheritdoc/>
-    public Unhandled3 Multiply<TFactor>(TFactor factor) where TFactor : IScalarQuantity => this * factor.Magnitude;
-
-    /// <inheritdoc/>
-    public Unhandled3 Divide<TDivisor>(TDivisor divisor) where TDivisor : IScalarQuantity => this / divisor.Magnitude;
-
-    /// <inheritdoc/>
-    public Unhandled Dot<TFactor>(TFactor factor) where TFactor : IVector3Quantity => ScalarMaths.Dot3(this, factor);
-
-    /// <inheritdoc/>
-    public Unhandled3 Cross<TFactor>(TFactor factor) where TFactor : IVector3Quantity => VectorMaths.Cross(this, factor);
-
-    /// <inheritdoc/>
-    public Unhandled3 CrossInto<TFactor>(TFactor factor) where TFactor : IVector3Quantity => VectorMaths.Cross(this, factor);
-
-    /// <inheritdoc/>
-    TProduct IVector3Quantity.Multiply<TProduct, TFactor>(TFactor factor) => TProduct.WithComponents(Components * factor.Magnitude);
-    /// <inheritdoc/>
-    TQuotient IVector3Quantity.Divide<TQuotient, TDivisor>(TDivisor divisor) => TQuotient.WithComponents(Components / divisor.Magnitude);
-    /// <inheritdoc/>
-    TProduct IVector3Quantity.Dot<TProduct, TFactor>(TFactor factor) => MathFactory.ScalarResult<TProduct>().Dot3(this, factor);
-    /// <inheritdoc/>
-    TProduct IVector3Quantity.Cross<TProduct, TFactor>(TFactor factor) => MathFactory.Vector3Result<TProduct>().Cross(this, factor);
-    /// <inheritdoc/>
-    TProduct IVector3Quantity.CrossInto<TProduct, TFactor>(TFactor factor) => MathFactory.Vector3Result<TProduct>().Cross(factor, this);
-
     /// <inheritdoc/>
     public static Unhandled3 operator +(Unhandled3 a) => a;
     /// <inheritdoc/>
@@ -220,6 +181,7 @@ public readonly record struct Unhandled3 :
     public static Unhandled3 operator -(Unhandled3 a, Unhandled3 b) => (a.X - b.X, a.Y - b.Y, a.Z - b.Z);
     /// <inheritdoc/>
     public static Unhandled3 operator *(Unhandled3 a, Unhandled b) => (a.X * b, a.Y * b, a.Z * b);
+    /// <inheritdoc/>
     static Unhandled3 IFactorVector3Quantity<Unhandled3, Unhandled3, Unhandled>.operator *(Unhandled a, Unhandled3 b) => (a * b.X, a * b.Y, a * b.Z);
     /// <inheritdoc/>
     public static Unhandled3 operator /(Unhandled3 a, Unhandled b) => (a.X / b, a.Y / b, a.Z / b);

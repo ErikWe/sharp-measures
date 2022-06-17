@@ -17,9 +17,10 @@ internal interface IGeneratedScalarRefinementDiagnostics
 {
     public abstract Diagnostic? TypeAlreadyUnit(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition);
     public abstract Diagnostic? TypeNotUnit(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition);
-    public abstract Diagnostic? UnitNotSupportingBiasedQuantities(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition);
+    public abstract Diagnostic? UnitNotIncludingBiasTerm(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition);
     public abstract Diagnostic? TypeNotVector(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition);
     public abstract Diagnostic? UnrecognizedDefaultUnit(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition);
+    public abstract Diagnostic? DifferenceNotScalar(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition);
     public abstract Diagnostic? ReciprocalNotScalar(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition);
     public abstract Diagnostic? SquareNotScalar(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition);
     public abstract Diagnostic? CubeNotScalar(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition);
@@ -62,6 +63,8 @@ internal class GeneratedScalarRefiner : IProcesser<IGeneratedScalarRefinementCon
         var processedVector = ProcessVector(context, definition);
         allDiagnostics = allDiagnostics.Concat(processedVector.Diagnostics);
 
+        var processedDifference = ProcessDifference(context, definition);
+
         var processedDefaultUnitName = ProcessDefaultUnitName(context, definition, processedUnit.Result);
 
         var processedReciprocal = ProcessPowerQuantity(context, definition, definition.Reciprocal, Diagnostics.ReciprocalNotScalar);
@@ -70,12 +73,12 @@ internal class GeneratedScalarRefiner : IProcesser<IGeneratedScalarRefinementCon
         var processedSquareRoot = ProcessPowerQuantity(context, definition, definition.SquareRoot, Diagnostics.SquareRootNotScalar);
         var processedCubeRoot = ProcessPowerQuantity(context, definition, definition.CubeRoot, Diagnostics.CubeRootNotScalar);
 
-        allDiagnostics = allDiagnostics.Concat(processedDefaultUnitName.Diagnostics).Concat(processedReciprocal.Diagnostics).Concat(processedSquare.Diagnostics)
-            .Concat(processedCube.Diagnostics).Concat(processedSquareRoot.Diagnostics).Concat(processedCubeRoot.Diagnostics);
+        allDiagnostics = allDiagnostics.Concat(processedDifference.Diagnostics).Concat(processedDefaultUnitName.Diagnostics).Concat(processedReciprocal.Diagnostics)
+            .Concat(processedSquare.Diagnostics) .Concat(processedCube.Diagnostics).Concat(processedSquareRoot.Diagnostics).Concat(processedCubeRoot.Diagnostics);
 
-        RefinedGeneratedScalarDefinition product = new(processedUnit.Result, processedVector.NullableResult, definition.Biased, processedDefaultUnitName.Result,
-            definition.DefaultUnitSymbol, processedReciprocal.Result, processedSquare.Result, processedCube.Result, processedSquareRoot.Result, processedCubeRoot.Result,
-            definition.GenerateDocumentation);
+        RefinedGeneratedScalarDefinition product = new(processedUnit.Result, processedVector.NullableResult, definition.UseUnitBias, definition.ImplementSum,
+            definition.ImplementDifference, processedDifference.Result, processedDefaultUnitName.Result, definition.DefaultUnitSymbol, processedReciprocal.Result,
+            processedSquare.Result, processedCube.Result, processedSquareRoot.Result, processedCubeRoot.Result, definition.GenerateDocumentation);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
@@ -87,9 +90,9 @@ internal class GeneratedScalarRefiner : IProcesser<IGeneratedScalarRefinementCon
             return OptionalWithDiagnostics.Empty<UnitInterface>(Diagnostics.TypeNotUnit(context, definition));
         }
 
-        if (definition.Biased && unit.SupportsBiasedQuantities is false)
+        if (definition.UseUnitBias && unit.BiasTerm is false)
         {
-            return OptionalWithDiagnostics.Empty<UnitInterface>(Diagnostics.UnitNotSupportingBiasedQuantities(context, definition));
+            return OptionalWithDiagnostics.Empty<UnitInterface>(Diagnostics.UnitNotIncludingBiasTerm(context, definition));
         }
 
         return OptionalWithDiagnostics.Result(unit);
@@ -113,6 +116,16 @@ internal class GeneratedScalarRefiner : IProcesser<IGeneratedScalarRefinementCon
         }
 
         return OptionalWithDiagnostics.Result(vectorGroup);
+    }
+
+    private IResultWithDiagnostics<ScalarInterface> ProcessDifference(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition)
+    {
+        if (context.ScalarPopulation.TryGetValue(definition.Difference, out var scalar) is false)
+        {
+            return ResultWithDiagnostics.Construct(context.ScalarPopulation[context.Type.AsNamedType()], Diagnostics.DifferenceNotScalar(context, definition));
+        }
+
+        return ResultWithDiagnostics.Construct(scalar);
     }
 
     private IResultWithDiagnostics<string?> ProcessDefaultUnitName(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition, UnitInterface unit)

@@ -38,6 +38,11 @@ internal static class Execution
 
             UsingsCollector = UsingsCollector.Delayed(Builder, Data.Vector.Namespace);
             UsingsCollector.AddUsing("SharpMeasures");
+
+            if (Data.Vector.IsReferenceType)
+            {
+                UsingsCollector.AddUsing("System");
+            }
         }
 
         private void Compose()
@@ -50,11 +55,6 @@ internal static class Execution
             UsingsCollector.MarkInsertionPoint();
 
             Builder.AppendLine(Data.Vector.ComposeDeclaration());
-
-            InterfaceBuilding.AppendInterfaceImplementation(Builder, new string[]
-            {
-                $"IVector{Data.Dimension}"
-            });
 
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0);
 
@@ -114,7 +114,23 @@ internal static class Execution
         private void ComposeOperatorConversion(ResizedVectorInterface vector, Indentation indentation, string behaviour)
         {
             AppendDocumentation(indentation, Data.Documentation.CastToDimensionallyEquivalent(vector));
-            Builder.AppendLine($"{indentation}public static {behaviour} operator {vector.VectorType.Name}({Data.Vector.Name} x) => new(x.Components);");
+            
+            if (Data.Vector.IsReferenceType)
+            {
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="ArgumentNullException"/>
+                    {{indentation}}public static {{behaviour}} operator {{vector.VectorType.Name}}({{Data.Vector.Name}} x)
+                    {{indentation}}{
+                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(x);
+
+                    {{indentation.Increased}}return new(x.Components);
+                    {{indentation}}}
+                    """);
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation}public static {behaviour} operator {vector.VectorType.Name}({Data.Vector.Name} x) => new(x.Components);");
+            }
         }
 
         private void AppendDocumentation(Indentation indentation, string text)

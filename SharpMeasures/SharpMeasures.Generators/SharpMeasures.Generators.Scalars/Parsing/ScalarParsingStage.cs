@@ -156,7 +156,7 @@ public static class ScalarParsingStage
 
         var dimensionalEquivalences = input.DimensionalEquivalences.Select(static (x) => new DimensionalEquivalenceInterface(x.Quantities, x.CastOperatorBehaviour));
 
-        return new(input.ScalarType, input.ScalarDefinition.Unit, input.ScalarDefinition.Biased, input.ScalarDefinition.Reciprocal, input.ScalarDefinition.Square,
+        return new(input.ScalarType, input.ScalarDefinition.Unit, input.ScalarDefinition.UseUnitBias, input.ScalarDefinition.Reciprocal, input.ScalarDefinition.Square,
             input.ScalarDefinition.Cube, input.ScalarDefinition.SquareRoot, input.ScalarDefinition.CubeRoot, includedBases, excludedBases, includedUnits,
             excludedUnits, dimensionalEquivalences);
     }

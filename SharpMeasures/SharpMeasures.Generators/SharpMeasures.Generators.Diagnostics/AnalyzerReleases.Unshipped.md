@@ -10,7 +10,7 @@ Measures1001 | Usage | Warning | Expected a scalar quantity
 Measures1002 | Usage | Warning | Expected a vector quantity
 Measures1003 | Usage | Warning | Expected a unit
 Measures1004 | Usage | Warning | Type already defined
-Measures1020 | Usage | Warning | Expected an unbiased scalar quantity
+Measures1020 | Usage | Warning | Expected a strictly unbiased scalar quantity
 Measures1021 | Usage | Warning | Expected a biased scalar quantity
 Measures1022 | Usage | Warning | Unit does not support biased quantities
 Measures1080 | Usage | Info | Expected a non-empty list
@@ -37,6 +37,7 @@ Measures1240 | Usage | Warning | Unrecognized cast operator behaviour
 Measures1260 | Usage | Warning | Contradictory attributes
 Measures1261 | Usage | Warning | Quantity group missing root quantity
 Measures1262 | Usage | Info | Inclusion or exclusion had no effect
+Measures1263 | Usage | Warning | Difference is disabled but a quantity was specified
 Measures1420 | Usage | Warning | Invalid vector dimension
 Measures1421 | Usage | Warning | Missing vector dimension
 Measures1422 | Usage | Warning | Duplicate vector dimension

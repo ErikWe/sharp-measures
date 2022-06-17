@@ -48,7 +48,7 @@ internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocume
     public string IsPositive() => FromFileOrDefault(static (strategy) => strategy.IsPositive());
     public string IsNegative() => FromFileOrDefault(static (strategy) => strategy.IsNegative());
     public string IsFinite() => FromFileOrDefault(static (strategy) => strategy.IsFinite());
-    public string IsInfinity() => FromFileOrDefault(static (strategy) => strategy.IsInfinity());
+    public string IsInfinite() => FromFileOrDefault(static (strategy) => strategy.IsInfinite());
     public string IsPositiveInfinity() => FromFileOrDefault(static (strategy) => strategy.IsPositiveInfinity());
     public string IsNegativeInfinity() => FromFileOrDefault(static (strategy) => strategy.IsNegativeInfinity());
 
@@ -63,8 +63,23 @@ internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocume
 
     public string ToStringDocumentation() => FromFileOrDefault(static (strategy) => strategy.ToStringDocumentation());
 
+    public string EqualsSameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.EqualsSameTypeMethod());
+    public string EqualsObjectMethod() => FromFileOrDefault(static (strategy) => strategy.EqualsObjectMethod());
+
+    public string EqualitySameTypeOperator() => FromFileOrDefault(static (strategy) => strategy.EqualitySameTypeOperator());
+    public string InequalitySameTypeOperator() => FromFileOrDefault(static (strategy) => strategy.InequalitySameTypeOperator());
+
+    public string GetHashCodeDocumentation() => FromFileOrDefault(static (strategy) => strategy.GetHashCodeDocumentation());
+
     public string UnaryPlusMethod() => FromFileOrDefault(static (strategy) => strategy.UnaryPlusMethod());
     public string NegateMethod() => FromFileOrDefault(static (strategy) => strategy.NegateMethod());
+
+    public string AddSameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.AddSameTypeMethod());
+    public string SubtractSameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.SubtractSameTypeMethod());
+    public string SubtractFromSameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.SubtractFromSameTypeMethod());
+
+    public string AddDifferenceMethod() => FromFileOrDefault(static (strategy) => strategy.AddDifferenceMethod());
+    public string SubtractDifferenceMethod() => FromFileOrDefault(static (strategy) => strategy.SubtractDifferenceMethod());
 
     public string MultiplyScalarMethod() => FromFileOrDefault(static (strategy) => strategy.MultiplyScalarMethod());
     public string DivideScalarMethod() => FromFileOrDefault(static (strategy) => strategy.DivideScalarMethod());
@@ -72,16 +87,17 @@ internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocume
     public string MultiplySameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.MultiplySameTypeMethod());
     public string DivideSameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.DivideSameTypeMethod());
 
-    public string MultiplyGenericScalarToUnhandledMethod() => FromFileOrDefault(static (strategy) => strategy.MultiplyGenericScalarToUnhandledMethod());
-    public string DivideGenericScalarToUnhandledMethod() => FromFileOrDefault(static (strategy) => strategy.DivideGenericScalarToUnhandledMethod());
-
-    public string MultiplyGenericScalarMethod() => FromFileOrDefault(static (strategy) => strategy.MultiplyGenericScalarMethod());
-    public string DivideGenericScalarMethod() => FromFileOrDefault(static (strategy) => strategy.DivideGenericScalarMethod());
-
     public string MultiplyVectorMethod(int dimension) => FromFileOrDefault((strategy) => strategy.MultiplyVectorMethod(dimension));
 
     public string UnaryPlusOperator() => FromFileOrDefault(static (strategy) => strategy.UnaryPlusOperator());
     public string NegateOperator() => FromFileOrDefault(static (strategy) => strategy.NegateOperator());
+
+    public string AddSameTypeOperator() => FromFileOrDefault(static (strategy) => strategy.AddSameTypeOperator());
+    public string SubtractSameTypeOperator() => FromFileOrDefault(static (strategy) => strategy.SubtractSameTypeOperator());
+
+    public string AddDifferenceOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.AddDifferenceOperatorLHS());
+    public string AddDifferenceOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.AddDifferenceOperatorRHS());
+    public string SubtractDifferenceOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.SubtractDifferenceOperatorLHS());
 
     public string MultiplyScalarOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyScalarOperatorLHS());
     public string MultiplyScalarOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyScalarOperatorRHS());
@@ -92,12 +108,8 @@ internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocume
     public string MultiplySameTypeOperator() => FromFileOrDefault(static (strategy) => strategy.MultiplySameTypeOperator());
     public string DivideSameTypeOperator() => FromFileOrDefault(static (strategy) => strategy.DivideSameTypeOperator());
 
-    public string MultiplyIScalarOperator() => FromFileOrDefault(static (strategy) => strategy.MultiplyIScalarOperator());
-    public string DivideIScalarOperator() => FromFileOrDefault(static (strategy) => strategy.DivideIScalarOperator());
-
     public string MultiplyVectorOperatorLHS(int dimension) => FromFileOrDefault((strategy) => strategy.MultiplyVectorOperatorLHS(dimension));
     public string MultiplyVectorOperatorRHS(int dimension) => FromFileOrDefault((strategy) => strategy.MultiplyVectorOperatorRHS(dimension));
-    public string DivideVectorOperatorRHS(int dimension) => FromFileOrDefault((strategy) => strategy.DivideVectorOperatorRHS(dimension));
 
     public string CompareToSameType() => FromFileOrDefault(static (strategy) => strategy.CompareToSameType());
 

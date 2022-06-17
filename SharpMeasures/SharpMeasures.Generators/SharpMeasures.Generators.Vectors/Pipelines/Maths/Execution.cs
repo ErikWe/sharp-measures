@@ -42,6 +42,11 @@ internal static class Execution
                 UsingsCollector.AddUsing(Data.Scalar.Value.Namespace);
             }
 
+            if (Data.Vector.IsReferenceType)
+            {
+                UsingsCollector.AddUsing("System");
+            }
+
             if (Data.Dimension is 3)
             {
                 UsingsCollector.AddUsing("System.Numerics");
@@ -58,11 +63,6 @@ internal static class Execution
             UsingsCollector.MarkInsertionPoint();
 
             Builder.AppendLine(Data.Vector.ComposeDeclaration());
-
-            InterfaceBuilding.AppendInterfaceImplementation(Builder, new string[]
-            {
-                $"IVector{Data.Dimension}"
-            });
 
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0);
 
@@ -92,18 +92,126 @@ internal static class Execution
 
             AppendDocumentation(indentation, Data.Documentation.UnaryPlusOperator());
             Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator +({Data.Vector.Name} a) => a;");
-            AppendDocumentation(indentation, Data.Documentation.NegateOperator());
-            Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator -({Data.Vector.Name} a) => ({ConstantVectorTexts.Upper.NegateA(Data.Dimension)});");
-            AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorLHS());
-            Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator *({Data.Vector.Name} a, Scalar b) => ({ConstantVectorTexts.Upper.MultiplyAScalar(Data.Dimension)});");
-            AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorRHS());
-            Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator *(Scalar a, {Data.Vector.Name} b) => ({ConstantVectorTexts.Upper.MultiplyBScalar(Data.Dimension)});");
-            AppendDocumentation(indentation, Data.Documentation.DivideScalarOperatorRHS());
-            Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator /({Data.Vector.Name} a, Scalar b) => ({ConstantVectorTexts.Upper.DivideAScalar(Data.Dimension)});");
+
+            if (Data.Vector.IsReferenceType)
+            {
+                Builder.AppendLine();
+            }
+
+            ComposeNegate(indentation);
+
+            if (Data.Vector.IsReferenceType)
+            {
+                Builder.AppendLine();
+            }
+
+            ComposeMultiplyScalarLHS(indentation);
+
+            if (Data.Vector.IsReferenceType)
+            {
+                Builder.AppendLine();
+            }
+
+            ComposeMultiplyScalarRHS(indentation);
+
+            if (Data.Vector.IsReferenceType)
+            {
+                Builder.AppendLine();
+            }
+
+            ComposeDivideScalarLHS(indentation);
 
             Builder.AppendLine();
 
             ComposeMathUtility(indentation);
+        }
+
+        private void ComposeNegate(Indentation indentation)
+        {
+            AppendDocumentation(indentation, Data.Documentation.NegateOperator());
+
+            if (Data.Vector.IsReferenceType)
+            {
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="ArgumentNullException"/>
+                    {{indentation}}public static {{Data.Vector.Name}} operator -({{Data.Vector.Name}} a)
+                    {{indentation}}{
+                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(a);
+
+                    {{indentation.Increased}}return ({{ConstantVectorTexts.Upper.NegateA(Data.Dimension)}});
+                    {{indentation}}}
+                    """);
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator -({Data.Vector.Name} a) => ({ConstantVectorTexts.Upper.NegateA(Data.Dimension)});");
+            }
+        }
+
+        private void ComposeMultiplyScalarLHS(Indentation indentation)
+        {
+            AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorLHS());
+
+            if (Data.Vector.IsReferenceType)
+            {
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="ArgumentNullException"/>
+                    {{indentation}}public static {{Data.Vector.Name}} operator *({{Data.Vector.Name}} a, Scalar b)
+                    {{indentation}}{
+                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(a);
+
+                    {{indentation.Increased}}return ({{ConstantVectorTexts.Upper.MultiplyAScalar(Data.Dimension)}});
+                    {{indentation}}}
+                    """);
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator *({Data.Vector.Name} a, Scalar b) => ({ConstantVectorTexts.Upper.MultiplyAScalar(Data.Dimension)});");
+            }
+        }
+
+        private void ComposeMultiplyScalarRHS(Indentation indentation)
+        {
+            AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorRHS());
+
+            if (Data.Vector.IsReferenceType)
+            {
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="ArgumentNullException"/>
+                    {{indentation}}public static {{Data.Vector.Name}} operator *(Scalar a, {{Data.Vector.Name}} b)
+                    {{indentation}}{
+                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(b);
+
+                    {{indentation.Increased}}return ({{ConstantVectorTexts.Upper.MultiplyBScalar(Data.Dimension)}});
+                    {{indentation}}}
+                    """);
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator *(Scalar a, {Data.Vector.Name} b) => ({ConstantVectorTexts.Upper.MultiplyBScalar(Data.Dimension)});");
+            }
+        }
+
+        private void ComposeDivideScalarLHS(Indentation indentation)
+        {
+            AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorRHS());
+
+            if (Data.Vector.IsReferenceType)
+            {
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="ArgumentNullException"/>
+                    {{indentation}}public static {{Data.Vector.Name}} operator /({{Data.Vector.Name}} a, Scalar b)
+                    {{indentation}}{
+                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(a);
+
+                    {{indentation.Increased}}return ({{ConstantVectorTexts.Upper.DivideAScalar(Data.Dimension)}});
+                    {{indentation}}}
+                    """);
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator /({Data.Vector.Name} a, Scalar b) => ({ConstantVectorTexts.Upper.DivideAScalar(Data.Dimension)});");
+            }
         }
 
         private void ComposeMathUtility(Indentation indentation)

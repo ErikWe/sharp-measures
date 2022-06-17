@@ -19,15 +19,23 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string Definition(IUnitDefinition definition) => $"Definition_{definition.Name}";
 
     public string RepresentedQuantity() => "Quantity";
-    public string Offset() => "Offset";
+    public string Bias() => "Offset";
 
     public string Constructor() => "Constructor";
 
     public string ScaledBy() => "ScaledBy";
-    public string OffsetBy() => "OffsetBy";
+    public string WithBias() => "OffsetBy";
     public string WithPrefix() => "WithPrefix";
 
     public string ToStringDocumentation() => "ToString";
+
+    public string EqualsSameTypeMethod() => "Method_Equals_SameType";
+    public string EqualsObjectMethod() => "Method_Equals_Object";
+
+    public string EqualitySameTypeOperator() => "Operator_Equality_SameType";
+    public string InequalitySameTypeOperator() => "Operator_Inequality_SameType";
+
+    public string GetHashCodeDocumentation() => "GetHashCode";
 
     public string CompareToSameType() => "CompareTo_SameType";
 

@@ -58,6 +58,15 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string Transform() => "Transform";
 
     public string ToStringDocumentation() => "ToString";
+
+    public string EqualsSameTypeMethod() => "Method_Equals_SameType";
+    public string EqualsObjectMethod() => "Method_Equals_Object";
+
+    public string EqualitySameTypeOperator() => "Operator_Equality_SameType";
+    public string InequalitySameTypeOperator() => "Operator_Inequality_SameType";
+
+    public string GetHashCodeDocumentation() => "GetHashCode";
+
     public string Deconstruct() => "Deconstruct";
 
     public string UnaryPlusMethod() => "Method_UnaryPlus";
@@ -66,25 +75,12 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string MultiplyScalarMethod() => "Method_Multiply_Scalar";
     public string DivideScalarMethod() => "Method_Divide_Scalar";
 
-    public string MultiplyGenericScalarMethod() => "Method_Multiply_GenericScalar";
-    public string DivideGenericScalarMethod() => "Method_Divide_GenericScalar";
-
-    public string DotVector() => "Method_Dot_Vector";
-    public string CrossVector() => "Method_Cross_Vector";
-
-    public string DotGenericVector() => "Method_Dot_GenericVector";
-    public string CrossGenericVector() => "Method_Cross_GenericVector";
-
     public string UnaryPlusOperator() => "Operator_UnaryPlus";
     public string NegateOperator() => "Operator_Negate";
 
     public string MultiplyScalarOperatorLHS() => "Operator_Multiply_Scalar_LHS";
     public string MultiplyScalarOperatorRHS() => "Operator_Multiply_Scalar_RHS";
-    public string DivideScalarOperatorRHS() => "Operator_Divide_Scalar_RHS";
-
-    public string MultiplyIScalarOperatorLHS() => "Operator_Multiply_IScalar_LHS";
-    public string MultiplyIScalarOperatorRHS() => "Operator_Multiply_IScalar_RHS";
-    public string DivideIScalarOperatorRHS() => "Operator_Divide_IScalar_RHS";
+    public string DivideScalarOperatorLHS() => "Operator_Divide_Scalar_LHS";
 
     public virtual bool Equals(DocumentationTags? other)
     {

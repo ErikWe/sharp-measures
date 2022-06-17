@@ -9,7 +9,7 @@ internal static class OffsetUnitParser
 
     private static RawOffsetUnitDefinition DefaultDefinition() => RawOffsetUnitDefinition.Empty;
 
-    private class AttributeParser : AUnitParser<RawOffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations, OffsetUnitAttribute>
+    private class AttributeParser : AUnitParser<RawOffsetUnitDefinition, OffsetUnitParsingData, OffsetUnitLocations, BiasedUnitAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, OffsetUnitProperties.AllProperties) { }
     }

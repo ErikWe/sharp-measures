@@ -2,6 +2,8 @@
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Generators.SourceBuilding;
+
 using System.Threading;
 
 internal static class CommonGenerator
@@ -16,6 +18,7 @@ internal static class CommonGenerator
     private static DataModel Reduce(Scalars.DataModel input, CancellationToken _)
     {
         return new(input.ScalarData.ScalarType, input.ScalarDefinition.Unit.UnitType.AsNamedType(), input.ScalarDefinition.Unit.QuantityType,
-            input.ScalarDefinition.Biased, input.ScalarDefinition.DefaultUnitName, input.ScalarDefinition.DefaultUnitSymbol, input.Documentation);
+            input.ScalarDefinition.UseUnitBias, input.ScalarDefinition.DefaultUnitName, input.ScalarDefinition.DefaultUnitSymbol, input.Documentation,
+            SourceBuildingUtility.ToParameterName(input.ScalarDefinition.Unit.UnitType.Name));
     }
 }

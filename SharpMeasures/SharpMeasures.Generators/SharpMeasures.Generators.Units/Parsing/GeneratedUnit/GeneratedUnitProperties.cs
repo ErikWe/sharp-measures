@@ -11,7 +11,7 @@ internal static class GeneratedUnitProperties
     public static IReadOnlyList<IAttributeProperty<RawGeneratedUnitDefinition>> AllProperties => new IAttributeProperty<RawGeneratedUnitDefinition>[]
     {
         Quantity,
-        SupportsBiasedQuantities,
+        BiasTerm,
         GenerateDocumentation
     };
 
@@ -22,11 +22,11 @@ internal static class GeneratedUnitProperties
         locator: static (locations, quantityLocation) => locations with { Quantity = quantityLocation }
     );
 
-    private static GeneratedUnitProperty<bool> SupportsBiasedQuantities { get; } = new
+    private static GeneratedUnitProperty<bool> BiasTerm { get; } = new
     (
-        name: nameof(SharpMeasuresUnitAttribute.SupportsBiasedQuantities),
-        setter: static (definition, allowBias) => definition with { SupportsBiasedQuantities = allowBias },
-        locator: static (locations, allowBiasLocation) => locations with { SupportsBiasedQuantities = allowBiasLocation }
+        name: nameof(SharpMeasuresUnitAttribute.BiasTerm),
+        setter: static (definition, biasTerm) => definition with { BiasTerm = biasTerm },
+        locator: static (locations, biasTermLocation) => locations with { BiasTerm = biasTermLocation }
     );
 
     private static GeneratedUnitProperty<bool> GenerateDocumentation { get; } = new

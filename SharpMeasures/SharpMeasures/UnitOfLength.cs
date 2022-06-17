@@ -3,8 +3,8 @@
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
-[GeneratedUnit(typeof(Length), SupportsBiasedQuantities = false)]
+[SharpMeasuresUnit(typeof(Length), BiasTerm = false)]
 public readonly partial record struct UnitOfLength { }

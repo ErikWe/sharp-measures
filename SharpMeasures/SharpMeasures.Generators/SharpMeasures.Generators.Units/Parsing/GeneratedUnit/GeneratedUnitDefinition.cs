@@ -6,16 +6,16 @@ internal record class GeneratedUnitDefinition : AAttributeDefinition<GeneratedUn
 {
     public NamedType Quantity { get; }
 
-    public bool SupportsBiasedQuantities { get; }
+    public bool BiasTerm { get; }
 
     public bool GenerateDocumentation { get; }
 
-    public GeneratedUnitDefinition(NamedType quantity, bool supportsBiasedQuantities, bool generateDocumentation, GeneratedUnitLocations locations)
+    public GeneratedUnitDefinition(NamedType quantity, bool biasTerm, bool generateDocumentation, GeneratedUnitLocations locations)
         : base(locations)
     {
         Quantity = quantity;
 
-        SupportsBiasedQuantities = supportsBiasedQuantities;
+        BiasTerm = biasTerm;
         GenerateDocumentation = generateDocumentation;
     }
 }

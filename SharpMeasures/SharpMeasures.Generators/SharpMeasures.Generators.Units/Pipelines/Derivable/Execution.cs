@@ -77,11 +77,42 @@ internal static class Execution
         private void ComposeDefinition(RefinedDerivableUnitDefinition definition, Indentation indentation)
         {
             IEnumerable<string> signatureComponents = GetSignatureComponents(definition);
+            bool anyNullableTypes = AnyNullableTypesInSignature(definition);
 
             AppendDocumentation(indentation, Data.Documentation.Derivation(definition.Signature));
+
+            if (anyNullableTypes)
+            {
+                Builder.AppendLine($"""{indentation}/// <exception cref="ArgumentNullException"/>""");
+            }
+
             Builder.Append($"{indentation}public static {Data.Unit.Name} From(");
-            IterativeBuilding.AppendEnumerable(Builder, signatureComponents, ", ");
-            Builder.AppendLine($") => new({definition.Expression});");
+            IterativeBuilding.AppendEnumerable(Builder, signatureComponents, ", ", ")");
+
+            if (anyNullableTypes is false)
+            {
+                Builder.AppendLine($" => new({definition.Expression});");
+                return;
+            }
+
+            UsingsCollector.AddUsings("System");
+
+            IEnumerator<string> parameterEnumerator = definition.ParameterNames.GetEnumerator();
+            IEnumerator<NamedType> namedTypeEnumerator = definition.Signature.GetEnumerator();
+
+            Builder.AppendLine($$"""{{indentation}}{""");
+
+            while (parameterEnumerator.MoveNext() && namedTypeEnumerator.MoveNext())
+            {
+                if (namedTypeEnumerator.Current.IsReferenceType)
+                {
+                    Builder.AppendLine($"{indentation.Increased}ArgumentNullException.ThrowIfNull({parameterEnumerator.Current});");
+                }
+            }
+
+            Builder.AppendLine();
+            Builder.AppendLine($"{indentation.Increased}return new({definition.Expression});");
+            Builder.AppendLine($$"""{{indentation}}}""");
         }
 
         private IEnumerable<string> GetSignatureComponents(RefinedDerivableUnitDefinition definition)
@@ -94,6 +125,19 @@ internal static class Execution
                 UsingsCollector.AddUsing(signatureIterator.Current.Namespace);
                 yield return $"{signatureIterator.Current.Name} {parameterIterator.Current}";
             }
+        }
+
+        private static bool AnyNullableTypesInSignature(RefinedDerivableUnitDefinition definition)
+        {
+            foreach (var namedType in definition.Signature)
+            {
+                if (namedType.IsReferenceType)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void AppendDocumentation(Indentation indentation, string text)

@@ -35,7 +35,7 @@ internal interface IDocumentationStrategy
     public abstract string IsPositive();
     public abstract string IsNegative();
     public abstract string IsFinite();
-    public abstract string IsInfinity();
+    public abstract string IsInfinite();
     public abstract string IsPositiveInfinity();
     public abstract string IsNegativeInfinity();
 
@@ -50,8 +50,23 @@ internal interface IDocumentationStrategy
 
     public abstract string ToStringDocumentation();
 
+    public abstract string EqualsSameTypeMethod();
+    public abstract string EqualsObjectMethod();
+
+    public abstract string EqualitySameTypeOperator();
+    public abstract string InequalitySameTypeOperator();
+
+    public abstract string GetHashCodeDocumentation();
+
     public abstract string UnaryPlusMethod();
     public abstract string NegateMethod();
+
+    public abstract string AddSameTypeMethod();
+    public abstract string SubtractSameTypeMethod();
+    public abstract string SubtractFromSameTypeMethod();
+
+    public abstract string AddDifferenceMethod();
+    public abstract string SubtractDifferenceMethod();
 
     public abstract string MultiplyScalarMethod();
     public abstract string DivideScalarMethod();
@@ -59,16 +74,17 @@ internal interface IDocumentationStrategy
     public abstract string MultiplySameTypeMethod();
     public abstract string DivideSameTypeMethod();
 
-    public abstract string MultiplyGenericScalarToUnhandledMethod();
-    public abstract string DivideGenericScalarToUnhandledMethod();
-
-    public abstract string MultiplyGenericScalarMethod();
-    public abstract string DivideGenericScalarMethod();
-
     public abstract string MultiplyVectorMethod(int dimension);
 
     public abstract string UnaryPlusOperator();
     public abstract string NegateOperator();
+
+    public abstract string AddSameTypeOperator();
+    public abstract string SubtractSameTypeOperator();
+
+    public abstract string AddDifferenceOperatorLHS();
+    public abstract string AddDifferenceOperatorRHS();
+    public abstract string SubtractDifferenceOperatorLHS();
 
     public abstract string MultiplyScalarOperatorLHS();
     public abstract string MultiplyScalarOperatorRHS();
@@ -78,12 +94,8 @@ internal interface IDocumentationStrategy
     public abstract string MultiplySameTypeOperator();
     public abstract string DivideSameTypeOperator();
 
-    public abstract string MultiplyIScalarOperator();
-    public abstract string DivideIScalarOperator();
-
     public abstract string MultiplyVectorOperatorLHS(int dimension);
     public abstract string MultiplyVectorOperatorRHS(int dimension);
-    public abstract string DivideVectorOperatorRHS(int dimension);
 
     public abstract string CompareToSameType();
 

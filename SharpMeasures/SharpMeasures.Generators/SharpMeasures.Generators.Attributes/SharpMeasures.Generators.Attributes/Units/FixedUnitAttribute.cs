@@ -13,8 +13,9 @@ public sealed class FixedUnitAttribute : Attribute
     public string Plural { get; }
     /// <summary>The fixed value of the instance of the unit.</summary>
     public double Value { get; }
-    /// <summary>The bias of the instance of the unit.</summary>
-    /// <remarks>This is only used if the unit is biased.</remarks>
+    /// <summary>The bias of the instance of the unit. This is only used if the unit includes a bias term.</summary>
+    /// <remarks>This is the value of this instance of the unit when the "reference instance" is zero. What instance is defined as the "reference instance"
+    /// is arbitrary, but should be consistent across all instances.</remarks>
     public double Bias { get; init; }
 
     /// <summary>Constructs a definition of an instance of the unit, using a fixed value.</summary>

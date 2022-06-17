@@ -8,7 +8,7 @@ internal record class RawGeneratedUnitDefinition : ARawAttributeDefinition<Gener
 
     public NamedType? Quantity { get; init; }
 
-    public bool SupportsBiasedQuantities { get; init; }
+    public bool BiasTerm { get; init; }
 
     public bool GenerateDocumentation { get; init; }
 

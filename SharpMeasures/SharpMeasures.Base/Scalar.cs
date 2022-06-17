@@ -22,7 +22,8 @@ public readonly partial record struct Scalar :
     IFactorScalarQuantity<Scalar, Scalar, Scalar>,
     IDividendScalarQuantity<Scalar, Scalar, Scalar>,
     IDivisorScalarQuantity<Scalar, Scalar, Scalar>,
-    IFactor3ScalarQuantity<Vector3, Vector3>
+    IFactor3ScalarQuantity<Vector3, Vector3>,
+    IDivisor3ScalarQuantity<Vector3, Vector3>
 {
     /// <summary>The <see cref="Scalar"/> representing { 0 }.</summary>
     public static Scalar Zero { get; } = 0;
@@ -69,8 +70,12 @@ public readonly partial record struct Scalar :
     /// <summary>Computes the ceiling of <see langword="this"/>.</summary>
     public Scalar Ceiling() => Math.Ceiling(Value);
     /// <summary>Rounds <see langword="this"/> to the nearest integer value.</summary>
-    /// <remarks>Midpoint values are rounded to the nearest even integer value, consistent with <see cref="Math.Round(double)"/>.</remarks>
+    /// <remarks>Midpoint values are rounded to the nearest even integer value. This is consistent with <see cref="Math.Round(double)"/>.</remarks>
     public Scalar Round() => Math.Round(Value);
+    /// <summary>Computes the sign of <see langword="this"/>. { 1 } is returned if <see langword="this"/> is positive, { -1 } is returned if
+    /// <see langword="this"/> is negative, and { 0 } is returned if <see langword="this"/> is zero.</summary>
+    /// <returns></returns>
+    public int Sign() => Math.Sign(Value);
 
     /// <summary>Computes { <see langword="this"/> ^ <paramref name="exponent"/> }.</summary>
     /// <param name="exponent">The exponent of { <see langword="this"/> ^ <paramref name="exponent"/> }.</param>
@@ -86,9 +91,9 @@ public readonly partial record struct Scalar :
     /// <inheritdoc/>
     public Scalar CubeRoot() => ScalarMaths.CubeRoot(this);
 
-    /// <summary>Compares <see langword="this"/> to <paramref name="other"/>. 1 is returned if <see langword="this"/> is greater than <paramref name="other"/>,
-    /// -1 is returned if <paramref name="other"/> is greater than <see langword="this"/>, and 0 is returned if <see langword="this"/> and <paramref name="other"/>
-    /// are equal.
+    /// <summary>Compares <see langword="this"/> to <paramref name="other"/>. { 1 } is returned if <see langword="this"/> is greater than <paramref name="other"/>,
+    /// { -1 } is returned if <paramref name="other"/> is greater than <see langword="this"/>, and { 0 } is returned if <see langword="this"/> and
+    /// <paramref name="other"/> are equal.
     /// <para>A representation of { <see cref="double.NaN"/> }, { <see cref="double.NegativeInfinity"/> }, or { <see cref="double.PositiveInfinity"/> } is
     /// considered equal to another representation of the same value. { <see cref="double.NaN"/> } is treated as the smallest value.</para></summary>
     /// <param name="other"><see langword="this"/> is compared to this value.</param>
@@ -119,33 +124,10 @@ public readonly partial record struct Scalar :
     /// <inheritdoc/>
     Scalar IDivisorScalarQuantity<Scalar, Scalar>.DivideInto(Scalar dividend) => dividend / this;
 
-    /// <inheritdoc cref="IScalarQuantity.Multiply{TFactor}(TFactor)"/>
-    public TFactor Multiply<TFactor>(TFactor factor) where TFactor : IScalarQuantity<TFactor> => TFactor.WithMagnitude(this * factor.Magnitude);
-
-    /// <inheritdoc/>
-    Unhandled IScalarQuantity.Multiply<TFactor>(TFactor factor) => new(this * factor.Magnitude);
-
-    /// <inheritdoc/>
-    TProduct IScalarQuantity.Multiply<TProduct, TFactor>(TFactor factor) => TProduct.WithMagnitude(this * factor.Magnitude);
-
-    /// <inheritdoc/>
-    TQuotient IScalarQuantity.DivideInto<TQuotient, TDividend>(TDividend dividend) => TQuotient.WithMagnitude(dividend.Magnitude / this);
-
-    /// <inheritdoc cref="Divide(Scalar)"/>
-    /// <typeparam name="TQuotient">The scalar quantity that represents the result of { <see langword="this"/> / <paramref name="divisor"/> }.</typeparam>
-    /// <typeparam name="TDivisor">The scalar quantity that represents the divisor of { <see langword="this"/> / <paramref name="divisor"/> }.</typeparam>
-    public TQuotient Divide<TQuotient, TDivisor>(TDivisor divisor)
-        where TQuotient : IScalarQuantity<TQuotient>
-        where TDivisor : IScalarQuantity
-        => TQuotient.WithMagnitude(this / divisor.Magnitude);
-
-    /// <inheritdoc/>
-    Unhandled IScalarQuantity.Divide<TDivisor>(TDivisor divisor) => new(this / divisor.Magnitude);
-    /// <inheritdoc/>
-    Unhandled IScalarQuantity.DivideInto<TDividend>(TDividend dividend) => new(dividend.Magnitude / this);
-
     /// <inheritdoc/>
     public Vector3 Multiply(Vector3 factor) => this * factor;
+    /// <inheritdoc/>
+    public Vector3 DivideInto(Vector3 dividend) => dividend / this;
 
     /// <inheritdoc/>
     public static Scalar operator +(Scalar x) => x;

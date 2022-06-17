@@ -16,12 +16,12 @@ public class AbortedCases
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
 [ScaledUnit(""Foot"", ""Feet"", ""Metre"")]
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
 
@@ -35,12 +35,12 @@ public partial class UnitOfLength { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
 [ScaledUnit(""Foot"", ""Feet"", ""Invalid"", 0.3048)]
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
 
@@ -54,12 +54,12 @@ public partial class UnitOfLength { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
 [ScaledUnit(null, ""Feet"", ""Metre"", 0.3048)]
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
 
@@ -73,12 +73,12 @@ public partial class UnitOfLength { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
 [ScaledUnit(""Kilometre"", null, ""Metre"", 0.3048)]
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
 
@@ -92,12 +92,12 @@ public partial class UnitOfLength { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
 [ScaledUnit(""Kilometre"", ""Kilometres"", null, 0.3048)]
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
 
@@ -111,12 +111,12 @@ public partial class UnitOfLength { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
 [ScaledUnit(""Metre"", ""Meters"", ""Metre"", 1)]
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
 
@@ -130,12 +130,12 @@ public partial class UnitOfLength { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
 [ScaledUnit(""Meter"", ""Metres"", ""Metre"", 1)]
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
 
@@ -149,12 +149,12 @@ public partial class UnitOfLength { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
 [ScaledUnit(""Foot"", ""Feet"", ""Metre"", null)]
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
 

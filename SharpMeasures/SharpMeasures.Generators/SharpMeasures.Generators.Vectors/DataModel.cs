@@ -2,7 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Documentation;
 using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;

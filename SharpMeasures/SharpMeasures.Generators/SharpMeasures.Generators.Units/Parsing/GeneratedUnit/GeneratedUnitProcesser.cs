@@ -26,7 +26,7 @@ internal class GeneratedUnitProcesser : AProcesser<IProcessingContext, RawGenera
             return OptionalWithDiagnostics.Empty<GeneratedUnitDefinition>(Diagnostics.NullQuantity(context, definition));
         }
 
-        GeneratedUnitDefinition product = new(definition.Quantity.Value, definition.SupportsBiasedQuantities, definition.GenerateDocumentation, definition.Locations);
+        GeneratedUnitDefinition product = new(definition.Quantity.Value, definition.BiasTerm, definition.GenerateDocumentation, definition.Locations);
         return OptionalWithDiagnostics.Result(product);
     }
 }

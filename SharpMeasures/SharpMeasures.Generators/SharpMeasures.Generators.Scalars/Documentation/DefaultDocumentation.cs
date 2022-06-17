@@ -135,7 +135,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     public string IsPositive() => """/// <inheritdoc cref="Scalar.IsPositive"/>""";
     public string IsNegative() => """/// <inheritdoc cref="Scalar.IsNegative"/>""";
     public string IsFinite() => """/// <inheritdoc cref="Scalar.IsFinite"/>""";
-    public string IsInfinity() => """/// <inheritdoc cref="Scalar.IsInfinity"/>""";
+    public string IsInfinite() => """/// <inheritdoc cref="Scalar.IsInfinite"/>""";
     public string IsPositiveInfinity() => """/// <inheritdoc cref="Scalar.IsPositiveInfinity"/>""";
     public string IsNegativeInfinity() => """/// <inheritdoc cref="Scalar.IsNegativeInfinity"/>""";
 
@@ -170,23 +170,60 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         return $"""{commonText} and the magnitude expressed in an arbitrary unit.</summary>""";
     }
 
+    public string EqualsSameTypeMethod() => InheritDoc;
+    public string EqualsObjectMethod() => InheritDoc;
+
+    public string EqualitySameTypeOperator()
+    {
+        string text = $"""/// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent equivalent magnitudes.""";
+
+        return $"""
+            {text}.</summary>
+            /// <param name="lhs">The left-hand side of the equality check.</param>
+            /// <param name="rhs">The right-hand side of the equality check.</param>
+            """;
+    }
+
+    public string InequalitySameTypeOperator()
+    {
+        string text = $"""/// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent inequivalent magnitudes.""";
+
+        return $"""
+            {text}.</summary>
+            /// <param name="lhs">The left-hand side of the inequality check.</param>
+            /// <param name="rhs">The right-hand side of the inequality check.</param>
+            """;
+    }
+
+    public string GetHashCodeDocumentation() => InheritDoc;
+
     public string UnaryPlusMethod() => InheritDoc;
     public string NegateMethod() => InheritDoc;
+
+    public string AddSameTypeMethod() => InheritDoc;
+    public string SubtractSameTypeMethod() => InheritDoc;
+    public string SubtractFromSameTypeMethod() => InheritDoc;
+
+    public string AddDifferenceMethod() => InheritDoc;
+    public string SubtractDifferenceMethod() => InheritDoc;
+
     public string MultiplyScalarMethod() => InheritDoc;
     public string DivideScalarMethod() => InheritDoc;
+
     public string MultiplySameTypeMethod() => InheritDoc;
     public string DivideSameTypeMethod() => InheritDoc;
-
-    public string MultiplyGenericScalarToUnhandledMethod() => InheritDoc;
-    public string DivideGenericScalarToUnhandledMethod() => InheritDoc;
-
-    public string MultiplyGenericScalarMethod() => InheritDoc;
-    public string DivideGenericScalarMethod() => InheritDoc;
 
     public string MultiplyVectorMethod(int dimension) => InheritDoc;
 
     public string UnaryPlusOperator() => InheritDoc;
     public string NegateOperator() => InheritDoc;
+
+    public string AddSameTypeOperator() => InheritDoc;
+    public string SubtractSameTypeOperator() => InheritDoc;
+
+    public string AddDifferenceOperatorLHS() => InheritDoc;
+    public string AddDifferenceOperatorRHS() => InheritDoc;
+    public string SubtractDifferenceOperatorLHS() => InheritDoc;
 
     public string MultiplyScalarOperatorLHS() => InheritDoc;
     public string MultiplyScalarOperatorRHS() => InheritDoc;
@@ -196,26 +233,15 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     public string MultiplySameTypeOperator() => InheritDoc;
     public string DivideSameTypeOperator() => InheritDoc;
 
-    public string MultiplyIScalarOperator() => $"""
-        {InheritDoc}
-        /// <exception cref="ArgumentNullException"/>
-        """;
-
-    public string DivideIScalarOperator() => $"""
-        {InheritDoc}
-        /// <exception cref="ArgumentNullException"/>
-        """;
-
     public string MultiplyVectorOperatorLHS(int dimension) => InheritDoc;
     public string MultiplyVectorOperatorRHS(int dimension) => InheritDoc;
-    public string DivideVectorOperatorRHS(int dimension) => InheritDoc;
 
     public string CompareToSameType() => """/// <inheritdoc cref="Scalar.CompareTo(Scalar)"/>""";
 
     public string LessThanSameType()=> $$"""/// <inheritdoc cref="Scalar.operator &lt;(Scalar, Scalar)"/>""";
     public string GreaterThanSameType() => $$"""/// <inheritdoc cref="Scalar.operator &gt;(Scalar, Scalar)"/>""";
-    public string LessThanOrEqualSameType() => $$"""/// <inheritdoc cref="Scalar.operator &lt=;(Scalar, Scalar)"/>""";
-    public string GreaterThanOrEqualSameType() => $$"""/// <inheritdoc cref="Scalar.operator &gt=;(Scalar, Scalar)"/>""";
+    public string LessThanOrEqualSameType() => $$"""/// <inheritdoc cref="Scalar.operator &lt;=(Scalar, Scalar)"/>""";
+    public string GreaterThanOrEqualSameType() => $$"""/// <inheritdoc cref="Scalar.operator &gt;=(Scalar, Scalar)"/>""";
 
     private string ScalarReference => $"""<see cref="{ScalarType.Name}"/>""";
     private string UnitReference => $"""<see cref="{Unit.UnitType.Name}"/>""";

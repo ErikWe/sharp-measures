@@ -9,7 +9,12 @@ internal record class RawGeneratedScalarDefinition : ARawAttributeDefinition<Gen
     public NamedType? Unit { get; init; }
     public NamedType? Vector { get; init; }
 
-    public bool Biased { get; init; }
+    public bool UseUnitBias { get; init; }
+
+    public bool ImplementSum { get; init; } = true;
+    public bool ImplementDifference { get; init; } = true;
+
+    public NamedType? Difference { get; init; }
 
     public string? DefaultUnitName { get; init; }
     public string? DefaultUnitSymbol { get; init; }

@@ -10,15 +10,23 @@ internal interface IDocumentationStrategy
     public abstract string Definition(IUnitDefinition definition);
 
     public abstract string RepresentedQuantity();
-    public abstract string Offset();
+    public abstract string Bias();
 
     public abstract string Constructor();
 
     public abstract string ScaledBy();
-    public abstract string OffsetBy();
+    public abstract string WithBias();
     public abstract string WithPrefix();
 
     public abstract string ToStringDocumentation();
+
+    public abstract string EqualsSameTypeMethod();
+    public abstract string EqualsObjectMethod();
+
+    public abstract string EqualitySameTypeOperator();
+    public abstract string InequalitySameTypeOperator();
+
+    public abstract string GetHashCodeDocumentation();
 
     public abstract string CompareToSameType();
 

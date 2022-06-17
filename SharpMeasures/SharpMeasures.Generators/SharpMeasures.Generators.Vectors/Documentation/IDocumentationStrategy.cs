@@ -47,6 +47,15 @@ internal interface IDocumentationStrategy
     public abstract string Transform();
 
     public abstract string ToStringDocumentation();
+
+    public abstract string EqualsSameTypeMethod();
+    public abstract string EqualsObjectMethod();
+
+    public abstract string EqualitySameTypeOperator();
+    public abstract string InequalitySameTypeOperator();
+
+    public abstract string GetHashCodeDocumentation();
+
     public abstract string Deconstruct();
 
     public abstract string UnaryPlusMethod();
@@ -55,23 +64,10 @@ internal interface IDocumentationStrategy
     public abstract string MultiplyScalarMethod();
     public abstract string DivideScalarMethod();
 
-    public abstract string MultiplyGenericScalarMethod();
-    public abstract string DivideGenericScalarMethod();
-
-    public abstract string DotVector();
-    public abstract string CrossVector();
-
-    public abstract string DotGenericVector();
-    public abstract string CrossGenericVector();
-
     public abstract string UnaryPlusOperator();
     public abstract string NegateOperator();
 
     public abstract string MultiplyScalarOperatorLHS();
     public abstract string MultiplyScalarOperatorRHS();
-    public abstract string DivideScalarOperatorRHS();
-
-    public abstract string MultiplyIScalarOperatorLHS();
-    public abstract string MultiplyIScalarOperatorRHS();
-    public abstract string DivideIScalarOperatorRHS();
+    public abstract string DivideScalarOperatorLHS();
 }

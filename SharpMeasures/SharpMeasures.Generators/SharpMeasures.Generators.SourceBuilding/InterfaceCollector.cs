@@ -56,4 +56,12 @@ public class InterfaceCollector
             InterfaceBuilding.InsertInterfaceImplementation(Source, StartIndex, CollectedInterfaces);
         }
     }
+
+    public void InsertInterfacesOnNewLines(Indentation indentation)
+    {
+        if (CollectedInterfaces.Count > 0)
+        {
+            InterfaceBuilding.InsertInterfaceImplementationOnNewLines(Source, indentation, StartIndex, CollectedInterfaces);
+        }
+    }
 }

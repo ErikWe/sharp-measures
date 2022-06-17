@@ -16,12 +16,12 @@ public class AbortedCases
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfTemperature))]
+[SharpMeasuresScalar(typeof(UnitOfTemperature))]
 public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
 [OffsetUnit(""Celsius"", ""Celsius"", ""Kelvin"")]
-[GeneratedUnit(typeof(TemperatureDifference), Biased = true)]
+[SharpMeasuresUnit(typeof(TemperatureDifference), Biased = true)]
 public partial class UnitOfTemperature { }
 ";
 
@@ -35,12 +35,12 @@ public partial class UnitOfTemperature { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfTemperature))]
+[SharpMeasuresScalar(typeof(UnitOfTemperature))]
 public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
 [OffsetUnit(""Celsius"", ""Celsius"", ""Invalid"", -273.15)]
-[GeneratedUnit(typeof(TemperatureDifference), Biased = true)]
+[SharpMeasuresUnit(typeof(TemperatureDifference), Biased = true)]
 public partial class UnitOfTemperature { }
 ";
 
@@ -54,12 +54,12 @@ public partial class UnitOfTemperature { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfTemperature))]
+[SharpMeasuresScalar(typeof(UnitOfTemperature))]
 public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
 [OffsetUnit(null, ""Celsius"", ""Kelvin"", -273.15)]
-[GeneratedUnit(typeof(TemperatureDifference), Biased = true)]
+[SharpMeasuresUnit(typeof(TemperatureDifference), Biased = true)]
 public partial class UnitOfTemperature { }
 ";
 
@@ -73,12 +73,12 @@ public partial class UnitOfTemperature { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfTemperature))]
+[SharpMeasuresScalar(typeof(UnitOfTemperature))]
 public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
 [OffsetUnit(""Celcius"", null, ""Kelvin"", -273.15)]
-[GeneratedUnit(typeof(TemperatureDifference), Biased = true)]
+[SharpMeasuresUnit(typeof(TemperatureDifference), Biased = true)]
 public partial class UnitOfTemperature { }
 ";
 
@@ -92,12 +92,12 @@ public partial class UnitOfTemperature { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfTemperature))]
+[SharpMeasuresScalar(typeof(UnitOfTemperature))]
 public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
 [OffsetUnit(""Celcius"", ""Celcius"", null, -273.15)]
-[GeneratedUnit(typeof(TemperatureDifference), Biased = true)]
+[SharpMeasuresUnit(typeof(TemperatureDifference), Biased = true)]
 public partial class UnitOfTemperature { }
 ";
 
@@ -111,12 +111,12 @@ public partial class UnitOfTemperature { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfTemperature))]
+[SharpMeasuresScalar(typeof(UnitOfTemperature))]
 public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
 [OffsetUnit(""Kelvin"", ""Kelvins"", ""Kelvin"", -273.15)]
-[GeneratedUnit(typeof(TemperatureDifference), Biased = true)]
+[SharpMeasuresUnit(typeof(TemperatureDifference), Biased = true)]
 public partial class UnitOfTemperature { }
 ";
 
@@ -130,12 +130,12 @@ public partial class UnitOfTemperature { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfTemperature))]
+[SharpMeasuresScalar(typeof(UnitOfTemperature))]
 public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
 [OffsetUnit(""OneKelvin"", ""Kelvin"", ""Kelvin"", -273.15)]
-[GeneratedUnit(typeof(TemperatureDifference), Biased = true)]
+[SharpMeasuresUnit(typeof(TemperatureDifference), Biased = true)]
 public partial class UnitOfTemperature { }
 ";
 
@@ -149,12 +149,12 @@ public partial class UnitOfTemperature { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfTemperature))]
+[SharpMeasuresScalar(typeof(UnitOfTemperature))]
 public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
 [OffsetUnit(""Celsius"", ""Celsius"", ""Kelvin"", null)]
-[GeneratedUnit(typeof(TemperatureDifference), Biased = true)]
+[SharpMeasuresUnit(typeof(TemperatureDifference), Biased = true)]
 public partial class UnitOfTemperature { }
 ";
 

@@ -50,6 +50,11 @@ internal static class Execution
                 UsingsCollector.AddUsing(Data.Scalar.Value.Namespace);
             }
 
+            if (Data.Unit.IsReferenceType || Data.Scalar?.IsReferenceType is true)
+            {
+                UsingsCollector.AddUsing("System");
+            }
+
             if (Data.Dimension is 3)
             {
                 UsingsCollector.AddUsing("System.Numerics");
@@ -68,7 +73,7 @@ internal static class Execution
             AppendDocumentation(new Indentation(0), Data.Documentation.Header());
             Builder.AppendLine(Data.Vector.ComposeDeclaration());
 
-            InterfaceBuilding.AppendInterfaceImplementation(Builder, new string[]
+            InterfaceBuilding.AppendInterfaceImplementationOnNewLines(Builder, new Indentation(1), new string[]
             {
                 $"IVector{Data.Dimension}"
             });
@@ -125,13 +130,29 @@ internal static class Execution
 
             ComposeDeconstruct(indentation);
 
-            Builder.AppendLine();
+            if (Data.Vector.IsRecord is false)
+            {
+                ComposeEquality(indentation);
+
+                Builder.AppendLine();
+
+                ComposeGetHashCode(indentation);
+
+                Builder.AppendLine();
+            }
 
             if (Data.Scalar is not null)
             {
-                AppendDocumentation(indentation, Data.Documentation.CastFromComponents());
-                Builder.AppendLine("[SuppressMessage(\"Usage\", \"CA2225\", Justification = \"Behaviour can be achieved through a constructor\")]");
-                Builder.AppendLine($"public static implicit operator {Data.Vector.Name}(({Texts.Upper.Component}) components) => new({ConstantVectorTexts.Upper.ComponentsAccess(Data.Dimension)});");
+                Builder.AppendLine();
+
+                ComposeCastFromComponents(indentation);
+            }
+
+            if (Data.Unit.IsReferenceType)
+            {
+                Builder.AppendLine();
+
+                ComposeComputationUtilityMethod(indentation);
             }
         }
 
@@ -198,8 +219,24 @@ internal static class Execution
         private void ComposeInUnit(Indentation indentation)
         {
             AppendDocumentation(indentation, Data.Documentation.InUnit());
-            Builder.AppendLine($"{indentation}public Vector{Data.Dimension} InUnit({Data.Unit.Name} {Data.Unit.ParameterName})");
-            Builder.AppendLine($"{indentation.Increased}=> new({ComposeInUnitComputation()});");
+
+            if (Data.Unit.IsReferenceType)
+            {
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="ArgumentNullException"/>
+                    {{indentation}}public Vector{{Data.Dimension}} InUnit({{Data.Unit.Name}} {{Data.UnitParameterName}})
+                    {{indentation}}{
+                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull({{Data.UnitParameterName}});
+
+                    {{indentation.Increased}}return new({{ComposeInUnitComputation()}});
+                    {{indentation}}}
+                    """);
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation}public Vector{Data.Dimension} InUnit({Data.Unit.Name} {Data.UnitParameterName})");
+                Builder.AppendLine($"{indentation.Increased}=> new({ComposeInUnitComputation()});");
+            }
         }
 
         private void ComposeComponentsAsScalars(Indentation indentation)
@@ -248,8 +285,31 @@ internal static class Execution
         private void ComposeConstructorsToComponents(Indentation indentation)
         {
             AppendDocumentation(indentation, Data.Documentation.ComponentsConstructor());
-            Builder.AppendLine($"{indentation}public {Data.Vector.Name}({Texts.Lower.Component})");
-            BlockBuilding.AppendBlock(Builder, ComposeConstructorBlock, indentation);
+
+            if (Data.Scalar!.Value.IsReferenceType)
+            {
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="ArgumentNullException"/>
+                    {{indentation}}public {{Data.Vector.Name}}({{Texts.Lower.Component}})
+                    {{indentation}}{
+                    """);
+
+                for (int i = 0; i < Data.Dimension; i++)
+                {
+                    Builder.AppendLine($"{indentation.Increased}ArgumentNullException.ThrowIfNull({Texts.Lower.ComponentName(i)});");
+                }
+
+                Builder.AppendLine();
+
+                ComposeConstructorBlock(indentation.Increased);
+
+                Builder.AppendLine($$"""{{indentation}}}""");
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation}public {Data.Vector.Name}({Texts.Lower.Component})");
+                BlockBuilding.AppendBlock(Builder, ComposeConstructorBlock, indentation);
+            }
 
             Builder.AppendLine();
 
@@ -275,8 +335,22 @@ internal static class Execution
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.ScalarsAndUnitConstructor());
+            
+            if (Data.Unit.IsReferenceType)
+            {
+                Builder.AppendLine($"""{indentation}/// <exception cref="ArgumentNullException"/>""");
+            }
+            
             Builder.AppendLine($"{indentation}public {Data.Vector.Name}({ConstantVectorTexts.Lower.Scalar(Data.Dimension)}, {Data.Unit.Name} {UnitParameterName})");
-            Builder.AppendLine($"{indentation.Increased}: this({Texts.Lower.ScalarMultiplyUnit}) {{ }}");
+            
+            if (Data.Unit.IsReferenceType)
+            {
+                Builder.AppendLine($"{indentation.Increased}: this(ComputeRepresentedMagnitude({ConstantVectorTexts.Lower.Name(Data.Dimension)})) {{ }}");
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation.Increased}: this({Texts.Lower.ScalarMultiplyUnit}) {{ }}");
+            }
 
             Builder.AppendLine();
 
@@ -349,6 +423,161 @@ internal static class Execution
                         $"{UnitParameterName}.{Data.UnitQuantity.Name}.Magnitude.Value";
                 }
             }
+        }
+
+        private void ComposeEquality(Indentation indentation)
+        {
+            if (Data.Vector.IsReferenceType)
+            {
+                ComposeReferenceTypeEquality(indentation);
+            }
+            else
+            {
+                ComposeValueTypeEquality(indentation);
+            }
+        }
+
+        private void ComposeReferenceTypeEquality(Indentation indentation)
+        {
+            string virtualText = Data.Vector.IsSealed ? " virtual" : string.Empty;
+
+            AppendDocumentation(indentation, Data.Documentation.EqualsSameTypeMethod());
+            Builder.AppendLine($$"""
+                {{indentation}}public{{virtualText}} bool Equals({{Data.Vector.Name}}? other)
+                {{indentation}}{
+                {{indentation.Increased}}if (other is null)
+                {{indentation.Increased}}{
+                {{indentation.Increased.Increased}}return false;
+                {{indentation.Increased}}}
+
+                {{indentation.Increased}}return {{ConstructEqualityChecksText()}};
+                {{indentation}}}
+                """);
+
+            Builder.AppendLine();
+
+            AppendDocumentation(indentation, Data.Documentation.EqualsObjectMethod());
+            StaticBuilding.AppendEqualsObjectMethod(Builder, indentation, Data.Vector.Name);
+
+            Builder.AppendLine();
+
+            AppendDocumentation(indentation, Data.Documentation.EqualitySameTypeOperator());
+            Builder.AppendLine($"{indentation}public static bool operator ==({Data.Vector.Name}? lhs, {Data.Vector.Name}? rhs) => lhs?.Equals(rhs) ?? rhs is null;");
+
+            AppendDocumentation(indentation, Data.Documentation.InequalitySameTypeOperator());
+            Builder.AppendLine($"{indentation}public static bool operator !=({Data.Vector.Name}? lhs, {Data.Vector.Name}? rhs) => (lhs == rhs) is false;");
+        }
+
+        private void ComposeValueTypeEquality(Indentation indentation)
+        {
+            AppendDocumentation(indentation, Data.Documentation.EqualsSameTypeMethod());
+            Builder.AppendLine($"{indentation}public bool Equals({Data.Vector.Name} other)");
+            Builder.AppendLine($"{indentation.Increased}=> {ConstructEqualityChecksText()};");
+
+            Builder.AppendLine();
+
+            AppendDocumentation(indentation, Data.Documentation.EqualsObjectMethod());
+            StaticBuilding.AppendEqualsObjectMethod(Builder, indentation, Data.Vector.Name);
+
+            Builder.AppendLine();
+
+            AppendDocumentation(indentation, Data.Documentation.EqualitySameTypeOperator());
+            Builder.AppendLine($"{indentation}public static bool operator ==({Data.Vector.Name} lhs, {Data.Vector.Name} rhs) => lhs.Equals(rhs);");
+
+            AppendDocumentation(indentation, Data.Documentation.InequalitySameTypeOperator());
+            Builder.AppendLine($"{indentation}public static bool operator !=({Data.Vector.Name} lhs, {Data.Vector.Name} rhs) => (lhs == rhs) is false;");
+        }
+
+        private string ConstructEqualityChecksText()
+        {
+            StringBuilder equalityChecksText = new();
+            IterativeBuilding.AppendEnumerable(equalityChecksText, equalityChecks(), " && ");
+            return equalityChecksText.ToString();
+
+            IEnumerable<string> equalityChecks()
+            {
+                if (Data.Scalar is null)
+                {
+                    for (int i = 0; i < Data.Dimension; i++)
+                    {
+                        yield return $"{Texts.Upper.ComponentName(i)}.Value == other.{Texts.Upper.ComponentName(i)}.Value";
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < Data.Dimension; i++)
+                    {
+                        yield return $"{Texts.Upper.ComponentName(i)}.Magnitude.Value == other.{Texts.Upper.ComponentName(i)}.Magnitude.Value";
+                    }
+                }
+            }
+        }
+
+        private void ComposeGetHashCode(Indentation indentation)
+        {
+            AppendDocumentation(indentation, Data.Documentation.GetHashCodeDocumentation());
+            Builder.AppendLine($"{indentation}public override int GetHashCode()");
+            Builder.AppendLine($"{indentation.Increased}=> ({ConstantVectorTexts.Upper.Name(Data.Dimension)}).GetHashCode();");
+        }
+
+        private void ComposeCastFromComponents(Indentation indentation)
+        {
+            AppendDocumentation(indentation, Data.Documentation.CastFromComponents());
+            Builder.Append($$"""
+                [SuppressMessage("Usage", "CA2225", Justification = "Behaviour can be achieved through a constructor")]
+                public static implicit operator {{Data.Vector.Name}}(({{Texts.Upper.Component}}) components)
+                """);
+
+            if (Data.Scalar!.Value.IsReferenceType)
+            {
+                Builder.AppendLine($$"""{{indentation}}{""");
+
+                for (int i = 0; i < Data.Dimension; i++)
+                {
+                    Builder.AppendLine($"{indentation.Increased}ArgumentNullException.ThrowIfNull(components.{Texts.Upper.ComponentName(i)});");
+                }
+
+                Builder.AppendLine();
+                Builder.AppendLine($"{indentation.Increased}return new({ConstantVectorTexts.Upper.ComponentsAccess(Data.Dimension)});");
+                Builder.AppendLine($$"""{{indentation}}}""");
+            }
+            else
+            {
+                Builder.AppendLine($" => new({ConstantVectorTexts.Upper.ComponentsAccess(Data.Dimension)});");
+            }
+        }
+
+        private void ComposeComputationUtilityMethod(Indentation indentation)
+        {
+            Builder.AppendLine($$"""
+                {{indentation}}/// <summary>Computes the magnitudes of the represented components based on magnitudes expressed in
+                {{indentation}}/// a certain unit <paramref name="{{Data.UnitParameterName}}"/>.</summary>
+                """);
+
+            for (int i = 0; i < Data.Dimension; i++)
+            {
+                Builder.AppendLine($"""{indentation}/// <param name="{Texts.Lower.ComponentName(i)}">The magnitude of the {Texts.Upper.ComponentName(i)}-component, expressed in a certain unit <paramref name="{Data.UnitParameterName}"/>.</param>""");
+            }
+
+            Builder.AppendLine($$"""
+                {{indentation}}/// <param name="{{Data.UnitParameterName}}">The {{Data.Unit.Name}} in which the magnitudes of the components are expressed.</param>
+                {{indentation}}/// <exception cref="ArgumentNullException"/>
+                {{indentation}}private static Scalar ComputeRepresentedMagnitude({{ConstantVectorTexts.Lower.Scalar(Data.Dimension)}}, {{Data.Unit.Name}} {{UnitParameterName}})
+                {{indentation}}{
+                """);
+
+            for (int i = 0; i < Data.Dimension; i++)
+            {
+                Builder.AppendLine($"""{indentation.Increased}ArgumentNullException.ThrowIfNull({Texts.Lower.ComponentName(i)});""");
+            }
+
+            Builder.AppendLine($$"""
+                
+                {{indentation.Increased}}ArgumentNullException.ThrowIfNull({{UnitParameterName}});
+
+                {{indentation.Increased}}return {{Texts.Lower.ScalarMultiplyUnit}};
+                {{indentation}}}
+                """);
         }
 
         private void AppendDocumentation(Indentation indentation, string text)

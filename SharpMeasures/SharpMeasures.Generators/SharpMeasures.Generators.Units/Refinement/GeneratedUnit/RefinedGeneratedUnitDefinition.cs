@@ -6,12 +6,12 @@ internal readonly record struct RefinedGeneratedUnitDefinition
 {
     public ScalarInterface Quantity { get; }
 
-    public bool SupportsBiasedQuantities { get; }
+    public bool BiasTerm { get; }
 
-    public RefinedGeneratedUnitDefinition(ScalarInterface quantity, bool supportsBiasedQuantities)
+    public RefinedGeneratedUnitDefinition(ScalarInterface quantity, bool biasTerm)
     {
         Quantity = quantity;
 
-        SupportsBiasedQuantities = supportsBiasedQuantities;
+        BiasTerm = biasTerm;
     }
 }

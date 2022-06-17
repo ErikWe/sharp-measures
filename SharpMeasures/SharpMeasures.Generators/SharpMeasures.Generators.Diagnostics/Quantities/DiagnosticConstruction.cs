@@ -102,4 +102,9 @@ public static partial class DiagnosticConstruction
     {
         return Diagnostic.Create(DiagnosticRules.UnitAlreadyListed, location, unitName);
     }
+
+    public static Diagnostic DifferenceDisabledButQuantitySpecified(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.DifferenceDisabledButQuantitySpecified, location);
+    }
 }

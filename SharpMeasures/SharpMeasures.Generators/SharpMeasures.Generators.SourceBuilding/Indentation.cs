@@ -14,7 +14,7 @@ public readonly record struct Indentation(int Level, string Text)
         string text = "";
         for (int i = 0; i < level; i++)
         {
-            text += "\t";
+            text += "    ";
         }
 
         return text;

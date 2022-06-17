@@ -11,7 +11,7 @@ using VerifyXunit;
 using Xunit;
 
 [UsesVerify]
-public class GeneratedUnit
+public class SharpMeasuresUnit
 {
     [Fact]
     public Task QuantityArgumentNotScalar_VerifyAndDiagnosticsList()
@@ -22,7 +22,7 @@ using SharpMeasures.Generators.Units;
 
 public partial class Length { }
 
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
 

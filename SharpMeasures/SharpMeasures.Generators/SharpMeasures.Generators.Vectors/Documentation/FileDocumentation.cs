@@ -64,6 +64,15 @@ internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocume
     public string Transform() => FromFileOrDefault(static (strategy) => strategy.Transform());
 
     public string ToStringDocumentation() => FromFileOrDefault(static (strategy) => strategy.ToStringDocumentation());
+
+    public string EqualsSameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.EqualsSameTypeMethod());
+    public string EqualsObjectMethod() => FromFileOrDefault(static (strategy) => strategy.EqualsObjectMethod());
+
+    public string EqualitySameTypeOperator() => FromFileOrDefault(static (strategy) => strategy.EqualitySameTypeOperator());
+    public string InequalitySameTypeOperator() => FromFileOrDefault(static (strategy) => strategy.InequalitySameTypeOperator());
+
+    public string GetHashCodeDocumentation() => FromFileOrDefault(static (strategy) => strategy.GetHashCodeDocumentation());
+
     public string Deconstruct() => FromFileOrDefault(static (strategy) => strategy.Deconstruct());
 
     public string UnaryPlusMethod() => FromFileOrDefault(static (strategy) => strategy.UnaryPlusMethod());
@@ -72,25 +81,12 @@ internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocume
     public string MultiplyScalarMethod() => FromFileOrDefault(static (strategy) => strategy.MultiplyScalarMethod());
     public string DivideScalarMethod() => FromFileOrDefault(static (strategy) => strategy.DivideScalarMethod());
 
-    public string MultiplyGenericScalarMethod() => FromFileOrDefault(static (strategy) => strategy.MultiplyGenericScalarMethod());
-    public string DivideGenericScalarMethod() => FromFileOrDefault(static (strategy) => strategy.DivideGenericScalarMethod());
-
-    public string DotVector() => FromFileOrDefault(static (strategy) => strategy.DotVector());
-    public string CrossVector() => FromFileOrDefault(static (strategy) => strategy.CrossVector());
-
-    public string DotGenericVector() => FromFileOrDefault(static (strategy) => strategy.DotGenericVector());
-    public string CrossGenericVector() => FromFileOrDefault(static (strategy) => strategy.CrossGenericVector());
-
     public string UnaryPlusOperator() => FromFileOrDefault(static (strategy) => strategy.UnaryPlusOperator());
     public string NegateOperator() => FromFileOrDefault(static (strategy) => strategy.NegateOperator());
 
     public string MultiplyScalarOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyScalarOperatorLHS());
     public string MultiplyScalarOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyScalarOperatorRHS());
-    public string DivideScalarOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.DivideScalarOperatorRHS());
-
-    public string MultiplyIScalarOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyIScalarOperatorLHS());
-    public string MultiplyIScalarOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyIScalarOperatorRHS());
-    public string DivideIScalarOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.DivideIScalarOperatorRHS());
+    public string DivideScalarOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.DivideScalarOperatorLHS());
 
     private string FromFileOrDefault(Func<IDocumentationStrategy, string> defaultDelegate)
     {

@@ -23,11 +23,11 @@ internal static class CommonResults
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
 [FixedUnit(""Metre"", ""Metres"", 1)]
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
 
@@ -35,10 +35,10 @@ public partial class UnitOfLength { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ";
 
@@ -46,11 +46,11 @@ public partial class UnitOfLength { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfTemperature))]
+[SharpMeasuresScalar(typeof(UnitOfTemperature))]
 public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
-[GeneratedUnit(typeof(TemperatureDifference), Biased = true)]
+[SharpMeasuresUnit(typeof(TemperatureDifference), Biased = true)]
 public partial class UnitOfTemperature { }
 ";
 
@@ -58,11 +58,11 @@ public partial class UnitOfTemperature { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfTemperature))]
+[SharpMeasuresScalar(typeof(UnitOfTemperature))]
 public partial class TemperatureDifference { }
 
 [FixedUnit(""Kelvin"", ""Kelvin"", 1, Bias = 0)]
-[GeneratedUnit(typeof(TemperatureDifference), Biased = true)]
+[SharpMeasuresUnit(typeof(TemperatureDifference), Biased = true)]
 public partial class UnitOfTemperature { }
 ";
 
@@ -70,22 +70,22 @@ public partial class UnitOfTemperature { }
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[GeneratedScalar(typeof(UnitOfLength))]
+[SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
-[GeneratedScalar(typeof(UnitOfTime))]
+[SharpMeasuresScalar(typeof(UnitOfTime))]
 public partial class Time { }
 
-[GeneratedScalar(typeof(UnitOfSpeed))]
+[SharpMeasuresScalar(typeof(UnitOfSpeed))]
 public partial class Speed { }
 
-[GeneratedUnit(typeof(Length))]
+[SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 
-[GeneratedUnit(typeof(Time))]
+[SharpMeasuresUnit(typeof(Time))]
 public partial class UnitOfTime { }
 
-[GeneratedUnit(typeof(Speed))]
+[SharpMeasuresUnit(typeof(Speed))]
 public partial class UnitOfSpeed { }
 ";
 }

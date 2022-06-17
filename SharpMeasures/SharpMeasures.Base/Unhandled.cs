@@ -44,7 +44,7 @@ public readonly record struct Unhandled :
     public Scalar Magnitude { get; }
 
     /// <summary>Constructs a new <see cref="Unhandled"/> representing { <paramref name="magnitude"/> }.</summary>
-    /// <param name="magnitude">The magnitude represented by the constructed <see cref="Unhandled"/>.</param>
+    /// <param name="magnitude">The magnitude of the constructed <see cref="Unhandled"/>.</param>
     public Unhandled(Scalar magnitude)
     {
         Magnitude = magnitude;
@@ -133,13 +133,6 @@ public readonly record struct Unhandled :
     Unhandled IDivisorScalarQuantity<Unhandled, IScalarQuantity>.DivideInto(IScalarQuantity dividend) => dividend / this;
 
     /// <inheritdoc/>
-    TProduct IScalarQuantity.Multiply<TProduct, TFactor>(TFactor factor) => TProduct.WithMagnitude(Magnitude * factor.Magnitude);
-    /// <inheritdoc/>
-    TQuotient IScalarQuantity.Divide<TQuotient, TFactor>(TFactor divisor) => TQuotient.WithMagnitude(Magnitude / divisor.Magnitude);
-    /// <inheritdoc/>
-    TQuotient IScalarQuantity.DivideInto<TQuotient, TDividend>(TDividend dividend) => TQuotient.WithMagnitude(dividend.Magnitude / Magnitude);
-
-    /// <inheritdoc/>
     Unhandled3 IFactor3ScalarQuantity<Unhandled3, Unhandled3>.Multiply(Unhandled3 factor) => this * factor;
     /// <inheritdoc/>
     Unhandled3 IDivisor3ScalarQuantity<Unhandled3, Unhandled3>.DivideInto(Unhandled3 dividend) => dividend / this;
@@ -150,30 +143,6 @@ public readonly record struct Unhandled :
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>
     Unhandled3 IDivisor3ScalarQuantity<Unhandled3, IVector3Quantity>.DivideInto(IVector3Quantity dividend) => dividend / this;
-
-    /// <inheritdoc cref="IAddendScalarQuantity{TSum, TAddend}.Add(TAddend)"/>
-    /// <typeparam name="TAddend">The scalar quantity that represents the second addend of { <see langword="this"/> + <typeparamref name="TAddend"/> }.</typeparam>
-    public Unhandled Add<TAddend>(TAddend addend) where TAddend : IScalarQuantity => new(Magnitude + addend.Magnitude);
-
-    /// <inheritdoc cref="IMinuendScalarQuantity{TSum, TSubtrahend}.Subtract(TSubtrahend)"/>
-    /// <typeparam name="TSubtrahend">The scalar quantity that represents the subtrahend of { <see langword="this"/> - <typeparamref name="TSubtrahend"/> }.</typeparam>
-    public Unhandled Subtract<TSubtrahend>(TSubtrahend subtrahend) where TSubtrahend : IScalarQuantity => new(Magnitude - subtrahend.Magnitude);
-
-    /// <inheritdoc cref="ISubtrahendScalarQuantity{TSum, TMinuend}.SubtractFrom(TMinuend)"/>
-    /// <typeparam name="TMinuend">The scalar quantity that represents the minuend of { <typeparamref name="TMinuend"/> - <see langword="this"/> }.</typeparam>
-    public Unhandled SubtractFrom<TMinuend>(TMinuend minuend) where TMinuend : IScalarQuantity => new(minuend.Magnitude - Magnitude);
-
-    /// <inheritdoc cref="IFactorScalarQuantity{TSum, TFactor}.Multiply(TFactor)"/>
-    /// <typeparam name="TFactor">The scalar quantity that represents the second factor of { <see langword="this"/> ∙ <typeparamref name="TFactor"/> }.</typeparam>
-    public Unhandled Multiply<TFactor>(TFactor factor) where TFactor : IScalarQuantity => new(Magnitude * factor.Magnitude);
-
-    /// <inheritdoc cref="IDividendScalarQuantity{TSum, TDivisor}.Divide(TDivisor)"/>
-    /// <typeparam name="TDivisor">The scalar quantity that represents the divisor of { <see langword="this"/> / <typeparamref name="TDivisor"/> }.</typeparam>
-    public Unhandled Divide<TDivisor>(TDivisor divisor) where TDivisor : IScalarQuantity => new(Magnitude / divisor.Magnitude);
-
-    /// <inheritdoc cref="IDivisorScalarQuantity{TSum, TDividend}.DivideInto(TDividend)"/>
-    /// <typeparam name="TDividend">The scalar quantity that represents the dividend of { <typeparamref name="TDividend"/> / <see langword="this"/> }.</typeparam>
-    public Unhandled DivideInto<TDividend>(TDividend dividend) where TDividend : IScalarQuantity => new(dividend.Magnitude / Magnitude);
 
     /// <inheritdoc/>
     public static Unhandled operator +(Unhandled x) => x;

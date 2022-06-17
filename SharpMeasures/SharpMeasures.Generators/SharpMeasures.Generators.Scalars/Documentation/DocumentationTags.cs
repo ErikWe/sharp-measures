@@ -41,7 +41,7 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string IsPositive() => "IsPositive";
     public string IsNegative() => "IsNegative";
     public string IsFinite() => "IsFinite";
-    public string IsInfinity() => "IsInfinity";
+    public string IsInfinite() => "IsInfinite";
     public string IsPositiveInfinity() => "IsPositiveInfinity";
     public string IsNegativeInfinity() => "IsNegativeInfinity";
 
@@ -56,8 +56,23 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
 
     public string ToStringDocumentation() => "ToString";
 
+    public string EqualsSameTypeMethod() => "Method_Equals_SameType";
+    public string EqualsObjectMethod() => "Method_Equals_Object";
+
+    public string EqualitySameTypeOperator() => "Operator_Equality_SameType";
+    public string InequalitySameTypeOperator() => "Operator_Inequality_SameType";
+
+    public string GetHashCodeDocumentation() => "GetHashCode";
+
     public string UnaryPlusMethod() => "Method_UnaryPlus";
     public string NegateMethod() => "Method_Negate";
+
+    public string AddSameTypeMethod() => "Method_Add_SameType";
+    public string SubtractSameTypeMethod() => "Method_Subtract_SameType";
+    public string SubtractFromSameTypeMethod() => "Method_SubtractFrom_SameType";
+
+    public string AddDifferenceMethod() => "Method_Add_Difference";
+    public string SubtractDifferenceMethod() => "Method_Subtract_Difference";
 
     public string MultiplyScalarMethod() => "Method_Multiply_Scalar";
     public string DivideScalarMethod() => "Method_Divide_Scalar";
@@ -65,16 +80,17 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string MultiplySameTypeMethod() => "Method_Multiply_SameType";
     public string DivideSameTypeMethod() => "Method_Divide_SameType";
 
-    public string MultiplyGenericScalarToUnhandledMethod() => "Method_Multiply_GenericScalar_Unhandled";
-    public string DivideGenericScalarToUnhandledMethod() => "Method_Divide_GenericScalar_Unhandled";
-
-    public string MultiplyGenericScalarMethod() => "Method_Multiply_GenericScalar";
-    public string DivideGenericScalarMethod() => "Method_Divide_GenericScalar";
-
     public string MultiplyVectorMethod(int dimension) => $"Method_Multiply_Vector_{dimension}";
 
     public string UnaryPlusOperator() => "Operator_UnaryPlus";
     public string NegateOperator() => "Operator_negate";
+
+    public string AddSameTypeOperator() => "Operator_Add_SameType";
+    public string SubtractSameTypeOperator() => "Operator_Subtract_SameType";
+
+    public string AddDifferenceOperatorLHS() => "Operator_Add_Difference_LHS";
+    public string AddDifferenceOperatorRHS() => "Operator_Add_Difference_RHS";
+    public string SubtractDifferenceOperatorLHS() => "Operator_Subtract_Difference_LHS";
 
     public string MultiplyScalarOperatorLHS() => "Operator_Multiply_Scalar_LHS";
     public string MultiplyScalarOperatorRHS() => "Operator_Multiply_Scalar_RHS";
@@ -84,12 +100,8 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string MultiplySameTypeOperator() => "Operator_Multiply_SameType";
     public string DivideSameTypeOperator() => "Operator_Divide_SameType";
 
-    public string MultiplyIScalarOperator() => "Operator_Multiply_IScalar";
-    public string DivideIScalarOperator() => "Operator_Divide_IScalar";
-
     public string MultiplyVectorOperatorLHS(int dimension) => $"Operator_MultiplyVector_LHS_{dimension}";
     public string MultiplyVectorOperatorRHS(int dimension) => $"Operator_MultiplyVector_RHS_{dimension}";
-    public string DivideVectorOperatorRHS(int dimension) => $"Operator_DivideVector_RHS_{dimension}";
 
     public string CompareToSameType() => "CompareTo_SameType";
 

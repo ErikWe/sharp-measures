@@ -10,7 +10,7 @@ using SharpMeasures.Generators.Units.Parsing.GeneratedUnit;
 internal interface IGeneratedUnitRefinementDiagnostics
 {
     public abstract Diagnostic? QuantityNotScalar(IGeneratedUnitRefinementContext context, GeneratedUnitDefinition definition);
-    public abstract Diagnostic? QuantityNotUnbiased(IGeneratedUnitRefinementContext context, GeneratedUnitDefinition definition);
+    public abstract Diagnostic? QuantityBiased(IGeneratedUnitRefinementContext context, GeneratedUnitDefinition definition);
 }
 
 internal interface IGeneratedUnitRefinementContext : IProcessingContext
@@ -34,12 +34,12 @@ internal class GeneratedUnitRefiner : IProcesser<IGeneratedUnitRefinementContext
             return OptionalWithDiagnostics.Empty<RefinedGeneratedUnitDefinition>(Diagnostics.QuantityNotScalar(context, definition));
         }
 
-        if (quantity.Biased)
+        if (quantity.UseUnitBias)
         {
-            return OptionalWithDiagnostics.Empty<RefinedGeneratedUnitDefinition>(Diagnostics.QuantityNotUnbiased(context, definition));
+            return OptionalWithDiagnostics.Empty<RefinedGeneratedUnitDefinition>(Diagnostics.QuantityBiased(context, definition));
         }
 
-        RefinedGeneratedUnitDefinition product = new(quantity, definition.SupportsBiasedQuantities);
+        RefinedGeneratedUnitDefinition product = new(quantity, definition.BiasTerm);
         return OptionalWithDiagnostics.Result(product);
     }
 }

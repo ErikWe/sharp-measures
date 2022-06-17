@@ -8,7 +8,12 @@ internal readonly record struct RefinedGeneratedScalarDefinition
     public UnitInterface Unit { get; }
     public ResizedVectorGroup? VectorGroup { get; }
 
-    public bool Biased { get; }
+    public bool UseUnitBias { get; }
+
+    public bool ImplementSum { get; }
+    public bool ImplementDifference { get; }
+
+    public ScalarInterface Difference { get; }
 
     public string? DefaultUnitName { get; }
     public string? DefaultUnitSymbol { get; }
@@ -21,13 +26,20 @@ internal readonly record struct RefinedGeneratedScalarDefinition
 
     public bool GenerateDocumentation { get; }
 
-    public RefinedGeneratedScalarDefinition(UnitInterface unit, ResizedVectorGroup? vectorGroup, bool biased, string? defaultUnitName, string? defaultUnitSymbol,
-        ScalarInterface? reciprocal, ScalarInterface? square, ScalarInterface? cube, ScalarInterface? squareRoot, ScalarInterface? cubeRoot, bool generateDocumentation)
+    public RefinedGeneratedScalarDefinition(UnitInterface unit, ResizedVectorGroup? vectorGroup, bool biased, bool implementSum, bool implementDifference,
+        ScalarInterface difference, string? defaultUnitName, string? defaultUnitSymbol, ScalarInterface? reciprocal, ScalarInterface? square, ScalarInterface? cube,
+        ScalarInterface? squareRoot, ScalarInterface? cubeRoot, bool generateDocumentation)
     {
         Unit = unit;
         VectorGroup = vectorGroup;
 
-        Biased = biased;
+        UseUnitBias = biased;
+
+        ImplementSum = implementSum;
+        ImplementDifference = implementDifference;
+
+        Difference = difference;
+
         DefaultUnitName = defaultUnitName;
         DefaultUnitSymbol = defaultUnitSymbol;
 

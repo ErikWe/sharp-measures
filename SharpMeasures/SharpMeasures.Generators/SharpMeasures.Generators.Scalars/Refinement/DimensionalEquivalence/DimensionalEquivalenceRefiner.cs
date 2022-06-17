@@ -51,7 +51,7 @@ internal class DimensionalEquivalenceRefiner : IProcesser<IDimensionalEquivalenc
                 continue;
             }
 
-            if (context.Biased && scalar.Biased is false)
+            if (context.Biased && scalar.UseUnitBias is false)
             {
                 if (Diagnostics.ScalarNotUnbiased(context, definition, index) is Diagnostic diagnostics)
                 {
@@ -61,7 +61,7 @@ internal class DimensionalEquivalenceRefiner : IProcesser<IDimensionalEquivalenc
                 continue;
             }
 
-            if (context.Biased is false && scalar.Biased)
+            if (context.Biased is false && scalar.UseUnitBias)
             {
                 if (Diagnostics.ScalarNotBiased(context, definition, index) is Diagnostic diagnostics)
                 {

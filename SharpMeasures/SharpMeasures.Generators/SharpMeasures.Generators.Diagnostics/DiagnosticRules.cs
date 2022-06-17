@@ -93,44 +93,31 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor UnitQuantityNotUnbiasedScalar = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor ScalarBiased = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.ScalarNotUnbiased,
-        title: "Expected an unbiased scalar quantity",
-        messageFormat: "Expected an unbiased scalar quantity. Make {0} an unbiased scalar quantity, or use another quantity.",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
-        isEnabledByDefault: true,
-        description: "The quantity associated with a unit should always be an unbiased quantity, regardless of whether the unit supports " +
-            "biased quantities. As an example; \"UnitOfTemperature\" should be associated with the unbiased quantity \"TemperatureDifference\", " +
-            "rather than the biased quantity \"Temperature\"."
-    );
-
-    public static readonly DiagnosticDescriptor ScalarNotUnbiased = new DiagnosticDescriptor
-    (
-        id: DiagnosticIDs.ScalarNotUnbiased,
-        title: "Expected an unbiased scalar quantity",
-        messageFormat: "Expected an unbiased scalar quantity. Make {0} an unbiased scalar quantity, or use another quantity.",
+        id: DiagnosticIDs.ScalarBiased,
+        title: "Expected a strictly unbiased scalar quantity",
+        messageFormat: "Expected a scalar quantity that disregards unit biases. Mark {0} as not using unit biases, or choose another quantity.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor ScalarNotBiased = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor ScalarUnbiased = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.ScalarNotBiased,
+        id: DiagnosticIDs.ScalarUnbiased,
         title: "Expected a biased scalar quantity",
-        messageFormat: "Expected a biased scalar quantity. Make {0} a biased scalar quantity, or use another quantity.",
+        messageFormat: "Expected a scalar quantity that considers unit biases. Mark {0} as using unit biases, or choose another quantity.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor UnitNotSupportingBias = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor UnitNotIncludingBiasTerm = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.UnitNotSupportingBias,
-        title: "Unit does not support biased quantities",
-        messageFormat: "The unit {0} does not support biased quantities",
+        id: DiagnosticIDs.UnitNotIncludingBiasTerm,
+        title: "Unit does not include a bias term",
+        messageFormat: "The unit {0} does not include a bias term",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

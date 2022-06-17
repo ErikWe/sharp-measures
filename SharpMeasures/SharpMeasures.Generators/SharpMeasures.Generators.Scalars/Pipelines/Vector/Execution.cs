@@ -79,11 +79,36 @@ internal static class Execution
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorLHS(vector.Dimension));
-            Builder.AppendLine($"{indentation}public static {vector.VectorType.Name} operator *({Data.Scalar.Name} x, Vector{vector.Dimension} y) => new(x.Magnitude.Value * y);");
+            if (Data.Scalar.IsReferenceType)
+            {
+                AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorLHS(vector.Dimension));
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="ArgumentNullException"/>
+                    {{indentation}}{
+                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(x);
 
-            AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorRHS(vector.Dimension));
-            Builder.AppendLine($"{indentation}public static {vector.VectorType.Name} operator *(Vector{vector.Dimension} x, {Data.Scalar.Name} y) => new(x * y.Magnitude.Value);");
+                    {{indentation.Increased}}return new(x.Magnitude.Value * y);
+                    {{indentation}}}
+                    """);
+
+                AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorRHS(vector.Dimension));
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="ArgumentNullException"/>
+                    {{indentation}}{
+                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(y);
+
+                    {{indentation.Increased}}return new(x * y.Magnitude.Value);
+                    {{indentation}}}
+                    """);
+            }
+            else
+            {
+                AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorLHS(vector.Dimension));
+                Builder.AppendLine($"{indentation}public static {vector.VectorType.Name} operator *({Data.Scalar.Name} x, Vector{vector.Dimension} y) => new(x.Magnitude.Value * y);");
+
+                AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorRHS(vector.Dimension));
+                Builder.AppendLine($"{indentation}public static {vector.VectorType.Name} operator *(Vector{vector.Dimension} x, {Data.Scalar.Name} y) => new(x * y.Magnitude.Value);");
+            }
         }
 
         private void AppendDocumentation(Indentation indentation, string text)

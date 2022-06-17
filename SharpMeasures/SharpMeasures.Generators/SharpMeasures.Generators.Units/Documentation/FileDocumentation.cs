@@ -22,15 +22,23 @@ internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocume
     public string Definition(IUnitDefinition definition) => FromFileOrDefault((strategy) => strategy.Definition(definition));
 
     public string RepresentedQuantity() => FromFileOrDefault(static (strategy) => strategy.RepresentedQuantity());
-    public string Offset() => FromFileOrDefault(static (strategy) => strategy.Offset());
+    public string Bias() => FromFileOrDefault(static (strategy) => strategy.Bias());
 
     public string Constructor() => FromFileOrDefault(static (strategy) => strategy.Constructor());
 
     public string ScaledBy() => FromFileOrDefault(static (strategy) => strategy.ScaledBy());
-    public string OffsetBy() => FromFileOrDefault(static (strategy) => strategy.OffsetBy());
+    public string WithBias() => FromFileOrDefault(static (strategy) => strategy.WithBias());
     public string WithPrefix() => FromFileOrDefault(static (strategy) => strategy.WithPrefix());
 
     public string ToStringDocumentation() => FromFileOrDefault(static (strategy) => strategy.ToStringDocumentation());
+
+    public string EqualsSameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.EqualsSameTypeMethod());
+    public string EqualsObjectMethod() => FromFileOrDefault(static (strategy) => strategy.EqualsObjectMethod());
+
+    public string EqualitySameTypeOperator() => FromFileOrDefault(static (strategy) => strategy.EqualitySameTypeOperator());
+    public string InequalitySameTypeOperator() => FromFileOrDefault(static (strategy) => strategy.InequalitySameTypeOperator());
+
+    public string GetHashCodeDocumentation() => FromFileOrDefault(static (strategy) => strategy.GetHashCodeDocumentation());
 
     public string CompareToSameType() => FromFileOrDefault(static (strategy) => strategy.CompareToSameType());
 

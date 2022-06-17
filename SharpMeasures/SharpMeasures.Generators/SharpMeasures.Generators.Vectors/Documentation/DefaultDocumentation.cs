@@ -235,6 +235,33 @@ internal class DefaultDocumentation<TDataModel> : IDocumentationStrategy, IEquat
         return $"""{commonText} and the components expressed in an arbitrary unit.</summary>""";
     }
 
+    public string EqualsSameTypeMethod() => InheritDoc;
+    public string EqualsObjectMethod() => InheritDoc;
+
+    public string EqualitySameTypeOperator()
+    {
+        string text = $"""/// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent equivalent components.""";
+
+        return $"""
+            {text}.</summary>
+            /// <param name="lhs">The left-hand side of the equality check.</param>
+            /// <param name="rhs">The right-hand side of the equality check.</param>
+            """;
+    }
+
+    public string InequalitySameTypeOperator()
+    {
+        string text = $"""/// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent inequivalent components.""";
+
+        return $"""
+            {text}.</summary>
+            /// <param name="lhs">The left-hand side of the inequality check.</param>
+            /// <param name="rhs">The right-hand side of the inequality check.</param>
+            """;
+    }
+
+    public string GetHashCodeDocumentation() => InheritDoc;
+
     public string Deconstruct() => $"""
         /// <summary>Deconstructs <see langword="this"/> into the individual components.</summary>
         {Texts.Deconstruct()}
@@ -246,26 +273,12 @@ internal class DefaultDocumentation<TDataModel> : IDocumentationStrategy, IEquat
     public string MultiplyScalarMethod() => InheritDoc;
     public string DivideScalarMethod() => InheritDoc;
 
-    public string MultiplyGenericScalarMethod() => """/// <inheritdoc cref="Vector3.Multiply{TFactor}(TFactor)"/>""";
-
-    public string DivideGenericScalarMethod() => """/// <inheritdoc cref="Vector3.Divide{TDivisor}(TDivisor)"/>""";
-
-    public string DotVector() => InheritDoc;
-    public string CrossVector() => InheritDoc;
-
-    public string DotGenericVector() => InheritDoc;
-    public string CrossGenericVector() => InheritDoc;
-
     public string UnaryPlusOperator() => InheritDoc;
     public string NegateOperator() => InheritDoc;
 
     public string MultiplyScalarOperatorLHS() => InheritDoc;
     public string MultiplyScalarOperatorRHS() => InheritDoc;
-    public string DivideScalarOperatorRHS() => InheritDoc;
-
-    public string MultiplyIScalarOperatorLHS() => InheritDoc;
-    public string MultiplyIScalarOperatorRHS() => InheritDoc;
-    public string DivideIScalarOperatorRHS() => InheritDoc;
+    public string DivideScalarOperatorLHS() => InheritDoc;
 
     private string VectorReference => $"""<see cref="{VectorType.Name}"/>""";
     private string UnitReference => $"""<see cref="{Unit.UnitType.Name}"/>""";

@@ -13,6 +13,10 @@ internal interface IGeneratedScalarProcessingDiagnostics
 {
     public abstract Diagnostic? NullUnit(IProcessingContext context, RawGeneratedScalarDefinition definition);
     public abstract Diagnostic? NullVector(IProcessingContext context, RawGeneratedScalarDefinition definition);
+
+    public abstract Diagnostic? DifferenceDisabledButQuantitySpecified(IProcessingContext context, RawGeneratedScalarDefinition definition);
+    public abstract Diagnostic? NullDifferenceQuantity(IProcessingContext context, RawGeneratedScalarDefinition definition);
+
     public abstract Diagnostic? NullDefaultUnit(IProcessingContext context, RawGeneratedScalarDefinition definition);
     public abstract Diagnostic? EmptyDefaultUnit(IProcessingContext context, RawGeneratedScalarDefinition definition);
     public abstract Diagnostic? SetDefaultSymbolButNotUnit(IProcessingContext context, RawGeneratedScalarDefinition definition);
@@ -56,7 +60,8 @@ internal class GeneratedScalarProcesser : AProcesser<IProcessingContext, RawGene
         var processedDefaultUnitData = ProcessDefaultUnitData(context, definition);
         allDiagnostics = allDiagnostics.Concat(processedDefaultUnitData);
 
-        GeneratedScalarDefinition product = new(definition.Unit!.Value, definition.Vector, definition.Biased, processedDefaultUnitData.Result.Name,
+        GeneratedScalarDefinition product = new(definition.Unit!.Value, definition.Vector, definition.UseUnitBias, definition.ImplementSum,
+            definition.ImplementDifference, definition.Difference ?? context.Type.AsNamedType(), processedDefaultUnitData.Result.Name,
             processedDefaultUnitData.Result.Symbol, definition.Reciprocal, definition.Square, definition.Cube, definition.SquareRoot, definition.CubeRoot,
             definition.GenerateDocumentation, definition.Locations);
 
@@ -92,7 +97,7 @@ internal class GeneratedScalarProcesser : AProcesser<IProcessingContext, RawGene
 
         IEnumerable<IValidityWithDiagnostics> validities()
         {
-            yield return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckUnitValidity, CheckVectorValidity);
+            yield return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckUnitValidity, CheckVectorValidity, CheckDifferenceValidity);
             yield return CheckPowerValidity(context, definition, definition.Locations.ExplicitlySetReciprocal, definition.Reciprocal, Diagnostics.NullReciprocalQuantity);
             yield return CheckPowerValidity(context, definition, definition.Locations.ExplicitlySetSquare, definition.Square, Diagnostics.NullSquareQuantity);
             yield return CheckPowerValidity(context, definition, definition.Locations.ExplicitlySetCube, definition.Cube, Diagnostics.NullCubeQuantity);
@@ -121,6 +126,26 @@ internal class GeneratedScalarProcesser : AProcesser<IProcessingContext, RawGene
         if (definition.Vector is null)
         {
             return ValidityWithDiagnostics.ValidWithDiagnostics(Diagnostics.NullVector(context, definition));
+        }
+
+        return ValidityWithDiagnostics.Valid;
+    }
+
+    private IValidityWithDiagnostics CheckDifferenceValidity(IProcessingContext context, RawGeneratedScalarDefinition definition)
+    {
+        if (definition.Locations.ExplicitlySetDifference is false)
+        {
+            return ValidityWithDiagnostics.Valid;
+        }
+
+        if (definition.Difference is null)
+        {
+            return ValidityWithDiagnostics.ValidWithDiagnostics(Diagnostics.NullDifferenceQuantity(context, definition));
+        }
+
+        if (definition.ImplementDifference is false)
+        {
+            return ValidityWithDiagnostics.ValidWithDiagnostics(Diagnostics.DifferenceDisabledButQuantitySpecified(context, definition));
         }
 
         return ValidityWithDiagnostics.Valid;

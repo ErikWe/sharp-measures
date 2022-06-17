@@ -66,24 +66,19 @@ public static partial class DiagnosticConstruction
     public static Diagnostic ScalarTypeAlreadyDefinedAsVector(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "scalar", "vector");
     public static Diagnostic VectorTypeAlreadyDefinedAsVector(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "vector", "vector");
 
-    public static Diagnostic UnitQuantityNotUnbiased(Location? location, string scalarName)
+    public static Diagnostic ScalarBiased(Location? location, string scalarName)
     {
-        return Diagnostic.Create(DiagnosticRules.UnitQuantityNotUnbiasedScalar, location, scalarName);
+        return Diagnostic.Create(DiagnosticRules.ScalarBiased, location, scalarName);
     }
 
-    public static Diagnostic ScalarNotUnbiased(Location? location, string scalarName)
+    public static Diagnostic ScalarUnbiased(Location? location, string scalarName)
     {
-        return Diagnostic.Create(DiagnosticRules.ScalarNotUnbiased, location, scalarName);
+        return Diagnostic.Create(DiagnosticRules.ScalarUnbiased, location, scalarName);
     }
 
-    public static Diagnostic ScalarNotBiased(Location? location, string scalarName)
+    public static Diagnostic UnitNotIncludingBiasTerm(Location? location, string unitName)
     {
-        return Diagnostic.Create(DiagnosticRules.ScalarNotBiased, location, scalarName);
-    }
-
-    public static Diagnostic UnitNotSupportingBias(Location? location, string unitName)
-    {
-        return Diagnostic.Create(DiagnosticRules.UnitNotSupportingBias, location, unitName);
+        return Diagnostic.Create(DiagnosticRules.UnitNotIncludingBiasTerm, location, unitName);
     }
 
     public static Diagnostic EmptyList(Location? location, string objectType)

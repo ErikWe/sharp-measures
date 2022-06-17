@@ -21,7 +21,7 @@ internal static class DimensionalEquivalenceGenerator
 
     private static IResultWithDiagnostics<DataModel> ReduceToDataModel(Scalars.DataModel input, CancellationToken _)
     {
-        DimensionalEquivalenceRefinementContext context = new(input.ScalarDefinition.Unit.UnitType, input.ScalarData.ScalarDefinition.Biased, input.ScalarPopulation);
+        DimensionalEquivalenceRefinementContext context = new(input.ScalarDefinition.Unit.UnitType, input.ScalarData.ScalarDefinition.UseUnitBias, input.ScalarPopulation);
         DimensionalEquivalenceRefiner refiner = new(DimensionalEquivalenceDiagnostics.Instance);
 
         var processed = ProcessingFilter.Create(refiner).Filter(context, input.ScalarData.DimensionalEquivalences);

@@ -23,6 +23,16 @@ internal class GeneratedScalarDiagnostics : IGeneratedScalarProcessingDiagnostic
         return DiagnosticConstruction.NullTypeNotVector(definition.Locations.Vector?.AsRoslynLocation());
     }
 
+    public Diagnostic NullDifferenceQuantity(IProcessingContext context, RawGeneratedScalarDefinition definition)
+    {
+        return DiagnosticConstruction.NullTypeNotScalar(definition.Locations.Difference?.AsRoslynLocation());
+    }
+
+    public Diagnostic DifferenceDisabledButQuantitySpecified(IProcessingContext context, RawGeneratedScalarDefinition definition)
+    {
+        return DiagnosticConstruction.DifferenceDisabledButQuantitySpecified(definition.Locations.Difference?.AsRoslynLocation());
+    }
+
     public Diagnostic NullDefaultUnit(IProcessingContext context, RawGeneratedScalarDefinition definition)
     {
         return DiagnosticConstruction.NullUnrecognizedUnitName(definition.Locations.DefaultUnitName?.AsRoslynLocation(), definition.Unit!.Value.Name);
@@ -70,9 +80,9 @@ internal class GeneratedScalarDiagnostics : IGeneratedScalarProcessingDiagnostic
         return DiagnosticConstruction.TypeNotUnit(definition.Locations.Unit?.AsRoslynLocation(), definition.Unit.Name);
     }
 
-    public Diagnostic UnitNotSupportingBiasedQuantities(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition)
+    public Diagnostic UnitNotIncludingBiasTerm(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition)
     {
-        return DiagnosticConstruction.UnitNotSupportingBias(definition.Locations.Unit?.AsRoslynLocation(), definition.Unit.Name);
+        return DiagnosticConstruction.UnitNotIncludingBiasTerm(definition.Locations.UseUnitBias?.AsRoslynLocation(), definition.Unit.Name);
     }
 
     public Diagnostic TypeNotVector(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition)
@@ -83,6 +93,11 @@ internal class GeneratedScalarDiagnostics : IGeneratedScalarProcessingDiagnostic
     public Diagnostic UnrecognizedDefaultUnit(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition)
     {
         return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.DefaultUnitName?.AsRoslynLocation(), definition.DefaultUnitName!, definition.Unit.Name);
+    }
+
+    public Diagnostic DifferenceNotScalar(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition)
+    {
+        return DiagnosticConstruction.TypeNotScalar(definition.Locations.Difference?.AsRoslynLocation(), definition.Reciprocal!.Value.Name);
     }
 
     public Diagnostic ReciprocalNotScalar(IGeneratedScalarRefinementContext context, GeneratedScalarDefinition definition)

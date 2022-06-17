@@ -9,16 +9,16 @@ public record class UnitInterface
     public DefinedType UnitType { get; }
     public NamedType QuantityType { get; }
 
-    public bool SupportsBiasedQuantities { get; }
+    public bool BiasTerm { get; }
 
     public ReadOnlyEquatableDictionary<string, UnitInstance> UnitsByName { get; }
 
-    public UnitInterface(DefinedType unitType, NamedType quantityType, bool supportsBiasedQuantities, IReadOnlyDictionary<string, UnitInstance> unitsByName)
+    public UnitInterface(DefinedType unitType, NamedType quantityType, bool biasTerm, IReadOnlyDictionary<string, UnitInstance> unitsByName)
     {
         UnitType = unitType;
         QuantityType = quantityType;
 
-        SupportsBiasedQuantities = supportsBiasedQuantities;
+        BiasTerm = biasTerm;
 
         UnitsByName = unitsByName.AsReadOnlyEquatable();
     }

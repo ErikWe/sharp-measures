@@ -25,11 +25,11 @@ internal class DimensionalEquivalenceDiagnostics : ADimensionalEquivalenceProces
 
     public Diagnostic ScalarNotUnbiased(IDimensionalEquivalenceRefinementContext context, DimensionalEquivalenceDefinition definition, int index)
     {
-        return DiagnosticConstruction.ScalarNotUnbiased(definition.Locations.QuantitiesElements[index].AsRoslynLocation(), definition.Quantities[index].Name);
+        return DiagnosticConstruction.ScalarBiased(definition.Locations.QuantitiesElements[index].AsRoslynLocation(), definition.Quantities[index].Name);
     }
 
     public Diagnostic ScalarNotBiased(IDimensionalEquivalenceRefinementContext context, DimensionalEquivalenceDefinition definition, int index)
     {
-        return DiagnosticConstruction.ScalarNotBiased(definition.Locations.QuantitiesElements[index].AsRoslynLocation(), definition.Quantities[index].Name);
+        return DiagnosticConstruction.ScalarUnbiased(definition.Locations.QuantitiesElements[index].AsRoslynLocation(), definition.Quantities[index].Name);
     }
 }

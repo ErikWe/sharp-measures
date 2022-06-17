@@ -13,7 +13,10 @@ internal static class GeneratedScalarProperties
     {
         Unit,
         Vector,
-        Biased,
+        UseUnitBias,
+        ImplementSum,
+        ImplementDifference,
+        Difference,
         DefaultUnitName,
         DefaultUnitSymbol,
         Reciprocal,
@@ -38,11 +41,32 @@ internal static class GeneratedScalarProperties
         locator: static (locations, vectorLocation) => locations with { Vector = vectorLocation }
     );
 
-    private static GeneratedScalarProperty<bool> Biased { get; } = new
+    private static GeneratedScalarProperty<bool> UseUnitBias { get; } = new
     (
-        name: nameof(SharpMeasuresScalarAttribute.Biased),
-        setter: static (definition, biased) => definition with { Biased = biased },
-        locator: static (locations, biasedLocation) => locations with { Biased = biasedLocation }
+        name: nameof(SharpMeasuresScalarAttribute.UseUnitBias),
+        setter: static (definition, useUnitBias) => definition with { UseUnitBias = useUnitBias },
+        locator: static (locations, useUnitBiasLocation) => locations with { UseUnitBias = useUnitBiasLocation }
+    );
+
+    private static GeneratedScalarProperty<bool> ImplementSum { get; } = new
+    (
+        name: nameof(SharpMeasuresScalarAttribute.ImplementSum),
+        setter: static (definition, implementSum) => definition with { ImplementSum = implementSum },
+        locator: static (locations, implementSumLocation) => locations with { ImplementSum = implementSumLocation }
+    );
+
+    private static GeneratedScalarProperty<bool> ImplementDifference { get; } = new
+    (
+        name: nameof(SharpMeasuresScalarAttribute.ImplementDifference),
+        setter: static (definition, implementDifference) => definition with { ImplementDifference = implementDifference },
+        locator: static (locations, implementDifferenceLocation) => locations with { ImplementDifference = implementDifferenceLocation }
+    );
+
+    private static GeneratedScalarProperty<INamedTypeSymbol> Difference { get; } = new
+    (
+        name: nameof(SharpMeasuresScalarAttribute.Difference),
+        setter: static (definition, difference) => definition with { Difference = difference.AsNamedType() },
+        locator: static (locations, differenceLocation) => locations with { Difference = differenceLocation }
     );
 
     private static GeneratedScalarProperty<string> DefaultUnitName { get; } = new

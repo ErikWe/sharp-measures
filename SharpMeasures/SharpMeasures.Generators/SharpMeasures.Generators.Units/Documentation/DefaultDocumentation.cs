@@ -11,7 +11,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     private DefinedType UnitType { get; }
     private ScalarInterface Quantity { get; }
 
-    private bool SupportsBiasedQuantities { get; }
+    private bool BiasTerm { get; }
 
     private string QuantityParameterName { get; }
 
@@ -20,14 +20,14 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         UnitType = model.UnitData.UnitType;
         Quantity = model.UnitDefinition.Quantity;
 
-        SupportsBiasedQuantities = model.UnitDefinition.SupportsBiasedQuantities;
+        BiasTerm = model.UnitDefinition.BiasTerm;
 
-        QuantityParameterName = SourceBuildingUtility.ToParameterName(UnitType.Name);
+        QuantityParameterName = SourceBuildingUtility.ToParameterName(Quantity.ScalarType.Name);
     }
 
-    public string Header() => SupportsBiasedQuantities switch
+    public string Header() => BiasTerm switch
     {
-        true => $"""/// <summary>A unit of measurement, describing {QuantityReference} together with a <see cref="Scalar"/> offset.</summary>""",
+        true => $"""/// <summary>A unit of measurement, describing {QuantityReference} together with a <see cref="Scalar"/> bias term.</summary>""",
         false => $"""/// <summary>A unit of measurement, primarily describing {QuantityReference}.</summary>"""
     };
 
@@ -46,25 +46,28 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         return text;
     }
 
-    public string Definition(IUnitDefinition definition) => SupportsBiasedQuantities switch
+    public string Definition(IUnitDefinition definition) => BiasTerm switch
     {
-        true => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference} together with a <see cref="Scalar"/> offset.</summary>""",
+        true => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference} together with a <see cref="Scalar"/> bias term.</summary>""",
         false => $"/// <summary>A {UnitReference}, describing a certain {QuantityReference}.</summary>"
     };
 
     public string RepresentedQuantity() => $"""/// <summary>The {QuantityReference} described by <see langword="this"/>.</summary>""";
-    public string Offset() => """/// <summary>The <see cref="Scalar"/> offset described by <see langword="this"/>.</summary>""";
+    public string Bias() => """
+        /// <summary>The <see cref="Scalar"/> bias term associated with <see langword="this"/>.</summary>
+        /// <remarks>This is the value of <see langword="this"/> when a unit with bias { 0 } represents the value { 0 }.</remarks>
+        """;
 
-    public string Constructor() => SupportsBiasedQuantities switch
+    public string Constructor() => BiasTerm switch
     {
         true => BiasedConstructor(),
         false => UnbiasedConstructor()
     };
 
     private string BiasedConstructor() => $"""
-        /// <summary>Constructs a new {UnitReference}, describing <paremref name="{QuantityParameterName}"/>, together with a offset <paramref name="offset"/>.</summary>
+        /// <summary>Constructs a new {UnitReference}, describing <paremref name="{QuantityParameterName}"/>, together with a bias <paramref name="bias"/>.</summary>
         /// <param name="{QuantityParameterName}">The {QuantityReference} described by the constructed {UnitReference}.</param>
-        /// <param name="offset">The <see cref="Scalar"/> offset described by the constructed {UnitReference}.</param>
+        /// <param name="bias">The <see cref="Scalar"/> bias associated with the constructed {UnitReference}.</param>
         """;
     
     private string UnbiasedConstructor() => $"""
@@ -72,7 +75,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         /// <param name="{QuantityParameterName}">The {QuantityReference} described by the constructed {UnitReference}.</param>
         """;
 
-    public string ScaledBy() => SupportsBiasedQuantities switch
+    public string ScaledBy() => BiasTerm switch
     {
         true => BiasedScaledBy(),
         false => UnbiasedScaledBy()
@@ -81,67 +84,104 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     private string BiasedScaledBy() => $$"""
         /// <summary>Scales the {{QuantityReference}} described by <see langword="this"/> by <paramref name="scale"/> to derive a new {{UnitReference}}.</summary>
         /// <param name="scale">The described {{QuantityReference}} is scaled by this value.
-        /// <para>The described offset is also scaled, but by the reciprocal / inverse of this value.</para></param>
-        /// <remarks>The offset described by <see langword="this"/> is also scaled, but by { 1 / <paramref name="scale"/> }.
-        /// <para>When used together with <see cref="OffsetBy(Scalar)"/>, the order matters.</para></remarks>
+        /// <para>The bias term associated with <see langword="this"/> is also scaled, but by the reciprocal / inverse of this value.</para></param>
+        /// <remarks>The bias term associated with <see langword="this"/> is also scaled, but by { 1 / <paramref name="scale"/> }.
+        /// <para>When used together with <see cref="WithBias(Scalar)"/>, the order matters.</para></remarks>
         """;
 
     private string UnbiasedScaledBy() => $"""
-        /// <summary>Scales <see langword="this"/> by <paramref name="scale"/> to derive a new {UnitReference}.</summary>
+        /// <summary>Scales the {QuantityReference} described by <see langword="this"/> by <paramref name="scale"/> to derive a new {UnitReference}.</summary>
         /// <param name="scale">The described {QuantityReference} is scaled by this value.</param>
         """;
 
-    public string OffsetBy() => $"""
-        /// <summary>Offsets <see langword="this"/> by <paramref name="offset"/> to derive a new {UnitReference}.</summary>
-        /// <param name="offset">The difference in offset between <see langword="this"/> and the derived {UnitReference}.</param>
+    public string WithBias() => $"""
+        /// <summary>Derives a new {UnitReference} that has bias <paramref name="bias"/> relative to <see langword="this"/>.</summary>
+        /// <param name="bias">The bias of the derived {UnitReference} relative to <see langword="this"/>.</param>
         /// <remarks>When used together with <see cref="ScaledBy(Scalar)"/> or <see cref="WithPrefix(IPrefix)"/>, the order matters.</remarks>
         """;
 
-    public string WithPrefix() => SupportsBiasedQuantities switch
+    public string WithPrefix() => BiasTerm switch
     {
         true => BiasedWithPrefix(),
         false => UnbiasedWithPrefix()
     };
     
-    private string BiasedWithPrefix() => $"""
-        /// <summary>Prefixes <see langword="this"/> with <paramref name="prefix"/> to derive a new {UnitReference}.</summary>
-        /// <param name="prefix">The described {QuantityReference} is prefixed by this <see cref="IPrefix"/>.</param>
-        /// <remarks>The offset described by <see langword="this"/> is also affected, but by the reciprocal / inverse of the scale-factor of <paramref name="prefix"/>.
-        /// <para>Repeated invokation of <see cref="WithPrefix(IPrefix)"/> will not <i>replace</i> the previously applied <see cref="IPrefix"/>, but
-        /// <i>stack</i> them.</para>
-        /// <para>When used together with <see cref="OffsetBy(Scalar)"/>, the order matters.</para></remarks>
+    private string BiasedWithPrefix() => $$"""
+        /// <summary>Prefixes the {{QuantityReference}} described by <see langword="this"/> with <paramref name="prefix"/> to derive a new {{UnitReference}}.</summary>
+        /// <param name="prefix">The described {{QuantityReference}} is prefixed by this <see cref="IPrefix"/>.</param>
+        /// <remarks>The bias term associated with <see langword="this"/> is also scaled, but by the reciprocal / inverse of the scale-factor of <paramref name="prefix"/>.
+        /// <para>Repeated invokation will <i>stack</i> the prefixes, rather than <i>replace</i> the previously applied <see cref="IPrefix"/>.</para>
+        /// <para>When used together with <see cref="WithBias(Scalar)"/>, the order matters.</para></remarks>
         """;
 
-    private string UnbiasedWithPrefix() => $"""
-        /// <summary>Prefixes <see langword="this"/> with <paramref name="prefix"/> to derive a new {UnitReference}.</summary>
-        /// <param name="prefix">The described {QuantityReference} is prefixed by this <see cref="IPrefix"/>.</param>
-        /// <remarks>Repeated invokation of <see cref="WithPrefix(IPrefix)"/> will not <i>replace</i> the previously applied <see cref="IPrefix"/>, but
-        /// <i>stack</i> them.</remarks>
+    private string UnbiasedWithPrefix() => $$"""
+        /// <summary>Prefixes the {{QuantityReference}} described by <see langword="this"/> with <paramref name="prefix"/> to derive a new {{UnitReference}}.</summary>
+        /// <param name="prefix">The described {{QuantityReference}} is prefixed by this <see cref="IPrefix"/>.</param>
+        /// <remarks>Repeated invokation will <i>stack</i> the prefixes, rather than <i>replace</i> the previously applied <see cref="IPrefix"/>.</remarks>
         """;
 
-    public string ToStringDocumentation() => SupportsBiasedQuantities switch
+    public string ToStringDocumentation() => BiasTerm switch
     {
         true => BiasedToStringDocumentation(),
         false => UnbiasedToStringDocumentation()
     };
 
     private string BiasedToStringDocumentation() => $"""
-        ///<summary>Produces a description of <see langword="this"/> containing the type, the described {QuantityReference}, and the described offset.</summary>
+        ///<summary>Produces a description of <see langword="this"/> containing the type, the described {QuantityReference}, and the associated bias.</summary>
         """;
 
     private string UnbiasedToStringDocumentation() => $"""
         ///<summary>Produces a description of <see langword="this"/> containing the type and the described {QuantityReference}.</summary>
         """;
 
+    public string EqualsSameTypeMethod() => InheritDoc;
+    public string EqualsObjectMethod() => InheritDoc;
+
+    public string EqualitySameTypeOperator()
+    {
+        string text = $"""/// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent equivalent {QuantityReference}""";
+
+        if (BiasTerm)
+        {
+            text += " and bias";
+        }
+
+        return $"""
+            {text}.</summary>
+            /// <param name="lhs">The left-hand side of the equality check.</param>
+            /// <param name="rhs">The right-hand side of the equality check.</param>
+            """;
+    }
+
+    public string InequalitySameTypeOperator()
+    {
+        string text = $"""/// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent inequivalent {QuantityReference}""";
+
+        if (BiasTerm)
+        {
+            text += " or bias";
+        }
+
+        return $"""
+            {text}.</summary>
+            /// <param name="lhs">The left-hand side of the inequality check.</param>
+            /// <param name="rhs">The right-hand side of the inequality check.</param>
+            """;
+    }
+
+    public string GetHashCodeDocumentation() => InheritDoc;
+
     public string CompareToSameType() => """/// <inheritdoc cref="Scalar.CompareTo(Scalar)"/>""";
 
     public string LessThanSameType() => $$"""/// <inheritdoc cref="Scalar.operator &lt;(Scalar, Scalar)"/>""";
     public string GreaterThanSameType() => $$"""/// <inheritdoc cref="Scalar.operator &gt;(Scalar, Scalar)"/>""";
-    public string LessThanOrEqualSameType() => $$"""/// <inheritdoc cref="Scalar.operator &lt=;(Scalar, Scalar)"/>""";
-    public string GreaterThanOrEqualSameType() => $$"""/// <inheritdoc cref="Scalar.operator &gt=;(Scalar, Scalar)"/>""";
+    public string LessThanOrEqualSameType() => $$"""/// <inheritdoc cref="Scalar.operator &lt;=(Scalar, Scalar)"/>""";
+    public string GreaterThanOrEqualSameType() => $$"""/// <inheritdoc cref="Scalar.operator &gt;=(Scalar, Scalar)"/>""";
 
     private string UnitReference => $"""<see cref="{UnitType.Name}"/>""";
-    private string QuantityReference => $"""<see cref="{Quantity.ScalarType.Name}"/>""";
+    private string QuantityReference => $"""<see cref="{Quantity.ScalarType.Namespace}.{Quantity.ScalarType.Name}"/>""";
+
+    private static string InheritDoc => "/// <inheritdoc/>";
 
     public virtual bool Equals(DefaultDocumentation? other)
     {
@@ -150,7 +190,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
             return false;
         }
 
-        return UnitType == other.UnitType && Quantity == other.Quantity && SupportsBiasedQuantities == other.SupportsBiasedQuantities;
+        return UnitType == other.UnitType && Quantity == other.Quantity && BiasTerm == other.BiasTerm;
     }
 
     public override bool Equals(object obj)
@@ -166,5 +206,5 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     public static bool operator ==(DefaultDocumentation? lhs, DefaultDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(DefaultDocumentation? lhs, DefaultDocumentation? rhs) => (lhs == rhs) is false;
 
-    public override int GetHashCode() => (UnitType, Quantity, SupportsBiasedQuantities).GetHashCode();
+    public override int GetHashCode() => (UnitType, Quantity, BiasTerm).GetHashCode();
 }

@@ -103,55 +103,7 @@ public readonly record struct Vector3 :
     /// <inheritdoc/>
     public Vector3 Cross(Vector3 factor) => VectorMaths.Cross(this, factor);
     /// <inheritdoc/>
-    Vector3 IVector3Quantity<Vector3>.CrossInto(Vector3 factor) => VectorMaths.Cross(factor, this);
-    /// <inheritdoc/>
     Vector3 ICrossFactorVector3Quantity<Vector3, Vector3>.CrossInto(Vector3 factor) => VectorMaths.Cross(factor, this);
-
-    /// <inheritdoc/>
-    public Unhandled3 Multiply<TFactor>(TFactor factor)
-        where TFactor : IScalarQuantity
-        => new(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
-
-    /// <inheritdoc/>
-    public TProduct Multiply<TProduct, TFactor>(TFactor factor)
-        where TProduct : IVector3Quantity<TProduct>
-        where TFactor : IScalarQuantity
-        => TProduct.WithComponents(X * factor.Magnitude, Y * factor.Magnitude, Z * factor.Magnitude);
-
-    /// <inheritdoc/>
-    public Unhandled3 Divide<TDivisor>(TDivisor divisor)
-        where TDivisor : IScalarQuantity
-        => new(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
-
-    /// <inheritdoc/>
-    public TQuotient Divide<TQuotient, TDivisor>(TDivisor divisor)
-        where TQuotient : IVector3Quantity<TQuotient>
-        where TDivisor : IScalarQuantity
-        => TQuotient.WithComponents(X / divisor.Magnitude, Y / divisor.Magnitude, Z / divisor.Magnitude);
-
-    /// <inheritdoc/>
-    public TProduct Dot<TProduct, TFactor>(TFactor factor)
-        where TProduct : IScalarQuantity<TProduct>
-        where TFactor : IVector3Quantity
-        => MathFactory.ScalarResult<TProduct>().Dot3(this, factor);
-
-    /// <inheritdoc/>
-    Unhandled IVector3Quantity.Dot<TFactor>(TFactor factor) => UnhandledMaths.Dot3(this, factor);
-
-    /// <inheritdoc cref="IVector3Quantity.Cross{TProduct, TFactor}(TFactor)"/>
-    public TFactor Cross<TFactor>(TFactor factor) where TFactor : IVector3Quantity<TFactor> => MathFactory.Vector3Result<TFactor>().Cross(this, factor);
-    /// <inheritdoc cref="IVector3Quantity.CrossInto{TProduct, TFactor}(TFactor)"/>
-    public TFactor CrossInto<TFactor>(TFactor factor) where TFactor : IVector3Quantity<TFactor> => MathFactory.Vector3Result<TFactor>().Cross(this, factor);
-
-    /// <inheritdoc/>
-    Unhandled3 IVector3Quantity.Cross<TFactor>(TFactor factor) => Unhandled3Maths.Cross(this, factor);
-    /// <inheritdoc/>
-    Unhandled3 IVector3Quantity.CrossInto<TFactor>(TFactor factor) => Unhandled3Maths.Cross(factor, this);
-
-    /// <inheritdoc/>
-    TProduct IVector3Quantity.Cross<TProduct, TFactor>(TFactor factor) => MathFactory.Vector3Result<TProduct>().Cross(this, factor);
-    /// <inheritdoc/>
-    TProduct IVector3Quantity.CrossInto<TProduct, TFactor>(TFactor factor) => MathFactory.Vector3Result<TProduct>().Cross(factor, this);
 
     /// <inheritdoc/>
     public static Vector3 operator +(Vector3 a) => a;
@@ -168,7 +120,9 @@ public readonly record struct Vector3 :
     public static Vector3 operator *(Scalar a, Vector3 b) => (a * b.X, a * b.Y, a * b.Z);
     /// <inheritdoc/>
     public static Vector3 operator /(Vector3 a, Scalar b) => (a.X / b, a.Y / b, a.Z / b);
-    /// <inheritdoc cref="Scalar.operator %(Scalar, Scalar)"/>
+    /// <summary>Computes { <paramref name="a"/> % <paramref name="b"/> }.</summary>
+    /// <param name="a">The dividend of { <paramref name="a"/> % <paramref name="b"/> }.</param>
+    /// <param name="b">The divisor of { <paramref name="a"/> % <paramref name="b"/> }.</param>
     public static Vector3 operator %(Vector3 a, Scalar b) => (a.X % b, a.Y % b, a.Z % b);
 
     /// <summary>Constructs the <see cref="Vector3"/> with the elements of <paramref name="components"/> as components.</summary>

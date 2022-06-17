@@ -25,7 +25,7 @@ internal static class UnitDefinitionsGenerator
 
         var filteredDerivedUnits = ValidityFilter.Create(validator).Filter(context, input.UnitData.DerivedUnits);
 
-        DataModel model = new(input.UnitData.UnitType, input.UnitDefinition.Quantity.ScalarType.AsNamedType(), input.UnitDefinition.SupportsBiasedQuantities,
+        DataModel model = new(input.UnitData.UnitType, input.UnitDefinition.Quantity.ScalarType.AsNamedType(), input.UnitDefinition.BiasTerm,
             input.Documentation, input.UnitData.UnitAliases, filteredDerivedUnits.Result, input.UnitData.FixedUnits, input.UnitData.OffsetUnits,
             input.UnitData.PrefixedUnits, input.UnitData.ScaledUnits);
 

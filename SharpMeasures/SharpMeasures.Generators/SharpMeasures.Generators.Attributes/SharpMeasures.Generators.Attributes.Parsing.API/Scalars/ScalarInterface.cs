@@ -10,7 +10,7 @@ public record class ScalarInterface
     public DefinedType ScalarType { get; }
     public NamedType UnitType { get; }
 
-    public bool Biased { get; }
+    public bool UseUnitBias { get; }
 
     public NamedType? Reciprocal { get; }
     public NamedType? Square { get; }
@@ -26,15 +26,15 @@ public record class ScalarInterface
 
     public EquatableEnumerable<DimensionalEquivalenceInterface> DimensionalEquivalences { get; }
 
-    public ScalarInterface(DefinedType scalarType, NamedType unittype, bool biased, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot,
-        NamedType? cubeRoot, IEnumerable<IncludeBasesInterface> includedBases, IEnumerable<ExcludeBasesInterface> excludedBases,
+    public ScalarInterface(DefinedType scalarType, NamedType unittype, bool useUnitBias, NamedType? reciprocal, NamedType? square, NamedType? cube,
+        NamedType? squareRoot, NamedType? cubeRoot, IEnumerable<IncludeBasesInterface> includedBases, IEnumerable<ExcludeBasesInterface> excludedBases,
         IEnumerable<IncludeUnitsInterface> includedUnits, IEnumerable<ExcludeUnitsInterface> excludedUnits,
         IEnumerable<DimensionalEquivalenceInterface> dimensionalEquivalences)
     {
         ScalarType = scalarType;
         UnitType = unittype;
 
-        Biased = biased;
+        UseUnitBias = useUnitBias;
 
         Reciprocal = reciprocal;
         Square = square;

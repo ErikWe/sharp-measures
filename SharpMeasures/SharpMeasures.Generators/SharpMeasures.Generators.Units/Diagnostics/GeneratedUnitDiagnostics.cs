@@ -23,8 +23,8 @@ internal class GeneratedUnitDiagnostics : IGeneratedUnitProcessingDiagnostics, I
         return DiagnosticConstruction.TypeNotScalar(definition.Locations.Quantity?.AsRoslynLocation(), definition.Quantity.Name);
     }
 
-    public Diagnostic QuantityNotUnbiased(IGeneratedUnitRefinementContext context, GeneratedUnitDefinition definition)
+    public Diagnostic QuantityBiased(IGeneratedUnitRefinementContext context, GeneratedUnitDefinition definition)
     {
-        return DiagnosticConstruction.UnitQuantityNotUnbiased(definition.Locations.Quantity?.AsRoslynLocation(), definition.Quantity.Name);
+        return DiagnosticConstruction.ScalarBiased(definition.Locations.Quantity?.AsRoslynLocation(), definition.Quantity.Name);
     }
 }
