@@ -2,7 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Units.Utility;
 
 public static partial class DiagnosticConstruction
@@ -47,7 +46,7 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.NullUnrecognizedUnitName, location, unitTypeName);
     }
 
-    public static Diagnostic CyclicDependency(Location? location, string unitName, string unitTypeName)
+    public static Diagnostic CyclicUnitDependency(Location? location, string unitName, string unitTypeName)
     {
         return Diagnostic.Create(DiagnosticRules.CyclicUnitDependency, location, unitName, unitTypeName);
     }
@@ -65,5 +64,25 @@ public static partial class DiagnosticConstruction
     public static Diagnostic UnrecognizedPrefix(Location? location, string prefix, string prefixTypeName)
     {
         return Diagnostic.Create(DiagnosticRules.UnrecognizedPrefix, location, prefix, prefixTypeName);
+    }
+
+    public static Diagnostic NullScaledUnitExpression(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.NullScaledUnitExpression, location);
+    }
+
+    public static Diagnostic NullBiasedUnitExpression(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.NullBiasedUnitExpression, location);
+    }
+
+    public static Diagnostic FixedUnitBiasSpecifiedButUnitNotBiased(Location? location, string unitTypeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.FixedUnitBiasSpecifiedButUnitNotBiased, location, unitTypeName);
+    }
+
+    public static Diagnostic BiasedUnitDefinedButUnitNotBiased(Location? location, string unitName, string unitTypeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.BiasedUnitDefinedButUnitNotBiased, location, unitName, unitTypeName);
     }
 }

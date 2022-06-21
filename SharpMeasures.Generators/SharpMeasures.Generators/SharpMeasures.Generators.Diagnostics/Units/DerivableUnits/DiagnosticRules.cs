@@ -3,14 +3,45 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Units.Utility;
 
 public static partial class DiagnosticRules
 {
+    public static readonly DiagnosticDescriptor NullUnitDerivationID = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InvalidUnitDerivationID,
+        title: "Invalid derivation ID",
+        messageFormat: "The derivation ID must be defined",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor DuplicateUnitDerivationID = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.DuplicateUnitDerivationID,
+        title: "Duplicate derivation ID",
+        messageFormat: "{0} already defines a derivation with ID \"{1}\"",
+        category: "Naming",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor UnrecognizedUnitDerivationID = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.UnrecognizedUnitDerivationID,
+        title: "Derivation ID not recognized",
+        messageFormat: $"The derivation ID \"{{0}}\" was not recognized. {{1}} should be decorated by a {typeof(DerivableUnitAttribute).FullName} with this ID.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
     public static readonly DiagnosticDescriptor InvalidUnitDerivationExpression = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidUnitDerivationExpression,
         title: "Invalid unit derivation expression",
-        messageFormat: "The unit derivation described by \"{0}\" is invalid",
+        messageFormat: $"The unit derivation expression \"{{0}}\" is invalid. Common expressions can be found in {typeof(UnitDerivations).FullName}.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -20,7 +51,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InvalidUnitDerivationExpression,
         title: "Invalid unit derivation expression",
-        messageFormat: "Expected an expression describing the derivation",
+        messageFormat: $"The unit derivation expression must be defined. Common expressions can be found in {typeof(UnitDerivations).FullName}.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -36,31 +67,31 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor DuplicateUnitDerivationSignature = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor IncompatibleDerivedUnitListSize = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.DuplicateUnitDerivationSignature,
-        title: "Duplicate derivation signature",
-        messageFormat: "The unit {0} already defines this derivation signature",
+        id: DiagnosticIDs.IncompatibleDerivedUnitListSize,
+        title: "Unit list length not matching signature",
+        messageFormat: "Expected {0} units to match the derivation signature - but {1} was identified",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor UnrecognizedUnitDerivationSignature = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor UnitNotDerivable = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.UnrecognizedDerivedUnitSignature,
-        title: "Derivation signature not recognized",
-        messageFormat: $"The signature was not recognized. {{0}} should be marked with a {typeof(DerivableUnitAttribute)} describing a matching signature.",
+        id: DiagnosticIDs.UnitNotDerivable,
+        title: "Unit not derivable",
+        messageFormat: $"{{0}} has no defined derivations. Add a definition using {typeof(DerivableUnitAttribute).FullName}.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor UnitListNotMatchingSignature = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor AmbiguousDerivationSignatureNotSpecified = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.UnitListNotMatchingSignature,
-        title: "Unit list not matching signature",
-        messageFormat: "The number of items in the list should be {0}, to match the provided signature - but {1} was identified",
+        id: DiagnosticIDs.AmbiguousDerivationSignatureNotSpecified,
+        title: "Ambiguous unit derivation signature",
+        messageFormat: $"{{0}} contains multiple derivation definitions, but the ID of the intended derivation was not specified",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

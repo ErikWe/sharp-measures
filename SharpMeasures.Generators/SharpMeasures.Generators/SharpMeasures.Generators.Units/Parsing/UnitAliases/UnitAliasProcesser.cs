@@ -14,7 +14,7 @@ internal class UnitAliasProcesser : ADependantUnitProcesser<IDependantUnitProces
             return OptionalWithDiagnostics.Empty<UnitAliasDefinition>();
         }
 
-        var validity = CheckUnitValidity(context, definition);
+        var validity = CheckDependantUnitValidity(context, definition);
 
         if (validity.IsInvalid)
         {

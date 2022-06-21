@@ -41,6 +41,11 @@ internal static class ArgumentLocator
             return FromArray(initializerExpression);
         }
 
+        if (argumentList.Arguments[index].Expression is ImplicitArrayCreationExpressionSyntax implicitArrayCreationExpression)
+        {
+            return FromArray(implicitArrayCreationExpression.Initializer);
+        }
+
         return FromParamsList(argumentList, index);
     }
 

@@ -31,25 +31,8 @@ public sealed class EquatableCollection<T> : ICollection<T>, IReadOnlyCollection
 
     void ICollection<T>.CopyTo(T[] array, int arrayIndex) => Items.CopyTo(array, arrayIndex);
 
-    public bool Equals(EquatableCollection<T>? other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
-
-        return Items.SequenceEqual(other.Items);
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj is EquatableCollection<T> other)
-        {
-            return Equals(other);
-        }
-
-        return false;
-    }
+    public bool Equals(EquatableCollection<T>? other) => other is not null && Items.SequenceEqual(other.Items);
+    public override bool Equals(object? obj) => obj is EquatableCollection<T> other && Equals(other);
 
     public static bool operator ==(EquatableCollection<T>? lhs, EquatableCollection<T>? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(EquatableCollection<T>? lhs, EquatableCollection<T>? rhs) => (lhs == rhs) is false;

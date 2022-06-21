@@ -22,11 +22,18 @@ Measures1103 | Naming | Warning | Duplicate unit plural form
 Measures1104 | Usage | Warning | Expected the name of a unit
 Measures1105 | Usage | Warning | Cyclic unit dependency
 Measures1120 | Usage | Warning | Prefix not recognized
-Measures1140 | Usage | Warning | Invalid unit derivation expression
-Measures1141 | Usage | Warning | Expected a non-empty signature
-Measures1142 | Usage | Warning | Duplicate derivation signature
-Measures1143 | Usage | Warning | Derivation signature not recognized
-Measures1144 | Usage | Warning | Unit list not matching signature
+Measures1121 | Usage | Warning | Invalid scaled unit expression
+Measures1122 | Usage | Warning | Invalid biased unit expression
+Measures1123 | Usage | Warning | The unit does not support biases
+Measures1124 | Usage | Warning | The unit does not support biases
+Measures1140 | Usage | Warning | Invalid derivation ID
+Measures1141 | Naming | Warning | Duplicate derivation ID
+Measures1142 | Usage | Warning | Derivation ID not recognized
+Measures1143 | Usage | Warning | Invalid unit derivation expression
+Measures1144 | Usage | Warning | Expected a non-empty signature
+Measures1145 | Usage | Warning | Unit list not matching signature
+Measures1146 | Usage | Warning | Unit not derivable
+Measures1147 | Usage | Warning | Ambiguous unit derivation signature
 Measures1200 | Usage | Warning | Expected both unit name and symbol
 Measures1220 | Naming | Warning | Invalid name of constant
 Measures1221 | Naming | Warning | Invalid name for multiples of constant

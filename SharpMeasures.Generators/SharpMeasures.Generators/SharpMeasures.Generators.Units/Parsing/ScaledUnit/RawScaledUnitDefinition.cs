@@ -8,6 +8,7 @@ internal record class RawScaledUnitDefinition : ARawDependantUnitDefinition<Scal
 
     public string? From => DependantOn;
     public double Scale { get; init; }
+    public string? Expression { get; init; }
 
     private RawScaledUnitDefinition() : base(ScaledUnitLocations.Empty, ScaledUnitParsingData.Empty) { }
 }

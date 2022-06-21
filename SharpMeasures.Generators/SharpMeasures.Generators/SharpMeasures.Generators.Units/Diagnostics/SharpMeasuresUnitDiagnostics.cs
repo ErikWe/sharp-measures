@@ -25,6 +25,6 @@ internal class SharpMeasuresUnitDiagnostics : ISharpMeasuresUnitProcessingDiagno
 
     public Diagnostic QuantityBiased(ISharpMeasuresUnitRefinementContext context, SharpMeasuresUnitDefinition definition)
     {
-        return DiagnosticConstruction.ScalarBiased(definition.Locations.Quantity?.AsRoslynLocation(), definition.Quantity.Name);
+        return DiagnosticConstruction.TypeNotUnbiasedScalar(definition.Locations.Quantity?.AsRoslynLocation(), definition.Quantity.Name);
     }
 }

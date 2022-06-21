@@ -11,9 +11,17 @@ internal static class DerivableUnitProperties
 {
     public static IReadOnlyList<IAttributeProperty<RawDerivableUnitDefinition>> AllProperties => new IAttributeProperty<RawDerivableUnitDefinition>[]
     {
+        DerivationID,
         Expression,
         Signature
     };
+
+    private static DerivableUnitProperty<string> DerivationID { get; } = new
+    (
+        name: nameof(DerivableUnitAttribute.DerivationID),
+        setter: static (definition, derivationID) => definition with { DerivationID = derivationID },
+        locator: static (locations, derivationIDLocation) => locations with { DerivationID = derivationIDLocation }
+    );
 
     private static DerivableUnitProperty<string> Expression { get; } = new
     (

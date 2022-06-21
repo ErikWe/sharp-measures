@@ -130,25 +130,10 @@ internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocume
         return tagContent;
     }
 
-    public virtual bool Equals(FileDocumentation? other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
+    public virtual bool Equals(FileDocumentation? other) => other is not null && DocumentationFile == other.DocumentationFile
+        && DefaultDocumentationStrategy.Equals(other.DefaultDocumentationStrategy);
 
-        return DocumentationFile == other.DocumentationFile && DefaultDocumentationStrategy.Equals(other.DefaultDocumentationStrategy);
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj is FileDocumentation other)
-        {
-            return Equals(other);
-        }
-
-        return false;
-    }
+    public override bool Equals(object? obj) => obj is FileDocumentation other && Equals(other);
 
     public static bool operator ==(FileDocumentation? lhs, FileDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(FileDocumentation? lhs, FileDocumentation? rhs) => (lhs == rhs) is false;

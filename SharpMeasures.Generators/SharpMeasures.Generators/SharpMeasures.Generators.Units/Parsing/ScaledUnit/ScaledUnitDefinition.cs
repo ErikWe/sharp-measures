@@ -6,9 +6,12 @@ internal record class ScaledUnitDefinition : ADependantUnitDefinition<ScaledUnit
 {
     public string From => DependantOn;
     public double Scale { get; init; }
+    public string? Expression { get; init; }
 
-    public ScaledUnitDefinition(string name, string plural, string from, double scale, ScaledUnitLocations locations) : base(name, plural, from, locations)
+    public ScaledUnitDefinition(string name, string plural, string from, double scale, string? expression, ScaledUnitLocations locations)
+        : base(name, plural, from, locations)
     {
         Scale = scale;
+        Expression = expression;
     }
 }

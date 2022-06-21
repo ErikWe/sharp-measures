@@ -12,6 +12,19 @@ internal class DerivableUnitDiagnostics : IDerivableUnitProcessingDiagnostics, I
 
     private DerivableUnitDiagnostics() { }
 
+    public Diagnostic NullDerivationID(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
+    {
+        return DiagnosticConstruction.NullUnitDerivationID(definition.Locations.DerivationID?.AsRoslynLocation());
+    }
+
+    public Diagnostic EmptyDerivationID(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
+        => NullDerivationID(context, definition);
+
+    public Diagnostic DuplicateDerivationID(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
+    {
+        return DiagnosticConstruction.DuplicateUnitDerivationID(definition.Locations.DerivationID?.AsRoslynLocation(), definition.DerivationID!, context.Type.Name);
+    }
+
     public Diagnostic NullExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
         return DiagnosticConstruction.NullUnitDerivationExpression(definition.Locations.Expression?.AsRoslynLocation());
@@ -27,11 +40,6 @@ internal class DerivableUnitDiagnostics : IDerivableUnitProcessingDiagnostics, I
     public Diagnostic NullSignatureElement(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int index)
     {
         return DiagnosticConstruction.NullTypeNotUnit(definition.Locations.SignatureElements[index].AsRoslynLocation());
-    }
-
-    public Diagnostic DuplicateSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
-    {
-        return DiagnosticConstruction.DuplicateUnitDerivationSignature(definition.Locations.SignatureCollection?.AsRoslynLocation(), context.Type.Name);
     }
 
     public Diagnostic SignatureElementNotUnit(IDerivableUnitRefinementContext context, DerivableUnitDefinition definition, int index)

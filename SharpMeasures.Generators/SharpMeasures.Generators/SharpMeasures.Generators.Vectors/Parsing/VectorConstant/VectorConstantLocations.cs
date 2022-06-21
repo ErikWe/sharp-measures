@@ -27,16 +27,9 @@ internal record class VectorConstantLocations : AAttributeLocations
 
     private VectorConstantLocations() { }
 
-    public virtual bool Equals(VectorConstantLocations other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
-
-        return Name == other.Name && Unit == other.Unit && ValueCollection == other.ValueCollection && GenerateMultiplesProperty == other.GenerateMultiplesProperty
-            && MultiplesName == other.MultiplesName && ValueElements.SequenceEqual(other.ValueElements);
-    }
+    public virtual bool Equals(VectorConstantLocations other) => other is not null && Name == other.Name && Unit == other.Unit
+        && ValueCollection == other.ValueCollection && GenerateMultiplesProperty == other.GenerateMultiplesProperty && MultiplesName == other.MultiplesName
+        && ValueElements.SequenceEqual(other.ValueElements);
 
     public override int GetHashCode()
     {

@@ -1,6 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Tests.Verify;
 
+using Microsoft.CodeAnalysis;
+
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -18,6 +21,7 @@ internal static class Initializer
         VerifySourceGenerators.Enable();
         VerifierSettings.DerivePathInfo(DerivePathInfo);
         VerifierSettings.AddScrubber(ScrubTimestamp);
+        VerifierSettings.RegisterFileConverter<GeneratedSourceResult>(ConvertGeneratedSourceResult);
     }
 
     private static void ScrubTimestamp(StringBuilder source)
@@ -34,12 +38,26 @@ internal static class Initializer
         source.Insert(match.Index, match.Result("${header}<stamp>"));
     }
 
+    private static ConversionResult ConvertGeneratedSourceResult(GeneratedSourceResult target, IReadOnlyDictionary<string, object> context)
+    {
+        return new(null, new Target[] { SourceToTarget(target) });
+    }
+
+    private static Target SourceToTarget(GeneratedSourceResult source)
+    {
+        var data = $"""
+            //HintName: {source.HintName}
+            {source.SourceText}
+            """;
+        return new("cs", data);
+    }
+
     private static PathInfo DerivePathInfo(string sourceFile, string projectDirectory, Type type, MethodInfo method)
     {
         string[] path = new string[]
         {
             projectDirectory,
-            @"Verify\Results"
+            @"Snapshots"
         };
 
         path = path.Concat(type.FullName?.Split('.').Skip(3) ?? Array.Empty<string>()).ToArray();

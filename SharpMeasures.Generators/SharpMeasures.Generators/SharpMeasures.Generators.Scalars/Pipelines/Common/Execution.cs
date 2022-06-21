@@ -243,17 +243,8 @@ internal static class Execution
             string virtualText = Data.Scalar.IsSealed ? string.Empty : " virtual";
 
             AppendDocumentation(indentation, Data.Documentation.EqualsSameTypeMethod());
-            Builder.AppendLine($$"""
-                {{indentation}}public{{virtualText}} bool Equals({{Data.Scalar.Name}}? other)
-                {{indentation}}{
-                {{indentation.Increased}}if (other is null)
-                {{indentation.Increased}}{
-                {{indentation.Increased.Increased}}return false;
-                {{indentation.Increased}}}
-
-                {{indentation.Increased}}return Magnitude.Value == other.Magnitude.Value;
-                {{indentation}}}
-                """);
+            Builder.AppendLine($"{indentation}public{virtualText} bool Equals({Data.Scalar.Name}? other) => other is not null " +
+                $"&& Magnitude.Value == other.Magnitude.Value;");
 
             Builder.AppendLine();
 

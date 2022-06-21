@@ -10,7 +10,7 @@ internal abstract class ADependantUnitDiagnostics<TRawDefinition> : AUnitDiagnos
 {
     public Diagnostic NullDependency(IDependantUnitProcessingContext context, TRawDefinition definition)
     {
-        return DiagnosticConstruction.NullUnitName(definition.Locations.DependantOn?.AsRoslynLocation());
+        return DiagnosticConstruction.NullUnrecognizedUnitName(definition.Locations.DependantOn?.AsRoslynLocation(), context.Type.Name);
     }
 
     public Diagnostic EmptyDependency(IDependantUnitProcessingContext context, TRawDefinition definition) => NullDependency(context, definition);
@@ -22,6 +22,6 @@ internal abstract class ADependantUnitDiagnostics<TRawDefinition> : AUnitDiagnos
 
     public Diagnostic DependantOnSelf(IDependantUnitProcessingContext context, TRawDefinition definition)
     {
-        return DiagnosticConstruction.CyclicDependency(definition.Locations.Attribute.AsRoslynLocation(), definition.Name!, context.Type.Name);
+        return DiagnosticConstruction.CyclicUnitDependency(definition.Locations.Attribute.AsRoslynLocation(), definition.Name!, context.Type.Name);
     }
 }

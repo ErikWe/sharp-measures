@@ -11,7 +11,7 @@ public static class SimpleTextExpression
 
         string[] splitByOpenBracket = expression.Split('[');
 
-        if (splitByOpenBracket.Length is 0)
+        if (splitByOpenBracket.Length is 1)
         {
             return expression;
         }

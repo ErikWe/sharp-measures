@@ -20,25 +20,8 @@ public class EquatableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IEqua
 
     public ReadOnlyEquatableDictionary<TKey, TValue> AsReadOnly() => new(this);
 
-    public virtual bool Equals(EquatableDictionary<TKey, TValue>? other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
-
-        return this.OrderIndependentSequenceEquals(other);
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj is EquatableDictionary<TKey, TValue> other)
-        {
-            return Equals(other);
-        }
-
-        return false;
-    }
+    public virtual bool Equals(EquatableDictionary<TKey, TValue>? other) => other is not null && this.OrderIndependentSequenceEquals(other);
+    public override bool Equals(object? obj) => obj is EquatableDictionary<TKey, TValue> other && Equals(other);
 
     public static bool operator ==(EquatableDictionary<TKey, TValue>? lhs, EquatableDictionary<TKey, TValue>? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(EquatableDictionary<TKey, TValue>? lhs, EquatableDictionary<TKey, TValue>? rhs) => (lhs == rhs) is false;

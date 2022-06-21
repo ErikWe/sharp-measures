@@ -115,15 +115,7 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
         return other is not null;
     }
 
-    public override bool Equals(object obj)
-    {
-        if (obj is DocumentationTags other)
-        {
-            return Equals(other);
-        }
-
-        return false;
-    }
+    public override bool Equals(object? obj) => obj is DocumentationTags other && Equals(other);
 
     public static bool operator ==(DocumentationTags? lhs, DocumentationTags? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(DocumentationTags? lhs, DocumentationTags? rhs) => (lhs == rhs) is false;

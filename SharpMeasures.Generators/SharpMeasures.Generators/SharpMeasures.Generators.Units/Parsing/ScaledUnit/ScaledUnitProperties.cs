@@ -12,7 +12,8 @@ internal static class ScaledUnitProperties
         CommonProperties.Name<RawScaledUnitDefinition, ScaledUnitParsingData, ScaledUnitLocations>(nameof(ScaledUnitAttribute.Name)),
         CommonProperties.Plural<RawScaledUnitDefinition, ScaledUnitParsingData, ScaledUnitLocations>(nameof(ScaledUnitAttribute.Plural)),
         CommonProperties.DependantOn<RawScaledUnitDefinition, ScaledUnitParsingData, ScaledUnitLocations>(nameof(ScaledUnitAttribute.From)),
-        Scale
+        Scale,
+        Expression
     };
 
     private static ScaledUnitProperty<double> Scale { get; } = new
@@ -20,5 +21,12 @@ internal static class ScaledUnitProperties
         name: nameof(ScaledUnitAttribute.Scale),
         setter: static (definition, scale) => definition with { Scale = scale },
         locator: static (locations, scaleLocation) => locations with { Scale = scaleLocation }
+    );
+
+    private static ScaledUnitProperty<string> Expression { get; } = new
+    (
+        name: nameof(ScaledUnitAttribute.Expression),
+        setter: static (definition, expression) => definition with { Expression = expression },
+        locator: static (locations, expressionLocation) => locations with { Expression = expressionLocation }
     );
 }

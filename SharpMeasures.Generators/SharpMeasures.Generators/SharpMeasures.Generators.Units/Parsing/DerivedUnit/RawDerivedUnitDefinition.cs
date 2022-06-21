@@ -7,7 +7,7 @@ internal record class RawDerivedUnitDefinition : ARawUnitDefinition<DerivedUnitP
 {
     public static RawDerivedUnitDefinition Empty { get; } = new();
 
-    public ReadOnlyEquatableList<NamedType?> Signature { get; init; } = ReadOnlyEquatableList<NamedType?>.Empty;
+    public string? SignatureID { get; init; }
     public ReadOnlyEquatableList<string?> Units { get; init; } = ReadOnlyEquatableList<string?>.Empty;
 
     private RawDerivedUnitDefinition() : base(DerivedUnitLocations.Empty, DerivedUnitParsingData.Empty) { }

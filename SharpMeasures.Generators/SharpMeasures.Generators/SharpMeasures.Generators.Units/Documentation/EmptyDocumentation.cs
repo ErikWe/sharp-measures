@@ -36,15 +36,7 @@ internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocu
         return other is not null;
     }
 
-    public override bool Equals(object obj)
-    {
-        if (obj is EmptyDocumentation other)
-        {
-            return Equals(other);
-        }
-
-        return false;
-    }
+    public override bool Equals(object? obj) => obj is EmptyDocumentation other && Equals(other);
 
     public static bool operator ==(EmptyDocumentation? lhs, EmptyDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(EmptyDocumentation? lhs, EmptyDocumentation? rhs) => (lhs == rhs) is false;

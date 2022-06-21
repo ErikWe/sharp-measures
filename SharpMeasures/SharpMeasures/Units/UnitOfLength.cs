@@ -14,5 +14,11 @@ using SharpMeasures.Generators.Units.Utility;
 [PrefixedUnit("Kilometre", UnitPluralCodes.AppendS, "Metre", MetricPrefixName.Kilo)]
 [ScaledUnit("AstronomicalUnit", UnitPluralCodes.AppendS, "Metre", 149597870700)]
 [ScaledUnit("LightYear", UnitPluralCodes.AppendS, "Metre", 9460730472580800)]
+[ScaledUnit("Parsec", UnitPluralCodes.AppendS, "AstronomicalUnit", "648000 / System.Math.PI")]
+[PrefixedUnit("Kiloparsec", UnitPluralCodes.AppendS, "Parsec", MetricPrefixName.Kilo)]
+[PrefixedUnit("Megaparsec", UnitPluralCodes.AppendS, "Parsec", MetricPrefixName.Mega)]
+[PrefixedUnit("Gigaparsec", UnitPluralCodes.AppendS, "Parsec", MetricPrefixName.Giga)]
+[ScaledUnit("Inch", UnitPluralCodes.AppendEs, "Millimetre", 25.4)]
+[ScaledUnit("Foot", "Feet", "Inch", 12)]
 [SharpMeasuresUnit(typeof(Length), BiasTerm = false)]
 public readonly partial record struct UnitOfLength { }

@@ -19,12 +19,12 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string Definition(IUnitDefinition definition) => $"Definition_{definition.Name}";
 
     public string RepresentedQuantity() => "Quantity";
-    public string Bias() => "Offset";
+    public string Bias() => "Bias";
 
     public string Constructor() => "Constructor";
 
     public string ScaledBy() => "ScaledBy";
-    public string WithBias() => "OffsetBy";
+    public string WithBias() => "WithBias";
     public string WithPrefix() => "WithPrefix";
 
     public string ToStringDocumentation() => "ToString";
@@ -58,15 +58,7 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
         return other is not null;
     }
 
-    public override bool Equals(object obj)
-    {
-        if (obj is DocumentationTags other)
-        {
-            return Equals(other);
-        }
-
-        return false;
-    }
+    public override bool Equals(object? obj) => obj is DocumentationTags other && Equals(other);
 
     public static bool operator ==(DocumentationTags? lhs, DocumentationTags? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(DocumentationTags? lhs, DocumentationTags? rhs) => (lhs == rhs) is false;

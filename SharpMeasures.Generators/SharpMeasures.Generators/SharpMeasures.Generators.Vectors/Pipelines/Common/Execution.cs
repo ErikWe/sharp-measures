@@ -441,16 +441,9 @@ internal static class Execution
             string virtualText = Data.Vector.IsSealed ? " virtual" : string.Empty;
 
             AppendDocumentation(indentation, Data.Documentation.EqualsSameTypeMethod());
-            Builder.AppendLine($$"""
-                {{indentation}}public{{virtualText}} bool Equals({{Data.Vector.Name}}? other)
-                {{indentation}}{
-                {{indentation.Increased}}if (other is null)
-                {{indentation.Increased}}{
-                {{indentation.Increased.Increased}}return false;
-                {{indentation.Increased}}}
-
-                {{indentation.Increased}}return {{ConstructEqualityChecksText()}};
-                {{indentation}}}
+            Builder.AppendLine($"""
+                {indentation}public{virtualText} bool Equals({Data.Vector.Name}? other)
+                {indentation.Increased}=> other is not null && {ConstructEqualityChecksText()};
                 """);
 
             Builder.AppendLine();

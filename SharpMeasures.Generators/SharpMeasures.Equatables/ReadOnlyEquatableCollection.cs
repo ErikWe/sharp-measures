@@ -19,25 +19,8 @@ public class ReadOnlyEquatableCollection<T> : EquatableEnumerable<T>, IReadOnlyC
         Items = items;
     }
 
-    public virtual bool Equals(ReadOnlyEquatableCollection<T>? other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
-
-        return Items.SequenceEqual(other.Items);
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj is ReadOnlyEquatableCollection<T> other)
-        {
-            return Equals(other);
-        }
-
-        return false;
-    }
+    public virtual bool Equals(ReadOnlyEquatableCollection<T>? other) => other is not null && Items.SequenceEqual(other.Items);
+    public override bool Equals(object? obj) => obj is ReadOnlyEquatableCollection<T> other && Equals(other);
 
     public static bool operator ==(ReadOnlyEquatableCollection<T>? lhs, ReadOnlyEquatableCollection<T>? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(ReadOnlyEquatableCollection<T>? lhs, ReadOnlyEquatableCollection<T>? rhs) => (lhs == rhs) is false;

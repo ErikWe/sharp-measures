@@ -15,7 +15,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotPartial,
         title: "Expected a partial type",
-        messageFormat: "To apply a SharpMeasures source generator, as suggested by the attribute {0}, {1} should be made partial",
+        messageFormat: "To apply a SharpMeasures source generator, as indicated by the attribute {0}, {1} should be made partial",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -93,21 +93,21 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor ScalarBiased = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor TypeNotUnbiasedScalar = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.ScalarBiased,
+        id: DiagnosticIDs.TypeNotUnbiasedScalar,
         title: "Expected a strictly unbiased scalar quantity",
-        messageFormat: "Expected a scalar quantity that disregards unit biases. Mark {0} as not using unit biases, or choose another quantity.",
+        messageFormat: "Expected a scalar quantity that ignores unit bias. Mark {0} as not using unit biases, or choose another quantity.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor ScalarUnbiased = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor TypeNotBiasedScalar = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.ScalarUnbiased,
+        id: DiagnosticIDs.TypeNotBiasedScalar,
         title: "Expected a biased scalar quantity",
-        messageFormat: "Expected a scalar quantity that considers unit biases. Mark {0} as using unit biases, or choose another quantity.",
+        messageFormat: "Expected a scalar quantity that considers unit bias. Mark {0} as using unit biases, or choose another quantity.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true

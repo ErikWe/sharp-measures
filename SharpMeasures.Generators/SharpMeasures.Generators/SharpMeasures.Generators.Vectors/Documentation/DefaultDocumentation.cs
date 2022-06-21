@@ -429,27 +429,11 @@ internal class DefaultDocumentation<TDataModel> : IDocumentationStrategy, IEquat
         }
     }
 
-    public virtual bool Equals(DefaultDocumentation<TDataModel>? other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
+    public virtual bool Equals(DefaultDocumentation<TDataModel>? other) => other is not null && VectorType == other.VectorType && Dimension == other.Dimension
+        && Unit == other.Unit && Scalar == other.Scalar && DefaultUnitName == other.DefaultUnitName && DefaultUnitSymbol == other.DefaultUnitSymbol;
 
-        return VectorType == other.VectorType && Dimension == other.Dimension && Unit == other.Unit && Scalar == other.Scalar
-            && DefaultUnitName == other.DefaultUnitName && DefaultUnitSymbol == other.DefaultUnitSymbol;
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj is DefaultDocumentation<TDataModel> other)
-        {
-            return Equals(other);
-        }
-
-        return false;
-    }
-
+    public override bool Equals(object? obj) => obj is DefaultDocumentation<TDataModel> other && Equals(other);
+    
     public static bool operator ==(DefaultDocumentation<TDataModel>? lhs, DefaultDocumentation<TDataModel>? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(DefaultDocumentation<TDataModel>? lhs, DefaultDocumentation<TDataModel>? rhs) => (lhs == rhs) is false;
 

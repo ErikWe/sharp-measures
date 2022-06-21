@@ -2,6 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Units.Utility;
 
 public static partial class DiagnosticRules
@@ -30,7 +31,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InvalidUnitPluralForm,
         title: "Invalid plural form of unit name",
-        messageFormat: $"\"{{0}}\" could not be used to construct the plural form of \"{{1}}\". Try writing the plural form in full, or use a suitable notation" +
+        messageFormat: $"\"{{0}}\" could not be used to construct the plural form of \"{{1}}\". Try writing the plural form in full, or use a suitable notation " +
             $"from {typeof(UnitPluralCodes).FullName}.",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
@@ -41,7 +42,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InvalidUnitPluralForm,
         title: "Invalid plural form of unit name",
-        messageFormat: $"The plural form of the unit must be defined. Try writing the plural form in full, or use a suitable notation" +
+        messageFormat: $"The plural form of the unit must be defined. Try writing the plural form in full, or use a suitable notation " +
             $"from {typeof(UnitPluralCodes).FullName}.",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
@@ -52,7 +53,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DuplicateUnitName,
         title: "Duplicate unit name",
-        messageFormat: "The unit {0} already defines a unit with the name {1}",
+        messageFormat: "{0} already defines a unit with the name {1}",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -62,7 +63,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DuplicateUnitPluralForm,
         title: "Duplicate unit plural form",
-        messageFormat: "The unit {0} already defines a unit with the plural form {1}",
+        messageFormat: "{0} already defines a unit with the plural form {1}",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -72,7 +73,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.UnrecognizedUnitName,
         title: "Expected the name of a unit",
-        messageFormat: "\"{0}\" was not recognized as the name of a unit of {1}. The referenced unit must be defined in an attribute on {1}.",
+        messageFormat: "\"{0}\" was not recognized as the name of a {1}. The referenced unit must be defined through an attribute applied to {1}.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -82,7 +83,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.UnrecognizedUnitName,
         title: "Expected the name of a unit",
-        messageFormat: "Expected the name of a unit of {0}",
+        messageFormat: "Expected the name of a {0}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -92,7 +93,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.CyclicUnitDependency,
         title: "Cyclic unit dependency",
-        messageFormat: "{0} has a cyclic dependency on other units of {1}",
+        messageFormat: "{0} has a cyclic dependency on other instances of {1}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -103,6 +104,48 @@ public static partial class DiagnosticRules
         id: DiagnosticIDs.UnrecognizedPrefix,
         title: "Prefix not recognized",
         messageFormat: "{0} was not recognized as a {1}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor NullScaledUnitExpression = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InvalidScaledUnitExpression,
+        title: "Invalid scaled unit expression",
+        messageFormat: "The expression describing the scaling factor must be defined",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor NullBiasedUnitExpression = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InvalidBiasedUnitExpression,
+        title: "Invalid biased unit expression",
+        messageFormat: "The expression describing the bias must be defined",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor FixedUnitBiasSpecifiedButUnitNotBiased = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.FixedUnitBiasSpecifiedButUnitNotBiased,
+        title: "The unit does not support biases",
+        messageFormat: $"{{0}} does not support biases. Do not specify a bias term, or make {{0}} support biases through {typeof(SharpMeasuresUnitAttribute).FullName}.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        customTags: WellKnownDiagnosticTags.Unnecessary
+    );
+
+    public static readonly DiagnosticDescriptor BiasedUnitDefinedButUnitNotBiased = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.BiasedUnitDefinedButUnitNotBiased,
+        title: "The unit does not support biases",
+        messageFormat: $"{{0}} could not be implemented, as {{1}} does not support biases. Remove {{0}}, or make {{1}} support biases through " +
+            $"{typeof(SharpMeasuresUnitAttribute).FullName}.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

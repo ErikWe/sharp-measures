@@ -8,11 +8,13 @@ internal record class DerivableUnitLocations : AAttributeLocations
     public static DerivableUnitLocations Empty { get; } = new();
 
     public MinimalLocation? Expression { get; init; }
+    public MinimalLocation? DerivationID { get; init; }
 
     public MinimalLocation? SignatureCollection { get; init; }
     public ReadOnlyEquatableList<MinimalLocation> SignatureElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
 
     public bool ExplicitlySetExpression => Expression is not null;
+    public bool ExplicitlySetDerivationID => DerivationID is not null;
     public bool ExplicitlySetSignature => SignatureCollection is not null;
 
     private DerivableUnitLocations() { }

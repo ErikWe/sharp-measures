@@ -179,29 +179,14 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     public string GreaterThanOrEqualSameType() => $$"""/// <inheritdoc cref="Scalar.operator &gt;=(Scalar, Scalar)"/>""";
 
     private string UnitReference => $"""<see cref="{UnitType.Name}"/>""";
-    private string QuantityReference => $"""<see cref="{Quantity.ScalarType.Namespace}.{Quantity.ScalarType.Name}"/>""";
+    private string QuantityReference => $"""<see cref="{Quantity.ScalarType.FullyQualifiedName}"/>""";
 
     private static string InheritDoc => "/// <inheritdoc/>";
 
-    public virtual bool Equals(DefaultDocumentation? other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
+    public virtual bool Equals(DefaultDocumentation? other) => other is not null && UnitType == other.UnitType && Quantity == other.Quantity
+        && BiasTerm == other.BiasTerm;
 
-        return UnitType == other.UnitType && Quantity == other.Quantity && BiasTerm == other.BiasTerm;
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj is DefaultDocumentation other)
-        {
-            return Equals(other);
-        }
-
-        return false;
-    }
+    public override bool Equals(object? obj) => obj is DefaultDocumentation other && Equals(other);
 
     public static bool operator ==(DefaultDocumentation? lhs, DefaultDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(DefaultDocumentation? lhs, DefaultDocumentation? rhs) => (lhs == rhs) is false;

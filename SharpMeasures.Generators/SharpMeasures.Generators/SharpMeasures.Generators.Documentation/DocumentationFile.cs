@@ -98,25 +98,8 @@ public class DocumentationFile : IEquatable<DocumentationFile>
         return Microsoft.CodeAnalysis.Location.Create(file.Path, TextSpan.FromBounds(0, file.ToString().Length - 1), span).Minimize();
     }
 
-    public virtual bool Equals(DocumentationFile? other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
-
-        return Name == other.Name && Location == other.Location && Content == other.Content;
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj is DocumentationFile other)
-        {
-            return Equals(other);
-        }
-
-        return false;
-    }
+    public virtual bool Equals(DocumentationFile? other) => other is not null && Name == other.Name && Location == other.Location && Content == other.Content;
+    public override bool Equals(object? obj) => obj is DocumentationFile other && Equals(other);
 
     public static bool operator ==(DocumentationFile? lhs, DocumentationFile? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(DocumentationFile? lhs, DocumentationFile? rhs) => (lhs == rhs) is false;

@@ -18,25 +18,8 @@ public class ReadOnlyEquatableHashSet<T> : ReadOnlyEquatableCollection<T>, IRead
 
     public bool Contains(T item) => Items.Contains(item);
 
-    public virtual bool Equals(ReadOnlyEquatableHashSet<T>? other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
-
-        return Items.SetEquals(other.Items);
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj is ReadOnlyEquatableHashSet<T> other)
-        {
-            return Equals(other);
-        }
-
-        return false;
-    }
+    public virtual bool Equals(ReadOnlyEquatableHashSet<T>? other) => other is not null && Items.SetEquals(other.Items);
+    public override bool Equals(object? obj) => obj is ReadOnlyEquatableHashSet<T> other && Equals(other);
 
     public static bool operator ==(ReadOnlyEquatableHashSet<T>? lhs, ReadOnlyEquatableHashSet<T>? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(ReadOnlyEquatableHashSet<T>? lhs, ReadOnlyEquatableHashSet<T>? rhs) => (lhs == rhs) is false;

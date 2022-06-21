@@ -91,13 +91,13 @@ internal static class Execution
         private void ComposeUnbiasedTypeBlock(Indentation indentation)
         {
             AppendDocumentation(indentation, Data.Documentation.RepresentedQuantity());
-            Builder.AppendLine($"{indentation}public {Data.Quantity.Name} {Data.Quantity.Name} {{ get; }}");
+            Builder.AppendLine($"{indentation}public {Data.Quantity.FullyQualifiedName} {Data.Quantity.Name} {{ get; }}");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.Constructor());
             Builder.AppendLine($$"""
-                {{indentation}}private {{Data.Unit.Name}}({{Data.Quantity.Name}} {{Data.QuantityParameterName}})
+                {{indentation}}private {{Data.Unit.Name}}({{Data.Quantity.FullyQualifiedName}} {{Data.QuantityParameterName}})
                 {{indentation}}{
                 """);
 
@@ -154,7 +154,7 @@ internal static class Execution
         private void ComposeBiasedTypeBlock(Indentation indentation)
         {
             AppendDocumentation(indentation, Data.Documentation.RepresentedQuantity());
-            Builder.AppendLine($"{indentation}public {Data.Quantity.Name} {Data.Quantity.Name} {{ get; }}");
+            Builder.AppendLine($"{indentation}public {Data.Quantity.FullyQualifiedName} {Data.Quantity.Name} {{ get; }}");
             AppendDocumentation(indentation, Data.Documentation.Bias());
             Builder.AppendLine($"{indentation}public Scalar Bias {{ get; }}");
 
@@ -166,7 +166,7 @@ internal static class Execution
             }
 
             Builder.AppendLine($$"""
-                {{indentation}}private {{Data.Unit.Name}}({{Data.Quantity.Name}} {{Data.QuantityParameterName}}, Scalar bias)
+                {{indentation}}private {{Data.Unit.Name}}({{Data.Quantity.FullyQualifiedName}} {{Data.QuantityParameterName}}, Scalar bias)
                 {{indentation}}{
                 """);
 
@@ -231,28 +231,11 @@ internal static class Execution
         private void ComposeReferenceTypeEquality(Indentation indentation)
         {
             string virtualText = Data.Unit.IsSealed ? string.Empty : " virtual";
+            string biasEqualityText = Data.BiasTerm ? " && Bias == other.Bias" : string.Empty;
 
             AppendDocumentation(indentation, Data.Documentation.EqualsSameTypeMethod());
-            Builder.AppendLine($$"""
-                {{indentation}}public{{virtualText}} bool Equals({{Data.Unit.Name}}? other)
-                {{indentation}}{
-                {{indentation.Increased}}if (other is null)
-                {{indentation.Increased}}{
-                {{indentation.Increased.Increased}}return false;
-                {{indentation.Increased}}}
-
-                """);
-
-            if (Data.BiasTerm)
-            {
-                Builder.AppendLine($"{indentation}return {Data.Quantity.Name} == other.{Data.Quantity.Name} && Bias == other.Bias;");
-            }
-            else
-            {
-                Builder.AppendLine($"{indentation}return {Data.Quantity.Name} == other.{Data.Quantity.Name};");
-            }
-
-            Builder.AppendLine($$"""{{indentation}}}""");
+            Builder.AppendLine($"{indentation}public{virtualText} bool Equals({Data.Unit.Name}? other) => other is not null " +
+                $"&& {Data.Quantity.Name} == other.{Data.Quantity.Name}{biasEqualityText};");
 
             Builder.AppendLine();
 
@@ -270,20 +253,13 @@ internal static class Execution
 
         private void ComposeValueTypeEquality(Indentation indentation)
         {
+            string biasEqualityText = Data.BiasTerm ? " && Bias == other.Bias" : string.Empty;
+
             AppendDocumentation(indentation, Data.Documentation.EqualsSameTypeMethod());
-            Builder.AppendLine($$"""{{indentation}}public bool Equals({{Data.Unit.Name}} other)""");
-            Builder.AppendLine($$"""{{indentation}}{""");
-
-            if (Data.BiasTerm)
-            {
-                Builder.AppendLine($"{indentation}return {Data.Quantity.Name} == other.{Data.Quantity.Name} && Bias == other.Bias;");
-            }
-            else
-            {
-                Builder.AppendLine($"{indentation}return {Data.Quantity.Name} == other.{Data.Quantity.Name};");
-            }
-
-            Builder.AppendLine($$"""{{indentation}}}""");
+            Builder.AppendLine($$"""
+                {{indentation}}public bool Equals({{Data.Unit.Name}} other)
+                {{indentation.Increased}}=> {{Data.Quantity.Name}} == other.{{Data.Quantity.Name}}{{biasEqualityText}};
+                """);
 
             Builder.AppendLine();
 

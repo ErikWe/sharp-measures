@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.DerivedUnit;
 
-using Microsoft.CodeAnalysis;
-
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
@@ -14,19 +12,15 @@ internal static class DerivedUnitProperties
     {
         CommonProperties.Name<RawDerivedUnitDefinition, DerivedUnitParsingData, DerivedUnitLocations>(nameof(DerivedUnitAttribute.Name)),
         CommonProperties.Plural<RawDerivedUnitDefinition, DerivedUnitParsingData, DerivedUnitLocations>(nameof(DerivedUnitAttribute.Plural)),
-        Signature,
+        SignatureID,
         Units
     };
 
-    private static DerivedUnitProperty<INamedTypeSymbol[]> Signature { get; } = new
+    private static DerivedUnitProperty<string> SignatureID { get; } = new
     (
-        name: nameof(DerivedUnitAttribute.Signature),
-        setter: static (definition, signature) => definition with { Signature = signature.AsNamedTypes().AsReadOnlyEquatable() },
-        locator: static (locations, collectionLocation, elementLocations) => locations with
-        {
-            SignatureCollection = collectionLocation,
-            SignatureElements = elementLocations
-        }
+        name: nameof(DerivedUnitAttribute.SignatureID),
+        setter: static (definition, signatureID) => definition with { SignatureID = signatureID },
+        locator: static (locations, signatureIDLocation) => locations with { SignatureID = signatureIDLocation }
     );
 
     private static DerivedUnitProperty<string?[]> Units { get; } = new

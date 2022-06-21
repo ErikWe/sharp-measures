@@ -28,25 +28,8 @@ public class ReadOnlyEquatableDictionary<TKey, TValue> : IReadOnlyDictionary<TKe
 
     public bool ContainsKey(TKey key) => Items.ContainsKey(key);
 
-    public virtual bool Equals(ReadOnlyEquatableDictionary<TKey, TValue>? other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
-
-        return Items.OrderIndependentSequenceEquals(other.Items);
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj is ReadOnlyEquatableDictionary<TKey, TValue> other)
-        {
-            return Equals(other);
-        }
-
-        return false;
-    }
+    public virtual bool Equals(ReadOnlyEquatableDictionary<TKey, TValue>? other) => other is not null && Items.OrderIndependentSequenceEquals(other.Items);
+    public override bool Equals(object? obj) => obj is ReadOnlyEquatableDictionary<TKey, TValue> other && Equals(other);
 
     public static bool operator ==(ReadOnlyEquatableDictionary<TKey, TValue>? lhs, ReadOnlyEquatableDictionary<TKey, TValue>? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(ReadOnlyEquatableDictionary<TKey, TValue>? lhs, ReadOnlyEquatableDictionary<TKey, TValue>? rhs) => (lhs == rhs) is false;

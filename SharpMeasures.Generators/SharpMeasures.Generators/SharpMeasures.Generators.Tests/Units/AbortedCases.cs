@@ -12,15 +12,16 @@ public class AbortedCases
     [Fact]
     public void TypeNotPartial_NoSource()
     {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
+        string source = """
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
 
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public partial class Length { }
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
 
-[SharpMeasuresUnit(typeof(Length))]
-public class UnitOfLength { }";
+            [SharpMeasuresUnit(typeof(Length))]
+            public class UnitOfLength { }
+            """;
 
         GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoSourceGenerated();
     }
@@ -28,15 +29,16 @@ public class UnitOfLength { }";
     [Fact]
     public void InvalidTypeName_NoSource()
     {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
+        string source = """
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
 
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public partial class Length { }
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
 
-[SharpMeasuresUnit(typeof(Length))]
-public partial class struct { }";
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class struct { }
+            """;
 
         GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoSourceGenerated();
     }
@@ -44,13 +46,14 @@ public partial class struct { }";
     [Fact]
     public void QuantityNotScalar_NoSource()
     {
-        string source = @"
-using SharpMeasures.Generators.Units;
+        string source = """
+            using SharpMeasures.Generators.Units;
 
-public partial class Length { }
+            public partial class Length { }
 
-[SharpMeasuresUnit(typeof(Length))]
-public partial class UnitOfLength { }";
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
 
         GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoSourceGenerated();
     }
@@ -58,15 +61,16 @@ public partial class UnitOfLength { }";
     [Fact]
     public void UnbiasedUnit_QuantityNotUnbiased_NoSource()
     {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
+        string source = """
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
 
-[SharpMeasuresScalar(typeof(UnitOfTemperature), Biased = true)]
-public partial class Temperature { }
+            [SharpMeasuresScalar(typeof(UnitOfTemperature), UseUnitBias = true)]
+            public partial class Temperature { }
 
-[SharpMeasuresUnit(typeof(Temperature), AllowBias = false)]
-public partial class UnitOfTemperature { }";
+            [SharpMeasuresUnit(typeof(Temperature), BiasTerm = false)]
+            public partial class UnitOfTemperature { }
+            """;
 
         GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoSourceGenerated();
     }
@@ -74,27 +78,31 @@ public partial class UnitOfTemperature { }";
     [Fact]
     public void BiasedUnit_QuantityNotUnbiased_NoSource()
     {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
+        string source = """
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
 
-[SharpMeasuresScalar(typeof(UnitOfTemperature), Biased = true)]
-public partial class Temperature { }
+            [SharpMeasuresScalar(typeof(UnitOfTemperature), UseUnitBias = true)]
+            public partial class Temperature { }
 
-[SharpMeasuresUnit(typeof(Temperature), AllowBias = true)]
-public partial class UnitOfTemperature { }";
+            [SharpMeasuresUnit(typeof(Temperature), BiasTerm = true)]
+            public partial class UnitOfTemperature { }
+            """;
 
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoSourceGenerated();
+        string[] expectedOutput = new[] { "Temperature_Common.g.cs", "Temperature_Maths.g.cs" };
+
+        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedSourceNamesGenerated(expectedOutput);
     }
 
     [Fact]
     public void IncorrectAttributeSignature_NoSource()
     {
-        string source = @"
-using SharpMeasures.Generators.Units;
+        string source = """
+            using SharpMeasures.Generators.Units;
 
-[SharpMeasuresUnit(3)]
-public partial class UnitOfLength { }";
+            [SharpMeasuresUnit(3)]
+            public partial class UnitOfLength { }
+            """;
 
         GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoSourceGenerated();
     }
@@ -102,11 +110,12 @@ public partial class UnitOfLength { }";
     [Fact]
     public void EmptyAttributeSignature_NoSource()
     {
-        string source = @"
-using SharpMeasures.Generators.Units;
+        string source = """
+            using SharpMeasures.Generators.Units;
 
-[SharpMeasuresUnit]
-public partial class UnitOfLength { }";
+            [SharpMeasuresUnit]
+            public partial class UnitOfLength { }
+            """;
 
         GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoSourceGenerated();
     }
@@ -114,11 +123,12 @@ public partial class UnitOfLength { }";
     [Fact]
     public void NullQuantityArgument_NoSource()
     {
-        string source = @"
-using SharpMeasures.Generators.Units;
+        string source = """
+            using SharpMeasures.Generators.Units;
 
-[SharpMeasuresUnit(null)]
-public partial class UnitOfLength { }";
+            [SharpMeasuresUnit(null)]
+            public partial class UnitOfLength { }
+            """;
 
         GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoSourceGenerated();
     }

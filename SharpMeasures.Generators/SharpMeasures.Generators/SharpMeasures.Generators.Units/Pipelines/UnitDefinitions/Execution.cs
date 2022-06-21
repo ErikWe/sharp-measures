@@ -8,13 +8,14 @@ using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.Parsing.DerivedUnit;
 using SharpMeasures.Generators.Units.Parsing.FixedUnit;
-using SharpMeasures.Generators.Units.Parsing.OffsetUnit;
+using SharpMeasures.Generators.Units.Parsing.BiasedUnit;
 using SharpMeasures.Generators.Units.Parsing.PrefixedUnit;
 using SharpMeasures.Generators.Units.Parsing.ScaledUnit;
 using SharpMeasures.Generators.Units.Parsing.UnitAlias;
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -22,7 +23,7 @@ internal static class Execution
 {
     public static void Execute(SourceProductionContext context, DataModel result)
     {
-        if (result.DerivedUnits.Any() is false && result.FixedUnits.Any() is false && result.UnitAliases.Any() is false && result.OffsetUnits.Any() is false
+        if (result.DerivedUnits.Any() is false && result.FixedUnits.Any() is false && result.UnitAliases.Any() is false && result.BiasedUnits.Any() is false
             && result.PrefixedUnits.Any() is false && result.ScaledUnits.Any() is false)
         {
             return;
@@ -176,9 +177,9 @@ internal static class Execution
                     {
                         AppendPrefixed(prefixedUnit);
                     }
-                    else if (dependantUnits[i] is OffsetUnitDefinition offsetUnit)
+                    else if (dependantUnits[i] is BiasedUnitDefinition biasedUnit)
                     {
-                        AppendOffset(offsetUnit);
+                        AppendBiased(biasedUnit);
                     }
 
                     Builder.AppendLine($";");
@@ -210,7 +211,9 @@ internal static class Execution
 
         private void AppendScaled(ScaledUnitDefinition scaledUnit)
         {
-            Builder.Append($"{{ get; }} = {scaledUnit.From}.ScaledBy({scaledUnit.Scale})");
+            string expression = scaledUnit.Locations.ExplicitlySetScale ? scaledUnit.Scale.ToString(CultureInfo.InvariantCulture) : scaledUnit.Expression!;
+
+            Builder.Append($"{{ get; }} = {scaledUnit.From}.ScaledBy({expression})");
         }
 
         private void AppendPrefixed(PrefixedUnitDefinition prefixedUnit)
@@ -222,9 +225,11 @@ internal static class Execution
             Builder.Append($"{{ get; }} = {prefixedUnit.From}.WithPrefix({prefixText})");
         }
 
-        private void AppendOffset(OffsetUnitDefinition offsetUnit)
+        private void AppendBiased(BiasedUnitDefinition biasedUnit)
         {
-            Builder.Append($"{{ get; }} = {offsetUnit.From}.ScaledBy({offsetUnit.Offset})");
+            string expression = biasedUnit.Locations.ExplicitlySetBias ? biasedUnit.Bias.ToString(CultureInfo.InvariantCulture) : biasedUnit.Expression!;
+
+            Builder.Append($"{{ get; }} = {biasedUnit.From}.WithBias({expression})");
         }
 
         private List<IDependantUnitDefinition> GetDependantInstances()
@@ -236,9 +241,9 @@ internal static class Execution
                 result.Add(unitAlias);
             }
 
-            foreach (OffsetUnitDefinition offsetUnit in Data.OffsetUnits)
+            foreach (BiasedUnitDefinition biasedUnit in Data.BiasedUnits)
             {
-                result.Add(offsetUnit);
+                result.Add(biasedUnit);
             }
 
             foreach (PrefixedUnitDefinition prefixedUnit in Data.PrefixedUnits)
@@ -263,7 +268,7 @@ internal static class Execution
         {
             foreach (var dependantUnit in dependantUnits)
             {
-                Diagnostic diagnostics = DiagnosticConstruction.CyclicDependency(dependantUnit.Locations.Attribute.AsRoslynLocation(),
+                Diagnostic diagnostics = DiagnosticConstruction.CyclicUnitDependency(dependantUnit.Locations.Attribute.AsRoslynLocation(),
                     dependantUnit.Name, Data.Unit.Name);
 
                 Diagnostics.Add(diagnostics);

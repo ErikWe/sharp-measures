@@ -16,25 +16,8 @@ public class EquatableList<T> : List<T>, IReadOnlyList<T>, IEquatable<EquatableL
 
     new public ReadOnlyEquatableList<T> AsReadOnly() => new(this);
 
-    public virtual bool Equals(EquatableList<T>? other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
-
-        return this.SequenceEqual(other);
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj is EquatableList<T> other)
-        {
-            return Equals(other);
-        }
-
-        return false;
-    }
+    public virtual bool Equals(EquatableList<T>? other) => other is not null && this.SequenceEqual(other);
+    public override bool Equals(object? obj) => obj is EquatableList<T> other && Equals(other);
 
     public static bool operator ==(EquatableList<T>? lhs, EquatableList<T>? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(EquatableList<T>? lhs, EquatableList<T>? rhs) => (lhs == rhs) is false;

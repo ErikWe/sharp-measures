@@ -38,7 +38,8 @@ internal class PrefixedUnitProcesser : ADependantUnitProcesser<IDependantUnitPro
 
     protected override bool VerifyRequiredPropertiesSet(RawPrefixedUnitDefinition definition)
     {
-        return base.VerifyRequiredPropertiesSet(definition) && (definition.Locations.ExplicitlySetMetricPrefixName || definition.Locations.ExplicitlySetBinaryPrefixName);
+        return base.VerifyRequiredPropertiesSet(definition)
+            && (definition.Locations.ExplicitlySetMetricPrefixName || definition.Locations.ExplicitlySetBinaryPrefixName);
     }
 
     private IValidityWithDiagnostics CheckValidity(IDependantUnitProcessingContext context, RawPrefixedUnitDefinition definition)

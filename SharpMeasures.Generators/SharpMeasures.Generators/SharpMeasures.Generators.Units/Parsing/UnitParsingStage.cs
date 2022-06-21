@@ -13,7 +13,7 @@ using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 using SharpMeasures.Generators.Units.Parsing.DerivedUnit;
 using SharpMeasures.Generators.Units.Parsing.FixedUnit;
 using SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
-using SharpMeasures.Generators.Units.Parsing.OffsetUnit;
+using SharpMeasures.Generators.Units.Parsing.BiasedUnit;
 using SharpMeasures.Generators.Units.Parsing.PrefixedUnit;
 using SharpMeasures.Generators.Units.Parsing.ScaledUnit;
 using SharpMeasures.Generators.Units.Parsing.UnitAlias;
@@ -55,24 +55,24 @@ public static class UnitParsingStage
         var definedType = input.TypeSymbol.AsDefinedType();
         var typeLocation = input.Declaration.Identifier.GetLocation().Minimize();
 
-        var únitDerivations = DerivableUnitParser.Instance.ParseAllOccurrences(input.TypeSymbol);
+        var unitDerivations = DerivableUnitParser.Instance.ParseAllOccurrences(input.TypeSymbol);
 
         var unitAliases = UnitAliasParser.Instance.ParseAllOccurrences(input.TypeSymbol);
         var derivedUnits = DerivedUnitParser.Instance.ParseAllOccurrences(input.TypeSymbol);
         var fixedUnits = FixedUnitParser.Instance.ParseAllOccurrences(input.TypeSymbol);
-        var offsetUnits = OffsetUnitParser.Instance.ParseAllOccurrences(input.TypeSymbol);
+        var biasedUnits = BiasedUnitParser.Instance.ParseAllOccurrences(input.TypeSymbol);
         var prefixedUnits = PrefixedUnitParser.Instance.ParseAllOccurrences(input.TypeSymbol);
         var scaledUnits = ScaledUnitParser.Instance.ParseAllOccurrences(input.TypeSymbol);
 
-        RawParsedUnit result = new(definedType, typeLocation, processedUnit.Result, únitDerivations, unitAliases, derivedUnits,
-            fixedUnits, offsetUnits, prefixedUnits, scaledUnits);
+        RawParsedUnit result = new(definedType, typeLocation, processedUnit.Result, unitDerivations, unitAliases, derivedUnits,
+            fixedUnits, biasedUnits, prefixedUnits, scaledUnits);
 
         return OptionalWithDiagnostics.Result(result, processedUnit.Diagnostics);
     }
 
     private static IResultWithDiagnostics<ParsedUnit> ProcessUnitInformation(RawParsedUnit input, CancellationToken _)
     {
-        ProcessingContext context = new(input.UnitType);
+        UnitProcessingContext context = new(input.UnitType, input.UnitDefinition.BiasTerm);
 
         foreach (IRawUnitDefinition unitDefinition in input.GetUnitList())
         {
@@ -81,19 +81,23 @@ public static class UnitParsingStage
 
         var unitDerivations = ProcessingFilter.Create(Processers.DerivableUnitProcesser).Filter(context, input.UnitDerivations);
 
+        Dictionary<string, DerivableSignature> availableSignatureIDs = unitDerivations.Result.ToDictionary(static (x) => x.DerivationID, static (x) => x.Signature);
+
+        DerivedUnitProcessingContext derivedUnitContext = new(context, availableSignatureIDs);
+
         var unitAliases = ProcessingFilter.Create(Processers.UnitAliasProcesser).Filter(context, input.UnitAliases);
-        var derivedUnits = ProcessingFilter.Create(Processers.DerivedUnitProcesser).Filter(context, input.DerivedUnits);
+        var derivedUnits = ProcessingFilter.Create(Processers.DerivedUnitProcesser).Filter(derivedUnitContext, input.DerivedUnits);
         var fixedUnits = ProcessingFilter.Create(Processers.FixedUnitProcesser).Filter(context, input.FixedUnits);
-        var offsetUnits = ProcessingFilter.Create(Processers.OffsetUnitProcesser).Filter(context, input.OffsetUnits);
+        var biasedUnits = ProcessingFilter.Create(Processers.BiasedUnitProcesser).Filter(context, input.BiasedUnits);
         var prefixedUnits = ProcessingFilter.Create(Processers.PrefixedUnitProcesser).Filter(context, input.PrefixedUnits);
         var scaledUnits = ProcessingFilter.Create(Processers.ScaledUnitProcesser).Filter(context, input.ScaledUnits);
 
         var allDiagnostics = unitDerivations.Diagnostics.Concat(unitAliases.Diagnostics)
-            .Concat(derivedUnits.Diagnostics).Concat(fixedUnits.Diagnostics).Concat(offsetUnits.Diagnostics)
+            .Concat(derivedUnits.Diagnostics).Concat(fixedUnits.Diagnostics).Concat(biasedUnits.Diagnostics)
             .Concat(prefixedUnits.Diagnostics).Concat(scaledUnits.Diagnostics);
 
         ParsedUnit processedResult = new(input.UnitType, input.UnitLocation, input.UnitDefinition, unitDerivations.Result,
-            unitAliases.Result, derivedUnits.Result, fixedUnits.Result, offsetUnits.Result,
+            unitAliases.Result, derivedUnits.Result, fixedUnits.Result, biasedUnits.Result,
             prefixedUnits.Result, scaledUnits.Result);
 
         return ResultWithDiagnostics.Construct(processedResult, allDiagnostics);
@@ -115,21 +119,53 @@ public static class UnitParsingStage
         return new(units.ToDictionary(static (unit) => unit.UnitType.AsNamedType()));
     }
 
-    private readonly record struct ProcessingContext : IProcessingContext, IDependantUnitProcessingContext, IDerivableUnitProcessingContext, IDerivedUnitProcessingContext
+    private readonly record struct ProcessingContext : IProcessingContext
     {
         public DefinedType Type { get; }
 
-        public HashSet<DerivableSignature> ReservedSignatures { get; } = new();
-        HashSet<DerivableSignature> IDerivedUnitProcessingContext.AvailableSignatures => ReservedSignatures;
+        public ProcessingContext(DefinedType type)
+        {
+            Type = type;
+        }
+    }
+
+    private readonly record struct UnitProcessingContext : IProcessingContext, IDependantUnitProcessingContext, IDerivableUnitProcessingContext,
+        IBiasedUnitProcessingContext, IFixedUnitProcessingContext
+    {
+        public DefinedType Type { get; }
+
+        public bool UnitIncludesBiasTerm { get; }
+
+        public HashSet<string> ReservedIDs { get; } = new();
 
         public HashSet<string> AvailableUnitDependencies { get; } = new();
 
         public HashSet<string> ReservedUnits { get; } = new();
         public HashSet<string> ReservedUnitPlurals { get; } = new();
 
-        public ProcessingContext(DefinedType type)
+        public UnitProcessingContext(DefinedType type, bool unitIncludesBiasTerm)
         {
             Type = type;
+
+            UnitIncludesBiasTerm = unitIncludesBiasTerm;
+        }
+    }
+
+    private readonly record struct DerivedUnitProcessingContext : IDerivedUnitProcessingContext
+    {
+        public DefinedType Type { get; }
+        public HashSet<string> ReservedUnits { get; }
+        public HashSet<string> ReservedUnitPlurals { get; }
+
+        public Dictionary<string, DerivableSignature> AvailableSignatureIDs { get; }
+
+        public DerivedUnitProcessingContext(UnitProcessingContext backedContext, Dictionary<string, DerivableSignature> availableSignatureIDs)
+        {
+            Type = backedContext.Type;
+            ReservedUnits = backedContext.ReservedUnits;
+            ReservedUnitPlurals = backedContext.ReservedUnitPlurals;
+
+            AvailableSignatureIDs = availableSignatureIDs;
         }
     }
 
@@ -142,7 +178,7 @@ public static class UnitParsingStage
         public static UnitAliasProcesser UnitAliasProcesser { get; } = new(UnitAliasDiagnostics.Instance);
         public static DerivedUnitProcesser DerivedUnitProcesser { get; } = new(DerivedUnitDiagnostics.Instance);
         public static FixedUnitProcesser FixedUnitProcesser { get; } = new(FixedUnitDiagnostics.Instance);
-        public static OffsetUnitProcesser OffsetUnitProcesser { get; } = new(OffsetUnitDiagnostics.Instance);
+        public static BiasedUnitProcesser BiasedUnitProcesser { get; } = new(BiasedUnitDiagnostics.Instance);
         public static PrefixedUnitProcesser PrefixedUnitProcesser { get; } = new(PrefixedUnitDiagnostics.Instance);
         public static ScaledUnitProcesser ScaledUnitProcesser { get; } = new(ScaledUnitDiagnostics.Instance);
     }

@@ -300,26 +300,11 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         return null;
     }
 
-    public virtual bool Equals(DefaultDocumentation? other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
+    public virtual bool Equals(DefaultDocumentation? other) => other is not null && ScalarType == other.ScalarType && Unit == other.Unit
+        && DefaultUnitName == other.DefaultUnitName && DefaultUnitSymbol == other.DefaultUnitSymbol && UnitParameterName == other.UnitParameterName
+        && ExampleBase == other.ExampleBase && ExampleUnit == other.ExampleUnit;
 
-        return ScalarType == other.ScalarType && Unit == other.Unit && DefaultUnitName == other.DefaultUnitName && DefaultUnitSymbol == other.DefaultUnitSymbol
-            && UnitParameterName == other.UnitParameterName && ExampleBase == other.ExampleBase && ExampleUnit == other.ExampleUnit;
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj is DefaultDocumentation other)
-        {
-            return Equals(other);
-        }
-
-        return false;
-    }
+    public override bool Equals(object? obj) => obj is DefaultDocumentation other && Equals(other);
 
     public static bool operator ==(DefaultDocumentation? lhs, DefaultDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(DefaultDocumentation? lhs, DefaultDocumentation? rhs) => (lhs == rhs) is false;

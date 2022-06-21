@@ -66,14 +66,14 @@ public static partial class DiagnosticConstruction
     public static Diagnostic ScalarTypeAlreadyDefinedAsVector(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "scalar", "vector");
     public static Diagnostic VectorTypeAlreadyDefinedAsVector(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "vector", "vector");
 
-    public static Diagnostic ScalarBiased(Location? location, string scalarName)
+    public static Diagnostic TypeNotUnbiasedScalar(Location? location, string scalarName)
     {
-        return Diagnostic.Create(DiagnosticRules.ScalarBiased, location, scalarName);
+        return Diagnostic.Create(DiagnosticRules.TypeNotUnbiasedScalar, location, scalarName);
     }
 
-    public static Diagnostic ScalarUnbiased(Location? location, string scalarName)
+    public static Diagnostic TypeNotBiasedScalar(Location? location, string scalarName)
     {
-        return Diagnostic.Create(DiagnosticRules.ScalarUnbiased, location, scalarName);
+        return Diagnostic.Create(DiagnosticRules.TypeNotBiasedScalar, location, scalarName);
     }
 
     public static Diagnostic UnitNotIncludingBiasTerm(Location? location, string unitName)

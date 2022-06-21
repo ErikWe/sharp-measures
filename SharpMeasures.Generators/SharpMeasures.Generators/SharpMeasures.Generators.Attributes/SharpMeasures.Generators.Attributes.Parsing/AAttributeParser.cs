@@ -103,7 +103,7 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
             return definition;
         }
 
-        for (int i = 0; i < parameterSymbols.Length && i < attributeData.ConstructorArguments.Length; i++)
+        for (int i = 0; i < parameterSymbols.Length && i < attributeData.ConstructorArguments.Length && i < attributeSyntax.ArgumentList?.Arguments.Count; i++)
         {
             if (attributeData.ConstructorArguments[i].Kind is TypedConstantKind.Error
                 || ConstructorParameters.TryGetValue(parameterSymbols[i].Name, out IAttributeProperty<TDefinition> property) is false)
@@ -177,8 +177,13 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
         };
     }
 
-    private static object?[] ParseArray(TypedConstant value)
+    private static object?[]? ParseArray(TypedConstant value)
     {
+        if (value.Values.IsDefault)
+        {
+            return null;
+        }
+
         ImmutableArray<TypedConstant> arrayConstants = value.Values;
         object?[] arrayValues = new object[arrayConstants.Length];
         for (int j = 0; j < arrayConstants.Length; j++)

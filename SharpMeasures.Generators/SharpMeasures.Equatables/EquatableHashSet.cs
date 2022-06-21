@@ -18,25 +18,8 @@ public class EquatableHashSet<T> : HashSet<T>, IReadOnlyHashSet<T>, IEquatable<E
 
     public ReadOnlyEquatableHashSet<T> AsReadOnly() => new(this);
 
-    public virtual bool Equals(EquatableHashSet<T>? other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
-
-        return SetEquals(other);
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj is EquatableHashSet<T> other)
-        {
-            return Equals(other);
-        }
-
-        return false;
-    }
+    public virtual bool Equals(EquatableHashSet<T>? other) => other is not null && SetEquals(other);
+    public override bool Equals(object? obj) => obj is EquatableHashSet<T> other && Equals(other);
 
     public static bool operator ==(EquatableHashSet<T>? lhs, EquatableHashSet<T>? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(EquatableHashSet<T>? lhs, EquatableHashSet<T>? rhs) => (lhs == rhs) is false;

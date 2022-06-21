@@ -13,5 +13,5 @@ public readonly record struct NamedType(string Name, string Namespace, bool IsVa
 
     public bool IsReferenceType => IsValueType is false;
 
-    public string FullyQualifiedName => string.IsNullOrEmpty(Namespace) ? Name : $"{Namespace}.{Name}";
+    public string FullyQualifiedName => $"global::{(string.IsNullOrEmpty(Namespace) ? string.Empty : $"{Namespace}.")}{Name}";
 }

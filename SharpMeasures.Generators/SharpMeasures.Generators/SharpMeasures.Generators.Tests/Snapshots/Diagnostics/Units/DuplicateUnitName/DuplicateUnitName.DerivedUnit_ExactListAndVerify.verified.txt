@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1102,
+    Title: Duplicate unit name,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (22,13)-(22,29),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} already defines a unit with the name {1},
+    Message: UnitOfSpeed already defines a unit with the name MetrePerSecond,
+    Category: Naming,
+    CustomTags: []
+  }
+]

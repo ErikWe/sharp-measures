@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 using SharpMeasures.Generators.Units.Parsing.DerivedUnit;
 using SharpMeasures.Generators.Units.Parsing.FixedUnit;
 using SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
-using SharpMeasures.Generators.Units.Parsing.OffsetUnit;
+using SharpMeasures.Generators.Units.Parsing.BiasedUnit;
 using SharpMeasures.Generators.Units.Parsing.PrefixedUnit;
 using SharpMeasures.Generators.Units.Parsing.ScaledUnit;
 using SharpMeasures.Generators.Units.Parsing.UnitAlias;
@@ -25,14 +25,14 @@ internal record class RawParsedUnit
     public EquatableEnumerable<RawUnitAliasDefinition> UnitAliases { get; }
     public EquatableEnumerable<RawDerivedUnitDefinition> DerivedUnits { get; }
     public EquatableEnumerable<RawFixedUnitDefinition> FixedUnits { get; }
-    public EquatableEnumerable<RawOffsetUnitDefinition> OffsetUnits { get; }
+    public EquatableEnumerable<RawBiasedUnitDefinition> BiasedUnits { get; }
     public EquatableEnumerable<RawPrefixedUnitDefinition> PrefixedUnits { get; }
     public EquatableEnumerable<RawScaledUnitDefinition> ScaledUnits { get; }
 
     public RawParsedUnit(DefinedType unitType, MinimalLocation unitLocation, SharpMeasuresUnitDefinition unitDefinition,
         IEnumerable<RawDerivableUnitDefinition> derivableUnitDefinitions, IEnumerable<RawUnitAliasDefinition> unitAliasDefinitions,
         IEnumerable<RawDerivedUnitDefinition> derivedUnitDefinitions, IEnumerable<RawFixedUnitDefinition> fixedUnitDefinitions,
-        IEnumerable<RawOffsetUnitDefinition> offsetUnitDefinitions, IEnumerable<RawPrefixedUnitDefinition> prefixedUnitDefinitions,
+        IEnumerable<RawBiasedUnitDefinition> biasedUnitDefinitions, IEnumerable<RawPrefixedUnitDefinition> prefixedUnitDefinitions,
         IEnumerable<RawScaledUnitDefinition> scaledUnitDefinitions)
     {
         UnitType = unitType;
@@ -43,14 +43,14 @@ internal record class RawParsedUnit
         UnitAliases = unitAliasDefinitions.AsEquatable();
         DerivedUnits = derivedUnitDefinitions.AsEquatable();
         FixedUnits = fixedUnitDefinitions.AsEquatable();
-        OffsetUnits = offsetUnitDefinitions.AsEquatable();
+        BiasedUnits = biasedUnitDefinitions.AsEquatable();
         PrefixedUnits = prefixedUnitDefinitions.AsEquatable();
         ScaledUnits = scaledUnitDefinitions.AsEquatable();
     }
 
     public IEnumerable<IRawUnitDefinition> GetUnitList()
     {
-        return (UnitAliases as IEnumerable<IRawUnitDefinition>).Concat(DerivedUnits).Concat(FixedUnits).Concat(OffsetUnits)
+        return (UnitAliases as IEnumerable<IRawUnitDefinition>).Concat(DerivedUnits).Concat(FixedUnits).Concat(BiasedUnits)
             .Concat(PrefixedUnits).Concat(ScaledUnits);
     }
 
@@ -61,6 +61,6 @@ internal record class RawParsedUnit
 
     public IEnumerable<IRawDependantUnitDefinition> GetDependantUnitList()
     {
-        return (UnitAliases as IEnumerable<IRawDependantUnitDefinition>).Concat(OffsetUnits).Concat(PrefixedUnits).Concat(ScaledUnits);
+        return (UnitAliases as IEnumerable<IRawDependantUnitDefinition>).Concat(BiasedUnits).Concat(PrefixedUnits).Concat(ScaledUnits);
     }
 }

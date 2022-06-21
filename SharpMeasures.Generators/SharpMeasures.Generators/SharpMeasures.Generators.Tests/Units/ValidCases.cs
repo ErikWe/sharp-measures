@@ -14,16 +14,19 @@ public class ValidCases
     [Fact]
     public Task UnbiasedUnit_Verify()
     {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
+        string source = """
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
 
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public partial class Length { }
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
 
-[SharpMeasuresUnit(typeof(Length))]
-public partial class UnitOfLength { }";
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).Verify();
+        string[] verifiedSources = new[] { "UnitOfLength_Common.g.cs" };
+
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyListedSourceNames(verifiedSources);
     }
 }

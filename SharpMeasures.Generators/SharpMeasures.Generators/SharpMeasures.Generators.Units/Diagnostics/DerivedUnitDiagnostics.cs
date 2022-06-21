@@ -12,36 +12,34 @@ internal class DerivedUnitDiagnostics : AUnitDiagnostics<RawDerivedUnitDefinitio
 
     private DerivedUnitDiagnostics() { }
 
-    public Diagnostic EmptySignature(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
+    public Diagnostic UnitNotDerivable(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
     {
-        return DiagnosticConstruction.EmptyUnitDerivationSignature(definition.Locations.SignatureCollection?.AsRoslynLocation());
+        return DiagnosticConstruction.UnitNotDerivable(definition.Locations.Attribute.AsRoslynLocation(), context.Type.Name);
     }
 
-    public Diagnostic IncompatibleSignatureAndUnitLists(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
+    public Diagnostic AmbiguousSignatureNotSpecified(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
     {
-        return DiagnosticConstruction.UnitListNotMatchingSignature(definition.Locations.Attribute.AsRoslynLocation(),
-            definition.Signature.Count, definition.Units.Count);
+        return DiagnosticConstruction.AmbiguousDerivationSignatureNotSpecified(definition.Locations.Attribute.AsRoslynLocation(), context.Type.Name);
     }
 
-    public Diagnostic UnrecognizedSignature(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
+    public Diagnostic InvalidUnitListLength(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition, DerivableSignature signature)
     {
-        return DiagnosticConstruction.UnrecognizedUnitDerivationSignature(definition.Locations.SignatureCollection?.AsRoslynLocation(), context.Type.Name);
+        return DiagnosticConstruction.IncompatibleDerivedUnitListSize(definition.Locations.Attribute.AsRoslynLocation(), signature.Count, definition.Units.Count);
     }
 
-    public Diagnostic NullSignatureElement(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition, int index)
+    public Diagnostic UnrecognizedSignatureID(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
     {
-        return DiagnosticConstruction.NullTypeNotUnit(definition.Locations.SignatureElements[index].AsRoslynLocation());
+        return DiagnosticConstruction.UnrecognizedUnitDerivationID(definition.Locations.SignatureID?.AsRoslynLocation(), definition.SignatureID!, context.Type.Name);
     }
 
-    public Diagnostic NullUnitElement(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition, int index)
+    public Diagnostic NullUnitElement(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition, int index, DerivableSignature signature)
     {
-        return DiagnosticConstruction.NullUnrecognizedUnitName(definition.Locations.UnitsElements[index].AsRoslynLocation(), definition.Signature[index]!.Value.Name);
+        return DiagnosticConstruction.NullUnrecognizedUnitName(definition.Locations.UnitsElements[index].AsRoslynLocation(),
+            signature[index].Name);
     }
 
-    public Diagnostic EmptyUnitElement(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition, int index)
-    {
-        return NullUnitElement(context, definition, index);
-    }
+    public Diagnostic EmptyUnitElement(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition, int index, DerivableSignature signature)
+        => NullUnitElement(context, definition, index, signature);
 
     public Diagnostic UnrecognizedUnit(IDerivedUnitValidatorContext context, DerivedUnitDefinition definition, int index)
     {

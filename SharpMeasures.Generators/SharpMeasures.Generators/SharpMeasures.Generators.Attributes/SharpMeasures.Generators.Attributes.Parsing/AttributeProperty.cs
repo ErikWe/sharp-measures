@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Equatables;
 
+using System;
 using System.Globalization;
 
 public interface IAttributeProperty
@@ -91,10 +92,37 @@ public record class AttributeProperty<TDefinition, TPropertyType> : AttributePro
         {
             if (obj is not TPropertyType value)
             {
+                if (obj is object[] objArray)
+                {
+                    return arrayWrapper(definition, objArray);
+                }
+
                 return definition;
             }
 
             return setter(definition, value);
+        }
+
+        TDefinition arrayWrapper(TDefinition definition, object[] objArray)
+        {
+            if (typeof(TPropertyType) is Type { IsArray: true } propertyType)
+            {
+                Array values = Array.CreateInstance(propertyType.GetElementType(), objArray.Length);
+
+                for (int i = 0; i < objArray.Length; i++)
+                {
+                    if (propertyType.GetElementType().IsAssignableFrom(objArray[i].GetType()) is false)
+                    {
+                        return definition;
+                    }
+
+                    values.SetValue(objArray[i], i);
+                }
+
+                return setter(definition, (TPropertyType)(object)values);
+            }
+
+            return definition;
         }
     }
 }

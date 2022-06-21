@@ -82,25 +82,8 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string MultiplyScalarOperatorRHS() => "Operator_Multiply_Scalar_RHS";
     public string DivideScalarOperatorLHS() => "Operator_Divide_Scalar_LHS";
 
-    public virtual bool Equals(DocumentationTags? other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
-
-        return Dimension == other.Dimension;
-    }
-
-    public override bool Equals(object obj)
-    {
-        if (obj is DocumentationTags other)
-        {
-            return Equals(other);
-        }
-
-        return false;
-    }
+    public virtual bool Equals(DocumentationTags? other) => other is not null && Dimension == other.Dimension;
+    public override bool Equals(object? obj) => obj is DocumentationTags other && Equals(other);
 
     public static bool operator ==(DocumentationTags? lhs, DocumentationTags? rhs) => lhs?.Equals(rhs) ?? rhs is null;
     public static bool operator !=(DocumentationTags? lhs, DocumentationTags? rhs) => (lhs == rhs) is false;
