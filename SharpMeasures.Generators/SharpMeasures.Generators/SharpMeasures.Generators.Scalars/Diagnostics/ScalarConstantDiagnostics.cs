@@ -52,8 +52,8 @@ internal class ScalarConstantDiagnostics : IScalarConstantDiagnostics, IScalarCo
                 definition.ParsingData.InterpretedMultiples!, context.Type.Name);
         }
 
-        return DiagnosticConstruction.DuplicateConstantMultiplesName(definition.Locations.Attribute.AsRoslynLocation(), definition.ParsingData.InterpretedMultiples!,
-            context.Type.Name);
+        return DiagnosticConstruction.DuplicateConstantMultiplesName(definition.Locations.AttributeName.AsRoslynLocation(),
+            definition.ParsingData.InterpretedMultiples!, context.Type.Name);
     }
 
     public Diagnostic MultiplesDisabledButNameSpecified(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
@@ -79,7 +79,7 @@ internal class ScalarConstantDiagnostics : IScalarConstantDiagnostics, IScalarCo
                 context.Type.Name);
         }
 
-        return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.Attribute.AsRoslynLocation(), definition.Multiples!,
+        return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.AttributeName.AsRoslynLocation(), definition.Multiples!,
             context.Type.Name);
     }
 }

@@ -1,6 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Scalars;
 
-using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors;
 
 using System;

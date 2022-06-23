@@ -48,7 +48,7 @@ internal class DimensionalEquivalenceValidator : IValidator<IDimensionalEquivale
                 continue;
             }
 
-            if (context.VectorPopulation.AllVectors.ContainsKey(definition.Quantities[i]))
+            if (context.VectorPopulation.AllVectors.ContainsKey(definition.Quantities[i]) is false)
             {
                 if (Diagnostics.TypeNotVector(context, definition, i) is Diagnostic diagnostics)
                 {

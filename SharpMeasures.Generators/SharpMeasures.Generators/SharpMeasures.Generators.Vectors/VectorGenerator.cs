@@ -12,6 +12,7 @@ using SharpMeasures.Generators.Vectors.Diagnostics;
 using SharpMeasures.Generators.Vectors.Documentation;
 using SharpMeasures.Generators.Vectors.Parsing;
 using SharpMeasures.Generators.Vectors.Pipelines.Common;
+using SharpMeasures.Generators.Vectors.Pipelines.DimensionalEquivalence;
 using SharpMeasures.Generators.Vectors.Pipelines.Maths;
 using SharpMeasures.Generators.Vectors.Pipelines.Units;
 using SharpMeasures.Generators.Vectors.Refinement.SharpMeasuresVector;
@@ -55,6 +56,7 @@ public class VectorGenerator
             .Combine(documentationDictionary).Flatten().Select(AppendDocumentationFile);
 
         CommonGenerator.Initialize(context, minimized, minimizedResized);
+        DimensionEquivalenceGenerator.Initialize(context, minimized, minimizedResized);
         MathsGenerator.Initialize(context, minimized, minimizedResized);
         UnitsGenerator.Initialize(context, minimized, minimizedResized, UnitInclusionPopulationProvider);
     }
@@ -62,7 +64,9 @@ public class VectorGenerator
     private static IOptionalWithDiagnostics<DataModel> ReduceToDataModel((ParsedVector Vector, UnitPopulation UnitPopulation, ScalarPopulation ScalarPopulation,
         VectorPopulation VectorPopulation, VectorPopulationData VectorPopulationData) input, CancellationToken _)
     {
-        SharpMeasuresVectorRefinementContext context = new(input.Vector.VectorType, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        SharpMeasuresVectorRefinementContext context = new(input.Vector.VectorType, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation,
+            input.VectorPopulationData);
+
         SharpMeasuresVectorRefiner refiner = new(SharpMeasuresVectorDiagnostics.Instance);
 
         var processedVector = refiner.Process(context, input.Vector.VectorDefinition);
@@ -139,13 +143,18 @@ public class VectorGenerator
         public ScalarPopulation ScalarPopulation { get; }
         public VectorPopulation VectorPopulation { get; }
 
-        public SharpMeasuresVectorRefinementContext(DefinedType type, UnitPopulation unitPopulation, ScalarPopulation scalarPopulation, VectorPopulation vectorPopulation)
+        public VectorPopulationData VectorPopulationData { get; }
+
+        public SharpMeasuresVectorRefinementContext(DefinedType type, UnitPopulation unitPopulation, ScalarPopulation scalarPopulation,
+            VectorPopulation vectorPopulation, VectorPopulationData vectorPopulationData)
         {
             Type = type;
 
             UnitPopulation = unitPopulation;
             ScalarPopulation = scalarPopulation;
             VectorPopulation = vectorPopulation;
+
+            VectorPopulationData = vectorPopulationData;
         }
     }
 

@@ -14,7 +14,6 @@ internal interface IResizedSharpMeasuresVectorRefinementDiagnostics
 {
     public abstract Diagnostic? TypeAlreadyUnit(IResizedSharpMeasuresVectorRefinementContext context, ResizedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? TypeAlreadyScalar(IResizedSharpMeasuresVectorRefinementContext context, ResizedSharpMeasuresVectorDefinition definition);
-    public abstract Diagnostic? TypeAlreadyVector(IResizedSharpMeasuresVectorRefinementContext context, ResizedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? TypeNotVector(IResizedSharpMeasuresVectorRefinementContext context, ResizedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? DuplicateDimension(IResizedSharpMeasuresVectorRefinementContext context, ResizedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? UnresolvedVectorGroup(IResizedSharpMeasuresVectorRefinementContext context, ResizedSharpMeasuresVectorDefinition definition);
@@ -29,7 +28,8 @@ internal interface IResizedSharpMeasuresVectorRefinementContext : IProcessingCon
     public abstract VectorPopulationData VectorPopulationData { get; }
 }
 
-internal class ResizedSharpMeasuresVectorRefiner : IProcesser<IResizedSharpMeasuresVectorRefinementContext, ResizedSharpMeasuresVectorDefinition, RefinedResizedSharpMeasuresVectorDefinition>
+internal class ResizedSharpMeasuresVectorRefiner : IProcesser<IResizedSharpMeasuresVectorRefinementContext, ResizedSharpMeasuresVectorDefinition,
+    RefinedResizedSharpMeasuresVectorDefinition>
 {
     private IResizedSharpMeasuresVectorRefinementDiagnostics Diagnostics { get; }
 
@@ -38,7 +38,8 @@ internal class ResizedSharpMeasuresVectorRefiner : IProcesser<IResizedSharpMeasu
         Diagnostics = diagnostics;
     }
 
-    public IOptionalWithDiagnostics<RefinedResizedSharpMeasuresVectorDefinition> Process(IResizedSharpMeasuresVectorRefinementContext context, ResizedSharpMeasuresVectorDefinition definition)
+    public IOptionalWithDiagnostics<RefinedResizedSharpMeasuresVectorDefinition> Process(IResizedSharpMeasuresVectorRefinementContext context,
+        ResizedSharpMeasuresVectorDefinition definition)
     {
         if (context.UnitPopulation.ContainsKey(context.Type.AsNamedType()))
         {

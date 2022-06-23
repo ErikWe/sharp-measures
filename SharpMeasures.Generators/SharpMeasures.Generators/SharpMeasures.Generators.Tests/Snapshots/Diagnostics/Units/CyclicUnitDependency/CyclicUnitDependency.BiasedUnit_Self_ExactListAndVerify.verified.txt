@@ -4,7 +4,7 @@
     Title: Cyclic unit dependency,
     Severity: Warning,
     WarningLevel: 1,
-    Location: : (6,1)-(6,44),
+    Location: : (6,32)-(6,40),
     Description: ,
     HelpLink: ,
     MessageFormat: {0} has a cyclic dependency on other instances of {1},

@@ -1,0 +1,17 @@
+﻿[
+  {
+    Id: Measures1460,
+    Title: Vector group already specified,
+    Severity: Info,
+    WarningLevel: 1,
+    Location: : (11,54)-(11,67),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The vector group to which {0} belongs has already been specified,
+    Message: The vector group to which Displacement3 belongs has already been specified,
+    Category: Usage,
+    CustomTags: [
+      Unnecessary
+    ]
+  }
+]

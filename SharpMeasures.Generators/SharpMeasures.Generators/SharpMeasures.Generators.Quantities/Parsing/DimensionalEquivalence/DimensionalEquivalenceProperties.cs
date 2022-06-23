@@ -13,7 +13,7 @@ internal static class DimensionalEquivalenceProperties
     public static IReadOnlyList<IAttributeProperty<RawDimensionalEquivalenceDefinition>> AllProperties => new IAttributeProperty<RawDimensionalEquivalenceDefinition>[]
     {
         CommonProperties.Items<INamedTypeSymbol, NamedType?, RawDimensionalEquivalenceDefinition, DimensionalEquivalenceLocations>
-            (nameof(DimensionalEquivalenceAttribute.Quantities), static (x) => x.AsNamedType()),
+            (nameof(DimensionalEquivalenceAttribute.Quantities), static (x) => x?.AsNamedType()),
         CastOperatorBehaviour
     };
 

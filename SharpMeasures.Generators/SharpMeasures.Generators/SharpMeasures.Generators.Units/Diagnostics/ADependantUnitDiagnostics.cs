@@ -22,6 +22,6 @@ internal abstract class ADependantUnitDiagnostics<TRawDefinition> : AUnitDiagnos
 
     public Diagnostic DependantOnSelf(IDependantUnitProcessingContext context, TRawDefinition definition)
     {
-        return DiagnosticConstruction.CyclicUnitDependency(definition.Locations.Attribute.AsRoslynLocation(), definition.Name!, context.Type.Name);
+        return DiagnosticConstruction.CyclicUnitDependency(definition.Locations.DependantOn?.AsRoslynLocation(), definition.Name!, context.Type.Name);
     }
 }

@@ -8,7 +8,17 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InvalidVectorDimension,
         title: "Invalid vector dimension",
-        messageFormat: "{0} is not a valid dimension. The dimension should be an integer larger than 1.",
+        messageFormat: "{0} is not a valid vector dimension, a value greater than 1 was expected",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor InvalidInterpretedVectorDimension = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InvalidVectorDimension,
+        title: "Invalid vector dimension",
+        messageFormat: "Interpreted the dimension of {0} as {1}, which is not a valid dimension - a value greater than 1 was expected",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -18,7 +28,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.MissingVectorDimension,
         title: "Missing vector dimension",
-        messageFormat: "Could not interpret the dimension for vector {0}. Specify the dimension manually, or change the name of the type to \"{0}X\", " +
+        messageFormat: "Could not interpret the vector dimension of {0}. Specify the dimension manually, or change the name of the type to \"{0}X\", " +
             "where X is the dimension.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
@@ -39,7 +49,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.VectorConstantInvalidDimension,
         title: "Invalid dimension of vector constant",
-        messageFormat: "Expected {0} elements, as {1} has dimension {0}",
+        messageFormat: "Expected {0} elements, as {2} has dimension {0} - but received {1} element(s)",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

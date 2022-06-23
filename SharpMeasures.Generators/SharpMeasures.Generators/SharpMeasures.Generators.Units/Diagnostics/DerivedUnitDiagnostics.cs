@@ -14,17 +14,18 @@ internal class DerivedUnitDiagnostics : AUnitDiagnostics<RawDerivedUnitDefinitio
 
     public Diagnostic UnitNotDerivable(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
     {
-        return DiagnosticConstruction.UnitNotDerivable(definition.Locations.Attribute.AsRoslynLocation(), context.Type.Name);
+        return DiagnosticConstruction.UnitNotDerivable(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
     public Diagnostic AmbiguousSignatureNotSpecified(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
     {
-        return DiagnosticConstruction.AmbiguousDerivationSignatureNotSpecified(definition.Locations.Attribute.AsRoslynLocation(), context.Type.Name);
+        return DiagnosticConstruction.AmbiguousDerivationSignatureNotSpecified(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
     public Diagnostic InvalidUnitListLength(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition, DerivableSignature signature)
     {
-        return DiagnosticConstruction.IncompatibleDerivedUnitListSize(definition.Locations.Attribute.AsRoslynLocation(), signature.Count, definition.Units.Count);
+        return DiagnosticConstruction.IncompatibleDerivedUnitListSize(definition.Locations.UnitsCollection?.AsRoslynLocation(), signature.Count,
+            definition.Units.Count);
     }
 
     public Diagnostic UnrecognizedSignatureID(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)

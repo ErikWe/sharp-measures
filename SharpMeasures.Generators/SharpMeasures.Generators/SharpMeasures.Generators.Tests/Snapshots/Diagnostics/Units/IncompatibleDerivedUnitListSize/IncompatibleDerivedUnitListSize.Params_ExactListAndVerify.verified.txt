@@ -4,7 +4,7 @@
     Title: Unit list length not matching signature,
     Severity: Warning,
     WarningLevel: 1,
-    Location: : (21,1)-(21,64),
+    Location: : (21,56)-(21,63),
     Description: ,
     HelpLink: ,
     MessageFormat: Expected {0} units to match the derivation signature - but {1} was identified,

@@ -268,7 +268,7 @@ internal static class Execution
         {
             foreach (var dependantUnit in dependantUnits)
             {
-                Diagnostic diagnostics = DiagnosticConstruction.CyclicUnitDependency(dependantUnit.Locations.Attribute.AsRoslynLocation(),
+                Diagnostic diagnostics = DiagnosticConstruction.CyclicUnitDependency(dependantUnit.Locations.DependantOn?.AsRoslynLocation(),
                     dependantUnit.Name, Data.Unit.Name);
 
                 Diagnostics.Add(diagnostics);

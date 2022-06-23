@@ -77,7 +77,7 @@ internal class SharpMeasuresScalarDiagnostics : ISharpMeasuresScalarProcessingDi
 
     public Diagnostic TypeAlreadyUnit(ISharpMeasuresScalarRefinementContext context, SharpMeasuresScalarDefinition definition)
     {
-        return DiagnosticConstruction.ScalarTypeAlreadyDefinedAsUnit(definition.Locations.Attribute.AsRoslynLocation(), context.Type.Name);
+        return DiagnosticConstruction.ScalarTypeAlreadyDefinedAsUnit(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
     public Diagnostic TypeNotUnit(ISharpMeasuresScalarRefinementContext context, SharpMeasuresScalarDefinition definition)
@@ -102,7 +102,7 @@ internal class SharpMeasuresScalarDiagnostics : ISharpMeasuresScalarProcessingDi
 
     public Diagnostic DifferenceNotScalar(ISharpMeasuresScalarRefinementContext context, SharpMeasuresScalarDefinition definition)
     {
-        return DiagnosticConstruction.TypeNotScalar(definition.Locations.Difference?.AsRoslynLocation(), definition.Reciprocal!.Value.Name);
+        return DiagnosticConstruction.TypeNotScalar(definition.Locations.Difference?.AsRoslynLocation(), definition.Difference.Name);
     }
 
     public Diagnostic ReciprocalNotScalar(ISharpMeasuresScalarRefinementContext context, SharpMeasuresScalarDefinition definition)

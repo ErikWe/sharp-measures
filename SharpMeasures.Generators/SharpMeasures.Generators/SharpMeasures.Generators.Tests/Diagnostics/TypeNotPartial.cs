@@ -14,29 +14,85 @@ using Xunit;
 public class TypeNotPartial
 {
     [Fact]
-    public Task Unit_Class_ExactListAndVerify()
+    public Task Unit_ExactListAndVerify()
     {
         string source = """
+            using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
 
             [SharpMeasuresUnit(typeof(int))]
-            public class UnitOfLength { }
+            public class UnitOfLength2 { }
+
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
+
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
             """;
 
         return AssertExactlyTypeNotPartialDiagnostics(source).VerifyDiagnostics();
     }
 
     [Fact]
-    public Task Unit_PrivateClass_ExactListAndVerify()
+    public Task Scalar_ExactListAndVerify()
     {
         string source = """
+            using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
 
-            class Foo
-            {
-                [SharpMeasuresUnit(typeof(int))]
-                private class UnitOfLength { }
-            }
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public class Length2 { }
+
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
+
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
+
+        return AssertExactlyTypeNotPartialDiagnostics(source).VerifyDiagnostics();
+    }
+
+    [Fact]
+    public Task Vector_ExactListAndVerify()
+    {
+        string source = """
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
+            using SharpMeasures.Generators.Vectors;
+
+            [SharpMeasuresVector(typeof(UnitOfLength))]
+            public class Position3 { }
+
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
+
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
+
+        return AssertExactlyTypeNotPartialDiagnostics(source).VerifyDiagnostics();
+    }
+
+    [Fact]
+    public Task ResizedVector_ExactListAndVerify()
+    {
+        string source = """
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
+            using SharpMeasures.Generators.Vectors;
+
+            [ResizedSharpMeasuresVector(typeof(Position3))]
+            public class Position2 { }
+
+            [SharpMeasuresVector(typeof(UnitOfLength))]
+            public partial class Position3 { }
+
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
+
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
             """;
 
         return AssertExactlyTypeNotPartialDiagnostics(source).VerifyDiagnostics();

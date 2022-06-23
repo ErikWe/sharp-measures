@@ -20,6 +20,6 @@ internal class ScalarDiagnostics : IPartialDeclarationProviderDiagnostics
 
     public static Diagnostic ContradictoryAttributes<TInclusionAttribute, TExclusionAttribute>(IItemListDefinition<string?> definition)
     {
-        return DiagnosticConstruction.ContradictoryAttributes<TInclusionAttribute, TExclusionAttribute>(definition.Locations.Attribute.AsRoslynLocation());
+        return DiagnosticConstruction.ContradictoryAttributes<TInclusionAttribute, TExclusionAttribute>(definition.Locations.AttributeName.AsRoslynLocation());
     }
 }

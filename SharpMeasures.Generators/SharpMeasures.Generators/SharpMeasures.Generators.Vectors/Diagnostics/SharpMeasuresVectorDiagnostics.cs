@@ -28,14 +28,19 @@ internal class SharpMeasuresVectorDiagnostics : ISharpMeasuresVectorProcessingDi
         return DiagnosticConstruction.InvalidVectorDimension(definition.Locations.Dimension?.AsRoslynLocation(), definition.Dimension);
     }
 
+    public Diagnostic InvalidInterpretedDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition, int dimension)
+    {
+        return DiagnosticConstruction.InvalidInterpretedVectorDimension(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name, dimension);
+    }
+
     public Diagnostic MissingDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)
     {
-        return DiagnosticConstruction.MissingVectorDimension(definition.Locations.Attribute.AsRoslynLocation(), context.Type.Name);
+        return DiagnosticConstruction.MissingVectorDimension(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
     public Diagnostic NullDifferenceQuantity(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)
     {
-        return DiagnosticConstruction.NullTypeNotScalar(definition.Locations.Difference?.AsRoslynLocation());
+        return DiagnosticConstruction.NullTypeNotVector(definition.Locations.Difference?.AsRoslynLocation());
     }
 
     public Diagnostic DifferenceDisabledButQuantitySpecified(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)
@@ -69,12 +74,17 @@ internal class SharpMeasuresVectorDiagnostics : ISharpMeasuresVectorProcessingDi
 
     public Diagnostic TypeAlreadyUnit(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition)
     {
-        return DiagnosticConstruction.VectorTypeAlreadyDefinedAsUnit(definition.Locations.Attribute.AsRoslynLocation(), context.Type.Name);
+        return DiagnosticConstruction.VectorTypeAlreadyDefinedAsUnit(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
     public Diagnostic TypeAlreadyScalar(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition)
     {
-        return DiagnosticConstruction.VectorTypeAlreadyDefinedAsScalar(definition.Locations.Attribute.AsRoslynLocation(), context.Type.Name);
+        return DiagnosticConstruction.VectorTypeAlreadyDefinedAsScalar(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
+    }
+
+    public Diagnostic TypeAlreadyVector(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition)
+    {
+        return DiagnosticConstruction.VectorTypeAlreadyDefinedAsVector(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
     public Diagnostic TypeNotUnit(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition)
@@ -87,8 +97,13 @@ internal class SharpMeasuresVectorDiagnostics : ISharpMeasuresVectorProcessingDi
         return DiagnosticConstruction.TypeNotScalar(definition.Locations.Scalar?.AsRoslynLocation(), definition.Scalar!.Value.Name);
     }
 
-    public Diagnostic UnrecognizedUnit(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition)
+    public Diagnostic UnrecognizedDefaultUnit(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition)
     {
         return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.DefaultUnitName?.AsRoslynLocation(), definition.DefaultUnitName!, definition.Unit.Name);
+    }
+
+    public Diagnostic DifferenceNotVector(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition)
+    {
+        return DiagnosticConstruction.TypeNotVector(definition.Locations.Difference?.AsRoslynLocation(), definition.Difference.Name);
     }
 }

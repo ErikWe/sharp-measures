@@ -9,7 +9,7 @@ internal record class RawDerivableUnitDefinition : ARawAttributeDefinition<Deriv
 
     public string? Expression { get; init; }
     public string? DerivationID { get; init; }
-    public ReadOnlyEquatableList<NamedType?> Signature { get; init; } = ReadOnlyEquatableList<NamedType?>.Empty;
+    public ReadOnlyEquatableList<NamedType?>? Signature { get; init; }
 
     private RawDerivableUnitDefinition() : base(DerivableUnitLocations.Empty) { }
 }

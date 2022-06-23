@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1002,
+    Title: Expected a vector quantity,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: : (5,31)-(5,34),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Expected a vector quantity. Decorate {0} with the attribute SharpMeasures.Generators.Vectors.SharpMeasuresVectorAttribute, or use another type.,
+    Message: Expected a vector quantity. Decorate Int32 with the attribute SharpMeasures.Generators.Vectors.SharpMeasuresVectorAttribute, or use another type.,
+    Category: Usage,
+    CustomTags: []
+  }
+]

@@ -34,7 +34,8 @@ internal class VectorConstantDiagnostics : IVectorConstantProcessingDiagnostics,
 
     public Diagnostic InvalidValueDimension(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
     {
-        return DiagnosticConstruction.VectorConstantInvalidDimension(definition.Locations.ValueCollection?.AsRoslynLocation(), context.Dimension, context.Type.Name);
+        return DiagnosticConstruction.VectorConstantInvalidDimension(definition.Locations.ValueCollection?.AsRoslynLocation(), context.Dimension,
+            definition.Value.Count, context.Type.Name);
     }
 
     public Diagnostic NullMultiples(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
@@ -58,8 +59,8 @@ internal class VectorConstantDiagnostics : IVectorConstantProcessingDiagnostics,
                 definition.ParsingData.InterpretedMultiples!, context.Type.Name);
         }
 
-        return DiagnosticConstruction.DuplicateConstantMultiplesName(definition.Locations.Attribute.AsRoslynLocation(), definition.ParsingData.InterpretedMultiples!,
-            context.Type.Name);
+        return DiagnosticConstruction.DuplicateConstantMultiplesName(definition.Locations.AttributeName.AsRoslynLocation(),
+            definition.ParsingData.InterpretedMultiples!, context.Type.Name);
     }
 
     public Diagnostic MultiplesDisabledButNameSpecified(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
@@ -85,7 +86,7 @@ internal class VectorConstantDiagnostics : IVectorConstantProcessingDiagnostics,
                 context.Type.Name);
         }
 
-        return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.Attribute.AsRoslynLocation(), definition.Multiples!,
+        return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.AttributeName.AsRoslynLocation(), definition.Multiples!,
             context.Type.Name);
     }
 }

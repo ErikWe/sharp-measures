@@ -60,7 +60,7 @@ public static partial class UtilityExtensions
 
         foreach (var keyValuePair in dictionary)
         {
-            if ((other.TryGetValue(keyValuePair.Key, out var value) && keyValuePair.Equals(value)) is false)
+            if ((other.TryGetValue(keyValuePair.Key, out var value) && (keyValuePair.Value?.Equals(value) ?? value is null)) is false)
             {
                 return false;
             }

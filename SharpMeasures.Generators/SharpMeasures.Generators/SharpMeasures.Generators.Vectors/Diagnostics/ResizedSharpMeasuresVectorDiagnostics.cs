@@ -23,24 +23,24 @@ internal class ResizedSharpMeasuresVectorDiagnostics : IResizedSharpMeasuresVect
         return DiagnosticConstruction.InvalidVectorDimension(definition.Locations.Dimension?.AsRoslynLocation(), definition.Dimension);
     }
 
+    public Diagnostic InvalidInterpretedDimension(IProcessingContext context, RawResizedSharpMeasuresVectorDefinition definition, int dimension)
+    {
+        return DiagnosticConstruction.InvalidInterpretedVectorDimension(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name, dimension);
+    }
+
     public Diagnostic MissingDimension(IProcessingContext context, RawResizedSharpMeasuresVectorDefinition definition)
     {
-        return DiagnosticConstruction.MissingVectorDimension(definition.Locations.Attribute.AsRoslynLocation(), context.Type.Name);
+        return DiagnosticConstruction.MissingVectorDimension(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
     public Diagnostic TypeAlreadyUnit(IResizedSharpMeasuresVectorRefinementContext context, ResizedSharpMeasuresVectorDefinition definition)
     {
-        return DiagnosticConstruction.VectorTypeAlreadyDefinedAsUnit(definition.Locations.Attribute.AsRoslynLocation(), context.Type.Name);
+        return DiagnosticConstruction.VectorTypeAlreadyDefinedAsUnit(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
     public Diagnostic TypeAlreadyScalar(IResizedSharpMeasuresVectorRefinementContext context, ResizedSharpMeasuresVectorDefinition definition)
     {
-        return DiagnosticConstruction.VectorTypeAlreadyDefinedAsScalar(definition.Locations.Attribute.AsRoslynLocation(), context.Type.Name);
-    }
-
-    public Diagnostic TypeAlreadyVector(IResizedSharpMeasuresVectorRefinementContext context, ResizedSharpMeasuresVectorDefinition definition)
-    {
-        return DiagnosticConstruction.VectorTypeAlreadyDefinedAsVector(definition.Locations.Attribute.AsRoslynLocation(), context.Type.Name);
+        return DiagnosticConstruction.VectorTypeAlreadyDefinedAsScalar(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
     public Diagnostic TypeNotVector(IResizedSharpMeasuresVectorRefinementContext context, ResizedSharpMeasuresVectorDefinition definition)

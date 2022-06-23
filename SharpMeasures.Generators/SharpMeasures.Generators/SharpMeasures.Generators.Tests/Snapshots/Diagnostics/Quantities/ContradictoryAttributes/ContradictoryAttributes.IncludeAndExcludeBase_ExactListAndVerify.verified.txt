@@ -4,7 +4,7 @@
     Title: Contradictory attributes,
     Severity: Warning,
     WarningLevel: 1,
-    Location: : (5,1)-(5,26),
+    Location: : (5,1)-(5,13),
     Description: ,
     HelpLink: ,
     MessageFormat: Contradictory attributes {0} and {1} were used,

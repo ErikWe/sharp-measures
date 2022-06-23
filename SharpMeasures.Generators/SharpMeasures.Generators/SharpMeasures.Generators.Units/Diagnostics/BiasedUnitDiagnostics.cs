@@ -13,7 +13,7 @@ internal class BiasedUnitDiagnostics : ADependantUnitDiagnostics<RawBiasedUnitDe
 
     public Diagnostic UnitNotIncludingBiasTerm(IBiasedUnitProcessingContext context, RawBiasedUnitDefinition definition)
     {
-        return DiagnosticConstruction.BiasedUnitDefinedButUnitNotBiased(definition.Locations.Attribute.AsRoslynLocation(), definition.Name!, context.Type.Name);
+        return DiagnosticConstruction.BiasedUnitDefinedButUnitNotBiased(definition.Locations.AttributeName.AsRoslynLocation(), definition.Name!, context.Type.Name);
     }
 
     public Diagnostic NullExpression(IBiasedUnitProcessingContext context, RawBiasedUnitDefinition definition)

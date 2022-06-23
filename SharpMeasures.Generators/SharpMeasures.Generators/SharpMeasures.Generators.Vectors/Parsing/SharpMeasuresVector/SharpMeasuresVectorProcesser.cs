@@ -16,6 +16,7 @@ internal interface ISharpMeasuresVectorProcessingDiagnostics
 
     public abstract Diagnostic? MissingDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? InvalidDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
+    public abstract Diagnostic? InvalidInterpretedDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition, int dimension);
 
     public abstract Diagnostic? DifferenceDisabledButQuantitySpecified(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? NullDifferenceQuantity(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
@@ -100,10 +101,13 @@ internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, Raw
         {
             if (int.TryParse(trailingNumber.Value, NumberStyles.None, CultureInfo.InvariantCulture, out int result))
             {
+                if (result < 2)
+                {
+                    return OptionalWithDiagnostics.Empty<int>(Diagnostics.InvalidInterpretedDimension(context, definition, result));
+                }
+
                 return OptionalWithDiagnostics.Result(result);
             }
-
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<int>();
         }
 
         return OptionalWithDiagnostics.Empty<int>(Diagnostics.MissingDimension(context, definition));

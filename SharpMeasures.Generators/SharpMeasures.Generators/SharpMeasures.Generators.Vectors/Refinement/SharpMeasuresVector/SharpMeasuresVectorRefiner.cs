@@ -7,17 +7,20 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors;
+using SharpMeasures.Generators.Vectors.Parsing;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 
 using System.Linq;
 
 internal interface ISharpMeasuresVectorRefinementDiagnostics
 {
-    public Diagnostic? TypeAlreadyUnit(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition);
-    public Diagnostic? TypeAlreadyScalar(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition);
-    public Diagnostic? TypeNotUnit(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition);
-    public Diagnostic? TypeNotScalar(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition);
-    public Diagnostic? UnrecognizedUnit(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition);
+    public abstract Diagnostic? TypeAlreadyUnit(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition);
+    public abstract Diagnostic? TypeAlreadyScalar(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition);
+    public abstract Diagnostic? TypeAlreadyVector(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition);
+    public abstract Diagnostic? TypeNotUnit(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition);
+    public abstract Diagnostic? TypeNotScalar(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition);
+    public abstract Diagnostic? UnrecognizedDefaultUnit(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition);
+    public abstract Diagnostic? DifferenceNotVector(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition);
 }
 
 internal interface ISharpMeasuresVectorRefinementContext : IProcessingContext
@@ -25,6 +28,8 @@ internal interface ISharpMeasuresVectorRefinementContext : IProcessingContext
     public abstract UnitPopulation UnitPopulation { get; }
     public abstract ScalarPopulation ScalarPopulation { get; }
     public abstract VectorPopulation VectorPopulation { get; }
+
+    public abstract VectorPopulationData VectorPopulationData { get; }
 }
 
 internal class SharpMeasuresVectorRefiner : IProcesser<ISharpMeasuresVectorRefinementContext, SharpMeasuresVectorDefinition, RefinedSharpMeasuresVectorDefinition>
@@ -48,6 +53,11 @@ internal class SharpMeasuresVectorRefiner : IProcesser<ISharpMeasuresVectorRefin
             return OptionalWithDiagnostics.Empty<RefinedSharpMeasuresVectorDefinition>(Diagnostics.TypeAlreadyScalar(context, definition));
         }
 
+        if (context.VectorPopulationData.NonUniquelyDefinedTypes.ContainsKey(context.Type.AsNamedType()))
+        {
+            return OptionalWithDiagnostics.Empty<RefinedSharpMeasuresVectorDefinition>(Diagnostics.TypeAlreadyVector(context, definition));
+        }
+
         if (context.VectorPopulation.ResizedVectorGroups.TryGetValue(context.Type.AsNamedType(), out var vectorGroup) is false)
         {
             return OptionalWithDiagnostics.Empty<RefinedSharpMeasuresVectorDefinition>();
@@ -63,6 +73,9 @@ internal class SharpMeasuresVectorRefiner : IProcesser<ISharpMeasuresVectorRefin
 
         var processedScalar = ProcessScalar(context, definition);
         allDiagnostics = allDiagnostics.Concat(processedScalar.Diagnostics);
+
+        var processedDifference = ProcessDifference(context, definition);
+        allDiagnostics = allDiagnostics.Concat(processedDifference.Diagnostics);
 
         var processedDefaultUnitName = ProcessDefaultUnitName(context, definition, processedUnit.Result);
         allDiagnostics = allDiagnostics.Concat(processedDefaultUnitName.Diagnostics);
@@ -84,19 +97,29 @@ internal class SharpMeasuresVectorRefiner : IProcesser<ISharpMeasuresVectorRefin
         return OptionalWithDiagnostics.Result(unit);
     }
 
-    private IOptionalWithDiagnostics<ScalarInterface?> ProcessScalar(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition)
+    private IResultWithDiagnostics<ScalarInterface?> ProcessScalar(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition)
     {
         if (definition.Scalar is null)
         {
-            return OptionalWithDiagnostics.Result<ScalarInterface?>(null);
+            return ResultWithDiagnostics.Construct<ScalarInterface?>(null);
         }
 
         if (context.ScalarPopulation.TryGetValue(definition.Scalar.Value, out var scalar))
         {
-            return OptionalWithDiagnostics.Result<ScalarInterface?>(scalar);
+            return ResultWithDiagnostics.Construct<ScalarInterface?>(scalar);
         }
 
-        return OptionalWithDiagnostics.Empty<ScalarInterface?>(Diagnostics.TypeNotScalar(context, definition));
+        return ResultWithDiagnostics.Construct<ScalarInterface?>(null, Diagnostics.TypeNotScalar(context, definition));
+    }
+
+    private IResultWithDiagnostics<IVectorInterface> ProcessDifference(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition)
+    {
+        if (context.VectorPopulation.AllVectors.TryGetValue(definition.Difference, out var vector) is false)
+        {
+            return ResultWithDiagnostics.Construct(context.VectorPopulation.AllVectors[context.Type.AsNamedType()], Diagnostics.DifferenceNotVector(context, definition));
+        }
+
+        return ResultWithDiagnostics.Construct(vector);
     }
 
     private IResultWithDiagnostics<string?> ProcessDefaultUnitName(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition, UnitInterface unit)
@@ -108,7 +131,7 @@ internal class SharpMeasuresVectorRefiner : IProcesser<ISharpMeasuresVectorRefin
 
         if (unit.UnitsByName.ContainsKey(definition.DefaultUnitName) is false)
         {
-            return ResultWithDiagnostics.Construct<string?>(null, Diagnostics.UnrecognizedUnit(context, definition));
+            return ResultWithDiagnostics.Construct<string?>(null, Diagnostics.UnrecognizedDefaultUnit(context, definition));
         }
 
         return ResultWithDiagnostics.Construct<string?>(definition.DefaultUnitName);

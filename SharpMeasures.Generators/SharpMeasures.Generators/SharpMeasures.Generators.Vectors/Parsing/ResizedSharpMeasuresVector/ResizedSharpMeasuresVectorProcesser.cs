@@ -15,6 +15,7 @@ internal interface IResizedSharpMeasuresVectorProcessingDiagnostics
 
     public abstract Diagnostic? MissingDimension(IProcessingContext context, RawResizedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? InvalidDimension(IProcessingContext context, RawResizedSharpMeasuresVectorDefinition definition);
+    public abstract Diagnostic? InvalidInterpretedDimension(IProcessingContext context, RawResizedSharpMeasuresVectorDefinition definition, int dimension);
 }
 
 internal class ResizedSharpMeasuresVectorProcesser : AProcesser<IProcessingContext, RawResizedSharpMeasuresVectorDefinition, ResizedSharpMeasuresVectorDefinition>
@@ -84,6 +85,11 @@ internal class ResizedSharpMeasuresVectorProcesser : AProcesser<IProcessingConte
         {
             if (int.TryParse(trailingNumber.Value, NumberStyles.None, CultureInfo.InvariantCulture, out int result))
             {
+                if (result < 2)
+                {
+                    return OptionalWithDiagnostics.Empty<int>(Diagnostics.InvalidInterpretedDimension(context, definition, result));
+                }
+
                 return OptionalWithDiagnostics.Result(result);
             }
 

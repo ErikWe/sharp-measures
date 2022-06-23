@@ -67,7 +67,7 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
             return definition;
         }
 
-        definition = AddAttributeLocation(definition, attributeSyntax.GetLocation().Minimize());
+        definition = AddAttributeLocation(definition, attributeSyntax.GetLocation().Minimize(), attributeSyntax.Name.GetLocation().Minimize());
         definition = AddConstructorArguments(definition, attributeData, attributeSyntax, parameterSymbols);
         definition = AddNamedArguments(definition, attributeData, attributeSyntax, parameterSymbols);
         definition = AddCustomData(definition, attributeData, attributeSyntax, parameterSymbols);
@@ -180,13 +180,14 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
         return property.Setter(definition, value.Value);
     }
 
-    private static TDefinition AddAttributeLocation(TDefinition definition, MinimalLocation attributeLocation)
+    private static TDefinition AddAttributeLocation(TDefinition definition, MinimalLocation attributeLocation, MinimalLocation attributeNameLocation)
     {
         return definition with
         {
             Locations = definition.Locations with
             {
-                Attribute = attributeLocation
+                Attribute = attributeLocation,
+                AttributeName = attributeNameLocation
             }
         };
     }

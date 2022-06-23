@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1001,
+    Title: Expected a scalar quantity,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: : (3,63)-(3,66),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Expected a scalar quantity. Decorate {0} with the attribute SharpMeasures.Generators.Scalars.SharpMeasuresScalarAttribute, or use another type.,
+    Message: Expected a scalar quantity. Decorate Int32 with the attribute SharpMeasures.Generators.Scalars.SharpMeasuresScalarAttribute, or use another type.,
+    Category: Usage,
+    CustomTags: []
+  }
+]

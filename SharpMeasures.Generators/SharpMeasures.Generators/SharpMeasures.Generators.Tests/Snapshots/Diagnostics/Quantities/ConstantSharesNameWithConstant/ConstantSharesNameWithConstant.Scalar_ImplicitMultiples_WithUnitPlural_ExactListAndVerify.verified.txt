@@ -4,7 +4,7 @@
     Title: Constant shares name with unit,
     Severity: Warning,
     WarningLevel: 1,
-    Location: : (5,1)-(5,43),
+    Location: : (5,1)-(5,15),
     Description: ,
     HelpLink: ,
     MessageFormat: {0} already associates "{1}" with a unit,

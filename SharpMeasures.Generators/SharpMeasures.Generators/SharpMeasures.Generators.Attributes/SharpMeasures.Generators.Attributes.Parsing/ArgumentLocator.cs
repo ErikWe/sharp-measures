@@ -68,7 +68,7 @@ internal static class ArgumentLocator
 
         for (int i = 0; i < elements.Length; i++)
         {
-            elements[i] = argumentList.Arguments[i].GetLocation().Minimize();
+            elements[i] = SimpleArgument(argumentList, i);
         }
 
         Location firstLocation = argumentList.Arguments[startIndex].GetLocation();

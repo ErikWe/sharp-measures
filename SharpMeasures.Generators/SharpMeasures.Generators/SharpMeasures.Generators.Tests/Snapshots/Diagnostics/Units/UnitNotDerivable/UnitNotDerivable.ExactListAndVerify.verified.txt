@@ -4,7 +4,7 @@
     Title: Unit not derivable,
     Severity: Warning,
     WarningLevel: 1,
-    Location: : (6,1)-(6,64),
+    Location: : (6,1)-(6,12),
     Description: ,
     HelpLink: ,
     MessageFormat: {0} has no defined derivations. Add a definition using SharpMeasures.Generators.Units.DerivableUnitAttribute.,

@@ -15,6 +15,7 @@ internal static class VectorPopulationBuilder
         ((ImmutableArray<SharpMeasuresVectorInterface> Base, ImmutableArray<ResizedSharpMeasuresVectorInterface> Resized) vectors, CancellationToken _)
     {
         Dictionary<NamedType, IVectorInterface> allVectors = new();
+        Dictionary<NamedType, IVectorInterface> nonUniquelyDefinedTypes = new();
 
         foreach (SharpMeasuresVectorInterface baseVector in vectors.Base)
         {
@@ -23,6 +24,17 @@ internal static class VectorPopulationBuilder
 
         foreach (ResizedSharpMeasuresVectorInterface resizedVector in vectors.Resized)
         {
+            if (allVectors.ContainsKey(resizedVector.VectorType))
+            {
+                if (nonUniquelyDefinedTypes.ContainsKey(resizedVector.VectorType))
+                {
+                    continue;
+                }
+
+                nonUniquelyDefinedTypes.Add(resizedVector.VectorType, resizedVector);
+                continue;
+            }
+
             allVectors.Add(resizedVector.VectorType, resizedVector);
         }
 
@@ -35,7 +47,7 @@ internal static class VectorPopulationBuilder
         }
 
         List<ResizedSharpMeasuresVectorInterface> ungroupedResizedVectors = new(vectors.Resized);
-        AddResizedVectors(groupBuilders, ungroupedResizedVectors, duplicatePopulation);
+        AddResizedVectors(groupBuilders, ungroupedResizedVectors, duplicatePopulation, nonUniquelyDefinedTypes);
 
         ReadOnlyEquatableDictionary<NamedType, ResizedVectorGroup> resizedVectorGroups
             = groupBuilders.ToDictionary(static (x) => x.Key, static (x) => x.Value.Build()).AsReadOnlyEquatable();
@@ -86,14 +98,16 @@ internal static class VectorPopulationBuilder
             dimensionalEquivalences.ToDictionary((x) => x.Key, (x) => x.Value.AsReadOnlyEquatable()),
             excessiveDimensionalEquivalences.ToDictionary((x) => x.Key, (x) => x.Value.AsReadOnlyEquatable()),
             unresolvedPopulation,
-            duplicatePopulation
+            duplicatePopulation,
+            nonUniquelyDefinedTypes
         );
 
         return (population, populationData);
     }
 
     private static void AddResizedVectors(Dictionary<NamedType, ResizedVectorGroup.IBuilder> groupBuilders,
-        List<ResizedSharpMeasuresVectorInterface> ungroupedVectors, Dictionary<NamedType, ResizedSharpMeasuresVectorInterface> duplicateDimensionVectors)
+        List<ResizedSharpMeasuresVectorInterface> ungroupedVectors, Dictionary<NamedType, ResizedSharpMeasuresVectorInterface> duplicateDimensionVectors,
+        Dictionary<NamedType, IVectorInterface> nonUniquelyDefinedTypes)
     {
         while (true)
         {
@@ -106,6 +120,11 @@ internal static class VectorPopulationBuilder
 
             for (int i = 0; i < ungroupedVectors.Count; i++)
             {
+                if (nonUniquelyDefinedTypes.ContainsKey(ungroupedVectors[i].VectorType))
+                {
+                    continue;
+                }
+
                 if (groupBuilders.TryGetValue(ungroupedVectors[i].AssociatedVector, out var builder) is false)
                 {
                     if (duplicateDimensionVectors.TryGetValue(ungroupedVectors[i].AssociatedVector, out var duplicateParent))
@@ -121,6 +140,8 @@ internal static class VectorPopulationBuilder
                 {
                     duplicateDimensionVectors.Add(ungroupedVectors[i].VectorType, ungroupedVectors[i]);
                     removeAndDecrementLoop();
+
+                    continue;
                 }
 
                 builder.AddResizedVector(ungroupedVectors[i]);

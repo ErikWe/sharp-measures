@@ -4,7 +4,7 @@
     Title: The unit does not support biases,
     Severity: Warning,
     WarningLevel: 1,
-    Location: : (7,1)-(7,44),
+    Location: : (7,1)-(7,11),
     Description: ,
     HelpLink: ,
     MessageFormat: {0} could not be implemented, as {1} does not support biases. Remove {0}, or make {1} support biases through SharpMeasures.Generators.Units.SharpMeasuresUnitAttribute.,
