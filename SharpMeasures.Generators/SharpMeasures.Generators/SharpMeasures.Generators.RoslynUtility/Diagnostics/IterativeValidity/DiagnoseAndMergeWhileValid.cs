@@ -8,6 +8,24 @@ public static partial class IterativeValidity
     public delegate IValidityWithDiagnostics DValidity<T>(T argument);
     public delegate IValidityWithDiagnostics DValidity<T1, T2>(T1 argument1, T2 argument2);
 
+    public static IValidityWithDiagnostics DiagnoseAndMergeWhileValid(IEnumerable<IValidityWithDiagnostics> validities)
+    {
+        return DiagnoseAndMergeWhileValid(wrappedValidities());
+
+        IEnumerable<DValidity> wrappedValidities()
+        {
+            foreach (var validity in validities)
+            {
+                yield return () => validity;
+            }
+        }
+    }
+
+    public static IValidityWithDiagnostics DiagnoseAndMergeWhileValid(params IValidityWithDiagnostics[] validities)
+    {
+        return DiagnoseAndMergeWhileValid(validities as IEnumerable<IValidityWithDiagnostics>);
+    }
+
     public static IValidityWithDiagnostics DiagnoseAndMergeWhileValid(IEnumerable<DValidity> delegatedValidity)
     {
         return DiagnoseAndMergeWhileValid(IValidityWithDiagnostics.MergeOperation.AND, delegatedValidity);

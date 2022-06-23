@@ -97,16 +97,6 @@ public static class ScalarParsingStage
         var allDiagnostics = includeBasesDefinitions.Diagnostics.Concat(excludeBasesDefinitions.Diagnostics).Concat(includeUnitsDefinitions.Diagnostics)
             .Concat(excludeUnitsDefinitions.Diagnostics).Concat(scalarConstantDefinitions.Diagnostics).Concat(dimensionalEquivalenceDefinitions.Diagnostics);
 
-        if (input.IncludeBases.Any() && input.ExcludeBases.Any())
-        {
-            allDiagnostics = allDiagnostics.Concat(CreateExcessiveExclusionDiagnostics<IncludeBasesAttribute, ExcludeBasesAttribute>(input.ExcludeBases));
-        }
-
-        if (input.IncludeUnits.Any() && input.ExcludeUnits.Any())
-        {
-            allDiagnostics = allDiagnostics.Concat(CreateExcessiveExclusionDiagnostics<IncludeUnitsAttribute, ExcludeUnitsAttribute>(input.ExcludeUnits));
-        }
-
         ParsedScalar processed = new(input.ScalarType, input.ScalarLocation, input.ScalarDefinition, includeBasesDefinitions.Result, excludeBasesDefinitions.Result,
             includeUnitsDefinitions.Result, excludeUnitsDefinitions.Result, scalarConstantDefinitions.Result, dimensionalEquivalenceDefinitions.Result);
 
@@ -203,7 +193,7 @@ public static class ScalarParsingStage
         }
     }
 
-    private readonly record struct UnitListProcessingContext : IItemListProcessingContext<string>
+    private readonly record struct UnitListProcessingContext : IUniqueItemListProcessingContext<string>
     {
         public DefinedType Type { get; }
 

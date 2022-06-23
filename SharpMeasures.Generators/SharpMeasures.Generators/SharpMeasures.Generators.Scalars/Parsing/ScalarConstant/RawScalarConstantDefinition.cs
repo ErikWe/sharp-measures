@@ -11,7 +11,7 @@ internal record class RawScalarConstantDefinition : ARawAttributeDefinition<Scal
     public double Value { get; init; }
 
     public bool GenerateMultiplesProperty { get; init; }
-    public string? MultiplesName { get; init; }
+    public string? Multiples { get; init; }
 
     public ScalarConstantParsingData ParsingData { get; init; } = ScalarConstantParsingData.Empty;
 

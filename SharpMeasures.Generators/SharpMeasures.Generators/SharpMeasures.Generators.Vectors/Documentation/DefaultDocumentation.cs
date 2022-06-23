@@ -270,11 +270,25 @@ internal class DefaultDocumentation<TDataModel> : IDocumentationStrategy, IEquat
     public string UnaryPlusMethod() => InheritDoc;
     public string NegateMethod() => InheritDoc;
 
+    public string AddSameTypeMethod() => InheritDoc;
+    public string SubtractSameTypeMethod() => InheritDoc;
+    public string SubtractFromSameTypeMethod() => InheritDoc;
+
+    public string AddDifferenceMethod() => InheritDoc;
+    public string SubtractDifferenceMethod() => InheritDoc;
+
     public string MultiplyScalarMethod() => InheritDoc;
     public string DivideScalarMethod() => InheritDoc;
 
     public string UnaryPlusOperator() => InheritDoc;
     public string NegateOperator() => InheritDoc;
+
+    public string AddSameTypeOperator() => InheritDoc;
+    public string SubtractSameTypeOperator() => InheritDoc;
+
+    public string AddDifferenceOperatorLHS() => InheritDoc;
+    public string AddDifferenceOperatorRHS() => InheritDoc;
+    public string SubtractDifferenceOperatorLHS() => InheritDoc;
 
     public string MultiplyScalarOperatorLHS() => InheritDoc;
     public string MultiplyScalarOperatorRHS() => InheritDoc;

@@ -12,7 +12,7 @@ public static partial class DiagnosticRules
         title: "Expected both unit name and symbol",
         messageFormat: "The symbol for the default unit of the quantity was specified, but not the name of the default unit",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true
     );
 
@@ -22,7 +22,7 @@ public static partial class DiagnosticRules
         title: "Expected both unit name and symbol",
         messageFormat: "The name of the default unit of the quantity was specified, but not the associated symbol",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true
     );
 
@@ -50,7 +50,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InvalidConstantMultiplesName,
         title: "Invalid name for multiples of constant",
-        messageFormat: "\"{0}\" can not be used as the name for multiples of {1}. Try writing the name in full, or use a suitable notation" +
+        messageFormat: "\"{0}\" can not be used as the name for multiples of {1}. Use the default value, write the name in full, or use a suitable notation " +
             $"from {typeof(ConstantMultiplesCodes).FullName}.",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
@@ -61,7 +61,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InvalidConstantMultiplesName,
         title: "Invalid name for multiples of constant",
-        messageFormat: "The name for multiples of {0} must be defined. Try writing the name in full, or use a suitable notation" +
+        messageFormat: "The name for multiples of {0} must be defined. Use the default value, write the name in full, or use a suitable notation " +
             $"from {typeof(ConstantMultiplesCodes).FullName}.",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
@@ -72,7 +72,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DuplicateConstantName,
         title: "Duplicate name of constant",
-        messageFormat: "The quantity {0} already defines a constant with the name {1}",
+        messageFormat: "{0} already defines a constant with the name \"{1}\"",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -82,7 +82,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DuplicateConstantMultiplesName,
         title: "Duplicate name for multiples of constant",
-        messageFormat: "The quantity {0} already uses the name {1} to describe the magnitude in multiples of a constant",
+        messageFormat: "{0} already defines a constant with multiples \"{1}\"",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -92,17 +92,29 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.ConstantSharesNameWithUnit,
         title: "Constant shares name with unit",
-        messageFormat: "The quantity {0} already associates the name {1} with a unit",
+        messageFormat: "{0} already associates \"{1}\" with a unit",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor ConstantMultiplesDisabledButNameSpecified = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.ConstantMultiplesDisabledButNameSpecified,
+        title: "Constant multiples is disabled",
+        messageFormat: "The name for multiples of constant \"{0}\" was specified, but generating the property was explicitly disabled. Enable the property, "
+            + "or do not specify the name.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Info,
+        isEnabledByDefault: true,
+        customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
     public static readonly DiagnosticDescriptor UnrecognizedCastOperatorBehaviour = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.UnrecognizedCastOperatorBehaviour,
         title: "Unrecognized cast operator behaviour",
-        messageFormat: $"{{0}} was not recognized as a {typeof(ConversionOperationBehaviour)}",
+        messageFormat: $"{{0}} was not recognized as a {typeof(ConversionOperationBehaviour).Name}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -115,7 +127,8 @@ public static partial class DiagnosticRules
         messageFormat: "Contradictory attributes {0} and {1} were used",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
-        isEnabledByDefault: true
+        isEnabledByDefault: true,
+        customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
     public static readonly DiagnosticDescriptor QuantityGroupMissingRoot = new DiagnosticDescriptor
@@ -133,7 +146,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
         title: "Inclusion or exclusion had no effect",
-        messageFormat: "Including {0} had no effect, as {0} was already included",
+        messageFormat: "Including \"{0}\" had no effect, as \"{0}\" was already included",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true,
@@ -144,7 +157,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
         title: "Inclusion or exclusion had no effect",
-        messageFormat: "Excluding {0} had no effect, as {0} was not included",
+        messageFormat: "Excluding \"{0}\" had no effect, as \"{0}\" was not included",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true,
@@ -155,7 +168,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
         title: "Inclusion or exclusion had no effect",
-        messageFormat: "Excluding {0} had no effect, as {0} was already excluded",
+        messageFormat: "Excluding \"{0}\" had no effect, as \"{0}\" was already excluded",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true,
@@ -166,7 +179,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
         title: "Inclusion or exclusion had no effect",
-        messageFormat: "Including {0} had no effect, as {0} was not excluded",
+        messageFormat: "Including \"{0}\" had no effect, as \"{0}\" was not excluded",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true,
@@ -177,7 +190,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
         title: "Inclusion or exclusion had no effect",
-        messageFormat: "Including or excluding {0} had no effect, as {0} was already listed",
+        messageFormat: "Including or excluding \"{0}\" had no effect, as \"{0}\" was already listed",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true,
@@ -188,9 +201,10 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DifferenceDisabledButQuantitySpecified,
         title: "Difference is disabled but a quantity was specified",
-        messageFormat: "Difference is disabled, but a quantity that represents difference was specified. Enable difference or do not specify a quantity.",
+        messageFormat: "Difference is not implemented for {0}, but a quantity that represents difference was specified. Enable difference or do not " +
+            "specify the quantity.",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true,
         customTags: WellKnownDiagnosticTags.Unnecessary
     );

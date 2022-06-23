@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1104,
+    Title: Expected the name of a unit,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (4,29)-(4,31),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Expected the name of a unit,
+    Message: Expected the name of a unit,
+    Category: Usage,
+    CustomTags: []
+  }
+]

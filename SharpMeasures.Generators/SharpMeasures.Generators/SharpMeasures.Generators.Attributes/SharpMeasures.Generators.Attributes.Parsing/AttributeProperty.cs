@@ -111,6 +111,20 @@ public record class AttributeProperty<TDefinition, TPropertyType> : AttributePro
 
                 for (int i = 0; i < objArray.Length; i++)
                 {
+                    if (objArray[i] is null)
+                    {
+                        try
+                        {
+                            values.SetValue(null, i);
+                        }
+                        catch (ArgumentException)
+                        {
+                            return definition;
+                        }
+
+                        continue;
+                    }
+
                     if (propertyType.GetElementType().IsAssignableFrom(objArray[i].GetType()) is false)
                     {
                         return definition;

@@ -24,46 +24,68 @@ internal class VectorConstantDiagnostics : IVectorConstantProcessingDiagnostics,
         return DiagnosticConstruction.DuplicateConstantName(definition.Locations.Name?.AsRoslynLocation(), definition.Name!, context.Type.Name);
     }
 
+    public Diagnostic NullUnit(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
+    {
+        return DiagnosticConstruction.NullUnrecognizedUnitNameUnknownType(definition.Locations.Unit?.AsRoslynLocation());
+    }
+
+    public Diagnostic EmptyUnit(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
+        => NullUnit(context, definition);
+
     public Diagnostic InvalidValueDimension(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
     {
         return DiagnosticConstruction.VectorConstantInvalidDimension(definition.Locations.ValueCollection?.AsRoslynLocation(), context.Dimension, context.Type.Name);
     }
 
-    public Diagnostic NullMultiplesName(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
+    public Diagnostic NullMultiples(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
     {
-        return DiagnosticConstruction.NullConstantMultiplesName(definition.Locations.MultiplesName?.AsRoslynLocation(), definition.Name!);
+        return DiagnosticConstruction.NullConstantMultiplesName(definition.Locations.Multiples?.AsRoslynLocation(), definition.Name!);
     }
 
-    public Diagnostic EmptyMultiplesName(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition) => NullMultiplesName(context, definition);
+    public Diagnostic EmptyMultiples(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition) => NullMultiples(context, definition);
 
-    public Diagnostic InvalidMultiplesName(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
+    public Diagnostic InvalidMultiples(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
     {
-        return DiagnosticConstruction.InvalidConstantMultiplesName(definition.Locations.MultiplesName?.AsRoslynLocation(),
-            definition.Name!, definition.ParsingData.InterpretedMultiplesName!);
+        return DiagnosticConstruction.InvalidConstantMultiplesName(definition.Locations.Multiples?.AsRoslynLocation(),
+            definition.Name!, definition.ParsingData.InterpretedMultiples!);
     }
 
-    public Diagnostic DuplicateMultiplesName(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
+    public Diagnostic DuplicateMultiples(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
     {
-        if (definition.Locations.ExplicitlySetMultiplesName)
+        if (definition.Locations.ExplicitlySetMultiples)
         {
-            return DiagnosticConstruction.DuplicateConstantMultiplesName(definition.Locations.MultiplesName?.AsRoslynLocation(),
-                definition.ParsingData.InterpretedMultiplesName!, context.Type.Name);
+            return DiagnosticConstruction.DuplicateConstantMultiplesName(definition.Locations.Multiples?.AsRoslynLocation(),
+                definition.ParsingData.InterpretedMultiples!, context.Type.Name);
         }
 
-        return DiagnosticConstruction.DuplicateConstantMultiplesName(definition.Locations.Attribute.AsRoslynLocation(), definition.ParsingData.InterpretedMultiplesName!,
+        return DiagnosticConstruction.DuplicateConstantMultiplesName(definition.Locations.Attribute.AsRoslynLocation(), definition.ParsingData.InterpretedMultiples!,
             context.Type.Name);
     }
 
-    public Diagnostic NullUnit(IVectorConstantRefinementContext context, VectorConstantDefinition definition)
+    public Diagnostic MultiplesDisabledButNameSpecified(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
     {
-        return DiagnosticConstruction.NullUnrecognizedUnitName(definition.Locations.Unit?.AsRoslynLocation(), context.Unit.UnitType.Name);
+        return DiagnosticConstruction.ConstantMultiplesDisabledButNameSpecified(definition.Locations.Multiples?.AsRoslynLocation(), definition.Name!);
     }
-
-    public Diagnostic EmptyUnit(IVectorConstantRefinementContext context, VectorConstantDefinition definition)
-        => NullUnit(context, definition);
 
     public Diagnostic UnrecognizedUnit(IVectorConstantRefinementContext context, VectorConstantDefinition definition)
     {
         return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.Unit?.AsRoslynLocation(), definition.Unit!, context.Unit.UnitType.Name);
+    }
+
+    public Diagnostic ConstantSharesNameWithUnit(IVectorConstantRefinementContext context, VectorConstantDefinition definition)
+    {
+        return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.Name?.AsRoslynLocation(), definition.Name, context.Type.Name);
+    }
+
+    public Diagnostic ConstantMultiplesSharesNameWithUnit(IVectorConstantRefinementContext context, VectorConstantDefinition definition)
+    {
+        if (definition.Locations.ExplicitlySetMultiples)
+        {
+            return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.Multiples?.AsRoslynLocation(), definition.Multiples!,
+                context.Type.Name);
+        }
+
+        return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.Attribute.AsRoslynLocation(), definition.Multiples!,
+            context.Type.Name);
     }
 }

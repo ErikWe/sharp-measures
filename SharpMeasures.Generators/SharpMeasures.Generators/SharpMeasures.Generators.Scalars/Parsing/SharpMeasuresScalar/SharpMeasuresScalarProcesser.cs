@@ -20,6 +20,7 @@ internal interface ISharpMeasuresScalarProcessingDiagnostics
     public abstract Diagnostic? NullDefaultUnit(IProcessingContext context, RawSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? EmptyDefaultUnit(IProcessingContext context, RawSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? SetDefaultSymbolButNotUnit(IProcessingContext context, RawSharpMeasuresScalarDefinition definition);
+    public abstract Diagnostic? SetDefaultUnitButNotSymbol(IProcessingContext context, RawSharpMeasuresScalarDefinition definition);
 
     public abstract Diagnostic? NullReciprocalQuantity(IProcessingContext context, RawSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? NullSquareQuantity(IProcessingContext context, RawSharpMeasuresScalarDefinition definition);
@@ -85,6 +86,11 @@ internal class SharpMeasuresScalarProcesser : AProcesser<IProcessingContext, Raw
             return ResultWithDiagnostics.Construct<(string?, string?)>((null, null), Diagnostics.SetDefaultSymbolButNotUnit(context, definition));
         }
 
+        if (definition.Locations.ExplicitlySetDefaultUnitSymbol is false && definition.DefaultUnitName is not null)
+        {
+            return ResultWithDiagnostics.Construct<(string?, string?)>((null, null), Diagnostics.SetDefaultUnitButNotSymbol(context, definition));
+        }
+
         if (definition.Locations.ExplicitlySetDefaultUnitName)
         {
             if (definition.DefaultUnitName is null)
@@ -103,11 +109,13 @@ internal class SharpMeasuresScalarProcesser : AProcesser<IProcessingContext, Raw
 
     private IValidityWithDiagnostics CheckValidity(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
     {
-        return IterativeValidity.DiagnoseAndMergeWhileValid(validities);
+        return IterativeValidity.DiagnoseAndMergeWhileValid(validities());
 
         IEnumerable<IValidityWithDiagnostics> validities()
         {
-            yield return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckUnitValidity, CheckVectorValidity, CheckDifferenceValidity);
+            yield return CheckUnitValidity(context, definition);
+            yield return CheckVectorValidity(context, definition);
+            yield return CheckDifferenceValidity(context, definition);
             yield return CheckPowerValidity(context, definition, definition.Locations.ExplicitlySetReciprocal, definition.Reciprocal, Diagnostics.NullReciprocalQuantity);
             yield return CheckPowerValidity(context, definition, definition.Locations.ExplicitlySetSquare, definition.Square, Diagnostics.NullSquareQuantity);
             yield return CheckPowerValidity(context, definition, definition.Locations.ExplicitlySetCube, definition.Cube, Diagnostics.NullCubeQuantity);

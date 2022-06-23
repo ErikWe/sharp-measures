@@ -9,7 +9,6 @@ using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 
-using System;
 using System.Linq;
 
 internal interface ISharpMeasuresVectorRefinementDiagnostics
@@ -68,8 +67,9 @@ internal class SharpMeasuresVectorRefiner : IProcesser<ISharpMeasuresVectorRefin
         var processedDefaultUnitName = ProcessDefaultUnitName(context, definition, processedUnit.Result);
         allDiagnostics = allDiagnostics.Concat(processedDefaultUnitName.Diagnostics);
 
-        RefinedSharpMeasuresVectorDefinition product = new(processedUnit.Result, processedScalar.Result, vectorGroup, definition.Dimension, processedDefaultUnitName.Result,
-            definition.DefaultUnitSymbol, definition.GenerateDocumentation);
+        RefinedSharpMeasuresVectorDefinition product = new(processedUnit.Result, processedScalar.Result, vectorGroup, definition.Dimension,
+            definition.ImplementSum, definition.ImplementDifference, definition.Difference, processedDefaultUnitName.Result, definition.DefaultUnitSymbol,
+            definition.GenerateDocumentation);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }

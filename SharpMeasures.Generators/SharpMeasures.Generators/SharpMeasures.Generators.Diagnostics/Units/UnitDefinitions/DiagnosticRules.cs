@@ -73,7 +73,8 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.UnrecognizedUnitName,
         title: "Expected the name of a unit",
-        messageFormat: "\"{0}\" was not recognized as the name of a {1}. The referenced unit must be defined through an attribute applied to {1}.",
+        messageFormat: "\"{0}\" was not recognized as the name of a {1}. \"{0}\" should be defined through an attribute applied to {1} - for example; " +
+            $"{typeof(FixedUnitAttribute).FullName}.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -84,6 +85,16 @@ public static partial class DiagnosticRules
         id: DiagnosticIDs.UnrecognizedUnitName,
         title: "Expected the name of a unit",
         messageFormat: "Expected the name of a {0}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor NullUnrecognizedUnitNameUnknownType = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.UnrecognizedUnitName,
+        title: "Expected the name of a unit",
+        messageFormat: "Expected the name of a unit",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

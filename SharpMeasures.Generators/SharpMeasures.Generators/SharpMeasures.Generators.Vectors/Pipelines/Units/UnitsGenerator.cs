@@ -111,6 +111,7 @@ internal static class UnitsGenerator
             = new(AssociatedUnitInclusionRefinementDiagnostics<IncludeUnitsDefinition, ExcludeUnitsDefinition>.Instance);
 
         var processedUnitInclusion = unitInclusionRefiner.Process(unitInclusionContext, input.Model.VectorData);
+        var allDiagnostics = processedUnitInclusion.Diagnostics;
 
         HashSet<string> includedUnitsHashSet = new(processedUnitInclusion.Result.UnitList.Select(static (x) => x.Plural));
 
@@ -118,11 +119,12 @@ internal static class UnitsGenerator
         VectorConstantRefiner vectorConstantRefiner = new(VectorConstantDiagnostics.Instance);
 
         var processedConstants = ProcessingFilter.Create(vectorConstantRefiner).Filter(vectorConstantContext, input.Model.VectorData.VectorConstants);
+        allDiagnostics = allDiagnostics.Concat(processedConstants.Diagnostics);
 
         DataModel model = new(input.Model.VectorData.VectorType, input.Model.VectorDefinition.Dimension, associatedModel.Scalar, associatedModel.Unit,
             associatedModel.UnitQuantity, associatedModel.Units, processedConstants.Result, input.Model.Documentation);
 
-        return OptionalWithDiagnostics.Result(model, processedConstants.Diagnostics);
+        return OptionalWithDiagnostics.Result(model, allDiagnostics);
     }
 
     private class UnitListRefinementContext : IUnitListRefinementContext

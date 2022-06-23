@@ -4,7 +4,7 @@ public static class SimpleTextExpression
 {
     public static string? Interpret(string? original, string? expression)
     {
-        if (original is null || expression is null || expression.Length is 0)
+        if (original is null || original.Length is 0 || expression is null || expression.Length is 0)
         {
             return null;
         }

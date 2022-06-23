@@ -18,6 +18,7 @@ public class UnitListRefinementDiagnostics<TDefinition> : IUnitListRefinementDia
 
     public Diagnostic UnrecognizedUnit(IUnitListRefinementContext context, TDefinition definition, int index)
     {
-        return DiagnosticConstruction.TypeNotUnit(definition.Locations.ItemsElements[index].AsRoslynLocation(), definition.Items[index]);
+        return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.ItemsElements[index].AsRoslynLocation(), definition.Items[index],
+            context.Unit.UnitType.Name);
     }
 }

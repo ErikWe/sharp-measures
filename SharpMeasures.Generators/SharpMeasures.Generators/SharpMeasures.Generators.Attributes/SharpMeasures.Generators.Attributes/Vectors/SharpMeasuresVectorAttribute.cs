@@ -19,6 +19,20 @@ public sealed class SharpMeasuresVectorAttribute : Attribute
     /// <para>If the name of the type ends with the dimension this property can be ignored - such as for <i>Position3</i>.</para></summary>
     public int Dimension { get; init; }
 
+    /// <summary>Dictates whether to implement support for computing the sum of two instances of this vector. The default behaviour is <see langword="true"/>.</summary>
+    public bool ImplementSum { get; init; }
+
+    /// <summary>Dictates whether to implement support for computing the difference between two instances of this vector. The default behaviour is
+    /// <see langword="true"/>.</summary>
+    /// <remarks>To specify the vector quantity that represents the difference, use <see cref="Difference"/>. By default, the same quantity is used as the
+    /// difference between two instance.</remarks>
+    public bool ImplementDifference { get; init; }
+
+    /// <summary>The vector quantity that is considered the difference between two instances of this vector. By default, and when set to <see langword="null"/>, the
+    /// same quantity is used.</summary>
+    /// <remarks>To disable support for computing the difference in the first place, use <see cref="ImplementDifference"/>.</remarks>
+    public Type? Difference { get; init; }
+
     /// <summary>The name of the default unit.</summary>
     /// <remarks>This is used by ToString(), together with <see cref="DefaultUnitSymbol"/>.</remarks>
     public string? DefaultUnitName { get; init; }

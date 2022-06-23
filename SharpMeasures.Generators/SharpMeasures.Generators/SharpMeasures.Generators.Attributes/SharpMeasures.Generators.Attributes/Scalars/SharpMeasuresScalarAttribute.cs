@@ -9,12 +9,11 @@ using System;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 public sealed class SharpMeasuresScalarAttribute : Attribute
 {
-    /// <summary>The unit that describes this quantity. The specified type should be decorated with <see cref="SharpMeasuresUnitAttribute"/>.</summary>
+    /// <summary>The unit that describes this quantity.</summary>
     public Type Unit { get; }
 
     /// <summary>The quantity that is considered the "vector version" of this scalar quantity, if one exists. This is often the vector for which
-    /// this scalar represents the magnitude. For example, <i>Velocity</i> could be considered the "vector version" of <i>Speed</i>. The specified
-    /// type should be decorated with <see cref="SharpMeasuresVectorAttribute"/>.</summary>
+    /// this scalar represents the magnitude. For example, <i>Velocity</i> could be considered the "vector version" of <i>Speed</i>.</summary>
     /// <remarks>There may be multiple such quantities, in which case the most similar or most fundamental quantity should be used.
     /// <para>If the vector quantity is associated with multiple types representing different dimensions, using <see cref="ResizedSharpMeasuresVectorAttribute"/>,
     /// any of the associated types can be specified.</para></remarks>
@@ -36,7 +35,7 @@ public sealed class SharpMeasuresScalarAttribute : Attribute
     public bool ImplementDifference { get; init; }
 
     /// <summary>The scalar quantity that is considered the difference between two instances of this scalar. By default, and when set to <see langword="null"/>, the
-    /// same quantity is used. The specified type should be decorated with <see cref="SharpMeasuresScalarAttribute"/>.</summary>
+    /// same quantity is used.</summary>
     /// <remarks>To disable support for computing the difference in the first place, use <see cref="ImplementDifference"/>.</remarks>
     public Type? Difference { get; init; }
 

@@ -14,6 +14,11 @@ public record class SharpMeasuresVectorInterface : IVectorInterface
 
     public int Dimension { get; }
 
+    public bool ImplementSum { get; }
+    public bool ImplementDifference { get; }
+
+    public NamedType Difference { get; }
+
     public string? DefaultUnitName { get; }
     public string? DefaultUnitSymbol { get; }
 
@@ -25,7 +30,8 @@ public record class SharpMeasuresVectorInterface : IVectorInterface
     IEnumerable<ExcludeUnitsInterface> IVectorInterface.ExcludedUnits => ExcludedUnits;
     IEnumerable<DimensionalEquivalenceInterface> IVectorInterface.DimensionalEquivalences => DimensionalEquivalences;
 
-    public SharpMeasuresVectorInterface(NamedType vectorType, NamedType unitType, NamedType? scalarType, int dimension, string? defaultUnitName, string? defaultUnitSymbol,
+    public SharpMeasuresVectorInterface(NamedType vectorType, NamedType unitType, NamedType? scalarType, int dimension, bool implementSum, bool implementDifference,
+        NamedType difference, string? defaultUnitName, string? defaultUnitSymbol,
         IEnumerable<IncludeUnitsInterface> includedUnits, IEnumerable<ExcludeUnitsInterface> excludedUnits,
         IEnumerable<DimensionalEquivalenceInterface> dimensionalEquivalences)
     {
@@ -35,6 +41,11 @@ public record class SharpMeasuresVectorInterface : IVectorInterface
         ScalarType = scalarType;
 
         Dimension = dimension;
+
+        ImplementSum = implementSum;
+        ImplementDifference = implementDifference;
+
+        Difference = difference;
 
         DefaultUnitName = defaultUnitName;
         DefaultUnitSymbol = defaultUnitSymbol;

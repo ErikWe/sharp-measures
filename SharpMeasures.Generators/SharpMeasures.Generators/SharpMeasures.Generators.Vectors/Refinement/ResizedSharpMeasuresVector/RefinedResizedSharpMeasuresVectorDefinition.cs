@@ -13,13 +13,19 @@ internal readonly record struct RefinedResizedSharpMeasuresVectorDefinition
 
     public int Dimension { get; }
 
+    public bool ImplementSum { get; }
+    public bool ImplementDifference { get; }
+
+    public NamedType Difference { get; }
+
     public string? DefaultUnitName { get; }
     public string? DefaultUnitSymbol { get; }
 
     public bool GenerateDocumentation { get; }
 
     public RefinedResizedSharpMeasuresVectorDefinition(IVectorInterface associatedVector, ResizedVectorGroup vectorGroup, UnitInterface unit, ScalarInterface? scalar,
-        int dimension, string? defaultUnitName, string? defaultUnitSymbol, bool generateDocumentation)
+        int dimension, bool implementSum, bool implementDifference, NamedType difference, string? defaultUnitName, string? defaultUnitSymbol,
+        bool generateDocumentation)
     {
         AssociatedVector = associatedVector;
         VectorGroup = vectorGroup;
@@ -28,6 +34,11 @@ internal readonly record struct RefinedResizedSharpMeasuresVectorDefinition
         Scalar = scalar;
 
         Dimension = dimension;
+
+        ImplementSum = implementSum;
+        ImplementDifference = implementDifference;
+
+        Difference = difference;
 
         DefaultUnitName = defaultUnitName;
         DefaultUnitSymbol = defaultUnitSymbol;

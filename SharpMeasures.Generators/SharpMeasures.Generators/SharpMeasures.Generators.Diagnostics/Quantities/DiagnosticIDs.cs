@@ -9,6 +9,7 @@ public static partial class DiagnosticIDs
     public const string DuplicateConstantName = $"{Prefix}{Numbering.Hundreds.Quantities}22";
     public const string DuplicateConstantMultiplesName = $"{Prefix}{Numbering.Hundreds.Quantities}23";
     public const string ConstantSharesNameWithUnit = $"{Prefix}{Numbering.Hundreds.Quantities}24";
+    public const string ConstantMultiplesDisabledButNameSpecified = $"{Prefix}{Numbering.Hundreds.Quantities}25";
 
     public const string UnrecognizedCastOperatorBehaviour = $"{Prefix}{Numbering.Hundreds.Quantities}40";
 

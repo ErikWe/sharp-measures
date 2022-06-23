@@ -1,0 +1,17 @@
+﻿[
+  {
+    Id: Measures1260,
+    Title: Contradictory attributes,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (6,1)-(6,26),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Contradictory attributes {0} and {1} were used,
+    Message: Contradictory attributes IncludeUnitsAttribute and ExcludeUnitsAttribute were used,
+    Category: Usage,
+    CustomTags: [
+      Unnecessary
+    ]
+  }
+]

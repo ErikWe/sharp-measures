@@ -12,7 +12,7 @@ internal record class RawVectorConstantDefinition : ARawAttributeDefinition<Vect
     public ReadOnlyEquatableList<double> Value { get; init; } = ReadOnlyEquatableList<double>.Empty;
 
     public bool GenerateMultiplesProperty { get; init; }
-    public string? MultiplesName { get; init; }
+    public string? Multiples { get; init; }
 
     public VectorConstantParsingData ParsingData { get; init; } = VectorConstantParsingData.Empty;
 

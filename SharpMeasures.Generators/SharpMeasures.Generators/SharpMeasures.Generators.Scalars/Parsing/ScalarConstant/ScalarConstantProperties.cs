@@ -12,7 +12,7 @@ internal static class ScalarConstantProperties
         Unit,
         Value,
         GenerateMultiplesProperty,
-        MultiplesName
+        Multiples
     };
 
     private static ScalarConstantProperty<string> Name { get; } = new
@@ -39,14 +39,14 @@ internal static class ScalarConstantProperties
     private static ScalarConstantProperty<bool> GenerateMultiplesProperty { get; } = new
     (
         name: nameof(ScalarConstantAttribute.GenerateMultiplesProperty),
-        setter: static (definition, generateMagnitudeProperty) => definition with { GenerateMultiplesProperty = generateMagnitudeProperty },
-        locator: static (locations, generateMagnitudePropertLocation) => locations with { GenerateMultiplesProperty = generateMagnitudePropertLocation }
+        setter: static (definition, generateMultiplesProperty) => definition with { GenerateMultiplesProperty = generateMultiplesProperty },
+        locator: static (locations, generateMultiplesPropertyLocation) => locations with { GenerateMultiplesProperty = generateMultiplesPropertyLocation }
     );
 
-    private static ScalarConstantProperty<string> MultiplesName { get; } = new
+    private static ScalarConstantProperty<string?> Multiples { get; } = new
     (
-        name: nameof(ScalarConstantAttribute.MultiplesName),
-        setter: static (definition, magnitudePropertyName) => definition with { MultiplesName = magnitudePropertyName },
-        locator: static (locations, magnitudePropertyNameLocation) => locations with { MultiplesName = magnitudePropertyNameLocation }
+        name: nameof(ScalarConstantAttribute.Multiples),
+        setter: static (definition, multiples) => definition with { Multiples = multiples },
+        locator: static (locations, multiplesLocation) => locations with { Multiples = multiplesLocation }
     );
 }

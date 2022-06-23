@@ -9,7 +9,7 @@ using System.Linq;
 public sealed class EquatableCollection<T> : ICollection<T>, IReadOnlyCollection<T>, IEquatable<EquatableCollection<T>>
 {
     [SuppressMessage("Design", "CA1000", Justification = "Property")]
-    public static EquatableCollection<T> Empty => new(Array.Empty<T>());
+    public static EquatableCollection<T> Empty => new(new List<T>());
 
     private ICollection<T> Items { get; }
 

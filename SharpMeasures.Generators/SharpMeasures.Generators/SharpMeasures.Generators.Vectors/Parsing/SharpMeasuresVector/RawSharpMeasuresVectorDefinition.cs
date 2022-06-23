@@ -11,6 +11,11 @@ internal record class RawSharpMeasuresVectorDefinition : ARawAttributeDefinition
 
     public int Dimension { get; init; }
 
+    public bool ImplementSum { get; init; } = true;
+    public bool ImplementDifference { get; init; } = true;
+
+    public NamedType? Difference { get; init; }
+
     public string? DefaultUnitName { get; init; } = string.Empty;
     public string? DefaultUnitSymbol { get; init; } = string.Empty;
 

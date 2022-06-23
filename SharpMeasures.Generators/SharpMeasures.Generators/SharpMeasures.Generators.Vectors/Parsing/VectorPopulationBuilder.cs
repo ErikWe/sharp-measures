@@ -16,9 +16,9 @@ internal static class VectorPopulationBuilder
     {
         Dictionary<NamedType, IVectorInterface> allVectors = new();
 
-        foreach (SharpMeasuresVectorInterface vector in vectors.Base)
+        foreach (SharpMeasuresVectorInterface baseVector in vectors.Base)
         {
-            allVectors.Add(vector.VectorType, vector);
+            allVectors.Add(baseVector.VectorType, baseVector);
         }
 
         foreach (ResizedSharpMeasuresVectorInterface resizedVector in vectors.Resized)
@@ -48,8 +48,10 @@ internal static class VectorPopulationBuilder
 
         VectorPopulation population = new(allVectors, resizedVectorGroups);
 
-        foreach (var resizedVectorGroup in population.ResizedVectorGroups.Values)
+        foreach (var baseVector in vectors.Base)
         {
+            var resizedVectorGroup = population.ResizedVectorGroups[baseVector.VectorType];
+
             Dictionary<ResizedVectorGroup, ConversionOperationBehaviour> linkedGroups = new();
 
             foreach (var vector in resizedVectorGroup.VectorsByDimension.Values)
@@ -122,6 +124,7 @@ internal static class VectorPopulationBuilder
                 }
 
                 builder.AddResizedVector(ungroupedVectors[i]);
+                groupBuilders.Add(ungroupedVectors[i].VectorType, builder);
                 removeAndDecrementLoop();
 
                 void removeAndDecrementLoop()

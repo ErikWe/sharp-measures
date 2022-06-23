@@ -9,9 +9,9 @@ internal record class ScalarConstantDefinition : AAttributeDefinition<ScalarCons
     public double Value { get; }
 
     public bool GenerateMultiplesProperty { get; }
-    public string? MultiplesName { get; }
+    public string? Multiples { get; }
 
-    public ScalarConstantDefinition(string name, string unit, double value, bool generateMultiplesProperty, string? multiplesName, ScalarConstantLocations locations)
+    public ScalarConstantDefinition(string name, string unit, double value, bool generateMultiplesProperty, string? multiples, ScalarConstantLocations locations)
         : base(locations)
     {
         Name = name;
@@ -19,6 +19,6 @@ internal record class ScalarConstantDefinition : AAttributeDefinition<ScalarCons
         Value = value;
 
         GenerateMultiplesProperty = generateMultiplesProperty;
-        MultiplesName = multiplesName;
+        Multiples = multiples;
     }
 }

@@ -30,7 +30,7 @@ internal class SharpMeasuresScalarDiagnostics : ISharpMeasuresScalarProcessingDi
 
     public Diagnostic DifferenceDisabledButQuantitySpecified(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
     {
-        return DiagnosticConstruction.DifferenceDisabledButQuantitySpecified(definition.Locations.Difference?.AsRoslynLocation());
+        return DiagnosticConstruction.DifferenceDisabledButQuantitySpecified(definition.Locations.Difference?.AsRoslynLocation(), context.Type.Name);
     }
 
     public Diagnostic NullDefaultUnit(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
@@ -41,6 +41,11 @@ internal class SharpMeasuresScalarDiagnostics : ISharpMeasuresScalarProcessingDi
     public Diagnostic EmptyDefaultUnit(IProcessingContext context, RawSharpMeasuresScalarDefinition definition) => NullDefaultUnit(context, definition);
 
     public Diagnostic SetDefaultSymbolButNotUnit(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
+    {
+        return DiagnosticConstruction.DefineQuantityDefaultUnit(definition.Locations.DefaultUnitSymbol?.AsRoslynLocation());
+    }
+
+    public Diagnostic SetDefaultUnitButNotSymbol(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
     {
         return DiagnosticConstruction.DefineQuantityDefaultSymbol(definition.Locations.DefaultUnitName?.AsRoslynLocation());
     }

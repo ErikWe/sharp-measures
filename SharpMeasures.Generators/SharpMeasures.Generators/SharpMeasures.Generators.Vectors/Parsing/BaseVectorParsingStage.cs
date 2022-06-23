@@ -57,6 +57,7 @@ internal class BaseVectorParsingStage : AVectorParsingStage<SharpMeasuresVectorA
         var dimensionalEquivalences = input.DimensionalEquivalences.Select(static (x) => new DimensionalEquivalenceInterface(x.Quantities, x.CastOperatorBehaviour));
 
         return new(input.VectorType.AsNamedType(), input.VectorDefinition.Unit, input.VectorDefinition.Scalar, input.VectorDefinition.Dimension,
-            input.VectorDefinition.DefaultUnitName, input.VectorDefinition.DefaultUnitSymbol, includedUnits, excludedUnits, dimensionalEquivalences);
+            input.VectorDefinition.ImplementSum, input.VectorDefinition.ImplementDifference, input.VectorDefinition.Difference, input.VectorDefinition.DefaultUnitName,
+            input.VectorDefinition.DefaultUnitSymbol, includedUnits, excludedUnits, dimensionalEquivalences);
     }
 }

@@ -72,11 +72,25 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string UnaryPlusMethod() => "Method_UnaryPlus";
     public string NegateMethod() => "Method_Negate";
 
+    public string AddSameTypeMethod() => "Method_Add_SameType";
+    public string SubtractSameTypeMethod() => "Method_Subtract_SameType";
+    public string SubtractFromSameTypeMethod() => "Method_SubtractFrom_SameType";
+
+    public string AddDifferenceMethod() => "Method_Add_Difference";
+    public string SubtractDifferenceMethod() => "Method_Subtract_Difference";
+
     public string MultiplyScalarMethod() => "Method_Multiply_Scalar";
     public string DivideScalarMethod() => "Method_Divide_Scalar";
 
     public string UnaryPlusOperator() => "Operator_UnaryPlus";
     public string NegateOperator() => "Operator_Negate";
+
+    public string AddSameTypeOperator() => "Operator_Add_SameType";
+    public string SubtractSameTypeOperator() => "Operator_Subtract_SameType";
+
+    public string AddDifferenceOperatorLHS() => "Operator_Add_Difference_LHS";
+    public string AddDifferenceOperatorRHS() => "Operator_Add_Difference_RHS";
+    public string SubtractDifferenceOperatorLHS() => "Operator_Subtract_Difference_LHS";
 
     public string MultiplyScalarOperatorLHS() => "Operator_Multiply_Scalar_LHS";
     public string MultiplyScalarOperatorRHS() => "Operator_Multiply_Scalar_RHS";

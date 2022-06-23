@@ -82,8 +82,10 @@ internal class ResizedSharpMeasuresVectorRefiner : IProcesser<IResizedSharpMeasu
             return OptionalWithDiagnostics.Empty<RefinedResizedSharpMeasuresVectorDefinition>();
         }
 
-        RefinedResizedSharpMeasuresVectorDefinition product = new(associatedVector, vectorGroup, unit, scalar, definition.Dimension,
-            vectorGroup.Root.DefaultUnitName, vectorGroup.Root.DefaultUnitSymbol, definition.GenerateDocumentation);
+        RefinedResizedSharpMeasuresVectorDefinition product = new(associatedVector, vectorGroup, unit, scalar, definition.Dimension, vectorGroup.Root.ImplementSum,
+            vectorGroup.Root.ImplementDifference, vectorGroup.Root.Difference, vectorGroup.Root.DefaultUnitName, vectorGroup.Root.DefaultUnitSymbol,
+            definition.GenerateDocumentation);
+        
         return OptionalWithDiagnostics.Result(product);
     }
 }

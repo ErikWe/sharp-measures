@@ -8,13 +8,13 @@ using System.Collections.Generic;
 internal record class VectorConstantDefinition : AAttributeDefinition<VectorConstantLocations>
 {
     public string Name { get; }
-    public string? Unit { get; }
+    public string Unit { get; }
     public ReadOnlyEquatableList<double> Value { get; }
 
     public bool GenerateMultiplesProperty { get; }
-    public string? MultiplesName { get; }
+    public string? Multiples { get; }
 
-    public VectorConstantDefinition(string name, string? unit, IReadOnlyList<double> value, bool generateMultiplesProperty, string? multiplesName,
+    public VectorConstantDefinition(string name, string unit, IReadOnlyList<double> value, bool generateMultiplesProperty, string? multiples,
         VectorConstantLocations locations)
         : base(locations)
     {
@@ -23,6 +23,6 @@ internal record class VectorConstantDefinition : AAttributeDefinition<VectorCons
         Value = value.AsReadOnlyEquatable();
 
         GenerateMultiplesProperty = generateMultiplesProperty;
-        MultiplesName = multiplesName;
+        Multiples = multiples;
     }
 }

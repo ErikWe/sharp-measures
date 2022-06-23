@@ -46,6 +46,11 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.NullUnrecognizedUnitName, location, unitTypeName);
     }
 
+    public static Diagnostic NullUnrecognizedUnitNameUnknownType(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.NullUnrecognizedUnitNameUnknownType, location);
+    }
+
     public static Diagnostic CyclicUnitDependency(Location? location, string unitName, string unitTypeName)
     {
         return Diagnostic.Create(DiagnosticRules.CyclicUnitDependency, location, unitName, unitTypeName);

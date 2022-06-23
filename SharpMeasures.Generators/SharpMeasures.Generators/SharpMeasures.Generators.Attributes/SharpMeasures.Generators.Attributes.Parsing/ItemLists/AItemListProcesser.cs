@@ -9,18 +9,22 @@ using System.Linq;
 
 public interface IItemListProcessingDiagnostics<TItem, TDefinition>
 {
-    public abstract Diagnostic? EmptyItemList(IItemListProcessingContext<TItem> context, TDefinition definition);
-    public abstract Diagnostic? NullItem(IItemListProcessingContext<TItem> context, TDefinition definition, int index);
-    public abstract Diagnostic? DuplicateItem(IItemListProcessingContext<TItem> context, TDefinition definition, int index);
+    public abstract Diagnostic? EmptyItemList(IProcessingContext context, TDefinition definition);
+    public abstract Diagnostic? NullItem(IProcessingContext context, TDefinition definition, int index);
 }
 
-public interface IItemListProcessingContext<TItem> : IProcessingContext
+public interface IUniqueItemListProcessingDiagnostics<TItem, TDefinition> : IItemListProcessingDiagnostics<TItem, TDefinition>
+{
+    public abstract Diagnostic? DuplicateItem(IUniqueItemListProcessingContext<TItem> context, TDefinition definition, int index);
+}
+
+public interface IUniqueItemListProcessingContext<TItem> : IProcessingContext
 {
     public abstract HashSet<TItem> ListedItems { get; }
 }
 
 public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext, TDefinition, TProduct> : AActionableProcesser<TContext, TDefinition, TProduct>
-    where TContext : IItemListProcessingContext<TProductItem>
+    where TContext : IProcessingContext
     where TDefinition : IItemListDefinition<TDefinitionItem?>
     where TProduct : IItemListDefinition<TProductItem>
 {
@@ -29,19 +33,6 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
     protected AItemListProcesser(IItemListProcessingDiagnostics<TProductItem, TDefinition> diagnostics)
     {
         Diagnostics = diagnostics;
-    }
-
-    public override void OnSuccessfulProcess(TContext context, TDefinition definition, TProduct product)
-    {
-        if (DisallowDuplicate is false)
-        {
-            return;
-        }
-
-        foreach (var item in product.Items)
-        {
-            context.ListedItems.Add(item);
-        }
     }
 
     public override IOptionalWithDiagnostics<TProduct> Process(TContext context, TDefinition definition)
@@ -59,15 +50,15 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
             return OptionalWithDiagnostics.Empty<TProduct>(allDiagnostics);
         }
 
-        var processed = DisallowDuplicate ? ProcessNonDuplicateItems(context, definition) : ProcessItems(context, definition);
-        allDiagnostics = allDiagnostics.Concat(processed);
+        var processedItems = ProcessItems(context, definition);
+        allDiagnostics = allDiagnostics.Concat(processedItems);
 
-        if (DisallowEmpty && processed.Result.Items.Count is 0)
+        if (DisallowEmpty && processedItems.Result.Items.Count is 0)
         {
             return OptionalWithDiagnostics.Empty<TProduct>(allDiagnostics);
         }
 
-        return processed.ReplaceDiagnostics(allDiagnostics);
+        return processedItems.ReplaceDiagnostics(allDiagnostics);
     }
 
     protected virtual bool VerifyRequiredPropertiesSet(TDefinition definition)
@@ -80,7 +71,21 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
     protected abstract TProductItem UpgradeNullItem(TDefinitionItem? item);
     protected virtual bool DisallowNull => true;
     protected virtual bool DisallowEmpty => true;
-    protected virtual bool DisallowDuplicate => true;
+
+    protected virtual IOptionalWithDiagnostics<TProductItem> ProcessItem(TContext context, TDefinition definition, int index)
+    {
+        if (DisallowNull && definition.Items[index] is null)
+        {
+            return OptionalWithDiagnostics.Empty<TProductItem>(Diagnostics.NullItem(context, definition, index));
+        }
+
+        if (definition.Items[index] is not TDefinitionItem definiteItem)
+        {
+            return OptionalWithDiagnostics.Result(UpgradeNullItem(definition.Items[index]));
+        }
+
+        return OptionalWithDiagnostics.Result(UpgradeItem(definiteItem));
+    }
 
     private IResultWithDiagnostics<TProduct> ProcessItems(TContext context, TDefinition definition)
     {
@@ -89,62 +94,17 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
 
         for (int i = 0; i < definition.Items.Count; i++)
         {
-            if (DisallowNull && definition.Items[i] is null)
+            var processedItem = ProcessItem(context, definition, i);
+
+            allDiagnostics.AddRange(processedItem.Diagnostics);
+
+            if (processedItem.HasResult)
             {
-                if (Diagnostics.NullItem(context, definition, i) is Diagnostic diagnostics)
-                {
-                    allDiagnostics.Add(diagnostics);
-                }
-
-                continue;
+                listedItems.Add(processedItem.Result);
             }
-
-            if (definition.Items[i] is not TDefinitionItem definiteItem)
-            {
-                listedItems.Add(UpgradeNullItem(definition.Items[i]));
-                continue;
-            }
-
-            listedItems.Add(UpgradeItem(definiteItem));
         }
 
         TProduct product = ConstructProduct(listedItems, definition);
-        return ResultWithDiagnostics.Construct(product, allDiagnostics);
-    }
-
-    private IResultWithDiagnostics<TProduct> ProcessNonDuplicateItems(TContext context, TDefinition definition)
-    {
-        HashSet<TProductItem> locallyListedItems = new();
-        List<Diagnostic> allDiagnostics = new();
-
-        for (int i = 0; i < definition.Items.Count; i++)
-        {
-            if (DisallowNull && definition.Items[i] is null)
-            {
-                if (Diagnostics.NullItem(context, definition, i) is Diagnostic diagnostics)
-                {
-                    allDiagnostics.Add(diagnostics);
-                }
-
-                continue;
-            }
-
-            TProductItem upgradedItem = definition.Items[i] is TDefinitionItem definiteItem
-                ? UpgradeItem(definiteItem)
-                : UpgradeNullItem(definition.Items[i]);
-
-            if (context.ListedItems.Contains(upgradedItem) || locallyListedItems.Add(upgradedItem) is false)
-            {
-                if (Diagnostics.DuplicateItem(context, definition, i) is Diagnostic diagnostics)
-                {
-                    allDiagnostics.Add(diagnostics);
-                }
-
-                continue;
-            }
-        }
-
-        TProduct product = ConstructProduct(locallyListedItems.ToList(), definition);
         return ResultWithDiagnostics.Construct(product, allDiagnostics);
     }
 
@@ -156,5 +116,52 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
         }
 
         return ValidityWithDiagnostics.Valid;
+    }
+}
+
+public abstract class AUniqueItemListProcesser<TDefinitionItem, TProductItem, TContext, TDefinition, TProduct>
+    : AItemListProcesser<TDefinitionItem, TProductItem, TContext, TDefinition, TProduct>
+    where TContext : IUniqueItemListProcessingContext<TProductItem>
+    where TDefinition : IItemListDefinition<TDefinitionItem?>
+    where TProduct : IItemListDefinition<TProductItem>
+{
+    private IUniqueItemListProcessingDiagnostics<TProductItem, TDefinition> Diagnostics { get; }
+    private HashSet<TProductItem> LocallyListedItems { get; } = new();
+
+    protected AUniqueItemListProcesser(IUniqueItemListProcessingDiagnostics<TProductItem, TDefinition> diagnostics) : base(diagnostics)
+    {
+        Diagnostics = diagnostics;
+    }
+
+    public override IOptionalWithDiagnostics<TProduct> Process(TContext context, TDefinition definition)
+    {
+        LocallyListedItems.Clear();
+
+        return base.Process(context, definition);
+    }
+
+    public override void OnSuccessfulProcess(TContext context, TDefinition definition, TProduct product)
+    {
+        foreach (var item in product.Items)
+        {
+            context.ListedItems.Add(item);
+        }
+    }
+
+    protected override IOptionalWithDiagnostics<TProductItem> ProcessItem(TContext context, TDefinition definition, int index)
+    {
+        var result = base.ProcessItem(context, definition, index);
+
+        if (result.LacksResult)
+        {
+            return result;
+        }
+
+        if (context.ListedItems.Contains(result.Result) || LocallyListedItems.Add(result.Result) is false)
+        {
+            return OptionalWithDiagnostics.Empty<TProductItem>(Diagnostics.DuplicateItem(context, definition, index));
+        }
+
+        return result;
     }
 }

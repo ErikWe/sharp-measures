@@ -13,6 +13,9 @@ internal static class SharpMeasuresVectorProperties
         Unit,
         Scalar,
         Dimension,
+        ImplementSum,
+        ImplementDifference,
+        Difference,
         DefaultUnitName,
         DefaultUnitSymbol,
         GenerateDocumentation
@@ -37,6 +40,27 @@ internal static class SharpMeasuresVectorProperties
         name: nameof(SharpMeasuresVectorAttribute.Dimension),
         setter: static (definition, dimension) => definition with { Dimension = dimension },
         locator: static (locations, dimensionLocation) => locations with { Dimension = dimensionLocation }
+    );
+
+    private static SharpMeasuresVectorProperty<bool> ImplementSum { get; } = new
+    (
+        name: nameof(SharpMeasuresVectorAttribute.ImplementSum),
+        setter: static (definition, implementSum) => definition with { ImplementSum = implementSum },
+        locator: static (locations, implementSumLocation) => locations with { ImplementSum = implementSumLocation }
+    );
+
+    private static SharpMeasuresVectorProperty<bool> ImplementDifference { get; } = new
+    (
+        name: nameof(SharpMeasuresVectorAttribute.ImplementDifference),
+        setter: static (definition, implementDifference) => definition with { ImplementDifference = implementDifference },
+        locator: static (locations, implementDifferenceLocation) => locations with { ImplementDifference = implementDifferenceLocation }
+    );
+
+    private static SharpMeasuresVectorProperty<INamedTypeSymbol> Difference { get; } = new
+    (
+        name: nameof(SharpMeasuresVectorAttribute.Difference),
+        setter: static (definition, difference) => definition with { Difference = difference.AsNamedType() },
+        locator: static (locations, differenceLocation) => locations with { Difference = differenceLocation }
     );
 
     private static SharpMeasuresVectorProperty<string> DefaultUnitName { get; } = new

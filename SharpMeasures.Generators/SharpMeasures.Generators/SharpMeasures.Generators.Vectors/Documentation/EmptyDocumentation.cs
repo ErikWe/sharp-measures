@@ -49,6 +49,16 @@ internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocu
     string IDocumentationStrategy.Deconstruct() => string.Empty;
     string IDocumentationStrategy.UnaryPlusMethod() => string.Empty;
     string IDocumentationStrategy.NegateMethod() => string.Empty;
+    string IDocumentationStrategy.AddSameTypeOperator() => string.Empty;
+    string IDocumentationStrategy.SubtractSameTypeOperator() => string.Empty;
+    string IDocumentationStrategy.AddDifferenceOperatorLHS() => string.Empty;
+    string IDocumentationStrategy.AddDifferenceOperatorRHS() => string.Empty;
+    string IDocumentationStrategy.SubtractDifferenceOperatorLHS() => string.Empty;
+    string IDocumentationStrategy.AddSameTypeMethod() => string.Empty;
+    string IDocumentationStrategy.SubtractSameTypeMethod() => string.Empty;
+    string IDocumentationStrategy.SubtractFromSameTypeMethod() => string.Empty;
+    string IDocumentationStrategy.AddDifferenceMethod() => string.Empty;
+    string IDocumentationStrategy.SubtractDifferenceMethod() => string.Empty;
     string IDocumentationStrategy.MultiplyScalarMethod() => string.Empty;
     string IDocumentationStrategy.DivideScalarMethod() => string.Empty;
     string IDocumentationStrategy.UnaryPlusOperator() => string.Empty;

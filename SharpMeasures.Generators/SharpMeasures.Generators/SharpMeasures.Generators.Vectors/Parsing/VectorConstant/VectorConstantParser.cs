@@ -5,6 +5,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Attributes.Parsing.Utility;
+using SharpMeasures.Generators.Quantities.Utility;
+
+using System.Collections.Immutable;
 
 internal static class VectorConstantParser
 {
@@ -16,15 +19,31 @@ internal static class VectorConstantParser
     {
         public AttributeParser() : base(DefaultDefiniton, VectorConstantProperties.AllProperties) { }
 
-        protected override RawVectorConstantDefinition AddCustomData(RawVectorConstantDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax)
+        protected override RawVectorConstantDefinition AddCustomData(RawVectorConstantDefinition definition, AttributeData attributeData,
+            AttributeSyntax attributeSyntax, ImmutableArray<IParameterSymbol> parameterSymbols)
         {
+            definition = SetUnassignedDefaults(definition);
+
             var modifiedParsingData = definition.ParsingData with
             {
-                InterpretedMultiplesName = SimpleTextExpression.Interpret(definition.Name, definition.MultiplesName)
+                InterpretedMultiples = SimpleTextExpression.Interpret(definition.Name, definition.Multiples)
             };
 
             definition = definition with { ParsingData = modifiedParsingData };
-            return base.AddCustomData(definition, attributeData, attributeSyntax);
+            return base.AddCustomData(definition, attributeData, attributeSyntax, parameterSymbols);
+        }
+
+        private static RawVectorConstantDefinition SetUnassignedDefaults(RawVectorConstantDefinition definition)
+        {
+            if (definition.Locations.ExplicitlySetMultiples is false)
+            {
+                definition = definition with
+                {
+                    Multiples = ConstantMultiplesCodes.MultiplesOfConstant
+                };
+            }
+
+            return definition;
         }
     }
 }

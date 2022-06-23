@@ -4,7 +4,7 @@ internal record class ScalarConstantParsingData
 {
     public static ScalarConstantParsingData Empty { get; } = new();
 
-    public string? InterpretedMultiplesName { get; init; }
+    public string? InterpretedMultiples { get; init; }
 
     private ScalarConstantParsingData() { }
 }

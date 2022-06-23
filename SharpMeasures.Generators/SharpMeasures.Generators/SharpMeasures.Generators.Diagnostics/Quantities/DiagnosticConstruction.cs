@@ -53,6 +53,11 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.ConstantSharesNameWithUnit, location, quantityTypeName, sharedName);
     }
 
+    public static Diagnostic ConstantMultiplesDisabledButNameSpecified(Location? location, string singularForm)
+    {
+        return Diagnostic.Create(DiagnosticRules.ConstantMultiplesDisabledButNameSpecified, location, singularForm);
+    }
+
     public static Diagnostic UnrecognizedConversionOperationBehaviour(Location? location, ConversionOperationBehaviour conversionOperationBehaviour)
     {
         return Diagnostic.Create(DiagnosticRules.UnrecognizedCastOperatorBehaviour, location, conversionOperationBehaviour.ToString());
@@ -75,7 +80,7 @@ public static partial class DiagnosticConstruction
 
     public static Diagnostic QuantityGroupMissingRoot<TAttribute>(Location? location)
     {
-        return Diagnostic.Create(DiagnosticRules.QuantityGroupMissingRoot, location, typeof(TAttribute).Name);
+        return Diagnostic.Create(DiagnosticRules.QuantityGroupMissingRoot, location, typeof(TAttribute).FullName);
     }
 
     public static Diagnostic UnitAlreadyIncluded(Location? location, string unitName)
@@ -103,8 +108,8 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.UnitAlreadyListed, location, unitName);
     }
 
-    public static Diagnostic DifferenceDisabledButQuantitySpecified(Location? location)
+    public static Diagnostic DifferenceDisabledButQuantitySpecified(Location? location, string quantityTypeName)
     {
-        return Diagnostic.Create(DiagnosticRules.DifferenceDisabledButQuantitySpecified, location);
+        return Diagnostic.Create(DiagnosticRules.DifferenceDisabledButQuantitySpecified, location, quantityTypeName);
     }
 }

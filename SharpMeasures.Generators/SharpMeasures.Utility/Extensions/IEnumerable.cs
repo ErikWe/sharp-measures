@@ -35,7 +35,7 @@ public static partial class UtilityExtensions
 
         IEnumerable orderAndFlattenDictionary()
         {
-            foreach (KeyValuePair<TKey, TValue> pair in dictionary.OrderBy(static (x) => x))
+            foreach (KeyValuePair<TKey, TValue> pair in dictionary.OrderBy(static (x) => x.Key))
             {
                 yield return pair.Key;
                 yield return pair.Value;

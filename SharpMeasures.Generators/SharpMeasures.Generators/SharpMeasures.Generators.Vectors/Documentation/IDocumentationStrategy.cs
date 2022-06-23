@@ -61,11 +61,25 @@ internal interface IDocumentationStrategy
     public abstract string UnaryPlusMethod();
     public abstract string NegateMethod();
 
+    public abstract string AddSameTypeMethod();
+    public abstract string SubtractSameTypeMethod();
+    public abstract string SubtractFromSameTypeMethod();
+
+    public abstract string AddDifferenceMethod();
+    public abstract string SubtractDifferenceMethod();
+
     public abstract string MultiplyScalarMethod();
     public abstract string DivideScalarMethod();
 
     public abstract string UnaryPlusOperator();
     public abstract string NegateOperator();
+
+    public abstract string AddSameTypeOperator();
+    public abstract string SubtractSameTypeOperator();
+
+    public abstract string AddDifferenceOperatorLHS();
+    public abstract string AddDifferenceOperatorRHS();
+    public abstract string SubtractDifferenceOperatorLHS();
 
     public abstract string MultiplyScalarOperatorLHS();
     public abstract string MultiplyScalarOperatorRHS();

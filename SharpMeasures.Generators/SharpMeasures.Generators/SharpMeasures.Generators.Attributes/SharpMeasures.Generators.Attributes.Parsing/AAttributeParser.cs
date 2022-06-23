@@ -62,10 +62,15 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
 
         TDefinition definition = DefaultValueConstructor();
 
+        if (attributeData.AttributeConstructor?.Parameters is not ImmutableArray<IParameterSymbol> parameterSymbols)
+        {
+            return definition;
+        }
+
         definition = AddAttributeLocation(definition, attributeSyntax.GetLocation().Minimize());
-        definition = AddConstructorArguments(definition, attributeData, attributeSyntax);
-        definition = AddNamedArguments(definition, attributeData, attributeSyntax);
-        definition = AddCustomData(definition, attributeData, attributeSyntax);
+        definition = AddConstructorArguments(definition, attributeData, attributeSyntax, parameterSymbols);
+        definition = AddNamedArguments(definition, attributeData, attributeSyntax, parameterSymbols);
+        definition = AddCustomData(definition, attributeData, attributeSyntax, parameterSymbols);
 
         return definition;
     }
@@ -93,12 +98,13 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
         return Parse(typeSymbol.GetAttributesOfType(AttributeType));
     }
 
-    protected virtual TDefinition AddCustomData(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax) => definition;
+    protected virtual TDefinition AddCustomData(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax,
+        ImmutableArray<IParameterSymbol> parameterSymbols) => definition;
 
-    private TDefinition AddConstructorArguments(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax)
+    private TDefinition AddConstructorArguments(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax,
+        ImmutableArray<IParameterSymbol> parameterSymbols)
     {
-        if (attributeData.ConstructorArguments.IsEmpty
-            || attributeData.AttributeConstructor?.Parameters is not ImmutableArray<IParameterSymbol> parameterSymbols)
+        if (attributeData.ConstructorArguments.IsEmpty)
         {
             return definition;
         }
@@ -118,11 +124,19 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
         return definition;
     }
 
-    private TDefinition AddNamedArguments(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax)
+    private TDefinition AddNamedArguments(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax,
+        ImmutableArray<IParameterSymbol> parameterSymbols)
     {
         if (attributeData.NamedArguments.IsEmpty)
         {
             return definition;
+        }
+
+        int argumentIndexOffset = attributeData.ConstructorArguments.Length;
+
+        if (parameterSymbols[attributeData.ConstructorArguments.Length - 1].IsParams)
+        {
+            argumentIndexOffset += attributeData.ConstructorArguments[attributeData.ConstructorArguments.Length - 1].Values.Length - 1;
         }
 
         for (int i = 0; i < attributeData.NamedArguments.Length; i++)
@@ -134,7 +148,7 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
             }
 
             definition = SetNamedArgument(definition, property, attributeData.NamedArguments[i].Value);
-            definition = property.Locator(definition, attributeSyntax.ArgumentList!, attributeData.ConstructorArguments.Length + i);
+            definition = property.Locator(definition, attributeSyntax.ArgumentList!, argumentIndexOffset + i);
         }
 
         return definition;

@@ -34,17 +34,18 @@ Measures1144 | Usage | Warning | Expected a non-empty signature
 Measures1145 | Usage | Warning | Unit list not matching signature
 Measures1146 | Usage | Warning | Unit not derivable
 Measures1147 | Usage | Warning | Ambiguous unit derivation signature
-Measures1200 | Usage | Warning | Expected both unit name and symbol
+Measures1200 | Usage | Info | Expected both unit name and symbol
 Measures1220 | Naming | Warning | Invalid name of constant
 Measures1221 | Naming | Warning | Invalid name for multiples of constant
 Measures1222 | Naming | Warning | Duplicate name of constant
 Measures1223 | Naming | Warning | Duplicate name for multiples of constant
 Measures1224 | Naming | Warning | Constant shares name with unit
+Measures1225 | Usage | Info | Constant multiples is disabled
 Measures1240 | Usage | Warning | Unrecognized cast operator behaviour
 Measures1260 | Usage | Warning | Contradictory attributes
 Measures1261 | Usage | Warning | Quantity group missing root quantity
 Measures1262 | Usage | Info | Inclusion or exclusion had no effect
-Measures1263 | Usage | Warning | Difference is disabled but a quantity was specified
+Measures1263 | Usage | Info | Difference is disabled but a quantity was specified
 Measures1420 | Usage | Warning | Invalid vector dimension
 Measures1421 | Usage | Warning | Missing vector dimension
 Measures1422 | Usage | Warning | Duplicate vector dimension

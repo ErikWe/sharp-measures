@@ -152,7 +152,7 @@ internal abstract class AVectorParsingStage<TAttribute, TRawDefinition, TDefinit
         }
     }
 
-    private readonly record struct UnitListProcessingContext : IItemListProcessingContext<string>
+    private readonly record struct UnitListProcessingContext : IUniqueItemListProcessingContext<string>
     {
         public DefinedType Type { get; }
 

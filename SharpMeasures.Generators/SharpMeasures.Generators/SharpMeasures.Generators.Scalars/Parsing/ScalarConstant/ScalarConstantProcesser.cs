@@ -15,10 +15,11 @@ internal interface IScalarConstantDiagnostics
     public abstract Diagnostic? DuplicateName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
     public abstract Diagnostic? NullUnit(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
     public abstract Diagnostic? EmptyUnit(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
-    public abstract Diagnostic? NullMultiplesName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
-    public abstract Diagnostic? EmptyMultiplesName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
-    public abstract Diagnostic? InvalidMultiplesName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
-    public abstract Diagnostic? DuplicateMultiplesName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
+    public abstract Diagnostic? NullMultiples(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
+    public abstract Diagnostic? EmptyMultiples(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
+    public abstract Diagnostic? InvalidMultiples(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
+    public abstract Diagnostic? DuplicateMultiples(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
+    public abstract Diagnostic? MultiplesDisabledButNameSpecified(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition);
 }
 
 internal interface IScalarConstantProcessingContext : IProcessingContext
@@ -42,9 +43,9 @@ internal class ScalarConstantProcesser : AActionableProcesser<IScalarConstantPro
     {
         context.ReservedConstants.Add(product.Name);
 
-        if (product.MultiplesName is not null)
+        if (product.Multiples is not null)
         {
-            context.ReservedConstantMultiples.Add(product.MultiplesName);
+            context.ReservedConstantMultiples.Add(product.Multiples);
         }
     }
 
@@ -87,7 +88,7 @@ internal class ScalarConstantProcesser : AActionableProcesser<IScalarConstantPro
     private IResultWithDiagnostics<(bool Generate, string? Name)> ProcessMultiplesPropertyData(IScalarConstantProcessingContext context,
         RawScalarConstantDefinition definition)
     {
-        var processedMultiplesName = ProcessMultiplesName(context, definition);
+        var processedMultiplesName = ProcessMultiples(context, definition);
 
         if (processedMultiplesName.LacksResult)
         {
@@ -97,34 +98,39 @@ internal class ScalarConstantProcesser : AActionableProcesser<IScalarConstantPro
         return ResultWithDiagnostics.Construct<(bool, string?)>((true, processedMultiplesName.Result), processedMultiplesName.Diagnostics);
     }
 
-    private IOptionalWithDiagnostics<string> ProcessMultiplesName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
+    private IOptionalWithDiagnostics<string> ProcessMultiples(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
     {
-        if (definition.Locations.ExplicitlySetMultiplesName is false || definition.GenerateMultiplesProperty is false)
+        if (definition.Locations.ExplicitlySetGenerateMultiplesProperty && definition.GenerateMultiplesProperty is false)
         {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<string>();
-        }
-
-        if (definition.ParsingData.InterpretedMultiplesName is null)
-        {
-            if (definition.MultiplesName is null)
+            if (definition.Locations.ExplicitlySetMultiples)
             {
-                return OptionalWithDiagnostics.Empty<string>(Diagnostics.NullMultiplesName(context, definition));
+                return OptionalWithDiagnostics.Empty<string>(Diagnostics.MultiplesDisabledButNameSpecified(context, definition));
             }
 
-            if (definition.MultiplesName.Length is 0)
+            return OptionalWithDiagnostics.Empty<string>();
+        }
+
+        if (definition.ParsingData.InterpretedMultiples is null)
+        {
+            if (definition.Multiples is null)
             {
-                return OptionalWithDiagnostics.Empty<string>(Diagnostics.EmptyMultiplesName(context, definition));
+                return OptionalWithDiagnostics.Empty<string>(Diagnostics.NullMultiples(context, definition));
             }
 
-            return OptionalWithDiagnostics.Empty<string>(Diagnostics.InvalidMultiplesName(context, definition));
+            if (definition.Multiples.Length is 0)
+            {
+                return OptionalWithDiagnostics.Empty<string>(Diagnostics.EmptyMultiples(context, definition));
+            }
+
+            return OptionalWithDiagnostics.Empty<string>(Diagnostics.InvalidMultiples(context, definition));
         }
 
-        if (context.ReservedConstantMultiples.Contains(definition.ParsingData.InterpretedMultiplesName))
+        if (context.ReservedConstantMultiples.Contains(definition.ParsingData.InterpretedMultiples))
         {
-            return OptionalWithDiagnostics.Empty<string>(Diagnostics.DuplicateMultiplesName(context, definition));
+            return OptionalWithDiagnostics.Empty<string>(Diagnostics.DuplicateMultiples(context, definition));
         }
 
-        return OptionalWithDiagnostics.Result(definition.ParsingData.InterpretedMultiplesName);
+        return OptionalWithDiagnostics.Result(definition.ParsingData.InterpretedMultiples);
     }
 
     private IValidityWithDiagnostics CheckValidity(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)

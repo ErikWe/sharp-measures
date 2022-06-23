@@ -36,6 +36,11 @@ internal record class DataModel : IDataModel<DataModel>
     DefinedType IDataModel.VectorType => VectorData.VectorType;
     int IDataModel.Dimension => VectorDefinition.Dimension;
 
+    bool IDataModel.ImplementSum => VectorDefinition.ImplementSum;
+    bool IDataModel.ImplementDifference => VectorDefinition.ImplementDifference;
+
+    NamedType IDataModel.Difference => VectorDefinition.Difference;
+
     UnitInterface IDataModel.Unit => VectorDefinition.Unit;
     ScalarInterface? IDataModel.Scalar => VectorDefinition.Scalar;
 

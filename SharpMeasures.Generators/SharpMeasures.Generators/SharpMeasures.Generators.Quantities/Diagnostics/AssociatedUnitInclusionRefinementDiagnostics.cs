@@ -41,6 +41,6 @@ public class AssociatedUnitInclusionRefinementDiagnostics<TIncludeDefinition, TE
 
     public Diagnostic UnitNotIncluded(IAssociatedUnitInclusionRefinementContext context, TExcludeDefinition definition, int index)
     {
-        return DiagnosticConstruction.UnitNotExcluded(definition.Locations.ItemsElements[index].AsRoslynLocation(), definition.Items[index]);
+        return DiagnosticConstruction.UnitNotIncluded(definition.Locations.ItemsElements[index].AsRoslynLocation(), definition.Items[index]);
     }
 }

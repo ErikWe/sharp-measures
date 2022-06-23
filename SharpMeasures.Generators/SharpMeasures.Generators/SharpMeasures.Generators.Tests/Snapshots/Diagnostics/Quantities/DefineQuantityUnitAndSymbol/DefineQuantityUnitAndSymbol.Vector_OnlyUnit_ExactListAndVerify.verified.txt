@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1200,
+    Title: Expected both unit name and symbol,
+    Severity: Info,
+    WarningLevel: 1,
+    Location: : (7,61)-(7,68),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The name of the default unit of the quantity was specified, but not the associated symbol,
+    Message: The name of the default unit of the quantity was specified, but not the associated symbol,
+    Category: Usage,
+    CustomTags: []
+  }
+]

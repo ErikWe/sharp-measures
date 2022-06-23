@@ -29,12 +29,15 @@ internal static class Execution
 
         private DataModel Data { get; }
         private UsingsCollector UsingsCollector { get; }
+        private InterfaceCollector InterfaceCollector { get; }
 
         private Composer(DataModel data)
         {
             Data = data;
 
             UsingsCollector = UsingsCollector.Delayed(Builder, Data.Vector.Namespace);
+            InterfaceCollector = InterfaceCollector.Delayed(Builder);
+
             UsingsCollector.AddUsings("SharpMeasures", "SharpMeasures.Maths", Data.Unit.Namespace);
 
             if (Data.Scalar is not null)
@@ -51,6 +54,33 @@ internal static class Execution
             {
                 UsingsCollector.AddUsing("System.Numerics");
             }
+
+            if (Data.ImplementSum)
+            {
+                InterfaceCollector.AddInterface($"IAddendVector{Data.Dimension}Quantity<{Data.Vector.Name}>");
+            }
+
+            if (Data.ImplementDifference)
+            {
+                if (Data.Difference == Data.Vector.AsNamedType())
+                {
+                    InterfaceCollector.AddInterfaces
+                    (
+                        $"IMinuendVector{Data.Dimension}Quantity<{Data.Vector.Name}>",
+                        $"ISubtrahendVector{Data.Dimension}Quantity<{Data.Vector.Name}>"
+                    );
+                }
+                else
+                {
+                    InterfaceCollector.AddInterfaces
+                    (
+                        $"IMinuendVector{Data.Dimension}Quantity<{Data.Vector.Name}, {Data.Difference.Name}, {Data.Vector.Name}>",
+                        $"ISubtrahendVector{Data.Dimension}Quantity<{Data.Vector.Name}, {Data.Difference.Name}, {Data.Vector.Name}>",
+                        $"IAddendVector{Data.Dimension}Quantity<{Data.Vector.Name}, {Data.Vector.Name}, {Data.Difference.Name}>",
+                        $"IMinuendVector{Data.Dimension}Quantity<{Data.Vector.Name}, {Data.Vector.Name}, {Data.Difference.Name}>"
+                    );
+                }
+            }
         }
 
         private void Compose()
@@ -63,8 +93,11 @@ internal static class Execution
 
             Builder.AppendLine(Data.Vector.ComposeDeclaration());
 
+            InterfaceCollector.MarkInsertionPoint();
+
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0);
 
+            InterfaceCollector.InsertInterfacesOnNewLines(new Indentation(1));
             UsingsCollector.InsertUsings();
         }
 
@@ -75,6 +108,16 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
+            if (Data.ImplementSum)
+            {
+                ComposeSumMethod(indentation);
+            }
+
+            if (Data.ImplementDifference)
+            {
+                ComposeDifferenceMethod(indentation);
+            }
+
             AppendDocumentation(indentation, Data.Documentation.UnaryPlusMethod());
             Builder.AppendLine($"{indentation}public {Data.Vector.Name} Plus() => this;");
             AppendDocumentation(indentation, Data.Documentation.NegateMethod());
@@ -83,9 +126,9 @@ internal static class Execution
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.MultiplyScalarMethod());
-            Builder.AppendLine($"{indentation}public {Data.Vector.Name} Multiply(Scalar factor) => this * factor;");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name} Multiply(Scalar factor) => ({ConstantVectorTexts.Upper.MultiplyFactorScalar(Data.Dimension)});");
             AppendDocumentation(indentation, Data.Documentation.DivideScalarMethod());
-            Builder.AppendLine($"{indentation}public {Data.Vector.Name} Divide(Scalar divisor) => this / divisor;");
+            Builder.AppendLine($"{indentation}public {Data.Vector.Name} Divide(Scalar divisor) => ({ConstantVectorTexts.Upper.MultiplyFactorScalar(Data.Dimension)});");
 
             Builder.AppendLine();
 
@@ -99,10 +142,22 @@ internal static class Execution
 
             ComposeNegate(indentation);
 
-            if (Data.Vector.IsReferenceType)
+            if (Data.ImplementSum || Data.ImplementDifference)
             {
                 Builder.AppendLine();
             }
+
+            if (Data.ImplementSum)
+            {
+                ComposeSumOperator(indentation);
+            }
+
+            if (Data.ImplementDifference)
+            {
+                ComposeDifferenceOperator(indentation);
+            }
+
+            Builder.AppendLine();
 
             ComposeMultiplyScalarLHS(indentation);
 
@@ -211,6 +266,187 @@ internal static class Execution
             {
                 Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator /({Data.Vector.Name} a, Scalar b) => ({ConstantVectorTexts.Upper.DivideAScalar(Data.Dimension)});");
             }
+        }
+
+        private void ComposeSumMethod(Indentation indentation)
+        {
+            AppendDocumentation(indentation, Data.Documentation.AddSameTypeMethod());
+
+            if (Data.Vector.IsReferenceType)
+            {
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="ArgumentNullException"/>
+                    {{indentation}}public {{Data.Vector.Name}} Add({{Data.Vector.Name}} addend)
+                    {{indentation}}{
+                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(addend);
+                        
+                    {{indentation.Increased}}return ({{ConstantVectorTexts.Upper.AddAddendVector(Data.Dimension)}});
+                    {{indentation}}}
+                    """);
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation}public {Data.Vector.Name} Add({Data.Vector.Name} addend) => ({ConstantVectorTexts.Upper.AddAddendVector(Data.Dimension)});");
+            }
+        }
+
+        private void ComposeDifferenceMethod(Indentation indentation)
+        {
+            if (Data.Difference == Data.Vector.AsNamedType())
+            {
+                ComposeDifferenceMethodAsSameType(indentation);
+            }
+            else
+            {
+                ComposeDifferenceMethodAsDifferentType(indentation);
+            }
+        }
+
+        private void ComposeDifferenceMethodAsSameType(Indentation indentation)
+        {
+            if (Data.Vector.IsReferenceType)
+            {
+                AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeMethod());
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="ArgumentNullException"/>
+                    {{indentation}}public {{Data.Difference.Name}} Subtract({{Data.Vector.Name}} subtrahend)
+                    {{indentation}}{
+                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(subtrahend);
+
+                    {{indentation.Increased}}return ({{ConstantVectorTexts.Upper.SubtractSubtrahendVector(Data.Dimension)}});
+                    {{indentation}}}
+                    """);
+
+                AppendDocumentation(indentation, Data.Documentation.SubtractFromSameTypeMethod());
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="ArgumentNullException"/>
+                    {{indentation}}public {{Data.Difference.Name}} SubtractFrom({{Data.Vector.Name}} minuend)
+                    {{indentation}}{
+                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(minuend);
+
+                    {{indentation.Increased}}return ({{ConstantVectorTexts.Upper.SubtractFromMinuendVector(Data.Dimension)}});
+                    {{indentation}}}
+                    """);
+            }
+            else
+            {
+                AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeMethod());
+                Builder.Append($"{indentation}public {Data.Difference.Name} Subtract({Data.Vector.Name} subtrahend) " +
+                    $"=> ({ConstantVectorTexts.Upper.SubtractSubtrahendVector(Data.Dimension)});");
+
+                AppendDocumentation(indentation, Data.Documentation.SubtractFromSameTypeMethod());
+                Builder.Append($"{indentation}public {Data.Difference.Name} SubtractFrom({Data.Vector.Name} minuend) " +
+                    $"=> ({ConstantVectorTexts.Upper.SubtractFromMinuendVector(Data.Dimension)});");
+            }
+        }
+
+        private void ComposeDifferenceMethodAsDifferentType(Indentation indentation)
+        {
+            if (Data.Difference.IsReferenceType)
+            {
+                AppendDocumentation(indentation, Data.Documentation.AddDifferenceMethod());
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="ArgumentNullException"/>
+                    {{indentation}}public {{Data.Vector.Name}} Add({{Data.Difference.Name}} addend)
+                    {{indentation}}}
+                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(addend);
+
+                    {{indentation.Increased}}return ({{ConstantVectorTexts.Upper.AddAddendVector(Data.Dimension)}});
+                    {{indentation}}}
+                    """);
+
+                AppendDocumentation(indentation, Data.Documentation.SubtractDifferenceMethod());
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="ArgumentNullException"/>
+                    {{indentation}}public {{Data.Vector.Name}} Subtract({{Data.Difference.Name}} subtrahend)
+                    {{indentation}}}
+                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(subtrahend);
+
+                    {{indentation.Increased}}return ({{ConstantVectorTexts.Upper.SubtractSubtrahendVector(Data.Dimension)}});
+                    {{indentation}}}
+                    """);
+            }
+            else
+            {
+                AppendDocumentation(indentation, Data.Documentation.AddDifferenceMethod());
+                Builder.AppendLine($"{indentation}public {Data.Vector.Name} Add({Data.Difference.Name} addend) => ({ConstantVectorTexts.Upper.AddAddendVector(Data.Dimension)});");
+
+                AppendDocumentation(indentation, Data.Documentation.SubtractDifferenceMethod());
+                Builder.AppendLine($"{indentation}public {Data.Vector.Name} Subtract({Data.Difference.Name} subtrahend) => ({ConstantVectorTexts.Upper.SubtractSubtrahendVector(Data.Dimension)});");
+            }
+
+            if (Data.Vector.IsReferenceType)
+            {
+                AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeMethod());
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="ArgumentNullException"/>
+                    {{indentation}}public {{Data.Difference.Name}} Subtract({{Data.Vector.Name}} subtrahend)
+                    {{indentation}}}
+                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(subtrahend);
+
+                    {{indentation.Increased}}return ({{ConstantVectorTexts.Upper.SubtractSubtrahendVector(Data.Dimension)}});
+                    {{indentation}}}
+                    """);
+
+                AppendDocumentation(indentation, Data.Documentation.SubtractFromSameTypeMethod());
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="ArgumentNullException"/>
+                    {{indentation}}{{Data.Difference.Name}} ISubtrahendScalarQuantity<{{Data.Vector.Name}}, {{Data.Difference.Name}}, {{Data.Vector.Name}}>SubtractFrom({{Data.Vector.Name}} minuend)
+                    {{indentation}}}
+                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(minuend);
+
+                    {{indentation.Increased}}return ({{ConstantVectorTexts.Upper.SubtractFromMinuendVector(Data.Dimension)}});
+                    {{indentation}}}
+                    """);
+            }
+            else
+            {
+                AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeMethod());
+                Builder.AppendLine($"{indentation}public {Data.Difference.Name} Subtract({Data.Vector.Name} subtrahend) => ({ConstantVectorTexts.Upper.SubtractSubtrahendVector(Data.Dimension)});");
+
+                AppendDocumentation(indentation, Data.Documentation.SubtractFromSameTypeMethod());
+                Builder.AppendLine($"{indentation}{Data.Difference.Name} ISubtrahendScalarQuantity<{Data.Vector.Name}, {Data.Difference.Name}, {Data.Vector.Name}>" +
+                    $".SubtractFrom({Data.Vector.Name} minuend) => new({ConstantVectorTexts.Upper.SubtractFromMinuendVector(Data.Dimension)});");
+            }
+        }
+
+        private void ComposeSumOperator(Indentation indentation)
+        {
+            AppendDocumentation(indentation, Data.Documentation.AddSameTypeOperator());
+            Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator +({Data.Vector.Name} x, {Data.Vector.Name} y) => new(x.Magnitude.Value + y.Magnitude.Value);");
+        }
+
+        private void ComposeDifferenceOperator(Indentation indentation)
+        {
+            if (Data.Difference == Data.Vector.AsNamedType())
+            {
+                ComposeDifferenceOperatorAsSameType(indentation);
+            }
+            else
+            {
+                ComposeDifferenceOperatorAsDifferentType(indentation);
+            }
+        }
+
+        private void ComposeDifferenceOperatorAsSameType(Indentation indentation)
+        {
+            AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeOperator());
+            Builder.AppendLine($"{indentation}public static {Data.Difference.Name} operator -({Data.Vector.Name} x, {Data.Vector.Name} y) => new(x.Magnitude.Value - y.Magnitude.Value);");
+        }
+
+        private void ComposeDifferenceOperatorAsDifferentType(Indentation indentation)
+        {
+            AppendDocumentation(indentation, Data.Documentation.AddDifferenceOperatorLHS());
+            Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator +({Data.Vector.Name} x, {Data.Difference.Name} y) => new(x.Magnitude.Value + y.Magnitude.Value);");
+
+            AppendDocumentation(indentation, Data.Documentation.AddDifferenceOperatorRHS());
+            Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator +({Data.Difference.Name} x, {Data.Vector.Name} y) => new(x.Magnitude.Value + y.Magnitude.Value);");
+
+            AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeOperator());
+            Builder.AppendLine($"{indentation}public static {Data.Difference.Name} operator -({Data.Vector.Name} x, {Data.Vector.Name} y) => new(x.Magnitude.Value - y.Magnitude.Value);");
+
+            AppendDocumentation(indentation, Data.Documentation.SubtractDifferenceOperatorLHS());
+            Builder.AppendLine($"{indentation}public static {Data.Vector.Name} operator -({Data.Vector.Name} x, {Data.Difference.Name} y) => new(x.Magnitude.Value - y.Magnitude.Value);");
         }
 
         private void ComposeMathUtility(Indentation indentation)

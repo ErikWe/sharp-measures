@@ -13,11 +13,14 @@ internal interface IVectorConstantProcessingDiagnostics
     public abstract Diagnostic? NullName(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition);
     public abstract Diagnostic? EmptyName(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition);
     public abstract Diagnostic? DuplicateName(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition);
+    public abstract Diagnostic? NullUnit(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition);
+    public abstract Diagnostic? EmptyUnit(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition);
     public abstract Diagnostic? InvalidValueDimension(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition);
-    public abstract Diagnostic? NullMultiplesName(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition);
-    public abstract Diagnostic? EmptyMultiplesName(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition);
-    public abstract Diagnostic? InvalidMultiplesName(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition);
-    public abstract Diagnostic? DuplicateMultiplesName(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition);
+    public abstract Diagnostic? NullMultiples(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition);
+    public abstract Diagnostic? EmptyMultiples(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition);
+    public abstract Diagnostic? InvalidMultiples(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition);
+    public abstract Diagnostic? DuplicateMultiples(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition);
+    public abstract Diagnostic? MultiplesDisabledButNameSpecified(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition);
 }
 
 internal interface IVectorConstantProcessingContext : IProcessingContext
@@ -41,9 +44,9 @@ internal class VectorConstantProcesser : AActionableProcesser<IVectorConstantPro
     {
         context.ReservedConstants.Add(product.Name);
 
-        if (product.MultiplesName is not null)
+        if (product.Multiples is not null)
         {
-            context.ReservedConstantMultiples.Add(product.MultiplesName);
+            context.ReservedConstantMultiples.Add(product.Multiples);
         }
     }
 
@@ -77,7 +80,7 @@ internal class VectorConstantProcesser : AActionableProcesser<IVectorConstantPro
     {
         var processedMultiplesPropertyData = ProcessMultiplesPropertyData(context, definition);
 
-        VectorConstantDefinition product = new(definition.Name!, definition.Unit, definition.Value, processedMultiplesPropertyData.Result.Generate,
+        VectorConstantDefinition product = new(definition.Name!, definition.Unit!, definition.Value, processedMultiplesPropertyData.Result.Generate,
             processedMultiplesPropertyData.Result.Name, definition.Locations);
 
         return ResultWithDiagnostics.Construct(product, processedMultiplesPropertyData.Diagnostics);
@@ -86,7 +89,7 @@ internal class VectorConstantProcesser : AActionableProcesser<IVectorConstantPro
     private IResultWithDiagnostics<(bool Generate, string? Name)> ProcessMultiplesPropertyData(IVectorConstantProcessingContext context,
         RawVectorConstantDefinition definition)
     {
-        var processedMultiplesName = ProcessMultiplesName(context, definition);
+        var processedMultiplesName = ProcessMultiples(context, definition);
 
         if (processedMultiplesName.LacksResult)
         {
@@ -96,39 +99,44 @@ internal class VectorConstantProcesser : AActionableProcesser<IVectorConstantPro
         return ResultWithDiagnostics.Construct<(bool, string?)>((true, processedMultiplesName.Result), processedMultiplesName.Diagnostics);
     }
 
-    private IOptionalWithDiagnostics<string> ProcessMultiplesName(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
+    private IOptionalWithDiagnostics<string> ProcessMultiples(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
     {
-        if (definition.Locations.ExplicitlySetMultiplesName is false || definition.GenerateMultiplesProperty is false)
+        if (definition.Locations.ExplicitlySetGenerateMultiplesProperty && definition.GenerateMultiplesProperty is false)
         {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<string>();
-        }
-
-        if (definition.ParsingData.InterpretedMultiplesName is null)
-        {
-            if (definition.MultiplesName is null)
+            if (definition.Locations.ExplicitlySetMultiples)
             {
-                return OptionalWithDiagnostics.Empty<string>(Diagnostics.NullMultiplesName(context, definition));
+                return OptionalWithDiagnostics.Empty<string>(Diagnostics.MultiplesDisabledButNameSpecified(context, definition));
             }
 
-            if (definition.MultiplesName.Length is 0)
+            return OptionalWithDiagnostics.Empty<string>();
+        }
+
+        if (definition.ParsingData.InterpretedMultiples is null)
+        {
+            if (definition.Multiples is null)
             {
-                return OptionalWithDiagnostics.Empty<string>(Diagnostics.EmptyMultiplesName(context, definition));
+                return OptionalWithDiagnostics.Empty<string>(Diagnostics.NullMultiples(context, definition));
             }
 
-            return OptionalWithDiagnostics.Empty<string>(Diagnostics.InvalidMultiplesName(context, definition));
+            if (definition.Multiples.Length is 0)
+            {
+                return OptionalWithDiagnostics.Empty<string>(Diagnostics.EmptyMultiples(context, definition));
+            }
+
+            return OptionalWithDiagnostics.Empty<string>(Diagnostics.InvalidMultiples(context, definition));
         }
 
-        if (context.ReservedConstantMultiples.Contains(definition.ParsingData.InterpretedMultiplesName))
+        if (context.ReservedConstantMultiples.Contains(definition.ParsingData.InterpretedMultiples))
         {
-            return OptionalWithDiagnostics.Empty<string>(Diagnostics.DuplicateMultiplesName(context, definition));
+            return OptionalWithDiagnostics.Empty<string>(Diagnostics.DuplicateMultiples(context, definition));
         }
 
-        return OptionalWithDiagnostics.Result(definition.ParsingData.InterpretedMultiplesName);
+        return OptionalWithDiagnostics.Result(definition.ParsingData.InterpretedMultiples);
     }
 
     private IValidityWithDiagnostics CheckValidity(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
     {
-        return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckNameValidity, CheckValueValidity);
+        return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckNameValidity, CheckUnitValidity, CheckValueValidity);
     }
 
     private IValidityWithDiagnostics CheckNameValidity(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
@@ -146,6 +154,21 @@ internal class VectorConstantProcesser : AActionableProcesser<IVectorConstantPro
         if (context.ReservedConstants.Contains(definition.Name))
         {
             return ValidityWithDiagnostics.Invalid(Diagnostics.DuplicateName(context, definition));
+        }
+
+        return ValidityWithDiagnostics.Valid;
+    }
+
+    private IValidityWithDiagnostics CheckUnitValidity(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
+    {
+        if (definition.Unit is null)
+        {
+            return ValidityWithDiagnostics.Invalid(Diagnostics.NullUnit(context, definition));
+        }
+
+        if (definition.Unit.Length is 0)
+        {
+            return ValidityWithDiagnostics.Invalid(Diagnostics.EmptyUnit(context, definition));
         }
 
         return ValidityWithDiagnostics.Valid;

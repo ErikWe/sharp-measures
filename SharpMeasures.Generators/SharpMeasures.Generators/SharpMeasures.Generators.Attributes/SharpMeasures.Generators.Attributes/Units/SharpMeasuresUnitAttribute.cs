@@ -8,7 +8,7 @@ using System;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 public sealed class SharpMeasuresUnitAttribute : Attribute
 {
-    /// <summary>The scalar quantity that the unit describes.</summary>
+    /// <summary>The scalar quantity that this unit describes.</summary>
     /// <remarks>For units that include a bias term, this should represent an associated unbiased quantity. For example; <i>UnitOfTemperature</i>,
     /// should be represented by <i>TemperatureDifference</i> rather than <i>Temperature</i>.</remarks>
     public Type Quantity { get; }

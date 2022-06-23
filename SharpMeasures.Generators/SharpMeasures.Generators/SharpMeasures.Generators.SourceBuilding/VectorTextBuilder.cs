@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.SourceBuilding;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 
@@ -38,7 +39,7 @@ public class VectorTextBuilder
 
     public static string GetUpperCasedComponentName(int componentIndex, int dimension) => GetLowerCasedComponentName(componentIndex, dimension).ToUpperInvariant();
     
-    private Dictionary<int, string> CachedTexts { get; } = new();
+    private ConcurrentDictionary<int, string> CachedTexts { get; } = new();
 
     private Func<int, int, string> ElementDelegate { get; }
     private string Separator { get; }
@@ -65,7 +66,7 @@ public class VectorTextBuilder
     private string ComposeAndCache(int dimension)
     {
         string text = Compose(ElementDelegate, Separator, dimension);
-        CachedTexts.Add(dimension, text);
+        CachedTexts.TryAdd(dimension, text);
         return text;
     }
 

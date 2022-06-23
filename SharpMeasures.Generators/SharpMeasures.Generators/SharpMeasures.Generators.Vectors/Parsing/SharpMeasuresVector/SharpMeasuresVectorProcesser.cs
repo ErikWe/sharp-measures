@@ -17,6 +17,9 @@ internal interface ISharpMeasuresVectorProcessingDiagnostics
     public abstract Diagnostic? MissingDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? InvalidDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
 
+    public abstract Diagnostic? DifferenceDisabledButQuantitySpecified(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
+    public abstract Diagnostic? NullDifferenceQuantity(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
+
     public abstract Diagnostic? NullDefaultUnit(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? EmptyDefaultUnit(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? NullDefaultSymbol(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
@@ -73,7 +76,8 @@ internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, Raw
             return OptionalWithDiagnostics.Empty<SharpMeasuresVectorDefinition>(allDiagnostics);
         }
 
-        SharpMeasuresVectorDefinition product = new(definition.Unit!.Value, definition.Scalar, processedDimensionality.Result, processedDefaultUnitData.Result.Name,
+        SharpMeasuresVectorDefinition product = new(definition.Unit!.Value, definition.Scalar, processedDimensionality.Result, definition.ImplementSum,
+            definition.ImplementDifference, definition.Difference ?? context.Type.AsNamedType(), processedDefaultUnitData.Result.Name,
             processedDefaultUnitData.Result.Symbol, definition.GenerateDocumentation, definition.Locations);
 
         return ResultWithDiagnostics.Construct(product, allDiagnostics);
@@ -147,7 +151,7 @@ internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, Raw
 
     private IValidityWithDiagnostics CheckValidity(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)
     {
-        return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckUnitValidity, CheckScalarValidity);
+        return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckUnitValidity, CheckScalarValidity, CheckDifferenceValidity);
     }
 
     private IValidityWithDiagnostics CheckUnitValidity(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)
@@ -170,6 +174,26 @@ internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, Raw
         if (definition.Scalar is null)
         {
             return ValidityWithDiagnostics.Invalid(Diagnostics.NullScalar(context, definition));
+        }
+
+        return ValidityWithDiagnostics.Valid;
+    }
+
+    private IValidityWithDiagnostics CheckDifferenceValidity(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)
+    {
+        if (definition.Locations.ExplicitlySetDifference is false)
+        {
+            return ValidityWithDiagnostics.Valid;
+        }
+
+        if (definition.Difference is null)
+        {
+            return ValidityWithDiagnostics.ValidWithDiagnostics(Diagnostics.NullDifferenceQuantity(context, definition));
+        }
+
+        if (definition.ImplementDifference is false)
+        {
+            return ValidityWithDiagnostics.ValidWithDiagnostics(Diagnostics.DifferenceDisabledButQuantitySpecified(context, definition));
         }
 
         return ValidityWithDiagnostics.Valid;

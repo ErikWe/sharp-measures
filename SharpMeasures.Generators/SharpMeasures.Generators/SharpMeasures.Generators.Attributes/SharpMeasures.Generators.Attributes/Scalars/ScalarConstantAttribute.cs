@@ -17,7 +17,7 @@ public sealed class ScalarConstantAttribute : Attribute
 
     /// <summary>Determines whether to generate a property for retrieving the magnitude of the scalar in terms of multiples of this constant. The
     /// default behaviour is <see langword="true"/>.</summary>
-    /// <remarks>If set to <see langword="true"/>, <see cref="MultiplesName"/> is used to determine the name of the property.</remarks>
+    /// <remarks>If set to <see langword="true"/>, <see cref="Multiples"/> is used to determine the name of the property.</remarks>
     public bool GenerateMultiplesProperty { get; init; } = true;
 
     /// <summary>If <see cref="GenerateMultiplesProperty"/> is set to <see langword="true"/>, this value is used as the name of the property. The name of this
@@ -25,7 +25,7 @@ public sealed class ScalarConstantAttribute : Attribute
     /// <para>The default behaviour is prepending "MultiplesOf" to the name of the constant.</para></summary>
     /// <remarks>See <see cref="ConstantMultiplesCodes"/> for some short-hand notations for producing a name for multiples of the constant, based on the
     /// name of the constant.</remarks>
-    public string MultiplesName { get; init; } = ConstantMultiplesCodes.MultiplesOfConstant;
+    public string Multiples { get; init; } = ConstantMultiplesCodes.MultiplesOfConstant;
 
     /// <summary>Defines a constant.</summary>
     /// <param name="name">The name of the constant.</param>

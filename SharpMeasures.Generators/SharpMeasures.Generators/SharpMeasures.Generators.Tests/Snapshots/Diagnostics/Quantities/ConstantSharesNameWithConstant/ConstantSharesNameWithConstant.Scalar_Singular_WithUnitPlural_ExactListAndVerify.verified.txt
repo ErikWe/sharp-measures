@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1224,
+    Title: Constant shares name with unit,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (5,16)-(5,28),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} already associates "{1}" with a unit,
+    Message: Length already associates "Kilometres" with a unit,
+    Category: Naming,
+    CustomTags: []
+  }
+]

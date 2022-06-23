@@ -16,6 +16,11 @@ internal interface IDataModel
 {
     public abstract DefinedType VectorType { get; }
     public abstract int Dimension { get; }
+    
+    public abstract bool ImplementSum { get; }
+    public abstract bool ImplementDifference { get; }
+
+    public abstract NamedType Difference { get; }
 
     public abstract UnitInterface Unit { get; }
     public abstract ScalarInterface? Scalar { get; }

@@ -13,7 +13,7 @@ internal static class VectorConstantProperties
         Unit,
         Value,
         GenerateMultiplesProperty,
-        MultiplesName
+        Multiples
     };
 
     private static VectorConstantProperty<string> Name { get; } = new
@@ -44,14 +44,14 @@ internal static class VectorConstantProperties
     private static VectorConstantProperty<bool> GenerateMultiplesProperty { get; } = new
     (
         name: nameof(VectorConstantAttribute.GenerateMultiplesProperty),
-        setter: static (definition, generateMagnitudeProperty) => definition with { GenerateMultiplesProperty = generateMagnitudeProperty },
-        locator: static (locations, generateMagnitudePropertLocation) => locations with { GenerateMultiplesProperty = generateMagnitudePropertLocation }
+        setter: static (definition, generateMultiplesProperty) => definition with { GenerateMultiplesProperty = generateMultiplesProperty },
+        locator: static (locations, generateMultiplesPropertyLocation) => locations with { GenerateMultiplesProperty = generateMultiplesPropertyLocation }
     );
 
-    private static VectorConstantProperty<string> MultiplesName { get; } = new
+    private static VectorConstantProperty<string> Multiples { get; } = new
     (
-        name: nameof(VectorConstantAttribute.MultiplesName),
-        setter: static (definition, magnitudePropertyName) => definition with { MultiplesName = magnitudePropertyName },
-        locator: static (locations, magnitudePropertyNameLocation) => locations with { MultiplesName = magnitudePropertyNameLocation }
+        name: nameof(VectorConstantAttribute.Multiples),
+        setter: static (definition, multiples) => definition with { Multiples = multiples },
+        locator: static (locations, multiplesLocation) => locations with { Multiples = multiplesLocation }
     );
 }

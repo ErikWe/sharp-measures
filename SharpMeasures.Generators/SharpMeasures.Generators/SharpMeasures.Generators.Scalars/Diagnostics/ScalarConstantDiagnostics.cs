@@ -31,29 +31,34 @@ internal class ScalarConstantDiagnostics : IScalarConstantDiagnostics, IScalarCo
 
     public Diagnostic EmptyUnit(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition) => NullUnit(context, definition);
 
-    public Diagnostic NullMultiplesName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
+    public Diagnostic NullMultiples(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
     {
-        return DiagnosticConstruction.NullConstantMultiplesName(definition.Locations.MultiplesName?.AsRoslynLocation(), definition.Name!);
+        return DiagnosticConstruction.NullConstantMultiplesName(definition.Locations.Multiples?.AsRoslynLocation(), definition.Name!);
     }
 
-    public Diagnostic EmptyMultiplesName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition) => NullMultiplesName(context, definition);
+    public Diagnostic EmptyMultiples(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition) => NullMultiples(context, definition);
 
-    public Diagnostic InvalidMultiplesName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
+    public Diagnostic InvalidMultiples(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
     {
-        return DiagnosticConstruction.InvalidConstantMultiplesName(definition.Locations.MultiplesName?.AsRoslynLocation(),
-            definition.Name!, definition.ParsingData.InterpretedMultiplesName!);
+        return DiagnosticConstruction.InvalidConstantMultiplesName(definition.Locations.Multiples?.AsRoslynLocation(),
+            definition.Name!, definition.ParsingData.InterpretedMultiples!);
     }
 
-    public Diagnostic DuplicateMultiplesName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
+    public Diagnostic DuplicateMultiples(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
     {
-        if (definition.Locations.ExplicitlySetMultiplesName)
+        if (definition.Locations.ExplicitlySetMultiples)
         {
-            return DiagnosticConstruction.DuplicateConstantMultiplesName(definition.Locations.MultiplesName?.AsRoslynLocation(),
-                definition.ParsingData.InterpretedMultiplesName!, context.Type.Name);
+            return DiagnosticConstruction.DuplicateConstantMultiplesName(definition.Locations.Multiples?.AsRoslynLocation(),
+                definition.ParsingData.InterpretedMultiples!, context.Type.Name);
         }
 
-        return DiagnosticConstruction.DuplicateConstantMultiplesName(definition.Locations.Attribute.AsRoslynLocation(), definition.ParsingData.InterpretedMultiplesName!,
+        return DiagnosticConstruction.DuplicateConstantMultiplesName(definition.Locations.Attribute.AsRoslynLocation(), definition.ParsingData.InterpretedMultiples!,
             context.Type.Name);
+    }
+
+    public Diagnostic MultiplesDisabledButNameSpecified(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
+    {
+        return DiagnosticConstruction.ConstantMultiplesDisabledButNameSpecified(definition.Locations.Multiples?.AsRoslynLocation(), definition.Name!);
     }
 
     public Diagnostic UnrecognizedUnit(IScalarConstantRefinementContext context, ScalarConstantDefinition definition)
@@ -66,15 +71,15 @@ internal class ScalarConstantDiagnostics : IScalarConstantDiagnostics, IScalarCo
         return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.Name?.AsRoslynLocation(), definition.Name, context.Type.Name);
     }
 
-    public Diagnostic ConstantMultiplesSharesNameWithUnitPlural(IScalarConstantRefinementContext context, ScalarConstantDefinition definition)
+    public Diagnostic ConstantMultiplesSharesNameWithUnit(IScalarConstantRefinementContext context, ScalarConstantDefinition definition)
     {
-        if (definition.Locations.ExplicitlySetMultiplesName)
+        if (definition.Locations.ExplicitlySetMultiples)
         {
-            return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.MultiplesName?.AsRoslynLocation(), definition.MultiplesName!,
+            return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.Multiples?.AsRoslynLocation(), definition.Multiples!,
                 context.Type.Name);
         }
 
-        return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.Attribute.AsRoslynLocation(), definition.MultiplesName!,
+        return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.Attribute.AsRoslynLocation(), definition.Multiples!,
             context.Type.Name);
     }
 }

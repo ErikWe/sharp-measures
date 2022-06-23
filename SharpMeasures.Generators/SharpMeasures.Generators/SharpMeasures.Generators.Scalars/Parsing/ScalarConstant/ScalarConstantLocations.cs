@@ -11,14 +11,14 @@ internal record class ScalarConstantLocations : AAttributeLocations
     public MinimalLocation? Value { get; init; }
 
     public MinimalLocation? GenerateMultiplesProperty { get; init; }
-    public MinimalLocation? MultiplesName { get; init; }
+    public MinimalLocation? Multiples { get; init; }
 
     public bool ExplicitlySetName => Name is not null;
     public bool ExplicitlySetUnit => Unit is not null;
     public bool ExplicitlySetValue => Value is not null;
 
     public bool ExplicitlySetGenerateMultiplesProperty => GenerateMultiplesProperty is not null;
-    public bool ExplicitlySetMultiplesName => MultiplesName is not null;
+    public bool ExplicitlySetMultiples => Multiples is not null;
 
     private ScalarConstantLocations() { }
 }
