@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
 using SharpMeasures.Generators.Vectors.Refinement.DimensionalEquivalence;
+using SharpMeasures.Generators.Vectors.Populations;
 
 internal static class DimensionEquivalenceGenerator
 {

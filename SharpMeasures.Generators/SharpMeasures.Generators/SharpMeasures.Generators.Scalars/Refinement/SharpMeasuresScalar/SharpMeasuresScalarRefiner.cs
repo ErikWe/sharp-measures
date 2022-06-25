@@ -9,6 +9,7 @@ using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors;
+using SharpMeasures.Generators.Vectors.Populations;
 
 using System;
 using System.Linq;
@@ -98,21 +99,21 @@ internal class SharpMeasuresScalarRefiner : IProcesser<ISharpMeasuresScalarRefin
         return OptionalWithDiagnostics.Result(unit);
     }
 
-    private IOptionalWithDiagnostics<ResizedVectorGroup> ProcessVector(ISharpMeasuresScalarRefinementContext context, SharpMeasuresScalarDefinition definition)
+    private IOptionalWithDiagnostics<ResizedGroup> ProcessVector(ISharpMeasuresScalarRefinementContext context, SharpMeasuresScalarDefinition definition)
     {
         if (definition.Vector is null)
         {
-            return OptionalWithDiagnostics.Empty<ResizedVectorGroup>();
+            return OptionalWithDiagnostics.Empty<ResizedGroup>();
         }
 
         if (context.VectorPopulation.ResizedVectorGroups.TryGetValue(definition.Vector.Value, out var vectorGroup) is false)
         {
             if (context.VectorPopulation.AllVectors.ContainsKey(definition.Vector.Value) is false)
             {
-                return OptionalWithDiagnostics.Empty<ResizedVectorGroup>(Diagnostics.TypeNotVector(context, definition));
+                return OptionalWithDiagnostics.Empty<ResizedGroup>(Diagnostics.TypeNotVector(context, definition));
             }
 
-            return OptionalWithDiagnostics.Empty<ResizedVectorGroup>();
+            return OptionalWithDiagnostics.Empty<ResizedGroup>();
         }
 
         return OptionalWithDiagnostics.Result(vectorGroup);

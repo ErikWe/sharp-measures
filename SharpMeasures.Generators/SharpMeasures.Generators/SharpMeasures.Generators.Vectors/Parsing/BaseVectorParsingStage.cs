@@ -17,9 +17,9 @@ using System.Linq;
 using System.Threading;
 
 internal class BaseVectorParsingStage : AVectorParsingStage<SharpMeasuresVectorAttribute, RawSharpMeasuresVectorDefinition, SharpMeasuresVectorDefinition,
-    RawParsedVector, ParsedVector>
+    RawParsedBaseVector, ParsedBaseVector>
 {
-    public IncrementalValuesProvider<SharpMeasuresVectorInterface> InterfaceProvider { get; }
+    public IncrementalValuesProvider<BaseVector> InterfaceProvider { get; }
 
     public BaseVectorParsingStage(IncrementalGeneratorInitializationContext context) : base(context)
     {
@@ -31,26 +31,26 @@ internal class BaseVectorParsingStage : AVectorParsingStage<SharpMeasuresVectorA
 
     protected override RawSharpMeasuresVectorDefinition? Parse(INamedTypeSymbol typeSymbol) => SharpMeasuresVectorParser.Parser.ParseFirstOccurrence(typeSymbol);
 
-    protected override RawParsedVector ConstructParsed(DefinedType type, MinimalLocation location, SharpMeasuresVectorDefinition definition,
+    protected override RawParsedBaseVector ConstructParsed(DefinedType type, MinimalLocation location, SharpMeasuresVectorDefinition definition,
         IEnumerable<RawIncludeUnitsDefinition> includeUnits, IEnumerable<RawExcludeUnitsDefinition> excludeUnits,
         IEnumerable<RawVectorConstantDefinition> vectorConstants, IEnumerable<RawDimensionalEquivalenceDefinition> dimensionalEquivalences)
     {
         return new(type, location, definition, includeUnits, excludeUnits, vectorConstants, dimensionalEquivalences);
     }
 
-    protected override ParsedVector ConstructProcessed(DefinedType type, MinimalLocation location, SharpMeasuresVectorDefinition definition,
+    protected override ParsedBaseVector ConstructProcessed(DefinedType type, MinimalLocation location, SharpMeasuresVectorDefinition definition,
         IEnumerable<IncludeUnitsDefinition> includeUnits, IEnumerable<ExcludeUnitsDefinition> excludeUnits,
         IEnumerable<VectorConstantDefinition> vectorConstants, IEnumerable<DimensionalEquivalenceDefinition> dimensionalEquivalences)
     {
         return new(type, location, definition, includeUnits, excludeUnits, vectorConstants, dimensionalEquivalences);
     }
 
-    private IncrementalValuesProvider<SharpMeasuresVectorInterface> ConstructInterfaces()
+    private IncrementalValuesProvider<BaseVector> ConstructInterfaces()
     {
         return ProcessedProvider.Select(ConstructInterface);
     }
 
-    private SharpMeasuresVectorInterface ConstructInterface(ParsedVector input, CancellationToken _)
+    private BaseVector ConstructInterface(ParsedBaseVector input, CancellationToken _)
     {
         var includedUnits = input.IncludeUnits.Select(static (x) => new IncludeUnitsInterface(x.IncludedUnits));
         var excludedUnits = input.ExcludeUnits.Select(static (x) => new ExcludeUnitsInterface(x.ExcludedUnits));

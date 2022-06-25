@@ -10,7 +10,7 @@ using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System.Collections.Generic;
 
-internal record class RawParsedVector : IRawParsedVector<SharpMeasuresVectorDefinition>
+internal record class RawParsedBaseVector : IRawParsedVector<SharpMeasuresVectorDefinition>
 {
     public DefinedType VectorType { get; }
     public MinimalLocation VectorLocation { get; }
@@ -27,7 +27,7 @@ internal record class RawParsedVector : IRawParsedVector<SharpMeasuresVectorDefi
     IEnumerable<RawVectorConstantDefinition> IRawParsedVector<SharpMeasuresVectorDefinition>.VectorConstants => VectorConstants;
     IEnumerable<RawDimensionalEquivalenceDefinition> IRawParsedVector<SharpMeasuresVectorDefinition>.DimensionalEquivalences => DimensionalEquivalences;
 
-    public RawParsedVector(DefinedType vectorType, MinimalLocation vectorLocation, SharpMeasuresVectorDefinition vectorDefinition,
+    public RawParsedBaseVector(DefinedType vectorType, MinimalLocation vectorLocation, SharpMeasuresVectorDefinition vectorDefinition,
         IEnumerable<RawIncludeUnitsDefinition> includeUnits, IEnumerable<RawExcludeUnitsDefinition> excludeUnits, IEnumerable<RawVectorConstantDefinition> vectorConstants,
         IEnumerable<RawDimensionalEquivalenceDefinition> dimensionalEquivalences)
     {

@@ -15,7 +15,7 @@ using SharpMeasures.Generators.Scalars.Pipelines.Units;
 using SharpMeasures.Generators.Scalars.Pipelines.Vectors;
 using SharpMeasures.Generators.Scalars.Refinement.SharpMeasuresScalar;
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Vectors;
+using SharpMeasures.Generators.Vectors.Populations;
 
 using System.Threading;
 

@@ -191,10 +191,10 @@ internal class DefaultDocumentation<TDataModel> : IDocumentationStrategy, IEquat
         /// <summary>The components of <see langword="this"/>, expressed in <see cref="{UnitReference}.{unitInstance.Name}"/>.</summary>
         """;
 
-    public string AsDimensionallyEquivalent(IVectorInterface vector) => $"""
+    public string AsDimensionallyEquivalent(IVector vector) => $"""
         /// <summary>Converts <see langword="this"/> to the equivalent <see cref="{vector.VectorType.Name}"/>.</summary>
         """;
-    public string CastToDimensionallyEquivalent(IVectorInterface vector) => $"""
+    public string CastToDimensionallyEquivalent(IVector vector) => $"""
         /// <summary>Converts <paramref name="x"/> to the equivalent <see cref="{vector.VectorType.Name}"/>.</summary>
         /// <param name="x">This {VectorReference} is converted to the equivalent <see cref="{vector.VectorType.Name}"/>.</param>
         """;

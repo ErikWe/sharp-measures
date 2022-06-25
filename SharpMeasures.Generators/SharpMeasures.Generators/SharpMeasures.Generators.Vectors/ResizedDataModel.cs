@@ -12,6 +12,8 @@ using SharpMeasures.Generators.Vectors.Refinement.ResizedSharpMeasuresVector;
 using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;
+using SharpMeasures.Generators.Vectors.Populations;
+using SharpMeasures.Generators.Vectors.Populations;
 
 internal record class ResizedDataModel : IDataModel<ResizedDataModel>
 {
@@ -19,12 +21,12 @@ internal record class ResizedDataModel : IDataModel<ResizedDataModel>
     public ParsedResizedVector VectorData { get; }
 
     public VectorPopulation VectorPopulation { get; }
-    public VectorPopulationData VectorPopulationData { get; }
+    public VectorPopulationErrors VectorPopulationData { get; }
 
     public IDocumentationStrategy Documentation { get; init; } = EmptyDocumentation.Instance;
 
     public ResizedDataModel(RefinedResizedSharpMeasuresVectorDefinition vectorDefinition, ParsedResizedVector vectorData, VectorPopulation vectorPopulation,
-        VectorPopulationData vectorPopulationData)
+        VectorPopulationErrors vectorPopulationData)
     {
         VectorDefinition = vectorDefinition;
         VectorData = vectorData;

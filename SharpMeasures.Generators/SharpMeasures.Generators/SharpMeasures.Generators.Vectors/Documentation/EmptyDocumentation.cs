@@ -28,8 +28,8 @@ internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocu
     string IDocumentationStrategy.InUnit() => string.Empty;
     string IDocumentationStrategy.InConstantMultiples(RefinedVectorConstantDefinition _) => string.Empty;
     string IDocumentationStrategy.InSpecifiedUnit(UnitInstance _) => string.Empty;
-    string IDocumentationStrategy.AsDimensionallyEquivalent(IVectorInterface _) => string.Empty;
-    string IDocumentationStrategy.CastToDimensionallyEquivalent(IVectorInterface _) => string.Empty;
+    string IDocumentationStrategy.AsDimensionallyEquivalent(IVector _) => string.Empty;
+    string IDocumentationStrategy.CastToDimensionallyEquivalent(IVector _) => string.Empty;
     string IDocumentationStrategy.IsNaN() => string.Empty;
     string IDocumentationStrategy.IsZero() => string.Empty;
     string IDocumentationStrategy.IsFinite() => string.Empty;

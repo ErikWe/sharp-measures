@@ -6,7 +6,7 @@ using SharpMeasures.Generators;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
-using SharpMeasures.Generators.Vectors;
+using SharpMeasures.Generators.Vectors.Populations;
 
 using System.Collections.Generic;
 

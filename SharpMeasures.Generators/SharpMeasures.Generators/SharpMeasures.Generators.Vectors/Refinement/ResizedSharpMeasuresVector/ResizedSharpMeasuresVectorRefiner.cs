@@ -6,9 +6,9 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Vectors;
-using SharpMeasures.Generators.Vectors.Parsing;
 using SharpMeasures.Generators.Vectors.Parsing.ResizedSharpMeasuresVector;
+using SharpMeasures.Generators.Vectors.Populations;
+using SharpMeasures.Generators.Vectors.Populations;
 
 internal interface IResizedSharpMeasuresVectorRefinementDiagnostics
 {
@@ -25,7 +25,7 @@ internal interface IResizedSharpMeasuresVectorRefinementContext : IProcessingCon
     public abstract ScalarPopulation ScalarPopulation { get; }
     public abstract VectorPopulation VectorPopulation { get; }
 
-    public abstract VectorPopulationData VectorPopulationData { get; }
+    public abstract VectorPopulationErrors VectorPopulationData { get; }
 }
 
 internal class ResizedSharpMeasuresVectorRefiner : IProcesser<IResizedSharpMeasuresVectorRefinementContext, ResizedSharpMeasuresVectorDefinition,
@@ -53,7 +53,7 @@ internal class ResizedSharpMeasuresVectorRefiner : IProcesser<IResizedSharpMeasu
 
         if (context.VectorPopulation.ResizedVectorGroups.TryGetValue(context.Type.AsNamedType(), out var vectorGroup) is false)
         {
-            if (context.VectorPopulationData.UnresolvedVectors.ContainsKey(context.Type.AsNamedType()))
+            if (context.VectorPopulationData.UnresolvedAssociatedVectors.ContainsKey(context.Type.AsNamedType()))
             {
                 return OptionalWithDiagnostics.Empty<RefinedResizedSharpMeasuresVectorDefinition>(Diagnostics.UnresolvedVectorGroup(context, definition));
             }

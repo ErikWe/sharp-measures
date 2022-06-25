@@ -40,8 +40,8 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string InConstantMultiples(RefinedVectorConstantDefinition definition) => $"InMultiplesOf_{definition.Name}";
     public string InSpecifiedUnit(UnitInstance unitInstance) => $"InUnit_{unitInstance.Name}";
 
-    public string AsDimensionallyEquivalent(IVectorInterface vector) => $"As_{vector.VectorType.Name}";
-    public string CastToDimensionallyEquivalent(IVectorInterface vector) => $"Operator_Cast_{vector.VectorType.Name}";
+    public string AsDimensionallyEquivalent(IVector vector) => $"As_{vector.VectorType.Name}";
+    public string CastToDimensionallyEquivalent(IVector vector) => $"Operator_Cast_{vector.VectorType.Name}";
 
     public string IsNaN() => "IsNaN";
     public string IsZero() => "IsZero";

@@ -82,7 +82,7 @@ internal static class Execution
                     continue;
                 }
 
-                Action<ResizedSharpMeasuresVectorInterface, Indentation> composer = dimensionallyEquivalentVectorGroup.Value switch
+                Action<ResizedVector, Indentation> composer = dimensionallyEquivalentVectorGroup.Value switch
                 {
                     ConversionOperationBehaviour.Explicit => ComposeExplicitOperatorConversion,
                     ConversionOperationBehaviour.Implicit => ComposeImplicitOperatorConversion,
@@ -96,7 +96,7 @@ internal static class Execution
             }
         }
 
-        private void ComposeInstanceConversion(ResizedSharpMeasuresVectorInterface vector, Indentation indentation)
+        private void ComposeInstanceConversion(ResizedVector vector, Indentation indentation)
         {
             UsingsCollector.AddUsing(vector.VectorType.Namespace);
 
@@ -104,13 +104,13 @@ internal static class Execution
             Builder.AppendLine($"{indentation}public {vector.VectorType.Name} As{vector.VectorType.Name} => new(Components);");
         }
 
-        private void ComposeExplicitOperatorConversion(ResizedSharpMeasuresVectorInterface vector, Indentation indentation)
+        private void ComposeExplicitOperatorConversion(ResizedVector vector, Indentation indentation)
             => ComposeOperatorConversion(vector, indentation, "explicit");
 
-        private void ComposeImplicitOperatorConversion(ResizedSharpMeasuresVectorInterface vector, Indentation indentation)
+        private void ComposeImplicitOperatorConversion(ResizedVector vector, Indentation indentation)
             => ComposeOperatorConversion(vector, indentation, "implicit");
 
-        private void ComposeOperatorConversion(ResizedSharpMeasuresVectorInterface vector, Indentation indentation, string behaviour)
+        private void ComposeOperatorConversion(ResizedVector vector, Indentation indentation, string behaviour)
         {
             AppendDocumentation(indentation, Data.Documentation.CastToDimensionallyEquivalent(vector));
             

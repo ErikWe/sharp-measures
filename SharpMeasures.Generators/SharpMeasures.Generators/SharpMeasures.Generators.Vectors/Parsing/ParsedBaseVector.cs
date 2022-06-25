@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing;
 
 using SharpMeasures.Equatables;
+using SharpMeasures.Generators.Quantities.Abstrations;
 using SharpMeasures.Generators.Quantities.Parsing.Abstractions;
 using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
@@ -10,7 +11,7 @@ using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System.Collections.Generic;
 
-internal record class ParsedVector : IUnitListInclusionExclusion<IncludeUnitsDefinition, ExcludeUnitsDefinition>
+internal record class ParsedBaseVector : IInclusionExclusion<IncludeUnitsDefinition, ExcludeUnitsDefinition>
 {
     public DefinedType VectorType { get; }
     public MinimalLocation VectorLocation { get; }
@@ -22,10 +23,10 @@ internal record class ParsedVector : IUnitListInclusionExclusion<IncludeUnitsDef
     public EquatableEnumerable<VectorConstantDefinition> VectorConstants { get; }
     public EquatableEnumerable<DimensionalEquivalenceDefinition> DimensionalEquivalences { get; }
 
-    IEnumerable<IncludeUnitsDefinition> IUnitListInclusionExclusion<IncludeUnitsDefinition, ExcludeUnitsDefinition>.IncludeUnits => IncludeUnits;
-    IEnumerable<ExcludeUnitsDefinition> IUnitListInclusionExclusion<IncludeUnitsDefinition, ExcludeUnitsDefinition>.ExcludeUnits => ExcludeUnits;
+    IEnumerable<IncludeUnitsDefinition> IInclusionExclusion<IncludeUnitsDefinition, ExcludeUnitsDefinition>.IncludeUnits => IncludeUnits;
+    IEnumerable<ExcludeUnitsDefinition> IInclusionExclusion<IncludeUnitsDefinition, ExcludeUnitsDefinition>.ExcludeUnits => ExcludeUnits;
 
-    public ParsedVector(DefinedType vectorType, MinimalLocation vectorLocation, SharpMeasuresVectorDefinition vectorDefinition,
+    public ParsedBaseVector(DefinedType vectorType, MinimalLocation vectorLocation, SharpMeasuresVectorDefinition vectorDefinition,
         IEnumerable<IncludeUnitsDefinition> includeUnits, IEnumerable<ExcludeUnitsDefinition> excludeUnits, IEnumerable<VectorConstantDefinition> vectorConstants,
         IEnumerable<DimensionalEquivalenceDefinition> dimensionalEquivalences)
     {

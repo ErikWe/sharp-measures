@@ -24,13 +24,13 @@ using SharpMeasures.Generators.Vectors.Refinement.VectorConstant;
 internal static class UnitsGenerator
 {
     public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Vectors.DataModel> vectorProvider,
-        IncrementalValuesProvider<ResizedDataModel> resizedVectorProvider, IncrementalValueProvider<UnitInclusionPopulation> unitInclusionProvider)
+        IncrementalValuesProvider<ResizedDataModel> resizedVectorProvider)
     {
         var reducedVectors = vectorProvider.Select(ReduceToDataModel).ReportDiagnostics(context);
 
         var rootModels = reducedVectors.Collect().Select(ExposeRootDataModels);
 
-        var reducedResizedVectors = resizedVectorProvider.Combine(rootModels, unitInclusionProvider).Select(ReduceThroughRootDataModel).ReportDiagnostics(context);
+        var reducedResizedVectors = resizedVectorProvider.Combine(rootModels).Select(ReduceThroughRootDataModel).ReportDiagnostics(context);
 
         context.RegisterSourceOutput(reducedVectors, Execution.Execute);
         context.RegisterSourceOutput(reducedResizedVectors, Execution.Execute);
@@ -96,7 +96,7 @@ internal static class UnitsGenerator
     }
 
     private static IOptionalWithDiagnostics<DataModel> ReduceThroughRootDataModel
-        ((ResizedDataModel Model, ReadOnlyEquatableDictionary<NamedType, DataModel> RootModels, UnitInclusionPopulation UnitInclusionPopulation) input,
+        ((ResizedDataModel Model, ReadOnlyEquatableDictionary<NamedType, DataModel> RootModels, InclusionPopulation UnitInclusionPopulation) input,
         CancellationToken _)
     {
         if (input.RootModels.TryGetValue(input.Model.VectorDefinition.AssociatedVector.VectorType, out var associatedModel) is false)
@@ -163,9 +163,9 @@ internal static class UnitsGenerator
         public NamedType AssociatedType { get; }
         public UnitInterface Unit { get; }
 
-        public UnitInclusionPopulation UnitInclusionPopulation { get; }
+        public InclusionPopulation UnitInclusionPopulation { get; }
 
-        public AssociatedUnitInclusionRefinementContext(DefinedType type, NamedType associatedType, UnitInterface unit, UnitInclusionPopulation unitInclusionPopulation)
+        public AssociatedUnitInclusionRefinementContext(DefinedType type, NamedType associatedType, UnitInterface unit, InclusionPopulation unitInclusionPopulation)
         {
             Type = type;
             AssociatedType = associatedType;

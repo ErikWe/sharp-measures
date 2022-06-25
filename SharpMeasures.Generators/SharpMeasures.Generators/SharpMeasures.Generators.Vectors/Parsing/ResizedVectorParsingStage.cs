@@ -19,7 +19,7 @@ using System.Threading;
 internal class ResizedVectorParsingStage : AVectorParsingStage<ResizedSharpMeasuresVectorAttribute, RawResizedSharpMeasuresVectorDefinition, ResizedSharpMeasuresVectorDefinition,
     RawParsedResizedVector, ParsedResizedVector>
 {
-    public IncrementalValuesProvider<ResizedSharpMeasuresVectorInterface> InterfaceProvider { get; }
+    public IncrementalValuesProvider<ResizedVector> InterfaceProvider { get; }
 
     public ResizedVectorParsingStage(IncrementalGeneratorInitializationContext context) : base(context)
     {
@@ -45,12 +45,12 @@ internal class ResizedVectorParsingStage : AVectorParsingStage<ResizedSharpMeasu
         return new(type, location, definition, includeUnits, excludeUnits, vectorConstants, dimensionalEquivalences);
     }
 
-    private IncrementalValuesProvider<ResizedSharpMeasuresVectorInterface> ConstructInterfaces()
+    private IncrementalValuesProvider<ResizedVector> ConstructInterfaces()
     {
         return ProcessedProvider.Select(ConstructInterface);
     }
 
-    private ResizedSharpMeasuresVectorInterface ConstructInterface(ParsedResizedVector input, CancellationToken _)
+    private ResizedVector ConstructInterface(ParsedResizedVector input, CancellationToken _)
     {
         var includedUnits = input.IncludeUnits.Select(static (x) => new IncludeUnitsInterface(x.IncludedUnits));
         var excludedUnits = input.ExcludeUnits.Select(static (x) => new ExcludeUnitsInterface(x.ExcludedUnits));

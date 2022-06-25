@@ -46,8 +46,8 @@ internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocume
     public string InConstantMultiples(RefinedVectorConstantDefinition definition) => FromFileOrDefault((strategy) => strategy.InConstantMultiples(definition));
     public string InSpecifiedUnit(UnitInstance unitInstance) => FromFileOrDefault((strategy) => strategy.InSpecifiedUnit(unitInstance));
 
-    public string AsDimensionallyEquivalent(IVectorInterface vector) => FromFileOrDefault((strategy) => strategy.AsDimensionallyEquivalent(vector));
-    public string CastToDimensionallyEquivalent(IVectorInterface vector) => FromFileOrDefault((strategy) => strategy.CastToDimensionallyEquivalent(vector));
+    public string AsDimensionallyEquivalent(IVector vector) => FromFileOrDefault((strategy) => strategy.AsDimensionallyEquivalent(vector));
+    public string CastToDimensionallyEquivalent(IVector vector) => FromFileOrDefault((strategy) => strategy.CastToDimensionallyEquivalent(vector));
 
     public string IsNaN() => FromFileOrDefault(static (strategy) => strategy.IsNaN());
     public string IsZero() => FromFileOrDefault(static (strategy) => strategy.IsZero());

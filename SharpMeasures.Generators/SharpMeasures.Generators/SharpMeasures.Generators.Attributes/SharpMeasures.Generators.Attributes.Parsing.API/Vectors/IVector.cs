@@ -1,10 +1,11 @@
 ﻿namespace SharpMeasures.Generators.Vectors;
 
+using SharpMeasures.Generators.Attributes.Parsing.InclusionExclusion;
 using SharpMeasures.Generators.Quantities;
 
 using System.Collections.Generic;
 
-public interface IVectorInterface
+public interface IVector : IInclusionExclusion<string>
 {
     public abstract NamedType VectorType { get; }
     public abstract int Dimension { get; }

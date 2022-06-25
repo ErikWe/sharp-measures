@@ -8,17 +8,13 @@ using System.Diagnostics.CodeAnalysis;
 
 public readonly record struct RefinedUnitListDefinition
 {
-    public static IBuilder StartBuilder() => new Builder(new RefinedUnitListDefinition());
+    public static IBuilder StartBuilder() => new Builder();
 
     public ReadOnlyEquatableCollection<UnitInstance> UnitList { get; }
 
-    private EquatableCollection<UnitInstance> UnitListBuilder { get; }
-
-    public RefinedUnitListDefinition(ICollection<UnitInstance> unitList)
+    public RefinedUnitListDefinition(IReadOnlyCollection<UnitInstance> unitList)
     {
-        UnitListBuilder = unitList.AsEquatable();
-
-        UnitList = UnitListBuilder.AsReadOnlyEquatable();
+        UnitList = unitList.AsReadOnlyEquatable();
     }
 
     public RefinedUnitListDefinition() : this(EquatableCollection<UnitInstance>.Empty) { }
@@ -26,20 +22,20 @@ public readonly record struct RefinedUnitListDefinition
     [SuppressMessage("Design", "CA1034", Justification = "Builder")]
     public interface IBuilder
     {
-        public abstract RefinedUnitListDefinition Target { get; }
-
         public abstract void AddUnit(UnitInstance unit);
+        public abstract RefinedUnitListDefinition Finalize();
     }
 
     private class Builder : IBuilder
     {
-        public RefinedUnitListDefinition Target { get; }
+        private List<UnitInstance> UnitListBuilder { get; }
 
-        public Builder(RefinedUnitListDefinition target)
+        public Builder()
         {
-            Target = target;
+            UnitListBuilder = new();
         }
 
-        public void AddUnit(UnitInstance unit) => Target.UnitListBuilder.Add(unit);
+        public void AddUnit(UnitInstance unit) => UnitListBuilder.Add(unit);
+        public RefinedUnitListDefinition Finalize() => new(UnitListBuilder);
     }
 }

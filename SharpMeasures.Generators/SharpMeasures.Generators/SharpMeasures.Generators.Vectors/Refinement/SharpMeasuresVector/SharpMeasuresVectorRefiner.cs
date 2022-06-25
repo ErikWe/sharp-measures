@@ -7,8 +7,9 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors;
-using SharpMeasures.Generators.Vectors.Parsing;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
+using SharpMeasures.Generators.Vectors.Populations;
+using SharpMeasures.Generators.Vectors.Populations;
 
 using System.Linq;
 
@@ -29,7 +30,7 @@ internal interface ISharpMeasuresVectorRefinementContext : IProcessingContext
     public abstract ScalarPopulation ScalarPopulation { get; }
     public abstract VectorPopulation VectorPopulation { get; }
 
-    public abstract VectorPopulationData VectorPopulationData { get; }
+    public abstract VectorPopulationErrors VectorPopulationData { get; }
 }
 
 internal class SharpMeasuresVectorRefiner : IProcesser<ISharpMeasuresVectorRefinementContext, SharpMeasuresVectorDefinition, RefinedSharpMeasuresVectorDefinition>
@@ -112,7 +113,7 @@ internal class SharpMeasuresVectorRefiner : IProcesser<ISharpMeasuresVectorRefin
         return ResultWithDiagnostics.Construct<ScalarInterface?>(null, Diagnostics.TypeNotScalar(context, definition));
     }
 
-    private IResultWithDiagnostics<IVectorInterface> ProcessDifference(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition)
+    private IResultWithDiagnostics<IVector> ProcessDifference(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition)
     {
         if (context.VectorPopulation.AllVectors.TryGetValue(definition.Difference, out var vector) is false)
         {

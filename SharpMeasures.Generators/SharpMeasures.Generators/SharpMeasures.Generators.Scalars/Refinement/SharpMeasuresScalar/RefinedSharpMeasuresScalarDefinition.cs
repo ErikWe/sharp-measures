@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Vectors;
 internal readonly record struct RefinedSharpMeasuresScalarDefinition
 {
     public UnitInterface Unit { get; }
-    public ResizedVectorGroup? VectorGroup { get; }
+    public ResizedGroup? VectorGroup { get; }
 
     public bool UseUnitBias { get; }
 
@@ -26,7 +26,7 @@ internal readonly record struct RefinedSharpMeasuresScalarDefinition
 
     public bool GenerateDocumentation { get; }
 
-    public RefinedSharpMeasuresScalarDefinition(UnitInterface unit, ResizedVectorGroup? vectorGroup, bool biased, bool implementSum, bool implementDifference,
+    public RefinedSharpMeasuresScalarDefinition(UnitInterface unit, ResizedGroup? vectorGroup, bool biased, bool implementSum, bool implementDifference,
         ScalarInterface difference, string? defaultUnitName, string? defaultUnitSymbol, ScalarInterface? reciprocal, ScalarInterface? square, ScalarInterface? cube,
         ScalarInterface? squareRoot, ScalarInterface? cubeRoot, bool generateDocumentation)
     {

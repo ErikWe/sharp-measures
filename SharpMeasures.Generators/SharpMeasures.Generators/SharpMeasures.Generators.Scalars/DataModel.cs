@@ -3,7 +3,7 @@
 using SharpMeasures.Generators.Scalars.Documentation;
 using SharpMeasures.Generators.Scalars.Parsing;
 using SharpMeasures.Generators.Scalars.Refinement.SharpMeasuresScalar;
-using SharpMeasures.Generators.Vectors;
+using SharpMeasures.Generators.Vectors.Populations;
 
 internal record class DataModel
 {

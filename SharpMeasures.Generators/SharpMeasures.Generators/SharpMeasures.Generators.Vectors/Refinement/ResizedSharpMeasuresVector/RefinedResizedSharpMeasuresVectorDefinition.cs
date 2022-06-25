@@ -5,8 +5,8 @@ using SharpMeasures.Generators.Scalars;
 
 internal readonly record struct RefinedResizedSharpMeasuresVectorDefinition
 {
-    public IVectorInterface AssociatedVector { get; }
-    public ResizedVectorGroup VectorGroup { get; }
+    public IVector AssociatedVector { get; }
+    public ResizedGroup VectorGroup { get; }
 
     public UnitInterface Unit { get; }
     public ScalarInterface? Scalar { get; }
@@ -23,7 +23,7 @@ internal readonly record struct RefinedResizedSharpMeasuresVectorDefinition
 
     public bool GenerateDocumentation { get; }
 
-    public RefinedResizedSharpMeasuresVectorDefinition(IVectorInterface associatedVector, ResizedVectorGroup vectorGroup, UnitInterface unit, ScalarInterface? scalar,
+    public RefinedResizedSharpMeasuresVectorDefinition(IVector associatedVector, ResizedGroup vectorGroup, UnitInterface unit, ScalarInterface? scalar,
         int dimension, bool implementSum, bool implementDifference, NamedType difference, string? defaultUnitName, string? defaultUnitSymbol,
         bool generateDocumentation)
     {

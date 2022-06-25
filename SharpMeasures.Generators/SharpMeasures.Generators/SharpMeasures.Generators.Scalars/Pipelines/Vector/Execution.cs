@@ -62,7 +62,7 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
-            foreach (ResizedSharpMeasuresVectorInterface vector in Data.Vectors.VectorsByDimension.Values)
+            foreach (ResizedVector vector in Data.Vectors.VectorsByDimension.Values)
             {
                 UsingsCollector.AddUsing(vector.VectorType.Namespace);
 
@@ -71,7 +71,7 @@ internal static class Execution
             }
         }
 
-        private void ComposeForVector(Indentation indentation, ResizedSharpMeasuresVectorInterface vector)
+        private void ComposeForVector(Indentation indentation, ResizedVector vector)
         {
             AppendDocumentation(indentation, Data.Documentation.MultiplyVectorMethod(vector.Dimension));
             Builder.AppendLine($"{indentation}public {vector.VectorType.Name} Multiply(Vector{vector.Dimension} factor) => new(Magnitude.Value * factor);");

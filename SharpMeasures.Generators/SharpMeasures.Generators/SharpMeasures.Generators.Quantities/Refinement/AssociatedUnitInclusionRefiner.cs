@@ -3,6 +3,7 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
+using SharpMeasures.Generators.Attributes.Parsing.InclusionExclusion;
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing;
@@ -32,12 +33,12 @@ public interface IAssociatedUnitInclusionRefinementContext : IProcessingContext
 
     public abstract NamedType AssociatedType { get; }
 
-    public abstract UnitInclusionPopulation UnitInclusionPopulation { get; }
+    public abstract InclusionPopulation<string> UnitInclusionPopulation { get; }
 }
 
 public class AssociatedUnitInclusionRefiner<TDefinition, TIncludeDefinition, TExcludeDefinition> :
     IProcesser<IAssociatedUnitInclusionRefinementContext, TDefinition, RefinedUnitListDefinition>
-    where TDefinition : IUnitListInclusionExclusion<TIncludeDefinition, TExcludeDefinition>
+    where TDefinition : IInclusionExclusion<string>
     where TIncludeDefinition : IItemListDefinition<string>
     where TExcludeDefinition : IItemListDefinition<string>
 {
@@ -63,44 +64,44 @@ public class AssociatedUnitInclusionRefiner<TDefinition, TIncludeDefinition, TEx
             return ResultWithDiagnostics.Construct<RefinedUnitListDefinition>(new(context.Unit.UnitsByName.Values.ToList()));
         }
 
-        IReadOnlyHashSet<string> listedUnits = associatedUnitInclusion.ListedUnits;
+        IReadOnlyHashSet<string> listedUnits = associatedUnitInclusion.Items;
         List<Diagnostic> allDiagnostics = new();
 
-        if (associatedUnitInclusion.Mode is UnitInclusion.InclusionMode.Include)
+        if (associatedUnitInclusion.Mode is InclusionMode.Include)
         {
-            if (definition.IncludeUnits.Any())
+            if (definition.Inclusions.Any())
             {
-                ProduceInclusionDiagnostics(context, listedUnits, allDiagnostics, definition.IncludeUnits);
+                ProduceInclusionDiagnostics(context, listedUnits, allDiagnostics, definition.Inclusions);
             }
             else
             {
-                ProduceInclusionDiagnostics(context, listedUnits, allDiagnostics, definition.ExcludeUnits);
+                ProduceInclusionDiagnostics(context, listedUnits, allDiagnostics, definition.Exclusions);
             }
         }
         else
         {
-            if (definition.IncludeUnits.Any())
+            if (definition.Inclusions.Any())
             {
-                ProduceExclusionDiagnostics(context, listedUnits, allDiagnostics, definition.IncludeUnits);
+                ProduceExclusionDiagnostics(context, listedUnits, allDiagnostics, definition.Inclusions);
             }
             else
             {
-                ProduceExclusionDiagnostics(context, listedUnits, allDiagnostics, definition.ExcludeUnits);
+                ProduceExclusionDiagnostics(context, listedUnits, allDiagnostics, definition.Exclusions);
             }
         }
 
         List<UnitInstance> unitList = new();
 
-        if (associatedUnitInclusion.Mode is UnitInclusion.InclusionMode.Exclude)
+        if (associatedUnitInclusion.Mode is InclusionMode.Exclude)
         {
             unitList.AddRange(context.Unit.UnitsByName.Values);
         }
 
-        Action<UnitInstance> unitListAction = associatedUnitInclusion.Mode is UnitInclusion.InclusionMode.Include
+        Action<UnitInstance> unitListAction = associatedUnitInclusion.Mode is InclusionMode.Include
             ? unitList.Add
             : (x) => unitList.Remove(x);
 
-        foreach (var unitName in associatedUnitInclusion.ListedUnits)
+        foreach (var unitName in associatedUnitInclusion.Items)
         {
             if (context.Unit.UnitsByName.TryGetValue(unitName, out var unit))
             {
@@ -108,24 +109,24 @@ public class AssociatedUnitInclusionRefiner<TDefinition, TIncludeDefinition, TEx
             }
         }
 
-        if (definition.IncludeUnits.Any())
+        if (definition.Inclusions.Any())
         {
-            foreach (var includeUnits in definition.IncludeUnits)
+            int index = 0;
+            foreach (var includedUnit in definition.Inclusions)
             {
-                for (int i = 0; i < includeUnits.Items.Count; i++)
+                if (context.Unit.UnitsByName.TryGetValue(includedUnit, out var unit) is false)
                 {
-                    if (context.Unit.UnitsByName.TryGetValue(includeUnits.Items[i], out var unit) is false)
+                    if (Diagnostics.UnrecognizedUnit(context, includedUnit) is Diagnostic diagnostics)
                     {
-                        if (Diagnostics.UnrecognizedUnit(context, includeUnits, i) is Diagnostic diagnostics)
-                        {
-                            allDiagnostics.Add(diagnostics);
-                        }
-
-                        continue;
+                        allDiagnostics.Add(diagnostics);
                     }
 
-                    unitListAction(unit);
+                    continue;
                 }
+
+                unitListAction(unit);
+
+                index += 1;
             }
         }
 

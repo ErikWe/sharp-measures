@@ -29,8 +29,8 @@ internal interface IDocumentationStrategy
     public abstract string InConstantMultiples(RefinedVectorConstantDefinition definition);
     public abstract string InSpecifiedUnit(UnitInstance unitInstance);
 
-    public abstract string AsDimensionallyEquivalent(IVectorInterface scalar);
-    public abstract string CastToDimensionallyEquivalent(IVectorInterface scalar);
+    public abstract string AsDimensionallyEquivalent(IVector scalar);
+    public abstract string CastToDimensionallyEquivalent(IVector scalar);
 
     public abstract string IsNaN();
     public abstract string IsZero();

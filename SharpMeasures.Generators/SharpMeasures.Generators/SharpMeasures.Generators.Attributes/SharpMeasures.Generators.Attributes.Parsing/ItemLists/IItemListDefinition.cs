@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 
-using SharpMeasures.Equatables;
-
 using System.Collections.Generic;
 
 public interface IItemListDefinition<TItem> : IAttributeDefinition

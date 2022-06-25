@@ -5,27 +5,27 @@ using SharpMeasures.Equatables;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-public record class ResizedVectorGroup
+public record class ResizedGroup
 {
-    public static IBuilder StartBuilder(SharpMeasuresVectorInterface root) => new Builder(root);
+    public static IBuilder StartBuilder(IRootVector root) => new Builder(root);
     
-    public SharpMeasuresVectorInterface Root { get; }
+    public IRootVector Root { get; }
 
-    public IReadOnlyDictionary<int, ResizedSharpMeasuresVectorInterface> VectorsByDimension => VectorsByDimensionBuilder;
-    private EquatableDictionary<int, ResizedSharpMeasuresVectorInterface> VectorsByDimensionBuilder { get; } = EquatableDictionary<int, ResizedSharpMeasuresVectorInterface>.Empty;
+    public IReadOnlyDictionary<int, ResizedVector> VectorsByDimension => VectorsByDimensionBuilder;
+    private EquatableDictionary<int, ResizedVector> VectorsByDimensionBuilder { get; } = EquatableDictionary<int, ResizedVector>.Empty;
 
     private bool Built { get; set; }
     private int? CachedHashCode { get; set; }
 
-    private ResizedVectorGroup(SharpMeasuresVectorInterface root)
+    private ResizedGroup(IRootVector root)
     {
         Root = root;
 
-        VectorsByDimensionBuilder.Add(root.Dimension, new ResizedSharpMeasuresVectorInterface(root.VectorType, root.VectorType, root.Dimension, root.IncludedUnits,
+        VectorsByDimensionBuilder.Add(root.Dimension, new ResizedVector(root.VectorType, root.VectorType, root.Dimension, root.IncludedUnits,
             root.ExcludedUnits, root.DimensionalEquivalences));
     }
 
-    public virtual bool Equals(ResizedVectorGroup? other)
+    public virtual bool Equals(ResizedGroup? other)
     {
         if (other is null || CachedHashCode is not null && other.CachedHashCode is not null && CachedHashCode != other.CachedHashCode)
         {
@@ -55,27 +55,27 @@ public record class ResizedVectorGroup
     [SuppressMessage("Design", "CA1034", Justification = "Builder")]
     public interface IBuilder
     {
-        public abstract void AddResizedVector(ResizedSharpMeasuresVectorInterface vector);
+        public abstract void AddResizedVector(ResizedVector vector);
         public abstract bool HasVectorOfDimension(int dimension);
 
-        public abstract ResizedVectorGroup Build();
+        public abstract ResizedGroup Build();
     }
 
     private class Builder : IBuilder
     {
-        private ResizedVectorGroup Target { get; }
+        private ResizedGroup Target { get; }
 
-        public Builder(SharpMeasuresVectorInterface root)
+        public Builder(IRootVector root)
         {
             Target = new(root);
         }
 
-        public void AddResizedVector(ResizedSharpMeasuresVectorInterface vector)
+        public void AddResizedVector(ResizedVector vector)
         {
             Target.VectorsByDimensionBuilder.Add(vector.Dimension, vector);
         }
 
-        public ResizedVectorGroup Build()
+        public ResizedGroup Build()
         {
             Target.Built = true;
 

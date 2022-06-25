@@ -7,10 +7,11 @@ using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Vectors.Documentation;
-using SharpMeasures.Generators.Vectors.Parsing;
 using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;
+using SharpMeasures.Generators.Vectors.Populations;
+using SharpMeasures.Generators.Vectors.Populations;
 
 internal interface IDataModel
 {
@@ -33,7 +34,7 @@ internal interface IDataModel
     public abstract string? DefaultUnitSymbol { get; }
 
     public abstract VectorPopulation VectorPopulation { get; }
-    public abstract VectorPopulationData VectorPopulationData { get; }
+    public abstract VectorPopulationErrors VectorPopulationData { get; }
 
     public abstract string Identifier { get; }
     public abstract Location? IdentifierLocation { get; }

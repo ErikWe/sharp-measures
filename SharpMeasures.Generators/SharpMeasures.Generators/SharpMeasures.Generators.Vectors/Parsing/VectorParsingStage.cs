@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Quantities.Parsing;
 using SharpMeasures.Generators.Vectors;
+using SharpMeasures.Generators.Vectors.Populations;
 
 public static class VectorParsingStage
 {

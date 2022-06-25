@@ -12,19 +12,21 @@ using SharpMeasures.Generators.Vectors.Refinement.SharpMeasuresVector;
 using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;
+using SharpMeasures.Generators.Vectors.Populations;
+using SharpMeasures.Generators.Vectors.Populations;
 
 internal record class DataModel : IDataModel<DataModel>
 {
     public RefinedSharpMeasuresVectorDefinition VectorDefinition { get; }
-    public ParsedVector VectorData { get; }
+    public ParsedBaseVector VectorData { get; }
 
     public VectorPopulation VectorPopulation { get; }
-    public VectorPopulationData VectorPopulationData { get; }
+    public VectorPopulationErrors VectorPopulationData { get; }
 
     public IDocumentationStrategy Documentation { get; init; } = EmptyDocumentation.Instance;
 
-    public DataModel(RefinedSharpMeasuresVectorDefinition vectorDefinition, ParsedVector vectorData, VectorPopulation vectorPopulation,
-        VectorPopulationData vectorPopulationData)
+    public DataModel(RefinedSharpMeasuresVectorDefinition vectorDefinition, ParsedBaseVector vectorData, VectorPopulation vectorPopulation,
+        VectorPopulationErrors vectorPopulationData)
     {
         VectorDefinition = vectorDefinition;
         VectorData = vectorData;
