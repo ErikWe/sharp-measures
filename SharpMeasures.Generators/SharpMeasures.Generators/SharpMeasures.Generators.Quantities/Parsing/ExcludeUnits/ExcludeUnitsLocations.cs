@@ -1,16 +1,19 @@
 ﻿namespace SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 
-using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 
-public record class ExcludeUnitsLocations : AItemListLocations
+using System.Collections.Generic;
+
+public record class ExcludeUnitsLocations : AItemListLocations<ExcludeUnitsLocations>
 {
     internal static ExcludeUnitsLocations Empty { get; } = new();
 
     public MinimalLocation? ExcludedUnitsCollection => ItemsCollection;
-    public ReadOnlyEquatableList<MinimalLocation> ExcludedUnitsElements => ItemsElements;
+    public IReadOnlyList<MinimalLocation> ExcludedUnitsElements => ItemsElements;
 
-    public bool ExplicitlySetExcludedUnits => ExcludedUnitsCollection is not null;
+    public bool ExplicitlySetExcludedUnits => ExplicitlySetItems;
+
+    protected override ExcludeUnitsLocations Locations => this;
 
     private ExcludeUnitsLocations() { }
 }

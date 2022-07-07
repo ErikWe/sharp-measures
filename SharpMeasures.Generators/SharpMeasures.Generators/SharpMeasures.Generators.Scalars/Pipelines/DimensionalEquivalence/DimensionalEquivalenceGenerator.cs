@@ -21,23 +21,23 @@ internal static class DimensionalEquivalenceGenerator
 
     private static IResultWithDiagnostics<DataModel> ReduceToDataModel(Scalars.DataModel input, CancellationToken _)
     {
-        DimensionalEquivalenceRefinementContext context = new(input.ScalarDefinition.Unit.UnitType, input.ScalarData.ScalarDefinition.UseUnitBias, input.ScalarPopulation);
-        DimensionalEquivalenceRefiner refiner = new(DimensionalEquivalenceDiagnostics.Instance);
+        DimensionalEquivalenceRefinementContext context = new(input.ScalarDefinition.Unit.Type, input.ScalarData.ScalarDefinition.UseUnitBias, input.ScalarPopulation);
+        ConvertibleQuantityRefiner refiner = new(ConvertibleQuantityDiagnostics.Instance);
 
-        var processed = ProcessingFilter.Create(refiner).Filter(context, input.ScalarData.DimensionalEquivalences);
+        var processed = ProcessingFilter.Create(refiner).Filter(context, input.ScalarData.convertibleQuantities);
 
         DataModel model = new(input.ScalarData.ScalarType, processed.Result, input.Documentation);
         return ResultWithDiagnostics.Construct(model, processed.Diagnostics);
     }
 
-    private readonly record struct DimensionalEquivalenceRefinementContext : IDimensionalEquivalenceRefinementContext
+    private readonly record struct DimensionalEquivalenceRefinementContext : IConvertibleQuantityRefinementContext
     {
         public DefinedType Type { get; }
 
         public bool Biased { get; }
-        public ScalarPopulation ScalarPopulation { get; }
+        public IScalarPopulation ScalarPopulation { get; }
 
-        public DimensionalEquivalenceRefinementContext(DefinedType type, bool biased, ScalarPopulation scalarPopulation)
+        public DimensionalEquivalenceRefinementContext(DefinedType type, bool biased, IScalarPopulation scalarPopulation)
         {
             Type = type;
 

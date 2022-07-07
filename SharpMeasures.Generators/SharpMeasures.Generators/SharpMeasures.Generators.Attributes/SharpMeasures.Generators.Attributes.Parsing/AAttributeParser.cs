@@ -17,8 +17,8 @@ public interface IAttributeParser<TDefinition>
 }
 
 public abstract class AAttributeParser<TDefinition, TLocations, TAttribute> : AAttributeParser<TDefinition, TLocations>
-    where TDefinition : ARawAttributeDefinition<TLocations>
-    where TLocations : AAttributeLocations
+    where TDefinition : IOpenAttributeDefinition<TDefinition, TLocations>
+    where TLocations : IOpenAttributeLocations<TLocations>
 {
     protected override Type AttributeType { get; } = typeof(TAttribute);
 
@@ -31,8 +31,8 @@ public abstract class AAttributeParser<TDefinition, TLocations, TAttribute> : AA
 }
 
 public abstract class AAttributeParser<TDefinition, TLocations> : IAttributeParser<TDefinition>
-    where TDefinition : ARawAttributeDefinition<TLocations>
-    where TLocations : AAttributeLocations
+    where TDefinition : IOpenAttributeDefinition<TDefinition, TLocations>
+    where TLocations : IOpenAttributeLocations<TLocations>
 {
     protected abstract Type AttributeType { get; }
 
@@ -90,7 +90,7 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
             return Parse(attributeData);
         }
 
-        return null;
+        return default;
     }
 
     public IEnumerable<TDefinition> ParseAllOccurrences(INamedTypeSymbol typeSymbol)
@@ -182,14 +182,9 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
 
     private static TDefinition AddAttributeLocation(TDefinition definition, MinimalLocation attributeLocation, MinimalLocation attributeNameLocation)
     {
-        return definition with
-        {
-            Locations = definition.Locations with
-            {
-                Attribute = attributeLocation,
-                AttributeName = attributeNameLocation
-            }
-        };
+        var modifiedLocations = definition.Locations.WithAttribute(attributeLocation, attributeNameLocation);
+
+        return definition.WithLocations(modifiedLocations);
     }
 
     private static object?[]? ParseArray(TypedConstant value)

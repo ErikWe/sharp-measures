@@ -70,7 +70,7 @@ internal class VectorConstantDiagnostics : IVectorConstantProcessingDiagnostics,
 
     public Diagnostic UnrecognizedUnit(IVectorConstantRefinementContext context, VectorConstantDefinition definition)
     {
-        return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.Unit?.AsRoslynLocation(), definition.Unit!, context.Unit.UnitType.Name);
+        return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.Unit?.AsRoslynLocation(), definition.Unit!, context.Unit.Type.Name);
     }
 
     public Diagnostic ConstantSharesNameWithUnit(IVectorConstantRefinementContext context, VectorConstantDefinition definition)

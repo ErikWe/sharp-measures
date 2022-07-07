@@ -1,17 +1,28 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 
+using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class DerivableUnitDefinition : AAttributeDefinition<DerivableUnitLocations>
+using System.Collections.Generic;
+
+internal record class DerivableUnitDefinition : IAttributeDefinition<DerivableUnitLocations>, IDerivableUnit
 {
     public string DerivationID { get; }
     public string Expression { get; }
-    public DerivableSignature Signature { get; }
+    public UnitDerivationSignature Signature { get; }
+    public IReadOnlyList<string> ParameterNames => parameterNames;
 
-    public DerivableUnitDefinition(string derivationID, string expression, DerivableSignature signature, DerivableUnitLocations locations) : base(locations)
+    private ReadOnlyEquatableList<string> parameterNames { get; }
+
+    public DerivableUnitLocations Locations { get; }
+
+    public DerivableUnitDefinition(string derivationID, string expression, UnitDerivationSignature signature, IReadOnlyList<string> parameterNames, DerivableUnitLocations locations)
     {
-        Expression = expression;
         DerivationID = derivationID;
+        Expression = expression;
         Signature = signature;
+        this.parameterNames = parameterNames.AsReadOnlyEquatable();
+
+        Locations = locations;
     }
 }

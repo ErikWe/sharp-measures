@@ -7,15 +7,19 @@ using SharpMeasures.Generators.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 
-public interface IItemListProcessingDiagnostics<TItem, TDefinition>
+public interface IItemListProcessingDiagnostics<TItem, TDefinition, TLocations>
+    where TDefinition : IItemListDefinition<TItem, TLocations>
+    where TLocations : IItemListLocations
 {
     public abstract Diagnostic? EmptyItemList(IProcessingContext context, TDefinition definition);
     public abstract Diagnostic? NullItem(IProcessingContext context, TDefinition definition, int index);
 }
 
-public interface IUniqueItemListProcessingDiagnostics<TItem, TDefinition> : IItemListProcessingDiagnostics<TItem, TDefinition>
+public interface IUniqueItemListProcessingDiagnostics<TDefinitionItem, TProductItem, TDefinition, TLocations> : IItemListProcessingDiagnostics<TDefinitionItem, TDefinition, TLocations>
+    where TDefinition : IItemListDefinition<TDefinitionItem, TLocations>
+    where TLocations : IItemListLocations
 {
-    public abstract Diagnostic? DuplicateItem(IUniqueItemListProcessingContext<TItem> context, TDefinition definition, int index);
+    public abstract Diagnostic? DuplicateItem(IUniqueItemListProcessingContext<TProductItem> context, TDefinition definition, int index);
 }
 
 public interface IUniqueItemListProcessingContext<TItem> : IProcessingContext
@@ -23,14 +27,16 @@ public interface IUniqueItemListProcessingContext<TItem> : IProcessingContext
     public abstract HashSet<TItem> ListedItems { get; }
 }
 
-public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext, TDefinition, TProduct> : AActionableProcesser<TContext, TDefinition, TProduct>
+public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext, TDefinition, TLocations, TProduct>
+    : AActionableProcesser<TContext, TDefinition, TProduct>
     where TContext : IProcessingContext
-    where TDefinition : IItemListDefinition<TDefinitionItem?>
-    where TProduct : IItemListDefinition<TProductItem>
+    where TDefinition : IItemListDefinition<TDefinitionItem?, TLocations>
+    where TLocations : IItemListLocations
+    where TProduct : IItemListDefinition<TProductItem, TLocations>
 {
-    private IItemListProcessingDiagnostics<TProductItem, TDefinition> Diagnostics { get; }
+    private IItemListProcessingDiagnostics<TDefinitionItem?, TDefinition, TLocations> Diagnostics { get; }
 
-    protected AItemListProcesser(IItemListProcessingDiagnostics<TProductItem, TDefinition> diagnostics)
+    protected AItemListProcesser(IItemListProcessingDiagnostics<TDefinitionItem?, TDefinition, TLocations> diagnostics)
     {
         Diagnostics = diagnostics;
     }
@@ -119,16 +125,17 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
     }
 }
 
-public abstract class AUniqueItemListProcesser<TDefinitionItem, TProductItem, TContext, TDefinition, TProduct>
-    : AItemListProcesser<TDefinitionItem, TProductItem, TContext, TDefinition, TProduct>
+public abstract class AUniqueItemListProcesser<TDefinitionItem, TProductItem, TContext, TDefinition, TLocations, TProduct>
+    : AItemListProcesser<TDefinitionItem, TProductItem, TContext, TDefinition, TLocations, TProduct>
     where TContext : IUniqueItemListProcessingContext<TProductItem>
-    where TDefinition : IItemListDefinition<TDefinitionItem?>
-    where TProduct : IItemListDefinition<TProductItem>
+    where TDefinition : IItemListDefinition<TDefinitionItem?, TLocations>
+    where TLocations : IItemListLocations
+    where TProduct : IItemListDefinition<TProductItem, TLocations>
 {
-    private IUniqueItemListProcessingDiagnostics<TProductItem, TDefinition> Diagnostics { get; }
+    private IUniqueItemListProcessingDiagnostics<TDefinitionItem?, TProductItem, TDefinition, TLocations> Diagnostics { get; }
     private HashSet<TProductItem> LocallyListedItems { get; } = new();
 
-    protected AUniqueItemListProcesser(IUniqueItemListProcessingDiagnostics<TProductItem, TDefinition> diagnostics) : base(diagnostics)
+    protected AUniqueItemListProcesser(IUniqueItemListProcessingDiagnostics<TDefinitionItem?, TProductItem, TDefinition, TLocations> diagnostics) : base(diagnostics)
     {
         Diagnostics = diagnostics;
     }

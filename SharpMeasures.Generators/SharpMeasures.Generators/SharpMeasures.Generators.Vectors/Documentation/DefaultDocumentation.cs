@@ -18,8 +18,8 @@ internal class DefaultDocumentation<TDataModel> : IDocumentationStrategy, IEquat
 {
     private DefinedType VectorType { get; }
     private int Dimension { get; }
-    private UnitInterface Unit { get; }
-    private ScalarInterface? Scalar { get; }
+    private IUnitType Unit { get; }
+    private IScalarType? Scalar { get; }
 
     private string? DefaultUnitName { get; }
     private string? DefaultUnitSymbol { get; }
@@ -42,7 +42,7 @@ internal class DefaultDocumentation<TDataModel> : IDocumentationStrategy, IEquat
         DefaultUnitName = model.DefaultUnitName;
         DefaultUnitSymbol = model.DefaultUnitSymbol;
 
-        UnitParameterName = SourceBuildingUtility.ToParameterName(Unit.UnitType.Name);
+        UnitParameterName = SourceBuildingUtility.ToParameterName(Unit.Type.Name);
 
         if (model.Scalar is not null)
         {
@@ -101,14 +101,14 @@ internal class DefaultDocumentation<TDataModel> : IDocumentationStrategy, IEquat
     public string ScalarsConstructor() => $$"""
         /// <summary>Constructs a new {{VectorReference}} representing { {{Texts.ParameterTuple()}} }, expressed in an arbitrary unit.</summary>
         {{Texts.ScalarsConstructor()}}
-        /// <remarks>Consider preferring construction through <see cref="{{VectorType.Name}}({{ConstantVectorTexts.UnnamedScalars(Dimension)}}, {{Unit.UnitType.Name}})"/>,
+        /// <remarks>Consider preferring construction through <see cref="{{VectorType.Name}}({{ConstantVectorTexts.UnnamedScalars(Dimension)}}, {{Unit.Type.Name}})"/>,
         /// where the components are expressed in a certain {{UnitReference}}.</remarks>
         """;
 
     public string VectorConstructor() => $"""
         /// <summary>Constructs a new {VectorReference} components of magnitudes <paramref name="components"/>, expressed in an arbitrary unit.</summary>
         /// <param name="components">The magnitudes of the components of the constructed <see cref="Unhandled3"/>, expressed in an arbitrary unit.</param>
-        /// <remarks>Consider preferring construction through <see cref="{VectorType.Name}(Vector{Dimension}, {Unit.UnitType.Name})"/>,
+        /// <remarks>Consider preferring construction through <see cref="{VectorType.Name}(Vector{Dimension}, {Unit.Type.Name})"/>,
         /// where the components are expressed in a certain {UnitReference}.</remarks>
         """;
 
@@ -125,7 +125,7 @@ internal class DefaultDocumentation<TDataModel> : IDocumentationStrategy, IEquat
             commonText = $"""
                 {commonText}
                 /// <remarks>A {VectorReference} may also be constructed as demonstrated below.
-                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.ScalarType.Name}.One{ExampleScalarBase.Value.Name}"/>;</code>
+                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Type.Name}.One{ExampleScalarBase.Value.Name}"/>;</code>
                 /// </remarks>
                 """;
         }
@@ -144,7 +144,7 @@ internal class DefaultDocumentation<TDataModel> : IDocumentationStrategy, IEquat
             commonText = $"""
                 {commonText}
                 /// <remarks>A {VectorReference} may also be constructed as demonstrated below.
-                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.ScalarType.Name}.One{ExampleScalarBase.Value.Name}"/>;</code>
+                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Type.Name}.One{ExampleScalarBase.Value.Name}"/>;</code>
                 /// </remarks>
                 """;
         }
@@ -169,7 +169,7 @@ internal class DefaultDocumentation<TDataModel> : IDocumentationStrategy, IEquat
         var commonText = $"""
             /// <summary>The magnitudes of the components of <see langword="this"/>, expressed in an arbitrary unit.</summary>
             /// <remarks>In most cases, expressing the magnitudes in a certain {UnitReference} should be preferred. This can be achieved through
-            /// <see cref="InUnit({Unit.UnitType.Name})"/>
+            /// <see cref="InUnit({Unit.Type.Name})"/>
             """;
 
         if (ExampleUnit is not null)
@@ -219,12 +219,12 @@ internal class DefaultDocumentation<TDataModel> : IDocumentationStrategy, IEquat
 
         if (DefaultUnitName is not null && DefaultUnitSymbol is not null)
         {
-            return $"""{commonText}, the components expressed in <see cref="{Unit.UnitType.Name}.{DefaultUnitName}"/>, and the symbol [{DefaultUnitSymbol}].</summary>""";
+            return $"""{commonText}, the components expressed in <see cref="{Unit.Type.Name}.{DefaultUnitName}"/>, and the symbol [{DefaultUnitSymbol}].</summary>""";
         }
 
         if (DefaultUnitName is not null)
         {
-            return $"""{commonText} and the components expressed in <see cref="{Unit.UnitType.Name}.{DefaultUnitName}"/>.</summary>""";
+            return $"""{commonText} and the components expressed in <see cref="{Unit.Type.Name}.{DefaultUnitName}"/>.</summary>""";
         }
 
         if (DefaultUnitSymbol is not null)
@@ -295,12 +295,12 @@ internal class DefaultDocumentation<TDataModel> : IDocumentationStrategy, IEquat
     public string DivideScalarOperatorLHS() => InheritDoc;
 
     private string VectorReference => $"""<see cref="{VectorType.Name}"/>""";
-    private string UnitReference => $"""<see cref="{Unit.UnitType.Name}"/>""";
-    private string ScalarReference => $"""<see cref={Scalar?.ScalarType.Name}"/>""";
+    private string UnitReference => $"""<see cref="{Unit.Type.Name}"/>""";
+    private string ScalarReference => $"""<see cref={Scalar?.Type.Name}"/>""";
 
     private static string InheritDoc => "/// <inheritdoc/>";
 
-    private static UnitInstance? GetExampleBase(UnitInterface unit, IEnumerable<IncludeBasesInterface> includeBases, IEnumerable<ExcludeBasesInterface> excludeBases)
+    private static UnitInstance? GetExampleBase(IUnitType unit, IEnumerable<IIncludeBases> includeBases, IEnumerable<IExcludeBases> excludeBases)
     {
         foreach (var inclusionList in includeBases)
         {
@@ -326,7 +326,7 @@ internal class DefaultDocumentation<TDataModel> : IDocumentationStrategy, IEquat
         return null;
     }
 
-    private static UnitInstance? GetExampleUnit(UnitInterface unit, IEnumerable<IncludeUnitsDefinition> includeUnits, IEnumerable<ExcludeUnitsDefinition> excludeUnits)
+    private static UnitInstance? GetExampleUnit(IUnitType unit, IEnumerable<IncludeUnitsDefinition> includeUnits, IEnumerable<ExcludeUnitsDefinition> excludeUnits)
     {
         foreach (var inclusionList in includeUnits)
         {

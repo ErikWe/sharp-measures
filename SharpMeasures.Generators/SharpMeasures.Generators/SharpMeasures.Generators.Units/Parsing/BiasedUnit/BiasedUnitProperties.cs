@@ -9,9 +9,9 @@ internal static class BiasedUnitProperties
 {
     public static IReadOnlyList<IAttributeProperty<RawBiasedUnitDefinition>> AllProperties => new IAttributeProperty<RawBiasedUnitDefinition>[]
     {
-        CommonProperties.Name<RawBiasedUnitDefinition, BiasedUnitParsingData, BiasedUnitLocations>(nameof(BiasedUnitAttribute.Name)),
-        CommonProperties.Plural<RawBiasedUnitDefinition, BiasedUnitParsingData, BiasedUnitLocations>(nameof(BiasedUnitAttribute.Plural)),
-        CommonProperties.DependantOn<RawBiasedUnitDefinition, BiasedUnitParsingData, BiasedUnitLocations>(nameof(BiasedUnitAttribute.From)),
+        CommonProperties.Name<RawBiasedUnitDefinition, BiasedUnitLocations>(nameof(BiasedUnitAttribute.Name)),
+        CommonProperties.Plural<RawBiasedUnitDefinition, BiasedUnitLocations>(nameof(BiasedUnitAttribute.Plural)),
+        CommonProperties.DependantOn<RawBiasedUnitDefinition, BiasedUnitLocations>(nameof(BiasedUnitAttribute.From)),
         Bias,
         Expression
     };

@@ -3,8 +3,8 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-using SharpMeasures.Generators.Quantities.Utility;
 using SharpMeasures.Generators.SourceBuilding;
+using SharpMeasures.Generators.Utility;
 
 using System;
 using System.Text;
@@ -77,15 +77,15 @@ internal static class Execution
 
             foreach (var dimensionallyEquivalentVectorGroup in Data.DimensionalEquivalences)
             {
-                if (dimensionallyEquivalentVectorGroup.Value is ConversionOperationBehaviour.None)
+                if (dimensionallyEquivalentVectorGroup.Value is ConversionOperatorBehaviour.None)
                 {
                     continue;
                 }
 
                 Action<ResizedVector, Indentation> composer = dimensionallyEquivalentVectorGroup.Value switch
                 {
-                    ConversionOperationBehaviour.Explicit => ComposeExplicitOperatorConversion,
-                    ConversionOperationBehaviour.Implicit => ComposeImplicitOperatorConversion,
+                    ConversionOperatorBehaviour.Explicit => ComposeExplicitOperatorConversion,
+                    ConversionOperatorBehaviour.Implicit => ComposeImplicitOperatorConversion,
                     _ => throw new NotSupportedException("Invalid cast operation")
                 };
 

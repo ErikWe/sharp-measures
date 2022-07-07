@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class ScalarConstantLocations : AAttributeLocations
+internal record class ScalarConstantLocations : AAttributeLocations<ScalarConstantLocations>
 {
     public static ScalarConstantLocations Empty { get; } = new();
 
@@ -19,6 +19,8 @@ internal record class ScalarConstantLocations : AAttributeLocations
 
     public bool ExplicitlySetGenerateMultiplesProperty => GenerateMultiplesProperty is not null;
     public bool ExplicitlySetMultiples => Multiples is not null;
+
+    protected override ScalarConstantLocations Locations => this;
 
     private ScalarConstantLocations() { }
 }

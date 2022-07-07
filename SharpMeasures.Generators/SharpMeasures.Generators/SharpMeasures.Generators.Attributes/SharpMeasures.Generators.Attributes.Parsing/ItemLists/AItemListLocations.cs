@@ -4,11 +4,30 @@ using SharpMeasures.Equatables;
 
 using System.Collections.Generic;
 
-public abstract record class AItemListLocations : AAttributeLocations, IItemListLocations
+public abstract record class AItemListLocations<TLocations> : AAttributeLocations<TLocations>, IOpenItemListLocations<TLocations>
+    where TLocations : AItemListLocations<TLocations>
 {
-    public MinimalLocation? ItemsCollection { get; init; }
-    public ReadOnlyEquatableList<MinimalLocation> ItemsElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
-    IReadOnlyList<MinimalLocation> IItemListLocations.ItemsElements => ItemsElements;
+    protected MinimalLocation? ItemsCollection { get; private init; }
+    protected IReadOnlyList<MinimalLocation> ItemsElements
+    {
+        get => itemsElements;
+        private init => itemsElements = value.AsReadOnlyEquatable();
+    }
 
-    public bool ExplicitlySetItems => ItemsCollection is not null;
+    protected bool ExplicitlySetItems => ItemsCollection is not null;
+
+    MinimalLocation? IItemListLocations.ItemsCollection => ItemsCollection;
+    IReadOnlyList<MinimalLocation> IItemListLocations.ItemsElements => ItemsElements;
+    bool IItemListLocations.ExplicitlySetItems => ExplicitlySetItems;
+
+    private ReadOnlyEquatableList<MinimalLocation> itemsElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
+
+    protected TLocations WithItems(MinimalLocation collection, IReadOnlyList<MinimalLocation> elements) => Locations with
+    {
+        ItemsCollection = collection,
+        ItemsElements = elements
+    };
+
+    TLocations IOpenItemListLocations<TLocations>.WithItems(MinimalLocation collectionLocation, IReadOnlyList<MinimalLocation> elementLocations)
+        => WithItems(collectionLocation, elementLocations);
 }

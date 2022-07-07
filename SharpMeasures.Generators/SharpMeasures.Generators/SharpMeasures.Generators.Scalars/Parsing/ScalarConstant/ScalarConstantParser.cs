@@ -39,7 +39,7 @@ internal static class ScalarConstantParser
             {
                 definition = definition with
                 {
-                    Multiples = ConstantMultiplesCodes.MultiplesOfConstant
+                    Multiples = CommonConstantMultiplesPropertyNotations.PrependMultiplesOf
                 };
             }
 

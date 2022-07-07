@@ -9,7 +9,6 @@ using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors;
-using SharpMeasures.Generators.Vectors.Populations;
 
 using System;
 using System.Linq;
@@ -31,9 +30,9 @@ internal interface ISharpMeasuresScalarRefinementDiagnostics
 
 internal interface ISharpMeasuresScalarRefinementContext : IProcessingContext
 {
-    public abstract UnitPopulation UnitPopulation { get; }
-    public abstract ScalarPopulation ScalarPopulation { get; }
-    public abstract VectorPopulation VectorPopulation { get; }
+    public abstract IUnitPopulation UnitPopulation { get; }
+    public abstract IScalarPopulation ScalarPopulation { get; }
+    public abstract IVectorPopulation VectorPopulation { get; }
 }
 
 internal class SharpMeasuresScalarRefiner : IProcesser<ISharpMeasuresScalarRefinementContext, SharpMeasuresScalarDefinition, RefinedSharpMeasuresScalarDefinition>
@@ -47,7 +46,7 @@ internal class SharpMeasuresScalarRefiner : IProcesser<ISharpMeasuresScalarRefin
 
     public IOptionalWithDiagnostics<RefinedSharpMeasuresScalarDefinition> Process(ISharpMeasuresScalarRefinementContext context, SharpMeasuresScalarDefinition definition)
     {
-        if (context.UnitPopulation.ContainsKey(context.Type.AsNamedType()))
+        if (context.UnitPopulation.Units.ContainsKey(context.Type.AsNamedType()))
         {
             var diagnostics = Diagnostics.TypeAlreadyUnit(context, definition);
             return OptionalWithDiagnostics.Empty<RefinedSharpMeasuresScalarDefinition>(diagnostics);
@@ -84,16 +83,16 @@ internal class SharpMeasuresScalarRefiner : IProcesser<ISharpMeasuresScalarRefin
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private IOptionalWithDiagnostics<UnitInterface> ProcessUnit(ISharpMeasuresScalarRefinementContext context, SharpMeasuresScalarDefinition definition)
+    private IOptionalWithDiagnostics<IUnitType> ProcessUnit(ISharpMeasuresScalarRefinementContext context, SharpMeasuresScalarDefinition definition)
     {
-        if (context.UnitPopulation.TryGetValue(definition.Unit, out var unit) is false)
+        if (context.UnitPopulation.Units.TryGetValue(definition.Unit, out var unit) is false)
         {
-            return OptionalWithDiagnostics.Empty<UnitInterface>(Diagnostics.TypeNotUnit(context, definition));
+            return OptionalWithDiagnostics.Empty<IUnitType>(Diagnostics.TypeNotUnit(context, definition));
         }
 
-        if (definition.UseUnitBias && unit.BiasTerm is false)
+        if (definition.UseUnitBias && unit.UnitDefinition.BiasTerm is false)
         {
-            return OptionalWithDiagnostics.Empty<UnitInterface>(Diagnostics.UnitNotIncludingBiasTerm(context, definition));
+            return OptionalWithDiagnostics.Empty<IUnitType>(Diagnostics.UnitNotIncludingBiasTerm(context, definition));
         }
 
         return OptionalWithDiagnostics.Result(unit);
@@ -119,7 +118,7 @@ internal class SharpMeasuresScalarRefiner : IProcesser<ISharpMeasuresScalarRefin
         return OptionalWithDiagnostics.Result(vectorGroup);
     }
 
-    private IResultWithDiagnostics<ScalarInterface> ProcessDifference(ISharpMeasuresScalarRefinementContext context, SharpMeasuresScalarDefinition definition)
+    private IResultWithDiagnostics<IScalarType> ProcessDifference(ISharpMeasuresScalarRefinementContext context, SharpMeasuresScalarDefinition definition)
     {
         if (context.ScalarPopulation.TryGetValue(definition.Difference, out var scalar) is false)
         {
@@ -129,7 +128,7 @@ internal class SharpMeasuresScalarRefiner : IProcesser<ISharpMeasuresScalarRefin
         return ResultWithDiagnostics.Construct(scalar);
     }
 
-    private IResultWithDiagnostics<string?> ProcessDefaultUnitName(ISharpMeasuresScalarRefinementContext context, SharpMeasuresScalarDefinition definition, UnitInterface unit)
+    private IResultWithDiagnostics<string?> ProcessDefaultUnitName(ISharpMeasuresScalarRefinementContext context, SharpMeasuresScalarDefinition definition, IUnitType unit)
     {
         if (definition.DefaultUnitName is null)
         {
@@ -144,19 +143,19 @@ internal class SharpMeasuresScalarRefiner : IProcesser<ISharpMeasuresScalarRefin
         return ResultWithDiagnostics.Construct<string?>(definition.DefaultUnitName);
     }
 
-    private static IResultWithDiagnostics<ScalarInterface?> ProcessPowerQuantity(ISharpMeasuresScalarRefinementContext context, SharpMeasuresScalarDefinition definition,
+    private static IResultWithDiagnostics<IScalarType?> ProcessPowerQuantity(ISharpMeasuresScalarRefinementContext context, SharpMeasuresScalarDefinition definition,
         NamedType? quantity, Func<ISharpMeasuresScalarRefinementContext, SharpMeasuresScalarDefinition, Diagnostic?> typeNotScalarDiagnosticsDelegate)
     {
         if (quantity is null)
         {
-            return ResultWithDiagnostics.Construct<ScalarInterface?>(null);
+            return ResultWithDiagnostics.Construct<IScalarType?>(null);
         }
 
         if (context.ScalarPopulation.TryGetValue(quantity.Value, out var scalar) is false)
         {
-            return ResultWithDiagnostics.Construct<ScalarInterface?>(null, typeNotScalarDiagnosticsDelegate(context, definition));
+            return ResultWithDiagnostics.Construct<IScalarType?>(null, typeNotScalarDiagnosticsDelegate(context, definition));
         }
 
-        return ResultWithDiagnostics.Construct<ScalarInterface?>(scalar);
+        return ResultWithDiagnostics.Construct<IScalarType?>(scalar);
     }
 }

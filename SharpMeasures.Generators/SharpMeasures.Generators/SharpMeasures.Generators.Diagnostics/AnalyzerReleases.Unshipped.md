@@ -13,6 +13,8 @@ Measures1004 | Usage | Error | Type already defined
 Measures1020 | Usage | Error | Expected a strictly unbiased scalar quantity
 Measures1021 | Usage | Error | Expected a biased scalar quantity
 Measures1022 | Usage | Error | Unit does not support biased quantities
+Measures1040 | Usage | Warning | Invalid derivation expression
+Measures1041 | Usage | Warning | Invalid derivation signature
 Measures1080 | Usage | Info | Expected a non-empty list
 Measures1081 | Usage | Info | Item has already been listed
 Measures1100 | Naming | Warning | Invalid unit name
@@ -29,11 +31,9 @@ Measures1124 | Usage | Warning | The unit does not support biases
 Measures1140 | Usage | Warning | Invalid derivation ID
 Measures1141 | Naming | Warning | Duplicate derivation ID
 Measures1142 | Usage | Warning | Derivation ID not recognized
-Measures1143 | Usage | Warning | Invalid unit derivation expression
-Measures1144 | Usage | Warning | Expected a non-empty signature
-Measures1145 | Usage | Warning | Unit list not matching signature
-Measures1146 | Usage | Warning | Unit not derivable
-Measures1147 | Usage | Warning | Ambiguous unit derivation signature
+Measures1143 | Usage | Warning | Unit list not matching signature
+Measures1144 | Usage | Warning | Unit not derivable
+Measures1145 | Usage | Warning | Ambiguous unit derivation signature
 Measures1200 | Usage | Info | Expected both unit name and symbol
 Measures1220 | Naming | Warning | Invalid name of constant
 Measures1221 | Naming | Warning | Invalid name for multiples of constant

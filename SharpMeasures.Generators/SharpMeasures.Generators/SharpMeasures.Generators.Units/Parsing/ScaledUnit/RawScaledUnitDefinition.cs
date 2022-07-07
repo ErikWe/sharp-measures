@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal record class RawScaledUnitDefinition : ARawDependantUnitDefinition<ScaledUnitParsingData, ScaledUnitLocations>
+internal record class RawScaledUnitDefinition : ARawDependantUnitDefinition<RawScaledUnitDefinition, ScaledUnitLocations>
 {
     public static RawScaledUnitDefinition Empty { get; } = new();
 
@@ -10,5 +10,7 @@ internal record class RawScaledUnitDefinition : ARawDependantUnitDefinition<Scal
     public double Scale { get; init; }
     public string? Expression { get; init; }
 
-    private RawScaledUnitDefinition() : base(ScaledUnitLocations.Empty, ScaledUnitParsingData.Empty) { }
+    protected override RawScaledUnitDefinition Definition => this;
+
+    private RawScaledUnitDefinition() : base(ScaledUnitLocations.Empty) { }
 }

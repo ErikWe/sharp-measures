@@ -24,8 +24,6 @@ internal interface IScalarConstantDiagnostics
 
 internal interface IScalarConstantProcessingContext : IProcessingContext
 {
-    public abstract NamedType Unit { get; }
-
     public abstract HashSet<string> ReservedConstants { get; }
     public abstract HashSet<string> ReservedConstantMultiples { get; }
 }

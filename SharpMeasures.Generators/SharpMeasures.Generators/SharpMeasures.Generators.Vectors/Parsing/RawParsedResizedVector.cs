@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing;
 
 using SharpMeasures.Equatables;
-using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
+using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Vectors.Parsing.Abstractions;
@@ -20,16 +20,16 @@ internal class RawParsedResizedVector : IRawParsedVector<ResizedSharpMeasuresVec
     public EquatableEnumerable<RawExcludeUnitsDefinition> ExcludeUnits { get; }
 
     public EquatableEnumerable<RawVectorConstantDefinition> VectorConstants { get; }
-    public EquatableEnumerable<RawDimensionalEquivalenceDefinition> DimensionalEquivalences { get; }
+    public EquatableEnumerable<RawConvertibleQuantityDefinition> DimensionalEquivalences { get; }
 
     IEnumerable<RawIncludeUnitsDefinition> IRawParsedVector<ResizedSharpMeasuresVectorDefinition>.IncludeUnits => IncludeUnits;
     IEnumerable<RawExcludeUnitsDefinition> IRawParsedVector<ResizedSharpMeasuresVectorDefinition>.ExcludeUnits => ExcludeUnits;
     IEnumerable<RawVectorConstantDefinition> IRawParsedVector<ResizedSharpMeasuresVectorDefinition>.VectorConstants => VectorConstants;
-    IEnumerable<RawDimensionalEquivalenceDefinition> IRawParsedVector<ResizedSharpMeasuresVectorDefinition>.DimensionalEquivalences => DimensionalEquivalences;
+    IEnumerable<RawConvertibleQuantityDefinition> IRawParsedVector<ResizedSharpMeasuresVectorDefinition>.DimensionalEquivalences => DimensionalEquivalences;
 
     public RawParsedResizedVector(DefinedType vectorType, MinimalLocation vectorLocation, ResizedSharpMeasuresVectorDefinition vectorDefinition,
         IEnumerable<RawIncludeUnitsDefinition> includeUnits, IEnumerable<RawExcludeUnitsDefinition> excludeUnits, IEnumerable<RawVectorConstantDefinition> vectorConstants,
-        IEnumerable<RawDimensionalEquivalenceDefinition> dimensionalEquivalences)
+        IEnumerable<RawConvertibleQuantityDefinition> dimensionalEquivalences)
     {
         VectorType = vectorType;
         VectorLocation = vectorLocation;

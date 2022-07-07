@@ -10,7 +10,7 @@ internal interface ISharpMeasuresUnitProcessingDiagnostics
     public abstract Diagnostic? NullQuantity(IProcessingContext context, RawSharpMeasuresUnitDefinition definition);
 }
 
-internal class SharpMeasuresUnitProcesser : AProcesser<IProcessingContext, RawSharpMeasuresUnitDefinition, SharpMeasuresUnitDefinition>
+internal class SharpMeasuresUnitProcesser : AProcesser<IProcessingContext, RawSharpMeasuresUnitDefinition, UnresolvedSharpMeasuresUnitDefinition>
 {
     private ISharpMeasuresUnitProcessingDiagnostics Diagnostics { get; }
 
@@ -19,19 +19,19 @@ internal class SharpMeasuresUnitProcesser : AProcesser<IProcessingContext, RawSh
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<SharpMeasuresUnitDefinition> Process(IProcessingContext context, RawSharpMeasuresUnitDefinition definition)
+    public override IOptionalWithDiagnostics<UnresolvedSharpMeasuresUnitDefinition> Process(IProcessingContext context, RawSharpMeasuresUnitDefinition definition)
     {
         if (VerifyRequiredPropertiesSet(definition) is false)
         {
-            return OptionalWithDiagnostics.Empty<SharpMeasuresUnitDefinition>();
+            return OptionalWithDiagnostics.Empty<UnresolvedSharpMeasuresUnitDefinition>();
         }
 
         if (definition.Quantity is null)
         {
-            return OptionalWithDiagnostics.Empty<SharpMeasuresUnitDefinition>(Diagnostics.NullQuantity(context, definition));
+            return OptionalWithDiagnostics.Empty<UnresolvedSharpMeasuresUnitDefinition>(Diagnostics.NullQuantity(context, definition));
         }
 
-        SharpMeasuresUnitDefinition product = new(definition.Quantity.Value, definition.BiasTerm, definition.GenerateDocumentation, definition.Locations);
+        UnresolvedSharpMeasuresUnitDefinition product = new(definition.Quantity.Value, definition.BiasTerm, definition.GenerateDocumentation, definition.Locations);
         return OptionalWithDiagnostics.Result(product);
     }
 

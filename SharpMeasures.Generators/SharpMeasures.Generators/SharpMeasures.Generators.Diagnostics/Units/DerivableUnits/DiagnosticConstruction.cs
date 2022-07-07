@@ -19,21 +19,6 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.UnrecognizedUnitDerivationID, location, derivationID, unitTypeName);
     }
 
-    public static Diagnostic InvalidUnitDerivationExpression(Location? location, string expression)
-    {
-        return Diagnostic.Create(DiagnosticRules.InvalidUnitDerivationExpression, location, expression);
-    }
-
-    public static Diagnostic NullUnitDerivationExpression(Location? location)
-    {
-        return Diagnostic.Create(DiagnosticRules.NullUnitDerivationExpression, location);
-    }
-
-    public static Diagnostic EmptyUnitDerivationSignature(Location? location)
-    {
-        return Diagnostic.Create(DiagnosticRules.EmptyUnitDerivationSignature, location);
-    }
-
     public static Diagnostic IncompatibleDerivedUnitListSize(Location? location, int expectedCount, int actualCount)
     {
         return Diagnostic.Create(DiagnosticRules.IncompatibleDerivedUnitListSize, location, expectedCount, actualCount);

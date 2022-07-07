@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Diagnostics;
-using SharpMeasures.Generators.Quantities.Refinement;
+using SharpMeasures.Generators.Quantities.Refinement.UnitList;
 using SharpMeasures.Generators.Scalars.Diagnostics;
 using SharpMeasures.Generators.Scalars.Refinement.ScalarConstant;
 using SharpMeasures.Generators.Units;
@@ -27,8 +27,8 @@ internal static class UnitsGenerator
 
     private static IResultWithDiagnostics<DataModel> ReduceToDataModel(Scalars.DataModel input, CancellationToken _)
     {
-        var processedBases = GetIncludedUnits(input, input.ScalarData.IncludeBases, input.ScalarData.ExcludeBases);
-        var processedUnits = GetIncludedUnits(input, input.ScalarData.IncludeUnits, input.ScalarData.ExcludeUnits);
+        var processedBases = GetIncludedUnits(input, input.ScalarData.includeBases, input.ScalarData.excludeBases);
+        var processedUnits = GetIncludedUnits(input, input.ScalarData.includeUnits, input.ScalarData.excludeUnits);
 
         HashSet<string> includedBases = new(processedBases.Result.Select(static (x) => x.Name));
         HashSet<string> includedUnits = new(processedUnits.Result.Select(static (x) => x.Plural));
@@ -36,9 +36,9 @@ internal static class UnitsGenerator
         ScalarConstantRefinementContext scalarConstantContext = new(input.ScalarData.ScalarType, input.ScalarDefinition.Unit, includedBases, includedUnits);
         ScalarConstantRefiner scalarConstantRefiner = new(ScalarConstantDiagnostics.Instance);
 
-        var processedConstants = ProcessingFilter.Create(scalarConstantRefiner).Filter(scalarConstantContext, input.ScalarData.ScalarConstants);
+        var processedConstants = ProcessingFilter.Create(scalarConstantRefiner).Filter(scalarConstantContext, input.ScalarData.constants);
 
-        DataModel model = new(input.ScalarData.ScalarType, input.ScalarDefinition.Unit.UnitType.AsNamedType(), input.ScalarDefinition.Unit.QuantityType,
+        DataModel model = new(input.ScalarData.ScalarType, input.ScalarDefinition.Unit.Type.AsNamedType(), input.ScalarDefinition.Unit.QuantityType,
             processedBases.Result, processedUnits.Result, processedConstants.Result, input.Documentation);
 
         var allDiagnostics = processedBases.Diagnostics.Concat(processedUnits.Diagnostics).Concat(processedConstants.Diagnostics);
@@ -48,8 +48,8 @@ internal static class UnitsGenerator
 
     private static IResultWithDiagnostics<IReadOnlyCollection<UnitInstance>> GetIncludedUnits<TInclusion, TExclusion>(Scalars.DataModel input,
         IEnumerable<TInclusion> inclusions, IEnumerable<TExclusion> exclusions)
-        where TInclusion : IItemListDefinition<string>
-        where TExclusion : IItemListDefinition<string>
+        where TInclusion : IOpenItemListDefinition<string>
+        where TExclusion : IOpenItemListDefinition<string>
     {
         UnitListRefinementContext context = new(input.ScalarData.ScalarType, input.ScalarDefinition.Unit);
 
@@ -81,9 +81,9 @@ internal static class UnitsGenerator
     {
         public DefinedType Type { get; }
 
-        public UnitInterface Unit { get; }
+        public IUnitType Unit { get; }
 
-        public UnitListRefinementContext(DefinedType type, UnitInterface unit)
+        public UnitListRefinementContext(DefinedType type, IUnitType unit)
         {
             Type = type;
             Unit = unit;
@@ -94,12 +94,12 @@ internal static class UnitsGenerator
     {
         public DefinedType Type { get; }
 
-        public UnitInterface Unit { get; }
+        public IUnitType Unit { get; }
 
         public HashSet<string> IncludedBases { get; }
         public HashSet<string> IncludedUnits { get; }
 
-        public ScalarConstantRefinementContext(DefinedType type, UnitInterface unit, HashSet<string> includedBases, HashSet<string> includedUnits)
+        public ScalarConstantRefinementContext(DefinedType type, IUnitType unit, HashSet<string> includedBases, HashSet<string> includedUnits)
         {
             Type = type;
             Unit = unit;

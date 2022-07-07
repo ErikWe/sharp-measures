@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class RawSharpMeasuresScalarDefinition : ARawAttributeDefinition<SharpMeasuresScalarLocations>
+internal record class RawSharpMeasuresScalarDefinition : ARawAttributeDefinition<RawSharpMeasuresScalarDefinition, SharpMeasuresScalarLocations>
 {
     public static RawSharpMeasuresScalarDefinition Empty => new();
 
@@ -26,6 +26,8 @@ internal record class RawSharpMeasuresScalarDefinition : ARawAttributeDefinition
     public NamedType? CubeRoot { get; init; }
 
     public bool GenerateDocumentation { get; init; }
+
+    protected override RawSharpMeasuresScalarDefinition Definition => this;
 
     private RawSharpMeasuresScalarDefinition() : base(SharpMeasuresScalarLocations.Empty) { }
 }

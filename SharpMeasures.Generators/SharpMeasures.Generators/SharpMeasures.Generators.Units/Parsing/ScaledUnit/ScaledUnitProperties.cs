@@ -9,9 +9,9 @@ internal static class ScaledUnitProperties
 {
     public static IReadOnlyList<IAttributeProperty<RawScaledUnitDefinition>> AllProperties => new IAttributeProperty<RawScaledUnitDefinition>[]
     {
-        CommonProperties.Name<RawScaledUnitDefinition, ScaledUnitParsingData, ScaledUnitLocations>(nameof(ScaledUnitAttribute.Name)),
-        CommonProperties.Plural<RawScaledUnitDefinition, ScaledUnitParsingData, ScaledUnitLocations>(nameof(ScaledUnitAttribute.Plural)),
-        CommonProperties.DependantOn<RawScaledUnitDefinition, ScaledUnitParsingData, ScaledUnitLocations>(nameof(ScaledUnitAttribute.From)),
+        CommonProperties.Name<RawScaledUnitDefinition, ScaledUnitLocations>(nameof(ScaledUnitAttribute.Name)),
+        CommonProperties.Plural<RawScaledUnitDefinition, ScaledUnitLocations>(nameof(ScaledUnitAttribute.Plural)),
+        CommonProperties.DependantOn<RawScaledUnitDefinition, ScaledUnitLocations>(nameof(ScaledUnitAttribute.From)),
         Scale,
         Expression
     };

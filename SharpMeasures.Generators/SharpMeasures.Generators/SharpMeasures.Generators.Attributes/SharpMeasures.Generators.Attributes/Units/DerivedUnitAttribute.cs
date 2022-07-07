@@ -2,56 +2,46 @@
 
 using System;
 
-/// <summary>Defines an instance of the unit as a derivation from instances of other units.</summary>
+/// <summary>Derives an instance of a unit from instances of other units, according to a definition in a specified <see cref="DerivableUnitAttribute"/>.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class DerivedUnitAttribute : Attribute
 {
-    /// <summary>The name of the instance of the unit, in singular form.</summary>
+    /// <inheritdoc cref="FixedUnitAttribute.Name"/>
     public string Name { get; }
-    /// <summary>The name of the instance of the unit, in plural form. May be identical to the singular form.</summary>
-    /// <remarks>See <see cref="Utility.UnitPluralCodes"/> for some short-hand notations for producing the plural form based on the singular form.</remarks>
+    /// <inheritdoc cref="FixedUnitAttribute.Plural"/>
     public string Plural { get; }
-    /// <summary>The unique ID of the intended derivation signature.</summary>
-    /// <remarks>The unit itself has to be marked with a <see cref="DerivableUnitAttribute"/> describing a derivation with this ID.
-    /// <para>If <see langword="null"/> and only one signature is defined for the unit, that definition is used. If more than one definition exists, the
-    /// signature must be explicitly specified.</para></remarks>
-    public string? SignatureID { get; }
+    /// <summary>The ID of the intended derivation signature.</summary>
+    /// <remarks>This is only required to be explicitly specified if more than one derivation is defined for the unit.</remarks>
+    public string? DerivationID { get; }
     /// <summary>The names of the instances of other units from which this instance is derived. The order must match that of the derivation signature
-    /// with ID <see cref="SignatureID"/>.</summary>
+    /// specified by <see cref="DerivationID"/>.</summary>
     public string[] Units { get; }
 
-    /// <summary>Constructs a definition of an instance of the unit as a derivation from instances of other units.</summary>
-    /// <param name="name">The name of the instance of the unit, in singular form.</param>
-    /// <param name="plural">The name of the instance of the unit, in plural form. May be identical to the singular form.
-    /// <para>See <see cref="Utility.UnitPluralCodes"/> for some short-hand notations for producing the plural form based on the singular form.</para></param>
-    /// <param name="signatureID">The unique ID of the intended derivation signature.
-    /// <para>The unit itself has to be marked with a <see cref="DerivableUnitAttribute"/> describing a derivation with this ID.</para>
-    /// <para>If <see langword="null"/> and only one signature is defined for the unit, that definition is used. If more than one definition exists, the
-    /// signature must be explicitly specified.</para></param>
-    /// <param name="units">The names of the instances of other units from which this instance is derived. The order must match that of the derivation signature
-    /// with ID <paramref name="signatureID"/>.</param>
-    public DerivedUnitAttribute(string name, string plural, string signatureID, params string[] units)
+    /// <inheritdoc cref="DerivedUnitAttribute"/>
+    /// <param name="name"><inheritdoc cref="Name" path="/summary"/><para><inheritdoc cref="Name" path="/remarks"/></para></param>
+    /// <param name="plural"><inheritdoc cref="Plural" path="/summary"/><para><inheritdoc cref="Plural" path="/remarks"/></para></param>
+    /// <param name="derivationID"><inheritdoc cref="DerivationID" path="/summary"/><para><inheritdoc cref="DerivationID" path="/remarks"/></para></param>
+    /// <param name="units"><inheritdoc cref="Units" path="/summary"/><para><inheritdoc cref="Units" path="/remarks"/></para></param>
+    public DerivedUnitAttribute(string name, string plural, string derivationID, params string[] units)
     {
         Name = name;
         Plural = plural;
-        SignatureID = signatureID;
+        DerivationID = derivationID;
         Units = units;
     }
 
-    /// <summary>Constructs a definition of an instance of the unit as a derivation from instances of other units.</summary>
-    /// <param name="name">The name of the instance of the unit, in singular form.</param>
-    /// <param name="plural">The name of the instance of the unit, in plural form. May be identical to the singular form.
-    /// <para>See <see cref="Utility.UnitPluralCodes"/> for some short-hand notations for producing the plural form based on the singular form.</para></param>
-    /// <param name="units">The names of the instances of other units from which this instance is derived. The order must match that of the definition provided
-    /// in the only <see cref="DerivableUnitAttribute"/> on the unit.</param>
+    /// <summary><inheritdoc cref="DerivedUnitAttribute" path="/summary"/></summary>
+    /// <param name="name"><inheritdoc cref="Name" path="/summary"/><para><inheritdoc cref="Name" path="/remarks"/></para></param>
+    /// <param name="plural"><inheritdoc cref="Plural" path="/summary"/><para><inheritdoc cref="Plural" path="/remarks"/></para></param>
+    /// <param name="units"><inheritdoc cref="Units" path="/summary"/><para><inheritdoc cref="Units" path="/remarks"/></para></param>
     /// <remarks>This constructor may only be used if the unit is decorated with exactly one <see cref="DerivableUnitAttribute"/>. Otherwise,
-    /// <see cref="DerivedUnitAttribute(string, string, string, string[])"/> should be used - where the signature ID is explicitly specified.</remarks>
+    /// the derivation ID should be explicitly specified - using <see cref="DerivedUnitAttribute(string, string, string, string[])"/>.</remarks>
     public DerivedUnitAttribute(string name, string plural, string[] units)
     {
         Name = name;
         Plural = plural;
         Units = units;
 
-        SignatureID = null;
+        DerivationID = null;
     }
 }

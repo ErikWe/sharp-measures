@@ -3,12 +3,22 @@
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal record class RawDerivedUnitDefinition : ARawUnitDefinition<DerivedUnitParsingData, DerivedUnitLocations>
+using System.Collections.Generic;
+
+internal record class RawDerivedUnitDefinition : ARawUnitDefinition<RawDerivedUnitDefinition, DerivedUnitLocations>
 {
     public static RawDerivedUnitDefinition Empty { get; } = new();
 
     public string? SignatureID { get; init; }
-    public ReadOnlyEquatableList<string?> Units { get; init; } = ReadOnlyEquatableList<string?>.Empty;
+    public IReadOnlyList<string?> Units
+    {
+        get => units;
+        init => units = value.AsReadOnlyEquatable(); 
+    }
 
-    private RawDerivedUnitDefinition() : base(DerivedUnitLocations.Empty, DerivedUnitParsingData.Empty) { }
+    private ReadOnlyEquatableList<string?> units { get; init; } = ReadOnlyEquatableList<string?>.Empty;
+
+    protected override RawDerivedUnitDefinition Definition => this;
+
+    private RawDerivedUnitDefinition() : base(DerivedUnitLocations.Empty) { }
 }

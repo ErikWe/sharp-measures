@@ -9,11 +9,12 @@ using SharpMeasures.Generators.Quantities.Parsing.Abstractions;
 
 using System.Diagnostics.CodeAnalysis;
 
-public class UnitListProcessingDiagnostics<TDefinition> : IUnitListProcessingDiagnostics<TDefinition>
-    where TDefinition : IItemListDefinition<string?>
+public class UnitListProcessingDiagnostics<TDefinition, TLocations> : IUnitListProcessingDiagnostics<TDefinition, TLocations>
+    where TDefinition : IItemListDefinition<string?, TLocations>
+    where TLocations : IItemListLocations
 {
     [SuppressMessage("Design", "CA1000", Justification = "Property")]
-    public static UnitListProcessingDiagnostics<TDefinition> Instance { get; } = new();
+    public static UnitListProcessingDiagnostics<TDefinition, TLocations> Instance { get; } = new();
 
     private UnitListProcessingDiagnostics() { }
 

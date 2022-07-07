@@ -2,13 +2,28 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Units.Documentation;
-using SharpMeasures.Generators.Units.Refinement.DerivableUnit;
+using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 
 using System.Collections.Generic;
 
-internal readonly record struct DataModel(DefinedType Unit, NamedType Quantity, IDocumentationStrategy Documentation,
-    ReadOnlyEquatableCollection<RefinedDerivableUnitDefinition> Derivations)
+internal readonly record struct DataModel
 {
-    public DataModel(DefinedType unit, NamedType quantity, IDocumentationStrategy documentation, IReadOnlyCollection<RefinedDerivableUnitDefinition> derivations)
-        : this(unit, quantity, documentation, derivations.AsReadOnlyEquatable()) { }
+    public DefinedType Unit { get; }
+    public NamedType Quantity { get; }
+
+    public IReadOnlyCollection<DerivableUnitDefinition> Derivations => derivations;
+
+    public IDocumentationStrategy Documentation { get; }
+
+    private ReadOnlyEquatableCollection<DerivableUnitDefinition> derivations { get; }
+
+    public DataModel(DefinedType unit, NamedType quantity, IReadOnlyCollection<DerivableUnitDefinition> derivations, IDocumentationStrategy documentation)
+    {
+        Unit = unit;
+        Quantity = quantity;
+
+        this.derivations = derivations.AsReadOnlyEquatable();
+
+        Documentation = documentation;
+    }
 }

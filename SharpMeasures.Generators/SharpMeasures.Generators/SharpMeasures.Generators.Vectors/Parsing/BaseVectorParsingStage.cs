@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
+using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Vectors.Diagnostics;
@@ -33,14 +33,14 @@ internal class BaseVectorParsingStage : AVectorParsingStage<SharpMeasuresVectorA
 
     protected override RawParsedBaseVector ConstructParsed(DefinedType type, MinimalLocation location, SharpMeasuresVectorDefinition definition,
         IEnumerable<RawIncludeUnitsDefinition> includeUnits, IEnumerable<RawExcludeUnitsDefinition> excludeUnits,
-        IEnumerable<RawVectorConstantDefinition> vectorConstants, IEnumerable<RawDimensionalEquivalenceDefinition> dimensionalEquivalences)
+        IEnumerable<RawVectorConstantDefinition> vectorConstants, IEnumerable<RawConvertibleQuantityDefinition> dimensionalEquivalences)
     {
         return new(type, location, definition, includeUnits, excludeUnits, vectorConstants, dimensionalEquivalences);
     }
 
     protected override ParsedBaseVector ConstructProcessed(DefinedType type, MinimalLocation location, SharpMeasuresVectorDefinition definition,
         IEnumerable<IncludeUnitsDefinition> includeUnits, IEnumerable<ExcludeUnitsDefinition> excludeUnits,
-        IEnumerable<VectorConstantDefinition> vectorConstants, IEnumerable<DimensionalEquivalenceDefinition> dimensionalEquivalences)
+        IEnumerable<VectorConstantDefinition> vectorConstants, IEnumerable<ConvertibleQuantityDefinition> dimensionalEquivalences)
     {
         return new(type, location, definition, includeUnits, excludeUnits, vectorConstants, dimensionalEquivalences);
     }
@@ -52,8 +52,8 @@ internal class BaseVectorParsingStage : AVectorParsingStage<SharpMeasuresVectorA
 
     private BaseVector ConstructInterface(ParsedBaseVector input, CancellationToken _)
     {
-        var includedUnits = input.IncludeUnits.Select(static (x) => new IncludeUnitsInterface(x.IncludedUnits));
-        var excludedUnits = input.ExcludeUnits.Select(static (x) => new ExcludeUnitsInterface(x.ExcludedUnits));
+        var includedUnits = input.IncludeUnits.Select(static (x) => new IIncludeUnits(x.IncludedUnits));
+        var excludedUnits = input.ExcludeUnits.Select(static (x) => new IExcludeUnits(x.ExcludedUnits));
         var dimensionalEquivalences = input.DimensionalEquivalences.Select(static (x) => new DimensionalEquivalenceInterface(x.Quantities, x.CastOperatorBehaviour));
 
         return new(input.VectorType.AsNamedType(), input.VectorDefinition.Unit, input.VectorDefinition.Scalar, input.VectorDefinition.Dimension,

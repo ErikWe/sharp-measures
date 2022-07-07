@@ -33,8 +33,8 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string InConstantMultiples(RefinedScalarConstantDefinition definition) => $"InMultiplesOf_{definition.Name}";
     public string InSpecifiedUnit(UnitInstance unitInstance) => $"InUnit_{unitInstance.Name}";
 
-    public string AsDimensionallyEquivalent(ScalarInterface scalar) => $"As_{scalar.ScalarType.Name}";
-    public string CastToDimensionallyEquivalent(ScalarInterface scalar) => $"Operator_Cast_{scalar.ScalarType.Name}";
+    public string AsDimensionallyEquivalent(IScalarType scalar) => $"As_{scalar.Type.Name}";
+    public string CastToDimensionallyEquivalent(IScalarType scalar) => $"Operator_Cast_{scalar.Type.Name}";
 
     public string IsNaN() => "IsNaN";
     public string IsZero() => "IsZero";

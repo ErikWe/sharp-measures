@@ -19,7 +19,7 @@ internal interface IVectorConstantRefinementDiagnostics
 
 internal interface IVectorConstantRefinementContext : IProcessingContext
 {
-    public abstract UnitInterface Unit { get; }
+    public abstract IUnitType Unit { get; }
 
     public HashSet<string> IncludedUnits { get; }
 }

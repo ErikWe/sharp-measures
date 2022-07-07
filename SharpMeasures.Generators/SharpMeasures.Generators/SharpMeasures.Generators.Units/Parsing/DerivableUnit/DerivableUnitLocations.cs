@@ -3,7 +3,9 @@
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class DerivableUnitLocations : AAttributeLocations
+using System.Collections.Generic;
+
+internal record class DerivableUnitLocations : AAttributeLocations<DerivableUnitLocations>, IOpenAttributeLocations<DerivableUnitLocations>
 {
     public static DerivableUnitLocations Empty { get; } = new();
 
@@ -11,11 +13,19 @@ internal record class DerivableUnitLocations : AAttributeLocations
     public MinimalLocation? DerivationID { get; init; }
 
     public MinimalLocation? SignatureCollection { get; init; }
-    public ReadOnlyEquatableList<MinimalLocation> SignatureElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
+    public IReadOnlyList<MinimalLocation> SignatureElements
+    {
+        get => signatureElements;
+        init => signatureElements = value.AsReadOnlyEquatable();
+    }
 
     public bool ExplicitlySetExpression => Expression is not null;
     public bool ExplicitlySetDerivationID => DerivationID is not null;
     public bool ExplicitlySetSignature => SignatureCollection is not null;
+
+    protected override DerivableUnitLocations Locations => this;
+
+    private ReadOnlyEquatableList<MinimalLocation> signatureElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
 
     private DerivableUnitLocations() { }
 }

@@ -3,36 +3,31 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Configuration;
-using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Documentation;
 using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units.Diagnostics;
 using SharpMeasures.Generators.Units.Documentation;
-using SharpMeasures.Generators.Units.Parsing;
 using SharpMeasures.Generators.Units.Pipelines.Common;
 using SharpMeasures.Generators.Units.Pipelines.Derivable;
 using SharpMeasures.Generators.Units.Pipelines.UnitDefinitions;
-using SharpMeasures.Generators.Units.Refinement.SharpMeasuresUnit;
 
 using System.Threading;
 
 public class UnitGenerator
 {
-    public IncrementalValueProvider<UnitPopulation> PopulationProvider { get; }
-    private IncrementalValuesProvider<ParsedUnit> UnitProvider { get; }
+    private IncrementalValuesProvider<UnitType> UnitProvider { get; }
 
-    internal UnitGenerator(IncrementalValueProvider<UnitPopulation> populationProvider, IncrementalValuesProvider<ParsedUnit> unitProvider)
+    internal UnitGenerator(IncrementalValuesProvider<UnitType> unitProvider)
     {
-        PopulationProvider = populationProvider;
         UnitProvider = unitProvider;
     }
 
-    public void Perform(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<ScalarPopulation> scalarPopulationProvider,
-        IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
+    public void Perform(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
+        IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider,
+        IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
     {
         var defaultGenerateDocumentation = globalAnalyzerConfigProvider.Select(ExtractDefaultGenerateDocumentation);
 
-        var minimized = UnitProvider.Combine(PopulationProvider, scalarPopulationProvider).Select(ReduceToDataModel).ReportDiagnostics(context)
+        var minimized = UnitProvider.Combine(unitPopulationProvider, scalarPopulationProvider).Select(ReduceToDataModel)
             .Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionaryProvider).Flatten()
             .Select(AppendDocumentationFile);
 
@@ -41,22 +36,9 @@ public class UnitGenerator
         UnitDefinitionsGenerator.Initialize(context, minimized);
     }
 
-    private static IOptionalWithDiagnostics<DataModel> ReduceToDataModel
-        ((ParsedUnit Unit, UnitPopulation UnitPopulation, ScalarPopulation ScalarPopulation) input, CancellationToken _)
+    private static DataModel ReduceToDataModel((UnitType Unit, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation) input, CancellationToken _)
     {
-        SharpMeasuresUnitRefinementContext context = new(input.Unit.UnitType, input.ScalarPopulation);
-        SharpMeasuresUnitRefiner refiner = new(SharpMeasuresUnitDiagnostics.Instance);
-
-        var processedSharpMeasuresUnit = refiner.Process(context, input.Unit.UnitDefinition);
-
-        if (processedSharpMeasuresUnit.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<DataModel>(processedSharpMeasuresUnit.Diagnostics);
-        }
-
-        DataModel model = new(processedSharpMeasuresUnit.Result, input.Unit, input.UnitPopulation);
-
-        return OptionalWithDiagnostics.Result(model, processedSharpMeasuresUnit.Diagnostics);
+        return new(input.Unit, input.UnitPopulation);
     }
 
     private static (DataModel Model, bool GenerateDocumentation) InterpretGenerateDocumentation((DataModel Model, bool Default) data, CancellationToken _)
@@ -76,7 +58,7 @@ public class UnitGenerator
         {
             DefaultDocumentation defaultDocumentation = new(input.Model);
 
-            if (input.DocumentationDictionary.TryGetValue(input.Model.UnitData.UnitType.Name, out DocumentationFile documentationFile))
+            if (input.DocumentationDictionary.TryGetValue(input.Model.UnitData.Type.Name, out DocumentationFile documentationFile))
             {
                 input.Model = input.Model with
                 {
@@ -96,17 +78,4 @@ public class UnitGenerator
     }
 
     private static bool ExtractDefaultGenerateDocumentation(GlobalAnalyzerConfig config, CancellationToken _) => config.GenerateDocumentationByDefault;
-
-    private readonly record struct SharpMeasuresUnitRefinementContext : ISharpMeasuresUnitRefinementContext
-    {
-        public DefinedType Type { get; }
-
-        public ScalarPopulation ScalarPopulation { get; }
-
-        public SharpMeasuresUnitRefinementContext(DefinedType type, ScalarPopulation scalarPopulation)
-        {
-            Type = type;
-            ScalarPopulation = scalarPopulation;
-        }
-    }
 }

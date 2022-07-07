@@ -3,7 +3,7 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Units.Utility;
+using SharpMeasures.Generators.Utility;
 
 public static partial class DiagnosticRules
 {
@@ -32,36 +32,6 @@ public static partial class DiagnosticRules
         id: DiagnosticIDs.UnrecognizedUnitDerivationID,
         title: "Derivation ID not recognized",
         messageFormat: $"The derivation ID \"{{0}}\" was not recognized. {{1}} should be decorated by a {typeof(DerivableUnitAttribute).FullName} with this ID.",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
-        isEnabledByDefault: true
-    );
-
-    public static readonly DiagnosticDescriptor InvalidUnitDerivationExpression = new DiagnosticDescriptor
-    (
-        id: DiagnosticIDs.InvalidUnitDerivationExpression,
-        title: "Invalid unit derivation expression",
-        messageFormat: $"The unit derivation expression \"{{0}}\" is invalid. Common expressions can be found in {typeof(UnitDerivations).FullName}.",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
-        isEnabledByDefault: true
-    );
-
-    public static readonly DiagnosticDescriptor NullUnitDerivationExpression = new DiagnosticDescriptor
-    (
-        id: DiagnosticIDs.InvalidUnitDerivationExpression,
-        title: "Invalid unit derivation expression",
-        messageFormat: $"The unit derivation expression must be defined. Common expressions can be found in {typeof(UnitDerivations).FullName}.",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
-        isEnabledByDefault: true
-    );
-
-    public static readonly DiagnosticDescriptor EmptyUnitDerivationSignature = new DiagnosticDescriptor
-    (
-        id: DiagnosticIDs.EmptyUnitDerivationSignature,
-        title: "Expected a non-empty signature",
-        messageFormat: "The unit derivation signature should consist of at least 1 unit",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

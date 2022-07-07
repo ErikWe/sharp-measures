@@ -27,8 +27,8 @@ internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocu
     string IDocumentationStrategy.InUnit() => string.Empty;
     string IDocumentationStrategy.InConstantMultiples(RefinedScalarConstantDefinition _) => string.Empty;
     string IDocumentationStrategy.InSpecifiedUnit(UnitInstance _) => string.Empty;
-    string IDocumentationStrategy.AsDimensionallyEquivalent(ScalarInterface _) => string.Empty;
-    string IDocumentationStrategy.CastToDimensionallyEquivalent(ScalarInterface _) => string.Empty;
+    string IDocumentationStrategy.AsDimensionallyEquivalent(IScalarType _) => string.Empty;
+    string IDocumentationStrategy.CastToDimensionallyEquivalent(IScalarType _) => string.Empty;
     string IDocumentationStrategy.IsNaN() => string.Empty;
     string IDocumentationStrategy.IsZero() => string.Empty;
     string IDocumentationStrategy.IsPositive() => string.Empty;

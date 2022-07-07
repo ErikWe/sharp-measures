@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Utility;
 using SharpMeasures.Generators.Vectors;
 
 using System.Diagnostics.CodeAnalysis;
@@ -120,6 +121,46 @@ public static partial class DiagnosticRules
         messageFormat: "The unit {0} does not include a bias term",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor InvalidDerivationExpression = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InvalidDerivationExpression,
+        title: "Invalid derivation expression",
+        messageFormat: $"The derivation expression \"{{0}}\" is invalid. Common expressions can be found in {typeof(CommonAlgebraicDerivations).FullName}.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor NullDerivationExpression = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InvalidDerivationExpression,
+        title: "Invalid derivation expression",
+        messageFormat: $"The derivation expression must be defined. Common expressions can be found in {typeof(CommonAlgebraicDerivations).FullName}.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor NullDerivationSignature = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InvalidDerivationSignature,
+        title: "Invalid derivation signature",
+        messageFormat: "The derivation signature must be defined",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor EmptyDerivationSignature = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InvalidDerivationSignature,
+        title: "Invalid derivation signature",
+        messageFormat: "The derivation signature should consist of at least 1 {0}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
 

@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.ScaledUnit;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
 internal static class ScaledUnitParser
 {
@@ -9,7 +8,7 @@ internal static class ScaledUnitParser
 
     private static RawScaledUnitDefinition DefaultDefinition() => RawScaledUnitDefinition.Empty;
 
-    private class AttributeParser : AUnitParser<RawScaledUnitDefinition, ScaledUnitParsingData, ScaledUnitLocations, ScaledUnitAttribute>
+    private class AttributeParser : AAttributeParser<RawScaledUnitDefinition, ScaledUnitLocations, ScaledUnitAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, ScaledUnitProperties.AllProperties) { }
     }

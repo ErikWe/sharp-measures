@@ -3,7 +3,7 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Units.Utility;
+using SharpMeasures.Generators.Utility;
 
 public static partial class DiagnosticRules
 {
@@ -32,7 +32,7 @@ public static partial class DiagnosticRules
         id: DiagnosticIDs.InvalidUnitPluralForm,
         title: "Invalid plural form of unit name",
         messageFormat: $"\"{{0}}\" could not be used to construct the plural form of \"{{1}}\". Try writing the plural form in full, or use a suitable notation " +
-            $"from {typeof(UnitPluralCodes).FullName}.",
+            $"from {typeof(CommonPluralNotations).FullName}.",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -43,7 +43,7 @@ public static partial class DiagnosticRules
         id: DiagnosticIDs.InvalidUnitPluralForm,
         title: "Invalid plural form of unit name",
         messageFormat: $"The plural form of the unit must be defined. Try writing the plural form in full, or use a suitable notation " +
-            $"from {typeof(UnitPluralCodes).FullName}.",
+            $"from {typeof(CommonPluralNotations).FullName}.",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

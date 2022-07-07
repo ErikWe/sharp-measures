@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing;
 
 using SharpMeasures.Equatables;
-using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
+using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Vectors.Parsing.Abstractions;
@@ -20,16 +20,16 @@ internal record class RawParsedBaseVector : IRawParsedVector<SharpMeasuresVector
     public EquatableEnumerable<RawExcludeUnitsDefinition> ExcludeUnits { get; }
 
     public EquatableEnumerable<RawVectorConstantDefinition> VectorConstants { get; }
-    public EquatableEnumerable<RawDimensionalEquivalenceDefinition> DimensionalEquivalences { get; }
+    public EquatableEnumerable<RawConvertibleQuantityDefinition> DimensionalEquivalences { get; }
 
     IEnumerable<RawIncludeUnitsDefinition> IRawParsedVector<SharpMeasuresVectorDefinition>.IncludeUnits => IncludeUnits;
     IEnumerable<RawExcludeUnitsDefinition> IRawParsedVector<SharpMeasuresVectorDefinition>.ExcludeUnits => ExcludeUnits;
     IEnumerable<RawVectorConstantDefinition> IRawParsedVector<SharpMeasuresVectorDefinition>.VectorConstants => VectorConstants;
-    IEnumerable<RawDimensionalEquivalenceDefinition> IRawParsedVector<SharpMeasuresVectorDefinition>.DimensionalEquivalences => DimensionalEquivalences;
+    IEnumerable<RawConvertibleQuantityDefinition> IRawParsedVector<SharpMeasuresVectorDefinition>.DimensionalEquivalences => DimensionalEquivalences;
 
     public RawParsedBaseVector(DefinedType vectorType, MinimalLocation vectorLocation, SharpMeasuresVectorDefinition vectorDefinition,
         IEnumerable<RawIncludeUnitsDefinition> includeUnits, IEnumerable<RawExcludeUnitsDefinition> excludeUnits, IEnumerable<RawVectorConstantDefinition> vectorConstants,
-        IEnumerable<RawDimensionalEquivalenceDefinition> dimensionalEquivalences)
+        IEnumerable<RawConvertibleQuantityDefinition> dimensionalEquivalences)
     {
         VectorType = vectorType;
         VectorLocation = vectorLocation;

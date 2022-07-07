@@ -2,9 +2,8 @@
 
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-using SharpMeasures.Equatables;
-
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 public interface IAttributeProperty
@@ -25,7 +24,7 @@ public interface IAttributeProperty<TDefinition> : IAttributeProperty
 public record class AttributeProperty<TDefinition> : IAttributeProperty<TDefinition>
 {
     public delegate TDefinition DSingleLocator(TDefinition definition, MinimalLocation location);
-    public delegate TDefinition DMultiLocator(TDefinition definition, MinimalLocation collection, ReadOnlyEquatableList<MinimalLocation> elements);
+    public delegate TDefinition DMultiLocator(TDefinition definition, MinimalLocation collection, IReadOnlyList<MinimalLocation> elements);
 
     public string Name { get; init; }
     public string ParameterName { get; init; }
@@ -68,7 +67,7 @@ public record class AttributeProperty<TDefinition> : IAttributeProperty<TDefinit
         {
             (var collection, var elements) = ArgumentLocator.FromArrayOrParamsList(argumentList, index);
 
-            return locator(definition, collection, elements.AsReadOnlyEquatable());
+            return locator(definition, collection, elements);
         }
     }
 
@@ -142,11 +141,11 @@ public record class AttributeProperty<TDefinition, TPropertyType> : AttributePro
 }
 
 public record class AttributeProperty<TDefinition, TLocations, TPropertyType> : AttributeProperty<TDefinition, TPropertyType>
-    where TDefinition : ARawAttributeDefinition<TLocations>
-    where TLocations : AAttributeLocations
+    where TDefinition : IOpenAttributeDefinition<TDefinition, TLocations>
+    where TLocations : IAttributeLocations
 {
     public delegate TLocations DSingleLocationSetter(TLocations definition, MinimalLocation location);
-    public delegate TLocations DMultiLocationSetter(TLocations definition, MinimalLocation collectionLocation, ReadOnlyEquatableList<MinimalLocation> elementLocations);
+    public delegate TLocations DMultiLocationSetter(TLocations definition, MinimalLocation collectionLocation, IReadOnlyList<MinimalLocation> elementLocations);
 
     public AttributeProperty(string name, string parameterName, DTypeSetter setter, DSingleLocationSetter locator)
         : base(name, parameterName, setter, WrapLocator(locator)) { }
@@ -166,7 +165,7 @@ public record class AttributeProperty<TDefinition, TLocations, TPropertyType> : 
         {
             var modifiedLocations = locator(definition.Locations, location);
 
-            return definition with { Locations = modifiedLocations };
+            return definition.WithLocations(modifiedLocations);
         }
     }
 
@@ -174,11 +173,11 @@ public record class AttributeProperty<TDefinition, TLocations, TPropertyType> : 
     {
         return wrapper;
 
-        TDefinition wrapper(TDefinition definition, MinimalLocation collectionLocation, ReadOnlyEquatableList<MinimalLocation> elementLocations)
+        TDefinition wrapper(TDefinition definition, MinimalLocation collectionLocation, IReadOnlyList<MinimalLocation> elementLocations)
         {
             var modifiedLocations = locator(definition.Locations, collectionLocation, elementLocations);
 
-            return definition with { Locations = modifiedLocations };
+            return definition.WithLocations(modifiedLocations);
         }
     }
 }

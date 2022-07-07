@@ -10,15 +10,15 @@ internal static class DerivedUnitProperties
 {
     public static IReadOnlyList<IAttributeProperty<RawDerivedUnitDefinition>> AllProperties => new IAttributeProperty<RawDerivedUnitDefinition>[]
     {
-        CommonProperties.Name<RawDerivedUnitDefinition, DerivedUnitParsingData, DerivedUnitLocations>(nameof(DerivedUnitAttribute.Name)),
-        CommonProperties.Plural<RawDerivedUnitDefinition, DerivedUnitParsingData, DerivedUnitLocations>(nameof(DerivedUnitAttribute.Plural)),
+        CommonProperties.Name<RawDerivedUnitDefinition, DerivedUnitLocations>(nameof(DerivedUnitAttribute.Name)),
+        CommonProperties.Plural<RawDerivedUnitDefinition, DerivedUnitLocations>(nameof(DerivedUnitAttribute.Plural)),
         SignatureID,
         Units
     };
 
     private static DerivedUnitProperty<string> SignatureID { get; } = new
     (
-        name: nameof(DerivedUnitAttribute.SignatureID),
+        name: nameof(DerivedUnitAttribute.DerivationID),
         setter: static (definition, signatureID) => definition with { SignatureID = signatureID },
         locator: static (locations, signatureIDLocation) => locations with { SignatureID = signatureIDLocation }
     );
@@ -30,7 +30,7 @@ internal static class DerivedUnitProperties
         locator: static (locations, collectionLocation, elementLocations) => locations with
         {
             UnitsCollection = collectionLocation,
-            UnitsElements = elementLocations
+            UnitsElements = elementLocations.AsReadOnlyEquatable()
         }
     );
 }

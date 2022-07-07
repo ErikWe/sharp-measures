@@ -2,14 +2,13 @@
 
 using System;
 
-/// <summary>Defines an instance of the unit by scaling of another instance of the same unit.</summary>
+/// <summary>Defines an instance of a unit by scaling another instance of the same unit.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class ScaledUnitAttribute : Attribute
 {
-    /// <summary>The name of the instance of the unit, in singular form.</summary>
+    /// <inheritdoc cref="FixedUnitAttribute.Name"/>
     public string Name { get; }
-    /// <summary>The name of the instance of the unit, in plural form. May be identical to the singular form.</summary>
-    /// <remarks>See <see cref="Utility.UnitPluralCodes"/> for some short-hand notations for producing the plural form based on the singular form.</remarks>
+    /// <inheritdoc cref="FixedUnitAttribute.Plural"/>
     public string Plural { get; }
     /// <summary>The name of the instance that is scaled.</summary>
     public string From { get; }
@@ -18,12 +17,11 @@ public sealed class ScaledUnitAttribute : Attribute
     /// <summary>An expression that computes the value by which the original instance is scaled.</summary>
     public string? Expression { get; }
 
-    /// <summary>Constructs a definition of an instance of the unit by scaling of another instance of the same unit.</summary>
-    /// <param name="name">The name of the instance of the unit, in singular form.</param>
-    /// <param name="plural">The name of the instance of the unit, in plural form. May be identical to the singular form.
-    /// <para>See <see cref="Utility.UnitPluralCodes"/> for some short-hand notations for producing the plural form based on the singular form.</para></param>
-    /// <param name="from">The name of the instance that is scaled.</param>
-    /// <param name="scale">The value by which the original instance is scaled.</param>
+    /// <inheritdoc cref="ScaledUnitAttribute"/>
+    /// <param name="name"><inheritdoc cref="Name" path="/summary"/><para><inheritdoc cref="Name" path="/remarks"/></para></param>
+    /// <param name="plural"><inheritdoc cref="Plural" path="/summary"/><para><inheritdoc cref="Plural" path="/remarks"/></para></param>
+    /// <param name="from"><inheritdoc cref="From" path="/summary"/><para><inheritdoc cref="From" path="/remarks"/></para></param>
+    /// <param name="scale"><inheritdoc cref="Scale" path="/summary"/><para><inheritdoc cref="Scale" path="/remarks"/></para></param>
     public ScaledUnitAttribute(string name, string plural, string from, double scale)
     {
         Name = name;
@@ -32,13 +30,13 @@ public sealed class ScaledUnitAttribute : Attribute
         Scale = scale;
     }
 
-    /// <summary>Constructs a definition of an instance of the unit by scaling of another instance of the same unit.</summary>
-    /// <param name="name">The name of the instance of the unit, in singular form.</param>
-    /// <param name="plural">The name of the instance of the unit, in plural form. May be identical to the singular form.
-    /// <para>See <see cref="Utility.UnitPluralCodes"/> for some short-hand notations for producing the plural form based on the singular form.</para></param>
-    /// <param name="from">The name of the instance that is scaled.</param>
+    /// <summary><inheritdoc cref="ScaledUnitAttribute" path="/summary"/></summary>
+    /// <param name="name"><inheritdoc cref="Name" path="/summary"/><para><inheritdoc cref="Name" path="/remarks"/></para></param>
+    /// <param name="plural"><inheritdoc cref="Plural" path="/summary"/><para><inheritdoc cref="Plural" path="/remarks"/></para></param>
+    /// <param name="from"><inheritdoc cref="From" path="/summary"/><para><inheritdoc cref="From" path="/remarks"/></para></param>
     /// <param name="expression">An expression that computes the value by which the original instance is scaled.</param>
-    /// <remarks>This constructor should only be preferred when <see cref="ScaledUnitAttribute(string, string, string, double)"/> is insufficient.</remarks>
+    /// <remarks><inheritdoc cref="ScaledUnitAttribute" path="/remarks"/>
+    /// <para>When applicable, <see cref="ScaledUnitAttribute(string, string, string, double)"/> should be preferred.</para></remarks>
     public ScaledUnitAttribute(string name, string plural, string from, string expression)
     {
         Name = name;

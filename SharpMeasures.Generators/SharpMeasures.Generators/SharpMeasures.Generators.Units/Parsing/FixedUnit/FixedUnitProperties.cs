@@ -9,23 +9,7 @@ internal static class FixedUnitProperties
 {
     public static IReadOnlyList<IAttributeProperty<RawFixedUnitDefinition>> AllProperties => new IAttributeProperty<RawFixedUnitDefinition>[]
     {
-        CommonProperties.Name<RawFixedUnitDefinition, FixedUnitParsingData, FixedUnitLocations>(nameof(FixedUnitAttribute.Name)),
-        CommonProperties.Plural<RawFixedUnitDefinition, FixedUnitParsingData, FixedUnitLocations>(nameof(FixedUnitAttribute.Plural)),
-        Value,
-        Bias
+        CommonProperties.Name<RawFixedUnitDefinition, FixedUnitLocations>(nameof(FixedUnitAttribute.Name)),
+        CommonProperties.Plural<RawFixedUnitDefinition, FixedUnitLocations>(nameof(FixedUnitAttribute.Plural))
     };
-
-    private static FixedUnitProperty<double> Value { get; } = new
-    (
-        name: nameof(FixedUnitAttribute.Value),
-        setter: static (definition, value) => definition with { Value = value },
-        locator: static (locations, valueLocation) => locations with { Value = valueLocation }
-    );
-
-    private static FixedUnitProperty<double> Bias { get; } = new
-    (
-        name: nameof(FixedUnitAttribute.Bias),
-        setter: static (definition, bias) => definition with { Bias = bias },
-        locator: static (locations, biasLocation) => locations with { Bias = biasLocation }
-    );
 }

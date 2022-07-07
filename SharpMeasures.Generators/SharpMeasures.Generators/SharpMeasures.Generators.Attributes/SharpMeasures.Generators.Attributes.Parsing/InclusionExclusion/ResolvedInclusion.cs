@@ -8,15 +8,17 @@ public class ResolvedInclusion<TItem>
 {
     public InclusionMode Mode { get; }
 
-    public ReadOnlyEquatableHashSet<TItem> Items { get; }
+    public IReadOnlyHashSet<TItem> Items => items;
+    public IReadOnlyCollection<int> RedundantIndices => redundantIndices;
 
-    public ReadOnlyEquatableCollection<int> RedundantIndices { get; }
+    private ReadOnlyEquatableHashSet<TItem> items { get; }
+    private ReadOnlyEquatableCollection<int> redundantIndices { get; }
 
     public ResolvedInclusion(InclusionMode mode, HashSet<TItem> items, IReadOnlyCollection<int> redundantIndices)
     {
         Mode = mode;
-        Items = items.AsReadOnlyEquatable();
 
-        RedundantIndices = redundantIndices.AsReadOnlyEquatable();
+        this.items = items.AsReadOnlyEquatable();
+        this.redundantIndices = redundantIndices.AsReadOnlyEquatable();
     }
 }

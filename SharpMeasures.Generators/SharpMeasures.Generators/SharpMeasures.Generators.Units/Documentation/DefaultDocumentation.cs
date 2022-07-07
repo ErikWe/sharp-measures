@@ -1,15 +1,15 @@
 ﻿namespace SharpMeasures.Generators.Units.Documentation;
 
-using SharpMeasures.Generators.Units.Parsing.Abstractions;
-using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.SourceBuilding;
+using SharpMeasures.Generators.Units.UnitInstances;
+using SharpMeasures.Generators.Unresolved.Scalars;
 
 using System;
 
 internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<DefaultDocumentation>
 {
     private DefinedType UnitType { get; }
-    private ScalarInterface Quantity { get; }
+    private IUnresolvedScalarType Quantity { get; }
 
     private bool BiasTerm { get; }
 
@@ -17,12 +17,12 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
 
     public DefaultDocumentation(DataModel model)
     {
-        UnitType = model.UnitData.UnitType;
-        Quantity = model.UnitDefinition.Quantity;
+        UnitType = model.UnitData.Type;
+        Quantity = model.UnitData.UnitDefinition.Quantity;
 
-        BiasTerm = model.UnitDefinition.BiasTerm;
+        BiasTerm = model.UnitData.UnitDefinition.BiasTerm;
 
-        QuantityParameterName = SourceBuildingUtility.ToParameterName(Quantity.ScalarType.Name);
+        QuantityParameterName = SourceBuildingUtility.ToParameterName(Quantity.Type.Name);
     }
 
     public string Header() => BiasTerm switch
@@ -31,7 +31,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         false => $"""/// <summary>A unit of measurement, primarily describing {QuantityReference}.</summary>"""
     };
 
-    public string Derivation(DerivableSignature signature)
+    public string Derivation(UnitDerivationSignature signature)
     {
         var text = $"""/// <summary>Constructs a new {UnitReference}, derived from other units.</summary>""";
 
@@ -39,14 +39,14 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         {
             text = $"""
                 {text}
-                /// <param name="{SourceBuildingUtility.ToParameterName(unit.Name)}">This <see cref="{unit.Name}"/> is used to derive a {UnitReference}.</param>
+                /// <param name="{SourceBuildingUtility.ToParameterName(unit.Type.Name)}">This <see cref="{unit.Type.Name}"/> is used to derive a {UnitReference}.</param>
                 """;
         }
 
         return text;
     }
 
-    public string Definition(IUnitDefinition definition) => BiasTerm switch
+    public string Definition(IUnitInstance definition) => BiasTerm switch
     {
         true => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference} together with a <see cref="Scalar"/> bias term.</summary>""",
         false => $"/// <summary>A {UnitReference}, describing a certain {QuantityReference}.</summary>"
@@ -179,7 +179,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     public string GreaterThanOrEqualSameType() => $$"""/// <inheritdoc cref="Scalar.operator &gt;=(Scalar, Scalar)"/>""";
 
     private string UnitReference => $"""<see cref="{UnitType.Name}"/>""";
-    private string QuantityReference => $"""<see cref="{Quantity.ScalarType.FullyQualifiedName}"/>""";
+    private string QuantityReference => $"""<see cref="{Quantity.Type.FullyQualifiedName}"/>""";
 
     private static string InheritDoc => "/// <inheritdoc/>";
 

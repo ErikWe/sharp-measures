@@ -4,16 +4,16 @@ using SharpMeasures.Equatables;
 
 using System.Collections.Generic;
 
-public abstract record class AItemListDefinition<TItem, TLocations> : AAttributeDefinition<TLocations>, IItemListDefinition<TItem>
-    where TLocations : AItemListLocations
+public abstract record class AItemListDefinition<TItem, TLocations> : AAttributeDefinition<TLocations>, IItemListDefinition<TItem, TLocations>
+    where TLocations : IItemListLocations
 {
-    public ReadOnlyEquatableList<TItem> Items { get; }
-    IReadOnlyList<TItem> IItemListDefinition<TItem>.Items => Items;
+    protected IReadOnlyList<TItem> Items => items;
 
-    IItemListLocations IItemListDefinition<TItem>.Locations => Locations;
+    private ReadOnlyEquatableList<TItem> items { get; } = ReadOnlyEquatableList<TItem>.Empty;
+    IReadOnlyList<TItem> IItemListDefinition<TItem, TLocations>.Items => Items;
 
     protected AItemListDefinition(IReadOnlyList<TItem> items, TLocations locations) : base(locations)
     {
-        Items = items.AsReadOnlyEquatable();
+        this.items = items.AsReadOnlyEquatable();
     }
 }

@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.BiasedUnit;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
 internal static class BiasedUnitParser
 {
@@ -9,7 +8,7 @@ internal static class BiasedUnitParser
 
     private static RawBiasedUnitDefinition DefaultDefinition() => RawBiasedUnitDefinition.Empty;
 
-    private class AttributeParser : AUnitParser<RawBiasedUnitDefinition, BiasedUnitParsingData, BiasedUnitLocations, BiasedUnitAttribute>
+    private class AttributeParser : AAttributeParser<RawBiasedUnitDefinition, BiasedUnitLocations, BiasedUnitAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, BiasedUnitProperties.AllProperties) { }
     }

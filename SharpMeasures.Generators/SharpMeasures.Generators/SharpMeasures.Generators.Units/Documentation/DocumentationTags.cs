@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Units.Documentation;
 
-using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.SourceBuilding;
+using SharpMeasures.Generators.Units.UnitInstances;
 
 using System;
 using System.Linq;
@@ -15,8 +15,8 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
 
     public string Header() => "Header";
 
-    public string Derivation(DerivableSignature signature) => $"From_{ParseDerivableSignature(signature)}";
-    public string Definition(IUnitDefinition definition) => $"Definition_{definition.Name}";
+    public string Derivation(UnitDerivationSignature signature) => $"From_{ParseDerivableSignature(signature)}";
+    public string Definition(IUnitInstance definition) => $"Definition_{definition.Name}";
 
     public string RepresentedQuantity() => "Quantity";
     public string Bias() => "Bias";
@@ -44,11 +44,11 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string LessThanOrEqualSameType() => "Operator_LessThanOrEqual_SameType";
     public string GreaterThanOrEqualSameType() => "Operator_GreaterThanOrEqual_SameType";
 
-    private static string ParseDerivableSignature(DerivableSignature signature)
+    private static string ParseDerivableSignature(UnitDerivationSignature signature)
     {
         StringBuilder tag = new();
 
-        IterativeBuilding.AppendEnumerable(tag, signature.Select(static (x) => x.Name), "_");
+        IterativeBuilding.AppendEnumerable(tag, signature.Select(static (signatureElement) => signatureElement.Type.Name), "_");
 
         return tag.ToString();
     }

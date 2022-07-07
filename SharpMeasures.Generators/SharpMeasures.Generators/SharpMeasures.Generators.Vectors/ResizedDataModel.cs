@@ -2,7 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
+using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars;
@@ -43,12 +43,12 @@ internal record class ResizedDataModel : IDataModel<ResizedDataModel>
 
     NamedType IDataModel.Difference => VectorDefinition.Difference;
 
-    UnitInterface IDataModel.Unit => VectorDefinition.Unit;
-    ScalarInterface? IDataModel.Scalar => VectorDefinition.Scalar;
+    IUnitType IDataModel.Unit => VectorDefinition.Unit;
+    IScalarType? IDataModel.Scalar => VectorDefinition.Scalar;
 
     IEnumerable<IncludeUnitsDefinition> IDataModel.IncludeUnits => VectorData.IncludeUnits;
     IEnumerable<ExcludeUnitsDefinition> IDataModel.ExcludeUnits => VectorData.ExcludeUnits;
-    IEnumerable<DimensionalEquivalenceDefinition> IDataModel.DimensionalEquivalences => VectorData.DimensionalEquivalences;
+    IEnumerable<ConvertibleQuantityDefinition> IDataModel.DimensionalEquivalences => VectorData.DimensionalEquivalences;
 
     string? IDataModel.DefaultUnitName => VectorDefinition.DefaultUnitName;
     string? IDataModel.DefaultUnitSymbol => VectorDefinition.DefaultUnitSymbol;

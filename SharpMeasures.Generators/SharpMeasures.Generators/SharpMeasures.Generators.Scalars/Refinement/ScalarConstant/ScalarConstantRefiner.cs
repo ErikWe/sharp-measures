@@ -20,7 +20,7 @@ internal interface IScalarConstantRefinementDiagnostics
 
 internal interface IScalarConstantRefinementContext : IProcessingContext
 {
-    public UnitInterface Unit { get; }
+    public IUnitType Unit { get; }
 
     public HashSet<string> IncludedBases { get; }
     public HashSet<string> IncludedUnits { get; }

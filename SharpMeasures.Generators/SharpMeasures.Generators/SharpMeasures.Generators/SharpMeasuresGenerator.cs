@@ -18,7 +18,7 @@ public class SharpMeasuresGenerator : IIncrementalGenerator
         var documentationDictionary = DocumentationDictionaryProvider.AttachAndReport(context, context.AdditionalTextsProvider, globalAnalyzerConfig,
             DocumentationDiagnostics.Instance);
 
-        var unitParsingResult = UnitParsingStage.Attach(context);
+        var unitParsingResult = UnitParser.Attach(context);
         var scalarParsingResult = ScalarParsingStage.Attach(context);
         var vectorParsingResult = VectorParsingStage.Attach(context);
 

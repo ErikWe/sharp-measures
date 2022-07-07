@@ -3,7 +3,7 @@
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities.Abstrations;
 using SharpMeasures.Generators.Quantities.Parsing.Abstractions;
-using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
+using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Vectors.Parsing.ResizedSharpMeasuresVector;
@@ -21,14 +21,14 @@ internal class ParsedResizedVector : IInclusionExclusion<IncludeUnitsDefinition,
     public EquatableEnumerable<ExcludeUnitsDefinition> ExcludeUnits { get; }
 
     public EquatableEnumerable<VectorConstantDefinition> VectorConstants { get; }
-    public EquatableEnumerable<DimensionalEquivalenceDefinition> DimensionalEquivalences { get; }
+    public EquatableEnumerable<ConvertibleQuantityDefinition> DimensionalEquivalences { get; }
 
     IEnumerable<IncludeUnitsDefinition> IInclusionExclusion<IncludeUnitsDefinition, ExcludeUnitsDefinition>.IncludeUnits => IncludeUnits;
     IEnumerable<ExcludeUnitsDefinition> IInclusionExclusion<IncludeUnitsDefinition, ExcludeUnitsDefinition>.ExcludeUnits => ExcludeUnits;
 
     public ParsedResizedVector(DefinedType vectorType, MinimalLocation vectorLocation, ResizedSharpMeasuresVectorDefinition vectorDefinition,
         IEnumerable<IncludeUnitsDefinition> includeUnits, IEnumerable<ExcludeUnitsDefinition> excludeUnits, IEnumerable<VectorConstantDefinition> vectorConstants,
-        IEnumerable<DimensionalEquivalenceDefinition> dimensionalEquivalences)
+        IEnumerable<ConvertibleQuantityDefinition> dimensionalEquivalences)
     {
         VectorType = vectorType;
         VectorLocation = vectorLocation;

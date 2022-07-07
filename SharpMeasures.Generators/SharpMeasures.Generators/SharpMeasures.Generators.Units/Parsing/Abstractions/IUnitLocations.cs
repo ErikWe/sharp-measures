@@ -10,3 +10,10 @@ internal interface IUnitLocations : IAttributeLocations
     public abstract bool ExplicitlySetName { get; }
     public abstract bool ExplicitlySetPlural { get; }
 }
+
+internal interface IOpenUnitLocations<out TLocations> : IOpenAttributeLocations<TLocations>, IUnitLocations
+    where TLocations : IOpenUnitLocations<TLocations>
+{
+    public abstract TLocations WithName(MinimalLocation name);
+    public abstract TLocations WithPlural(MinimalLocation plural);
+}

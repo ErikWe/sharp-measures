@@ -4,30 +4,25 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
 
-using System.Collections.Generic;
-
-internal interface IDependantUnitProcessingDiagnostics<in TDefinition> : IUnitProcessingDiagnostics<TDefinition>
-    where TDefinition : IRawDependantUnitDefinition
+internal interface IDependantUnitProcessingDiagnostics<in TDefinition, in TLocations> : IUnitProcessingDiagnostics<TDefinition, TLocations>
+    where TDefinition : IRawDependantUnitDefinition<TLocations>
+    where TLocations : IDependantUnitLocations
 {
-    public abstract Diagnostic? NullDependency(IDependantUnitProcessingContext context, TDefinition definition);
-    public abstract Diagnostic? EmptyDependency(IDependantUnitProcessingContext context, TDefinition definition);
-    public abstract Diagnostic? UnrecognizedDependency(IDependantUnitProcessingContext context, TDefinition definition);
-    public abstract Diagnostic? DependantOnSelf(IDependantUnitProcessingContext context, TDefinition definition);
+    public abstract Diagnostic? NullDependency(IUnitProcessingContext context, TDefinition definition);
+    public abstract Diagnostic? EmptyDependency(IUnitProcessingContext context, TDefinition definition);
+    public abstract Diagnostic? DependantOnSelf(IUnitProcessingContext context, TDefinition definition);
 }
 
-internal interface IDependantUnitProcessingContext : IUnitProcessingContext
+internal abstract class ADependantUnitProcesser<TContext, TDefinition, TLocations, TProduct>
+    : AUnitProcesser<TContext, TDefinition, TLocations, TProduct>
+    where TContext : IUnitProcessingContext
+    where TDefinition : IRawDependantUnitDefinition<TLocations>
+    where TLocations : IDependantUnitLocations
+    where TProduct : IUnresolvedDependantUnitDefinition<TLocations>
 {
-    public abstract HashSet<string> AvailableUnitDependencies { get; }
-}
+    private IDependantUnitProcessingDiagnostics<TDefinition, TLocations> Diagnostics { get; }
 
-internal abstract class ADependantUnitProcesser<TContext, TDefinition, TProduct> : AUnitProcesser<TContext, TDefinition, TProduct>
-    where TContext : IDependantUnitProcessingContext
-    where TDefinition : IRawDependantUnitDefinition
-    where TProduct : IDependantUnitDefinition
-{
-    private IDependantUnitProcessingDiagnostics<TDefinition> Diagnostics { get; }
-
-    protected ADependantUnitProcesser(IDependantUnitProcessingDiagnostics<TDefinition> diagnostics) : base(diagnostics)
+    protected ADependantUnitProcesser(IDependantUnitProcessingDiagnostics<TDefinition, TLocations> diagnostics) : base(diagnostics)
     {
         Diagnostics = diagnostics;
     }
@@ -52,11 +47,6 @@ internal abstract class ADependantUnitProcesser<TContext, TDefinition, TProduct>
         if (definition.DependantOn.Length is 0)
         {
             return ValidityWithDiagnostics.Invalid(Diagnostics.EmptyDependency(context, definition));
-        }
-
-        if (context.AvailableUnitDependencies.Contains(definition.DependantOn) is false)
-        {
-            return ValidityWithDiagnostics.Invalid(Diagnostics.UnrecognizedDependency(context, definition));
         }
 
         if (definition.DependantOn == definition.Name)

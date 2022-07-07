@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class ScalarConstantDefinition : AAttributeDefinition<ScalarConstantLocations>
+internal record class ScalarConstantDefinition : AAttributeDefinition<ScalarConstantLocations>, IScalarConstant
 {
     public string Name { get; }
     public string Unit { get; }

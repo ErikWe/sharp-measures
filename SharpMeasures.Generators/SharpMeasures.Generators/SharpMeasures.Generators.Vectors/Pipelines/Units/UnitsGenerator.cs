@@ -20,6 +20,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using SharpMeasures.Generators.Vectors.Refinement.VectorConstant;
+using SharpMeasures.Generators.Quantities.Refinement.UnitList;
 
 internal static class UnitsGenerator
 {
@@ -47,7 +48,7 @@ internal static class UnitsGenerator
 
         var processedConstants = ProcessingFilter.Create(vectorConstantRefiner).Filter(vectorConstantContext, input.VectorData.VectorConstants);
 
-        DataModel model = new(input.VectorData.VectorType, input.VectorDefinition.Dimension, input.VectorDefinition.Scalar?.ScalarType.AsNamedType(),
+        DataModel model = new(input.VectorData.VectorType, input.VectorDefinition.Dimension, input.VectorDefinition.Scalar?.Type.AsNamedType(),
             input.VectorDefinition.Unit, input.VectorDefinition.Unit.QuantityType, processedUnits.Result, processedConstants.Result, input.Documentation);
 
         var allDiagnostics = processedUnits.Diagnostics.Concat(processedConstants.Diagnostics);
@@ -107,7 +108,7 @@ internal static class UnitsGenerator
         AssociatedUnitInclusionRefinementContext unitInclusionContext = new(input.Model.VectorData.VectorType, input.Model.VectorData.VectorDefinition.AssociatedVector,
             associatedModel.Unit, input.UnitInclusionPopulation);
 
-        AssociatedUnitInclusionRefiner<ParsedResizedVector, IncludeUnitsDefinition, ExcludeUnitsDefinition> unitInclusionRefiner
+        AssociatedInclusionRefiner<ParsedResizedVector, IncludeUnitsDefinition, ExcludeUnitsDefinition> unitInclusionRefiner
             = new(AssociatedUnitInclusionRefinementDiagnostics<IncludeUnitsDefinition, ExcludeUnitsDefinition>.Instance);
 
         var processedUnitInclusion = unitInclusionRefiner.Process(unitInclusionContext, input.Model.VectorData);
@@ -131,9 +132,9 @@ internal static class UnitsGenerator
     {
         public DefinedType Type { get; }
 
-        public UnitInterface Unit { get; }
+        public IUnitType Unit { get; }
 
-        public UnitListRefinementContext(DefinedType type, UnitInterface unit)
+        public UnitListRefinementContext(DefinedType type, IUnitType unit)
         {
             Type = type;
             Unit = unit;
@@ -144,11 +145,11 @@ internal static class UnitsGenerator
     {
         public DefinedType Type { get; }
 
-        public UnitInterface Unit { get; }
+        public IUnitType Unit { get; }
 
         public HashSet<string> IncludedUnits { get; }
 
-        public VectorConstantRefinementContext(DefinedType type, UnitInterface unit, HashSet<string> includedUnits)
+        public VectorConstantRefinementContext(DefinedType type, IUnitType unit, HashSet<string> includedUnits)
         {
             Type = type;
             Unit = unit;
@@ -157,15 +158,15 @@ internal static class UnitsGenerator
         }
     }
 
-    private class AssociatedUnitInclusionRefinementContext : IAssociatedUnitInclusionRefinementContext
+    private class AssociatedUnitInclusionRefinementContext : IAssociatedInclusionRefinementContext
     {
         public DefinedType Type { get; }
         public NamedType AssociatedType { get; }
-        public UnitInterface Unit { get; }
+        public IUnitType Unit { get; }
 
         public InclusionPopulation UnitInclusionPopulation { get; }
 
-        public AssociatedUnitInclusionRefinementContext(DefinedType type, NamedType associatedType, UnitInterface unit, InclusionPopulation unitInclusionPopulation)
+        public AssociatedUnitInclusionRefinementContext(DefinedType type, NamedType associatedType, IUnitType unit, InclusionPopulation unitInclusionPopulation)
         {
             Type = type;
             AssociatedType = associatedType;

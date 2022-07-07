@@ -4,7 +4,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Units.Refinement.DerivableUnit;
+using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
+using SharpMeasures.Generators.Unresolved.Units;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -67,43 +68,47 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
-            foreach (RefinedDerivableUnitDefinition definition in Data.Derivations)
+            foreach (DerivableUnitDefinition definition in Data.Derivations)
             {
                 ComposeDefinition(definition, indentation);
             }
         }
 
-        private void ComposeDefinition(RefinedDerivableUnitDefinition definition, Indentation indentation)
+        private void ComposeDefinition(DerivableUnitDefinition definition, Indentation indentation)
         {
             IEnumerable<string> signatureComponents = GetSignatureComponents(definition);
-            bool anyNullableTypes = AnyNullableTypesInSignature(definition);
+            bool anyNullableTypes = AnyReferenceTypesInSignature(definition);
 
             AppendDocumentation(indentation, Data.Documentation.Derivation(definition.Signature));
 
             if (anyNullableTypes)
             {
+                UsingsCollector.AddUsings("System");
                 Builder.AppendLine($"""{indentation}/// <exception cref="ArgumentNullException"/>""");
             }
 
             Builder.Append($"{indentation}public static {Data.Unit.Name} From(");
             IterativeBuilding.AppendEnumerable(Builder, signatureComponents, ", ", ")");
 
-            if (anyNullableTypes is false)
+            if (anyNullableTypes)
             {
-                Builder.AppendLine($" => new({definition.Expression});");
+                ComposeDefinitionWithReferenceTypeArgument(definition, indentation);
                 return;
             }
+            
+            Builder.AppendLine($" => new({definition.Expression});");
+        }
 
-            UsingsCollector.AddUsings("System");
-
+        private void ComposeDefinitionWithReferenceTypeArgument(DerivableUnitDefinition definition, Indentation indentation)
+        {
             IEnumerator<string> parameterEnumerator = definition.ParameterNames.GetEnumerator();
-            IEnumerator<NamedType> namedTypeEnumerator = definition.Signature.GetEnumerator();
+            IEnumerator<IUnresolvedUnitType> signatureUnitTypeEnumerator = definition.Signature.GetEnumerator();
 
             Builder.AppendLine($$"""{{indentation}}{""");
 
-            while (parameterEnumerator.MoveNext() && namedTypeEnumerator.MoveNext())
+            while (parameterEnumerator.MoveNext() && signatureUnitTypeEnumerator.MoveNext())
             {
-                if (namedTypeEnumerator.Current.IsReferenceType)
+                if (signatureUnitTypeEnumerator.Current.Type.IsReferenceType)
                 {
                     Builder.AppendLine($"{indentation.Increased}ArgumentNullException.ThrowIfNull({parameterEnumerator.Current});");
                 }
@@ -114,23 +119,23 @@ internal static class Execution
             Builder.AppendLine($$"""{{indentation}}}""");
         }
 
-        private IEnumerable<string> GetSignatureComponents(RefinedDerivableUnitDefinition definition)
+        private IEnumerable<string> GetSignatureComponents(DerivableUnitDefinition definition)
         {
-            IEnumerator<NamedType> signatureIterator = definition.Signature.GetEnumerator();
-            IEnumerator<string> parameterIterator = definition.ParameterNames.GetEnumerator();
+            IEnumerator<string> parameterEnumerator = definition.ParameterNames.GetEnumerator();
+            IEnumerator<IUnresolvedUnitType> signatureUnitTypeEnumerator = definition.Signature.GetEnumerator();
 
-            while (parameterIterator.MoveNext() && signatureIterator.MoveNext())
+            while (parameterEnumerator.MoveNext() && signatureUnitTypeEnumerator.MoveNext())
             {
-                UsingsCollector.AddUsing(signatureIterator.Current.Namespace);
-                yield return $"{signatureIterator.Current.Name} {parameterIterator.Current}";
+                UsingsCollector.AddUsing(signatureUnitTypeEnumerator.Current.Type.Namespace);
+                yield return $"{signatureUnitTypeEnumerator.Current.Type.Name} {parameterEnumerator.Current}";
             }
         }
 
-        private static bool AnyNullableTypesInSignature(RefinedDerivableUnitDefinition definition)
+        private static bool AnyReferenceTypesInSignature(DerivableUnitDefinition definition)
         {
-            foreach (var namedType in definition.Signature)
+            foreach (var unitType in definition.Signature)
             {
-                if (namedType.IsReferenceType)
+                if (unitType.Type.IsReferenceType)
                 {
                     return true;
                 }

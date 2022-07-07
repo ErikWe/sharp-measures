@@ -2,9 +2,9 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class RawSharpMeasuresUnitDefinition : ARawAttributeDefinition<SharpMeasuresUnitLocations>
+internal record class RawSharpMeasuresUnitDefinition : IOpenAttributeDefinition<RawSharpMeasuresUnitDefinition, SharpMeasuresUnitLocations>
 {
-    public static RawSharpMeasuresUnitDefinition Empty { get; } = new();
+    public static RawSharpMeasuresUnitDefinition Empty { get; } = new(SharpMeasuresUnitLocations.Empty);
 
     public NamedType? Quantity { get; init; }
 
@@ -12,5 +12,18 @@ internal record class RawSharpMeasuresUnitDefinition : ARawAttributeDefinition<S
 
     public bool GenerateDocumentation { get; init; }
 
-    private RawSharpMeasuresUnitDefinition() : base(SharpMeasuresUnitLocations.Empty) { }
+    public SharpMeasuresUnitLocations Locations { get; private init; }
+
+    private RawSharpMeasuresUnitDefinition(SharpMeasuresUnitLocations locations)
+    {
+        Locations = locations;
+    }
+
+    protected RawSharpMeasuresUnitDefinition WithLocations(SharpMeasuresUnitLocations locations) => this with
+    {
+        Locations = locations
+    };
+
+    RawSharpMeasuresUnitDefinition IOpenAttributeDefinition<RawSharpMeasuresUnitDefinition, SharpMeasuresUnitLocations>.WithLocations(SharpMeasuresUnitLocations locations)
+        => WithLocations(locations);
 }

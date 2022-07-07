@@ -2,7 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Quantities.Utility;
+using SharpMeasures.Generators.Utility;
 
 using System;
 
@@ -58,7 +58,7 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.ConstantMultiplesDisabledButNameSpecified, location, singularForm);
     }
 
-    public static Diagnostic UnrecognizedConversionOperationBehaviour(Location? location, ConversionOperationBehaviour conversionOperationBehaviour)
+    public static Diagnostic UnrecognizedConversionOperationBehaviour(Location? location, ConversionOperatorBehaviour conversionOperationBehaviour)
     {
         return Diagnostic.Create(DiagnosticRules.UnrecognizedCastOperatorBehaviour, location, conversionOperationBehaviour.ToString());
     }

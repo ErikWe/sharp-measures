@@ -18,7 +18,7 @@ internal static class MathsGenerator
 
     private static DataModel ReduceToDataModel(IDataModel input, CancellationToken _)
     {
-        return new(input.VectorType, input.Dimension, input.ImplementSum, input.ImplementDifference, input.Difference, input.Scalar?.ScalarType.AsNamedType(), 
-            input.Scalar?.Square, input.Unit.UnitType.AsNamedType(), input.Unit.QuantityType, input.Documentation);
+        return new(input.VectorType, input.Dimension, input.ImplementSum, input.ImplementDifference, input.Difference, input.Scalar?.Type.AsNamedType(), 
+            input.Scalar?.Square, input.Unit.Type.AsNamedType(), input.Unit.QuantityType, input.Documentation);
     }
 }

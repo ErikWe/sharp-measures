@@ -1,26 +1,27 @@
 ﻿namespace SharpMeasures.Generators.Units;
 
+using SharpMeasures.Generators.Utility;
+
 using System;
 
-/// <summary>Describes how a unit may be derived from other units.</summary>
+/// <summary>Describes how an instance of a unit may be derived from instances of other units. The defined derivation may then be used through
+/// <see cref="DerivedUnitAttribute"/>.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class DerivableUnitAttribute : Attribute
 {
-    /// <summary>A unique ID for referring to this derivation definition.</summary>
+    /// <summary>A unique ID for this definition, used by <see cref="DerivedUnitAttribute"/> to specify a derivation.</summary>
     public string DerivationID { get; }
-    /// <summary>The unit may be derived according to this expression. The types from <see cref="Signature"/> are inserted into this expression,
-    /// replacing occurences of "{x}" - where x is the zero-based index of that type in <see cref="Signature"/>.</summary>
-    /// <remarks>See <see cref="Utility.UnitDerivations"/> for some common expressions.</remarks>
+    /// <summary>The expression used to derive new instances of this unit. The types of <see cref="Signature"/> are inserted into this expression,
+    /// using normal string formatting syntax - occurences of "{X}" are replaced with the X´th element of <see cref="Signature"/>.</summary>
+    /// <remarks>Some common expressions are defined in <see cref="CommonAlgebraicDerivations"/>.</remarks>
     public string Expression { get; }
-    /// <summary>The unit may be derived from a combination of the units of these <see cref="Type"/>s, according to <see cref="Expression"/>.</summary>
+    /// <summary>The unit may be derived from instances of these units, according to <see cref="Expression"/>.</summary>
     public Type[] Signature { get; }
 
-    /// <summary>Constructs a description of how a unit may be derived from other units.</summary>
-    /// <param name="derivationID">A unique ID for referring to this derivation definition.</param>
-    /// <param name="expression">he unit may be derived according to this expression. The types from <paramref name="signature"/> are inserted into this expression,
-    /// replacing occurences of "{x}" - where x is the zero-based index of that type in <paramref name="signature"/>.
-    /// <para>See <see cref="Utility.UnitDerivations"/> for some common expressions.</para></param>
-    /// <param name="signature">The unit may be derived from a combination of the units of these <see cref="Type"/>s, according to <paramref name="expression"/>.</param>
+    /// <inheritdoc cref="DerivableUnitAttribute"/>
+    /// <param name="derivationID"><inheritdoc cref="DerivationID" path="/summary"/><para><inheritdoc cref="DerivationID" path="/remarks"/></para></param>
+    /// <param name="expression"><inheritdoc cref="Expression" path="/summary"/><para><inheritdoc cref="Expression" path="/remarks"/></para></param>
+    /// <param name="signature"><inheritdoc cref="Signature" path="/summary"/><para><inheritdoc cref="Signature" path="/remarks"/></para></param>
     public DerivableUnitAttribute(string derivationID, string expression, params Type[] signature)
     {
         Expression = expression;

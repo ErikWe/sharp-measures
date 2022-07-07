@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal record class RawBiasedUnitDefinition : ARawDependantUnitDefinition<BiasedUnitParsingData, BiasedUnitLocations>
+internal record class RawBiasedUnitDefinition : ARawDependantUnitDefinition<RawBiasedUnitDefinition, BiasedUnitLocations>
 {
     internal static RawBiasedUnitDefinition Empty { get; } = new();
 
@@ -10,5 +10,7 @@ internal record class RawBiasedUnitDefinition : ARawDependantUnitDefinition<Bias
     public double Bias { get; init; }
     public string? Expression { get; init; }
 
-    private RawBiasedUnitDefinition() : base(BiasedUnitLocations.Empty, BiasedUnitParsingData.Empty) { }
+    protected override RawBiasedUnitDefinition Definition => this;
+
+    private RawBiasedUnitDefinition() : base(BiasedUnitLocations.Empty) { }
 }

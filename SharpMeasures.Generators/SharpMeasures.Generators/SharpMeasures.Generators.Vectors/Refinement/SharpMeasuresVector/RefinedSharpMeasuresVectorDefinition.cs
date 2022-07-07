@@ -5,8 +5,8 @@ using SharpMeasures.Generators.Units;
 
 internal readonly record struct RefinedSharpMeasuresVectorDefinition
 {
-    public UnitInterface Unit { get; }
-    public ScalarInterface? Scalar { get; }
+    public IUnitType Unit { get; }
+    public IScalarType? Scalar { get; }
     public ResizedGroup VectorGroup { get; }
 
     public int Dimension { get; }
@@ -21,7 +21,7 @@ internal readonly record struct RefinedSharpMeasuresVectorDefinition
 
     public bool GenerateDocumentation { get; }
 
-    public RefinedSharpMeasuresVectorDefinition(UnitInterface unit, ScalarInterface? scalar, ResizedGroup vectorGroup, int dimension, bool implementSum,
+    public RefinedSharpMeasuresVectorDefinition(IUnitType unit, IScalarType? scalar, ResizedGroup vectorGroup, int dimension, bool implementSum,
         bool implementDifference, NamedType difference, string? defaultUnitName, string? defaultUnitSymbol, bool generateDocumentation)
     {
         Unit = unit;

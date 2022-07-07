@@ -27,8 +27,8 @@ internal interface IDocumentationStrategy
     public abstract string InConstantMultiples(RefinedScalarConstantDefinition definition);
     public abstract string InSpecifiedUnit(UnitInstance unitInstance);
 
-    public abstract string AsDimensionallyEquivalent(ScalarInterface scalar);
-    public abstract string CastToDimensionallyEquivalent(ScalarInterface scalar);
+    public abstract string AsDimensionallyEquivalent(IScalarType scalar);
+    public abstract string CastToDimensionallyEquivalent(IScalarType scalar);
 
     public abstract string IsNaN();
     public abstract string IsZero();

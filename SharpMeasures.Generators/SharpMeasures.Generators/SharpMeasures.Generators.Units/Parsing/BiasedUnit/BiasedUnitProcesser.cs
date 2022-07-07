@@ -5,19 +5,16 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal interface IBiasedUnitProcessingDiagnostics : IDependantUnitProcessingDiagnostics<RawBiasedUnitDefinition>
+using System.Globalization;
+using System.Linq;
+
+internal interface IBiasedUnitProcessingDiagnostics : IDependantUnitProcessingDiagnostics<RawBiasedUnitDefinition, BiasedUnitLocations>
 {
-    public abstract Diagnostic? UnitNotIncludingBiasTerm(IBiasedUnitProcessingContext context, RawBiasedUnitDefinition definition);
-    public abstract Diagnostic? NullExpression(IBiasedUnitProcessingContext context, RawBiasedUnitDefinition definition);
-    public abstract Diagnostic? EmptyExpression(IBiasedUnitProcessingContext context, RawBiasedUnitDefinition definition);
+    public abstract Diagnostic? NullExpression(IUnitProcessingContext context, RawBiasedUnitDefinition definition);
+    public abstract Diagnostic? EmptyExpression(IUnitProcessingContext context, RawBiasedUnitDefinition definition);
 }
 
-internal interface IBiasedUnitProcessingContext : IDependantUnitProcessingContext
-{
-    public abstract bool UnitIncludesBiasTerm { get; }
-}
-
-internal class BiasedUnitProcesser : ADependantUnitProcesser<IBiasedUnitProcessingContext, RawBiasedUnitDefinition, BiasedUnitDefinition>
+internal class BiasedUnitProcesser : ADependantUnitProcesser<IUnitProcessingContext, RawBiasedUnitDefinition, BiasedUnitLocations, UnresolvedBiasedUnitDefinition>
 {
     private IBiasedUnitProcessingDiagnostics Diagnostics { get; }
 
@@ -26,28 +23,31 @@ internal class BiasedUnitProcesser : ADependantUnitProcesser<IBiasedUnitProcessi
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<BiasedUnitDefinition> Process(IBiasedUnitProcessingContext context, RawBiasedUnitDefinition definition)
+    public override IOptionalWithDiagnostics<UnresolvedBiasedUnitDefinition> Process(IUnitProcessingContext context, RawBiasedUnitDefinition definition)
     {
-        if (context.UnitIncludesBiasTerm is false)
-        {
-            return OptionalWithDiagnostics.Empty<BiasedUnitDefinition>(Diagnostics.UnitNotIncludingBiasTerm(context, definition));
-        }
-
         if (VerifyRequiredPropertiesSet(definition) is false)
         {
-            return OptionalWithDiagnostics.Empty<BiasedUnitDefinition>();
+            return OptionalWithDiagnostics.Empty<UnresolvedBiasedUnitDefinition>();
         }
 
         var validity = IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckDependantUnitValidity, CheckExpressionValidity);
+        var allDiagnostics = validity.Diagnostics;
 
         if (validity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<BiasedUnitDefinition>(validity.Diagnostics);
+            return OptionalWithDiagnostics.Empty<UnresolvedBiasedUnitDefinition>(allDiagnostics);
         }
 
-        BiasedUnitDefinition product = new(definition.Name!, definition.ParsingData.InterpretedPlural!, definition.From!, definition.Bias,
-            definition.Expression, definition.Locations);
-        return OptionalWithDiagnostics.Result(product, validity.Diagnostics);
+        var processedPlural = ProcessPlural(context, definition);
+        allDiagnostics = allDiagnostics.Concat(processedPlural.Diagnostics);
+
+        if (processedPlural.LacksResult)
+        {
+            return OptionalWithDiagnostics.Empty<UnresolvedBiasedUnitDefinition>(allDiagnostics);
+        }
+
+        var product = CreateProduct(definition, processedPlural.Result);
+        return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
     protected override bool VerifyRequiredPropertiesSet(RawBiasedUnitDefinition definition)
@@ -55,7 +55,7 @@ internal class BiasedUnitProcesser : ADependantUnitProcesser<IBiasedUnitProcessi
         return base.VerifyRequiredPropertiesSet(definition) && (definition.Locations.ExplicitlySetBias || definition.Locations.ExplicitlySetExpression);
     }
 
-    private IValidityWithDiagnostics CheckExpressionValidity(IBiasedUnitProcessingContext context, RawBiasedUnitDefinition definition)
+    private IValidityWithDiagnostics CheckExpressionValidity(IUnitProcessingContext context, RawBiasedUnitDefinition definition)
     {
         if (definition.Locations.ExplicitlySetExpression is false)
         {
@@ -73,5 +73,15 @@ internal class BiasedUnitProcesser : ADependantUnitProcesser<IBiasedUnitProcessi
         }
 
         return ValidityWithDiagnostics.Valid;
+    }
+
+    private static UnresolvedBiasedUnitDefinition CreateProduct(RawBiasedUnitDefinition definition, string interpretedPlural)
+    {
+        if (definition.Locations.ExplicitlySetBias)
+        {
+            return new(definition.Name!, interpretedPlural, definition.From!, definition.Bias.ToString(CultureInfo.InvariantCulture), definition.Locations);
+        }
+
+        return new(definition.Name!, interpretedPlural, definition.From!, definition.Expression!, definition.Locations);
     }
 }

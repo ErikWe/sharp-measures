@@ -1,13 +1,16 @@
 ﻿namespace SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 
-using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 
-public record class RawExcludeUnitsDefinition : ARawItemListDefinition<string?, ExcludeUnitsLocations>
+using System.Collections.Generic;
+
+public record class RawExcludeUnitsDefinition : ARawItemListDefinition<string?, RawExcludeUnitsDefinition, ExcludeUnitsLocations>
 {
     internal static RawExcludeUnitsDefinition Empty => new();
 
-    public ReadOnlyEquatableList<string?> ExcludedUnits => Items;
+    public IReadOnlyList<string?> ExcludedUnits => Items;
+
+    protected override RawExcludeUnitsDefinition Definition => this;
 
     private RawExcludeUnitsDefinition() : base(ExcludeUnitsLocations.Empty) { }
 }

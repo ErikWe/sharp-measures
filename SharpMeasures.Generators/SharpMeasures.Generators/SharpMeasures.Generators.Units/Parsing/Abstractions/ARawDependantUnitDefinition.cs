@@ -1,11 +1,17 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.Abstractions;
-internal abstract record class ARawDependantUnitDefinition<TParsingData, TLocations> : ARawUnitDefinition<TParsingData, TLocations>, IRawDependantUnitDefinition
-    where TParsingData : AUnitParsingData
-    where TLocations : ADependantUnitLocations
+
+internal abstract record class ARawDependantUnitDefinition<TDefinition, TLocations> : ARawUnitDefinition<TDefinition, TLocations>,
+    IOpenRawDependantUnitDefinition<TDefinition, TLocations>
+    where TDefinition : ARawDependantUnitDefinition<TDefinition, TLocations>
+    where TLocations : IOpenDependantUnitLocations<TLocations>
 {
-    public string? DependantOn { get; init; }
+    protected string? DependantOn { get; private init; }
 
-    IDependantUnitLocations IRawDependantUnitDefinition.Locations => Locations;
+    string? IRawDependantUnitDefinition<TLocations>.DependantOn => DependantOn;
 
-    protected ARawDependantUnitDefinition(TLocations locations, TParsingData parsingData) : base(locations, parsingData) { }
+    protected ARawDependantUnitDefinition(TLocations locations) : base(locations) { }
+
+    protected TDefinition WithDependantOn(string? dependantOn) => Definition with { DependantOn = dependantOn };
+
+    TDefinition IOpenRawDependantUnitDefinition<TDefinition, TLocations>.WithDependantOn(string? name) => WithName(name);
 }

@@ -2,14 +2,13 @@
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
-
-using SharpMeasures.Generators.Quantities.Utility;
 using SharpMeasures.Generators.Scalars.Refinement.DimensionalEquivalence;
 using SharpMeasures.Generators.SourceBuilding;
 
 using System;
 using System.Text;
 using System.Linq;
+using SharpMeasures.Generators.Utility;
 
 internal static class Execution
 {
@@ -80,30 +79,30 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
-            foreach (RefinedDimensionalEquivalenceDefinition definition in Data.DimensionalEquivalences)
+            foreach (RefinedConvertibleQuantityDefinition definition in Data.DimensionalEquivalences)
             {
-                foreach (ScalarInterface scalar in definition.Quantities)
+                foreach (IScalarType scalar in definition.Quantities)
                 {
                     ComposeInstanceConversion(indentation, scalar);
                     Builder.AppendLine();
                 }
             }
 
-            foreach (RefinedDimensionalEquivalenceDefinition definition in Data.DimensionalEquivalences)
+            foreach (RefinedConvertibleQuantityDefinition definition in Data.DimensionalEquivalences)
             {
-                if (definition.CastOperatorBehaviour is ConversionOperationBehaviour.None)
+                if (definition.CastOperatorBehaviour is ConversionOperatorBehaviour.None)
                 {
                     continue;
                 }
 
-                Action<Indentation, ScalarInterface> composer = definition.CastOperatorBehaviour switch
+                Action<Indentation, IScalarType> composer = definition.CastOperatorBehaviour switch
                 {
-                    ConversionOperationBehaviour.Explicit => ComposeExplicitOperatorConversion,
-                    ConversionOperationBehaviour.Implicit => ComposeImplicitOperatorConversion,
+                    ConversionOperatorBehaviour.Explicit => ComposeExplicitOperatorConversion,
+                    ConversionOperatorBehaviour.Implicit => ComposeImplicitOperatorConversion,
                     _ => throw new NotSupportedException("Invalid cast operation")
                 };
 
-                foreach (ScalarInterface scalar in definition.Quantities)
+                foreach (IScalarType scalar in definition.Quantities)
                 {
                     composer(indentation, scalar);
                     Builder.AppendLine();
@@ -113,19 +112,19 @@ internal static class Execution
             SourceBuildingUtility.RemoveOneNewLine(Builder);
         }
 
-        private void ComposeInstanceConversion(Indentation indentation, ScalarInterface scalar)
+        private void ComposeInstanceConversion(Indentation indentation, IScalarType scalar)
         {
             AppendDocumentation(indentation, Data.Documentation.AsDimensionallyEquivalent(scalar));
-            Builder.AppendLine($"{indentation}public {scalar.ScalarType.Name} As{scalar.ScalarType.Name} => new(Magnitude);");
+            Builder.AppendLine($"{indentation}public {scalar.Type.Name} As{scalar.Type.Name} => new(Magnitude);");
         }
 
-        private void ComposeExplicitOperatorConversion(Indentation indentation, ScalarInterface scalar)
+        private void ComposeExplicitOperatorConversion(Indentation indentation, IScalarType scalar)
             => ComposeOperatorConversion(indentation, scalar, "explicit");
 
-        private void ComposeImplicitOperatorConversion(Indentation indentation, ScalarInterface scalar)
+        private void ComposeImplicitOperatorConversion(Indentation indentation, IScalarType scalar)
             => ComposeOperatorConversion(indentation, scalar, "implicit");
 
-        private void ComposeOperatorConversion(Indentation indentation, ScalarInterface scalar, string behaviour)
+        private void ComposeOperatorConversion(Indentation indentation, IScalarType scalar, string behaviour)
         {
             AppendDocumentation(indentation, Data.Documentation.CastToDimensionallyEquivalent(scalar));
 
@@ -134,7 +133,7 @@ internal static class Execution
                 Builder.AppendLine($"""{indentation}/// <exception cref="ArgumentNullException"/>""");
             }
 
-            Builder.Append($"{indentation}public static {behaviour} operator {scalar.ScalarType.Name}({Data.Scalar.Name} x)");
+            Builder.Append($"{indentation}public static {behaviour} operator {scalar.Type.Name}({Data.Scalar.Name} x)");
 
             if (Data.Scalar.IsReferenceType)
             {

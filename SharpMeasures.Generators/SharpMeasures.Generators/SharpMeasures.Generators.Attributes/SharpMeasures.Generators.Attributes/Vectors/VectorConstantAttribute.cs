@@ -1,10 +1,11 @@
 ﻿namespace SharpMeasures.Generators.Vectors;
 
 using SharpMeasures.Generators.Quantities.Utility;
+using SharpMeasures.Generators.Utility;
 
 using System;
 
-/// <summary>Defines a constant of the vector quantity.</summary>
+/// <summary>Defines a constant of a vector quantity.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class VectorConstantAttribute : Attribute
 {
@@ -23,14 +24,14 @@ public sealed class VectorConstantAttribute : Attribute
 
     /// <summary>If <see cref="GenerateMultiplesProperty"/> is set to <see langword="true"/>, this value is used as the name of the property.
     /// <para>The default behaviour is prepending "InMultiplesOf" to the name of the constant.</para></summary>
-    /// <remarks>See <see cref="ConstantMultiplesCodes"/> for some short-hand notations for producing this name based on the name of the constant.</remarks>
-    public string Multiples { get; init; } = ConstantMultiplesCodes.InMultiplesOfConstant;
+    /// <remarks>See <see cref="CommonConstantMultiplesPropertyNotations"/> or <see cref="CommonPluralNotations"/> for some short-hand notations for producing
+    /// this name based on the singular name of the constant.</remarks>
+    public string Multiples { get; init; } = CommonConstantMultiplesPropertyNotations.PrependInMultiplesOf;
 
-    /// <summary>Defines a constant.</summary>
-    /// <param name="name">The name of the constant.</param>
-    /// <param name="unit">The name of the unit in which the value was specified.</param>
-    /// <param name="value">The value of the constant, in the specified unit.
-    /// <para>The number of elements should match the dimension of the vector.</para></param>
+    /// <inheritdoc cref="VectorConstantAttribute"/>
+    /// <param name="name"><inheritdoc cref="Name" path="/summary"/><para><inheritdoc cref="Name" path="/remarks"/></para></param>
+    /// <param name="unit"><inheritdoc cref="Unit" path="/summary"/><para><inheritdoc cref="Unit" path="/remarks"/></para></param>
+    /// <param name="value"><inheritdoc cref="Value" path="/summary"/><para><inheritdoc cref="Value" path="/remarks"/></para></param>
     public VectorConstantAttribute(string name, string unit, params double[] value)
     {
         Name = name;

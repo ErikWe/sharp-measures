@@ -2,7 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
+using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars;
@@ -23,12 +23,12 @@ internal interface IDataModel
 
     public abstract NamedType Difference { get; }
 
-    public abstract UnitInterface Unit { get; }
-    public abstract ScalarInterface? Scalar { get; }
+    public abstract IUnitType Unit { get; }
+    public abstract IScalarType? Scalar { get; }
 
     public abstract IEnumerable<IncludeUnitsDefinition> IncludeUnits { get; }
     public abstract IEnumerable<ExcludeUnitsDefinition> ExcludeUnits { get; }
-    public abstract IEnumerable<DimensionalEquivalenceDefinition> DimensionalEquivalences { get; }
+    public abstract IEnumerable<ConvertibleQuantityDefinition> DimensionalEquivalences { get; }
 
     public abstract string? DefaultUnitName { get; }
     public abstract string? DefaultUnitSymbol { get; }

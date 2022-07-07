@@ -15,10 +15,10 @@ internal static class MathsGenerator
 
     private static DataModel Reduce(Scalars.DataModel input, CancellationToken _)
     {
-        return new(input.ScalarData.ScalarType, input.ScalarDefinition.Unit.UnitType.AsNamedType(), input.ScalarDefinition.ImplementSum,
-            input.ScalarDefinition.ImplementDifference, input.ScalarDefinition.Difference.ScalarType.AsNamedType(),
-            input.ScalarDefinition.Reciprocal?.ScalarType.AsNamedType(), input.ScalarDefinition.Square?.ScalarType.AsNamedType(),
-            input.ScalarDefinition.Cube?.ScalarType.AsNamedType(), input.ScalarDefinition.SquareRoot?.ScalarType.AsNamedType(),
-            input.ScalarDefinition.CubeRoot?.ScalarType.AsNamedType(), input.Documentation);
+        return new(input.ScalarData.ScalarType, input.ScalarDefinition.Unit.Type.AsNamedType(), input.ScalarDefinition.ImplementSum,
+            input.ScalarDefinition.ImplementDifference, input.ScalarDefinition.Difference.Type.AsNamedType(),
+            input.ScalarDefinition.Reciprocal?.Type.AsNamedType(), input.ScalarDefinition.Square?.Type.AsNamedType(),
+            input.ScalarDefinition.Cube?.Type.AsNamedType(), input.ScalarDefinition.SquareRoot?.Type.AsNamedType(),
+            input.ScalarDefinition.CubeRoot?.Type.AsNamedType(), input.Documentation);
     }
 }

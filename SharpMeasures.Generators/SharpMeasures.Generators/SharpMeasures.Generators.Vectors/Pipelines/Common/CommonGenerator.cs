@@ -20,8 +20,8 @@ internal static class CommonGenerator
 
     private static DataModel ReduceToDataModel(IDataModel input, CancellationToken _)
     {
-        return new(input.VectorType, input.Dimension, input.Scalar?.ScalarType.AsNamedType(), input.Scalar?.Square, input.Unit.UnitType.AsNamedType(),
+        return new(input.VectorType, input.Dimension, input.Scalar?.Type.AsNamedType(), input.Scalar?.Square, input.Unit.Type.AsNamedType(),
             input.Unit.QuantityType, input.DefaultUnitName, input.DefaultUnitSymbol, input.Documentation,
-            SourceBuildingUtility.ToParameterName(input.Unit.UnitType.Name));
+            SourceBuildingUtility.ToParameterName(input.Unit.Type.Name));
     }
 }

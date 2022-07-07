@@ -42,6 +42,26 @@ public static class StaticBuilding
 
     public static void AppendEqualsObjectMethod(StringBuilder source, Indentation indentation, string type)
     {
-        source.AppendLine($"""{indentation}public override bool Equals(object? obj) => return obj is {type} other && Equals(other);""");
+        source.AppendLine($"{indentation}public override bool Equals(object? obj) => return obj is {type} other && Equals(other);");
+    }
+
+    public static void AppendReferenceTypeEqualityOperator(StringBuilder source, Indentation indentation, string type)
+    {
+        source.AppendLine($"{indentation}public static bool operator ==({type}? lhs, {type}? rhs) => lhs?.Equals(rhs) ?? rhs is null;");
+    }
+
+    public static void AppendReferenceTypeInequalityOperator(StringBuilder source, Indentation indentation, string type)
+    {
+        source.AppendLine($"{indentation}public static bool operator !=({type}? lhs, {type}? rhs) => (lhs == rhs) is false;");
+    }
+
+    public static void AppendValueTypeEqualityOperator(StringBuilder source, Indentation indentation, string type)
+    {
+        source.AppendLine($"{indentation}public static bool operator ==({type} lhs, {type} rhs) => lhs.Equals(rhs);");
+    }
+
+    public static void AppendValueTypeInequalityOperator(StringBuilder source, Indentation indentation, string type)
+    {
+        source.AppendLine($"{indentation}public static bool operator !=({type} lhs, {type} rhs) => (lhs == rhs) is false;");
     }
 }

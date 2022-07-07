@@ -3,6 +3,7 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Quantities.Utility;
+using SharpMeasures.Generators.Utility;
 
 public static partial class DiagnosticRules
 {
@@ -51,7 +52,7 @@ public static partial class DiagnosticRules
         id: DiagnosticIDs.InvalidConstantMultiplesName,
         title: "Invalid name for multiples of constant",
         messageFormat: "\"{0}\" can not be used as the name for multiples of {1}. Use the default value, write the name in full, or use a suitable notation " +
-            $"from {typeof(ConstantMultiplesCodes).FullName}.",
+            $"from {typeof(CommonConstantMultiplesPropertyNotations).FullName}.",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -62,7 +63,7 @@ public static partial class DiagnosticRules
         id: DiagnosticIDs.InvalidConstantMultiplesName,
         title: "Invalid name for multiples of constant",
         messageFormat: "The name for multiples of {0} must be defined. Use the default value, write the name in full, or use a suitable notation " +
-            $"from {typeof(ConstantMultiplesCodes).FullName}.",
+            $"from {typeof(CommonConstantMultiplesPropertyNotations).FullName}.",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -114,7 +115,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.UnrecognizedCastOperatorBehaviour,
         title: "Unrecognized cast operator behaviour",
-        messageFormat: $"{{0}} was not recognized as a {typeof(ConversionOperationBehaviour).Name}",
+        messageFormat: $"{{0}} was not recognized as a {typeof(ConversionOperatorBehaviour).Name}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

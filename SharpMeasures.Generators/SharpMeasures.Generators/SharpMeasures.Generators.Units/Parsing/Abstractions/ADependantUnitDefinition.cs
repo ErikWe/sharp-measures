@@ -1,12 +1,16 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.Abstractions;
-internal abstract record class ADependantUnitDefinition<TLocations> : AUnitDefinition<TLocations>, IDependantUnitDefinition
-    where TLocations : ADependantUnitLocations
+
+using SharpMeasures.Generators.Units.UnitInstances;
+using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+
+internal abstract record class ADependantUnitDefinition<TLocations> : AUnitDefinition<TLocations>, IDependantUnitDefinition<TLocations>
+    where TLocations : ADependantUnitLocations<TLocations>
 {
-    public string DependantOn { get; }
+    protected IUnresolvedUnitInstance DependantOn { get; private init; }
 
-    IDependantUnitLocations IDependantUnitDefinition.Locations => Locations;
+    IUnresolvedUnitInstance IDependantUnitInstance.DependantOn => DependantOn;
 
-    protected ADependantUnitDefinition(string name, string plural, string dependantOn, TLocations locations) : base(name, plural, locations)
+    protected ADependantUnitDefinition(string name, string plural, IUnresolvedUnitInstance dependantOn, TLocations locations) : base(name, plural, locations)
     {
         DependantOn = dependantOn;
     }

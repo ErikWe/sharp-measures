@@ -2,12 +2,11 @@
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal record class RawFixedUnitDefinition : ARawUnitDefinition<FixedUnitParsingData, FixedUnitLocations>
+internal record class RawFixedUnitDefinition : ARawUnitDefinition<RawFixedUnitDefinition, FixedUnitLocations>
 {
     public static RawFixedUnitDefinition Empty { get; } = new();
-    
-    public double Value { get; init; }
-    public double Bias { get; init; }
 
-    private RawFixedUnitDefinition() : base(FixedUnitLocations.Empty, FixedUnitParsingData.Empty) { }
+    protected override RawFixedUnitDefinition Definition => this;
+
+    private RawFixedUnitDefinition() : base(FixedUnitLocations.Empty) { }
 }

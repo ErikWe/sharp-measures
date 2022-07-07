@@ -2,11 +2,17 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal interface IRawUnitDefinition : IAttributeDefinition
+internal interface IRawUnitDefinition<out TLocations> : IAttributeDefinition<TLocations>
+    where TLocations : IUnitLocations
 {
     public abstract string? Name { get; }
     public abstract string? Plural { get; }
+}
 
-    new public abstract IUnitLocations Locations { get; }
-    public abstract IUnitParsingData ParsingData { get; }
+internal interface IOpenRawUnitDefinition<out TDefinition, TLocations> : IOpenAttributeDefinition<TDefinition, TLocations>, IRawUnitDefinition<TLocations>
+    where TDefinition : IOpenRawUnitDefinition<TDefinition, TLocations>
+    where TLocations : IUnitLocations
+{
+    public abstract TDefinition WithName(string? name);
+    public abstract TDefinition WithPlural(string? plural);
 }

@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.PrefixedUnit;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
 internal static class PrefixedUnitParser
 {
@@ -9,7 +8,7 @@ internal static class PrefixedUnitParser
 
     private static RawPrefixedUnitDefinition DefaultDefinition() => RawPrefixedUnitDefinition.Empty;
 
-    private class AttributeParser : AUnitParser<RawPrefixedUnitDefinition, PrefixedUnitParsingData, PrefixedUnitLocations, PrefixedUnitAttribute>
+    private class AttributeParser : AAttributeParser<RawPrefixedUnitDefinition, PrefixedUnitLocations, PrefixedUnitAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, PrefixedUnitProperties.AllProperties) { }
     }

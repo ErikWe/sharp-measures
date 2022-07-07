@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal interface IVectorDefinition : IAttributeDefinition
+internal interface IVectorDefinition : IOpenAttributeDefinition
 {
     public abstract int Dimension { get; }
 }

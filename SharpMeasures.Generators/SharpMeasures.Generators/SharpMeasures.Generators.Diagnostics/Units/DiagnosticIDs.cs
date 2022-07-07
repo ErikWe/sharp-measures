@@ -18,9 +18,7 @@ public static partial class DiagnosticIDs
     public const string InvalidUnitDerivationID = $"{Prefix}{Numbering.Hundreds.Units}40";
     public const string DuplicateUnitDerivationID = $"{Prefix}{Numbering.Hundreds.Units}41";
     public const string UnrecognizedUnitDerivationID = $"{Prefix}{Numbering.Hundreds.Units}42";
-    public const string InvalidUnitDerivationExpression = $"{Prefix}{Numbering.Hundreds.Units}43";
-    public const string EmptyUnitDerivationSignature = $"{Prefix}{Numbering.Hundreds.Units}44";
-    public const string IncompatibleDerivedUnitListSize = $"{Prefix}{Numbering.Hundreds.Units}45";
-    public const string UnitNotDerivable = $"{Prefix}{Numbering.Hundreds.Units}46";
-    public const string AmbiguousDerivationSignatureNotSpecified = $"{Prefix}{Numbering.Hundreds.Units}47";
+    public const string IncompatibleDerivedUnitListSize = $"{Prefix}{Numbering.Hundreds.Units}43";
+    public const string UnitNotDerivable = $"{Prefix}{Numbering.Hundreds.Units}44";
+    public const string AmbiguousDerivationSignatureNotSpecified = $"{Prefix}{Numbering.Hundreds.Units}45";
 }

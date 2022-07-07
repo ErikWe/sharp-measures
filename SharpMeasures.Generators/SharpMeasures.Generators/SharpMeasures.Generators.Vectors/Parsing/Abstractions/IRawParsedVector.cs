@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.Abstractions;
 
-using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
+using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
@@ -18,5 +18,5 @@ internal interface IRawParsedVector<TDefinition>
     public abstract IEnumerable<RawExcludeUnitsDefinition> ExcludeUnits { get; }
 
     public abstract IEnumerable<RawVectorConstantDefinition> VectorConstants { get; }
-    public abstract IEnumerable<RawDimensionalEquivalenceDefinition> DimensionalEquivalences { get; }
+    public abstract IEnumerable<RawConvertibleQuantityDefinition> DimensionalEquivalences { get; }
 }

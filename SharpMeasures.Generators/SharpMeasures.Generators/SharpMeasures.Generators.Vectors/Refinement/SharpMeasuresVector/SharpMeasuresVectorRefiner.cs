@@ -27,7 +27,7 @@ internal interface ISharpMeasuresVectorRefinementDiagnostics
 internal interface ISharpMeasuresVectorRefinementContext : IProcessingContext
 {
     public abstract UnitPopulation UnitPopulation { get; }
-    public abstract ScalarPopulation ScalarPopulation { get; }
+    public abstract IScalarPopulation ScalarPopulation { get; }
     public abstract VectorPopulation VectorPopulation { get; }
 
     public abstract VectorPopulationErrors VectorPopulationData { get; }
@@ -88,29 +88,29 @@ internal class SharpMeasuresVectorRefiner : IProcesser<ISharpMeasuresVectorRefin
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private IOptionalWithDiagnostics<UnitInterface> ProcessUnit(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition)
+    private IOptionalWithDiagnostics<IUnitType> ProcessUnit(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition)
     {
         if (context.UnitPopulation.TryGetValue(definition.Unit, out var unit) is false)
         {
-            return OptionalWithDiagnostics.Empty<UnitInterface>(Diagnostics.TypeNotUnit(context, definition));
+            return OptionalWithDiagnostics.Empty<IUnitType>(Diagnostics.TypeNotUnit(context, definition));
         }
 
         return OptionalWithDiagnostics.Result(unit);
     }
 
-    private IResultWithDiagnostics<ScalarInterface?> ProcessScalar(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition)
+    private IResultWithDiagnostics<IScalarType?> ProcessScalar(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition)
     {
         if (definition.Scalar is null)
         {
-            return ResultWithDiagnostics.Construct<ScalarInterface?>(null);
+            return ResultWithDiagnostics.Construct<IScalarType?>(null);
         }
 
         if (context.ScalarPopulation.TryGetValue(definition.Scalar.Value, out var scalar))
         {
-            return ResultWithDiagnostics.Construct<ScalarInterface?>(scalar);
+            return ResultWithDiagnostics.Construct<IScalarType?>(scalar);
         }
 
-        return ResultWithDiagnostics.Construct<ScalarInterface?>(null, Diagnostics.TypeNotScalar(context, definition));
+        return ResultWithDiagnostics.Construct<IScalarType?>(null, Diagnostics.TypeNotScalar(context, definition));
     }
 
     private IResultWithDiagnostics<IVector> ProcessDifference(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition)
@@ -123,7 +123,7 @@ internal class SharpMeasuresVectorRefiner : IProcesser<ISharpMeasuresVectorRefin
         return ResultWithDiagnostics.Construct(vector);
     }
 
-    private IResultWithDiagnostics<string?> ProcessDefaultUnitName(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition, UnitInterface unit)
+    private IResultWithDiagnostics<string?> ProcessDefaultUnitName(ISharpMeasuresVectorRefinementContext context, SharpMeasuresVectorDefinition definition, IUnitType unit)
     {
         if (definition.DefaultUnitName is null)
         {

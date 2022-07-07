@@ -3,25 +3,36 @@
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal class UnitAliasProcesser : ADependantUnitProcesser<IDependantUnitProcessingContext, RawUnitAliasDefinition, UnitAliasDefinition>
-{
-    public UnitAliasProcesser(IDependantUnitProcessingDiagnostics<RawUnitAliasDefinition> diagnostics) : base(diagnostics) { }
+using System.Linq;
 
-    public override IOptionalWithDiagnostics<UnitAliasDefinition> Process(IDependantUnitProcessingContext context, RawUnitAliasDefinition definition)
+internal class UnitAliasProcesser : ADependantUnitProcesser<IUnitProcessingContext, RawUnitAliasDefinition, UnitAliasLocations, UnresolvedUnitAliasDefinition>
+{
+    public UnitAliasProcesser(IDependantUnitProcessingDiagnostics<RawUnitAliasDefinition, UnitAliasLocations> diagnostics) : base(diagnostics) { }
+
+    public override IOptionalWithDiagnostics<UnresolvedUnitAliasDefinition> Process(IUnitProcessingContext context, RawUnitAliasDefinition definition)
     {
         if (VerifyRequiredPropertiesSet(definition) is false)
         {
-            return OptionalWithDiagnostics.Empty<UnitAliasDefinition>();
+            return OptionalWithDiagnostics.Empty<UnresolvedUnitAliasDefinition>();
         }
 
         var validity = CheckDependantUnitValidity(context, definition);
+        var allDiagnostics = validity.Diagnostics;
 
         if (validity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<UnitAliasDefinition>(validity.Diagnostics);
+            return OptionalWithDiagnostics.Empty<UnresolvedUnitAliasDefinition>(allDiagnostics);
         }
 
-        UnitAliasDefinition product = new(definition.Name!, definition.ParsingData.InterpretedPlural!, definition.AliasOf!, definition.Locations);
-        return OptionalWithDiagnostics.Result(product, validity.Diagnostics);
+        var processedPlural = ProcessPlural(context, definition);
+        allDiagnostics = allDiagnostics.Concat(processedPlural.Diagnostics);
+
+        if (processedPlural.LacksResult)
+        {
+            return OptionalWithDiagnostics.Empty<UnresolvedUnitAliasDefinition>(allDiagnostics);
+        }
+
+        UnresolvedUnitAliasDefinition product = new(definition.Name!, processedPlural.Result, definition.AliasOf!, definition.Locations);
+        return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 }

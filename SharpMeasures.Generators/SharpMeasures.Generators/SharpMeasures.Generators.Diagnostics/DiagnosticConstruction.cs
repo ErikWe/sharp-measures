@@ -81,6 +81,29 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.UnitNotIncludingBiasTerm, location, unitName);
     }
 
+    public static Diagnostic InvalidDerivationExpression(Location? location, string expression)
+    {
+        return Diagnostic.Create(DiagnosticRules.InvalidDerivationExpression, location, expression);
+    }
+
+    public static Diagnostic NullDerivationExpression(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.NullDerivationExpression, location);
+    }
+
+    public static Diagnostic NullDerivationSignature(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.NullDerivationSignature, location);
+    }
+
+    public static Diagnostic EmptyDerivationSignature(Location? location, string objectType)
+    {
+        return Diagnostic.Create(DiagnosticRules.EmptyDerivationSignature, location, objectType);
+    }
+
+    public static Diagnostic EmptyUnitDerivationSignature(Location? location) => EmptyDerivationSignature(location, "unit");
+    public static Diagnostic EmptyQuantityDerivationSignature(Location? location) => EmptyDerivationSignature(location, "quantity");
+
     public static Diagnostic EmptyList(Location? location, string objectType)
     {
         return Diagnostic.Create(DiagnosticRules.EmptyList, location, objectType);

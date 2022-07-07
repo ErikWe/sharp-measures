@@ -16,7 +16,7 @@ using System.Linq;
 internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<DefaultDocumentation>
 {
     private DefinedType ScalarType { get; }
-    private UnitInterface Unit { get; }
+    private IUnitType Unit { get; }
 
     private string? DefaultUnitName { get; }
     private string? DefaultUnitSymbol { get; }
@@ -34,10 +34,10 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         DefaultUnitName = model.ScalarDefinition.DefaultUnitName;
         DefaultUnitSymbol = model.ScalarDefinition.DefaultUnitSymbol;
 
-        UnitParameterName = SourceBuildingUtility.ToParameterName(Unit.UnitType.Name);
+        UnitParameterName = SourceBuildingUtility.ToParameterName(Unit.Type.Name);
 
-        ExampleBase = GetExampleBase(model.ScalarDefinition.Unit, model.ScalarData.IncludeBases, model.ScalarData.ExcludeBases);
-        ExampleUnit = GetExampleUnit(model.ScalarDefinition.Unit, model.ScalarData.IncludeUnits, model.ScalarData.ExcludeUnits);
+        ExampleBase = GetExampleBase(model.ScalarDefinition.Unit, model.ScalarData.includeBases, model.ScalarData.excludeBases);
+        ExampleUnit = GetExampleUnit(model.ScalarDefinition.Unit, model.ScalarData.includeUnits, model.ScalarData.excludeUnits);
     }
 
     public string Header() => $"""/// <summary>A measure of the scalar quantity {ScalarType.Name}, expressed in {UnitReference}.</summary>""";
@@ -54,7 +54,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         return $$"""/// <summary>The {{ScalarReference}} representing the constant {{definition.Name}}, with value { {{value}} [{{definition.Unit.Plural}}] }.</summary>""";
     }
 
-    public string UnitBase(UnitInstance unitInstance) => $$"""/// <summary>The {{ScalarReference}} representing { 1 [<see cref="{{Unit.UnitType.Name}}.{{unitInstance.Name}}"/>] }.</summary>""";
+    public string UnitBase(UnitInstance unitInstance) => $$"""/// <summary>The {{ScalarReference}} representing { 1 [<see cref="{{Unit.Type.Name}}.{{unitInstance.Name}}"/>] }.</summary>""";
 
     public string WithMagnitude() => "/// <inheritdoc/>";
 
@@ -69,7 +69,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         var commonText = $"""
             /// <summary>The magnitude of <see langword="this"/>, expressed in an arbitrary unit.</summary>
             /// <remarks>In most cases, expressing the magnitude in a certain {UnitReference} should be preferred. This can be achieved through
-            /// <see cref="InUnit({Unit.UnitType.Name})"/>
+            /// <see cref="InUnit({Unit.Type.Name})"/>
             """;
 
         if (ExampleUnit is not null)
@@ -83,7 +83,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     public string ScalarConstructor() => $$"""
         /// <summary>Constructs a new {{ScalarReference}} representing { <paramref name="magnitude"/> }, expressed in an arbitrary unit.</summary>
         /// <param name="magnitude">The magnitude represented by the constructed {{ScalarReference}}, expressed in an arbitrary unit.</param>
-        /// <remarks>Consider preferring construction through <see cref="{{ScalarType.Name}}(Scalar, {{Unit.UnitType.Name}})"/>, where the magnitude is expressed in
+        /// <remarks>Consider preferring construction through <see cref="{{ScalarType.Name}}(Scalar, {{Unit.Type.Name}})"/>, where the magnitude is expressed in
         /// a certain {{UnitReference}}.</remarks>
         """;
 
@@ -118,16 +118,16 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         """;
 
     public string InSpecifiedUnit(UnitInstance unitInstance) => $"""
-        /// <summary>The magnitude of <see langword="this"/>, expressed in <see cref="{Unit.UnitType.Name}.{unitInstance.Name}"/>.</summary>
+        /// <summary>The magnitude of <see langword="this"/>, expressed in <see cref="{Unit.Type.Name}.{unitInstance.Name}"/>.</summary>
         """;
 
-    public string AsDimensionallyEquivalent(ScalarInterface scalar) => $"""
-        /// <summary>Converts <see langword="this"/> to the equivalent <see cref="{scalar.ScalarType.Name}"/>.</summary>
+    public string AsDimensionallyEquivalent(IScalarType scalar) => $"""
+        /// <summary>Converts <see langword="this"/> to the equivalent <see cref="{scalar.Type.Name}"/>.</summary>
         """;
 
-    public string CastToDimensionallyEquivalent(ScalarInterface scalar) => $"""
-        /// <summary>Converts <paramref name="x"/> to the equivalent <see cref="{scalar.ScalarType.Name}"/>.</summary>
-        /// <param name="x">This {ScalarReference} is converted to the equivalent <see cref="{scalar.ScalarType.Name}"/>.</param>
+    public string CastToDimensionallyEquivalent(IScalarType scalar) => $"""
+        /// <summary>Converts <paramref name="x"/> to the equivalent <see cref="{scalar.Type.Name}"/>.</summary>
+        /// <param name="x">This {ScalarReference} is converted to the equivalent <see cref="{scalar.Type.Name}"/>.</param>
         """;
     
     public string IsNaN() => """/// <inheritdoc cref="Scalar.IsNaN"/>""";
@@ -154,12 +154,12 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
 
         if (DefaultUnitName is not null && DefaultUnitSymbol is not null)
         {
-            return $"""{commonText}, the magnitude expressed in <see cref="{Unit.UnitType.Name}.{DefaultUnitName}"/>, and the symbol [{DefaultUnitSymbol}].</summary>""";
+            return $"""{commonText}, the magnitude expressed in <see cref="{Unit.Type.Name}.{DefaultUnitName}"/>, and the symbol [{DefaultUnitSymbol}].</summary>""";
         }
 
         if (DefaultUnitName is not null)
         {
-            return $"""{commonText} and the magnitude expressed in <see cref="{Unit.UnitType.Name}.{DefaultUnitName}"/>.</summary>""";
+            return $"""{commonText} and the magnitude expressed in <see cref="{Unit.Type.Name}.{DefaultUnitName}"/>.</summary>""";
         }
 
         if (DefaultUnitSymbol is not null)
@@ -244,11 +244,11 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     public string GreaterThanOrEqualSameType() => $$"""/// <inheritdoc cref="Scalar.operator &gt;=(Scalar, Scalar)"/>""";
 
     private string ScalarReference => $"""<see cref="{ScalarType.Name}"/>""";
-    private string UnitReference => $"""<see cref="{Unit.UnitType.Name}"/>""";
+    private string UnitReference => $"""<see cref="{Unit.Type.Name}"/>""";
 
     private static string InheritDoc => "/// <inheritdoc/>";
 
-    private static UnitInstance? GetExampleBase(UnitInterface unit, IEnumerable<IncludeBasesDefinition> includeBases, IEnumerable<ExcludeBasesDefinition> excludeBases)
+    private static UnitInstance? GetExampleBase(IUnitType unit, IEnumerable<IncludeBasesDefinition> includeBases, IEnumerable<ExcludeBasesDefinition> excludeBases)
     {
         foreach (var inclusionList in includeBases)
         {
@@ -274,7 +274,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         return null;
     }
 
-    private static UnitInstance? GetExampleUnit(UnitInterface unit, IEnumerable<IncludeUnitsDefinition> includeUnits, IEnumerable<ExcludeUnitsDefinition> excludeUnits)
+    private static UnitInstance? GetExampleUnit(IUnitType unit, IEnumerable<IncludeUnitsDefinition> includeUnits, IEnumerable<ExcludeUnitsDefinition> excludeUnits)
     {
         foreach (var inclusionList in includeUnits)
         {

@@ -5,15 +5,15 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
+using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Vectors.Populations;
 
 using System.Collections.Generic;
 
 internal interface IDimensionalEquivalenceValidationDiagnostics
 {
-    public abstract Diagnostic? TypeNotVector(IDimensionalEquivalenceValidationContext context, DimensionalEquivalenceDefinition definition, int index);
-    public abstract Diagnostic? VectorGroupAlreadySpecified(IDimensionalEquivalenceValidationContext context, DimensionalEquivalenceDefinition definition, int index);
+    public abstract Diagnostic? TypeNotVector(IDimensionalEquivalenceValidationContext context, ConvertibleQuantityDefinition definition, int index);
+    public abstract Diagnostic? VectorGroupAlreadySpecified(IDimensionalEquivalenceValidationContext context, ConvertibleQuantityDefinition definition, int index);
 }
 
 internal interface IDimensionalEquivalenceValidationContext : IValidationContext
@@ -23,7 +23,7 @@ internal interface IDimensionalEquivalenceValidationContext : IValidationContext
     public abstract VectorPopulation VectorPopulation { get; }
 }
 
-internal class DimensionalEquivalenceValidator : IValidator<IDimensionalEquivalenceValidationContext, DimensionalEquivalenceDefinition>
+internal class DimensionalEquivalenceValidator : IValidator<IDimensionalEquivalenceValidationContext, ConvertibleQuantityDefinition>
 {
     private IDimensionalEquivalenceValidationDiagnostics Diagnostics { get; }
 
@@ -32,7 +32,7 @@ internal class DimensionalEquivalenceValidator : IValidator<IDimensionalEquivale
         Diagnostics = diagnostics;
     }
 
-    public IValidityWithDiagnostics CheckValidity(IDimensionalEquivalenceValidationContext context, DimensionalEquivalenceDefinition definition)
+    public IValidityWithDiagnostics CheckValidity(IDimensionalEquivalenceValidationContext context, ConvertibleQuantityDefinition definition)
     {
         List<Diagnostic> allDiagnostics = new();
 

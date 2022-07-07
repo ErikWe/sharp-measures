@@ -8,9 +8,17 @@ using SharpMeasures.Generators.Scalars.Refinement.ScalarConstant;
 
 internal class ScalarConstantDiagnostics : IScalarConstantDiagnostics, IScalarConstantRefinementDiagnostics
 {
-    public static ScalarConstantDiagnostics Instance { get; } = new();
+    private NamedType? Unit { get; }
 
-    private ScalarConstantDiagnostics() { }
+    public ScalarConstantDiagnostics(NamedType unit)
+    {
+        Unit = unit;
+    }
+
+    public ScalarConstantDiagnostics()
+    {
+        Unit = null;
+    }
 
     public Diagnostic NullName(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
     {
@@ -26,7 +34,12 @@ internal class ScalarConstantDiagnostics : IScalarConstantDiagnostics, IScalarCo
 
     public Diagnostic NullUnit(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition)
     {
-        return DiagnosticConstruction.NullUnrecognizedUnitName(definition.Locations.Unit?.AsRoslynLocation(), context.Unit.Name);
+        if (Unit is null)
+        {
+            return DiagnosticConstruction.NullUnrecognizedUnitNameUnknownType(definition.Locations.Unit?.AsRoslynLocation());
+        }
+
+        return DiagnosticConstruction.NullUnrecognizedUnitName(definition.Locations.Unit?.AsRoslynLocation(), Unit.Value.Name);
     }
 
     public Diagnostic EmptyUnit(IScalarConstantProcessingContext context, RawScalarConstantDefinition definition) => NullUnit(context, definition);
@@ -63,7 +76,7 @@ internal class ScalarConstantDiagnostics : IScalarConstantDiagnostics, IScalarCo
 
     public Diagnostic UnrecognizedUnit(IScalarConstantRefinementContext context, ScalarConstantDefinition definition)
     {
-        return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.Unit?.AsRoslynLocation(), definition.Unit, context.Unit.UnitType.Name);
+        return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.Unit?.AsRoslynLocation(), definition.Unit, context.Unit.Type.Name);
     }
 
     public Diagnostic ConstantSharesNameWithUnit(IScalarConstantRefinementContext context, ScalarConstantDefinition definition)

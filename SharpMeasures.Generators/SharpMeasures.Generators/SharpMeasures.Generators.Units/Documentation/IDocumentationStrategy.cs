@@ -1,13 +1,13 @@
 ﻿namespace SharpMeasures.Generators.Units.Documentation;
 
-using SharpMeasures.Generators.Units.Parsing.Abstractions;
+using SharpMeasures.Generators.Units.UnitInstances;
 
 internal interface IDocumentationStrategy
 {
     public abstract string Header();
 
-    public abstract string Derivation(DerivableSignature signature);
-    public abstract string Definition(IUnitDefinition definition);
+    public abstract string Derivation(UnitDerivationSignature signature);
+    public abstract string Definition(IUnitInstance definition);
 
     public abstract string RepresentedQuantity();
     public abstract string Bias();

@@ -1,30 +1,28 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.PrefixedUnit;
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
+using SharpMeasures.Generators.Units.UnitInstances;
 using SharpMeasures.Generators.Units.Utility;
+using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 
-internal record class PrefixedUnitDefinition : ADependantUnitDefinition<PrefixedUnitLocations>
+internal record class PrefixedUnitDefinition : ADependantUnitDefinition<PrefixedUnitLocations>, IPrefixedUnit
 {
-    public enum PrefixType { Metric, Binary }
+    public IUnresolvedUnitInstance From => DependantOn;
 
-    public string From => DependantOn;
+    public MetricPrefixName? MetricPrefix { get; }
+    public BinaryPrefixName? BinaryPrefix { get; }
 
-    public MetricPrefixName MetricPrefixName { get; }
-    public BinaryPrefixName BinaryPrefixName { get; }
+    public PrefixType SpecifiedPrefixType => MetricPrefix is null ? PrefixType.Binary : PrefixType.Metric;
 
-    public PrefixType SpecifiedPrefixType { get; }
-
-    public PrefixedUnitDefinition(string name, string plural, string from, MetricPrefixName metricPrefixName, PrefixedUnitLocations locations)
+    public PrefixedUnitDefinition(string name, string plural, IUnresolvedUnitInstance from, MetricPrefixName metricPrefix, PrefixedUnitLocations locations)
         : base(name, plural, from, locations)
     {
-        MetricPrefixName = metricPrefixName;
-        SpecifiedPrefixType = PrefixType.Metric;
+        MetricPrefix = metricPrefix;
     }
 
-    public PrefixedUnitDefinition(string name, string plural, string from, BinaryPrefixName binaryPrefixName, PrefixedUnitLocations locations)
+    public PrefixedUnitDefinition(string name, string plural, IUnresolvedUnitInstance from, BinaryPrefixName binaryPrefix, PrefixedUnitLocations locations)
         : base(name, plural, from, locations)
     {
-        BinaryPrefixName = binaryPrefixName;
-        SpecifiedPrefixType = PrefixType.Binary;
+        BinaryPrefix = binaryPrefix;
     }
 }

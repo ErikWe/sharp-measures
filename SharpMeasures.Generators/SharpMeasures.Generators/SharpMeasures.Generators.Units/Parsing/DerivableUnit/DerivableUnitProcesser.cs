@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
+using SharpMeasures.Generators.Unresolved.Units;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ internal interface IDerivableUnitProcessingDiagnostics
     public abstract Diagnostic? DuplicateDerivationID(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? NullExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? EmptyExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
+    public abstract Diagnostic? NullSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? EmptySignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? NullSignatureElement(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int index);
 }
@@ -24,7 +26,7 @@ internal interface IDerivableUnitProcessingContext : IProcessingContext
     public abstract HashSet<string> ReservedIDs { get; }
 }
 
-internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProcessingContext, RawDerivableUnitDefinition, DerivableUnitDefinition>
+internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProcessingContext, RawDerivableUnitDefinition, UnresolvedDerivableUnitDefinition>
 {
     private IDerivableUnitProcessingDiagnostics Diagnostics { get; }
 
@@ -33,16 +35,16 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
         Diagnostics = diagnostics;
     }
 
-    public override void OnSuccessfulProcess(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, DerivableUnitDefinition product)
+    public override void OnSuccessfulProcess(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, UnresolvedDerivableUnitDefinition product)
     {
         context.ReservedIDs.Add(product.DerivationID);
     }
 
-    public override IOptionalWithDiagnostics<DerivableUnitDefinition> Process(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
+    public override IOptionalWithDiagnostics<UnresolvedDerivableUnitDefinition> Process(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
         if (VerifyRequiredPropertiesSet(definition) is false)
         {
-            return OptionalWithDiagnostics.Empty<DerivableUnitDefinition>();
+            return OptionalWithDiagnostics.Empty<UnresolvedDerivableUnitDefinition>();
         }
 
         var expressionValidity = IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckDerivationIDValidity, CheckExpressionValidity);
@@ -50,7 +52,7 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
 
         if (expressionValidity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<DerivableUnitDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<UnresolvedDerivableUnitDefinition>(allDiagnostics);
         }
 
         var processedSignature = ProcessSignature(context, definition);
@@ -58,10 +60,10 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
 
         if (processedSignature.LacksResult)
         {
-            return OptionalWithDiagnostics.Empty<DerivableUnitDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<UnresolvedDerivableUnitDefinition>(allDiagnostics);
         }
 
-        DerivableUnitDefinition product = new(definition.DerivationID!, definition.Expression!, processedSignature.Result, definition.Locations);
+        UnresolvedDerivableUnitDefinition product = new(definition.DerivationID!, definition.Expression!, processedSignature.Result, definition.Locations);
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
@@ -100,11 +102,16 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
         return ValidityWithDiagnostics.Valid;
     }
 
-    private IOptionalWithDiagnostics<DerivableSignature> ProcessSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
+    private IOptionalWithDiagnostics<UnresolvedUnitDerivationSignature> ProcessSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
+        if (definition.Signature is null)
+        {
+            return OptionalWithDiagnostics.Empty<UnresolvedUnitDerivationSignature>(Diagnostics.NullSignature(context, definition));
+        }
+
         if (definition.Signature.Count is 0)
         {
-            return OptionalWithDiagnostics.Empty<DerivableSignature>(Diagnostics.EmptySignature(context, definition));
+            return OptionalWithDiagnostics.Empty<UnresolvedUnitDerivationSignature>(Diagnostics.EmptySignature(context, definition));
         }
 
         NamedType[] definiteSignature = new NamedType[definition.Signature.Count];
@@ -113,13 +120,13 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
         {
             if (definition.Signature[i] is not NamedType signatureComponent)
             {
-                return OptionalWithDiagnostics.Empty<DerivableSignature>(Diagnostics.NullSignatureElement(context, definition, i));
+                return OptionalWithDiagnostics.Empty<UnresolvedUnitDerivationSignature>(Diagnostics.NullSignatureElement(context, definition, i));
             }
 
             definiteSignature[i] = signatureComponent;
         }
 
-        var derivableSignature = new DerivableSignature(definiteSignature);
+        var derivableSignature = new UnresolvedUnitDerivationSignature(definiteSignature);
 
         return OptionalWithDiagnostics.Result(derivableSignature);
     }

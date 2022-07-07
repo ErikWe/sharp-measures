@@ -3,7 +3,7 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Quantities.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
+using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Vectors.Refinement.DimensionalEquivalence;
 
@@ -13,17 +13,17 @@ internal class DimensionalEquivalenceDiagnostics : ADimensionalEquivalenceProces
 
     private DimensionalEquivalenceDiagnostics() { }
 
-    public override Diagnostic NullQuantity(IDimensionalEquivalenceProcessingContext context, RawDimensionalEquivalenceDefinition definition, int index)
+    public override Diagnostic NullQuantity(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, int index)
     {
         return DiagnosticConstruction.NullTypeNotVector(definition.Locations.QuantitiesElements[index].AsRoslynLocation());
     }
 
-    public Diagnostic TypeNotVector(IDimensionalEquivalenceValidationContext context, DimensionalEquivalenceDefinition definition, int index)
+    public Diagnostic TypeNotVector(IDimensionalEquivalenceValidationContext context, ConvertibleQuantityDefinition definition, int index)
     {
         return DiagnosticConstruction.TypeNotVector(definition.Locations.QuantitiesElements[index].AsRoslynLocation(), definition.Quantities[index].Name);
     }
 
-    public Diagnostic VectorGroupAlreadySpecified(IDimensionalEquivalenceValidationContext context, DimensionalEquivalenceDefinition definition, int index)
+    public Diagnostic VectorGroupAlreadySpecified(IDimensionalEquivalenceValidationContext context, ConvertibleQuantityDefinition definition, int index)
     {
         return DiagnosticConstruction.VectorGroupAlreadySpecified(definition.Locations.QuantitiesElements[index].AsRoslynLocation(), definition.Quantities[index].Name);
     }

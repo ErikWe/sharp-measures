@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Units.Documentation;
 
 using SharpMeasures.Generators.Documentation;
-using SharpMeasures.Generators.Units.Parsing.Abstractions;
+using SharpMeasures.Generators.Units.UnitInstances;
 
 using System;
 
@@ -18,8 +18,8 @@ internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocume
 
     public string Header() => FromFileOrDefault(static (strategy) => strategy.Header());
 
-    public string Derivation(DerivableSignature signature) => FromFileOrDefault((strategy) => strategy.Derivation(signature));
-    public string Definition(IUnitDefinition definition) => FromFileOrDefault((strategy) => strategy.Definition(definition));
+    public string Derivation(UnitDerivationSignature signature) => FromFileOrDefault((strategy) => strategy.Derivation(signature));
+    public string Definition(IUnitInstance definition) => FromFileOrDefault((strategy) => strategy.Definition(definition));
 
     public string RepresentedQuantity() => FromFileOrDefault(static (strategy) => strategy.RepresentedQuantity());
     public string Bias() => FromFileOrDefault(static (strategy) => strategy.Bias());

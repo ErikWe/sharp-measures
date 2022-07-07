@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal record class BiasedUnitLocations : ADependantUnitLocations
+internal record class BiasedUnitLocations : ADependantUnitLocations<BiasedUnitLocations>
 {
     public static BiasedUnitLocations Empty { get; } = new();
 
@@ -10,9 +10,11 @@ internal record class BiasedUnitLocations : ADependantUnitLocations
     public MinimalLocation? Bias { get; init; }
     public MinimalLocation? Expression { get; init; }
 
-    public bool ExplicitlySetFrom => From is not null;
+    public bool ExplicitlySetFrom => ExplicitlySetDependantOn;
     public bool ExplicitlySetBias => Bias is not null;
     public bool ExplicitlySetExpression => Expression is not null;
+
+    protected override BiasedUnitLocations Locations => this;
 
     private BiasedUnitLocations() { }
 }

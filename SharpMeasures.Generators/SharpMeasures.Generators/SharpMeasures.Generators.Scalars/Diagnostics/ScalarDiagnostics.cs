@@ -18,7 +18,7 @@ internal class ScalarDiagnostics : IPartialDeclarationProviderDiagnostics
         return DiagnosticConstruction.TypeNotPartial<SharpMeasuresScalarAttribute>(declaration.Identifier.GetLocation(), declaration.Identifier.Text);
     }
 
-    public static Diagnostic ContradictoryAttributes<TInclusionAttribute, TExclusionAttribute>(IItemListDefinition<string?> definition)
+    public static Diagnostic ContradictoryAttributes<TInclusionAttribute, TExclusionAttribute>(IOpenItemListDefinition<string?> definition)
     {
         return DiagnosticConstruction.ContradictoryAttributes<TInclusionAttribute, TExclusionAttribute>(definition.Locations.AttributeName.AsRoslynLocation());
     }

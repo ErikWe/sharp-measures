@@ -3,7 +3,7 @@
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.Utility;
 
-internal record class RawPrefixedUnitDefinition : ARawDependantUnitDefinition<PrefixedUnitParsingData, PrefixedUnitLocations>
+internal record class RawPrefixedUnitDefinition : ARawDependantUnitDefinition<RawPrefixedUnitDefinition, PrefixedUnitLocations>
 {
     public static RawPrefixedUnitDefinition Empty { get; } = new();
 
@@ -11,5 +11,7 @@ internal record class RawPrefixedUnitDefinition : ARawDependantUnitDefinition<Pr
     public MetricPrefixName MetricPrefixName { get; init; }
     public BinaryPrefixName BinaryPrefixName { get; init; }
 
-    private RawPrefixedUnitDefinition() : base(PrefixedUnitLocations.Empty, PrefixedUnitParsingData.Empty) { }
+    protected override RawPrefixedUnitDefinition Definition => this;
+
+    private RawPrefixedUnitDefinition() : base(PrefixedUnitLocations.Empty) { }
 }

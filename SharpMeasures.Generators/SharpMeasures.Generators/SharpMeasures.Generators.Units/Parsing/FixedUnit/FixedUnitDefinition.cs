@@ -1,15 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.FixedUnit;
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
+using SharpMeasures.Generators.Units.UnitInstances;
 
-internal record class FixedUnitDefinition : AUnitDefinition<FixedUnitLocations>
+internal record class FixedUnitDefinition : AUnresolvedUnitDefinition<FixedUnitLocations>, IFixedUnit
 {
-    public double Value { get; }
-    public double Bias { get; }
-
-    public FixedUnitDefinition(string name, string plural, double value, double bias, FixedUnitLocations locations) : base(name, plural, locations)
-    {
-        Value = value;
-        Bias = bias;
-    }
+    public FixedUnitDefinition(string name, string plural, FixedUnitLocations locations) : base(name, plural, locations) { }
 }

@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.UnitAlias;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
 internal static class UnitAliasParser
 {
@@ -9,8 +8,8 @@ internal static class UnitAliasParser
 
     private static RawUnitAliasDefinition DefaultDefinition() => RawUnitAliasDefinition.Empty;
 
-    private class AttributeParser : AUnitParser<RawUnitAliasDefinition, UnitAliasParsingData, UnitAliasLocations, UnitAliasAttribute>
+    private class AttributeParser : AAttributeParser<RawUnitAliasDefinition, UnitAliasLocations, UnitAliasAttribute>
     {
-        public AttributeParser() : base(DefaultDefinition, UnitAliasProperty.AllProperties) { }
+        public AttributeParser() : base(DefaultDefinition, UnitAliasProperties.AllProperties) { }
     }
 }

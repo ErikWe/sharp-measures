@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class SharpMeasuresScalarLocations : AAttributeLocations
+internal record class SharpMeasuresScalarLocations : AAttributeLocations<SharpMeasuresScalarLocations>
 {
     public static SharpMeasuresScalarLocations Empty => new();
 
@@ -41,6 +41,8 @@ internal record class SharpMeasuresScalarLocations : AAttributeLocations
     public bool ExplicitlySetSquareRoot => SquareRoot is not null;
     public bool ExplicitlySetCubeRoot => CubeRoot is not null;
     public bool ExplicitlySetGenerateDocumentation => GenerateDocumentation is not null;
+
+    protected override SharpMeasuresScalarLocations Locations => this;
 
     private SharpMeasuresScalarLocations() { }
 }

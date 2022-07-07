@@ -1,13 +1,16 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.IncludeBases;
 
-using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 
-internal record class RawIncludeBasesDefinition : ARawItemListDefinition<string?, IncludeBasesLocations>
+using System.Collections.Generic;
+
+internal record class RawIncludeBasesDefinition : ARawItemListDefinition<string?, RawIncludeBasesDefinition, IncludeBasesLocations>
 {
     public static RawIncludeBasesDefinition Empty => new();
 
-    public ReadOnlyEquatableList<string?> IncludedBases => Items;
+    public IReadOnlyList<string?> IncludedBases => Items;
+
+    protected override RawIncludeBasesDefinition Definition => this;
 
     private RawIncludeBasesDefinition() : base(IncludeBasesLocations.Empty) { }
 }

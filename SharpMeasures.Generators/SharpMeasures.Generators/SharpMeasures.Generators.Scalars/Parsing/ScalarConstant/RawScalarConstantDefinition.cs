@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class RawScalarConstantDefinition : ARawAttributeDefinition<ScalarConstantLocations>
+internal record class RawScalarConstantDefinition : ARawAttributeDefinition<RawScalarConstantDefinition, ScalarConstantLocations>
 {
     public static RawScalarConstantDefinition Empty { get; } = new();
 
@@ -14,6 +14,8 @@ internal record class RawScalarConstantDefinition : ARawAttributeDefinition<Scal
     public string? Multiples { get; init; }
 
     public ScalarConstantParsingData ParsingData { get; init; } = ScalarConstantParsingData.Empty;
+
+    protected override RawScalarConstantDefinition Definition => this;
 
     private RawScalarConstantDefinition() : base(ScalarConstantLocations.Empty) { }
 }

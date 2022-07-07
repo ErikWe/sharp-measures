@@ -5,14 +5,15 @@ using SharpMeasures.Generators.Diagnostics;
 
 using System;
 
-public abstract class AUnitListProcesser<TDefinition, TProduct>
-    : AUniqueItemListProcesser<string?,  string, IUniqueItemListProcessingContext<string>, TDefinition, TProduct>
-    where TDefinition : IItemListDefinition<string?>
-    where TProduct : IItemListDefinition<string>
+public abstract class AUnitListProcesser<TDefinition, TLocations, TProduct>
+    : AUniqueItemListProcesser<string?, string, IUniqueItemListProcessingContext<string>, TDefinition, TLocations, TProduct>
+    where TDefinition : IOpenItemListDefinition<string?, TDefinition, TLocations>
+    where TProduct : IItemListDefinition<string, TLocations>
+    where TLocations : IOpenItemListLocations<TLocations>
 {
-    private IUnitListProcessingDiagnostics<TDefinition> Diagnostics { get; }
+    private IUnitListProcessingDiagnostics<TDefinition, TLocations> Diagnostics { get; }
 
-    protected AUnitListProcesser(IUnitListProcessingDiagnostics<TDefinition> diagnostics) : base(diagnostics)
+    protected AUnitListProcesser(IUnitListProcessingDiagnostics<TDefinition, TLocations> diagnostics) : base(diagnostics)
     {
         Diagnostics = diagnostics;
     }

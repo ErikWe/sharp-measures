@@ -8,8 +8,8 @@ internal readonly record struct RefinedResizedSharpMeasuresVectorDefinition
     public IVector AssociatedVector { get; }
     public ResizedGroup VectorGroup { get; }
 
-    public UnitInterface Unit { get; }
-    public ScalarInterface? Scalar { get; }
+    public IUnitType Unit { get; }
+    public IScalarType? Scalar { get; }
 
     public int Dimension { get; }
 
@@ -23,7 +23,7 @@ internal readonly record struct RefinedResizedSharpMeasuresVectorDefinition
 
     public bool GenerateDocumentation { get; }
 
-    public RefinedResizedSharpMeasuresVectorDefinition(IVector associatedVector, ResizedGroup vectorGroup, UnitInterface unit, ScalarInterface? scalar,
+    public RefinedResizedSharpMeasuresVectorDefinition(IVector associatedVector, ResizedGroup vectorGroup, IUnitType unit, IScalarType? scalar,
         int dimension, bool implementSum, bool implementDifference, NamedType difference, string? defaultUnitName, string? defaultUnitSymbol,
         bool generateDocumentation)
     {

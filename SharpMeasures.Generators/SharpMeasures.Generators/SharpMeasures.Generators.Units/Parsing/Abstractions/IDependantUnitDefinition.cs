@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.Abstractions;
-internal interface IDependantUnitDefinition : IUnitDefinition
-{
-    public abstract string DependantOn { get; }
 
-    new public abstract IDependantUnitLocations Locations { get; }
-}
+using SharpMeasures.Generators.Units.UnitInstances;
+
+internal interface IDependantUnitDefinition<out TLocations> : IUnitDefinition<TLocations>, IDependantUnitInstance
+    where TLocations : IDependantUnitLocations
+{ }

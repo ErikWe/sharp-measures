@@ -1,10 +1,11 @@
 ﻿namespace SharpMeasures.Generators.Scalars;
 
 using SharpMeasures.Generators.Quantities.Utility;
+using SharpMeasures.Generators.Utility;
 
 using System;
 
-/// <summary>Defines a constant of the scalar quantity.</summary>
+/// <summary>Defines a constant of a scalar quantity.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class ScalarConstantAttribute : Attribute
 {
@@ -23,14 +24,14 @@ public sealed class ScalarConstantAttribute : Attribute
     /// <summary>If <see cref="GenerateMultiplesProperty"/> is set to <see langword="true"/>, this value is used as the name of the property. The name of this
     /// property must differ from the name of the constant.
     /// <para>The default behaviour is prepending "MultiplesOf" to the name of the constant.</para></summary>
-    /// <remarks>See <see cref="ConstantMultiplesCodes"/> for some short-hand notations for producing a name for multiples of the constant, based on the
-    /// name of the constant.</remarks>
-    public string Multiples { get; init; } = ConstantMultiplesCodes.MultiplesOfConstant;
+    /// <remarks>See <see cref="CommonConstantMultiplesPropertyNotations"/> or <see cref="CommonPluralNotations"/> for some short-hand notations for producing this
+    /// name based on the singular name of the constant.</remarks>
+    public string Multiples { get; init; } = CommonConstantMultiplesPropertyNotations.PrependMultiplesOf;
 
-    /// <summary>Defines a constant.</summary>
-    /// <param name="name">The name of the constant.</param>
-    /// <param name="unit">The name of the unit in which the value was specified.</param>
-    /// <param name="value">The value of the constant, in the specified unit.</param>
+    /// <inheritdoc cref="ScalarConstantAttribute"/>
+    /// <param name="name"><inheritdoc cref="Name" path="/summary"/><para><inheritdoc cref="Name" path="/remarks"/></para></param>
+    /// <param name="unit"><inheritdoc cref="Unit" path="/summary"/><para><inheritdoc cref="Unit" path="/remarks"/></para></param>
+    /// <param name="value"><inheritdoc cref="Value" path="/summary"/><para><inheritdoc cref="Value" path="/remarks"/></para></param>
     public ScalarConstantAttribute(string name, string unit, double value)
     {
         Name = name;

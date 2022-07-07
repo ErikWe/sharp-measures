@@ -9,7 +9,7 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Providers;
 using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DimensionalEquivalence;
+using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Vectors.Diagnostics;
@@ -46,11 +46,11 @@ internal abstract class AVectorParsingStage<TAttribute, TRawDefinition, TDefinit
 
     protected abstract TParsed ConstructParsed(DefinedType type, MinimalLocation location, TDefinition definition,
         IEnumerable<RawIncludeUnitsDefinition> includeUnits, IEnumerable<RawExcludeUnitsDefinition> excludeUnits,
-        IEnumerable<RawVectorConstantDefinition> vectorConstants, IEnumerable<RawDimensionalEquivalenceDefinition> dimensionalEquivalences);
+        IEnumerable<RawVectorConstantDefinition> vectorConstants, IEnumerable<RawConvertibleQuantityDefinition> dimensionalEquivalences);
 
     protected abstract TProcessed ConstructProcessed(DefinedType type, MinimalLocation location, TDefinition definition,
         IEnumerable<IncludeUnitsDefinition> includeUnits, IEnumerable<ExcludeUnitsDefinition> excludeUnits,
-        IEnumerable<VectorConstantDefinition> vectorConstants, IEnumerable<DimensionalEquivalenceDefinition> dimensionalEquivalences);
+        IEnumerable<VectorConstantDefinition> vectorConstants, IEnumerable<ConvertibleQuantityDefinition> dimensionalEquivalences);
 
     private IOptionalWithDiagnostics<TParsed> ExtractVectorInformation(IntermediateResult input, CancellationToken _)
     {
@@ -74,7 +74,7 @@ internal abstract class AVectorParsingStage<TAttribute, TRawDefinition, TDefinit
         var excludeUnits = ExcludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
 
         var vectorConstants = VectorConstantParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-        var dimensionalEquivalences = DimensionalEquivalenceParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+        var dimensionalEquivalences = ConvertibleQuantityParser.Parser.ParseAllOccurrences(input.TypeSymbol);
 
         var result = ConstructParsed(definedType, typeLocation, processedVector.Result, includeUnits, excludeUnits, vectorConstants, dimensionalEquivalences);
 
@@ -119,7 +119,7 @@ internal abstract class AVectorParsingStage<TAttribute, TRawDefinition, TDefinit
     }
 
     private static IEnumerable<Diagnostic> CreateExcessiveExclusionDiagnostics<TInclusionAttribute, TExclusionAttribute>
-        (IEnumerable<IItemListDefinition<string?>> excessiveAttributes)
+        (IEnumerable<IOpenItemListDefinition<string?>> excessiveAttributes)
     {
         foreach (var item in excessiveAttributes)
         {
@@ -164,12 +164,12 @@ internal abstract class AVectorParsingStage<TAttribute, TRawDefinition, TDefinit
         }
     }
 
-    private readonly record struct DimensionalEquivalenceProcessingContext : IDimensionalEquivalenceProcessingContext
+    private readonly record struct DimensionalEquivalenceProcessingContext : IConvertibleQuantityProcessingContext
     {
         public DefinedType Type { get; }
 
         public HashSet<NamedType> DimensionallyEquivalentQuantities { get; } = new();
-        HashSet<NamedType> IDimensionalEquivalenceProcessingContext.ListedQuantities => DimensionallyEquivalentQuantities;
+        HashSet<NamedType> IConvertibleQuantityProcessingContext.ListedQuantities => DimensionallyEquivalentQuantities;
 
         public DimensionalEquivalenceProcessingContext(DefinedType type)
         {
@@ -185,7 +185,7 @@ internal abstract class AVectorParsingStage<TAttribute, TRawDefinition, TDefinit
         public static ExcludeUnitsProcesser ExcludeUnitsProcesser { get; } = new(UnitListProcessingDiagnostics<RawExcludeUnitsDefinition>.Instance);
 
         public static VectorConstantProcesser VectorConstantProcesser { get; } = new(VectorConstantDiagnostics.Instance);
-        public static DimensionalEquivalenceProcesser DimensionalEquivalenceValidator { get; } = new(DimensionalEquivalenceDiagnostics.Instance);
+        public static ConvertibleQuantityProcesser DimensionalEquivalenceValidator { get; } = new(DimensionalEquivalenceDiagnostics.Instance);
     }
 
     private readonly record struct IntermediateResult(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol);

@@ -1,16 +1,18 @@
 ﻿namespace SharpMeasures.Generators.Vectors;
 
-using SharpMeasures.Generators.Attributes.Parsing.InclusionExclusion;
-using SharpMeasures.Generators.Quantities;
-
-using System.Collections.Generic;
-
-public interface IVector : IInclusionExclusion<string>
+public interface IVector
 {
-    public abstract NamedType VectorType { get; }
-    public abstract int Dimension { get; }
+    public int Dimension { get; }
 
-    public abstract IEnumerable<IncludeUnitsInterface> IncludedUnits { get; }
-    public abstract IEnumerable<ExcludeUnitsInterface> ExcludedUnits { get; }
-    public abstract IEnumerable<DimensionalEquivalenceInterface> DimensionalEquivalences { get; }
+    public abstract NamedType? Scalar { get; }
+
+    public abstract bool ImplementSum { get; }
+    public abstract bool ImplementDifference { get; }
+
+    public abstract NamedType? Difference { get; }
+
+    public abstract string? DefaultUnitName { get; }
+    public abstract string? DefaultUnitSymbol { get; }
+
+    public abstract bool GenerateDocumentation { get; }
 }

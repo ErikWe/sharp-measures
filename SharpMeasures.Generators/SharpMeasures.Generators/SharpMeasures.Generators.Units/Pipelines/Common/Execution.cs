@@ -78,62 +78,27 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
-            if (Data.BiasTerm)
-            {
-                ComposeBiasedTypeBlock(indentation);
-            }
-            else
-            {
-                ComposeUnbiasedTypeBlock(indentation);
-            }
-        }
-
-        private void ComposeUnbiasedTypeBlock(Indentation indentation)
-        {
-            AppendDocumentation(indentation, Data.Documentation.RepresentedQuantity());
-            Builder.AppendLine($"{indentation}public {Data.Quantity.FullyQualifiedName} {Data.Quantity.Name} {{ get; }}");
+            ComposeProperties(indentation);
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, Data.Documentation.Constructor());
-            Builder.AppendLine($$"""
-                {{indentation}}private {{Data.Unit.Name}}({{Data.Quantity.FullyQualifiedName}} {{Data.QuantityParameterName}})
-                {{indentation}}{
-                """);
-
-            if (Data.Quantity.IsReferenceType)
-            {
-                Builder.AppendLine($"{indentation.Increased}ArgumentNullException.ThrowIfNull({Data.QuantityParameterName});");
-                Builder.AppendLine();
-            }
-
-            Builder.AppendLine($$"""
-                {{indentation.Increased}}{{Data.Quantity.Name}} = {{Data.QuantityParameterName}};
-                {{indentation}}}
-                """);
+            ComposeConstructor(indentation);
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, Data.Documentation.ScaledBy());
-            Builder.AppendLine($"{indentation}public {Data.Unit.Name} ScaledBy(Scalar scale) => new({Data.Quantity.Name} * scale);");
+            ComposeScaledBy(indentation);
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, Data.Documentation.WithPrefix());
-            Builder.AppendLine($$"""
-                {{indentation}}/// <exception cref="ArgumentNullException"/>
-                {{indentation}}public {{Data.Unit.Name}} WithPrefix<TPrefix>(TPrefix prefix) where TPrefix : IPrefix
-                {{indentation}}{
-                {{indentation.Increased}}ArgumentNullException.ThrowIfNull(prefix);
-
-                {{indentation.Increased}}return ScaledBy(prefix.Factor);
-                {{indentation}}}
-                """);
+            ComposeWithPrefix(indentation);
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, Data.Documentation.ToStringDocumentation());
-            Builder.AppendLine($@"{indentation}public override string ToString() => $""{{typeof({Data.Unit.Name})}}: [{{{Data.Quantity.Name}}}]"";");
+            ComposeWithBias(indentation);
+
+            Builder.AppendLine();
+
+            ComposeToString(indentation);
 
             Builder.AppendLine();
 
@@ -151,13 +116,20 @@ internal static class Execution
             ComposeComparisons(indentation);
         }
 
-        private void ComposeBiasedTypeBlock(Indentation indentation)
+        private void ComposeProperties(Indentation indentation)
         {
             AppendDocumentation(indentation, Data.Documentation.RepresentedQuantity());
             Builder.AppendLine($"{indentation}public {Data.Quantity.FullyQualifiedName} {Data.Quantity.Name} {{ get; }}");
-            AppendDocumentation(indentation, Data.Documentation.Bias());
-            Builder.AppendLine($"{indentation}public Scalar Bias {{ get; }}");
 
+            if (Data.BiasTerm)
+            {
+                AppendDocumentation(indentation, Data.Documentation.Bias());
+                Builder.AppendLine($"{indentation}public Scalar Bias {{ get; }}");
+            }
+        }
+
+        private void ComposeConstructor(Indentation indentation)
+        {
             AppendDocumentation(indentation, Data.Documentation.Constructor());
 
             if (Data.Quantity.IsReferenceType)
@@ -165,10 +137,16 @@ internal static class Execution
                 Builder.AppendLine($"""{indentation}/// <exception cref="ArgumentNullException"/>""");
             }
 
-            Builder.AppendLine($$"""
-                {{indentation}}private {{Data.Unit.Name}}({{Data.Quantity.FullyQualifiedName}} {{Data.QuantityParameterName}}, Scalar bias)
-                {{indentation}}{
-                """);
+            if (Data.BiasTerm)
+            {
+                Builder.AppendLine($"{indentation}private {Data.Unit.Name}({Data.Quantity.FullyQualifiedName} {Data.QuantityParameterName}, Scalar bias)");
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation}private {Data.Unit.Name}({Data.Quantity.FullyQualifiedName} {Data.QuantityParameterName})");
+            }
+
+            BlockBuilding.AppendOpeningBracket(Builder, indentation);
 
             if (Data.Quantity.IsReferenceType)
             {
@@ -176,21 +154,27 @@ internal static class Execution
                 Builder.AppendLine();
             }
 
-            Builder.AppendLine($$"""
-                {{indentation.Increased}}{{Data.Quantity.Name}} = {{Data.QuantityParameterName}};
-                {{indentation.Increased}}Bias = bias;
-                {{indentation}}}
-                """);
+            Builder.AppendLine($"{indentation.Increased}{Data.Quantity.Name} = {Data.QuantityParameterName};");
+
+            if (Data.BiasTerm)
+            {
+                Builder.AppendLine($"{indentation.Increased}Bias = bias;");
+            }
+
+            BlockBuilding.AppendClosingBracket(Builder, indentation);
+        }
+
+        private void ComposeScaledBy(Indentation indentation)
+        {
+            string expression = Data.BiasTerm ? $"{Data.Quantity.Name} * scale, Bias / scale" : $"{Data.Quantity.Name} * scale";
 
             AppendDocumentation(indentation, Data.Documentation.ScaledBy());
-            Builder.AppendLine($"{indentation}public {Data.Unit.Name} ScaledBy(Scalar scale) => new({Data.Quantity.Name} * scale, Bias / scale);");
+            Builder.AppendLine($"{indentation}public {Data.Unit.Name} ScaledBy(Scalar scale) => new({expression});");
+        }
 
-            Builder.AppendLine();
-
-            AppendDocumentation(indentation, Data.Documentation.WithBias());
-            Builder.AppendLine($"{indentation}public {Data.Unit.Name} WithBias(Scalar bias) => new({Data.Quantity.Name}, Bias + bias);");
-
-            Builder.AppendLine();
+        private void ComposeWithPrefix(Indentation indentation)
+        {
+            string expression = Data.BiasTerm ? $"{Data.Quantity.Name} * prefix.Factor, Bias / prefix.Factor" : $"{Data.Quantity.Name} * prefix.Factor";
 
             AppendDocumentation(indentation, Data.Documentation.WithPrefix());
             Builder.AppendLine($$"""
@@ -199,21 +183,30 @@ internal static class Execution
                 {{indentation}}{
                 {{indentation.Increased}}ArgumentNullException.ThrowIfNull(prefix);
 
-                {{indentation.Increased}}return ScaledBy(prefix.Factor);
+                {{indentation.Increased}}return new({{expression}});
                 {{indentation}}}
                 """);
+        }
 
-            Builder.AppendLine();
+        private void ComposeWithBias(Indentation indentation)
+        {
+            if (Data.BiasTerm is false)
+            {
+                return;
+            }
+
+            AppendDocumentation(indentation, Data.Documentation.WithBias());
+            Builder.AppendLine($"{indentation}public {Data.Unit.Name} WithBias(Scalar bias) => new({Data.Quantity.Name}, Bias + bias);");
+        }
+
+        private void ComposeToString(Indentation indentation)
+        {
+            string expression = Data.BiasTerm
+                ? $"{{typeof({Data.Unit.Name})}}: [{{{Data.Quantity.Name}}} + {{Bias}}]"
+                : $"{{typeof({Data.Unit.Name})}}: [{{{Data.Quantity.Name}}}]";
 
             AppendDocumentation(indentation, Data.Documentation.ToStringDocumentation());
-            Builder.AppendLine($"{indentation}public override string ToString() => \"{{typeof({Data.Unit.Name})}}: ({{{Data.Quantity.Name}}} + {{Bias}})\";");
-
-            if (Data.Unit.IsRecord is false)
-            {
-                Builder.AppendLine();
-
-                ComposeEquality(indentation);
-            }
+            Builder.AppendLine($"{indentation}public override string ToString() => \"{expression}\";");
         }
 
         private void ComposeEquality(Indentation indentation)
@@ -245,10 +238,9 @@ internal static class Execution
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.EqualitySameTypeOperator());
-            Builder.AppendLine($"{indentation}public static bool operator ==({Data.Unit.Name}? lhs, {Data.Unit.Name}? rhs) => lhs?.Equals(rhs) ?? rhs is null;");
-
+            StaticBuilding.AppendReferenceTypeEqualityOperator(Builder, indentation, Data.Unit.Name);
             AppendDocumentation(indentation, Data.Documentation.InequalitySameTypeOperator());
-            Builder.AppendLine($"{indentation}public static bool operator !=({Data.Unit.Name}? lhs, {Data.Unit.Name}? rhs) => (lhs == rhs) is false;");
+            StaticBuilding.AppendReferenceTypeInequalityOperator(Builder, indentation, Data.Unit.Name);
         }
 
         private void ComposeValueTypeEquality(Indentation indentation)
@@ -269,10 +261,9 @@ internal static class Execution
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.EqualitySameTypeOperator());
-            Builder.AppendLine($"{indentation}public static bool operator ==({Data.Unit.Name} lhs, {Data.Unit.Name} rhs) => lhs.Equals(rhs);");
-
+            StaticBuilding.AppendValueTypeEqualityOperator(Builder, indentation, Data.Unit.Name);
             AppendDocumentation(indentation, Data.Documentation.InequalitySameTypeOperator());
-            Builder.AppendLine($"{indentation}public static bool operator !=({Data.Unit.Name} lhs, {Data.Unit.Name} rhs) => (lhs == rhs) is false;");
+            StaticBuilding.AppendValueTypeInequalityOperator(Builder, indentation, Data.Unit.Name);
         }
 
         private void ComposeGetHashCode(Indentation indentation)

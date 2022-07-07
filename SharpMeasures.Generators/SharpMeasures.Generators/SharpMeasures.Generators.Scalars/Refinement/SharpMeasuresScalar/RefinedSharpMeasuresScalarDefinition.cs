@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Vectors;
 
 internal readonly record struct RefinedSharpMeasuresScalarDefinition
 {
-    public UnitInterface Unit { get; }
+    public IUnitType Unit { get; }
     public ResizedGroup? VectorGroup { get; }
 
     public bool UseUnitBias { get; }
@@ -13,22 +13,22 @@ internal readonly record struct RefinedSharpMeasuresScalarDefinition
     public bool ImplementSum { get; }
     public bool ImplementDifference { get; }
 
-    public ScalarInterface Difference { get; }
+    public IScalarType Difference { get; }
 
     public string? DefaultUnitName { get; }
     public string? DefaultUnitSymbol { get; }
 
-    public ScalarInterface? Reciprocal { get; }
-    public ScalarInterface? Square { get; }
-    public ScalarInterface? Cube { get; }
-    public ScalarInterface? SquareRoot { get; }
-    public ScalarInterface? CubeRoot { get; }
+    public IScalarType? Reciprocal { get; }
+    public IScalarType? Square { get; }
+    public IScalarType? Cube { get; }
+    public IScalarType? SquareRoot { get; }
+    public IScalarType? CubeRoot { get; }
 
     public bool GenerateDocumentation { get; }
 
-    public RefinedSharpMeasuresScalarDefinition(UnitInterface unit, ResizedGroup? vectorGroup, bool biased, bool implementSum, bool implementDifference,
-        ScalarInterface difference, string? defaultUnitName, string? defaultUnitSymbol, ScalarInterface? reciprocal, ScalarInterface? square, ScalarInterface? cube,
-        ScalarInterface? squareRoot, ScalarInterface? cubeRoot, bool generateDocumentation)
+    public RefinedSharpMeasuresScalarDefinition(IUnitType unit, ResizedGroup? vectorGroup, bool biased, bool implementSum, bool implementDifference,
+        IScalarType difference, string? defaultUnitName, string? defaultUnitSymbol, IScalarType? reciprocal, IScalarType? square, IScalarType? cube,
+        IScalarType? squareRoot, IScalarType? cubeRoot, bool generateDocumentation)
     {
         Unit = unit;
         VectorGroup = vectorGroup;

@@ -8,22 +8,14 @@ using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using System.Collections.Generic;
 using System.Linq;
 
-internal interface IDerivedUnitProcessingDiagnostics : IUnitProcessingDiagnostics<RawDerivedUnitDefinition>
+internal interface IDerivedUnitProcessingDiagnostics : IUnitProcessingDiagnostics<RawDerivedUnitDefinition, DerivedUnitLocations>
 {
-    public abstract Diagnostic? UnitNotDerivable(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition);
-    public abstract Diagnostic? AmbiguousSignatureNotSpecified(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition);
-    public abstract Diagnostic? UnrecognizedSignatureID(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition);
-    public abstract Diagnostic? InvalidUnitListLength(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition, DerivableSignature signature);
-    public abstract Diagnostic? NullUnitElement(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition, int index, DerivableSignature signature);
-    public abstract Diagnostic? EmptyUnitElement(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition, int index, DerivableSignature signature);
+    public abstract Diagnostic? EmptyUnitList(IUnitProcessingContext context, RawDerivedUnitDefinition definition);
+    public abstract Diagnostic? NullUnitElement(IUnitProcessingContext context, RawDerivedUnitDefinition definition, int index);
+    public abstract Diagnostic? EmptyUnitElement(IUnitProcessingContext context, RawDerivedUnitDefinition definition, int index);
 }
 
-internal interface IDerivedUnitProcessingContext : IUnitProcessingContext
-{
-    public abstract Dictionary<string, DerivableSignature> AvailableSignatureIDs { get; }
-}
-
-internal class DerivedUnitProcesser : AUnitProcesser<IDerivedUnitProcessingContext, RawDerivedUnitDefinition, DerivedUnitDefinition>
+internal class DerivedUnitProcesser : AUnitProcesser<IUnitProcessingContext, RawDerivedUnitDefinition, DerivedUnitLocations, UnresolvedDerivedUnitDefinition>
 {
     private IDerivedUnitProcessingDiagnostics Diagnostics { get; }
 
@@ -32,69 +24,47 @@ internal class DerivedUnitProcesser : AUnitProcesser<IDerivedUnitProcessingConte
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<DerivedUnitDefinition> Process(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
+    public override IOptionalWithDiagnostics<UnresolvedDerivedUnitDefinition> Process(IUnitProcessingContext context, RawDerivedUnitDefinition definition)
     {
-        if (context.AvailableSignatureIDs.Count is 0)
-        {
-            return OptionalWithDiagnostics.Empty<DerivedUnitDefinition>(Diagnostics.UnitNotDerivable(context, definition));
-        }
-
         if (VerifyRequiredPropertiesSet(definition) is false)
         {
-            return OptionalWithDiagnostics.Empty<DerivedUnitDefinition>();
+            return OptionalWithDiagnostics.Empty<UnresolvedDerivedUnitDefinition>();
         }
 
-        var validity = IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckUnitValidity, CheckSignatureIDValidity);
+        var validity = CheckUnitValidity(context, definition);
         IEnumerable<Diagnostic> allDiagnostics = validity.Diagnostics;
 
         if (validity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<DerivedUnitDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<UnresolvedDerivedUnitDefinition>(allDiagnostics);
         }
 
-        var processedSignature = ProcessSignature(context, definition);
-        allDiagnostics = allDiagnostics.Concat(processedSignature);
+        var processedPlural = ProcessPlural(context, definition);
+        allDiagnostics = allDiagnostics.Concat(processedPlural.Diagnostics);
 
-        if (processedSignature.LacksResult)
+        if (processedPlural.LacksResult)
         {
-            return OptionalWithDiagnostics.Empty<DerivedUnitDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<UnresolvedDerivedUnitDefinition>(allDiagnostics);
         }
 
-        var processedUnits = ProcessUnits(context, definition, processedSignature.Result);
-        allDiagnostics = allDiagnostics.Concat(processedUnits);
+        var processedUnits = ProcessUnits(context, definition);
+        allDiagnostics = allDiagnostics.Concat(processedUnits.Diagnostics);
 
         if (processedUnits.LacksResult)
         {
-            return OptionalWithDiagnostics.Empty<DerivedUnitDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<UnresolvedDerivedUnitDefinition>(allDiagnostics);
         }
 
-        DerivedUnitDefinition product = new(definition.Name!, definition.ParsingData.InterpretedPlural!, processedSignature.Result,
-            processedUnits.Result, definition.Locations);
+        UnresolvedDerivedUnitDefinition product = new(definition.Name!, processedPlural.Result, definition.SignatureID, processedUnits.Result, definition.Locations);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private IOptionalWithDiagnostics<DerivableSignature> ProcessSignature(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
+    private IOptionalWithDiagnostics<IReadOnlyList<string>> ProcessUnits(IUnitProcessingContext context, RawDerivedUnitDefinition definition)
     {
-        if (definition.SignatureID is null || definition.SignatureID.Length is 0)
+        if (definition.Units.Count is 0)
         {
-            return OptionalWithDiagnostics.Result(context.AvailableSignatureIDs.First().Value);
-        }
-
-        if (context.AvailableSignatureIDs.TryGetValue(definition.SignatureID, out var signature) is false)
-        {
-            return OptionalWithDiagnostics.Empty<DerivableSignature>(Diagnostics.UnrecognizedSignatureID(context, definition));
-        }
-
-        return OptionalWithDiagnostics.Result(signature);
-    }
-
-    private IOptionalWithDiagnostics<IReadOnlyList<string>> ProcessUnits(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition,
-        DerivableSignature signature)
-    {
-        if (definition.Units.Count != signature.Count)
-        {
-            return OptionalWithDiagnostics.Empty<IReadOnlyList<string>>(Diagnostics.InvalidUnitListLength(context, definition, signature));
+            return OptionalWithDiagnostics.Empty<IReadOnlyList<string>>(Diagnostics.EmptyUnitList(context, definition));
         }
 
         string[] units = new string[definition.Units.Count];
@@ -103,32 +73,17 @@ internal class DerivedUnitProcesser : AUnitProcesser<IDerivedUnitProcessingConte
         {
             if (definition.Units[i] is not string unit)
             {
-                return OptionalWithDiagnostics.Empty<IReadOnlyList<string>>(Diagnostics.NullUnitElement(context, definition, i, signature));
+                return OptionalWithDiagnostics.Empty<IReadOnlyList<string>>(Diagnostics.NullUnitElement(context, definition, i));
             }
 
             if (unit.Length is 0)
             {
-                return OptionalWithDiagnostics.Empty<IReadOnlyList<string>>(Diagnostics.EmptyUnitElement(context, definition, i, signature));
+                return OptionalWithDiagnostics.Empty<IReadOnlyList<string>>(Diagnostics.EmptyUnitElement(context, definition, i));
             }
 
             units[i] = unit;
         }
 
         return OptionalWithDiagnostics.Result(units as IReadOnlyList<string>);
-    }
-
-    private IValidityWithDiagnostics CheckSignatureIDValidity(IDerivedUnitProcessingContext context, RawDerivedUnitDefinition definition)
-    {
-        if (definition.SignatureID is null || definition.SignatureID.Length is 0)
-        {
-            if (context.AvailableSignatureIDs.Count is not 1)
-            {
-                return ValidityWithDiagnostics.Invalid(Diagnostics.AmbiguousSignatureNotSpecified(context, definition));
-            }
-
-            return ValidityWithDiagnostics.Valid;
-        }
-
-        return ValidityWithDiagnostics.Valid;
     }
 }

@@ -22,7 +22,7 @@ internal interface IResizedSharpMeasuresVectorRefinementDiagnostics
 internal interface IResizedSharpMeasuresVectorRefinementContext : IProcessingContext
 {
     public abstract UnitPopulation UnitPopulation { get; }
-    public abstract ScalarPopulation ScalarPopulation { get; }
+    public abstract IScalarPopulation ScalarPopulation { get; }
     public abstract VectorPopulation VectorPopulation { get; }
 
     public abstract VectorPopulationErrors VectorPopulationData { get; }
@@ -76,7 +76,7 @@ internal class ResizedSharpMeasuresVectorRefiner : IProcesser<IResizedSharpMeasu
             return OptionalWithDiagnostics.Empty<RefinedResizedSharpMeasuresVectorDefinition>();
         }
 
-        ScalarInterface? scalar = null;
+        IScalarType? scalar = null;
 
         if (vectorGroup.Root.ScalarType is not null && context.ScalarPopulation.TryGetValue(vectorGroup.Root.ScalarType.Value, out scalar) is false)
         {

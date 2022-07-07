@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Units.Documentation;
 
-using SharpMeasures.Generators.Units.Parsing.Abstractions;
+using SharpMeasures.Generators.Units.UnitInstances;
 
 using System;
 
@@ -11,8 +11,8 @@ internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocu
     private EmptyDocumentation() { }
 
     string IDocumentationStrategy.Header() => string.Empty;
-    string IDocumentationStrategy.Derivation(DerivableSignature _) => string.Empty;
-    string IDocumentationStrategy.Definition(IUnitDefinition _) => string.Empty;
+    string IDocumentationStrategy.Derivation(UnitDerivationSignature _) => string.Empty;
+    string IDocumentationStrategy.Definition(IUnitInstance _) => string.Empty;
     string IDocumentationStrategy.RepresentedQuantity() => string.Empty;
     string IDocumentationStrategy.Bias() => string.Empty;
     string IDocumentationStrategy.Constructor() => string.Empty;

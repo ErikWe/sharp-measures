@@ -10,9 +10,9 @@ internal static class PrefixedUnitProperties
 {
     public static IReadOnlyList<IAttributeProperty<RawPrefixedUnitDefinition>> AllProperties => new IAttributeProperty<RawPrefixedUnitDefinition>[]
     {
-        CommonProperties.Name<RawPrefixedUnitDefinition, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.Name)),
-        CommonProperties.Plural<RawPrefixedUnitDefinition, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.Plural)),
-        CommonProperties.DependantOn<RawPrefixedUnitDefinition, PrefixedUnitParsingData, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.From)),
+        CommonProperties.Name<RawPrefixedUnitDefinition, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.Name)),
+        CommonProperties.Plural<RawPrefixedUnitDefinition, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.Plural)),
+        CommonProperties.DependantOn<RawPrefixedUnitDefinition, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.From)),
         MetricPrefixName,
         BinaryPrefixName
     };

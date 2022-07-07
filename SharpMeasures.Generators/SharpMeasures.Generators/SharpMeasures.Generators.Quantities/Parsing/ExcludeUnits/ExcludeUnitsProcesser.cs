@@ -4,9 +4,9 @@ using SharpMeasures.Generators.Quantities.Parsing.Abstractions;
 
 using System.Collections.Generic;
 
-public class ExcludeUnitsProcesser : AUnitListProcesser<RawExcludeUnitsDefinition, ExcludeUnitsDefinition>
+public class ExcludeUnitsProcesser : AUnitListProcesser<RawExcludeUnitsDefinition, ExcludeUnitsLocations, ExcludeUnitsDefinition>
 {
-    public ExcludeUnitsProcesser(IUnitListProcessingDiagnostics<RawExcludeUnitsDefinition> diagnostics) : base(diagnostics) { }
+    public ExcludeUnitsProcesser(IUnitListProcessingDiagnostics<RawExcludeUnitsDefinition, ExcludeUnitsLocations> diagnostics) : base(diagnostics) { }
 
     protected override ExcludeUnitsDefinition ConstructProduct(IReadOnlyList<string> items, RawExcludeUnitsDefinition definition) => new(items, definition.Locations);
 }

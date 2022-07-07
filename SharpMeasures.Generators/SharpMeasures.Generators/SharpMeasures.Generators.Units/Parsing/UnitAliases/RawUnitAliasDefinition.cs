@@ -2,11 +2,13 @@
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal record class RawUnitAliasDefinition : ARawDependantUnitDefinition<UnitAliasParsingData, UnitAliasLocations>
+internal record class RawUnitAliasDefinition : ARawDependantUnitDefinition<RawUnitAliasDefinition, UnitAliasLocations>
 {
     public static RawUnitAliasDefinition Empty { get; } = new();
 
     public string? AliasOf => DependantOn;
 
-    private RawUnitAliasDefinition() : base(UnitAliasLocations.Empty, UnitAliasParsingData.Empty) { }
+    protected override RawUnitAliasDefinition Definition => this;
+
+    private RawUnitAliasDefinition() : base(UnitAliasLocations.Empty) { }
 }
