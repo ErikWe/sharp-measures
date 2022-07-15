@@ -144,7 +144,7 @@ internal class DerivableUnitResolver : AProcesser<IDerivableUnitResolutionContex
     {
         foreach (var signatureElement in signature)
         {
-            yield return context.UnitPopulation.Units[signatureElement.Type.AsNamedType()].UnitDefinition.Quantity;
+            yield return context.UnitPopulation.Units[signatureElement.Type.AsNamedType()].Definition.Quantity;
         }
     }
 }

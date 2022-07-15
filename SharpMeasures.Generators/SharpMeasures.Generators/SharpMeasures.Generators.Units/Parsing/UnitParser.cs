@@ -6,10 +6,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Providers;
-using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Units.Diagnostics;
-using SharpMeasures.Generators.Units.Diagnostics.Processing;
-using SharpMeasures.Generators.Units.Parsing.Abstractions;
+using SharpMeasures.Generators.Units.Parsing.Contexts.Processing;
+using SharpMeasures.Generators.Units.Parsing.Diagnostics;
+using SharpMeasures.Generators.Units.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Units.Parsing.BiasedUnit;
 using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 using SharpMeasures.Generators.Units.Parsing.DerivedUnit;
@@ -41,7 +40,7 @@ public static class UnitParser
 
     private static IOptionalWithDiagnostics<RawUnitType> ParseAttributes(IntermediateResult input, CancellationToken _)
     {
-        if (SharpMeasuresUnitParser.Instance.ParseFirstOccurrence(input.TypeSymbol) is not RawSharpMeasuresUnitDefinition unit)
+        if (SharpMeasuresUnitParser.Parser.ParseFirstOccurrence(input.TypeSymbol) is not RawSharpMeasuresUnitDefinition unit)
         {
             return OptionalWithDiagnostics.EmptyWithoutDiagnostics<RawUnitType>();
         }
@@ -49,14 +48,14 @@ public static class UnitParser
         var definedType = input.TypeSymbol.AsDefinedType();
         var typeLocation = input.Declaration.Identifier.GetLocation().Minimize();
 
-        var fixedUnit = FixedUnitParser.Instance.ParseFirstOccurrence(input.TypeSymbol);
-        var unitDerivations = DerivableUnitParser.Instance.ParseAllOccurrences(input.TypeSymbol);
+        var fixedUnit = FixedUnitParser.Parser.ParseFirstOccurrence(input.TypeSymbol);
+        var unitDerivations = DerivableUnitParser.Parser.ParseAllOccurrences(input.TypeSymbol);
 
-        var unitAliases = UnitAliasParser.Instance.ParseAllOccurrences(input.TypeSymbol);
-        var derivedUnits = DerivedUnitParser.Instance.ParseAllOccurrences(input.TypeSymbol);
-        var biasedUnits = BiasedUnitParser.Instance.ParseAllOccurrences(input.TypeSymbol);
-        var prefixedUnits = PrefixedUnitParser.Instance.ParseAllOccurrences(input.TypeSymbol);
-        var scaledUnits = ScaledUnitParser.Instance.ParseAllOccurrences(input.TypeSymbol);
+        var unitAliases = UnitAliasParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+        var derivedUnits = DerivedUnitParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+        var biasedUnits = BiasedUnitParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+        var prefixedUnits = PrefixedUnitParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+        var scaledUnits = ScaledUnitParser.Parser.ParseAllOccurrences(input.TypeSymbol);
 
         RawUnitType rawUnitType = new(definedType, typeLocation, unit, fixedUnit, unitDerivations, unitAliases, derivedUnits, biasedUnits,
             prefixedUnits, scaledUnits);
@@ -66,9 +65,9 @@ public static class UnitParser
 
     private static IOptionalWithDiagnostics<UnresolvedUnitType> ProcessParsedData(RawUnitType rawUnitType, CancellationToken _)
     {
-        ProcessingContext unitProcessingContext = new(rawUnitType.Type);
+        IProcessingContext processingContext = new SimpleProcessingContext(rawUnitType.Type);
 
-        var unit = Processers.SharpMeasuresUnitProcesser.Process(unitProcessingContext, rawUnitType.UnitDefinition);
+        var unit = Processers.SharpMeasuresUnitProcesser.Process(processingContext, rawUnitType.Definition);
         var allDiagnostics = unit.Diagnostics;
 
         if (unit.LacksResult)
@@ -76,18 +75,14 @@ public static class UnitParser
             return OptionalWithDiagnostics.Empty<UnresolvedUnitType>(allDiagnostics);
         }
 
-        UnitProcessingContext unitInstanceProcessingContext = new(rawUnitType.Type, rawUnitType.UnitDefinition.BiasTerm);
-
-        foreach (IRawUnitDefinition<IUnitLocations> unitInstance in rawUnitType.AllUnitInstances)
-        {
-            unitInstanceProcessingContext.UnitInstanceNames.Add(unitInstance.Name!);
-        }
+        UnitProcessingContext unitInstanceProcessingContext = new(rawUnitType.Type);
+        DerivableUnitProcessingContext derivableUnitProcessingContext = new(rawUnitType.Type);
 
         var fixedUnit = rawUnitType.FixedUnit is not null
             ? Processers.FixedUnitProcesser.Process(unitInstanceProcessingContext, rawUnitType.FixedUnit)
             : OptionalWithDiagnostics.Empty<UnresolvedFixedUnitDefinition>();
 
-        var unitDerivations = ProcessingFilter.Create(Processers.DerivableUnitProcesser).Filter(unitInstanceProcessingContext, rawUnitType.UnitDerivations);
+        var unitDerivations = ProcessingFilter.Create(Processers.DerivableUnitProcesser).Filter(derivableUnitProcessingContext, rawUnitType.UnitDerivations);
 
         Dictionary<string, UnresolvedUnitDerivationSignature> availableSignatureIDs
             = unitDerivations.Result.ToDictionary(static (x) => x.DerivationID, static (x) => x.Signature);
@@ -112,37 +107,6 @@ public static class UnitParser
     private static IUnresolvedUnitPopulation CreatePopulation(ImmutableArray<IUnresolvedUnitType> units, CancellationToken _)
     {
         return new UnresolvedUnitPopulation(units.ToDictionary(static (unit) => unit.Type.AsNamedType()));
-    }
-
-    private readonly record struct ProcessingContext : IProcessingContext
-    {
-        public DefinedType Type { get; }
-
-        public ProcessingContext(DefinedType type)
-        {
-            Type = type;
-        }
-    }
-
-    private readonly record struct UnitProcessingContext : IProcessingContext, IUnitProcessingContext, IDerivableUnitProcessingContext
-    {
-        public DefinedType Type { get; }
-
-        public bool UnitIncludesBiasTerm { get; }
-
-        public HashSet<string> ReservedIDs { get; } = new();
-
-        public HashSet<string> UnitInstanceNames { get; } = new();
-
-        public HashSet<string> ReservedUnits { get; } = new();
-        public HashSet<string> ReservedUnitPlurals { get; } = new();
-
-        public UnitProcessingContext(DefinedType type, bool unitIncludesBiasTerm)
-        {
-            Type = type;
-
-            UnitIncludesBiasTerm = unitIncludesBiasTerm;
-        }
     }
 
     private static class Processers

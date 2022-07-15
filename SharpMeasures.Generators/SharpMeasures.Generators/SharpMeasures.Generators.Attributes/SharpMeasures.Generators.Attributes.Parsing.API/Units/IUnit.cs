@@ -2,11 +2,9 @@
 
 using SharpMeasures.Generators.Unresolved.Scalars;
 
-public interface IUnit
+public interface IUnit : ISharpMeasuresObject
 {
     public abstract IUnresolvedScalarType Quantity { get; }
 
     public abstract bool BiasTerm { get; }
-
-    public abstract bool GenerateDocumentation { get; }
 }

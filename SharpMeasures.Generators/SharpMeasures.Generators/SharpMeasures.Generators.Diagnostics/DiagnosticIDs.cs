@@ -27,6 +27,7 @@ public static partial class DiagnosticIDs
     public const string TypeNotVector = $"{Prefix}{Numbering.Hundreds.Misc}02";
     public const string TypeNotUnit = $"{Prefix}{Numbering.Hundreds.Misc}03";
     public const string TypeAlreadyDefined = $"{Prefix}{Numbering.Hundreds.Misc}04";
+    public const string TypeNotQuantity = $"{Prefix}{Numbering.Hundreds.Misc}05";
 
     public const string TypeNotUnbiasedScalar = $"{Prefix}{Numbering.Hundreds.Misc}20";
     public const string TypeNotBiasedScalar = $"{Prefix}{Numbering.Hundreds.Misc}21";

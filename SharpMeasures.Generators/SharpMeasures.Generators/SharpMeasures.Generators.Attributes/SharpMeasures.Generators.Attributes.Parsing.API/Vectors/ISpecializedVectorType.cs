@@ -1,6 +1,8 @@
 ﻿namespace SharpMeasures.Generators.Vectors;
 
-public interface ISpecializedVectorType : IVectorType
+using SharpMeasures.Generators.Quantities;
+
+public interface ISpecializedVectorType : IVectorType, ISpecializedQuantityType
 {
-    new public abstract ISpecializedVector VectorDefinition { get; }
+    new public abstract ISpecializedVector Definition { get; }
 }

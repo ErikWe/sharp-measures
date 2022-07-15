@@ -81,7 +81,7 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
-            if (Data.Biased is false)
+            if (Data.UseUnitBias is false)
             {
                 AppendDocumentation(indentation, Data.Documentation.Zero());
                 Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} Zero {{ get; }} = new(0);");
@@ -207,9 +207,9 @@ internal static class Execution
             AppendDocumentation(indentation, Data.Documentation.ToStringDocumentation());
             Builder.Append($$"""{{indentation}}public override string ToString() => $"{typeof({{Data.Scalar.Name}})}: [{""");
 
-            if (Data.DefaultUnitName is not null)
+            if (Data.DefaultUnit is not null)
             {
-                Builder.Append($"InUnit({Data.Unit.Name}.{Data.DefaultUnitName}).Value");
+                Builder.Append($"InUnit({Data.Unit.Name}.{Data.DefaultUnit.Name}).Value");
             }
             else
             {
@@ -343,7 +343,7 @@ internal static class Execution
         {
             string unitMagnitude = $"{data.UnitParameterName}.{data.UnitQuantity.Name}.Magnitude";
 
-            if (data.Biased)
+            if (data.UseUnitBias)
             {
                 return $"(magnitude - {data.UnitParameterName}.Bias) * {unitMagnitude}";
             }
@@ -355,7 +355,7 @@ internal static class Execution
         {
             string scaled = $"Magnitude / {data.UnitParameterName}.{data.UnitQuantity.Name}.Magnitude";
 
-            if (data.Biased)
+            if (data.UseUnitBias)
             {
                 return $"{scaled} + {data.UnitParameterName}.Bias";
             }

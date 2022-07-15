@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Attributes.Parsing.Utility;
 using SharpMeasures.Generators.Quantities.Utility;
 
 using System.Collections.Immutable;
@@ -24,12 +23,6 @@ internal static class ScalarConstantParser
         {
             definition = SetUnassignedDefaults(definition);
 
-            var modifiedParsingData = definition.ParsingData with
-            {
-                InterpretedMultiples = SimpleTextExpression.Interpret(definition.Name, definition.Multiples)
-            };
-
-            definition = definition with { ParsingData = modifiedParsingData };
             return base.AddCustomData(definition, attributeData, attributeSyntax, parameterSymbols);
         }
 

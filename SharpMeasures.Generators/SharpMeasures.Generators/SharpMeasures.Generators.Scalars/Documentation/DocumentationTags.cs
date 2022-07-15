@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
-using SharpMeasures.Generators.Scalars.Refinement.ScalarConstant;
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Units.UnitInstances;
 
 using System;
 
@@ -14,8 +13,8 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string Header() => "Header";
 
     public string Zero() => "Zero";
-    public string Constant(RefinedScalarConstantDefinition definition) => $"Constant_{definition.Name}";
-    public string UnitBase(UnitInstance unitInstance) => $"One_{unitInstance.Name}";
+    public string Constant(IScalarConstant constant) => $"Constant_{constant.Name}";
+    public string UnitBase(IUnitInstance unitInstance) => $"One_{unitInstance.Name}";
 
     public string WithMagnitude() => "WithMagnitude";
 
@@ -30,8 +29,8 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
 
     public string Magnitude() => "Magnitude";
     public string InUnit() => "InUnit";
-    public string InConstantMultiples(RefinedScalarConstantDefinition definition) => $"InMultiplesOf_{definition.Name}";
-    public string InSpecifiedUnit(UnitInstance unitInstance) => $"InUnit_{unitInstance.Name}";
+    public string InConstantMultiples(IScalarConstant constant) => $"InMultiplesOf_{constant.Name}";
+    public string InSpecifiedUnit(IUnitInstance unitInstance) => $"InUnit_{unitInstance.Name}";
 
     public string AsDimensionallyEquivalent(IScalarType scalar) => $"As_{scalar.Type.Name}";
     public string CastToDimensionallyEquivalent(IScalarType scalar) => $"Operator_Cast_{scalar.Type.Name}";

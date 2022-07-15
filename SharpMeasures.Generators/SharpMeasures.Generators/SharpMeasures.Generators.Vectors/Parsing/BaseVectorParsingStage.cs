@@ -39,8 +39,8 @@ internal class BaseVectorParsingStage : AVectorParsingStage<SharpMeasuresVectorA
     }
 
     protected override ParsedBaseVector ConstructProcessed(DefinedType type, MinimalLocation location, SharpMeasuresVectorDefinition definition,
-        IEnumerable<IncludeUnitsDefinition> includeUnits, IEnumerable<ExcludeUnitsDefinition> excludeUnits,
-        IEnumerable<VectorConstantDefinition> vectorConstants, IEnumerable<ConvertibleQuantityDefinition> dimensionalEquivalences)
+        IEnumerable<UnresolvedIncludeUnitsDefinition> includeUnits, IEnumerable<UnresolvedExcludeUnitsDefinition> excludeUnits,
+        IEnumerable<VectorConstantDefinition> vectorConstants, IEnumerable<UnresolvedConvertibleQuantityDefinition> dimensionalEquivalences)
     {
         return new(type, location, definition, includeUnits, excludeUnits, vectorConstants, dimensionalEquivalences);
     }

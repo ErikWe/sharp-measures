@@ -1,6 +1,8 @@
 ﻿namespace SharpMeasures.Generators.Scalars;
 
-public interface ISpecializedScalarType : IScalarType
+using SharpMeasures.Generators.Quantities;
+
+public interface ISpecializedScalarType : IScalarType, ISpecializedQuantityType
 {
-    new public abstract ISpecializedScalar ScalarDefinition { get; }
+    new public abstract ISpecializedScalar Definition { get; }
 }

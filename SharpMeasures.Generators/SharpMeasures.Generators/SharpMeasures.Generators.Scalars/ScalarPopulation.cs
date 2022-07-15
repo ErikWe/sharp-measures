@@ -1,114 +1,71 @@
 ﻿namespace SharpMeasures.Generators.Scalars;
 
-using Microsoft.CodeAnalysis;
-
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators;
+using SharpMeasures.Generators.Quantities;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Threading;
 
 internal class ScalarPopulation : IScalarPopulation
 {
-    public static IncrementalValueProvider<ScalarPopulation> Build(IncrementalValuesProvider<IBaseScalarType> baseScalars,
-        IncrementalValuesProvider<ISpecializedScalarType> specializedScalars)
+    public static ScalarPopulation Build(ImmutableArray<IBaseScalarType> baseScalars, ImmutableArray<ISpecializedScalarType> specializedScalars)
     {
-        return baseScalars.Collect().Combine(specializedScalars.Collect()).Select(createPopulation);
+        var scalars = (baseScalars as IEnumerable<IScalarType>).Concat(specializedScalars).ToDictionary(static (scalar) => scalar.Type.AsNamedType());
+        var specializationsByScalarTypeBuilder
+            = scalars.Keys.ToDictionary(static (type) => type, static (_) => new Dictionary<NamedType, ISpecializedScalarType>());
 
-        static ScalarPopulation createPopulation((ImmutableArray<IBaseScalarType> Base, ImmutableArray<ISpecializedScalarType> Specialized) scalars, CancellationToken _)
+        foreach (var specializedScalar in specializedScalars)
         {
-            return new Builder(scalars.Base, scalars.Specialized).Resolve();
+            if (specializationsByScalarTypeBuilder.TryGetValue(specializedScalar.Definition.OriginalScalar.Type.AsNamedType(), out var originalScalarSpecializations) is false)
+            {
+                continue;
+            }
+
+            originalScalarSpecializations.Add(specializedScalar.Type.AsNamedType(), specializedScalar);
+        }
+
+        var specializationsByScalarType = specializationsByScalarTypeBuilder.Transform(static (dictionary) => new SpecializedScalarPopulation(dictionary));
+        var baseScalarByScalarType = baseScalars.ToDictionary(static (scalar) => scalar.Type.AsNamedType());
+
+        foreach (var baseScalar in baseScalars)
+        {
+            recursivelySetBaseScalarForSpecializations(baseScalar, baseScalar);
+        }
+
+        return new(scalars, baseScalarByScalarType, specializationsByScalarType);
+
+        void recursivelySetBaseScalarForSpecializations(IBaseScalarType baseScalar, IScalarType scalar)
+        {
+            if (specializationsByScalarTypeBuilder.TryGetValue(scalar.Type.AsNamedType(), out var specializations) is false)
+            {
+                return;
+            }
+
+            foreach (var specialization in specializations.Values)
+            {
+                baseScalarByScalarType.Add(specialization.Type.AsNamedType(), baseScalar);
+                recursivelySetBaseScalarForSpecializations(baseScalar, specialization);
+            }
         }
     }
 
     public IReadOnlyDictionary<NamedType, IScalarType> Scalars => scalars;
-    public IReadOnlyDictionary<NamedType, SpecializedScalarPopulation> Specializations => specializations;
-    public IReadOnlyDictionary<NamedType, ISpecializedScalarType> UnresolvedSpecializedScalars => unresolvedSpecializedScalars;
+    public IReadOnlyDictionary<NamedType, IBaseScalarType> BaseScalarByScalarType => baseScalarByScalarType;
+    public IReadOnlyDictionary<NamedType, SpecializedScalarPopulation> SpecializationsByScalarType => specializationsByScalarType;
 
     private ReadOnlyEquatableDictionary<NamedType, IScalarType> scalars { get; }
-    private ReadOnlyEquatableDictionary<NamedType, SpecializedScalarPopulation> specializations { get; }
+    private ReadOnlyEquatableDictionary<NamedType, IBaseScalarType> baseScalarByScalarType { get; }
+    private ReadOnlyEquatableDictionary<NamedType, SpecializedScalarPopulation> specializationsByScalarType { get; }
 
-    private ReadOnlyEquatableDictionary<NamedType, ISpecializedScalarType> unresolvedSpecializedScalars { get; }
+    IReadOnlyDictionary<NamedType, IQuantityType> IQuantityPopulation.Quantities => Scalars.Transform(static (scalar) => scalar as IQuantityType);
 
-    private ScalarPopulation(IReadOnlyDictionary<NamedType, IScalarType> scalars, IReadOnlyDictionary<NamedType, SpecializedScalarPopulation> specializations,
-        IReadOnlyDictionary<NamedType, ISpecializedScalarType> unresolvedSpecializedScalars)
+    private ScalarPopulation(IReadOnlyDictionary<NamedType, IScalarType> scalars, IReadOnlyDictionary<NamedType, IBaseScalarType> baseScalarByScalarType,
+        IReadOnlyDictionary<NamedType, SpecializedScalarPopulation> specializationsByScalarType)
     {
         this.scalars = scalars.AsReadOnlyEquatable();
-        this.specializations = specializations.AsReadOnlyEquatable();
-
-        this.unresolvedSpecializedScalars = unresolvedSpecializedScalars.AsReadOnlyEquatable();
-    }
-
-    private class Builder
-    {
-        private Dictionary<NamedType, IScalarType> AllScalars { get; }
-        private Dictionary<NamedType, Dictionary<NamedType, ISpecializedScalarType>> Specializations { get; } = new();
-
-        private List<ISpecializedScalarType> UnresolvedSpecializedScalars { get; }
-
-        public Builder(ImmutableArray<IBaseScalarType> baseScalars, ImmutableArray<ISpecializedScalarType> specializedScalars)
-        {
-            AllScalars = baseScalars.ToDictionary(static (scalar) => scalar.Type.AsNamedType(), static (scalar) => scalar as IScalarType);
-
-            foreach (var baseScalar in baseScalars)
-            {
-                Specializations.Add(baseScalar.Type.AsNamedType(), new Dictionary<NamedType, ISpecializedScalarType>());
-            }
-
-            UnresolvedSpecializedScalars = specializedScalars.ToList();
-        }
-
-        public ScalarPopulation Resolve()
-        {
-            ResolveSpecializedScalars();
-
-            var specializationsDictionary = Specializations.ToDictionary(static (x) => x.Key, static (x) => new SpecializedScalarPopulation(x.Value));
-
-            var unresolvedSpecializedScalarsDictionary = UnresolvedSpecializedScalars.ToDictionary(static (scalar) => scalar.Type.AsNamedType());
-
-            return new(AllScalars, specializationsDictionary, unresolvedSpecializedScalarsDictionary);
-        }
-
-        private void ResolveSpecializedScalars()
-        {
-            while (true)
-            {
-                var startLength = UnresolvedSpecializedScalars.Count;
-
-                for (var i = 0; i < UnresolvedSpecializedScalars.Count; i++)
-                {
-                    if (AllScalars.TryGetValue(UnresolvedSpecializedScalars[i].ScalarDefinition.OriginalScalar, out var parentScalar))
-                    {
-                        AllScalars.Add(UnresolvedSpecializedScalars[i].Type.AsNamedType(), UnresolvedSpecializedScalars[i]);
-                        Specializations.Add(UnresolvedSpecializedScalars[i].Type.AsNamedType(), new Dictionary<NamedType, ISpecializedScalarType>());
-                        AddPotentiallyRecursiveSpecialization(parentScalar, UnresolvedSpecializedScalars[i]);
-
-                        UnresolvedSpecializedScalars.RemoveAt(i);
-                        i -= 1;
-                    }
-                }
-
-                if (UnresolvedSpecializedScalars.Count == startLength)
-                {
-                    break;
-                }
-            }
-        }
-
-        private void AddPotentiallyRecursiveSpecialization(IScalarType parentScalar, ISpecializedScalarType specializedScalar)
-        {
-            if (Specializations.TryGetValue(parentScalar.Type.AsNamedType(), out var specializationsOfOriginalScalar))
-            {
-                specializationsOfOriginalScalar.Add(specializedScalar.Type.AsNamedType(), specializedScalar);
-            }
-
-            if (parentScalar is ISpecializedScalarType originalScalarAsSpecialized
-                && AllScalars.TryGetValue(originalScalarAsSpecialized.ScalarDefinition.OriginalScalar, out var grandParentScalar))
-            {
-                AddPotentiallyRecursiveSpecialization(grandParentScalar, specializedScalar);
-            }
-        }
+        this.baseScalarByScalarType = baseScalarByScalarType.AsReadOnlyEquatable();
+        this.specializationsByScalarType = specializationsByScalarType.AsReadOnlyEquatable();
     }
 }

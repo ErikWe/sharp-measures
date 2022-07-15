@@ -47,6 +47,8 @@ public sealed class SpecializedSharpMeasuresScalarAttribute : Attribute
     public bool InheritDerivations { get; init; }
     /// <summary>Dictates whether this quantity inherits the constants defined by the original quantity. The default behaviour is <see langword="true"/>.</summary>
     public bool InheritConstants { get; init; }
+    /// <summary>Dictates whether this quantity inherits the convertible quantities defined by the original quantity. The default behaviour is <see langword="true"/>.</summary>
+    public bool InheritConvertibleQuantities { get; init; }
     /// <summary>Dictates whether this quantity inherits the bases of the original quantity. The default behaviour is <see langword="true"/>.</summary>
     /// <remarks>The bases are the units for which a static property representing the value { 1 } is implemented.
     /// <para>IThe attributes <see cref="IncludeBasesAttribute"/> and <see cref="ExcludeBasesAttribute"/> enable more granular control of
@@ -56,9 +58,6 @@ public sealed class SpecializedSharpMeasuresScalarAttribute : Attribute
     /// <remarks>The attributes <see cref="IncludeUnitsAttribute"/> and <see cref="ExcludeUnitsAttribute"/> enable more granular control of what units are
     /// inherited.</remarks>
     public bool InheritUnits { get; init; }
-
-    /// <summary>Dictates whether this quantity inherits the convertible quantities defined by the original quantity. The default behaviour is <see langword="true"/>.</summary>
-    public bool InheritConvertibleQuantities { get; init; }
 
     /// <summary><inheritdoc cref="SharpMeasuresScalarAttribute.Vector" path="/summary"/> By default, the value is inherited from the original quantity.</summary>
     /// <remarks><inheritdoc cref="SharpMeasuresScalarAttribute.Vector" path="/remarks"/></remarks>

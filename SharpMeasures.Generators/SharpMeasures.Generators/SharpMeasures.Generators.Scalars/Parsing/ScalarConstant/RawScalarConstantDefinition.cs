@@ -1,19 +1,12 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 
-using SharpMeasures.Generators.Attributes.Parsing;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
-internal record class RawScalarConstantDefinition : ARawAttributeDefinition<RawScalarConstantDefinition, ScalarConstantLocations>
+internal record class RawScalarConstantDefinition : ARawQuantityConstantDefinition<RawScalarConstantDefinition, ScalarConstantLocations>
 {
     public static RawScalarConstantDefinition Empty { get; } = new();
 
-    public string? Name { get; init; }
-    public string? Unit { get; init; }
     public double Value { get; init; }
-
-    public bool GenerateMultiplesProperty { get; init; }
-    public string? Multiples { get; init; }
-
-    public ScalarConstantParsingData ParsingData { get; init; } = ScalarConstantParsingData.Empty;
 
     protected override RawScalarConstantDefinition Definition => this;
 

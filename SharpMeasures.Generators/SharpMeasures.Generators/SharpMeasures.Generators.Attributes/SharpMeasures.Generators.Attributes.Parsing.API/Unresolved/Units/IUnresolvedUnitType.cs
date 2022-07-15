@@ -4,10 +4,9 @@ using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 
 using System.Collections.Generic;
 
-public interface IUnresolvedUnitType
+public interface IUnresolvedUnitType : ISharpMeasuresObjectType
 {
-    public abstract DefinedType Type { get; }
-    public abstract IUnresolvedUnit UnitDefinition { get; }
+    new public abstract IUnresolvedUnit Definition { get; }
 
     public abstract IUnresolvedFixedUnit? FixedUnit { get; }
     public abstract IReadOnlyList<IUnresolvedDerivableUnit> UnitDerivations { get; }
@@ -19,5 +18,6 @@ public interface IUnresolvedUnitType
     public abstract IReadOnlyList<IUnresolvedScaledUnit> ScaledUnits { get; }
 
     public abstract IReadOnlyDictionary<string, IUnresolvedUnitInstance> UnitsByName { get; }
+    public abstract IReadOnlyDictionary<string, IUnresolvedUnitInstance> UnitsByPluralName { get; }
     public abstract IReadOnlyDictionary<string, IUnresolvedDerivableUnit> DerivationsByID { get; }
 }

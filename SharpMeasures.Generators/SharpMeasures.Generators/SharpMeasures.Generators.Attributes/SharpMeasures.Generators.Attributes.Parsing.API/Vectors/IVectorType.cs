@@ -4,17 +4,13 @@ using SharpMeasures.Generators.Quantities;
 
 using System.Collections.Generic;
 
-public interface IVectorType
+public interface IVectorType : IQuantityType
 {
-    public abstract DefinedType Type { get; }
-    public abstract IVector VectorDefinition { get; }
+    new public abstract IVector Definition { get; }
 
-    public abstract IReadOnlyList<IDerivedQuantity> Derivations { get; }
+    new public abstract IReadOnlyList<IVectorConstant> Constants { get; }
+    public abstract IReadOnlyList<IConvertibleVector> ConvertibleVectors { get; }
 
-    public abstract IReadOnlyList<IVectorConstant> Constants { get; }
-
-    public abstract IReadOnlyList<IIncludeUnits> IncludeUnits { get; }
-    public abstract IReadOnlyList<IExcludeUnits> ExcludeUnits { get; }
-
-    public abstract IReadOnlyList<IConvertibleQuantity> ConvertibleQuantities { get; }
+    new public IReadOnlyDictionary<string, IVectorConstant> ConstantsByName { get; }
+    new public IReadOnlyDictionary<string, IVectorConstant> ConstantsByMultiplesName { get; }
 }

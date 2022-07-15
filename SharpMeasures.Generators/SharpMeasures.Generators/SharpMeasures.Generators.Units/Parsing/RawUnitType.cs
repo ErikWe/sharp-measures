@@ -19,7 +19,7 @@ internal record class RawUnitType
     public DefinedType Type { get; }
     public MinimalLocation TypeLocation { get; }
 
-    public RawSharpMeasuresUnitDefinition UnitDefinition { get; }
+    public RawSharpMeasuresUnitDefinition Definition { get; }
 
     public RawFixedUnitDefinition? FixedUnit { get; }
     public IEnumerable<RawDerivableUnitDefinition> UnitDerivations => unitDerivations;
@@ -44,7 +44,7 @@ internal record class RawUnitType
     {
         Type = type;
         TypeLocation = unitLocation;
-        UnitDefinition = unitDefinition;
+        Definition = unitDefinition;
 
         FixedUnit = fixedUnit;
         this.unitDerivations = unitDerivations.AsEquatable();

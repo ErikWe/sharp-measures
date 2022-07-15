@@ -2,6 +2,16 @@
 
 using SharpMeasures.Generators.Diagnostics;
 
+public record class SimpleProcessingContext : IProcessingContext
+{
+    public DefinedType Type { get; }
+
+    public SimpleProcessingContext(DefinedType type)
+    {
+        Type = type;
+    }
+}
+
 public interface IProcessingContext
 {
     public abstract DefinedType Type { get; }

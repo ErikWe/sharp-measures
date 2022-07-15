@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 public record class RawDerivedQuantityDefinition : ARawAttributeDefinition<RawDerivedQuantityDefinition, DerivedQuantityLocations>
 {
-    public static RawDerivedQuantityDefinition Empty { get; } = new();
+    public static RawDerivedQuantityDefinition Empty { get; } = new(DerivedQuantityLocations.Empty);
 
     public string? Expression { get; init; }
     public IReadOnlyList<NamedType?> Signature

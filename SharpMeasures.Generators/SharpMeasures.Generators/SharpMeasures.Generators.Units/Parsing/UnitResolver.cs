@@ -4,8 +4,8 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Units.Diagnostics.Resolution;
-using SharpMeasures.Generators.Units.Parsing.Abstractions;
+using SharpMeasures.Generators.Units.Parsing.Contexts.Resolution;
+using SharpMeasures.Generators.Units.Parsing.Diagnostics.Resolution;
 using SharpMeasures.Generators.Units.Parsing.BiasedUnit;
 using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 using SharpMeasures.Generators.Units.Parsing.DerivedUnit;
@@ -16,9 +16,7 @@ using SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
 using SharpMeasures.Generators.Units.Parsing.UnitAlias;
 using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
@@ -46,7 +44,7 @@ public class UnitResolver
     {
         SharpMeasuresUnitResolutionContext unitResolutionContext = new(input.Unit.Type, input.ScalarPopulation);
 
-        var unit = Resolvers.SharpMeasuresUnitResolver.Process(unitResolutionContext, input.Unit.UnitDefinition);
+        var unit = Resolvers.SharpMeasuresUnitResolver.Process(unitResolutionContext, input.Unit.Definition);
         var allDiagnostics = unit.Diagnostics;
 
         if (unit.LacksResult)
@@ -55,20 +53,22 @@ public class UnitResolver
         }
 
         DerivableUnitResolutionContext derivableUnitResolutionContext = new(input.Unit.Type, input.UnitPopulation);
-        UnitResolutionContext unitInstanceResolutionContext
-            = new(input.Unit.Type, input.Unit.UnitDefinition.BiasTerm, input.Unit.UnitsByName, input.Unit.DerivationsByID, input.UnitPopulation);
+        IProcessingContext resolutionContext = new SimpleProcessingContext(input.Unit.Type);
+        DependantUnitResolutionContext dependantUnitResolutionContext = new(input.Unit.Type, input.Unit.UnitsByName);
+        BiasedUnitResolutionContext biasedUnitResolutionContext = new(input.Unit.Type, input.Unit.Definition.BiasTerm, input.Unit.UnitsByName);
+        DerivedUnitResolutionContext derivedUnitResolutionContext = new(input.Unit.Type, input.Unit.UnitsByName, input.Unit.DerivationsByID, input.UnitPopulation);
 
         var fixedUnit = input.Unit.FixedUnit is not null
-            ? Resolvers.FixedUnitResolver.Process(unitInstanceResolutionContext, input.Unit.FixedUnit)
+            ? Resolvers.FixedUnitResolver.Process(resolutionContext, input.Unit.FixedUnit)
             : OptionalWithDiagnostics.Empty<FixedUnitDefinition>();
 
         var unitDerivations = ProcessingFilter.Create(Resolvers.DerivableUnitResolver).Filter(derivableUnitResolutionContext, input.Unit.UnitDerivations);
 
-        var unitAliases = ProcessingFilter.Create(Resolvers.UnitAliasResolver).Filter(unitInstanceResolutionContext, input.Unit.UnitAliases);
-        var derivedUnits = ProcessingFilter.Create(Resolvers.DerivedUnitResolver).Filter(unitInstanceResolutionContext, input.Unit.DerivedUnits);
-        var biasedUnits = ProcessingFilter.Create(Resolvers.BiasedUnitResolver).Filter(unitInstanceResolutionContext, input.Unit.BiasedUnits);
-        var prefixedUnits = ProcessingFilter.Create(Resolvers.PrefixedUnitResolver).Filter(unitInstanceResolutionContext, input.Unit.PrefixedUnits);
-        var scaledUnits = ProcessingFilter.Create(Resolvers.ScaledUnitResolver).Filter(unitInstanceResolutionContext, input.Unit.ScaledUnits);
+        var unitAliases = ProcessingFilter.Create(Resolvers.UnitAliasResolver).Filter(dependantUnitResolutionContext, input.Unit.UnitAliases);
+        var derivedUnits = ProcessingFilter.Create(Resolvers.DerivedUnitResolver).Filter(derivedUnitResolutionContext, input.Unit.DerivedUnits);
+        var biasedUnits = ProcessingFilter.Create(Resolvers.BiasedUnitResolver).Filter(biasedUnitResolutionContext, input.Unit.BiasedUnits);
+        var prefixedUnits = ProcessingFilter.Create(Resolvers.PrefixedUnitResolver).Filter(dependantUnitResolutionContext, input.Unit.PrefixedUnits);
+        var scaledUnits = ProcessingFilter.Create(Resolvers.ScaledUnitResolver).Filter(dependantUnitResolutionContext, input.Unit.ScaledUnits);
 
         allDiagnostics = allDiagnostics.Concat(fixedUnit.Diagnostics).Concat(unitDerivations.Diagnostics).Concat(unitAliases.Diagnostics)
             .Concat(derivedUnits.Diagnostics).Concat(biasedUnits.Diagnostics).Concat(prefixedUnits.Diagnostics).Concat(scaledUnits.Diagnostics);
@@ -84,57 +84,6 @@ public class UnitResolver
     private static IUnitPopulation CreatePopulation(ImmutableArray<IUnitType> units, CancellationToken _)
     {
         return new UnitPopulation(units.ToDictionary(static (unit) => unit.Type.AsNamedType()));
-    }
-
-    private readonly record struct SharpMeasuresUnitResolutionContext : ISharpMeasuresUnitResolutionContext
-    {
-        public DefinedType Type { get; }
-
-        public IUnresolvedScalarPopulation ScalarPopulation { get; }
-
-        public SharpMeasuresUnitResolutionContext(DefinedType type, IUnresolvedScalarPopulation scalarPopulation)
-        {
-            Type = type;
-            ScalarPopulation = scalarPopulation;
-        }
-    }
-
-    private readonly record struct DerivableUnitResolutionContext : IDerivableUnitResolutionContext
-    {
-        public DefinedType Type { get; }
-
-        public IUnresolvedUnitPopulation UnitPopulation { get; }
-
-        public DerivableUnitResolutionContext(DefinedType type, IUnresolvedUnitPopulation unitPopulation)
-        {
-            Type = type;
-            UnitPopulation = unitPopulation;
-        }
-    }
-
-    private readonly record struct UnitResolutionContext : IDependantUnitResolutionContext, IDerivedUnitResolutionContext, IBiasedUnitResolutionContext
-    {
-        public DefinedType Type { get; }
-
-        public bool UnitIncludesBiasTerm { get; }
-
-        public IReadOnlyDictionary<string, IUnresolvedUnitInstance> UnitsByName { get; }
-        public IReadOnlyDictionary<string, IUnresolvedDerivableUnit> DerivationsByID { get; }
-        
-        public IUnresolvedUnitPopulation UnitPopulation { get; }
-
-        public UnitResolutionContext(DefinedType type, bool unitIncludesBiasTerm, IReadOnlyDictionary<string, IUnresolvedUnitInstance> unitsByName,
-            IReadOnlyDictionary<string, IUnresolvedDerivableUnit> derivationsByID, IUnresolvedUnitPopulation unitPopulation)
-        {
-            Type = type;
-
-            UnitIncludesBiasTerm = unitIncludesBiasTerm;
-
-            UnitsByName = unitsByName;
-            DerivationsByID = derivationsByID;
-
-            UnitPopulation = unitPopulation;
-        }
     }
 
     private static class Resolvers

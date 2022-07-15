@@ -326,7 +326,7 @@ internal class DefaultDocumentation<TDataModel> : IDocumentationStrategy, IEquat
         return null;
     }
 
-    private static UnitInstance? GetExampleUnit(IUnitType unit, IEnumerable<IncludeUnitsDefinition> includeUnits, IEnumerable<ExcludeUnitsDefinition> excludeUnits)
+    private static UnitInstance? GetExampleUnit(IUnitType unit, IEnumerable<UnresolvedIncludeUnitsDefinition> includeUnits, IEnumerable<UnresolvedExcludeUnitsDefinition> excludeUnits)
     {
         foreach (var inclusionList in includeUnits)
         {

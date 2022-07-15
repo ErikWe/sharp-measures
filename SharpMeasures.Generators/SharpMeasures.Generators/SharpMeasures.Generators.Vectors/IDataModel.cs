@@ -26,9 +26,9 @@ internal interface IDataModel
     public abstract IUnitType Unit { get; }
     public abstract IScalarType? Scalar { get; }
 
-    public abstract IEnumerable<IncludeUnitsDefinition> IncludeUnits { get; }
-    public abstract IEnumerable<ExcludeUnitsDefinition> ExcludeUnits { get; }
-    public abstract IEnumerable<ConvertibleQuantityDefinition> DimensionalEquivalences { get; }
+    public abstract IEnumerable<UnresolvedIncludeUnitsDefinition> IncludeUnits { get; }
+    public abstract IEnumerable<UnresolvedExcludeUnitsDefinition> ExcludeUnits { get; }
+    public abstract IEnumerable<UnresolvedConvertibleQuantityDefinition> DimensionalEquivalences { get; }
 
     public abstract string? DefaultUnitName { get; }
     public abstract string? DefaultUnitSymbol { get; }

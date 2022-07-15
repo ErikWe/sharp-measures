@@ -48,7 +48,7 @@ internal class VectorConstantDiagnostics : IVectorConstantProcessingDiagnostics,
     public Diagnostic InvalidMultiples(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)
     {
         return DiagnosticConstruction.InvalidConstantMultiplesName(definition.Locations.Multiples?.AsRoslynLocation(),
-            definition.Name!, definition.ParsingData.InterpretedMultiples!);
+            definition.ParsingData.InterpretedMultiples!, definition.Name!);
     }
 
     public Diagnostic DuplicateMultiples(IVectorConstantProcessingContext context, RawVectorConstantDefinition definition)

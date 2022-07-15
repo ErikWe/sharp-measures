@@ -36,6 +36,8 @@ public sealed class SpecializedSharpMeasuresVectorAttribute : Attribute
     public bool InheritDerivations { get; init; }
     /// <inheritdoc cref="SpecializedSharpMeasuresScalarAttribute.InheritConstants"/>
     public bool InheritConstants { get; init; }
+    /// <inheritdoc cref="SpecializedSharpMeasuresScalarAttribute.InheritConvertibleQuantities"/>
+    public bool InheritConvertibleVectors { get; init; }
     /// <inheritdoc cref="SpecializedSharpMeasuresScalarAttribute.InheritUnits"/>
     public bool InheritUnits { get; init; }
 

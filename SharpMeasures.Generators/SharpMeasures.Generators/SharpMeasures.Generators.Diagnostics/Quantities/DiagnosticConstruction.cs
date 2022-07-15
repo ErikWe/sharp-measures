@@ -28,9 +28,9 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.NullConstantName, location);
     }
 
-    public static Diagnostic InvalidConstantMultiplesName(Location? location, string constantName, string multiplesName)
+    public static Diagnostic InvalidConstantMultiplesName(Location? location, string multiplesCode, string constantName)
     {
-        return Diagnostic.Create(DiagnosticRules.InvalidConstantMultiplesName, location, multiplesName, constantName);
+        return Diagnostic.Create(DiagnosticRules.InvalidConstantMultiplesName, location, multiplesCode, constantName);
     }
 
     public static Diagnostic NullConstantMultiplesName(Location? location, string constantName)

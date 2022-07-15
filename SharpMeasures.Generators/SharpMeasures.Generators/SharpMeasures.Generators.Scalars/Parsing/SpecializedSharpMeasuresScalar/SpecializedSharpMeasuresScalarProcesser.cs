@@ -29,7 +29,7 @@ internal interface ISpecializedSharpMeasuresScalarProcessingDiagnostics
     public abstract Diagnostic? NullCubeRootQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
 }
 
-internal class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProcessingContext, RawSpecializedSharpMeasuresScalarDefinition, SpecializedSharpMeasuresScalarDefinition>
+internal class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProcessingContext, RawSpecializedSharpMeasuresScalarDefinition, UnresolvedSpecializedSharpMeasuresScalarDefinition>
 {
     private ISpecializedSharpMeasuresScalarProcessingDiagnostics Diagnostics { get; }
 
@@ -38,11 +38,11 @@ internal class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProcessingC
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<SpecializedSharpMeasuresScalarDefinition> Process(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
+    public override IOptionalWithDiagnostics<UnresolvedSpecializedSharpMeasuresScalarDefinition> Process(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
     {
         if (VerifyRequiredPropertiesSet(definition) is false)
         {
-            return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresScalarDefinition>();
+            return OptionalWithDiagnostics.Empty<UnresolvedSpecializedSharpMeasuresScalarDefinition>();
         }
 
         var validity = CheckValidity(context, definition);
@@ -50,7 +50,7 @@ internal class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProcessingC
 
         if (validity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresScalarDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<UnresolvedSpecializedSharpMeasuresScalarDefinition>(allDiagnostics);
         }
 
         var product = ProcessDefinition(context, definition);
@@ -64,17 +64,17 @@ internal class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProcessingC
         return definition.Locations.ExplicitlySetOriginalScalar;
     }
 
-    private IResultWithDiagnostics<SpecializedSharpMeasuresScalarDefinition> ProcessDefinition(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
+    private IResultWithDiagnostics<UnresolvedSpecializedSharpMeasuresScalarDefinition> ProcessDefinition(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
     {
         IEnumerable<Diagnostic> allDiagnostics = Array.Empty<Diagnostic>();
 
         var processedDefaultUnitData = ProcessDefaultUnitData(context, definition);
         allDiagnostics = allDiagnostics.Concat(processedDefaultUnitData);
 
-        SpecializedSharpMeasuresScalarDefinition product = new(definition.OriginalScalar!.Value, definition.InheritDerivations, definition.InheritConstants,
-            definition.InheritBases, definition.InheritUnits, definition.Vector, definition.ImplementSum, definition.ImplementDifference, definition.Difference,
-            processedDefaultUnitData.Result.Name, processedDefaultUnitData.Result.Symbol, definition.Reciprocal, definition.Square, definition.Cube, definition.SquareRoot,
-            definition.CubeRoot, definition.GenerateDocumentation, definition.Locations);
+        UnresolvedSpecializedSharpMeasuresScalarDefinition product = new(definition.OriginalScalar!.Value, definition.InheritDerivations, definition.InheritConstants,
+            definition.InheritConvertibleScalars, definition.InheritBases, definition.InheritUnits, definition.Vector, definition.ImplementSum, definition.ImplementDifference,
+            definition.Difference, processedDefaultUnitData.Result.Name, processedDefaultUnitData.Result.Symbol, definition.Reciprocal, definition.Square, definition.Cube,
+            definition.SquareRoot, definition.CubeRoot, definition.GenerateDocumentation, definition.Locations);
 
         return ResultWithDiagnostics.Construct(product, allDiagnostics);
     }

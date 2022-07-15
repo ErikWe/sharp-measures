@@ -1,13 +1,8 @@
 ﻿namespace SharpMeasures.Generators.Scalars;
 
-using SharpMeasures.Generators.Units.UnitInstances;
+using SharpMeasures.Generators.Quantities;
 
-public interface IScalarConstant
+public interface IScalarConstant : IQuantityConstant
 {
-    public abstract string Name { get; }
-    public abstract IUnitInstance Unit { get; }
     public abstract double Value { get; }
-
-    public abstract bool GenerateMultiplesProperty { get; }
-    public abstract string? Multiples { get; }
 }

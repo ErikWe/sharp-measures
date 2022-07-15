@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Vectors;
+using SharpMeasures.Generators.Unresolved.Vectors;
 
 using System.Text;
 
@@ -62,25 +62,25 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
-            foreach (ResizedVector vector in Data.Vectors.VectorsByDimension.Values)
+            foreach (var vector in Data.Vectors)
             {
-                UsingsCollector.AddUsing(vector.VectorType.Namespace);
+                UsingsCollector.AddUsing(vector.Type.Namespace);
 
                 ComposeForVector(indentation, vector);
                 Builder.AppendLine();
             }
         }
 
-        private void ComposeForVector(Indentation indentation, ResizedVector vector)
+        private void ComposeForVector(Indentation indentation, IUnresolvedVectorType vector)
         {
-            AppendDocumentation(indentation, Data.Documentation.MultiplyVectorMethod(vector.Dimension));
-            Builder.AppendLine($"{indentation}public {vector.VectorType.Name} Multiply(Vector{vector.Dimension} factor) => new(Magnitude.Value * factor);");
+            AppendDocumentation(indentation, Data.Documentation.MultiplyVectorMethod(vector.Definition.Dimension));
+            Builder.AppendLine($"{indentation}public {vector.Type.Name} Multiply(Vector{vector.Definition.Dimension} factor) => new(Magnitude.Value * factor);");
 
             Builder.AppendLine();
 
             if (Data.Scalar.IsReferenceType)
             {
-                AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorLHS(vector.Dimension));
+                AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorLHS(vector.Definition.Dimension));
                 Builder.AppendLine($$"""
                     {{indentation}}/// <exception cref="ArgumentNullException"/>
                     {{indentation}}{
@@ -90,7 +90,7 @@ internal static class Execution
                     {{indentation}}}
                     """);
 
-                AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorRHS(vector.Dimension));
+                AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorRHS(vector.Definition.Dimension));
                 Builder.AppendLine($$"""
                     {{indentation}}/// <exception cref="ArgumentNullException"/>
                     {{indentation}}{
@@ -102,11 +102,11 @@ internal static class Execution
             }
             else
             {
-                AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorLHS(vector.Dimension));
-                Builder.AppendLine($"{indentation}public static {vector.VectorType.Name} operator *({Data.Scalar.Name} x, Vector{vector.Dimension} y) => new(x.Magnitude.Value * y);");
+                AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorLHS(vector.Definition.Dimension));
+                Builder.AppendLine($"{indentation}public static {vector.Type.Name} operator *({Data.Scalar.Name} x, Vector{vector.Definition.Dimension} y) => new(x.Magnitude.Value * y);");
 
-                AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorRHS(vector.Dimension));
-                Builder.AppendLine($"{indentation}public static {vector.VectorType.Name} operator *(Vector{vector.Dimension} x, {Data.Scalar.Name} y) => new(x * y.Magnitude.Value);");
+                AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorRHS(vector.Definition.Dimension));
+                Builder.AppendLine($"{indentation}public static {vector.Type.Name} operator *(Vector{vector.Definition.Dimension} x, {Data.Scalar.Name} y) => new(x * y.Magnitude.Value);");
             }
         }
 

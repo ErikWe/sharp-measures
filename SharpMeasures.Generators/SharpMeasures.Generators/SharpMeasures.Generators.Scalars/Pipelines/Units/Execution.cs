@@ -4,16 +4,14 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Units;
 
 using System.Text;
-using SharpMeasures.Generators.Scalars.Refinement.ScalarConstant;
 
 internal static class Execution
 {
     public static void Execute(SourceProductionContext context, DataModel data)
     {
-        if (data.Constants.Count is 0 && data.Bases.Count is 0 && data.Units.Count is 0)
+        if (data.IncludedBases.Count is 0 && data.IncluedUnits.Count is 0 && data.Constants.Count is 0)
         {
             return;
         }
@@ -65,7 +63,7 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
-            foreach (RefinedScalarConstantDefinition constant in Data.Constants)
+            foreach (var constant in Data.Constants)
             {
                 AppendDocumentation(indentation, Data.Documentation.Constant(constant));
                 Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} {constant.Name} => " +
@@ -77,28 +75,28 @@ internal static class Execution
                 Builder.AppendLine();
             }
 
-            foreach (UnitInstance includedBase in Data.Bases)
+            foreach (var includedBase in Data.IncludedBases)
             {
                 AppendDocumentation(indentation, Data.Documentation.UnitBase(includedBase));
                 Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} One{includedBase.Name} => " +
                     $"{Data.Unit.Name}.{includedBase.Name}.{Data.UnitQuantity.Name};");
             }
 
-            if (Data.Bases.Count > 0)
+            if (Data.IncludedBases.Count > 0)
             {
                 Builder.AppendLine();
             }
 
             bool anyAccessedConstant = false;
 
-            foreach (RefinedScalarConstantDefinition constant in Data.Constants)
+            foreach (var constant in Data.Constants)
             {
                 if (constant.GenerateMultiplesProperty)
                 {
                     anyAccessedConstant = true;
 
                     AppendDocumentation(indentation, Data.Documentation.InConstantMultiples(constant));
-                    Builder.AppendLine($"{indentation}public Scalar {constant.MultiplesName!} => Magnitude.Value / {constant.Name}.Magnitude.Value;");
+                    Builder.AppendLine($"{indentation}public Scalar {constant.Multiples!} => Magnitude.Value / {constant.Name}.Magnitude.Value;");
                 }
             }
 
@@ -107,7 +105,7 @@ internal static class Execution
                 Builder.AppendLine();
             }
 
-            foreach (UnitInstance includedUnit in Data.Units)
+            foreach (var includedUnit in Data.IncluedUnits)
             {
                 AppendDocumentation(indentation, Data.Documentation.InSpecifiedUnit(includedUnit));
                 Builder.AppendLine($"{indentation}public Scalar {includedUnit.Plural} => InUnit({Data.Unit.Name}.{includedUnit.Name});");

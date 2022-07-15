@@ -46,9 +46,9 @@ internal record class DataModel : IDataModel<DataModel>
     IUnitType IDataModel.Unit => VectorDefinition.Unit;
     IScalarType? IDataModel.Scalar => VectorDefinition.Scalar;
 
-    IEnumerable<IncludeUnitsDefinition> IDataModel.IncludeUnits => VectorData.IncludeUnits;
-    IEnumerable<ExcludeUnitsDefinition> IDataModel.ExcludeUnits => VectorData.ExcludeUnits;
-    IEnumerable<ConvertibleQuantityDefinition> IDataModel.DimensionalEquivalences => VectorData.DimensionalEquivalences;
+    IEnumerable<UnresolvedIncludeUnitsDefinition> IDataModel.IncludeUnits => VectorData.IncludeUnits;
+    IEnumerable<UnresolvedExcludeUnitsDefinition> IDataModel.ExcludeUnits => VectorData.ExcludeUnits;
+    IEnumerable<UnresolvedConvertibleQuantityDefinition> IDataModel.DimensionalEquivalences => VectorData.DimensionalEquivalences;
 
     string? IDataModel.DefaultUnitName => VectorDefinition.DefaultUnitName;
     string? IDataModel.DefaultUnitSymbol => VectorDefinition.DefaultUnitSymbol;

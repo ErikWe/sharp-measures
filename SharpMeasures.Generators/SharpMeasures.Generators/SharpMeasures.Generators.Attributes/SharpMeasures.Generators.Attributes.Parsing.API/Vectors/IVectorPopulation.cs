@@ -1,10 +1,11 @@
 ﻿namespace SharpMeasures.Generators.Vectors;
 
 using SharpMeasures.Equatables;
+using SharpMeasures.Generators.Quantities;
 
 using System.Collections.Generic;
 
-public interface IVectorPopulation
+public interface IVectorPopulation : IQuantityPopulation
 {
     public IReadOnlyDictionary<NamedType, IVectorType> Vectors { get; }
     public IReadOnlyDictionary<NamedType, SpecializedVectorPopulation> Specializations { get; }

@@ -1,12 +1,12 @@
 ﻿namespace SharpMeasures.Generators.Scalars;
 
-public interface ISpecializedScalar : IScalar
-{
-    public abstract IScalarType OriginalScalar { get; }
+using SharpMeasures.Generators.Quantities;
+using SharpMeasures.Generators.Unresolved.Scalars;
 
-    public abstract bool InheritDerivations { get; }
-    public abstract bool InheritConstants { get; }
+public interface ISpecializedScalar : IScalar, ISpecializedQuantity
+{
+    public abstract IUnresolvedScalarType OriginalScalar { get; }
+
+    public abstract bool InheritConvertibleScalars { get; }
     public abstract bool InheritBases { get; }
-    public abstract bool InheritUnits { get; }
-    public abstract bool InheritConvertibleQuantities { get; }
 }

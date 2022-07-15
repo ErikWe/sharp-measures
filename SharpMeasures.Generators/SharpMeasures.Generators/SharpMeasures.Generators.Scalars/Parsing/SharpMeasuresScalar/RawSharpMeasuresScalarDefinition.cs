@@ -25,7 +25,7 @@ internal record class RawSharpMeasuresScalarDefinition : ARawAttributeDefinition
     public NamedType? SquareRoot { get; init; }
     public NamedType? CubeRoot { get; init; }
 
-    public bool GenerateDocumentation { get; init; }
+    public bool? GenerateDocumentation { get; init; }
 
     protected override RawSharpMeasuresScalarDefinition Definition => this;
 

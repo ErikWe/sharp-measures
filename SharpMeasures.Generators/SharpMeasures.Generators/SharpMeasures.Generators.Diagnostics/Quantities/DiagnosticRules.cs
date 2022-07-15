@@ -51,7 +51,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InvalidConstantMultiplesName,
         title: "Invalid name for multiples of constant",
-        messageFormat: "\"{0}\" can not be used as the name for multiples of {1}. Use the default value, write the name in full, or use a suitable notation " +
+        messageFormat: "\"{0}\" can not be used to construct the name for multiples of {1}. Use the default value, write the name in full, or use a suitable notation " +
             $"from {typeof(CommonConstantMultiplesPropertyNotations).FullName}.",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,

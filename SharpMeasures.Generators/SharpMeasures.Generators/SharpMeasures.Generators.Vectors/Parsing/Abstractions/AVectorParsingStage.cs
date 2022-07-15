@@ -49,8 +49,8 @@ internal abstract class AVectorParsingStage<TAttribute, TRawDefinition, TDefinit
         IEnumerable<RawVectorConstantDefinition> vectorConstants, IEnumerable<RawConvertibleQuantityDefinition> dimensionalEquivalences);
 
     protected abstract TProcessed ConstructProcessed(DefinedType type, MinimalLocation location, TDefinition definition,
-        IEnumerable<IncludeUnitsDefinition> includeUnits, IEnumerable<ExcludeUnitsDefinition> excludeUnits,
-        IEnumerable<VectorConstantDefinition> vectorConstants, IEnumerable<ConvertibleQuantityDefinition> dimensionalEquivalences);
+        IEnumerable<UnresolvedIncludeUnitsDefinition> includeUnits, IEnumerable<UnresolvedExcludeUnitsDefinition> excludeUnits,
+        IEnumerable<VectorConstantDefinition> vectorConstants, IEnumerable<UnresolvedConvertibleQuantityDefinition> dimensionalEquivalences);
 
     private IOptionalWithDiagnostics<TParsed> ExtractVectorInformation(IntermediateResult input, CancellationToken _)
     {
@@ -106,13 +106,13 @@ internal abstract class AVectorParsingStage<TAttribute, TRawDefinition, TDefinit
         return ResultWithDiagnostics.Construct(processed, allDiagnostics);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ProcessExcludeUnits(UnitListProcessingContext context, TParsed input)
+    private static IResultWithDiagnostics<IReadOnlyList<UnresolvedExcludeUnitsDefinition>> ProcessExcludeUnits(UnitListProcessingContext context, TParsed input)
     {
         if (input.IncludeUnits.Any())
         {
             var allDiagnostics = CreateExcessiveExclusionDiagnostics<IncludeUnitsAttribute, ExcludeUnitsAttribute>(input.ExcludeUnits);
 
-            return ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>, allDiagnostics);
+            return ResultWithDiagnostics.Construct(Array.Empty<UnresolvedExcludeUnitsDefinition>() as IReadOnlyList<UnresolvedExcludeUnitsDefinition>, allDiagnostics);
         }
 
         return ProcessingFilter.Create(Processers.ExcludeUnitsProcesser).Filter(context, input.ExcludeUnits);
@@ -185,7 +185,7 @@ internal abstract class AVectorParsingStage<TAttribute, TRawDefinition, TDefinit
         public static ExcludeUnitsProcesser ExcludeUnitsProcesser { get; } = new(UnitListProcessingDiagnostics<RawExcludeUnitsDefinition>.Instance);
 
         public static VectorConstantProcesser VectorConstantProcesser { get; } = new(VectorConstantDiagnostics.Instance);
-        public static ConvertibleQuantityProcesser DimensionalEquivalenceValidator { get; } = new(DimensionalEquivalenceDiagnostics.Instance);
+        public static AConvertibleQuantityProcesser DimensionalEquivalenceValidator { get; } = new(DimensionalEquivalenceDiagnostics.Instance);
     }
 
     private readonly record struct IntermediateResult(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol);

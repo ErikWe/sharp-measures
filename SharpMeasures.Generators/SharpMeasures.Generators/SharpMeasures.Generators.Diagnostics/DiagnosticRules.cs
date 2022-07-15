@@ -47,8 +47,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotVector,
         title: "Expected a vector quantity",
-        messageFormat: $"Expected a vector quantity. Decorate {{0}} with the attribute {typeof(SharpMeasuresVectorAttribute).FullName}, " +
-            $"or use another type.",
+        messageFormat: $"Expected a vector quantity. Decorate {{0}} with the attribute {typeof(SharpMeasuresVectorAttribute).FullName}, or use another type.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -89,6 +88,27 @@ public static partial class DiagnosticRules
         id: DiagnosticIDs.TypeAlreadyDefined,
         title: "Type already defined",
         messageFormat: "{0} cannot be defined as a {1}, as it was already defined as a {2}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor TypeNotQuantity = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.TypeNotScalar,
+        title: "Expected a SharpMeasures quantity",
+        messageFormat: "Expected a SharpMeasures quantity. Decorate {{0}} with an attribute describing a SharpMeasures quantity, such as " +
+            $"{typeof(SharpMeasuresScalarAttribute).FullName}, or use another type.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor NullTypeNotQuantity = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.TypeNotScalar,
+        title: "Expected a SharpMeasures quantity",
+        messageFormat: $"Expected a type marked with an attribute describing a SharpMeasures quantity, such as {typeof(SharpMeasuresScalarAttribute).FullName}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true

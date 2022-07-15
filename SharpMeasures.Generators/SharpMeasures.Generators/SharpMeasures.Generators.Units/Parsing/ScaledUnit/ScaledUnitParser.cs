@@ -4,7 +4,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 
 internal static class ScaledUnitParser
 {
-    public static IAttributeParser<RawScaledUnitDefinition> Instance { get; } = new AttributeParser();
+    public static IAttributeParser<RawScaledUnitDefinition> Parser { get; } = new AttributeParser();
 
     private static RawScaledUnitDefinition DefaultDefinition() => RawScaledUnitDefinition.Empty;
 

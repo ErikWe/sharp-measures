@@ -2,13 +2,14 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
+using SharpMeasures.Generators.Quantities.Parsing.UnitList;
 
 using System.Collections.Generic;
 
 internal static class ExcludeBasesProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawExcludeBasesDefinition>> AllProperties => new IAttributeProperty<RawExcludeBasesDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawUnitListDefinition>> AllProperties => new IAttributeProperty<RawUnitListDefinition>[]
     {
-        CommonProperties.Items<string?, RawExcludeBasesDefinition, ExcludeBasesLocations>(nameof(ExcludeBasesAttribute.ExcludedBases))
+        CommonProperties.Items<string?, RawUnitListDefinition, UnitListLocations>(nameof(ExcludeBasesAttribute.ExcludedBases))
     };
 }

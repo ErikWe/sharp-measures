@@ -1,10 +1,8 @@
 ﻿namespace SharpMeasures.Generators.Unresolved.Scalars;
 
-using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators.Unresolved.Quantities;
 
-public interface IUnresolvedSpecializedScalarType : IUnresolvedScalarType
+public interface IUnresolvedSpecializedScalarType : IUnresolvedScalarType, IUnresolvedSpecializedQuantityType
 {
-    new public abstract ISpecializedScalarType UnresolvedTarget { get; }
-
-    new public abstract IUnresolvedSpecializedScalar ScalarDefinition { get; }
+    new public abstract IUnresolvedSpecializedScalar Definition { get; }
 }

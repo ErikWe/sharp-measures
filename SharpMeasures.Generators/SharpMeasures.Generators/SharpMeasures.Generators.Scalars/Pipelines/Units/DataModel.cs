@@ -1,17 +1,42 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Pipelines.Units;
 
 using SharpMeasures.Equatables;
-using SharpMeasures.Generators.Documentation;
 using SharpMeasures.Generators.Scalars.Documentation;
-using SharpMeasures.Generators.Scalars.Refinement.ScalarConstant;
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Units.UnitInstances;
 
 using System.Collections.Generic;
 
-internal readonly record struct DataModel(DefinedType Scalar, NamedType Unit, NamedType UnitQuantity, ReadOnlyEquatableCollection<UnitInstance> Bases,
-    ReadOnlyEquatableCollection<UnitInstance> Units, ReadOnlyEquatableCollection<RefinedScalarConstantDefinition> Constants, IDocumentationStrategy Documentation)
+internal readonly record struct DataModel
 {
-    public DataModel(DefinedType scalar, NamedType unit, NamedType unitQuantity, IReadOnlyCollection<UnitInstance> bases, IReadOnlyCollection<UnitInstance> units,
-        IReadOnlyCollection<RefinedScalarConstantDefinition> constants, IDocumentationStrategy documentation)
-        : this(scalar, unit, unitQuantity, bases.AsReadOnlyEquatable(), units.AsReadOnlyEquatable(), constants.AsReadOnlyEquatable(), documentation) { }
+    public DefinedType Scalar { get; }
+
+    public NamedType Unit { get; }
+    public NamedType UnitQuantity { get; }
+
+    public IReadOnlyList<IUnitInstance> IncludedBases => includedBases;
+    public IReadOnlyList<IUnitInstance> IncluedUnits => includedUnits;
+
+    public IReadOnlyList<IScalarConstant> Constants => constants;
+
+    public IDocumentationStrategy Documentation { get; }
+
+    private ReadOnlyEquatableList<IUnitInstance> includedBases { get; }
+    private ReadOnlyEquatableList<IUnitInstance> includedUnits { get; }
+
+    private ReadOnlyEquatableList<IScalarConstant> constants { get; }
+
+    public DataModel(DefinedType scalar, NamedType unit, NamedType unitQuantity, IReadOnlyList<IUnitInstance> includedBases, IReadOnlyList<IUnitInstance> includedUnits,
+        IReadOnlyList<IScalarConstant> constants, IDocumentationStrategy documentation)
+    {
+        Scalar = scalar;
+
+        Unit = unit;
+        UnitQuantity = unitQuantity;
+
+        this.includedBases = includedBases.AsReadOnlyEquatable();
+        this.includedUnits = includedUnits.AsReadOnlyEquatable();
+        this.constants = constants.AsReadOnlyEquatable();
+
+        Documentation = documentation;
+    }
 }

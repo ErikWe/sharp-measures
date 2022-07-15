@@ -1,15 +1,14 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
-using SharpMeasures.Generators.Scalars.Refinement.ScalarConstant;
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Units.UnitInstances;
 
 internal interface IDocumentationStrategy
 {
     public abstract string Header();
 
     public abstract string Zero();
-    public abstract string Constant(RefinedScalarConstantDefinition definition);
-    public abstract string UnitBase(UnitInstance unitInstance);
+    public abstract string Constant(IScalarConstant constant);
+    public abstract string UnitBase(IUnitInstance unitInstance);
 
     public abstract string WithMagnitude();
 
@@ -24,8 +23,8 @@ internal interface IDocumentationStrategy
 
     public abstract string Magnitude();
     public abstract string InUnit();
-    public abstract string InConstantMultiples(RefinedScalarConstantDefinition definition);
-    public abstract string InSpecifiedUnit(UnitInstance unitInstance);
+    public abstract string InConstantMultiples(IScalarConstant constant);
+    public abstract string InSpecifiedUnit(IUnitInstance unitInstance);
 
     public abstract string AsDimensionallyEquivalent(IScalarType scalar);
     public abstract string CastToDimensionallyEquivalent(IScalarType scalar);

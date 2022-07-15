@@ -10,8 +10,8 @@ public record class DerivedQuantityDefinition : AAttributeDefinition<DerivedQuan
     public bool ImplementOperators { get; }
     public bool ImplementAlgebraicallyEquivalentDerivations { get; }
 
-    public DerivedQuantityDefinition(string expression, QuantityDerivationSignature signature, bool implementOperators, bool implementAlgebraicallyEquivalentDerivations,
-        DerivedQuantityLocations locations) : base(locations)
+    public DerivedQuantityDefinition(string expression, QuantityDerivationSignature signature, bool implementOperators,
+        bool implementAlgebraicallyEquivalentDerivations, DerivedQuantityLocations locations) : base(locations)
     {
         Expression = expression;
         Signature = signature;

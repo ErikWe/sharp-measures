@@ -6,19 +6,24 @@ using System.Threading;
 
 internal static class MathsGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Scalars.DataModel> inputProvider)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<BaseDataModel> inputProvider)
     {
-        var reducedUnbiased = inputProvider.Select(Reduce);
+        var reduced = inputProvider.Select(Reduce);
 
-        context.RegisterSourceOutput(reducedUnbiased, Execution.Execute);
+        context.RegisterSourceOutput(reduced, Execution.Execute);
     }
 
-    private static DataModel Reduce(Scalars.DataModel input, CancellationToken _)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<SpecializedDataModel> inputProvider)
     {
-        return new(input.ScalarData.ScalarType, input.ScalarDefinition.Unit.Type.AsNamedType(), input.ScalarDefinition.ImplementSum,
-            input.ScalarDefinition.ImplementDifference, input.ScalarDefinition.Difference.Type.AsNamedType(),
-            input.ScalarDefinition.Reciprocal?.Type.AsNamedType(), input.ScalarDefinition.Square?.Type.AsNamedType(),
-            input.ScalarDefinition.Cube?.Type.AsNamedType(), input.ScalarDefinition.SquareRoot?.Type.AsNamedType(),
-            input.ScalarDefinition.CubeRoot?.Type.AsNamedType(), input.Documentation);
+        var reduced = inputProvider.Select(Reduce);
+
+        context.RegisterSourceOutput(reduced, Execution.Execute);
+    }
+
+    private static DataModel Reduce<TScalarType>(ADataModel<TScalarType> input, CancellationToken _) where TScalarType : IScalarType
+    {
+        return new(input.Scalar.Type, input.Inheritance.BaseScalar.Unit.Type.AsNamedType(), input.Inheritance.ImplementSum, input.Inheritance.ImplementDifference,
+            input.Inheritance.Difference.Type.AsNamedType(), input.Inheritance.Reciprocal?.Type.AsNamedType(), input.Inheritance.Square?.Type.AsNamedType(),
+            input.Inheritance.Cube?.Type.AsNamedType(), input.Inheritance.SquareRoot?.Type.AsNamedType(), input.Inheritance.CubeRoot?.Type.AsNamedType(), input.Documentation);
     }
 }

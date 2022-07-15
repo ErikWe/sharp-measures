@@ -20,7 +20,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using SharpMeasures.Generators.Vectors.Refinement.VectorConstant;
-using SharpMeasures.Generators.Quantities.Refinement.UnitList;
+using SharpMeasures.Generators.Quantities.Parsing.UnitList;
 
 internal static class UnitsGenerator
 {
@@ -60,19 +60,19 @@ internal static class UnitsGenerator
     {
         UnitListRefinementContext context = new(input.VectorData.VectorType, input.VectorDefinition.Unit);
 
-        UnitListRefiner<IncludeUnitsDefinition> inclusionRefiner = new(UnitListRefinementDiagnostics<IncludeUnitsDefinition>.Instance);
+        UnitListResolver<UnresolvedIncludeUnitsDefinition> inclusionRefiner = new(UnitListRefinementDiagnostics<UnresolvedIncludeUnitsDefinition>.Instance);
 
         if (input.VectorData.IncludeUnits.Any())
         {
-            var processedInclusions = ProcessingFilter.Create(inclusionRefiner).Filter(context, input.VectorData.IncludeUnits, RefinedUnitListDefinition.StartBuilder());
+            var processedInclusions = ProcessingFilter.Create(inclusionRefiner).Filter(context, input.VectorData.IncludeUnits, UnitListDefinition.StartBuilder());
 
             var includedUnits = processedInclusions.Result.Target.UnitList as IReadOnlyCollection<UnitInstance> ?? Array.Empty<UnitInstance>();
             return ResultWithDiagnostics.Construct(includedUnits, processedInclusions.Diagnostics);
         }
 
-        UnitListRefiner<ExcludeUnitsDefinition> exclusionRefiner = new(UnitListRefinementDiagnostics<ExcludeUnitsDefinition>.Instance);
+        UnitListResolver<UnresolvedExcludeUnitsDefinition> exclusionRefiner = new(UnitListRefinementDiagnostics<UnresolvedExcludeUnitsDefinition>.Instance);
 
-        var processedExclusions = ProcessingFilter.Create(exclusionRefiner).Filter(context, input.VectorData.ExcludeUnits, RefinedUnitListDefinition.StartBuilder());
+        var processedExclusions = ProcessingFilter.Create(exclusionRefiner).Filter(context, input.VectorData.ExcludeUnits, UnitListDefinition.StartBuilder());
 
         List<UnitInstance> allUnits = input.VectorDefinition.Unit.UnitsByName.Values.ToList();
 
@@ -108,8 +108,8 @@ internal static class UnitsGenerator
         AssociatedUnitInclusionRefinementContext unitInclusionContext = new(input.Model.VectorData.VectorType, input.Model.VectorData.VectorDefinition.AssociatedVector,
             associatedModel.Unit, input.UnitInclusionPopulation);
 
-        AssociatedInclusionRefiner<ParsedResizedVector, IncludeUnitsDefinition, ExcludeUnitsDefinition> unitInclusionRefiner
-            = new(AssociatedUnitInclusionRefinementDiagnostics<IncludeUnitsDefinition, ExcludeUnitsDefinition>.Instance);
+        AssociatedInclusionRefiner<ParsedResizedVector, UnresolvedIncludeUnitsDefinition, UnresolvedExcludeUnitsDefinition> unitInclusionRefiner
+            = new(AssociatedUnitInclusionRefinementDiagnostics<UnresolvedIncludeUnitsDefinition, UnresolvedExcludeUnitsDefinition>.Instance);
 
         var processedUnitInclusion = unitInclusionRefiner.Process(unitInclusionContext, input.Model.VectorData);
         var allDiagnostics = processedUnitInclusion.Diagnostics;
@@ -128,7 +128,7 @@ internal static class UnitsGenerator
         return OptionalWithDiagnostics.Result(model, allDiagnostics);
     }
 
-    private class UnitListRefinementContext : IUnitListRefinementContext
+    private class UnitListRefinementContext : IUnitListResolutionContext
     {
         public DefinedType Type { get; }
 

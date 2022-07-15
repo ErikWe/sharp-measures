@@ -1,14 +1,15 @@
 ﻿namespace SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 
 using SharpMeasures.Generators.Attributes.Parsing;
+using SharpMeasures.Generators.Quantities.Parsing.UnitList;
 
 public static class ExcludeUnitsParser
 {
-    public static IAttributeParser<RawExcludeUnitsDefinition> Parser { get; } = new AttributeParser();
+    public static IAttributeParser<RawUnitListDefinition> Parser { get; } = new AttributeParser();
 
-    private static RawExcludeUnitsDefinition DefaultDefinition() => RawExcludeUnitsDefinition.Empty;
+    private static RawUnitListDefinition DefaultDefinition() => RawUnitListDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawExcludeUnitsDefinition, ExcludeUnitsLocations, ExcludeUnitsAttribute>
+    private class AttributeParser : AAttributeParser<RawUnitListDefinition, UnitListLocations, ExcludeUnitsAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, ExcludeUnitsProperties.AllProperties) { }
     }

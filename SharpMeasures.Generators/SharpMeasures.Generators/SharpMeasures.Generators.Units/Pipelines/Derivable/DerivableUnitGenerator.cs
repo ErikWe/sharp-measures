@@ -16,6 +16,6 @@ internal static class DerivableUnitGenerator
 
     private static DataModel ReduceToDataModel(Units.DataModel input, CancellationToken _)
     {
-        return new(input.UnitData.Type, input.UnitData.UnitDefinition.Quantity.Type.AsNamedType(), input.UnitData.UnitDerivations, input.Documentation);
+        return new(input.Unit.Type, input.Unit.Definition.Quantity.Type.AsNamedType(), input.Unit.UnitDerivations, input.Documentation);
     }
 }

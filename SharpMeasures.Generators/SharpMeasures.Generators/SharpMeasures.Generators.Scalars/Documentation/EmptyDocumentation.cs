@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
-using SharpMeasures.Generators.Scalars.Refinement.ScalarConstant;
-using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Units.UnitInstances;
 
 using System;
 
@@ -13,8 +12,8 @@ internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocu
 
     string IDocumentationStrategy.Header() => string.Empty;
     string IDocumentationStrategy.Zero() => string.Empty;
-    string IDocumentationStrategy.Constant(RefinedScalarConstantDefinition _) => string.Empty;
-    string IDocumentationStrategy.UnitBase(UnitInstance _) => string.Empty;
+    string IDocumentationStrategy.Constant(IScalarConstant _) => string.Empty;
+    string IDocumentationStrategy.UnitBase(IUnitInstance _) => string.Empty;
     string IDocumentationStrategy.WithMagnitude() => string.Empty;
     string IDocumentationStrategy.FromReciprocal() => string.Empty;
     string IDocumentationStrategy.FromSquare() => string.Empty;
@@ -25,8 +24,8 @@ internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocu
     string IDocumentationStrategy.ScalarConstructor() => string.Empty;
     string IDocumentationStrategy.ScalarAndUnitConstructor() => string.Empty;
     string IDocumentationStrategy.InUnit() => string.Empty;
-    string IDocumentationStrategy.InConstantMultiples(RefinedScalarConstantDefinition _) => string.Empty;
-    string IDocumentationStrategy.InSpecifiedUnit(UnitInstance _) => string.Empty;
+    string IDocumentationStrategy.InConstantMultiples(IScalarConstant _) => string.Empty;
+    string IDocumentationStrategy.InSpecifiedUnit(IUnitInstance _) => string.Empty;
     string IDocumentationStrategy.AsDimensionallyEquivalent(IScalarType _) => string.Empty;
     string IDocumentationStrategy.CastToDimensionallyEquivalent(IScalarType _) => string.Empty;
     string IDocumentationStrategy.IsNaN() => string.Empty;

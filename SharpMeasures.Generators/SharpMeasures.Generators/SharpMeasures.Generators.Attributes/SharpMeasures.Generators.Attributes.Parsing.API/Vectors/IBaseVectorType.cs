@@ -2,5 +2,5 @@
 
 public interface IBaseVectorType : IVectorType
 {
-    new public abstract IBaseVector VectorDefinition { get; }
+    new public abstract IBaseVector Definition { get; }
 }

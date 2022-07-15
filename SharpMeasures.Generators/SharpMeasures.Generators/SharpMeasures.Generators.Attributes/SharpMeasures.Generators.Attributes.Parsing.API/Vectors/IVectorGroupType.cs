@@ -1,6 +1,10 @@
 ﻿namespace SharpMeasures.Generators.Vectors;
 
-public interface IVectorGroupType : IVectorType
+using System.Collections.Generic;
+
+public interface IVectorGroupType : ISharpMeasuresObjectType
 {
-    new public abstract IVectorGroup VectorDefinition { get; }
+    new public abstract IVectorGroup Definition { get; }
+
+    public abstract IReadOnlyList<IConvertibleVector> ConvertibleVectors { get; }
 }

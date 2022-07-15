@@ -9,11 +9,11 @@ internal record class SharpMeasuresUnitDefinition : IAttributeDefinition<SharpMe
 
     public bool BiasTerm { get; }
 
-    public bool GenerateDocumentation { get; }
+    public bool? GenerateDocumentation { get; }
 
     public SharpMeasuresUnitLocations Locations { get; }
 
-    public SharpMeasuresUnitDefinition(IUnresolvedScalarType quantity, bool biasTerm, bool generateDocumentation, SharpMeasuresUnitLocations locations)
+    public SharpMeasuresUnitDefinition(IUnresolvedScalarType quantity, bool biasTerm, bool? generateDocumentation, SharpMeasuresUnitLocations locations)
     {
         Quantity = quantity;
 

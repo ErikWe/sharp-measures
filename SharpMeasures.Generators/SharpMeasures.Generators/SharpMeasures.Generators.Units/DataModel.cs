@@ -4,15 +4,15 @@ using SharpMeasures.Generators.Units.Documentation;
 
 internal record class DataModel
 {
-    public UnitType UnitData { get; }
+    public UnitType Unit { get; }
 
     public IUnitPopulation UnitPopulation { get; }
 
     public IDocumentationStrategy Documentation { get; init; } = EmptyDocumentation.Instance;
 
-    public DataModel(UnitType unitData, IUnitPopulation unitPopulation)
+    public DataModel(UnitType unit, IUnitPopulation unitPopulation)
     {
-        UnitData = unitData;
+        Unit = unit;
 
         UnitPopulation = unitPopulation;
     }

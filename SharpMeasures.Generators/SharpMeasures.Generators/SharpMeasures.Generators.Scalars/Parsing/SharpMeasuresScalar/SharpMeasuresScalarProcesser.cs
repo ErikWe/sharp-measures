@@ -29,7 +29,7 @@ internal interface ISharpMeasuresScalarProcessingDiagnostics
     public abstract Diagnostic? NullCubeRootQuantity(IProcessingContext context, RawSharpMeasuresScalarDefinition definition);
 }
 
-internal class SharpMeasuresScalarProcesser : AProcesser<IProcessingContext, RawSharpMeasuresScalarDefinition, SharpMeasuresScalarDefinition>
+internal class SharpMeasuresScalarProcesser : AProcesser<IProcessingContext, RawSharpMeasuresScalarDefinition, UnresolvedSharpMeasuresScalarDefinition>
 {
     private ISharpMeasuresScalarProcessingDiagnostics Diagnostics { get; }
 
@@ -38,11 +38,11 @@ internal class SharpMeasuresScalarProcesser : AProcesser<IProcessingContext, Raw
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<SharpMeasuresScalarDefinition> Process(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
+    public override IOptionalWithDiagnostics<UnresolvedSharpMeasuresScalarDefinition> Process(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
     {
         if (VerifyRequiredPropertiesSet(definition) is false)
         {
-            return OptionalWithDiagnostics.Empty<SharpMeasuresScalarDefinition>();
+            return OptionalWithDiagnostics.Empty<UnresolvedSharpMeasuresScalarDefinition>();
         }
 
         var validity = CheckValidity(context, definition);
@@ -50,7 +50,7 @@ internal class SharpMeasuresScalarProcesser : AProcesser<IProcessingContext, Raw
 
         if (validity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<SharpMeasuresScalarDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<UnresolvedSharpMeasuresScalarDefinition>(allDiagnostics);
         }
 
         var product = ProcessDefinition(context, definition);
@@ -64,14 +64,14 @@ internal class SharpMeasuresScalarProcesser : AProcesser<IProcessingContext, Raw
         return definition.Locations.ExplicitlySetUnit;
     }
 
-    private IResultWithDiagnostics<SharpMeasuresScalarDefinition> ProcessDefinition(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
+    private IResultWithDiagnostics<UnresolvedSharpMeasuresScalarDefinition> ProcessDefinition(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
     {
         IEnumerable<Diagnostic> allDiagnostics = Array.Empty<Diagnostic>();
 
         var processedDefaultUnitData = ProcessDefaultUnitData(context, definition);
         allDiagnostics = allDiagnostics.Concat(processedDefaultUnitData);
 
-        SharpMeasuresScalarDefinition product = new(definition.Unit!.Value, definition.Vector, definition.UseUnitBias, definition.ImplementSum,
+        UnresolvedSharpMeasuresScalarDefinition product = new(definition.Unit!.Value, definition.Vector, definition.UseUnitBias, definition.ImplementSum,
             definition.ImplementDifference, definition.Difference ?? context.Type.AsNamedType(), processedDefaultUnitData.Result.Name,
             processedDefaultUnitData.Result.Symbol, definition.Reciprocal, definition.Square, definition.Cube, definition.SquareRoot, definition.CubeRoot,
             definition.GenerateDocumentation, definition.Locations);

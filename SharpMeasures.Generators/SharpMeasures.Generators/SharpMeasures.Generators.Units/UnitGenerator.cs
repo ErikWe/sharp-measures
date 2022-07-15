@@ -43,12 +43,7 @@ public class UnitGenerator
 
     private static (DataModel Model, bool GenerateDocumentation) InterpretGenerateDocumentation((DataModel Model, bool Default) data, CancellationToken _)
     {
-        if (data.Model.UnitData.UnitDefinition.Locations.ExplicitlySetGenerateDocumentation)
-        {
-            return (data.Model, data.Model.UnitData.UnitDefinition.GenerateDocumentation);
-        }
-
-        return (data.Model, data.Default);
+        return (data.Model, data.Model.Unit.Definition.GenerateDocumentation ?? data.Default);
     }
 
     private static DataModel AppendDocumentationFile
@@ -58,7 +53,7 @@ public class UnitGenerator
         {
             DefaultDocumentation defaultDocumentation = new(input.Model);
 
-            if (input.DocumentationDictionary.TryGetValue(input.Model.UnitData.Type.Name, out DocumentationFile documentationFile))
+            if (input.DocumentationDictionary.TryGetValue(input.Model.Unit.Type.Name, out DocumentationFile documentationFile))
             {
                 input.Model = input.Model with
                 {

@@ -20,7 +20,7 @@ internal class UnresolvedUnitType : IUnresolvedUnitType
     public DefinedType Type { get; }
     public MinimalLocation TypeLocation { get; }
 
-    public UnresolvedSharpMeasuresUnitDefinition UnitDefinition { get; }
+    public UnresolvedSharpMeasuresUnitDefinition Definition { get; }
 
     public UnresolvedFixedUnitDefinition? FixedUnit { get; }
     public IReadOnlyList<UnresolvedDerivableUnitDefinition> UnitDerivations => unitDerivations;
@@ -32,6 +32,7 @@ internal class UnresolvedUnitType : IUnresolvedUnitType
     public IReadOnlyList<UnresolvedScaledUnitDefinition> ScaledUnits => scaledUnits;
 
     public IReadOnlyDictionary<string, IUnresolvedUnitInstance> UnitsByName => unitsByName;
+    public IReadOnlyDictionary<string, IUnresolvedUnitInstance> UnitsByPluralName => unitsByPluralName;
     public IReadOnlyDictionary<string, IUnresolvedDerivableUnit> DerivationsByID => derivationsByID;
 
     private ReadOnlyEquatableList<UnresolvedDerivableUnitDefinition> unitDerivations { get; }
@@ -43,9 +44,11 @@ internal class UnresolvedUnitType : IUnresolvedUnitType
     private ReadOnlyEquatableList<UnresolvedScaledUnitDefinition> scaledUnits { get; }
 
     private ReadOnlyEquatableDictionary<string, IUnresolvedUnitInstance> unitsByName { get; }
+    private ReadOnlyEquatableDictionary<string, IUnresolvedUnitInstance> unitsByPluralName { get; }
     private ReadOnlyEquatableDictionary<string, IUnresolvedDerivableUnit> derivationsByID { get; }
 
-    IUnresolvedUnit IUnresolvedUnitType.UnitDefinition => UnitDefinition;
+    ISharpMeasuresObject ISharpMeasuresObjectType.Definition => Definition;
+    IUnresolvedUnit IUnresolvedUnitType.Definition => Definition;
 
     IUnresolvedFixedUnit? IUnresolvedUnitType.FixedUnit => FixedUnit;
     IReadOnlyList<IUnresolvedDerivableUnit> IUnresolvedUnitType.UnitDerivations => UnitDerivations;
@@ -56,15 +59,15 @@ internal class UnresolvedUnitType : IUnresolvedUnitType
     IReadOnlyList<IUnresolvedPrefixedUnit> IUnresolvedUnitType.PrefixedUnits => PrefixedUnits;
     IReadOnlyList<IUnresolvedScaledUnit> IUnresolvedUnitType.ScaledUnits => ScaledUnits;
 
-    public UnresolvedUnitType(DefinedType type, MinimalLocation unitLocation, UnresolvedSharpMeasuresUnitDefinition unitDefinition, UnresolvedFixedUnitDefinition fixedUnit,
+    public UnresolvedUnitType(DefinedType type, MinimalLocation unitLocation, UnresolvedSharpMeasuresUnitDefinition definition, UnresolvedFixedUnitDefinition fixedUnit,
         IReadOnlyList<UnresolvedDerivableUnitDefinition> unitDerivations, IReadOnlyList<UnresolvedUnitAliasDefinition> unitAliases,
         IReadOnlyList<UnresolvedDerivedUnitDefinition> derivedUnits, IReadOnlyList<UnresolvedBiasedUnitDefinition> biasedUnits,
         IReadOnlyList<UnresolvedPrefixedUnitDefinition> prefixedUnits, IReadOnlyList<UnresolvedScaledUnitDefinition> scaledUnits)
     {
         Type = type;
-
         TypeLocation = unitLocation;
-        UnitDefinition = unitDefinition;
+
+        Definition = definition;
 
         FixedUnit = fixedUnit;
         this.unitDerivations = unitDerivations.AsReadOnlyEquatable();
@@ -76,6 +79,7 @@ internal class UnresolvedUnitType : IUnresolvedUnitType
         this.scaledUnits = scaledUnits.AsReadOnlyEquatable();
 
         unitsByName = ConstructUnitsByNameDictionary();
+        unitsByPluralName = ConstructUnitsByPluralNameDictionary();
         derivationsByID = ConstructDerivationsByIDDictionary();
     }
 
@@ -85,6 +89,14 @@ internal class UnresolvedUnitType : IUnresolvedUnitType
             .Concat(ScaledUnits);
 
         return allUnits.ToDictionary(static (unit) => unit.Name).AsReadOnlyEquatable();
+    }
+
+    private ReadOnlyEquatableDictionary<string, IUnresolvedUnitInstance> ConstructUnitsByPluralNameDictionary()
+    {
+        var allUnits = (new[] { FixedUnit } as IEnumerable<IUnresolvedUnitInstance>).Concat(UnitAliases).Concat(BiasedUnits).Concat(DerivedUnits).Concat(PrefixedUnits)
+            .Concat(ScaledUnits);
+
+        return allUnits.ToDictionary(static (unit) => unit.Plural).AsReadOnlyEquatable();
     }
 
     private ReadOnlyEquatableDictionary<string, IUnresolvedDerivableUnit> ConstructDerivationsByIDDictionary()

@@ -17,7 +17,7 @@ internal static class CommonGenerator
 
     private static DataModel ReduceToDataModel(Units.DataModel input, CancellationToken _)
     {
-        return new(input.UnitData.Type, input.UnitData.UnitDefinition.Quantity.Type, input.UnitData.UnitDefinition.BiasTerm,
-            SourceBuildingUtility.ToParameterName(input.UnitData.UnitDefinition.Quantity.Type.Name), input.Documentation);
+        return new(input.Unit.Type, input.Unit.Definition.Quantity.Type, input.Unit.Definition.BiasTerm,
+            SourceBuildingUtility.ToParameterName(input.Unit.Definition.Quantity.Type.Name), input.Documentation);
     }
 }

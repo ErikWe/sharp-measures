@@ -17,10 +17,10 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
 
     public DefaultDocumentation(DataModel model)
     {
-        UnitType = model.UnitData.Type;
-        Quantity = model.UnitData.UnitDefinition.Quantity;
+        UnitType = model.Unit.Type;
+        Quantity = model.Unit.Definition.Quantity;
 
-        BiasTerm = model.UnitData.UnitDefinition.BiasTerm;
+        BiasTerm = model.Unit.Definition.BiasTerm;
 
         QuantityParameterName = SourceBuildingUtility.ToParameterName(Quantity.Type.Name);
     }

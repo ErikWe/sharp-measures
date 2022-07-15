@@ -12,8 +12,8 @@ using System.Collections.Generic;
 
 internal interface IDimensionalEquivalenceValidationDiagnostics
 {
-    public abstract Diagnostic? TypeNotVector(IDimensionalEquivalenceValidationContext context, ConvertibleQuantityDefinition definition, int index);
-    public abstract Diagnostic? VectorGroupAlreadySpecified(IDimensionalEquivalenceValidationContext context, ConvertibleQuantityDefinition definition, int index);
+    public abstract Diagnostic? TypeNotVector(IDimensionalEquivalenceValidationContext context, UnresolvedConvertibleQuantityDefinition definition, int index);
+    public abstract Diagnostic? VectorGroupAlreadySpecified(IDimensionalEquivalenceValidationContext context, UnresolvedConvertibleQuantityDefinition definition, int index);
 }
 
 internal interface IDimensionalEquivalenceValidationContext : IValidationContext
@@ -23,7 +23,7 @@ internal interface IDimensionalEquivalenceValidationContext : IValidationContext
     public abstract VectorPopulation VectorPopulation { get; }
 }
 
-internal class DimensionalEquivalenceValidator : IValidator<IDimensionalEquivalenceValidationContext, ConvertibleQuantityDefinition>
+internal class DimensionalEquivalenceValidator : IValidator<IDimensionalEquivalenceValidationContext, UnresolvedConvertibleQuantityDefinition>
 {
     private IDimensionalEquivalenceValidationDiagnostics Diagnostics { get; }
 
@@ -32,7 +32,7 @@ internal class DimensionalEquivalenceValidator : IValidator<IDimensionalEquivale
         Diagnostics = diagnostics;
     }
 
-    public IValidityWithDiagnostics CheckValidity(IDimensionalEquivalenceValidationContext context, ConvertibleQuantityDefinition definition)
+    public IValidityWithDiagnostics CheckValidity(IDimensionalEquivalenceValidationContext context, UnresolvedConvertibleQuantityDefinition definition)
     {
         List<Diagnostic> allDiagnostics = new();
 

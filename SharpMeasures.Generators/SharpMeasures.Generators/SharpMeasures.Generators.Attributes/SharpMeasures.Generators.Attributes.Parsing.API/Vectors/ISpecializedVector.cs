@@ -1,10 +1,11 @@
 ﻿namespace SharpMeasures.Generators.Vectors;
 
-public interface ISpecializedVector : IVector
-{
-    public abstract NamedType OriginalVector { get; }
+using SharpMeasures.Generators.Quantities;
+using SharpMeasures.Generators.Unresolved.Vectors;
 
-    public abstract bool InheritDerivations { get; }
-    public abstract bool InheritConstants { get; }
-    public abstract bool InheritUnits { get; }
+public interface ISpecializedVector : IVector, ISpecializedQuantity
+{
+    public abstract IUnresolvedVectorType OriginalVector { get; }
+
+    public abstract bool InheritConvertibleVectors { get; }
 }

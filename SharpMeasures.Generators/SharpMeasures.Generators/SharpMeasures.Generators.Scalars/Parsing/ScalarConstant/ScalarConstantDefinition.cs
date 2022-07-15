@@ -1,24 +1,16 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 
-using SharpMeasures.Generators.Attributes.Parsing;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
+using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 
-internal record class ScalarConstantDefinition : AAttributeDefinition<ScalarConstantLocations>, IScalarConstant
+internal record class ScalarConstantDefinition : AQuantityConstantDefinition<ScalarConstantLocations>, IScalarConstant
 {
-    public string Name { get; }
-    public string Unit { get; }
     public double Value { get; }
 
-    public bool GenerateMultiplesProperty { get; }
-    public string? Multiples { get; }
-
-    public ScalarConstantDefinition(string name, string unit, double value, bool generateMultiplesProperty, string? multiples, ScalarConstantLocations locations)
-        : base(locations)
+    public ScalarConstantDefinition(string name, IUnresolvedUnitInstance unit, double value, bool generateMultiplesProperty, string? multiples,
+        ScalarConstantLocations locations)
+        : base(name, unit, generateMultiplesProperty, multiples, locations)
     {
-        Name = name;
-        Unit = unit;
         Value = value;
-
-        GenerateMultiplesProperty = generateMultiplesProperty;
-        Multiples = multiples;
     }
 }

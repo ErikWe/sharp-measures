@@ -28,17 +28,17 @@ internal class SharpMeasuresUnitResolver : AProcesser<ISharpMeasuresUnitResoluti
 
     public override IOptionalWithDiagnostics<SharpMeasuresUnitDefinition> Process(ISharpMeasuresUnitResolutionContext context, UnresolvedSharpMeasuresUnitDefinition definition)
     {
-        if (context.ScalarPopulation.Scalars.TryGetValue(definition.Quantity, out var quantity) is false)
+        if (context.ScalarPopulation.BaseScalarByScalarType.TryGetValue(definition.Quantity, out var baseQuantity) is false)
         {
             return OptionalWithDiagnostics.Empty<SharpMeasuresUnitDefinition>(Diagnostics.QuantityNotScalar(context, definition));
         }
 
-        if (quantity.ScalarDefinition.UseUnitBias)
+        if (baseQuantity.Definition.UseUnitBias)
         {
             return OptionalWithDiagnostics.Empty<SharpMeasuresUnitDefinition>(Diagnostics.QuantityBiased(context, definition));
         }
 
-        SharpMeasuresUnitDefinition product = new(quantity, definition.BiasTerm, definition.GenerateDocumentation, definition.Locations);
+        SharpMeasuresUnitDefinition product = new(baseQuantity, definition.BiasTerm, definition.GenerateDocumentation, definition.Locations);
         return OptionalWithDiagnostics.Result(product);
     }
 }

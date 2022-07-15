@@ -19,7 +19,7 @@ internal class UnitType : IUnitType
     public DefinedType Type { get; }
     public MinimalLocation TypeLocation { get; }
 
-    public SharpMeasuresUnitDefinition UnitDefinition { get; }
+    public SharpMeasuresUnitDefinition Definition { get; }
 
     public FixedUnitDefinition? FixedUnit { get; }
     public IReadOnlyList<DerivableUnitDefinition> UnitDerivations => unitDerivations;
@@ -31,6 +31,7 @@ internal class UnitType : IUnitType
     public IReadOnlyList<ScaledUnitDefinition> ScaledUnits => scaledUnits;
 
     public IReadOnlyDictionary<string, IUnitInstance> UnitsByName => unitsByName;
+    public IReadOnlyDictionary<string, IUnitInstance> UnitsByPluralName => unitsByPluralName;
     public IReadOnlyDictionary<string, IDerivableUnit> DerivationsByID => derivationsByID;
 
     private ReadOnlyEquatableList<DerivableUnitDefinition> unitDerivations { get; }
@@ -42,9 +43,11 @@ internal class UnitType : IUnitType
     private ReadOnlyEquatableList<ScaledUnitDefinition> scaledUnits { get; }
 
     private ReadOnlyEquatableDictionary<string, IUnitInstance> unitsByName { get; }
+    private ReadOnlyEquatableDictionary<string, IUnitInstance> unitsByPluralName { get; }
     private ReadOnlyEquatableDictionary<string, IDerivableUnit> derivationsByID { get; }
 
-    IUnit IUnitType.UnitDefinition => UnitDefinition;
+    ISharpMeasuresObject ISharpMeasuresObjectType.Definition => Definition;
+    IUnit IUnitType.Definition => Definition;
 
     IFixedUnit? IUnitType.FixedUnit => FixedUnit;
     IReadOnlyList<IDerivableUnit> IUnitType.UnitDerivations => UnitDerivations;
@@ -55,14 +58,14 @@ internal class UnitType : IUnitType
     IReadOnlyList<IPrefixedUnit> IUnitType.PrefixedUnits => PrefixedUnits;
     IReadOnlyList<IScaledUnit> IUnitType.ScaledUnits => ScaledUnits;
 
-    public UnitType(DefinedType type, MinimalLocation unitLocation, SharpMeasuresUnitDefinition unitDefinition, FixedUnitDefinition fixedUnit,
+    public UnitType(DefinedType type, MinimalLocation unitLocation, SharpMeasuresUnitDefinition definition, FixedUnitDefinition fixedUnit,
         IReadOnlyList<DerivableUnitDefinition> unitDerivations, IReadOnlyList<UnitAliasDefinition> unitAliases, IReadOnlyList<DerivedUnitDefinition> derivedUnits,
         IReadOnlyList<BiasedUnitDefinition> biasedUnits, IReadOnlyList<PrefixedUnitDefinition> prefixedUnits, IReadOnlyList<ScaledUnitDefinition> scaledUnits)
     {
         Type = type;
-
         TypeLocation = unitLocation;
-        UnitDefinition = unitDefinition;
+
+        Definition = definition;
 
         FixedUnit = fixedUnit;
         this.unitDerivations = unitDerivations.AsReadOnlyEquatable();
@@ -74,19 +77,16 @@ internal class UnitType : IUnitType
         this.scaledUnits = scaledUnits.AsReadOnlyEquatable();
 
         unitsByName = ConstructUnitsByNameDictionary();
+        unitsByPluralName = ConstructUnitsByPluralNameDictionary();
         derivationsByID = ConstructDerivationsByIDDictionary();
     }
 
-    private ReadOnlyEquatableDictionary<string, IUnitInstance> ConstructUnitsByNameDictionary()
-    {
-        var allUnits = (new[] { FixedUnit } as IEnumerable<IUnitInstance>).Concat(UnitAliases).Concat(BiasedUnits).Concat(DerivedUnits).Concat(PrefixedUnits)
-            .Concat(ScaledUnits);
+    private IEnumerable<IUnitInstance> AllUnits()
+        => (new[] { FixedUnit } as IEnumerable<IUnitInstance>).Concat(UnitAliases).Concat(BiasedUnits).Concat(DerivedUnits).Concat(PrefixedUnits) .Concat(ScaledUnits);
 
-        return allUnits.ToDictionary(static (unit) => unit.Name).AsReadOnlyEquatable();
-    }
+    private ReadOnlyEquatableDictionary<string, IUnitInstance> ConstructUnitsByNameDictionary() => AllUnits().ToDictionary(static (unit) => unit.Name).AsReadOnlyEquatable();
+    private ReadOnlyEquatableDictionary<string, IUnitInstance> ConstructUnitsByPluralNameDictionary() => AllUnits().ToDictionary(static (unit) => unit.Plural).AsReadOnlyEquatable();
 
     private ReadOnlyEquatableDictionary<string, IDerivableUnit> ConstructDerivationsByIDDictionary()
-    {
-        return UnitDerivations.ToDictionary(static (derivation) => derivation.DerivationID, static (derivation) => derivation as IDerivableUnit).AsReadOnlyEquatable();
-    }
+        => UnitDerivations.ToDictionary(static (derivation) => derivation.DerivationID, static (derivation) => derivation as IDerivableUnit).AsReadOnlyEquatable();
 }

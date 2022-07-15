@@ -15,7 +15,7 @@ internal static class UnitDefinitionsGenerator
 
     private static DataModel ReduceToDataModel(Units.DataModel input, CancellationToken _)
     {
-        return new(input.UnitData.Type, input.UnitData.UnitDefinition.Quantity.Type, input.UnitData.UnitDefinition.BiasTerm, input.UnitData.FixedUnit,
-            input.UnitData.UnitAliases, input.UnitData.DerivedUnits, input.UnitData.BiasedUnits, input.UnitData.PrefixedUnits, input.UnitData.ScaledUnits, input.Documentation);
+        return new(input.Unit.Type, input.Unit.Definition.Quantity.Type, input.Unit.Definition.BiasTerm, input.Unit.FixedUnit,
+            input.Unit.UnitAliases, input.Unit.DerivedUnits, input.Unit.BiasedUnits, input.Unit.PrefixedUnits, input.Unit.ScaledUnits, input.Documentation);
     }
 }

@@ -11,24 +11,24 @@ using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System.Collections.Generic;
 
-internal record class ParsedBaseVector : IInclusionExclusion<IncludeUnitsDefinition, ExcludeUnitsDefinition>
+internal record class ParsedBaseVector : IInclusionExclusion<UnresolvedIncludeUnitsDefinition, UnresolvedExcludeUnitsDefinition>
 {
     public DefinedType VectorType { get; }
     public MinimalLocation VectorLocation { get; }
     public SharpMeasuresVectorDefinition VectorDefinition { get; }
 
-    public EquatableEnumerable<IncludeUnitsDefinition> IncludeUnits { get; }
-    public EquatableEnumerable<ExcludeUnitsDefinition> ExcludeUnits { get; }
+    public EquatableEnumerable<UnresolvedIncludeUnitsDefinition> IncludeUnits { get; }
+    public EquatableEnumerable<UnresolvedExcludeUnitsDefinition> ExcludeUnits { get; }
 
     public EquatableEnumerable<VectorConstantDefinition> VectorConstants { get; }
-    public EquatableEnumerable<ConvertibleQuantityDefinition> DimensionalEquivalences { get; }
+    public EquatableEnumerable<UnresolvedConvertibleQuantityDefinition> DimensionalEquivalences { get; }
 
-    IEnumerable<IncludeUnitsDefinition> IInclusionExclusion<IncludeUnitsDefinition, ExcludeUnitsDefinition>.IncludeUnits => IncludeUnits;
-    IEnumerable<ExcludeUnitsDefinition> IInclusionExclusion<IncludeUnitsDefinition, ExcludeUnitsDefinition>.ExcludeUnits => ExcludeUnits;
+    IEnumerable<UnresolvedIncludeUnitsDefinition> IInclusionExclusion<UnresolvedIncludeUnitsDefinition, UnresolvedExcludeUnitsDefinition>.IncludeUnits => IncludeUnits;
+    IEnumerable<UnresolvedExcludeUnitsDefinition> IInclusionExclusion<UnresolvedIncludeUnitsDefinition, UnresolvedExcludeUnitsDefinition>.ExcludeUnits => ExcludeUnits;
 
     public ParsedBaseVector(DefinedType vectorType, MinimalLocation vectorLocation, SharpMeasuresVectorDefinition vectorDefinition,
-        IEnumerable<IncludeUnitsDefinition> includeUnits, IEnumerable<ExcludeUnitsDefinition> excludeUnits, IEnumerable<VectorConstantDefinition> vectorConstants,
-        IEnumerable<ConvertibleQuantityDefinition> dimensionalEquivalences)
+        IEnumerable<UnresolvedIncludeUnitsDefinition> includeUnits, IEnumerable<UnresolvedExcludeUnitsDefinition> excludeUnits, IEnumerable<VectorConstantDefinition> vectorConstants,
+        IEnumerable<UnresolvedConvertibleQuantityDefinition> dimensionalEquivalences)
     {
         VectorType = vectorType;
         VectorLocation = vectorLocation;

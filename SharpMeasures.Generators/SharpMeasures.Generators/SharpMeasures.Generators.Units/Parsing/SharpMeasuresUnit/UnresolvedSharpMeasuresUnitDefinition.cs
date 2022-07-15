@@ -10,11 +10,11 @@ internal record class UnresolvedSharpMeasuresUnitDefinition : IAttributeDefiniti
 
     public bool BiasTerm { get; }
 
-    public bool GenerateDocumentation { get; }
+    public bool? GenerateDocumentation { get; }
 
     public SharpMeasuresUnitLocations Locations { get; }
 
-    public UnresolvedSharpMeasuresUnitDefinition(NamedType quantity, bool biasTerm, bool generateDocumentation, SharpMeasuresUnitLocations locations)
+    public UnresolvedSharpMeasuresUnitDefinition(NamedType quantity, bool biasTerm, bool? generateDocumentation, SharpMeasuresUnitLocations locations)
     {
         Quantity = quantity;
 
