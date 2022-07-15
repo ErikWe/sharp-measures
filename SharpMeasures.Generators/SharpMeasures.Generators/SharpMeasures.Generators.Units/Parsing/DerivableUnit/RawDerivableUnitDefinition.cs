@@ -3,13 +3,21 @@
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Attributes.Parsing;
 
+using System.Collections.Generic;
+
 internal record class RawDerivableUnitDefinition : IOpenAttributeDefinition<RawDerivableUnitDefinition, DerivableUnitLocations>
 {
     public static RawDerivableUnitDefinition Empty { get; } = new(DerivableUnitLocations.Empty);
 
     public string? Expression { get; init; }
     public string? DerivationID { get; init; }
-    public ReadOnlyEquatableList<NamedType?>? Signature { get; init; }
+    public IReadOnlyList<NamedType?>? Signature
+    {
+        get => signature;
+        init => signature = value?.AsReadOnlyEquatable();
+    }
+
+    private ReadOnlyEquatableList<NamedType?>? signature { get; init; }
 
     public DerivableUnitLocations Locations { get; private init; }
 

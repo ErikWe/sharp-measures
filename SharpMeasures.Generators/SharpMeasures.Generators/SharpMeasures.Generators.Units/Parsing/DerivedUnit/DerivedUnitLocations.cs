@@ -3,6 +3,8 @@
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
+using System.Collections.Generic;
+
 internal record class DerivedUnitLocations : AUnitLocations<DerivedUnitLocations>
 {
     public static DerivedUnitLocations Empty { get; } = new();
@@ -10,7 +12,7 @@ internal record class DerivedUnitLocations : AUnitLocations<DerivedUnitLocations
     public MinimalLocation? SignatureID { get; init; }
     
     public MinimalLocation? UnitsCollection { get; init; }
-    public ReadOnlyEquatableList<MinimalLocation> UnitsElements
+    public IReadOnlyList<MinimalLocation> UnitsElements
     {
         get => unitsElements;
         init => unitsElements = value.AsReadOnlyEquatable();
