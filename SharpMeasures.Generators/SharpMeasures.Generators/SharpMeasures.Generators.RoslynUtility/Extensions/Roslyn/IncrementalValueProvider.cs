@@ -37,6 +37,13 @@ public static partial class RoslynUtilityExtensions
         return provider1.Combine(provider2).Combine(provider3).Combine(provider4).Combine(provider5).Flatten();
     }
 
+    public static IncrementalValueProvider<(T1, T2, T3, T4, T5, T6)> Combine<T1, T2, T3, T4, T5, T6>(this IncrementalValueProvider<T1> provider1,
+        IncrementalValueProvider<T2> provider2, IncrementalValueProvider<T3> provider3, IncrementalValueProvider<T4> provider4, IncrementalValueProvider<T5> provider5,
+        IncrementalValueProvider<T6> provider6)
+    {
+        return provider1.Combine(provider2).Combine(provider3).Combine(provider4).Combine(provider5).Combine(provider6).Flatten();
+    }
+
     public static IncrementalValueProvider<(T1, T2, T3)> Flatten<T1, T2, T3>(this IncrementalValueProvider<((T1, T2), T3)> provider)
     {
         return provider.Select(flatten);
@@ -65,6 +72,17 @@ public static partial class RoslynUtilityExtensions
         {
             return (tupleHierarchy.Item1.Item1.Item1.Item1, tupleHierarchy.Item1.Item1.Item1.Item2, tupleHierarchy.Item1.Item1.Item2,
                 tupleHierarchy.Item1.Item2, tupleHierarchy.Item2);
+        }
+    }
+
+    public static IncrementalValueProvider<(T1, T2, T3, T4, T5, T6)> Flatten<T1, T2, T3, T4, T5, T6>(this IncrementalValueProvider<(((((T1, T2), T3), T4), T5), T6)> provider)
+    {
+        return provider.Select(flatten);
+
+        static (T1, T2, T3, T4, T5, T6) flatten((((((T1, T2), T3), T4), T5), T6) tupleHierarchy, CancellationToken _)
+        {
+            return (tupleHierarchy.Item1.Item1.Item1.Item1.Item1, tupleHierarchy.Item1.Item1.Item1.Item1.Item2, tupleHierarchy.Item1.Item1.Item1.Item2,
+                tupleHierarchy.Item1.Item1.Item2, tupleHierarchy.Item1.Item2, tupleHierarchy.Item2);
         }
     }
 }

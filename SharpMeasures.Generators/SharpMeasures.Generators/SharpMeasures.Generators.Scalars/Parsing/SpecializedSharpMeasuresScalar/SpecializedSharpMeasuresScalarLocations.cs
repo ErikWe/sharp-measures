@@ -10,6 +10,7 @@ internal record class SpecializedSharpMeasuresScalarLocations : AAttributeLocati
 
     public MinimalLocation? InheritDerivations { get; init; }
     public MinimalLocation? InheritConstants { get; init; }
+    public MinimalLocation? InheritConversions { get; init; }
     public MinimalLocation? InheritBases { get; init; }
     public MinimalLocation? InheritUnits { get; init; }
 
@@ -34,6 +35,7 @@ internal record class SpecializedSharpMeasuresScalarLocations : AAttributeLocati
     public bool ExplicitlySetOriginalScalar => OriginalScalar is not null;
     public bool ExplicitlySetInheritDerivations => InheritDerivations is not null;
     public bool ExplicitlySetInheritConstants => InheritConstants is not null;
+    public bool ExplicitlySetInheritConversions => InheritConversions is not null;
     public bool ExplicitlySetInheritBases => InheritBases is not null;
     public bool ExplicitlySetInheritUnits => InheritUnits is not null;
     public bool ExplicitlySetVector => Vector is not null;

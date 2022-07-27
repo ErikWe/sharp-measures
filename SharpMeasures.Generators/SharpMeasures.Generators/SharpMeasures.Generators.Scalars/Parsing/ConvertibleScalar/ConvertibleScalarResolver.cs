@@ -38,7 +38,7 @@ internal class ConvertibleScalarResolver : IProcesser<IConvertibleScalarResoluti
         var index = 0;
         foreach (var quantity in definition.Scalars)
         {
-            if (context.ScalarPopulation.BaseScalarByScalarType.TryGetValue(quantity, out var baseScalar) is false)
+            if (context.ScalarPopulation.ScalarBases.TryGetValue(quantity, out var baseScalar) is false)
             {
                 if (Diagnostics.TypeNotScalar(context, definition, index) is Diagnostic diagnostics)
                 {

@@ -71,7 +71,7 @@ public class DerivedQuantityResolver : AProcesser<IDerivedQuantityResolutionCont
             return OptionalWithDiagnostics.Result(scalar as IUnresolvedQuantityType);
         }
 
-        if (context.VectorPopulation.Vectors.TryGetValue(definition.Signature[index], out var vector))
+        if (context.VectorPopulation.IndividualVectors.TryGetValue(definition.Signature[index], out var vector))
         {
             return OptionalWithDiagnostics.Result(vector as IUnresolvedQuantityType);
         }

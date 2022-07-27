@@ -4,10 +4,10 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Unresolved.Quantities;
 using SharpMeasures.Generators.Unresolved.Scalars;
 
-internal record class UnresolvedSharpMeasuresScalarDefinition : AAttributeDefinition<SharpMeasuresScalarLocations>, IUnresolvedBaseScalar
+internal record class UnresolvedSharpMeasuresScalarDefinition : AAttributeDefinition<SharpMeasuresScalarLocations>, IUnresolvedScalarBase
 {
     public NamedType Unit { get; }
-    public NamedType? Vector { get; }
+    public NamedType? VectorGroup { get; }
 
     public bool UseUnitBias { get; }
 
@@ -30,13 +30,13 @@ internal record class UnresolvedSharpMeasuresScalarDefinition : AAttributeDefini
 
     public bool? GenerateDocumentation { get; }
 
-    public UnresolvedSharpMeasuresScalarDefinition(NamedType unit, NamedType? vector, bool useUnitBias, bool implementSum, bool implementDifference, NamedType difference,
+    public UnresolvedSharpMeasuresScalarDefinition(NamedType unit, NamedType? vectorGroup, bool useUnitBias, bool implementSum, bool implementDifference, NamedType difference,
         string? defaultUnitName, string? defaultUnitSymbol, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot,
         bool? generateDocumentation, SharpMeasuresScalarLocations locations)
         : base(locations)
     {
         Unit = unit;
-        Vector = vector;
+        VectorGroup = vectorGroup;
 
         UseUnitBias = useUnitBias;
 

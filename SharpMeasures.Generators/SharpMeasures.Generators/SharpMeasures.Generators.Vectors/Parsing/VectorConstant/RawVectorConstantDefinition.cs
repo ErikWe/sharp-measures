@@ -1,20 +1,23 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using SharpMeasures.Equatables;
-using SharpMeasures.Generators.Attributes.Parsing;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
-internal record class RawVectorConstantDefinition : ARawAttributeDefinition<VectorConstantLocations>
+using System.Collections.Generic;
+
+internal record class RawVectorConstantDefinition : ARawQuantityConstantDefinition<RawVectorConstantDefinition, VectorConstantLocations>
 {
     public static RawVectorConstantDefinition Empty { get; } = new();
 
-    public string? Name { get; init; }
-    public string? Unit { get; init; }
-    public ReadOnlyEquatableList<double> Value { get; init; } = ReadOnlyEquatableList<double>.Empty;
+    public IReadOnlyList<double> Value
+    {
+        get => value;
+        init => this.value = value.AsReadOnlyEquatable();
+    }
 
-    public bool GenerateMultiplesProperty { get; init; }
-    public string? Multiples { get; init; }
+    private ReadOnlyEquatableList<double> value { get; init; } = ReadOnlyEquatableList<double>.Empty;
 
-    public VectorConstantParsingData ParsingData { get; init; } = VectorConstantParsingData.Empty;
+    protected override RawVectorConstantDefinition Definition => this;
 
     private RawVectorConstantDefinition() : base(VectorConstantLocations.Empty) { }
 }

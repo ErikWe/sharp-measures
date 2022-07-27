@@ -56,5 +56,5 @@ public class EmptyUnitDerivationSignature
     private static GeneratorVerifier AssertExactlyEmptyUnitDerivationSignatureDiagnostics(string source)
         => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(EmptyUnitDerivationSignatureDiagnostics);
 
-    private static IReadOnlyCollection<string> EmptyUnitDerivationSignatureDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidUnitDerivationSignature };
+    private static IReadOnlyCollection<string> EmptyUnitDerivationSignatureDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidDerivationSignature };
 }

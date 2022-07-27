@@ -7,23 +7,16 @@ using System.Threading;
 
 internal static class UnitsGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<BaseDataModel> inputProvider)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Scalars.DataModel> inputProvider)
     {
         var reduced = inputProvider.Select(Reduce);
 
         context.RegisterSourceOutput(reduced, Execution.Execute);
     }
 
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<SpecializedDataModel> inputProvider)
+    private static DataModel Reduce(Scalars.DataModel input, CancellationToken _)
     {
-        var reduced = inputProvider.Select(Reduce);
-
-        context.RegisterSourceOutput(reduced, Execution.Execute);
-    }
-
-    private static DataModel Reduce<TScalarType>(ADataModel<TScalarType> input, CancellationToken _) where TScalarType : IScalarType
-    {
-        return new(input.Scalar.Type, input.Inheritance.BaseScalar.Unit.Type.AsNamedType(), input.Inheritance.BaseScalar.Unit.Definition.Quantity,
-            input.Inheritance.IncludedBases, input.Inheritance.IncludedUnits, input.Inheritance.Constants, input.Documentation);
+        return new(input.Scalar.Type, input.Scalar.Definition.Unit.Type.AsNamedType(), input.Scalar.Definition.Unit.Definition.Quantity,
+            input.Scalar.IncludedBases, input.Scalar.IncludedUnits, input.Scalar.Constants, input.Documentation);
     }
 }

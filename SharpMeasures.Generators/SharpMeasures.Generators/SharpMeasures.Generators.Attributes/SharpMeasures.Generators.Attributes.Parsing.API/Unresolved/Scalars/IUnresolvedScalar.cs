@@ -4,7 +4,7 @@ using SharpMeasures.Generators.Unresolved.Quantities;
 
 public interface IUnresolvedScalar : IUnresolvedQuantity
 {
-    public abstract NamedType? Vector { get; }
+    public abstract NamedType? VectorGroup { get; }
 
     public abstract NamedType? Reciprocal { get; }
     public abstract NamedType? Square { get; }

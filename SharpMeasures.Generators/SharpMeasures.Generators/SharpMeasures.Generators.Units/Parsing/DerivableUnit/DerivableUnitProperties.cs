@@ -2,7 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Attributes.Parsing;
 
 using System.Collections.Generic;
@@ -33,7 +32,7 @@ internal static class DerivableUnitProperties
     private static DerivableUnitProperty<INamedTypeSymbol[]> Signature { get; } = new
     (
         name: nameof(DerivableUnitAttribute.Signature),
-        setter: static (definition, signature) => definition with { Signature = signature.AsNamedTypes().AsReadOnlyEquatable() },
+        setter: static (definition, signature) => definition with { Signature = signature.AsNamedTypes() },
         locator: static (locations, collectionLocation, elementLocations) => locations with
         {
             SignatureCollection = collectionLocation,

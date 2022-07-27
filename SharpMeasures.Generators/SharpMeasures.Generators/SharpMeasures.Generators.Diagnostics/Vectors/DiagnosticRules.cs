@@ -4,6 +4,16 @@ using Microsoft.CodeAnalysis;
 
 public static partial class DiagnosticRules
 {
+    public static readonly DiagnosticDescriptor VectorNotMemberOfVectorGroup = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.VectorNotMemberOfVectorGroup,
+        title: "Vector not member of vector group",
+        messageFormat: "Expected a member of vector group {0}, but {1} is not a member of {0}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
     public static readonly DiagnosticDescriptor InvalidVectorDimension = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidVectorDimension,
@@ -40,6 +50,16 @@ public static partial class DiagnosticRules
         id: DiagnosticIDs.DuplicateVectorDimension,
         title: "Duplicate vector dimension",
         messageFormat: "The group of resized vectors already contains a vector of dimension {0}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor VectorGroupLacksMemberOfDimension = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.VectorGroupLacksMemberOfDimension,
+        title: "No vector of appropiate dimension in group",
+        messageFormat: "The vector group {0} does not contain a member of dimension {1}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

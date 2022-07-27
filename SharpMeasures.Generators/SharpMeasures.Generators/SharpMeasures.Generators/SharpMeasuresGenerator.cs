@@ -18,12 +18,16 @@ public class SharpMeasuresGenerator : IIncrementalGenerator
         var documentationDictionary = DocumentationDictionaryProvider.AttachAndReport(context, context.AdditionalTextsProvider, globalAnalyzerConfig,
             DocumentationDiagnostics.Instance);
 
-        var unitParsingResult = UnitParser.Attach(context);
-        var scalarParsingResult = ScalarParsingStage.Attach(context);
-        var vectorParsingResult = VectorParsingStage.Attach(context);
+        (var unresolvedUnitPopulation, var unitResolver) = UnitParser.Attach(context);
+        (var unresolvedScalarPopulation, var scalarResolver) = ScalarParser.Attach(context);
+        (var unresolvedVectorPopulation, var vectorResolver) = VectorParser.Attach(context);
 
-        unitParsingResult.Perform(context, scalarParsingResult.PopulationProvider, globalAnalyzerConfig, documentationDictionary);
-        scalarParsingResult.Perform(context, unitParsingResult.PopulationProvider, vectorParsingResult.PopulationProvider, globalAnalyzerConfig, documentationDictionary);
-        vectorParsingResult.Perform(context, unitParsingResult.PopulationProvider, scalarParsingResult.PopulationProvider, globalAnalyzerConfig, documentationDictionary);
+        (var unitPopulation, var unitGenerator) = unitResolver.Resolve(context, unresolvedUnitPopulation, unresolvedScalarPopulation);
+        (var scalarPopulation, var scalarGenerator) = scalarResolver.Resolve(context, unresolvedUnitPopulation, unresolvedScalarPopulation, unresolvedVectorPopulation);
+        (var vectorPopulation, var vectorGenerator) = vectorResolver.Resolve(context, unresolvedUnitPopulation, unresolvedScalarPopulation, unresolvedVectorPopulation);
+
+        unitGenerator.Perform(context, unitPopulation, scalarPopulation, globalAnalyzerConfig, documentationDictionary);
+        scalarGenerator.Perform(context, unitPopulation, scalarPopulation, vectorPopulation, globalAnalyzerConfig, documentationDictionary);
+        vectorGenerator.Perform(context, unitPopulation, scalarPopulation, vectorPopulation, globalAnalyzerConfig, documentationDictionary);
     }
 }

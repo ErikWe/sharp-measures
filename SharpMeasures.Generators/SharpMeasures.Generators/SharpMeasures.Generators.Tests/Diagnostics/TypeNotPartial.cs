@@ -20,7 +20,7 @@ public class TypeNotPartial
             using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
 
-            [SharpMeasuresUnit(typeof(int))]
+            [SharpMeasuresUnit(typeof(Length))]
             public class UnitOfLength2 { }
 
             [SharpMeasuresScalar(typeof(UnitOfLength))]

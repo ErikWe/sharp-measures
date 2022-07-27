@@ -41,6 +41,41 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.NullTypeNotVector, location);
     }
 
+    public static Diagnostic TypeNotVectorGroup(Location? location, string typeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.TypeNotVectorGroup, location, typeName);
+    }
+
+    public static Diagnostic NullTypeNotVectorGroup(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.NullTypeNotVectorGroup, location);
+    }
+
+    public static Diagnostic TypeNotVectorGroupMember(Location? location, string typeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.TypeNotVectorGroupMember, location, typeName);
+    }
+
+    public static Diagnostic NullTypeNotVectorGroupMember(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.NullTypeNotVectorGroupMember, location);
+    }
+
+    public static Diagnostic TypeNotVectorGroupMemberSpecificGroup(Location? location, string typeName, string groupTypeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.TypeNotVectorGroupMemberSpecificGroup, location, groupTypeName, typeName);
+    }
+
+    public static Diagnostic TypeNotQuantity(Location? location, string typeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.TypeNotQuantity, location, typeName);
+    }
+
+    public static Diagnostic NullTypeNotQuantity(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.NullTypeNotQuantity, location);
+    }
+
     public static Diagnostic TypeNotUnit(Location? location, string typeName)
     {
         return Diagnostic.Create(DiagnosticRules.TypeNotUnit, location, typeName);
@@ -56,25 +91,42 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.TypeAlreadyDefined, location, typeName, attemptedDefinition, existingDefinition);
     }
 
-    public static Diagnostic UnitTypeAlreadyDefinedAsUnit(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "unit", "unit");
-    public static Diagnostic ScalarTypeAlreadyDefinedAsUnit(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "scalar", "unit");
-    public static Diagnostic VectorTypeAlreadyDefinedAsUnit(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "vector", "unit");
-    public static Diagnostic UnitTypeAlreadyDefinedAsScalar(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "unit", "scalar");
-    public static Diagnostic ScalarTypeAlreadyDefinedAsScalar(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "scalar", "scalar");
-    public static Diagnostic VectorTypeAlreadyDefinedAsScalar(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "vector", "scalar");
-    public static Diagnostic UnitTypeAlreadyDefinedAsVector(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "unit", "vector");
-    public static Diagnostic ScalarTypeAlreadyDefinedAsVector(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "scalar", "vector");
-    public static Diagnostic VectorTypeAlreadyDefinedAsVector(Location? location, string typeName) => TypeAlreadyDefined(location, typeName, "vector", "vector");
+    public static Diagnostic TypeAlreadyDefinedAsUnit(Location? location, string typeName, string attemptedDefinition)
+        => TypeAlreadyDefined(location, typeName, attemptedDefinition, "unit");
+    public static Diagnostic TypeAlreadyDefinedAsScalar(Location? location, string typeName, string attemptedDefinition)
+        => TypeAlreadyDefined(location, typeName, attemptedDefinition, "scalar");
+    public static Diagnostic TypeAlreadyDefinedAsVector(Location? location, string typeName, string attemptedDefinition)
+        => TypeAlreadyDefined(location, typeName, attemptedDefinition, "vector");
+    public static Diagnostic TypeAlreadyDefinedAsVectorGroup(Location? location, string typeName, string attemptedDefinition)
+        => TypeAlreadyDefined(location, typeName, attemptedDefinition, "vector group");
+    public static Diagnostic TypeAlreadyDefinedAsVectorGroupMember(Location? location, string typeName, string attemptedDefinition)
+        => TypeAlreadyDefined(location, typeName, attemptedDefinition, "vector group member");
 
-    public static Diagnostic TypeNotQuantity(Location? location, string typeName)
-    {
-        return Diagnostic.Create(DiagnosticRules.TypeNotQuantity, location, typeName);
-    }
-
-    public static Diagnostic NullTypeNotQuantity(Location? location)
-    {
-        return Diagnostic.Create(DiagnosticRules.NullTypeNotQuantity, location);
-    }
+    public static Diagnostic UnitTypeAlreadyDefinedAsUnit(Location? location, string typeName) => TypeAlreadyDefinedAsUnit(location, typeName, "unit");
+    public static Diagnostic ScalarTypeAlreadyDefinedAsUnit(Location? location, string typeName) => TypeAlreadyDefinedAsUnit(location, typeName, "scalar");
+    public static Diagnostic VectorTypeAlreadyDefinedAsUnit(Location? location, string typeName) => TypeAlreadyDefinedAsUnit(location, typeName, "vector");
+    public static Diagnostic VectorGroupTypeAlreadyDefinedAsUnit(Location? location, string typeName) => TypeAlreadyDefinedAsUnit(location, typeName, "vector group");
+    public static Diagnostic VectorGroupMemberTypeAlreadyDefinedAsUnit(Location? location, string typeName) => TypeAlreadyDefinedAsUnit(location, typeName, "vector group member");
+    public static Diagnostic UnitTypeAlreadyDefinedAsScalar(Location? location, string typeName) => TypeAlreadyDefinedAsScalar(location, typeName, "unit");
+    public static Diagnostic ScalarTypeAlreadyDefinedAsScalar(Location? location, string typeName) => TypeAlreadyDefinedAsScalar(location, typeName, "scalar");
+    public static Diagnostic VectorTypeAlreadyDefinedAsScalar(Location? location, string typeName) => TypeAlreadyDefinedAsScalar(location, typeName, "vector");
+    public static Diagnostic VectorGroupTypeAlreadyDefinedAsScalar(Location? location, string typeName) => TypeAlreadyDefinedAsScalar(location, typeName, "vector group");
+    public static Diagnostic VectorGroupMemberTypeAlreadyDefinedAsScalar(Location? location, string typeName) => TypeAlreadyDefinedAsScalar(location, typeName, "vector group member");
+    public static Diagnostic UnitTypeAlreadyDefinedAsVector(Location? location, string typeName) => TypeAlreadyDefinedAsVector(location, typeName, "unit");
+    public static Diagnostic ScalarTypeAlreadyDefinedAsVector(Location? location, string typeName) => TypeAlreadyDefinedAsVector(location, typeName, "scalar");
+    public static Diagnostic VectorTypeAlreadyDefinedAsVector(Location? location, string typeName) => TypeAlreadyDefinedAsVector(location, typeName, "vector");
+    public static Diagnostic VectorGroupTypeAlreadyDefinedAsVector(Location? location, string typeName) => TypeAlreadyDefinedAsVector(location, typeName, "vector group");
+    public static Diagnostic VectorGroupMemberTypeAlreadyDefinedAsVector(Location? location, string typeName) => TypeAlreadyDefinedAsVector(location, typeName, "vector group member");
+    public static Diagnostic UnitTypeAlreadyDefinedAsVectorGroup(Location? location, string typeName) => TypeAlreadyDefinedAsVectorGroup(location, typeName, "unit");
+    public static Diagnostic ScalarTypeAlreadyDefinedAsVectorGroup(Location? location, string typeName) => TypeAlreadyDefinedAsVectorGroup(location, typeName, "scalar");
+    public static Diagnostic VectorTypeAlreadyDefinedAsVectorGroup(Location? location, string typeName) => TypeAlreadyDefinedAsVectorGroup(location, typeName, "vector");
+    public static Diagnostic VectorGroupTypeAlreadyDefinedAsVectorGroup(Location? location, string typeName) => TypeAlreadyDefinedAsVectorGroup(location, typeName, "vector group");
+    public static Diagnostic VectorGroupMemberTypeAlreadyDefinedAsVectorGroup(Location? location, string typeName) => TypeAlreadyDefinedAsVectorGroup(location, typeName, "vector group member");
+    public static Diagnostic UnitTypeAlreadyDefinedAsVectorGroupMember(Location? location, string typeName) => TypeAlreadyDefinedAsVectorGroupMember(location, typeName, "unit");
+    public static Diagnostic ScalarTypeAlreadyDefinedAsVectorGroupMember(Location? location, string typeName) => TypeAlreadyDefinedAsVectorGroupMember(location, typeName, "scalar");
+    public static Diagnostic VectorTypeAlreadyDefinedAsVectorGroupMember(Location? location, string typeName) => TypeAlreadyDefinedAsVectorGroupMember(location, typeName, "vector");
+    public static Diagnostic VectorGroupTypeAlreadyDefinedAsVectorGroupMember(Location? location, string typeName) => TypeAlreadyDefinedAsVectorGroupMember(location, typeName, "vector group");
+    public static Diagnostic VectorGroupMemberTypeAlreadyDefinedAsVectorGroupMember(Location? location, string typeName) => TypeAlreadyDefinedAsVectorGroupMember(location, typeName, "vector group member");
 
     public static Diagnostic TypeNotUnbiasedScalar(Location? location, string scalarName)
     {

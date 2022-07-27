@@ -11,7 +11,6 @@ using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 using SharpMeasures.Generators.Unresolved.Vectors;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 internal interface ISharpMeasuresScalarResolutionDiagnostics
@@ -20,8 +19,8 @@ internal interface ISharpMeasuresScalarResolutionDiagnostics
     public abstract Diagnostic? TypeNotUnit(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? UnitNotIncludingBiasTerm(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? TypeNotVector(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? UnrecognizedDefaultUnit(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? DifferenceNotScalar(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
+    public abstract Diagnostic? UnrecognizedDefaultUnit(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? ReciprocalNotScalar(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? SquareNotScalar(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? CubeNotScalar(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
@@ -76,9 +75,10 @@ internal class SharpMeasuresScalarResolver : IProcesser<ISharpMeasuresScalarReso
         allDiagnostics = allDiagnostics.Concat(processedDifference.Diagnostics).Concat(processedDefaultUnitName.Diagnostics).Concat(processedReciprocal.Diagnostics)
             .Concat(processedSquare.Diagnostics).Concat(processedCube.Diagnostics).Concat(processedSquareRoot.Diagnostics).Concat(processedCubeRoot.Diagnostics);
 
-        SharpMeasuresScalarDefinition product = new(processedUnit.Result, processedVector.Result, definition.UseUnitBias, definition.ImplementSum,
-            definition.ImplementDifference, processedDifference.Result, processedDefaultUnitName.Result, definition.DefaultUnitSymbol, processedReciprocal.Result,
-            processedSquare.Result, processedCube.Result, processedSquareRoot.Result, processedCubeRoot.Result, definition.GenerateDocumentation, definition.Locations);
+        SharpMeasuresScalarDefinition product = new(processedUnit.Result, processedVector.NullableResult, definition.UseUnitBias, definition.ImplementSum,
+            definition.ImplementDifference, processedDifference.Result, processedDefaultUnitName.Result, definition.DefaultUnitSymbol, processedReciprocal.NullableResult,
+            processedSquare.NullableResult, processedCube.NullableResult, processedSquareRoot.NullableResult, processedCubeRoot.NullableResult,
+            definition.GenerateDocumentation, definition.Locations);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
@@ -98,25 +98,20 @@ internal class SharpMeasuresScalarResolver : IProcesser<ISharpMeasuresScalarReso
         return OptionalWithDiagnostics.Result(unit);
     }
 
-    private IOptionalWithDiagnostics<IReadOnlyList<IUnresolvedVectorType>> ProcessVector(ISharpMeasuresScalarResolutionContext context,
+    private IOptionalWithDiagnostics<IUnresolvedVectorGroupType> ProcessVector(ISharpMeasuresScalarResolutionContext context,
         UnresolvedSharpMeasuresScalarDefinition definition)
     {
-        if (definition.Vector is null)
+        if (definition.VectorGroup is null)
         {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<IReadOnlyList<IUnresolvedVectorType>>();
+            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<IUnresolvedVectorGroupType>();
         }
 
-        if (context.VectorPopulation.Vectors.TryGetValue(definition.Vector.Value, out var vector) is false)
+        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.VectorGroup.Value, out var vectorGroup) is false)
         {
-            if (context.VectorPopulation.Groups.TryGetValue(definition.Vector.Value, out var vectorGroup) is false)
-            {
-                return OptionalWithDiagnostics.Empty<IReadOnlyList<IUnresolvedVectorType>>(Diagnostics.TypeNotVector(context, definition));
-            }
-
-            return OptionalWithDiagnostics.Result(vectorGroup.Values.ToList() as IReadOnlyList<IUnresolvedVectorType>);
+            return OptionalWithDiagnostics.Empty<IUnresolvedVectorGroupType>(Diagnostics.TypeNotVector(context, definition));
         }
 
-        return OptionalWithDiagnostics.Result(new[] { vector } as IReadOnlyList<IUnresolvedVectorType>);
+        return OptionalWithDiagnostics.Result(vectorGroup);
     }
 
     private IOptionalWithDiagnostics<IUnresolvedScalarType> ProcessDifference(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition)

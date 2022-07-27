@@ -23,13 +23,11 @@ internal interface ISharpMeasuresVectorProcessingDiagnostics
 
     public abstract Diagnostic? NullDefaultUnit(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? EmptyDefaultUnit(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
-    public abstract Diagnostic? NullDefaultSymbol(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
-    public abstract Diagnostic? EmptyDefaultSymbol(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? SetDefaultSymbolButNotUnit(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? SetDefaultUnitButNotSymbol(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
 }
 
-internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, RawSharpMeasuresVectorDefinition, SharpMeasuresVectorDefinition>
+internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, RawSharpMeasuresVectorDefinition, UnresolvedSharpMeasuresVectorDefinition>
 {
     private ISharpMeasuresVectorProcessingDiagnostics Diagnostics { get; }
 
@@ -38,11 +36,11 @@ internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, Raw
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<SharpMeasuresVectorDefinition> Process(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)
+    public override IOptionalWithDiagnostics<UnresolvedSharpMeasuresVectorDefinition> Process(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)
     {
         if (VerifyRequiredPropertiesSet(definition) is false)
         {
-            return OptionalWithDiagnostics.Empty<SharpMeasuresVectorDefinition>();
+            return OptionalWithDiagnostics.Empty<UnresolvedSharpMeasuresVectorDefinition>();
         }
 
         var validity = CheckValidity(context, definition);
@@ -50,7 +48,7 @@ internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, Raw
 
         if (validity.IsInvalid)
         {
-            return OptionalWithDiagnostics.Empty<SharpMeasuresVectorDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<UnresolvedSharpMeasuresVectorDefinition>(allDiagnostics);
         }
 
         var product = ProcessDefinition(context, definition);
@@ -64,7 +62,7 @@ internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, Raw
         return definition.Locations.ExplicitlySetUnit;
     }
 
-    private IOptionalWithDiagnostics<SharpMeasuresVectorDefinition> ProcessDefinition(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)
+    private IOptionalWithDiagnostics<UnresolvedSharpMeasuresVectorDefinition> ProcessDefinition(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)
     {
         var processedDefaultUnitData = ProcessDefaultUnitData(context, definition);
         var allDiagnostics = processedDefaultUnitData.Diagnostics;
@@ -74,10 +72,10 @@ internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, Raw
 
         if (processedDimensionality.LacksResult)
         {
-            return OptionalWithDiagnostics.Empty<SharpMeasuresVectorDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<UnresolvedSharpMeasuresVectorDefinition>(allDiagnostics);
         }
 
-        SharpMeasuresVectorDefinition product = new(definition.Unit!.Value, definition.Scalar, processedDimensionality.Result, definition.ImplementSum,
+        UnresolvedSharpMeasuresVectorDefinition product = new(definition.Unit!.Value, definition.Scalar, processedDimensionality.Result, definition.ImplementSum,
             definition.ImplementDifference, definition.Difference ?? context.Type.AsNamedType(), processedDefaultUnitData.Result.Name,
             processedDefaultUnitData.Result.Symbol, definition.GenerateDocumentation, definition.Locations);
 
@@ -115,39 +113,27 @@ internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, Raw
 
     private IResultWithDiagnostics<(string? Name, string? Symbol)> ProcessDefaultUnitData(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)
     {
-        if (definition.Locations.ExplicitlySetDefaultUnitName && definition.Locations.ExplicitlySetDefaultUnitSymbol is false)
-        {
-            return ResultWithDiagnostics.Construct<(string?, string?)>((null, null), Diagnostics.SetDefaultUnitButNotSymbol(context, definition));
-        }
-
-        if (definition.Locations.ExplicitlySetDefaultUnitSymbol && definition.Locations.ExplicitlySetDefaultUnitName is false)
+        if (definition.Locations.ExplicitlySetDefaultUnitName is false && definition.DefaultUnitSymbol is not null)
         {
             return ResultWithDiagnostics.Construct<(string?, string?)>((null, null), Diagnostics.SetDefaultSymbolButNotUnit(context, definition));
         }
 
-        if (definition.Locations.ExplicitlySetDefaultUnitName is false || definition.Locations.ExplicitlySetDefaultUnitSymbol is false)
+        if (definition.Locations.ExplicitlySetDefaultUnitSymbol is false && definition.DefaultUnitName is not null)
         {
-            return ResultWithDiagnostics.Construct<(string?, string?)>((null, null));
+            return ResultWithDiagnostics.Construct<(string?, string?)>((null, null), Diagnostics.SetDefaultUnitButNotSymbol(context, definition));
         }
 
-        if (definition.DefaultUnitName is null)
+        if (definition.Locations.ExplicitlySetDefaultUnitName)
         {
-            return ResultWithDiagnostics.Construct<(string?, string?)>((null, null), Diagnostics.NullDefaultUnit(context, definition));
-        }
+            if (definition.DefaultUnitName is null)
+            {
+                return ResultWithDiagnostics.Construct<(string?, string?)>((null, null), Diagnostics.NullDefaultUnit(context, definition));
+            }
 
-        if (definition.DefaultUnitName.Length is 0)
-        {
-            return ResultWithDiagnostics.Construct<(string?, string?)>((null, null), Diagnostics.EmptyDefaultUnit(context, definition));
-        }
-
-        if (definition.DefaultUnitSymbol is null)
-        {
-            return ResultWithDiagnostics.Construct<(string?, string?)>((null, null), Diagnostics.NullDefaultSymbol(context, definition));
-        }
-
-        if (definition.DefaultUnitSymbol.Length is 0)
-        {
-            return ResultWithDiagnostics.Construct<(string?, string?)>((null, null), Diagnostics.EmptyDefaultSymbol(context, definition));
+            if (definition.DefaultUnitName.Length is 0)
+            {
+                return ResultWithDiagnostics.Construct<(string?, string?)>((null, null), Diagnostics.EmptyDefaultUnit(context, definition));
+            }
         }
 
         return ResultWithDiagnostics.Construct<(string?, string?)>((definition.DefaultUnitName, definition.DefaultUnitSymbol));

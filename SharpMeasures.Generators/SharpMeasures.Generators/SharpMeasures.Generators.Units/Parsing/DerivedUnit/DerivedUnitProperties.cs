@@ -1,6 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.DerivedUnit;
 
-using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
@@ -26,11 +25,11 @@ internal static class DerivedUnitProperties
     private static DerivedUnitProperty<string?[]> Units { get; } = new
     (
         name: nameof(DerivedUnitAttribute.Units),
-        setter: static (definition, units) => definition with { Units = units.AsReadOnlyEquatable() },
+        setter: static (definition, units) => definition with { Units = units },
         locator: static (locations, collectionLocation, elementLocations) => locations with
         {
             UnitsCollection = collectionLocation,
-            UnitsElements = elementLocations.AsReadOnlyEquatable()
+            UnitsElements = elementLocations
         }
     );
 }

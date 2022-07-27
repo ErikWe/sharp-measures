@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class RawSharpMeasuresVectorDefinition : ARawAttributeDefinition<SharpMeasuresVectorLocations>
+internal record class RawSharpMeasuresVectorDefinition : ARawAttributeDefinition<RawSharpMeasuresVectorDefinition, SharpMeasuresVectorLocations>
 {
     public static RawSharpMeasuresVectorDefinition Empty => new();
 
@@ -19,7 +19,9 @@ internal record class RawSharpMeasuresVectorDefinition : ARawAttributeDefinition
     public string? DefaultUnitName { get; init; } = string.Empty;
     public string? DefaultUnitSymbol { get; init; } = string.Empty;
 
-    public bool GenerateDocumentation { get; init; }
+    public bool? GenerateDocumentation { get; init; }
+
+    protected override RawSharpMeasuresVectorDefinition Definition => this;
 
     private RawSharpMeasuresVectorDefinition() : base(SharpMeasuresVectorLocations.Empty) { }
 }

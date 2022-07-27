@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Unresolved.Vectors;
 
-public interface IVectorGroupMember : IVector
+public interface IVectorGroupMember : IIndividualVector
 {
-    public abstract IUnresolvedVectorGroup Group { get; }
+    public abstract IUnresolvedVectorGroupType VectorGroup { get; }
 }

@@ -4,13 +4,13 @@ using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Vectors;
 
-using System.Collections.Generic;
-
 public interface IScalar : IQuantity
 {
-    public abstract IReadOnlyList<IUnresolvedVectorType> Vectors { get; }
+    public abstract bool UseUnitBias { get; }
 
-    new public abstract IUnresolvedScalarType? Difference { get; }
+    public abstract IUnresolvedVectorGroupType? VectorGroup { get; }
+
+    new public abstract IUnresolvedScalarType Difference { get; }
 
     public abstract IUnresolvedScalarType? Reciprocal { get; }
     public abstract IUnresolvedScalarType? Square { get; }

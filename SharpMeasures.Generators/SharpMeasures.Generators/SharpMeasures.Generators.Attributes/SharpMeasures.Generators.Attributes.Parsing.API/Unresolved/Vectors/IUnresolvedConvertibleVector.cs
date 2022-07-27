@@ -6,5 +6,5 @@ using System.Collections.Generic;
 
 public interface IUnresolvedConvertibleVector : IUnresolvedConvertibleQuantity
 {
-    public abstract IReadOnlyList<NamedType> Vectors { get; }
+    public abstract IReadOnlyList<NamedType> VectorGroups { get; }
 }

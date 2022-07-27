@@ -56,5 +56,5 @@ public class InvalidUnitDerivationExpression
     private static GeneratorVerifier AssertExactlyInvalidUnitDerivationExpressionDiagnostics(string source)
         => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidUnitderivationExpressionDiagnostics);
 
-    private static IReadOnlyCollection<string> InvalidUnitderivationExpressionDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidUnitDerivationExpression };
+    private static IReadOnlyCollection<string> InvalidUnitderivationExpressionDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidDerivationExpression };
 }

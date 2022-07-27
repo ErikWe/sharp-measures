@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 
-using SharpMeasures.Equatables;
-
 using System;
 using System.Linq;
 
@@ -14,7 +12,7 @@ public static class CommonProperties
         return new AttributeProperty<TDefinition, TLocations, TItem[]>
         (
             name: name,
-            setter: static (definition, items) => definition.WithItems(items.AsReadOnlyEquatable()),
+            setter: static (definition, items) => definition.WithItems(items),
             locator: static (locations, collectionLocation, elementLocations) => locations.WithItems(collectionLocation, elementLocations)
         );
     }

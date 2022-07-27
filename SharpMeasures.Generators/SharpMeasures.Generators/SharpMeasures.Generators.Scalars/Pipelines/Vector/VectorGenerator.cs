@@ -6,27 +6,20 @@ using System.Threading;
 
 internal static class VectorsGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<BaseDataModel> inputProvider)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Scalars.DataModel> inputProvider)
     {
         var reducedAndFiltered = inputProvider.Select(Reduce).WhereNotNull();
 
         context.RegisterSourceOutput(reducedAndFiltered, Execution.Execute);
     }
 
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<SpecializedDataModel> inputProvider)
+    private static DataModel? Reduce(Scalars.DataModel input, CancellationToken _)
     {
-        var reducedAndFiltered = inputProvider.Select(Reduce).WhereNotNull();
-
-        context.RegisterSourceOutput(reducedAndFiltered, Execution.Execute);
-    }
-
-    private static DataModel? Reduce<TScalarType>(ADataModel<TScalarType> input, CancellationToken _) where TScalarType : IScalarType
-    {
-        if (input.Scalar.Definition.Vectors.Count is 0)
+        if (input.Scalar.Definition.VectorGroup?.RegisteredMembersByDimension.Count is null or 0)
         {
             return null;
         }
 
-        return new(input.Scalar.Type, input.Scalar.Definition.Vectors, input.Documentation);
+        return new(input.Scalar.Type, input.Scalar.Definition.VectorGroup, input.Documentation);
     }
 }

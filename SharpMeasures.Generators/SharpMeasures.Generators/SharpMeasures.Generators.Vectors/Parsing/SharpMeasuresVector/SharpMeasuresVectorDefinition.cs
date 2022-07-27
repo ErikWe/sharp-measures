@@ -1,27 +1,33 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Vectors.Parsing.Abstractions;
+using SharpMeasures.Generators.Quantities;
+using SharpMeasures.Generators.Unresolved.Quantities;
+using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Unresolved.Units;
+using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Unresolved.Vectors;
 
-internal record class SharpMeasuresVectorDefinition : AAttributeDefinition<SharpMeasuresVectorLocations>, IVectorDefinition
+internal record class SharpMeasuresVectorDefinition : AAttributeDefinition<SharpMeasuresVectorLocations>, IIndividualVector
 {
-    public NamedType Unit { get; }
-    public NamedType? Scalar { get; }
+    public IUnresolvedUnitType Unit { get; }
+    public IUnresolvedScalarType? Scalar { get; }
 
     public int Dimension { get; }
 
     public bool ImplementSum { get; }
     public bool ImplementDifference { get; }
 
-    public NamedType Difference { get; }
+    public IUnresolvedVectorGroupType Difference { get; }
+    IUnresolvedQuantityType IQuantity.Difference => Difference;
 
-    public string? DefaultUnitName { get; }
+    public IUnresolvedUnitInstance? DefaultUnit { get; }
     public string? DefaultUnitSymbol { get; }
 
-    public bool GenerateDocumentation { get; }
+    public bool? GenerateDocumentation { get; }
 
-    public SharpMeasuresVectorDefinition(NamedType unit, NamedType? scalar, int dimension, bool implementSum, bool implementDifference, NamedType difference,
-        string? defaultUnitName, string? defaultUnitSymbol, bool generateDocumentation, SharpMeasuresVectorLocations locations)
+    public SharpMeasuresVectorDefinition(IUnresolvedUnitType unit, IUnresolvedScalarType? scalar, int dimension, bool implementSum, bool implementDifference,
+        IUnresolvedVectorGroupType difference, IUnresolvedUnitInstance? defaultUnit, string? defaultUnitSymbol, bool? generateDocumentation, SharpMeasuresVectorLocations locations)
         : base(locations)
     {
         Unit = unit;
@@ -31,10 +37,10 @@ internal record class SharpMeasuresVectorDefinition : AAttributeDefinition<Sharp
 
         ImplementSum = implementSum;
         ImplementDifference = implementDifference;
-        
+
         Difference = difference;
 
-        DefaultUnitName = defaultUnitName;
+        DefaultUnit = defaultUnit;
         DefaultUnitSymbol = defaultUnitSymbol;
 
         GenerateDocumentation = generateDocumentation;

@@ -6,24 +6,18 @@ using System.Threading;
 
 internal static class MathsGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<BaseDataModel> inputProvider)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Scalars.DataModel> inputProvider)
     {
         var reduced = inputProvider.Select(Reduce);
 
         context.RegisterSourceOutput(reduced, Execution.Execute);
     }
 
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<SpecializedDataModel> inputProvider)
+    private static DataModel Reduce(Scalars.DataModel input, CancellationToken _)
     {
-        var reduced = inputProvider.Select(Reduce);
-
-        context.RegisterSourceOutput(reduced, Execution.Execute);
-    }
-
-    private static DataModel Reduce<TScalarType>(ADataModel<TScalarType> input, CancellationToken _) where TScalarType : IScalarType
-    {
-        return new(input.Scalar.Type, input.Inheritance.BaseScalar.Unit.Type.AsNamedType(), input.Inheritance.ImplementSum, input.Inheritance.ImplementDifference,
-            input.Inheritance.Difference.Type.AsNamedType(), input.Inheritance.Reciprocal?.Type.AsNamedType(), input.Inheritance.Square?.Type.AsNamedType(),
-            input.Inheritance.Cube?.Type.AsNamedType(), input.Inheritance.SquareRoot?.Type.AsNamedType(), input.Inheritance.CubeRoot?.Type.AsNamedType(), input.Documentation);
+        return new(input.Scalar.Type, input.Scalar.Definition.Unit.Type.AsNamedType(), input.Scalar.Definition.ImplementSum, input.Scalar.Definition.ImplementDifference,
+            input.Scalar.Definition.Difference.Type.AsNamedType(), input.Scalar.Definition.Reciprocal?.Type.AsNamedType(), input.Scalar.Definition.Square?.Type.AsNamedType(),
+            input.Scalar.Definition.Cube?.Type.AsNamedType(), input.Scalar.Definition.SquareRoot?.Type.AsNamedType(), input.Scalar.Definition.CubeRoot?.Type.AsNamedType(),
+            input.Documentation);
     }
 }

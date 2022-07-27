@@ -8,25 +8,18 @@ using System.Threading;
 
 internal static class CommonGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<BaseDataModel> inputProvider)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Scalars.DataModel> inputProvider)
     {
         var reduced = inputProvider.Select(Reduce);
 
         context.RegisterSourceOutput(reduced, Execution.Execute);
     }
 
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<SpecializedDataModel> inputProvider)
+    private static DataModel Reduce(Scalars.DataModel input, CancellationToken _)
     {
-        var reduced = inputProvider.Select(Reduce);
+        string unitParameterName = SourceBuildingUtility.ToParameterName(input.Scalar.Definition.Unit.Type.Name);
 
-        context.RegisterSourceOutput(reduced, Execution.Execute);
-    }
-
-    private static DataModel Reduce<TScalarType>(ADataModel<TScalarType> input, CancellationToken _) where TScalarType : IScalarType
-    {
-        string unitParameterName = SourceBuildingUtility.ToParameterName(input.Inheritance.BaseScalar.Unit.Type.Name);
-
-        return new(input.Scalar.Type, input.Inheritance.BaseScalar.Unit.Type.AsNamedType(), input.Inheritance.BaseScalar.Unit.Definition.Quantity, unitParameterName,
-            input.Inheritance.BaseScalar.UseUnitBias, input.Inheritance.DefaultUnit, input.Inheritance.DefaultUnitSymbol, input.Documentation);
+        return new(input.Scalar.Type, input.Scalar.Definition.Unit.Type.AsNamedType(), input.Scalar.Definition.Unit.Definition.Quantity, unitParameterName,
+            input.Scalar.Definition.UseUnitBias, input.Scalar.Definition.DefaultUnit, input.Scalar.Definition.DefaultUnitSymbol, input.Documentation);
     }
 }

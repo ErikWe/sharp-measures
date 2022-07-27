@@ -47,8 +47,8 @@ public sealed class SpecializedSharpMeasuresScalarAttribute : Attribute
     public bool InheritDerivations { get; init; }
     /// <summary>Dictates whether this quantity inherits the constants defined by the original quantity. The default behaviour is <see langword="true"/>.</summary>
     public bool InheritConstants { get; init; }
-    /// <summary>Dictates whether this quantity inherits the convertible quantities defined by the original quantity. The default behaviour is <see langword="true"/>.</summary>
-    public bool InheritConvertibleQuantities { get; init; }
+    /// <summary>Dictates whether this quantity inherits the conversions defined by the original quantity. The default behaviour is <see langword="true"/>.</summary>
+    public bool InheritConversions { get; init; }
     /// <summary>Dictates whether this quantity inherits the bases of the original quantity. The default behaviour is <see langword="true"/>.</summary>
     /// <remarks>The bases are the units for which a static property representing the value { 1 } is implemented.
     /// <para>IThe attributes <see cref="IncludeBasesAttribute"/> and <see cref="ExcludeBasesAttribute"/> enable more granular control of
@@ -63,11 +63,11 @@ public sealed class SpecializedSharpMeasuresScalarAttribute : Attribute
     /// <remarks><inheritdoc cref="SharpMeasuresScalarAttribute.Vector" path="/remarks"/></remarks>
     public Type? Vector { get; init; }
 
-    /// <summary>Dictates whether to implement support for computing the sum of two instances of this scalar. By default, the value is inherited from the
+    /// <summary>Dictates whether to implement support for computing the sum of two instances of this scalar. By default, the behaviour is inherited from the
     /// original quantity.</summary>
     public bool ImplementSum { get; init; }
 
-    /// <summary>Dictates whether to implement support for computing the difference between two instances of this scalar. By default, the value is
+    /// <summary>Dictates whether to implement support for computing the difference between two instances of this scalar. By default, the behaviour is
     /// inherited from the original quantity.</summary>
     /// <remarks>To specify the scalar quantity that represents the difference, use <see cref="Difference"/>.</remarks>
     public bool ImplementDifference { get; init; }
@@ -104,7 +104,7 @@ public sealed class SpecializedSharpMeasuresScalarAttribute : Attribute
     /// <remarks><inheritdoc cref="SharpMeasuresScalarAttribute.CubeRoot" path="/remarks"/></remarks>
     public Type? CubeRoot { get; init; }
 
-    /// <summary><inheritdoc cref="SharpMeasuresScalarAttribute.GenerateDocumentation" path="/summary"/> By default, the value is inherited from
+    /// <summary><inheritdoc cref="SharpMeasuresScalarAttribute.GenerateDocumentation" path="/summary"/> By default, the behaviour is inherited from
     /// the original quantity.</summary>
     public bool GenerateDocumentation { get; init; }
 

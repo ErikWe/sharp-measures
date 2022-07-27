@@ -1,6 +1,8 @@
 ﻿namespace SharpMeasures.Generators.Unresolved.Vectors;
 
-public interface IUnresolvedVectorGroupMember : IUnresolvedVector
+public interface IUnresolvedVectorGroupMember : ISharpMeasuresObject
 {
-    public abstract NamedType Group { get; }
+    public abstract NamedType VectorGroup { get; }
+
+    public abstract int Dimension { get; }
 }

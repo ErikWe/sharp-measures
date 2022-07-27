@@ -68,4 +68,7 @@ public static partial class UtilityExtensions
 
         return true;
     }
+
+    public static IDictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> keyValuePairs)
+        => keyValuePairs.ToDictionary(static (x) => x.Key, static (x) => x.Value);
 }

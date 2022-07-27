@@ -8,8 +8,11 @@ Rule ID | Category | Severity | Notes
 Measures1000 | Usage | Error | Expected a partial type
 Measures1001 | Usage | Error | Expected a scalar quantity
 Measures1002 | Usage | Error | Expected a vector quantity
-Measures1003 | Usage | Error | Expected a unit
-Measures1004 | Usage | Error | Type already defined
+Measures1003 | Usage | Error | Expected a vector group
+Measures1004 | Usage | Error | Expected a vector group member
+Measures1005 | Usage | Error | Expected a quantity
+Measures1006 | Usage | Error | Expected a unit
+Measures1007 | Usage | Error | Type already defined
 Measures1020 | Usage | Error | Expected a strictly unbiased scalar quantity
 Measures1021 | Usage | Error | Expected a biased scalar quantity
 Measures1022 | Usage | Error | Unit does not support biased quantities
@@ -46,9 +49,11 @@ Measures1260 | Usage | Warning | Contradictory attributes
 Measures1261 | Usage | Warning | Quantity group missing root quantity
 Measures1262 | Usage | Info | Inclusion or exclusion had no effect
 Measures1263 | Usage | Info | Difference is disabled but a quantity was specified
+Measures1400 | Usage | Warning | Vector not member of vector group
 Measures1420 | Usage | Warning | Invalid vector dimension
 Measures1421 | Usage | Warning | Missing vector dimension
 Measures1422 | Usage | Warning | Duplicate vector dimension
+Measures1423 | Usage | Warning | No vector of appropiate dimension in group
 Measures1440 | Usage | Warning | Invalid dimension of vector constant
 Measures1460 | Usage | Info | Vector group already specified
 Measures1900 | Documentation | Warning | Unresolved documentation dependency

@@ -11,14 +11,14 @@ internal record class RawSpecializedSharpMeasuresScalarDefinition :
 
     public bool InheritDerivations { get; init; }
     public bool InheritConstants { get; init; }
-    public bool InheritConvertibleScalars { get; init; }
+    public bool InheritConversions { get; init; }
     public bool InheritBases { get; init; }
     public bool InheritUnits { get; init; }
 
     public NamedType? Vector { get; init; }
 
-    public bool ImplementSum { get; init; } = true;
-    public bool ImplementDifference { get; init; } = true;
+    public bool? ImplementSum { get; init; }
+    public bool? ImplementDifference { get; init; }
 
     public NamedType? Difference { get; init; }
 

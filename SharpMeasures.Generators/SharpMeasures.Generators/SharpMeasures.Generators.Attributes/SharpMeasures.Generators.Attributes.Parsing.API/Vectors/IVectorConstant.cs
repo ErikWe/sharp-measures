@@ -6,5 +6,5 @@ using System.Collections.Generic;
 
 public interface IVectorConstant : IQuantityConstant
 {
-    public abstract IReadOnlyCollection<double> Value { get; }
+    public abstract IReadOnlyList<double> Value { get; }
 }

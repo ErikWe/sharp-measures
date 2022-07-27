@@ -1,15 +1,13 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Units.UnitInstances;
 using SharpMeasures.Generators.Unresolved.Units;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 
 using System;
 using System.Globalization;
 
-internal class DefaultDocumentation<TScalarType> : IDocumentationStrategy, IEquatable<DefaultDocumentation<TScalarType>>
-    where TScalarType : IScalarType
+internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<DefaultDocumentation>
 {
     private DefinedType Type { get; }
     private IUnresolvedUnitType Unit { get; }
@@ -19,21 +17,21 @@ internal class DefaultDocumentation<TScalarType> : IDocumentationStrategy, IEqua
 
     private string UnitParameterName { get; }
 
-    private IUnitInstance? ExampleBase { get; }
-    private IUnitInstance? ExampleUnit { get; }
+    private IUnresolvedUnitInstance? ExampleBase { get; }
+    private IUnresolvedUnitInstance? ExampleUnit { get; }
 
-    public DefaultDocumentation(ADataModel<TScalarType> model)
+    public DefaultDocumentation(DataModel model)
     {
         Type = model.Scalar.Type;
-        Unit = model.ScalarPopulation.BaseScalarByScalarType[model.Scalar.Type.AsNamedType()].Definition.Unit;
+        Unit = model.Scalar.Definition.Unit;
 
-        DefaultUnit = model.Inheritance.DefaultUnit;
+        DefaultUnit = model.Scalar.Definition.DefaultUnit;
         DefaultUnitSymbol = model.Scalar.Definition.DefaultUnitSymbol;
 
         UnitParameterName = SourceBuildingUtility.ToParameterName(Unit.Type.Name);
 
-        ExampleBase = model.Inheritance.IncludedBases.Count > 0 ? model.Inheritance.IncludedBases[0] : null;
-        ExampleUnit = model.Inheritance.IncludedUnits.Count > 0 ? model.Inheritance.IncludedUnits[0] : null;
+        ExampleBase = model.Scalar.IncludedBases.Count > 0 ? model.Scalar.IncludedBases[0] : null;
+        ExampleUnit = model.Scalar.IncludedUnits.Count > 0 ? model.Scalar.IncludedUnits[0] : null;
     }
 
     public string Header() => $"""/// <summary>A measure of the scalar quantity {Type.Name}, expressed in {UnitReference}.</summary>""";
@@ -50,7 +48,8 @@ internal class DefaultDocumentation<TScalarType> : IDocumentationStrategy, IEqua
         return $$"""/// <summary>The {{ScalarReference}} representing the constant {{constant.Name}}, with value { {{value}} [{{constant.Unit.Plural}}] }.</summary>""";
     }
 
-    public string UnitBase(IUnitInstance unitInstance) => $$"""/// <summary>The {{ScalarReference}} representing { 1 [<see cref="{{Unit.Type.Name}}.{{unitInstance.Name}}"/>] }.</summary>""";
+    public string UnitBase(IUnresolvedUnitInstance unitInstance)
+        => $$"""/// <summary>The {{ScalarReference}} representing { 1 [<see cref="{{Unit.Type.Name}}.{{unitInstance.Name}}"/>] }.</summary>""";
 
     public string WithMagnitude() => "/// <inheritdoc/>";
 
@@ -113,7 +112,7 @@ internal class DefaultDocumentation<TScalarType> : IDocumentationStrategy, IEqua
         /// <summary>The magnitude of <see langword="this", expressed in multiples of <see cref="{Type.Name}.{constant.Name}"/>.</summary>
         """;
 
-    public string InSpecifiedUnit(IUnitInstance unitInstance) => $"""
+    public string InSpecifiedUnit(IUnresolvedUnitInstance unitInstance) => $"""
         /// <summary>The magnitude of <see langword="this"/>, expressed in <see cref="{Unit.Type.Name}.{unitInstance.Name}"/>.</summary>
         """;
 
@@ -244,14 +243,13 @@ internal class DefaultDocumentation<TScalarType> : IDocumentationStrategy, IEqua
 
     private static string InheritDoc => "/// <inheritdoc/>";
 
-    public virtual bool Equals(DefaultDocumentation<TScalarType>? other) => other is not null && Type == other.Type && Unit == other.Unit
-        && DefaultUnit == other.DefaultUnit && DefaultUnitSymbol == other.DefaultUnitSymbol && UnitParameterName == other.UnitParameterName
-        && ExampleBase == other.ExampleBase && ExampleUnit == other.ExampleUnit;
+    public virtual bool Equals(DefaultDocumentation? other) => other is not null && Type == other.Type && Unit == other.Unit && DefaultUnit == other.DefaultUnit
+        && DefaultUnitSymbol == other.DefaultUnitSymbol && UnitParameterName == other.UnitParameterName && ExampleBase == other.ExampleBase && ExampleUnit == other.ExampleUnit;
 
-    public override bool Equals(object? obj) => obj is DefaultDocumentation<TScalarType> other && Equals(other);
+    public override bool Equals(object? obj) => obj is DefaultDocumentation other && Equals(other);
 
-    public static bool operator ==(DefaultDocumentation<TScalarType>? lhs, DefaultDocumentation<TScalarType>? rhs) => lhs?.Equals(rhs) ?? rhs is null;
-    public static bool operator !=(DefaultDocumentation<TScalarType>? lhs, DefaultDocumentation<TScalarType>? rhs) => (lhs == rhs) is false;
+    public static bool operator ==(DefaultDocumentation? lhs, DefaultDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;
+    public static bool operator !=(DefaultDocumentation? lhs, DefaultDocumentation? rhs) => (lhs == rhs) is false;
 
     public override int GetHashCode() => (Type, Unit, DefaultUnit, DefaultUnitSymbol, UnitParameterName, ExampleBase, ExampleUnit).GetHashCode();
 }

@@ -1,38 +1,26 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
-using SharpMeasures.Generators.Attributes.Parsing;
+using SharpMeasures.Equatables;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
-internal record class VectorConstantLocations : AAttributeLocations
+internal record class VectorConstantLocations : AQuantityConstantLocations<VectorConstantLocations>
 {
     public static VectorConstantLocations Empty { get; } = new();
 
-    public MinimalLocation? Name { get; init; }
-    public MinimalLocation? Unit { get; init; }
     public MinimalLocation? ValueCollection { get; init; }
-    public IReadOnlyList<MinimalLocation> ValueElements { get; init; } = Array.Empty<MinimalLocation>();
+    public IReadOnlyList<MinimalLocation> ValueElements
+    {
+        get => valueElements;
+        init => valueElements = value.AsReadOnlyEquatable();
+    }
 
-    public MinimalLocation? GenerateMultiplesProperty { get; init; }
-    public MinimalLocation? Multiples { get; init; }
-
-    public bool ExplicitlySetName => Name is not null;
-    public bool ExplicitlySetUnit => Unit is not null;
     public bool ExplicitlySetValue => ValueCollection is not null;
 
-    public bool ExplicitlySetGenerateMultiplesProperty => GenerateMultiplesProperty is not null;
-    public bool ExplicitlySetMultiples => Multiples is not null;
+    private ReadOnlyEquatableList<MinimalLocation> valueElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
+
+    protected override VectorConstantLocations Locations => this;
 
     private VectorConstantLocations() { }
-
-    public virtual bool Equals(VectorConstantLocations other) => other is not null && Name == other.Name && Unit == other.Unit
-        && ValueCollection == other.ValueCollection && GenerateMultiplesProperty == other.GenerateMultiplesProperty && Multiples == other.Multiples
-        && ValueElements.SequenceEqual(other.ValueElements);
-
-    public override int GetHashCode()
-    {
-        return (Name, Unit, ValueCollection, GenerateMultiplesProperty, Multiples).GetHashCode() ^ ValueElements.GetSequenceHashCode();
-    }
 }

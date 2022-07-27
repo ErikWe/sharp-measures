@@ -4,19 +4,18 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Unresolved.Quantities;
 using SharpMeasures.Generators.Unresolved.Scalars;
 
-internal record class UnresolvedSpecializedSharpMeasuresScalarDefinition : AAttributeDefinition<SpecializedSharpMeasuresScalarLocations>, IUnresolvedSpecializedScalar
+internal record class UnresolvedSpecializedSharpMeasuresScalarDefinition : AAttributeDefinition<SpecializedSharpMeasuresScalarLocations>, IUnresolvedScalarSpecialization
 {
     public NamedType OriginalScalar { get; }
-    NamedType IUnresolvedSpecializedQuantity.OriginalQuantity => OriginalScalar;
+    NamedType IUnresolvedQuantitySpecialization.OriginalQuantity => OriginalScalar;
 
     public bool InheritDerivations { get; }
     public bool InheritConstants { get; }
-    public bool InheritConvertibleScalars { get; }
-    bool IUnresolvedSpecializedQuantity.InheritConvertibleQuantities => InheritConvertibleScalars;
+    public bool InheritConversions { get; }
     public bool InheritBases { get; }
     public bool InheritUnits { get; }
 
-    public NamedType? Vector { get; }
+    public NamedType? VectorGroup { get; }
 
     public bool? ImplementSum { get; }
     public bool? ImplementDifference { get; }
@@ -34,8 +33,8 @@ internal record class UnresolvedSpecializedSharpMeasuresScalarDefinition : AAttr
 
     public bool? GenerateDocumentation { get; }
 
-    public UnresolvedSpecializedSharpMeasuresScalarDefinition(NamedType originalScalar, bool inheritDerivations, bool inheritConstants, bool inheritConvertibleScalars,
-        bool inheritBases, bool inheritUnits, NamedType? vector, bool? implementSum, bool? implementDifference, NamedType? difference, string? defaultUnitName,
+    public UnresolvedSpecializedSharpMeasuresScalarDefinition(NamedType originalScalar, bool inheritDerivations, bool inheritConstants, bool inheritConversions,
+        bool inheritBases, bool inheritUnits, NamedType? vectorGroup, bool? implementSum, bool? implementDifference, NamedType? difference, string? defaultUnitName,
         string? defaultUnitSymbol, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot, bool? generateDocumentation,
         SpecializedSharpMeasuresScalarLocations locations)
         : base(locations)
@@ -44,11 +43,11 @@ internal record class UnresolvedSpecializedSharpMeasuresScalarDefinition : AAttr
 
         InheritDerivations = inheritDerivations;
         InheritConstants = inheritConstants;
-        InheritConvertibleScalars = inheritConvertibleScalars;
+        InheritConversions = inheritConversions;
         InheritBases = inheritBases;
         InheritUnits = inheritUnits;
 
-        Vector = vector;
+        VectorGroup = vectorGroup;
 
         ImplementSum = implementSum;
         ImplementDifference = implementDifference;

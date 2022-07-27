@@ -7,13 +7,11 @@ using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Utility;
 
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
-public record class UnresolvedConvertibleScalarDefinition : AItemListDefinition<NamedType, ConvertibleQuantityLocations>, IUnresolvedConvertibleScalar
+internal record class UnresolvedConvertibleScalarDefinition : AItemListDefinition<NamedType, ConvertibleQuantityLocations>, IUnresolvedConvertibleScalar
 {
     public IReadOnlyList<NamedType> Scalars => Items;
 
-    [SuppressMessage("Design", "CA1033", Justification = "Available under another name")]
     IReadOnlyList<NamedType> IUnresolvedConvertibleQuantity.Quantities => Scalars;
 
     public bool Bidirectional { get; }

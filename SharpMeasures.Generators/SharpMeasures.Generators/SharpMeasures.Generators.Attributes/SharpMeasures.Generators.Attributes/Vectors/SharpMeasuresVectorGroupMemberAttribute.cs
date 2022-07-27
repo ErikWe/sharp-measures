@@ -12,7 +12,7 @@ public sealed class SharpMeasuresVectorGroupMemberAttribute : Attribute
     /// <inheritdoc cref="SharpMeasuresVectorAttribute.Dimension"/>
     public int Dimension { get; }
 
-    /// <summary><inheritdoc cref="SharpMeasuresVectorAttribute.GenerateDocumentation" path="/summary"/> By default, the value is inherited from the vector group.</summary>
+    /// <summary><inheritdoc cref="SharpMeasuresVectorAttribute.GenerateDocumentation" path="/summary"/> By default, the behaviour is inherited from the vector group.</summary>
     public bool GenerateDocumentation { get; }
 
     /// <inheritdoc cref="SharpMeasuresVectorGroupMemberAttribute"/>

@@ -6,6 +6,11 @@ using System.Globalization;
 
 public static partial class DiagnosticConstruction
 {
+    public static Diagnostic VectorNotMemberOfVectorGroup(Location? location, string vectorGroupType, string memberType)
+    {
+        return Diagnostic.Create(DiagnosticRules.VectorNotMemberOfVectorGroup, location, vectorGroupType, memberType);
+    }
+
     public static Diagnostic InvalidVectorDimension(Location? location, int dimension)
     {
         return Diagnostic.Create(DiagnosticRules.InvalidVectorDimension, location, dimension.ToString(CultureInfo.InvariantCulture));
@@ -24,6 +29,11 @@ public static partial class DiagnosticConstruction
     public static Diagnostic DuplicateVectorDimension(Location? location, int dimension)
     {
         return Diagnostic.Create(DiagnosticRules.DuplicateVectorDimension, location, dimension.ToString(CultureInfo.InvariantCulture));
+    }
+
+    public static Diagnostic VectorGroupsLacksMemberOfDimension(Location? location, string vectorGroupType, int expectedDimension)
+    {
+        return Diagnostic.Create(DiagnosticRules.VectorGroupLacksMemberOfDimension, location, vectorGroupType, expectedDimension);
     }
 
     public static Diagnostic VectorConstantInvalidDimension(Location? location, int expectedDimension, int constantDimension, string vectorName)

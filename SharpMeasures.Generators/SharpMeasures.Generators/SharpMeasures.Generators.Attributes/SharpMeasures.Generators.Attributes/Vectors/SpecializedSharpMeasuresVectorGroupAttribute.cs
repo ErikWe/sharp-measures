@@ -31,14 +31,14 @@ public sealed class SpecializedSharpMeasuresVectorGroupAttribute : Attribute
     /// <summary>The original vector group, of which this is a specialized form.</summary>
     public Type OriginalVectorGroup { get; }
 
-    /// <summary>Dictates whether this vector group inherits the derivations defined by the original group. The default behaviour is <see langword="true"/>.</summary>
+    /// <inheritdoc cref="SpecializedSharpMeasuresVectorAttribute.InheritDerivations"/>
     public bool InheritDerivations { get; init; }
     /// <summary>Dictates whether the vectors of this group inherits the constants defined by the vectors of the original group. The default behaviour is
     /// <see langword="true"/>.</summary>
     public bool InheritConstants { get; init; }
-    /// <summary>Dictates whether this vector group inherits the units of the original group. The default behaviour is <see langword="true"/>.</summary>
-    /// <remarks>The attributes <see cref="IncludeUnitsAttribute"/> and <see cref="ExcludeUnitsAttribute"/> enable more granular control of what units are
-    /// inherited.</remarks>
+    /// <inheritdoc cref="SpecializedSharpMeasuresVectorAttribute.InheritConversions"/>
+    public bool InheritConversions { get; init; }
+    /// <inheritdoc cref="SpecializedSharpMeasuresVectorAttribute.InheritUnits"/>
     public bool InheritUnits { get; init; }
 
     /// <summary><inheritdoc cref="SharpMeasuresVectorGroupAttribute.Scalar" path="/summary"/> By default, the value is inherited from the original group.</summary>
@@ -46,11 +46,11 @@ public sealed class SpecializedSharpMeasuresVectorGroupAttribute : Attribute
     public Type? Scalar { get; init; }
 
     /// <summary>Dictates whether the vectors of this group should implement support for computing the sum of two instances of that vector. By default,
-    /// the value is inherited from the original group.</summary>
+    /// the behaviour is inherited from the original group.</summary>
     public bool ImplementSum { get; init; }
 
     /// <summary>Dictates whether the vectors of this group should implement support for computing the difference between two instances of that vector. By default,
-    /// the value is inherited from the original group.</summary>
+    /// the behaviour is inherited from the original group.</summary>
     /// <remarks>To specify the vector group that represents the differences, use <see cref="Difference"/>.</remarks>
     public bool ImplementDifference { get; init; }
 
@@ -67,7 +67,8 @@ public sealed class SpecializedSharpMeasuresVectorGroupAttribute : Attribute
     /// <remarks><inheritdoc cref="SharpMeasuresVectorGroupAttribute.DefaultUnitSymbol" path="/remarks"/></remarks>
     public string? DefaultUnitSymbol { get; init; }
 
-    /// <summary><inheritdoc cref="SharpMeasuresVectorGroupAttribute.GenerateDocumentation" path="/summary"/> By default, the value is inherited from the original group.</summary>
+    /// <summary><inheritdoc cref="SharpMeasuresVectorGroupAttribute.GenerateDocumentation" path="/summary"/> By default, the behaviour is inherited from the original
+    /// group.</summary>
     public bool GenerateDocumentation { get; init; }
 
     /// <inheritdoc cref="SharpMeasuresVectorGroupAttribute"/>

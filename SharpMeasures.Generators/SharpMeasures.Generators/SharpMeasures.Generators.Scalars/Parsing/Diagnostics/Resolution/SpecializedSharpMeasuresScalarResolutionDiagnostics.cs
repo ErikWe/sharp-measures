@@ -6,11 +6,11 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars.Parsing.SpecializedSharpMeasuresScalar;
 using SharpMeasures.Generators.Unresolved.Units;
 
-internal class SpecialziedSharpMeasuresScalarResolutionDiagnostics : ISpecializedSharpMeasuresScalarResolutionDiagnostics
+internal class SpecializedSharpMeasuresScalarResolutionDiagnostics : ISpecializedSharpMeasuresScalarResolutionDiagnostics
 {
-    public static SpecialziedSharpMeasuresScalarResolutionDiagnostics Instance { get; } = new();
+    public static SpecializedSharpMeasuresScalarResolutionDiagnostics Instance { get; } = new();
 
-    private SpecialziedSharpMeasuresScalarResolutionDiagnostics() { }
+    private SpecializedSharpMeasuresScalarResolutionDiagnostics() { }
 
     public Diagnostic TypeAlreadyUnit(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition)
     {
@@ -24,18 +24,18 @@ internal class SpecialziedSharpMeasuresScalarResolutionDiagnostics : ISpecialize
 
     public Diagnostic TypeNotVector(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition)
     {
-        return DiagnosticConstruction.TypeNotVector(definition.Locations.Vector?.AsRoslynLocation(), definition.Vector!.Value.Name);
+        return DiagnosticConstruction.TypeNotVector(definition.Locations.Vector?.AsRoslynLocation(), definition.VectorGroup!.Value.Name);
+    }
+
+    public Diagnostic DifferenceNotScalar(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition)
+    {
+        return DiagnosticConstruction.TypeNotScalar(definition.Locations.Difference?.AsRoslynLocation(), definition.Difference!.Value.Name);
     }
 
     public Diagnostic UnrecognizedDefaultUnit(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition,
         IUnresolvedUnitType unit)
     {
         return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.DefaultUnitName?.AsRoslynLocation(), definition.DefaultUnitName!, unit.Type.Name);
-    }
-
-    public Diagnostic DifferenceNotScalar(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition)
-    {
-        return DiagnosticConstruction.TypeNotScalar(definition.Locations.Difference?.AsRoslynLocation(), definition.Difference!.Value.Name);
     }
 
     public Diagnostic ReciprocalNotScalar(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition)

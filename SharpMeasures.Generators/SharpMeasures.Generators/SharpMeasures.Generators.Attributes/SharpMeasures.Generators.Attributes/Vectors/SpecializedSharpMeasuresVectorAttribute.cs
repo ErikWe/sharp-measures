@@ -36,8 +36,8 @@ public sealed class SpecializedSharpMeasuresVectorAttribute : Attribute
     public bool InheritDerivations { get; init; }
     /// <inheritdoc cref="SpecializedSharpMeasuresScalarAttribute.InheritConstants"/>
     public bool InheritConstants { get; init; }
-    /// <inheritdoc cref="SpecializedSharpMeasuresScalarAttribute.InheritConvertibleQuantities"/>
-    public bool InheritConvertibleVectors { get; init; }
+    /// <inheritdoc cref="SpecializedSharpMeasuresScalarAttribute.InheritConversions"/>
+    public bool InheritConversions { get; init; }
     /// <inheritdoc cref="SpecializedSharpMeasuresScalarAttribute.InheritUnits"/>
     public bool InheritUnits { get; init; }
 
@@ -45,11 +45,11 @@ public sealed class SpecializedSharpMeasuresVectorAttribute : Attribute
     /// <remarks>For example; <i>Speed</i> could be considered the scalar associated with <i>Velocity</i>.</remarks>
     public Type? Scalar { get; init; }
 
-    /// <summary>Dictates whether to implement support for computing the sum of two instances of this vector. By default, the value is inherited from the original
+    /// <summary>Dictates whether to implement support for computing the sum of two instances of this vector. By default, the behaviour is inherited from the original
     /// quantity.</summary>
     public bool ImplementSum { get; init; }
 
-    /// <summary>Dictates whether to implement support for computing the difference between two instances of this vector. By default, the value is inherited from
+    /// <summary>Dictates whether to implement support for computing the difference between two instances of this vector. By default, the behaviour is inherited from
     /// the original quantity.</summary>
     /// <remarks>To specify the vector quantity that represents the difference, use <see cref="Difference"/>.</remarks>
     public bool ImplementDifference { get; init; }
@@ -67,7 +67,8 @@ public sealed class SpecializedSharpMeasuresVectorAttribute : Attribute
     /// <remarks><inheritdoc cref="SharpMeasuresVectorAttribute.DefaultUnitSymbol" path="/remarks"/></remarks>
     public string? DefaultUnitSymbol { get; init; }
 
-    /// <summary><inheritdoc cref="SharpMeasuresVectorAttribute.GenerateDocumentation" path="/summary"/> By default, the value is inherited from the original quantity.</summary>
+    /// <summary><inheritdoc cref="SharpMeasuresVectorAttribute.GenerateDocumentation" path="/summary"/> By default, the behaviour is inherited from the original
+    /// quantity.</summary>
     public bool GenerateDocumentation { get; init; }
 
     /// <inheritdoc cref="SharpMeasuresVectorAttribute"/>

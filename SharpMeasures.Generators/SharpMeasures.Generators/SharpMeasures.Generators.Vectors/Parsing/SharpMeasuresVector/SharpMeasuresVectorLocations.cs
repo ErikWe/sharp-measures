@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class SharpMeasuresVectorLocations : AAttributeLocations
+internal record class SharpMeasuresVectorLocations : AAttributeLocations<SharpMeasuresVectorLocations>
 {
     public static SharpMeasuresVectorLocations Empty => new();
 
@@ -30,6 +30,8 @@ internal record class SharpMeasuresVectorLocations : AAttributeLocations
     public bool ExplicitlySetDefaultUnitName => DefaultUnitName is not null;
     public bool ExplicitlySetDefaultUnitSymbol => DefaultUnitSymbol is not null;
     public bool ExplicitlySetGenerateDocumentation => GenerateDocumentation is not null;
+
+    protected override SharpMeasuresVectorLocations Locations => this;
 
     private SharpMeasuresVectorLocations() { }
 }

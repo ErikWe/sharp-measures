@@ -8,12 +8,12 @@ public interface IUnresolvedScalarType : IUnresolvedQuantityType
 {
     new public abstract IUnresolvedScalar Definition { get; }
 
-    new public abstract IReadOnlyList<IUnresolvedScalarConstant> Constants { get; }
-    public abstract IReadOnlyList<IUnresolvedConvertibleScalar> ConvertibleScalars { get; }
+    public abstract IReadOnlyList<IUnresolvedScalarConstant> Constants { get; }
+    new public abstract IReadOnlyList<IUnresolvedConvertibleScalar> Conversions { get; }
 
     public abstract IReadOnlyList<IUnresolvedUnitList> BaseInclusions { get; }
     public abstract IReadOnlyList<IUnresolvedUnitList> BaseExclusion { get; }
 
-    new public IReadOnlyDictionary<string, IUnresolvedScalarConstant> ConstantsByName { get; }
-    new public IReadOnlyDictionary<string, IUnresolvedScalarConstant> ConstantsByMultiplesName { get; }
+    public IReadOnlyDictionary<string, IUnresolvedScalarConstant> ConstantsByName { get; }
+    public IReadOnlyDictionary<string, IUnresolvedScalarConstant> ConstantsByMultiplesName { get; }
 }

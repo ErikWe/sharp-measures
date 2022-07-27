@@ -3,183 +3,170 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Configuration;
-using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Documentation;
-using SharpMeasures.Generators.Quantities.Parsing;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Vectors.Diagnostics;
 using SharpMeasures.Generators.Vectors.Documentation;
-using SharpMeasures.Generators.Vectors.Parsing;
-using SharpMeasures.Generators.Vectors.Pipelines.Common;
-using SharpMeasures.Generators.Vectors.Pipelines.DimensionalEquivalence;
-using SharpMeasures.Generators.Vectors.Pipelines.Maths;
-using SharpMeasures.Generators.Vectors.Pipelines.Units;
-using SharpMeasures.Generators.Vectors.Refinement.SharpMeasuresVector;
-using SharpMeasures.Generators.Vectors.Refinement.ResizedSharpMeasuresVector;
+using SharpMeasures.Generators.Vectors.Pipelines.IndividualVector.Common;
+using SharpMeasures.Generators.Vectors.Pipelines.IndividualVector.Conversions;
+using SharpMeasures.Generators.Vectors.Pipelines.IndividualVector.Maths;
+using SharpMeasures.Generators.Vectors.Pipelines.IndividualVector.Units;
 
+using System;
 using System.Threading;
-using SharpMeasures.Generators.Vectors.Populations;
-using SharpMeasures.Generators.Vectors.Populations;
 
-public class VectorGenerator
+public interface IVectorGenerator
 {
-    public IncrementalValueProvider<VectorPopulation> PopulationProvider { get; }
-    private IncrementalValueProvider<VectorPopulationErrors> PopulationDataProvider { get; }
-    private IncrementalValueProvider<InclusionPopulation> UnitInclusionPopulationProvider { get; }
+    public abstract void Perform(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
+        IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider,
+        IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider);
+}
 
-    private IncrementalValuesProvider<ParsedBaseVector> VectorProvider { get; }
-    private IncrementalValuesProvider<ParsedResizedVector> ResizedVectorProvider { get; }
+internal class VectorGenerator : IVectorGenerator
+{
+    private IncrementalValuesProvider<VectorGroupType> VectorGroupBaseProvider { get; }
+    private IncrementalValuesProvider<VectorGroupType> VectorGroupSpecializationProvider { get; }
+    private IncrementalValuesProvider<VectorGroupMemberType> VectorGroupMemberProvider { get; }
 
-    internal VectorGenerator(IncrementalValueProvider<VectorPopulation> populationProvider, IncrementalValueProvider<VectorPopulationErrors> populationDataProvider,
-        IncrementalValueProvider<InclusionPopulation> unitInclusionPopulationProvider, IncrementalValuesProvider<ParsedBaseVector> vectorProvider,
-        IncrementalValuesProvider<ParsedResizedVector> resizedVectorProvider)
+    private IncrementalValuesProvider<IndividualVectorType> IndividualVectorBaseProvider { get; }
+    private IncrementalValuesProvider<IndividualVectorType> IndividualVectorSpecializationProvider { get; }
+    
+    internal VectorGenerator(IncrementalValuesProvider<VectorGroupType> vectorGroupBaseProvider,
+        IncrementalValuesProvider<VectorGroupType> vectorGroupSpecializationProvider,
+        IncrementalValuesProvider<VectorGroupMemberType> vectorGroupMemberProvider,
+        IncrementalValuesProvider<IndividualVectorType> individualVectorBaseProvider,
+        IncrementalValuesProvider<IndividualVectorType> individualVectorSpecializationProvider)
     {
-        PopulationProvider = populationProvider;
-        PopulationDataProvider = populationDataProvider;
-        UnitInclusionPopulationProvider = unitInclusionPopulationProvider;
+        VectorGroupBaseProvider = vectorGroupBaseProvider;
+        VectorGroupSpecializationProvider = vectorGroupSpecializationProvider;
+        VectorGroupMemberProvider = vectorGroupMemberProvider;
 
-        VectorProvider = vectorProvider;
-        ResizedVectorProvider = resizedVectorProvider;
+        IndividualVectorBaseProvider = individualVectorBaseProvider;
+        IndividualVectorSpecializationProvider = individualVectorSpecializationProvider;
     }
 
-    public void Perform(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<UnitPopulation> unitPopulation,
-        IncrementalValueProvider<IVectorPopulation> scalarPopulation, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfig,
-        IncrementalValueProvider<DocumentationDictionary> documentationDictionary)
+    public void Perform(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
+        IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider,
+        IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
     {
-        var defaultGenerateDocumentation = globalAnalyzerConfig.Select(ExtractDefaultGenerateDocumentation);
+        Perform(context, VectorGroupBaseProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider,
+            documentationDictionaryProvider);
 
-        var minimized = VectorProvider.Combine(unitPopulation, scalarPopulation, PopulationProvider, PopulationDataProvider).Select(ReduceToDataModel)
-            .ReportDiagnostics(context).Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionary)
-            .Flatten().Select(AppendDocumentationFile);
+        Perform(context, VectorGroupSpecializationProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider,
+            documentationDictionaryProvider);
 
-        var minimizedResized = ResizedVectorProvider.Combine(unitPopulation, scalarPopulation, PopulationProvider, PopulationDataProvider)
-            .Select(ReduceToDataModel).ReportDiagnostics(context).Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation)
-            .Combine(documentationDictionary).Flatten().Select(AppendDocumentationFile);
+        Perform(context, VectorGroupMemberProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider,
+            documentationDictionaryProvider);
 
-        CommonGenerator.Initialize(context, minimized, minimizedResized);
-        DimensionEquivalenceGenerator.Initialize(context, minimized, minimizedResized);
-        MathsGenerator.Initialize(context, minimized, minimizedResized);
-        UnitsGenerator.Initialize(context, minimized, minimizedResized, UnitInclusionPopulationProvider);
+        Perform(context, IndividualVectorBaseProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider,
+            documentationDictionaryProvider);
+
+        Perform(context, IndividualVectorSpecializationProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider,
+            documentationDictionaryProvider);
     }
 
-    private static IOptionalWithDiagnostics<DataModel> ReduceToDataModel((ParsedBaseVector Vector, UnitPopulation UnitPopulation, IVectorPopulation ScalarPopulation,
-        VectorPopulation VectorPopulation, VectorPopulationErrors VectorPopulationData) input, CancellationToken _)
+    private static void Perform(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<VectorGroupType> vectors,
+        IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
+        IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider,
+        IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
     {
-        SharpMeasuresVectorRefinementContext context = new(input.Vector.VectorType, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation,
-            input.VectorPopulationData);
+        var defaultGenerateDocumentation = globalAnalyzerConfigProvider.Select(ExtractDefaultGenerateDocumentation);
 
-        SharpMeasuresVectorRefiner refiner = new(SharpMeasuresVectorDiagnostics.Instance);
+        var reduced = vectors.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(ReduceToDataModel)
+            .Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionaryProvider).Flatten().Select(AppendDocumentation);
+    }
 
-        var processedVector = refiner.Process(context, input.Vector.VectorDefinition);
+    private static void Perform(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<IndividualVectorType> vectors,
+        IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
+        IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider,
+        IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
+    {
+        var defaultGenerateDocumentation = globalAnalyzerConfigProvider.Select(ExtractDefaultGenerateDocumentation);
 
-        if (processedVector.LacksResult)
+        var reduced = vectors.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(ReduceToDataModel)
+            .Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionaryProvider).Flatten().Select(AppendDocumentation);
+
+        IndividualVectorCommonGenerator.Initialize(context, reduced);
+        IndividualVectorConversionsGenerator.Initialize(context, reduced);
+        IndividualVectorMathsGenerator.Initialize(context, reduced);
+        IndividualVectorUnitsGenerator.Initialize(context, reduced);
+    }
+
+    private static void Perform(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<VectorGroupMemberType> members,
+        IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
+        IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider,
+        IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
+    {
+        Perform(context, members.Select(static (member, _) => member as IndividualVectorType), unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider,
+            globalAnalyzerConfigProvider, documentationDictionaryProvider);
+    }
+
+    private static VectorGroupDataModel ReduceToDataModel
+        ((VectorGroupType VectorGroup, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken _)
+    {
+        return new(input.VectorGroup, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+    }
+
+    private static IndividualVectorDataModel ReduceToDataModel
+        ((IndividualVectorType IndividualVector, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken _)
+    {
+        return new(input.IndividualVector, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+    }
+
+    private static (VectorGroupDataModel Model, bool GenerateDocumentation) InterpretGenerateDocumentation((VectorGroupDataModel Model, bool Default) data, CancellationToken _)
+    {
+        return (data.Model, data.Model.Vector.Definition.GenerateDocumentation ?? data.Default);
+    }
+
+    private static (IndividualVectorDataModel Model, bool GenerateDocumentation) InterpretGenerateDocumentation((IndividualVectorDataModel Model, bool Default) data, CancellationToken _)
+    {
+        return (data.Model, data.Model.Vector.Definition.GenerateDocumentation ?? data.Default);
+    }
+
+    private static VectorGroupDataModel AppendDocumentation
+        ((VectorGroupDataModel Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
+    {
+        return AppendDocumentation<VectorGroupDataModel, IVectorGroupType, IVectorGroupDocumentationStrategy>(input.Model, input.GenerateDocumentation,
+            input.DocumentationDictionary, static (model) => new DefaultVectorGroupDocumentation(model),
+            static (file, documentation) => new VectorGroupFileDocumentation(file, documentation));
+    }
+
+    private static IndividualVectorDataModel AppendDocumentation
+        ((IndividualVectorDataModel Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
+    {
+        return AppendDocumentation<IndividualVectorDataModel, IIndividualVectorType, IIndividualVectorDocumentationStrategy>(input.Model, input.GenerateDocumentation,
+            input.DocumentationDictionary, static (model) => new DefaultIndividualVectorDocumentation(model),
+            (file, documentation) => new IndividualVectorFileDocumentation(input.Model.Vector.Definition.Dimension, file, documentation));
+    }
+
+    private static TDataModel AppendDocumentation<TDataModel, TVectorType, TDocumentation>
+        (TDataModel model, bool generateDocumentation, DocumentationDictionary documentationDictionary, Func<TDataModel, TDocumentation> defaultDocumentationDelegate,
+        Func<DocumentationFile, TDocumentation, TDocumentation> fileDocumentationDelegate)
+        where TDataModel : ADataModel<TVectorType, TDocumentation>
+        where TVectorType : IVectorGroupType
+    {
+        if (generateDocumentation)
         {
-            return OptionalWithDiagnostics.Empty<DataModel>(processedVector.Diagnostics);
-        }
+            TDocumentation defaultDocumentation = defaultDocumentationDelegate(model);
 
-        DataModel model = new(processedVector.Result, input.Vector, input.VectorPopulation, input.VectorPopulationData);
-
-        return OptionalWithDiagnostics.Result(model, processedVector.Diagnostics);
-    }
-
-    private static IOptionalWithDiagnostics<ResizedDataModel> ReduceToDataModel((ParsedResizedVector Vector, UnitPopulation UnitPopulation,
-        IVectorPopulation ScalarPopulation, VectorPopulation VectorPopulation, VectorPopulationErrors VectorPopulationData) input, CancellationToken _)
-    {
-        ResizedSharpMeasuresVectorRefinementContext context
-            = new(input.Vector.VectorType, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation, input.VectorPopulationData);
-
-        ResizedSharpMeasuresVectorRefiner refiner = new(ResizedSharpMeasuresVectorDiagnostics.Instance);
-
-        var processedResizedVector = refiner.Process(context, input.Vector.VectorDefinition);
-
-        if (processedResizedVector.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<ResizedDataModel>(processedResizedVector.Diagnostics);
-        }
-
-        ResizedDataModel model = new(processedResizedVector.Result, input.Vector, input.VectorPopulation, input.VectorPopulationData);
-
-        return OptionalWithDiagnostics.Result(model, processedResizedVector.Diagnostics);
-    }
-
-    private static (TDataModel Model, bool GenerateDocumentation) InterpretGenerateDocumentation<TDataModel>((TDataModel Model, bool Default) data, CancellationToken _)
-        where TDataModel : IDataModel<TDataModel>
-    {
-        if (data.Model.ExplicitlySetGenerateDocumentation)
-        {
-            return (data.Model, data.Model.GenerateDocumentation);
-        }
-
-        return (data.Model, data.Default);
-    }
-
-    private static TDataModel AppendDocumentationFile<TDataModel>
-        ((TDataModel Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
-        where TDataModel : IDataModel<TDataModel>
-    {
-        if (input.GenerateDocumentation)
-        {
-            DefaultDocumentation<TDataModel> defaultDocumentation = new(input.Model);
-
-            if (input.DocumentationDictionary.TryGetValue(input.Model.VectorType.Name, out DocumentationFile documentationFile))
+            if (documentationDictionary.TryGetValue(model.Vector.Type.Name, out DocumentationFile documentationFile))
             {
-                input.Model = input.Model.WithDocumentation(new FileDocumentation(input.Model.Dimension, documentationFile, defaultDocumentation));
+                model = model with
+                {
+                    Documentation = fileDocumentationDelegate(documentationFile, defaultDocumentation)
+                };
             }
             else
             {
-                input.Model = input.Model.WithDocumentation(defaultDocumentation);
+                model = model with
+                {
+                    Documentation = defaultDocumentation
+                };
             }
         }
 
-        return input.Model;
+        return model;
     }
 
     private static bool ExtractDefaultGenerateDocumentation(GlobalAnalyzerConfig config, CancellationToken _) => config.GenerateDocumentationByDefault;
-
-    private readonly record struct SharpMeasuresVectorRefinementContext : ISharpMeasuresVectorRefinementContext
-    {
-        public DefinedType Type { get; }
-
-        public UnitPopulation UnitPopulation { get; }
-        public IVectorPopulation ScalarPopulation { get; }
-        public VectorPopulation VectorPopulation { get; }
-
-        public VectorPopulationErrors VectorPopulationData { get; }
-
-        public SharpMeasuresVectorRefinementContext(DefinedType type, UnitPopulation unitPopulation, IVectorPopulation scalarPopulation,
-            VectorPopulation vectorPopulation, VectorPopulationErrors vectorPopulationData)
-        {
-            Type = type;
-
-            UnitPopulation = unitPopulation;
-            ScalarPopulation = scalarPopulation;
-            VectorPopulation = vectorPopulation;
-
-            VectorPopulationData = vectorPopulationData;
-        }
-    }
-
-    private readonly record struct ResizedSharpMeasuresVectorRefinementContext : IResizedSharpMeasuresVectorRefinementContext
-    {
-        public DefinedType Type { get; }
-
-        public UnitPopulation UnitPopulation { get; }
-        public IVectorPopulation ScalarPopulation { get; }
-        public VectorPopulation VectorPopulation { get; }
-
-        public VectorPopulationErrors VectorPopulationData { get; }
-
-        public ResizedSharpMeasuresVectorRefinementContext(DefinedType type, UnitPopulation unitPopulation, IVectorPopulation scalarPopulation, VectorPopulation vectorPopulation,
-            VectorPopulationErrors vectorPopulationData)
-        {
-            Type = type;
-
-            UnitPopulation = unitPopulation;
-            ScalarPopulation = scalarPopulation;
-            VectorPopulation = vectorPopulation;
-
-            VectorPopulationData = vectorPopulationData;
-        }
-    }
 }

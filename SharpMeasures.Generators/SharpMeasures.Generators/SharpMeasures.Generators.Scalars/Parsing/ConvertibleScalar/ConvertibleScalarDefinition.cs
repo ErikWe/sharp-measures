@@ -15,7 +15,7 @@ public record class ConvertibleScalarDefinition : AItemListDefinition<IUnresolve
     public IReadOnlyList<IUnresolvedScalarType> Scalars => Items;
 
     [SuppressMessage("Design", "CA1033", Justification = "Available under another name")]
-    IReadOnlyList<IUnresolvedQuantityType> IConvertibleQuantity.Quantities => Items;
+    IReadOnlyList<IUnresolvedQuantityType> IConvertibleQuantity.Quantities => Scalars;
 
     public bool Bidirectional { get; }
     public ConversionOperatorBehaviour CastOperatorBehaviour { get; }

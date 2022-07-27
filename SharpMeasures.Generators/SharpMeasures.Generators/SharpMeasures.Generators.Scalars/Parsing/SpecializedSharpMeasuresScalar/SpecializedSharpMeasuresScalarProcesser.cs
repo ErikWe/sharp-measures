@@ -9,13 +9,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-internal interface ISpecializedSharpMeasuresScalarProcessingDiagnostics
+internal interface ISharpMeasuresScalarSpecializationProcessingDiagnostics
 {
     public abstract Diagnostic? NullOriginalScalar(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? NullVector(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
 
-    public abstract Diagnostic? DifferenceDisabledButQuantitySpecified(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? NullDifferenceQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
+    public abstract Diagnostic? DifferenceDisabledButQuantitySpecified(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
 
     public abstract Diagnostic? NullDefaultUnit(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? EmptyDefaultUnit(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
@@ -31,9 +31,9 @@ internal interface ISpecializedSharpMeasuresScalarProcessingDiagnostics
 
 internal class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProcessingContext, RawSpecializedSharpMeasuresScalarDefinition, UnresolvedSpecializedSharpMeasuresScalarDefinition>
 {
-    private ISpecializedSharpMeasuresScalarProcessingDiagnostics Diagnostics { get; }
+    private ISharpMeasuresScalarSpecializationProcessingDiagnostics Diagnostics { get; }
 
-    public SpecializedSharpMeasuresScalarProcesser(ISpecializedSharpMeasuresScalarProcessingDiagnostics diagnostics)
+    public SpecializedSharpMeasuresScalarProcesser(ISharpMeasuresScalarSpecializationProcessingDiagnostics diagnostics)
     {
         Diagnostics = diagnostics;
     }
@@ -72,7 +72,7 @@ internal class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProcessingC
         allDiagnostics = allDiagnostics.Concat(processedDefaultUnitData);
 
         UnresolvedSpecializedSharpMeasuresScalarDefinition product = new(definition.OriginalScalar!.Value, definition.InheritDerivations, definition.InheritConstants,
-            definition.InheritConvertibleScalars, definition.InheritBases, definition.InheritUnits, definition.Vector, definition.ImplementSum, definition.ImplementDifference,
+            definition.InheritConversions, definition.InheritBases, definition.InheritUnits, definition.Vector, definition.ImplementSum, definition.ImplementDifference,
             definition.Difference, processedDefaultUnitData.Result.Name, processedDefaultUnitData.Result.Symbol, definition.Reciprocal, definition.Square, definition.Cube,
             definition.SquareRoot, definition.CubeRoot, definition.GenerateDocumentation, definition.Locations);
 

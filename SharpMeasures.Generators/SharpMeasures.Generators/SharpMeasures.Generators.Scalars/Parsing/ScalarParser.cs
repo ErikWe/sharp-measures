@@ -14,6 +14,7 @@ using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.UnitList;
 using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 using SharpMeasures.Generators.Scalars.Parsing.Diagnostics;
 using SharpMeasures.Generators.Scalars.Parsing.Diagnostics.Processing;
@@ -24,27 +25,36 @@ using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 using SharpMeasures.Generators.Scalars.Parsing.SpecializedSharpMeasuresScalar;
 using SharpMeasures.Generators.Unresolved.Scalars;
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 
 public static class ScalarParser
 {
-    public static (IncrementalValueProvider<IUnresolvedScalarPopulation>, ScalarResolver) Attach(IncrementalGeneratorInitializationContext context)
+    public static (IncrementalValueProvider<IUnresolvedScalarPopulation>, IScalarResolver) Attach(IncrementalGeneratorInitializationContext context)
     {
-        var baseScalarSymbols = AttachSymbolProvider<SharpMeasuresScalarAttribute>(context, BaseScalarTypeDiagnostics.Instance);
-        var specializedScalarSymbols = AttachSymbolProvider<SpecializedSharpMeasuresScalarAttribute>(context, SpecializedScalarTypeDiagnostics.Instance);
+        var scalarBaseSymbols = AttachSymbolProvider<SharpMeasuresScalarAttribute>(context, BaseScalarTypeDiagnostics.Instance);
+        var scalarSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresScalarAttribute>(context, SpecializedScalarTypeDiagnostics.Instance);
 
-        var parsedBaseScalars = baseScalarSymbols.Select(ParseBaseAttributes).ReportDiagnostics(context).Select(ProcessParsedData).ReportDiagnostics(context);
-        var parsedSpecializedScalars = specializedScalarSymbols.Select(ParseSpecializedAttributes).ReportDiagnostics(context).Select(ProcessParsedData)
-            .ReportDiagnostics(context);
+        ScalarBaseParser scalarBaseParser = new();
+        ScalarSpecializationParser scalarSpecializationParser = new();
 
-        var baseScalarInterfaces = parsedBaseScalars.Select(ExtractInterface).Collect();
-        var specializedScalarInterfaces = parsedSpecializedScalars.Select(ExtractInterface).Collect();
+        var parsedScalarBases = scalarBaseSymbols.Select(scalarBaseParser.Parse).ReportDiagnostics(context);
+        var parsedScalarSpecializations = scalarSpecializationSymbols.Select(scalarSpecializationParser.Parse).ReportDiagnostics(context);
+
+        ScalarBaseProcesser scalarBaseProcesser = new();
+        ScalarSpecializationProcesser scalarSpecializationProcesser = new();
+
+        var processedScalarBases = parsedScalarBases.Select(scalarBaseProcesser.Process).ReportDiagnostics(context);
+        var processedScalarSpecializations = parsedScalarSpecializations.Select(scalarSpecializationProcesser.Process).ReportDiagnostics(context);
+
+        var scalarBaseInterfaces = processedScalarBases.Select(ExtractInterface).Collect();
+        var scalarSpecializationInterfaces = processedScalarSpecializations.Select(ExtractInterface).Collect();
         
-        var population = baseScalarInterfaces.Combine(specializedScalarInterfaces).Select(CreatePopulation);
+        var population = scalarBaseInterfaces.Combine(scalarSpecializationInterfaces).Select(CreatePopulation);
 
-        return (population, new ScalarResolver(parsedBaseScalars, parsedSpecializedScalars));
+        return (population, new ScalarResolver(processedScalarBases, processedScalarSpecializations));
     }
 
     private static IncrementalValuesProvider<IntermediateResult> AttachSymbolProvider<TAttribute>(IncrementalGeneratorInitializationContext context,
@@ -55,147 +65,181 @@ public static class ScalarParser
         return DeclarationSymbolProvider.ConstructForValueType(IntermediateResult.Construct).Attach(partialDeclarations, context.CompilationProvider);
     }
 
-    private static IOptionalWithDiagnostics<RawBaseScalarType> ParseBaseAttributes(IntermediateResult input, CancellationToken _)
-    {
-        if (SharpMeasuresScalarParser.Parser.ParseFirstOccurrence(input.TypeSymbol) is not RawSharpMeasuresScalarDefinition scalar)
-        {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<RawBaseScalarType>();
-        }
-
-        var definedType = input.TypeSymbol.AsDefinedType();
-        var typeLocation = input.Declaration.Identifier.GetLocation().Minimize();
-
-        var derivations = DerivedQuantityParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-        var constants = ScalarConstantParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-        var convertibles = ConvertibleQuantityParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-
-        var baseInclusions = IncludeBasesParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-        var baseExclusions = ExcludeBasesParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-
-        var unitInclusions = IncludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-        var unitExclusions = ExcludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-
-        RawBaseScalarType rawScalarType = new(definedType, typeLocation, scalar, derivations, constants, convertibles, baseInclusions, baseExclusions, unitInclusions,
-            unitExclusions);
-
-        return OptionalWithDiagnostics.Result(rawScalarType);
-    }
-
-    private static IOptionalWithDiagnostics<RawSpecializedScalarType> ParseSpecializedAttributes(IntermediateResult input, CancellationToken _)
-    {
-        if (SpecializedSharpMeasuresScalarParser.Parser.ParseFirstOccurrence(input.TypeSymbol) is not RawSpecializedSharpMeasuresScalarDefinition scalar)
-        {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<RawSpecializedScalarType>();
-        }
-
-        var definedType = input.TypeSymbol.AsDefinedType();
-        var typeLocation = input.Declaration.Identifier.GetLocation().Minimize();
-
-        var derivations = DerivedQuantityParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-        var constants = ScalarConstantParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-        var convertibles = ConvertibleQuantityParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-
-        var baseInclusions = IncludeBasesParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-        var baseExclusions = ExcludeBasesParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-
-        var unitInclusions = IncludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-        var unitExclusions = ExcludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-
-        RawSpecializedScalarType rawScalarType = new(definedType, typeLocation, scalar, derivations, constants, convertibles, baseInclusions, baseExclusions,
-            unitInclusions, unitExclusions);
-
-        return OptionalWithDiagnostics.Result(rawScalarType);
-    }
-
-    private static IOptionalWithDiagnostics<UnresolvedBaseScalarType> ProcessParsedData(RawBaseScalarType rawScalarType, CancellationToken _)
-    {
-        IProcessingContext processingContext = new SimpleProcessingContext(rawScalarType.Type);
-
-        var scalar = Processers.SharpMeasuresScalarProcesser.Process(processingContext, rawScalarType.Definition);
-        var allDiagnostics = scalar.Diagnostics;
-
-        if (scalar.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedBaseScalarType>(allDiagnostics);
-        }
-
-        DerivedQuantityProcessingContext derivedQuantityProcessingContext = new(rawScalarType.Type);
-        QuantityConstantProcessingContext quantityConstantProcessingContext = new(rawScalarType.Type);
-        ConvertibleQuantityProcessingContext convertibleQuantityProcessingContext = new(rawScalarType.Type);
-        UnitListProcessingContext unitListProcessingContext = new(rawScalarType.Type);
-
-        var derivations = ProcessingFilter.Create(Processers.DerivedQuantityProcesser).Filter(derivedQuantityProcessingContext, rawScalarType.Derivations);
-        var constants = ProcessingFilter.Create(Processers.ScalarConstantProcesser(scalar.Result.Unit)).Filter(quantityConstantProcessingContext, rawScalarType.Constants);
-        var convertibleScalars = ProcessingFilter.Create(Processers.ConvertibleScalarProcesser).Filter(convertibleQuantityProcessingContext, rawScalarType.ConvertibleScalars);
-
-        var includeBases = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, rawScalarType.BaseInclusions);
-        unitListProcessingContext.ListedItems.Clear();
-
-        var excludeBases = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, rawScalarType.BaseExclusions);
-        unitListProcessingContext.ListedItems.Clear();
-
-        var includeUnits = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, rawScalarType.UnitInclusions);
-        unitListProcessingContext.ListedItems.Clear();
-
-        var excludeUnits = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, rawScalarType.UnitExclusions);
-
-        allDiagnostics = allDiagnostics.Concat(derivations.Diagnostics).Concat(constants.Diagnostics).Concat(convertibleScalars.Diagnostics)
-            .Concat(includeBases.Diagnostics).Concat(excludeBases.Diagnostics).Concat(includeUnits.Diagnostics).Concat(excludeUnits.Diagnostics);
-
-        UnresolvedBaseScalarType scalarType = new(rawScalarType.Type, rawScalarType.TypeLocation, scalar.Result, derivations.Result, constants.Result,
-            convertibleScalars.Result, includeBases.Result, excludeBases.Result, includeUnits.Result, excludeUnits.Result);
-
-        return OptionalWithDiagnostics.Result(scalarType, allDiagnostics);
-    }
-
-    private static IOptionalWithDiagnostics<UnresolvedSpecializedScalarType> ProcessParsedData(RawSpecializedScalarType rawScalarType, CancellationToken _)
-    {
-        IProcessingContext processingContext = new SimpleProcessingContext(rawScalarType.Type);
-
-        var scalar = Processers.SpecializedSharpMeasuresScalarProcesser.Process(processingContext, rawScalarType.Definition);
-        var allDiagnostics = scalar.Diagnostics;
-
-        if (scalar.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedSpecializedScalarType>(allDiagnostics);
-        }
-
-        DerivedQuantityProcessingContext derivedQuantityProcessingContext = new(rawScalarType.Type);
-        QuantityConstantProcessingContext quantityConstantProcessingContext = new(rawScalarType.Type);
-        ConvertibleQuantityProcessingContext convertibleQuantityProcessingContext = new(rawScalarType.Type);
-        UnitListProcessingContext unitListProcessingContext = new(rawScalarType.Type);
-
-        var derivations = ProcessingFilter.Create(Processers.DerivedQuantityProcesser).Filter(derivedQuantityProcessingContext, rawScalarType.Derivations);
-        var constants = ProcessingFilter.Create(Processers.ScalarConstantProcesserForUnknownUnit).Filter(quantityConstantProcessingContext, rawScalarType.Constants);
-        var convertibleScalars = ProcessingFilter.Create(Processers.ConvertibleScalarProcesser).Filter(convertibleQuantityProcessingContext, rawScalarType.ConvertibleScalars);
-
-        var includeBases = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, rawScalarType.BaseInclusions);
-        unitListProcessingContext.ListedItems.Clear();
-
-        var excludeBases = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, rawScalarType.BaseExclusions);
-        unitListProcessingContext.ListedItems.Clear();
-
-        var includeUnits = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, rawScalarType.UnitInclusions);
-        unitListProcessingContext.ListedItems.Clear();
-
-        var excludeUnits = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, rawScalarType.UnitExclusions);
-
-        allDiagnostics = allDiagnostics.Concat(derivations.Diagnostics).Concat(constants.Diagnostics).Concat(convertibleScalars.Diagnostics)
-            .Concat(includeBases.Diagnostics).Concat(excludeBases.Diagnostics).Concat(includeUnits.Diagnostics).Concat(excludeUnits.Diagnostics);
-
-        UnresolvedSpecializedScalarType scalarType = new(rawScalarType.Type, rawScalarType.TypeLocation, scalar.Result, derivations.Result, constants.Result,
-            convertibleScalars.Result, includeBases.Result, excludeBases.Result, includeUnits.Result, excludeUnits.Result);
-
-        return OptionalWithDiagnostics.Result(scalarType, allDiagnostics);
-    }
-
-    private static IUnresolvedBaseScalarType ExtractInterface(UnresolvedBaseScalarType scalarType, CancellationToken _) => scalarType;
-    private static IUnresolvedSpecializedScalarType ExtractInterface(UnresolvedSpecializedScalarType scalarType, CancellationToken _) => scalarType;
+    private static IUnresolvedScalarBaseType ExtractInterface(IUnresolvedScalarBaseType scalarType, CancellationToken _) => scalarType;
+    private static IUnresolvedScalarSpecializationType ExtractInterface(IUnresolvedScalarSpecializationType scalarType, CancellationToken _) => scalarType;
 
     private static IUnresolvedScalarPopulation CreatePopulation
-        ((ImmutableArray<IUnresolvedBaseScalarType> Bases, ImmutableArray<IUnresolvedSpecializedScalarType> Specialized) scalars, CancellationToken _)
+        ((ImmutableArray<IUnresolvedScalarBaseType> Bases, ImmutableArray<IUnresolvedScalarSpecializationType> Specializations) scalars, CancellationToken _)
     {
-        return UnresolvedScalarPopulation.Build(scalars.Bases, scalars.Specialized);
+        return UnresolvedScalarPopulation.Build(scalars.Bases, scalars.Specializations);
+    }
+
+    private class ScalarBaseParser : AScalarParser<RawSharpMeasuresScalarDefinition, RawScalarBaseType>
+    {
+        protected override RawScalarBaseType FinalizeParse(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresScalarDefinition definition,
+            IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
+            IEnumerable<RawUnitListDefinition> baseInclusions, IEnumerable<RawUnitListDefinition> baseExclusions, IEnumerable<RawUnitListDefinition> unitInclusions,
+            IEnumerable<RawUnitListDefinition> unitExclusions)
+        {
+            return new(type, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInclusions, unitExclusions);
+        }
+
+        protected override IAttributeParser<RawSharpMeasuresScalarDefinition> Parser => SharpMeasuresScalarParser.Parser;
+    }
+
+    private class ScalarSpecializationParser : AScalarParser<RawSpecializedSharpMeasuresScalarDefinition, RawScalarSpecializationType>
+    {
+        protected override RawScalarSpecializationType FinalizeParse(DefinedType type, MinimalLocation typeLocation, RawSpecializedSharpMeasuresScalarDefinition definition,
+            IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
+            IEnumerable<RawUnitListDefinition> baseInclusions, IEnumerable<RawUnitListDefinition> baseExclusions, IEnumerable<RawUnitListDefinition> unitInclusions,
+            IEnumerable<RawUnitListDefinition> unitExclusions)
+        {
+            return new(type, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInclusions, unitExclusions);
+        }
+
+        protected override IAttributeParser<RawSpecializedSharpMeasuresScalarDefinition> Parser => SpecializedSharpMeasuresScalarParser.Parser;
+    }
+
+    private abstract class AScalarParser<TDefinition, TProduct>
+        where TProduct : ARawScalarType
+    {
+        public IOptionalWithDiagnostics<TProduct> Parse(IntermediateResult input, CancellationToken _) => Parse(input);
+        public IOptionalWithDiagnostics<TProduct> Parse(IntermediateResult input)
+        {
+            if (Parser.ParseFirstOccurrence(input.TypeSymbol) is not TDefinition definition)
+            {
+                return OptionalWithDiagnostics.EmptyWithoutDiagnostics<TProduct>();
+            }
+
+            var definedType = input.TypeSymbol.AsDefinedType();
+            var typeLocation = input.Declaration.Identifier.GetLocation().Minimize();
+
+            var derivations = DerivedQuantityParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+            var constants = ScalarConstantParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+            var conversions = ConvertibleQuantityParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+
+            var baseInclusions = IncludeBasesParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+            var baseExclusions = ExcludeBasesParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+
+            var unitInclusions = IncludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+            var unitExclusions = ExcludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
+
+            TProduct product = FinalizeParse(definedType, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions,
+                unitInclusions, unitExclusions);
+
+            return OptionalWithDiagnostics.Result(product);
+        }
+
+        protected abstract TProduct FinalizeParse(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations,
+            IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawUnitListDefinition> baseInclusions,
+            IEnumerable<RawUnitListDefinition> baseExclusions, IEnumerable<RawUnitListDefinition> unitInclusions, IEnumerable<RawUnitListDefinition> unitExclusions);
+
+        protected abstract IAttributeParser<TDefinition> Parser { get; }
+    }
+
+    private class ScalarBaseProcesser : AScalarProcesser<UnresolvedSharpMeasuresScalarDefinition, RawScalarBaseType, UnresolvedScalarBaseType>
+    {
+        protected override UnresolvedScalarBaseType FinalizeProcess(DefinedType type, MinimalLocation typeLocation, UnresolvedSharpMeasuresScalarDefinition definition,
+            IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedScalarConstantDefinition> constants,
+            IReadOnlyList<UnresolvedConvertibleScalarDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> baseInclusions,
+            IReadOnlyList<UnresolvedUnitListDefinition> baseExclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
+            IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
+        {
+            return new(type, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInclusions, unitExclusions);
+        }
+
+        protected override NamedType? GetUnit(UnresolvedSharpMeasuresScalarDefinition scalar) => scalar.Unit;
+
+        protected override IOptionalWithDiagnostics<UnresolvedSharpMeasuresScalarDefinition> ProcessScalar(RawScalarBaseType raw)
+        {
+            var processingContext = new SimpleProcessingContext(raw.Type);
+
+            return Processers.SharpMeasuresScalarProcesser.Process(processingContext, raw.Definition);
+        }
+    }
+
+    private class ScalarSpecializationProcesser
+        : AScalarProcesser<UnresolvedSpecializedSharpMeasuresScalarDefinition, RawScalarSpecializationType, UnresolvedScalarSpecializationType>
+    {
+        protected override UnresolvedScalarSpecializationType FinalizeProcess(DefinedType type, MinimalLocation typeLocation,
+            UnresolvedSpecializedSharpMeasuresScalarDefinition definition, IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations,
+            IReadOnlyList<UnresolvedScalarConstantDefinition> constants, IReadOnlyList<UnresolvedConvertibleScalarDefinition> conversions,
+            IReadOnlyList<UnresolvedUnitListDefinition> baseInclusions, IReadOnlyList<UnresolvedUnitListDefinition> baseExclusions,
+            IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
+        {
+            return new(type, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInclusions, unitExclusions);
+        }
+
+        protected override NamedType? GetUnit(UnresolvedSpecializedSharpMeasuresScalarDefinition scalar) => null;
+
+        protected override IOptionalWithDiagnostics<UnresolvedSpecializedSharpMeasuresScalarDefinition> ProcessScalar(RawScalarSpecializationType raw)
+        {
+            var processingContext = new SimpleProcessingContext(raw.Type);
+
+            return Processers.SpecializedSharpMeasuresScalarProcesser.Process(processingContext, raw.Definition);
+        }
+    }
+
+    private abstract class AScalarProcesser<TDefinition, TRaw, TProduct>
+        where TDefinition : IUnresolvedScalar
+        where TRaw : ARawScalarType
+        where TProduct : AUnresolvedScalarType<TDefinition>
+    {
+        public IOptionalWithDiagnostics<TProduct> Process(TRaw raw, CancellationToken _) => Process(raw);
+        public IOptionalWithDiagnostics<TProduct> Process(TRaw raw)
+        {
+            var scalar = ProcessScalar(raw);
+            var allDiagnostics = scalar.Diagnostics;
+
+            if (scalar.LacksResult)
+            {
+                return OptionalWithDiagnostics.Empty<TProduct>(allDiagnostics);
+            }
+
+            DerivedQuantityProcessingContext derivedQuantityProcessingContext = new(raw.Type);
+            QuantityConstantProcessingContext quantityConstantProcessingContext = new(raw.Type);
+            ConvertibleQuantityProcessingContext convertibleQuantityProcessingContext = new(raw.Type);
+            UnitListProcessingContext unitListProcessingContext = new(raw.Type);
+
+            var unit = GetUnit(scalar.Result);
+
+            var scalarConstantProcesser = unit is null
+                ? Processers.ScalarConstantProcesserForUnknownUnit
+                : Processers.ScalarConstantProcesser(unit.Value);
+
+            var derivations = ProcessingFilter.Create(Processers.DerivedQuantityProcesser).Filter(derivedQuantityProcessingContext, raw.Derivations);
+            var constants = ProcessingFilter.Create(scalarConstantProcesser).Filter(quantityConstantProcessingContext, raw.Constants);
+            var conversions = ProcessingFilter.Create(Processers.ConvertibleScalarProcesser).Filter(convertibleQuantityProcessingContext, raw.Conversions);
+
+            var includeBases = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.BaseInclusions);
+            unitListProcessingContext.ListedItems.Clear();
+
+            var excludeBases = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.BaseExclusions);
+            unitListProcessingContext.ListedItems.Clear();
+
+            var includeUnits = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.UnitInclusions);
+            unitListProcessingContext.ListedItems.Clear();
+
+            var excludeUnits = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.UnitExclusions);
+
+            allDiagnostics = allDiagnostics.Concat(derivations.Diagnostics).Concat(constants.Diagnostics).Concat(conversions.Diagnostics)
+                .Concat(includeBases.Diagnostics).Concat(excludeBases.Diagnostics).Concat(includeUnits.Diagnostics).Concat(excludeUnits.Diagnostics);
+
+            TProduct product = FinalizeProcess(raw.Type, raw.TypeLocation, scalar.Result, derivations.Result, constants.Result,
+                conversions.Result, includeBases.Result, excludeBases.Result, includeUnits.Result, excludeUnits.Result);
+
+            return OptionalWithDiagnostics.Result(product, allDiagnostics);
+        }
+
+        protected abstract TProduct FinalizeProcess(DefinedType type, MinimalLocation typeLocation, TDefinition definition,
+            IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedScalarConstantDefinition> constants,
+            IReadOnlyList<UnresolvedConvertibleScalarDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> baseInclusions,
+            IReadOnlyList<UnresolvedUnitListDefinition> baseExclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
+            IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions);
+
+        protected abstract NamedType? GetUnit(TDefinition scalar);
+
+        protected abstract IOptionalWithDiagnostics<TDefinition> ProcessScalar(TRaw raw);
     }
 
     private static class Processers

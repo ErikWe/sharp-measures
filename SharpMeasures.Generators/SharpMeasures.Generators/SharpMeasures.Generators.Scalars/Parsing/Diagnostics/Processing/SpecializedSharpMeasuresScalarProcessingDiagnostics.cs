@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars.Parsing.SpecializedSharpMeasuresScalar;
 
-internal class SpecializedSharpMeasuresScalarProcessingDiagnostics : ISpecializedSharpMeasuresScalarProcessingDiagnostics
+internal class SpecializedSharpMeasuresScalarProcessingDiagnostics : ISharpMeasuresScalarSpecializationProcessingDiagnostics
 {
     public static SpecializedSharpMeasuresScalarProcessingDiagnostics Instance { get; } = new();
 

@@ -1,28 +1,21 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using SharpMeasures.Equatables;
-using SharpMeasures.Generators.Attributes.Parsing;
+using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
+using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 
 using System.Collections.Generic;
 
-internal record class VectorConstantDefinition : AAttributeDefinition<VectorConstantLocations>
+internal record class VectorConstantDefinition : AQuantityConstantDefinition<VectorConstantLocations>, IVectorConstant
 {
-    public string Name { get; }
-    public string Unit { get; }
-    public ReadOnlyEquatableList<double> Value { get; }
+    public IReadOnlyList<double> Value => value;
 
-    public bool GenerateMultiplesProperty { get; }
-    public string? Multiples { get; }
+    private ReadOnlyEquatableList<double> value { get; }
 
-    public VectorConstantDefinition(string name, string unit, IReadOnlyList<double> value, bool generateMultiplesProperty, string? multiples,
+    public VectorConstantDefinition(string name, IUnresolvedUnitInstance unit, IReadOnlyList<double> value, bool generateMultiplesProperty, string? multiples,
         VectorConstantLocations locations)
-        : base(locations)
+        : base(name, unit, generateMultiplesProperty, multiples, locations)
     {
-        Name = name;
-        Unit = unit;
-        Value = value.AsReadOnlyEquatable();
-
-        GenerateMultiplesProperty = generateMultiplesProperty;
-        Multiples = multiples;
+        this.value = value.AsReadOnlyEquatable();
     }
 }

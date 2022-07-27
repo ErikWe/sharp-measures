@@ -28,7 +28,7 @@ internal class SharpMeasuresUnitResolver : AProcesser<ISharpMeasuresUnitResoluti
 
     public override IOptionalWithDiagnostics<SharpMeasuresUnitDefinition> Process(ISharpMeasuresUnitResolutionContext context, UnresolvedSharpMeasuresUnitDefinition definition)
     {
-        if (context.ScalarPopulation.BaseScalarByScalarType.TryGetValue(definition.Quantity, out var baseQuantity) is false)
+        if (context.ScalarPopulation.ScalarBases.TryGetValue(definition.Quantity, out var baseQuantity) is false)
         {
             return OptionalWithDiagnostics.Empty<SharpMeasuresUnitDefinition>(Diagnostics.QuantityNotScalar(context, definition));
         }
