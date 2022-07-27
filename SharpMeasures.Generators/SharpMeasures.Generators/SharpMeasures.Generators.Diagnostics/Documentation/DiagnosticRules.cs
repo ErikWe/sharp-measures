@@ -2,8 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Configuration;
-
 public static partial class DiagnosticRules
 {
     public static readonly DiagnosticDescriptor UnresolvedDocumentationDependency = new DiagnosticDescriptor

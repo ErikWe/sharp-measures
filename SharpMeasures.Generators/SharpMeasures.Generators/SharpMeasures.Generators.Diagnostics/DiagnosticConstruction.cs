@@ -18,7 +18,7 @@ public static partial class DiagnosticConstruction
 
     public static Diagnostic TypeNotPartial(Location? location, string attributeName, string typeName)
     {
-        return Diagnostic.Create(DiagnosticRules.TypeNotPartial, location, attributeName, typeName);
+        return Diagnostic.Create(DiagnosticRules.TypeNotPartial, location, Utility.AttributeName(attributeName), typeName);
     }
 
     public static Diagnostic TypeNotScalar(Location? location, string typeName)

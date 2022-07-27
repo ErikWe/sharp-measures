@@ -202,8 +202,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DifferenceDisabledButQuantitySpecified,
         title: "Difference is disabled but a quantity was specified",
-        messageFormat: "Difference is not implemented for {0}, but a quantity that represents difference was specified. Enable difference or do not " +
-            "specify the quantity.",
+        messageFormat: "Difference is not implemented for {0}, but a quantity that represents difference was specified. Enable difference or do not specify the quantity.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true,

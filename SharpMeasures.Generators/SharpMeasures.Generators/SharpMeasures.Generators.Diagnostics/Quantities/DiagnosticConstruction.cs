@@ -75,7 +75,8 @@ public static partial class DiagnosticConstruction
 
     public static Diagnostic ContradictoryAttributes(Location? location, string inclusionAttributeName, string exclusionAttributeName)
     {
-        return Diagnostic.Create(DiagnosticRules.ContradictoryAttributes, location, inclusionAttributeName, exclusionAttributeName);
+        return Diagnostic.Create(DiagnosticRules.ContradictoryAttributes, location, Utility.AttributeName(inclusionAttributeName),
+            Utility.AttributeName(exclusionAttributeName));
     }
 
     public static Diagnostic QuantityGroupMissingRoot<TAttribute>(Location? location)

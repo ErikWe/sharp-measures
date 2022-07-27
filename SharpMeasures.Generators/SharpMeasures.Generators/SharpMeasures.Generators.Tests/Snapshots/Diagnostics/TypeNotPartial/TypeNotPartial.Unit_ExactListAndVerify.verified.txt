@@ -8,7 +8,7 @@
     Description: ,
     HelpLink: ,
     MessageFormat: To apply a SharpMeasures source generator, as indicated by the attribute {0}, {1} should be made partial,
-    Message: To apply a SharpMeasures source generator, as indicated by the attribute SharpMeasuresUnitAttribute, UnitOfLength2 should be made partial,
+    Message: To apply a SharpMeasures source generator, as indicated by the attribute SharpMeasuresUnit, UnitOfLength2 should be made partial,
     Category: Usage,
     CustomTags: []
   }

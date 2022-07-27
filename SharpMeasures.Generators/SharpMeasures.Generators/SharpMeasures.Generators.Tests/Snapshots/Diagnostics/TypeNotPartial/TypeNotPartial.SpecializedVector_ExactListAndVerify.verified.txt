@@ -4,11 +4,11 @@
     Title: Expected a partial type,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (4,13)-(4,20),
+    Location: : (5,13)-(5,22),
     Description: ,
     HelpLink: ,
     MessageFormat: To apply a SharpMeasures source generator, as indicated by the attribute {0}, {1} should be made partial,
-    Message: To apply a SharpMeasures source generator, as indicated by the attribute SharpMeasuresScalar, Length2 should be made partial,
+    Message: To apply a SharpMeasures source generator, as indicated by the attribute SpecializedSharpMeasuresVector, Distance3 should be made partial,
     Category: Usage,
     CustomTags: []
   }

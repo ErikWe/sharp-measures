@@ -3,7 +3,6 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Utility;
 
 public static partial class DiagnosticRules
 {
@@ -31,7 +30,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.UnrecognizedUnitDerivationID,
         title: "Derivation ID not recognized",
-        messageFormat: $"The derivation ID \"{{0}}\" was not recognized. {{1}} should be decorated by a {typeof(DerivableUnitAttribute).FullName} with this ID.",
+        messageFormat: $"The derivation ID \"{{0}}\" was not recognized. {{1}} should be decorated by a {Utility.FullAttributeName<DerivableUnitAttribute>()} with this ID.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -51,7 +50,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.UnitNotDerivable,
         title: "Unit not derivable",
-        messageFormat: $"{{0}} has no defined derivations. Add a definition using {typeof(DerivableUnitAttribute).FullName}.",
+        messageFormat: $"{{0}} has no defined derivations. Add a definition using {Utility.FullAttributeName<DerivableUnitAttribute>()}.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

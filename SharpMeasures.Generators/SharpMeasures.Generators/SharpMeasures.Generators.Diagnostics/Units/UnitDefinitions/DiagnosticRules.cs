@@ -74,7 +74,7 @@ public static partial class DiagnosticRules
         id: DiagnosticIDs.UnrecognizedUnitName,
         title: "Expected the name of a unit",
         messageFormat: "\"{0}\" was not recognized as the name of a {1}. \"{0}\" should be defined through an attribute applied to {1} - for example; " +
-            $"{typeof(FixedUnitAttribute).FullName}.",
+            $"{Utility.FullAttributeName<FixedUnitAttribute>()}.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -144,7 +144,8 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.FixedUnitBiasSpecifiedButUnitNotBiased,
         title: "The unit does not support biases",
-        messageFormat: $"{{0}} does not support biases. Do not specify a bias term, or make {{0}} support biases through {typeof(SharpMeasuresUnitAttribute).FullName}.",
+        messageFormat: "{0} does not support biases. Do not specify a bias term, or make {0} support biases through " +
+            $"{Utility.ShortAttributeName<SharpMeasuresUnitAttribute>()}.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
@@ -156,7 +157,7 @@ public static partial class DiagnosticRules
         id: DiagnosticIDs.BiasedUnitDefinedButUnitNotBiased,
         title: "The unit does not support biases",
         messageFormat: $"{{0}} could not be implemented, as {{1}} does not support biases. Remove {{0}}, or make {{1}} support biases through " +
-            $"{typeof(SharpMeasuresUnitAttribute).FullName}.",
+            $"{Utility.ShortAttributeName<SharpMeasuresUnitAttribute>()}.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

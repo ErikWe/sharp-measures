@@ -8,7 +8,7 @@
     Description: ,
     HelpLink: ,
     MessageFormat: To apply a SharpMeasures source generator, as indicated by the attribute {0}, {1} should be made partial,
-    Message: To apply a SharpMeasures source generator, as indicated by the attribute SharpMeasuresScalar, Length2 should be made partial,
+    Message: To apply a SharpMeasures source generator, as indicated by the attribute SpecializedSharpMeasuresScalar, Length2 should be made partial,
     Category: Usage,
     CustomTags: []
   }
