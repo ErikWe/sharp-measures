@@ -16,7 +16,27 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotPartial,
         title: "Expected a partial type",
-        messageFormat: "To apply a SharpMeasures source generator, as indicated by the attribute {0}, {1} should be made partial",
+        messageFormat: "The SharpMeasures source generator associated with the attribute {0} requires {1} to be made partial",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor TypeStatic = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.TypeStatic,
+        title: "Expected a non-static type",
+        messageFormat: "The SharpMeasures source generator associated with the attribute {0} requires {1} to be made non-static",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor TypeNotStatic = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.TypeNotStatic,
+        title: "Expected a static type",
+        messageFormat: "The SharpMeasures source generator associated with the attribute {0} requires {1} to be made static",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true

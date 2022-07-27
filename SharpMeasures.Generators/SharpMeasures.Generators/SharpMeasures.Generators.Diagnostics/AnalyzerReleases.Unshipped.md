@@ -6,13 +6,15 @@
 Rule ID | Category | Severity | Notes
 --------|----------|----------|--------------------
 Measures1000 | Usage | Error | Expected a partial type
-Measures1001 | Usage | Error | Expected a scalar quantity
-Measures1002 | Usage | Error | Expected a vector quantity
-Measures1003 | Usage | Error | Expected a vector group
-Measures1004 | Usage | Error | Expected a vector group member
-Measures1005 | Usage | Error | Expected a quantity
-Measures1006 | Usage | Error | Expected a unit
-Measures1007 | Usage | Error | Type already defined
+Measures1001 | Usage | Error | Expected a non-static type
+Measures1002 | Usage | Error | Expected a static type
+Measures1003 | Usage | Error | Expected a scalar quantity
+Measures1004 | Usage | Error | Expected a vector quantity
+Measures1005 | Usage | Error | Expected a vector group
+Measures1006 | Usage | Error | Expected a vector group member
+Measures1007 | Usage | Error | Expected a quantity
+Measures1008 | Usage | Error | Expected a unit
+Measures1009 | Usage | Error | Type already defined
 Measures1020 | Usage | Error | Expected a strictly unbiased scalar quantity
 Measures1021 | Usage | Error | Expected a biased scalar quantity
 Measures1022 | Usage | Error | Unit does not support biased quantities

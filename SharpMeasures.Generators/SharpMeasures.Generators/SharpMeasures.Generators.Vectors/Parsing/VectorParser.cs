@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Providers;
+using SharpMeasures.Generators.Providers.DeclarationFilter;
 using SharpMeasures.Generators.Quantities.Parsing.Contexts.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
@@ -36,12 +37,12 @@ public static class VectorParser
 {
     public static (IncrementalValueProvider<IUnresolvedVectorPopulation>, IVectorResolver) Attach(IncrementalGeneratorInitializationContext context)
     {
-        var vectorGroupBaseSymbols = AttachSymbolProvider<SharpMeasuresVectorGroupAttribute>(context, BaseVectorGroupTypeDiagnostics.Instance);
-        var vectorGroupSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresVectorGroupAttribute>(context, SpecializedVectorGroupTypeDiagnostics.Instance);
-        var vectorGroupMemberSymbols = AttachSymbolProvider<SharpMeasuresVectorGroupMemberAttribute>(context, VectorGroupMemberTypeDiagnostics.Instance);
+        var vectorGroupBaseSymbols = AttachSymbolProvider<SharpMeasuresVectorGroupAttribute>(context, GroupBaseDeclarationFilters);
+        var vectorGroupSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresVectorGroupAttribute>(context, GroupSpecializationDeclarationFilters);
+        var vectorGroupMemberSymbols = AttachSymbolProvider<SharpMeasuresVectorGroupMemberAttribute>(context, GroupMemberDeclarationFilters);
 
-        var individualVectorBaseSymbols = AttachSymbolProvider<SharpMeasuresVectorAttribute>(context, BaseVectorTypeDiagnostics.Instance);
-        var individualVectorSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresVectorAttribute>(context, SpecializedVectorTypeDiagnostics.Instance);
+        var individualVectorBaseSymbols = AttachSymbolProvider<SharpMeasuresVectorAttribute>(context, IndividualBaseDeclarationFilters);
+        var individualVectorSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresVectorAttribute>(context, IndividualSpecializationDeclarationFilters);
 
         VectorGroupBaseParser vectorGroupBaseParser = new();
         VectorGroupSpecializationParser vectorGroupSpecializationParser = new();
@@ -84,11 +85,11 @@ public static class VectorParser
     }
 
     private static IncrementalValuesProvider<IntermediateResult> AttachSymbolProvider<TAttribute>(IncrementalGeneratorInitializationContext context,
-        IPartialDeclarationProviderDiagnostics diagnostics)
+        IEnumerable<IDeclarationFilter> declarationFilters)
     {
         var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<TAttribute>(context.SyntaxProvider);
-        var partialDeclarations = PartialDeclarationProvider.Construct<TypeDeclarationSyntax>().AttachAndReport(context, declarations, diagnostics);
-        return DeclarationSymbolProvider.ConstructForValueType(IntermediateResult.Construct).Attach(partialDeclarations, context.CompilationProvider);
+        var filteredDeclarations = FilteredDeclarationProvider.Construct<TypeDeclarationSyntax>(declarationFilters).AttachAndReport(context, declarations);
+        return DeclarationSymbolProvider.ConstructForValueType(IntermediateResult.Construct).Attach(filteredDeclarations, context.CompilationProvider);
     }
 
     private static IUnresolvedVectorGroupBaseType ExtractInterface(IUnresolvedVectorGroupBaseType vectorGroupType, CancellationToken _) => vectorGroupType;
@@ -460,6 +461,36 @@ public static class VectorParser
 
         protected abstract IOptionalWithDiagnostics<TDefinition> ProcessIndividualVector(TRaw raw);
     }
+
+    private static IEnumerable<IDeclarationFilter> GroupBaseDeclarationFilters { get; } = new IDeclarationFilter[]
+    {
+        new PartialDeclarationFilter(VectorGroupBaseTypeDiagnostics.TypeNotPartial),
+        new StaticDeclarationFilter(VectorGroupBaseTypeDiagnostics.TypeNotStatic)
+    };
+
+    private static IEnumerable<IDeclarationFilter> GroupSpecializationDeclarationFilters { get; } = new IDeclarationFilter[]
+    {
+        new PartialDeclarationFilter(VectorGroupSpecializationTypeDiagnostics.TypeNotPartial),
+        new StaticDeclarationFilter(VectorGroupSpecializationTypeDiagnostics.TypeNotStatic)
+    };
+
+    private static IEnumerable<IDeclarationFilter> GroupMemberDeclarationFilters { get; } = new IDeclarationFilter[]
+    {
+        new PartialDeclarationFilter(VectorGroupMemberTypeDiagnostics.TypeNotPartial),
+        new NonStaticDeclarationFilter(VectorGroupMemberTypeDiagnostics.TypeStatic)
+    };
+
+    private static IEnumerable<IDeclarationFilter> IndividualBaseDeclarationFilters { get; } = new IDeclarationFilter[]
+    {
+        new PartialDeclarationFilter(IndividualVectorBaseTypeDiagnostics.TypeNotPartial),
+        new NonStaticDeclarationFilter(IndividualVectorBaseTypeDiagnostics.TypeStatic)
+    };
+
+    private static IEnumerable<IDeclarationFilter> IndividualSpecializationDeclarationFilters { get; } = new IDeclarationFilter[]
+    {
+        new PartialDeclarationFilter(IndividualVectorSpecializationTypeDiagnostics.TypeNotPartial),
+        new NonStaticDeclarationFilter(IndividualVectorSpecializationTypeDiagnostics.TypeStatic)
+    };
 
     private static class Processers
     {

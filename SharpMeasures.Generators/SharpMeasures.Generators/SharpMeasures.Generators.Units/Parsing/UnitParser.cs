@@ -23,14 +23,15 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
+using SharpMeasures.Generators.Providers.DeclarationFilter;
 
 public static class UnitParser
 {
     public static (IncrementalValueProvider<IUnresolvedUnitPopulation>, UnitResolver) Attach(IncrementalGeneratorInitializationContext context)
     {
         var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<SharpMeasuresUnitAttribute>(context.SyntaxProvider);
-        var partialDeclarations = PartialDeclarationProvider.Construct<TypeDeclarationSyntax>().AttachAndReport(context, declarations, UnitTypeDiagnostics.Instance);
-        var symbols = DeclarationSymbolProvider.ConstructForValueType(IntermediateResult.Construct).Attach(partialDeclarations, context.CompilationProvider);
+        var filteredDeclarations = FilteredDeclarationProvider.Construct<TypeDeclarationSyntax>(DeclarationFilters).AttachAndReport(context, declarations);
+        var symbols = DeclarationSymbolProvider.ConstructForValueType(IntermediateResult.Construct).Attach(filteredDeclarations, context.CompilationProvider);
 
         var parsed = symbols.Select(ParseAttributes).ReportDiagnostics(context).Select(ProcessParsedData).ReportDiagnostics(context);
         var population = parsed.Select(ExtractInterface).Collect().Select(CreatePopulation);
@@ -108,6 +109,12 @@ public static class UnitParser
     {
         return new UnresolvedUnitPopulation(units.ToDictionary(static (unit) => unit.Type.AsNamedType()));
     }
+
+    private static IEnumerable<IDeclarationFilter> DeclarationFilters { get; } = new IDeclarationFilter[]
+    {
+        new PartialDeclarationFilter(UnitTypeDiagnostics.TypeNotPartial),
+        new NonStaticDeclarationFilter(UnitTypeDiagnostics.TypeStatic)
+    };
 
     private static class Processers
     {

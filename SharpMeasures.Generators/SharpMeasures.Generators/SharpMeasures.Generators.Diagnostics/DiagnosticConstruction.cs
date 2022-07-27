@@ -21,6 +21,36 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.TypeNotPartial, location, Utility.AttributeName(attributeName), typeName);
     }
 
+    public static Diagnostic TypeStatic<TAttribute>(Location? location, string typeName)
+    {
+        return TypeStatic(location, typeof(TAttribute), typeName);
+    }
+
+    public static Diagnostic TypeStatic(Location? location, Type attributeType, string typeName)
+    {
+        return TypeStatic(location, attributeType.Name, typeName);
+    }
+
+    public static Diagnostic TypeStatic(Location? location, string attributeName, string typeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.TypeStatic, location, Utility.AttributeName(attributeName), typeName);
+    }
+
+    public static Diagnostic TypeNotStatic<TAttribute>(Location? location, string typeName)
+    {
+        return TypeNotStatic(location, typeof(TAttribute), typeName);
+    }
+
+    public static Diagnostic TypeNotStatic(Location? location, Type attributeType, string typeName)
+    {
+        return TypeNotStatic(location, attributeType.Name, typeName);
+    }
+
+    public static Diagnostic TypeNotStatic(Location? location, string attributeName, string typeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.TypeNotStatic, location, Utility.AttributeName(attributeName), typeName);
+    }
+
     public static Diagnostic TypeNotScalar(Location? location, string typeName)
     {
         return Diagnostic.Create(DiagnosticRules.TypeNotScalar, location, typeName);

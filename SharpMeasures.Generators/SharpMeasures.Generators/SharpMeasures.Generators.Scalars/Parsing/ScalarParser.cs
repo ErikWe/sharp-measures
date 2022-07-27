@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Providers;
+using SharpMeasures.Generators.Providers.DeclarationFilter;
 using SharpMeasures.Generators.Quantities.Parsing.Contexts.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
@@ -34,8 +35,8 @@ public static class ScalarParser
 {
     public static (IncrementalValueProvider<IUnresolvedScalarPopulation>, IScalarResolver) Attach(IncrementalGeneratorInitializationContext context)
     {
-        var scalarBaseSymbols = AttachSymbolProvider<SharpMeasuresScalarAttribute>(context, BaseScalarTypeDiagnostics.Instance);
-        var scalarSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresScalarAttribute>(context, SpecializedScalarTypeDiagnostics.Instance);
+        var scalarBaseSymbols = AttachSymbolProvider<SharpMeasuresScalarAttribute>(context, BaseDeclarationFilters);
+        var scalarSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresScalarAttribute>(context, SpecializedDeclarationFilters);
 
         ScalarBaseParser scalarBaseParser = new();
         ScalarSpecializationParser scalarSpecializationParser = new();
@@ -58,11 +59,11 @@ public static class ScalarParser
     }
 
     private static IncrementalValuesProvider<IntermediateResult> AttachSymbolProvider<TAttribute>(IncrementalGeneratorInitializationContext context,
-        IPartialDeclarationProviderDiagnostics diagnostics)
+        IEnumerable<IDeclarationFilter> declarationFilters)
     {
         var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<TAttribute>(context.SyntaxProvider);
-        var partialDeclarations = PartialDeclarationProvider.Construct<TypeDeclarationSyntax>().AttachAndReport(context, declarations, diagnostics);
-        return DeclarationSymbolProvider.ConstructForValueType(IntermediateResult.Construct).Attach(partialDeclarations, context.CompilationProvider);
+        var filteredDeclarations = FilteredDeclarationProvider.Construct<TypeDeclarationSyntax>(declarationFilters).AttachAndReport(context, declarations);
+        return DeclarationSymbolProvider.ConstructForValueType(IntermediateResult.Construct).Attach(filteredDeclarations, context.CompilationProvider);
     }
 
     private static IUnresolvedScalarBaseType ExtractInterface(IUnresolvedScalarBaseType scalarType, CancellationToken _) => scalarType;
@@ -241,6 +242,18 @@ public static class ScalarParser
 
         protected abstract IOptionalWithDiagnostics<TDefinition> ProcessScalar(TRaw raw);
     }
+
+    private static IEnumerable<IDeclarationFilter> BaseDeclarationFilters { get; } = new IDeclarationFilter[]
+    {
+        new PartialDeclarationFilter(ScalarBaseTypeDiagnostics.TypeNotPartial),
+        new NonStaticDeclarationFilter(ScalarBaseTypeDiagnostics.TypeStatic)
+    };
+
+    private static IEnumerable<IDeclarationFilter> SpecializedDeclarationFilters { get; } = new IDeclarationFilter[]
+    {
+        new PartialDeclarationFilter(ScalarSpecializationTypeDiagnostics.TypeNotPartial),
+        new NonStaticDeclarationFilter(ScalarSpecializationTypeDiagnostics.TypeStatic)
+    };
 
     private static class Processers
     {

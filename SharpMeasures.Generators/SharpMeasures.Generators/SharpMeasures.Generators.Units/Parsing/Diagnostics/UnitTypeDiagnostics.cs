@@ -4,17 +4,17 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Providers;
 using SharpMeasures.Generators.Units;
 
-internal class UnitTypeDiagnostics : IPartialDeclarationProviderDiagnostics
+internal static class UnitTypeDiagnostics
 {
-    public static UnitTypeDiagnostics Instance { get; } = new();
-
-    private UnitTypeDiagnostics() { }
-
-    public Diagnostic TypeNotPartial(BaseTypeDeclarationSyntax declaration)
+    public static Diagnostic TypeNotPartial(BaseTypeDeclarationSyntax declaration)
     {
         return DiagnosticConstruction.TypeNotPartial<SharpMeasuresUnitAttribute>(declaration.Identifier.GetLocation(), declaration.Identifier.Text);
+    }
+
+    public static Diagnostic TypeStatic(BaseTypeDeclarationSyntax declaration)
+    {
+        return DiagnosticConstruction.TypeStatic<SharpMeasuresUnitAttribute>(declaration.Identifier.GetLocation(), declaration.Identifier.Text);
     }
 }
