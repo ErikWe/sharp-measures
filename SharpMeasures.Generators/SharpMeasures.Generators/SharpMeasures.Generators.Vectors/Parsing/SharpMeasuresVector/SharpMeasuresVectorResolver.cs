@@ -64,9 +64,9 @@ internal class SharpMeasuresVectorResolver : IProcesser<ISharpMeasuresVectorReso
 
         allDiagnostics = allDiagnostics.Concat(processedScalar.Diagnostics).Concat(processedDifference.Diagnostics).Concat(processedDefaultUnitName.Diagnostics);
 
-        SharpMeasuresVectorDefinition product = new(processedUnit.Result, processedScalar.Result, definition.Dimension, definition.ImplementSum,
-            definition.ImplementDifference, processedDifference.Result, processedDefaultUnitName.Result, definition.DefaultUnitSymbol, definition.GenerateDocumentation,
-            definition.Locations);
+        SharpMeasuresVectorDefinition product = new(processedUnit.Result, processedScalar.NullableResult, definition.Dimension, definition.ImplementSum,
+            definition.ImplementDifference, processedDifference.Result, processedDefaultUnitName.NullableResult, definition.DefaultUnitSymbol,
+            definition.GenerateDocumentation, definition.Locations);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }

@@ -118,6 +118,75 @@ public class TypeNotPartial
         return AssertExactlyTypeNotPartialDiagnostics(source).VerifyDiagnostics();
     }
 
+    [Fact]
+    public Task VectorGroup_ExactListAndVerify()
+    {
+        string source = """
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
+            using SharpMeasures.Generators.Vectors;
+
+            [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+            public class Position { }
+
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
+
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
+
+        return AssertExactlyTypeNotPartialDiagnostics(source).VerifyDiagnostics();
+    }
+
+    [Fact]
+    public Task SpecializedVectorGroup_ExactListAndVerify()
+    {
+        string source = """
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
+            using SharpMeasures.Generators.Vectors;
+
+            [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+            public class Distance { }
+
+            [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+            public partial class Position { }
+
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
+
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
+
+        return AssertExactlyTypeNotPartialDiagnostics(source).VerifyDiagnostics();
+    }
+
+    [Fact]
+    public Task VectorGroupMember_ExactListAndVerify()
+    {
+        string source = """
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
+            using SharpMeasures.Generators.Vectors;
+
+            [SharpMeasuresVectorGroupMember(typeof(Position))]
+            public class Position3 { }
+
+            [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+            public partial class Position { }
+
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
+
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
+
+        return AssertExactlyTypeNotPartialDiagnostics(source).VerifyDiagnostics();
+    }
+
     private static GeneratorVerifier AssertExactlyTypeNotPartialDiagnostics(string source)
         => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotPartialDiagnostics);
 

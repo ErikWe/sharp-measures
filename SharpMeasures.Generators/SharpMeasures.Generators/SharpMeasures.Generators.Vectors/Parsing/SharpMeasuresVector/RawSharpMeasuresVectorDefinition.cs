@@ -16,8 +16,8 @@ internal record class RawSharpMeasuresVectorDefinition : ARawAttributeDefinition
 
     public NamedType? Difference { get; init; }
 
-    public string? DefaultUnitName { get; init; } = string.Empty;
-    public string? DefaultUnitSymbol { get; init; } = string.Empty;
+    public string? DefaultUnitName { get; init; }
+    public string? DefaultUnitSymbol { get; init; }
 
     public bool? GenerateDocumentation { get; init; }
 
