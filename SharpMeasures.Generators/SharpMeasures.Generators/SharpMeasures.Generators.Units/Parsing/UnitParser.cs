@@ -96,7 +96,7 @@ public static class UnitParser
         allDiagnostics = allDiagnostics.Concat(fixedUnit.Diagnostics).Concat(unitDerivations.Diagnostics).Concat(unitAliases.Diagnostics)
             .Concat(derivedUnits.Diagnostics).Concat(biasedUnits.Diagnostics) .Concat(prefixedUnits.Diagnostics).Concat(scaledUnits.Diagnostics);
 
-        UnresolvedUnitType unitType = new(rawUnitType.Type, rawUnitType.TypeLocation, unit.Result, fixedUnit.Result, unitDerivations.Result,
+        UnresolvedUnitType unitType = new(rawUnitType.Type, rawUnitType.TypeLocation, unit.Result, fixedUnit.NullableResult, unitDerivations.Result,
             unitAliases.Result, derivedUnits.Result, biasedUnits.Result, prefixedUnits.Result, scaledUnits.Result);
 
         return OptionalWithDiagnostics.Result(unitType, allDiagnostics);

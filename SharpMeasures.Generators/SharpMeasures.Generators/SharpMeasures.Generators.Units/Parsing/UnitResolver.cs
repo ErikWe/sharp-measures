@@ -73,8 +73,8 @@ public class UnitResolver
         allDiagnostics = allDiagnostics.Concat(fixedUnit.Diagnostics).Concat(unitDerivations.Diagnostics).Concat(unitAliases.Diagnostics)
             .Concat(derivedUnits.Diagnostics).Concat(biasedUnits.Diagnostics).Concat(prefixedUnits.Diagnostics).Concat(scaledUnits.Diagnostics);
 
-        UnitType product = new(input.Unit.Type, input.Unit.TypeLocation, unit.Result, fixedUnit.Result, unitDerivations.Result, unitAliases.Result, derivedUnits.Result,
-            biasedUnits.Result, prefixedUnits.Result, scaledUnits.Result);
+        UnitType product = new(input.Unit.Type, input.Unit.TypeLocation, unit.Result, fixedUnit.NullableResult, unitDerivations.Result, unitAliases.Result,
+            derivedUnits.Result, biasedUnits.Result, prefixedUnits.Result, scaledUnits.Result);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }

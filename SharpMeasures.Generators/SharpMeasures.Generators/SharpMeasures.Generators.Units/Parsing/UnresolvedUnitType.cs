@@ -59,7 +59,7 @@ internal class UnresolvedUnitType : IUnresolvedUnitType
     IReadOnlyList<IUnresolvedPrefixedUnit> IUnresolvedUnitType.PrefixedUnits => PrefixedUnits;
     IReadOnlyList<IUnresolvedScaledUnit> IUnresolvedUnitType.ScaledUnits => ScaledUnits;
 
-    public UnresolvedUnitType(DefinedType type, MinimalLocation unitLocation, UnresolvedSharpMeasuresUnitDefinition definition, UnresolvedFixedUnitDefinition fixedUnit,
+    public UnresolvedUnitType(DefinedType type, MinimalLocation unitLocation, UnresolvedSharpMeasuresUnitDefinition definition, UnresolvedFixedUnitDefinition? fixedUnit,
         IReadOnlyList<UnresolvedDerivableUnitDefinition> unitDerivations, IReadOnlyList<UnresolvedUnitAliasDefinition> unitAliases,
         IReadOnlyList<UnresolvedDerivedUnitDefinition> derivedUnits, IReadOnlyList<UnresolvedBiasedUnitDefinition> biasedUnits,
         IReadOnlyList<UnresolvedPrefixedUnitDefinition> prefixedUnits, IReadOnlyList<UnresolvedScaledUnitDefinition> scaledUnits)
@@ -83,21 +83,23 @@ internal class UnresolvedUnitType : IUnresolvedUnitType
         derivationsByID = ConstructDerivationsByIDDictionary();
     }
 
-    private ReadOnlyEquatableDictionary<string, IUnresolvedUnitInstance> ConstructUnitsByNameDictionary()
+    private IEnumerable<IUnresolvedUnitInstance> AllUnits()
     {
-        var allUnits = (new[] { FixedUnit } as IEnumerable<IUnresolvedUnitInstance>).Concat(UnitAliases).Concat(BiasedUnits).Concat(DerivedUnits).Concat(PrefixedUnits)
-            .Concat(ScaledUnits);
+        var allUnits = (UnitAliases as IEnumerable<IUnresolvedUnitInstance>).Concat(BiasedUnits).Concat(DerivedUnits).Concat(PrefixedUnits).Concat(ScaledUnits);
 
-        return allUnits.ToDictionary(static (unit) => unit.Name).AsReadOnlyEquatable();
+        if (FixedUnit is not null)
+        {
+            allUnits = allUnits.Concat(new[] { FixedUnit });
+        }
+
+        return allUnits;
     }
+
+    private ReadOnlyEquatableDictionary<string, IUnresolvedUnitInstance> ConstructUnitsByNameDictionary()
+        => AllUnits().ToDictionary(static (unit) => unit.Name).AsReadOnlyEquatable();
 
     private ReadOnlyEquatableDictionary<string, IUnresolvedUnitInstance> ConstructUnitsByPluralNameDictionary()
-    {
-        var allUnits = (new[] { FixedUnit } as IEnumerable<IUnresolvedUnitInstance>).Concat(UnitAliases).Concat(BiasedUnits).Concat(DerivedUnits).Concat(PrefixedUnits)
-            .Concat(ScaledUnits);
-
-        return allUnits.ToDictionary(static (unit) => unit.Plural).AsReadOnlyEquatable();
-    }
+        => AllUnits().ToDictionary(static (unit) => unit.Plural).AsReadOnlyEquatable();
 
     private ReadOnlyEquatableDictionary<string, IUnresolvedDerivableUnit> ConstructDerivationsByIDDictionary()
     {

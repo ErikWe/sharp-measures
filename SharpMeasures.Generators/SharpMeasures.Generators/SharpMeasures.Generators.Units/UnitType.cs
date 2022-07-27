@@ -58,7 +58,7 @@ internal class UnitType : IUnitType
     IReadOnlyList<IPrefixedUnit> IUnitType.PrefixedUnits => PrefixedUnits;
     IReadOnlyList<IScaledUnit> IUnitType.ScaledUnits => ScaledUnits;
 
-    public UnitType(DefinedType type, MinimalLocation unitLocation, SharpMeasuresUnitDefinition definition, FixedUnitDefinition fixedUnit,
+    public UnitType(DefinedType type, MinimalLocation unitLocation, SharpMeasuresUnitDefinition definition, FixedUnitDefinition? fixedUnit,
         IReadOnlyList<DerivableUnitDefinition> unitDerivations, IReadOnlyList<UnitAliasDefinition> unitAliases, IReadOnlyList<DerivedUnitDefinition> derivedUnits,
         IReadOnlyList<BiasedUnitDefinition> biasedUnits, IReadOnlyList<PrefixedUnitDefinition> prefixedUnits, IReadOnlyList<ScaledUnitDefinition> scaledUnits)
     {
@@ -82,7 +82,16 @@ internal class UnitType : IUnitType
     }
 
     private IEnumerable<IUnitInstance> AllUnits()
-        => (new[] { FixedUnit } as IEnumerable<IUnitInstance>).Concat(UnitAliases).Concat(BiasedUnits).Concat(DerivedUnits).Concat(PrefixedUnits) .Concat(ScaledUnits);
+    {
+        var allUnits = (UnitAliases as IEnumerable<IUnitInstance>).Concat(BiasedUnits).Concat(DerivedUnits).Concat(PrefixedUnits) .Concat(ScaledUnits);
+
+        if (FixedUnit is not null)
+        {
+            allUnits = allUnits.Concat(new[] { FixedUnit });
+        }
+
+        return allUnits;
+    }
 
     private ReadOnlyEquatableDictionary<string, IUnitInstance> ConstructUnitsByNameDictionary() => AllUnits().ToDictionary(static (unit) => unit.Name).AsReadOnlyEquatable();
     private ReadOnlyEquatableDictionary<string, IUnitInstance> ConstructUnitsByPluralNameDictionary() => AllUnits().ToDictionary(static (unit) => unit.Plural).AsReadOnlyEquatable();
