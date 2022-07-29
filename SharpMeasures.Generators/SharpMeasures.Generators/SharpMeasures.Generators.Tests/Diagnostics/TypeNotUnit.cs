@@ -13,47 +13,8 @@ using Xunit;
 [UsesVerify]
 public class TypeNotUnit
 {
-    private static string DerivableUnitText(string value) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength2 { }
-
-        [DerivableUnit("1", "{0}", {{value}})]
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-        """;
-
     [Fact]
-    public Task DerivableUnit_Null_ExactListAndVerify()
-    {
-        string source = DerivableUnitText("null, typeof(UnitOfLength2)");
-
-        return AssertExactlyTypeNotUnitDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task DerivableUnit_Int_ExactListAndVerify()
-    {
-        string source = DerivableUnitText("typeof(int)");
-
-        return AssertExactlyTypeNotUnitDiagnostics(source).VerifyDiagnostics();
-    }
-
-    private static string ScalarUnitText(string value) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-
-        [SharpMeasuresScalar({{value}})]
-        public partial class Length { }
-        """;
-
-    [Fact]
-    public Task ScalarUnit_Null_ExactListAndVerify()
+    public Task VerifyTypeNotUnitDiagnosticsMessage_Null()
     {
         string source = ScalarUnitText("null");
 
@@ -61,12 +22,84 @@ public class TypeNotUnit
     }
 
     [Fact]
-    public Task ScalarUnit_Int_ExactListAndVerify()
+    public Task VerifyTypeNotUnitDiagnosticsMessage_Int()
     {
         string source = ScalarUnitText("typeof(int)");
 
         return AssertExactlyTypeNotUnitDiagnostics(source).VerifyDiagnostics();
     }
+
+    [Theory]
+    [MemberData(nameof(NonUnitTypes))]
+    public void ScalarUnit_ExactList(string value)
+    {
+        string source = ScalarUnitText(value);
+
+        AssertExactlyTypeNotUnitDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(NonUnitTypes))]
+    public void VectorUnit_ExactList(string value)
+    {
+        string source = VectorUnitText(value);
+
+        AssertExactlyTypeNotUnitDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(NonUnitTypes))]
+    public void DerivableUnitArgument_ExactList(string value)
+    {
+        string source = VectorUnitText(value);
+
+        AssertExactlyTypeNotUnitDiagnostics(source);
+    }
+
+    private static IEnumerable<object[]> NonUnitTypes() => new object[][]
+    {
+        new[] { "null" },
+        new[] { "typeof(int)" },
+        new[] { "typeof(Length)" },
+        new[] { "typeof(Position3)" },
+        new[] { "typeof(Displacement3)" },
+        new[] { "typeof(Position)" },
+        new[] { "typeof(Displacement)" },
+        new[] { "typeof(Position2)" }
+    };
+
+    private static GeneratorVerifier AssertExactlyTypeNotUnitDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotUnitDiagnostics);
+    private static IReadOnlyCollection<string> TypeNotUnitDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotUnit };
+
+    private static string ScalarUnitText(string value) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [SharpMeasuresScalar({{value}})]
+        public partial class Distance { }
+
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        public static partial class Displacement { }
+
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Position2 { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        public partial class Displacement3 { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 
     private static string VectorUnitText(string value) => $$"""
         using SharpMeasures.Generators.Scalars;
@@ -74,27 +107,54 @@ public class TypeNotUnit
         using SharpMeasures.Generators.Vectors;
 
         [SharpMeasuresVector({{value}})]
+        public partial class Position4 { }
+
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        public static partial class Displacement { }
+
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Position2 { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        public partial class Displacement3 { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
         public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
         """;
 
-    [Fact]
-    public Task VectorUnit_Null_ExactListAndVerify()
-    {
-        string source = VectorUnitText("null");
+    private static string DerivableUnitArgumentText(string value) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
 
-        return AssertExactlyTypeNotUnitDiagnostics(source).VerifyDiagnostics();
-    }
+        [DerivableUnit("_", "{0}", {{value}})]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
 
-    [Fact]
-    public Task VectorUnit_Int_ExactListAndVerify()
-    {
-        string source = VectorUnitText("typeof(int)");
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        public static partial class Displacement { }
 
-        return AssertExactlyTypeNotUnitDiagnostics(source).VerifyDiagnostics();
-    }
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Position2 { }
 
-    private static GeneratorVerifier AssertExactlyTypeNotUnitDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotUnitDiagnostics);
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
 
-    private static IReadOnlyCollection<string> TypeNotUnitDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotUnit };
+        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        public partial class Displacement3 { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        """;
 }

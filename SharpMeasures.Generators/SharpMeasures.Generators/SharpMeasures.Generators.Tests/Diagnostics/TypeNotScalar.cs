@@ -14,7 +14,7 @@ using Xunit;
 public class TypeNotScalar
 {
     [Fact]
-    public Task VerifyNullDiagnosticsMessage()
+    public Task VerifyTypeNotScalarDiagnosticsMessage_Null()
     {
         var source = UnitQuantityText("null");
 
@@ -22,7 +22,7 @@ public class TypeNotScalar
     }
 
     [Fact]
-    public Task VerifyNonScalarDiagnosticsMessage()
+    public Task VerifyTypeNotScalarDiagnosticsMessage_Int()
     {
         var source = UnitQuantityText("typeof(int)");
 

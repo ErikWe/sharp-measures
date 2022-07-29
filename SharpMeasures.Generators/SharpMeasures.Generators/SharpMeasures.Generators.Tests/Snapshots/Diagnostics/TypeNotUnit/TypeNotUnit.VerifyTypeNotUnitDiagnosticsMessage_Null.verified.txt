@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1008,
+    Title: Expected a unit,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: : (4,21)-(4,25),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Expected a type decorated with the attribute SharpMeasures.Generators.Units.SharpMeasuresUnit,
+    Message: Expected a type decorated with the attribute SharpMeasures.Generators.Units.SharpMeasuresUnit,
+    Category: Usage,
+    CustomTags: []
+  }
+]
