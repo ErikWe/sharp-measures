@@ -114,14 +114,17 @@ internal class SharpMeasuresScalarResolver : IProcesser<ISharpMeasuresScalarReso
         return OptionalWithDiagnostics.Result(vectorGroup);
     }
 
-    private IOptionalWithDiagnostics<IUnresolvedScalarType> ProcessDifference(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition)
+    private IResultWithDiagnostics<IUnresolvedScalarType> ProcessDifference(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition)
     {
-        if (context.ScalarPopulation.Scalars.TryGetValue(definition.Difference, out var scalar) is false)
+        if (context.ScalarPopulation.Scalars.TryGetValue(definition.Difference, out var difference) is false)
         {
-            return OptionalWithDiagnostics.Empty<IUnresolvedScalarType>(Diagnostics.DifferenceNotScalar(context, definition));
+            var diagnostics = Diagnostics.DifferenceNotScalar(context, definition);
+            var selfType = context.ScalarPopulation.Scalars[context.Type.AsNamedType()];
+
+            return ResultWithDiagnostics.Construct(selfType, diagnostics);
         }
 
-        return OptionalWithDiagnostics.Result(scalar);
+        return ResultWithDiagnostics.Construct(difference);
     }
 
     private IResultWithDiagnostics<IUnresolvedUnitInstance?> ProcessDefaultUnitName(ISharpMeasuresScalarResolutionContext context,

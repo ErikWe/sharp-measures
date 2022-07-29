@@ -57,7 +57,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotScalar,
         title: "Expected a scalar quantity",
-        messageFormat: $"Expected a type marked with the attribute {Utility.FullAttributeName<SharpMeasuresScalarAttribute>()}",
+        messageFormat: $"Expected a type decorated with the attribute {Utility.FullAttributeName<SharpMeasuresScalarAttribute>()}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -77,7 +77,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotVector,
         title: "Expected a vector quantity",
-        messageFormat: $"Expected a type marked with the attribute {Utility.FullAttributeName<SharpMeasuresVectorAttribute>()}",
+        messageFormat: $"Expected a type decorated with the attribute {Utility.FullAttributeName<SharpMeasuresVectorAttribute>()}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -97,7 +97,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotVectorGroup,
         title: "Expected a vector group",
-        messageFormat: $"Expected a type marked with the attribute {Utility.FullAttributeName<SharpMeasuresVectorGroupAttribute>()}",
+        messageFormat: $"Expected a type decorated with the attribute {Utility.FullAttributeName<SharpMeasuresVectorGroupAttribute>()}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -118,7 +118,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotVectorGroup,
         title: "Expected a vector group member",
-        messageFormat: $"Expected a type marked with the attribute {Utility.FullAttributeName<SharpMeasuresVectorGroupMemberAttribute>()}",
+        messageFormat: $"Expected a type decorated with the attribute {Utility.FullAttributeName<SharpMeasuresVectorGroupMemberAttribute>()}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -150,7 +150,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotScalar,
         title: "Expected a SharpMeasures quantity",
-        messageFormat: $"Expected a type marked with an attribute describing a SharpMeasures quantity, such as {Utility.FullAttributeName<SharpMeasuresScalarAttribute>()}",
+        messageFormat: $"Expected a type decorated with an attribute describing a SharpMeasures quantity, such as {Utility.FullAttributeName<SharpMeasuresScalarAttribute>()}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -170,7 +170,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotUnit,
         title: "Expected a unit",
-        messageFormat: $"Expected a type marked with the attribute {Utility.FullAttributeName<SharpMeasuresUnitAttribute>()}",
+        messageFormat: $"Expected a type decorated with the attribute {Utility.FullAttributeName<SharpMeasuresUnitAttribute>()}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true

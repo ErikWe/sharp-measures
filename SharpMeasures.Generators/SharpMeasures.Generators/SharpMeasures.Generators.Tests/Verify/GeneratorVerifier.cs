@@ -241,6 +241,16 @@ internal class GeneratorVerifier
         await Verifier.Verify(Diagnostics);
     }
 
+    public async Task VerifyDiagnostics(object parameter)
+    {
+        await VerifyDiagnostics(new[] { parameter }).ConfigureAwait(false);
+    }
+
+    public async Task VerifyDiagnostics(object?[] parameter)
+    {
+        await Verifier.Verify(Diagnostics).UseParameters(parameter);
+    }
+
     public async Task VerifyListedDiagnosticIDs(IEnumerable<string> diagnosticIDs)
     {
         HashSet<string> includedIDs = new(diagnosticIDs);

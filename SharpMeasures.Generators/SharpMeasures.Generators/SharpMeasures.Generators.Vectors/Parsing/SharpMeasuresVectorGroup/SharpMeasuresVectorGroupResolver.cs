@@ -71,7 +71,7 @@ internal class SharpMeasuresVectorGroupResolver : IProcesser<ISharpMeasuresVecto
 
         allDiagnostics = allDiagnostics.Concat(processedScalar.Diagnostics).Concat(processedDifference.Diagnostics).Concat(processedDefaultUnitName.Diagnostics);
 
-        SharpMeasuresVectorGroupDefinition product = new(processedUnit.Result, processedScalar.Result, definition.ImplementSum, definition.ImplementDifference,
+        SharpMeasuresVectorGroupDefinition product = new(processedUnit.Result, processedScalar.NullableResult, definition.ImplementSum, definition.ImplementDifference,
             processedDifference.Result, processedDefaultUnitName.Result, definition.DefaultUnitSymbol, definition.GenerateDocumentation, definition.Locations);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
@@ -104,15 +104,18 @@ internal class SharpMeasuresVectorGroupResolver : IProcesser<ISharpMeasuresVecto
         return OptionalWithDiagnostics.Result(scalar);
     }
 
-    private IOptionalWithDiagnostics<IUnresolvedVectorGroupType> ProcessDifference(ISharpMeasuresVectorGroupResolutionContext context,
+    private IResultWithDiagnostics<IUnresolvedVectorGroupType> ProcessDifference(ISharpMeasuresVectorGroupResolutionContext context,
         UnresolvedSharpMeasuresVectorGroupDefinition definition)
     {
         if (context.VectorPopulation.VectorGroups.TryGetValue(definition.Difference, out var vectorGroup) is false)
         {
-            return OptionalWithDiagnostics.Empty<IUnresolvedVectorGroupType>(Diagnostics.DifferenceNotVectorGroup(context, definition));
+            var diagnostics = Diagnostics.DifferenceNotVectorGroup(context, definition);
+            var selfType = context.VectorPopulation.VectorGroups[context.Type.AsNamedType()];
+
+            return ResultWithDiagnostics.Construct(selfType, diagnostics);
         }
 
-        return OptionalWithDiagnostics.Result(vectorGroup);
+        return ResultWithDiagnostics.Construct(vectorGroup);
     }
 
     private IResultWithDiagnostics<IUnresolvedUnitInstance?> ProcessDefaultUnitName(ISharpMeasuresVectorGroupResolutionContext context,

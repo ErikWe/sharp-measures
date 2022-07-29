@@ -1,5 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
+using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 
 internal interface IDocumentationStrategy
@@ -26,8 +27,8 @@ internal interface IDocumentationStrategy
     public abstract string InConstantMultiples(IScalarConstant constant);
     public abstract string InSpecifiedUnit(IUnresolvedUnitInstance unitInstance);
 
-    public abstract string AsDimensionallyEquivalent(IScalarType scalar);
-    public abstract string CastToDimensionallyEquivalent(IScalarType scalar);
+    public abstract string AsDimensionallyEquivalent(IUnresolvedScalarType scalar);
+    public abstract string CastToDimensionallyEquivalent(IUnresolvedScalarType scalar);
 
     public abstract string IsNaN();
     public abstract string IsZero();

@@ -8,7 +8,7 @@ public static class DerivedQuantityParser
 
     private static RawDerivedQuantityDefinition DefaultDefinition() => RawDerivedQuantityDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawDerivedQuantityDefinition, DerivedQuantityLocations, ConvertibleQuantityAttribute>
+    private class AttributeParser : AAttributeParser<RawDerivedQuantityDefinition, DerivedQuantityLocations, DerivedQuantityAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, DerivedQuantityProperties.AllProperties) { }
     }

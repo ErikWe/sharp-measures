@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
 using SharpMeasures.Generators.SourceBuilding;
+using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Units;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 
@@ -116,11 +117,11 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         /// <summary>The magnitude of <see langword="this"/>, expressed in <see cref="{Unit.Type.Name}.{unitInstance.Name}"/>.</summary>
         """;
 
-    public string AsDimensionallyEquivalent(IScalarType scalar) => $"""
+    public string AsDimensionallyEquivalent(IUnresolvedScalarType scalar) => $"""
         /// <summary>Converts <see langword="this"/> to the equivalent <see cref="{scalar.Type.Name}"/>.</summary>
         """;
 
-    public string CastToDimensionallyEquivalent(IScalarType scalar) => $"""
+    public string CastToDimensionallyEquivalent(IUnresolvedScalarType scalar) => $"""
         /// <summary>Converts <paramref name="x"/> to the equivalent <see cref="{scalar.Type.Name}"/>.</summary>
         /// <param name="x">This {ScalarReference} is converted to the equivalent <see cref="{scalar.Type.Name}"/>.</param>
         """;

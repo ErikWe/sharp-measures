@@ -81,12 +81,12 @@ internal class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProcessingC
 
     private IResultWithDiagnostics<(string? Name, string? Symbol)> ProcessDefaultUnitData(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
     {
-        if (definition.Locations.ExplicitlySetDefaultUnitName is false && definition.DefaultUnitSymbol is not null)
+        if (definition.Locations.ExplicitlySetDefaultUnitSymbol && definition.Locations.ExplicitlySetDefaultUnitName is false)
         {
             return ResultWithDiagnostics.Construct<(string?, string?)>((null, null), Diagnostics.SetDefaultSymbolButNotUnit(context, definition));
         }
 
-        if (definition.Locations.ExplicitlySetDefaultUnitSymbol is false && definition.DefaultUnitName is not null)
+        if (definition.Locations.ExplicitlySetDefaultUnitName && definition.Locations.ExplicitlySetDefaultUnitSymbol is false)
         {
             return ResultWithDiagnostics.Construct<(string?, string?)>((null, null), Diagnostics.SetDefaultUnitButNotSymbol(context, definition));
         }

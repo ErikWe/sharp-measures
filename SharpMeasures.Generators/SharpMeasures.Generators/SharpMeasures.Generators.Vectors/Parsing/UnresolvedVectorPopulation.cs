@@ -43,9 +43,9 @@ internal class UnresolvedVectorPopulation : IUnresolvedVectorPopulation
             {
                 if (baseVectorGroupByVectorGroupType.TryGetValue(unassignedSpecializedVectorGroups[i].Definition.OriginalVectorGroup, out var baseVectorGroup))
                 {
-                    unassignedSpecializedVectorGroups.RemoveAt(i);
-
                     baseVectorGroupByVectorGroupType[unassignedSpecializedVectorGroups[i].Type.AsNamedType()] = baseVectorGroup;
+
+                    unassignedSpecializedVectorGroups.RemoveAt(i);
                 }
             }
 
@@ -63,9 +63,9 @@ internal class UnresolvedVectorPopulation : IUnresolvedVectorPopulation
             {
                 if (baseIndividualVectorByIndividualVectorType.TryGetValue(unassignedSpecializedIndividualVectors[i].Definition.OriginalVector, out var baseIndividualVector))
                 {
-                    unassignedSpecializedIndividualVectors.RemoveAt(i);
-
                     baseIndividualVectorByIndividualVectorType[unassignedSpecializedIndividualVectors[i].Type.AsNamedType()] = baseIndividualVector;
+
+                    unassignedSpecializedIndividualVectors.RemoveAt(i);
                 }
             }
 

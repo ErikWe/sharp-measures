@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
 using SharpMeasures.Generators.Documentation;
+using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 
 using System;
@@ -39,8 +40,8 @@ internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocume
     public string InConstantMultiples(IScalarConstant constant) => FromFileOrDefault((strategy) => strategy.InConstantMultiples(constant));
     public string InSpecifiedUnit(IUnresolvedUnitInstance unitInstance) => FromFileOrDefault((strategy) => strategy.InSpecifiedUnit(unitInstance));
 
-    public string AsDimensionallyEquivalent(IScalarType scalar) => FromFileOrDefault((strategy) => strategy.AsDimensionallyEquivalent(scalar));
-    public string CastToDimensionallyEquivalent(IScalarType scalar) => FromFileOrDefault((strategy) => strategy.CastToDimensionallyEquivalent(scalar));
+    public string AsDimensionallyEquivalent(IUnresolvedScalarType scalar) => FromFileOrDefault((strategy) => strategy.AsDimensionallyEquivalent(scalar));
+    public string CastToDimensionallyEquivalent(IUnresolvedScalarType scalar) => FromFileOrDefault((strategy) => strategy.CastToDimensionallyEquivalent(scalar));
 
     public string IsNaN() => FromFileOrDefault(static (strategy) => strategy.IsNaN());
     public string IsZero() => FromFileOrDefault(static (strategy) => strategy.IsZero());

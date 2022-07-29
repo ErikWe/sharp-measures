@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.Text;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Utility;
+using SharpMeasures.Generators.Unresolved.Scalars;
 
 using System;
 using System.Text;
@@ -81,7 +82,7 @@ internal static class Execution
         {
             foreach (ConvertibleScalarDefinition definition in Data.Conversions)
             {
-                foreach (IScalarType scalar in definition.Scalars)
+                foreach (IUnresolvedScalarType scalar in definition.Scalars)
                 {
                     ComposeInstanceConversion(indentation, scalar);
                     Builder.AppendLine();
@@ -95,14 +96,14 @@ internal static class Execution
                     continue;
                 }
 
-                Action<Indentation, IScalarType> composer = definition.CastOperatorBehaviour switch
+                Action<Indentation, IUnresolvedScalarType> composer = definition.CastOperatorBehaviour switch
                 {
                     ConversionOperatorBehaviour.Explicit => ComposeExplicitOperatorConversion,
                     ConversionOperatorBehaviour.Implicit => ComposeImplicitOperatorConversion,
                     _ => throw new NotSupportedException("Invalid cast operation")
                 };
 
-                foreach (IScalarType scalar in definition.Scalars)
+                foreach (IUnresolvedScalarType scalar in definition.Scalars)
                 {
                     composer(indentation, scalar);
                     Builder.AppendLine();
@@ -112,19 +113,19 @@ internal static class Execution
             SourceBuildingUtility.RemoveOneNewLine(Builder);
         }
 
-        private void ComposeInstanceConversion(Indentation indentation, IScalarType scalar)
+        private void ComposeInstanceConversion(Indentation indentation, IUnresolvedScalarType scalar)
         {
             AppendDocumentation(indentation, Data.Documentation.AsDimensionallyEquivalent(scalar));
             Builder.AppendLine($"{indentation}public {scalar.Type.Name} As{scalar.Type.Name} => new(Magnitude);");
         }
 
-        private void ComposeExplicitOperatorConversion(Indentation indentation, IScalarType scalar)
+        private void ComposeExplicitOperatorConversion(Indentation indentation, IUnresolvedScalarType scalar)
             => ComposeOperatorConversion(indentation, scalar, "explicit");
 
-        private void ComposeImplicitOperatorConversion(Indentation indentation, IScalarType scalar)
+        private void ComposeImplicitOperatorConversion(Indentation indentation, IUnresolvedScalarType scalar)
             => ComposeOperatorConversion(indentation, scalar, "implicit");
 
-        private void ComposeOperatorConversion(Indentation indentation, IScalarType scalar, string behaviour)
+        private void ComposeOperatorConversion(Indentation indentation, IUnresolvedScalarType scalar, string behaviour)
         {
             AppendDocumentation(indentation, Data.Documentation.CastToDimensionallyEquivalent(scalar));
 
