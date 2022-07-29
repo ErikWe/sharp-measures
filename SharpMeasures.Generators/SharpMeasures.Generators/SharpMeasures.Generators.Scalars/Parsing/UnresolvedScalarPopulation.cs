@@ -16,7 +16,7 @@ internal class UnresolvedScalarPopulation : IUnresolvedScalarPopulation
         var baseScalarByScalarType = baseScalars.ToDictionary(static (baseScalar) => baseScalar.Type.AsNamedType());
 
         var unassignedSpecializedScalars = specializedScalars.ToList();
-
+        
         iterativelySetBaseScalarForSpecializations();
 
         return new(scalars, baseScalarByScalarType);
@@ -29,9 +29,9 @@ internal class UnresolvedScalarPopulation : IUnresolvedScalarPopulation
             {
                 if (baseScalarByScalarType.TryGetValue(unassignedSpecializedScalars[i].Definition.OriginalScalar, out var baseScalar))
                 {
-                    unassignedSpecializedScalars.RemoveAt(i);
-
                     baseScalarByScalarType[unassignedSpecializedScalars[i].Type.AsNamedType()] = baseScalar;
+
+                    unassignedSpecializedScalars.RemoveAt(i);
                 }
             }
 

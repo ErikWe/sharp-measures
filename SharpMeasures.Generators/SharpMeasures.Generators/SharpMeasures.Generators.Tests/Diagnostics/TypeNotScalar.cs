@@ -94,6 +94,69 @@ public class TypeNotScalar
 
     [Theory]
     [MemberData(nameof(NonScalarTypes))]
+    public void SpecializedScalarOriginalScalar_ExactList(string value)
+    {
+        var source = SpecializedScalarOriginalScalarText(value);
+
+        AssertExactlyTypeNotScalarDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(NonScalarTypes))]
+    public void SpecializedScalarReciprocal_ExactList(string value)
+    {
+        var source = SpecializedScalarArgumentText("Reciprocal", value);
+
+        AssertExactlyTypeNotScalarDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(NonScalarTypes))]
+    public void SpecializedScalarSquare_ExactList(string value)
+    {
+        var source = SpecializedScalarArgumentText("Square", value);
+
+        AssertExactlyTypeNotScalarDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(NonScalarTypes))]
+    public void SpecializedScalarCube_ExactList(string value)
+    {
+        var source = SpecializedScalarArgumentText("Cube", value);
+
+        AssertExactlyTypeNotScalarDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(NonScalarTypes))]
+    public void SpecializedScalarSquareRoot_ExactList(string value)
+    {
+        var source = SpecializedScalarArgumentText("SquareRoot", value);
+
+        AssertExactlyTypeNotScalarDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(NonScalarTypes))]
+    public void SpecializedScalarCubeRoot_ExactList(string value)
+    {
+        var source = SpecializedScalarArgumentText("CubeRoot", value);
+
+        AssertExactlyTypeNotScalarDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(NonScalarTypes))]
+    public void SpecializedScalarDifference_ExactList(string value)
+    {
+        var source = SpecializedScalarArgumentText("Difference", value);
+
+        AssertExactlyTypeNotScalarDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(NonScalarTypes))]
     public void VectorScalar_ExactList(string value)
     {
         var source = VectorScalarText(value);
@@ -190,6 +253,7 @@ public class TypeNotScalar
     private static string ScalarArgumentText(string argument, string value) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
 
         [SharpMeasuresScalar(typeof(UnitOfLength), {{argument}} = {{value}})]
         public partial class Distance { }
@@ -216,14 +280,42 @@ public class TypeNotScalar
         public partial class UnitOfLength { }
         """;
 
-    private static string ConvertibleQuantityText(string value) => $$"""
-        using SharpMeasures.Generators.Quantities;
+    private static string SpecializedScalarOriginalScalarText(string value) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [ConvertibleQuantity({{value}})]
+        [SpecializedSharpMeasuresScalar({{value}})]
+        public partial class Distance { }
+
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        public static partial class Displacement { }
+
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Position2 { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        public partial class Displacement3 { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
         [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedScalarArgumentText(string argument, string value) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [SpecializedSharpMeasuresScalar(typeof(Length), {{argument}} = {{value}})]
         public partial class Distance { }
 
         [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
@@ -345,6 +437,38 @@ public class TypeNotScalar
 
         [SpecializedSharpMeasuresVectorGroup(typeof(Position), Scalar = {{value}})]
         public static partial class Size { }
+
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        public static partial class Displacement { }
+
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Position2 { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        public partial class Displacement3 { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string ConvertibleQuantityText(string value) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [ConvertibleQuantity({{value}})]
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Distance { }
 
         [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
         public static partial class Displacement { }
