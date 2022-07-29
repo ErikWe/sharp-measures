@@ -59,7 +59,7 @@ internal class SpecializedSharpMeasuresVectorResolver
 
         if (context.VectorPopulation.IndividualVectorBases.TryGetValue(context.Type.AsNamedType(), out var baseVector) is false)
         {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<SpecializedSharpMeasuresVectorDefinition>();
+            return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresVectorDefinition>(Diagnostics.OriginalNotVector(context, definition));
         }
 
         if (context.UnitPopulation.Units.TryGetValue(baseVector.Definition.Unit, out var unit) is false)
