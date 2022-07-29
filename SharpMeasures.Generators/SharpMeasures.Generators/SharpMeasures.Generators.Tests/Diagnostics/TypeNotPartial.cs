@@ -187,8 +187,6 @@ public class TypeNotPartial
         return AssertExactlyTypeNotPartialDiagnostics(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyTypeNotPartialDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotPartialDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyTypeNotPartialDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotPartialDiagnostics);
     private static IReadOnlyCollection<string> TypeNotPartialDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotPartial };
 }

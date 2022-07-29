@@ -4,7 +4,7 @@
     Title: Expected a strictly unbiased scalar quantity,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (3,26)-(3,37),
+    Location: : (6,26)-(6,37),
     Description: ,
     HelpLink: ,
     MessageFormat: Expected a scalar quantity that ignores unit bias. Mark {0} as not using unit biases, or choose another quantity.,

@@ -20,20 +20,24 @@ public class TypeNotUnbiasedScalar
             using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
 
+            [SharpMeasuresUnit(typeof(Temperature))]
+            public partial class UnitOfTemperature2 { }
+
             [SharpMeasuresScalar(typeof(UnitOfTemperature), UseUnitBias = true)]
             public partial class Temperature { }
 
-            [SharpMeasuresUnit(typeof(Temperature))]
+            [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+            public partial class TemperatureDifference { }
+
+            [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
             public partial class UnitOfTemperature { }
             """;
 
-        string[] expectedDiagnostics = new[] { DiagnosticIDs.TypeNotUnbiasedScalar, DiagnosticIDs.UnitNotIncludingBiasTerm };
-
-        return AssertExactlyExpectedDiagnostics(source, expectedDiagnostics).VerifyListedDiagnosticIDs(TypeNotUnbiasedDiagnostics);
+        return AssertExactlyTypeNotUnbiasedScalarDiagnostics(source).VerifyDiagnostics();
     }
 
     [Fact]
-    public Task UnitQuantity_BiasedUnit_ExactListAndVerify()
+    public void UnitQuantity_BiasedUnit_ExactList()
     {
         string source = """
             using SharpMeasures.Generators.Scalars;
@@ -46,13 +50,9 @@ public class TypeNotUnbiasedScalar
             public partial class UnitOfTemperature { }
             """;
 
-        return AssertExactlyTypeNotUnbiasedDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyTypeNotUnbiasedScalarDiagnostics(source);
     }
 
-    private static GeneratorVerifier AssertExactlyTypeNotUnbiasedDiagnostics(string source) => AssertExactlyExpectedDiagnostics(source, TypeNotUnbiasedDiagnostics);
-
-    private static GeneratorVerifier AssertExactlyExpectedDiagnostics(string source, IEnumerable<string> expectedDiagnostics)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(expectedDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyTypeNotUnbiasedScalarDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotUnbiasedDiagnostics);
     private static IReadOnlyCollection<string> TypeNotUnbiasedDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotUnbiasedScalar };
 }
