@@ -97,24 +97,30 @@ internal class SharpMeasuresVectorResolver : IProcesser<ISharpMeasuresVectorReso
         return OptionalWithDiagnostics.Result(scalar);
     }
 
-    private IOptionalWithDiagnostics<IUnresolvedIndividualVectorType> ProcessDifference(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition)
+    private IResultWithDiagnostics<IUnresolvedIndividualVectorType> ProcessDifference(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition)
     {
         if (context.VectorPopulation.IndividualVectors.TryGetValue(definition.Difference, out var vector) is false)
         {
             if (context.VectorPopulation.VectorGroups.TryGetValue(definition.Difference, out var vectorGroup) is false)
             {
-                return OptionalWithDiagnostics.Empty<IUnresolvedIndividualVectorType>(Diagnostics.DifferenceNotVector(context, definition));
+                var diagnostics = Diagnostics.DifferenceNotVector(context, definition);
+                var selfType = context.VectorPopulation.IndividualVectors[context.Type.AsNamedType()];
+
+                return ResultWithDiagnostics.Construct(selfType, diagnostics);
             }
 
             if (vectorGroup.RegisteredMembersByDimension.TryGetValue(definition.Dimension, out var difference) is false)
             {
-                return OptionalWithDiagnostics.Empty<IUnresolvedIndividualVectorType>(Diagnostics.DifferenceVectorGroupLacksMatchingDimension(context, definition));
+                var diagnostics = Diagnostics.DifferenceVectorGroupLacksMatchingDimension(context, definition);
+                var selfType = context.VectorPopulation.IndividualVectors[context.Type.AsNamedType()];
+
+                return ResultWithDiagnostics.Construct(selfType, diagnostics);
             }
 
-            return OptionalWithDiagnostics.Result(context.VectorPopulation.IndividualVectors[difference.Vector]);
+            return ResultWithDiagnostics.Construct(context.VectorPopulation.IndividualVectors[difference.Vector]);
         }
 
-        return OptionalWithDiagnostics.Result(vector);
+        return ResultWithDiagnostics.Construct(vector);
     }
 
     private IResultWithDiagnostics<IUnresolvedUnitInstance?> ProcessDefaultUnitName(ISharpMeasuresVectorResolutionContext context,
