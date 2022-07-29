@@ -15,15 +15,14 @@ public class SharpMeasuresGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var globalAnalyzerConfig = GlobalAnalyzerConfigProvider.Attach(context.AnalyzerConfigOptionsProvider);
-        var documentationDictionary = DocumentationDictionaryProvider.AttachAndReport(context, context.AdditionalTextsProvider, globalAnalyzerConfig,
-            DocumentationDiagnostics.Instance);
+        var documentationDictionary = DocumentationDictionaryProvider.AttachAndReport(context, context.AdditionalTextsProvider, globalAnalyzerConfig, DocumentationDiagnostics.Instance);
 
         (var unresolvedUnitPopulation, var unitResolver) = UnitParser.Attach(context);
         (var unresolvedScalarPopulation, var scalarResolver) = ScalarParser.Attach(context);
         (var unresolvedVectorPopulation, var vectorResolver) = VectorParser.Attach(context);
 
         (var unitPopulation, var unitGenerator) = unitResolver.Resolve(context, unresolvedUnitPopulation, unresolvedScalarPopulation);
-        (var scalarPopulation, var scalarGenerator) = scalarResolver.Resolve(context, unresolvedUnitPopulation, unresolvedScalarPopulation, unresolvedVectorPopulation);
+        (var scalarPopulation, var scalarGenerator) = scalarResolver.Resolve(context, unresolvedUnitPopulation, unresolvedVectorPopulation);
         (var vectorPopulation, var vectorGenerator) = vectorResolver.Resolve(context, unresolvedUnitPopulation, unresolvedScalarPopulation, unresolvedVectorPopulation);
 
         unitGenerator.Perform(context, unitPopulation, scalarPopulation, globalAnalyzerConfig, documentationDictionary);

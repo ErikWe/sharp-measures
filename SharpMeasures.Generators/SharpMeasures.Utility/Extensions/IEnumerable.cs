@@ -26,49 +26,5 @@ public static partial class UtilityExtensions
         }
     }
 
-    public static int GetOrderIndependentHashCode<TKey, TValue>(this Dictionary<TKey, TValue> dictionary)
-        => ((IReadOnlyDictionary<TKey, TValue>)dictionary).GetOrderIndependentHashCode();
-
-    public static int GetOrderIndependentHashCode<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary)
-    {
-        return orderAndFlattenDictionary().GetSequenceHashCode();
-
-        IEnumerable orderAndFlattenDictionary()
-        {
-            foreach (KeyValuePair<TKey, TValue> pair in dictionary.OrderBy(static (x) => x.Key))
-            {
-                yield return pair.Key;
-                yield return pair.Value;
-            }
-        }
-    }
-
-    public static int GetOrderIndependentHashCode<TKey>(this HashSet<TKey> hashSet)
-    {
-        return hashSet.OrderBy(static (x) => x).GetSequenceHashCode();
-    }
-
-    public static bool OrderIndependentSequenceEquals<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, Dictionary<TKey, TValue> other)
-        => ((IReadOnlyDictionary<TKey, TValue>)dictionary).OrderIndependentSequenceEquals(other);
-
-    public static bool OrderIndependentSequenceEquals<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, IReadOnlyDictionary<TKey, TValue> other)
-    {
-        if (dictionary.Count != other.Count)
-        {
-            return false;
-        }
-
-        foreach (var keyValuePair in dictionary)
-        {
-            if ((other.TryGetValue(keyValuePair.Key, out var value) && (keyValuePair.Value?.Equals(value) ?? value is null)) is false)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public static IDictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> keyValuePairs)
-        => keyValuePairs.ToDictionary(static (x) => x.Key, static (x) => x.Value);
+    public static IDictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> keyValuePairs) => keyValuePairs.ToDictionary(static (x) => x.Key, static (x) => x.Value);
 }

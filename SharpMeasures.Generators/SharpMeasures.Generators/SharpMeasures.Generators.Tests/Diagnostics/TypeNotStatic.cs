@@ -35,7 +35,7 @@ public class TypeNotStatic
     }
 
     [Fact]
-    public Task SpecializedVectorGroup_ExactListAndVerify()
+    public Task SpecializedVectorGroup_ExactList()
     {
         string source = """
             using SharpMeasures.Generators.Scalars;

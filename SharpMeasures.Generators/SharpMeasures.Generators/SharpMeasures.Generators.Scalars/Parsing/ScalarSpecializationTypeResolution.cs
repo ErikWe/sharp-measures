@@ -6,7 +6,6 @@ using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.Contexts.Resolution;
 using SharpMeasures.Generators.Scalars.Parsing.Diagnostics.Resolution;
 using SharpMeasures.Generators.Scalars.Parsing.SpecializedSharpMeasuresScalar;
-using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Units;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 using SharpMeasures.Generators.Unresolved.Vectors;
@@ -49,11 +48,11 @@ internal static class ScalarSpecializationTypeResolution
     }
 
     public static IOptionalWithDiagnostics<IntermediateScalarSpecializationType> Resolve((UnresolvedScalarSpecializationType Scalar, IUnresolvedUnitPopulation UnitPopulation,
-        IUnresolvedScalarPopulation ScalarPopulation, IUnresolvedVectorPopulation VectorPopulation) input, CancellationToken _)
+        IUnresolvedScalarPopulationWithData ScalarPopulation, IUnresolvedVectorPopulation VectorPopulation) input, CancellationToken _)
         => Resolve(input.Scalar, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
 
     public static IOptionalWithDiagnostics<IntermediateScalarSpecializationType> Resolve(UnresolvedScalarSpecializationType unresolvedScalar,
-        IUnresolvedUnitPopulation unitPopulation, IUnresolvedScalarPopulation scalarPopulation, IUnresolvedVectorPopulation vectorPopulation)
+        IUnresolvedUnitPopulation unitPopulation, IUnresolvedScalarPopulationWithData scalarPopulation, IUnresolvedVectorPopulation vectorPopulation)
     {
         SpecializedSharpMeasuresScalarResolutionContext scalarResolutionContext = new(unresolvedScalar.Type, unitPopulation, scalarPopulation, vectorPopulation);
 

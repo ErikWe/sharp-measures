@@ -54,8 +54,9 @@ public static class ScalarParser
         var scalarSpecializationInterfaces = processedScalarSpecializations.Select(ExtractInterface).Collect();
         
         var population = scalarBaseInterfaces.Combine(scalarSpecializationInterfaces).Select(CreatePopulation);
+        var reducedPopulation = population.Select(ExtractInterface);
 
-        return (population, new ScalarResolver(processedScalarBases, processedScalarSpecializations));
+        return (reducedPopulation, new ScalarResolver(population, processedScalarBases, processedScalarSpecializations));
     }
 
     private static IncrementalValuesProvider<IntermediateResult> AttachSymbolProvider<TAttribute>(IncrementalGeneratorInitializationContext context,
@@ -68,8 +69,9 @@ public static class ScalarParser
 
     private static IUnresolvedScalarBaseType ExtractInterface(IUnresolvedScalarBaseType scalarType, CancellationToken _) => scalarType;
     private static IUnresolvedScalarSpecializationType ExtractInterface(IUnresolvedScalarSpecializationType scalarType, CancellationToken _) => scalarType;
+    private static IUnresolvedScalarPopulation ExtractInterface(IUnresolvedScalarPopulation population, CancellationToken _) => population;
 
-    private static IUnresolvedScalarPopulation CreatePopulation
+    private static IUnresolvedScalarPopulationWithData CreatePopulation
         ((ImmutableArray<IUnresolvedScalarBaseType> Bases, ImmutableArray<IUnresolvedScalarSpecializationType> Specializations) scalars, CancellationToken _)
     {
         return UnresolvedScalarPopulation.Build(scalars.Bases, scalars.Specializations);

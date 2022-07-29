@@ -6,6 +6,5 @@ public interface IUnresolvedScalarSpecialization : IUnresolvedScalar, IUnresolve
 {
     public abstract NamedType OriginalScalar { get; }
     
-    public abstract bool InheritConstants { get; }
     public abstract bool InheritBases { get; }
 }

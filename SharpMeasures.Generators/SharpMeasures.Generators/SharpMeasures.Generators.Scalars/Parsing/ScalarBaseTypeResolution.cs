@@ -3,10 +3,10 @@
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Scalars;
+using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.Contexts.Resolution;
 using SharpMeasures.Generators.Scalars.Parsing.Diagnostics.Resolution;
 using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
-using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Units;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 using SharpMeasures.Generators.Unresolved.Vectors;
@@ -18,11 +18,11 @@ using System.Threading;
 internal static class ScalarBaseTypeResolution
 {
     public static IOptionalWithDiagnostics<ScalarType> Resolve((UnresolvedScalarBaseType Scalar, IUnresolvedUnitPopulation UnitPopulation,
-        IUnresolvedScalarPopulation ScalarPopulation, IUnresolvedVectorPopulation VectorPopulation) input, CancellationToken _)
+        IUnresolvedScalarPopulationWithData ScalarPopulation, IUnresolvedVectorPopulation VectorPopulation) input, CancellationToken _)
         => Resolve(input.Scalar, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
 
     public static IOptionalWithDiagnostics<ScalarType> Resolve(UnresolvedScalarBaseType unresolvedScalar, IUnresolvedUnitPopulation unitPopulation,
-        IUnresolvedScalarPopulation scalarPopulation, IUnresolvedVectorPopulation vectorPopulation)
+        IUnresolvedScalarPopulationWithData scalarPopulation, IUnresolvedVectorPopulation vectorPopulation)
     {
         SharpMeasuresScalarResolutionContext scalarResolutionContext = new(unresolvedScalar.Type, unitPopulation, scalarPopulation, vectorPopulation);
 
