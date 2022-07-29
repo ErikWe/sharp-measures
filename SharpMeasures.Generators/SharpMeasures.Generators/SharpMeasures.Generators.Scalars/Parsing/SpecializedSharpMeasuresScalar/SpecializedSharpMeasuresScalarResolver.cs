@@ -57,7 +57,7 @@ internal class SpecializedSharpMeasuresScalarResolver
 
         if (context.ScalarPopulation.ScalarBases.TryGetValue(context.Type.AsNamedType(), out var baseScalar) is false)
         {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<SpecializedSharpMeasuresScalarDefinition>();
+            return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresScalarDefinition>(Diagnostics.OriginalNotScalar(context, definition));
         }
 
         if (context.UnitPopulation.Units.TryGetValue(baseScalar.Definition.Unit, out var unit) is false)
