@@ -20,10 +20,6 @@ public interface IValidityWithDiagnostics : IEnumerable<Diagnostic>
     public abstract bool IsInvalid { get; }
 
     public abstract IEnumerable<Diagnostic> Diagnostics { get; }
-    public abstract IValidityWithDiagnostics AddDiagnostics(IEnumerable<Diagnostic> diagnostics);
-    public abstract IValidityWithDiagnostics AddDiagnostics(params Diagnostic[] diagnostics);
-    public abstract IValidityWithDiagnostics ReplaceDiagnostics(IEnumerable<Diagnostic> diagnostics);
-    public abstract IValidityWithDiagnostics ReplaceDiagnostics(params Diagnostic[] diagnostics);
 
     public abstract IValidityWithDiagnostics Merge(DMergeOperation operation, IValidityWithDiagnostics other);
     public abstract IValidityWithDiagnostics Merge(IValidityWithDiagnostics other);
@@ -120,20 +116,6 @@ public static class ValidityWithDiagnostics
         public SimpleValidityWithDiagnostics Merge(IValidityWithDiagnostics.MergeOperation operation, IValidityWithDiagnostics other)
             => Merge(GetMergeOperationDelegate(operation), other);
 
-        public SimpleValidityWithDiagnostics AddDiagnostics(IEnumerable<Diagnostic> diagnostics)
-        {
-            return new(IsValid, Diagnostics.Concat(diagnostics));
-        }
-
-        public SimpleValidityWithDiagnostics AddDiagnostics(params Diagnostic[] diagnostics) => AddDiagnostics(diagnostics as IEnumerable<Diagnostic>);
-
-        public SimpleValidityWithDiagnostics ReplaceDiagnostics(IEnumerable<Diagnostic> diagnostics)
-        {
-            return new(IsValid, diagnostics);
-        }
-
-        public SimpleValidityWithDiagnostics ReplaceDiagnostics(params Diagnostic[] diagnostics) => ReplaceDiagnostics(diagnostics as IEnumerable<Diagnostic>);
-
         public IEnumerator<Diagnostic> GetEnumerator() => Diagnostics.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -142,10 +124,5 @@ public static class ValidityWithDiagnostics
         IValidityWithDiagnostics IValidityWithDiagnostics.Merge(IValidityWithDiagnostics other) => Merge(other);
         IValidityWithDiagnostics IValidityWithDiagnostics.Merge(IValidityWithDiagnostics.MergeOperation operation, IValidityWithDiagnostics other)
             => Merge(operation, other);
-
-        IValidityWithDiagnostics IValidityWithDiagnostics.AddDiagnostics(IEnumerable<Diagnostic> diagnostics) => AddDiagnostics(diagnostics);
-        IValidityWithDiagnostics IValidityWithDiagnostics.AddDiagnostics(params Diagnostic[] diagnostics) => AddDiagnostics(diagnostics);
-        IValidityWithDiagnostics IValidityWithDiagnostics.ReplaceDiagnostics(IEnumerable<Diagnostic> diagnostics) => ReplaceDiagnostics(diagnostics);
-        IValidityWithDiagnostics IValidityWithDiagnostics.ReplaceDiagnostics(params Diagnostic[] diagnostics) => ReplaceDiagnostics(diagnostics);
     }
 }

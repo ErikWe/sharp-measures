@@ -31,7 +31,7 @@ internal class VectorConstantProcesser
         var product = ProcessDefinition(context, definition);
         allDiagnostics = allDiagnostics.Concat(product);
 
-        return product.ReplaceDiagnostics(allDiagnostics);
+        return OptionalWithDiagnostics.Result(product.Result, allDiagnostics);
     }
 
     private IResultWithDiagnostics<UnresolvedVectorConstantDefinition> ProcessDefinition(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition)

@@ -54,7 +54,7 @@ internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, Raw
         var product = ProcessDefinition(context, definition);
         allDiagnostics = allDiagnostics.Concat(product);
 
-        return product.ReplaceDiagnostics(allDiagnostics);
+        return OptionalWithDiagnostics.Result(product.Result, allDiagnostics);
     }
 
     private static bool VerifyRequiredPropertiesSet(RawSharpMeasuresVectorDefinition definition)

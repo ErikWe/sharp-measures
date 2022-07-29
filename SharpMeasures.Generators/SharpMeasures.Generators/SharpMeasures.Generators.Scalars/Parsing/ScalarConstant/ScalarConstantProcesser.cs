@@ -31,7 +31,7 @@ internal class ScalarConstantProcesser
         var product = ProcessDefinition(context, definition);
         allDiagnostics = allDiagnostics.Concat(product);
 
-        return product.ReplaceDiagnostics(allDiagnostics);
+        return OptionalWithDiagnostics.Result(product.Result, allDiagnostics);
     }
 
     private IResultWithDiagnostics<UnresolvedScalarConstantDefinition> ProcessDefinition(IQuantityConstantProcessingContext context, RawScalarConstantDefinition definition)

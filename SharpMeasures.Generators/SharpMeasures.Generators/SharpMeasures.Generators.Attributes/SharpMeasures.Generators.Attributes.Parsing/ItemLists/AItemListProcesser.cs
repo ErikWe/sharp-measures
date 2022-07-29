@@ -64,7 +64,7 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
             return OptionalWithDiagnostics.Empty<TProduct>(allDiagnostics);
         }
 
-        return processedItems.ReplaceDiagnostics(allDiagnostics);
+        return ResultWithDiagnostics.Construct(processedItems.Result, allDiagnostics);
     }
 
     protected virtual bool VerifyRequiredPropertiesSet(TDefinition definition)

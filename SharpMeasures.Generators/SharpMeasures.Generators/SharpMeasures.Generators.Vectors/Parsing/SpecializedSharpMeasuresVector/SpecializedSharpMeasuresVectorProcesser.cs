@@ -50,7 +50,7 @@ internal class SpecializedSharpMeasuresVectorProcesser : AProcesser<IProcessingC
         var product = ProcessDefinition(context, definition);
         allDiagnostics = allDiagnostics.Concat(product);
 
-        return product.ReplaceDiagnostics(allDiagnostics);
+        return OptionalWithDiagnostics.Result(product.Result, allDiagnostics);
     }
 
     private static bool VerifyRequiredPropertiesSet(RawSpecializedSharpMeasuresVectorDefinition definition)

@@ -3,4 +3,7 @@
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Resolution;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 
-internal class ScalarConstantResolutionDiagnostics : QuantityConstantResolutionDiagnostics<UnresolvedScalarConstantDefinition, ScalarConstantLocations> { }
+internal static class ScalarConstantResolutionDiagnostics
+{
+    public static QuantityConstantResolutionDiagnostics<UnresolvedScalarConstantDefinition, ScalarConstantLocations> Instance => QuantityConstantResolutionDiagnostics<UnresolvedScalarConstantDefinition, ScalarConstantLocations>.Instance;
+}
