@@ -21,7 +21,7 @@ public class SharpMeasuresGenerator : IIncrementalGenerator
         (var unresolvedScalarPopulation, var scalarResolver) = ScalarParser.Attach(context);
         (var unresolvedVectorPopulation, var vectorResolver) = VectorParser.Attach(context);
 
-        (var unitPopulation, var unitGenerator) = unitResolver.Resolve(context, unresolvedUnitPopulation, unresolvedScalarPopulation);
+        (var unitPopulation, var unitGenerator) = unitResolver.Resolve(context, unresolvedScalarPopulation);
         (var scalarPopulation, var scalarGenerator) = scalarResolver.Resolve(context, unresolvedUnitPopulation, unresolvedVectorPopulation);
         (var vectorPopulation, var vectorGenerator) = vectorResolver.Resolve(context, unresolvedUnitPopulation, unresolvedScalarPopulation, unresolvedVectorPopulation);
 

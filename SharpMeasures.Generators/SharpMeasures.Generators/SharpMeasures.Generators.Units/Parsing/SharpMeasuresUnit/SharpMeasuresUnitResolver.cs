@@ -4,16 +4,19 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
+using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Unresolved.Scalars;
 
 internal interface ISharpMeasuresUnitResolutionDiagnostics
 {
+    public abstract Diagnostic? TypeAlreadyUnit(ISharpMeasuresUnitResolutionContext context, UnresolvedSharpMeasuresUnitDefinition definition);
     public abstract Diagnostic? QuantityNotScalar(ISharpMeasuresUnitResolutionContext context, UnresolvedSharpMeasuresUnitDefinition definition);
     public abstract Diagnostic? QuantityBiased(ISharpMeasuresUnitResolutionContext context, UnresolvedSharpMeasuresUnitDefinition definition);
 }
 
 internal interface ISharpMeasuresUnitResolutionContext : IProcessingContext
 {
+    public abstract IUnresolvedUnitPopulationWithData UnitPopulation { get; }
     public abstract IUnresolvedScalarPopulation ScalarPopulation { get; }
 }
 
@@ -28,6 +31,11 @@ internal class SharpMeasuresUnitResolver : AProcesser<ISharpMeasuresUnitResoluti
 
     public override IOptionalWithDiagnostics<SharpMeasuresUnitDefinition> Process(ISharpMeasuresUnitResolutionContext context, UnresolvedSharpMeasuresUnitDefinition definition)
     {
+        if (context.UnitPopulation.DuplicatelyDefined.ContainsKey(context.Type.AsNamedType()))
+        {
+            return OptionalWithDiagnostics.Empty<SharpMeasuresUnitDefinition>(Diagnostics.TypeAlreadyUnit(context, definition));
+        }
+
         if (context.ScalarPopulation.ScalarBases.TryGetValue(definition.Quantity, out var baseQuantity) is false)
         {
             return OptionalWithDiagnostics.Empty<SharpMeasuresUnitDefinition>(Diagnostics.QuantityNotScalar(context, definition));
