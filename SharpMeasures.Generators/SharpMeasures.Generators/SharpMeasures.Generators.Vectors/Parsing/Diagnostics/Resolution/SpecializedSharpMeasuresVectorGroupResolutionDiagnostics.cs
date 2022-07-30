@@ -24,7 +24,7 @@ internal class SpecializedSharpMeasuresVectorGroupResolutionDiagnostics : ISpeci
 
     public Diagnostic TypeAlreadyVector(ISpecializedSharpMeasuresVectorGroupResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition)
     {
-        return DiagnosticConstruction.VectorGroupTypeAlreadyDefinedAsVector(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
+        return DiagnosticConstruction.VectorGroupTypeAlreadyDefinedAsVectorGroup(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
     public Diagnostic OriginalNotVectorGroup(ISpecializedSharpMeasuresVectorGroupResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition)

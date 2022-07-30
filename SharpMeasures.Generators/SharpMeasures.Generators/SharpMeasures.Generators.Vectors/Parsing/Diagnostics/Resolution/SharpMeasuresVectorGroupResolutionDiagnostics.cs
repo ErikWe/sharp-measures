@@ -21,11 +21,6 @@ internal class SharpMeasuresVectorGroupResolutionDiagnostics : ISharpMeasuresVec
         return DiagnosticConstruction.VectorGroupTypeAlreadyDefinedAsScalar(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
-    public Diagnostic TypeAlreadyVector(ISharpMeasuresVectorGroupResolutionContext context, UnresolvedSharpMeasuresVectorGroupDefinition definition)
-    {
-        return DiagnosticConstruction.VectorGroupTypeAlreadyDefinedAsVector(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
-    }
-
     public Diagnostic TypeNotUnit(ISharpMeasuresVectorGroupResolutionContext context, UnresolvedSharpMeasuresVectorGroupDefinition definition)
     {
         return DiagnosticConstruction.TypeNotUnit(definition.Locations.Unit?.AsRoslynLocation(), definition.Unit.Name);

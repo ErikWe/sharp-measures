@@ -65,7 +65,7 @@ public class TypeAlreadyDefined
             using SharpMeasures.Generators.Vectors;
 
             [SpecializedSharpMeasuresScalar(typeof(Length))]
-            [SharpMeasuresScalar(typeof(Length))]
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Distance { }
 
             [SharpMeasuresScalar(typeof(UnitOfLength))]
@@ -75,7 +75,7 @@ public class TypeAlreadyDefined
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDoubleTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -399,7 +399,5 @@ public class TypeAlreadyDefined
 
     private static GeneratorVerifier AssertExactDiagnostics(string source, IEnumerable<string> expectedDiagnostics) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(expectedDiagnostics);
     private static GeneratorVerifier AssertExactlyTypeAlreadyDefinedDiagnostics(string source) => AssertExactDiagnostics(source, TypeAlreadyDefinedDiagnostics);
-    private static GeneratorVerifier AssertExactlyDoubleTypeAlreadyDefinedDiagnostics(string source) => AssertExactDiagnostics(source, DoubleTypeAlreadyDefinedDiagnostics);
     private static IReadOnlyCollection<string> TypeAlreadyDefinedDiagnostics { get; } = new string[] { DiagnosticIDs.TypeAlreadyDefined };
-    private static IReadOnlyCollection<string> DoubleTypeAlreadyDefinedDiagnostics { get; } = new string[] { DiagnosticIDs.TypeAlreadyDefined, DiagnosticIDs.TypeAlreadyDefined };
 }

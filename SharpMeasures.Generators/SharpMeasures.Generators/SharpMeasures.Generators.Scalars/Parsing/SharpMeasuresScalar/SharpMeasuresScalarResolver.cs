@@ -17,7 +17,6 @@ using System.Linq;
 internal interface ISharpMeasuresScalarResolutionDiagnostics
 {
     public abstract Diagnostic? TypeAlreadyUnit(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? TypeAlreadyScalar(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? TypeNotUnit(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? UnitNotIncludingBiasTerm(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? TypeNotVector(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
@@ -51,11 +50,6 @@ internal class SharpMeasuresScalarResolver : IProcesser<ISharpMeasuresScalarReso
         if (context.UnitPopulation.Units.ContainsKey(context.Type.AsNamedType()))
         {
             return OptionalWithDiagnostics.Empty<SharpMeasuresScalarDefinition>(Diagnostics.TypeAlreadyUnit(context, definition));
-        }
-
-        if (context.ScalarPopulation.DuplicatelyDefined.ContainsKey(context.Type.AsNamedType()))
-        {
-            return OptionalWithDiagnostics.Empty<SharpMeasuresScalarDefinition>(Diagnostics.TypeAlreadyScalar(context, definition));
         }
 
         var processedUnit = ProcessUnit(context, definition);

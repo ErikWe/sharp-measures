@@ -16,7 +16,6 @@ internal interface ISharpMeasuresVectorResolutionDiagnostics
 {
     public abstract Diagnostic? TypeAlreadyUnit(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? TypeAlreadyScalar(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition);
-    public abstract Diagnostic? TypeAlreadyVector(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? TypeNotUnit(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? TypeNotScalar(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? DifferenceNotVector(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition);
@@ -50,11 +49,6 @@ internal class SharpMeasuresVectorResolver : IProcesser<ISharpMeasuresVectorReso
         if (context.ScalarPopulation.Scalars.ContainsKey(context.Type.AsNamedType()))
         {
             return OptionalWithDiagnostics.Empty<SharpMeasuresVectorDefinition>(Diagnostics.TypeAlreadyScalar(context, definition));
-        }
-
-        if (context.VectorPopulation.DuplicatelyDefined.ContainsKey(context.Type.AsNamedType()))
-        {
-            return OptionalWithDiagnostics.Empty<SharpMeasuresVectorDefinition>(Diagnostics.TypeAlreadyVector(context, definition));
         }
 
         var processedUnit = ProcessUnit(context, definition);

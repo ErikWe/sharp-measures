@@ -16,11 +16,6 @@ internal class SharpMeasuresScalarResolutionDiagnostics : ISharpMeasuresScalarRe
         return DiagnosticConstruction.ScalarTypeAlreadyDefinedAsUnit(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
-    public Diagnostic TypeAlreadyScalar(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition)
-    {
-        return DiagnosticConstruction.ScalarTypeAlreadyDefinedAsScalar(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
-    }
-
     public Diagnostic TypeNotUnit(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition)
     {
         return DiagnosticConstruction.TypeNotUnit(definition.Locations.Unit?.AsRoslynLocation(), definition.Unit.Name);
