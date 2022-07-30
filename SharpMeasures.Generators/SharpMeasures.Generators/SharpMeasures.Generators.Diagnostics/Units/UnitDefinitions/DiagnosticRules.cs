@@ -140,18 +140,6 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor FixedUnitBiasSpecifiedButUnitNotBiased = new DiagnosticDescriptor
-    (
-        id: DiagnosticIDs.FixedUnitBiasSpecifiedButUnitNotBiased,
-        title: "The unit does not support biases",
-        messageFormat: "{0} does not support biases. Do not specify a bias term, or make {0} support biases through " +
-            $"{Utility.ShortAttributeName<SharpMeasuresUnitAttribute>()}.",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
-        isEnabledByDefault: true,
-        customTags: WellKnownDiagnosticTags.Unnecessary
-    );
-
     public static readonly DiagnosticDescriptor BiasedUnitDefinedButUnitNotBiased = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.BiasedUnitDefinedButUnitNotBiased,

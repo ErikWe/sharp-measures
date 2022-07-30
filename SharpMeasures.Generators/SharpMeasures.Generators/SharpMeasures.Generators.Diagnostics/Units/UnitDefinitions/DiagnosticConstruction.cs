@@ -81,11 +81,6 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.NullBiasedUnitExpression, location);
     }
 
-    public static Diagnostic FixedUnitBiasSpecifiedButUnitNotBiased(Location? location, string unitTypeName)
-    {
-        return Diagnostic.Create(DiagnosticRules.FixedUnitBiasSpecifiedButUnitNotBiased, location, unitTypeName);
-    }
-
     public static Diagnostic BiasedUnitDefinedButUnitNotBiased(Location? location, string unitName, string unitTypeName)
     {
         return Diagnostic.Create(DiagnosticRules.BiasedUnitDefinedButUnitNotBiased, location, unitName, unitTypeName);

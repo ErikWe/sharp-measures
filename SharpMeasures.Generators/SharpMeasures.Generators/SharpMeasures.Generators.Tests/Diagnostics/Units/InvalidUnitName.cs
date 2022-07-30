@@ -16,7 +16,7 @@ public class InvalidUnitName
     [Fact]
     public Task Alias_Null_ExactListAndVerify()
     {
-        string source = Common.Alias(name: "null");
+        string source = SourceTexts.Alias(name: "null");
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
     }
@@ -24,7 +24,7 @@ public class InvalidUnitName
     [Fact]
     public Task Alias_Empty_ExactListAndVerify()
     {
-        string source = Common.Alias(name: MetaEmptyString);
+        string source = SourceTexts.Alias(name: MetaEmptyString);
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
     }
@@ -32,7 +32,7 @@ public class InvalidUnitName
     [Fact]
     public Task Biased_Null_ExactListAndVerify()
     {
-        string source = Common.Biased(name: "null");
+        string source = SourceTexts.Biased(name: "null");
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
     }
@@ -40,7 +40,7 @@ public class InvalidUnitName
     [Fact]
     public Task Biased_Empty_ExactListAndVerify()
     {
-        string source = Common.Biased(name: MetaEmptyString);
+        string source = SourceTexts.Biased(name: MetaEmptyString);
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
     }
@@ -48,7 +48,7 @@ public class InvalidUnitName
     [Fact]
     public Task Derived_Null_ExactListAndVerify()
     {
-        string source = Common.DerivedWithoutSignature(name: "null");
+        string source = SourceTexts.DerivedWithoutSignature(name: "null");
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
     }
@@ -56,7 +56,7 @@ public class InvalidUnitName
     [Fact]
     public Task Derived_Empty_ExactListAndVerify()
     {
-        string source = Common.DerivedWithoutSignature(name: MetaEmptyString);
+        string source = SourceTexts.DerivedWithoutSignature(name: MetaEmptyString);
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
     }
@@ -64,7 +64,7 @@ public class InvalidUnitName
     [Fact]
     public Task Fixed_Null_ExactListAndVerify()
     {
-        string source = Common.Fixed(name: "null");
+        string source = SourceTexts.Fixed(name: "null");
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
     }
@@ -72,7 +72,7 @@ public class InvalidUnitName
     [Fact]
     public Task Fixed_Empty_ExactListAndVerify()
     {
-        string source = Common.Fixed(name: MetaEmptyString);
+        string source = SourceTexts.Fixed(name: MetaEmptyString);
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
     }
@@ -80,7 +80,7 @@ public class InvalidUnitName
     [Fact]
     public Task Prefixed_Null_ExactListAndVerify()
     {
-        string source = Common.Prefixed(name: "null");
+        string source = SourceTexts.Prefixed(name: "null");
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
     }
@@ -88,7 +88,7 @@ public class InvalidUnitName
     [Fact]
     public Task Prefixed_Empty_ExactListAndVerify()
     {
-        string source = Common.Prefixed(name: MetaEmptyString);
+        string source = SourceTexts.Prefixed(name: MetaEmptyString);
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
     }
@@ -96,7 +96,7 @@ public class InvalidUnitName
     [Fact]
     public Task Scaled_Null_ExactListAndVerify()
     {
-        string source = Common.Scaled(name: "null");
+        string source = SourceTexts.Scaled(name: "null");
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
     }
@@ -104,7 +104,7 @@ public class InvalidUnitName
     [Fact]
     public Task Scaled_Empty_ExactListAndVerify()
     {
-        string source = Common.Scaled(name: MetaEmptyString);
+        string source = SourceTexts.Scaled(name: MetaEmptyString);
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
     }

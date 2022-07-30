@@ -16,7 +16,7 @@ public class InvalidBiasedUnitExpression
     [Fact]
     public Task Null_ExactListAndVerify()
     {
-        string source = Common.Biased(bias: "null");
+        string source = SourceTexts.Biased(bias: "null");
 
         return AssertExactlyBiasedUnitExpressionDiagnostics(source).VerifyDiagnostics();
     }
@@ -24,7 +24,7 @@ public class InvalidBiasedUnitExpression
     [Fact]
     public Task Empty_ExactListAndVerify()
     {
-        string source = Common.Biased(bias: "\"\"");
+        string source = SourceTexts.Biased(bias: "\"\"");
 
         return AssertExactlyBiasedUnitExpressionDiagnostics(source).VerifyDiagnostics();
     }

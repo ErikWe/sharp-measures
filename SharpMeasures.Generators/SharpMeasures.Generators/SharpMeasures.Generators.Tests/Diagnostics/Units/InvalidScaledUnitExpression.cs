@@ -16,7 +16,7 @@ public class InvalidScaledUnitExpression
     [Fact]
     public Task Null_ExactListAndVerify()
     {
-        string source = Common.Scaled(value: "null");
+        string source = SourceTexts.Scaled(value: "null");
 
         return AssertExactlyScaledUnitExpressionDiagnostics(source).VerifyDiagnostics();
     }
@@ -24,7 +24,7 @@ public class InvalidScaledUnitExpression
     [Fact]
     public Task Empty_ExactListAndVerify()
     {
-        string source = Common.Scaled(value: "\"\"");
+        string source = SourceTexts.Scaled(value: "\"\"");
 
         return AssertExactlyScaledUnitExpressionDiagnostics(source).VerifyDiagnostics();
     }

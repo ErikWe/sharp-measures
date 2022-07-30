@@ -16,7 +16,7 @@ public class InvalidUnitPluralForm
     [Fact]
     public Task Alias_Null_ExactListAndVerify()
     {
-        string source = Common.Alias(plural: "null");
+        string source = SourceTexts.Alias(plural: "null");
 
         return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
     }
@@ -24,7 +24,7 @@ public class InvalidUnitPluralForm
     [Fact]
     public Task Alias_Empty_ExactListAndVerify()
     {
-        string source = Common.Alias(plural: MetaEmptyString);
+        string source = SourceTexts.Alias(plural: MetaEmptyString);
 
         return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
     }
@@ -32,7 +32,7 @@ public class InvalidUnitPluralForm
     [Fact]
     public Task Biased_Null_ExactListAndVerify()
     {
-        string source = Common.Biased(plural: "null");
+        string source = SourceTexts.Biased(plural: "null");
 
         return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
     }
@@ -40,7 +40,7 @@ public class InvalidUnitPluralForm
     [Fact]
     public Task Biased_Empty_ExactListAndVerify()
     {
-        string source = Common.Biased(plural: MetaEmptyString);
+        string source = SourceTexts.Biased(plural: MetaEmptyString);
 
         return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
     }
@@ -48,7 +48,7 @@ public class InvalidUnitPluralForm
     [Fact]
     public Task Derived_Null_ExactListAndVerify()
     {
-        string source = Common.DerivedWithoutSignature(plural: "null");
+        string source = SourceTexts.DerivedWithoutSignature(plural: "null");
 
         return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
     }
@@ -56,7 +56,7 @@ public class InvalidUnitPluralForm
     [Fact]
     public Task Derived_Empty_ExactListAndVerify()
     {
-        string source = Common.DerivedWithoutSignature(plural: MetaEmptyString);
+        string source = SourceTexts.DerivedWithoutSignature(plural: MetaEmptyString);
 
         return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
     }
@@ -64,7 +64,7 @@ public class InvalidUnitPluralForm
     [Fact]
     public Task Fixed_Null_ExactListAndVerify()
     {
-        string source = Common.Fixed(plural: "null");
+        string source = SourceTexts.Fixed(plural: "null");
 
         return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
     }
@@ -72,7 +72,7 @@ public class InvalidUnitPluralForm
     [Fact]
     public Task Fixed_Empty_ExactListAndVerify()
     {
-        string source = Common.Fixed(plural: MetaEmptyString);
+        string source = SourceTexts.Fixed(plural: MetaEmptyString);
 
         return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
     }
@@ -80,7 +80,7 @@ public class InvalidUnitPluralForm
     [Fact]
     public Task Prefixed_Null_ExactListAndVerify()
     {
-        string source = Common.Prefixed(plural: "null");
+        string source = SourceTexts.Prefixed(plural: "null");
 
         return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
     }
@@ -88,7 +88,7 @@ public class InvalidUnitPluralForm
     [Fact]
     public Task Prefixed_Empty_ExactListAndVerify()
     {
-        string source = Common.Prefixed(plural: MetaEmptyString);
+        string source = SourceTexts.Prefixed(plural: MetaEmptyString);
 
         return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
     }
@@ -96,7 +96,7 @@ public class InvalidUnitPluralForm
     [Fact]
     public Task Scaled_Null_ExactListAndVerify()
     {
-        string source = Common.Scaled(plural: "null");
+        string source = SourceTexts.Scaled(plural: "null");
 
         return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
     }
@@ -104,7 +104,7 @@ public class InvalidUnitPluralForm
     [Fact]
     public Task Scaled_Empty_ExactListAndVerify()
     {
-        string source = Common.Scaled(plural: MetaEmptyString);
+        string source = SourceTexts.Scaled(plural: MetaEmptyString);
 
         return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
     }

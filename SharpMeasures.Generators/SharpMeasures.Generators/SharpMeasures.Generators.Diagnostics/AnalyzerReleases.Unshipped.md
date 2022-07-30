@@ -32,7 +32,6 @@ Measures1120 | Usage | Warning | Prefix not recognized
 Measures1121 | Usage | Warning | Invalid scaled unit expression
 Measures1122 | Usage | Warning | Invalid biased unit expression
 Measures1123 | Usage | Warning | The unit does not support biases
-Measures1124 | Usage | Warning | The unit does not support biases
 Measures1140 | Usage | Warning | Invalid derivation ID
 Measures1141 | Naming | Warning | Duplicate derivation ID
 Measures1142 | Usage | Warning | Derivation ID not recognized

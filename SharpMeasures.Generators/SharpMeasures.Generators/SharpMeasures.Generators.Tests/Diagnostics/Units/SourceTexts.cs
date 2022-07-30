@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics.Units;
 
-internal static class Common
+internal static class SourceTexts
 {
     public static string Alias(string name = "\"Meter\"", string plural = "\"Meters\"", string aliasOf = "\"Metre\"") => $$"""
         using SharpMeasures.Generators.Scalars;

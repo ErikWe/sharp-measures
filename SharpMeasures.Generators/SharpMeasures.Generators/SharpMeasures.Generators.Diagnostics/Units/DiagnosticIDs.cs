@@ -12,8 +12,7 @@ public static partial class DiagnosticIDs
     public const string UnrecognizedPrefix = $"{Prefix}{Numbering.Hundreds.Units}20";
     public const string InvalidScaledUnitExpression = $"{Prefix}{Numbering.Hundreds.Units}21";
     public const string InvalidBiasedUnitExpression = $"{Prefix}{Numbering.Hundreds.Units}22";
-    public const string FixedUnitBiasSpecifiedButUnitNotBiased = $"{Prefix}{Numbering.Hundreds.Units}23";
-    public const string BiasedUnitDefinedButUnitNotBiased = $"{Prefix}{Numbering.Hundreds.Units}24";
+    public const string BiasedUnitDefinedButUnitNotBiased = $"{Prefix}{Numbering.Hundreds.Units}23";
 
     public const string InvalidUnitDerivationID = $"{Prefix}{Numbering.Hundreds.Units}40";
     public const string DuplicateUnitDerivationID = $"{Prefix}{Numbering.Hundreds.Units}41";
