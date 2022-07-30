@@ -16,7 +16,7 @@ public class InvalidUnitName
     [Fact]
     public Task VerifyInvalidUnitNameDiagnosticsMessage_Null()
     {
-        string source = SourceTexts.Fixed("null");
+        string source = SourceTexts.Fixed(name: "null");
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
     }
@@ -24,7 +24,7 @@ public class InvalidUnitName
     [Fact]
     public Task VerifyInvalidUnitNameDiagnosticsMessage_Empty()
     {
-        string source = SourceTexts.Fixed("\"\"");
+        string source = SourceTexts.Fixed(name: "\"\"");
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
     }

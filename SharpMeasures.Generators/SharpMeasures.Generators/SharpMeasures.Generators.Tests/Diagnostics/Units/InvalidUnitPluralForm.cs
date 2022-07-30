@@ -14,55 +14,7 @@ using Xunit;
 public class InvalidUnitPluralForm
 {
     [Fact]
-    public Task Alias_Null_ExactListAndVerify()
-    {
-        string source = SourceTexts.Alias(plural: "null");
-
-        return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task Alias_Empty_ExactListAndVerify()
-    {
-        string source = SourceTexts.Alias(plural: MetaEmptyString);
-
-        return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task Biased_Null_ExactListAndVerify()
-    {
-        string source = SourceTexts.Biased(plural: "null");
-
-        return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task Biased_Empty_ExactListAndVerify()
-    {
-        string source = SourceTexts.Biased(plural: MetaEmptyString);
-
-        return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task Derived_Null_ExactListAndVerify()
-    {
-        string source = SourceTexts.DerivedWithID(plural: "null");
-
-        return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task Derived_Empty_ExactListAndVerify()
-    {
-        string source = SourceTexts.DerivedWithID(plural: MetaEmptyString);
-
-        return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task Fixed_Null_ExactListAndVerify()
+    public Task VerifyInvalidUniPluralFormDiagnosticsMessage_Null()
     {
         string source = SourceTexts.Fixed(plural: "null");
 
@@ -70,48 +22,82 @@ public class InvalidUnitPluralForm
     }
 
     [Fact]
-    public Task Fixed_Empty_ExactListAndVerify()
+    public Task VerifyInvalidUnitPluralFormDiagnosticsMessage_Empty()
     {
-        string source = SourceTexts.Fixed(plural: MetaEmptyString);
+        string source = SourceTexts.Fixed(plural: "\"\"");
 
         return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
     }
 
-    [Fact]
-    public Task Prefixed_Null_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(InvalidUnitPluralForms))]
+    public void Alias_ExactList(string plural)
     {
-        string source = SourceTexts.Prefixed(plural: "null");
+        string source = SourceTexts.Alias(plural: plural);
 
-        return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyInvalidUnitFormDiagnostics(source);
     }
 
-    [Fact]
-    public Task Prefixed_Empty_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(InvalidUnitPluralForms))]
+    public void Biased_ExactList(string plural)
     {
-        string source = SourceTexts.Prefixed(plural: MetaEmptyString);
+        string source = SourceTexts.Biased(plural: plural);
 
-        return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyInvalidUnitFormDiagnostics(source);
     }
 
-    [Fact]
-    public Task Scaled_Null_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(InvalidUnitPluralForms))]
+    public void DerivedWithID_ExactList(string plural)
     {
-        string source = SourceTexts.Scaled(plural: "null");
+        string source = SourceTexts.DerivedWithID(plural: plural);
 
-        return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyInvalidUnitFormDiagnostics(source);
     }
 
-    [Fact]
-    public Task Scaled_Empty_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(InvalidUnitPluralForms))]
+    public void DerivedWithoutID_ExactList(string plural)
     {
-        string source = SourceTexts.Scaled(plural: MetaEmptyString);
+        string source = SourceTexts.DerivedWithoutID(plural: plural);
 
-        return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyInvalidUnitFormDiagnostics(source);
     }
 
-    private static GeneratorVerifier AssertExactlyInvalidUnitFormDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidUnitFormDiagnostics);
+    [Theory]
+    [MemberData(nameof(InvalidUnitPluralForms))]
+    public void Fixed_ExactList(string plural)
+    {
+        string source = SourceTexts.Fixed(plural: plural);
 
-    private const string MetaEmptyString = "\"\"";
+        AssertExactlyInvalidUnitFormDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidUnitPluralForms))]
+    public void Prefixed_ExactList(string plural)
+    {
+        string source = SourceTexts.Prefixed(plural: plural);
+
+        AssertExactlyInvalidUnitFormDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidUnitPluralForms))]
+    public void Scaled_ExactList(string plural)
+    {
+        string source = SourceTexts.Scaled(plural: plural);
+
+        AssertExactlyInvalidUnitFormDiagnostics(source);
+    }
+
+    private static IEnumerable<object[]> InvalidUnitPluralForms() => new object[][]
+    {
+        new[] { "null" },
+        new[] { "\"\"" }
+    };
+
+    private static GeneratorVerifier AssertExactlyInvalidUnitFormDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidUnitFormDiagnostics);
     private static IReadOnlyCollection<string> InvalidUnitFormDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidUnitPluralForm };
 }
