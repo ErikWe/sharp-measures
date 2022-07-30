@@ -11,8 +11,7 @@ using System.Linq;
 
 internal interface IDerivableUnitProcessingDiagnostics
 {
-    public abstract Diagnostic? NullDerivationID(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
-    public abstract Diagnostic? EmptyDerivationID(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
+    public abstract Diagnostic? MultipleDerivationsButNotNamed(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? DuplicateDerivationID(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? NullExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? EmptyExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
@@ -23,7 +22,10 @@ internal interface IDerivableUnitProcessingDiagnostics
 
 internal interface IDerivableUnitProcessingContext : IProcessingContext
 {
+    public abstract bool MultipleDefinitions { get; }
     public abstract HashSet<string> ReservedIDs { get; }
+
+    public abstract void MarkMultipleDefinitions();
 }
 
 internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProcessingContext, RawDerivableUnitDefinition, UnresolvedDerivableUnitDefinition>
@@ -37,7 +39,12 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
 
     public override void OnSuccessfulProcess(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, UnresolvedDerivableUnitDefinition product)
     {
-        context.ReservedIDs.Add(product.DerivationID);
+        if (product.DerivationID is not null)
+        {
+            context.ReservedIDs.Add(product.DerivationID);
+        }
+
+        context.MarkMultipleDefinitions();
     }
 
     public override IOptionalWithDiagnostics<UnresolvedDerivableUnitDefinition> Process(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
@@ -69,14 +76,14 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
 
     private IValidityWithDiagnostics CheckDerivationIDValidity(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
-        if (definition.DerivationID is null)
+        if (definition.DerivationID is null or { Length: 0 })
         {
-            return ValidityWithDiagnostics.Invalid(Diagnostics.NullDerivationID(context, definition));
-        }
+            if (context.MultipleDefinitions)
+            {
+                return ValidityWithDiagnostics.Invalid(Diagnostics.MultipleDerivationsButNotNamed(context, definition));
+            }
 
-        if (definition.DerivationID.Length is 0)
-        {
-            return ValidityWithDiagnostics.Invalid(Diagnostics.EmptyDerivationID(context, definition));
+            return ValidityWithDiagnostics.Valid;
         }
 
         if (context.ReservedIDs.Contains(definition.DerivationID))
@@ -133,6 +140,6 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
 
     private static bool VerifyRequiredPropertiesSet(RawDerivableUnitDefinition definition)
     {
-        return definition.Locations.ExplicitlySetDerivationID && definition.Locations.ExplicitlySetExpression;
+        return definition.Locations.ExplicitlySetExpression;
     }
 }

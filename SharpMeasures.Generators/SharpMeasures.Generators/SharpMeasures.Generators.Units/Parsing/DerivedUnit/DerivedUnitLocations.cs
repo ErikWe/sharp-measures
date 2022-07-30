@@ -9,7 +9,7 @@ internal record class DerivedUnitLocations : AUnitLocations<DerivedUnitLocations
 {
     public static DerivedUnitLocations Empty { get; } = new();
 
-    public MinimalLocation? SignatureID { get; init; }
+    public MinimalLocation? DerivationID { get; init; }
     
     public MinimalLocation? UnitsCollection { get; init; }
     public IReadOnlyList<MinimalLocation> UnitsElements
@@ -18,7 +18,7 @@ internal record class DerivedUnitLocations : AUnitLocations<DerivedUnitLocations
         init => unitsElements = value.AsReadOnlyEquatable();
     }
 
-    public bool ExplicitlySetSignatureID => SignatureID is not null;
+    public bool ExplicitlySetDerivationID => DerivationID is not null;
     public bool ExplicitlySetUnits => UnitsCollection is not null;
 
     protected override DerivedUnitLocations Locations => this;

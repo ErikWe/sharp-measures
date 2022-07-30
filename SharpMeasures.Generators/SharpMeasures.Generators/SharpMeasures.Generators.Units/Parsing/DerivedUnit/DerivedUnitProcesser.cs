@@ -55,7 +55,7 @@ internal class DerivedUnitProcesser : AUnitProcesser<IUnitProcessingContext, Raw
             return OptionalWithDiagnostics.Empty<UnresolvedDerivedUnitDefinition>(allDiagnostics);
         }
 
-        UnresolvedDerivedUnitDefinition product = new(definition.Name!, processedPlural.Result, definition.SignatureID, processedUnits.Result, definition.Locations);
+        UnresolvedDerivedUnitDefinition product = new(definition.Name!, processedPlural.Result, definition.DerivationID, processedUnits.Result, definition.Locations);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }

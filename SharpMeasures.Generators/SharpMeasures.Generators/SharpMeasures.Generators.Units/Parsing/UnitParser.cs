@@ -89,7 +89,7 @@ public static class UnitParser
         var unitDerivations = ProcessingFilter.Create(Processers.DerivableUnitProcesser).Filter(derivableUnitProcessingContext, rawUnitType.UnitDerivations);
 
         Dictionary<string, UnresolvedUnitDerivationSignature> availableSignatureIDs
-            = unitDerivations.Result.ToDictionary(static (x) => x.DerivationID, static (x) => x.Signature);
+            = unitDerivations.Result.Where(static (x) => x.DerivationID is not null).ToDictionary(static (x) => x.DerivationID!, static (x) => x.Signature);
 
         var unitAliases = ProcessingFilter.Create(Processers.UnitAliasProcesser).Filter(unitInstanceProcessingContext, rawUnitType.UnitAliases);
         var derivedUnits = ProcessingFilter.Create(Processers.DerivedUnitProcesser).Filter(unitInstanceProcessingContext, rawUnitType.DerivedUnits);

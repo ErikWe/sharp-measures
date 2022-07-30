@@ -103,6 +103,16 @@ internal class UnresolvedUnitType : IUnresolvedUnitType
 
     private ReadOnlyEquatableDictionary<string, IUnresolvedDerivableUnit> ConstructDerivationsByIDDictionary()
     {
-        return UnitDerivations.ToDictionary(static (derivation) => derivation.DerivationID, static (derivation) => derivation as IUnresolvedDerivableUnit).AsReadOnlyEquatable();
+        Dictionary<string, IUnresolvedDerivableUnit> derivationsDictionary = new(UnitDerivations.Count);
+
+        foreach (var derivation in UnitDerivations)
+        {
+            if (derivation.DerivationID is not null)
+            {
+                derivationsDictionary.Add(derivation.DerivationID, derivation);
+            }
+        }
+
+        return derivationsDictionary.AsReadOnlyEquatable();
     }
 }

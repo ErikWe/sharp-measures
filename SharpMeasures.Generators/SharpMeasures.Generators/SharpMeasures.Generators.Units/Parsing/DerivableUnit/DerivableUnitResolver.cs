@@ -6,7 +6,6 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 
 using System.Collections.Generic;
 using System.Globalization;
@@ -88,7 +87,7 @@ internal class DerivableUnitResolver : AProcesser<IDerivableUnitResolutionContex
     {
         Dictionary<string, int> counts = new();
 
-        foreach (IUnresolvedUnitInstance signatureComponent in signature)
+        foreach (var signatureComponent in signature)
         {
             countParameter(signatureComponent);
         }
@@ -96,9 +95,9 @@ internal class DerivableUnitResolver : AProcesser<IDerivableUnitResolutionContex
         var parameterNames = new string[signature.Count];
 
         int index = 0;
-        foreach (IUnresolvedUnitInstance signatureComponent in signature)
+        foreach (var signatureComponent in signature)
         {
-            string name = SourceBuildingUtility.ToParameterName(signatureComponent.Name);
+            string name = SourceBuildingUtility.ToParameterName(signatureComponent.Type.Name);
             name = appendParameterNumber(name, signatureComponent);
 
             parameterNames[index] = name;
@@ -107,21 +106,21 @@ internal class DerivableUnitResolver : AProcesser<IDerivableUnitResolutionContex
 
         return parameterNames;
 
-        void countParameter(IUnresolvedUnitInstance signatureComponent)
+        void countParameter(IUnresolvedUnitType signatureComponent)
         {
-            if (counts.TryGetValue(signatureComponent.Name, out int count))
+            if (counts.TryGetValue(signatureComponent.Type.Name, out int count))
             {
-                counts[signatureComponent.Name] = count - 1;
+                counts[signatureComponent.Type.Name] = count - 1;
             }
             else
             {
-                counts[signatureComponent.Name] = -1;
+                counts[signatureComponent.Type.Name] = -1;
             }
         }
 
-        string appendParameterNumber(string text, IUnresolvedUnitInstance signatureComponent)
+        string appendParameterNumber(string text, IUnresolvedUnitType signatureComponent)
         {
-            int count = counts[signatureComponent.Name];
+            int count = counts[signatureComponent.Type.Name];
 
             if (count == -1)
             {
@@ -129,13 +128,13 @@ internal class DerivableUnitResolver : AProcesser<IDerivableUnitResolutionContex
             }
             else if (count < 0)
             {
-                counts[signatureComponent.Name] = 1;
+                counts[signatureComponent.Type.Name] = 1;
                 return $"{text}1";
             }
             else
             {
-                counts[signatureComponent.Name] += 1;
-                return $"{text}{counts[signatureComponent.Name]}";
+                counts[signatureComponent.Type.Name] += 1;
+                return $"{text}{counts[signatureComponent.Type.Name]}";
             }
         }
     }

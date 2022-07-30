@@ -11,15 +11,15 @@ internal static class DerivedUnitProperties
     {
         CommonProperties.Name<RawDerivedUnitDefinition, DerivedUnitLocations>(nameof(DerivedUnitAttribute.Name)),
         CommonProperties.Plural<RawDerivedUnitDefinition, DerivedUnitLocations>(nameof(DerivedUnitAttribute.Plural)),
-        SignatureID,
+        DerivationID,
         Units
     };
 
-    private static DerivedUnitProperty<string> SignatureID { get; } = new
+    private static DerivedUnitProperty<string> DerivationID { get; } = new
     (
         name: nameof(DerivedUnitAttribute.DerivationID),
-        setter: static (definition, signatureID) => definition with { SignatureID = signatureID },
-        locator: static (locations, signatureIDLocation) => locations with { SignatureID = signatureIDLocation }
+        setter: static (definition, derivationID) => definition with { DerivationID = derivationID },
+        locator: static (locations, derivationIDLocation) => locations with { DerivationID = derivationIDLocation }
     );
 
     private static DerivedUnitProperty<string?[]> Units { get; } = new

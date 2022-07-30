@@ -6,11 +6,21 @@ using SharpMeasures.Generators.Units;
 
 public static partial class DiagnosticRules
 {
-    public static readonly DiagnosticDescriptor NullUnitDerivationID = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor MultipleDerivationSignaturesButNotNamed = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.InvalidUnitDerivationID,
-        title: "Invalid derivation ID",
-        messageFormat: "The derivation ID must be defined",
+        id: DiagnosticIDs.MultipleDerivationSignaturesButNotNamed,
+        title: "Unnamed derivation signature",
+        messageFormat: "The derivation ID must be specified, as {0} defines multiple derivations",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor AmbiguousDerivationSignatureNotSpecified = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.AmbiguousDerivationSignatureNotSpecified,
+        title: "Ambiguous unit derivation signature",
+        messageFormat: $"{{0}} contains multiple derivation definitions, but the ID of the intended derivation was not specified",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -21,7 +31,7 @@ public static partial class DiagnosticRules
         id: DiagnosticIDs.DuplicateUnitDerivationID,
         title: "Duplicate derivation ID",
         messageFormat: "{0} already defines a derivation with ID \"{1}\"",
-        category: "Naming",
+        category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
@@ -51,16 +61,6 @@ public static partial class DiagnosticRules
         id: DiagnosticIDs.UnitNotDerivable,
         title: "Unit not derivable",
         messageFormat: $"{{0}} has no defined derivations. Add a definition using {Utility.FullAttributeName<DerivableUnitAttribute>()}.",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
-        isEnabledByDefault: true
-    );
-
-    public static readonly DiagnosticDescriptor AmbiguousDerivationSignatureNotSpecified = new DiagnosticDescriptor
-    (
-        id: DiagnosticIDs.AmbiguousDerivationSignatureNotSpecified,
-        title: "Ambiguous unit derivation signature",
-        messageFormat: $"{{0}} contains multiple derivation definitions, but the ID of the intended derivation was not specified",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

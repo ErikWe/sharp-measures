@@ -73,7 +73,7 @@ internal class DerivedUnitResolver : AProcesser<IDerivedUnitResolutionContext, U
             return ValidityWithDiagnostics.Invalid(Diagnostics.UnitNotDerivable(context, definition));
         }
 
-        if (definition.SignatureID is null || definition.SignatureID.Length is 0)
+        if (definition.DerivationID is null || definition.DerivationID.Length is 0)
         {
             if (context.DerivationsByID.Count is not 1)
             {
@@ -88,12 +88,12 @@ internal class DerivedUnitResolver : AProcesser<IDerivedUnitResolutionContext, U
 
     private IOptionalWithDiagnostics<UnresolvedUnitDerivationSignature> ProcessSignature(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition)
     {
-        if (definition.SignatureID is null || definition.SignatureID.Length is 0)
+        if (definition.DerivationID is null || definition.DerivationID.Length is 0)
         {
             return OptionalWithDiagnostics.Result(context.DerivationsByID.Values.First().Signature);
         }
 
-        if (context.DerivationsByID.TryGetValue(definition.SignatureID, out var derivation) is false)
+        if (context.DerivationsByID.TryGetValue(definition.DerivationID, out var derivation) is false)
         {
             return OptionalWithDiagnostics.Empty<UnresolvedUnitDerivationSignature>(Diagnostics.UnrecognizedSignatureID(context, definition));
         }

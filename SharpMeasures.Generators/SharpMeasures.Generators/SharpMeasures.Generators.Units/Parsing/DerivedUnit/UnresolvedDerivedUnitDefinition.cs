@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 internal record class UnresolvedDerivedUnitDefinition : AUnresolvedUnitDefinition<DerivedUnitLocations>, IUnresolvedDerivedUnit
 {
-    public string? SignatureID { get; }
+    public string? DerivationID { get; }
     public IReadOnlyList<string> Units => units;
 
     private ReadOnlyEquatableList<string> units { get; }
@@ -16,7 +16,7 @@ internal record class UnresolvedDerivedUnitDefinition : AUnresolvedUnitDefinitio
     public UnresolvedDerivedUnitDefinition(string name, string plural, string? signatureID, IReadOnlyList<string> units, DerivedUnitLocations locations)
         : base(name, plural, locations)
     {
-        SignatureID = signatureID;
+        DerivationID = signatureID;
         this.units = units.AsReadOnlyEquatable();
     }
 }

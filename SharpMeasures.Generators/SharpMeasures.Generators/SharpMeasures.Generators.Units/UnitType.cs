@@ -97,5 +97,17 @@ internal class UnitType : IUnitType
     private ReadOnlyEquatableDictionary<string, IUnitInstance> ConstructUnitsByPluralNameDictionary() => AllUnits().ToDictionary(static (unit) => unit.Plural).AsReadOnlyEquatable();
 
     private ReadOnlyEquatableDictionary<string, IDerivableUnit> ConstructDerivationsByIDDictionary()
-        => UnitDerivations.ToDictionary(static (derivation) => derivation.DerivationID, static (derivation) => derivation as IDerivableUnit).AsReadOnlyEquatable();
+    {
+        Dictionary<string, IDerivableUnit> derivationsDictionary = new(UnitDerivations.Count);
+
+        foreach (var derivation in UnitDerivations)
+        {
+            if (derivation.DerivationID is not null)
+            {
+                derivationsDictionary.Add(derivation.DerivationID, derivation);
+            }
+        }
+
+        return derivationsDictionary.AsReadOnlyEquatable();
+    }
 }

@@ -9,7 +9,7 @@ internal static class SourceTexts
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnit("Metre", "Metres")]
         [UnitAlias({{name}}, {{plural}}, {{aliasOf}})]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
@@ -22,17 +22,13 @@ internal static class SourceTexts
         [SharpMeasuresScalar(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
 
-        [FixedUnit("Kelvin", "Kelvin", 1, 0)]
+        [FixedUnit("Kelvin", "Kelvin")]
         [BiasedUnit({{name}}, {{plural}}, {{from}}, {{bias}})]
         [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
 
-    public static string DerivedWithoutSignature(string name = "\"MetrePerSecond\"", string plural = "\"MetresPerSecond\"", string units = "\"Metre\", \"Second\"") =>
-        DerivedWithSignature(name, plural, "null", $$"""new[] { {{units}} }""");
-
-    public static string DerivedWithSignature(string name = "\"MetrePerSecond\"", string plural = "\"MetresPerSecond\"",
-        string signatureID = "1", string units = "new[] { \"Metre\", \"Second\" }") => $$"""
+    public static string DerivedWithID(string name = "\"MetrePerSecond\"", string plural = "\"MetresPerSecond\"", string derivationID = "\"1\"", string units = "\"Metre\", \"Second\"") => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
@@ -45,28 +41,55 @@ internal static class SourceTexts
         [SharpMeasuresScalar(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnit("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
 
-        [FixedUnit("Second", "Seconds", 1)]
+        [FixedUnit("Second", "Seconds")]
         [SharpMeasuresUnit(typeof(Time))]
         public partial class UnitOfTime { }
 
         [DerivableUnit("1", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-        [DerivedUnit({{name}}, {{plural}}, {{signatureID}}, {{units}})]
+        [DerivedUnit({{name}}, {{plural}}, {{derivationID}}, {{units}})]
         [SharpMeasuresUnit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
 
-    public static string Fixed(string name = "\"Metre\"", string plural = "\"Metres\"", string value = "1", string bias = "0") => $$"""
+    public static string DerivedWithoutID(string name = "\"MetrePerSecond\"", string plural = "\"MetresPerSecond\"", string units = "new[] { \"Metre\", \"Second\" }") => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit({{name}}, {{plural}}, {{value}}, {{bias}})]
+        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        public partial class Time { }
+
+        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        public partial class Speed { }
+
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+
+        [FixedUnit("Second", "Seconds")]
+        [SharpMeasuresUnit(typeof(Time))]
+        public partial class UnitOfTime { }
+
+        [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
+        [DerivedUnit({{name}}, {{plural}}, {{units}})]
+        [SharpMeasuresUnit(typeof(Speed))]
+        public partial class UnitOfSpeed { }
+        """;
+
+    public static string Fixed(string name = "\"Metre\"", string plural = "\"Metres\"") => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit({{name}}, {{plural}})]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -80,7 +103,7 @@ internal static class SourceTexts
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnit("Metre", "Metres")]
         [PrefixedUnit({{name}}, {{plural}}, {{from}}, {{prefix}})]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
@@ -93,7 +116,7 @@ internal static class SourceTexts
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnit("Metre", "Metres")]
         [ScaledUnit({{name}}, {{plural}}, {{from}}, {{value}})]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }

@@ -11,13 +11,10 @@ internal class DerivableUnitProcessingDiagnostics : IDerivableUnitProcessingDiag
 
     private DerivableUnitProcessingDiagnostics() { }
 
-    public Diagnostic NullDerivationID(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
+    public Diagnostic MultipleDerivationsButNotNamed(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
-        return DiagnosticConstruction.NullUnitDerivationID(definition.Locations.DerivationID?.AsRoslynLocation());
+        return DiagnosticConstruction.MultipleDerivationSignaturesButNotNamed(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
-
-    public Diagnostic EmptyDerivationID(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
-        => NullDerivationID(context, definition);
 
     public Diagnostic DuplicateDerivationID(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {

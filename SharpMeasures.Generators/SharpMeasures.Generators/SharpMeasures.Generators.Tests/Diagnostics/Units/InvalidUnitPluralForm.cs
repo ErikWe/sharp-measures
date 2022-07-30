@@ -48,7 +48,7 @@ public class InvalidUnitPluralForm
     [Fact]
     public Task Derived_Null_ExactListAndVerify()
     {
-        string source = SourceTexts.DerivedWithoutSignature(plural: "null");
+        string source = SourceTexts.DerivedWithID(plural: "null");
 
         return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
     }
@@ -56,7 +56,7 @@ public class InvalidUnitPluralForm
     [Fact]
     public Task Derived_Empty_ExactListAndVerify()
     {
-        string source = SourceTexts.DerivedWithoutSignature(plural: MetaEmptyString);
+        string source = SourceTexts.DerivedWithID(plural: MetaEmptyString);
 
         return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
     }

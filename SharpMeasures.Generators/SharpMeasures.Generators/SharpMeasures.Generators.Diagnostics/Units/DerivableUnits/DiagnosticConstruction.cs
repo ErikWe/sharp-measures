@@ -4,9 +4,14 @@ using Microsoft.CodeAnalysis;
 
 public static partial class DiagnosticConstruction
 {
-    public static Diagnostic NullUnitDerivationID(Location? location)
+    public static Diagnostic MultipleDerivationSignaturesButNotNamed(Location? location, string unitName)
     {
-        return Diagnostic.Create(DiagnosticRules.NullUnitDerivationID, location);
+        return Diagnostic.Create(DiagnosticRules.MultipleDerivationSignaturesButNotNamed, location, unitName);
+    }
+
+    public static Diagnostic AmbiguousDerivationSignatureNotSpecified(Location? location, string unitName)
+    {
+        return Diagnostic.Create(DiagnosticRules.AmbiguousDerivationSignatureNotSpecified, location, unitName);
     }
 
     public static Diagnostic DuplicateUnitDerivationID(Location? location, string derivationID, string unitTypeName)
@@ -27,10 +32,5 @@ public static partial class DiagnosticConstruction
     public static Diagnostic UnitNotDerivable(Location? location, string unitName)
     {
         return Diagnostic.Create(DiagnosticRules.UnitNotDerivable, location, unitName);
-    }
-
-    public static Diagnostic AmbiguousDerivationSignatureNotSpecified(Location? location, string unitName)
-    {
-        return Diagnostic.Create(DiagnosticRules.AmbiguousDerivationSignatureNotSpecified, location, unitName);
     }
 }

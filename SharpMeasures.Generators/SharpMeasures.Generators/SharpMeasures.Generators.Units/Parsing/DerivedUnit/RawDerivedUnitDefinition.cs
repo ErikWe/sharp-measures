@@ -9,7 +9,7 @@ internal record class RawDerivedUnitDefinition : ARawUnitDefinition<RawDerivedUn
 {
     public static RawDerivedUnitDefinition Empty { get; } = new();
 
-    public string? SignatureID { get; init; }
+    public string? DerivationID { get; init; }
     public IReadOnlyList<string?> Units
     {
         get => units;

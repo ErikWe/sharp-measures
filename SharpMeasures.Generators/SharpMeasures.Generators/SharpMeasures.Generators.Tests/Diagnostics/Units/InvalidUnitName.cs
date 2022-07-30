@@ -14,104 +14,90 @@ using Xunit;
 public class InvalidUnitName
 {
     [Fact]
-    public Task Alias_Null_ExactListAndVerify()
+    public Task VerifyInvalidUnitNameDiagnosticsMessage_Null()
     {
-        string source = SourceTexts.Alias(name: "null");
+        string source = SourceTexts.Fixed("null");
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
     }
 
     [Fact]
-    public Task Alias_Empty_ExactListAndVerify()
+    public Task VerifyInvalidUnitNameDiagnosticsMessage_Empty()
     {
-        string source = SourceTexts.Alias(name: MetaEmptyString);
+        string source = SourceTexts.Fixed("\"\"");
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
     }
 
-    [Fact]
-    public Task Biased_Null_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(InvalidUnitNames))]
+    public void Alias_ExactList(string name)
     {
-        string source = SourceTexts.Biased(name: "null");
+        string source = SourceTexts.Alias(name: name);
 
-        return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyInvalidUnitNameDiagnostics(source);
     }
 
-    [Fact]
-    public Task Biased_Empty_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(InvalidUnitNames))]
+    public void Biased_ExactList(string name)
     {
-        string source = SourceTexts.Biased(name: MetaEmptyString);
+        string source = SourceTexts.Biased(name: name);
 
-        return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyInvalidUnitNameDiagnostics(source);
     }
 
-    [Fact]
-    public Task Derived_Null_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(InvalidUnitNames))]
+    public void DerivedWithID_ExactList(string name)
     {
-        string source = SourceTexts.DerivedWithoutSignature(name: "null");
+        string source = SourceTexts.DerivedWithID(name: name);
 
-        return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyInvalidUnitNameDiagnostics(source);
     }
 
-    [Fact]
-    public Task Derived_Empty_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(InvalidUnitNames))]
+    public void DerivedWithoutID_ExactList(string name)
     {
-        string source = SourceTexts.DerivedWithoutSignature(name: MetaEmptyString);
+        string source = SourceTexts.DerivedWithoutID(name: name);
 
-        return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyInvalidUnitNameDiagnostics(source);
     }
 
-    [Fact]
-    public Task Fixed_Null_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(InvalidUnitNames))]
+    public void Fixed_ExactList(string name)
     {
-        string source = SourceTexts.Fixed(name: "null");
+        string source = SourceTexts.Fixed(name: name);
 
-        return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyInvalidUnitNameDiagnostics(source);
     }
 
-    [Fact]
-    public Task Fixed_Empty_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(InvalidUnitNames))]
+    public void Prefixed_ExactList(string name)
     {
-        string source = SourceTexts.Fixed(name: MetaEmptyString);
+        string source = SourceTexts.Prefixed(name:name);
 
-        return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyInvalidUnitNameDiagnostics(source);
     }
 
-    [Fact]
-    public Task Prefixed_Null_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(InvalidUnitNames))]
+    public void Scaled_ExactList(string name)
     {
-        string source = SourceTexts.Prefixed(name: "null");
+        string source = SourceTexts.Scaled(name: name);
 
-        return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyInvalidUnitNameDiagnostics(source);
     }
 
-    [Fact]
-    public Task Prefixed_Empty_ExactListAndVerify()
+    private static IEnumerable<object[]> InvalidUnitNames() => new object[][]
     {
-        string source = SourceTexts.Prefixed(name: MetaEmptyString);
+        new[] { "null" },
+        new[] { "\"\"" }
+    };
 
-        return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task Scaled_Null_ExactListAndVerify()
-    {
-        string source = SourceTexts.Scaled(name: "null");
-
-        return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task Scaled_Empty_ExactListAndVerify()
-    {
-        string source = SourceTexts.Scaled(name: MetaEmptyString);
-
-        return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    private static GeneratorVerifier AssertExactlyInvalidUnitNameDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidUnitNameDiagnostics);
-
-    private const string MetaEmptyString = "\"\"";
+    private static GeneratorVerifier AssertExactlyInvalidUnitNameDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidUnitNameDiagnostics);
     private static IReadOnlyCollection<string> InvalidUnitNameDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidUnitName };
 }

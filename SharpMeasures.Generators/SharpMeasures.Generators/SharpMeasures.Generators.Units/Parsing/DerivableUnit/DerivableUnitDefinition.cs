@@ -7,7 +7,8 @@ using System.Collections.Generic;
 
 internal record class DerivableUnitDefinition : IAttributeDefinition<DerivableUnitLocations>, IDerivableUnit
 {
-    public string DerivationID { get; }
+    public string? DerivationID { get; }
+
     public string Expression { get; }
     public UnitDerivationSignature Signature { get; }
     public IReadOnlyList<string> ParameterNames => parameterNames;
@@ -16,9 +17,10 @@ internal record class DerivableUnitDefinition : IAttributeDefinition<DerivableUn
 
     public DerivableUnitLocations Locations { get; }
 
-    public DerivableUnitDefinition(string derivationID, string expression, UnitDerivationSignature signature, IReadOnlyList<string> parameterNames, DerivableUnitLocations locations)
+    public DerivableUnitDefinition(string? derivationID, string expression, UnitDerivationSignature signature, IReadOnlyList<string> parameterNames, DerivableUnitLocations locations)
     {
         DerivationID = derivationID;
+
         Expression = expression;
         Signature = signature;
         this.parameterNames = parameterNames.AsReadOnlyEquatable();

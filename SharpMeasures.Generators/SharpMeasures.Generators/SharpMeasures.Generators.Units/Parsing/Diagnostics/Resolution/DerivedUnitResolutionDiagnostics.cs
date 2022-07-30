@@ -34,6 +34,6 @@ internal class DerivedUnitResolutionDiagnostics : IDerivedUnitResolutionDiagnost
 
     public Diagnostic UnrecognizedSignatureID(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition)
     {
-        return DiagnosticConstruction.UnrecognizedUnitDerivationID(definition.Locations.SignatureID?.AsRoslynLocation(), definition.SignatureID!, context.Type.Name);
+        return DiagnosticConstruction.UnrecognizedUnitDerivationID(definition.Locations.DerivationID?.AsRoslynLocation(), definition.DerivationID!, context.Type.Name);
     }
 }
