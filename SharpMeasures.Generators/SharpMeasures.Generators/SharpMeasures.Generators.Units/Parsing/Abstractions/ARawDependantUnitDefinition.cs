@@ -13,5 +13,5 @@ internal abstract record class ARawDependantUnitDefinition<TDefinition, TLocatio
 
     protected TDefinition WithDependantOn(string? dependantOn) => Definition with { DependantOn = dependantOn };
 
-    TDefinition IOpenRawDependantUnitDefinition<TDefinition, TLocations>.WithDependantOn(string? name) => WithName(name);
+    TDefinition IOpenRawDependantUnitDefinition<TDefinition, TLocations>.WithDependantOn(string? name) => WithDependantOn(name);
 }
