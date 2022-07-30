@@ -4,45 +4,52 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Units.Parsing.Contexts.Resolution;
-using SharpMeasures.Generators.Units.Parsing.Diagnostics.Resolution;
+using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.Parsing.BiasedUnit;
+using SharpMeasures.Generators.Units.Parsing.Contexts.Resolution;
 using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 using SharpMeasures.Generators.Units.Parsing.DerivedUnit;
+using SharpMeasures.Generators.Units.Parsing.Diagnostics.Resolution;
 using SharpMeasures.Generators.Units.Parsing.FixedUnit;
 using SharpMeasures.Generators.Units.Parsing.PrefixedUnit;
 using SharpMeasures.Generators.Units.Parsing.ScaledUnit;
 using SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
 using SharpMeasures.Generators.Units.Parsing.UnitAlias;
 using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units;
 
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 
-public class UnitResolver
+public interface IUnitResolver
 {
+    public abstract (IncrementalValueProvider<IUnitPopulation>, IUnitGenerator) Resolve(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnresolvedScalarPopulation> scalarPopulationProvider);
+}
+
+internal class UnitResolver : IUnitResolver
+{
+    private IncrementalValueProvider<IUnresolvedUnitPopulationWithData> UnitPopulationProvider { get; }
+
     private IncrementalValuesProvider<UnresolvedUnitType> UnitProvider { get; }
 
-    internal UnitResolver(IncrementalValuesProvider<UnresolvedUnitType> unitProvider)
+    internal UnitResolver(IncrementalValueProvider<IUnresolvedUnitPopulationWithData> unitPopulationProvider, IncrementalValuesProvider<UnresolvedUnitType> unitProvider)
     {
+        UnitPopulationProvider = unitPopulationProvider;
+
         UnitProvider = unitProvider;
     }
 
-    public (IncrementalValueProvider<IUnitPopulation>, UnitGenerator) Resolve(IncrementalGeneratorInitializationContext context,
-        IncrementalValueProvider<IUnresolvedUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IUnresolvedScalarPopulation> scalarPopulationProvider)
+    public (IncrementalValueProvider<IUnitPopulation>, IUnitGenerator) Resolve(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnresolvedScalarPopulation> scalarPopulationProvider)
     {
-        var resolved = UnitProvider.Combine(unitPopulationProvider, scalarPopulationProvider).Select(ResolveUnit).ReportDiagnostics(context);
+        var resolved = UnitProvider.Combine(UnitPopulationProvider, scalarPopulationProvider).Select(ResolveUnit).ReportDiagnostics(context);
         var population = resolved.Select(ExtractInterface).Collect().Select(CreatePopulation);
 
         return (population, new UnitGenerator(resolved));
     }
 
-    private IOptionalWithDiagnostics<UnitType> ResolveUnit
-        ((UnresolvedUnitType Unit, IUnresolvedUnitPopulation UnitPopulation, IUnresolvedScalarPopulation ScalarPopulation) input, CancellationToken _)
+    private IOptionalWithDiagnostics<UnitType> ResolveUnit ((UnresolvedUnitType Unit, IUnresolvedUnitPopulationWithData UnitPopulation, IUnresolvedScalarPopulation ScalarPopulation) input, CancellationToken _)
     {
-        SharpMeasuresUnitResolutionContext unitResolutionContext = new(input.Unit.Type, input.ScalarPopulation);
+        SharpMeasuresUnitResolutionContext unitResolutionContext = new(input.Unit.Type, input.UnitPopulation, input.ScalarPopulation);
 
         var unit = Resolvers.SharpMeasuresUnitResolver.Process(unitResolutionContext, input.Unit.Definition);
         var allDiagnostics = unit.Diagnostics;

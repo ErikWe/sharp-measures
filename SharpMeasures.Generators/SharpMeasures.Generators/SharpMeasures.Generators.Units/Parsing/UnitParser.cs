@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Providers;
+using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.Parsing.Contexts.Processing;
 using SharpMeasures.Generators.Units.Parsing.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Diagnostics.Processing;
@@ -27,16 +28,18 @@ using SharpMeasures.Generators.Providers.DeclarationFilter;
 
 public static class UnitParser
 {
-    public static (IncrementalValueProvider<IUnresolvedUnitPopulation>, UnitResolver) Attach(IncrementalGeneratorInitializationContext context)
+    public static (IncrementalValueProvider<IUnresolvedUnitPopulation>, IUnitResolver) Attach(IncrementalGeneratorInitializationContext context)
     {
         var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<SharpMeasuresUnitAttribute>(context.SyntaxProvider);
         var filteredDeclarations = FilteredDeclarationProvider.Construct<TypeDeclarationSyntax>(DeclarationFilters).AttachAndReport(context, declarations);
         var symbols = DeclarationSymbolProvider.ConstructForValueType(IntermediateResult.Construct).Attach(filteredDeclarations, context.CompilationProvider);
 
         var parsed = symbols.Select(ParseAttributes).ReportDiagnostics(context).Select(ProcessParsedData).ReportDiagnostics(context);
-        var population = parsed.Select(ExtractInterface).Collect().Select(CreatePopulation);
 
-        return (population, new UnitResolver(parsed));
+        var population = parsed.Select(ExtractInterface).Collect().Select(CreatePopulation);
+        var reducedPopulation = population.Select(ExtractInterface);
+
+        return (reducedPopulation, new UnitResolver(population, parsed));
     }
 
     private static IOptionalWithDiagnostics<RawUnitType> ParseAttributes(IntermediateResult input, CancellationToken _)
@@ -104,10 +107,11 @@ public static class UnitParser
     }
 
     private static IUnresolvedUnitType ExtractInterface(UnresolvedUnitType unitType, CancellationToken _) => unitType;
+    private static IUnresolvedUnitPopulation ExtractInterface(IUnresolvedUnitPopulation population, CancellationToken _) => population;
 
-    private static IUnresolvedUnitPopulation CreatePopulation(ImmutableArray<IUnresolvedUnitType> units, CancellationToken _)
+    private static IUnresolvedUnitPopulationWithData CreatePopulation(ImmutableArray<IUnresolvedUnitType> units, CancellationToken _)
     {
-        return new UnresolvedUnitPopulation(units.ToDictionary(static (unit) => unit.Type.AsNamedType()));
+        return UnresolvedUnitPopulation.Build(units);
     }
 
     private static IEnumerable<IDeclarationFilter> DeclarationFilters { get; } = new IDeclarationFilter[]

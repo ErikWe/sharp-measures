@@ -12,7 +12,14 @@ using SharpMeasures.Generators.Units.Pipelines.UnitDefinitions;
 
 using System.Threading;
 
-public class UnitGenerator
+public interface IUnitGenerator
+{
+    public abstract void Perform(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
+        IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider,
+        IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider);
+}
+
+internal class UnitGenerator : IUnitGenerator
 {
     private IncrementalValuesProvider<UnitType> UnitProvider { get; }
 

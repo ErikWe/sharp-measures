@@ -2,7 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
 
@@ -11,6 +10,11 @@ internal class SharpMeasuresUnitResolutionDiagnostics : ISharpMeasuresUnitResolu
     public static SharpMeasuresUnitResolutionDiagnostics Instance { get; } = new();
 
     private SharpMeasuresUnitResolutionDiagnostics() { }
+
+    public Diagnostic TypeAlreadyUnit(ISharpMeasuresUnitResolutionContext context, UnresolvedSharpMeasuresUnitDefinition definition)
+    {
+        return DiagnosticConstruction.UnitTypeAlreadyDefinedAsUnit(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
+    }
 
     public Diagnostic QuantityNotScalar(ISharpMeasuresUnitResolutionContext context, UnresolvedSharpMeasuresUnitDefinition definition)
     {
