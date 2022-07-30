@@ -59,11 +59,13 @@ internal class UnitResolver : IUnitResolver
             return OptionalWithDiagnostics.Empty<UnitType>(allDiagnostics);
         }
 
+        var unnamedUnitDerivation = input.Unit.UnitDerivations.Count == 1 && input.Unit.UnitDerivations[0].DerivationID is null ? input.Unit.UnitDerivations[0] : null;
+
         DerivableUnitResolutionContext derivableUnitResolutionContext = new(input.Unit.Type, input.UnitPopulation);
         IProcessingContext resolutionContext = new SimpleProcessingContext(input.Unit.Type);
         DependantUnitResolutionContext dependantUnitResolutionContext = new(input.Unit.Type, input.Unit.UnitsByName);
         BiasedUnitResolutionContext biasedUnitResolutionContext = new(input.Unit.Type, input.Unit.Definition.BiasTerm, input.Unit.UnitsByName);
-        DerivedUnitResolutionContext derivedUnitResolutionContext = new(input.Unit.Type, input.Unit.UnitsByName, input.Unit.DerivationsByID, input.UnitPopulation);
+        DerivedUnitResolutionContext derivedUnitResolutionContext = new(input.Unit.Type, unnamedUnitDerivation, input.Unit.UnitsByName, input.Unit.DerivationsByID, input.UnitPopulation);
 
         var fixedUnit = input.Unit.FixedUnit is not null
             ? Resolvers.FixedUnitResolver.Process(resolutionContext, input.Unit.FixedUnit)

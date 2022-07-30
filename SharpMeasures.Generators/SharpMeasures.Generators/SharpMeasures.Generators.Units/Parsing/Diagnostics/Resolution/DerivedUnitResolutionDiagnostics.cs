@@ -32,7 +32,7 @@ internal class DerivedUnitResolutionDiagnostics : IDerivedUnitResolutionDiagnost
         return DiagnosticConstruction.AmbiguousDerivationSignatureNotSpecified(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
-    public Diagnostic UnrecognizedSignatureID(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition)
+    public Diagnostic UnrecognizedDerivationID(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition)
     {
         return DiagnosticConstruction.UnrecognizedUnitDerivationID(definition.Locations.DerivationID?.AsRoslynLocation(), definition.DerivationID!, context.Type.Name);
     }

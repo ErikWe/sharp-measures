@@ -24,8 +24,6 @@ internal interface IDerivableUnitProcessingContext : IProcessingContext
 {
     public abstract bool MultipleDefinitions { get; }
     public abstract HashSet<string> ReservedIDs { get; }
-
-    public abstract void MarkMultipleDefinitions();
 }
 
 internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProcessingContext, RawDerivableUnitDefinition, UnresolvedDerivableUnitDefinition>
@@ -43,8 +41,6 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
         {
             context.ReservedIDs.Add(product.DerivationID);
         }
-
-        context.MarkMultipleDefinitions();
     }
 
     public override IOptionalWithDiagnostics<UnresolvedDerivableUnitDefinition> Process(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
@@ -70,7 +66,7 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
             return OptionalWithDiagnostics.Empty<UnresolvedDerivableUnitDefinition>(allDiagnostics);
         }
 
-        UnresolvedDerivableUnitDefinition product = new(definition.DerivationID!, definition.Expression!, processedSignature.Result, definition.Locations);
+        UnresolvedDerivableUnitDefinition product = new(definition.DerivationID, definition.Expression!, processedSignature.Result, definition.Locations);
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 

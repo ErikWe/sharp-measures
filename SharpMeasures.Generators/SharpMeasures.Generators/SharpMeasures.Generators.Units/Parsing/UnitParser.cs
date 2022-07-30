@@ -80,7 +80,7 @@ public static class UnitParser
         }
 
         UnitProcessingContext unitInstanceProcessingContext = new(rawUnitType.Type);
-        DerivableUnitProcessingContext derivableUnitProcessingContext = new(rawUnitType.Type);
+        DerivableUnitProcessingContext derivableUnitProcessingContext = new(rawUnitType.Type, rawUnitType.UnitDerivations.Skip(1).Any());
 
         var fixedUnit = rawUnitType.FixedUnit is not null
             ? Processers.FixedUnitProcesser.Process(unitInstanceProcessingContext, rawUnitType.FixedUnit)

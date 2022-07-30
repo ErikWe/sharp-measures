@@ -14,14 +14,14 @@ internal interface IDerivedUnitResolutionDiagnostics
 {
     public abstract Diagnostic? UnitNotDerivable(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition);
     public abstract Diagnostic? AmbiguousSignatureNotSpecified(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition);
-    public abstract Diagnostic? UnrecognizedSignatureID(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition);
-    public abstract Diagnostic? InvalidUnitListLength(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition,
-        UnresolvedUnitDerivationSignature signature);
+    public abstract Diagnostic? UnrecognizedDerivationID(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition);
+    public abstract Diagnostic? InvalidUnitListLength(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition, UnresolvedUnitDerivationSignature signature);
     public abstract Diagnostic? UnrecognizedUnit(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition, int index, IUnresolvedUnitType unitType);
 }
 
 internal interface IDerivedUnitResolutionContext : IProcessingContext
 {
+    public abstract IUnresolvedDerivableUnit? UnnamedDerivation { get; }
     public abstract IReadOnlyDictionary<string, IUnresolvedDerivableUnit> DerivationsByID { get; }
     public abstract IUnresolvedUnitPopulation UnitPopulation { get; }
 }
@@ -68,14 +68,14 @@ internal class DerivedUnitResolver : AProcesser<IDerivedUnitResolutionContext, U
 
     private IValidityWithDiagnostics CheckSignatureIDValidity(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition)
     {
-        if (context.DerivationsByID.Count is 0)
+        if (context.DerivationsByID.Count is 0 && context.UnnamedDerivation is null)
         {
             return ValidityWithDiagnostics.Invalid(Diagnostics.UnitNotDerivable(context, definition));
         }
 
         if (definition.DerivationID is null || definition.DerivationID.Length is 0)
         {
-            if (context.DerivationsByID.Count is not 1)
+            if (context.DerivationsByID.Count is not 1 && context.UnnamedDerivation is null)
             {
                 return ValidityWithDiagnostics.Invalid(Diagnostics.AmbiguousSignatureNotSpecified(context, definition));
             }
@@ -90,12 +90,17 @@ internal class DerivedUnitResolver : AProcesser<IDerivedUnitResolutionContext, U
     {
         if (definition.DerivationID is null || definition.DerivationID.Length is 0)
         {
+            if (context.UnnamedDerivation is not null)
+            {
+                return OptionalWithDiagnostics.Result(context.UnnamedDerivation.Signature);
+            }
+
             return OptionalWithDiagnostics.Result(context.DerivationsByID.Values.First().Signature);
         }
 
         if (context.DerivationsByID.TryGetValue(definition.DerivationID, out var derivation) is false)
         {
-            return OptionalWithDiagnostics.Empty<UnresolvedUnitDerivationSignature>(Diagnostics.UnrecognizedSignatureID(context, definition));
+            return OptionalWithDiagnostics.Empty<UnresolvedUnitDerivationSignature>(Diagnostics.UnrecognizedDerivationID(context, definition));
         }
 
         return OptionalWithDiagnostics.Result(derivation.Signature);
