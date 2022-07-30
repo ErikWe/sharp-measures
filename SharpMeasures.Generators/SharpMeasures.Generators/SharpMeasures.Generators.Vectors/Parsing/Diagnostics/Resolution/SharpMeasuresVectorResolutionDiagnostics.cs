@@ -21,6 +21,11 @@ internal class SharpMeasuresVectorResolutionDiagnostics : ISharpMeasuresVectorRe
         return DiagnosticConstruction.VectorTypeAlreadyDefinedAsScalar(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
+    public Diagnostic TypeAlreadyVector(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition)
+    {
+        return DiagnosticConstruction.VectorTypeAlreadyDefinedAsVector(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
+    }
+
     public Diagnostic TypeNotUnit(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition)
     {
         return DiagnosticConstruction.TypeNotUnit(definition.Locations.Unit?.AsRoslynLocation(), definition.Unit.Name);

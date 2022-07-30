@@ -2,11 +2,11 @@
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Vectors;
 using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Units;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Vectors;
+using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Resolution;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Resolution;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroup;
@@ -18,11 +18,11 @@ using System.Threading;
 internal static class VectorGroupBaseTypeResolution
 {
     public static IOptionalWithDiagnostics<VectorGroupType> Resolve((UnresolvedVectorGroupBaseType Vector, IUnresolvedUnitPopulation UnitPopulation,
-        IUnresolvedScalarPopulation ScalarPopulation, IUnresolvedVectorPopulation VectorPopulation) input, CancellationToken _)
+        IUnresolvedScalarPopulation ScalarPopulation, IUnresolvedVectorPopulationWithData VectorPopulation) input, CancellationToken _)
         => Resolve(input.Vector, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
 
     public static IOptionalWithDiagnostics<VectorGroupType> Resolve(UnresolvedVectorGroupBaseType unresolvedVector, IUnresolvedUnitPopulation unitPopulation,
-        IUnresolvedScalarPopulation scalarPopulation, IUnresolvedVectorPopulation vectorPopulation)
+        IUnresolvedScalarPopulation scalarPopulation, IUnresolvedVectorPopulationWithData vectorPopulation)
     {
         SharpMeasuresVectorGroupResolutionContext vectorResolutionContext = new(unresolvedVector.Type, unitPopulation, scalarPopulation, vectorPopulation);
 

@@ -64,9 +64,9 @@ internal class SpecializedSharpMeasuresScalarResolver : IProcesser<ISpecializedS
             return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresScalarDefinition>(Diagnostics.OriginalNotScalar(context, definition));
         }
 
-        var baseScalar = context.ScalarPopulation.ScalarBases[context.Type.AsNamedType()];
+        var scalarBase = context.ScalarPopulation.ScalarBases[context.Type.AsNamedType()];
 
-        if (context.UnitPopulation.Units.TryGetValue(baseScalar.Definition.Unit, out var unit) is false)
+        if (context.UnitPopulation.Units.TryGetValue(scalarBase.Definition.Unit, out var unit) is false)
         {
             return OptionalWithDiagnostics.EmptyWithoutDiagnostics<SpecializedSharpMeasuresScalarDefinition>();
         }
@@ -113,7 +113,7 @@ internal class SpecializedSharpMeasuresScalarResolver : IProcesser<ISpecializedS
         var resolvedGenerateDocumentation = ResolveGenerateDocumentation(context, definition);
 
         SpecializedSharpMeasuresScalarDefinition product = new(processedOriginalScalar.Result, definition.InheritDerivations, definition.InheritConstants,
-            definition.InheritConversions, definition.InheritBases, definition.InheritUnits, unit, resolvedVector, baseScalar.Definition.UseUnitBias, resolvedImplementSum,
+            definition.InheritConversions, definition.InheritBases, definition.InheritUnits, unit, resolvedVector, scalarBase.Definition.UseUnitBias, resolvedImplementSum,
             resolvedImplementDifference, resolvedDifference, resolvedDefaultUnit, resolvedDefaultUnitSymbol, resolvedReciprocal, resolvedSquare, resolvedCube,
             resolvedSquareRoot, resolvedCubeRoot, resolvedGenerateDocumentation, SharpMeasuresScalarLocations.Empty);
 

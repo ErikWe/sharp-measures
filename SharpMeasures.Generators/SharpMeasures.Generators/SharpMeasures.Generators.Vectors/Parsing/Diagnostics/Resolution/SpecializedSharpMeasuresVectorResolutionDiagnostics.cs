@@ -22,6 +22,11 @@ internal class SpecializedSharpMeasuresVectorResolutionDiagnostics : ISpecialize
         return DiagnosticConstruction.VectorTypeAlreadyDefinedAsScalar(definition.Locations.Attribute.AsRoslynLocation(), context.Type.Name);
     }
 
+    public Diagnostic TypeAlreadyVector(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition)
+    {
+        return DiagnosticConstruction.VectorTypeAlreadyDefinedAsVector(definition.Locations.Attribute.AsRoslynLocation(), context.Type.Name);
+    }
+
     public Diagnostic OriginalNotVector(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition)
     {
         return DiagnosticConstruction.TypeNotVector(definition.Locations.OriginalVector?.AsRoslynLocation(), definition.OriginalVector.Name);

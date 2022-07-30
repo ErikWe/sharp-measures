@@ -8,6 +8,7 @@ using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Units;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
 using System.Linq;
 
@@ -26,7 +27,7 @@ internal interface ISharpMeasuresVectorGroupResolutionContext : IProcessingConte
 {
     public abstract IUnresolvedUnitPopulation UnitPopulation { get; }
     public abstract IUnresolvedScalarPopulation ScalarPopulation { get; }
-    public abstract IUnresolvedVectorPopulation VectorPopulation { get; }
+    public abstract IUnresolvedVectorPopulationWithData VectorPopulation { get; }
 }
 
 internal class SharpMeasuresVectorGroupResolver : IProcesser<ISharpMeasuresVectorGroupResolutionContext, UnresolvedSharpMeasuresVectorGroupDefinition,
@@ -52,7 +53,7 @@ internal class SharpMeasuresVectorGroupResolver : IProcesser<ISharpMeasuresVecto
             return OptionalWithDiagnostics.Empty<SharpMeasuresVectorGroupDefinition>(Diagnostics.TypeAlreadyScalar(context, definition));
         }
 
-        if (context.VectorPopulation.IndividualVectors.ContainsKey(context.Type.AsNamedType()))
+        if (context.VectorPopulation.DuplicatelyDefined.ContainsKey(context.Type.AsNamedType()))
         {
             return OptionalWithDiagnostics.Empty<SharpMeasuresVectorGroupDefinition>(Diagnostics.TypeAlreadyVector(context, definition));
         }

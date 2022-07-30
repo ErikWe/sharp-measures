@@ -28,9 +28,9 @@ internal class UnresolvedScalarPopulation : IUnresolvedScalarPopulationWithData
             duplicatePopulation.TryAdd(scalar.Type.AsNamedType(), scalar);
         }
 
-        foreach (var baseScalar in scalarBases)
+        foreach (var scalarBase in scalarBases)
         {
-            scalarBasePopulation.TryAdd(baseScalar.Type.AsNamedType(), baseScalar);
+            scalarBasePopulation.TryAdd(scalarBase.Type.AsNamedType(), scalarBase);
         }
 
         var unassignedSpecializations = scalarSpecializations.ToList();
@@ -52,9 +52,9 @@ internal class UnresolvedScalarPopulation : IUnresolvedScalarPopulationWithData
 
             for (int i = 0; i < unassignedSpecializations.Count; i++)
             {
-                if (scalarBasePopulation.TryGetValue(unassignedSpecializations[i].Definition.OriginalScalar, out var baseScalar))
+                if (scalarBasePopulation.TryGetValue(unassignedSpecializations[i].Definition.OriginalScalar, out var scalarBase))
                 {
-                    scalarBasePopulation.TryAdd(unassignedSpecializations[i].Type.AsNamedType(), baseScalar);
+                    scalarBasePopulation.TryAdd(unassignedSpecializations[i].Type.AsNamedType(), scalarBase);
 
                     unassignedSpecializations.RemoveAt(i);
                 }

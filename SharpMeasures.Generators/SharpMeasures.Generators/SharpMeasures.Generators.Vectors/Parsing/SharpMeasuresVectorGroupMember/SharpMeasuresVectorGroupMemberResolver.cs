@@ -8,6 +8,7 @@ using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Units;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 
 using System;
@@ -19,6 +20,7 @@ internal interface ISharpMeasuresVectorGroupMemberResolutionDiagnostics
     public abstract Diagnostic? TypeAlreadyScalar(ISharpMeasuresVectorGroupMemberResolutionContext context, UnresolvedSharpMeasuresVectorGroupMemberDefinition definition);
     public abstract Diagnostic? TypeAlreadyVector(ISharpMeasuresVectorGroupMemberResolutionContext context, UnresolvedSharpMeasuresVectorGroupMemberDefinition definition);
     public abstract Diagnostic? TypeAlreadyVectorGroup(ISharpMeasuresVectorGroupMemberResolutionContext context, UnresolvedSharpMeasuresVectorGroupMemberDefinition definition);
+    public abstract Diagnostic? TypeAlreadyVectorGroupMember(ISharpMeasuresVectorGroupMemberResolutionContext context, UnresolvedSharpMeasuresVectorGroupMemberDefinition definition);
     public abstract Diagnostic? TypeNotVectorGroup(ISharpMeasuresVectorGroupMemberResolutionContext context, UnresolvedSharpMeasuresVectorGroupMemberDefinition definition);
 }
 
@@ -26,7 +28,7 @@ internal interface ISharpMeasuresVectorGroupMemberResolutionContext : IProcessin
 {
     public abstract IUnresolvedUnitPopulation UnitPopulation { get; }
     public abstract IUnresolvedScalarPopulation ScalarPopulation { get; }
-    public abstract IUnresolvedVectorPopulation VectorPopulation { get; }
+    public abstract IUnresolvedVectorPopulationWithData VectorPopulation { get; }
 }
 
 internal class SharpMeasuresVectorGroupMemberResolver
@@ -60,6 +62,11 @@ internal class SharpMeasuresVectorGroupMemberResolver
         if (context.VectorPopulation.VectorGroups.ContainsKey(context.Type.AsNamedType()))
         {
             return OptionalWithDiagnostics.Empty<SharpMeasuresVectorGroupMemberDefinition>(Diagnostics.TypeAlreadyVectorGroup(context, definition));
+        }
+
+        if (context.VectorPopulation.DuplicatelyDefinedVectorGroupMembers.ContainsKey(context.Type.AsNamedType()))
+        {
+            return OptionalWithDiagnostics.Empty<SharpMeasuresVectorGroupMemberDefinition>(Diagnostics.TypeAlreadyVectorGroupMember(context, definition));
         }
 
         var processedVectorGroup = ProcessVectorGroup(context, definition);

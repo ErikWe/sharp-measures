@@ -8,6 +8,7 @@ using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Units;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroup;
 
 using System;
@@ -30,7 +31,7 @@ internal interface ISpecializedSharpMeasuresVectorGroupResolutionContext : IProc
 {
     public abstract IUnresolvedUnitPopulation UnitPopulation { get; }
     public abstract IUnresolvedScalarPopulation ScalarPopulation { get; }
-    public abstract IUnresolvedVectorPopulation VectorPopulation { get; }
+    public abstract IUnresolvedVectorPopulationWithData VectorPopulation { get; }
 }
 
 internal class SpecializedSharpMeasuresVectorGroupResolver
@@ -56,17 +57,19 @@ internal class SpecializedSharpMeasuresVectorGroupResolver
             return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresVectorGroupDefinition>(Diagnostics.TypeAlreadyScalar(context, definition));
         }
 
-        if (context.VectorPopulation.IndividualVectors.ContainsKey(context.Type.AsNamedType()))
+        if (context.VectorPopulation.DuplicatelyDefined.ContainsKey(context.Type.AsNamedType()))
         {
             return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresVectorGroupDefinition>(Diagnostics.TypeAlreadyVector(context, definition));
         }
 
-        if (context.VectorPopulation.VectorGroupBases.TryGetValue(context.Type.AsNamedType(), out var baseVectorGroup) is false)
+        if (context.VectorPopulation.UnassignedSpecializations.ContainsKey(context.Type.AsNamedType()))
         {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<SpecializedSharpMeasuresVectorGroupDefinition>();
+            return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresVectorGroupDefinition>(Diagnostics.OriginalNotVectorGroup(context, definition));
         }
 
-        if (context.UnitPopulation.Units.TryGetValue(baseVectorGroup.Definition.Unit, out var unit) is false)
+        var vectorGroupBase = context.VectorPopulation.VectorGroupBases[context.Type.AsNamedType()];
+
+        if (context.UnitPopulation.Units.TryGetValue(vectorGroupBase.Definition.Unit, out var unit) is false)
         {
             return OptionalWithDiagnostics.EmptyWithoutDiagnostics<SpecializedSharpMeasuresVectorGroupDefinition>();
         }

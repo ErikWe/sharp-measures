@@ -80,7 +80,9 @@ public static class VectorParser
         var population = vectorGroupBaseInterfaces.Combine(vectorGroupSpecializationInterfaces, vectorGroupMemberInterfaces, individualVectorBaseInterfaces,
             individualVectorSpecializationInterfaces).Select(CreatePopulation);
 
-        return (population, new VectorResolver(processedVectorGroupBases, processedVectorGroupSpecializations, processedVectorGroupMembers, processedIndividualVectorBases,
+        var reducedPopulation = population.Select(ExtractInterface);
+
+        return (reducedPopulation, new VectorResolver(population, processedVectorGroupBases, processedVectorGroupSpecializations, processedVectorGroupMembers, processedIndividualVectorBases,
             processedIndividualVectorSpecializations));
     }
 
@@ -99,7 +101,9 @@ public static class VectorParser
     private static IUnresolvedIndividualVectorBaseType ExtractInterface(IUnresolvedIndividualVectorBaseType vectorType, CancellationToken _) => vectorType;
     private static IUnresolvedIndividualVectorSpecializationType ExtractInterface(IUnresolvedIndividualVectorSpecializationType vectorType, CancellationToken _) => vectorType;
 
-    private static IUnresolvedVectorPopulation CreatePopulation
+    private static IUnresolvedVectorPopulation ExtractInterface(IUnresolvedVectorPopulation population, CancellationToken _) => population;
+
+    private static IUnresolvedVectorPopulationWithData CreatePopulation
         ((ImmutableArray<IUnresolvedVectorGroupBaseType> BaseGroups, ImmutableArray<IUnresolvedVectorGroupSpecializationType> SpecializedGroups,
         ImmutableArray<IUnresolvedVectorGroupMemberType> GroupMembers, ImmutableArray<IUnresolvedIndividualVectorBaseType> Bases,
         ImmutableArray<IUnresolvedIndividualVectorSpecializationType> Specialized) vectors, CancellationToken _)

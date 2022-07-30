@@ -33,6 +33,7 @@
     <ItemGroup>
         <ProjectReference Include="..\SharpMeasures.Generators.Diagnostics\SharpMeasures.Generators.Diagnostics.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.DriverUtility\SharpMeasures.Generators.DriverUtility.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Units\SharpMeasures.Generators.Units.csproj" />
         <ProjectReference Include="..\SharpMeasures.Generators\SharpMeasures.Generators.csproj" PrivateAssets="all" />
     </ItemGroup>
 

@@ -4,7 +4,6 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Units;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
 using SharpMeasures.Generators.Vectors;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Resolution;
@@ -42,11 +41,11 @@ internal static class VectorGroupSpecializationTypeResolution
     }
 
     public static IOptionalWithDiagnostics<IntermediateVectorGroupSpecializationType> Resolve((UnresolvedVectorGroupSpecializationType Vector,
-        IUnresolvedUnitPopulation UnitPopulation, IUnresolvedScalarPopulation ScalarPopulation, IUnresolvedVectorPopulation VectorPopulation) input, CancellationToken _)
+        IUnresolvedUnitPopulation UnitPopulation, IUnresolvedScalarPopulation ScalarPopulation, IUnresolvedVectorPopulationWithData VectorPopulation) input, CancellationToken _)
         => Resolve(input.Vector, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
 
     public static IOptionalWithDiagnostics<IntermediateVectorGroupSpecializationType> Resolve(UnresolvedVectorGroupSpecializationType unresolvedVector,
-        IUnresolvedUnitPopulation unitPopulation, IUnresolvedScalarPopulation scalarPopulation, IUnresolvedVectorPopulation vectorPopulation)
+        IUnresolvedUnitPopulation unitPopulation, IUnresolvedScalarPopulation scalarPopulation, IUnresolvedVectorPopulationWithData vectorPopulation)
     {
         SpecializedSharpMeasuresVectorGroupResolutionContext vectorResolutionContext = new(unresolvedVector.Type, unitPopulation, scalarPopulation, vectorPopulation);
 

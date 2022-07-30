@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Vectors;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
 using System.Collections.Immutable;
@@ -14,12 +13,13 @@ using System.Threading;
 public interface IVectorResolver
 {
     public abstract (IncrementalValueProvider<IVectorPopulation>, IVectorGenerator) Resolve(IncrementalGeneratorInitializationContext context,
-        IncrementalValueProvider<IUnresolvedUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IUnresolvedScalarPopulation> scalarPopulationProvider,
-        IncrementalValueProvider<IUnresolvedVectorPopulation> vectorPopulationProvider);
+        IncrementalValueProvider<IUnresolvedUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IUnresolvedScalarPopulation> scalarPopulationProvider);
 }
 
 internal class VectorResolver : IVectorResolver
 {
+    private IncrementalValueProvider<IUnresolvedVectorPopulationWithData> VectorPopulationProvider { get; }
+
     private IncrementalValuesProvider<UnresolvedVectorGroupBaseType> BaseVectorGroupProvider { get; }
     private IncrementalValuesProvider<UnresolvedVectorGroupSpecializationType> SpecializedVectorGroupProvider { get; }
     private IncrementalValuesProvider<UnresolvedVectorGroupMemberType> VectorGroupMemberProvider { get; }
@@ -27,12 +27,12 @@ internal class VectorResolver : IVectorResolver
     private IncrementalValuesProvider<UnresolvedIndividualVectorBaseType> BaseIndividualVectorProvider { get; }
     private IncrementalValuesProvider<UnresolvedIndividualVectorSpecializationType> SpecializedIndividualVectorProvider { get; }
 
-    public VectorResolver(IncrementalValuesProvider<UnresolvedVectorGroupBaseType> baseVectorGroupProvider,
-        IncrementalValuesProvider<UnresolvedVectorGroupSpecializationType> specializedVectorGroupProvider,
-        IncrementalValuesProvider<UnresolvedVectorGroupMemberType> vectorGroupMemberProvider,
-        IncrementalValuesProvider<UnresolvedIndividualVectorBaseType> baseIndividualVectorProvider,
-        IncrementalValuesProvider<UnresolvedIndividualVectorSpecializationType> specializedIndividualVectorProvider)
+    public VectorResolver(IncrementalValueProvider<IUnresolvedVectorPopulationWithData> vectorPopulationProvider, IncrementalValuesProvider<UnresolvedVectorGroupBaseType> baseVectorGroupProvider,
+        IncrementalValuesProvider<UnresolvedVectorGroupSpecializationType> specializedVectorGroupProvider, IncrementalValuesProvider<UnresolvedVectorGroupMemberType> vectorGroupMemberProvider,
+        IncrementalValuesProvider<UnresolvedIndividualVectorBaseType> baseIndividualVectorProvider, IncrementalValuesProvider<UnresolvedIndividualVectorSpecializationType> specializedIndividualVectorProvider)
     {
+        VectorPopulationProvider = vectorPopulationProvider;
+
         BaseVectorGroupProvider = baseVectorGroupProvider;
         SpecializedVectorGroupProvider = specializedVectorGroupProvider;
         VectorGroupMemberProvider = vectorGroupMemberProvider;
@@ -42,22 +42,21 @@ internal class VectorResolver : IVectorResolver
     }
 
     public (IncrementalValueProvider<IVectorPopulation>, IVectorGenerator) Resolve(IncrementalGeneratorInitializationContext context,
-        IncrementalValueProvider<IUnresolvedUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IUnresolvedScalarPopulation> scalarPopulationProvider,
-        IncrementalValueProvider<IUnresolvedVectorPopulation> vectorPopulationProvider)
+        IncrementalValueProvider<IUnresolvedUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IUnresolvedScalarPopulation> scalarPopulationProvider)
     {
-        var resolvedVectorGroupBases = BaseVectorGroupProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider)
+        var resolvedVectorGroupBases = BaseVectorGroupProvider.Combine(unitPopulationProvider, scalarPopulationProvider, VectorPopulationProvider)
             .Select(VectorGroupBaseTypeResolution.Resolve).ReportDiagnostics(context);
 
-        var resolvedVectorGroupSpecializations = SpecializedVectorGroupProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider)
+        var resolvedVectorGroupSpecializations = SpecializedVectorGroupProvider.Combine(unitPopulationProvider, scalarPopulationProvider, VectorPopulationProvider)
             .Select(VectorGroupSpecializationTypeResolution.Resolve).ReportDiagnostics(context);
 
-        var resolvedVectorGroupMembers = VectorGroupMemberProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider)
+        var resolvedVectorGroupMembers = VectorGroupMemberProvider.Combine(unitPopulationProvider, scalarPopulationProvider, VectorPopulationProvider)
             .Select(VectorGroupMemberResolution.Resolve).ReportDiagnostics(context);
 
-        var resolvedIndividualVectorBases = BaseIndividualVectorProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider)
+        var resolvedIndividualVectorBases = BaseIndividualVectorProvider.Combine(unitPopulationProvider, scalarPopulationProvider, VectorPopulationProvider)
             .Select(IndividualVectorBaseTypeResolution.Resolve).ReportDiagnostics(context);
 
-        var resolvedIndividualVectorSpecializations = SpecializedIndividualVectorProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider)
+        var resolvedIndividualVectorSpecializations = SpecializedIndividualVectorProvider.Combine(unitPopulationProvider, scalarPopulationProvider, VectorPopulationProvider)
             .Select(IndividualVectorSpecializationTypeResolution.Resolve).ReportDiagnostics(context);
 
         var baseVectorGroupInterfaces = resolvedVectorGroupBases.Select(ExtractInterface).Collect();

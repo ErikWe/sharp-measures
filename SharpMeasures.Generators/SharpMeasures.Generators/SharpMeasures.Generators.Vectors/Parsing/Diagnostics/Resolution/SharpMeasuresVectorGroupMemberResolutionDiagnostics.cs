@@ -30,6 +30,11 @@ internal class SharpMeasuresVectorGroupMemberResolutionDiagnostics : ISharpMeasu
         return DiagnosticConstruction.VectorGroupMemberTypeAlreadyDefinedAsVectorGroup(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
+    public Diagnostic TypeAlreadyVectorGroupMember(ISharpMeasuresVectorGroupMemberResolutionContext context, UnresolvedSharpMeasuresVectorGroupMemberDefinition definition)
+    {
+        return DiagnosticConstruction.VectorGroupMemberTypeAlreadyDefinedAsVectorGroupMember(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
+    }
+
     public Diagnostic TypeNotVectorGroup(ISharpMeasuresVectorGroupMemberResolutionContext context, UnresolvedSharpMeasuresVectorGroupMemberDefinition definition)
     {
         return DiagnosticConstruction.TypeNotVectorGroup(definition.Locations.VectorGroup?.AsRoslynLocation(), definition.VectorGroup.Name);

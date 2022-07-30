@@ -59,11 +59,11 @@ internal class VectorGroupMemberResolution
     }
 
     public static IOptionalWithDiagnostics<IntermediateVectorGroupMemberType> Resolve((UnresolvedVectorGroupMemberType Member, IUnresolvedUnitPopulation UnitPopulation,
-        IUnresolvedScalarPopulation ScalarPopulation, IUnresolvedVectorPopulation VectorPopulation) input, CancellationToken _)
+        IUnresolvedScalarPopulation ScalarPopulation, IUnresolvedVectorPopulationWithData VectorPopulation) input, CancellationToken _)
         => Resolve(input.Member, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
 
     public static IOptionalWithDiagnostics<IntermediateVectorGroupMemberType> Resolve(UnresolvedVectorGroupMemberType unresolvedMember, IUnresolvedUnitPopulation unitPopulation,
-        IUnresolvedScalarPopulation scalarPopulation, IUnresolvedVectorPopulation vectorPopulation)
+        IUnresolvedScalarPopulation scalarPopulation, IUnresolvedVectorPopulationWithData vectorPopulation)
     {
         SharpMeasuresVectorGroupMemberResolutionContext memberResolutionContext = new(unresolvedMember.Type, unitPopulation, scalarPopulation, vectorPopulation);
 

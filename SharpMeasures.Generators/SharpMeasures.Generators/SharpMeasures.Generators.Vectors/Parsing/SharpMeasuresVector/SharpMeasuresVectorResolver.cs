@@ -8,6 +8,7 @@ using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Units;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
 using System.Linq;
 
@@ -15,6 +16,7 @@ internal interface ISharpMeasuresVectorResolutionDiagnostics
 {
     public abstract Diagnostic? TypeAlreadyUnit(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? TypeAlreadyScalar(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition);
+    public abstract Diagnostic? TypeAlreadyVector(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? TypeNotUnit(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? TypeNotScalar(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? DifferenceNotVector(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition);
@@ -26,7 +28,7 @@ internal interface ISharpMeasuresVectorResolutionContext : IProcessingContext
 {
     public abstract IUnresolvedUnitPopulation UnitPopulation { get; }
     public abstract IUnresolvedScalarPopulation ScalarPopulation { get; }
-    public abstract IUnresolvedVectorPopulation VectorPopulation { get; }
+    public abstract IUnresolvedVectorPopulationWithData VectorPopulation { get; }
 }
 
 internal class SharpMeasuresVectorResolver : IProcesser<ISharpMeasuresVectorResolutionContext, UnresolvedSharpMeasuresVectorDefinition, SharpMeasuresVectorDefinition>
@@ -48,6 +50,11 @@ internal class SharpMeasuresVectorResolver : IProcesser<ISharpMeasuresVectorReso
         if (context.ScalarPopulation.Scalars.ContainsKey(context.Type.AsNamedType()))
         {
             return OptionalWithDiagnostics.Empty<SharpMeasuresVectorDefinition>(Diagnostics.TypeAlreadyScalar(context, definition));
+        }
+
+        if (context.VectorPopulation.DuplicatelyDefined.ContainsKey(context.Type.AsNamedType()))
+        {
+            return OptionalWithDiagnostics.Empty<SharpMeasuresVectorDefinition>(Diagnostics.TypeAlreadyVector(context, definition));
         }
 
         var processedUnit = ProcessUnit(context, definition);

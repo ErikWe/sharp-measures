@@ -8,6 +8,7 @@ using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Units;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 
 using System;
@@ -18,6 +19,7 @@ internal interface ISpecializedSharpMeasuresVectorResolutionDiagnostics
 {
     public abstract Diagnostic? TypeAlreadyUnit(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? TypeAlreadyScalar(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition);
+    public abstract Diagnostic? TypeAlreadyVector(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? OriginalNotVector(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? TypeNotScalar(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? DifferenceNotVector(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition);
@@ -31,7 +33,7 @@ internal interface ISpecializedSharpMeasuresVectorResolutionContext : IProcessin
 {
     public abstract IUnresolvedUnitPopulation UnitPopulation { get; }
     public abstract IUnresolvedScalarPopulation ScalarPopulation { get; }
-    public abstract IUnresolvedVectorPopulation VectorPopulation { get; }
+    public abstract IUnresolvedVectorPopulationWithData VectorPopulation { get; }
 }
 
 internal class SpecializedSharpMeasuresVectorResolver
@@ -57,12 +59,19 @@ internal class SpecializedSharpMeasuresVectorResolver
             return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresVectorDefinition>(Diagnostics.TypeAlreadyScalar(context, definition));
         }
 
-        if (context.VectorPopulation.IndividualVectorBases.TryGetValue(context.Type.AsNamedType(), out var baseVector) is false)
+        if (context.VectorPopulation.DuplicatelyDefined.ContainsKey(context.Type.AsNamedType()))
+        {
+            return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresVectorDefinition>(Diagnostics.TypeAlreadyVector(context, definition));
+        }
+
+        if (context.VectorPopulation.UnassignedSpecializations.ContainsKey(context.Type.AsNamedType()))
         {
             return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresVectorDefinition>(Diagnostics.OriginalNotVector(context, definition));
         }
 
-        if (context.UnitPopulation.Units.TryGetValue(baseVector.Definition.Unit, out var unit) is false)
+        var vectorBase = context.VectorPopulation.IndividualVectorBases[context.Type.AsNamedType()];
+
+        if (context.UnitPopulation.Units.TryGetValue(vectorBase.Definition.Unit, out var unit) is false)
         {
             return OptionalWithDiagnostics.EmptyWithoutDiagnostics<SpecializedSharpMeasuresVectorDefinition>();
         }
@@ -76,7 +85,7 @@ internal class SpecializedSharpMeasuresVectorResolver
         }
 
         var processedVector = ProcessScalar(context, definition);
-        var processedDifference = ProcessDifference(context, definition, baseVector.Definition.Dimension);
+        var processedDifference = ProcessDifference(context, definition, vectorBase.Definition.Dimension);
         var processedDefaultUnitName = ProcessDefaultUnitName(context, definition, unit);
 
         allDiagnostics = allDiagnostics.Concat(processedVector.Diagnostics).Concat(processedDifference.Diagnostics).Concat(processedDefaultUnitName.Diagnostics);
@@ -93,7 +102,7 @@ internal class SpecializedSharpMeasuresVectorResolver
         var resolvedGenerateDocumentation = ResolveGenerateDocumentation(context, definition);
 
         SpecializedSharpMeasuresVectorDefinition product = new(processedOriginalVector.Result, definition.InheritDerivations, definition.InheritConstants,
-            definition.InheritConversions, definition.InheritUnits, unit, resolvedScalar, baseVector.Definition.Dimension, resolvedImplementSum, resolvedImplementDifference,
+            definition.InheritConversions, definition.InheritUnits, unit, resolvedScalar, vectorBase.Definition.Dimension, resolvedImplementSum, resolvedImplementDifference,
             resolvedDifference, resolvedDefaultUnit, resolvedDefaultUnitSymbol, resolvedGenerateDocumentation, SharpMeasuresVectorLocations.Empty);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
