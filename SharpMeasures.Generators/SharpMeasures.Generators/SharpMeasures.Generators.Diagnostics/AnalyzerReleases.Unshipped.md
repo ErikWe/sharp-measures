@@ -31,7 +31,7 @@ Measures1105 | Usage | Warning | Cyclic unit dependency
 Measures1120 | Usage | Warning | Prefix not recognized
 Measures1121 | Usage | Warning | Invalid scaled unit expression
 Measures1122 | Usage | Warning | Invalid biased unit expression
-Measures1123 | Usage | Warning | The unit does not support biases
+Measures1123 | Usage | Warning | Unit does not support biased instances
 Measures1140 | Usage | Warning | Unnamed derivation signature
 Measures1141 | Usage | Warning | Ambiguous unit derivation signature
 Measures1142 | Usage | Warning | Duplicate derivation ID

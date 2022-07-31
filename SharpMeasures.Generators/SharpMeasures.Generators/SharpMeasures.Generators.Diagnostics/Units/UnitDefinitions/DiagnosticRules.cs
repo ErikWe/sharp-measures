@@ -140,8 +140,8 @@ public static partial class DiagnosticRules
     public static readonly DiagnosticDescriptor BiasedUnitDefinedButUnitNotBiased = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.BiasedUnitDefinedButUnitNotBiased,
-        title: "The unit does not support biases",
-        messageFormat: $"{{0}} could not be implemented, as {{1}} does not support biases. Remove {{0}}, or make {{1}} support biases through {Utility.ShortAttributeName<SharpMeasuresUnitAttribute>()}.",
+        title: "Unit does not support biased instances",
+        messageFormat: "The biased unit {0} could not be implemented, as {1} is not defined as including a bias term",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
