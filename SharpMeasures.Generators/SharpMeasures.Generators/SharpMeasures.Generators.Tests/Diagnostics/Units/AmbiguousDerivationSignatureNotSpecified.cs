@@ -13,7 +13,26 @@ using Xunit;
 [UsesVerify]
 public class AmbiguousDerivationSignatureNotSpecified
 {
-    private static string Text(string id) => $$"""
+    [Fact]
+    public Task VerifyAmbiguousDerivationSignatureNotSpecifiedDiagnosticsMessage()
+    {
+        string source = SourceText("");
+
+        return AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnostics(source).VerifyDiagnostics();
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("null, ")]
+    [InlineData("\"\", ")]
+    public void ExactList(string id)
+    {
+        string source = SourceText(id);
+
+        AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnostics(source);
+    }
+
+    private static string SourceText(string derivationIDWithoutComma) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
@@ -36,40 +55,11 @@ public class AmbiguousDerivationSignatureNotSpecified
 
         [DerivableUnit("1", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
         [DerivableUnit("2", "{1} / {0}", typeof(UnitOfTime), typeof(UnitOfLength))]
-        [DerivedUnit("MetrePerSecond", "MetresPerSecond"{{id}}, new[] { "Metre", "Second" })]
+        [DerivedUnit("MetrePerSecond", "MetresPerSecond", {{derivationIDWithoutComma}}new[] { "Metre", "Second" })]
         [SharpMeasuresUnit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
 
-    [Fact]
-    public Task NotSpecified_ExactListAndVerify()
-    {
-        string source = Text("");
-
-        return AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task Null_ExactListAndVerify()
-    {
-        string source = Text("null");
-
-        return AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task Empty_ExactListAndVerify()
-    {
-        string source = Text("\"\"");
-
-        return AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnostics(source).VerifyDiagnostics();
-    }
-
-    private static GeneratorVerifier AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(AmbiguousDerivationSignatureNotSpecifiedDiagnostics);
-
-    private static IReadOnlyCollection<string> AmbiguousDerivationSignatureNotSpecifiedDiagnostics { get; } = new string[]
-    {
-        DiagnosticIDs.AmbiguousDerivationSignatureNotSpecified
-    };
+    private static GeneratorVerifier AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(AmbiguousDerivationSignatureNotSpecifiedDiagnostics);
+    private static IReadOnlyCollection<string> AmbiguousDerivationSignatureNotSpecifiedDiagnostics { get; } = new string[] { DiagnosticIDs.AmbiguousDerivationSignatureNotSpecified };
 }
