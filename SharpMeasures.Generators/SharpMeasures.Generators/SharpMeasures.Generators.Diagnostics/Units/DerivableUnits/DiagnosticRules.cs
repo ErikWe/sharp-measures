@@ -50,7 +50,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.IncompatibleDerivedUnitListSize,
         title: "Unit list length not matching signature",
-        messageFormat: "Expected {0} units to match the derivation signature - but {1} was identified",
+        messageFormat: "Expected {0} units to match the derivation signature - but received {1}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
