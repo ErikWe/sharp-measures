@@ -21,7 +21,7 @@ public static partial class DiagnosticConstruction
 
     public static Diagnostic UnrecognizedUnitDerivationID(Location? location, string derivationID, string unitTypeName)
     {
-        return Diagnostic.Create(DiagnosticRules.UnrecognizedUnitDerivationID, location, derivationID, unitTypeName);
+        return Diagnostic.Create(DiagnosticRules.UnrecognizedUnitDerivationID, location, unitTypeName, derivationID);
     }
 
     public static Diagnostic IncompatibleDerivedUnitListSize(Location? location, int expectedCount, int actualCount)

@@ -40,7 +40,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.UnrecognizedUnitDerivationID,
         title: "Derivation ID not recognized",
-        messageFormat: $"The derivation ID \"{{0}}\" was not recognized. {{1}} should be decorated by a {Utility.FullAttributeName<DerivableUnitAttribute>()} with this ID.",
+        messageFormat: "{0} does not define a derivation with ID \"{1}\"",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
