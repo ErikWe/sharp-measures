@@ -17,5 +17,8 @@ internal class BiasedUnitProcessingDiagnostics : ADependantUnitProcessingDiagnos
         return DiagnosticConstruction.NullBiasedUnitExpression(definition.Locations.Expression?.AsRoslynLocation());
     }
 
-    public Diagnostic EmptyExpression(IUnitProcessingContext context, RawBiasedUnitDefinition definition) => NullExpression(context, definition);
+    public Diagnostic EmptyExpression(IUnitProcessingContext context, RawBiasedUnitDefinition definition)
+    {
+        return DiagnosticConstruction.EmptyBiasedUnitExpression(definition.Locations.Expression?.AsRoslynLocation());
+    }
 }

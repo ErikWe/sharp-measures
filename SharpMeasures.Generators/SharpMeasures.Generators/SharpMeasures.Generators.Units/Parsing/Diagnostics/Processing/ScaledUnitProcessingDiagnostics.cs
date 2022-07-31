@@ -17,5 +17,8 @@ internal class ScaledUnitProcessingDiagnostics : ADependantUnitProcessingDiagnos
         return DiagnosticConstruction.NullScaledUnitExpression(definition.Locations.Expression?.AsRoslynLocation());
     }
 
-    public Diagnostic EmptyExpression(IUnitProcessingContext context, RawScaledUnitDefinition definition) => NullExpression(context, definition);
+    public Diagnostic EmptyExpression(IUnitProcessingContext context, RawScaledUnitDefinition definition)
+    {
+        return DiagnosticConstruction.EmptyScaledUnitExpression(definition.Locations.Expression?.AsRoslynLocation());
+    }
 }

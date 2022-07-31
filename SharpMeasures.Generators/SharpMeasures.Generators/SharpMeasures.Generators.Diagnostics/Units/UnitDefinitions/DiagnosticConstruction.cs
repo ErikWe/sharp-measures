@@ -76,10 +76,14 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.NullScaledUnitExpression, location);
     }
 
+    public static Diagnostic EmptyScaledUnitExpression(Location? location) => NullScaledUnitExpression(location);
+
     public static Diagnostic NullBiasedUnitExpression(Location? location)
     {
         return Diagnostic.Create(DiagnosticRules.NullBiasedUnitExpression, location);
     }
+
+    public static Diagnostic EmptyBiasedUnitExpression(Location? location) => NullBiasedUnitExpression(location);
 
     public static Diagnostic BiasedUnitDefinedButUnitNotBiased(Location? location, string unitName, string unitTypeName)
     {
