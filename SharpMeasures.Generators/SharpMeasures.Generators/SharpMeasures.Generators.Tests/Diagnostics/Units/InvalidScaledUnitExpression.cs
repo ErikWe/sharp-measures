@@ -29,8 +29,6 @@ public class InvalidScaledUnitExpression
         return AssertExactlyScaledUnitExpressionDiagnostics(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyScaledUnitExpressionDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidScaledUnitExpressionDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyScaledUnitExpressionDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidScaledUnitExpressionDiagnostics);
     private static IReadOnlyCollection<string> InvalidScaledUnitExpressionDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidScaledUnitExpression };
 }

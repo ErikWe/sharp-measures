@@ -29,8 +29,6 @@ public class InvalidBiasedUnitExpression
         return AssertExactlyBiasedUnitExpressionDiagnostics(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyBiasedUnitExpressionDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidBiasedUnitExpressionDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyBiasedUnitExpressionDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidBiasedUnitExpressionDiagnostics);
     private static IReadOnlyCollection<string> InvalidBiasedUnitExpressionDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidBiasedUnitExpression };
 }
