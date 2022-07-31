@@ -32,7 +32,7 @@ public class CyclicUnitDependency
     }
 
     [Fact]
-    public Task UnitAlias_Multiple_ExactListAndVerify()
+    public Task UnitAlias_Loop_ExactListAndVerify()
     {
         string source = """
             using SharpMeasures.Generators.Scalars;
@@ -51,7 +51,7 @@ public class CyclicUnitDependency
     }
 
     [Fact]
-    public Task BiasedUnit_Self_ExactListAndVerify()
+    public void BiasedUnit_Self_ExactList()
     {
         string source = """
             using SharpMeasures.Generators.Scalars;
@@ -65,11 +65,11 @@ public class CyclicUnitDependency
             public partial class UnitOfTemperature { }
             """;
 
-        return AssertExactlyOneCyclicUnitDependencyDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyOneCyclicUnitDependencyDiagnostics(source);
     }
 
     [Fact]
-    public Task BiasedUnit_Multiple_ExactListAndVerify()
+    public void BiasedUnit_Loop_ExactList()
     {
         string source = """
             using SharpMeasures.Generators.Scalars;
@@ -84,11 +84,11 @@ public class CyclicUnitDependency
             public partial class UnitOfTemperature { }
             """;
 
-        return AssertExactlyTwoCyclicUnitDependencyDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyTwoCyclicUnitDependencyDiagnostics(source);
     }
 
     [Fact]
-    public Task PrefixedUnit_Self_ExactListAndVerify()
+    public void PrefixedUnit_Self_ExactList()
     {
         string source = """
             using SharpMeasures.Generators.Scalars;
@@ -103,11 +103,11 @@ public class CyclicUnitDependency
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyOneCyclicUnitDependencyDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyOneCyclicUnitDependencyDiagnostics(source);
     }
 
     [Fact]
-    public Task PrefixedUnit_Multiple_ExactListAndVerify()
+    public void PrefixedUnit_Loop_ExactList()
     {
         string source = """
             using SharpMeasures.Generators.Scalars;
@@ -123,11 +123,11 @@ public class CyclicUnitDependency
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTwoCyclicUnitDependencyDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyTwoCyclicUnitDependencyDiagnostics(source);
     }
 
     [Fact]
-    public Task ScaledUnit_Self_ExactListAndVerify()
+    public void ScaledUnit_Self_ExactList()
     {
         string source = """
             using SharpMeasures.Generators.Scalars;
@@ -141,11 +141,11 @@ public class CyclicUnitDependency
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyOneCyclicUnitDependencyDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyOneCyclicUnitDependencyDiagnostics(source);
     }
 
     [Fact]
-    public Task ScaledUnit_Multiple_ExactListAndVerify()
+    public void ScaledUnit_Multiple_ExactList()
     {
         string source = """
             using SharpMeasures.Generators.Scalars;
@@ -160,19 +160,12 @@ public class CyclicUnitDependency
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTwoCyclicUnitDependencyDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyTwoCyclicUnitDependencyDiagnostics(source);
     }
 
-    private static GeneratorVerifier AssertExactlyOneCyclicUnitDependencyDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(OneCyclicUnitDependencyDiagnostics);
-
-    private static GeneratorVerifier AssertExactlyTwoCyclicUnitDependencyDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TwoCyclicUnitDependencyDiagnostics);
+    private static GeneratorVerifier AssertExactlyOneCyclicUnitDependencyDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(OneCyclicUnitDependencyDiagnostics);
+    private static GeneratorVerifier AssertExactlyTwoCyclicUnitDependencyDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TwoCyclicUnitDependencyDiagnostics);
 
     private static IReadOnlyCollection<string> OneCyclicUnitDependencyDiagnostics { get; } = new string[] { DiagnosticIDs.CyclicUnitDependency };
-    private static IReadOnlyCollection<string> TwoCyclicUnitDependencyDiagnostics { get; } = new string[]
-    {
-        DiagnosticIDs.CyclicUnitDependency,
-        DiagnosticIDs.CyclicUnitDependency
-    };
+    private static IReadOnlyCollection<string> TwoCyclicUnitDependencyDiagnostics { get; } = new string[] { DiagnosticIDs.CyclicUnitDependency, DiagnosticIDs.CyclicUnitDependency };
 }
