@@ -71,7 +71,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.UnrecognizedUnitName,
         title: "Expected the name of a unit",
-        messageFormat: $"\"{{0}}\" was not recognized as the name of a {{1}}. \"{{0}}\" should be defined through an attribute applied to {{1}} - for example; {Utility.FullAttributeName<FixedUnitAttribute>()}.",
+        messageFormat: $"\"{{0}}\" was not recognized as the name of a {{1}}. \"{{0}}\" should be defined through an attribute applied to {{1}} - for example, {Utility.FullAttributeName<FixedUnitAttribute>()}.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

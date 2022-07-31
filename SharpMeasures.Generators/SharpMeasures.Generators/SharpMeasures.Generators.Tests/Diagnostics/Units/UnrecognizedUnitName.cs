@@ -14,7 +14,43 @@ using Xunit;
 public class UnrecognizedUnitName
 {
     [Fact]
-    public Task UnitAlias_ExactListAndVerify()
+    public Task VerifyUnrecognizedUnitNameDiagnosticsMessage_Null()
+    {
+        string source = """
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
+
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
+
+            [UnitAlias("Meter", "Meters", null)]
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
+
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
+    }
+
+    [Fact]
+    public Task VerifyUnrecognizedUnitNameDiagnosticsMessage_Empty()
+    {
+        string source = """
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
+
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
+
+            [UnitAlias("Meter", "Meters", "")]
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
+
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
+    }
+
+    [Fact]
+    public Task VerifyUnrecognizedUnitNameDiagnosticsMessage_Missing()
     {
         string source = """
             using SharpMeasures.Generators.Scalars;
@@ -31,28 +67,49 @@ public class UnrecognizedUnitName
         return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
     }
 
-    [Fact]
-    public Task BiasedUnit_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void UnitAlias_ExactList(string name)
     {
-        string source = """
+        string source = $$"""
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
+
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
+
+            [UnitAlias("Meter", "Meters", {{name}})]
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void BiasedUnit_ExactList(string name)
+    {
+        string source = $$"""
             using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
 
             [SharpMeasuresScalar(typeof(UnitOfTemperature))]
             public partial class TemperatureDifference { }
 
-            [BiasedUnit("Celsius", "Celsius", "Kelvin", -273.15)]
+            [BiasedUnit("Celsius", "Celsius", {{name}}, -273.15)]
             [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
             public partial class UnitOfTemperature { }
             """;
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
     }
 
-    [Fact]
-    public Task DerivedUnit_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void DerivedUnit_ExactList(string name)
     {
-        string source = """
+        string source = $$"""
             using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
 
@@ -65,26 +122,27 @@ public class UnrecognizedUnitName
             [SharpMeasuresScalar(typeof(UnitOfSpeed))]
             public partial class Speed { }
 
-            [FixedUnit("Metre", "Metres", 1)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
 
+            [FixedUnit("Second", "Seconds")]
             [SharpMeasuresUnit(typeof(Time))]
             public partial class UnitOfTime { }
 
-            [DerivableUnit("1", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-            [DerivedUnit("MetrePerSecond", "MetresPerSecond", new[] { "Metre", "Second" })]
+            [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
+            [DerivedUnit("MetrePerSecond", "MetresPerSecond", new[] { {{name}}, "Second" })]
             [SharpMeasuresUnit(typeof(Speed))]
             public partial class UnitOfSpeed { }
             """;
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
     }
 
-    [Fact]
-    public Task PrefixedUnit_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void PrefixedUnit_ExactList(string name)
     {
-        string source = """
+        string source = $$"""
             using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
             using SharpMeasures.Generators.Units.Utility;
@@ -92,94 +150,123 @@ public class UnrecognizedUnitName
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
 
-            [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+            [PrefixedUnit("Kilometre", "Kilometres", {{name}}, MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
     }
 
-    [Fact]
-    public Task ScaledUnit_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void ScaledUnit_ExactList(string name)
     {
-        string source = """
+        string source = $$"""
             using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
 
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
 
-            [ScaledUnit("Kilometre", "Kilometres", "Metre", 1000)]
+            [ScaledUnit("Kilometre", "Kilometres", {{name}}, 1000)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
     }
 
-    [Fact]
-    public Task ScalarDefaultUnit_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void ScalarDefaultUnit_ExactList(string name)
     {
-        string source = """
+        string source = $$"""
             using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
 
-            [SharpMeasuresScalar(typeof(UnitOfLength), DefaultUnitName = "Metre", DefaultUnitSymbol = "m")]
+            [SharpMeasuresScalar(typeof(UnitOfLength), DefaultUnitName = {{name}}, DefaultUnitSymbol = "m")]
             public partial class Length { }
             
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
     }
 
-    private static string ScalarConstantText(string unit) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void SpecializedScalarDefaultUnit_ExactList(string name)
+    {
+        string source = $$"""
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        [ScalarConstant("Planck", {{unit}}, 1.616255E-35)]
-        public partial class Length { }
+            [SpecializedSharpMeasuresScalar(typeof(Length), DefaultUnitName = {{name}}, DefaultUnitSymbol = "m")]
+            public partial class Distance { }
+
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
             
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-        """;
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
 
-    [Fact]
-    public Task ScalarConstant_Null_ExactListAndVerify()
-    {
-        string source = ScalarConstantText("null");
-
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
     }
 
-    [Fact]
-    public Task ScalarConstant_Empty_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void ScalarConstant_ExactList(string name)
     {
-        string source = ScalarConstantText("\"\"");
+        string source = $$"""
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            [ScalarConstant("Planck", {{name}}, 1.616255E-35)]
+            public partial class Length { }
+            
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
     }
 
-    [Fact]
-    public Task ScalarConstant_Missing_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void SpecializedScalarConstant_ExactList(string name)
     {
-        string source = ScalarConstantText("\"Metre\"");
+        string source = $$"""
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
+            [ScalarConstant("Planck", {{name}}, 1.616255E-35)]
+            [SpecializedSharpMeasuresScalar(typeof(Length))]
+            public partial class Distance { }
+            
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
+
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
     }
 
-    [Fact]
-    public Task VectorDefaultUnit_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void VectorDefaultUnit_ExactListAndVerify(string name)
     {
-        string source = """
+        string source = $$"""
             using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
             using SharpMeasures.Generators.Vectors;
 
-            [SharpMeasuresVector(typeof(UnitOfLength), DefaultUnitName = "Metre", DefaultUnitSymbol = "m")]
+            [SharpMeasuresVector(typeof(UnitOfLength), DefaultUnitName = {{name}}, DefaultUnitSymbol = "m")]
             public partial class Position3 { }
 
             [SharpMeasuresScalar(typeof(UnitOfLength))]
@@ -189,15 +276,416 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
     }
 
-    private static string VectorConstantText(string unit) => $$"""
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void SpecializedVectorDefaultUnit_ExactListAndVerify(string name)
+    {
+        string source = $$"""
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
+            using SharpMeasures.Generators.Vectors;
+
+            [SpecializedSharpMeasuresVector(typeof(Position3), DefaultUnitName = {{name}}, DefaultUnitSymbol = "m")]
+            public partial class Displacement3 { }
+
+            [SharpMeasuresVector(typeof(UnitOfLength))]
+            public partial class Position3 { }
+
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
+            
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void VectorGroupDefaultUnit_ExactListAndVerify(string name)
+    {
+        string source = $$"""
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
+            using SharpMeasures.Generators.Vectors;
+
+            [SharpMeasuresVectorGroup(typeof(UnitOfLength), DefaultUnitName = {{name}}, DefaultUnitSymbol = "m")]
+            public static partial class Position { }
+
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
+            
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void SpecializedVectorGroupDefaultUnit_ExactListAndVerify(string name)
+    {
+        string source = $$"""
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
+            using SharpMeasures.Generators.Vectors;
+
+            [SpecializedSharpMeasuresVectorGroup(typeof(Position), DefaultUnitName = {{name}}, DefaultUnitSymbol = "m")]
+            public static partial class Displacement { }
+
+            [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+            public static partial class Position { }
+
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
+            
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void VectorConstant_ExactList(string name)
+    {
+        string source = $$"""
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
+            using SharpMeasures.Generators.Vectors;
+
+            [VectorConstant("MetreOnes", {{name}}, 1, 1, 1)]
+            [SharpMeasuresVector(typeof(UnitOfLength))]
+            public partial class Position3 { }
+
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
+            
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void SpecializedVectorConstant_ExactList(string name)
+    {
+        string source = $$"""
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
+            using SharpMeasures.Generators.Vectors;
+
+            [VectorConstant("MetreOnes", {{name}}, 1, 1, 1)]
+            [SpecializedSharpMeasuresVector(typeof(Position3))]
+            public partial class Displacement3 { }
+
+            [SharpMeasuresVector(typeof(UnitOfLength))]
+            public partial class Position3 { }
+
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
+            
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void VectorGroupMemberConstant_ExactList(string name)
+    {
+        string source = $$"""
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
+            using SharpMeasures.Generators.Vectors;
+
+            [VectorConstant("MetreOnes", {{name}}, 1, 1, 1)]
+            [SharpMeasuresVectorGroupMember(typeof(Position))]
+            public partial class Position3 { }
+
+            [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+            public static partial class Position { }
+
+            [SharpMeasuresScalar(typeof(UnitOfLength))]
+            public partial class Length { }
+            
+            [SharpMeasuresUnit(typeof(Length))]
+            public partial class UnitOfLength { }
+            """;
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void ScalarIncludeBase_ExactList(string name)
+    {
+        if (name is "null")
+        {
+            name = "(string)null";
+        }
+
+        string source = ScalarUnitListText("IncludeBases", name);
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void ScalarExcludeBase_ExactList(string name)
+    {
+        if (name is "null")
+        {
+            name = "(string)null";
+        }
+
+        string source = ScalarUnitListText("ExcludeBases", name);
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void ScalarIncludeUnit_ExactList(string name)
+    {
+        if (name is "null")
+        {
+            name = "(string)null";
+        }
+
+        string source = ScalarUnitListText("IncludeUnits", name);
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void ScalarExcludeUnit_ExactList(string name)
+    {
+        if (name is "null")
+        {
+            name = "(string)null";
+        }
+
+        string source = ScalarUnitListText("ExcludeUnits", name);
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void SpecializedScalarIncludeBase_ExactList(string name)
+    {
+        if (name is "null")
+        {
+            name = "(string)null";
+        }
+
+        string source = SpecializedScalarUnitListText("IncludeBases", name);
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void SpecializedScalarExcludeBase_ExactList(string name)
+    {
+        if (name is "null")
+        {
+            name = "(string)null";
+        }
+
+        string source = SpecializedScalarUnitListText("ExcludeBases", name);
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void SpecializedScalarIncludeUnit_ExactList(string name)
+    {
+        if (name is "null")
+        {
+            name = "(string)null";
+        }
+
+        string source = SpecializedScalarUnitListText("IncludeUnits", name);
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void SpecializedScalarExcludeUnit_ExactList(string name)
+    {
+        if (name is "null")
+        {
+            name = "(string)null";
+        }
+
+        string source = SpecializedScalarUnitListText("ExcludeUnits", name);
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void VectorIncludeUnit_ExactList(string name)
+    {
+        if (name is "null")
+        {
+            name = "(string)null";
+        }
+
+        string source = VectorUnitListText("IncludeUnits", name);
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void VectorExcludeUnit_ExactList(string name)
+    {
+        if (name is "null")
+        {
+            name = "(string)null";
+        }
+
+        string source = VectorUnitListText("ExcludeUnits", name);
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void SpecializedVectorIncludeUnit_ExactList(string name)
+    {
+        if (name is "null")
+        {
+            name = "(string)null";
+        }
+
+        string source = SpecializedVectorUnitListText("IncludeUnits", name);
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void SpecializedVectorExcludeUnit_ExactList(string name)
+    {
+        if (name is "null")
+        {
+            name = "(string)null";
+        }
+
+        string source = SpecializedVectorUnitListText("ExcludeUnits", name);
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void VectorGroupIncludeUnit_ExactList(string name)
+    {
+        if (name is "null")
+        {
+            name = "(string)null";
+        }
+
+        string source = VectorGroupUnitListText("IncludeUnits", name);
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void VectorGroupExcludeUnit_ExactList(string name)
+    {
+        if (name is "null")
+        {
+            name = "(string)null";
+        }
+
+        string source = VectorGroupUnitListText("ExcludeUnits", name);
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void SpecializedVectorGroupIncludeUnit_ExactList(string name)
+    {
+        if (name is "null")
+        {
+            name = "(string)null";
+        }
+
+        string source = SpecializedVectorGroupUnitListText("IncludeUnits", name);
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(UnrecognizedUnitNames))]
+    public void SpecializedVectorGroupExcludeUnit_ExactList(string name)
+    {
+        if (name is "null")
+        {
+            name = "(string)null";
+        }
+
+        string source = SpecializedVectorGroupUnitListText("ExcludeUnits", name);
+
+        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+    }
+
+    private static string ScalarUnitListText(string attribute, string unitInstanceName) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [{{attribute}}({{unitInstanceName}})]
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedScalarUnitListText(string attribute, string unitInstanceName) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [{{attribute}}({{unitInstanceName}})]
+        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        public partial class Distance { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorUnitListText(string attribute, string unitInstanceName) => $$"""
+        using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [VectorConstant("MetreOnes", {{unit}}, 1, 1, 1)]
+        [{{attribute}}({{unitInstanceName}})]
         [SharpMeasuresVector(typeof(UnitOfLength))]
         public partial class Position3 { }
 
@@ -208,142 +696,70 @@ public class UnrecognizedUnitName
         public partial class UnitOfLength { }
         """;
 
-    [Fact]
-    public Task VectorConstant_Null_ExactListAndVerify()
-    {
-        string source = VectorConstantText("null");
-
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task VectorConstant_Empty_ExactListAndVerify()
-    {
-        string source = VectorConstantText("\"\"");
-
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task VectorConstant_Missing_ExactListAndVerify()
-    {
-        string source = VectorConstantText("\"Metre\"");
-
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    private static string UnitListText(string attribute, string unit) => $$"""
+    private static string SpecializedVectorUnitListText(string attribute, string unitInstanceName) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
 
-        [{{attribute}}({{unit}})]
+        [{{attribute}}({{unitInstanceName}})]
+        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        public partial class Displacement3 { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres", 1)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
-    [Fact]
-    public Task IncludeBase_Null_ExactListAndVerify()
+    private static string VectorGroupUnitListText(string attribute, string unitInstanceName) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [{{attribute}}({{unitInstanceName}})]
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedVectorGroupUnitListText(string attribute, string unitInstanceName) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [{{attribute}}({{unitInstanceName}})]
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        public static partial class Displacement { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static IEnumerable<object[]> UnrecognizedUnitNames() => new object[][]
     {
-        string source = UnitListText("IncludeBases", "null, \"Metre\"");
+        new[] { "null" },
+        new[] { "\"\"" },
+        new[] { "\"Metre\"" }
+    };
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task IncludeBase_Empty_ExactListAndVerify()
-    {
-        string source = UnitListText("IncludeBases", "\"\"");
-
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task IncludeBase_Missing_ExactListAndVerify()
-    {
-        string source = UnitListText("IncludeBases", "\"Kilometre\"");
-
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task ExcludeBase_Null_ExactListAndVerify()
-    {
-        string source = UnitListText("ExcludeBases", "null, \"Metre\"");
-
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task ExcludeBase_Empty_ExactListAndVerify()
-    {
-        string source = UnitListText("ExcludeBases", "\"\"");
-
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task ExcludeBase_Missing_ExactListAndVerify()
-    {
-        string source = UnitListText("ExcludeBases", "\"Kilometre\"");
-
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task IncludeUnit_Null_ExactListAndVerify()
-    {
-        string source = UnitListText("IncludeUnits", "null, \"Metre\"");
-
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task IncludeUnit_Empty_ExactListAndVerify()
-    {
-        string source = UnitListText("IncludeUnits", "\"\"");
-
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task IncludeUnit_Missing_ExactListAndVerify()
-    {
-        string source = UnitListText("IncludeUnits", "\"Kilometre\"");
-
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task ExcludeUnit_Null_ExactListAndVerify()
-    {
-        string source = UnitListText("ExcludeUnits", "null, \"Metre\"");
-
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task ExcludeUnit_Empty_ExactListAndVerify()
-    {
-        string source = UnitListText("ExcludeUnits", "\"\"");
-
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task ExcludeUnit_Missing_ExactListAndVerify()
-    {
-        string source = UnitListText("ExcludeUnits", "\"Kilometre\"");
-
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    private static GeneratorVerifier AssertExactlyUnrecognizedUnitNameDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnrecognizedUnitNameDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyUnrecognizedUnitNameDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnrecognizedUnitNameDiagnostics);
     private static IReadOnlyCollection<string> UnrecognizedUnitNameDiagnostics { get; } = new string[] { DiagnosticIDs.UnrecognizedUnitName };
 }
