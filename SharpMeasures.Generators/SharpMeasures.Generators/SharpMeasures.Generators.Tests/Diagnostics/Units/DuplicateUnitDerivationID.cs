@@ -14,7 +14,7 @@ using Xunit;
 public class DuplicateUnitDerivationID
 {
     [Fact]
-    public Task Empty_ExactListAndVerify()
+    public Task ExactListAndVerify()
     {
         string source = """
             using SharpMeasures.Generators.Scalars;
@@ -44,8 +44,6 @@ public class DuplicateUnitDerivationID
         return AssertExactlyDuplicateUnitDerivationIDDiagnostics(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyDuplicateUnitDerivationIDDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateUnitderivationIDDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyDuplicateUnitDerivationIDDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateUnitderivationIDDiagnostics);
     private static IReadOnlyCollection<string> DuplicateUnitderivationIDDiagnostics { get; } = new string[] { DiagnosticIDs.DuplicateUnitDerivationID };
 }
