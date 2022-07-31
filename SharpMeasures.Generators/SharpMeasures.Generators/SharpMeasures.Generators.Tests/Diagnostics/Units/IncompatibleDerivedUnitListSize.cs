@@ -13,7 +13,26 @@ using Xunit;
 [UsesVerify]
 public class IncompatibleDerivedUnitListSize
 {
-    private static string Text(string signature) => $$"""
+    [Fact]
+    public Task VerifyIncompatibleDerivedUnitListSizeDiagnosticsMessage()
+    {
+        string source = SourceText("\"Metre\"");
+
+        return AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(source).VerifyDiagnostics();
+    }
+
+    [Theory]
+    [InlineData("\"Metre\"")]
+    [InlineData("new[] { \"Metre\" }")]
+    [InlineData("\"Metre\", \"Metre\", \"Metre\"")]
+    public void ExactList(string units)
+    {
+        string source = SourceText(units);
+
+        AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(source);
+    }
+
+    private static string SourceText(string units) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
@@ -26,38 +45,19 @@ public class IncompatibleDerivedUnitListSize
         [SharpMeasuresScalar(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnit("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
 
-        [FixedUnit("Second", "Seconds", 1)]
         [SharpMeasuresUnit(typeof(Time))]
         public partial class UnitOfTime { }
 
         [DerivableUnit("id", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-        [DerivedUnit("MetrePerSecond", "MetresPerSecond", "id", {{signature}})]
+        [DerivedUnit("MetrePerSecond", "MetresPerSecond", "id", {{units}})]
         [SharpMeasuresUnit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
 
-    [Fact]
-    public Task Params_ExactListAndVerify()
-    {
-        string source = Text("\"Metre\"");
-
-        return AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task Array_ExactListAndVerify()
-    {
-        string source = Text("new[] { \"Metre\" }");
-
-        return AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(source).VerifyDiagnostics();
-    }
-
-    private static GeneratorVerifier AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(IncompatibleDerivedUnitListSizeDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(IncompatibleDerivedUnitListSizeDiagnostics);
     private static IReadOnlyCollection<string> IncompatibleDerivedUnitListSizeDiagnostics { get; } = new string[] { DiagnosticIDs.IncompatibleDerivedUnitListSize };
 }
