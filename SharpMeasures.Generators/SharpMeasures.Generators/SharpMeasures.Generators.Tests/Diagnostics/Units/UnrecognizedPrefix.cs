@@ -18,7 +18,7 @@ public class UnrecognizedPrefix
     {
         string source = SourceText("(MetricPrefixName)(-1)");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyDiagnostics();
+        return AssertExactlyUnrecognizedPrefixDiagnostics(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class UnrecognizedPrefix
     {
         string source = SourceText("(BinaryPrefixName)(-1)");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyDiagnostics();
+        return AssertExactlyUnrecognizedPrefixDiagnostics(source).VerifyDiagnostics();
     }
 
     [Theory]

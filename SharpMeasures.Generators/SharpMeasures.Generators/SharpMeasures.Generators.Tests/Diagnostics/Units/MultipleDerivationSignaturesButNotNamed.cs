@@ -14,41 +14,34 @@ using Xunit;
 public class MultipleDerivationSignaturesButNotNamed
 {
     [Fact]
-    public Task SingleUnnamed_ExactListAndVerify()
+    public Task VerifyMultipleDerivationSignaturesButNotNamedDiagnosticsMessage()
     {
-        string source = $$"""
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-
-            [SharpMeasuresScalar(typeof(UnitOfTime))]
-            public partial class Time { }
-
-            [SharpMeasuresScalar(typeof(UnitOfSpeed))]
-            public partial class Speed { }
-
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-
-            [SharpMeasuresUnit(typeof(Time))]
-            public partial class UnitOfTime { }
-
-            [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-            [DerivableUnit("1", "{1} / {0}", typeof(UnitOfTime), typeof(UnitOfLength))]
-            [SharpMeasuresUnit(typeof(Speed))]
-            public partial class UnitOfSpeed { }
-            """;
+        string source = SourceText("", "\"2\", ");
 
         return AssertExactlyOneMultipleDerivationSignaturesButNotNamedDiagnostics(source).VerifyDiagnostics();
     }
 
-    [Fact]
-    public void MultipleUnnamed_ExactList()
+    [Theory]
+    [InlineData("", "\"2\", ")]
+    [InlineData("null, ", "\"2\", ")]
+    [InlineData("\"\", ", "\"2\", ")]
+    public void ExactlyOneDiagnostic(string firstIDWithoutComma, string secondIDWithoutComma)
     {
-        string source = $$"""
-            using SharpMeasures.Generators.Scalars;
+        string source = SourceText(firstIDWithoutComma, secondIDWithoutComma);
+
+        AssertExactlyOneMultipleDerivationSignaturesButNotNamedDiagnostics(source);
+    }
+
+    [Fact]
+    public void ExactlyTwoDiagnostic()
+    {
+        string source = SourceText("", "");
+
+        AssertExactlyTwoMultipleDerivationSignaturesButNotNamedDiagnostics(source);
+    }
+
+    private static string SourceText(string firstIDWithoutComma, string secondIDWithoutComma) => $$"""
+        using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
 
             [SharpMeasuresScalar(typeof(UnitOfLength))]
@@ -66,14 +59,11 @@ public class MultipleDerivationSignaturesButNotNamed
             [SharpMeasuresUnit(typeof(Time))]
             public partial class UnitOfTime { }
 
-            [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-            [DerivableUnit("{1} / {0}", typeof(UnitOfTime), typeof(UnitOfLength))]
+            [DerivableUnit({{firstIDWithoutComma}}"{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
+            [DerivableUnit({{secondIDWithoutComma}}"{1} / {0}", typeof(UnitOfTime), typeof(UnitOfLength))]
             [SharpMeasuresUnit(typeof(Speed))]
             public partial class UnitOfSpeed { }
-            """;
-
-        AssertExactlyTwoMultipleDerivationSignaturesButNotNamedDiagnostics(source);
-    }
+        """;
 
     private static GeneratorVerifier AssertExactlyOneMultipleDerivationSignaturesButNotNamedDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(OneMultipleDerivationSignaturesButNotNamedDiagnostics);
     private static GeneratorVerifier AssertExactlyTwoMultipleDerivationSignaturesButNotNamedDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TwoMultipleDerivationSignaturesButNotNamedDiagnostics);
