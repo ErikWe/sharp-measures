@@ -23,7 +23,7 @@ public class DuplicateUnitPluralForm
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
 
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [UnitAlias("Meter1", "Meters", "Metre")]
             [UnitAlias("Meter2", "Meters", "Metre")]
             [SharpMeasuresUnit(typeof(Length))]
@@ -34,7 +34,7 @@ public class DuplicateUnitPluralForm
     }
 
     [Fact]
-    public Task BiasedUnit_ExactListAndVerify()
+    public void BiasedUnit_ExactList()
     {
         string source = """
             using SharpMeasures.Generators.Scalars;
@@ -44,18 +44,18 @@ public class DuplicateUnitPluralForm
             [SharpMeasuresScalar(typeof(UnitOfTemperature))]
             public partial class TemperatureDifference { }
 
-            [FixedUnit("Kelvin", "Kelvin", 1, Bias = 0)]
+            [FixedUnit("Kelvin", "Kelvin")]
             [BiasedUnit("Celsius1", "Celsius", "Kelvin", -273.15)]
             [BiasedUnit("Celsius2", "Celsius", "Kelvin", -273.15)]
             [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
             public partial class UnitOfTemperature { }
             """;
 
-        return AssertExactlyDuplicateUnitPluralFormDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyDuplicateUnitPluralFormDiagnostics(source);
     }
 
     [Fact]
-    public Task DerivedUnit_ExactListAndVerify()
+    public void DerivedUnit_ExactList()
     {
         string source = """
             using SharpMeasures.Generators.Scalars;
@@ -70,41 +70,22 @@ public class DuplicateUnitPluralForm
             [SharpMeasuresScalar(typeof(UnitOfSpeed))]
             public partial class Speed { }
 
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
 
-            [FixedUnit("Second", "Seconds", 1)]
+            [FixedUnit("Second", "Seconds")]
             [SharpMeasuresUnit(typeof(Time))]
             public partial class UnitOfTime { }
 
-            [DerivableUnit("1", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
+            [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
             [DerivedUnit("MetrePerSecond1", "MetresPerSecond", new[] { "Metre", "Second" })]
             [DerivedUnit("MetrePerSecond2", "MetresPerSecond", new[] { "Metre", "Second" })]
             [SharpMeasuresUnit(typeof(Speed))]
             public partial class UnitOfSpeed { }
             """;
 
-        return AssertExactlyDuplicateUnitPluralFormDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task FixedUnit_ExactListAndVerify()
-    {
-        string source = """
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-
-            [FixedUnit("Metre1", "Metres", 1)]
-            [FixedUnit("Metre2", "Metres", 1)]
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-            """;
-
-        return AssertExactlyDuplicateUnitPluralFormDiagnostics(source).VerifyDiagnostics();
+        AssertExactlyDuplicateUnitPluralFormDiagnostics(source);
     }
 
     [Fact]
@@ -118,7 +99,7 @@ public class DuplicateUnitPluralForm
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
 
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [PrefixedUnit("Kilometre1", "Kilometres", "Metre", MetricPrefixName.Kilo)]
             [PrefixedUnit("Kilometre2", "Kilometres", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
@@ -138,7 +119,7 @@ public class DuplicateUnitPluralForm
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
 
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [ScaledUnit("Kilometre1", "Kilometres", "Metre", 1000)]
             [ScaledUnit("Kilometre2", "Kilometres", "Metre", 1000)]
             [SharpMeasuresUnit(typeof(Length))]
@@ -148,8 +129,6 @@ public class DuplicateUnitPluralForm
         return AssertExactlyDuplicateUnitPluralFormDiagnostics(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyDuplicateUnitPluralFormDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateUnitFormDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyDuplicateUnitPluralFormDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateUnitFormDiagnostics);
     private static IReadOnlyCollection<string> DuplicateUnitFormDiagnostics { get; } = new string[] { DiagnosticIDs.DuplicateUnitPluralForm };
 }
