@@ -23,7 +23,7 @@ public class BiasedUnitDefinedButUnitNotBiased
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
 
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [BiasedUnit("Metre2", "Metres2", "Metre", 1)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
@@ -32,11 +32,6 @@ public class BiasedUnitDefinedButUnitNotBiased
         return AssertExactlyBiasedUnitDefinedButUnitNotBiasedDiagnostics(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyBiasedUnitDefinedButUnitNotBiasedDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(BiasedUnitDefinedButUnitNotBiasedDiagnostics);
-
-    private static IReadOnlyCollection<string> BiasedUnitDefinedButUnitNotBiasedDiagnostics { get; } = new string[]
-    {
-        DiagnosticIDs.BiasedUnitDefinedButUnitNotBiased
-    };
+    private static GeneratorVerifier AssertExactlyBiasedUnitDefinedButUnitNotBiasedDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(BiasedUnitDefinedButUnitNotBiasedDiagnostics);
+    private static IReadOnlyCollection<string> BiasedUnitDefinedButUnitNotBiasedDiagnostics { get; } = new string[] { DiagnosticIDs.BiasedUnitDefinedButUnitNotBiased };
 }

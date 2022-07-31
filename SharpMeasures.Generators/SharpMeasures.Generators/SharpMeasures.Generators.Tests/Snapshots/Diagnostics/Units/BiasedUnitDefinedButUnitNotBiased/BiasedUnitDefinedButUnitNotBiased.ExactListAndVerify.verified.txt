@@ -1,14 +1,14 @@
 ﻿[
   {
-    Id: Measures1124,
-    Title: The unit does not support biases,
+    Id: Measures1123,
+    Title: Unit does not support biased instances,
     Severity: Warning,
     WarningLevel: 1,
     Location: : (7,1)-(7,11),
     Description: ,
     HelpLink: ,
-    MessageFormat: {0} could not be implemented, as {1} does not support biases. Remove {0}, or make {1} support biases through SharpMeasures.Generators.Units.SharpMeasuresUnitAttribute.,
-    Message: Metre2 could not be implemented, as UnitOfLength does not support biases. Remove Metre2, or make UnitOfLength support biases through SharpMeasures.Generators.Units.SharpMeasuresUnitAttribute.,
+    MessageFormat: The biased unit {0} could not be implemented, as {1} is not defined as including a bias term,
+    Message: The biased unit Metre2 could not be implemented, as UnitOfLength is not defined as including a bias term,
     Category: Usage,
     CustomTags: []
   }
