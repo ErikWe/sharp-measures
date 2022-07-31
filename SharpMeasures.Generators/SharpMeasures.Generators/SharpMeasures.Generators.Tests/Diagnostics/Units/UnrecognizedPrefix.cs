@@ -13,7 +13,35 @@ using Xunit;
 [UsesVerify]
 public class UnrecognizedPrefix
 {
-    private static string Text(string expression) => $$"""
+    [Fact]
+    public Task VerifyUnrecognizedPrefixDiagnosticsMessage_Metric()
+    {
+        string source = SourceText("(MetricPrefixName)(-1)");
+
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyDiagnostics();
+    }
+
+    [Fact]
+    public Task VerifyUnrecognizedPrefixDiagnosticsMessage_Binary()
+    {
+        string source = SourceText("(BinaryPrefixName)(-1)");
+
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyDiagnostics();
+    }
+
+    [Theory]
+    [InlineData("(MetricPrefixName)(-1)")]
+    [InlineData("(MetricPrefixName)int.MaxValue")]
+    [InlineData("(BinaryPrefixName)(-1)")]
+    [InlineData("(BinaryPrefixName)int.MaxValue")]
+    public void ExactList(string value)
+    {
+        string source = SourceText(value);
+
+        AssertExactlyUnrecognizedPrefixDiagnostics(source);
+    }
+
+    private static string SourceText(string expression) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Units.Utility;
@@ -27,40 +55,6 @@ public class UnrecognizedPrefix
         public partial class UnitOfLength { }
         """;
 
-    [Fact]
-    public Task Metric_Negative_ExactListAndVerify()
-    {
-        string source = Text("(MetricPrefixName)(-1)");
-
-        return AssertExactlyUnrecognizedPrefixDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task Metric_TooLarge_ExactListAndVerify()
-    {
-        string source = Text("(MetricPrefixName)int.MaxValue");
-
-        return AssertExactlyUnrecognizedPrefixDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task Binary_Negative_ExactListAndVerify()
-    {
-        string source = Text("(BinaryPrefixName)(-1)");
-
-        return AssertExactlyUnrecognizedPrefixDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task Binary_TooLarge_ExactListAndVerify()
-    {
-        string source = Text("(BinaryPrefixName)int.MaxValue");
-
-        return AssertExactlyUnrecognizedPrefixDiagnostics(source).VerifyDiagnostics();
-    }
-
-    private static GeneratorVerifier AssertExactlyUnrecognizedPrefixDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnrecognizedPrefixDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyUnrecognizedPrefixDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnrecognizedPrefixDiagnostics);
     private static IReadOnlyCollection<string> UnrecognizedPrefixDiagnostics { get; } = new string[] { DiagnosticIDs.UnrecognizedPrefix };
 }
