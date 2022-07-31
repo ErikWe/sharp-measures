@@ -37,14 +37,7 @@ internal class UnresolvedScalarPopulation : IUnresolvedScalarPopulationWithData
         
         iterativelySetBaseScalarForSpecializations();
 
-        Dictionary<NamedType, IUnresolvedScalarSpecializationType> unassignedSpecializationPopulation = new(unassignedSpecializations.Count);
-
-        foreach (var unassignedSpecialization in unassignedSpecializations)
-        {
-            unassignedSpecializationPopulation.TryAdd(unassignedSpecialization.Type.AsNamedType(), unassignedSpecialization);
-        }
-
-        return new(scalarPopulation, scalarBasePopulation, duplicatePopulation, unassignedSpecializationPopulation);
+        return new(scalarPopulation, scalarBasePopulation, duplicatePopulation);
 
         void iterativelySetBaseScalarForSpecializations()
         {
@@ -57,6 +50,7 @@ internal class UnresolvedScalarPopulation : IUnresolvedScalarPopulationWithData
                     scalarBasePopulation.TryAdd(unassignedSpecializations[i].Type.AsNamedType(), scalarBase);
 
                     unassignedSpecializations.RemoveAt(i);
+                    i -= 1;
                 }
             }
 
@@ -71,7 +65,6 @@ internal class UnresolvedScalarPopulation : IUnresolvedScalarPopulationWithData
     public IReadOnlyDictionary<NamedType, IUnresolvedScalarBaseType> ScalarBases => scalarBases;
 
     public IReadOnlyDictionary<NamedType, IUnresolvedScalarType> DuplicatelyDefined => duplicatelyDefined;
-    public IReadOnlyDictionary<NamedType, IUnresolvedScalarSpecializationType> UnassignedSpecializations => unassignedSpecializations;
 
     IReadOnlyDictionary<NamedType, IUnresolvedQuantityType> IUnresolvedQuantityPopulation.Quantities
         => Scalars.Transform(static (quantity) => quantity as IUnresolvedQuantityType);
@@ -83,15 +76,13 @@ internal class UnresolvedScalarPopulation : IUnresolvedScalarPopulationWithData
     private ReadOnlyEquatableDictionary<NamedType, IUnresolvedScalarBaseType> scalarBases { get; }
 
     private ReadOnlyEquatableDictionary<NamedType, IUnresolvedScalarType> duplicatelyDefined { get; }
-    private ReadOnlyEquatableDictionary<NamedType, IUnresolvedScalarSpecializationType> unassignedSpecializations { get; }
 
     private UnresolvedScalarPopulation(IReadOnlyDictionary<NamedType, IUnresolvedScalarType> scalars, IReadOnlyDictionary<NamedType, IUnresolvedScalarBaseType> baseScalarByScalarType,
-        IReadOnlyDictionary<NamedType, IUnresolvedScalarType> duplicatelyDefined, IReadOnlyDictionary<NamedType, IUnresolvedScalarSpecializationType> unassignedSpecializations)
+        IReadOnlyDictionary<NamedType, IUnresolvedScalarType> duplicatelyDefined)
     {
         this.scalars = scalars.AsReadOnlyEquatable();
         this.scalarBases = baseScalarByScalarType.AsReadOnlyEquatable();
 
         this.duplicatelyDefined = duplicatelyDefined.AsReadOnlyEquatable();
-        this.unassignedSpecializations = unassignedSpecializations.AsReadOnlyEquatable();
     }
 }

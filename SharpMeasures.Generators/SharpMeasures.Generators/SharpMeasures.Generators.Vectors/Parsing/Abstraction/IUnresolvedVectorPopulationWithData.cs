@@ -6,8 +6,7 @@ using System.Collections.Generic;
 
 internal interface IUnresolvedVectorPopulationWithData : IUnresolvedVectorPopulation
 {
-    public abstract IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupType> DuplicatelyDefined { get; }
+    public abstract IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupType> DuplicatelyDefinedVectorGroups { get; }
     public abstract IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupMemberType> DuplicatelyDefinedVectorGroupMembers { get; }
-
-    public abstract IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupSpecializationType> UnassignedSpecializations { get; }
+    public abstract IReadOnlyDictionary<NamedType, IUnresolvedIndividualVectorType> DuplicatelyDefinedIndividualVectors { get; }
 }

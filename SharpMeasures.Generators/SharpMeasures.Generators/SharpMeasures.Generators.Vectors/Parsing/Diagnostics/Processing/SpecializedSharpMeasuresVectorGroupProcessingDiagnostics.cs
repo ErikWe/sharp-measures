@@ -14,7 +14,7 @@ internal class SpecializedSharpMeasuresVectorGroupProcessingDiagnostics : ISpeci
 
     public Diagnostic NullOriginalVectorGroup(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition)
     {
-        return DiagnosticConstruction.NullTypeNotUnit(definition.Locations.OriginalVectorGroup?.AsRoslynLocation());
+        return DiagnosticConstruction.NullTypeNotVectorGroup(definition.Locations.OriginalVectorGroup?.AsRoslynLocation());
     }
 
     public Diagnostic NullScalar(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition)

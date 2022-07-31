@@ -30,17 +30,17 @@ internal class RegisterVectorGroupMemberResolver : AProcesser<IRegisterVectorGro
     public override IOptionalWithDiagnostics<RegisterVectorGroupMemberDefinition> Process(IRegisterVectorGroupMemberResolutionContext context,
         UnresolvedRegisterVectorGroupMemberDefinition definition)
     {
-        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.Vector, out var vectorGroup) is false)
+        if (context.VectorPopulation.VectorGroupMembers.TryGetValue(definition.Vector, out var vectorGroupMember) is false)
         {
             return OptionalWithDiagnostics.Empty<RegisterVectorGroupMemberDefinition>(Diagnostics.TypeNotVectorGroupMember(context, definition));
         }
 
-        if (vectorGroup.Type != context.VectorGroup.Type)
+        if (vectorGroupMember.Definition.VectorGroup != context.VectorGroup.Type.AsNamedType())
         {
             return OptionalWithDiagnostics.Empty<RegisterVectorGroupMemberDefinition>(Diagnostics.VectorNotMemberOfVectorGroup(context, definition));
         }
 
-        RegisterVectorGroupMemberDefinition product = new(context.VectorPopulation.IndividualVectors[definition.Vector], definition.Dimension, definition.Locations);
+        RegisterVectorGroupMemberDefinition product = new(vectorGroupMember, definition.Dimension, definition.Locations);
 
         return OptionalWithDiagnostics.Result(product);
     }

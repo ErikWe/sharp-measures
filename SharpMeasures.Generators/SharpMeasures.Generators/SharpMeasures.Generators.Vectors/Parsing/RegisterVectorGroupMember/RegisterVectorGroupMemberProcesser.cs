@@ -60,6 +60,11 @@ internal class RegisterVectorGroupMemberProcesser
         var product = ProcessDefinition(context, definition);
         allDiagnostics = allDiagnostics.Concat(product);
 
+        if (product.LacksResult)
+        {
+            return OptionalWithDiagnostics.Empty<UnresolvedRegisterVectorGroupMemberDefinition>(allDiagnostics);
+        }
+
         return OptionalWithDiagnostics.Result(product.Result, allDiagnostics);
     }
 
@@ -100,7 +105,7 @@ internal class RegisterVectorGroupMemberProcesser
             return OptionalWithDiagnostics.Result(definition.Dimension);
         }
 
-        var trailingNumber = Regex.Match(context.Type.Name, @"\d+$", RegexOptions.RightToLeft);
+        var trailingNumber = Regex.Match(definition.Vector!.Value.Name, @"\d+$", RegexOptions.RightToLeft);
         if (trailingNumber.Success)
         {
             if (int.TryParse(trailingNumber.Value, NumberStyles.None, CultureInfo.InvariantCulture, out int interpretedDimension))

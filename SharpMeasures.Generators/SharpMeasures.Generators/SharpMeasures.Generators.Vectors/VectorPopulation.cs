@@ -16,8 +16,7 @@ internal class VectorPopulation : IVectorPopulation
     private ReadOnlyEquatableDictionary<NamedType, IVectorGroupMemberType> vectorGroupMembers { get; }
     private ReadOnlyEquatableDictionary<NamedType, IIndividualVectorType> individualVectors { get; }
 
-    IReadOnlyDictionary<NamedType, IQuantityType> IQuantityPopulation.Quantities =>
-        VectorGroups.Transform(static (vector) => vector as IQuantityType)
+    IReadOnlyDictionary<NamedType, IQuantityType> IQuantityPopulation.Quantities => VectorGroups.Transform(static (vector) => vector as IQuantityType)
         .Concat(IndividualVectors.Transform(static (vector) => vector as IQuantityType)).ToDictionary().AsEquatable();
 
     public VectorPopulation(IReadOnlyDictionary<NamedType, IVectorGroupType> vectorGroups,

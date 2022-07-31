@@ -59,9 +59,12 @@ internal class SpecializedSharpMeasuresScalarResolver : IProcesser<ISpecializedS
             return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresScalarDefinition>(Diagnostics.TypeAlreadyScalar(context, definition));
         }
 
-        if (context.ScalarPopulation.UnassignedSpecializations.ContainsKey(context.Type.AsNamedType()))
+        var processedOriginalScalar = ProcessOriginalScalar(context, definition);
+        var allDiagnostics = processedOriginalScalar.Diagnostics;
+
+        if (processedOriginalScalar.LacksResult)
         {
-            return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresScalarDefinition>(Diagnostics.OriginalNotScalar(context, definition));
+            return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresScalarDefinition>(allDiagnostics);
         }
 
         var scalarBase = context.ScalarPopulation.ScalarBases[context.Type.AsNamedType()];
@@ -69,14 +72,6 @@ internal class SpecializedSharpMeasuresScalarResolver : IProcesser<ISpecializedS
         if (context.UnitPopulation.Units.TryGetValue(scalarBase.Definition.Unit, out var unit) is false)
         {
             return OptionalWithDiagnostics.EmptyWithoutDiagnostics<SpecializedSharpMeasuresScalarDefinition>();
-        }
-
-        var processedOriginalScalar = ProcessOriginalScalar(context, definition);
-        var allDiagnostics = processedOriginalScalar.Diagnostics;
-
-        if (processedOriginalScalar.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresScalarDefinition>(allDiagnostics);
         }
 
         var processedVector = ProcessVector(context, definition);

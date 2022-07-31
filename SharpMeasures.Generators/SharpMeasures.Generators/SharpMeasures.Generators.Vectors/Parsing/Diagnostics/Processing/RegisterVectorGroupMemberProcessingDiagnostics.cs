@@ -13,7 +13,7 @@ internal class RegisterVectorGroupMemberProcessingDiagnostics : IRegisterVectorG
 
     public Diagnostic NullVector(IRegisterVectorGroupMemberProcessingContext context, RawRegisterVectorGroupMemberDefinition definition)
     {
-        return DiagnosticConstruction.NullTypeNotVector(definition.Locations.Vector?.AsRoslynLocation());
+        return DiagnosticConstruction.NullTypeNotVectorGroupMember(definition.Locations.Vector?.AsRoslynLocation());
     }
 
     public Diagnostic InvalidDimension(IRegisterVectorGroupMemberProcessingContext context, RawRegisterVectorGroupMemberDefinition definition)

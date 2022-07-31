@@ -31,7 +31,7 @@ public static class DriverConstruction
         SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source);
 
         IEnumerable<MetadataReference> references = AssemblyLoader.ReferencedAssemblies
-            .Where(static (assembly) => !assembly.IsDynamic)
+            .Where(static (assembly) => assembly.IsDynamic is false)
             .Select(static (assembly) => MetadataReference.CreateFromFile(assembly.Location))
             .Cast<MetadataReference>();
 

@@ -46,8 +46,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotScalar,
         title: "Expected a scalar quantity",
-        messageFormat: $"Expected a scalar quantity. Decorate {{0}} with the attribute {Utility.FullAttributeName<SharpMeasuresScalarAttribute>()}, " +
-            $"or use another type.",
+        messageFormat: $"Expected a scalar quantity. Decorate {{0}} with the attribute {Utility.FullAttributeName<SharpMeasuresScalarAttribute>()}, or use another type.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -107,8 +106,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotVectorGroup,
         title: "Expected a vector group member",
-        messageFormat: $"Expected a vector group member. Decorate {{0}} with the attribute {Utility.FullAttributeName<SharpMeasuresVectorGroupMemberAttribute>()}, or " +
-            "use another type.",
+        messageFormat: $"Expected a vector group member. Decorate {{0}} with the attribute {Utility.FullAttributeName<SharpMeasuresVectorGroupMemberAttribute>()}, or use another type.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -128,8 +126,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotVectorGroup,
         title: "Expected a vector group member",
-        messageFormat: $"Expected a member of vector group {{0}}. Decorate {{1}} with the attribute {Utility.FullAttributeName<SharpMeasuresVectorGroupMemberAttribute>()}, " +
-            "or use another type.",
+        messageFormat: $"Expected a member of the vector group {{0}}. Decorate {{1}} with the attribute {Utility.FullAttributeName<SharpMeasuresVectorGroupMemberAttribute>()}, or use another type.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true

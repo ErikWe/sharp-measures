@@ -26,14 +26,13 @@ internal static class AssemblyLoader
 
         unresolvedAssemblies.Enqueue(entryAssembly);
 
-
         while (unresolvedAssemblies.Any())
         {
             Assembly targetAssembly = unresolvedAssemblies.Dequeue();
 
             foreach (AssemblyName assemblyName in targetAssembly.GetReferencedAssemblies())
             {
-                if (!resolvedAssemblyNames.Contains(assemblyName.FullName))
+                if (resolvedAssemblyNames.Contains(assemblyName.FullName) is false)
                 {
                     resolvedAssemblyNames.Add(assemblyName.FullName);
 

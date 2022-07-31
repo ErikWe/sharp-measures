@@ -102,7 +102,7 @@ internal class SharpMeasuresVectorGroupResolver : IProcesser<ISharpMeasuresVecto
     private IResultWithDiagnostics<IUnresolvedVectorGroupType> ProcessDifference(ISharpMeasuresVectorGroupResolutionContext context,
         UnresolvedSharpMeasuresVectorGroupDefinition definition)
     {
-        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.Difference, out var vectorGroup) is false)
+        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.Difference, out var vectorGroup) is false || context.VectorPopulation.IndividualVectors.ContainsKey(definition.Difference))
         {
             var diagnostics = Diagnostics.DifferenceNotVectorGroup(context, definition);
             var selfType = context.VectorPopulation.VectorGroups[context.Type.AsNamedType()];

@@ -23,8 +23,7 @@ internal interface ISpecializedSharpMeasuresVectorGroupResolutionDiagnostics
     public abstract Diagnostic? OriginalNotVectorGroup(ISpecializedSharpMeasuresVectorGroupResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition);
     public abstract Diagnostic? TypeNotScalar(ISpecializedSharpMeasuresVectorGroupResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition);
     public abstract Diagnostic? DifferenceNotVectorGroup(ISpecializedSharpMeasuresVectorGroupResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition);
-    public abstract Diagnostic? UnrecognizedDefaultUnit(ISpecializedSharpMeasuresVectorGroupResolutionContext context,
-        UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition, IUnresolvedUnitType unit);
+    public abstract Diagnostic? UnrecognizedDefaultUnit(ISpecializedSharpMeasuresVectorGroupResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition, IUnresolvedUnitType unit);
 }
 
 internal interface ISpecializedSharpMeasuresVectorGroupResolutionContext : IProcessingContext
@@ -57,21 +56,9 @@ internal class SpecializedSharpMeasuresVectorGroupResolver
             return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresVectorGroupDefinition>(Diagnostics.TypeAlreadyScalar(context, definition));
         }
 
-        if (context.VectorPopulation.DuplicatelyDefined.ContainsKey(context.Type.AsNamedType()))
+        if (context.VectorPopulation.DuplicatelyDefinedVectorGroups.ContainsKey(context.Type.AsNamedType()))
         {
             return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresVectorGroupDefinition>(Diagnostics.TypeAlreadyVector(context, definition));
-        }
-
-        if (context.VectorPopulation.UnassignedSpecializations.ContainsKey(context.Type.AsNamedType()))
-        {
-            return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresVectorGroupDefinition>(Diagnostics.OriginalNotVectorGroup(context, definition));
-        }
-
-        var vectorGroupBase = context.VectorPopulation.VectorGroupBases[context.Type.AsNamedType()];
-
-        if (context.UnitPopulation.Units.TryGetValue(vectorGroupBase.Definition.Unit, out var unit) is false)
-        {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<SpecializedSharpMeasuresVectorGroupDefinition>();
         }
 
         var processedOriginalVector = ProcessOriginalVectorGroup(context, definition);
@@ -80,6 +67,13 @@ internal class SpecializedSharpMeasuresVectorGroupResolver
         if (processedOriginalVector.LacksResult)
         {
             return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresVectorGroupDefinition>(allDiagnostics);
+        }
+
+        var vectorGroupBase = context.VectorPopulation.VectorGroupBases[context.Type.AsNamedType()];
+
+        if (context.UnitPopulation.Units.TryGetValue(vectorGroupBase.Definition.Unit, out var unit) is false)
+        {
+            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<SpecializedSharpMeasuresVectorGroupDefinition>();
         }
 
         var processedScalar = ProcessScalar(context, definition);
@@ -109,7 +103,7 @@ internal class SpecializedSharpMeasuresVectorGroupResolver
     private IOptionalWithDiagnostics<IUnresolvedVectorGroupType> ProcessOriginalVectorGroup(ISpecializedSharpMeasuresVectorGroupResolutionContext context,
         UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition)
     {
-        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.OriginalVectorGroup, out var vectorGroup) is false)
+        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.OriginalVectorGroup, out var vectorGroup) is false || context.VectorPopulation.IndividualVectors.ContainsKey(definition.OriginalVectorGroup))
         {
             return OptionalWithDiagnostics.Empty<IUnresolvedVectorGroupType>(Diagnostics.OriginalNotVectorGroup(context, definition));
         }
@@ -141,7 +135,7 @@ internal class SpecializedSharpMeasuresVectorGroupResolver
             return OptionalWithDiagnostics.EmptyWithoutDiagnostics<IUnresolvedVectorGroupType>();
         }
 
-        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.Difference.Value, out var vectorGroup) is false)
+        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.Difference.Value, out var vectorGroup) is false || context.VectorPopulation.IndividualVectors.ContainsKey(definition.Difference.Value))
         {
             return OptionalWithDiagnostics.Empty<IUnresolvedVectorGroupType>(Diagnostics.DifferenceNotVectorGroup(context, definition));
         }

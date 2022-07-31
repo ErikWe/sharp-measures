@@ -6,6 +6,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 internal interface ISharpMeasuresVectorGroupMemberProcessingDiagnostics
@@ -43,7 +44,15 @@ internal class SharpMeasuresVectorGroupMemberProcesser
             return OptionalWithDiagnostics.Empty<UnresolvedSharpMeasuresVectorGroupMemberDefinition>(allDiagnostics);
         }
 
-        UnresolvedSharpMeasuresVectorGroupMemberDefinition product = new(definition.VectorGroup!.Value, processedDimensionality.Result, definition.GenerateDocumentation,
+        var processedVectorGroup = ProcessVectorGroup(context, definition);
+        allDiagnostics = allDiagnostics.Concat(processedVectorGroup.Diagnostics);
+
+        if (processedVectorGroup.LacksResult)
+        {
+            return OptionalWithDiagnostics.Empty<UnresolvedSharpMeasuresVectorGroupMemberDefinition>(allDiagnostics);
+        }
+
+        UnresolvedSharpMeasuresVectorGroupMemberDefinition product = new(processedVectorGroup.Result, processedDimensionality.Result, definition.GenerateDocumentation,
             definition.Locations);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
@@ -81,5 +90,15 @@ internal class SharpMeasuresVectorGroupMemberProcesser
         }
 
         return OptionalWithDiagnostics.Empty<int>(Diagnostics.MissingDimension(context, definition));
+    }
+
+    private IOptionalWithDiagnostics<NamedType> ProcessVectorGroup(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition)
+    {
+        if (definition.VectorGroup is null)
+        {
+            return OptionalWithDiagnostics.Empty<NamedType>(Diagnostics.NullVectorGroup(context, definition));
+        }
+
+        return OptionalWithDiagnostics.Result(definition.VectorGroup.Value);
     }
 }

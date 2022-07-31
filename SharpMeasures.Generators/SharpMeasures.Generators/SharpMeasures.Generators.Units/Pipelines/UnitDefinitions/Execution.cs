@@ -177,7 +177,7 @@ internal static class Execution
 
                     ImplementedDefinitions.Add(dependantUnits[i].Name);
                     dependantUnits.RemoveAt(i);
-                    i--;
+                    i -= 1;
                 }
             }
 

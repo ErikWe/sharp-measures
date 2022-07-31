@@ -9,6 +9,7 @@ using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Resolution;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Resolution;
 using SharpMeasures.Generators.Vectors.Parsing.RegisterVectorGroupMember;
+using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
 using SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVector;
 
 using System;
@@ -70,18 +71,12 @@ internal static class IndividualVectorSpecializationTypeResolution
 
         allDiagnostics = allDiagnostics.Concat(derivations.Diagnostics).Concat(constants.Diagnostics).Concat(conversions.Diagnostics).Concat(unitInclusions.Diagnostics) .Concat(unitExclusions.Diagnostics);
 
-        var membersByDimension = (new IRegisteredVectorGroupMember[]
-        {
-            new RegisterVectorGroupMemberDefinition(unresolvedVector, vector.Result.Dimension, RegisterVectorGroupMemberLocations.Empty)
-        }).ToDictionary(static (vector) => vector.Dimension);
-
-        IntermediateIndividualVectorSpecializationType product = new(unresolvedVector.Type, unresolvedVector.TypeLocation, vector.Result, membersByDimension,
-            derivations.Result, constants.Result, conversions.Result, unitInclusions.Result.SelectMany((list) => list.Units).ToList(),
-            unitExclusions.Result.SelectMany((list) => list.Units).ToList());
+        IntermediateIndividualVectorSpecializationType product = new(unresolvedVector.Type, unresolvedVector.TypeLocation, vector.Result, MockMembersPopulation(unresolvedVector, vector.Result),
+            derivations.Result, constants.Result, conversions.Result, unitInclusions.Result.SelectMany((list) => list.Units).ToList(), unitExclusions.Result.SelectMany((list) => list.Units).ToList());
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
-
+    
     private static IReadOnlyList<IUnresolvedUnitInstance> GetIncludedUnits(IIntermediateIndividualVectorSpecializationType vector, IUnresolvedUnitType unit,
         IIntermediateIndividualVectorPopulation vectorPopulation, Func<IIntermediateIndividualVectorSpecializationType, bool> shouldInherit,
         Func<IIntermediateIndividualVectorSpecializationType, IEnumerable<IUnresolvedUnitInstance>> specializationInclusions,
@@ -153,6 +148,17 @@ internal static class IndividualVectorSpecializationTypeResolution
                 }
             }
         }
+    }
+
+    private static IReadOnlyDictionary<int, IRegisteredVectorGroupMember> MockMembersPopulation(UnresolvedIndividualVectorSpecializationType unresolvedType, SpecializedSharpMeasuresVectorDefinition vector)
+    {
+        UnresolvedSharpMeasuresVectorGroupMemberDefinition mockedMember = new(unresolvedType.Type.AsNamedType(), vector.Dimension, false, SharpMeasuresVectorGroupMemberLocations.Empty);
+        UnresolvedVectorGroupMemberType mockedType = new(unresolvedType.Type, unresolvedType.TypeLocation, mockedMember, unresolvedType.Constants);
+
+        return new Dictionary<int, IRegisteredVectorGroupMember>(1)
+        {
+            { vector.Dimension, new RegisterVectorGroupMemberDefinition(mockedType, vector.Dimension, RegisterVectorGroupMemberLocations.Empty) }
+        };
     }
 
     private static SpecializedSharpMeasuresVectorResolver SpecializedSharpMeasuresVectorResolver { get; } = new(SpecializedSharpMeasuresVectorResolutionDiagnostics.Instance);

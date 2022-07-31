@@ -18,12 +18,10 @@ using System.Threading;
 
 internal class VectorGroupMemberResolution
 {
-    public static IOptionalWithDiagnostics<VectorGroupMemberType> Reduce
-        ((IntermediateVectorGroupMemberType Intermediate, IIntermediateVectorGroupPopulation Population) vectors, CancellationToken _)
+    public static IOptionalWithDiagnostics<VectorGroupMemberType> Reduce ((IntermediateVectorGroupMemberType Intermediate, IIntermediateVectorGroupPopulation Population) vectors, CancellationToken _)
         => Reduce(vectors.Intermediate, vectors.Population);
 
-    public static IOptionalWithDiagnostics<VectorGroupMemberType> Reduce(IntermediateVectorGroupMemberType intermediateMember,
-        IIntermediateVectorGroupPopulation vectorPopulation)
+    public static IOptionalWithDiagnostics<VectorGroupMemberType> Reduce(IntermediateVectorGroupMemberType intermediateMember, IIntermediateVectorGroupPopulation vectorPopulation)
     {
         var membersByDimension = ResolveMembersByDimension(intermediateMember, vectorPopulation);
 

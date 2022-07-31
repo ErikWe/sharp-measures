@@ -107,7 +107,7 @@ internal class SharpMeasuresVectorGroupMemberResolver
     private IOptionalWithDiagnostics<IUnresolvedVectorGroupType> ProcessVectorGroup(ISharpMeasuresVectorGroupMemberResolutionContext context,
         UnresolvedSharpMeasuresVectorGroupMemberDefinition definition)
     {
-        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.VectorGroup, out var vectorGroup) is false)
+        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.VectorGroup, out var vectorGroup) is false || context.VectorPopulation.IndividualVectors.ContainsKey(definition.VectorGroup))
         {
             return OptionalWithDiagnostics.Empty<IUnresolvedVectorGroupType>(Diagnostics.TypeNotVectorGroup(context, definition));
         }

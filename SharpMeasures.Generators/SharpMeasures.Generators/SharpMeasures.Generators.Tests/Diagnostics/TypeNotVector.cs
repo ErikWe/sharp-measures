@@ -14,7 +14,7 @@ using Xunit;
 public class TypeNotVector
 {
     [Fact]
-    public Task VerifyTypeNotScalarDiagnosticsMessage_Null()
+    public Task VerifyTypeNotVectorDiagnosticsMessage_Null()
     {
         var source = ScalarVectorText("null");
 
@@ -22,7 +22,7 @@ public class TypeNotVector
     }
 
     [Fact]
-    public Task VerifyTypeNotScalarDiagnosticsMessage_Int()
+    public Task VerifyTypeNotVectorDiagnosticsMessage_Int()
     {
         var source = ScalarVectorText("typeof(int)");
 

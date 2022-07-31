@@ -5,11 +5,11 @@ using SharpMeasures.Generators.Unresolved.Vectors;
 
 internal record class RegisterVectorGroupMemberDefinition : AAttributeDefinition<RegisterVectorGroupMemberLocations>, IRegisteredVectorGroupMember
 {
-    public IUnresolvedIndividualVectorType Vector { get; }
+    public IUnresolvedVectorGroupMemberType Vector { get; }
 
     public int Dimension { get; }
 
-    public RegisterVectorGroupMemberDefinition(IUnresolvedIndividualVectorType vector, int dimension, RegisterVectorGroupMemberLocations locations) : base(locations)
+    public RegisterVectorGroupMemberDefinition(IUnresolvedVectorGroupMemberType vector, int dimension, RegisterVectorGroupMemberLocations locations) : base(locations)
     {
         Vector = vector;
 
