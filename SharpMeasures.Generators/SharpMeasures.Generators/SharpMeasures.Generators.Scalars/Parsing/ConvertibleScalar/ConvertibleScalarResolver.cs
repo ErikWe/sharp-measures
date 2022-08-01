@@ -38,7 +38,7 @@ internal class ConvertibleScalarResolver : IProcesser<IConvertibleScalarResoluti
         var index = 0;
         foreach (var quantity in definition.Scalars)
         {
-            if (context.ScalarPopulation.ScalarBases.TryGetValue(quantity, out var baseScalar) is false)
+            if (context.ScalarPopulation.ScalarBases.TryGetValue(quantity, out var quantityBase) is false)
             {
                 if (Diagnostics.TypeNotScalar(context, definition, index) is Diagnostic diagnostics)
                 {
@@ -48,9 +48,9 @@ internal class ConvertibleScalarResolver : IProcesser<IConvertibleScalarResoluti
                 continue;
             }
 
-            if (context.UseUnitBias && baseScalar.Definition.UseUnitBias is false)
+            if (context.UseUnitBias && quantityBase.Definition.UseUnitBias is false)
             {
-                if (Diagnostics.ScalarNotUnbiased(context, definition, index) is Diagnostic diagnostics)
+                if (Diagnostics.ScalarNotBiased(context, definition, index) is Diagnostic diagnostics)
                 {
                     allDiagnostics.Add(diagnostics);
                 }
@@ -58,9 +58,9 @@ internal class ConvertibleScalarResolver : IProcesser<IConvertibleScalarResoluti
                 continue;
             }
 
-            if (context.UseUnitBias is false && baseScalar.Definition.UseUnitBias)
+            if (context.UseUnitBias is false && quantityBase.Definition.UseUnitBias)
             {
-                if (Diagnostics.ScalarNotBiased(context, definition, index) is Diagnostic diagnostics)
+                if (Diagnostics.ScalarNotUnbiased(context, definition, index) is Diagnostic diagnostics)
                 {
                     allDiagnostics.Add(diagnostics);
                 }

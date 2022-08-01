@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
-using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 
 internal class ConvertibleScalarResolutionDiagnostics : IConvertibleScalarResolutionDiagnostics
 {
