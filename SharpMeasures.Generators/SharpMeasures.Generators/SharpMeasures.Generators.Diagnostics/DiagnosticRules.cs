@@ -134,10 +134,9 @@ public static partial class DiagnosticRules
 
     public static readonly DiagnosticDescriptor TypeNotQuantity = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.TypeNotScalar,
+        id: DiagnosticIDs.TypeNotQuantity,
         title: "Expected a SharpMeasures quantity",
-        messageFormat: "Expected a SharpMeasures quantity. Decorate {0} with an attribute describing a SharpMeasures quantity, such as " +
-            $"{Utility.FullAttributeName<SharpMeasuresScalarAttribute>()}, or use another type.",
+        messageFormat: $"Expected a SharpMeasures quantity. Decorate {{0}} with an attribute describing a SharpMeasures quantity, such as {Utility.FullAttributeName<SharpMeasuresScalarAttribute>()}, or use another type.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -145,7 +144,7 @@ public static partial class DiagnosticRules
 
     public static readonly DiagnosticDescriptor NullTypeNotQuantity = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.TypeNotScalar,
+        id: DiagnosticIDs.TypeNotQuantity,
         title: "Expected a SharpMeasures quantity",
         messageFormat: $"Expected a type decorated with an attribute describing a SharpMeasures quantity, such as {Utility.FullAttributeName<SharpMeasuresScalarAttribute>()}",
         category: "Usage",
