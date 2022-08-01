@@ -53,6 +53,28 @@ public class TypeNotUnbiasedScalar
         AssertExactlyTypeNotUnbiasedScalarDiagnostics(source);
     }
 
+    [Fact]
+    public void ConvertibleScalar_ExactList()
+    {
+        string source = """
+            using SharpMeasures.Generators.Quantities;
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
+
+            [ConvertibleQuantity(typeof(Temperature))]
+            [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+            public partial class TemperatureDifference { }
+
+            [SharpMeasuresScalar(typeof(UnitOfTemperature), UseUnitBias = true)]
+            public partial class Temperature { }
+
+            [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+            public partial class UnitOfTemperature { }
+            """;
+
+        AssertExactlyTypeNotUnbiasedScalarDiagnostics(source);
+    }
+
     private static GeneratorVerifier AssertExactlyTypeNotUnbiasedScalarDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotUnbiasedDiagnostics);
     private static IReadOnlyCollection<string> TypeNotUnbiasedDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotUnbiasedScalar };
 }
