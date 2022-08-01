@@ -63,6 +63,11 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.UnrecognizedCastOperatorBehaviour, location, conversionOperationBehaviour.ToString());
     }
 
+    public static Diagnostic QuantityConvertibleToSelf(Location? location, string quantityTypeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.QuantityConvertibleToSelf, location, quantityTypeName);
+    }
+
     public static Diagnostic ContradictoryAttributes<TInclusionAttribute, TExclusionAttribute>(Location? location)
     {
         return ContradictoryAttributes(location, typeof(TInclusionAttribute), typeof(TExclusionAttribute));

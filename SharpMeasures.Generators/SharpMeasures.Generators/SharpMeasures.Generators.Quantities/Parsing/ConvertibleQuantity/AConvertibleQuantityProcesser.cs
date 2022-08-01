@@ -16,6 +16,7 @@ public interface IConvertibleQuantityProcessingDiagnostics
     public abstract Diagnostic? EmptyQuantityList(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition);
     public abstract Diagnostic? NullQuantity(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, int index);
     public abstract Diagnostic? DuplicateQuantity(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, int index);
+    public abstract Diagnostic? ConvertibleToSelf(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, int index);
 
     public abstract Diagnostic? UnrecognizedCastOperatorBehaviour(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition);
 }
@@ -54,6 +55,16 @@ public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProce
             if (definition.Quantities[i] is not NamedType candidate)
             {
                 if (Diagnostics.NullQuantity(context, definition, i) is Diagnostic diagnostics)
+                {
+                    allDiagnostics.Add(diagnostics);
+                }
+
+                continue;
+            }
+
+            if (candidate == context.Type.AsNamedType())
+            {
+                if (Diagnostics.ConvertibleToSelf(context, definition, i) is Diagnostic diagnostics)
                 {
                     allDiagnostics.Add(diagnostics);
                 }

@@ -46,6 +46,7 @@ Measures1223 | Naming | Warning | Duplicate name for multiples of constant
 Measures1224 | Naming | Warning | Constant shares name with unit
 Measures1225 | Usage | Info | Constant multiples is disabled
 Measures1240 | Usage | Warning | Unrecognized cast operator behaviour
+Measures1241 | Usage | Warning | Quantity convertible to itself
 Measures1260 | Usage | Warning | Contradictory attributes
 Measures1261 | Usage | Warning | Quantity group missing root quantity
 Measures1262 | Usage | Info | Inclusion or exclusion had no effect

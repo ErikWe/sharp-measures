@@ -20,8 +20,13 @@ public abstract class AConvertibleQuantityProcessingDiagnostics : IConvertibleQu
 
     public Diagnostic DuplicateQuantity(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, int index)
     {
-        return DiagnosticConstruction.DuplicateQuantityListing(definition.Locations.QuantitiesElements[index].AsRoslynLocation(), definition.Quantities[index]?.Name!);
+        return DiagnosticConstruction.DuplicateQuantityListing(definition.Locations.QuantitiesElements[index].AsRoslynLocation(), definition.Quantities[index]!.Value.Name);
     }
 
     public abstract Diagnostic? NullQuantity(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, int index);
+
+    public Diagnostic ConvertibleToSelf(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, int index)
+    {
+        return DiagnosticConstruction.QuantityConvertibleToSelf(definition.Locations.QuantitiesElements[index].AsRoslynLocation(), definition.Quantities[index]!.Value.Name);
+    }
 }

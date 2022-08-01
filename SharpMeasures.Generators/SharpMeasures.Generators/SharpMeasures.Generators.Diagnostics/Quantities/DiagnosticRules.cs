@@ -121,6 +121,16 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
+    public static readonly DiagnosticDescriptor QuantityConvertibleToSelf = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.QuantityConvertibleToSelf,
+        title: "Quantity convertible to itself",
+        messageFormat: "{0} is marked as convertible to itself, which is not supported",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
     public static readonly DiagnosticDescriptor ContradictoryAttributes = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.ContradictoryAttributes,

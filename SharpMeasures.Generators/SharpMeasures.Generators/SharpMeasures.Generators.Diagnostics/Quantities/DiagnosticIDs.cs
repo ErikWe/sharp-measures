@@ -12,6 +12,7 @@ public static partial class DiagnosticIDs
     public const string ConstantMultiplesDisabledButNameSpecified = $"{Prefix}{Numbering.Hundreds.Quantities}25";
 
     public const string UnrecognizedCastOperatorBehaviour = $"{Prefix}{Numbering.Hundreds.Quantities}40";
+    public const string QuantityConvertibleToSelf = $"{Prefix}{Numbering.Hundreds.Quantities}41";
 
     public const string ContradictoryAttributes = $"{Prefix}{Numbering.Hundreds.Quantities}60";
     public const string QuantityGroupMissingRoot = $"{Prefix}{Numbering.Hundreds.Quantities}61";
