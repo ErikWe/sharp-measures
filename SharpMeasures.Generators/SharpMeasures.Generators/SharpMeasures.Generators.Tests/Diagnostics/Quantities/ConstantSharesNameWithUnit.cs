@@ -11,7 +11,7 @@ using VerifyXunit;
 using Xunit;
 
 [UsesVerify]
-public class ConstantSharesNameWithConstant
+public class ConstantSharesNameWithUnit
 {
     [Fact]
     public Task Scalar_Singular_WithUnitSingular_ExactListAndVerify()
@@ -25,13 +25,13 @@ public class ConstantSharesNameWithConstant
             [ScalarConstant("OneKilometre", "Metre", 1000)]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyConstantSharesNameWithUnitDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -46,13 +46,13 @@ public class ConstantSharesNameWithConstant
             [ScalarConstant("Kilometres", "Metre", 1000)]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyConstantSharesNameWithUnitDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -67,13 +67,13 @@ public class ConstantSharesNameWithConstant
             [ScalarConstant("Kilometre2", "Metre", 1000, Multiples = "OneKilometre")]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyConstantSharesNameWithUnitDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -88,13 +88,13 @@ public class ConstantSharesNameWithConstant
             [ScalarConstant("Kilometre2", "Metre", 1000, Multiples = "Kilometres")]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyConstantSharesNameWithUnitDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -109,13 +109,13 @@ public class ConstantSharesNameWithConstant
             [ScalarConstant("Kilometre", "Metre", 1000)]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [PrefixedUnit("Kilometre", "MultiplesOfKilometre", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyConstantSharesNameWithUnitDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -134,13 +134,13 @@ public class ConstantSharesNameWithConstant
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyConstantSharesNameWithUnitDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -159,13 +159,13 @@ public class ConstantSharesNameWithConstant
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyConstantSharesNameWithUnitDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -184,17 +184,15 @@ public class ConstantSharesNameWithConstant
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [PrefixedUnit("Kilometre", "MultiplesOfKilometre", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyConstantSharesNameWithUnitDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyConstantSharesNameWithUnitDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(ConstantSharesNameWithUnitDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyConstantSharesNameWithUnitDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(ConstantSharesNameWithUnitDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> ConstantSharesNameWithUnitDiagnostics { get; } = new string[] { DiagnosticIDs.ConstantSharesNameWithUnit };
 }

@@ -30,7 +30,7 @@ public class TypeStatic
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeStaticDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeStaticDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class TypeStatic
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeStaticDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeStaticDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -70,7 +70,7 @@ public class TypeStatic
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeStaticDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeStaticDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public class TypeStatic
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeStaticDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeStaticDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -115,7 +115,7 @@ public class TypeStatic
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeStaticDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeStaticDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -139,11 +139,10 @@ public class TypeStatic
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeStaticDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeStaticDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyTypeStaticDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeStaticDiagnostics);
+    private static GeneratorVerifier AssertExactlyTypeStaticDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeStaticDiagnostics).AssertAllDiagnosticsValidLocation();
 
     private static IReadOnlyCollection<string> TypeStaticDiagnostics { get; } = new string[] { DiagnosticIDs.TypeStatic };
 }

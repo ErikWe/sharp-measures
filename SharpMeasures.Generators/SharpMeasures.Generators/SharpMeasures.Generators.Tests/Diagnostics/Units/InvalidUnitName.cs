@@ -18,7 +18,7 @@ public class InvalidUnitName
     {
         string source = SourceTexts.Fixed(name: "null");
 
-        return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class InvalidUnitName
     {
         string source = SourceTexts.Fixed(name: "\"\"");
 
-        return AssertExactlyInvalidUnitNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Theory]
@@ -35,7 +35,7 @@ public class InvalidUnitName
     {
         string source = SourceTexts.Alias(name: name);
 
-        AssertExactlyInvalidUnitNameDiagnostics(source);
+        AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -44,7 +44,7 @@ public class InvalidUnitName
     {
         string source = SourceTexts.Biased(name: name);
 
-        AssertExactlyInvalidUnitNameDiagnostics(source);
+        AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -53,7 +53,7 @@ public class InvalidUnitName
     {
         string source = SourceTexts.DerivedWithID(name: name);
 
-        AssertExactlyInvalidUnitNameDiagnostics(source);
+        AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -62,7 +62,7 @@ public class InvalidUnitName
     {
         string source = SourceTexts.DerivedWithoutID(name: name);
 
-        AssertExactlyInvalidUnitNameDiagnostics(source);
+        AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -71,7 +71,7 @@ public class InvalidUnitName
     {
         string source = SourceTexts.Fixed(name: name);
 
-        AssertExactlyInvalidUnitNameDiagnostics(source);
+        AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -80,7 +80,7 @@ public class InvalidUnitName
     {
         string source = SourceTexts.Prefixed(name:name);
 
-        AssertExactlyInvalidUnitNameDiagnostics(source);
+        AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -89,7 +89,7 @@ public class InvalidUnitName
     {
         string source = SourceTexts.Scaled(name: name);
 
-        AssertExactlyInvalidUnitNameDiagnostics(source);
+        AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source);
     }
 
     private static IEnumerable<object[]> InvalidUnitNames() => new object[][]
@@ -98,6 +98,6 @@ public class InvalidUnitName
         new[] { "\"\"" }
     };
 
-    private static GeneratorVerifier AssertExactlyInvalidUnitNameDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidUnitNameDiagnostics);
+    private static GeneratorVerifier AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidUnitNameDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> InvalidUnitNameDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidUnitName };
 }

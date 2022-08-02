@@ -13,6 +13,41 @@ using Xunit;
 [UsesVerify]
 public class InvalidConstantMultiplesName
 {
+    [Fact]
+    public Task Scalar_Null_ExactListAndVerify()
+    {
+        string source = ScalarText("null");
+
+        return AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
+    }
+
+    [Fact]
+    public Task Scalar_Empty_ExactListAndVerify()
+    {
+        string source = ScalarText("\"\"");
+
+        return AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
+    }
+
+    [Fact]
+    public Task Vector_Null_ExactListAndVerify()
+    {
+        string source = VectorText("null");
+
+        return AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
+    }
+
+    [Fact]
+    public Task Vector_Empty_ExactListAndVerify()
+    {
+        string source = VectorText("\"\"");
+
+        return AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
+    }
+
+    private static GeneratorVerifier AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidConstantMultiplesNameDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static IReadOnlyCollection<string> InvalidConstantMultiplesNameDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidConstantMultiplesName };
+
     private static string ScalarText(string multiples) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -21,7 +56,7 @@ public class InvalidConstantMultiplesName
         [ScalarConstant("Planck", "Metre", 1.616255E-35, Multiples = {{multiples}})]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnit("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -38,45 +73,10 @@ public class InvalidConstantMultiplesName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnit("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
-    [Fact]
-    public Task Scalar_Null_ExactListAndVerify()
-    {
-        string source = ScalarText("null");
 
-        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task Scalar_Empty_ExactListAndVerify()
-    {
-        string source = ScalarText("\"\"");
-
-        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task Vector_Null_ExactListAndVerify()
-    {
-        string source = VectorText("null");
-
-        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task Vector_Empty_ExactListAndVerify()
-    {
-        string source = VectorText("\"\"");
-
-        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).VerifyDiagnostics();
-    }
-
-    private static GeneratorVerifier AssertExactlyInvalidConstantMultiplesNameDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidConstantMultiplesNameDiagnostics);
-
-    private static IReadOnlyCollection<string> InvalidConstantMultiplesNameDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidConstantMultiplesName };
 }

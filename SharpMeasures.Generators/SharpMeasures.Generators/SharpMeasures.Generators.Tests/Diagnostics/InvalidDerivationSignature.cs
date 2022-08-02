@@ -18,7 +18,7 @@ public class InvalidDerivationSignature
     {
         string source = DerivableUnitText("(System.Type[])null");
 
-        return AssertExactlyInvalidDerivationSignatureDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInvalidDerivationSignatureDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Theory]
@@ -27,7 +27,7 @@ public class InvalidDerivationSignature
     {
         string source = DerivableUnitText(expression);
 
-        AssertExactlyInvalidDerivationSignatureDiagnostics(source);
+        AssertExactlyInvalidDerivationSignatureDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -36,7 +36,7 @@ public class InvalidDerivationSignature
     {
         string source = DerivedQuantityText(expression);
 
-        AssertExactlyInvalidDerivationSignatureDiagnostics(source);
+        AssertExactlyInvalidDerivationSignatureDiagnosticsWithValidLocation(source);
     }
 
     private static IEnumerable<object[]> InvalidSignatures() => new object[][]
@@ -45,7 +45,7 @@ public class InvalidDerivationSignature
         new[] { "new System.Type[] { }" }
     };
 
-    private static GeneratorVerifier AssertExactlyInvalidDerivationSignatureDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidDerivationSignatureDiagnostics);
+    private static GeneratorVerifier AssertExactlyInvalidDerivationSignatureDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidDerivationSignatureDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> InvalidDerivationSignatureDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidDerivationSignature };
 
     private static string DerivableUnitText(string value) => $$"""

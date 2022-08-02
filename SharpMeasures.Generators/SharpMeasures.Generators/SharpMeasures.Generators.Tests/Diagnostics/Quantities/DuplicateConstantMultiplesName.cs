@@ -25,12 +25,12 @@ public class DuplicateConstantMultiplesName
             [ScalarConstant("Planck2", "Metre", 1.616255E-35, Multiples = "Plancks")]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDuplicateConstantMultiplesNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDuplicateConstantMultiplesNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -45,12 +45,12 @@ public class DuplicateConstantMultiplesName
             [ScalarConstant("Planck2", "Metre", 1.616255E-35, Multiples = "MultiplesOfPlanck")]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDuplicateConstantMultiplesNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDuplicateConstantMultiplesNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -65,12 +65,12 @@ public class DuplicateConstantMultiplesName
             [ScalarConstant("Planck", "Metre", 1.616255E-35)]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDuplicateConstantMultiplesNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDuplicateConstantMultiplesNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -89,12 +89,12 @@ public class DuplicateConstantMultiplesName
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDuplicateConstantMultiplesNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDuplicateConstantMultiplesNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -113,12 +113,12 @@ public class DuplicateConstantMultiplesName
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDuplicateConstantMultiplesNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDuplicateConstantMultiplesNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -137,16 +137,14 @@ public class DuplicateConstantMultiplesName
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDuplicateConstantMultiplesNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDuplicateConstantMultiplesNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyDuplicateConstantMultiplesNameDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateConstantMultiplesNameDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyDuplicateConstantMultiplesNameDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateConstantMultiplesNameDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> DuplicateConstantMultiplesNameDiagnostics { get; } = new string[] { DiagnosticIDs.DuplicateConstantMultiplesName };
 }

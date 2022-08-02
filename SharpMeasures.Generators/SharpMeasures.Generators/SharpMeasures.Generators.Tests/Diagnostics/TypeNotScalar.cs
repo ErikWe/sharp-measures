@@ -18,7 +18,7 @@ public class TypeNotScalar
     {
         var source = UnitQuantityText("null");
 
-        return AssertExactlyTypeNotScalarDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class TypeNotScalar
     {
         var source = UnitQuantityText("typeof(int)");
 
-        return AssertExactlyTypeNotScalarDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Theory]
@@ -35,7 +35,7 @@ public class TypeNotScalar
     {
         var source = UnitQuantityText(value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -44,7 +44,7 @@ public class TypeNotScalar
     {
         var source = ScalarArgumentText("Reciprocal", value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -53,7 +53,7 @@ public class TypeNotScalar
     {
         var source = ScalarArgumentText("Square", value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -62,7 +62,7 @@ public class TypeNotScalar
     {
         var source = ScalarArgumentText("Cube", value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -71,7 +71,7 @@ public class TypeNotScalar
     {
         var source = ScalarArgumentText("SquareRoot", value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -80,7 +80,7 @@ public class TypeNotScalar
     {
         var source = ScalarArgumentText("CubeRoot", value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -89,7 +89,7 @@ public class TypeNotScalar
     {
         var source = ScalarArgumentText("Difference", value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -98,7 +98,7 @@ public class TypeNotScalar
     {
         var source = SpecializedScalarOriginalScalarText(value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -107,7 +107,7 @@ public class TypeNotScalar
     {
         var source = SpecializedScalarArgumentText("Reciprocal", value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -116,7 +116,7 @@ public class TypeNotScalar
     {
         var source = SpecializedScalarArgumentText("Square", value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -125,7 +125,7 @@ public class TypeNotScalar
     {
         var source = SpecializedScalarArgumentText("Cube", value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -134,7 +134,7 @@ public class TypeNotScalar
     {
         var source = SpecializedScalarArgumentText("SquareRoot", value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -143,7 +143,7 @@ public class TypeNotScalar
     {
         var source = SpecializedScalarArgumentText("CubeRoot", value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -152,7 +152,7 @@ public class TypeNotScalar
     {
         var source = SpecializedScalarArgumentText("Difference", value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -161,7 +161,7 @@ public class TypeNotScalar
     {
         var source = VectorScalarText(value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -170,7 +170,7 @@ public class TypeNotScalar
     {
         var source = SpecializedVectorScalarText(value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -179,7 +179,7 @@ public class TypeNotScalar
     {
         var source = VectorGroupScalarText(value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -188,7 +188,7 @@ public class TypeNotScalar
     {
         var source = SpecializedVectorGroupScalarText(value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -202,7 +202,7 @@ public class TypeNotScalar
 
         var source = ConvertibleQuantityText(value);
 
-        AssertExactlyTypeNotScalarDiagnostics(source);
+        AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(source);
     }
 
     private static IEnumerable<object[]> NonScalarTypes() => new object[][]
@@ -217,7 +217,7 @@ public class TypeNotScalar
         new[] { "typeof(Position2)" }
     };
 
-    private static GeneratorVerifier AssertExactlyTypeNotScalarDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotScalarDiagnostics);
+    private static GeneratorVerifier AssertExactlyTypeNotScalarDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotScalarDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> TypeNotScalarDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotScalar };
 
     private static string UnitQuantityText(string value) => $$"""

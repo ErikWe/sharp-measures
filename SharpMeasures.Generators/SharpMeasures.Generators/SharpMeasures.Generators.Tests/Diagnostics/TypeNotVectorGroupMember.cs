@@ -18,7 +18,7 @@ public class TypeNotVectorGroupMember
     {
         var source = RegisterVectorGroupMemberText("null, Dimension = 2");
 
-        return AssertExactlyTypeNotVectorGroupMemberDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotVectorGroupMemberDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class TypeNotVectorGroupMember
     {
         var source = RegisterVectorGroupMemberText("typeof(int), Dimension = 2");
 
-        return AssertExactlyTypeNotVectorGroupMemberDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotVectorGroupMemberDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Theory]
@@ -35,7 +35,7 @@ public class TypeNotVectorGroupMember
     {
         var source = RegisterVectorGroupMemberText(value);
 
-        AssertExactlyTypeNotVectorGroupMemberDiagnostics(source);
+        AssertExactlyTypeNotVectorGroupMemberDiagnosticsWithValidLocation(source);
     }
 
     private static IEnumerable<object[]> NonVectorGroupMemberTypes() => new object[][]
@@ -49,7 +49,7 @@ public class TypeNotVectorGroupMember
         new[] { "typeof(Displacement), Dimension = 2" }
     };
 
-    private static GeneratorVerifier AssertExactlyTypeNotVectorGroupMemberDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotVectorGroupMemberDiagnostics);
+    private static GeneratorVerifier AssertExactlyTypeNotVectorGroupMemberDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotVectorGroupMemberDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> TypeNotVectorGroupMemberDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotVectorGroup };
 
     private static string RegisterVectorGroupMemberText(string value) => $$"""

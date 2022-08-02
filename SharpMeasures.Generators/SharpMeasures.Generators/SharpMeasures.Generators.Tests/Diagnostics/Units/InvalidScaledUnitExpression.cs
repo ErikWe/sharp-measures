@@ -18,7 +18,7 @@ public class InvalidScaledUnitExpression
     {
         string source = SourceTexts.Scaled(value: "null");
 
-        return AssertExactlyScaledUnitExpressionDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyScaledUnitExpressionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -26,9 +26,9 @@ public class InvalidScaledUnitExpression
     {
         string source = SourceTexts.Scaled(value: "\"\"");
 
-        return AssertExactlyScaledUnitExpressionDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyScaledUnitExpressionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyScaledUnitExpressionDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidScaledUnitExpressionDiagnostics);
+    private static GeneratorVerifier AssertExactlyScaledUnitExpressionDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidScaledUnitExpressionDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> InvalidScaledUnitExpressionDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidScaledUnitExpression };
 }

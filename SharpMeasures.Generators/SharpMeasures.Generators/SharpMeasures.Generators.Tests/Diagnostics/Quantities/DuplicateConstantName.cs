@@ -25,12 +25,12 @@ public class DuplicateConstantName
             [ScalarConstant("Planck", "Metre", 1.616255E-35)]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDuplicateConstantNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDuplicateConstantNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -49,16 +49,14 @@ public class DuplicateConstantName
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDuplicateConstantNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDuplicateConstantNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyDuplicateConstantNameDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateConstantNameDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyDuplicateConstantNameDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateConstantNameDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> DuplicateConstantNameDiagnostics { get; } = new string[] { DiagnosticIDs.DuplicateConstantName };
 }

@@ -18,7 +18,7 @@ public class InvalidBiasedUnitExpression
     {
         string source = SourceTexts.Biased(bias: "null");
 
-        return AssertExactlyBiasedUnitExpressionDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyBiasedUnitExpressionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -26,9 +26,9 @@ public class InvalidBiasedUnitExpression
     {
         string source = SourceTexts.Biased(bias: "\"\"");
 
-        return AssertExactlyBiasedUnitExpressionDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyBiasedUnitExpressionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyBiasedUnitExpressionDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidBiasedUnitExpressionDiagnostics);
+    private static GeneratorVerifier AssertExactlyBiasedUnitExpressionDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidBiasedUnitExpressionDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> InvalidBiasedUnitExpressionDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidBiasedUnitExpression };
 }

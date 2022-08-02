@@ -46,7 +46,7 @@ public class InvalidConstantName
     {
         string source = ScalarText("null");
 
-        return AssertExactlyInvalidConstantNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInvalidConstantNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class InvalidConstantName
     {
         string source = ScalarText("\"\"");
 
-        return AssertExactlyInvalidConstantNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInvalidConstantNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public class InvalidConstantName
     {
         string source = VectorText("null");
 
-        return AssertExactlyInvalidConstantNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInvalidConstantNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -70,11 +70,9 @@ public class InvalidConstantName
     {
         string source = VectorText("\"\"");
 
-        return AssertExactlyInvalidConstantNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInvalidConstantNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyInvalidConstantNameDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidConstantNameDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyInvalidConstantNameDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidConstantNameDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> InvalidConstantNameDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidConstantName };
 }

@@ -18,7 +18,7 @@ public class UnrecognizedPrefix
     {
         string source = SourceText("(MetricPrefixName)(-1)");
 
-        return AssertExactlyUnrecognizedPrefixDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyUnrecognizedPrefixDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class UnrecognizedPrefix
     {
         string source = SourceText("(BinaryPrefixName)(-1)");
 
-        return AssertExactlyUnrecognizedPrefixDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyUnrecognizedPrefixDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Theory]
@@ -38,7 +38,7 @@ public class UnrecognizedPrefix
     {
         string source = SourceText(value);
 
-        AssertExactlyUnrecognizedPrefixDiagnostics(source);
+        AssertExactlyUnrecognizedPrefixDiagnosticsWithValidLocation(source);
     }
 
     private static string SourceText(string expression) => $$"""
@@ -55,6 +55,6 @@ public class UnrecognizedPrefix
         public partial class UnitOfLength { }
         """;
 
-    private static GeneratorVerifier AssertExactlyUnrecognizedPrefixDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnrecognizedPrefixDiagnostics);
+    private static GeneratorVerifier AssertExactlyUnrecognizedPrefixDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnrecognizedPrefixDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> UnrecognizedPrefixDiagnostics { get; } = new string[] { DiagnosticIDs.UnrecognizedPrefix };
 }

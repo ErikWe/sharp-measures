@@ -18,7 +18,7 @@ public class AmbiguousDerivationSignatureNotSpecified
     {
         string source = SourceText("");
 
-        return AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Theory]
@@ -29,7 +29,7 @@ public class AmbiguousDerivationSignatureNotSpecified
     {
         string source = SourceText(id);
 
-        AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnostics(source);
+        AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnosticsWithValidLocation(source);
     }
 
     private static string SourceText(string derivationIDWithoutComma) => $$"""
@@ -60,6 +60,6 @@ public class AmbiguousDerivationSignatureNotSpecified
         public partial class UnitOfSpeed { }
         """;
 
-    private static GeneratorVerifier AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(AmbiguousDerivationSignatureNotSpecifiedDiagnostics);
+    private static GeneratorVerifier AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(AmbiguousDerivationSignatureNotSpecifiedDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> AmbiguousDerivationSignatureNotSpecifiedDiagnostics { get; } = new string[] { DiagnosticIDs.AmbiguousDerivationSignatureNotSpecified };
 }

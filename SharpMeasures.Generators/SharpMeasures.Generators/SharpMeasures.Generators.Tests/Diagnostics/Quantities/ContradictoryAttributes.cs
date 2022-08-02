@@ -27,13 +27,13 @@ public class ContradictoryAttributes
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyContradictoryAttributesDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyContradictoryAttributesDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -49,17 +49,15 @@ public class ContradictoryAttributes
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyContradictoryAttributesDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyContradictoryAttributesDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyContradictoryAttributesDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(ContradictoryAttributesDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyContradictoryAttributesDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(ContradictoryAttributesDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> ContradictoryAttributesDiagnostics { get; } = new string[] { DiagnosticIDs.ContradictoryAttributes };
 }

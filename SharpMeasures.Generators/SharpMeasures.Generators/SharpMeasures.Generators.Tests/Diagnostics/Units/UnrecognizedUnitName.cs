@@ -28,7 +28,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -64,7 +64,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Theory]
@@ -83,7 +83,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -102,7 +102,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfTemperature { }
             """;
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -135,7 +135,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfSpeed { }
             """;
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -155,7 +155,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -174,7 +174,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -192,7 +192,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -213,7 +213,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -232,7 +232,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -254,7 +254,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -276,7 +276,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -301,7 +301,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -323,7 +323,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -348,7 +348,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -371,7 +371,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -397,7 +397,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -423,7 +423,7 @@ public class UnrecognizedUnitName
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -437,7 +437,7 @@ public class UnrecognizedUnitName
 
         string source = ScalarUnitListText("IncludeBases", name);
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -451,7 +451,7 @@ public class UnrecognizedUnitName
 
         string source = ScalarUnitListText("ExcludeBases", name);
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -465,7 +465,7 @@ public class UnrecognizedUnitName
 
         string source = ScalarUnitListText("IncludeUnits", name);
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -479,7 +479,7 @@ public class UnrecognizedUnitName
 
         string source = ScalarUnitListText("ExcludeUnits", name);
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -493,7 +493,7 @@ public class UnrecognizedUnitName
 
         string source = SpecializedScalarUnitListText("IncludeBases", name);
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -507,7 +507,7 @@ public class UnrecognizedUnitName
 
         string source = SpecializedScalarUnitListText("ExcludeBases", name);
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -521,7 +521,7 @@ public class UnrecognizedUnitName
 
         string source = SpecializedScalarUnitListText("IncludeUnits", name);
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -535,7 +535,7 @@ public class UnrecognizedUnitName
 
         string source = SpecializedScalarUnitListText("ExcludeUnits", name);
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -549,7 +549,7 @@ public class UnrecognizedUnitName
 
         string source = VectorUnitListText("IncludeUnits", name);
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -563,7 +563,7 @@ public class UnrecognizedUnitName
 
         string source = VectorUnitListText("ExcludeUnits", name);
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -577,7 +577,7 @@ public class UnrecognizedUnitName
 
         string source = SpecializedVectorUnitListText("IncludeUnits", name);
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -591,7 +591,7 @@ public class UnrecognizedUnitName
 
         string source = SpecializedVectorUnitListText("ExcludeUnits", name);
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -605,7 +605,7 @@ public class UnrecognizedUnitName
 
         string source = VectorGroupUnitListText("IncludeUnits", name);
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -619,7 +619,7 @@ public class UnrecognizedUnitName
 
         string source = VectorGroupUnitListText("ExcludeUnits", name);
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -633,7 +633,7 @@ public class UnrecognizedUnitName
 
         string source = SpecializedVectorGroupUnitListText("IncludeUnits", name);
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -647,8 +647,18 @@ public class UnrecognizedUnitName
 
         string source = SpecializedVectorGroupUnitListText("ExcludeUnits", name);
 
-        AssertExactlyUnrecognizedUnitNameDiagnostics(source);
+        AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(source);
     }
+
+    private static IEnumerable<object[]> UnrecognizedUnitNames() => new object[][]
+    {
+        new[] { "null" },
+        new[] { "\"\"" },
+        new[] { "\"Metre\"" }
+    };
+
+    private static GeneratorVerifier AssertExactlyUnrecognizedUnitNameDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnrecognizedUnitNameDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static IReadOnlyCollection<string> UnrecognizedUnitNameDiagnostics { get; } = new string[] { DiagnosticIDs.UnrecognizedUnitName };
 
     private static string ScalarUnitListText(string attribute, string unitInstanceName) => $$"""
         using SharpMeasures.Generators.Quantities;
@@ -752,14 +762,4 @@ public class UnrecognizedUnitName
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
-
-    private static IEnumerable<object[]> UnrecognizedUnitNames() => new object[][]
-    {
-        new[] { "null" },
-        new[] { "\"\"" },
-        new[] { "\"Metre\"" }
-    };
-
-    private static GeneratorVerifier AssertExactlyUnrecognizedUnitNameDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnrecognizedUnitNameDiagnostics);
-    private static IReadOnlyCollection<string> UnrecognizedUnitNameDiagnostics { get; } = new string[] { DiagnosticIDs.UnrecognizedUnitName };
 }

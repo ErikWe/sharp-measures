@@ -15,7 +15,12 @@ public abstract class AConvertibleQuantityProcessingDiagnostics : IConvertibleQu
 
     public Diagnostic EmptyQuantityList(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
     {
-        return DiagnosticConstruction.EmptyQuantityList(definition.Locations.QuantitiesCollection?.AsRoslynLocation());
+        if (definition.Locations.ExplicitlySetQuantities)
+        {
+            return DiagnosticConstruction.EmptyQuantityList(definition.Locations.QuantitiesCollection?.AsRoslynLocation());
+        }
+
+        return DiagnosticConstruction.EmptyQuantityList(definition.Locations.Attribute.AsRoslynLocation());
     }
 
     public Diagnostic DuplicateQuantity(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, int index)

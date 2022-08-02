@@ -7,8 +7,8 @@
     Location: : (4,61)-(4,63),
     Description: ,
     HelpLink: ,
-    MessageFormat: The name for multiples of {0} must be defined. Use the default value, write the name in full, or use a suitable notation from SharpMeasures.Generators.Quantities.Utility.ConstantMultiplesCodes.,
-    Message: The name for multiples of Planck must be defined. Use the default value, write the name in full, or use a suitable notation from SharpMeasures.Generators.Quantities.Utility.ConstantMultiplesCodes.,
+    MessageFormat: The name for multiples of {0} must be defined. Use the default value, write the name in full, or use a suitable notation from SharpMeasures.Generators.Quantities.Utility.CommonConstantMultiplesPropertyNotations.,
+    Message: The name for multiples of Planck must be defined. Use the default value, write the name in full, or use a suitable notation from SharpMeasures.Generators.Quantities.Utility.CommonConstantMultiplesPropertyNotations.,
     Category: Naming,
     CustomTags: []
   }

@@ -24,12 +24,12 @@ public class ConstantMultiplesBisabledButNameSpecified
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
 
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyConstantMultiplesDisabledButNameSpecifiedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyConstantMultiplesDisabledButNameSpecifiedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -47,19 +47,14 @@ public class ConstantMultiplesBisabledButNameSpecified
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
 
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyConstantMultiplesDisabledButNameSpecifiedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyConstantMultiplesDisabledButNameSpecifiedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyConstantMultiplesDisabledButNameSpecifiedDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(ConstantMultiplesDisabledButNameSpecifiedDiagnostics);
-
-    private static IReadOnlyCollection<string> ConstantMultiplesDisabledButNameSpecifiedDiagnostics { get; } = new string[]
-    {
-        DiagnosticIDs.ConstantMultiplesDisabledButNameSpecified
-    };
+    private static GeneratorVerifier AssertExactlyConstantMultiplesDisabledButNameSpecifiedDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(ConstantMultiplesDisabledButNameSpecifiedDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static IReadOnlyCollection<string> ConstantMultiplesDisabledButNameSpecifiedDiagnostics { get; } = new string[] { DiagnosticIDs.ConstantMultiplesDisabledButNameSpecified };
 }

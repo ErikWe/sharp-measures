@@ -28,7 +28,7 @@ public class CyclicUnitDependency
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyOneCyclicUnitDependencyDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyOneCyclicUnitDependencyDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public class CyclicUnitDependency
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTwoCyclicUnitDependencyDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTwoCyclicUnitDependencyDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public class CyclicUnitDependency
             public partial class UnitOfTemperature { }
             """;
 
-        AssertExactlyOneCyclicUnitDependencyDiagnostics(source);
+        AssertExactlyOneCyclicUnitDependencyDiagnosticsWithValidLocation(source);
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class CyclicUnitDependency
             public partial class UnitOfTemperature { }
             """;
 
-        AssertExactlyTwoCyclicUnitDependencyDiagnostics(source);
+        AssertExactlyTwoCyclicUnitDependencyDiagnosticsWithValidLocation(source);
     }
 
     [Fact]
@@ -103,7 +103,7 @@ public class CyclicUnitDependency
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyOneCyclicUnitDependencyDiagnostics(source);
+        AssertExactlyOneCyclicUnitDependencyDiagnosticsWithValidLocation(source);
     }
 
     [Fact]
@@ -123,7 +123,7 @@ public class CyclicUnitDependency
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyTwoCyclicUnitDependencyDiagnostics(source);
+        AssertExactlyTwoCyclicUnitDependencyDiagnosticsWithValidLocation(source);
     }
 
     [Fact]
@@ -141,7 +141,7 @@ public class CyclicUnitDependency
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyOneCyclicUnitDependencyDiagnostics(source);
+        AssertExactlyOneCyclicUnitDependencyDiagnosticsWithValidLocation(source);
     }
 
     [Fact]
@@ -160,11 +160,11 @@ public class CyclicUnitDependency
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyTwoCyclicUnitDependencyDiagnostics(source);
+        AssertExactlyTwoCyclicUnitDependencyDiagnosticsWithValidLocation(source);
     }
 
-    private static GeneratorVerifier AssertExactlyOneCyclicUnitDependencyDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(OneCyclicUnitDependencyDiagnostics);
-    private static GeneratorVerifier AssertExactlyTwoCyclicUnitDependencyDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TwoCyclicUnitDependencyDiagnostics);
+    private static GeneratorVerifier AssertExactlyOneCyclicUnitDependencyDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(OneCyclicUnitDependencyDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static GeneratorVerifier AssertExactlyTwoCyclicUnitDependencyDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TwoCyclicUnitDependencyDiagnostics).AssertAllDiagnosticsValidLocation();
 
     private static IReadOnlyCollection<string> OneCyclicUnitDependencyDiagnostics { get; } = new string[] { DiagnosticIDs.CyclicUnitDependency };
     private static IReadOnlyCollection<string> TwoCyclicUnitDependencyDiagnostics { get; } = new string[] { DiagnosticIDs.CyclicUnitDependency, DiagnosticIDs.CyclicUnitDependency };

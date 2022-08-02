@@ -46,7 +46,7 @@ public class DefineQuantityUnitAndSymbol
     {
         var source = ScalarText("DefaultUnitName = \"Metre\"");
 
-        return AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDefineQuantityUnitAndSymbolDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class DefineQuantityUnitAndSymbol
     {
         var source = ScalarText("DefaultUnitSymbol = \"m\"");
 
-        return AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDefineQuantityUnitAndSymbolDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public class DefineQuantityUnitAndSymbol
     {
         var source = VectorText("DefaultUnitName = \"Metre\"");
 
-        return AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDefineQuantityUnitAndSymbolDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -70,11 +70,9 @@ public class DefineQuantityUnitAndSymbol
     {
         var source = VectorText("DefaultUnitSymbol = \"m\"");
 
-        return AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDefineQuantityUnitAndSymbolDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DefineQuantityUnitAndSymbolDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyDefineQuantityUnitAndSymbolDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DefineQuantityUnitAndSymbolDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> DefineQuantityUnitAndSymbolDiagnostics { get; } = new string[] { DiagnosticIDs.DefineQuantityUnitAndSymbol };
 }

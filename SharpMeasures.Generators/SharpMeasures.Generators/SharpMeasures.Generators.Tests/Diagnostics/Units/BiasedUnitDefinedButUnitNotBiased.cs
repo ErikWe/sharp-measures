@@ -29,9 +29,9 @@ public class BiasedUnitDefinedButUnitNotBiased
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyBiasedUnitDefinedButUnitNotBiasedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyBiasedUnitDefinedButUnitNotBiasedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyBiasedUnitDefinedButUnitNotBiasedDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(BiasedUnitDefinedButUnitNotBiasedDiagnostics);
+    private static GeneratorVerifier AssertExactlyBiasedUnitDefinedButUnitNotBiasedDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(BiasedUnitDefinedButUnitNotBiasedDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> BiasedUnitDefinedButUnitNotBiasedDiagnostics { get; } = new string[] { DiagnosticIDs.BiasedUnitDefinedButUnitNotBiased };
 }

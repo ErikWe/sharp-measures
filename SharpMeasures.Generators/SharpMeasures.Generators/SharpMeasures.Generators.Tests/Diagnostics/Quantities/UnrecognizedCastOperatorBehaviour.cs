@@ -29,12 +29,12 @@ public class UnrecognizedCastOperatorBehaviour
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Distance { }
 
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyUnrecognizedCastOperatorBehaviourDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyUnrecognizedCastOperatorBehaviourDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -53,19 +53,14 @@ public class UnrecognizedCastOperatorBehaviour
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Distance { }
 
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyUnrecognizedCastOperatorBehaviourDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyUnrecognizedCastOperatorBehaviourDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyUnrecognizedCastOperatorBehaviourDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnrecognizedCastOperatorBehaviourDiagnostics);
-
-    private static IReadOnlyCollection<string> UnrecognizedCastOperatorBehaviourDiagnostics { get; } = new string[]
-    {
-        DiagnosticIDs.UnrecognizedCastOperatorBehaviour
-    };
+    private static GeneratorVerifier AssertExactlyUnrecognizedCastOperatorBehaviourDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnrecognizedCastOperatorBehaviourDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static IReadOnlyCollection<string> UnrecognizedCastOperatorBehaviourDiagnostics { get; } = new string[] { DiagnosticIDs.UnrecognizedCastOperatorBehaviour };
 }

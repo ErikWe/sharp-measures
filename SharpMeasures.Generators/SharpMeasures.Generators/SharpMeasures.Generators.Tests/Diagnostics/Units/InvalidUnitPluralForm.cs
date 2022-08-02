@@ -18,7 +18,7 @@ public class InvalidUnitPluralForm
     {
         string source = SourceTexts.Fixed(plural: "null");
 
-        return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInvalidUnitFormDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class InvalidUnitPluralForm
     {
         string source = SourceTexts.Fixed(plural: "\"\"");
 
-        return AssertExactlyInvalidUnitFormDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInvalidUnitFormDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Theory]
@@ -35,7 +35,7 @@ public class InvalidUnitPluralForm
     {
         string source = SourceTexts.Alias(plural: plural);
 
-        AssertExactlyInvalidUnitFormDiagnostics(source);
+        AssertExactlyInvalidUnitFormDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -44,7 +44,7 @@ public class InvalidUnitPluralForm
     {
         string source = SourceTexts.Biased(plural: plural);
 
-        AssertExactlyInvalidUnitFormDiagnostics(source);
+        AssertExactlyInvalidUnitFormDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -53,7 +53,7 @@ public class InvalidUnitPluralForm
     {
         string source = SourceTexts.DerivedWithID(plural: plural);
 
-        AssertExactlyInvalidUnitFormDiagnostics(source);
+        AssertExactlyInvalidUnitFormDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -62,7 +62,7 @@ public class InvalidUnitPluralForm
     {
         string source = SourceTexts.DerivedWithoutID(plural: plural);
 
-        AssertExactlyInvalidUnitFormDiagnostics(source);
+        AssertExactlyInvalidUnitFormDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -71,7 +71,7 @@ public class InvalidUnitPluralForm
     {
         string source = SourceTexts.Fixed(plural: plural);
 
-        AssertExactlyInvalidUnitFormDiagnostics(source);
+        AssertExactlyInvalidUnitFormDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -80,7 +80,7 @@ public class InvalidUnitPluralForm
     {
         string source = SourceTexts.Prefixed(plural: plural);
 
-        AssertExactlyInvalidUnitFormDiagnostics(source);
+        AssertExactlyInvalidUnitFormDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -89,7 +89,7 @@ public class InvalidUnitPluralForm
     {
         string source = SourceTexts.Scaled(plural: plural);
 
-        AssertExactlyInvalidUnitFormDiagnostics(source);
+        AssertExactlyInvalidUnitFormDiagnosticsWithValidLocation(source);
     }
 
     private static IEnumerable<object[]> InvalidUnitPluralForms() => new object[][]
@@ -98,6 +98,6 @@ public class InvalidUnitPluralForm
         new[] { "\"\"" }
     };
 
-    private static GeneratorVerifier AssertExactlyInvalidUnitFormDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidUnitFormDiagnostics);
+    private static GeneratorVerifier AssertExactlyInvalidUnitFormDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidUnitFormDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> InvalidUnitFormDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidUnitPluralForm };
 }

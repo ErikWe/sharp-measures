@@ -31,7 +31,7 @@ public class TypeNotStatic
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeNotStaticDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotStaticDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -55,11 +55,10 @@ public class TypeNotStatic
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeNotStaticDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotStaticDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyTypeNotStaticDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotStaticDiagnostics);
+    private static GeneratorVerifier AssertExactlyTypeNotStaticDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotStaticDiagnostics).AssertAllDiagnosticsValidLocation();
 
     private static IReadOnlyCollection<string> TypeNotStaticDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotStatic };
 }

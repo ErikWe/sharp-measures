@@ -13,6 +13,57 @@ using Xunit;
 [UsesVerify]
 public class MissingVectorDimension
 {
+    [Fact]
+    public Task NoNumber_ExactListAndVerify()
+    {
+        string source = Text("LengthVector");
+
+        return AssertExactlyMissingVectorDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
+    }
+
+    [Fact]
+    public Task NumberInMiddle_ExactListAndVerify()
+    {
+        string source = Text("Position3D");
+
+        return AssertExactlyMissingVectorDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
+    }
+
+    [Fact]
+    public Task NumberAndUnderscore_ExactListAndVerify()
+    {
+        string source = Text("Position3_");
+
+        return AssertExactlyMissingVectorDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
+    }
+
+    [Fact]
+    public Task ResizedNoNumber_ExactListAndVerify()
+    {
+        string source = ResizedText("LengthVector");
+
+        return AssertExactlyMissingVectorDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
+    }
+
+    [Fact]
+    public Task ResizedNumberInMiddle_ExactListAndVerify()
+    {
+        string source = ResizedText("Position2D");
+
+        return AssertExactlyMissingVectorDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
+    }
+
+    [Fact]
+    public Task ResizedNumberAndUnderscore_ExactListAndVerify()
+    {
+        string source = ResizedText("Position2_");
+
+        return AssertExactlyMissingVectorDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
+    }
+
+    private static GeneratorVerifier AssertExactlyMissingVectorDimensionDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(MissingVectorDimensionDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static IReadOnlyCollection<string> MissingVectorDimensionDiagnostics { get; } = new string[] { DiagnosticIDs.MissingVectorDimension };
+
     private static string Text(string name) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -45,57 +96,4 @@ public class MissingVectorDimension
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
-
-    [Fact]
-    public Task NoNumber_ExactListAndVerify()
-    {
-        string source = Text("LengthVector");
-
-        return AssertExactlyMissingVectorDimensionDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task NumberInMiddle_ExactListAndVerify()
-    {
-        string source = Text("Position3D");
-
-        return AssertExactlyMissingVectorDimensionDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task NumberAndUnderscore_ExactListAndVerify()
-    {
-        string source = Text("Position3_");
-
-        return AssertExactlyMissingVectorDimensionDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task ResizedNoNumber_ExactListAndVerify()
-    {
-        string source = ResizedText("LengthVector");
-
-        return AssertExactlyMissingVectorDimensionDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task ResizedNumberInMiddle_ExactListAndVerify()
-    {
-        string source = ResizedText("Position2D");
-
-        return AssertExactlyMissingVectorDimensionDiagnostics(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task ResizedNumberAndUnderscore_ExactListAndVerify()
-    {
-        string source = ResizedText("Position2_");
-
-        return AssertExactlyMissingVectorDimensionDiagnostics(source).VerifyDiagnostics();
-    }
-
-    private static GeneratorVerifier AssertExactlyMissingVectorDimensionDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(MissingVectorDimensionDiagnostics);
-
-    private static IReadOnlyCollection<string> MissingVectorDimensionDiagnostics { get; } = new string[] { DiagnosticIDs.MissingVectorDimension };
 }

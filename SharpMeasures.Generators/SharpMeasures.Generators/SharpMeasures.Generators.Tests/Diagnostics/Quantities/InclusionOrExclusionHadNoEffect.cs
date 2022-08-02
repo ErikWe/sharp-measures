@@ -25,12 +25,12 @@ public class InclusionOrExclusionHadNoEffect
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -45,12 +45,12 @@ public class InclusionOrExclusionHadNoEffect
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -65,12 +65,12 @@ public class InclusionOrExclusionHadNoEffect
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -85,12 +85,12 @@ public class InclusionOrExclusionHadNoEffect
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -113,12 +113,12 @@ public class InclusionOrExclusionHadNoEffect
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -140,12 +140,12 @@ public class InclusionOrExclusionHadNoEffect
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -169,13 +169,13 @@ public class InclusionOrExclusionHadNoEffect
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -198,12 +198,12 @@ public class InclusionOrExclusionHadNoEffect
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -227,17 +227,15 @@ public class InclusionOrExclusionHadNoEffect
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres", 1)]
+            [FixedUnit("Metre", "Metres")]
             [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InclusionOrExclusionHadNoEffectDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InclusionOrExclusionHadNoEffectDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> InclusionOrExclusionHadNoEffectDiagnostics { get; } = new string[] { DiagnosticIDs.InclusionOrExclusionHadNoEffect };
 }

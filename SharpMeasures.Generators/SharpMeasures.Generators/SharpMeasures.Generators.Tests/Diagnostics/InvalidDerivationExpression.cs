@@ -18,7 +18,7 @@ public class InvalidDerivationExpression
     {
         string source = DerivableUnitText("null");
 
-        return AssertExactlyInvalidDerivationExpressionDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyInvalidDerivationExpressionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Theory]
@@ -27,7 +27,7 @@ public class InvalidDerivationExpression
     {
         string source = DerivableUnitText(expression);
 
-        AssertExactlyInvalidDerivationExpressionDiagnostics(source);
+        AssertExactlyInvalidDerivationExpressionDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -36,7 +36,7 @@ public class InvalidDerivationExpression
     {
         string source = DerivedQuantityText(expression);
 
-        AssertExactlyInvalidDerivationExpressionDiagnostics(source);
+        AssertExactlyInvalidDerivationExpressionDiagnosticsWithValidLocation(source);
     }
 
     private static IEnumerable<object[]> InvalidExpressions() => new object[][]
@@ -45,7 +45,7 @@ public class InvalidDerivationExpression
         new[] { "\"\"" }
     };
 
-    private static GeneratorVerifier AssertExactlyInvalidDerivationExpressionDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidDerivationExpressionDiagnostics);
+    private static GeneratorVerifier AssertExactlyInvalidDerivationExpressionDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidDerivationExpressionDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> InvalidDerivationExpressionDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidDerivationExpression };
 
     private static string DerivableUnitText(string value) => $$"""

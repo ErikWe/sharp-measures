@@ -33,7 +33,7 @@ public class TypeNotUnbiasedScalar
             public partial class UnitOfTemperature { }
             """;
 
-        return AssertExactlyTypeNotUnbiasedScalarDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotUnbiasedScalarDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class TypeNotUnbiasedScalar
             public partial class UnitOfTemperature { }
             """;
 
-        AssertExactlyTypeNotUnbiasedScalarDiagnostics(source);
+        AssertExactlyTypeNotUnbiasedScalarDiagnosticsWithValidLocation(source);
     }
 
     [Fact]
@@ -72,9 +72,9 @@ public class TypeNotUnbiasedScalar
             public partial class UnitOfTemperature { }
             """;
 
-        AssertExactlyTypeNotUnbiasedScalarDiagnostics(source);
+        AssertExactlyTypeNotUnbiasedScalarDiagnosticsWithValidLocation(source);
     }
 
-    private static GeneratorVerifier AssertExactlyTypeNotUnbiasedScalarDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotUnbiasedDiagnostics);
+    private static GeneratorVerifier AssertExactlyTypeNotUnbiasedScalarDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotUnbiasedDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> TypeNotUnbiasedDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotUnbiasedScalar };
 }

@@ -31,9 +31,9 @@ public class TypeNotBiasedScalar
             public partial class UnitOfTemperature { }
             """;
 
-        AssertExactlyTypeNotBiasedScalarDiagnostics(source);
+        AssertExactlyTypeNotBiasedScalarDiagnosticsWithValidLocation(source);
     }
 
-    private static GeneratorVerifier AssertExactlyTypeNotBiasedScalarDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotBiasedDiagnostics);
+    private static GeneratorVerifier AssertExactlyTypeNotBiasedScalarDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotBiasedDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> TypeNotBiasedDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotBiasedScalar };
 }

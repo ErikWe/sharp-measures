@@ -28,7 +28,7 @@ public class UnitNotDerivable
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyUnitNotDerivableDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyUnitNotDerivableDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -46,9 +46,9 @@ public class UnitNotDerivable
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyUnitNotDerivableDiagnostics(source);
+        AssertExactlyUnitNotDerivableDiagnosticsWithValidLocation(source);
     }
 
-    private static GeneratorVerifier AssertExactlyUnitNotDerivableDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnitNotDerivableDiagnostics);
+    private static GeneratorVerifier AssertExactlyUnitNotDerivableDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnitNotDerivableDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> UnitNotDerivableDiagnostics { get; } = new string[] { DiagnosticIDs.UnitNotDerivable };
 }

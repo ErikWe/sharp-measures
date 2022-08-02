@@ -18,7 +18,7 @@ public class IncompatibleDerivedUnitListSize
     {
         string source = SourceText("\"Metre\"");
 
-        return AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyIncompatibleDerivedUnitListSizeDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Theory]
@@ -29,7 +29,7 @@ public class IncompatibleDerivedUnitListSize
     {
         string source = SourceText(units);
 
-        AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(source);
+        AssertExactlyIncompatibleDerivedUnitListSizeDiagnosticsWithValidLocation(source);
     }
 
     private static string SourceText(string units) => $$"""
@@ -58,6 +58,6 @@ public class IncompatibleDerivedUnitListSize
         public partial class UnitOfSpeed { }
         """;
 
-    private static GeneratorVerifier AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(IncompatibleDerivedUnitListSizeDiagnostics);
+    private static GeneratorVerifier AssertExactlyIncompatibleDerivedUnitListSizeDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(IncompatibleDerivedUnitListSizeDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> IncompatibleDerivedUnitListSizeDiagnostics { get; } = new string[] { DiagnosticIDs.IncompatibleDerivedUnitListSize };
 }

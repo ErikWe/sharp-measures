@@ -31,7 +31,7 @@ public class TypeAlreadyDefined
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeAlreadyDefinedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public class TypeAlreadyDefined
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeAlreadyDefinedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public class TypeAlreadyDefined
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeAlreadyDefinedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public class TypeAlreadyDefined
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeAlreadyDefinedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -119,7 +119,7 @@ public class TypeAlreadyDefined
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeAlreadyDefinedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -141,7 +141,7 @@ public class TypeAlreadyDefined
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeAlreadyDefinedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -166,7 +166,7 @@ public class TypeAlreadyDefined
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeAlreadyDefinedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -191,7 +191,7 @@ public class TypeAlreadyDefined
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeAlreadyDefinedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -216,7 +216,7 @@ public class TypeAlreadyDefined
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeAlreadyDefinedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -241,7 +241,7 @@ public class TypeAlreadyDefined
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeAlreadyDefinedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -266,7 +266,7 @@ public class TypeAlreadyDefined
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeAlreadyDefinedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -291,7 +291,7 @@ public class TypeAlreadyDefined
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeAlreadyDefinedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -316,7 +316,7 @@ public class TypeAlreadyDefined
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeAlreadyDefinedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -341,7 +341,7 @@ public class TypeAlreadyDefined
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeAlreadyDefinedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -366,7 +366,7 @@ public class TypeAlreadyDefined
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeAlreadyDefinedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -394,10 +394,10 @@ public class TypeAlreadyDefined
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeAlreadyDefinedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeAlreadyDefinedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactDiagnostics(string source, IEnumerable<string> expectedDiagnostics) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(expectedDiagnostics);
-    private static GeneratorVerifier AssertExactlyTypeAlreadyDefinedDiagnostics(string source) => AssertExactDiagnostics(source, TypeAlreadyDefinedDiagnostics);
+    private static GeneratorVerifier AssertExactDiagnosticsWithValidLocation(string source, IEnumerable<string> expectedDiagnostics) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(expectedDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static GeneratorVerifier AssertExactlyTypeAlreadyDefinedDiagnosticsWithValidLocation(string source) => AssertExactDiagnosticsWithValidLocation(source, TypeAlreadyDefinedDiagnostics);
     private static IReadOnlyCollection<string> TypeAlreadyDefinedDiagnostics { get; } = new string[] { DiagnosticIDs.TypeAlreadyDefined };
 }

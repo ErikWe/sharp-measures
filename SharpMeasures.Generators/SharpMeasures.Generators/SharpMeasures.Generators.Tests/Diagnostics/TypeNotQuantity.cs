@@ -18,7 +18,7 @@ public class TypeNotQuantity
     {
         var source = DerivedScalarText("(System.Type)null");
 
-        return AssertExactlyTypeNotQuantityDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotQuantityDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class TypeNotQuantity
     {
         var source = DerivedScalarText("typeof(int)");
 
-        return AssertExactlyTypeNotQuantityDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotQuantityDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Theory]
@@ -40,7 +40,7 @@ public class TypeNotQuantity
 
         string source = DerivedScalarText(value);
 
-        AssertExactlyTypeNotQuantityDiagnostics(source);
+        AssertExactlyTypeNotQuantityDiagnosticsWithValidLocation(source);
     }
 
     private static IEnumerable<object[]> NonQuantityTypes() => new object[][]
@@ -50,7 +50,7 @@ public class TypeNotQuantity
         new[] { "typeof(UnitOfLength)" }
     };
 
-    private static GeneratorVerifier AssertExactlyTypeNotQuantityDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotQuantityDiagnostics);
+    private static GeneratorVerifier AssertExactlyTypeNotQuantityDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotQuantityDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> TypeNotQuantityDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotQuantity };
 
     private static string DerivedScalarText(string value) => $$"""

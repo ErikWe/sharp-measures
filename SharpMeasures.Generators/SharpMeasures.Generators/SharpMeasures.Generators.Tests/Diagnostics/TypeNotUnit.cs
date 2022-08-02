@@ -18,7 +18,7 @@ public class TypeNotUnit
     {
         string source = ScalarUnitText("null");
 
-        return AssertExactlyTypeNotUnitDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotUnitDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class TypeNotUnit
     {
         string source = ScalarUnitText("typeof(int)");
 
-        return AssertExactlyTypeNotUnitDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotUnitDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Theory]
@@ -35,7 +35,7 @@ public class TypeNotUnit
     {
         string source = ScalarUnitText(value);
 
-        AssertExactlyTypeNotUnitDiagnostics(source);
+        AssertExactlyTypeNotUnitDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -44,7 +44,7 @@ public class TypeNotUnit
     {
         string source = VectorUnitText(value);
 
-        AssertExactlyTypeNotUnitDiagnostics(source);
+        AssertExactlyTypeNotUnitDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -53,7 +53,7 @@ public class TypeNotUnit
     {
         string source = VectorUnitText(value);
 
-        AssertExactlyTypeNotUnitDiagnostics(source);
+        AssertExactlyTypeNotUnitDiagnosticsWithValidLocation(source);
     }
 
     private static IEnumerable<object[]> NonUnitTypes() => new object[][]
@@ -68,7 +68,7 @@ public class TypeNotUnit
         new[] { "typeof(Position2)" }
     };
 
-    private static GeneratorVerifier AssertExactlyTypeNotUnitDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotUnitDiagnostics);
+    private static GeneratorVerifier AssertExactlyTypeNotUnitDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotUnitDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> TypeNotUnitDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotUnit };
 
     private static string ScalarUnitText(string value) => $$"""

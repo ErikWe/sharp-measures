@@ -34,7 +34,7 @@ public class DuplicateVectorDimension
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDuplicateVectorDimensionDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDuplicateVectorDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class DuplicateVectorDimension
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDuplicateVectorDimensionDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDuplicateVectorDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -85,11 +85,9 @@ public class DuplicateVectorDimension
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDuplicateVectorDimensionDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDuplicateVectorDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyDuplicateVectorDimensionDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateVectorDimensionDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyDuplicateVectorDimensionDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateVectorDimensionDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> DuplicateVectorDimensionDiagnostics { get; } = new string[] { DiagnosticIDs.DuplicateVectorDimension };
 }

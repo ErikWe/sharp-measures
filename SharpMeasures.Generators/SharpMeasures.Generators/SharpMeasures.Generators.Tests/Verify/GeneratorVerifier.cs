@@ -66,6 +66,16 @@ internal class GeneratorVerifier
         return this;
     }
 
+    public GeneratorVerifier AssertAllDiagnosticsValidLocation()
+    {
+        foreach (var diagnostic in Diagnostics)
+        {
+            Assert.False(diagnostic.Location.SourceSpan.IsEmpty);
+        }
+
+        return this;
+    }
+
     public GeneratorVerifier AssertSourceCount(int expectedSourceCount)
     {
         Assert.Equal(expectedSourceCount, OutputCount);

@@ -30,7 +30,7 @@ public class DuplicateUnitPluralForm
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDuplicateUnitPluralFormDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDuplicateUnitPluralFormDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class DuplicateUnitPluralForm
             public partial class UnitOfTemperature { }
             """;
 
-        AssertExactlyDuplicateUnitPluralFormDiagnostics(source);
+        AssertExactlyDuplicateUnitPluralFormDiagnosticsWithValidLocation(source);
     }
 
     [Fact]
@@ -85,7 +85,7 @@ public class DuplicateUnitPluralForm
             public partial class UnitOfSpeed { }
             """;
 
-        AssertExactlyDuplicateUnitPluralFormDiagnostics(source);
+        AssertExactlyDuplicateUnitPluralFormDiagnosticsWithValidLocation(source);
     }
 
     [Fact]
@@ -106,7 +106,7 @@ public class DuplicateUnitPluralForm
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDuplicateUnitPluralFormDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDuplicateUnitPluralFormDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -126,9 +126,9 @@ public class DuplicateUnitPluralForm
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDuplicateUnitPluralFormDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDuplicateUnitPluralFormDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyDuplicateUnitPluralFormDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateUnitFormDiagnostics);
+    private static GeneratorVerifier AssertExactlyDuplicateUnitPluralFormDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateUnitFormDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> DuplicateUnitFormDiagnostics { get; } = new string[] { DiagnosticIDs.DuplicateUnitPluralForm };
 }

@@ -39,7 +39,7 @@ public class VectorGroupAlreadySpecified
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyVectorGroupAlreadySpecifiedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyVectorGroupAlreadySpecifiedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class VectorGroupAlreadySpecified
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyVectorGroupAlreadySpecifiedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyVectorGroupAlreadySpecifiedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -102,11 +102,9 @@ public class VectorGroupAlreadySpecified
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyVectorGroupAlreadySpecifiedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyVectorGroupAlreadySpecifiedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyVectorGroupAlreadySpecifiedDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(VectorGroupAlreadySpecifiedDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyVectorGroupAlreadySpecifiedDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(VectorGroupAlreadySpecifiedDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> VectorGroupAlreadySpecifiedDiagnostics { get; } = new string[] { DiagnosticIDs.VectorGroupAlreadySpecified };
 }

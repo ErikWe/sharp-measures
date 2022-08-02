@@ -30,7 +30,7 @@ public class TypeNotPartial
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeNotPartialDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotPartialDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class TypeNotPartial
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeNotPartialDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotPartialDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -70,7 +70,7 @@ public class TypeNotPartial
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeNotPartialDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotPartialDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public class TypeNotPartial
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeNotPartialDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotPartialDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -115,7 +115,7 @@ public class TypeNotPartial
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeNotPartialDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotPartialDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -136,7 +136,7 @@ public class TypeNotPartial
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeNotPartialDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotPartialDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -160,7 +160,7 @@ public class TypeNotPartial
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeNotPartialDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotPartialDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -184,9 +184,9 @@ public class TypeNotPartial
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyTypeNotPartialDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotPartialDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyTypeNotPartialDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotPartialDiagnostics);
+    private static GeneratorVerifier AssertExactlyTypeNotPartialDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotPartialDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> TypeNotPartialDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotPartial };
 }

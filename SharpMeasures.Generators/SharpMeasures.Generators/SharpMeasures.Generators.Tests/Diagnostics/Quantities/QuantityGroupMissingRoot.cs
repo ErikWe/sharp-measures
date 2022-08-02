@@ -31,7 +31,7 @@ public class QuantityGroupMissingRoot
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyQuantityGroupMissingRootDiagnostics(source, 1).VerifyDiagnostics();
+        return AssertExactlyQuantityGroupMissingRootDiagnosticsWithValidLocation(source, 1).VerifyDiagnostics();
     }
 
     [Fact]
@@ -55,7 +55,7 @@ public class QuantityGroupMissingRoot
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyQuantityGroupMissingRootDiagnostics(source, 2).VerifyDiagnostics();
+        return AssertExactlyQuantityGroupMissingRootDiagnosticsWithValidLocation(source, 2).VerifyDiagnostics();
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public class QuantityGroupMissingRoot
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyQuantityGroupMissingRootDiagnostics(source, 3).VerifyDiagnostics();
+        return AssertExactlyQuantityGroupMissingRootDiagnosticsWithValidLocation(source, 3).VerifyDiagnostics();
     }
 
     [Fact]
@@ -109,19 +109,19 @@ public class QuantityGroupMissingRoot
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyQuantityGroupMissingRootDiagnostics(source, 3).VerifyDiagnostics();
+        return AssertExactlyQuantityGroupMissingRootDiagnosticsWithValidLocation(source, 3).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyQuantityGroupMissingRootDiagnostics(string source, int diagnosticsCount)
+    private static GeneratorVerifier AssertExactlyQuantityGroupMissingRootDiagnosticsWithValidLocation(string source, int diagnosticsCount)
     {
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(expectedDiagnostics());
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(ExpectedDiagnostics(diagnosticsCount)).AssertAllDiagnosticsValidLocation();
+    }
 
-        IEnumerable<string> expectedDiagnostics()
+    private static IEnumerable<string> ExpectedDiagnostics(int diagnosticsCount)
+    {
+        for (int i = 0; i < diagnosticsCount; i++)
         {
-            for (int i = 0; i < diagnosticsCount; i++)
-            {
-                yield return DiagnosticIDs.QuantityGroupMissingRoot;
-            }
+            yield return DiagnosticIDs.QuantityGroupMissingRoot;
         }
     }
 }

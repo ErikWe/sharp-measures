@@ -41,9 +41,9 @@ public class DuplicateUnitDerivationID
             public partial class UnitOfSpeed { }
             """;
 
-        return AssertExactlyDuplicateUnitDerivationIDDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDuplicateUnitDerivationIDDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyDuplicateUnitDerivationIDDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateUnitderivationIDDiagnostics);
+    private static GeneratorVerifier AssertExactlyDuplicateUnitDerivationIDDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateUnitderivationIDDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> DuplicateUnitderivationIDDiagnostics { get; } = new string[] { DiagnosticIDs.DuplicateUnitDerivationID };
 }

@@ -31,9 +31,9 @@ public class UnitNotIncludingBiasTerm
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyUnitNotIncludingBiasTermDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyUnitNotIncludingBiasTermDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyUnitNotIncludingBiasTermDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnitNotIncludingBiasTermDiagnostics);
+    private static GeneratorVerifier AssertExactlyUnitNotIncludingBiasTermDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnitNotIncludingBiasTermDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> UnitNotIncludingBiasTermDiagnostics { get; } = new string[] { DiagnosticIDs.UnitNotIncludingBiasTerm };
 }

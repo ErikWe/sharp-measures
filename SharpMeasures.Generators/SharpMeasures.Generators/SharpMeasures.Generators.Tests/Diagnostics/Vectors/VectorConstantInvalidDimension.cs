@@ -33,7 +33,7 @@ public class VectorConstantInvalidDimension
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyVectorConstantInvalidDimensionDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyVectorConstantInvalidDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public class VectorConstantInvalidDimension
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyVectorConstantInvalidDimensionDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyVectorConstantInvalidDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -79,7 +79,7 @@ public class VectorConstantInvalidDimension
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyVectorConstantInvalidDimensionDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyVectorConstantInvalidDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -102,11 +102,9 @@ public class VectorConstantInvalidDimension
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyVectorConstantInvalidDimensionDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyVectorConstantInvalidDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyVectorConstantInvalidDimensionDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(VectorConstantInvalidDimensionDiagnostics);
-
+    private static GeneratorVerifier AssertExactlyVectorConstantInvalidDimensionDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(VectorConstantInvalidDimensionDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> VectorConstantInvalidDimensionDiagnostics { get; } = new string[] { DiagnosticIDs.VectorConstantInvalidDimension };
 }

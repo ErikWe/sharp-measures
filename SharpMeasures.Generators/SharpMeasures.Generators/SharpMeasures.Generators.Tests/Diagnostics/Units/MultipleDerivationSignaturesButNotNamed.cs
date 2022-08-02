@@ -18,7 +18,7 @@ public class MultipleDerivationSignaturesButNotNamed
     {
         string source = SourceText("", "\"2\", ");
 
-        return AssertExactlyOneMultipleDerivationSignaturesButNotNamedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyOneMultipleDerivationSignaturesButNotNamedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Theory]
@@ -29,7 +29,7 @@ public class MultipleDerivationSignaturesButNotNamed
     {
         string source = SourceText(firstIDWithoutComma, secondIDWithoutComma);
 
-        AssertExactlyOneMultipleDerivationSignaturesButNotNamedDiagnostics(source);
+        AssertExactlyOneMultipleDerivationSignaturesButNotNamedDiagnosticsWithValidLocation(source);
     }
 
     [Fact]
@@ -37,7 +37,7 @@ public class MultipleDerivationSignaturesButNotNamed
     {
         string source = SourceText("", "");
 
-        AssertExactlyTwoMultipleDerivationSignaturesButNotNamedDiagnostics(source);
+        AssertExactlyTwoMultipleDerivationSignaturesButNotNamedDiagnosticsWithValidLocation(source);
     }
 
     private static string SourceText(string firstIDWithoutComma, string secondIDWithoutComma) => $$"""
@@ -65,8 +65,8 @@ public class MultipleDerivationSignaturesButNotNamed
             public partial class UnitOfSpeed { }
         """;
 
-    private static GeneratorVerifier AssertExactlyOneMultipleDerivationSignaturesButNotNamedDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(OneMultipleDerivationSignaturesButNotNamedDiagnostics);
-    private static GeneratorVerifier AssertExactlyTwoMultipleDerivationSignaturesButNotNamedDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TwoMultipleDerivationSignaturesButNotNamedDiagnostics);
+    private static GeneratorVerifier AssertExactlyOneMultipleDerivationSignaturesButNotNamedDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(OneMultipleDerivationSignaturesButNotNamedDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static GeneratorVerifier AssertExactlyTwoMultipleDerivationSignaturesButNotNamedDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TwoMultipleDerivationSignaturesButNotNamedDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> OneMultipleDerivationSignaturesButNotNamedDiagnostics { get; } = new string[] { DiagnosticIDs.MultipleDerivationSignaturesButNotNamed };
     private static IReadOnlyCollection<string> TwoMultipleDerivationSignaturesButNotNamedDiagnostics { get; } = new string[] { DiagnosticIDs.MultipleDerivationSignaturesButNotNamed, DiagnosticIDs.MultipleDerivationSignaturesButNotNamed };
 }

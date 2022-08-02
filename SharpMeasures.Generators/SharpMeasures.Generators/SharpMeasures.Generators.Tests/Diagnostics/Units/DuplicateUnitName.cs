@@ -30,7 +30,7 @@ public class DuplicateUnitName
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDuplicateUnitNameDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDuplicateUnitNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class DuplicateUnitName
             public partial class UnitOfTemperature { }
             """;
 
-        AssertExactlyDuplicateUnitNameDiagnostics(source);
+        AssertExactlyDuplicateUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Fact]
@@ -85,7 +85,7 @@ public class DuplicateUnitName
             public partial class UnitOfSpeed { }
             """;
 
-        AssertExactlyDuplicateUnitNameDiagnostics(source);
+        AssertExactlyDuplicateUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Fact]
@@ -106,7 +106,7 @@ public class DuplicateUnitName
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyDuplicateUnitNameDiagnostics(source);
+        AssertExactlyDuplicateUnitNameDiagnosticsWithValidLocation(source);
     }
 
     [Fact]
@@ -126,9 +126,9 @@ public class DuplicateUnitName
             public partial class UnitOfLength { }
             """;
 
-        AssertExactlyDuplicateUnitNameDiagnostics(source);
+        AssertExactlyDuplicateUnitNameDiagnosticsWithValidLocation(source);
     }
 
-    private static GeneratorVerifier AssertExactlyDuplicateUnitNameDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateUnitNameDiagnostics);
+    private static GeneratorVerifier AssertExactlyDuplicateUnitNameDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateUnitNameDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> DuplicateUnitNameDiagnostics { get; } = new string[] { DiagnosticIDs.DuplicateUnitName };
 }

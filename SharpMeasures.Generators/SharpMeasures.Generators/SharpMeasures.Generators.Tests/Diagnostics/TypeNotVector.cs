@@ -18,7 +18,7 @@ public class TypeNotVector
     {
         var source = ScalarVectorText("null");
 
-        return AssertExactlyTypeNotVectorDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotVectorDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class TypeNotVector
     {
         var source = ScalarVectorText("typeof(int)");
 
-        return AssertExactlyTypeNotVectorDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyTypeNotVectorDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Theory]
@@ -35,7 +35,7 @@ public class TypeNotVector
     {
         string source = ScalarVectorText(value);
 
-        AssertExactlyTypeNotVectorDiagnostics(source);
+        AssertExactlyTypeNotVectorDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -44,7 +44,7 @@ public class TypeNotVector
     {
         string source = SpecializedVectorOriginalVectorText(value);
 
-        AssertExactlyTypeNotVectorDiagnostics(source);
+        AssertExactlyTypeNotVectorDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -53,7 +53,7 @@ public class TypeNotVector
     {
         string source = VectorDifferenceText(value);
 
-        AssertExactlyTypeNotVectorDiagnostics(source);
+        AssertExactlyTypeNotVectorDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -62,7 +62,7 @@ public class TypeNotVector
     {
         string source = SpecializedVectorDifferenceText(value);
 
-        AssertExactlyTypeNotVectorDiagnostics(source);
+        AssertExactlyTypeNotVectorDiagnosticsWithValidLocation(source);
     }
 
     [Theory]
@@ -76,7 +76,7 @@ public class TypeNotVector
 
         var source = ConvertibleQuantityText(value);
 
-        AssertExactlyTypeNotVectorDiagnostics(source);
+        AssertExactlyTypeNotVectorDiagnosticsWithValidLocation(source);
     }
 
     private static IEnumerable<object[]> NonVectorTypes() => new object[][]
@@ -87,7 +87,7 @@ public class TypeNotVector
         new[] { "typeof(Length)" }
     };
 
-    private static GeneratorVerifier AssertExactlyTypeNotVectorDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotVectorDiagnostics);
+    private static GeneratorVerifier AssertExactlyTypeNotVectorDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotVectorDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> TypeNotVectorDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotVector };
 
     private static string ScalarVectorText(string value) => $$"""

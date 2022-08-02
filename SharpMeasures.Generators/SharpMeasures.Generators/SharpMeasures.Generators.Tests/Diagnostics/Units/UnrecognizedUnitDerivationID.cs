@@ -44,7 +44,7 @@ public class UnrecognizedUnitDerivationID
             public partial class UnitOfSpeed { }
             """;
 
-        return AssertExactlyUnrecognizedUnitDerivationIDDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyUnrecognizedUnitDerivationIDDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -77,9 +77,9 @@ public class UnrecognizedUnitDerivationID
             public partial class UnitOfSpeed { }
             """;
 
-        AssertExactlyUnrecognizedUnitDerivationIDDiagnostics(source);
+        AssertExactlyUnrecognizedUnitDerivationIDDiagnosticsWithValidLocation(source);
     }
 
-    private static GeneratorVerifier AssertExactlyUnrecognizedUnitDerivationIDDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnrecognizedUnitderivationIDDiagnostics);
+    private static GeneratorVerifier AssertExactlyUnrecognizedUnitDerivationIDDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnrecognizedUnitderivationIDDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> UnrecognizedUnitderivationIDDiagnostics { get; } = new string[] { DiagnosticIDs.UnrecognizedUnitDerivationID };
 }

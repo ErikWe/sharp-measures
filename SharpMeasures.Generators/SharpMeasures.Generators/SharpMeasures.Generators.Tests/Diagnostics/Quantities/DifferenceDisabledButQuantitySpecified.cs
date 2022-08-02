@@ -27,7 +27,7 @@ public class DifferenceDisabledButQuantitySpecified
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDifferenceDisabledButQuantitySpecifiedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDifferenceDisabledButQuantitySpecifiedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
     [Fact]
@@ -51,14 +51,9 @@ public class DifferenceDisabledButQuantitySpecified
             public partial class UnitOfLength { }
             """;
 
-        return AssertExactlyDifferenceDisabledButQuantitySpecifiedDiagnostics(source).VerifyDiagnostics();
+        return AssertExactlyDifferenceDisabledButQuantitySpecifiedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    private static GeneratorVerifier AssertExactlyDifferenceDisabledButQuantitySpecifiedDiagnostics(string source)
-        => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DifferenceDisabledButQuantitySpecifiedDiagnostics);
-
-    private static IReadOnlyCollection<string> DifferenceDisabledButQuantitySpecifiedDiagnostics { get; } = new string[]
-    {
-        DiagnosticIDs.DifferenceDisabledButQuantitySpecified
-    };
+    private static GeneratorVerifier AssertExactlyDifferenceDisabledButQuantitySpecifiedDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DifferenceDisabledButQuantitySpecifiedDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static IReadOnlyCollection<string> DifferenceDisabledButQuantitySpecifiedDiagnostics { get; } = new string[] { DiagnosticIDs.DifferenceDisabledButQuantitySpecified };
 }

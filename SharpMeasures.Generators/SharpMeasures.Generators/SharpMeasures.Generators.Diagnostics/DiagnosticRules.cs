@@ -259,8 +259,7 @@ public static partial class DiagnosticRules
         messageFormat: "Expected at least one {0}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
-        isEnabledByDefault: true,
-        customTags: WellKnownDiagnosticTags.Unnecessary
+        isEnabledByDefault: true
     );
 
     public static readonly DiagnosticDescriptor DuplicateListing = new DiagnosticDescriptor
