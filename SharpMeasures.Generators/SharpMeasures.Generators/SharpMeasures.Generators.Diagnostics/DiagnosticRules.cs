@@ -246,7 +246,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InvalidDerivationSignature,
         title: "Invalid derivation signature",
-        messageFormat: "The derivation signature should consist of at least 1 {0}",
+        messageFormat: "The derivation signature should consist of at least one {0}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
