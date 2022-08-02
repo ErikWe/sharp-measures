@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1022,
+    Title: Unit does not include a bias term,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: : (4,57)-(4,61),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} does not include a bias term, and therefore cannot describe the biased quantity {1},
+    Message: UnitOfLength does not include a bias term, and therefore cannot describe the biased quantity Temperature,
+    Category: Usage,
+    CustomTags: []
+  }
+]
