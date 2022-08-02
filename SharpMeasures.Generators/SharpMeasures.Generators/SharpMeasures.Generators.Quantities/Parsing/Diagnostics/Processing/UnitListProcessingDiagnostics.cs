@@ -15,7 +15,12 @@ public class UnitListProcessingDiagnostics : IUnitListProcessingDiagnostics
 
     public Diagnostic EmptyItemList(IProcessingContext context, RawUnitListDefinition definition)
     {
-        return DiagnosticConstruction.EmptyUnitList(definition.Locations.UnitsCollection?.AsRoslynLocation());
+        if (definition.Locations.ExplicitlySetUnits)
+        {
+            return DiagnosticConstruction.EmptyUnitList(definition.Locations.UnitsCollection?.AsRoslynLocation());
+        }
+
+        return DiagnosticConstruction.EmptyUnitList(definition.Locations.Attribute.AsRoslynLocation());
     }
 
     public Diagnostic NullItem(IProcessingContext context, RawUnitListDefinition definition, int index)

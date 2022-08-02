@@ -13,8 +13,7 @@ public interface IUnitListProcessingDiagnostics : IUniqueItemListProcessingDiagn
     public abstract Diagnostic? EmptyItem(IUniqueItemListProcessingContext<string> context, RawUnitListDefinition definition, int index);
 }
 
-public class UnitListProcesser
-    : AUniqueItemListProcesser<string?, string, IUniqueItemListProcessingContext<string>, RawUnitListDefinition, UnitListLocations, UnresolvedUnitListDefinition>
+public class UnitListProcesser : AUniqueItemListProcesser<string?, string, IUniqueItemListProcessingContext<string>, RawUnitListDefinition, UnitListLocations, UnresolvedUnitListDefinition>
 {
     private IUnitListProcessingDiagnostics Diagnostics { get; }
 

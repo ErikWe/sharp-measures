@@ -77,6 +77,4 @@ public class InvalidConstantMultiplesName
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
-
-
 }

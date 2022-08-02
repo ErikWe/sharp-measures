@@ -36,8 +36,7 @@ public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProce
         Diagnostics = diagnostics;
     }
 
-    public override void OnSuccessfulProcess(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition,
-        TProduct product)
+    public override void OnSuccessfulProcess(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, TProduct product)
     {
         foreach (var quantity in product.Quantities)
         {
