@@ -170,7 +170,7 @@ public static partial class DiagnosticConstruction
 
     public static Diagnostic UnitNotIncludingBiasTerm(Location? location, string unitName, string quantityName)
     {
-        return Diagnostic.Create(DiagnosticRules.UnitNotIncludingBiasTerm, location, unitName, quantityName);
+        return Diagnostic.Create(DiagnosticRules.UnitNotIncludingBiasTerm, location, quantityName, unitName);
     }
 
     public static Diagnostic InvalidDerivationExpression(Location? location, string expression)
