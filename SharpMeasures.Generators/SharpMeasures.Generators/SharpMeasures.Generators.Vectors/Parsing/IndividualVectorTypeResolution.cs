@@ -52,7 +52,7 @@ internal static class IndividualVectorTypeResolution
 
     private static DerivedQuantityResolver DerivedQuantityResolver { get; } = new(DerivedQuantityResolutionDiagnostics.Instance);
     private static VectorConstantResolver VectorConstantResolver { get; } = new(VectorConstantResolutionDiagnostics.Instance);
-    private static ConvertibleVectorResolver ConvertibleVectorResolver { get; } = new(ConvertibleVectorResolutionDiagnostics.Instance);
+    private static ConvertibleIndividualVectorResolver ConvertibleVectorResolver { get; } = new(ConvertibleVectorResolutionDiagnostics.Instance);
 
     private static UnitListResolver UnitListResolver { get; } = new(UnitListResolutionDiagnostics.Instance);
 }

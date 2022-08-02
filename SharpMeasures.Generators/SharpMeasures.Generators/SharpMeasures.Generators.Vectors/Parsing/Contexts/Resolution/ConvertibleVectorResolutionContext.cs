@@ -3,7 +3,7 @@
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Unresolved.Vectors;
 
-internal record class ConvertibleVectorResolutionContext : IConvertibleVectorResolutionContext
+internal record class ConvertibleVectorResolutionContext : IConvertibleVectorGroupResolutionContext, IConvertibleIndividualVectorResolutionContext
 {
     public DefinedType Type { get; }
 

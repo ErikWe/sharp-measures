@@ -20,8 +20,7 @@ public record class ConvertibleVectorDefinition : AItemListDefinition<IUnresolve
     public bool Bidirectional { get; }
     public ConversionOperatorBehaviour CastOperatorBehaviour { get; }
 
-    public ConvertibleVectorDefinition(IReadOnlyList<IUnresolvedIndividualVectorType> vectors, bool bidirectional, ConversionOperatorBehaviour castOperatorBehaviour,
-        ConvertibleQuantityLocations locations)
+    public ConvertibleVectorDefinition(IReadOnlyList<IUnresolvedVectorGroupType> vectors, bool bidirectional, ConversionOperatorBehaviour castOperatorBehaviour, ConvertibleQuantityLocations locations)
         : base(vectors, locations)
     {
         Bidirectional = bidirectional;

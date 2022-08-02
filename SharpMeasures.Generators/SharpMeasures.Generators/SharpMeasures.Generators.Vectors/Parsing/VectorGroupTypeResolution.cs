@@ -53,7 +53,7 @@ internal static class VectorGroupTypeResolution
     private static RegisterVectorGroupMemberResolver RegisterVectorGroupMemberResolver { get; } = new(RegisterVectorGroupMemberResolutionDiagnostics.Instance);
 
     private static DerivedQuantityResolver DerivedQuantityResolver { get; } = new(DerivedQuantityResolutionDiagnostics.Instance);
-    private static ConvertibleVectorResolver ConvertibleVectorResolver { get; } = new(ConvertibleVectorResolutionDiagnostics.Instance);
+    private static ConvertibleVectorGroupResolver ConvertibleVectorResolver { get; } = new(ConvertibleVectorResolutionDiagnostics.Instance);
 
     private static UnitListResolver UnitListResolver { get; } = new(UnitListResolutionDiagnostics.Instance);
 }
