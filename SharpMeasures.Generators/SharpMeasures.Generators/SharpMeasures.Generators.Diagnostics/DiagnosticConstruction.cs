@@ -168,9 +168,9 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.TypeNotBiasedScalar, location, scalarName);
     }
 
-    public static Diagnostic UnitNotIncludingBiasTerm(Location? location, string unitName)
+    public static Diagnostic UnitNotIncludingBiasTerm(Location? location, string unitName, string quantityName)
     {
-        return Diagnostic.Create(DiagnosticRules.UnitNotIncludingBiasTerm, location, unitName);
+        return Diagnostic.Create(DiagnosticRules.UnitNotIncludingBiasTerm, location, unitName, quantityName);
     }
 
     public static Diagnostic InvalidDerivationExpression(Location? location, string expression)

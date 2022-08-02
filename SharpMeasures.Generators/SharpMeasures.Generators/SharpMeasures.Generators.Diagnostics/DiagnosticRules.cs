@@ -206,7 +206,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.UnitNotIncludingBiasTerm,
         title: "Unit does not include a bias term",
-        messageFormat: "The unit {0} does not include a bias term",
+        messageFormat: "{0} does not include a bias term, and therefore cannot describe the biased quantity {1}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
