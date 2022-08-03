@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1221,
+    Title: Invalid name for multiples of constant,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (3,61)-(3,65),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The name for multiples of {0} must be defined. Use the default value, write the name in full, or use a suitable notation from SharpMeasures.Generators.Quantities.Utility.CommonConstantMultiplesPropertyNotations.,
+    Message: The name for multiples of Planck must be defined. Use the default value, write the name in full, or use a suitable notation from SharpMeasures.Generators.Quantities.Utility.CommonConstantMultiplesPropertyNotations.,
+    Category: Naming,
+    CustomTags: []
+  }
+]

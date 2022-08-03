@@ -14,7 +14,7 @@ using Xunit;
 public class InvalidConstantMultiplesName
 {
     [Fact]
-    public Task Scalar_Null_ExactListAndVerify()
+    public Task VerifyInvalidConstantMultiplesNameDiagnosticsMessage_Null()
     {
         string source = ScalarText("null");
 
@@ -22,28 +22,63 @@ public class InvalidConstantMultiplesName
     }
 
     [Fact]
-    public Task Scalar_Empty_ExactListAndVerify()
+    public Task VerifyInvalidConstantMultiplesNameDiagnosticsMessage_Emptyl()
     {
         string source = ScalarText("\"\"");
 
         return AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    [Fact]
-    public Task Vector_Null_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(InvalidConstantMultiplesNames))]
+    public void Scalar_ExactList(string constantMultiplesName)
     {
-        string source = VectorText("null");
+        string source = ScalarText(constantMultiplesName);
 
-        return AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
+        AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source);
     }
 
-    [Fact]
-    public Task Vector_Empty_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(InvalidConstantMultiplesNames))]
+    public void SpecializedScalar_ExactList(string constantMultiplesName)
     {
-        string source = VectorText("\"\"");
+        string source = SpecializedScalarText(constantMultiplesName);
 
-        return AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
+        AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source);
     }
+
+    [Theory]
+    [MemberData(nameof(InvalidConstantMultiplesNames))]
+    public void Vector_ExactList(string constantMultiplesName)
+    {
+        string source = VectorText(constantMultiplesName);
+
+        AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidConstantMultiplesNames))]
+    public void SpecializedVector_ExactList(string constantMultiplesName)
+    {
+        string source = SpecializedVectorText(constantMultiplesName);
+
+        AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidConstantMultiplesNames))]
+    public void VectorGroupMember_ExactList(string constantMultiplesName)
+    {
+        string source = VectorGroupMemberText(constantMultiplesName);
+
+        AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source);
+    }
+
+    private static IEnumerable<object[]> InvalidConstantMultiplesNames() => new object[][]
+    {
+        new[] { "null" },
+        new[] { "\"\"" }
+    };
 
     private static GeneratorVerifier AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidConstantMultiplesNameDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> InvalidConstantMultiplesNameDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidConstantMultiplesName };
@@ -52,8 +87,24 @@ public class InvalidConstantMultiplesName
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
         [ScalarConstant("Planck", "Metre", 1.616255E-35, Multiples = {{multiples}})]
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedScalarText(string multiples) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [ScalarConstant("Planck", "Metre", 1.616255E-35, Multiples = {{multiples}})]
+        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        public partial class Distance { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
         [FixedUnit("Metre", "Metres")]
@@ -69,6 +120,43 @@ public class InvalidConstantMultiplesName
         [VectorConstant("MetreOnes", "Metre", 1, 1, 1, Multiples = {{multiples}})]
         [SharpMeasuresVector(typeof(UnitOfLength))]
         public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedVectorText(string multiples) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, Multiples = {{multiples}})]
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorGroupMemberText(string multiples) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, Multiples = {{multiples}})]
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Position3 { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
