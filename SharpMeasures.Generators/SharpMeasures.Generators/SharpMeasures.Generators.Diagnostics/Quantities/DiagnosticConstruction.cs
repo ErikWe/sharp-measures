@@ -8,14 +8,14 @@ using System;
 
 public static partial class DiagnosticConstruction
 {
-    public static Diagnostic DefineQuantityDefaultUnit(Location? location)
+    public static Diagnostic DefineQuantityDefaultUnit(Location? location, string quantityTypeName)
     {
-        return Diagnostic.Create(DiagnosticRules.DefineQuantityDefaultUnit, location);
+        return Diagnostic.Create(DiagnosticRules.DefineQuantityDefaultUnit, location, quantityTypeName);
     }
 
-    public static Diagnostic DefineQuantityDefaultSymbol(Location? location)
+    public static Diagnostic DefineQuantityDefaultSymbol(Location? location, string quantityTypeName)
     {
-        return Diagnostic.Create(DiagnosticRules.DefineQuantityDefaultSymbol, location);
+        return Diagnostic.Create(DiagnosticRules.DefineQuantityDefaultSymbol, location, quantityTypeName);
     }
 
     public static Diagnostic InvalidConstantName(Location? location, string constantName)

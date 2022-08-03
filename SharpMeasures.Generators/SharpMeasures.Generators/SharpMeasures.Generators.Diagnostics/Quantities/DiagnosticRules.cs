@@ -11,7 +11,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DefineQuantityUnitAndSymbol,
         title: "Expected both unit name and symbol",
-        messageFormat: "The symbol for the default unit of the quantity was specified, but not the name of the default unit",
+        messageFormat: "The symbol for the default unit of {0} was specified, but not the name of the default unit",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true
@@ -21,7 +21,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DefineQuantityUnitAndSymbol,
         title: "Expected both unit name and symbol",
-        messageFormat: "The name of the default unit of the quantity was specified, but not the associated symbol",
+        messageFormat: "The name of the default unit of {0} was specified, but not the associated symbol",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true

@@ -41,12 +41,12 @@ internal class SharpMeasuresScalarProcessingDiagnostics : ISharpMeasuresScalarPr
 
     public Diagnostic SetDefaultSymbolButNotUnit(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
     {
-        return DiagnosticConstruction.DefineQuantityDefaultUnit(definition.Locations.DefaultUnitSymbol?.AsRoslynLocation());
+        return DiagnosticConstruction.DefineQuantityDefaultUnit(definition.Locations.DefaultUnitSymbol?.AsRoslynLocation(), context.Type.Name);
     }
 
     public Diagnostic SetDefaultUnitButNotSymbol(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
     {
-        return DiagnosticConstruction.DefineQuantityDefaultSymbol(definition.Locations.DefaultUnitName?.AsRoslynLocation());
+        return DiagnosticConstruction.DefineQuantityDefaultSymbol(definition.Locations.DefaultUnitName?.AsRoslynLocation(), context.Type.Name);
     }
 
     public Diagnostic NullReciprocalQuantity(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)

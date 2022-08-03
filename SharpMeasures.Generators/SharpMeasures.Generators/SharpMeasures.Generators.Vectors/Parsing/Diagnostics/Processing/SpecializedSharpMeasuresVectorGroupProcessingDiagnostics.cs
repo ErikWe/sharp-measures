@@ -41,11 +41,11 @@ internal class SpecializedSharpMeasuresVectorGroupProcessingDiagnostics : ISpeci
 
     public Diagnostic SetDefaultSymbolButNotUnit(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition)
     {
-        return DiagnosticConstruction.DefineQuantityDefaultUnit(definition.Locations.DefaultUnitSymbol?.AsRoslynLocation());
+        return DiagnosticConstruction.DefineQuantityDefaultUnit(definition.Locations.DefaultUnitSymbol?.AsRoslynLocation(), context.Type.Name);
     }
 
     public Diagnostic SetDefaultUnitButNotSymbol(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition)
     {
-        return DiagnosticConstruction.DefineQuantityDefaultSymbol(definition.Locations.DefaultUnitName?.AsRoslynLocation());
+        return DiagnosticConstruction.DefineQuantityDefaultSymbol(definition.Locations.DefaultUnitName?.AsRoslynLocation(), context.Type.Name);
     }
 }

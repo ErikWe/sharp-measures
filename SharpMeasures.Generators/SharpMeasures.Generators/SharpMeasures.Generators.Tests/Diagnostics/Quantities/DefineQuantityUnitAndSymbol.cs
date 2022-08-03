@@ -13,36 +13,8 @@ using Xunit;
 [UsesVerify]
 public class DefineQuantityUnitAndSymbol
 {
-    private static string ScalarText(string info) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-
-        [SharpMeasuresScalar(typeof(UnitOfLength), {{info}})]
-        public partial class Length { }
-
-        [FixedUnit("Metre", "Metres", 1)]
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-        """;
-
-    private static string VectorText(string info) => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
-
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-
-        [SharpMeasuresVector(typeof(UnitOfLength), {{info}})]
-        public partial class Position3 { }
-
-        [FixedUnit("Metre", "Metres", 1)]
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-        """;
-
     [Fact]
-    public Task Scalar_OnlyUnit_ExactListAndVerify()
+    public Task VerifyDefineQuantityUnitAndSymbolDiagnosticsMessage_OnlyUnit()
     {
         var source = ScalarText("DefaultUnitName = \"Metre\"");
 
@@ -50,29 +22,170 @@ public class DefineQuantityUnitAndSymbol
     }
 
     [Fact]
-    public Task Scalar_OnlySymbol_ExactListAndVerify()
+    public Task VerifyDefineQuantityUnitAndSymbolDiagnosticsMessage_OnlySymbol()
     {
         var source = ScalarText("DefaultUnitSymbol = \"m\"");
 
         return AssertExactlyDefineQuantityUnitAndSymbolDiagnosticsWithValidLocation(source).VerifyDiagnostics();
     }
 
-    [Fact]
-    public Task Vector_OnlyUnit_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(Arguments))]
+    public void Scalar_ExactList(string argument)
     {
-        var source = VectorText("DefaultUnitName = \"Metre\"");
+        var source = ScalarText(argument);
 
-        return AssertExactlyDefineQuantityUnitAndSymbolDiagnosticsWithValidLocation(source).VerifyDiagnostics();
+        AssertExactlyDefineQuantityUnitAndSymbolDiagnosticsWithValidLocation(source);
     }
 
-    [Fact]
-    public Task Vector_OnlySymbol_ExactListAndVerify()
+    [Theory]
+    [MemberData(nameof(Arguments))]
+    public void SpecializedScalar_ExactList(string argument)
     {
-        var source = VectorText("DefaultUnitSymbol = \"m\"");
+        var source = SpecializedScalarText(argument);
 
-        return AssertExactlyDefineQuantityUnitAndSymbolDiagnosticsWithValidLocation(source).VerifyDiagnostics();
+        AssertExactlyDefineQuantityUnitAndSymbolDiagnosticsWithValidLocation(source);
     }
+
+    [Theory]
+    [MemberData(nameof(Arguments))]
+    public void Vector_ExactList(string argument)
+    {
+        var source = VectorText(argument);
+
+        AssertExactlyDefineQuantityUnitAndSymbolDiagnosticsWithValidLocation(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(Arguments))]
+    public void SpecializedVector_ExactList(string argument)
+    {
+        var source = SpecializedVectorText(argument);
+
+        AssertExactlyDefineQuantityUnitAndSymbolDiagnosticsWithValidLocation(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(Arguments))]
+    public void VectorGroup_ExactList(string argument)
+    {
+        var source = VectorGroupText(argument);
+
+        AssertExactlyDefineQuantityUnitAndSymbolDiagnosticsWithValidLocation(source);
+    }
+
+    [Theory]
+    [MemberData(nameof(Arguments))]
+    public void SpecializedVectorGroup_ExactList(string argument)
+    {
+        var source = SpecializedVectorGroupText(argument);
+
+        AssertExactlyDefineQuantityUnitAndSymbolDiagnosticsWithValidLocation(source);
+    }
+
+    private static IEnumerable<object[]> Arguments() => new object[][]
+    {
+        new[] { "DefaultUnitName = \"Metre\"" },
+        new[] { "DefaultUnitSymbol = \"m\"" }
+    };
 
     private static GeneratorVerifier AssertExactlyDefineQuantityUnitAndSymbolDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DefineQuantityUnitAndSymbolDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> DefineQuantityUnitAndSymbolDiagnostics { get; } = new string[] { DiagnosticIDs.DefineQuantityUnitAndSymbol };
+
+    private static string ScalarText(string argument) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength), {{argument}})]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres", 1)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedScalarText(string argument) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SpecializedSharpMeasuresScalar(typeof(Length), {{argument}})]
+        public partial class Distance { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres", 1)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorText(string argument) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [SharpMeasuresVector(typeof(UnitOfLength), {{argument}})]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres", 1)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedVectorText(string argument) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [SpecializedSharpMeasuresVector(typeof(Position3), {{argument}})]
+        public partial class Displacement3 { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres", 1)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorGroupText(string argument) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength), {{argument}})]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres", 1)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedVectorGroupText(string argument) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position), {{argument}})]
+        public static partial class Displacement { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres", 1)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }
