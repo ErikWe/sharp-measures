@@ -104,7 +104,7 @@ public static partial class DiagnosticRules
 
     public static readonly DiagnosticDescriptor TypeNotVectorGroupMember = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.TypeNotVectorGroup,
+        id: DiagnosticIDs.TypeNotVectorGroupMember,
         title: "Expected a vector group member",
         messageFormat: $"Expected a vector group member. Decorate {{0}} with the attribute {Utility.FullAttributeName<SharpMeasuresVectorGroupMemberAttribute>()}, or use another type.",
         category: "Usage",
@@ -114,7 +114,7 @@ public static partial class DiagnosticRules
 
     public static readonly DiagnosticDescriptor NullTypeNotVectorGroupMember = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.TypeNotVectorGroup,
+        id: DiagnosticIDs.TypeNotVectorGroupMember,
         title: "Expected a vector group member",
         messageFormat: $"Expected a type decorated with the attribute {Utility.FullAttributeName<SharpMeasuresVectorGroupMemberAttribute>()}",
         category: "Usage",
@@ -124,7 +124,7 @@ public static partial class DiagnosticRules
 
     public static readonly DiagnosticDescriptor TypeNotVectorGroupMemberSpecificGroup = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.TypeNotVectorGroup,
+        id: DiagnosticIDs.TypeNotVectorGroupMember,
         title: "Expected a vector group member",
         messageFormat: $"Expected a member of the vector group {{0}}. Decorate {{1}} with the attribute {Utility.FullAttributeName<SharpMeasuresVectorGroupMemberAttribute>()}, or use another type.",
         category: "Usage",

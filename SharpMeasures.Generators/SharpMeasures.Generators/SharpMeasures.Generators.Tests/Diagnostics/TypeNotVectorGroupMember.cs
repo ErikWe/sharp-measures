@@ -50,7 +50,7 @@ public class TypeNotVectorGroupMember
     };
 
     private static GeneratorVerifier AssertExactlyTypeNotVectorGroupMemberDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotVectorGroupMemberDiagnostics).AssertAllDiagnosticsValidLocation();
-    private static IReadOnlyCollection<string> TypeNotVectorGroupMemberDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotVectorGroup };
+    private static IReadOnlyCollection<string> TypeNotVectorGroupMemberDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotVectorGroupMember };
 
     private static string RegisterVectorGroupMemberText(string value) => $$"""
         using SharpMeasures.Generators.Scalars;
