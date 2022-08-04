@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Tests.Verify;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.DriverUtility;
 
@@ -142,6 +143,19 @@ internal class GeneratorVerifier
     {
         AssertAllListedDiagnosticsIDsReported(expectedDiagnosticIDs);
         Assert.Equal(expectedDiagnosticIDs.Count(), Diagnostics.Length);
+
+        return this;
+    }
+
+    public GeneratorVerifier AssertDiagnosticsLocation(IEnumerable<TextSpan> expectedLocations)
+    {
+        int index = 0;
+        foreach (var expectedLocation in expectedLocations)
+        {
+            Assert.Equal(expectedLocation, Diagnostics[index].Location.SourceSpan);
+
+            index += 1;
+        }
 
         return this;
     }
