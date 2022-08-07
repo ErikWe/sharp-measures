@@ -2,7 +2,10 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
+using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
+using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
+using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 
 using System.Collections.Generic;
@@ -14,9 +17,9 @@ internal record class IntermediateScalarSpecializationType : IIntermediateScalar
 
     public IScalarSpecialization Definition { get; }
 
-    public IReadOnlyList<IDerivedQuantity> Derivations => derivations;
-    public IReadOnlyList<IScalarConstant> Constants => constants;
-    public IReadOnlyList<IConvertibleScalar> Conversions => conversions;
+    public IReadOnlyList<DerivedQuantityDefinition> Derivations => derivations;
+    public IReadOnlyList<ScalarConstantDefinition> Constants => constants;
+    public IReadOnlyList<ConvertibleScalarDefinition> Conversions => conversions;
 
     public IReadOnlyList<IUnresolvedUnitInstance> BaseInclusions => baseInclusions;
     public IReadOnlyList<IUnresolvedUnitInstance> BaseExclusions => baseExclusions;
@@ -24,9 +27,13 @@ internal record class IntermediateScalarSpecializationType : IIntermediateScalar
     public IReadOnlyList<IUnresolvedUnitInstance> UnitInclusions => unitInclusions;
     public IReadOnlyList<IUnresolvedUnitInstance> UnitExclusions => unitExclusions;
 
-    private ReadOnlyEquatableList<IDerivedQuantity> derivations { get; }
-    private ReadOnlyEquatableList<IScalarConstant> constants { get; }
-    private ReadOnlyEquatableList<IConvertibleScalar> conversions { get; }
+    IReadOnlyList<IDerivedQuantity> IIntermediateScalarSpecializationType.Derivations => Derivations;
+    IReadOnlyList<IScalarConstant> IIntermediateScalarSpecializationType.Constants => Constants;
+    IReadOnlyList<IConvertibleScalar> IIntermediateScalarSpecializationType.Conversions => Conversions;
+
+    private ReadOnlyEquatableList<DerivedQuantityDefinition> derivations { get; }
+    private ReadOnlyEquatableList<ScalarConstantDefinition> constants { get; }
+    private ReadOnlyEquatableList<ConvertibleScalarDefinition> conversions { get; }
 
     private ReadOnlyEquatableList<IUnresolvedUnitInstance> baseInclusions { get; }
     private ReadOnlyEquatableList<IUnresolvedUnitInstance> baseExclusions { get; }
@@ -34,8 +41,8 @@ internal record class IntermediateScalarSpecializationType : IIntermediateScalar
     private ReadOnlyEquatableList<IUnresolvedUnitInstance> unitInclusions { get; }
     private ReadOnlyEquatableList<IUnresolvedUnitInstance> unitExclusions { get; }
 
-    public IntermediateScalarSpecializationType(DefinedType type, MinimalLocation typeLocation, IScalarSpecialization definition, IReadOnlyList<IDerivedQuantity> derivations,
-        IReadOnlyList<IScalarConstant> constants, IReadOnlyList<IConvertibleScalar> conversions, IReadOnlyList<IUnresolvedUnitInstance> baseInclusions,
+    public IntermediateScalarSpecializationType(DefinedType type, MinimalLocation typeLocation, IScalarSpecialization definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
+        IReadOnlyList<ScalarConstantDefinition> constants, IReadOnlyList<ConvertibleScalarDefinition> conversions, IReadOnlyList<IUnresolvedUnitInstance> baseInclusions,
         IReadOnlyList<IUnresolvedUnitInstance> baseExclusions, IReadOnlyList<IUnresolvedUnitInstance> unitInclusions, IReadOnlyList<IUnresolvedUnitInstance> unitExclusions)
     {
         Type = type;

@@ -11,12 +11,22 @@ internal static class ArgumentLocator
 {
     public static MinimalLocation SimpleArgument(AttributeArgumentListSyntax argumentList, int index)
     {
-        if (argumentList.Arguments[index].Expression is TypeOfExpressionSyntax typeofExpression)
+        return SimpleArgument(argumentList.Arguments[index].Expression);
+    }
+
+    public static MinimalLocation SimpleArgument(ExpressionSyntax expression)
+    {
+        if (expression is TypeOfExpressionSyntax typeofExpression)
         {
             return typeofExpression.Type.GetLocation().Minimize();
         }
 
-        return argumentList.Arguments[index].Expression.GetLocation().Minimize();
+        if (expression is CastExpressionSyntax castExpression)
+        {
+            return SimpleArgument(castExpression.Expression);
+        }
+
+        return expression.GetLocation().Minimize();
     }
 
     public static MinimalLocation SimpleArgument(SeparatedSyntaxList<ExpressionSyntax> expressions, int index)
@@ -31,22 +41,57 @@ internal static class ArgumentLocator
 
     public static (MinimalLocation Collection, IReadOnlyList<MinimalLocation> Elements) FromArrayOrParamsList(AttributeArgumentListSyntax argumentList, int index)
     {
-        if (argumentList.Arguments[index].Expression is InitializerExpressionSyntax initializerExpression)
+        if (AttemptFromArray(argumentList.Arguments[index].Expression) is var locatedArray and not null)
+        {
+            return locatedArray.Value;
+        }
+
+        return FromParamsList(argumentList, index);
+    }
+
+    private static (MinimalLocation Collection, IReadOnlyList<MinimalLocation> Elements)? AttemptFromArray(ExpressionSyntax expression)
+    {
+        if (expression is ArrayCreationExpressionSyntax arrayCreationExpression)
+        {
+            if (arrayCreationExpression.Initializer is not null)
+            {
+                return FromArray(arrayCreationExpression.Initializer);
+            }
+
+            return (arrayCreationExpression.Type.GetLocation().Minimize(), Array.Empty<MinimalLocation>());
+        }
+
+        if (expression is InitializerExpressionSyntax initializerExpression)
         {
             if (initializerExpression.IsNotKind(SyntaxKind.ArrayInitializerExpression))
             {
-                return (argumentList.Arguments[index].Expression.GetLocation().Minimize(), Array.Empty<MinimalLocation>());
+                return (initializerExpression.GetLocation().Minimize(), Array.Empty<MinimalLocation>());
             }
 
             return FromArray(initializerExpression);
         }
 
-        if (argumentList.Arguments[index].Expression is ImplicitArrayCreationExpressionSyntax implicitArrayCreationExpression)
+        if (expression is ImplicitArrayCreationExpressionSyntax implicitArrayCreationExpression)
         {
             return FromArray(implicitArrayCreationExpression.Initializer);
         }
 
-        return FromParamsList(argumentList, index);
+        if (expression is CastExpressionSyntax castExpression)
+        {
+            if (castExpression.Type is ArrayTypeSyntax)
+            {
+                return AttemptFromArray(castExpression.Expression);
+            }
+
+            return null;
+        }
+
+        if (expression is LiteralExpressionSyntax literalExpression)
+        {
+            return (literalExpression.GetLocation().Minimize(), Array.Empty<MinimalLocation>());
+        }
+
+        return null;
     }
 
     private static (MinimalLocation Collection, IReadOnlyList<MinimalLocation> Elements) FromArray(InitializerExpressionSyntax initializerExpression)
@@ -56,7 +101,6 @@ internal static class ArgumentLocator
         for (int i = 0; i < elements.Length; i++)
         {
             elements[i] = SimpleArgument(initializerExpression.Expressions, i);
-            elements[i] = initializerExpression.Expressions[i].GetLocation().Minimize();
         }
 
         return (initializerExpression.GetLocation().Minimize(), elements);
@@ -68,7 +112,7 @@ internal static class ArgumentLocator
 
         for (int i = 0; i < elements.Length; i++)
         {
-            elements[i] = SimpleArgument(argumentList, i);
+            elements[i] = SimpleArgument(argumentList, startIndex + i);
         }
 
         Location firstLocation = argumentList.Arguments[startIndex].GetLocation();

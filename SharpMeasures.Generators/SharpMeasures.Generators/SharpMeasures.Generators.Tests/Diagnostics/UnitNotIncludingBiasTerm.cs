@@ -1,6 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
 
+using Microsoft.CodeAnalysis.Text;
+
 using SharpMeasures.Generators.Diagnostics;
+using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
 
 using System.Collections.Generic;
@@ -14,26 +17,28 @@ using Xunit;
 public class UnitNotIncludingBiasTerm
 {
     [Fact]
-    public Task BiasedScalar_ExactListAndVerify()
-    {
-        string source = $$"""
-            using SharpMeasures.Generators.Quantities;
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
+    public Task BiasedScalar() => AssertAndVerifyBiasedScalar();
 
-            [SharpMeasuresScalar(typeof(UnitOfLength), UseUnitBias = true)]
-            public partial class Temperature { }
-            
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-            """;
-
-        return AssertExactlyUnitNotIncludingBiasTermDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
-
-    private static GeneratorVerifier AssertExactlyUnitNotIncludingBiasTermDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnitNotIncludingBiasTermDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static GeneratorVerifier AssertExactlyUnitNotIncludingBiasTermDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnitNotIncludingBiasTermDiagnostics);
     private static IReadOnlyCollection<string> UnitNotIncludingBiasTermDiagnostics { get; } = new string[] { DiagnosticIDs.UnitNotIncludingBiasTerm };
+
+    private static string BiasedScalarText => """
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength), UseUnitBias = true)]
+        public partial class Temperature { }
+            
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static TextSpan BiasedScalarLocation => ExpectedDiagnosticsLocation.TextSpan(BiasedScalarText, "true", prefix: "UseUnitBias = ");
+
+    private static GeneratorVerifier AssertBiasedScalar() => AssertExactlyUnitNotIncludingBiasTermDiagnostics(BiasedScalarText).AssertDiagnosticsLocation(BiasedScalarLocation);
+    private static Task AssertAndVerifyBiasedScalar() => AssertBiasedScalar().VerifyDiagnostics();
 }

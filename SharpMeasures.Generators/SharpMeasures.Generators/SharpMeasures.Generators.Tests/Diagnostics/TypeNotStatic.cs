@@ -17,16 +17,10 @@ using Xunit;
 public class TypeNotStatic
 {
     [Fact]
-    public Task VectorGroup()
-    {
-        return AssertExactlyTypeNotStaticDiagnostics(VectorGroupText).AssertDiagnosticsLocation(VectorGroupLocation).VerifyDiagnostics();
-    }
+    public Task VectorGroup() => AssertAndVerifyVectorGroup();
 
     [Fact]
-    public Task SpecializedVectorGroup()
-    {
-        return AssertExactlyTypeNotStaticDiagnostics(SpecializedVectorGroupText).AssertDiagnosticsLocation(SpecializedVectorGroupLocation).VerifyDiagnostics();
-    }
+    public Task SpecializedVectorGroup() => AssertAndVerifySpecializedVectorGroup();
 
     private static GeneratorVerifier AssertExactlyTypeNotStaticDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotStaticDiagnostics);
     private static IReadOnlyCollection<string> TypeNotStaticDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotStatic };
@@ -46,7 +40,10 @@ public class TypeNotStatic
         public partial class UnitOfLength { }
         """;
 
-    private static IEnumerable<TextSpan> VectorGroupLocation => ExpectedDiagnosticsLocation.TextSpan(VectorGroupText, "Position", "public partial class ");
+    private static TextSpan VectorGroupLocation => ExpectedDiagnosticsLocation.TextSpan(VectorGroupText, target: "Position", prefix: "public partial class ");
+
+    private static GeneratorVerifier AssertVectorGroup() => AssertExactlyTypeNotStaticDiagnostics(VectorGroupText).AssertDiagnosticsLocation(VectorGroupLocation, VectorGroupText);
+    private static Task AssertAndVerifyVectorGroup() => AssertVectorGroup().VerifyDiagnostics();
 
     private static string SpecializedVectorGroupText => """
         using SharpMeasures.Generators.Scalars;
@@ -66,5 +63,8 @@ public class TypeNotStatic
         public partial class UnitOfLength { }
         """;
 
-    private static IEnumerable<TextSpan> SpecializedVectorGroupLocation => ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText, "Displacement", "public partial class ");
+    private static TextSpan SpecializedVectorGroupLocation => ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText, target: "Displacement", prefix: "public partial class ");
+
+    private static GeneratorVerifier AssertSpecializedVectorGroup() => AssertExactlyTypeNotStaticDiagnostics(SpecializedVectorGroupText).AssertDiagnosticsLocation(SpecializedVectorGroupLocation, SpecializedVectorGroupText);
+    private static Task AssertAndVerifySpecializedVectorGroup() => AssertSpecializedVectorGroup().VerifyDiagnostics();
 }

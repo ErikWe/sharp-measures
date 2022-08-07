@@ -33,7 +33,7 @@ internal class ScalarResolver : IScalarResolver
 
     public (IncrementalValueProvider<IScalarPopulation>, IScalarGenerator) Resolve(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnresolvedUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IUnresolvedVectorPopulation> vectorPopulationProvider)
     {
-        var resolvedScalarBases = ScalarBaseProvider.Combine(unitPopulationProvider, ScalarPopulationProvider, vectorPopulationProvider) .Select(ScalarBaseTypeResolution.Resolve).ReportDiagnostics(context);
+        var resolvedScalarBases = ScalarBaseProvider.Combine(unitPopulationProvider, ScalarPopulationProvider, vectorPopulationProvider).Select(ScalarBaseTypeResolution.Resolve).ReportDiagnostics(context);
 
         var resolvedScalarSpecializations = ScalarSpecializationProvider.Combine(unitPopulationProvider, ScalarPopulationProvider, vectorPopulationProvider)
             .Select(ScalarSpecializationTypeResolution.Resolve).ReportDiagnostics(context);

@@ -9,11 +9,11 @@ internal record class RawSpecializedSharpMeasuresScalarDefinition :
 
     public NamedType? OriginalScalar { get; init; }
 
-    public bool InheritDerivations { get; init; }
-    public bool InheritConstants { get; init; }
-    public bool InheritConversions { get; init; }
-    public bool InheritBases { get; init; }
-    public bool InheritUnits { get; init; }
+    public bool InheritDerivations { get; init; } = true;
+    public bool InheritConstants { get; init; } = true;
+    public bool InheritConversions { get; init; } = true;
+    public bool InheritBases { get; init; } = true;
+    public bool InheritUnits { get; init; } = true;
 
     public NamedType? Vector { get; init; }
 

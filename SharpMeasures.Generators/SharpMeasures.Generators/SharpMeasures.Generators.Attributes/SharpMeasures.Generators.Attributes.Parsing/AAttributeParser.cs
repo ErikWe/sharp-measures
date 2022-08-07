@@ -22,8 +22,7 @@ public abstract class AAttributeParser<TDefinition, TLocations, TAttribute> : AA
 {
     protected override Type AttributeType { get; } = typeof(TAttribute);
 
-    protected AAttributeParser(Func<TDefinition> defaultValueConstructor, IReadOnlyDictionary<string, IAttributeProperty<TDefinition>> constructorParameters,
-        IReadOnlyDictionary<string, IAttributeProperty<TDefinition>> namedParameters)
+    protected AAttributeParser(Func<TDefinition> defaultValueConstructor, IReadOnlyDictionary<string, IAttributeProperty<TDefinition>> constructorParameters, IReadOnlyDictionary<string, IAttributeProperty<TDefinition>> namedParameters)
         : base(defaultValueConstructor, constructorParameters, namedParameters) { }
 
     protected AAttributeParser(Func<TDefinition> defaultValueConstructor, IEnumerable<IAttributeProperty<TDefinition>> properties)
@@ -41,8 +40,7 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
     private IReadOnlyDictionary<string, IAttributeProperty<TDefinition>> ConstructorParameters { get; }
     private IReadOnlyDictionary<string, IAttributeProperty<TDefinition>> NamedParameters { get; }
 
-    protected AAttributeParser(Func<TDefinition> defaultValueConstructor, IReadOnlyDictionary<string, IAttributeProperty<TDefinition>> constructorParameters,
-        IReadOnlyDictionary<string, IAttributeProperty<TDefinition>> namedParameters)
+    protected AAttributeParser(Func<TDefinition> defaultValueConstructor, IReadOnlyDictionary<string, IAttributeProperty<TDefinition>> constructorParameters, IReadOnlyDictionary<string, IAttributeProperty<TDefinition>> namedParameters)
     {
         DefaultValueConstructor = defaultValueConstructor;
 
@@ -98,11 +96,9 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
         return Parse(typeSymbol.GetAttributesOfType(AttributeType));
     }
 
-    protected virtual TDefinition AddCustomData(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax,
-        ImmutableArray<IParameterSymbol> parameterSymbols) => definition;
-
-    private TDefinition AddConstructorArguments(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax,
-        ImmutableArray<IParameterSymbol> parameterSymbols)
+    protected virtual TDefinition AddCustomData(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax, ImmutableArray<IParameterSymbol> parameterSymbols) => definition;
+ 
+    private TDefinition AddConstructorArguments(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax, ImmutableArray<IParameterSymbol> parameterSymbols)
     {
         if (attributeData.ConstructorArguments.IsEmpty)
         {
@@ -111,8 +107,7 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
 
         for (int i = 0; i < parameterSymbols.Length && i < attributeData.ConstructorArguments.Length && i < attributeSyntax.ArgumentList?.Arguments.Count; i++)
         {
-            if (attributeData.ConstructorArguments[i].Kind is TypedConstantKind.Error
-                || ConstructorParameters.TryGetValue(parameterSymbols[i].Name, out IAttributeProperty<TDefinition> property) is false)
+            if (attributeData.ConstructorArguments[i].Kind is TypedConstantKind.Error || ConstructorParameters.TryGetValue(parameterSymbols[i].Name, out IAttributeProperty<TDefinition> property) is false)
             {
                 continue;
             }
@@ -124,8 +119,7 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
         return definition;
     }
 
-    private TDefinition AddNamedArguments(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax,
-        ImmutableArray<IParameterSymbol> parameterSymbols)
+    private TDefinition AddNamedArguments(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax, ImmutableArray<IParameterSymbol> parameterSymbols)
     {
         if (attributeData.NamedArguments.IsEmpty)
         {

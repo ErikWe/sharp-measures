@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.DriverUtility;
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -18,11 +19,8 @@ using Xunit;
 [UsesVerify]
 internal class GeneratorVerifier
 {
-    public static GeneratorVerifier Construct<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new()
-        => Construct(source, new TGenerator());
-
-    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator)
-        => new(DriverConstruction.ConstructAndRun(source, generator, ProjectPath.Path + @"\Documentation"));
+    public static GeneratorVerifier Construct<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator());
+    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator) => new(DriverConstruction.ConstructAndRun(source, generator, ProjectPath.Path + @"\Documentation"));
 
     private GeneratorDriverRunResult RunResult { get; }
 
@@ -147,12 +145,55 @@ internal class GeneratorVerifier
         return this;
     }
 
+    public GeneratorVerifier AssertDiagnosticsLocation(TextSpan expectedLocation)
+    {
+        if (Diagnostics.Length is not 1)
+        {
+            throw new NotSupportedException("More than 1 diagnostics detected, specify multiple locations");
+        }
+
+        Assert.Equal(expectedLocation, Diagnostics[0].Location.SourceSpan);
+
+        return this;
+    }
+
+    public GeneratorVerifier AssertDiagnosticsLocation(TextSpan expectedLocation, string source)
+    {
+        if (Diagnostics.Length is not 1)
+        {
+            throw new NotSupportedException("More than 1 diagnostics detected, specify multiple locations");
+        }
+
+        var expectedText = source[expectedLocation.Start..expectedLocation.End];
+        var actualText = source[Diagnostics[0].Location.SourceSpan.Start..Diagnostics[0].Location.SourceSpan.End];
+
+        Assert.Equal(expectedText, actualText);
+
+        return this;
+    }
+
     public GeneratorVerifier AssertDiagnosticsLocation(IEnumerable<TextSpan> expectedLocations)
     {
         int index = 0;
         foreach (var expectedLocation in expectedLocations)
         {
             Assert.Equal(expectedLocation, Diagnostics[index].Location.SourceSpan);
+
+            index += 1;
+        }
+
+        return this;
+    }
+
+    public GeneratorVerifier AssertDiagnosticsLocation(IEnumerable<TextSpan> expectedLocations, string source)
+    {
+        int index = 0;
+        foreach (var expectedLocation in expectedLocations)
+        {
+            var expectedText = source[expectedLocation.Start..expectedLocation.End];
+            var actualText = source[Diagnostics[index].Location.SourceSpan.Start..Diagnostics[index].Location.SourceSpan.End];
+
+            Assert.Equal(expectedText, actualText);
 
             index += 1;
         }

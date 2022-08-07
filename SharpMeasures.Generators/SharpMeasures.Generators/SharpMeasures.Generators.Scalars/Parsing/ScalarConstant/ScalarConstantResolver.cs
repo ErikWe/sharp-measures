@@ -3,8 +3,7 @@
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
-internal class ScalarConstantResolver
-    : AQuantityConstantResolver<IQuantityConstantResolutionContext, UnresolvedScalarConstantDefinition, ScalarConstantLocations, ScalarConstantDefinition>
+internal class ScalarConstantResolver : AQuantityConstantResolver<IQuantityConstantResolutionContext, UnresolvedScalarConstantDefinition, ScalarConstantLocations, ScalarConstantDefinition>
 {
     public ScalarConstantResolver(IQuantityConstantResolutionDiagnostics<UnresolvedScalarConstantDefinition, ScalarConstantLocations> diagnostics) : base(diagnostics) { }
 

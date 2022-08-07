@@ -17,94 +17,52 @@ using Xunit;
 public class TypeNotVector
 {
     [Fact]
-    public Task VerifyTypeNotVectorDiagnosticsMessage_Null()
-    {
-        var source = ScalarVectorText("null");
-        var expectedLocation = ScalarVectorLocation("null");
-
-        return AssertExactlyTypeNotVectorDiagnosticsWithValidLocation(source).AssertDiagnosticsLocation(expectedLocation).VerifyDiagnostics();
-    }
+    public Task VerifyTypeNotVectorDiagnosticsMessage_Null() => AssertAndVerifyScalarVector(NullSubtext);
 
     [Fact]
-    public Task VerifyTypeNotVectorDiagnosticsMessage_Int()
-    {
-        var source = ScalarVectorText("typeof(int)");
-        var expectedLocation = ScalarVectorLocation("typeof(int)");
-
-        return AssertExactlyTypeNotVectorDiagnosticsWithValidLocation(source).AssertDiagnosticsLocation(expectedLocation).VerifyDiagnostics();
-    }
+    public Task VerifyTypeNotVectorDiagnosticsMessage_Int() => AssertAndVerifyScalarVector(IntSubtext);
 
     [Theory]
     [MemberData(nameof(NonVectorTypes))]
-    public void ScalarVector_ExactList(string value)
-    {
-        var source = ScalarVectorText(value);
-        var expectedLocation = ScalarVectorLocation(value);
-
-        AssertExactlyTypeNotVectorDiagnosticsWithValidLocation(source).AssertDiagnosticsLocation(expectedLocation);
-    }
+    public void ScalarVector(SourceSubtext vectorType) => AssertScalarVector(vectorType);
 
     [Theory]
     [MemberData(nameof(NonVectorTypes))]
-    public void SpecializedVectorOriginalVector_ExactList(string value)
-    {
-        var source = SpecializedVectorOriginalVectorText(value);
-        var expectedLocation = SpecializedVectorOriginalVectorLocation(value);
-
-        AssertExactlyTypeNotVectorDiagnosticsWithValidLocation(source).AssertDiagnosticsLocation(expectedLocation);
-    }
+    public void SpecializedVectorOriginalVector(SourceSubtext originalVectorType) => AssertSpecializedVectorOriginalVector(originalVectorType);
 
     [Theory]
     [MemberData(nameof(NonVectorTypes))]
-    public void VectorDifference_ExactList(string value)
-    {
-        var source = VectorDifferenceText(value);
-        var expectedLocation = VectorDifferenceLocation(value);
-
-        AssertExactlyTypeNotVectorDiagnosticsWithValidLocation(source).AssertDiagnosticsLocation(expectedLocation);
-    }
+    public void VectorDifference(SourceSubtext differenceVectorType) => AssertVectorDifference(differenceVectorType);
 
     [Theory]
     [MemberData(nameof(NonVectorTypes))]
-    public void SpecializedVectorDifference_ExactList(string value)
-    {
-        var source = SpecializedVectorDifferenceText(value);
-        var expectedLocation = SpecializedVectorDifferenceLocation(value);
-
-        AssertExactlyTypeNotVectorDiagnosticsWithValidLocation(source).AssertDiagnosticsLocation(expectedLocation);
-    }
+    public void SpecializedVectorDifference(SourceSubtext differenceVectorType) => AssertSpecializedVectorDifference(differenceVectorType);
 
     [Theory]
     [MemberData(nameof(NonVectorTypes))]
-    public void ConvertibleQuantity_ExactList(string value)
-    {
-        if (value is "null")
-        {
-            value = "(System.Type)null";
-        }
-
-        var source = ConvertibleQuantityText(value);
-        var expectedLocation = ConvertibleQuantityLocation(value);
-
-        AssertExactlyTypeNotVectorDiagnosticsWithValidLocation(source).AssertDiagnosticsLocation(expectedLocation);
-    }
+    public void ConvertibleQuantity(SourceSubtext quantityType) => AssertConvertibleQuantity(quantityType);
 
     private static IEnumerable<object[]> NonVectorTypes() => new object[][]
     {
-        new[] { "null" },
-        new[] { "typeof(int)" },
-        new[] { "typeof(UnitOfLength)" },
-        new[] { "typeof(Length)" }
+        new object[] { NullSubtext },
+        new object[] { IntSubtext },
+        new object[] { UnitOfLengthSubtext },
+        new object[] { LengthSubtext }
     };
 
-    private static GeneratorVerifier AssertExactlyTypeNotVectorDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotVectorDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static SourceSubtext NullSubtext { get; } = new("null");
+    private static SourceSubtext IntSubtext { get; } = SourceSubtext.Typeof("int");
+    private static SourceSubtext UnitOfLengthSubtext { get; } = SourceSubtext.Typeof("UnitOfLength");
+    private static SourceSubtext LengthSubtext { get; } = SourceSubtext.Typeof("Length");
+
+    private static GeneratorVerifier AssertExactlyTypeNotVectorDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotVectorDiagnostics);
     private static IReadOnlyCollection<string> TypeNotVectorDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotVector };
 
-    private static string ScalarVectorText(string value) => $$"""
+    private static string ScalarVectorText(SourceSubtext vectorType) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength), Vector = {{value}})]
+        [SharpMeasuresScalar(typeof(UnitOfLength), Vector = {{vectorType}})]
         public partial class Distance { }
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
@@ -114,14 +72,24 @@ public class TypeNotVector
         public partial class UnitOfLength { }
         """;
 
-    private static IEnumerable<TextSpan> ScalarVectorLocation(string value) => ExpectedDiagnosticsLocation.TypeofArgumentTextSpan(ScalarVectorText(value), value, prefix: "Vector = ");
+    private static TextSpan ScalarVectorLocation(SourceSubtext vectorType) => ExpectedDiagnosticsLocation.TextSpan(ScalarVectorText(vectorType), vectorType, prefix: "Vector = ");
 
-    private static string SpecializedVectorOriginalVectorText(string value) => $$"""
+    private static GeneratorVerifier AssertScalarVector(SourceSubtext vectorType)
+    {
+        var source = ScalarVectorText(vectorType);
+        var expectedLocation = ScalarVectorLocation(vectorType);
+
+        return AssertExactlyTypeNotVectorDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static Task AssertAndVerifyScalarVector(SourceSubtext vectorType) => AssertScalarVector(vectorType).VerifyDiagnostics();
+
+    private static string SpecializedVectorOriginalVectorText(SourceSubtext originalVectorType) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [SpecializedSharpMeasuresVector({{value}})]
+        [SpecializedSharpMeasuresVector({{originalVectorType}})]
         public partial class Displacement3 { }
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
@@ -131,15 +99,22 @@ public class TypeNotVector
         public partial class UnitOfLength { }
         """;
 
-    private static IEnumerable<TextSpan> SpecializedVectorOriginalVectorLocation(string value)
-        => ExpectedDiagnosticsLocation.TypeofArgumentTextSpan(SpecializedVectorOriginalVectorText(value), value, prefix: "SpecializedSharpMeasuresVector(");
+    private static TextSpan SpecializedVectorOriginalVectorLocation(SourceSubtext originalVectorType) => ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorOriginalVectorText(originalVectorType), originalVectorType, prefix: "SpecializedSharpMeasuresVector(");
 
-    private static string VectorDifferenceText(string value) => $$"""
+    private static GeneratorVerifier AssertSpecializedVectorOriginalVector(SourceSubtext originalVectorType)
+    {
+        var source = SpecializedVectorOriginalVectorText(originalVectorType);
+        var expectedLocation = SpecializedVectorOriginalVectorLocation(originalVectorType);
+
+        return AssertExactlyTypeNotVectorDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string VectorDifferenceText(SourceSubtext differenceVectorType) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [SharpMeasuresVector(typeof(UnitOfLength), Difference = {{value}})]
+        [SharpMeasuresVector(typeof(UnitOfLength), Difference = {{differenceVectorType}})]
         public partial class Position3 { }
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
@@ -149,14 +124,22 @@ public class TypeNotVector
         public partial class UnitOfLength { }
         """;
 
-    private static IEnumerable<TextSpan> VectorDifferenceLocation(string value) => ExpectedDiagnosticsLocation.TypeofArgumentTextSpan(VectorDifferenceText(value), value, prefix: "Difference = ");
+    private static TextSpan VectorDifferenceLocation(SourceSubtext differenceVectorType) => ExpectedDiagnosticsLocation.TextSpan(VectorDifferenceText(differenceVectorType), differenceVectorType, prefix: "Difference = ");
 
-    private static string SpecializedVectorDifferenceText(string value) => $$"""
+    private static GeneratorVerifier AssertVectorDifference(SourceSubtext differenceVectorType)
+    {
+        var source = VectorDifferenceText(differenceVectorType);
+        var expectedLocation = VectorDifferenceLocation(differenceVectorType);
+
+        return AssertExactlyTypeNotVectorDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string SpecializedVectorDifferenceText(SourceSubtext differenceVectorType) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [SpecializedSharpMeasuresVector(typeof(Position3), Difference = {{value}})]
+        [SpecializedSharpMeasuresVector(typeof(Position3), Difference = {{differenceVectorType}})]
         public partial class Displacement3 { }
 
         [SharpMeasuresVector(typeof(UnitOfLength))]
@@ -169,16 +152,23 @@ public class TypeNotVector
         public partial class UnitOfLength { }
         """;
 
-    private static IEnumerable<TextSpan> SpecializedVectorDifferenceLocation(string value)
-        => ExpectedDiagnosticsLocation.TypeofArgumentTextSpan(SpecializedVectorDifferenceText(value), value, prefix: "Difference = ");
+    private static TextSpan SpecializedVectorDifferenceLocation(SourceSubtext differenceVectorType) => ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorDifferenceText(differenceVectorType), differenceVectorType, prefix: "Difference = ");
 
-    private static string ConvertibleQuantityText(string value) => $$"""
+    private static GeneratorVerifier AssertSpecializedVectorDifference(SourceSubtext differenceVectorType)
+    {
+        var source = SpecializedVectorDifferenceText(differenceVectorType);
+        var expectedLocation = SpecializedVectorDifferenceLocation(differenceVectorType);
+
+        return AssertExactlyTypeNotVectorDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string ConvertibleQuantityText(SourceSubtext quantityType) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [ConvertibleQuantity({{value}})]
+        [ConvertibleQuantity({{quantityType}})]
         [SharpMeasuresVector(typeof(UnitOfLength))]
         public partial class Position3 { }
 
@@ -189,5 +179,18 @@ public class TypeNotVector
         public partial class UnitOfLength { }
         """;
 
-    private static IEnumerable<TextSpan> ConvertibleQuantityLocation(string value) => ExpectedDiagnosticsLocation.TypeofArgumentTextSpan(ConvertibleQuantityText(value), value, prefix: "ConvertibleQuantity(");
+    private static TextSpan ConvertibleQuantityLocation(SourceSubtext quantityType) => ExpectedDiagnosticsLocation.TextSpan(ConvertibleQuantityText(quantityType), quantityType, prefix: "ConvertibleQuantity(");
+
+    private static GeneratorVerifier AssertConvertibleQuantity(SourceSubtext quantityType)
+    {
+        if (quantityType.Target is "null")
+        {
+            quantityType = quantityType with { Prefix = $"{quantityType.Prefix}(System.Type)" };
+        }
+
+        var source = ConvertibleQuantityText(quantityType);
+        var expectedLocation = ConvertibleQuantityLocation(quantityType);
+
+        return AssertExactlyTypeNotVectorDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
 }

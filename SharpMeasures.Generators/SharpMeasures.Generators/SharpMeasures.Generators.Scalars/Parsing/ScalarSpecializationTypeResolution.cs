@@ -17,21 +17,18 @@ using System.Threading;
 
 internal static class ScalarSpecializationTypeResolution
 {
-    public static IOptionalWithDiagnostics<ScalarType> Reduce
-        ((IntermediateScalarSpecializationType Intermediate, IIntermediateScalarPopulation Population) scalars, CancellationToken _)
+    public static IOptionalWithDiagnostics<ScalarType> Reduce ((IntermediateScalarSpecializationType Intermediate, IIntermediateScalarPopulation Population) scalars, CancellationToken _)
         => Reduce(scalars.Intermediate, scalars.Population);
 
-    public static IOptionalWithDiagnostics<ScalarType> Reduce(IntermediateScalarSpecializationType intermediateScalar,
-        IIntermediateScalarPopulation scalarPopulation)
+    public static IOptionalWithDiagnostics<ScalarType> Reduce(IntermediateScalarSpecializationType intermediateScalar, IIntermediateScalarPopulation scalarPopulation)
     {
         var derivations = ResolveCollection(intermediateScalar, scalarPopulation, static (scalar) => scalar.Definition.InheritDerivations,
             static (scalar) => scalar.Derivations, static (scalar) => scalar.Derivations);
 
-        var constants = ResolveCollection(intermediateScalar, scalarPopulation, static (scalar) => scalar.Definition.InheritConstants,
-            static (scalar) => scalar.Constants, static (scalar) => scalar.Constants);
-
-        var conversions = ResolveCollection(intermediateScalar, scalarPopulation, static (scalar) => scalar.Definition.InheritConversions,
+        var inheritedConversions = ResolveInheritedCollection(intermediateScalar, scalarPopulation, static (scalar) => scalar.Definition.InheritConversions,
             static (scalar) => scalar.Conversions, static (scalar) => scalar.Conversions);
+
+        var allConversions = ScalarTypePostResolutionFilter.FilterAndCombineConversions(intermediateScalar.Type, intermediateScalar.Conversions, inheritedConversions);
 
         var includedBases = GetIncludedUnits(intermediateScalar, intermediateScalar.Definition.Unit, scalarPopulation, static (scalar) => scalar.Definition.InheritBases,
             static (scalar) => scalar.BaseInclusions, static (scalar) => scalar.BaseExclusions, static (scalar) => scalar.IncludedBases,
@@ -41,10 +38,15 @@ internal static class ScalarSpecializationTypeResolution
             static (scalar) => scalar.UnitInclusions, static (scalar) => scalar.UnitExclusions, static (scalar) => scalar.IncludedUnits,
             static (scalar) => Array.Empty<IUnresolvedUnitInstance>());
 
-        ScalarType reduced = new(intermediateScalar.Type, intermediateScalar.TypeLocation, intermediateScalar.Definition, derivations,
-            constants, conversions, includedBases, includedUnits);
+        var inheritedConstants = ResolveInheritedCollection(intermediateScalar, scalarPopulation, static (scalar) => scalar.Definition.InheritConstants,
+            static (scalar) => scalar.Constants, static (scalar) => scalar.Constants);
 
-        return OptionalWithDiagnostics.Result(reduced);
+        var allConstants = ScalarTypePostResolutionFilter.FilterAndCombineConstants(intermediateScalar.Type, intermediateScalar.Constants, inheritedConstants, includedBases, includedUnits);
+
+        ScalarType reduced = new(intermediateScalar.Type, intermediateScalar.TypeLocation, intermediateScalar.Definition, derivations, allConstants.Result, allConversions.Result, includedBases, includedUnits);
+        var allDiagnostics = allConversions.Diagnostics.Concat(allConstants.Diagnostics);
+
+        return OptionalWithDiagnostics.Result(reduced, allDiagnostics);
     }
 
     public static IOptionalWithDiagnostics<IntermediateScalarSpecializationType> Resolve((UnresolvedScalarSpecializationType Scalar, IUnresolvedUnitPopulation UnitPopulation,
@@ -127,25 +129,33 @@ internal static class ScalarSpecializationTypeResolution
         }
     }
 
-    private static IReadOnlyList<T> ResolveCollection<T>(IIntermediateScalarSpecializationType scalar, IIntermediateScalarPopulation scalarPopulation,
+    private static IReadOnlyList<T> ResolveInheritedCollection<T>(IIntermediateScalarSpecializationType scalar, IIntermediateScalarPopulation scalarPopulation,
         Func<IIntermediateScalarSpecializationType, bool> shouldInherit, Func<IIntermediateScalarSpecializationType, IEnumerable<T>> specializationTransform,
         Func<IScalarType, IEnumerable<T>> baseTransform)
+        => ResolveCollection(scalar, scalarPopulation, shouldInherit, specializationTransform, baseTransform, onlyInherited: true);
+
+    private static IReadOnlyList<T> ResolveCollection<T>(IIntermediateScalarSpecializationType scalar, IIntermediateScalarPopulation scalarPopulation,
+        Func<IIntermediateScalarSpecializationType, bool> shouldInherit, Func<IIntermediateScalarSpecializationType, IEnumerable<T>> specializationTransform,
+        Func<IScalarType, IEnumerable<T>> baseTransform, bool onlyInherited = false)
     {
         List<T> items = new();
 
-        recursivelyAdd(scalar);
+        recursivelyAdd(scalar, onlyInherited);
 
         return items;
 
-        void recursivelyAdd(IIntermediateScalarSpecializationType scalar)
+        void recursivelyAdd(IIntermediateScalarSpecializationType scalar, bool onlyInherited)
         {
-            items.AddRange(specializationTransform(scalar));
+            if (onlyInherited is false)
+            {
+                items.AddRange(specializationTransform(scalar));
+            }
 
             if (shouldInherit(scalar))
             {
                 if (scalarPopulation.ScalarSpecializations.TryGetValue(scalar.Definition.OriginalScalar.Type.AsNamedType(), out var originalScalar))
                 {
-                    recursivelyAdd(originalScalar);
+                    recursivelyAdd(originalScalar, false);
                     return;
                 }
 
