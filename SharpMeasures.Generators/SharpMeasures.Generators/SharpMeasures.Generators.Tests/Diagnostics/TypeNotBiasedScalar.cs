@@ -38,7 +38,7 @@ public class TypeNotBiasedScalar
         public partial class UnitOfTemperature { }
         """;
 
-    private static TextSpan ConvertibleScalarLocation => ExpectedDiagnosticsLocation.TypeofArgumentTextSpan(ConvertibleScalarText, "typeof(TemperatureDifference)", prefix: "ConvertibleQuantity(");
+    private static TextSpan ConvertibleScalarLocation => ExpectedDiagnosticsLocation.FromTypeofArgumentTextSpan(ConvertibleScalarText, target: "typeof(TemperatureDifference)", prefix: "ConvertibleQuantity(");
 
     private static GeneratorVerifier AssertConvertibleScalar() => AssertExactlyTypeNotBiasedScalarDiagnostics(ConvertibleScalarText).AssertDiagnosticsLocation(ConvertibleScalarLocation, ConvertibleScalarText);
     private static Task AssertAndVerifyConvertibleScalar() => AssertConvertibleScalar().VerifyDiagnostics();

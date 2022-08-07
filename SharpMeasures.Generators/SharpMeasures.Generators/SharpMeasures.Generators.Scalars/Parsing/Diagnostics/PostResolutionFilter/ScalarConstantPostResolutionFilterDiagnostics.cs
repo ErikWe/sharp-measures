@@ -8,9 +8,9 @@ using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 
 internal class ScalarConstantPostResolutionFilterDiagnostics : QuantityConstantPostResolutionFilterDiagnostics<ScalarConstantDefinition, ScalarConstantLocations>, IScalarConstantPostResolutionFilterDiagnostics
 {
-    public static ScalarConstantPostResolutionFilterDiagnostics Instance { get; } = new();
+    new public static ScalarConstantPostResolutionFilterDiagnostics Instance { get; } = new();
 
-    private ScalarConstantPostResolutionFilterDiagnostics() { }
+    private ScalarConstantPostResolutionFilterDiagnostics() : base() { }
 
     public Diagnostic ConstantNameReservedByUnitBase(IScalarConstantPostResolutionFilterContext context, ScalarConstantDefinition definition)
     {

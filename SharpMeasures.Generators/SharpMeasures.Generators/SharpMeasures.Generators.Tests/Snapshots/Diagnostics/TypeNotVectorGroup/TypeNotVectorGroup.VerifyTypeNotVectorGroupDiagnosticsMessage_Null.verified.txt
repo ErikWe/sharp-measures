@@ -4,7 +4,7 @@
     Title: Expected a vector group,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (4,32)-(4,36),
+    Location: : (4,45)-(4,49),
     Description: ,
     HelpLink: ,
     MessageFormat: Expected a type decorated with the attribute SharpMeasures.Generators.Vectors.SharpMeasuresVectorGroup,

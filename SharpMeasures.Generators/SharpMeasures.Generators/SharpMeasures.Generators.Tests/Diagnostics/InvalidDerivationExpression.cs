@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
 
-using Microsoft.CodeAnalysis.Text;
-
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
@@ -17,7 +15,7 @@ using Xunit;
 public class InvalidDerivationExpression
 {
     [Fact]
-    public Task VerifyInvalidDerivationExpressionDiagnosticsMessage_Null() => AssertAndVerifyDerivableUnit(NullSubtext);
+    public Task VerifyInvalidDerivationExpressionDiagnosticsMessage_Null() => AssertAndVerifyDerivableUnit(NullExpression);
 
     [Theory]
     [MemberData(nameof(InvalidExpressions))]
@@ -29,12 +27,12 @@ public class InvalidDerivationExpression
 
     private static IEnumerable<object[]> InvalidExpressions() => new object[][]
     {
-        new object[] { NullSubtext },
-        new object[] { EmptySubtext }
+        new object[] { NullExpression },
+        new object[] { EmptyExpression }
     };
 
-    private static SourceSubtext NullSubtext { get; } = new("null");
-    private static SourceSubtext EmptySubtext { get; } = new("\"\"");
+    private static SourceSubtext NullExpression { get; } = SourceSubtext.Covered("null");
+    private static SourceSubtext EmptyExpression { get; } = SourceSubtext.Covered("\"\"");
 
     private static GeneratorVerifier AssertExactlyInvalidDerivationExpressionDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidDerivationExpressionDiagnostics);
     private static IReadOnlyCollection<string> InvalidDerivationExpressionDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidDerivationExpression };
@@ -63,12 +61,10 @@ public class InvalidDerivationExpression
         public partial class Time { }
         """;
 
-    private static TextSpan DerivableUnitLocation(SourceSubtext expression) => ExpectedDiagnosticsLocation.TextSpan(DerivableUnitText(expression), expression, prefix: "DerivableUnit(");
-
     private static GeneratorVerifier AssertDerivableUnit(SourceSubtext expression)
     {
         var source = DerivableUnitText(expression);
-        var expectedLocation = DerivableUnitLocation(expression);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, expression.Context.With(outerPrefix: "DerivableUnit("));
 
         return AssertExactlyInvalidDerivationExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -100,12 +96,10 @@ public class InvalidDerivationExpression
         public partial class UnitOfTime { }
         """;
 
-    private static TextSpan DerivedQuantityLocation(SourceSubtext expression) => ExpectedDiagnosticsLocation.TextSpan(DerivedQuantityText(expression), expression, prefix: "DerivedQuantity(");
-
     private static GeneratorVerifier AssertDerivedQuantity(SourceSubtext expression)
     {
         var source = DerivedQuantityText(expression);
-        var expectedLocation = DerivedQuantityLocation(expression);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, expression.Context.With(outerPrefix: "DerivedQuantity("));
 
         return AssertExactlyInvalidDerivationExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }

@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
 
-using Microsoft.CodeAnalysis.Text;
-
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
@@ -17,7 +15,7 @@ using Xunit;
 public class InvalidDerivationSignature
 {
     [Fact]
-    public Task VerifyInvalidDerivationExpressionDiagnosticsMessage_Null() => AssertAndVerifyDerivableUnit(NullSubtext);
+    public Task VerifyInvalidDerivationExpressionDiagnosticsMessage_Null() => AssertAndVerifyDerivableUnit(NullSignature);
 
     [Theory]
     [MemberData(nameof(InvalidSignatures))]
@@ -29,14 +27,14 @@ public class InvalidDerivationSignature
 
     private static IEnumerable<object[]> InvalidSignatures() => new object[][]
     {
-        new object[] { NullSubtext },
-        new object[] { EmptySubtext }
+        new object[] { NullSignature },
+        new object[] { EmptySignature }
     };
 
-    private static SourceSubtext NullSubtext { get; } = new("null", "(System.Type[])");
-    private static SourceSubtext EmptySubtext { get; } = new("System.Type[0]", "new ");
+    private static SourceSubtext NullSignature { get; } = SourceSubtext.Covered("null", prefix: "(System.Type[])");
+    private static SourceSubtext EmptySignature { get; } = SourceSubtext.Covered("System.Type[0]", prefix: "new ");
 
-    private static GeneratorVerifier AssertExactlyInvalidDerivationSignatureDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidDerivationSignatureDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static GeneratorVerifier AssertExactlyInvalidDerivationSignatureDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidDerivationSignatureDiagnostics);
     private static IReadOnlyCollection<string> InvalidDerivationSignatureDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidDerivationSignature };
 
     private static string DerivableUnitText(SourceSubtext signature) => $$"""
@@ -63,14 +61,12 @@ public class InvalidDerivationSignature
         public partial class Time { }
         """;
 
-    private static TextSpan DerivableUnitLocation(SourceSubtext signature) => ExpectedDiagnosticsLocation.TextSpan(DerivableUnitText(signature), signature, prefix: $"DerivableUnit(\"{{0}} / {{1}}\", ");
-
     private static GeneratorVerifier AssertDerivableUnit(SourceSubtext signature)
     {
         var source = DerivableUnitText(signature);
-        var expectedLocation = DerivableUnitLocation(signature);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, signature.Context.With(outerPrefix: "DerivableUnit(\"{0} / {1}\", "));
 
-        return AssertExactlyInvalidDerivationSignatureDiagnosticsWithValidLocation(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidDerivationSignatureDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
 
     private static Task AssertAndVerifyDerivableUnit(SourceSubtext signature) => AssertDerivableUnit(signature).VerifyDiagnostics();
@@ -100,13 +96,11 @@ public class InvalidDerivationSignature
         public partial class UnitOfTime { }
         """;
 
-    private static TextSpan DerivedQuantityLocation(SourceSubtext signature) => ExpectedDiagnosticsLocation.TextSpan(DerivedQuantityText(signature), signature, prefix: $"DerivedQuantity(\"{{0}} / {{1}}\", ");
-
     private static GeneratorVerifier AssertDerivedQuantity(SourceSubtext signature)
     {
         var source = DerivedQuantityText(signature);
-        var expectedLocation = DerivedQuantityLocation(signature);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, signature.Context.With(outerPrefix: "DerivedQuantity(\"{0} / {1}\", "));
 
-        return AssertExactlyInvalidDerivationSignatureDiagnosticsWithValidLocation(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidDerivationSignatureDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
 }

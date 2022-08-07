@@ -5,10 +5,17 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
+using System.Diagnostics.CodeAnalysis;
+
 public class QuantityConstantPostResolutionFilterDiagnostics<TDefinition, TLocations> : IQuantityConstantPostResolutionFilterDiagnostics<TDefinition, TLocations>
     where TDefinition : AQuantityConstantDefinition<TLocations>
     where TLocations : AQuantityConstantLocations<TLocations>
 {
+    [SuppressMessage("Design", "CA1000", Justification = "Property")]
+    public static QuantityConstantPostResolutionFilterDiagnostics<TDefinition, TLocations> Instance { get; } = new();
+
+    protected QuantityConstantPostResolutionFilterDiagnostics() { }
+
     public Diagnostic DuplicateConstantName(IQuantityConstantPostResolutionFilterContext context, TDefinition definition)
     {
         return DiagnosticConstruction.DuplicateConstantName(definition.Locations.Name?.AsRoslynLocation(), definition.Name, context.Type.Name);

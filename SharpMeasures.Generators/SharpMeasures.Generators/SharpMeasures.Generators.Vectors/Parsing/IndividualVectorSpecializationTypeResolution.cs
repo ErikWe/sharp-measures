@@ -29,20 +29,26 @@ internal static class IndividualVectorSpecializationTypeResolution
         var derivations = ResolveCollection(intermediateVector, vectorPopulation, static (vector) => vector.Definition.InheritDerivations,
             static (vector) => vector.Derivations, static (vector) => vector.Derivations);
 
-        var constants = ResolveCollection(intermediateVector, vectorPopulation, static (vector) => vector.Definition.InheritConstants,
-            static (vector) => vector.Constants, static (vector) => vector.Constants);
+        var inheritedConversions = ResolveInheritedCollection(intermediateVector, vectorPopulation, static (scalar) => scalar.Definition.InheritConversions,
+            static (scalar) => scalar.Conversions, static (scalar) => scalar.Conversions);
 
-        var conversions = ResolveCollection(intermediateVector, vectorPopulation, static (vector) => vector.Definition.InheritConversions,
-            static (vector) => vector.Conversions, static (vector) => vector.Conversions);
+        var allConversions = VectorTypePostResolutionFilter.FilterAndCombineConversions(intermediateVector.Type, intermediateVector.Conversions, inheritedConversions);
 
         var includedUnits = GetIncludedUnits(intermediateVector, intermediateVector.Definition.Unit, vectorPopulation, static (vector) => vector.Definition.InheritUnits,
             static (vector) => vector.UnitInclusions, static (vector) => vector.UnitExclusions, static (vector) => vector.IncludedUnits,
             static (vector) => Array.Empty<IUnresolvedUnitInstance>());
 
-        IndividualVectorType reduced = new(intermediateVector.Type, intermediateVector.TypeLocation, intermediateVector.Definition,
-            intermediateVector.RegisteredMembersByDimension, derivations, constants, conversions, includedUnits);
+        var inheritedConstants = ResolveInheritedCollection(intermediateVector, vectorPopulation, static (scalar) => scalar.Definition.InheritConstants,
+            static (scalar) => scalar.Constants, static (scalar) => scalar.Constants);
 
-        return OptionalWithDiagnostics.Result(reduced);
+        var allConstants = VectorTypePostResolutionFilter.FilterAndCombineConstants(intermediateVector.Type, intermediateVector.Constants, inheritedConstants, includedUnits);
+
+        IndividualVectorType reduced = new(intermediateVector.Type, intermediateVector.TypeLocation, intermediateVector.Definition,
+            intermediateVector.RegisteredMembersByDimension, derivations, allConstants.Result, allConversions.Result, includedUnits);
+
+        var allDiagnostics = allConversions.Diagnostics.Concat(allConstants.Diagnostics);
+
+        return OptionalWithDiagnostics.Result(reduced, allDiagnostics);
     }
 
     public static IOptionalWithDiagnostics<IntermediateIndividualVectorSpecializationType> Resolve((UnresolvedIndividualVectorSpecializationType Vector,
@@ -120,19 +126,27 @@ internal static class IndividualVectorSpecializationTypeResolution
         }
     }
 
+    private static IReadOnlyList<T> ResolveInheritedCollection<T>(IIntermediateIndividualVectorSpecializationType vector, IIntermediateIndividualVectorPopulation VectorPopulation,
+        Func<IIntermediateIndividualVectorSpecializationType, bool> shouldInherit, Func<IIntermediateIndividualVectorSpecializationType, IEnumerable<T>> specializationTransform,
+        Func<IIndividualVectorType, IEnumerable<T>> baseTransform)
+        => ResolveCollection(vector, VectorPopulation, shouldInherit, specializationTransform, baseTransform, onlyInherited: true);
+
     private static IReadOnlyList<T> ResolveCollection<T>(IIntermediateIndividualVectorSpecializationType vector, IIntermediateIndividualVectorPopulation vectorPopulation,
-        Func<IIntermediateIndividualVectorSpecializationType, bool> shouldInherit,
-        Func<IIntermediateIndividualVectorSpecializationType, IEnumerable<T>> specializationTransform, Func<IIndividualVectorType, IEnumerable<T>> baseTransform)
+        Func<IIntermediateIndividualVectorSpecializationType, bool> shouldInherit, Func<IIntermediateIndividualVectorSpecializationType, IEnumerable<T>> specializationTransform,
+        Func<IIndividualVectorType, IEnumerable<T>> baseTransform, bool onlyInherited = false)
     {
         List<T> items = new();
 
-        recursivelyAdd(vector);
+        recursivelyAdd(vector, onlyInherited);
 
         return items;
 
-        void recursivelyAdd(IIntermediateIndividualVectorSpecializationType vector)
+        void recursivelyAdd(IIntermediateIndividualVectorSpecializationType vector, bool onlyInherited = false)
         {
-            items.AddRange(specializationTransform(vector));
+            if (onlyInherited is false)
+            {
+                items.AddRange(specializationTransform(vector));
+            }
 
             if (shouldInherit(vector))
             {

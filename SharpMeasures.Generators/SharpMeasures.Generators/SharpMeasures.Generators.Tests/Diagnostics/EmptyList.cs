@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
 
 using SharpMeasures.Generators.Diagnostics;
+using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
 
 using System.Collections.Generic;
@@ -16,119 +17,104 @@ public class EmptyList
     [Fact]
     public Task VerifyEmptyListDiagnosticsMessage_Quantity()
     {
-        string source = ScalarAttributeText("ConvertibleQuantity", string.Empty);
+        var attribute = ParseAttributeAndArguments("ConvertibleQuantity", EmptyParamsList);
 
-        return AssertExactlyEmptyListDiagnosticsWithValidLocation(source).VerifyDiagnostics();
+        return AssertAndVerifyScalarAttribute(attribute);
     }
 
     [Fact]
     public Task VerifyEmptyListDiagnosticsMessage_Unit()
     {
-        string source = ScalarAttributeText("IncludeBases", string.Empty);
+        var attribute = ParseAttributeAndArguments("IncludeBases", EmptyParamsList);
 
-        return AssertExactlyEmptyListDiagnosticsWithValidLocation(source).VerifyDiagnostics();
+        return AssertAndVerifyScalarAttribute(attribute);
     }
 
     [Theory]
     [MemberData(nameof(ScalarAttributesAndArguments))]
-    public void Scalar_ExactList(string attribute, string value)
-    {
-        string source = ScalarAttributeText(attribute, value);
-
-        AssertExactlyEmptyListDiagnosticsWithValidLocation(source);
-    }
+    public void Scalar(SourceSubtext attribute) => AssertScalarAttribute(attribute);
 
     [Theory]
     [MemberData(nameof(ScalarAttributesAndArguments))]
-    public void ConvertibleSpecializedScalar_ExactList(string attribute, string value)
-    {
-        string source = SpecializedScalarAttributeText(attribute, value);
-
-        AssertExactlyEmptyListDiagnosticsWithValidLocation(source);
-    }
+    public void SpecializedScalar(SourceSubtext attribute) => AssertSpecializedScalarAttribute(attribute);
 
     [Theory]
     [MemberData(nameof(QuantityAttributesAndArguments))]
-    public void ConvertibleVector_ExactList(string attribute, string value)
-    {
-        string source = VectorAttributeText(attribute, value);
-
-        AssertExactlyEmptyListDiagnosticsWithValidLocation(source);
-    }
+    public void Vector(SourceSubtext attribute) => AssertVectorAttribute(attribute);
 
     [Theory]
     [MemberData(nameof(QuantityAttributesAndArguments))]
-    public void ConvertibleSpecializedVector_ExactList(string attribute, string value)
-    {
-        string source = SpecializedVectorAttributeText(attribute, value);
-
-        AssertExactlyEmptyListDiagnosticsWithValidLocation(source);
-    }
+    public void SpecializedVector(SourceSubtext attribute) => AssertSpecializedVectorAttribute(attribute);
 
     [Theory]
     [MemberData(nameof(QuantityAttributesAndArguments))]
-    public void ConvertibleVectorGroup_ExactList(string attribute, string value)
-    {
-        string source = VectorGroupAttributeText(attribute, value);
-
-        AssertExactlyEmptyListDiagnosticsWithValidLocation(source);
-    }
+    public void VectorGroup(SourceSubtext attribute) => AssertVectorGroupAttribute(attribute);
 
     [Theory]
     [MemberData(nameof(QuantityAttributesAndArguments))]
-    public void ConvertibleSpecializedVectorGroup_ExactList(string attribute, string value)
-    {
-        string source = SpecializedVectorGroupAttributeText(attribute, value);
-
-        AssertExactlyEmptyListDiagnosticsWithValidLocation(source);
-    }
+    public void SpecializedVectorGroup(SourceSubtext attribute) => AssertSpecializedVectorGroupAttribute(attribute);
 
     private static IEnumerable<object[]> Arguments(string type) => new object[][]
     {
-        new[] { string.Empty },
-        new[] { $$"""new {{type}}[] { }""" }
+        new object[] { EmptyParamsList },
+        new object[] { ExplicitlyEmptyList(type) },
+        new object[] { ImplicitlyEmptyList(type) }
     };
+
+    private static (SourceSubtext Text, bool ShouldTargetAttribute) EmptyParamsList => (new(string.Empty, SourceLocationContext.Empty), true);
+    private static (SourceSubtext Text, bool ShouldTargetAttribute) ExplicitlyEmptyList(string type) => (SourceSubtext.Covered($"new {type}[0]"), false);
+    private static (SourceSubtext Text, bool ShouldTargetAttribute) ImplicitlyEmptyList(string type) => (SourceSubtext.Covered("{ }", prefix: $"new {type}[] "), false);
 
     private static IEnumerable<object[]> QuantityAttributesAndArguments()
     {
-        IEnumerable<(string, string)> attributes = new[] { ("ConvertibleQuantity", "System.Type"), ("IncludeUnits", "string"), ("ExcludeUnits", "string") };
+        IEnumerable<(string AttributeName, string Type)> attributes = new[] { ("ConvertibleQuantity", "System.Type"), ("IncludeUnits", "string"), ("ExcludeUnits", "string") };
 
-        foreach (var attribute in attributes)
+        foreach ((var attributeName, var type) in attributes)
         {
-            foreach (var argument in Arguments(attribute.Item2))
+            foreach (var argumentObject in Arguments(type))
             {
-                yield return new string[] { attribute.Item1, (string)argument[0] };
+                yield return new object[] { ParseAttributeAndArguments(attributeName, ((SourceSubtext, bool))argumentObject[0]) };
             }
         }
     }
 
     private static IEnumerable<object[]> ScalarAttributesAndArguments()
     {
-        IEnumerable<(string, string)> additionalAttributes = new[] { ("IncludeBases", "string"), ("ExcludeBases", "string") };
+        IEnumerable<(string AttributeName, string Type)> additionalAttributes = new[] { ("IncludeBases", "string"), ("ExcludeBases", "string") };
 
         foreach (var originalList in QuantityAttributesAndArguments())
         {
             yield return originalList;
         }
 
-        foreach (var attribute in additionalAttributes)
+        foreach ((var attributeName, var type) in additionalAttributes)
         {
-            foreach (var argument in Arguments(attribute.Item2))
+            foreach (var argumentObject in Arguments(type))
             {
-                yield return new string[] { attribute.Item1, (string)argument[0] };
+                yield return new object[] { ParseAttributeAndArguments(attributeName, ((SourceSubtext, bool))argumentObject[0]) };
             }
         }
     }
 
-    private static GeneratorVerifier AssertExactlyEmptyListDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(EmptyListDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static SourceSubtext ParseAttributeAndArguments(string attributeName, (SourceSubtext Text, bool ShouldTargetAttribute) argument)
+    {
+        if (argument.ShouldTargetAttribute)
+        {
+            return SourceSubtext.Covered(attributeName, prefix: argument.Text.Context.Prefix, postfix: argument.Text.Context.Postfix);
+        }
+
+        return argument.Text;
+    }
+
+    private static GeneratorVerifier AssertExactlyEmptyListDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(EmptyListDiagnostics);
     private static IReadOnlyCollection<string> EmptyListDiagnostics { get; } = new string[] { DiagnosticIDs.EmptyList };
 
-    private static string ScalarAttributeText(string attribute, string value) => $$"""
+    private static string ScalarAttributeText(SourceSubtext attribute) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [{{attribute}}({{value}})]
+        [{{attribute}}]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
@@ -136,12 +122,22 @@ public class EmptyList
         public partial class UnitOfLength { }
         """;
 
-    private static string SpecializedScalarAttributeText(string attribute, string value) => $$"""
+    private static GeneratorVerifier AssertScalarAttribute(SourceSubtext attribute)
+    {
+        var source = ScalarAttributeText(attribute);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, attribute.Context);
+
+        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static Task AssertAndVerifyScalarAttribute(SourceSubtext attribute) => AssertScalarAttribute(attribute).VerifyDiagnostics();
+
+    private static string SpecializedScalarAttributeText(SourceSubtext attribute) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [{{attribute}}({{value}})]
+        [{{attribute}}]
         [SpecializedSharpMeasuresScalar(typeof(Length))]
         public partial class Distance { }
 
@@ -152,13 +148,21 @@ public class EmptyList
         public partial class UnitOfLength { }
         """;
 
-    private static string VectorAttributeText(string attribute, string value) => $$"""
+    private static GeneratorVerifier AssertSpecializedScalarAttribute(SourceSubtext attribute)
+    {
+        var source = SpecializedScalarAttributeText(attribute);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, attribute.Context);
+
+        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string VectorAttributeText(SourceSubtext attribute) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [{{attribute}}({{value}})]
+        [{{attribute}}]
         [SharpMeasuresVector(typeof(UnitOfLength))]
         public partial class Position3 { }
 
@@ -169,13 +173,21 @@ public class EmptyList
         public partial class UnitOfLength { }
         """;
 
-    private static string SpecializedVectorAttributeText(string attribute, string value) => $$"""
+    private static GeneratorVerifier AssertVectorAttribute(SourceSubtext attribute)
+    {
+        var source = VectorAttributeText(attribute);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, attribute.Context);
+
+        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string SpecializedVectorAttributeText(SourceSubtext attribute) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [{{attribute}}({{value}})]
+        [{{attribute}}]
         [SpecializedSharpMeasuresVector(typeof(Position3))]
         public partial class Displacement3 { }
 
@@ -189,13 +201,21 @@ public class EmptyList
         public partial class UnitOfLength { }
         """;
 
-    private static string VectorGroupAttributeText(string attribute, string value) => $$"""
+    private static GeneratorVerifier AssertSpecializedVectorAttribute(SourceSubtext attribute)
+    {
+        var source = SpecializedVectorAttributeText(attribute);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, attribute.Context);
+
+        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string VectorGroupAttributeText(SourceSubtext attribute) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [{{attribute}}({{value}})]
+        [{{attribute}}]
         [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
@@ -206,13 +226,21 @@ public class EmptyList
         public partial class UnitOfLength { }
         """;
 
-    private static string SpecializedVectorGroupAttributeText(string attribute, string value) => $$"""
+    private static GeneratorVerifier AssertVectorGroupAttribute(SourceSubtext attribute)
+    {
+        var source = VectorGroupAttributeText(attribute);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, attribute.Context);
+
+        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string SpecializedVectorGroupAttributeText(SourceSubtext attribute) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [{{attribute}}({{value}})]
+        [{{attribute}}]
         [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
         public static partial class Displacement { }
             
@@ -225,4 +253,12 @@ public class EmptyList
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
+
+    private static GeneratorVerifier AssertSpecializedVectorGroupAttribute(SourceSubtext attribute)
+    {
+        var source = SpecializedVectorGroupAttributeText(attribute);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, attribute.Context);
+
+        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
 }

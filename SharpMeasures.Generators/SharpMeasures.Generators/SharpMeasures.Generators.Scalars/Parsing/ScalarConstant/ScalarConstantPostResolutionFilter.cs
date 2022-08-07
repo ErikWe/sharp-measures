@@ -19,7 +19,7 @@ internal interface IScalarConstantPostResolutionFilterContext : IQuantityConstan
     public abstract HashSet<string> IncludedBases { get; }
 }
 
-internal class ScalarConstantPostResolutionFilter : AQuantityConstantPostResolutionFilter<IScalarConstantPostResolutionFilterContext, ScalarConstantDefinition, ScalarConstantLocations>
+internal class ScalarConstantPostResolutionFilter : QuantityConstantPostResolutionFilter<IScalarConstantPostResolutionFilterContext, ScalarConstantDefinition, ScalarConstantLocations>
 {
     private IScalarConstantPostResolutionFilterDiagnostics Diagnostics { get; }
 

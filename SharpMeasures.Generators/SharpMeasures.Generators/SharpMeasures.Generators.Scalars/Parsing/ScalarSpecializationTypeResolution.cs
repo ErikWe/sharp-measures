@@ -144,7 +144,7 @@ internal static class ScalarSpecializationTypeResolution
 
         return items;
 
-        void recursivelyAdd(IIntermediateScalarSpecializationType scalar, bool onlyInherited)
+        void recursivelyAdd(IIntermediateScalarSpecializationType scalar, bool onlyInherited = false)
         {
             if (onlyInherited is false)
             {
@@ -155,7 +155,7 @@ internal static class ScalarSpecializationTypeResolution
             {
                 if (scalarPopulation.ScalarSpecializations.TryGetValue(scalar.Definition.OriginalScalar.Type.AsNamedType(), out var originalScalar))
                 {
-                    recursivelyAdd(originalScalar, false);
+                    recursivelyAdd(originalScalar);
                     return;
                 }
 

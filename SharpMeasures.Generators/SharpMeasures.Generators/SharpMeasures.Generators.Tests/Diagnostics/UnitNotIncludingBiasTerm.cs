@@ -37,7 +37,7 @@ public class UnitNotIncludingBiasTerm
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan BiasedScalarLocation => ExpectedDiagnosticsLocation.TextSpan(BiasedScalarText, "true", prefix: "UseUnitBias = ");
+    private static TextSpan BiasedScalarLocation => ExpectedDiagnosticsLocation.TextSpan(BiasedScalarText, target: "true", prefix: "UseUnitBias = ");
 
     private static GeneratorVerifier AssertBiasedScalar() => AssertExactlyUnitNotIncludingBiasTermDiagnostics(BiasedScalarText).AssertDiagnosticsLocation(BiasedScalarLocation);
     private static Task AssertAndVerifyBiasedScalar() => AssertBiasedScalar().VerifyDiagnostics();

@@ -17,27 +17,29 @@ using System.Threading;
 
 internal static class VectorGroupSpecializationTypeResolution
 {
-    public static IOptionalWithDiagnostics<VectorGroupType> Reduce
-        ((IntermediateVectorGroupSpecializationType Intermediate, IIntermediateVectorGroupPopulation Population) vectors, CancellationToken _)
+    public static IOptionalWithDiagnostics<VectorGroupType> Reduce ((IntermediateVectorGroupSpecializationType Intermediate, IIntermediateVectorGroupPopulation Population) vectors, CancellationToken _)
         => Reduce(vectors.Intermediate, vectors.Population);
 
-    public static IOptionalWithDiagnostics<VectorGroupType> Reduce(IntermediateVectorGroupSpecializationType intermediateVector,
-        IIntermediateVectorGroupPopulation vectorPopulation)
+    public static IOptionalWithDiagnostics<VectorGroupType> Reduce(IntermediateVectorGroupSpecializationType intermediateVector, IIntermediateVectorGroupPopulation vectorPopulation)
     {
         var derivations = ResolveCollection(intermediateVector, vectorPopulation, static (scalar) => scalar.Definition.InheritDerivations,
             static (scalar) => scalar.Derivations, static (scalar) => scalar.Derivations);
 
-        var conversions = ResolveCollection(intermediateVector, vectorPopulation, static (scalar) => scalar.Definition.InheritConversions,
+        var inheritedConversions = ResolveInheritedCollection(intermediateVector, vectorPopulation, static (scalar) => scalar.Definition.InheritConversions,
             static (scalar) => scalar.Conversions, static (scalar) => scalar.Conversions);
+
+        var allConversions = VectorTypePostResolutionFilter.FilterAndCombineConversions(intermediateVector.Type, intermediateVector.Conversions, inheritedConversions);
 
         var includedUnits = GetIncludedUnits(intermediateVector, intermediateVector.Definition.Unit, vectorPopulation, static (scalar) => scalar.Definition.InheritUnits,
             static (scalar) => scalar.UnitInclusions, static (scalar) => scalar.UnitExclusions, static (scalar) => scalar.IncludedUnits,
             static (scalar) => Array.Empty<IUnresolvedUnitInstance>());
 
         VectorGroupType reduced = new(intermediateVector.Type, intermediateVector.TypeLocation, intermediateVector.Definition, intermediateVector.RegisteredMembersByDimension,
-            derivations, conversions, includedUnits);
+            derivations, allConversions.Result, includedUnits);
 
-        return OptionalWithDiagnostics.Result(reduced);
+        var allDiagnostics = allConversions.Diagnostics;
+
+        return OptionalWithDiagnostics.Result(reduced, allDiagnostics);
     }
 
     public static IOptionalWithDiagnostics<IntermediateVectorGroupSpecializationType> Resolve((UnresolvedVectorGroupSpecializationType Vector,
@@ -119,19 +121,27 @@ internal static class VectorGroupSpecializationTypeResolution
         }
     }
 
-    private static IReadOnlyList<T> ResolveCollection<T>(IIntermediateVectorGroupSpecializationType vector, IIntermediateVectorGroupPopulation vectorPopulation,
+    private static IReadOnlyList<T> ResolveInheritedCollection<T>(IIntermediateVectorGroupSpecializationType vector, IIntermediateVectorGroupPopulation VectorPopulation,
         Func<IIntermediateVectorGroupSpecializationType, bool> shouldInherit, Func<IIntermediateVectorGroupSpecializationType, IEnumerable<T>> specializationTransform,
         Func<IVectorGroupType, IEnumerable<T>> baseTransform)
+        => ResolveCollection(vector, VectorPopulation, shouldInherit, specializationTransform, baseTransform, onlyInherited: true);
+
+    private static IReadOnlyList<T> ResolveCollection<T>(IIntermediateVectorGroupSpecializationType vector, IIntermediateVectorGroupPopulation vectorPopulation,
+        Func<IIntermediateVectorGroupSpecializationType, bool> shouldInherit, Func<IIntermediateVectorGroupSpecializationType, IEnumerable<T>> specializationTransform,
+        Func<IVectorGroupType, IEnumerable<T>> baseTransform, bool onlyInherited = false)
     {
         List<T> items = new();
 
-        recursivelyAdd(vector);
+        recursivelyAdd(vector, onlyInherited);
 
         return items;
 
-        void recursivelyAdd(IIntermediateVectorGroupSpecializationType vector)
+        void recursivelyAdd(IIntermediateVectorGroupSpecializationType vector, bool onlyInherited = false)
         {
-            items.AddRange(specializationTransform(vector));
+            if (onlyInherited is false)
+            {
+                items.AddRange(specializationTransform(vector));
+            }
 
             if (shouldInherit(vector))
             {
@@ -149,6 +159,5 @@ internal static class VectorGroupSpecializationTypeResolution
         }
     }
 
-    private static SpecializedSharpMeasuresVectorGroupResolver SpecializedSharpMeasuresVectorGroupResolver { get; }
-        = new(SpecializedSharpMeasuresVectorGroupResolutionDiagnostics.Instance);
+    private static SpecializedSharpMeasuresVectorGroupResolver SpecializedSharpMeasuresVectorGroupResolver { get; } = new(SpecializedSharpMeasuresVectorGroupResolutionDiagnostics.Instance);
 }

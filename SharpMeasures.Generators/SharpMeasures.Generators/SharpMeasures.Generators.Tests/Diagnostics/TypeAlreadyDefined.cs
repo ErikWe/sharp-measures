@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
 
-using Microsoft.CodeAnalysis.Text;
-
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
@@ -17,59 +15,59 @@ using Xunit;
 public class TypeAlreadyDefined
 {
     [Fact]
-    public Task Scalar_DefinedAsUnit_Verify() => AssertAndVerifyScalar(UnitDefinition);
+    public Task Scalar_DefinedAsUnit() => AssertAndVerifyScalar(UnitDefinition);
 
     [Fact]
-    public Task SpecializedScalar_DefinedAsUnit_Verify() => AssertAndVerifySpecializedScalar(UnitDefinition);
+    public Task SpecializedScalar_DefinedAsUnit() => AssertAndVerifySpecializedScalar(UnitDefinition);
 
     [Fact]
-    public Task SpecializedScalar_DefinedAsScalar_Verify() => AssertAndVerifySpecializedScalar(ScalarDefinition);
+    public Task SpecializedScalar_DefinedAsScalar() => AssertAndVerifySpecializedScalar(ScalarDefinition);
 
     [Fact]
-    public Task Vector_DefinedAsUnit_Verify() => AssertAndVerifyVector(UnitDefinition);
+    public Task Vector_DefinedAsUnit() => AssertAndVerifyVector(UnitDefinition);
 
     [Fact]
-    public Task Vector_DefinedAsScalar_Verify() => AssertAndVerifyVector(ScalarDefinition);
+    public Task Vector_DefinedAsScalar() => AssertAndVerifyVector(ScalarDefinition);
 
     [Fact]
     public void Vector_DefinedAsSpecializedScalar() => AssertAndVerifyVector(SpecializedScalarDefinition);
 
     [Fact]
-    public Task SpecializedVector_DefinedAsUnit_Verify() => AssertAndVerifySpecializedVector(UnitDefinition);
+    public Task SpecializedVector_DefinedAsUnit() => AssertAndVerifySpecializedVector(UnitDefinition);
 
     [Fact]
-    public Task SpecializedVector_DefinedAsScalar_Verify() => AssertAndVerifySpecializedVector(ScalarDefinition);
+    public Task SpecializedVector_DefinedAsScalar() => AssertAndVerifySpecializedVector(ScalarDefinition);
 
     [Fact]
     public void SpecializedVector_DefinedAsSpecializedScalar() => AssertAndVerifySpecializedVector(SpecializedScalarDefinition);
 
     [Fact]
-    public Task SpecializedVector_DefinedAsVector_Verify() => AssertAndVerifySpecializedVector(VectorDefinition);
+    public Task SpecializedVector_DefinedAsVector() => AssertAndVerifySpecializedVector(VectorDefinition);
 
     [Fact]
-    public Task SpecializedVectorGroup_DefinedAsVectorGroup_Verify() => AssertAndVerifySpecializedVectorGroup(VectorGroupDefinition);
+    public Task SpecializedVectorGroup_DefinedAsVectorGroup() => AssertAndVerifySpecializedVectorGroup(VectorGroupDefinition);
 
     [Fact]
-    public Task VectorGroupMember_DefinedAsUnit_Verify() => AssertAndVerifyVectorGroupMember(UnitDefinition);
+    public Task VectorGroupMember_DefinedAsUnit() => AssertAndVerifyVectorGroupMember(UnitDefinition);
 
     [Fact]
-    public Task VectorGroupMember_DefinedAsScalar_Verify() => AssertAndVerifyVectorGroupMember(ScalarDefinition);
+    public Task VectorGroupMember_DefinedAsScalar() => AssertAndVerifyVectorGroupMember(ScalarDefinition);
 
     [Fact]
     public void VectorGroupMember_DefinedAsSpecializedScalar() => AssertAndVerifyVectorGroupMember(SpecializedScalarDefinition);
 
     [Fact]
-    public Task VectorGroupMember_DefinedAsVector_Verify() => AssertAndVerifyVectorGroupMember(VectorDefinition);
+    public Task VectorGroupMember_DefinedAsVector() => AssertAndVerifyVectorGroupMember(VectorDefinition);
 
     [Fact]
     public void VectorGroupMember_DefinedAsSpecializedVector() => AssertAndVerifyVectorGroupMember(SpecializedVectorDefinition);
 
-    private static SourceSubtext UnitDefinition { get; } = SourceSubtext.Typeof("Length", prefix: "SharpMeasuresUnit(", postfix: ")");
-    private static SourceSubtext ScalarDefinition { get; } = SourceSubtext.Typeof("UnitOfLength", prefix: "SharpMeasuresScalar(", postfix: ")");
-    private static SourceSubtext SpecializedScalarDefinition { get; } = SourceSubtext.Typeof("Length", prefix: "SpecializedSharpMeasuresScalar(", postfix: ")");
-    private static SourceSubtext VectorDefinition { get; } = SourceSubtext.Typeof("UnitOfLength", prefix: "SharpMeasuresVector(", postfix: ")");
-    private static SourceSubtext SpecializedVectorDefinition { get; } = SourceSubtext.Typeof("Displacement2", prefix: "SpecializedSharpMeasuresVector(", postfix: ")");
-    private static SourceSubtext VectorGroupDefinition { get; } = SourceSubtext.Typeof("UnitOfLength", prefix: "SharpMeasuresVectorGroup(", postfix: ")");
+    private static SourceSubtext UnitDefinition { get; } = SourceSubtext.Covered("SharpMeasuresUnit", postfix: "(typeof(Length))");
+    private static SourceSubtext ScalarDefinition { get; } = SourceSubtext.Covered("SharpMeasuresScalar", postfix: "(typeof(UnitOfLength))");
+    private static SourceSubtext SpecializedScalarDefinition { get; } = SourceSubtext.Covered("SpecializedSharpMeasuresScalar", postfix: "(typeof(Length))");
+    private static SourceSubtext VectorDefinition { get; } = SourceSubtext.Covered("SharpMeasuresVector", postfix: "(typeof(UnitOfLength))");
+    private static SourceSubtext SpecializedVectorDefinition { get; } = SourceSubtext.Covered("SpecializedSharpMeasuresVector", postfix: "(typeof(Displacement2))");
+    private static SourceSubtext VectorGroupDefinition { get; } = SourceSubtext.Covered("SharpMeasuresVectorGroup", postfix: "(typeof(UnitOfLength))");
 
     private static GeneratorVerifier AssertExactDiagnostics(string source, IEnumerable<string> expectedDiagnostics) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(expectedDiagnostics);
     private static GeneratorVerifier AssertExactlyTypeAlreadyDefinedDiagnostics(string source) => AssertExactDiagnostics(source, TypeAlreadyDefinedDiagnostics);
@@ -90,12 +88,10 @@ public class TypeAlreadyDefined
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ScalarLocation(SourceSubtext otherDefinition) => ExpectedDiagnosticsLocation.TextSpan(ScalarText(otherDefinition), "SharpMeasuresScalar", postfix: "(typeof(UnitOfLength))]");
-
     private static GeneratorVerifier AssertScalar(SourceSubtext otherDefinition)
     {
         var source = ScalarText(otherDefinition);
-        var expectedLocation = ScalarLocation(otherDefinition);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, otherDefinition.Context);
 
         return AssertExactlyTypeAlreadyDefinedDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -118,12 +114,10 @@ public class TypeAlreadyDefined
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan SpecializedScalarLocation(SourceSubtext otherDefinition) => ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText(otherDefinition), "SpecializedSharpMeasuresScalar", postfix: "(typeof(Length))]");
-
     private static GeneratorVerifier AssertSpecializedScalar(SourceSubtext otherDefinition)
     {
         var source = SpecializedScalarText(otherDefinition);
-        var expectedLocation = SpecializedScalarLocation(otherDefinition);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, otherDefinition.Context);
 
         return AssertExactlyTypeAlreadyDefinedDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -146,12 +140,10 @@ public class TypeAlreadyDefined
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan VectorLocation(SourceSubtext otherDefinition) => ExpectedDiagnosticsLocation.TextSpan(VectorText(otherDefinition), "SharpMeasuresVector", postfix: "(typeof(UnitOfLength))");
-
     private static GeneratorVerifier AssertVector(SourceSubtext otherDefinition)
     {
         var source = VectorText(otherDefinition);
-        var expectedLocation = VectorLocation(otherDefinition);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, otherDefinition.Context);
 
         return AssertExactlyTypeAlreadyDefinedDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -177,12 +169,10 @@ public class TypeAlreadyDefined
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan SpecializedVectorLocation(SourceSubtext otherDefinition) => ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText(otherDefinition), "SpecializedSharpMeasuresVector", postfix: "(typeof(UnitOfLength))");
-
     private static GeneratorVerifier AssertSpecializedVector(SourceSubtext otherDefinition)
     {
         var source = SpecializedVectorText(otherDefinition);
-        var expectedLocation = SpecializedVectorLocation(otherDefinition);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, otherDefinition.Context);
 
         return AssertExactlyTypeAlreadyDefinedDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -208,12 +198,10 @@ public class TypeAlreadyDefined
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan SpecializedVectorGroupLocation(SourceSubtext otherDefinition) => ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText(otherDefinition), "SpecializedSharpMeasuresVectorGroup", postfix: "(typeof(Position))");
-
     private static GeneratorVerifier AssertSpecializedVectorGroup(SourceSubtext otherDefinition)
     {
         var source = SpecializedVectorGroupText(otherDefinition);
-        var expectedLocation = SpecializedVectorGroupLocation(otherDefinition);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, otherDefinition.Context);
 
         return AssertExactlyTypeAlreadyDefinedDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -242,12 +230,10 @@ public class TypeAlreadyDefined
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan VectorGroupMemberLocation(SourceSubtext otherDefinition) => ExpectedDiagnosticsLocation.TextSpan(VectorGroupMemberText(otherDefinition), "SharpMeasuresVectorGroupMember", postfix: "(typeof(Position))");
-
     private static GeneratorVerifier AssertVectorGroupMember(SourceSubtext otherDefinition)
     {
         var source = VectorGroupMemberText(otherDefinition);
-        var expectedLocation = VectorGroupMemberLocation(otherDefinition);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, otherDefinition.Context);
 
         return AssertExactlyTypeAlreadyDefinedDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }

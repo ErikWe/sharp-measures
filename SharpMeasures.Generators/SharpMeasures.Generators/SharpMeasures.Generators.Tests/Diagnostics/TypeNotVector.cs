@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
 
-using Microsoft.CodeAnalysis.Text;
-
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
@@ -17,10 +15,10 @@ using Xunit;
 public class TypeNotVector
 {
     [Fact]
-    public Task VerifyTypeNotVectorDiagnosticsMessage_Null() => AssertAndVerifyScalarVector(NullSubtext);
+    public Task VerifyTypeNotVectorDiagnosticsMessage_Null() => AssertAndVerifyScalarVector(NullType);
 
     [Fact]
-    public Task VerifyTypeNotVectorDiagnosticsMessage_Int() => AssertAndVerifyScalarVector(IntSubtext);
+    public Task VerifyTypeNotVectorDiagnosticsMessage_Int() => AssertAndVerifyScalarVector(IntType);
 
     [Theory]
     [MemberData(nameof(NonVectorTypes))]
@@ -44,16 +42,16 @@ public class TypeNotVector
 
     private static IEnumerable<object[]> NonVectorTypes() => new object[][]
     {
-        new object[] { NullSubtext },
-        new object[] { IntSubtext },
-        new object[] { UnitOfLengthSubtext },
-        new object[] { LengthSubtext }
+        new object[] { NullType },
+        new object[] { IntType },
+        new object[] { UnitOfLengthType },
+        new object[] { LengthType }
     };
 
-    private static SourceSubtext NullSubtext { get; } = new("null");
-    private static SourceSubtext IntSubtext { get; } = SourceSubtext.Typeof("int");
-    private static SourceSubtext UnitOfLengthSubtext { get; } = SourceSubtext.Typeof("UnitOfLength");
-    private static SourceSubtext LengthSubtext { get; } = SourceSubtext.Typeof("Length");
+    private static SourceSubtext NullType { get; } = SourceSubtext.Covered("null", prefix: "(System.Type)");
+    private static SourceSubtext IntType { get; } = SourceSubtext.AsTypeof("int");
+    private static SourceSubtext UnitOfLengthType { get; } = SourceSubtext.AsTypeof("UnitOfLength");
+    private static SourceSubtext LengthType { get; } = SourceSubtext.AsTypeof("Length");
 
     private static GeneratorVerifier AssertExactlyTypeNotVectorDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotVectorDiagnostics);
     private static IReadOnlyCollection<string> TypeNotVectorDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotVector };
@@ -72,12 +70,10 @@ public class TypeNotVector
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ScalarVectorLocation(SourceSubtext vectorType) => ExpectedDiagnosticsLocation.TextSpan(ScalarVectorText(vectorType), vectorType, prefix: "Vector = ");
-
     private static GeneratorVerifier AssertScalarVector(SourceSubtext vectorType)
     {
         var source = ScalarVectorText(vectorType);
-        var expectedLocation = ScalarVectorLocation(vectorType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, vectorType.Context.With(outerPrefix: "Vector = "));
 
         return AssertExactlyTypeNotVectorDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -99,12 +95,10 @@ public class TypeNotVector
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan SpecializedVectorOriginalVectorLocation(SourceSubtext originalVectorType) => ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorOriginalVectorText(originalVectorType), originalVectorType, prefix: "SpecializedSharpMeasuresVector(");
-
     private static GeneratorVerifier AssertSpecializedVectorOriginalVector(SourceSubtext originalVectorType)
     {
         var source = SpecializedVectorOriginalVectorText(originalVectorType);
-        var expectedLocation = SpecializedVectorOriginalVectorLocation(originalVectorType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, originalVectorType.Context.With(outerPrefix: "SpecializedSharpMeasuresVector("));
 
         return AssertExactlyTypeNotVectorDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -124,12 +118,10 @@ public class TypeNotVector
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan VectorDifferenceLocation(SourceSubtext differenceVectorType) => ExpectedDiagnosticsLocation.TextSpan(VectorDifferenceText(differenceVectorType), differenceVectorType, prefix: "Difference = ");
-
     private static GeneratorVerifier AssertVectorDifference(SourceSubtext differenceVectorType)
     {
         var source = VectorDifferenceText(differenceVectorType);
-        var expectedLocation = VectorDifferenceLocation(differenceVectorType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, differenceVectorType.Context.With(outerPrefix: "Difference = "));
 
         return AssertExactlyTypeNotVectorDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -152,12 +144,10 @@ public class TypeNotVector
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan SpecializedVectorDifferenceLocation(SourceSubtext differenceVectorType) => ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorDifferenceText(differenceVectorType), differenceVectorType, prefix: "Difference = ");
-
     private static GeneratorVerifier AssertSpecializedVectorDifference(SourceSubtext differenceVectorType)
     {
         var source = SpecializedVectorDifferenceText(differenceVectorType);
-        var expectedLocation = SpecializedVectorDifferenceLocation(differenceVectorType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, differenceVectorType.Context.With(outerPrefix: "Difference = "));
 
         return AssertExactlyTypeNotVectorDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -179,17 +169,10 @@ public class TypeNotVector
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ConvertibleQuantityLocation(SourceSubtext quantityType) => ExpectedDiagnosticsLocation.TextSpan(ConvertibleQuantityText(quantityType), quantityType, prefix: "ConvertibleQuantity(");
-
     private static GeneratorVerifier AssertConvertibleQuantity(SourceSubtext quantityType)
     {
-        if (quantityType.Target is "null")
-        {
-            quantityType = quantityType with { Prefix = $"{quantityType.Prefix}(System.Type)" };
-        }
-
         var source = ConvertibleQuantityText(quantityType);
-        var expectedLocation = ConvertibleQuantityLocation(quantityType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, quantityType.Context.With(outerPrefix: "ConvertibleQuantity("));
 
         return AssertExactlyTypeNotVectorDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }

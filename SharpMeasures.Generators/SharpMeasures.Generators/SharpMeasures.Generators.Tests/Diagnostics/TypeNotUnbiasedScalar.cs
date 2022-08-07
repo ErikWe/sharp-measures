@@ -45,7 +45,7 @@ public class TypeNotUnbiasedScalar
         public partial class UnitOfTemperature { }
         """;
 
-    private static TextSpan UnbiasedUnitQuantityLocation => ExpectedDiagnosticsLocation.TypeofArgumentTextSpan(UnbiasedUnitQuantityText, "typeof(Temperature)", prefix: "SharpMeasuresUnit(");
+    private static TextSpan UnbiasedUnitQuantityLocation => ExpectedDiagnosticsLocation.FromTypeofArgumentTextSpan(UnbiasedUnitQuantityText, target: "typeof(Temperature)", prefix: "SharpMeasuresUnit(");
 
     private static GeneratorVerifier AssertUnbiasedUnitQuantity() => AssertExactlyTypeNotUnbiasedScalarDiagnostics(UnbiasedUnitQuantityText).AssertDiagnosticsLocation(UnbiasedUnitQuantityLocation, UnbiasedUnitQuantityText);
     private static Task AssertAndVerifyUnbiasedUnitQuantity() => AssertUnbiasedUnitQuantity().VerifyDiagnostics();
@@ -61,7 +61,7 @@ public class TypeNotUnbiasedScalar
         public partial class UnitOfTemperature { }
         """;
 
-    private static TextSpan BiasedUnitQuantityLocation => ExpectedDiagnosticsLocation.TypeofArgumentTextSpan(BiasedUnitQuantityText, "typeof(Temperature)", prefix: "SharpMeasuresUnit(");
+    private static TextSpan BiasedUnitQuantityLocation => ExpectedDiagnosticsLocation.FromTypeofArgumentTextSpan(BiasedUnitQuantityText, target: "typeof(Temperature)", prefix: "SharpMeasuresUnit(");
 
     private static GeneratorVerifier AssertBiasedUnitQuantity() => AssertExactlyTypeNotUnbiasedScalarDiagnostics(BiasedUnitQuantityText).AssertDiagnosticsLocation(BiasedUnitQuantityLocation, BiasedUnitQuantityText);
 
@@ -81,7 +81,7 @@ public class TypeNotUnbiasedScalar
         public partial class UnitOfTemperature { }
         """;
 
-    private static TextSpan ConvertibleScalarLocation => ExpectedDiagnosticsLocation.TypeofArgumentTextSpan(ConvertibleScalarText, "typeof(Temperature)", prefix: "ConvertibleQuantity(");
+    private static TextSpan ConvertibleScalarLocation => ExpectedDiagnosticsLocation.FromTypeofArgumentTextSpan(ConvertibleScalarText, target: "typeof(Temperature)", prefix: "ConvertibleQuantity(");
 
     private static GeneratorVerifier AssertConvertibleScalar() => AssertExactlyTypeNotUnbiasedScalarDiagnostics(ConvertibleScalarText).AssertDiagnosticsLocation(ConvertibleScalarLocation, ConvertibleScalarText);
 }

@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
 
-using Microsoft.CodeAnalysis.Text;
-
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
@@ -17,10 +15,10 @@ using Xunit;
 public class TypeNotQuantity
 {
     [Fact]
-    public Task VerifyTypeNotQuantityDiagnosticsMessage_Null() => AssertAndVerifyDerivedScalar(NullSubtext);
+    public Task VerifyTypeNotQuantityDiagnosticsMessage_Null() => AssertAndVerifyDerivedScalar(NullType);
 
     [Fact]
-    public Task VerifyTypeNotQuantityDiagnosticsMessage_Int() => AssertAndVerifyDerivedScalar(IntSubtext);
+    public Task VerifyTypeNotQuantityDiagnosticsMessage_Int() => AssertAndVerifyDerivedScalar(IntType);
 
     [Theory]
     [MemberData(nameof(NonQuantityTypes))]
@@ -28,14 +26,14 @@ public class TypeNotQuantity
 
     private static IEnumerable<object[]> NonQuantityTypes() => new object[][]
     {
-        new object[] { NullSubtext },
-        new object[] { IntSubtext },
-        new object[] { UnitOfLengthSubtext }
+        new object[] { NullType },
+        new object[] { IntType },
+        new object[] { UnitOfLengthType }
     };
 
-    private static SourceSubtext NullSubtext { get; } = new("null");
-    private static SourceSubtext IntSubtext { get; } = SourceSubtext.Typeof("int");
-    private static SourceSubtext UnitOfLengthSubtext { get; } = SourceSubtext.Typeof("UnitOfLength");
+    private static SourceSubtext NullType { get; } = SourceSubtext.Covered("null", prefix: "(System.Type)");
+    private static SourceSubtext IntType { get; } = SourceSubtext.AsTypeof("int");
+    private static SourceSubtext UnitOfLengthType { get; } = SourceSubtext.AsTypeof("UnitOfLength");
 
     private static GeneratorVerifier AssertExactlyTypeNotQuantityDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotQuantityDiagnostics).AssertAllDiagnosticsValidLocation();
     private static IReadOnlyCollection<string> TypeNotQuantityDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotQuantity };
@@ -53,17 +51,10 @@ public class TypeNotQuantity
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan DerivedScalarLocation(SourceSubtext quantityType) => ExpectedDiagnosticsLocation.TextSpan(DerivedScalarText(quantityType), quantityType, prefix: "DerivedQuantity(\"{0}\", ");
-
     private static GeneratorVerifier AssertDerivedScalar(SourceSubtext quantityType)
     {
-        if (quantityType.Target is "null")
-        {
-            quantityType = quantityType with { Prefix = $"{quantityType.Prefix}(System.Type)" };
-        }
-
         var source = DerivedScalarText(quantityType);
-        var expectedLocation = DerivedScalarLocation(quantityType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, quantityType.Context.With(outerPrefix: "DerivedQuantity(\"{0}\", "));
 
         return AssertExactlyTypeNotQuantityDiagnosticsWithValidLocation(source).AssertDiagnosticsLocation(expectedLocation, source);
     }

@@ -4,7 +4,7 @@
     Title: Expected a scalar quantity,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (4,19)-(4,23),
+    Location: : (4,32)-(4,36),
     Description: ,
     HelpLink: ,
     MessageFormat: Expected a type decorated with the attribute SharpMeasures.Generators.Scalars.SharpMeasuresScalar,

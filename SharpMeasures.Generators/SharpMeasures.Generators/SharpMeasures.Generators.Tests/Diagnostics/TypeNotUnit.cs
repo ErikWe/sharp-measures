@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
 
-using Microsoft.CodeAnalysis.Text;
-
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
@@ -17,10 +15,10 @@ using Xunit;
 public class TypeNotUnit
 {
     [Fact]
-    public Task VerifyTypeNotUnitDiagnosticsMessage_Null() => AssertAndVerifyScalarUnit(NullSubtext);
+    public Task VerifyTypeNotUnitDiagnosticsMessage_Null() => AssertAndVerifyScalarUnit(NullType);
 
     [Fact]
-    public Task VerifyTypeNotUnitDiagnosticsMessage_Int() => AssertAndVerifyScalarUnit(IntSubtext);
+    public Task VerifyTypeNotUnitDiagnosticsMessage_Int() => AssertAndVerifyScalarUnit(IntType);
 
     [Theory]
     [MemberData(nameof(NonUnitTypes))]
@@ -40,24 +38,24 @@ public class TypeNotUnit
 
     private static IEnumerable<object[]> NonUnitTypes() => new object[][]
     {
-        new object[] { NullSubtext },
-        new object[] { IntSubtext },
-        new object[] { LengthSubtext },
-        new object[] { PositionSubtext },
-        new object[] { DisplacementSubtext },
-        new object[] { Position2Subtext },
-        new object[] { Position3Subtext },
-        new object[] { Displacement3Subtext }
+        new object[] { NullType },
+        new object[] { IntType },
+        new object[] { LengthType },
+        new object[] { PositionType },
+        new object[] { DisplacementType },
+        new object[] { Position2Type },
+        new object[] { Position3Type },
+        new object[] { Displacement3Type }
     };
 
-    private static SourceSubtext NullSubtext { get; } = new("null");
-    private static SourceSubtext IntSubtext { get; } = SourceSubtext.Typeof("int");
-    private static SourceSubtext LengthSubtext { get; } = SourceSubtext.Typeof("Length");
-    private static SourceSubtext PositionSubtext { get; } = SourceSubtext.Typeof("Position");
-    private static SourceSubtext DisplacementSubtext { get; } = SourceSubtext.Typeof("Displacement");
-    private static SourceSubtext Position2Subtext { get; } = SourceSubtext.Typeof("Position2");
-    private static SourceSubtext Position3Subtext { get; } = SourceSubtext.Typeof("Position3");
-    private static SourceSubtext Displacement3Subtext { get; } = SourceSubtext.Typeof("Displacement3");
+    private static SourceSubtext NullType { get; } = SourceSubtext.Covered("null", prefix: "(System.Type)");
+    private static SourceSubtext IntType { get; } = SourceSubtext.AsTypeof("int");
+    private static SourceSubtext LengthType { get; } = SourceSubtext.AsTypeof("Length");
+    private static SourceSubtext PositionType { get; } = SourceSubtext.AsTypeof("Position");
+    private static SourceSubtext DisplacementType { get; } = SourceSubtext.AsTypeof("Displacement");
+    private static SourceSubtext Position2Type { get; } = SourceSubtext.AsTypeof("Position2");
+    private static SourceSubtext Position3Type { get; } = SourceSubtext.AsTypeof("Position3");
+    private static SourceSubtext Displacement3Type { get; } = SourceSubtext.AsTypeof("Displacement3");
 
     private static GeneratorVerifier AssertExactlyTypeNotUnitDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotUnitDiagnostics);
     private static IReadOnlyCollection<string> TypeNotUnitDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotUnit };
@@ -92,12 +90,10 @@ public class TypeNotUnit
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ScalarUnitLocation(SourceSubtext unitType) => ExpectedDiagnosticsLocation.TextSpan(ScalarUnitText(unitType), unitType, prefix: "SharpMeasuresScalar(");
-
     private static GeneratorVerifier AssertScalarUnit(SourceSubtext unitType)
     {
         var source = ScalarUnitText(unitType);
-        var expectedLocation = ScalarUnitLocation(unitType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, unitType.Context.With(outerPrefix: "SharpMeasuresScalar("));
 
         return AssertExactlyTypeNotUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -134,12 +130,10 @@ public class TypeNotUnit
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan VectorUnitLocation(SourceSubtext unitType) => ExpectedDiagnosticsLocation.TextSpan(VectorUnitText(unitType), unitType, prefix: "SharpMeasuresVector(");
-
     private static GeneratorVerifier AssertVectorUnit(SourceSubtext unitType)
     {
         var source = VectorUnitText(unitType);
-        var expectedLocation = VectorUnitLocation(unitType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, unitType.Context.With(outerPrefix: "SharpMeasuresVector("));
 
         return AssertExactlyTypeNotUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -174,12 +168,10 @@ public class TypeNotUnit
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan VectorGroupUnitLocation(SourceSubtext unitType) => ExpectedDiagnosticsLocation.TextSpan(VectorGroupUnitText(unitType), unitType, prefix: "SharpMeasuresVectorGroup(");
-
     private static GeneratorVerifier AssertVectorGroupUnit(SourceSubtext unitType)
     {
         var source = VectorGroupUnitText(unitType);
-        var expectedLocation = VectorGroupUnitLocation(unitType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, unitType.Context.With(outerPrefix: "SharpMeasuresVectorGroup("));
 
         return AssertExactlyTypeNotUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -211,17 +203,10 @@ public class TypeNotUnit
         public partial class Length { }
         """;
 
-    private static TextSpan DerivableUnitArgumentLocation(SourceSubtext unitType) => ExpectedDiagnosticsLocation.TextSpan(DerivableUnitArgumentText(unitType), unitType, prefix: "DerivableUnit(\"{0}\", ");
-
     private static GeneratorVerifier AssertDerivableUnitArgument(SourceSubtext unitType)
     {
-        if (unitType.Target is "null")
-        {
-            unitType = unitType with { Prefix = $"{unitType.Prefix}(System.Type)" };
-        }
-
         var source = DerivableUnitArgumentText(unitType);
-        var expectedLocation = DerivableUnitArgumentLocation(unitType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, unitType.Context.With(outerPrefix: "DerivableUnit(\"{0}\", "));
 
         return AssertExactlyTypeNotUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }

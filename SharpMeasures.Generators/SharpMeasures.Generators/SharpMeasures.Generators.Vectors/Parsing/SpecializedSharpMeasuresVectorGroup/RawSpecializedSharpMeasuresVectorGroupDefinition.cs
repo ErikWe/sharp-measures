@@ -9,10 +9,10 @@ internal record class RawSpecializedSharpMeasuresVectorGroupDefinition :
 
     public NamedType? OriginalVectorGroup { get; init; }
 
-    public bool InheritDerivations { get; init; }
-    public bool InheritConstants { get; init; }
-    public bool InheritConversions { get; init; }
-    public bool InheritUnits { get; init; }
+    public bool InheritDerivations { get; init; } = true;
+    public bool InheritConstants { get; init; } = true;
+    public bool InheritConversions { get; init; } = true;
+    public bool InheritUnits { get; init; } = true;
 
     public NamedType? Scalar { get; init; }
 

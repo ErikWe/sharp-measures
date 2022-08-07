@@ -32,14 +32,12 @@ public class DerivedQuantityProcesser : AActionableProcesser<IDerivedQuantityPro
         Diagnostics = diagnostics;
     }
 
-    public override void OnSuccessfulProcess(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition,
-        UnresolvedDerivedQuantityDefinition product)
+    public override void OnSuccessfulProcess(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition, UnresolvedDerivedQuantityDefinition product)
     {
         context.ListedDerivations.Add(product.Signature);
     }
 
-    public override IOptionalWithDiagnostics<UnresolvedDerivedQuantityDefinition> Process(IDerivedQuantityProcessingContext context,
-        RawDerivedQuantityDefinition definition)
+    public override IOptionalWithDiagnostics<UnresolvedDerivedQuantityDefinition> Process(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         var validity = CheckExpressionValidity(context, definition);
         var allDiagnostics = validity.Diagnostics;

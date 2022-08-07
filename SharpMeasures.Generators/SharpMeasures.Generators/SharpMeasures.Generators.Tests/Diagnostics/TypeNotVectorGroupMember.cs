@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
 
-using Microsoft.CodeAnalysis.Text;
-
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
@@ -17,10 +15,10 @@ using Xunit;
 public class TypeNotVectorGroupMember
 {
     [Fact]
-    public Task VerifyTypeNotVectorGroupMemberDiagnosticsMessage_Null() => AssertAndVerifyRegisterVectorGroupMember(NullSubtext);
+    public Task VerifyTypeNotVectorGroupMemberDiagnosticsMessage_Null() => AssertAndVerifyRegisterVectorGroupMember(NullType);
 
     [Fact]
-    public Task VerifyTypeNotVectorGroupDiagnosticsMessage_Int() => AssertAndVerifyRegisterVectorGroupMember(IntSubtext);
+    public Task VerifyTypeNotVectorGroupDiagnosticsMessage_Int() => AssertAndVerifyRegisterVectorGroupMember(IntType);
 
     [Theory]
     [MemberData(nameof(NonVectorGroupMemberTypes))]
@@ -28,22 +26,22 @@ public class TypeNotVectorGroupMember
 
     private static IEnumerable<object[]> NonVectorGroupMemberTypes() => new object[][]
     {
-        new object[] { NullSubtext },
-        new object[] { IntSubtext },
-        new object[] { UnitOfLengthSubtext },
-        new object[] { LengthSubtext },
-        new object[] { Length3Subtext },
-        new object[] { Offset3Subtext },
-        new object[] { DisplacementSubtext }
+        new object[] { NullType },
+        new object[] { IntType },
+        new object[] { UnitOfLengthType },
+        new object[] { LengthType },
+        new object[] { Length3Type },
+        new object[] { Offset3Type },
+        new object[] { DisplacementType }
     };
 
-    private static SourceSubtext NullSubtext { get; } = new("null", postfix: ", Dimension = 2");
-    private static SourceSubtext IntSubtext { get; } = SourceSubtext.Typeof("int", postfix: ", Dimension = 2");
-    private static SourceSubtext UnitOfLengthSubtext { get; } = SourceSubtext.Typeof("UnitOfLength", postfix: ", Dimension = 2");
-    private static SourceSubtext LengthSubtext { get; } = SourceSubtext.Typeof("Length", postfix: ", Dimension = 2");
-    private static SourceSubtext Length3Subtext { get; } = SourceSubtext.Typeof("Length3");
-    private static SourceSubtext Offset3Subtext { get; } = SourceSubtext.Typeof("Offset3");
-    private static SourceSubtext DisplacementSubtext { get; } = SourceSubtext.Typeof("Displacement", postfix: ", Dimension = 2");
+    private static SourceSubtext NullType { get; } = SourceSubtext.Covered("null", postfix: ", Dimension = 2");
+    private static SourceSubtext IntType { get; } = SourceSubtext.AsTypeof("int", postfix: ", Dimension = 2");
+    private static SourceSubtext UnitOfLengthType { get; } = SourceSubtext.AsTypeof("UnitOfLength", postfix: ", Dimension = 2");
+    private static SourceSubtext LengthType { get; } = SourceSubtext.AsTypeof("Length", postfix: ", Dimension = 2");
+    private static SourceSubtext Length3Type { get; } = SourceSubtext.AsTypeof("Length3");
+    private static SourceSubtext Offset3Type { get; } = SourceSubtext.AsTypeof("Offset3");
+    private static SourceSubtext DisplacementType { get; } = SourceSubtext.AsTypeof("Displacement", postfix: ", Dimension = 2");
 
     private static GeneratorVerifier AssertExactlyTypeNotVectorGroupMemberDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotVectorGroupMemberDiagnostics);
     private static IReadOnlyCollection<string> TypeNotVectorGroupMemberDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotVectorGroupMember };
@@ -73,12 +71,10 @@ public class TypeNotVectorGroupMember
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan RegisterVectorGroupMemberLocation(SourceSubtext vectorGroupMemberType) => ExpectedDiagnosticsLocation.TextSpan(RegisterVectorGroupMemberText(vectorGroupMemberType), vectorGroupMemberType, prefix: "RegisterVectorGroupMember(");
-
     private static GeneratorVerifier AssertRegisterVectorGroupMember(SourceSubtext vectorGroupMemberType)
     {
         var source = RegisterVectorGroupMemberText(vectorGroupMemberType);
-        var expectedLocation = RegisterVectorGroupMemberLocation(vectorGroupMemberType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, vectorGroupMemberType.Context.With(outerPrefix: "RegisterVectorGroupMember("));
 
         return AssertExactlyTypeNotVectorGroupMemberDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }

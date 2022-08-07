@@ -26,16 +26,21 @@ public interface IQuantityConstantPostResolutionFilterContext : IValidationConte
     public abstract HashSet<string> IncludedUnits { get; }
 }
 
-public abstract class AQuantityConstantPostResolutionFilter<TContext, TDefinition, TLocations> : AValidator<TContext, TDefinition>
+public class QuantityConstantPostResolutionFilter<TContext, TDefinition, TLocations> : AValidator<TContext, TDefinition>
     where TContext : IQuantityConstantPostResolutionFilterContext
     where TDefinition : AQuantityConstantDefinition<TLocations>
     where TLocations : AQuantityConstantLocations<TLocations>
 {
     private IQuantityConstantPostResolutionFilterDiagnostics<TDefinition, TLocations> Diagnostics { get; }
 
-    protected AQuantityConstantPostResolutionFilter(IQuantityConstantPostResolutionFilterDiagnostics<TDefinition, TLocations> diagnostics)
+    public QuantityConstantPostResolutionFilter(IQuantityConstantPostResolutionFilterDiagnostics<TDefinition, TLocations> diagnostics)
     {
         Diagnostics = diagnostics;
+    }
+
+    public override IValidityWithDiagnostics CheckValidity(TContext context, TDefinition definition)
+    {
+        return CheckNameValidity(context, definition);
     }
 
     protected virtual IValidityWithDiagnostics CheckNameValidity(TContext context, TDefinition definition)

@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
 
-using Microsoft.CodeAnalysis.Text;
-
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
@@ -17,10 +15,10 @@ using Xunit;
 public class TypeNotScalar
 {
     [Fact]
-    public Task VerifyTypeNotScalarDiagnosticsMessage_Null() => AssertAndVerifyUnitQuantity(NullSubtext);
+    public Task VerifyTypeNotScalarDiagnosticsMessage_Null() => AssertAndVerifyUnitQuantity(NullType);
 
     [Fact]
-    public Task VerifyTypeNotScalarDiagnosticsMessage_Int() => AssertAndVerifyUnitQuantity(IntSubtext);
+    public Task VerifyTypeNotScalarDiagnosticsMessage_Int() => AssertAndVerifyUnitQuantity(IntType);
 
     [Theory]
     [MemberData(nameof(NonScalarTypes))]
@@ -100,24 +98,24 @@ public class TypeNotScalar
 
     private static IEnumerable<object[]> NonScalarTypes() => new object[][]
     {
-        new object[] { NullSubtext },
-        new object[] { IntSubtext },
-        new object[] { UnitOfLengthSubtext },
-        new object[] { PositionSubtext },
-        new object[] { DisplacementSubtext },
-        new object[] { Position2Subtext },
-        new object[] { Position3Subtext },
-        new object[] { Displacement3Subtext }
+        new object[] { NullType },
+        new object[] { IntType },
+        new object[] { UnitOfLengthType },
+        new object[] { PositionType },
+        new object[] { DisplacementType },
+        new object[] { Position2Type },
+        new object[] { Position3Type },
+        new object[] { Displacement3Type }
     };
 
-    private static SourceSubtext NullSubtext { get; } = new("null");
-    private static SourceSubtext IntSubtext { get; } = SourceSubtext.Typeof("int");
-    private static SourceSubtext UnitOfLengthSubtext { get; } = SourceSubtext.Typeof("UnitOfLength");
-    private static SourceSubtext PositionSubtext { get; } = SourceSubtext.Typeof("Position");
-    private static SourceSubtext DisplacementSubtext { get; } = SourceSubtext.Typeof("Displacement");
-    private static SourceSubtext Position2Subtext { get; } = SourceSubtext.Typeof("Position2");
-    private static SourceSubtext Position3Subtext { get; } = SourceSubtext.Typeof("Position3");
-    private static SourceSubtext Displacement3Subtext { get; } = SourceSubtext.Typeof("Displacement3");
+    private static SourceSubtext NullType { get; } = SourceSubtext.Covered("null", prefix: "(System.Type)");
+    private static SourceSubtext IntType { get; } = SourceSubtext.AsTypeof("int");
+    private static SourceSubtext UnitOfLengthType { get; } = SourceSubtext.AsTypeof("UnitOfLength");
+    private static SourceSubtext PositionType { get; } = SourceSubtext.AsTypeof("Position");
+    private static SourceSubtext DisplacementType { get; } = SourceSubtext.AsTypeof("Displacement");
+    private static SourceSubtext Position2Type { get; } = SourceSubtext.AsTypeof("Position2");
+    private static SourceSubtext Position3Type { get; } = SourceSubtext.AsTypeof("Position3");
+    private static SourceSubtext Displacement3Type { get; } = SourceSubtext.AsTypeof("Displacement3");
 
     private static GeneratorVerifier AssertExactlyTypeNotScalarDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotScalarDiagnostics);
     private static IReadOnlyCollection<string> TypeNotScalarDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotScalar };
@@ -152,12 +150,10 @@ public class TypeNotScalar
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan UnitQuantityLocation(SourceSubtext scalarType) => ExpectedDiagnosticsLocation.TextSpan(UnitQuantityText(scalarType), scalarType, prefix: "SharpMeasuresUnit(");
-
     private static GeneratorVerifier AssertUnitQuantity(SourceSubtext scalarType)
     {
         var source = UnitQuantityText(scalarType);
-        var expectedLocation = UnitQuantityLocation(scalarType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, scalarType.Context.With(outerPrefix: "SharpMeasuresUnit("));
 
         return AssertExactlyTypeNotScalarDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -194,12 +190,10 @@ public class TypeNotScalar
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ScalarArgumentLocation(string argument, SourceSubtext argumentValue) => ExpectedDiagnosticsLocation.TextSpan(ScalarArgumentText(argument, argumentValue), argumentValue, prefix: $"{argument} = ");
-
-    private static GeneratorVerifier AssertScalarArgument(string argument, SourceSubtext scalarType)
+    private static GeneratorVerifier AssertScalarArgument(string argument, SourceSubtext argumentValue)
     {
-        var source = ScalarArgumentText(argument, scalarType);
-        var expectedLocation = ScalarArgumentLocation(argument, scalarType);
+        var source = ScalarArgumentText(argument, argumentValue);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, argumentValue.Context.With(outerPrefix: $"{argument} = "));
 
         return AssertExactlyTypeNotScalarDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -234,12 +228,10 @@ public class TypeNotScalar
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan SpecializedScalarOriginalScalarLocation(SourceSubtext originalScalarType) => ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarOriginalScalarText(originalScalarType), originalScalarType, prefix: "SpecializedSharpMeasuresScalar(");
-
     private static GeneratorVerifier AssertSpecializedScalarOriginalScalar(SourceSubtext originalScalarType)
     {
         var source = SpecializedScalarOriginalScalarText(originalScalarType);
-        var expectedLocation = SpecializedScalarOriginalScalarLocation(originalScalarType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, originalScalarType.Context.With(outerPrefix: "SpecializedSharpMeasuresScalar("));
 
         return AssertExactlyTypeNotScalarDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -274,12 +266,10 @@ public class TypeNotScalar
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan SpecializedScalarArgumentLocation(string argument, SourceSubtext argumentValue) => ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarArgumentText(argument, argumentValue), argumentValue, prefix: $"{argument} = ");
-
     private static GeneratorVerifier AssertSpecializedScalarArgument(string argument, SourceSubtext scalarType)
     {
         var source = SpecializedScalarArgumentText(argument, scalarType);
-        var expectedLocation = SpecializedScalarArgumentLocation(argument, scalarType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, scalarType.Context.With(outerPrefix: $"{argument} = "));
 
         return AssertExactlyTypeNotScalarDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -314,12 +304,10 @@ public class TypeNotScalar
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan VectorScalarLocation(SourceSubtext scalarType) => ExpectedDiagnosticsLocation.TextSpan(VectorScalarText(scalarType), scalarType, prefix: "Scalar = ");
-
     private static GeneratorVerifier AssertVectorScalar(SourceSubtext scalarType)
     {
         var source = VectorScalarText(scalarType);
-        var expectedLocation = VectorScalarLocation(scalarType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, scalarType.Context.With(outerPrefix: "Scalar = "));
 
         return AssertExactlyTypeNotScalarDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -354,12 +342,10 @@ public class TypeNotScalar
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan SpecializedVectorScalarLocation(SourceSubtext scalarType) => ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorScalarText(scalarType), scalarType, prefix: "Scalar = ");
-
     private static GeneratorVerifier AssertSpecializedVectorScalar(SourceSubtext scalarType)
     {
         var source = SpecializedVectorScalarText(scalarType);
-        var expectedLocation = SpecializedVectorScalarLocation(scalarType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, scalarType.Context.With(outerPrefix: "Scalar = "));
 
         return AssertExactlyTypeNotScalarDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -394,12 +380,10 @@ public class TypeNotScalar
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan VectorGrouoScalarLocation(SourceSubtext scalarType) => ExpectedDiagnosticsLocation.TextSpan(VectorGroupScalarText(scalarType), scalarType, prefix: "Scalar = ");
-
     private static GeneratorVerifier AssertVectorGroupScalar(SourceSubtext scalarType)
     {
         var source = VectorGroupScalarText(scalarType);
-        var expectedLocation = VectorGrouoScalarLocation(scalarType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, scalarType.Context.With(outerPrefix: "Scalar = "));
 
         return AssertExactlyTypeNotScalarDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -434,12 +418,10 @@ public class TypeNotScalar
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan SpecializedVectorGrouoScalarLocation(SourceSubtext scalarType) => ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupScalarText(scalarType), scalarType, prefix: "Scalar = ");
-
     private static GeneratorVerifier AssertSpecializedVectorGroupScalar(SourceSubtext scalarType)
     {
         var source = SpecializedVectorGroupScalarText(scalarType);
-        var expectedLocation = SpecializedVectorGrouoScalarLocation(scalarType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, scalarType.Context.With(outerPrefix: "Scalar = "));
 
         return AssertExactlyTypeNotScalarDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -476,17 +458,10 @@ public class TypeNotScalar
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ConvertibleQuantityLocation(SourceSubtext quantityType) => ExpectedDiagnosticsLocation.TextSpan(ConvertibleQuantityText(quantityType), quantityType, prefix: "ConvertibleQuantity(");
-
     private static GeneratorVerifier AssertConvertibleQuantity(SourceSubtext quantityType)
     {
-        if (quantityType.Target is "null")
-        {
-            quantityType = quantityType with { Prefix = $"{quantityType.Prefix}(System.Type)" };
-        }
-
         var source = ConvertibleQuantityText(quantityType);
-        var expectedLocation = ConvertibleQuantityLocation(quantityType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, quantityType.Context.With(outerPrefix: "ConvertibleQuantity("));
 
         return AssertExactlyTypeNotScalarDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }

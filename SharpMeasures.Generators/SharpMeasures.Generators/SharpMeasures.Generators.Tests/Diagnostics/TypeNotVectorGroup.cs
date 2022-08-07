@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
 
-using Microsoft.CodeAnalysis.Text;
-
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
@@ -17,10 +15,10 @@ using Xunit;
 public class TypeNotVectorGroup
 {
     [Fact]
-    public Task VerifyTypeNotVectorGroupDiagnosticsMessage_Null() => AssertAndVerifyVectorGroupMemberVector(NullSubtext);
+    public Task VerifyTypeNotVectorGroupDiagnosticsMessage_Null() => AssertAndVerifyVectorGroupMemberVector(NullType);
 
     [Fact]
-    public Task VerifyTypeNotVectorGroupDiagnosticsMessage_Int() => AssertAndVerifyVectorGroupMemberVector(IntSubtext);
+    public Task VerifyTypeNotVectorGroupDiagnosticsMessage_Int() => AssertAndVerifyVectorGroupMemberVector(IntType);
 
     [Theory]
     [MemberData(nameof(NonVectorGroupTypes))]
@@ -36,22 +34,22 @@ public class TypeNotVectorGroup
 
     private static IEnumerable<object[]> NonVectorGroupTypes() => new object[][]
     {
-        new object[] { NullSubtext },
-        new object[] { IntSubtext },
-        new object[] { UnitOfLengthSubtext },
-        new object[] { LengthSubtext },
-        new object[] { Length3Subtext },
-        new object[] { Offset3Subtext },
-        new object[] { Displacement3Subtext }
+        new object[] { NullType },
+        new object[] { IntType },
+        new object[] { UnitOfLengthType },
+        new object[] { LengthType },
+        new object[] { Length3Type },
+        new object[] { Offset3Type },
+        new object[] { Displacement3Type }
     };
 
-    private static SourceSubtext NullSubtext { get; } = new("null");
-    private static SourceSubtext IntSubtext { get; } = SourceSubtext.Typeof("int");
-    private static SourceSubtext UnitOfLengthSubtext { get; } = SourceSubtext.Typeof("UnitOfLength");
-    private static SourceSubtext LengthSubtext { get; } = SourceSubtext.Typeof("Length");
-    private static SourceSubtext Length3Subtext { get; } = SourceSubtext.Typeof("Length3");
-    private static SourceSubtext Offset3Subtext { get; } = SourceSubtext.Typeof("Offset3");
-    private static SourceSubtext Displacement3Subtext { get; } = SourceSubtext.Typeof("Displacement3");
+    private static SourceSubtext NullType { get; } = SourceSubtext.Covered("null", prefix: "(System.Type)");
+    private static SourceSubtext IntType { get; } = SourceSubtext.AsTypeof("int");
+    private static SourceSubtext UnitOfLengthType { get; } = SourceSubtext.AsTypeof("UnitOfLength");
+    private static SourceSubtext LengthType { get; } = SourceSubtext.AsTypeof("Length");
+    private static SourceSubtext Length3Type { get; } = SourceSubtext.AsTypeof("Length3");
+    private static SourceSubtext Offset3Type { get; } = SourceSubtext.AsTypeof("Offset3");
+    private static SourceSubtext Displacement3Type { get; } = SourceSubtext.AsTypeof("Displacement3");
 
     private static GeneratorVerifier AssertExactlyTypeNotVectorGroupDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotVectorGroupDiagnostics);
     private static IReadOnlyCollection<string> TypeNotVectorGroupDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotVectorGroup };
@@ -83,12 +81,10 @@ public class TypeNotVectorGroup
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan VectorGroupMemberVectorLocation(SourceSubtext vectorGroupType) => ExpectedDiagnosticsLocation.TextSpan(VectorGroupMemberVectorText(vectorGroupType), vectorGroupType, prefix: "SharpMeasuresVectorGroupMember(");
-
     private static GeneratorVerifier AssertVectorGroupMemberVector(SourceSubtext vectorGroupType)
     {
         var source = VectorGroupMemberVectorText(vectorGroupType);
-        var expectedLocation = VectorGroupMemberVectorLocation(vectorGroupType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, vectorGroupType.Context.With(outerPrefix: "SharpMeasuresVectorGroupMember("));
 
         return AssertExactlyTypeNotVectorGroupDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -122,12 +118,10 @@ public class TypeNotVectorGroup
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan VectorGroupDifferenceLocation(SourceSubtext differenceVectorGroupType) => ExpectedDiagnosticsLocation.TextSpan(VectorGroupDifferenceText(differenceVectorGroupType), differenceVectorGroupType, prefix: "Difference = ");
-
     private static GeneratorVerifier AssertVectorGroupDifference(SourceSubtext differenceVectorGroupType)
     {
         var source = VectorGroupDifferenceText(differenceVectorGroupType);
-        var expectedLocation = VectorGroupDifferenceLocation(differenceVectorGroupType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, differenceVectorGroupType.Context.With(outerPrefix: "Difference = "));
 
         return AssertExactlyTypeNotVectorGroupDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
@@ -159,12 +153,10 @@ public class TypeNotVectorGroup
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan specializedVectorGroupOriginalVectorGroupLocation(SourceSubtext originalVectorGroupType) => ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupOriginalVectorGroupText(originalVectorGroupType), originalVectorGroupType, prefix: "SpecializedSharpMeasuresVectorGroup(");
-
     private static GeneratorVerifier AssertSpecializedVectorGroupOriginalVectorGroup(SourceSubtext originalVectorGroupType)
     {
         var source = SpecializedVectorGroupOriginalVectorGroupText(originalVectorGroupType);
-        var expectedLocation = specializedVectorGroupOriginalVectorGroupLocation(originalVectorGroupType);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, originalVectorGroupType.Context.With(outerPrefix: "SpecializedSharpMeasuresVectorGroup("));
 
         return AssertExactlyTypeNotVectorGroupDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }

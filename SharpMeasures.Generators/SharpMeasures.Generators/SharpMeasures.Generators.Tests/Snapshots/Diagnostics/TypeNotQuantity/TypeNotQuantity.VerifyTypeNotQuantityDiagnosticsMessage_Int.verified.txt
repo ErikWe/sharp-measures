@@ -4,7 +4,7 @@
     Title: Expected a SharpMeasures quantity,
     Severity: Error,
     WarningLevel: 0,
-    Location: : (4,17)-(4,22),
+    Location: : (4,31)-(4,34),
     Description: ,
     HelpLink: ,
     MessageFormat: Expected a SharpMeasures quantity. Decorate {0} with an attribute describing a SharpMeasures quantity, such as SharpMeasures.Generators.Scalars.SharpMeasuresScalar, or use another type.,

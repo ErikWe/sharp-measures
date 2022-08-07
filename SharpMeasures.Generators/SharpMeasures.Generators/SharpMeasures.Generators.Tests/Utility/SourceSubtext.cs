@@ -2,19 +2,20 @@
 
 public record struct SourceSubtext
 {
-    public static SourceSubtext Typeof(string target, string prefix = "", string postfix = "") => new(target, prefix: $"{prefix}typeof(", postfix: $"){postfix}");
+    internal static SourceSubtext Covered(string text, string prefix = "", string postfix = "") => new($"{prefix}{text}{postfix}", new(text, prefix, postfix));
+    internal static SourceSubtext AsTypeof(string text, string prefix = "", string postfix = "") => new($"{prefix}typeof({text}){postfix}", new(text, $"{prefix}typeof(", $"){postfix}"));
+    internal static SourceSubtext FromTypeof(string text, string prefix = "", string postfix = "") => new($"{prefix}{text}{postfix}", SourceLocationContext.AsTypeof(text, prefix, postfix));
 
-    public string Target { get; init; }
+    public string Text { get; init; }
 
-    public string Prefix { get; init; }
-    public string Postfix { get; init; }
+    internal SourceLocationContext Context { get; init; }
 
-    public SourceSubtext(string target, string prefix = "", string postfix = "")
+    internal SourceSubtext(string text, SourceLocationContext context)
     {
-        Target = target;
-        Prefix = prefix;
-        Postfix = postfix;
+        Text = text;
+
+        Context = context;
     }
 
-    public override string ToString() => $"{Prefix}{Target}{Postfix}";
+    public override string ToString() => Text;
 }
