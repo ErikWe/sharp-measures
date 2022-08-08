@@ -1,0 +1,17 @@
+﻿[
+  {
+    Id: Measures1225,
+    Title: Constant multiples is disabled,
+    Severity: Info,
+    WarningLevel: 1,
+    Location: : (4,94)-(4,107),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The name for multiples of constant "{0}" was specified, but generating the property was explicitly disabled. Enable the property, or do not specify the name.,
+    Message: The name for multiples of constant "MetreOnes" was specified, but generating the property was explicitly disabled. Enable the property, or do not specify the name.,
+    Category: Usage,
+    CustomTags: [
+      Unnecessary
+    ]
+  }
+]

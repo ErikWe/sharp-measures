@@ -1,0 +1,17 @@
+﻿[
+  {
+    Id: Measures1263,
+    Title: Difference is disabled but a quantity was specified,
+    Severity: Info,
+    WarningLevel: 1,
+    Location: : (4,92)-(4,105),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Difference is not implemented for {0}, but a quantity that represents difference was specified. Enable difference or do not specify the quantity.,
+    Message: Difference is not implemented for Position3, but a quantity that represents difference was specified. Enable difference or do not specify the quantity.,
+    Category: Usage,
+    CustomTags: [
+      Unnecessary
+    ]
+  }
+]

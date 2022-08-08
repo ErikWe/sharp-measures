@@ -1,0 +1,28 @@
+﻿[
+  {
+    Id: Measures1261,
+    Title: Quantity group missing root quantity,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (4,35)-(4,44),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Could not identify the root of the group of associated quantities. Exactly one quantity in the group should be decorated with the attribute {0}.,
+    Message: Could not identify the root of the group of associated quantities. Exactly one quantity in the group should be decorated with the attribute SharpMeasures.Generators.Vectors.SharpMeasuresVectorAttribute.,
+    Category: Usage,
+    CustomTags: []
+  },
+  {
+    Id: Measures1261,
+    Title: Quantity group missing root quantity,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (7,35)-(7,44),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Could not identify the root of the group of associated quantities. Exactly one quantity in the group should be decorated with the attribute {0}.,
+    Message: Could not identify the root of the group of associated quantities. Exactly one quantity in the group should be decorated with the attribute SharpMeasures.Generators.Vectors.SharpMeasuresVectorAttribute.,
+    Category: Usage,
+    CustomTags: []
+  }
+]

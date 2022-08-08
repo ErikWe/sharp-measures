@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1420,
+    Title: Invalid vector dimension,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (4,1)-(4,27),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Interpreted the dimension of {0} as {1}, which is not a valid dimension - a value greater than 1 was expected,
+    Message: Interpreted the dimension of Position0 as 0, which is not a valid dimension - a value greater than 1 was expected,
+    Category: Usage,
+    CustomTags: []
+  }
+]

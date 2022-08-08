@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1102,
+    Title: Duplicate unit name,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (9,12)-(9,21),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} already defines a unit with the name {1},
+    Message: UnitOfTemperature already defines a unit with the name Celsius,
+    Category: Naming,
+    CustomTags: []
+  }
+]

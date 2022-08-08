@@ -57,7 +57,7 @@ internal static class Initializer
         string[] path = new string[]
         {
             projectDirectory,
-            @"Verify\Snapshots"
+            @"Snapshots"
         };
 
         path = path.Concat(type.FullName?.Split('.').Skip(3) ?? Array.Empty<string>()).ToArray();

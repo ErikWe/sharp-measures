@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1143,
+    Title: Invalid unit derivation expression,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (18,21)-(18,23),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The unit derivation expression must be defined. Common expressions can be found in SharpMeasures.Generators.Units.Utility.UnitDerivations.,
+    Message: The unit derivation expression must be defined. Common expressions can be found in SharpMeasures.Generators.Units.Utility.UnitDerivations.,
+    Category: Usage,
+    CustomTags: []
+  }
+]

@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1223,
+    Title: Duplicate name for multiples of constant,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (5,1)-(5,15),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} already defines a constant with multiples "{1}",
+    Message: Position3 already defines a constant with multiples "MultiplesOfMetreOnes",
+    Category: Naming,
+    CustomTags: []
+  }
+]

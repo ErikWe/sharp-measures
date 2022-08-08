@@ -1,0 +1,28 @@
+﻿[
+  {
+    Id: Measures1105,
+    Title: Cyclic unit dependency,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (6,32)-(6,41),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} has a cyclic dependency on other instances of {1},
+    Message: Kelvin has a cyclic dependency on other instances of UnitOfTemperature,
+    Category: Usage,
+    CustomTags: []
+  },
+  {
+    Id: Measures1105,
+    Title: Cyclic unit dependency,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (7,34)-(7,42),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} has a cyclic dependency on other instances of {1},
+    Message: Celsius has a cyclic dependency on other instances of UnitOfTemperature,
+    Category: Usage,
+    CustomTags: []
+  }
+]

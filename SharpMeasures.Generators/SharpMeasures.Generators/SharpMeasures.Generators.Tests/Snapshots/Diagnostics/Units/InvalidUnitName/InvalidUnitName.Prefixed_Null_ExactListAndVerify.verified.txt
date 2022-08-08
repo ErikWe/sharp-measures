@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1100,
+    Title: Invalid unit name,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (8,14)-(8,18),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The name of the unit must be defined,
+    Message: The name of the unit must be defined,
+    Category: Naming,
+    CustomTags: []
+  }
+]

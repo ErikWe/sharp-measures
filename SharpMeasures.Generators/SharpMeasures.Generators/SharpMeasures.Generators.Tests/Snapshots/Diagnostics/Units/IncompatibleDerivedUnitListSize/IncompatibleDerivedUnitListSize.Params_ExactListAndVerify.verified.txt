@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1145,
+    Title: Unit list length not matching signature,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (21,56)-(21,63),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Expected {0} units to match the derivation signature - but {1} was identified,
+    Message: Expected 2 units to match the derivation signature - but 1 was identified,
+    Category: Usage,
+    CustomTags: []
+  }
+]

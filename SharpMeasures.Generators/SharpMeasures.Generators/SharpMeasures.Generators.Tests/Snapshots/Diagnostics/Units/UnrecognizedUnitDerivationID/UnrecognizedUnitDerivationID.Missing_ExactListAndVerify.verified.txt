@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1142,
+    Title: Derivation ID not recognized,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (22,50)-(22,53),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The derivation ID "{0}" was not recognized. {1} should be decorated by a SharpMeasures.Generators.Units.DerivableUnitAttribute with this ID.,
+    Message: The derivation ID "3" was not recognized. UnitOfSpeed should be decorated by a SharpMeasures.Generators.Units.DerivableUnitAttribute with this ID.,
+    Category: Usage,
+    CustomTags: []
+  }
+]

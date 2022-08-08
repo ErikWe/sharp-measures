@@ -1,0 +1,28 @@
+﻿[
+  {
+    Id: Measures1105,
+    Title: Cyclic unit dependency,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (6,30)-(6,37),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} has a cyclic dependency on other instances of {1},
+    Message: Metre has a cyclic dependency on other instances of UnitOfLength,
+    Category: Usage,
+    CustomTags: []
+  },
+  {
+    Id: Measures1105,
+    Title: Cyclic unit dependency,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (7,30)-(7,37),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} has a cyclic dependency on other instances of {1},
+    Message: Meter has a cyclic dependency on other instances of UnitOfLength,
+    Category: Usage,
+    CustomTags: []
+  }
+]

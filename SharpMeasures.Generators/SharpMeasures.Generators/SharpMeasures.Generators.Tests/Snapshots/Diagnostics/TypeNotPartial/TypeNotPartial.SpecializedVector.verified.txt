@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1000,
+    Title: Expected a partial type,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: : (5,13)-(5,26),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The SharpMeasures source generator associated with the attribute {0} requires {1} to be a partial type,
+    Message: The SharpMeasures source generator associated with the attribute SpecializedSharpMeasuresVector requires Displacement3 to be a partial type,
+    Category: Usage,
+    CustomTags: []
+  }
+]

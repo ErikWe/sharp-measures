@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1421,
+    Title: Missing vector dimension,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (4,1)-(4,20),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Could not interpret the vector dimension of {0}. Specify the dimension manually, or change the name of the type to "{0}X", where X is the dimension.,
+    Message: Could not interpret the vector dimension of Position3_. Specify the dimension manually, or change the name of the type to "Position3_X", where X is the dimension.,
+    Category: Usage,
+    CustomTags: []
+  }
+]

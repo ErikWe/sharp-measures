@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1006,
+    Title: Expected a vector group member,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: : (4,34)-(4,37),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Expected a member of the vector group {0}. Decorate {1} with the attribute SharpMeasures.Generators.Vectors.SharpMeasuresVectorGroupMember, or use another type.,
+    Message: Expected a member of the vector group Position. Decorate Int32 with the attribute SharpMeasures.Generators.Vectors.SharpMeasuresVectorGroupMember, or use another type.,
+    Category: Usage,
+    CustomTags: []
+  }
+]
