@@ -86,9 +86,9 @@ internal static class ArgumentLocator
             return null;
         }
 
-        if (expression is LiteralExpressionSyntax literalExpression)
+        if (expression is LiteralExpressionSyntax && expression.IsKind(SyntaxKind.NullLiteralExpression))
         {
-            return (literalExpression.GetLocation().Minimize(), Array.Empty<MinimalLocation>());
+            return (expression.GetLocation().Minimize(), Array.Empty<MinimalLocation>());
         }
 
         return null;
