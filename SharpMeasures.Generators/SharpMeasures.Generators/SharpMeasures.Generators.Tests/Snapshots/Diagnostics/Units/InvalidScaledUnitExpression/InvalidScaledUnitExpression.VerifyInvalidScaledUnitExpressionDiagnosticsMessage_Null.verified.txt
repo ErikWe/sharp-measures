@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1121,
+    Title: Invalid scaled unit expression,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (7,48)-(7,52),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The expression describing the scaling factor must be defined,
+    Message: The expression describing the scaling factor must be defined,
+    Category: Usage,
+    CustomTags: []
+  }
+]
