@@ -23,12 +23,12 @@ internal class ConvertibleScalarProcesser : AConvertibleQuantityProcesser<Unreso
         var processed = ProcessQuantities(context, definition);
         allDiagnostics = allDiagnostics.Concat(processed);
 
-        if (processed.Result.Count is 0)
+        if (processed.Result.Quantities.Count is 0)
         {
             return OptionalWithDiagnostics.Empty<UnresolvedConvertibleScalarDefinition>(allDiagnostics);
         }
 
-        UnresolvedConvertibleScalarDefinition product = new(processed.Result, definition.Bidirectional, definition.CastOperatorBehaviour, definition.Locations);
+        UnresolvedConvertibleScalarDefinition product = new(processed.Result.Quantities, definition.Bidirectional, definition.CastOperatorBehaviour, definition.Locations, processed.Result.LocationMap);
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 }

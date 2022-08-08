@@ -51,7 +51,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DuplicateUnitName,
         title: "Duplicate unit name",
-        messageFormat: "{0} already defines a unit with the name {1}",
+        messageFormat: "{0} already defines a unit with the name \"{1}\"",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -61,7 +61,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DuplicateUnitPluralForm,
         title: "Duplicate unit plural form",
-        messageFormat: "{0} already defines a unit with the plural form {1}",
+        messageFormat: "{0} already defines a unit with the plural form \"{1}\"",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -101,7 +101,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.CyclicUnitDependency,
         title: "Cyclic unit dependency",
-        messageFormat: "{0} has a cyclic dependency on other instances of {1}",
+        messageFormat: "\"{0}\" has a cyclic dependency on other instances of {1}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -141,7 +141,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.BiasedUnitDefinedButUnitNotBiased,
         title: "Unit does not support biased instances",
-        messageFormat: "The biased unit {0} could not be implemented, as {1} is not defined as including a bias term",
+        messageFormat: "The biased unit \"{0}\" could not be implemented, as {1} does not include a bias term",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

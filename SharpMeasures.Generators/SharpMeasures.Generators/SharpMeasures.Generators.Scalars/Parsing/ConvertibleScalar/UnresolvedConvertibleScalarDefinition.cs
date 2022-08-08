@@ -17,9 +17,8 @@ internal record class UnresolvedConvertibleScalarDefinition : AItemListDefinitio
     public bool Bidirectional { get; }
     public ConversionOperatorBehaviour CastOperatorBehaviour { get; }
 
-    public UnresolvedConvertibleScalarDefinition(IReadOnlyList<NamedType> scalars, bool bidirectional, ConversionOperatorBehaviour castOperatorBehaviour,
-        ConvertibleQuantityLocations locations)
-        : base(scalars, locations)
+    public UnresolvedConvertibleScalarDefinition(IReadOnlyList<NamedType> scalars, bool bidirectional, ConversionOperatorBehaviour castOperatorBehaviour, ConvertibleQuantityLocations locations, IReadOnlyList<int> locationMap)
+        : base(scalars, locations, locationMap)
     {
         Bidirectional = bidirectional;
         CastOperatorBehaviour = castOperatorBehaviour;

@@ -17,9 +17,8 @@ internal record class UnresolvedConvertibleVectorDefinition : AItemListDefinitio
     public bool Bidirectional { get; }
     public ConversionOperatorBehaviour CastOperatorBehaviour { get; }
 
-    public UnresolvedConvertibleVectorDefinition(IReadOnlyList<NamedType> vectorGroups, bool bidirectional, ConversionOperatorBehaviour castOperatorBehaviour,
-        ConvertibleQuantityLocations locations)
-        : base(vectorGroups, locations)
+    public UnresolvedConvertibleVectorDefinition(IReadOnlyList<NamedType> vectorGroups, bool bidirectional, ConversionOperatorBehaviour castOperatorBehaviour, ConvertibleQuantityLocations locations, IReadOnlyList<int> locationMap)
+        : base(vectorGroups, locations, locationMap)
     {
         Bidirectional = bidirectional;
         CastOperatorBehaviour = castOperatorBehaviour;

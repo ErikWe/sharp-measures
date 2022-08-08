@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
 
-using Microsoft.CodeAnalysis.Text;
-
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
@@ -17,7 +15,7 @@ using Xunit;
 public class UnitNotIncludingBiasTerm
 {
     [Fact]
-    public Task BiasedScalar() => AssertAndVerifyBiasedScalar();
+    public Task BiasedScalar() => AssertBiasedScalar().VerifyDiagnostics();
 
     private static GeneratorVerifier AssertExactlyUnitNotIncludingBiasTermDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnitNotIncludingBiasTermDiagnostics);
     private static IReadOnlyCollection<string> UnitNotIncludingBiasTermDiagnostics { get; } = new string[] { DiagnosticIDs.UnitNotIncludingBiasTerm };
@@ -37,8 +35,10 @@ public class UnitNotIncludingBiasTerm
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan BiasedScalarLocation => ExpectedDiagnosticsLocation.TextSpan(BiasedScalarText, target: "true", prefix: "UseUnitBias = ");
+    private static GeneratorVerifier AssertBiasedScalar()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(BiasedScalarText, target: "true", prefix: "UseUnitBias = ");
 
-    private static GeneratorVerifier AssertBiasedScalar() => AssertExactlyUnitNotIncludingBiasTermDiagnostics(BiasedScalarText).AssertDiagnosticsLocation(BiasedScalarLocation);
-    private static Task AssertAndVerifyBiasedScalar() => AssertBiasedScalar().VerifyDiagnostics();
+        return AssertExactlyUnitNotIncludingBiasTermDiagnostics(BiasedScalarText).AssertDiagnosticsLocation(expectedLocation, BiasedScalarText);
+    }
 }

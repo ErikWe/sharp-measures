@@ -19,7 +19,7 @@ public class EmptyList
     {
         var attribute = ParseAttributeAndArguments("ConvertibleQuantity", EmptyParamsList);
 
-        return AssertAndVerifyScalarAttribute(attribute);
+        return AssertScalarAttribute(attribute).VerifyDiagnostics();
     }
 
     [Fact]
@@ -27,7 +27,7 @@ public class EmptyList
     {
         var attribute = ParseAttributeAndArguments("IncludeBases", EmptyParamsList);
 
-        return AssertAndVerifyScalarAttribute(attribute);
+        return AssertScalarAttribute(attribute).VerifyDiagnostics();
     }
 
     [Theory]
@@ -62,10 +62,10 @@ public class EmptyList
     };
 
     private static (SourceSubtext Text, bool ShouldTargetAttribute) EmptyParamsList => (new(string.Empty, SourceLocationContext.Empty), true);
-    private static (SourceSubtext Text, bool ShouldTargetAttribute) ExplicitlyEmptyList(string type) => (SourceSubtext.Covered($"new {type}[0]"), false);
+    private static (SourceSubtext Text, bool ShouldTargetAttribute) ExplicitlyEmptyList(string type) => (SourceSubtext.Covered($"{type}[0]", prefix: "new "), false);
     private static (SourceSubtext Text, bool ShouldTargetAttribute) ImplicitlyEmptyList(string type) => (SourceSubtext.Covered("{ }", prefix: $"new {type}[] "), false);
 
-    private static IEnumerable<object[]> QuantityAttributesAndArguments()
+    public static IEnumerable<object[]> QuantityAttributesAndArguments()
     {
         IEnumerable<(string AttributeName, string Type)> attributes = new[] { ("ConvertibleQuantity", "System.Type"), ("IncludeUnits", "string"), ("ExcludeUnits", "string") };
 
@@ -78,7 +78,7 @@ public class EmptyList
         }
     }
 
-    private static IEnumerable<object[]> ScalarAttributesAndArguments()
+    public static IEnumerable<object[]> ScalarAttributesAndArguments()
     {
         IEnumerable<(string AttributeName, string Type)> additionalAttributes = new[] { ("IncludeBases", "string"), ("ExcludeBases", "string") };
 
@@ -100,10 +100,10 @@ public class EmptyList
     {
         if (argument.ShouldTargetAttribute)
         {
-            return SourceSubtext.Covered(attributeName, prefix: argument.Text.Context.Prefix, postfix: argument.Text.Context.Postfix);
+            return SourceSubtext.Covered($"{attributeName}()", prefix: argument.Text.Context.Prefix, postfix: argument.Text.Context.Postfix);
         }
 
-        return argument.Text;
+        return SourceSubtext.Covered(argument.Text.Context.Target, prefix: $"{attributeName}({argument.Text.Context.Prefix}", postfix: $"{argument.Text.Context.Postfix})");
     }
 
     private static GeneratorVerifier AssertExactlyEmptyListDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(EmptyListDiagnostics);
@@ -129,8 +129,6 @@ public class EmptyList
 
         return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
-
-    private static Task AssertAndVerifyScalarAttribute(SourceSubtext attribute) => AssertScalarAttribute(attribute).VerifyDiagnostics();
 
     private static string SpecializedScalarAttributeText(SourceSubtext attribute) => $$"""
         using SharpMeasures.Generators.Quantities;

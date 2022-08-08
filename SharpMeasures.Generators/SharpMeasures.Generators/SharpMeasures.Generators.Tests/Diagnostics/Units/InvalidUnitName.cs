@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics.Units;
 
 using SharpMeasures.Generators.Diagnostics;
+using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
 
 using System.Collections.Generic;
@@ -14,90 +15,104 @@ using Xunit;
 public class InvalidUnitName
 {
     [Fact]
-    public Task VerifyInvalidUnitNameDiagnosticsMessage_Null()
-    {
-        string source = SourceTexts.Fixed(name: "null");
-
-        return AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
+    public Task VerifyInvalidUnitNameDiagnosticsMessage_Null() => AssertFixed(NullName).VerifyDiagnostics();
 
     [Fact]
-    public Task VerifyInvalidUnitNameDiagnosticsMessage_Empty()
-    {
-        string source = SourceTexts.Fixed(name: "\"\"");
-
-        return AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
+    public Task VerifyInvalidUnitNameDiagnosticsMessage_Empty() => AssertFixed(EmptyName).VerifyDiagnostics();
 
     [Theory]
     [MemberData(nameof(InvalidUnitNames))]
-    public void Alias_ExactList(string name)
-    {
-        string source = SourceTexts.Alias(name: name);
-
-        AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source);
-    }
+    public void Alias(SourceSubtext name) => AssertAlias(name);
 
     [Theory]
     [MemberData(nameof(InvalidUnitNames))]
-    public void Biased_ExactList(string name)
-    {
-        string source = SourceTexts.Biased(name: name);
-
-        AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source);
-    }
+    public void Biased(SourceSubtext name) => AssertBiased(name);
 
     [Theory]
     [MemberData(nameof(InvalidUnitNames))]
-    public void DerivedWithID_ExactList(string name)
-    {
-        string source = SourceTexts.DerivedWithID(name: name);
-
-        AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source);
-    }
+    public void DerivedWithID(SourceSubtext name) => AssertDerived_WithID(name);
 
     [Theory]
     [MemberData(nameof(InvalidUnitNames))]
-    public void DerivedWithoutID_ExactList(string name)
-    {
-        string source = SourceTexts.DerivedWithoutID(name: name);
-
-        AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source);
-    }
+    public void DerivedWithoutID(SourceSubtext name) => AssertDerived_WithoutID(name);
 
     [Theory]
     [MemberData(nameof(InvalidUnitNames))]
-    public void Fixed_ExactList(string name)
-    {
-        string source = SourceTexts.Fixed(name: name);
-
-        AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source);
-    }
+    public void Fixed(SourceSubtext name) => AssertFixed(name);
 
     [Theory]
     [MemberData(nameof(InvalidUnitNames))]
-    public void Prefixed_ExactList(string name)
-    {
-        string source = SourceTexts.Prefixed(name:name);
-
-        AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source);
-    }
+    public void Prefixed(SourceSubtext name) => AssertPrefixed(name);
 
     [Theory]
     [MemberData(nameof(InvalidUnitNames))]
-    public void Scaled_ExactList(string name)
-    {
-        string source = SourceTexts.Scaled(name: name);
+    public void Scaled(SourceSubtext name) => AssertScaled(name);
 
-        AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(source);
-    }
-
-    private static IEnumerable<object[]> InvalidUnitNames() => new object[][]
+    public static IEnumerable<object[]> InvalidUnitNames() => new object[][]
     {
-        new[] { "null" },
-        new[] { "\"\"" }
+        new object[] { NullName },
+        new object[] { EmptyName }
     };
 
-    private static GeneratorVerifier AssertExactlyInvalidUnitNameDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidUnitNameDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static SourceSubtext NullName { get; } = SourceSubtext.Covered("null");
+    private static SourceSubtext EmptyName { get; } = SourceSubtext.Covered("\"\"");
+
+    private static GeneratorVerifier AssertExactlyInvalidUnitNameDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidUnitNameDiagnostics);
     private static IReadOnlyCollection<string> InvalidUnitNameDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidUnitName };
+
+    private static GeneratorVerifier AssertAlias(SourceSubtext name)
+    {
+        var source = SourceTexts.Alias(name: name.ToString());
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "UnitAlias("));
+
+        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static GeneratorVerifier AssertBiased(SourceSubtext name)
+    {
+        var source = SourceTexts.Biased(name: name.ToString());
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "BiasedUnit("));
+
+        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static GeneratorVerifier AssertDerived_WithID(SourceSubtext name)
+    {
+        var source = SourceTexts.DerivedWithID(name: name.ToString());
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DerivedUnit("));
+
+        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static GeneratorVerifier AssertDerived_WithoutID(SourceSubtext name)
+    {
+        var source = SourceTexts.DerivedWithoutID(name: name.ToString());
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DerivedUnit("));
+
+        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static GeneratorVerifier AssertFixed(SourceSubtext name)
+    {
+        var source = SourceTexts.Fixed(name: name.ToString());
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "FixedUnit("));
+
+        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static GeneratorVerifier AssertPrefixed(SourceSubtext name)
+    {
+        var source = SourceTexts.Prefixed(name: name.ToString());
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "PrefixedUnit("));
+
+        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static GeneratorVerifier AssertScaled(SourceSubtext name)
+    {
+        var source = SourceTexts.Scaled(name: name.ToString());
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "ScaledUnit("));
+
+        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
 }

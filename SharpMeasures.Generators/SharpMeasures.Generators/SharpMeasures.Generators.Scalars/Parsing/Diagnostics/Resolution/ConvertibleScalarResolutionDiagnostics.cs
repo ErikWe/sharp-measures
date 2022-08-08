@@ -13,16 +13,16 @@ internal class ConvertibleScalarResolutionDiagnostics : IConvertibleScalarResolu
 
     public Diagnostic TypeNotScalar(IConvertibleScalarResolutionContext context, UnresolvedConvertibleScalarDefinition definition, int index)
     {
-        return DiagnosticConstruction.TypeNotScalar(definition.Locations.QuantitiesElements[index].AsRoslynLocation(), definition.Scalars[index].Name);
+        return DiagnosticConstruction.TypeNotScalar(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Scalars[index].Name);
     }
 
     public Diagnostic ScalarNotUnbiased(IConvertibleScalarResolutionContext context, UnresolvedConvertibleScalarDefinition definition, int index)
     {
-        return DiagnosticConstruction.TypeNotUnbiasedScalar(definition.Locations.QuantitiesElements[index].AsRoslynLocation(), definition.Scalars[index].Name);
+        return DiagnosticConstruction.TypeNotUnbiasedScalar(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Scalars[index].Name);
     }
 
     public Diagnostic ScalarNotBiased(IConvertibleScalarResolutionContext context, UnresolvedConvertibleScalarDefinition definition, int index)
     {
-        return DiagnosticConstruction.TypeNotBiasedScalar(definition.Locations.QuantitiesElements[index].AsRoslynLocation(), definition.Scalars[index].Name);
+        return DiagnosticConstruction.TypeNotBiasedScalar(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Scalars[index].Name);
     }
 }

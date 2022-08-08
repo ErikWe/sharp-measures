@@ -13,11 +13,11 @@ internal class ConvertibleVectorResolutionDiagnostics : IConvertibleVectorGroupR
 
     public Diagnostic TypeNotVector(IConvertibleIndividualVectorResolutionContext context, UnresolvedConvertibleVectorDefinition definition, int index)
     {
-        return DiagnosticConstruction.TypeNotVector(definition.Locations.QuantitiesElements[index].AsRoslynLocation(), definition.VectorGroups[index].Name);
+        return DiagnosticConstruction.TypeNotVector(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.VectorGroups[index].Name);
     }
 
     public Diagnostic TypeNotVectorGroup(IConvertibleVectorGroupResolutionContext context, UnresolvedConvertibleVectorDefinition definition, int index)
     {
-        return DiagnosticConstruction.TypeNotVectorGroup(definition.Locations.QuantitiesElements[index].AsRoslynLocation(), definition.VectorGroups[index].Name);
+        return DiagnosticConstruction.TypeNotVectorGroup(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.VectorGroups[index].Name);
     }
 }

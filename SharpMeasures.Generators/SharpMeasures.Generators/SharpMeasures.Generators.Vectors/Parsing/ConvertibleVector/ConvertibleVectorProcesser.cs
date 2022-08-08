@@ -22,12 +22,12 @@ internal class ConvertibleVectorProcesser : AConvertibleQuantityProcesser<Unreso
         var processed = ProcessQuantities(context, definition);
         allDiagnostics = allDiagnostics.Concat(processed);
 
-        if (processed.Result.Count is 0)
+        if (processed.Result.Quantities.Count is 0)
         {
             return OptionalWithDiagnostics.Empty<UnresolvedConvertibleVectorDefinition>(allDiagnostics);
         }
 
-        UnresolvedConvertibleVectorDefinition product = new(processed.Result, definition.Bidirectional, definition.CastOperatorBehaviour, definition.Locations);
+        UnresolvedConvertibleVectorDefinition product = new(processed.Result.Quantities, definition.Bidirectional, definition.CastOperatorBehaviour, definition.Locations, processed.Result.LocationMap);
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 }

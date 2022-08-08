@@ -15,16 +15,16 @@ using Xunit;
 public class TypeNotQuantity
 {
     [Fact]
-    public Task VerifyTypeNotQuantityDiagnosticsMessage_Null() => AssertAndVerifyDerivedScalar(NullType);
+    public Task VerifyTypeNotQuantityDiagnosticsMessage_Null() => AssertDerivedScalar(NullType).VerifyDiagnostics();
 
     [Fact]
-    public Task VerifyTypeNotQuantityDiagnosticsMessage_Int() => AssertAndVerifyDerivedScalar(IntType);
+    public Task VerifyTypeNotQuantityDiagnosticsMessage_Int() => AssertDerivedScalar(IntType).VerifyDiagnostics();
 
     [Theory]
     [MemberData(nameof(NonQuantityTypes))]
     public void DerivedScalar(SourceSubtext quantityType) => AssertDerivedScalar(quantityType);
 
-    private static IEnumerable<object[]> NonQuantityTypes() => new object[][]
+    public static IEnumerable<object[]> NonQuantityTypes() => new object[][]
     {
         new object[] { NullType },
         new object[] { IntType },
@@ -58,6 +58,4 @@ public class TypeNotQuantity
 
         return AssertExactlyTypeNotQuantityDiagnosticsWithValidLocation(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
-
-    private static Task AssertAndVerifyDerivedScalar(SourceSubtext quantityType) => AssertDerivedScalar(quantityType).VerifyDiagnostics();
 }

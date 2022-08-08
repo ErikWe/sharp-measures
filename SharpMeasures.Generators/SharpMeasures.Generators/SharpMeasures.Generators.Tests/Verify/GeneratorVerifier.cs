@@ -145,6 +145,34 @@ internal class GeneratorVerifier
         return this;
     }
 
+    public GeneratorVerifier AssertSpecificDiagnosticsLocation(string diagnosticsID, TextSpan expectedLocation)
+    {
+        Assert.Contains(diagnosticsID, Diagnostics.Select(static (diagnostic) => diagnostic.Id));
+
+        var specifiedDiagnostics = Diagnostics.Where((diagnostic) => diagnostic.Id == diagnosticsID);
+
+        Assert.Single(specifiedDiagnostics);
+
+        Assert.Equal(expectedLocation, specifiedDiagnostics.First().Location.SourceSpan);
+
+        return this;
+    }
+
+    public GeneratorVerifier AssertSpecificDiagnosticsLocation(string diagnosticsID, TextSpan expectedLocation, string source)
+    {
+        Assert.Contains(diagnosticsID, Diagnostics.Select(static (diagnostic) => diagnostic.Id));
+
+        var specifiedDiagnostics = Diagnostics.Where((diagnostic) => diagnostic.Id == diagnosticsID).Single();
+
+        var expectedText = source[expectedLocation.Start..expectedLocation.End];
+        var actualText = source[specifiedDiagnostics.Location.SourceSpan.Start..specifiedDiagnostics.Location.SourceSpan.End];
+
+        Assert.Equal(expectedText, actualText);
+        Assert.Equal(expectedLocation, specifiedDiagnostics.Location.SourceSpan);
+
+        return this;
+    }
+
     public GeneratorVerifier AssertDiagnosticsLocation(TextSpan expectedLocation)
     {
         if (Diagnostics.Length is not 1)
@@ -168,6 +196,7 @@ internal class GeneratorVerifier
         var actualText = source[Diagnostics[0].Location.SourceSpan.Start..Diagnostics[0].Location.SourceSpan.End];
 
         Assert.Equal(expectedText, actualText);
+        Assert.Equal(expectedLocation, Diagnostics[0].Location.SourceSpan);
 
         return this;
     }
@@ -194,6 +223,7 @@ internal class GeneratorVerifier
             var actualText = source[Diagnostics[index].Location.SourceSpan.Start..Diagnostics[index].Location.SourceSpan.End];
 
             Assert.Equal(expectedText, actualText);
+            Assert.Equal(expectedLocation, Diagnostics[index].Location.SourceSpan);
 
             index += 1;
         }

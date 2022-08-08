@@ -44,9 +44,11 @@ public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProce
         }
     }
 
-    protected IResultWithDiagnostics<IReadOnlyList<NamedType>> ProcessQuantities(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
+    protected IResultWithDiagnostics<(IReadOnlyList<NamedType> Quantities, IReadOnlyList<int> LocationMap)> ProcessQuantities(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
     {
         HashSet<NamedType> quantities = new();
+        List<int> locationMap = new(definition.Quantities.Count);
+
         List<Diagnostic> allDiagnostics = new();
 
         for (int i = 0; i < definition.Quantities.Count; i++)
@@ -80,9 +82,11 @@ public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProce
 
                 continue;
             }
+
+            locationMap.Add(i);
         }
 
-        return ResultWithDiagnostics.Construct<IReadOnlyList<NamedType>>(quantities.ToList(), allDiagnostics);
+        return ResultWithDiagnostics.Construct<(IReadOnlyList<NamedType>, IReadOnlyList<int>)>((quantities.ToList(), locationMap), allDiagnostics);
     }
 
     protected IValidityWithDiagnostics CheckValidity(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)

@@ -20,8 +20,7 @@ public record class ConvertibleScalarDefinition : AItemListDefinition<IUnresolve
     public bool Bidirectional { get; }
     public ConversionOperatorBehaviour CastOperatorBehaviour { get; }
 
-    public ConvertibleScalarDefinition(IReadOnlyList<IUnresolvedScalarType> scalars, bool bidirectional, ConversionOperatorBehaviour castOperatorBehaviour,
-        ConvertibleQuantityLocations locations)
+    public ConvertibleScalarDefinition(IReadOnlyList<IUnresolvedScalarType> scalars, bool bidirectional, ConversionOperatorBehaviour castOperatorBehaviour, ConvertibleQuantityLocations locations)
         : base(scalars, locations)
     {
         Bidirectional = bidirectional;

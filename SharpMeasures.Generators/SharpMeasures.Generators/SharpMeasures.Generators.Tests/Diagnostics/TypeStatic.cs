@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
 
-using Microsoft.CodeAnalysis.Text;
-
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
@@ -17,22 +15,22 @@ using Xunit;
 public class TypeStatic
 {
     [Fact]
-    public Task Unit() => AssertAndVerifyUnit();
+    public Task Unit() => AssertUnit().VerifyDiagnostics();
 
     [Fact]
-    public Task Scalar() => AssertAndVerifyScalar();
+    public Task Scalar() => AssertScalar().VerifyDiagnostics();
 
     [Fact]
-    public Task SpecializedScalar() => AssertAndVerifySpecializedScalar();
+    public Task SpecializedScalar() => AssertSpecializedScalar().VerifyDiagnostics();
 
     [Fact]
-    public Task Vector() => AssertAndVerifyVector();
+    public Task Vector() => AssertVector().VerifyDiagnostics();
 
     [Fact]
-    public Task SpecializedVector() => AssertAndVerifySpecializedVector();
+    public Task SpecializedVector() => AssertSpecializedVector().VerifyDiagnostics();
 
     [Fact]
-    public Task VectorGroupMember() => AssertAndVerifyVectorGroupMember();
+    public Task VectorGroupMember() => AssertVectorGroupMember().VerifyDiagnostics();
 
     private static GeneratorVerifier AssertExactlyTypeStaticDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeStaticDiagnostics);
     private static IReadOnlyCollection<string> TypeStaticDiagnostics { get; } = new string[] { DiagnosticIDs.TypeStatic };
@@ -51,10 +49,12 @@ public class TypeStatic
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan UnitLocation => ExpectedDiagnosticsLocation.TextSpan(UnitText, target: "UnitOfLength2", prefix: "public static partial class ");
+    private static GeneratorVerifier AssertUnit()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(UnitText, target: "UnitOfLength2", prefix: "public static partial class ");
 
-    private static GeneratorVerifier AssertUnit() => AssertExactlyTypeStaticDiagnostics(UnitText).AssertDiagnosticsLocation(UnitLocation, UnitText);
-    private static Task AssertAndVerifyUnit() => AssertUnit().VerifyDiagnostics();
+        return AssertExactlyTypeStaticDiagnostics(UnitText).AssertDiagnosticsLocation(expectedLocation, UnitText);
+    }
 
     private static string ScalarText => """
         using SharpMeasures.Generators.Scalars;
@@ -70,10 +70,12 @@ public class TypeStatic
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ScalarLocation => ExpectedDiagnosticsLocation.TextSpan(ScalarText, target: "Length2", prefix: "public static partial class ");
+    private static GeneratorVerifier AssertScalar()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(ScalarText, target: "Length2", prefix: "public static partial class ");
 
-    private static GeneratorVerifier AssertScalar() => AssertExactlyTypeStaticDiagnostics(ScalarText).AssertDiagnosticsLocation(ScalarLocation, ScalarText);
-    private static Task AssertAndVerifyScalar() => AssertScalar().VerifyDiagnostics();
+        return AssertExactlyTypeStaticDiagnostics(ScalarText).AssertDiagnosticsLocation(expectedLocation, ScalarText);
+    }
 
     private static string SpecializedScalarText => """
         using SharpMeasures.Generators.Scalars;
@@ -89,10 +91,12 @@ public class TypeStatic
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan SpecializedScalarLocation => ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText, target: "Length2", prefix: "public static partial class ");
+    private static GeneratorVerifier AssertSpecializedScalar()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText, target: "Length2", prefix: "public static partial class ");
 
-    private static GeneratorVerifier AssertSpecializedScalar() => AssertExactlyTypeStaticDiagnostics(SpecializedScalarText).AssertDiagnosticsLocation(SpecializedScalarLocation, SpecializedScalarText);
-    private static Task AssertAndVerifySpecializedScalar() => AssertSpecializedScalar().VerifyDiagnostics();
+        return AssertExactlyTypeStaticDiagnostics(SpecializedScalarText).AssertDiagnosticsLocation(expectedLocation, SpecializedScalarText);
+    }
 
     private static string VectorText => """
         using SharpMeasures.Generators.Scalars;
@@ -109,10 +113,12 @@ public class TypeStatic
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan VectorLocation => ExpectedDiagnosticsLocation.TextSpan(VectorText, target: "Position3", prefix: "public static partial class ");
+    private static GeneratorVerifier AssertVector()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(VectorText, target: "Position3", prefix: "public static partial class ");
 
-    private static GeneratorVerifier AssertVector() => AssertExactlyTypeStaticDiagnostics(VectorText).AssertDiagnosticsLocation(VectorLocation, VectorText);
-    private static Task AssertAndVerifyVector() => AssertVector().VerifyDiagnostics();
+        return AssertExactlyTypeStaticDiagnostics(VectorText).AssertDiagnosticsLocation(expectedLocation, VectorText);
+    }
 
     private static string SpecializedVectorText => """
         using SharpMeasures.Generators.Scalars;
@@ -132,10 +138,12 @@ public class TypeStatic
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan SpecializedVectorLocation => ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText, target: "Displacement3", prefix: "public static partial class ");
+    private static GeneratorVerifier AssertSpecializedVector()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText, target: "Displacement3", prefix: "public static partial class ");
 
-    private static GeneratorVerifier AssertSpecializedVector() => AssertExactlyTypeStaticDiagnostics(SpecializedVectorText).AssertDiagnosticsLocation(SpecializedVectorLocation, SpecializedVectorText);
-    private static Task AssertAndVerifySpecializedVector() => AssertSpecializedVector().VerifyDiagnostics();
+        return AssertExactlyTypeStaticDiagnostics(SpecializedVectorText).AssertDiagnosticsLocation(expectedLocation, SpecializedVectorText);
+    }
 
     private static string VectorGroupMemberText => """
         using SharpMeasures.Generators.Scalars;
@@ -155,8 +163,10 @@ public class TypeStatic
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan VectorGroupMemberLocation => ExpectedDiagnosticsLocation.TextSpan(VectorGroupMemberText, target: "Position3", prefix: "public static partial class ");
+    private static GeneratorVerifier AssertVectorGroupMember()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(VectorGroupMemberText, target: "Position3", prefix: "public static partial class ");
 
-    private static GeneratorVerifier AssertVectorGroupMember() => AssertExactlyTypeStaticDiagnostics(VectorGroupMemberText).AssertDiagnosticsLocation(VectorGroupMemberLocation, VectorGroupMemberText);
-    private static Task AssertAndVerifyVectorGroupMember() => AssertVectorGroupMember().VerifyDiagnostics();
+        return AssertExactlyTypeStaticDiagnostics(VectorGroupMemberText).AssertDiagnosticsLocation(expectedLocation, VectorGroupMemberText);
+    }
 }

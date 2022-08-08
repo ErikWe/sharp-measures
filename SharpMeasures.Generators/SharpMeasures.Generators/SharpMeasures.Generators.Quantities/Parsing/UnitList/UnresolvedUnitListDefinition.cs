@@ -9,5 +9,5 @@ public record class UnresolvedUnitListDefinition : AItemListDefinition<string, U
 {
     public IReadOnlyList<string> Units => Items;
 
-    public UnresolvedUnitListDefinition(IReadOnlyList<string> units, UnitListLocations locations) : base(units, locations) { }
+    public UnresolvedUnitListDefinition(IReadOnlyList<string> units, UnitListLocations locations, IReadOnlyList<int> locationMap) : base(units, locations, locationMap) { }
 }

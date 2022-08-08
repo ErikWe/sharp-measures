@@ -215,14 +215,8 @@ public static class ScalarParser
             var conversions = ProcessingFilter.Create(Processers.ConvertibleScalarProcesser).Filter(convertibleQuantityProcessingContext, raw.Conversions);
 
             var includeBases = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.BaseInclusions);
-            unitListProcessingContext.ListedItems.Clear();
-
             var excludeBases = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.BaseExclusions);
-            unitListProcessingContext.ListedItems.Clear();
-
             var includeUnits = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.UnitInclusions);
-            unitListProcessingContext.ListedItems.Clear();
-
             var excludeUnits = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.UnitExclusions);
 
             allDiagnostics = allDiagnostics.Concat(derivations.Diagnostics).Concat(constants.Diagnostics).Concat(conversions.Diagnostics)

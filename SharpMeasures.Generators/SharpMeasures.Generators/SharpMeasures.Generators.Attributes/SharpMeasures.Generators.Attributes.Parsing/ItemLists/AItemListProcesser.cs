@@ -62,7 +62,7 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
         return ResultWithDiagnostics.Construct(processedItems.Result, allDiagnostics);
     }
 
-    protected abstract TProduct ConstructProduct(IReadOnlyList<TProductItem> items, TDefinition definition);
+    protected abstract TProduct ConstructProduct(IReadOnlyList<TProductItem> items, TDefinition definition, IReadOnlyList<int> locationMap);
     protected abstract TProductItem UpgradeItem(TDefinitionItem item);
     protected abstract TProductItem UpgradeNullItem(TDefinitionItem? item);
     protected virtual bool DisallowNull => true;
@@ -86,6 +86,8 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
     private IResultWithDiagnostics<TProduct> ProcessItems(TContext context, TDefinition definition)
     {
         List<TProductItem> listedItems = new();
+        List<int> locationMap = new();
+
         List<Diagnostic> allDiagnostics = new();
 
         for (int i = 0; i < definition.Items.Count; i++)
@@ -97,10 +99,11 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
             if (processedItem.HasResult)
             {
                 listedItems.Add(processedItem.Result);
+                locationMap.Add(i);
             }
         }
 
-        TProduct product = ConstructProduct(listedItems, definition);
+        TProduct product = ConstructProduct(listedItems, definition, locationMap);
         return ResultWithDiagnostics.Construct(product, allDiagnostics);
     }
 
@@ -130,11 +133,9 @@ public abstract class AUniqueItemListProcesser<TDefinitionItem, TProductItem, TC
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<TProduct> Process(TContext context, TDefinition definition)
+    public override void OnStartProcessing(TContext context, TDefinition definition)
     {
         LocallyListedItems.Clear();
-
-        return base.Process(context, definition);
     }
 
     public override void OnSuccessfulProcess(TContext context, TDefinition definition, TProduct product)

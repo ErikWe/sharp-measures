@@ -15,10 +15,10 @@ using Xunit;
 public class TypeNotVectorGroup
 {
     [Fact]
-    public Task VerifyTypeNotVectorGroupDiagnosticsMessage_Null() => AssertAndVerifyVectorGroupMemberVector(NullType);
+    public Task VerifyTypeNotVectorGroupDiagnosticsMessage_Null() => AssertVectorGroupMemberVector(NullType).VerifyDiagnostics();
 
     [Fact]
-    public Task VerifyTypeNotVectorGroupDiagnosticsMessage_Int() => AssertAndVerifyVectorGroupMemberVector(IntType);
+    public Task VerifyTypeNotVectorGroupDiagnosticsMessage_Int() => AssertVectorGroupMemberVector(IntType).VerifyDiagnostics();
 
     [Theory]
     [MemberData(nameof(NonVectorGroupTypes))]
@@ -32,7 +32,7 @@ public class TypeNotVectorGroup
     [MemberData(nameof(NonVectorGroupTypes))]
     public void SpecializedVectorGroupOriginalVectorGroup(SourceSubtext originalVectorGroupType) => AssertSpecializedVectorGroupOriginalVectorGroup(originalVectorGroupType);
 
-    private static IEnumerable<object[]> NonVectorGroupTypes() => new object[][]
+    public static IEnumerable<object[]> NonVectorGroupTypes() => new object[][]
     {
         new object[] { NullType },
         new object[] { IntType },
@@ -88,8 +88,6 @@ public class TypeNotVectorGroup
 
         return AssertExactlyTypeNotVectorGroupDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
-
-    private static Task AssertAndVerifyVectorGroupMemberVector(SourceSubtext vectorGroupType) => AssertVectorGroupMemberVector(vectorGroupType).VerifyDiagnostics();
 
     private static string VectorGroupDifferenceText(SourceSubtext differenceVectorGroupType) => $$"""
         using SharpMeasures.Generators.Scalars;

@@ -15,7 +15,7 @@ using Xunit;
 public class InvalidDerivationSignature
 {
     [Fact]
-    public Task VerifyInvalidDerivationExpressionDiagnosticsMessage_Null() => AssertAndVerifyDerivableUnit(NullSignature);
+    public Task VerifyInvalidDerivationExpressionDiagnosticsMessage_Null() => AssertDerivableUnit(NullSignature).VerifyDiagnostics();
 
     [Theory]
     [MemberData(nameof(InvalidSignatures))]
@@ -25,7 +25,7 @@ public class InvalidDerivationSignature
     [MemberData(nameof(InvalidSignatures))]
     public void DerivedQuantity(SourceSubtext signature) => AssertDerivedQuantity(signature);
 
-    private static IEnumerable<object[]> InvalidSignatures() => new object[][]
+    public static IEnumerable<object[]> InvalidSignatures() => new object[][]
     {
         new object[] { NullSignature },
         new object[] { EmptySignature }
@@ -68,8 +68,6 @@ public class InvalidDerivationSignature
 
         return AssertExactlyInvalidDerivationSignatureDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
-
-    private static Task AssertAndVerifyDerivableUnit(SourceSubtext signature) => AssertDerivableUnit(signature).VerifyDiagnostics();
 
     private static string DerivedQuantityText(SourceSubtext signature) => $$"""
         using SharpMeasures.Generators.Quantities;

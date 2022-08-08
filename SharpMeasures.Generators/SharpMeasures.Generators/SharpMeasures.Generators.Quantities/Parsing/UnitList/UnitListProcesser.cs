@@ -35,5 +35,6 @@ public class UnitListProcesser : AUniqueItemListProcesser<string?, string, IUniq
     protected override string UpgradeItem(string? item) => UpgradeNullItem(item);
     protected override string UpgradeNullItem(string? item) => item ?? throw new ArgumentNullException(nameof(item));
 
-    protected override UnresolvedUnitListDefinition ConstructProduct(IReadOnlyList<string> items, RawUnitListDefinition definition) => new(items, definition.Locations);
+    protected override UnresolvedUnitListDefinition ConstructProduct(IReadOnlyList<string> items, RawUnitListDefinition definition, IReadOnlyList<int> locationMap)
+        => new(items, definition.Locations, locationMap);
 }

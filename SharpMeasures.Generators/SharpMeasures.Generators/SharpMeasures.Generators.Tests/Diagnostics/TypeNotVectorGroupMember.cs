@@ -15,16 +15,16 @@ using Xunit;
 public class TypeNotVectorGroupMember
 {
     [Fact]
-    public Task VerifyTypeNotVectorGroupMemberDiagnosticsMessage_Null() => AssertAndVerifyRegisterVectorGroupMember(NullType);
+    public Task VerifyTypeNotVectorGroupMemberDiagnosticsMessage_Null() => AssertRegisterVectorGroupMember(NullType).VerifyDiagnostics();
 
     [Fact]
-    public Task VerifyTypeNotVectorGroupDiagnosticsMessage_Int() => AssertAndVerifyRegisterVectorGroupMember(IntType);
+    public Task VerifyTypeNotVectorGroupDiagnosticsMessage_Int() => AssertRegisterVectorGroupMember(IntType).VerifyDiagnostics();
 
     [Theory]
     [MemberData(nameof(NonVectorGroupMemberTypes))]
     public void VectorGroupMemberVector(SourceSubtext vectorGroupMemberType) => AssertRegisterVectorGroupMember(vectorGroupMemberType);
 
-    private static IEnumerable<object[]> NonVectorGroupMemberTypes() => new object[][]
+    public static IEnumerable<object[]> NonVectorGroupMemberTypes() => new object[][]
     {
         new object[] { NullType },
         new object[] { IntType },
@@ -78,6 +78,4 @@ public class TypeNotVectorGroupMember
 
         return AssertExactlyTypeNotVectorGroupMemberDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
-
-    private static Task AssertAndVerifyRegisterVectorGroupMember(SourceSubtext vectorGroupMemberType) => AssertRegisterVectorGroupMember(vectorGroupMemberType).VerifyDiagnostics();
 }

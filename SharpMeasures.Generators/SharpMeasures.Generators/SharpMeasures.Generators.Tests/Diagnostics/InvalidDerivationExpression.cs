@@ -15,7 +15,7 @@ using Xunit;
 public class InvalidDerivationExpression
 {
     [Fact]
-    public Task VerifyInvalidDerivationExpressionDiagnosticsMessage_Null() => AssertAndVerifyDerivableUnit(NullExpression);
+    public Task VerifyInvalidDerivationExpressionDiagnosticsMessage_Null() => AssertDerivableUnit(NullExpression).VerifyDiagnostics();
 
     [Theory]
     [MemberData(nameof(InvalidExpressions))]
@@ -25,7 +25,7 @@ public class InvalidDerivationExpression
     [MemberData(nameof(InvalidExpressions))]
     public void DerivedQuantity(SourceSubtext expression) => AssertDerivedQuantity(expression);
 
-    private static IEnumerable<object[]> InvalidExpressions() => new object[][]
+    public static IEnumerable<object[]> InvalidExpressions() => new object[][]
     {
         new object[] { NullExpression },
         new object[] { EmptyExpression }
@@ -68,8 +68,6 @@ public class InvalidDerivationExpression
 
         return AssertExactlyInvalidDerivationExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
-
-    private static Task AssertAndVerifyDerivableUnit(SourceSubtext expression) => AssertDerivableUnit(expression).VerifyDiagnostics();
 
     private static string DerivedQuantityText(SourceSubtext expression) => $$"""
         using SharpMeasures.Generators.Quantities;

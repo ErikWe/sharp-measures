@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
 
-using Microsoft.CodeAnalysis.Text;
-
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
@@ -17,7 +15,7 @@ using Xunit;
 public class TypeNotBiasedScalar
 {
     [Fact]
-    public Task ConvertibleScalar() => AssertAndVerifyConvertibleScalar();
+    public Task ConvertibleScalar() => AssertConvertibleScalar().VerifyDiagnostics();
 
     private static GeneratorVerifier AssertExactlyTypeNotBiasedScalarDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotBiasedDiagnostics);
     private static IReadOnlyCollection<string> TypeNotBiasedDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotBiasedScalar };
@@ -38,8 +36,10 @@ public class TypeNotBiasedScalar
         public partial class UnitOfTemperature { }
         """;
 
-    private static TextSpan ConvertibleScalarLocation => ExpectedDiagnosticsLocation.FromTypeofArgumentTextSpan(ConvertibleScalarText, target: "typeof(TemperatureDifference)", prefix: "ConvertibleQuantity(");
+    private static GeneratorVerifier AssertConvertibleScalar()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.FromTypeofArgumentTextSpan(ConvertibleScalarText, target: "typeof(TemperatureDifference)", prefix: "ConvertibleQuantity(");
 
-    private static GeneratorVerifier AssertConvertibleScalar() => AssertExactlyTypeNotBiasedScalarDiagnostics(ConvertibleScalarText).AssertDiagnosticsLocation(ConvertibleScalarLocation, ConvertibleScalarText);
-    private static Task AssertAndVerifyConvertibleScalar() => AssertConvertibleScalar().VerifyDiagnostics();
+        return AssertExactlyTypeNotBiasedScalarDiagnostics(ConvertibleScalarText).AssertDiagnosticsLocation(expectedLocation, ConvertibleScalarText);
+    }
 }

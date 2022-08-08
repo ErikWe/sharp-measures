@@ -15,10 +15,10 @@ using Xunit;
 public class TypeNotVector
 {
     [Fact]
-    public Task VerifyTypeNotVectorDiagnosticsMessage_Null() => AssertAndVerifyScalarVector(NullType);
+    public Task VerifyTypeNotVectorDiagnosticsMessage_Null() => AssertScalarVector(NullType).VerifyDiagnostics();
 
     [Fact]
-    public Task VerifyTypeNotVectorDiagnosticsMessage_Int() => AssertAndVerifyScalarVector(IntType);
+    public Task VerifyTypeNotVectorDiagnosticsMessage_Int() => AssertScalarVector(IntType).VerifyDiagnostics();
 
     [Theory]
     [MemberData(nameof(NonVectorTypes))]
@@ -40,7 +40,7 @@ public class TypeNotVector
     [MemberData(nameof(NonVectorTypes))]
     public void ConvertibleQuantity(SourceSubtext quantityType) => AssertConvertibleQuantity(quantityType);
 
-    private static IEnumerable<object[]> NonVectorTypes() => new object[][]
+    public static IEnumerable<object[]> NonVectorTypes() => new object[][]
     {
         new object[] { NullType },
         new object[] { IntType },
@@ -77,8 +77,6 @@ public class TypeNotVector
 
         return AssertExactlyTypeNotVectorDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
-
-    private static Task AssertAndVerifyScalarVector(SourceSubtext vectorType) => AssertScalarVector(vectorType).VerifyDiagnostics();
 
     private static string SpecializedVectorOriginalVectorText(SourceSubtext originalVectorType) => $$"""
         using SharpMeasures.Generators.Scalars;

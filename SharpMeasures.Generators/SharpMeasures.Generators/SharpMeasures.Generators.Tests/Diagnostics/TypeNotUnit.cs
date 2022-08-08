@@ -15,10 +15,10 @@ using Xunit;
 public class TypeNotUnit
 {
     [Fact]
-    public Task VerifyTypeNotUnitDiagnosticsMessage_Null() => AssertAndVerifyScalarUnit(NullType);
+    public Task VerifyTypeNotUnitDiagnosticsMessage_Null() => AssertScalarUnit(NullType).VerifyDiagnostics();
 
     [Fact]
-    public Task VerifyTypeNotUnitDiagnosticsMessage_Int() => AssertAndVerifyScalarUnit(IntType);
+    public Task VerifyTypeNotUnitDiagnosticsMessage_Int() => AssertScalarUnit(IntType).VerifyDiagnostics();
 
     [Theory]
     [MemberData(nameof(NonUnitTypes))]
@@ -36,7 +36,7 @@ public class TypeNotUnit
     [MemberData(nameof(NonUnitTypes))]
     public void DerivableUnitArgument(SourceSubtext unitType) => AssertDerivableUnitArgument(unitType);
 
-    private static IEnumerable<object[]> NonUnitTypes() => new object[][]
+    public static IEnumerable<object[]> NonUnitTypes() => new object[][]
     {
         new object[] { NullType },
         new object[] { IntType },
@@ -97,8 +97,6 @@ public class TypeNotUnit
 
         return AssertExactlyTypeNotUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
-
-    private static Task AssertAndVerifyScalarUnit(SourceSubtext unitType) => AssertScalarUnit(unitType).VerifyDiagnostics();
 
     private static string VectorUnitText(SourceSubtext unitType) => $$"""
         using SharpMeasures.Generators.Scalars;

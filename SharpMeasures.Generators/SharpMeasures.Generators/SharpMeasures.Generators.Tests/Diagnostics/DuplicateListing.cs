@@ -17,7 +17,7 @@ using Xunit;
 public class DuplicateListing
 {
     [Fact]
-    public Task VerifyDuplicateListingDiagnosticsMessage_Scalar() => AssertAndVerifyConvertibleScalar_SingleAttribute();
+    public Task VerifyDuplicateListingDiagnosticsMessage_Scalar() => AssertConvertibleScalar_SingleAttribute().VerifyDiagnostics();
 
     [Fact]
     public void ConvertibleScalar_MultipleAttributes() => AssertConvertibleScalar_MultipleAttributes();
@@ -83,7 +83,6 @@ public class DuplicateListing
     private static TextSpan ConvertibleScalarLocation_SingleAttribute => ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleScalarText_SingleAttribute, target: "Length", prefix: "ConvertibleQuantity(typeof(Length), ");
 
     private static GeneratorVerifier AssertConvertibleScalar_SingleAttribute() => AssertExactlyDuplicateListingDiagnostics(ConvertibleScalarText_SingleAttribute).AssertDiagnosticsLocation(ConvertibleScalarLocation_SingleAttribute, ConvertibleScalarText_SingleAttribute);
-    private static Task AssertAndVerifyConvertibleScalar_SingleAttribute() => AssertConvertibleScalar_SingleAttribute().VerifyDiagnostics();
 
     private static string ConvertibleScalarText_MultipleAttributes => """
         using SharpMeasures.Generators.Quantities;

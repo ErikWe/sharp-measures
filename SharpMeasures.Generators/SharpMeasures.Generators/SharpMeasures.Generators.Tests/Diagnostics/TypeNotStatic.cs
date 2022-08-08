@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
 
-using Microsoft.CodeAnalysis.Text;
-
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
@@ -17,10 +15,10 @@ using Xunit;
 public class TypeNotStatic
 {
     [Fact]
-    public Task VectorGroup() => AssertAndVerifyVectorGroup();
+    public Task VectorGroup() => AssertVectorGroup().VerifyDiagnostics();
 
     [Fact]
-    public Task SpecializedVectorGroup() => AssertAndVerifySpecializedVectorGroup();
+    public Task SpecializedVectorGroup() => AssertSpecializedVectorGroup().VerifyDiagnostics();
 
     private static GeneratorVerifier AssertExactlyTypeNotStaticDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotStaticDiagnostics);
     private static IReadOnlyCollection<string> TypeNotStaticDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotStatic };
@@ -40,10 +38,12 @@ public class TypeNotStatic
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan VectorGroupLocation => ExpectedDiagnosticsLocation.TextSpan(VectorGroupText, target: "Position", prefix: "public partial class ");
+    private static GeneratorVerifier AssertVectorGroup()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(VectorGroupText, target: "Position", prefix: "public partial class ");
 
-    private static GeneratorVerifier AssertVectorGroup() => AssertExactlyTypeNotStaticDiagnostics(VectorGroupText).AssertDiagnosticsLocation(VectorGroupLocation, VectorGroupText);
-    private static Task AssertAndVerifyVectorGroup() => AssertVectorGroup().VerifyDiagnostics();
+        return AssertExactlyTypeNotStaticDiagnostics(VectorGroupText).AssertDiagnosticsLocation(expectedLocation, VectorGroupText);
+    }
 
     private static string SpecializedVectorGroupText => """
         using SharpMeasures.Generators.Scalars;
@@ -63,8 +63,10 @@ public class TypeNotStatic
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan SpecializedVectorGroupLocation => ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText, target: "Displacement", prefix: "public partial class ");
+    private static GeneratorVerifier AssertSpecializedVectorGroup()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText, target: "Displacement", prefix: "public partial class ");
 
-    private static GeneratorVerifier AssertSpecializedVectorGroup() => AssertExactlyTypeNotStaticDiagnostics(SpecializedVectorGroupText).AssertDiagnosticsLocation(SpecializedVectorGroupLocation, SpecializedVectorGroupText);
-    private static Task AssertAndVerifySpecializedVectorGroup() => AssertSpecializedVectorGroup().VerifyDiagnostics();
+        return AssertExactlyTypeNotStaticDiagnostics(SpecializedVectorGroupText).AssertDiagnosticsLocation(expectedLocation, SpecializedVectorGroupText);
+    }
 }

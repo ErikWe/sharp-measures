@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1102,
+    Title: Duplicate unit name,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (8,11)-(8,18),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} already defines a unit with the name "{1}",
+    Message: UnitOfLength already defines a unit with the name "Meter",
+    Category: Naming,
+    CustomTags: []
+  }
+]

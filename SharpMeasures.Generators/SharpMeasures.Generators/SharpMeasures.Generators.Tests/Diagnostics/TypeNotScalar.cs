@@ -15,10 +15,10 @@ using Xunit;
 public class TypeNotScalar
 {
     [Fact]
-    public Task VerifyTypeNotScalarDiagnosticsMessage_Null() => AssertAndVerifyUnitQuantity(NullType);
+    public Task VerifyTypeNotScalarDiagnosticsMessage_Null() => AssertUnitQuantity(NullType).VerifyDiagnostics();
 
     [Fact]
-    public Task VerifyTypeNotScalarDiagnosticsMessage_Int() => AssertAndVerifyUnitQuantity(IntType);
+    public Task VerifyTypeNotScalarDiagnosticsMessage_Int() => AssertUnitQuantity(IntType).VerifyDiagnostics();
 
     [Theory]
     [MemberData(nameof(NonScalarTypes))]
@@ -96,7 +96,7 @@ public class TypeNotScalar
     [MemberData(nameof(NonScalarTypes))]
     public void ConvertibleQuantity(SourceSubtext quantityType) => AssertConvertibleQuantity(quantityType);
 
-    private static IEnumerable<object[]> NonScalarTypes() => new object[][]
+    public static IEnumerable<object[]> NonScalarTypes() => new object[][]
     {
         new object[] { NullType },
         new object[] { IntType },
@@ -157,8 +157,6 @@ public class TypeNotScalar
 
         return AssertExactlyTypeNotScalarDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
-
-    private static Task AssertAndVerifyUnitQuantity(SourceSubtext scalarType) => AssertUnitQuantity(scalarType).VerifyDiagnostics();
 
     private static string ScalarArgumentText(string argument, SourceSubtext argumentValue) => $$"""
         using SharpMeasures.Generators.Scalars;
