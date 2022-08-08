@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1142,
+    Title: Duplicate derivation ID,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (19,15)-(19,19),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} already defines a derivation with ID "{1}",
+    Message: UnitOfSpeed already defines a derivation with ID "id",
+    Category: Usage,
+    CustomTags: []
+  }
+]
