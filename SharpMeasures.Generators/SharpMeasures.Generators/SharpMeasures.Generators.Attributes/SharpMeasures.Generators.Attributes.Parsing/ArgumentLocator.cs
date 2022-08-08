@@ -26,6 +26,11 @@ internal static class ArgumentLocator
             return SimpleArgument(castExpression.Expression);
         }
 
+        if (expression is ParenthesizedExpressionSyntax parenthesizedExpression)
+        {
+            return SimpleArgument(parenthesizedExpression.Expression);
+        }
+
         return expression.GetLocation().Minimize();
     }
 
@@ -89,6 +94,11 @@ internal static class ArgumentLocator
         if (expression is LiteralExpressionSyntax && expression.IsKind(SyntaxKind.NullLiteralExpression))
         {
             return (expression.GetLocation().Minimize(), Array.Empty<MinimalLocation>());
+        }
+
+        if (expression is ParenthesizedExpressionSyntax parenthesizedExpression)
+        {
+            return AttemptFromArray(parenthesizedExpression.Expression);
         }
 
         return null;
