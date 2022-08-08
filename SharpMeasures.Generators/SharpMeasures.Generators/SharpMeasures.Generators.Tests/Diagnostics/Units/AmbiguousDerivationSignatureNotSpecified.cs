@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics.Units;
 
 using SharpMeasures.Generators.Diagnostics;
+using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
 
 using System.Collections.Generic;
@@ -14,25 +15,27 @@ using Xunit;
 public class AmbiguousDerivationSignatureNotSpecified
 {
     [Fact]
-    public Task VerifyAmbiguousDerivationSignatureNotSpecifiedDiagnosticsMessage()
-    {
-        string source = SourceText("");
-
-        return AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
+    public Task VerifyAmbiguousDerivationSignatureNotSpecifiedDiagnosticsMessage() => Assert(IgnoredName).VerifyDiagnostics();
 
     [Theory]
-    [InlineData("")]
-    [InlineData("null, ")]
-    [InlineData("\"\", ")]
-    public void ExactList(string id)
+    [MemberData(nameof(InvalidNames))]
+    public void ExactList(string derivationID) => Assert(derivationID);
+
+    public static IEnumerable<object[]> InvalidNames => new object[][]
     {
-        string source = SourceText(id);
+        new[] { IgnoredName },
+        new[] { NullName },
+        new[] { EmptyName }
+    };
 
-        AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnosticsWithValidLocation(source);
-    }
+    private static string IgnoredName { get; } = string.Empty;
+    private static string NullName { get; } = "null, ";
+    private static string EmptyName { get; } = "\"\", ";
 
-    private static string SourceText(string derivationIDWithoutComma) => $$"""
+    private static GeneratorVerifier AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(AmbiguousDerivationSignatureNotSpecifiedDiagnostics);
+    private static IReadOnlyCollection<string> AmbiguousDerivationSignatureNotSpecifiedDiagnostics { get; } = new string[] { DiagnosticIDs.AmbiguousDerivationSignatureNotSpecified };
+
+    private static string Text(string derivationIDWithoutComma) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
@@ -60,6 +63,11 @@ public class AmbiguousDerivationSignatureNotSpecified
         public partial class UnitOfSpeed { }
         """;
 
-    private static GeneratorVerifier AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(AmbiguousDerivationSignatureNotSpecifiedDiagnostics).AssertAllDiagnosticsValidLocation();
-    private static IReadOnlyCollection<string> AmbiguousDerivationSignatureNotSpecifiedDiagnostics { get; } = new string[] { DiagnosticIDs.AmbiguousDerivationSignatureNotSpecified };
+    private static GeneratorVerifier Assert(string derivationIDWithoutComma)
+    {
+        var source = Text(derivationIDWithoutComma);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivedUnit");
+
+        return AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
 }
