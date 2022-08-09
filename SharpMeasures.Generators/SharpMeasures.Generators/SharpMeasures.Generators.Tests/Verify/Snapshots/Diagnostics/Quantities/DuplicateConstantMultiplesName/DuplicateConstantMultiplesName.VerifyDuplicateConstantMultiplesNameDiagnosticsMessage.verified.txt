@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1223,
+    Title: Duplicate name for multiples of constant,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (4,62)-(4,81),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} already defines a constant with multiples "{1}",
+    Message: Length already defines a constant with multiples "MultiplesOfPlanck",
+    Category: Naming,
+    CustomTags: []
+  }
+]
