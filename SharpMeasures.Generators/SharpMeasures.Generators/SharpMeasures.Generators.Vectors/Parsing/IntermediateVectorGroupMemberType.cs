@@ -2,6 +2,7 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
+using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System.Collections.Generic;
 
@@ -12,10 +13,13 @@ internal record class IntermediateVectorGroupMemberType : IIntermediateVectorGro
 
     public IVectorGroupMember Definition { get; }
 
-    public IReadOnlyList<IVectorConstant> Constants => constants;
-    private ReadOnlyEquatableList<IVectorConstant> constants { get; }
+    public IReadOnlyList<VectorConstantDefinition> Constants => constants;
 
-    public IntermediateVectorGroupMemberType(DefinedType type, MinimalLocation typeLocation, IVectorGroupMember definition, IReadOnlyList<IVectorConstant> constants)
+    IReadOnlyList<IVectorConstant> IIntermediateVectorGroupMemberType.Constants => Constants;
+
+    private ReadOnlyEquatableList<VectorConstantDefinition> constants { get; }
+
+    public IntermediateVectorGroupMemberType(DefinedType type, MinimalLocation typeLocation, IVectorGroupMember definition, IReadOnlyList<VectorConstantDefinition> constants)
     {
         Type = type;
         TypeLocation = typeLocation;

@@ -45,6 +45,6 @@ internal class ScalarConstantPostResolutionFilter : QuantityConstantPostResoluti
             return ValidityWithDiagnostics.Invalid(Diagnostics.ConstantMultiplesNameReservedByUnitBase(context, definition));
         }
 
-        return ValidityWithDiagnostics.Valid;
+        return base.CheckNameValidity(context, definition);
     }
 }

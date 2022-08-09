@@ -5,12 +5,15 @@ using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.Contexts.Resolution;
+using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 using SharpMeasures.Generators.Scalars.Parsing.Diagnostics.Resolution;
+using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 using SharpMeasures.Generators.Unresolved.Units;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 using SharpMeasures.Generators.Unresolved.Vectors;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -47,11 +50,13 @@ internal static class ScalarBaseTypeResolution
         var includedBases = GetIncludedUnits(scalar.Result.Unit, baseInclusions.Result, baseExclusions.Result);
         var includedUnits = GetIncludedUnits(scalar.Result.Unit, unitInclusions.Result, unitExclusions.Result);
 
-        allDiagnostics = allDiagnostics.Concat(derivations.Diagnostics).Concat(constants.Diagnostics).Concat(conversions.Diagnostics).Concat(baseInclusions.Diagnostics)
-            .Concat(baseExclusions.Diagnostics).Concat(unitInclusions.Diagnostics).Concat(unitExclusions.Diagnostics);
+        var filteredConstants = ScalarTypePostResolutionFilter.FilterAndCombineConstants(unresolvedScalar.Type, constants.Result, Array.Empty<ScalarConstantDefinition>(), includedBases, includedUnits);
+        var filteredConversions = ScalarTypePostResolutionFilter.FilterAndCombineConversions(unresolvedScalar.Type, conversions.Result, Array.Empty<ConvertibleScalarDefinition>());
 
-        ScalarType product = new(unresolvedScalar.Type, unresolvedScalar.TypeLocation, scalar.Result, derivations.Result, constants.Result, conversions.Result,
-            includedBases, includedUnits);
+        allDiagnostics = allDiagnostics.Concat(derivations.Diagnostics).Concat(constants.Diagnostics).Concat(conversions.Diagnostics).Concat(baseInclusions.Diagnostics)
+            .Concat(baseExclusions.Diagnostics).Concat(unitInclusions.Diagnostics).Concat(unitExclusions.Diagnostics).Concat(filteredConstants.Diagnostics).Concat(filteredConversions.Diagnostics);
+
+        ScalarType product = new(unresolvedScalar.Type, unresolvedScalar.TypeLocation, scalar.Result, derivations.Result, filteredConstants.Result, filteredConversions.Result, includedBases, includedUnits);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }

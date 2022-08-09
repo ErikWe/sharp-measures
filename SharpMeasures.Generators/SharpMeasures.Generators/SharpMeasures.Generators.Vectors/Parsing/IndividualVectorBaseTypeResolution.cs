@@ -12,7 +12,10 @@ using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Resolution;
 using SharpMeasures.Generators.Vectors.Parsing.RegisterVectorGroupMember;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
+using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
+using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -45,10 +48,14 @@ internal static class IndividualVectorBaseTypeResolution
 
         var includedUnits = GetIncludedUnits(vector.Result.Unit, unitInclusions.Result, unitExclusions.Result);
 
-        allDiagnostics = allDiagnostics.Concat(derivations.Diagnostics).Concat(constants.Diagnostics).Concat(conversions.Diagnostics).Concat(unitInclusions.Diagnostics).Concat(unitExclusions.Diagnostics);
+        var filteredConstants = VectorTypePostResolutionFilter.FilterAndCombineConstants(unresolvedVector.Type, constants.Result, Array.Empty<VectorConstantDefinition>(), includedUnits);
+        var filteredConversions = VectorTypePostResolutionFilter.FilterAndCombineConversions(unresolvedVector.Type, conversions.Result, Array.Empty<ConvertibleVectorDefinition>());
 
-        IndividualVectorType product = new(unresolvedVector.Type, unresolvedVector.TypeLocation, vector.Result, MockMembersPopulation(unresolvedVector, vector.Result), derivations.Result, constants.Result,
-            conversions.Result, includedUnits);
+        allDiagnostics = allDiagnostics.Concat(derivations.Diagnostics).Concat(constants.Diagnostics).Concat(conversions.Diagnostics).Concat(unitInclusions.Diagnostics).Concat(unitExclusions.Diagnostics)
+            .Concat(filteredConstants.Diagnostics).Concat(filteredConversions.Diagnostics);
+
+        IndividualVectorType product = new(unresolvedVector.Type, unresolvedVector.TypeLocation, vector.Result, MockMembersPopulation(unresolvedVector, vector.Result), derivations.Result,
+            filteredConstants.Result, filteredConversions.Result, includedUnits);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }

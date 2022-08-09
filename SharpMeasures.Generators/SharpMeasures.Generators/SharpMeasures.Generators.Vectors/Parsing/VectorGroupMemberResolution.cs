@@ -28,10 +28,26 @@ internal class VectorGroupMemberResolution
         var derivations = ResolveCollection(intermediateMember, vectorPopulation, static (vector) => vector.Definition.InheritDerivations,
             static (vector) => vector.Derivations, static (vector) => vector.Derivations);
 
-        var constants = ResolveCollection(intermediateMember, vectorPopulation, static (vector) => vector.Definition.InheritConstants,
+        var conversions = ResolveCollection(intermediateMember, vectorPopulation, static (vector) => vector.Definition.InheritConversions,
+            static (vector) => vector.Conversions, static (vector) => vector.Conversions);
+
+        var includedUnits = GetIncludedUnits(intermediateMember, intermediateMember.Definition.Unit, vectorPopulation, static (vector) => vector.Definition.InheritUnits,
+            static (vector) => vector.UnitInclusions, static (vector) => vector.UnitExclusions, static (vector) => vector.IncludedUnits,
+            static (vector) => Array.Empty<IUnresolvedUnitInstance>());
+
+        var inheritedConstants = ResolveCollection(intermediateMember, vectorPopulation, static (vector) => vector.Definition.InheritConstants,
             (vector) => vector.RegisteredMembersByDimension.Values.SelectMany(vectorGroupConstants),
             (vector) => vector.RegisteredMembersByDimension.Values.SelectMany(vectorGroupConstants));
 
+        var allConstants = VectorTypePostResolutionFilter.FilterAndCombineConstants(intermediateMember.Type, intermediateMember.Constants, inheritedConstants, includedUnits);
+
+        VectorGroupMemberType reduced = new(intermediateMember.Type, intermediateMember.TypeLocation, intermediateMember.Definition, membersByDimension,
+            derivations, allConstants.Result, conversions, includedUnits);
+
+        var allDiagnostics = allConstants.Diagnostics;
+
+        return OptionalWithDiagnostics.Result(reduced, allDiagnostics);
+        
         IEnumerable<IVectorConstant> vectorGroupConstants(IRegisteredVectorGroupMember member)
         {
             if (vectorPopulation.VectorGroupMembers.TryGetValue(member.Vector.Type.AsNamedType(), out var memberType))
@@ -41,18 +57,6 @@ internal class VectorGroupMemberResolution
 
             return Array.Empty<IVectorConstant>();
         }
-
-        var conversions = ResolveCollection(intermediateMember, vectorPopulation, static (vector) => vector.Definition.InheritConversions,
-            static (vector) => vector.Conversions, static (vector) => vector.Conversions);
-
-        var includedUnits = GetIncludedUnits(intermediateMember, intermediateMember.Definition.Unit, vectorPopulation, static (vector) => vector.Definition.InheritUnits,
-            static (vector) => vector.UnitInclusions, static (vector) => vector.UnitExclusions, static (vector) => vector.IncludedUnits,
-            static (vector) => Array.Empty<IUnresolvedUnitInstance>());
-
-        VectorGroupMemberType reduced = new(intermediateMember.Type, intermediateMember.TypeLocation, intermediateMember.Definition, membersByDimension,
-            derivations, constants, conversions, includedUnits);
-
-        return OptionalWithDiagnostics.Result(reduced);
     }
 
     public static IOptionalWithDiagnostics<IntermediateVectorGroupMemberType> Resolve((UnresolvedVectorGroupMemberType Member, IUnresolvedUnitPopulation UnitPopulation,
@@ -201,7 +205,7 @@ internal class VectorGroupMemberResolution
         }
     }
 
-    private static IReadOnlyList<T> ResolveCollection<T>(IntermediateVectorGroupMemberType member, IIntermediateVectorGroupPopulation vectorPopulation,
+    private static IReadOnlyList<T> ResolveCollection<T>(IIntermediateVectorGroupMemberType member, IIntermediateVectorGroupPopulation vectorPopulation,
         Func<IIntermediateVectorGroupSpecializationType, bool> shouldInherit, Func<IIntermediateVectorGroupSpecializationType, IEnumerable<T>> specializationTransform,
         Func<IVectorGroupType, IEnumerable<T>> baseTransform)
     {
