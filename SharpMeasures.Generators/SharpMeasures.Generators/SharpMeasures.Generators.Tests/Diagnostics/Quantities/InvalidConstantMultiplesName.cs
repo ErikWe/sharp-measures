@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics.Quantities;
 
 using SharpMeasures.Generators.Diagnostics;
+using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
 
 using System.Collections.Generic;
@@ -14,80 +15,48 @@ using Xunit;
 public class InvalidConstantMultiplesName
 {
     [Fact]
-    public Task VerifyInvalidConstantMultiplesNameDiagnosticsMessage_Null()
-    {
-        string source = ScalarText("null");
-
-        return AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
+    public Task VerifyInvalidConstantMultiplesNameDiagnosticsMessage_Null() => AssertScalar(NullName).VerifyDiagnostics();
 
     [Fact]
-    public Task VerifyInvalidConstantMultiplesNameDiagnosticsMessage_Emptyl()
-    {
-        string source = ScalarText("\"\"");
-
-        return AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
+    public Task VerifyInvalidConstantMultiplesNameDiagnosticsMessage_Empty() => AssertScalar(EmptyName).VerifyDiagnostics();
 
     [Theory]
     [MemberData(nameof(InvalidConstantMultiplesNames))]
-    public void Scalar_ExactList(string constantMultiplesName)
-    {
-        string source = ScalarText(constantMultiplesName);
-
-        AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source);
-    }
+    public void Scalar(SourceSubtext constantMultiplesName) => AssertScalar(constantMultiplesName);
 
     [Theory]
     [MemberData(nameof(InvalidConstantMultiplesNames))]
-    public void SpecializedScalar_ExactList(string constantMultiplesName)
-    {
-        string source = SpecializedScalarText(constantMultiplesName);
-
-        AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source);
-    }
+    public void SpecializedScalar(SourceSubtext constantMultiplesName) => AssertSpecializedScalar(constantMultiplesName);
 
     [Theory]
     [MemberData(nameof(InvalidConstantMultiplesNames))]
-    public void Vector_ExactList(string constantMultiplesName)
-    {
-        string source = VectorText(constantMultiplesName);
-
-        AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source);
-    }
+    public void Vector(SourceSubtext constantMultiplesName) => AssertVector(constantMultiplesName);
 
     [Theory]
     [MemberData(nameof(InvalidConstantMultiplesNames))]
-    public void SpecializedVector_ExactList(string constantMultiplesName)
-    {
-        string source = SpecializedVectorText(constantMultiplesName);
-
-        AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source);
-    }
+    public void SpecializedVector(SourceSubtext constantMultiplesName) => AssertSpecializedVector(constantMultiplesName);
 
     [Theory]
     [MemberData(nameof(InvalidConstantMultiplesNames))]
-    public void VectorGroupMember_ExactList(string constantMultiplesName)
-    {
-        string source = VectorGroupMemberText(constantMultiplesName);
+    public void VectorGroupMember(SourceSubtext constantMultiplesName) => AssertVectorGroupMember(constantMultiplesName);
 
-        AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(source);
-    }
-
-    private static IEnumerable<object[]> InvalidConstantMultiplesNames() => new object[][]
+    public static IEnumerable<object[]> InvalidConstantMultiplesNames() => new object[][]
     {
-        new[] { "null" },
-        new[] { "\"\"" }
+        new object[] { NullName },
+        new object[] { EmptyName }
     };
 
-    private static GeneratorVerifier AssertExactlyInvalidConstantMultiplesNameDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidConstantMultiplesNameDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static SourceSubtext NullName { get; } = SourceSubtext.Covered("null");
+    private static SourceSubtext EmptyName { get; } = SourceSubtext.Covered("\"\"");
+
+    private static GeneratorVerifier AssertExactlyInvalidConstantMultiplesNameDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidConstantMultiplesNameDiagnostics);
     private static IReadOnlyCollection<string> InvalidConstantMultiplesNameDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidConstantMultiplesName };
 
-    private static string ScalarText(string multiples) => $$"""
+    private static string ScalarText(SourceSubtext constantMultiplesName) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [ScalarConstant("Planck", "Metre", 1.616255E-35, Multiples = {{multiples}})]
+        [ScalarConstant("Planck", "Metre", 1.616255E-35, Multiples = {{constantMultiplesName}})]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
@@ -96,11 +65,19 @@ public class InvalidConstantMultiplesName
         public partial class UnitOfLength { }
         """;
 
-    private static string SpecializedScalarText(string multiples) => $$"""
+    private static GeneratorVerifier AssertScalar(SourceSubtext constantMultiplesName)
+    {
+        var source = ScalarText(constantMultiplesName);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantMultiplesName.Context.With(outerPrefix: "Multiples = "));
+
+        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string SpecializedScalarText(SourceSubtext constantMultiplesName) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [ScalarConstant("Planck", "Metre", 1.616255E-35, Multiples = {{multiples}})]
+        [ScalarConstant("Planck", "Metre", 1.616255E-35, Multiples = {{constantMultiplesName}})]
         [SpecializedSharpMeasuresScalar(typeof(Length))]
         public partial class Distance { }
 
@@ -112,12 +89,20 @@ public class InvalidConstantMultiplesName
         public partial class UnitOfLength { }
         """;
 
-    private static string VectorText(string multiples) => $$"""
+    private static GeneratorVerifier AssertSpecializedScalar(SourceSubtext constantMultiplesName)
+    {
+        var source = SpecializedScalarText(constantMultiplesName);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantMultiplesName.Context.With(outerPrefix: "Multiples = "));
+
+        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string VectorText(SourceSubtext constantMultiplesName) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, Multiples = {{multiples}})]
+        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, Multiples = {{constantMultiplesName}})]
         [SharpMeasuresVector(typeof(UnitOfLength))]
         public partial class Position3 { }
 
@@ -129,12 +114,20 @@ public class InvalidConstantMultiplesName
         public partial class UnitOfLength { }
         """;
 
-    private static string SpecializedVectorText(string multiples) => $$"""
+    private static GeneratorVerifier AssertVector(SourceSubtext constantMultiplesName)
+    {
+        var source = VectorText(constantMultiplesName);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantMultiplesName.Context.With(outerPrefix: "Multiples = "));
+
+        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string SpecializedVectorText(SourceSubtext constantMultiplesName) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, Multiples = {{multiples}})]
+        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, Multiples = {{constantMultiplesName}})]
         [SharpMeasuresVector(typeof(UnitOfLength))]
         public partial class Position3 { }
 
@@ -146,12 +139,20 @@ public class InvalidConstantMultiplesName
         public partial class UnitOfLength { }
         """;
 
-    private static string VectorGroupMemberText(string multiples) => $$"""
+    private static GeneratorVerifier AssertSpecializedVector(SourceSubtext constantMultiplesName)
+    {
+        var source = SpecializedVectorText(constantMultiplesName);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantMultiplesName.Context.With(outerPrefix: "Multiples = "));
+
+        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string VectorGroupMemberText(SourceSubtext constantMultiplesName) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, Multiples = {{multiples}})]
+        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, Multiples = {{constantMultiplesName}})]
         [SharpMeasuresVectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 
@@ -165,4 +166,12 @@ public class InvalidConstantMultiplesName
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
+
+    private static GeneratorVerifier AssertVectorGroupMember(SourceSubtext constantMultiplesName)
+    {
+        var source = VectorGroupMemberText(constantMultiplesName);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantMultiplesName.Context.With(outerPrefix: "Multiples = "));
+
+        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
 }

@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics.Quantities;
 
 using SharpMeasures.Generators.Diagnostics;
+using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
 
 using System.Collections.Generic;
@@ -14,80 +15,48 @@ using Xunit;
 public class InvalidConstantName
 {
     [Fact]
-    public Task VerifyInvalidConstantNameDiagnosticsMessage_Null()
-    {
-        string source = ScalarText("null");
-
-        return AssertExactlyInvalidConstantNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
+    public Task VerifyInvalidConstantNameDiagnosticsMessage_Null() => AssertScalar(NullName).VerifyDiagnostics();
 
     [Fact]
-    public Task VerifyInvalidConstantNameDiagnosticsMessage_Emptyl()
-    {
-        string source = ScalarText("\"\"");
-
-        return AssertExactlyInvalidConstantNameDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
+    public Task VerifyInvalidConstantNameDiagnosticsMessage_Empt() => AssertScalar(EmptyName).VerifyDiagnostics();
 
     [Theory]
     [MemberData(nameof(InvalidConstantNames))]
-    public void Scalar_ExactList(string constantName)
-    {
-        string source = ScalarText(constantName);
-
-        AssertExactlyInvalidConstantNameDiagnosticsWithValidLocation(source);
-    }
+    public void Scalar(SourceSubtext constantName) => AssertScalar(constantName);
 
     [Theory]
     [MemberData(nameof(InvalidConstantNames))]
-    public void SpecializedScalar_ExactList(string constantName)
-    {
-        string source = SpecializedScalarText(constantName);
-
-        AssertExactlyInvalidConstantNameDiagnosticsWithValidLocation(source);
-    }
+    public void SpecializedScalar(SourceSubtext constantName) => AssertSpecializedScalar(constantName);
 
     [Theory]
     [MemberData(nameof(InvalidConstantNames))]
-    public void Vector_ExactList(string constantName)
-    {
-        string source = VectorText(constantName);
-
-        AssertExactlyInvalidConstantNameDiagnosticsWithValidLocation(source);
-    }
+    public void Vector(SourceSubtext constantName) => AssertVector(constantName);
 
     [Theory]
     [MemberData(nameof(InvalidConstantNames))]
-    public void SpecializedVector_ExactList(string constantName)
-    {
-        string source = SpecializedVectorText(constantName);
-
-        AssertExactlyInvalidConstantNameDiagnosticsWithValidLocation(source);
-    }
+    public void SpecializedVector(SourceSubtext constantName) => AssertSpecializedVector(constantName);
 
     [Theory]
     [MemberData(nameof(InvalidConstantNames))]
-    public void VectorGroupMember_ExactList(string constantName)
-    {
-        string source = VectorGroupMemberText(constantName);
+    public void VectorGroupMember(SourceSubtext constantName) => AssertSpecializedVector(constantName);
 
-        AssertExactlyInvalidConstantNameDiagnosticsWithValidLocation(source);
-    }
-
-    private static IEnumerable<object[]> InvalidConstantNames() => new object[][]
+    public static IEnumerable<object[]> InvalidConstantNames() => new object[][]
     {
-        new[] { "null" },
-        new[] { "\"\"" }
+        new object[] { NullName },
+        new object[] { EmptyName }
     };
 
-    private static GeneratorVerifier AssertExactlyInvalidConstantNameDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidConstantNameDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static SourceSubtext NullName { get; } = SourceSubtext.Covered("null");
+    private static SourceSubtext EmptyName { get; } = SourceSubtext.Covered("\"\"");
+
+    private static GeneratorVerifier AssertExactlyInvalidConstantNameDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidConstantNameDiagnostics);
     private static IReadOnlyCollection<string> InvalidConstantNameDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidConstantName };
 
-    private static string ScalarText(string name) => $$"""
+    private static string ScalarText(SourceSubtext constantName) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [ScalarConstant({{name}}, "Metre", 1.616255E-35)]
+        [ScalarConstant({{constantName}}, "Metre", 1.616255E-35)]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
@@ -96,11 +65,19 @@ public class InvalidConstantName
         public partial class UnitOfLength { }
         """;
 
-    private static string SpecializedScalarText(string name) => $$"""
+    private static GeneratorVerifier AssertScalar(SourceSubtext constantName)
+    {
+        var source = ScalarText(constantName);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantName.Context.With(outerPrefix: "ScalarConstant("));
+
+        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string SpecializedScalarText(SourceSubtext constantName) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [ScalarConstant({{name}}, "Metre", 1.616255E-35)]
+        [ScalarConstant({{constantName}}, "Metre", 1.616255E-35)]
         [SpecializedSharpMeasuresScalar(typeof(Length))]
         public partial class Distance { }
 
@@ -112,12 +89,20 @@ public class InvalidConstantName
         public partial class UnitOfLength { }
         """;
 
-    private static string VectorText(string name) => $$"""
+    private static GeneratorVerifier AssertSpecializedScalar(SourceSubtext constantName)
+    {
+        var source = SpecializedScalarText(constantName);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantName.Context.With(outerPrefix: "ScalarConstant("));
+
+        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string VectorText(SourceSubtext constantName) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [VectorConstant({{name}}, "Metre", 1, 1, 1)]
+        [VectorConstant({{constantName}}, "Metre", 1, 1, 1)]
         [SharpMeasuresVector(typeof(UnitOfLength))]
         public partial class Position3 { }
 
@@ -129,12 +114,20 @@ public class InvalidConstantName
         public partial class UnitOfLength { }
         """;
 
-    private static string SpecializedVectorText(string name) => $$"""
+    private static GeneratorVerifier AssertVector(SourceSubtext constantName)
+    {
+        var source = VectorText(constantName);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantName.Context.With(outerPrefix: "VectorConstant("));
+
+        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string SpecializedVectorText(SourceSubtext constantName) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [VectorConstant({{name}}, "Metre", 1, 1, 1)]
+        [VectorConstant({{constantName}}, "Metre", 1, 1, 1)]
         [SpecializedSharpMeasuresVector(typeof(Position3))]
         public partial class Displacement3 { }
 
@@ -149,12 +142,20 @@ public class InvalidConstantName
         public partial class UnitOfLength { }
         """;
 
-    private static string VectorGroupMemberText(string name) => $$"""
+    private static GeneratorVerifier AssertSpecializedVector(SourceSubtext constantName)
+    {
+        var source = SpecializedVectorText(constantName);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantName.Context.With(outerPrefix: "VectorConstant("));
+
+        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string VectorGroupMemberText(SourceSubtext constantName) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [VectorConstant({{name}}, "Metre", 1, 1, 1)]
+        [VectorConstant({{constantName}}, "Metre", 1, 1, 1)]
         [SharpMeasuresVectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 
@@ -168,4 +169,12 @@ public class InvalidConstantName
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
+
+    private static GeneratorVerifier AssertVectorGroupMember(SourceSubtext constantName)
+    {
+        var source = VectorGroupMemberText(constantName);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantName.Context.With(outerPrefix: "VectorConstant("));
+
+        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
 }
