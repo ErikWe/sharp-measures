@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics.Units;
 
 using SharpMeasures.Generators.Diagnostics;
+using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
 
 using System.Collections.Generic;
@@ -14,25 +15,27 @@ using Xunit;
 public class IncompatibleDerivedUnitListSize
 {
     [Fact]
-    public Task VerifyIncompatibleDerivedUnitListSizeDiagnosticsMessage()
-    {
-        string source = SourceText("\"Metre\"");
-
-        return AssertExactlyIncompatibleDerivedUnitListSizeDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
+    public Task VerifyIncompatibleDerivedUnitListSizeDiagnosticsMessage() => AssertTwoElementSignature(OneElement).VerifyDiagnostics();
 
     [Theory]
-    [InlineData("\"Metre\"")]
-    [InlineData("new[] { \"Metre\" }")]
-    [InlineData("\"Metre\", \"Metre\", \"Metre\"")]
-    public void ExactList(string units)
+    [MemberData(nameof(IncompatibleUnitLists))]
+    public void TwoElementSignature(SourceSubtext units) => AssertTwoElementSignature(units);
+
+    public static IEnumerable<object[]> IncompatibleUnitLists() => new object[][]
     {
-        string source = SourceText(units);
+        new object[] { OneElement },
+        new object[] { OneElementArray },
+        new object[] { ThreeElements }
+    };
 
-        AssertExactlyIncompatibleDerivedUnitListSizeDiagnosticsWithValidLocation(source);
-    }
+    private static SourceSubtext OneElement { get; } = SourceSubtext.Covered("\"Metre\"");
+    private static SourceSubtext OneElementArray { get; } = SourceSubtext.Covered("{ \"Metre\" }", prefix: "new[] ");
+    private static SourceSubtext ThreeElements { get; } = SourceSubtext.Covered("\"Metre\", \"Metre\", \"Metre\"");
 
-    private static string SourceText(string units) => $$"""
+    private static GeneratorVerifier AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(IncompatibleDerivedUnitListSizeDiagnostics);
+    private static IReadOnlyCollection<string> IncompatibleDerivedUnitListSizeDiagnostics { get; } = new string[] { DiagnosticIDs.IncompatibleDerivedUnitListSize };
+
+    private static string TwoElementSignatureText(SourceSubtext units) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
@@ -58,6 +61,11 @@ public class IncompatibleDerivedUnitListSize
         public partial class UnitOfSpeed { }
         """;
 
-    private static GeneratorVerifier AssertExactlyIncompatibleDerivedUnitListSizeDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(IncompatibleDerivedUnitListSizeDiagnostics).AssertAllDiagnosticsValidLocation();
-    private static IReadOnlyCollection<string> IncompatibleDerivedUnitListSizeDiagnostics { get; } = new string[] { DiagnosticIDs.IncompatibleDerivedUnitListSize };
+    private static GeneratorVerifier AssertTwoElementSignature(SourceSubtext units)
+    {
+        var source = TwoElementSignatureText(units);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, units.Context.With(outerPrefix: "DerivedUnit(\"MetrePerSecond\", \"MetresPerSecond\", \"id\", "));
+
+        return AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
 }

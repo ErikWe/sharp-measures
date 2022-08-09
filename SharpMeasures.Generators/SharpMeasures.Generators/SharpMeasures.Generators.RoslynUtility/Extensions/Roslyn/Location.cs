@@ -26,8 +26,8 @@ public static partial class RoslynUtilityExtensions
             : new(originalLineSpan.Path, otherLineSpan.StartLinePosition, originalLineSpan.EndLinePosition);
 
         TextSpan combinedTextSpan = originalLocationIsFirst
-            ? new(originalLocation.SourceSpan.Start, otherLocation.SourceSpan.End)
-            : new(otherLocation.SourceSpan.Start, originalLocation.SourceSpan.End);
+            ? TextSpan.FromBounds(originalLocation.SourceSpan.Start, otherLocation.SourceSpan.End)
+            : TextSpan.FromBounds(otherLocation.SourceSpan.Start, originalLocation.SourceSpan.End);
 
         return Location.Create(originalLineSpan.Path, combinedTextSpan, combinedLineSpan.Span);
 

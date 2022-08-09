@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics.Units;
 
 using SharpMeasures.Generators.Diagnostics;
+using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
 
 using System.Collections.Generic;
@@ -14,41 +15,49 @@ using Xunit;
 public class UnitNotDerivable
 {
     [Fact]
-    public Task WithoutID_ExactListAndVerify()
-    {
-        string source = """
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-
-            [DerivedUnit("Metre", "Metres", new[] { "MetrePerSecond", "Second" })]
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-            """;
-
-        return AssertExactlyUnitNotDerivableDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
+    public Task WithoutID() => AssertWithoutID().VerifyDiagnostics();
 
     [Fact]
-    public void WithID_ExactList()
+    public void WithID() => AssertWithID();
+
+    private static GeneratorVerifier AssertExactlyUnitNotDerivableDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnitNotDerivableDiagnostics);
+    private static IReadOnlyCollection<string> UnitNotDerivableDiagnostics { get; } = new string[] { DiagnosticIDs.UnitNotDerivable };
+
+    private static string WithoutIDText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [DerivedUnit("Metre", "Metres", new[] { "MetrePerSecond", "Second" })]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertWithoutID()
     {
-        string source = """
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(WithoutIDText, target: "DerivedUnit");
 
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-
-            [DerivedUnit("Metre", "Metres", "1", new[] { "MetrePerSecond", "Second" })]
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-            """;
-
-        AssertExactlyUnitNotDerivableDiagnosticsWithValidLocation(source);
+        return AssertExactlyUnitNotDerivableDiagnostics(WithoutIDText).AssertDiagnosticsLocation(expectedLocation, WithoutIDText);
     }
 
-    private static GeneratorVerifier AssertExactlyUnitNotDerivableDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnitNotDerivableDiagnostics).AssertAllDiagnosticsValidLocation();
-    private static IReadOnlyCollection<string> UnitNotDerivableDiagnostics { get; } = new string[] { DiagnosticIDs.UnitNotDerivable };
+    private static string WithIDText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [DerivedUnit("Metre", "Metres", "1", new[] { "MetrePerSecond", "Second" })]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertWithID()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(WithIDText, target: "DerivedUnit");
+
+        return AssertExactlyUnitNotDerivableDiagnostics(WithIDText).AssertDiagnosticsLocation(expectedLocation, WithIDText);
+    }
 }
