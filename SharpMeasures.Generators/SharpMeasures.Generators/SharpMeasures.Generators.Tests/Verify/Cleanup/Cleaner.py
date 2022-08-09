@@ -20,7 +20,7 @@ class Utility:
     def deleteStateDirectory():
         print('Deleting state...')
         shutil.rmtree(Utility.stateDirectoryPath())
-        print('State deleted.'
+        print('State deleted.')
 
     def deleteVerifyDirectory():
         print('Deleting verification files...')
@@ -29,27 +29,33 @@ class Utility:
 
     def moveToStateDirectory():
         print('Moving verification files...')
-        shutil.move(verifyDirectoryPath(), stateDirectoryPath())
+        shutil.move(Utility.verifyDirectoryPath(), Utility.stateDirectoryPath())
         print('Verification files moved.')
 
     def restoreVerifyDirectory():
         print('Restoring verification files...')
-        shutil.move(stateDirectoryPath(), verifyDirectoryPath())
+        shutil.move(Utility.stateDirectoryPath(), Utility.verifyDirectoryPath())
         print('Verification files restored.')
 
-    def getReceivedFiles():
-        return glob.glob(verifyDirectoryPath() + '/**/*.received.txt', recursive = True)
+    def getVerifiedFiles():
+        return glob.glob(Utility.verifyDirectoryPath() + '/**/*.verified.txt', recursive = True)
 
-    def getCorrespondingVerifiedFile(receivedFile, issueWarning):
-        verifiedFile = received.replace('received', 'verified').replace('Snapshots', 'Cleanup/Snapshots')
+    def getAllSavedVerifiedFiles():
+        return glob.glob(Utility.stateDirectoryPath() + '/**/*.verified.txt', recursive = True)
 
-        if os.path.isfile(verifiedFile):
-            return verifiedFile
+    def getCorrespondingSavedVerifiedFile(verifiedFile, issueWarning):
+        savedFile = verifiedFile.replace('Snapshots', 'Cleanup/State')
+
+        if os.path.isfile(savedFile):
+            return savedFile
 
         if issueWarning:
             print(verifiedFile + ' has no corresponding verified file.')
 
         return False
+
+    def getCorrespondingReceivedFile(verifiedFile):
+        return verifiedFile.replace('verified', 'received')
 
 class Starter:
     
@@ -67,20 +73,32 @@ class Finisher:
             print('Cannot finish cleanup, as no started cleanup was found.')
             return
 
-        if Utility.verifyDirectoryExists() is false:
+        if Utility.verifyDirectoryExists() is False:
             print('The cleanup cannot be finished until the tests are run.')
             return
 
-        receivedFiles = Utility.getReceivedFiles()
+        verifiedFiles = Utility.getVerifiedFiles()
 
-        for receivedFile in receivedFiles:
-            verifiedFile = Utility.getCorrespondingVerifiedFile(received, verifiedWarnings)
+        appliedFiles = 0
+        savedFiles = len(Utility.getAllSavedVerifiedFiles())
 
-            if verifiedFile is False:
+        for verifiedFile in verifiedFiles:
+            savedFile = Utility.getCorrespondingSavedVerifiedFile(verifiedFile, verifiedWarnings)
+
+            if savedFile is False:
                 continue
 
-            shutil.move(verifiedFile, receivedFiles.replace('received', 'verified')
-            shutil.remove(receivedFile)
+            appliedFiles += 1
+
+            os.remove(verifiedFile)
+            os.remove(Utility.getCorrespondingReceivedFile(verifiedFile))
+            
+            shutil.move(savedFile, verifiedFile)
+
+        if appliedFiles == savedFiles:
+            print('No unused files were found.')
+        else:
+            print('Removed ' + str(savedFiles - appliedFiles) + ' unused files.')
 
         Utility.deleteStateDirectory()
 
