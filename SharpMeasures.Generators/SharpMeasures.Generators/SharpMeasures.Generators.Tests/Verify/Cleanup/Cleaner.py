@@ -37,11 +37,19 @@ class Utility:
         shutil.move(stateDirectoryPath(), verifyDirectoryPath())
         print('Verification files restored.')
 
-    def getVerifiedFiles():
-        return glob.glob(stateDirectoryPath() + '/**/*.verified.txt', recursive = True)
+    def getReceivedFiles():
+        return glob.glob(verifyDirectoryPath() + '/**/*.received.txt', recursive = True)
 
-    def getAppropriateReceivedFile(verifiedFile):
-        
+    def getCorrespondingVerifiedFile(receivedFile, issueWarning):
+        verifiedFile = received.replace('received', 'verified').replace('Snapshots', 'Cleanup/Snapshots')
+
+        if os.path.isfile(verifiedFile):
+            return verifiedFile
+
+        if issueWarning:
+            print(verifiedFile + ' has no corresponding verified file.')
+
+        return False
 
 class Starter:
     
@@ -54,7 +62,7 @@ class Starter:
 
 class Finisher:
 
-    def run():
+    def run(verifiedWarnings):
         if Utility.stateDirectoryExists() is False:
             print('Cannot finish cleanup, as no started cleanup was found.')
             return
@@ -63,10 +71,18 @@ class Finisher:
             print('The cleanup cannot be finished until the tests are run.')
             return
 
-        verifiedFiles = Utility.getVerifiedFiles()
+        receivedFiles = Utility.getReceivedFiles()
 
-        for verifiedFile in verifiedFiles:
-            
+        for receivedFile in receivedFiles:
+            verifiedFile = Utility.getCorrespondingVerifiedFile(received, verifiedWarnings)
+
+            if verifiedFile is False:
+                continue
+
+            shutil.move(verifiedFile, receivedFiles.replace('received', 'verified')
+            shutil.remove(receivedFile)
+
+        Utility.deleteStateDirectory()
 
 class Restorer:
 
@@ -117,6 +133,7 @@ class Deleter:
 parser = argparse.ArgumentParser(description = 'Delete unused Verify snapshots.')
 
 parser.add_argument('mode', type = str, nargs = 1, choices = ['start', 'finish', 'restore', 'force-delete'], help = 'The mode')
+parser.add_argument('-v', '--noVerifiedWarnings', action = 'store_true', help = 'Enables warnings for received files with no corresponding verified file.')
 
 args = parser.parse_args()
 
@@ -124,7 +141,7 @@ if args.mode[0] == 'start':
     Starter.run()
 
 if args.mode[0] == 'finish':
-    Finisher.run()
+    Finisher.run(args.noVerifiedWarnings)
 
 if args.mode[0] == 'restore':
     Restorer.run()
