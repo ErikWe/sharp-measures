@@ -1,6 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Diagnostics;
 
-using System;
 using System.Collections.Generic;
 
 public static partial class IterativeValidity

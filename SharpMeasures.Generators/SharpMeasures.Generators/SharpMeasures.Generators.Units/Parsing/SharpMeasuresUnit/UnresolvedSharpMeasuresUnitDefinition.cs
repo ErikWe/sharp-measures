@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Unresolved.Units;
 
 internal record class UnresolvedSharpMeasuresUnitDefinition : IAttributeDefinition<SharpMeasuresUnitLocations>, IUnresolvedUnit

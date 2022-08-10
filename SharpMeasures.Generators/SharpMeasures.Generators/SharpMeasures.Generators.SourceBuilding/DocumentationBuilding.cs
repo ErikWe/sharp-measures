@@ -1,9 +1,5 @@
 ﻿namespace SharpMeasures.Generators.SourceBuilding;
 
-using Microsoft.CodeAnalysis;
-
-using SharpMeasures.Generators.Documentation;
-
 using System.Text;
 using System.Text.RegularExpressions;
 

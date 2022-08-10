@@ -1,8 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.Diagnostics.Processing;
 
-using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Processing;
+using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 
 internal class ScalarConstantProcessingDiagnostics : QuantityConstantProcessingDiagnostics<RawScalarConstantDefinition, ScalarConstantLocations>
 {

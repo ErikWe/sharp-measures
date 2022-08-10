@@ -18,18 +18,6 @@ internal class VectorGroupFileDocumentation : IVectorGroupDocumentationStrategy,
         DocumentationFile = documentationFile;
         DefaultDocumentationStrategy = defaultDocumentationStrategy;
     }
-    
-    private string FromFileOrDefault(Func<IVectorGroupDocumentationStrategy, string> defaultDelegate)
-    {
-        string tag = defaultDelegate(DocumentationTags);
-
-        if (DocumentationFile.OptionallyResolveTag(tag) is not string { Length: > 0 } tagContent)
-        {
-            tagContent = defaultDelegate(DefaultDocumentationStrategy);
-        }
-
-        return tagContent;
-    }
 
     public virtual bool Equals(VectorGroupFileDocumentation? other) => other is not null && DocumentationTags == other.DocumentationTags
         && DocumentationFile == other.DocumentationFile && DefaultDocumentationStrategy.Equals(other.DefaultDocumentationStrategy);

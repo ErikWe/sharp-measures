@@ -1,8 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
-using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-
 using System.Collections.Generic;
 
 internal interface IIntermediateVectorGroupMemberType
