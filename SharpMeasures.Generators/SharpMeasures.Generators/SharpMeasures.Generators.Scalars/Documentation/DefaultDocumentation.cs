@@ -117,11 +117,11 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         /// <summary>The magnitude of <see langword="this"/>, expressed in <see cref="{Unit.Type.Name}.{unitInstance.Name}"/>.</summary>
         """;
 
-    public string AsDimensionallyEquivalent(IUnresolvedScalarType scalar) => $"""
+    public string Conversion(IUnresolvedScalarType scalar) => $"""
         /// <summary>Converts <see langword="this"/> to the equivalent <see cref="{scalar.Type.Name}"/>.</summary>
         """;
 
-    public string CastToDimensionallyEquivalent(IUnresolvedScalarType scalar) => $"""
+    public string CastConversion(IUnresolvedScalarType scalar) => $"""
         /// <summary>Converts <paramref name="x"/> to the equivalent <see cref="{scalar.Type.Name}"/>.</summary>
         /// <param name="x">This {ScalarReference} is converted to the equivalent <see cref="{scalar.Type.Name}"/>.</param>
         """;

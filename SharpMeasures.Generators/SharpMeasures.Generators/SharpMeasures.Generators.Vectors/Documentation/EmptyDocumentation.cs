@@ -28,8 +28,8 @@ internal class EmptyDocumentation : IVectorGroupDocumentationStrategy, IIndividu
     string IIndividualVectorDocumentationStrategy.InUnit() => string.Empty;
     string IIndividualVectorDocumentationStrategy.InConstantMultiples(IVectorConstant _) => string.Empty;
     string IIndividualVectorDocumentationStrategy.InSpecifiedUnit(IUnresolvedUnitInstance _) => string.Empty;
-    string IIndividualVectorDocumentationStrategy.AsDimensionallyEquivalent(IUnresolvedRegisteredVectorGroupMember _) => string.Empty;
-    string IIndividualVectorDocumentationStrategy.CastToDimensionallyEquivalent(IUnresolvedRegisteredVectorGroupMember _) => string.Empty;
+    string IIndividualVectorDocumentationStrategy.Conversion(IUnresolvedVectorGroupMemberType _) => string.Empty;
+    string IIndividualVectorDocumentationStrategy.CastConversion(IUnresolvedVectorGroupMemberType _) => string.Empty;
     string IIndividualVectorDocumentationStrategy.IsNaN() => string.Empty;
     string IIndividualVectorDocumentationStrategy.IsZero() => string.Empty;
     string IIndividualVectorDocumentationStrategy.IsFinite() => string.Empty;

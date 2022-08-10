@@ -188,12 +188,12 @@ internal class DefaultIndividualVectorDocumentation : IIndividualVectorDocumenta
         /// <summary>The components of <see langword="this"/>, expressed in <see cref="{UnitReference}.{unitInstance.Name}"/>.</summary>
         """;
 
-    public string AsDimensionallyEquivalent(IUnresolvedRegisteredVectorGroupMember member) => $"""
-        /// <summary>Converts <see langword="this"/> to the equivalent <see cref="{member.Vector.Name}"/>.</summary>
+    public string Conversion(IUnresolvedVectorGroupMemberType vectorGroupMember) => $"""
+        /// <summary>Converts <see langword="this"/> to the equivalent <see cref="{vectorGroupMember.Type.Name}"/>.</summary>
         """;
-    public string CastToDimensionallyEquivalent(IUnresolvedRegisteredVectorGroupMember member) => $"""
-        /// <summary>Converts <paramref name="a"/> to the equivalent <see cref="{member.Vector.Name}"/>.</summary>
-        /// <param name="a">This {VectorReference} is converted to the equivalent <see cref="{member.Vector.Name}"/>.</param>
+    public string CastConversion(IUnresolvedVectorGroupMemberType vectorGroupMember) => $"""
+        /// <summary>Converts <paramref name="a"/> to the equivalent <see cref="{vectorGroupMember.Type.Name}"/>.</summary>
+        /// <param name="a">This {VectorReference} is converted to the equivalent <see cref="{vectorGroupMember.Type.Name}"/>.</param>
         """;
 
     public string IsNaN() => """/// <inheritdoc cref="Vector3.IsNaN"/>""";

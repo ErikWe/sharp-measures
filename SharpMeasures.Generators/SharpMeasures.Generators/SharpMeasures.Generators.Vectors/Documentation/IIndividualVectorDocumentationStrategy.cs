@@ -29,8 +29,8 @@ internal interface IIndividualVectorDocumentationStrategy
     public abstract string InConstantMultiples(IVectorConstant constant);
     public abstract string InSpecifiedUnit(IUnresolvedUnitInstance unitInstance);
 
-    public abstract string AsDimensionallyEquivalent(IUnresolvedRegisteredVectorGroupMember member);
-    public abstract string CastToDimensionallyEquivalent(IUnresolvedRegisteredVectorGroupMember member);
+    public abstract string Conversion(IUnresolvedVectorGroupMemberType vectorGroupMember);
+    public abstract string CastConversion(IUnresolvedVectorGroupMemberType vectorGroupMember);
 
     public abstract string IsNaN();
     public abstract string IsZero();

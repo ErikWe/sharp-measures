@@ -15,11 +15,21 @@ internal static class VectorsGenerator
 
     private static DataModel? Reduce(Scalars.DataModel input, CancellationToken _)
     {
-        if (input.Scalar.Definition.VectorGroup?.RegisteredMembersByDimension.Count is null or 0)
+        if (input.Scalar.Definition.VectorGroup is null)
         {
             return null;
         }
 
-        return new(input.Scalar.Type, input.Scalar.Definition.VectorGroup, input.Documentation);
+        if (input.VectorPopulation.VectorGroups.TryGetValue(input.Scalar.Definition.VectorGroup.Type.AsNamedType(), out var vectorGroup) is false)
+        {
+            return null;
+        }
+
+        if (vectorGroup.MembersByDimension.Count is 0)
+        {
+            return null;
+        }
+
+        return new(input.Scalar.Type, vectorGroup, input.Documentation);
     }
 }

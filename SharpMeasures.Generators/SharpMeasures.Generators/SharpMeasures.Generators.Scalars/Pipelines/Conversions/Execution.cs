@@ -115,7 +115,7 @@ internal static class Execution
 
         private void ComposeInstanceConversion(Indentation indentation, IUnresolvedScalarType scalar)
         {
-            AppendDocumentation(indentation, Data.Documentation.AsDimensionallyEquivalent(scalar));
+            AppendDocumentation(indentation, Data.Documentation.Conversion(scalar));
             Builder.AppendLine($"{indentation}public {scalar.Type.Name} As{scalar.Type.Name} => new(Magnitude);");
         }
 
@@ -127,7 +127,7 @@ internal static class Execution
 
         private void ComposeOperatorConversion(Indentation indentation, IUnresolvedScalarType scalar, string behaviour)
         {
-            AppendDocumentation(indentation, Data.Documentation.CastToDimensionallyEquivalent(scalar));
+            AppendDocumentation(indentation, Data.Documentation.CastConversion(scalar));
 
             if (Data.Scalar.IsReferenceType)
             {

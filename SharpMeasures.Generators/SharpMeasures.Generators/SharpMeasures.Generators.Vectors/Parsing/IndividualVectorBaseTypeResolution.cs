@@ -5,11 +5,11 @@ using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Units;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Unresolved.Vectors;
 using SharpMeasures.Generators.Vectors;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Resolution;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Resolution;
-using SharpMeasures.Generators.Vectors.Parsing.RegisterVectorGroupMember;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
@@ -77,14 +77,14 @@ internal static class IndividualVectorBaseTypeResolution
         return includedUnits.ToList();
     }
 
-    private static IReadOnlyDictionary<int, IRegisteredVectorGroupMember> MockMembersPopulation(UnresolvedIndividualVectorBaseType unresolvedType, SharpMeasuresVectorDefinition vector)
+    private static IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> MockMembersPopulation(UnresolvedIndividualVectorBaseType unresolvedType, SharpMeasuresVectorDefinition vector)
     {
         UnresolvedSharpMeasuresVectorGroupMemberDefinition mockedMember = new(unresolvedType.Type.AsNamedType(), vector.Dimension, false, SharpMeasuresVectorGroupMemberLocations.Empty);
         UnresolvedVectorGroupMemberType mockedType = new(unresolvedType.Type, unresolvedType.TypeLocation, mockedMember, unresolvedType.Constants);
 
-        return new Dictionary<int, IRegisteredVectorGroupMember>(1)
+        return new Dictionary<int, IUnresolvedVectorGroupMemberType>(1)
         {
-            { vector.Dimension, new RegisterVectorGroupMemberDefinition(mockedType, vector.Dimension, RegisterVectorGroupMemberLocations.Empty) }
+            { vector.Dimension, mockedType }
         };
     }
 

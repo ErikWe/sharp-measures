@@ -3,6 +3,7 @@
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Unresolved.Vectors;
 
 using System.Collections.Generic;
 
@@ -13,14 +14,14 @@ internal record class VectorGroupType : IVectorGroupType
 
     public IVectorGroup Definition { get; }
 
-    public IReadOnlyDictionary<int, IRegisteredVectorGroupMember> RegisteredMembersByDimension => registeredMembersByDimension;
+    public IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> MembersByDimension => registeredMembersByDimension;
 
     public IReadOnlyList<IDerivedQuantity> Derivations => derivations;
     public IReadOnlyList<IConvertibleVector> Conversions => conversions;
 
     public IReadOnlyList<IUnresolvedUnitInstance> IncludedUnits => includedUnits;
 
-    private ReadOnlyEquatableDictionary<int, IRegisteredVectorGroupMember> registeredMembersByDimension { get; }
+    private ReadOnlyEquatableDictionary<int, IUnresolvedVectorGroupMemberType> registeredMembersByDimension { get; }
 
     private ReadOnlyEquatableList<IDerivedQuantity> derivations { get; }
     private ReadOnlyEquatableList<IConvertibleVector> conversions { get; }
@@ -36,7 +37,7 @@ internal record class VectorGroupType : IVectorGroupType
     IReadOnlyList<IConvertibleVector> IVectorGroupType.Conversions => Conversions;
 
     public VectorGroupType(DefinedType type, MinimalLocation typeLocation, IVectorGroup definition,
-        IReadOnlyDictionary<int, IRegisteredVectorGroupMember> registeredMembersByDimension, IReadOnlyList<IDerivedQuantity> derivations,
+        IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> registeredMembersByDimension, IReadOnlyList<IDerivedQuantity> derivations,
         IReadOnlyList<IConvertibleVector> conversions, IReadOnlyList<IUnresolvedUnitInstance> includedUnits)
     {
         Type = type;

@@ -5,7 +5,6 @@ using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.UnitList;
 using SharpMeasures.Generators.Unresolved.Vectors;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
-using SharpMeasures.Generators.Vectors.Parsing.RegisterVectorGroupMember;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System.Collections.Generic;
@@ -28,11 +27,10 @@ internal abstract record class AUnresolvedIndividualVectorType<TDefinition> : AU
 
     IReadOnlyList<IUnresolvedVectorConstant> IUnresolvedIndividualVectorType.Constants => Constants;
 
-    protected AUnresolvedIndividualVectorType(DefinedType type, MinimalLocation typeLocation, TDefinition definition,
-        IReadOnlyDictionary<int, UnresolvedRegisterVectorGroupMemberDefinition> registeredMembersByDimension, IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations,
+    protected AUnresolvedIndividualVectorType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations,
         IReadOnlyList<UnresolvedVectorConstantDefinition> constants, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions,
         IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
-        : base(type, typeLocation, definition, registeredMembersByDimension, derivations, conversions, unitInclusions, unitExclusions)
+        : base(type, typeLocation, definition, derivations, conversions, unitInclusions, unitExclusions)
     {
         this.constants = constants.AsReadOnlyEquatable();
 

@@ -62,19 +62,19 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
-            foreach (var vector in Data.VectorGroup.RegisteredMembersByDimension)
+            foreach (var vector in Data.VectorGroup.MembersByDimension)
             {
-                UsingsCollector.AddUsing(vector.Value.Vector.Namespace);
+                UsingsCollector.AddUsing(vector.Value.Type.Namespace);
                 
                 ComposeForVector(indentation, vector.Value, vector.Key);
                 Builder.AppendLine();
             }
         }
 
-        private void ComposeForVector(Indentation indentation, IUnresolvedRegisteredVectorGroupMember vectorGroupMember, int dimension)
+        private void ComposeForVector(Indentation indentation, IUnresolvedVectorGroupMemberType vectorGroupMember, int dimension)
         {
             AppendDocumentation(indentation, Data.Documentation.MultiplyVectorMethod(dimension));
-            Builder.AppendLine($"{indentation}public {vectorGroupMember.Vector.Name} Multiply(Vector{dimension} factor) => new(Magnitude.Value * factor);");
+            Builder.AppendLine($"{indentation}public {vectorGroupMember.Type.Name} Multiply(Vector{dimension} factor) => new(Magnitude.Value * factor);");
 
             Builder.AppendLine();
 
@@ -103,10 +103,10 @@ internal static class Execution
             else
             {
                 AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorLHS(dimension));
-                Builder.AppendLine($"{indentation}public static {vectorGroupMember.Vector.Name} operator *({Data.Scalar.Name} x, Vector{dimension} y) => new(x.Magnitude.Value * y);");
+                Builder.AppendLine($"{indentation}public static {vectorGroupMember.Type.Name} operator *({Data.Scalar.Name} x, Vector{dimension} y) => new(x.Magnitude.Value * y);");
 
                 AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorRHS(dimension));
-                Builder.AppendLine($"{indentation}public static {vectorGroupMember.Vector.Name} operator *(Vector{dimension} x, {Data.Scalar.Name} y) => new(x * y.Magnitude.Value);");
+                Builder.AppendLine($"{indentation}public static {vectorGroupMember.Type.Name} operator *(Vector{dimension} x, {Data.Scalar.Name} y) => new(x * y.Magnitude.Value);");
             }
         }
 

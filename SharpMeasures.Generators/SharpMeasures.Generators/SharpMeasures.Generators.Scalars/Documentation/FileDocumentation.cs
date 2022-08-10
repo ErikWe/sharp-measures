@@ -40,8 +40,8 @@ internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocume
     public string InConstantMultiples(IScalarConstant constant) => FromFileOrDefault((strategy) => strategy.InConstantMultiples(constant));
     public string InSpecifiedUnit(IUnresolvedUnitInstance unitInstance) => FromFileOrDefault((strategy) => strategy.InSpecifiedUnit(unitInstance));
 
-    public string AsDimensionallyEquivalent(IUnresolvedScalarType scalar) => FromFileOrDefault((strategy) => strategy.AsDimensionallyEquivalent(scalar));
-    public string CastToDimensionallyEquivalent(IUnresolvedScalarType scalar) => FromFileOrDefault((strategy) => strategy.CastToDimensionallyEquivalent(scalar));
+    public string Conversion(IUnresolvedScalarType scalar) => FromFileOrDefault((strategy) => strategy.Conversion(scalar));
+    public string CastConversion(IUnresolvedScalarType scalar) => FromFileOrDefault((strategy) => strategy.CastConversion(scalar));
 
     public string IsNaN() => FromFileOrDefault(static (strategy) => strategy.IsNaN());
     public string IsZero() => FromFileOrDefault(static (strategy) => strategy.IsZero());

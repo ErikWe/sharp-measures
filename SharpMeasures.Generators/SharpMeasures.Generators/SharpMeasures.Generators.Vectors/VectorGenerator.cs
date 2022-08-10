@@ -127,7 +127,7 @@ internal class VectorGenerator : IVectorGenerator
         ((VectorGroupDataModel Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
     {
         return AppendDocumentation<VectorGroupDataModel, IVectorGroupType, IVectorGroupDocumentationStrategy>(input.Model, input.GenerateDocumentation,
-            input.DocumentationDictionary, static (model) => new DefaultVectorGroupDocumentation(model),
+            input.DocumentationDictionary, static (model) => new DefaultVectorGroupDocumentation(),
             static (file, documentation) => new VectorGroupFileDocumentation(file, documentation));
     }
 

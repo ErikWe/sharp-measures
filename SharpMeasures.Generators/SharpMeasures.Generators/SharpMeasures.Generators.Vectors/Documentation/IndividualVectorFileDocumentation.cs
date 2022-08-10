@@ -46,8 +46,8 @@ internal class IndividualVectorFileDocumentation : IIndividualVectorDocumentatio
     public string InConstantMultiples(IVectorConstant constant) => FromFileOrDefault((strategy) => strategy.InConstantMultiples(constant));
     public string InSpecifiedUnit(IUnresolvedUnitInstance unitInstance) => FromFileOrDefault((strategy) => strategy.InSpecifiedUnit(unitInstance));
 
-    public string AsDimensionallyEquivalent(IUnresolvedRegisteredVectorGroupMember member) => FromFileOrDefault((strategy) => strategy.AsDimensionallyEquivalent(member));
-    public string CastToDimensionallyEquivalent(IUnresolvedRegisteredVectorGroupMember member) => FromFileOrDefault((strategy) => strategy.CastToDimensionallyEquivalent(member));
+    public string Conversion(IUnresolvedVectorGroupMemberType vectorGroupMember) => FromFileOrDefault((strategy) => strategy.Conversion(vectorGroupMember));
+    public string CastConversion(IUnresolvedVectorGroupMemberType vectorGroupMember) => FromFileOrDefault((strategy) => strategy.CastConversion(vectorGroupMember));
 
     public string IsNaN() => FromFileOrDefault(static (strategy) => strategy.IsNaN());
     public string IsZero() => FromFileOrDefault(static (strategy) => strategy.IsZero());

@@ -40,8 +40,8 @@ internal class IndividualVectorDocumentationTags : IIndividualVectorDocumentatio
     public string InConstantMultiples(IVectorConstant constant) => $"InMultiplesOf_{constant.Name}";
     public string InSpecifiedUnit(IUnresolvedUnitInstance unitInstance) => $"InUnit_{unitInstance.Name}";
 
-    public string AsDimensionallyEquivalent(IUnresolvedRegisteredVectorGroupMember member) => $"As_{member.Vector.Name}";
-    public string CastToDimensionallyEquivalent(IUnresolvedRegisteredVectorGroupMember memberor) => $"Operator_Cast_{memberor.Vector.Name}";
+    public string Conversion(IUnresolvedVectorGroupMemberType vectorGroupMember) => $"As_{vectorGroupMember.Type.Name}";
+    public string CastConversion(IUnresolvedVectorGroupMemberType vectorGroupMember) => $"Operator_Cast_{vectorGroupMember.Type.Name}";
 
     public string IsNaN() => "IsNaN";
     public string IsZero() => "IsZero";

@@ -5,6 +5,7 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Units;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Unresolved.Vectors;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Resolution;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Resolution;
@@ -36,8 +37,8 @@ internal class VectorGroupMemberResolution
             static (vector) => Array.Empty<IUnresolvedUnitInstance>());
 
         var inheritedConstants = ResolveCollection(intermediateMember, vectorPopulation, static (vector) => vector.Definition.InheritConstants,
-            (vector) => vector.RegisteredMembersByDimension.Values.SelectMany(vectorGroupConstants),
-            (vector) => vector.RegisteredMembersByDimension.Values.SelectMany(vectorGroupConstants));
+            (vector) => vector.MembersByDimension.Values.SelectMany(vectorGroupConstants),
+            (vector) => vector.MembersByDimension.Values.SelectMany(vectorGroupConstants));
 
         var allConstants = VectorTypePostResolutionFilter.FilterAndCombineConstants(intermediateMember.Type, intermediateMember.Constants, inheritedConstants, includedUnits);
 
@@ -48,9 +49,9 @@ internal class VectorGroupMemberResolution
 
         return OptionalWithDiagnostics.Result(reduced, allDiagnostics);
         
-        IEnumerable<IVectorConstant> vectorGroupConstants(IRegisteredVectorGroupMember member)
+        IEnumerable<IVectorConstant> vectorGroupConstants(IUnresolvedVectorGroupMemberType member)
         {
-            if (vectorPopulation.VectorGroupMembers.TryGetValue(member.Vector.Type.AsNamedType(), out var memberType))
+            if (vectorPopulation.VectorGroupMembers.TryGetValue(member.Type.AsNamedType(), out var memberType))
             {
                 return memberType.Constants;
             }
@@ -103,20 +104,19 @@ internal class VectorGroupMemberResolution
         return ProcessingFilter.Create(VectorConstantResolver).Filter(vectorConstantResolutionContext, unresolvedConstants);
     }
 
-    private static IReadOnlyDictionary<int, IRegisteredVectorGroupMember> ResolveMembersByDimension(IntermediateVectorGroupMemberType member,
-        IIntermediateVectorGroupPopulation vectorPopulation)
+    private static IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> ResolveMembersByDimension(IntermediateVectorGroupMemberType member, IIntermediateVectorGroupPopulation vectorPopulation)
     {
         if (vectorPopulation.VectorGroupBases.TryGetValue(member.Definition.VectorGroup.Type.AsNamedType(), out var vectorGroupBase))
         {
-            return vectorGroupBase.RegisteredMembersByDimension;
+            return vectorGroupBase.MembersByDimension;
         }
 
         if (vectorPopulation.VectorGroupSpecializations.TryGetValue(member.Definition.VectorGroup.Type.AsNamedType(), out var vectorGroupSpecialization))
         {
-            return vectorGroupSpecialization.RegisteredMembersByDimension;
+            return vectorGroupSpecialization.MembersByDimension;
         }
 
-        return new Dictionary<int, IRegisteredVectorGroupMember>();
+        return new Dictionary<int, IUnresolvedVectorGroupMemberType>();
     }
 
     private static IReadOnlyList<IUnresolvedUnitInstance> GetIncludedUnits(IntermediateVectorGroupMemberType member, IUnresolvedUnitType unit,

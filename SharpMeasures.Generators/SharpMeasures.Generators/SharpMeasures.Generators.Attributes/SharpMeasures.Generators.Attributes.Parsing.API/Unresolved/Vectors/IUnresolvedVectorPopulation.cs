@@ -10,6 +10,13 @@ public interface IUnresolvedVectorPopulation : IUnresolvedQuantityPopulation
     public abstract IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupBaseType> VectorGroupBases { get; }
     public abstract IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupMemberType> VectorGroupMembers { get; }
 
+    public abstract IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupPopulation> VectorGroupMembersByGroup { get; }
+
     public abstract IReadOnlyDictionary<NamedType, IUnresolvedIndividualVectorType> IndividualVectors { get; }
     public abstract IReadOnlyDictionary<NamedType, IUnresolvedIndividualVectorBaseType> IndividualVectorBases { get; }
+}
+
+public interface IUnresolvedVectorGroupPopulation
+{
+    public abstract IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> VectorGroupMembersByDimension { get; }
 }

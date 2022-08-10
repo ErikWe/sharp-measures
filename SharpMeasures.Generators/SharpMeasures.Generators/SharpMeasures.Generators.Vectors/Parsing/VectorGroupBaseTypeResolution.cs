@@ -34,22 +34,20 @@ internal static class VectorGroupBaseTypeResolution
             return OptionalWithDiagnostics.Empty<VectorGroupType>(allDiagnostics);
         }
 
-        var members = VectorGroupTypeResolution.ResolveMembers(unresolvedVector.Type, unresolvedVector.RegisteredMembersByDimension.Values, unresolvedVector, vectorPopulation);
-
         var derivations = VectorGroupTypeResolution.ResolveDerivations(unresolvedVector.Type, unresolvedVector.Derivations, scalarPopulation, vectorPopulation);
         var conversions = VectorGroupTypeResolution.ResolveConversions(unresolvedVector.Type, unresolvedVector.Conversions, vectorPopulation);
 
         var unitInclusions = VectorGroupTypeResolution.ResolveUnitList(unresolvedVector.Type, vector.Result.Unit, unresolvedVector.UnitInclusions);
         var unitExclusions = VectorGroupTypeResolution.ResolveUnitList(unresolvedVector.Type, vector.Result.Unit, unresolvedVector.UnitExclusions);
 
+        var membersByDimension = vectorPopulation.VectorGroupMembersByGroup[unresolvedVector.Type.AsNamedType()].VectorGroupMembersByDimension;
+
         var includedUnits = GetIncludedUnits(vector.Result.Unit, unitInclusions.Result, unitExclusions.Result);
 
-        allDiagnostics = allDiagnostics.Concat(members.Diagnostics).Concat(derivations.Diagnostics).Concat(conversions.Diagnostics).Concat(unitInclusions.Diagnostics)
+        allDiagnostics = allDiagnostics.Concat(derivations.Diagnostics).Concat(conversions.Diagnostics).Concat(unitInclusions.Diagnostics)
             .Concat(unitExclusions.Diagnostics);
 
-        var membersDictionary = members.Result.ToDictionary(static (member) => member.Dimension, static (member) => member as IRegisteredVectorGroupMember);
-
-        VectorGroupType product = new(unresolvedVector.Type, unresolvedVector.TypeLocation, vector.Result, membersDictionary, derivations.Result,
+        VectorGroupType product = new(unresolvedVector.Type, unresolvedVector.TypeLocation, vector.Result, membersByDimension, derivations.Result,
             conversions.Result, includedUnits);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);

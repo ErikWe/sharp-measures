@@ -12,20 +12,11 @@ using SharpMeasures.Generators.Unresolved.Vectors;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Resolution;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Resolution;
-using SharpMeasures.Generators.Vectors.Parsing.RegisterVectorGroupMember;
 
 using System.Collections.Generic;
 
 internal static class VectorGroupTypeResolution
 {
-    public static IResultWithDiagnostics<IReadOnlyList<RegisterVectorGroupMemberDefinition>> ResolveMembers(DefinedType type,
-        IEnumerable<UnresolvedRegisterVectorGroupMemberDefinition> unresolvedMembers, IUnresolvedVectorGroupType vectorGroup, IUnresolvedVectorPopulation vectorPopulation)
-    {
-        RegisterVectorGroupMemberResolutionContext registerVectorGroupMemberResolutionContext = new(type, vectorGroup, vectorPopulation);
-
-        return ProcessingFilter.Create(RegisterVectorGroupMemberResolver).Filter(registerVectorGroupMemberResolutionContext, unresolvedMembers);
-    }
-
     public static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ResolveDerivations(DefinedType type,
         IEnumerable<UnresolvedDerivedQuantityDefinition> unresolvedDerivations, IUnresolvedScalarPopulation scalarPopulation, IUnresolvedVectorPopulation vectorPopulation)
     {
@@ -49,8 +40,6 @@ internal static class VectorGroupTypeResolution
 
         return ProcessingFilter.Create(UnitListResolver).Filter(unitListResolutionContext, unresolvedUnitList);
     }
-
-    private static RegisterVectorGroupMemberResolver RegisterVectorGroupMemberResolver { get; } = new(RegisterVectorGroupMemberResolutionDiagnostics.Instance);
 
     private static DerivedQuantityResolver DerivedQuantityResolver { get; } = new(DerivedQuantityResolutionDiagnostics.Instance);
     private static ConvertibleVectorGroupResolver ConvertibleVectorResolver { get; } = new(ConvertibleVectorResolutionDiagnostics.Instance);

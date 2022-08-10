@@ -4,8 +4,6 @@ using System;
 
 internal class DefaultVectorGroupDocumentation : IVectorGroupDocumentationStrategy, IEquatable<DefaultVectorGroupDocumentation>
 {
-    public DefaultVectorGroupDocumentation(VectorGroupDataModel model) { }
-
     public virtual bool Equals(DefaultVectorGroupDocumentation? other) => other is not null;
 
     public override bool Equals(object? obj) => obj is DefaultVectorGroupDocumentation other && Equals(other);

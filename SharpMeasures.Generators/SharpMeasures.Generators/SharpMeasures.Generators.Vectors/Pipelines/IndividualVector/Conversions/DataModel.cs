@@ -12,18 +12,22 @@ internal readonly record struct DataModel
     public int Dimension { get; }
 
     public IReadOnlyList<IConvertibleVector> Conversions => conversions;
+    public IReadOnlyDictionary<NamedType, IVectorGroupType> VectorGroupPopulation => vectorGroupPopulation;
 
     public IIndividualVectorDocumentationStrategy Documentation { get; }
 
     private ReadOnlyEquatableList<IConvertibleVector> conversions { get; }
+    private ReadOnlyEquatableDictionary<NamedType, IVectorGroupType> vectorGroupPopulation { get; }
 
-    public DataModel(DefinedType vector, int dimension, IReadOnlyList<IConvertibleVector> conversions, IIndividualVectorDocumentationStrategy documentation)
+    public DataModel(DefinedType vector, int dimension, IReadOnlyList<IConvertibleVector> conversions, IReadOnlyDictionary<NamedType, IVectorGroupType> vectorGroupPopulation,
+        IIndividualVectorDocumentationStrategy documentation)
     {
         Vector = vector;
 
         Dimension = dimension;
 
         this.conversions = conversions.AsReadOnlyEquatable();
+        this.vectorGroupPopulation = vectorGroupPopulation.AsReadOnlyEquatable();
 
         Documentation = documentation;
     }

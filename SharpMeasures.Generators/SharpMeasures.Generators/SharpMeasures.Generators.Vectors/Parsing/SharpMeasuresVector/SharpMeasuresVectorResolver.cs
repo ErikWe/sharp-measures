@@ -98,7 +98,7 @@ internal class SharpMeasuresVectorResolver : IProcesser<ISharpMeasuresVectorReso
         return OptionalWithDiagnostics.Result(scalar);
     }
 
-    private IResultWithDiagnostics<IUnresolvedIndividualVectorType> ProcessDifference(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition)
+    private IResultWithDiagnostics<IUnresolvedVectorGroupType> ProcessDifference(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition)
     {
         if (context.VectorPopulation.IndividualVectors.TryGetValue(definition.Difference, out var vector) is false)
         {
@@ -107,21 +107,21 @@ internal class SharpMeasuresVectorResolver : IProcesser<ISharpMeasuresVectorReso
                 var diagnostics = Diagnostics.DifferenceNotVector(context, definition);
                 var selfType = context.VectorPopulation.IndividualVectors[context.Type.AsNamedType()];
 
-                return ResultWithDiagnostics.Construct(selfType, diagnostics);
+                return ResultWithDiagnostics.Construct(selfType as IUnresolvedVectorGroupType, diagnostics);
             }
 
-            if (vectorGroup.RegisteredMembersByDimension.TryGetValue(definition.Dimension, out var difference) is false)
+            if (context.VectorPopulation.VectorGroupMembersByGroup[vectorGroup.Type.AsNamedType()].VectorGroupMembersByDimension.ContainsKey(definition.Dimension) is false)
             {
                 var diagnostics = Diagnostics.DifferenceVectorGroupLacksMatchingDimension(context, definition);
                 var selfType = context.VectorPopulation.IndividualVectors[context.Type.AsNamedType()];
 
-                return ResultWithDiagnostics.Construct(selfType, diagnostics);
+                return ResultWithDiagnostics.Construct(selfType as IUnresolvedVectorGroupType, diagnostics);
             }
 
-            return ResultWithDiagnostics.Construct(context.VectorPopulation.IndividualVectors[difference.Vector]);
+            return ResultWithDiagnostics.Construct(vectorGroup);
         }
 
-        return ResultWithDiagnostics.Construct(vector);
+        return ResultWithDiagnostics.Construct(vector as IUnresolvedVectorGroupType);
     }
 
     private IResultWithDiagnostics<IUnresolvedUnitInstance?> ProcessDefaultUnitName(ISharpMeasuresVectorResolutionContext context,

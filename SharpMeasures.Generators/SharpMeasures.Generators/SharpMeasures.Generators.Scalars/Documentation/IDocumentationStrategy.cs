@@ -27,8 +27,8 @@ internal interface IDocumentationStrategy
     public abstract string InConstantMultiples(IScalarConstant constant);
     public abstract string InSpecifiedUnit(IUnresolvedUnitInstance unitInstance);
 
-    public abstract string AsDimensionallyEquivalent(IUnresolvedScalarType scalar);
-    public abstract string CastToDimensionallyEquivalent(IUnresolvedScalarType scalar);
+    public abstract string Conversion(IUnresolvedScalarType scalar);
+    public abstract string CastConversion(IUnresolvedScalarType scalar);
 
     public abstract string IsNaN();
     public abstract string IsZero();

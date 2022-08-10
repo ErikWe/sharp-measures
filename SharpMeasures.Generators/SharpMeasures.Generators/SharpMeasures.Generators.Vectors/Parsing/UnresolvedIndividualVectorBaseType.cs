@@ -6,7 +6,6 @@ using SharpMeasures.Generators.Unresolved.Quantities;
 using SharpMeasures.Generators.Unresolved.Vectors;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
-using SharpMeasures.Generators.Vectors.Parsing.RegisterVectorGroupMember;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
@@ -19,9 +18,8 @@ internal record class UnresolvedIndividualVectorBaseType : AUnresolvedIndividual
     IUnresolvedIndividualVectorBase IUnresolvedIndividualVectorBaseType.Definition => Definition;
 
     public UnresolvedIndividualVectorBaseType(DefinedType type, MinimalLocation typeLocation, UnresolvedSharpMeasuresVectorDefinition definition,
-        IReadOnlyDictionary<int, UnresolvedRegisterVectorGroupMemberDefinition> registeredMembersByDimension,
         IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedVectorConstantDefinition> constants,
         IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
         IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
-        : base(type, typeLocation, definition, registeredMembersByDimension, derivations, constants, conversions, unitInclusions, unitExclusions) { }
+        : base(type, typeLocation, definition, derivations, constants, conversions, unitInclusions, unitExclusions) { }
 }

@@ -4,11 +4,11 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Unresolved.Scalars;
 using SharpMeasures.Generators.Unresolved.Units;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Unresolved.Vectors;
 using SharpMeasures.Generators.Vectors;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Resolution;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Resolution;
-using SharpMeasures.Generators.Vectors.Parsing.RegisterVectorGroupMember;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
 using SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVector;
 
@@ -43,8 +43,8 @@ internal static class IndividualVectorSpecializationTypeResolution
 
         var allConstants = VectorTypePostResolutionFilter.FilterAndCombineConstants(intermediateVector.Type, intermediateVector.Constants, inheritedConstants, includedUnits);
 
-        IndividualVectorType reduced = new(intermediateVector.Type, intermediateVector.TypeLocation, intermediateVector.Definition,
-            intermediateVector.RegisteredMembersByDimension, derivations, allConstants.Result, allConversions.Result, includedUnits);
+        IndividualVectorType reduced = new(intermediateVector.Type, intermediateVector.TypeLocation, intermediateVector.Definition, intermediateVector.MembersByDimension,
+            derivations, allConstants.Result, allConversions.Result, includedUnits);
 
         var allDiagnostics = allConversions.Diagnostics.Concat(allConstants.Diagnostics);
 
@@ -72,13 +72,15 @@ internal static class IndividualVectorSpecializationTypeResolution
         var constants = IndividualVectorTypeResolution.ResolveConstants(unresolvedVector.Type, unresolvedVector.Constants, vector.Result.Unit, vector.Result.Dimension);
         var conversions = IndividualVectorTypeResolution.ResolveConversions(unresolvedVector.Type, unresolvedVector.Conversions, vectorPopulation);
 
+        var membersByDimension = MockMembersPopulation(unresolvedVector, vector.Result);
+
         var unitInclusions = IndividualVectorTypeResolution.ResolveUnitList(unresolvedVector.Type, vector.Result.Unit, unresolvedVector.UnitInclusions);
         var unitExclusions = IndividualVectorTypeResolution.ResolveUnitList(unresolvedVector.Type, vector.Result.Unit, unresolvedVector.UnitExclusions);
 
         allDiagnostics = allDiagnostics.Concat(derivations.Diagnostics).Concat(constants.Diagnostics).Concat(conversions.Diagnostics).Concat(unitInclusions.Diagnostics) .Concat(unitExclusions.Diagnostics);
 
-        IntermediateIndividualVectorSpecializationType product = new(unresolvedVector.Type, unresolvedVector.TypeLocation, vector.Result, MockMembersPopulation(unresolvedVector, vector.Result),
-            derivations.Result, constants.Result, conversions.Result, unitInclusions.Result.SelectMany((list) => list.Units).ToList(), unitExclusions.Result.SelectMany((list) => list.Units).ToList());
+        IntermediateIndividualVectorSpecializationType product = new(unresolvedVector.Type, unresolvedVector.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result,
+            membersByDimension, unitInclusions.Result.SelectMany((list) => list.Units).ToList(), unitExclusions.Result.SelectMany((list) => list.Units).ToList());
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
@@ -164,14 +166,14 @@ internal static class IndividualVectorSpecializationTypeResolution
         }
     }
 
-    private static IReadOnlyDictionary<int, IRegisteredVectorGroupMember> MockMembersPopulation(UnresolvedIndividualVectorSpecializationType unresolvedType, SpecializedSharpMeasuresVectorDefinition vector)
+    private static IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> MockMembersPopulation(UnresolvedIndividualVectorSpecializationType unresolvedType, SpecializedSharpMeasuresVectorDefinition vector)
     {
         UnresolvedSharpMeasuresVectorGroupMemberDefinition mockedMember = new(unresolvedType.Type.AsNamedType(), vector.Dimension, false, SharpMeasuresVectorGroupMemberLocations.Empty);
         UnresolvedVectorGroupMemberType mockedType = new(unresolvedType.Type, unresolvedType.TypeLocation, mockedMember, unresolvedType.Constants);
 
-        return new Dictionary<int, IRegisteredVectorGroupMember>(1)
+        return new Dictionary<int, IUnresolvedVectorGroupMemberType>(1)
         {
-            { vector.Dimension, new RegisterVectorGroupMemberDefinition(mockedType, vector.Dimension, RegisterVectorGroupMemberLocations.Empty) }
+            { vector.Dimension, mockedType }
         };
     }
 

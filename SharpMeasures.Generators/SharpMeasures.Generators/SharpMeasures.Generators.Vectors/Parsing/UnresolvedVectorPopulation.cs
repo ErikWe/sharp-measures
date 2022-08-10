@@ -17,11 +17,12 @@ internal class UnresolvedVectorPopulation : IUnresolvedVectorPopulationWithData
     {
         Dictionary<NamedType, IUnresolvedVectorGroupType> vectorGroupPopulation = new(vectorGroupBases.Length + vectorGroupSpecializations.Length);
         Dictionary<NamedType, IUnresolvedVectorGroupBaseType> vectorGroupBasePopulation = new(vectorGroupBases.Length + individualVectorBases.Length);
+        Dictionary<NamedType, IUnresolvedVectorGroupMemberType> vectorGroupMemberPopulation = new(vectorGroupMembers.Length);
+
+        Dictionary<NamedType, Dictionary<int, IUnresolvedVectorGroupMemberType>> vectorGroupMembersByGroup = new(vectorGroupBases.Length + vectorGroupSpecializations.Length);
 
         Dictionary<NamedType, IUnresolvedIndividualVectorType> individualVectorPopulation = new(individualVectorBases.Length);
         Dictionary<NamedType, IUnresolvedIndividualVectorBaseType> individualVectorBasePopulation = new(individualVectorBases.Length);
-
-        Dictionary<NamedType, IUnresolvedVectorGroupMemberType> vectorGroupMemberPopulation = new(vectorGroupMembers.Length);
 
         Dictionary<NamedType, IUnresolvedVectorGroupType> duplicateVectorGroupPopulation = new();
         Dictionary<NamedType, IUnresolvedVectorGroupMemberType> duplicateVectorGroupMemberPopulation = new();
@@ -29,12 +30,12 @@ internal class UnresolvedVectorPopulation : IUnresolvedVectorPopulationWithData
 
         foreach (var vectorGroup in (vectorGroupBases as IEnumerable<IUnresolvedVectorGroupType>).Concat(vectorGroupSpecializations))
         {
-            if (vectorGroupPopulation.TryAdd(vectorGroup.Type.AsNamedType(), vectorGroup))
+            if (vectorGroupPopulation.TryAdd(vectorGroup.Type.AsNamedType(), vectorGroup) is false)
             {
-                continue;
+                duplicateVectorGroupPopulation.TryAdd(vectorGroup.Type.AsNamedType(), vectorGroup);
             }
 
-            duplicateVectorGroupPopulation.TryAdd(vectorGroup.Type.AsNamedType(), vectorGroup);
+            vectorGroupMembersByGroup.TryAdd(vectorGroup.Type.AsNamedType(), new Dictionary<int, IUnresolvedVectorGroupMemberType>());
         }
 
         foreach (var vectorGroupBase in vectorGroupBases)
@@ -46,10 +47,8 @@ internal class UnresolvedVectorPopulation : IUnresolvedVectorPopulationWithData
         {
             if (individualVectorPopulation.TryAdd(individualVector.Type.AsNamedType(), individualVector))
             {
-                continue;
+                duplicateIndividualVectorPopulation.TryAdd(individualVector.Type.AsNamedType(), individualVector);
             }
-
-            duplicateIndividualVectorPopulation.TryAdd(individualVector.Type.AsNamedType(), individualVector);
         }
 
         foreach (var individualVectorBase in individualVectorBases)
@@ -61,10 +60,13 @@ internal class UnresolvedVectorPopulation : IUnresolvedVectorPopulationWithData
         {
             if (vectorGroupMemberPopulation.TryAdd(vectorGroupMember.Type.AsNamedType(), vectorGroupMember))
             {
-                continue;
+                duplicateVectorGroupMemberPopulation.TryAdd(vectorGroupMember.Type.AsNamedType(), vectorGroupMember);
             }
 
-            duplicateVectorGroupMemberPopulation.TryAdd(vectorGroupMember.Type.AsNamedType(), vectorGroupMember);
+            if (vectorGroupMembersByGroup.TryGetValue(vectorGroupMember.Definition.VectorGroup, out var vectorGroupMembersInGroup))
+            {
+                vectorGroupMembersInGroup.TryAdd(vectorGroupMember.Definition.Dimension, vectorGroupMember);
+            }
         }
 
         var unassignedVectorGroupSpecializations = vectorGroupSpecializations.ToList();
@@ -73,8 +75,9 @@ internal class UnresolvedVectorPopulation : IUnresolvedVectorPopulationWithData
         iterativelySetBaseVectorGroupForSpecializations();
         iterativelySetBaseIndividualVectorForSpecializations();
 
-        return new(vectorGroupPopulation, vectorGroupBasePopulation, vectorGroupMemberPopulation, individualVectorPopulation, individualVectorBasePopulation, duplicateVectorGroupPopulation,
-            duplicateVectorGroupMemberPopulation, duplicateIndividualVectorPopulation);
+        return new(vectorGroupPopulation, vectorGroupBasePopulation, vectorGroupMemberPopulation,
+            vectorGroupMembersByGroup.Transform(static (members) => new UnresolvedVectorGroupPopulation(members) as IUnresolvedVectorGroupPopulation),
+            individualVectorPopulation, individualVectorBasePopulation, duplicateVectorGroupPopulation, duplicateVectorGroupMemberPopulation, duplicateIndividualVectorPopulation);
 
         void iterativelySetBaseVectorGroupForSpecializations()
         {
@@ -123,6 +126,8 @@ internal class UnresolvedVectorPopulation : IUnresolvedVectorPopulationWithData
     public IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupBaseType> VectorGroupBases => vectorGroupBases;
     public IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupMemberType> VectorGroupMembers => vectorGroupMembers;
 
+    public IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupPopulation> VectorGroupMembersByGroup => vectorGroupMembersByGroup;
+
     public IReadOnlyDictionary<NamedType, IUnresolvedIndividualVectorType> IndividualVectors => individualVectors;
     public IReadOnlyDictionary<NamedType, IUnresolvedIndividualVectorBaseType> IndividualVectorBases => individualVectorBases;
 
@@ -140,6 +145,8 @@ internal class UnresolvedVectorPopulation : IUnresolvedVectorPopulationWithData
     private ReadOnlyEquatableDictionary<NamedType, IUnresolvedVectorGroupBaseType> vectorGroupBases { get; }
     private ReadOnlyEquatableDictionary<NamedType, IUnresolvedVectorGroupMemberType> vectorGroupMembers { get; }
 
+    private ReadOnlyEquatableDictionary<NamedType, IUnresolvedVectorGroupPopulation> vectorGroupMembersByGroup { get; }
+
     private ReadOnlyEquatableDictionary<NamedType, IUnresolvedIndividualVectorType> individualVectors { get; }
     private ReadOnlyEquatableDictionary<NamedType, IUnresolvedIndividualVectorBaseType> individualVectorBases { get; }
 
@@ -148,14 +155,16 @@ internal class UnresolvedVectorPopulation : IUnresolvedVectorPopulationWithData
     private ReadOnlyEquatableDictionary<NamedType, IUnresolvedIndividualVectorType> duplicatelyDefinedIndividualVectors { get; }
 
     public UnresolvedVectorPopulation(IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupType> vectorGroups, IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupBaseType> vectorGroupBases,
-        IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupMemberType> vectorGroupMembers, IReadOnlyDictionary<NamedType, IUnresolvedIndividualVectorType> individualVectors,
-        IReadOnlyDictionary<NamedType, IUnresolvedIndividualVectorBaseType> individualVectorBases, IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupType> duplicatelyDefinedVectorGroups,
-        IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupMemberType> duplicatelyDefinedVectorGroupMembers,
+        IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupMemberType> vectorGroupMembers, IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupPopulation> vectorGroupMembersByGroup,
+        IReadOnlyDictionary<NamedType, IUnresolvedIndividualVectorType> individualVectors, IReadOnlyDictionary<NamedType, IUnresolvedIndividualVectorBaseType> individualVectorBases,
+        IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupType> duplicatelyDefinedVectorGroups, IReadOnlyDictionary<NamedType, IUnresolvedVectorGroupMemberType> duplicatelyDefinedVectorGroupMembers,
         IReadOnlyDictionary<NamedType, IUnresolvedIndividualVectorType> duplicatelyDefinedIndividualVectors)
     {
         this.vectorGroups = vectorGroups.AsReadOnlyEquatable();
         this.vectorGroupBases = vectorGroupBases.AsReadOnlyEquatable();
         this.vectorGroupMembers = vectorGroupMembers.AsReadOnlyEquatable();
+
+        this.vectorGroupMembersByGroup = vectorGroupMembersByGroup.AsReadOnlyEquatable();
 
         this.individualVectors = individualVectors.AsReadOnlyEquatable();
         this.individualVectorBases = individualVectorBases.AsReadOnlyEquatable();

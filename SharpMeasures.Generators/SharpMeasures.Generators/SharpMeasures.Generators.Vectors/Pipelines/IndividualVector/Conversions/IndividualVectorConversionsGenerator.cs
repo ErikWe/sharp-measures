@@ -16,6 +16,6 @@ internal static class IndividualVectorConversionsGenerator
 
     private static DataModel Reduce(IndividualVectorDataModel input, CancellationToken _)
     {
-        return new(input.Vector.Type, input.Vector.Definition.Dimension, input.Vector.Conversions, input.Documentation);
+        return new(input.Vector.Type, input.Vector.Definition.Dimension, input.Vector.Conversions, input.VectorPopulation.VectorGroups, input.Documentation);
     }
 }

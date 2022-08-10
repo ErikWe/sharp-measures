@@ -4,8 +4,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Utility;
 using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Utility;
 
 using System;
 using System.Linq;
@@ -71,9 +71,12 @@ internal static class Execution
         {
             foreach (var convertibleVectorGroup in Data.Conversions.SelectMany(static (x) => x.VectorGroups))
             {
-                if (convertibleVectorGroup.RegisteredMembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
+                if (Data.VectorGroupPopulation.TryGetValue(convertibleVectorGroup.Type.AsNamedType(), out var resolvedVectorGroup))
                 {
-                    ComposeInstanceConversion(correspondingMember, indentation);
+                    if (resolvedVectorGroup.MembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
+                    {
+                        ComposeInstanceConversion(correspondingMember, indentation);
+                    }
                 }
             }
 
@@ -84,7 +87,7 @@ internal static class Execution
                     continue;
                 }
 
-                Action<IUnresolvedRegisteredVectorGroupMember, Indentation> composer = convertibleVectorGroups.CastOperatorBehaviour switch
+                Action<IUnresolvedVectorGroupMemberType, Indentation> composer = convertibleVectorGroups.CastOperatorBehaviour switch
                 {
                     ConversionOperatorBehaviour.Explicit => ComposeExplicitOperatorConversion,
                     ConversionOperatorBehaviour.Implicit => ComposeImplicitOperatorConversion,
@@ -93,37 +96,40 @@ internal static class Execution
 
                 foreach (var convertibleVectorGroup in convertibleVectorGroups.VectorGroups)
                 {
-                    if (convertibleVectorGroup.RegisteredMembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
+                    if (Data.VectorGroupPopulation.TryGetValue(convertibleVectorGroup.Type.AsNamedType(), out var resolvedVectorGroup))
                     {
-                        composer(correspondingMember, indentation);
+                        if (resolvedVectorGroup.MembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
+                        {
+                            composer(correspondingMember, indentation);
+                        }
                     }
                 }
             }
         }
 
-        private void ComposeInstanceConversion(IUnresolvedRegisteredVectorGroupMember vectorGroupMember, Indentation indentation)
+        private void ComposeInstanceConversion(IUnresolvedVectorGroupMemberType vectorGroupMember, Indentation indentation)
         {
-            UsingsCollector.AddUsing(vectorGroupMember.Vector.Namespace);
+            UsingsCollector.AddUsing(vectorGroupMember.Type.Namespace);
 
-            AppendDocumentation(indentation, Data.Documentation.AsDimensionallyEquivalent(vectorGroupMember));
-            Builder.AppendLine($"{indentation}public {vectorGroupMember.Vector.Name} As{vectorGroupMember.Vector.Name} => new(Components);");
+            AppendDocumentation(indentation, Data.Documentation.Conversion(vectorGroupMember));
+            Builder.AppendLine($"{indentation}public {vectorGroupMember.Type.Name} As{vectorGroupMember.Type.Name} => new(Components);");
         }
 
-        private void ComposeExplicitOperatorConversion(IUnresolvedRegisteredVectorGroupMember vector, Indentation indentation)
-            => ComposeOperatorConversion(vector, indentation, "explicit");
+        private void ComposeExplicitOperatorConversion(IUnresolvedVectorGroupMemberType vectorGroupMember, Indentation indentation)
+            => ComposeOperatorConversion(vectorGroupMember, indentation, "explicit");
 
-        private void ComposeImplicitOperatorConversion(IUnresolvedRegisteredVectorGroupMember vector, Indentation indentation)
-            => ComposeOperatorConversion(vector, indentation, "implicit");
+        private void ComposeImplicitOperatorConversion(IUnresolvedVectorGroupMemberType vectorGroupMember, Indentation indentation)
+            => ComposeOperatorConversion(vectorGroupMember, indentation, "implicit");
 
-        private void ComposeOperatorConversion(IUnresolvedRegisteredVectorGroupMember vector, Indentation indentation, string behaviour)
+        private void ComposeOperatorConversion(IUnresolvedVectorGroupMemberType vectorGroupMember, Indentation indentation, string behaviour)
         {
-            AppendDocumentation(indentation, Data.Documentation.CastToDimensionallyEquivalent(vector));
+            AppendDocumentation(indentation, Data.Documentation.CastConversion(vectorGroupMember));
             
             if (Data.Vector.IsReferenceType)
             {
                 Builder.AppendLine($$"""
                     {{indentation}}/// <exception cref="ArgumentNullException"/>
-                    {{indentation}}public static {{behaviour}} operator {{vector.Vector.Name}}({{Data.Vector.Name}} a)
+                    {{indentation}}public static {{behaviour}} operator {{vectorGroupMember.Type.Name}}({{Data.Vector.Name}} a)
                     {{indentation}}{
                     {{indentation.Increased}}ArgumentNullException.ThrowIfNull(a);
 
@@ -133,7 +139,7 @@ internal static class Execution
             }
             else
             {
-                Builder.AppendLine($"{indentation}public static {behaviour} operator {vector.Vector.Name}({Data.Vector.Name} a) => new(a.Components);");
+                Builder.AppendLine($"{indentation}public static {behaviour} operator {vectorGroupMember.Type.Name}({Data.Vector.Name} a) => new(a.Components);");
             }
         }
 

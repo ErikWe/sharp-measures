@@ -4,13 +4,12 @@ using SharpMeasures.Generators.Quantities;
 
 using System;
 
-/// <summary>Marks the type as the root of a group of vectors that represent the same quantity, but with varying dimension. The members of the group
-/// are registered using <see cref="RegisterVectorGroupMemberAttribute"/>.</summary>
-/// <remarks>The following accompanying attributes may be used to enhance the vector group:
+/// <summary>Marks the type as the root of a group of vectors that represent the same quantity, but of different dimension.</summary>
+/// <remarks>The following attributes may be used to modify how the vectors of the group are generated:
 /// <list type="bullet">
 /// <item>
 /// <term><see cref="DerivedQuantityAttribute"/></term>
-/// <description>Describes how the quantities of the vector group may be derived from other quantities.</description>
+/// <description>Describes how the vectors of the group may be derived from other quantities.</description>
 /// </item>
 /// <item>
 /// <term><see cref="IncludeUnitsAttribute"/></term>
@@ -22,7 +21,7 @@ using System;
 /// </item>
 /// <item>
 /// <term><see cref="ConvertibleQuantityAttribute"/></term>
-/// <description>Lists vector groups that this vector group may be converted to.</description>
+/// <description>Lists other vectors that the vectors in the group may be converted to.</description>
 /// </item>
 /// </list></remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]

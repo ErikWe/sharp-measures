@@ -3,6 +3,7 @@
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Unresolved.Vectors;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +23,9 @@ internal record class IndividualVectorType : VectorGroupType, IIndividualVectorT
     IIndividualVector IIndividualVectorType.Definition => (IIndividualVector)Definition;
 
     public IndividualVectorType(DefinedType type, MinimalLocation typeLocation, IIndividualVector definition,
-        IReadOnlyDictionary<int, IRegisteredVectorGroupMember> registeredMembersByDimension, IReadOnlyList<IDerivedQuantity> derivations,
+        IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> membersByDimension, IReadOnlyList<IDerivedQuantity> derivations,
         IReadOnlyList<IVectorConstant> constants, IReadOnlyList<IConvertibleVector> conversions, IReadOnlyList<IUnresolvedUnitInstance> includedUnits)
-        : base(type, typeLocation, definition, registeredMembersByDimension, derivations, conversions, includedUnits)
+        : base(type, typeLocation, definition, membersByDimension, derivations, conversions, includedUnits)
     {
         this.constants = constants.AsReadOnlyEquatable();
 

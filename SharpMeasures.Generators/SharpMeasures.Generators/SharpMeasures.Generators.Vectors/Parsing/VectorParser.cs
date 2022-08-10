@@ -17,11 +17,9 @@ using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.UnitList;
 using SharpMeasures.Generators.Unresolved.Vectors;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
-using SharpMeasures.Generators.Vectors.Parsing.Contexts.Processing;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Processing;
-using SharpMeasures.Generators.Vectors.Parsing.RegisterVectorGroupMember;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroup;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
@@ -116,10 +114,10 @@ public static class VectorParser
     private class VectorGroupBaseParser : AVectorGroupParser<RawSharpMeasuresVectorGroupDefinition, RawVectorGroupBaseType>
     {
         protected override RawVectorGroupBaseType FinalizeParse(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresVectorGroupDefinition definition,
-            IEnumerable<RawRegisterVectorGroupMemberDefinition> members, IEnumerable<RawDerivedQuantityDefinition> derivations,
-            IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawUnitListDefinition> unitInclusions, IEnumerable<RawUnitListDefinition> unitExclusions)
+            IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawUnitListDefinition> unitInclusions,
+            IEnumerable<RawUnitListDefinition> unitExclusions)
         {
-            return new(type, typeLocation, definition, members, derivations, conversions, unitInclusions, unitExclusions);
+            return new(type, typeLocation, definition, derivations, conversions, unitInclusions, unitExclusions);
         }
 
         protected override IAttributeParser<RawSharpMeasuresVectorGroupDefinition> Parser => SharpMeasuresVectorGroupParser.Parser;
@@ -128,10 +126,10 @@ public static class VectorParser
     private class VectorGroupSpecializationParser : AVectorGroupParser<RawSpecializedSharpMeasuresVectorGroupDefinition, RawVectorGroupSpecializationType>
     {
         protected override RawVectorGroupSpecializationType FinalizeParse(DefinedType type, MinimalLocation typeLocation, RawSpecializedSharpMeasuresVectorGroupDefinition definition,
-            IEnumerable<RawRegisterVectorGroupMemberDefinition> members, IEnumerable<RawDerivedQuantityDefinition> derivations,
-            IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawUnitListDefinition> unitInclusions, IEnumerable<RawUnitListDefinition> unitExclusions)
+            IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawUnitListDefinition> unitInclusions,
+            IEnumerable<RawUnitListDefinition> unitExclusions)
         {
-            return new(type, typeLocation, definition, members, derivations, conversions, unitInclusions, unitExclusions);
+            return new(type, typeLocation, definition, derivations, conversions, unitInclusions, unitExclusions);
         }
 
         protected override IAttributeParser<RawSpecializedSharpMeasuresVectorGroupDefinition> Parser => SpecializedSharpMeasuresVectorGroupParser.Parser;
@@ -151,21 +149,18 @@ public static class VectorParser
             var type = input.TypeSymbol.AsDefinedType();
             var typeLocation = input.Declaration.Identifier.GetLocation().Minimize();
 
-            var members = RegisterVectorGroupMemberParser.Parser.ParseAllOccurrences(input.TypeSymbol);
-
             var derivations = DerivedQuantityParser.Parser.ParseAllOccurrences(input.TypeSymbol);
             var conversions = ConvertibleQuantityParser.Parser.ParseAllOccurrences(input.TypeSymbol);
 
             var unitInclusions = IncludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
             var unitExclusions = ExcludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
 
-            TProduct product = FinalizeParse(type, typeLocation, vectorGroup, members, derivations, conversions, unitInclusions, unitExclusions);
+            TProduct product = FinalizeParse(type, typeLocation, vectorGroup, derivations, conversions, unitInclusions, unitExclusions);
 
             return OptionalWithDiagnostics.Result(product);
         }
 
-        protected abstract TProduct FinalizeParse(DefinedType type, MinimalLocation typeLocation, TDefinition definition,
-            IEnumerable<RawRegisterVectorGroupMemberDefinition> members, IEnumerable<RawDerivedQuantityDefinition> derivations,
+        protected abstract TProduct FinalizeParse(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations,
             IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawUnitListDefinition> unitInclusions, IEnumerable<RawUnitListDefinition> unitExclusions);
 
         protected abstract IAttributeParser<TDefinition> Parser { get; }
@@ -252,11 +247,10 @@ public static class VectorParser
     private class VectorGroupBaseProcesser : AVectorGroupProcesser<UnresolvedSharpMeasuresVectorGroupDefinition, RawVectorGroupBaseType, UnresolvedVectorGroupBaseType>
     {
         protected override UnresolvedVectorGroupBaseType FinalizeProcess(DefinedType type, MinimalLocation typeLocation, UnresolvedSharpMeasuresVectorGroupDefinition definition,
-            IReadOnlyList<UnresolvedRegisterVectorGroupMemberDefinition> members, IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations,
-            IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
+            IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
             IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
         {
-            return new(type, typeLocation, definition, members.ToDictionary(static (member) => member.Dimension), derivations, conversions, unitInclusions, unitExclusions);
+            return new(type, typeLocation, definition, derivations, conversions, unitInclusions, unitExclusions);
         }
 
         protected override NamedType? GetUnit(UnresolvedSharpMeasuresVectorGroupDefinition scalar) => scalar.Unit;
@@ -273,11 +267,10 @@ public static class VectorParser
         UnresolvedVectorGroupSpecializationType>
     {
         protected override UnresolvedVectorGroupSpecializationType FinalizeProcess(DefinedType type, MinimalLocation typeLocation,
-            UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition, IReadOnlyList<UnresolvedRegisterVectorGroupMemberDefinition> members,
-            IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions,
-            IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
+            UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition, IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations,
+            IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
         {
-            return new(type, typeLocation, definition, members.ToDictionary(static (member) => member.Dimension), derivations, conversions, unitInclusions, unitExclusions);
+            return new(type, typeLocation, definition, derivations, conversions, unitInclusions, unitExclusions);
         }
 
         protected override NamedType? GetUnit(UnresolvedSpecializedSharpMeasuresVectorGroupDefinition scalar) => null;
@@ -306,19 +299,17 @@ public static class VectorParser
                 return OptionalWithDiagnostics.Empty<TProduct>(allDiagnostics);
             }
 
-            RegisterVectorGroupMemberProcessingContext registerVectorGroupMemberProcessingContext = new(raw.Type);
             DerivedQuantityProcessingContext derivedQuantityProcessingContext = new(raw.Type);
             ConvertibleQuantityProcessingContext convertibleQuantityProcessingContext = new(raw.Type);
             UnitListProcessingContext unitListProcessingContext = new(raw.Type);
 
-            var members = ProcessingFilter.Create(Processers.RegisterVectorGroupMemberProcesser).Filter(registerVectorGroupMemberProcessingContext, raw.Members);
             var derivations = ProcessingFilter.Create(Processers.DerivedQuantityProcesser).Filter(derivedQuantityProcessingContext, raw.Derivations);
             var convertibleVectors = ProcessingFilter.Create(Processers.ConvertibleVectorProcesser).Filter(convertibleQuantityProcessingContext, raw.Conversions);
 
             var includeUnits = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.UnitInclusions);
             var excludeUnits = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.UnitExclusions);
 
-            allDiagnostics = allDiagnostics.Concat(members.Diagnostics).Concat(derivations.Diagnostics).Concat(convertibleVectors.Diagnostics)
+            allDiagnostics = allDiagnostics.Concat(derivations.Diagnostics).Concat(convertibleVectors.Diagnostics)
                 .Concat(includeUnits.Diagnostics).Concat(excludeUnits.Diagnostics);
 
             if (includeUnits.HasResult && includeUnits.Result.Count > 0 && excludeUnits.HasResult && excludeUnits.Result.Count > 0)
@@ -327,18 +318,13 @@ public static class VectorParser
                 excludeUnits = ResultWithDiagnostics.Construct(Array.Empty<UnresolvedUnitListDefinition>() as IReadOnlyList<UnresolvedUnitListDefinition>);
             }
 
-            var membersByDimension = members.Result.ToDictionary(static (member) => member.Dimension);
-
-            var product = FinalizeProcess(raw.Type, raw.TypeLocation, vectorGroup.Result, members.Result, derivations.Result, convertibleVectors.Result, includeUnits.Result,
-                excludeUnits.Result);
+            var product = FinalizeProcess(raw.Type, raw.TypeLocation, vectorGroup.Result, derivations.Result, convertibleVectors.Result, includeUnits.Result, excludeUnits.Result);
 
             return OptionalWithDiagnostics.Result(product, allDiagnostics);
         }
 
-        protected abstract TProduct FinalizeProcess(DefinedType type, MinimalLocation typeLocation, TDefinition definition,
-            IReadOnlyList<UnresolvedRegisterVectorGroupMemberDefinition> members, IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations,
-            IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
-            IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions);
+        protected abstract TProduct FinalizeProcess(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations,
+            IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions);
 
         protected abstract NamedType? GetUnit(TDefinition scalar);
 
@@ -375,11 +361,10 @@ public static class VectorParser
         UnresolvedIndividualVectorBaseType>
     {
         protected override UnresolvedIndividualVectorBaseType FinalizeProcess(DefinedType type, MinimalLocation typeLocation, UnresolvedSharpMeasuresVectorDefinition definition,
-            IReadOnlyDictionary<int, UnresolvedRegisterVectorGroupMemberDefinition> registeredMembersByDimension, IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations,
-            IReadOnlyList<UnresolvedVectorConstantDefinition> constants, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions,
+            IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedVectorConstantDefinition> constants, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions,
             IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
         {
-            return new(type, typeLocation, definition, registeredMembersByDimension, derivations, constants, conversions, unitInclusions, unitExclusions);
+            return new(type, typeLocation, definition, derivations, constants, conversions, unitInclusions, unitExclusions);
         }
 
         protected override NamedType? GetUnit(UnresolvedSharpMeasuresVectorDefinition scalar) => scalar.Unit;
@@ -395,13 +380,11 @@ public static class VectorParser
     private class IndividualVectorSpecializationProcesser : AIndividualVectorProcesser<UnresolvedSpecializedSharpMeasuresVectorDefinition, RawIndividualVectorSpecializationType,
         UnresolvedIndividualVectorSpecializationType>
     {
-        protected override UnresolvedIndividualVectorSpecializationType FinalizeProcess(DefinedType type, MinimalLocation typeLocation,
-            UnresolvedSpecializedSharpMeasuresVectorDefinition definition, IReadOnlyDictionary<int, UnresolvedRegisterVectorGroupMemberDefinition> registeredMembersByDimension,
-            IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedVectorConstantDefinition> constants,
-            IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
-            IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
+        protected override UnresolvedIndividualVectorSpecializationType FinalizeProcess(DefinedType type, MinimalLocation typeLocation, UnresolvedSpecializedSharpMeasuresVectorDefinition definition,
+            IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedVectorConstantDefinition> constants, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions,
+            IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
         {
-            return new(type, typeLocation, definition, registeredMembersByDimension, derivations, constants, conversions, unitInclusions, unitExclusions);
+            return new(type, typeLocation, definition, derivations, constants, conversions, unitInclusions, unitExclusions);
         }
 
         protected override NamedType? GetUnit(UnresolvedSpecializedSharpMeasuresVectorDefinition scalar) => null;
@@ -457,18 +440,13 @@ public static class VectorParser
                 excludeUnits = ResultWithDiagnostics.Construct(Array.Empty<UnresolvedUnitListDefinition>() as IReadOnlyList<UnresolvedUnitListDefinition>);
             }
 
-            Dictionary<int, UnresolvedRegisterVectorGroupMemberDefinition> membersByDimension = new();
-
-            TProduct product = FinalizeProcess(raw.Type, raw.TypeLocation, vector.Result, membersByDimension, derivations.Result, constants.Result, convertibleVectors.Result,
-                includeUnits.Result, excludeUnits.Result);
+            TProduct product = FinalizeProcess(raw.Type, raw.TypeLocation, vector.Result, derivations.Result, constants.Result, convertibleVectors.Result, includeUnits.Result, excludeUnits.Result);
 
             return OptionalWithDiagnostics.Result(product, allDiagnostics);
         }
 
-        protected abstract TProduct FinalizeProcess(DefinedType type, MinimalLocation typeLocation, TDefinition definition,
-            IReadOnlyDictionary<int, UnresolvedRegisterVectorGroupMemberDefinition> registeredMembersByDimension,
-            IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedVectorConstantDefinition> constants,
-            IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
+        protected abstract TProduct FinalizeProcess(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations,
+            IReadOnlyList<UnresolvedVectorConstantDefinition> constants, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
             IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions);
 
         protected abstract NamedType? GetUnit(TDefinition vector);
@@ -509,22 +487,16 @@ public static class VectorParser
     private static class Processers
     {
         public static SharpMeasuresVectorProcesser SharpMeasuresVectorProcesser { get; } = new(SharpMeasuresVectorProcessingDiagnostics.Instance);
-        public static SpecializedSharpMeasuresVectorProcesser SpecializedSharpMeasuresVectorProcesser { get; }
-            = new(SpecializedSharpMeasuresVectorProcessingDiagnostics.Instance);
+        public static SpecializedSharpMeasuresVectorProcesser SpecializedSharpMeasuresVectorProcesser { get; } = new(SpecializedSharpMeasuresVectorProcessingDiagnostics.Instance);
 
         public static SharpMeasuresVectorGroupProcesser SharpMeasuresVectorGroupProcesser { get; } = new(SharpMeasuresVectorGroupProcessingDiagnostics.Instance);
-        public static SpecializedSharpMeasuresVectorGroupProcesser SpecializedSharpMeasuresVectorGroupProcesser { get; }
-        = new(SpecializedSharpMeasuresVectorGroupProcessingDiagnostics.Instance);
+        public static SpecializedSharpMeasuresVectorGroupProcesser SpecializedSharpMeasuresVectorGroupProcesser { get; } = new(SpecializedSharpMeasuresVectorGroupProcessingDiagnostics.Instance);
 
-        public static SharpMeasuresVectorGroupMemberProcesser SharpMeasuresVectorGroupMemberProcesser { get; }
-            = new(SharpMeasuresVectorGroupMemberProcessingDiagnostics.Instance);
+        public static SharpMeasuresVectorGroupMemberProcesser SharpMeasuresVectorGroupMemberProcesser { get; } = new(SharpMeasuresVectorGroupMemberProcessingDiagnostics.Instance);
 
-        public static RegisterVectorGroupMemberProcesser RegisterVectorGroupMemberProcesser { get; } = new(RegisterVectorGroupMemberProcessingDiagnostics.Instance);
         public static DerivedQuantityProcesser DerivedQuantityProcesser { get; } = new(DerivedQuantityProcessingDiagnostics.Instance);
-        public static VectorConstantProcesser VectorConstantProcesser(NamedType unit)
-            => new(new QuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>(unit));
-        public static VectorConstantProcesser VectorConstantProcesserForUnknownUnit { get; }
-            = new(new QuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>());
+        public static VectorConstantProcesser VectorConstantProcesser(NamedType unit) => new(new QuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>(unit));
+        public static VectorConstantProcesser VectorConstantProcesserForUnknownUnit { get; } = new(new QuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>());
         public static ConvertibleVectorProcesser ConvertibleVectorProcesser { get; } = new(ConvertibleVectorProcessingDiagnostics.Instance);
 
         public static UnitListProcesser UnitListProcesser { get; } = new(UnitListProcessingDiagnostics.Instance);

@@ -5,15 +5,15 @@ using SharpMeasures.Generators.Quantities;
 using System;
 
 /// <summary>Marks the type as a vector quantity.</summary>
-/// <remarks>The following accompanying attributes may be used to enhance the vector:
+/// <remarks>The following attributes may be used to modify how the vector is generated:
 /// <list type="bullet">
 /// <item>
 /// <term><see cref="DerivedQuantityAttribute"/></term>
-/// <description>Describes how the quantity may be derived from other quantities.</description>
+/// <description>Describes how the vector may be derived from other quantities.</description>
 /// </item>
 /// <item>
 /// <term><see cref="VectorConstantAttribute"/></term>
-/// <description>Defines a constant of this quantity.</description>
+/// <description>Defines a constant of the vector.</description>
 /// </item>
 /// <item>
 /// <term><see cref="IncludeUnitsAttribute"/></term>
@@ -25,7 +25,7 @@ using System;
 /// </item>
 /// <item>
 /// <term><see cref="ConvertibleQuantityAttribute"/></term>
-/// <description>Lists quantities that this quantity may be converted to.</description>
+/// <description>Lists other vectors that this vector may be converted to.</description>
 /// </item>
 /// </list></remarks>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]

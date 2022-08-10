@@ -116,29 +116,29 @@ internal class SpecializedSharpMeasuresVectorResolver
         return OptionalWithDiagnostics.Result(scalar);
     }
 
-    private IOptionalWithDiagnostics<IUnresolvedIndividualVectorType> ProcessDifference(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition, int dimension)
+    private IOptionalWithDiagnostics<IUnresolvedVectorGroupType> ProcessDifference(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition, int dimension)
     {
         if (definition.Difference is null)
         {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<IUnresolvedIndividualVectorType>();
+            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<IUnresolvedVectorGroupType>();
         }
 
         if (context.VectorPopulation.IndividualVectors.TryGetValue(definition.Difference.Value, out var vector) is false)
         {
             if (context.VectorPopulation.VectorGroups.TryGetValue(definition.Difference.Value, out var vectorGroup) is false)
             {
-                return OptionalWithDiagnostics.Empty<IUnresolvedIndividualVectorType>(Diagnostics.DifferenceNotVector(context, definition));
+                return OptionalWithDiagnostics.Empty<IUnresolvedVectorGroupType>(Diagnostics.DifferenceNotVector(context, definition));
             }
 
-            if (vectorGroup.RegisteredMembersByDimension.TryGetValue(dimension, out var difference) is false)
+            if (context.VectorPopulation.VectorGroupMembersByGroup[vectorGroup.Type.AsNamedType()].VectorGroupMembersByDimension.ContainsKey(dimension) is false)
             {
-                return OptionalWithDiagnostics.Empty<IUnresolvedIndividualVectorType>(Diagnostics.DifferenceVectorGroupLacksMatchingDimension(context, definition, dimension));
+                return OptionalWithDiagnostics.Empty<IUnresolvedVectorGroupType>(Diagnostics.DifferenceVectorGroupLacksMatchingDimension(context, definition, dimension));
             }
 
-            return OptionalWithDiagnostics.Result(context.VectorPopulation.IndividualVectors[difference.Vector]);
+            return OptionalWithDiagnostics.Result(vectorGroup);
         }
 
-        return OptionalWithDiagnostics.Result(vector);
+        return OptionalWithDiagnostics.Result(vector as IUnresolvedVectorGroupType);
     }
 
     private IResultWithDiagnostics<IUnresolvedUnitInstance?> ProcessDefaultUnitName(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition, IUnresolvedUnitType unit)

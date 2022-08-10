@@ -34,7 +34,7 @@ internal static class VectorGroupSpecializationTypeResolution
             static (scalar) => scalar.UnitInclusions, static (scalar) => scalar.UnitExclusions, static (scalar) => scalar.IncludedUnits,
             static (scalar) => Array.Empty<IUnresolvedUnitInstance>());
 
-        VectorGroupType reduced = new(intermediateVector.Type, intermediateVector.TypeLocation, intermediateVector.Definition, intermediateVector.RegisteredMembersByDimension,
+        VectorGroupType reduced = new(intermediateVector.Type, intermediateVector.TypeLocation, intermediateVector.Definition, intermediateVector.MembersByDimension,
             derivations, allConversions.Result, includedUnits);
 
         var allDiagnostics = allConversions.Diagnostics;
@@ -59,21 +59,19 @@ internal static class VectorGroupSpecializationTypeResolution
             return OptionalWithDiagnostics.Empty<IntermediateVectorGroupSpecializationType>(allDiagnostics);
         }
 
-        var members = VectorGroupTypeResolution.ResolveMembers(unresolvedVector.Type, unresolvedVector.RegisteredMembersByDimension.Values, unresolvedVector, vectorPopulation);
-
         var derivations = VectorGroupTypeResolution.ResolveDerivations(unresolvedVector.Type, unresolvedVector.Derivations, scalarPopulation, vectorPopulation);
         var conversions = VectorGroupTypeResolution.ResolveConversions(unresolvedVector.Type, unresolvedVector.Conversions, vectorPopulation);
 
         var unitInclusions = VectorGroupTypeResolution.ResolveUnitList(unresolvedVector.Type, vector.Result.Unit, unresolvedVector.UnitInclusions);
         var unitExclusions = VectorGroupTypeResolution.ResolveUnitList(unresolvedVector.Type, vector.Result.Unit, unresolvedVector.UnitExclusions);
 
-        allDiagnostics = allDiagnostics.Concat(members.Diagnostics).Concat(derivations.Diagnostics).Concat(conversions.Diagnostics).Concat(unitInclusions.Diagnostics)
+        var membersByDimension = vectorPopulation.VectorGroupMembersByGroup[unresolvedVector.Type.AsNamedType()].VectorGroupMembersByDimension;
+
+        allDiagnostics = allDiagnostics.Concat(derivations.Diagnostics).Concat(conversions.Diagnostics).Concat(unitInclusions.Diagnostics)
             .Concat(unitExclusions.Diagnostics);
 
-        var membersDictionary = members.Result.ToDictionary(static (member) => member.Dimension, static (member) => member as IRegisteredVectorGroupMember);
-
-        IntermediateVectorGroupSpecializationType product = new(unresolvedVector.Type, unresolvedVector.TypeLocation, vector.Result, membersDictionary, derivations.Result,
-            conversions.Result, unitInclusions.Result.SelectMany((list) => list.Units).ToList(), unitExclusions.Result.SelectMany((list) => list.Units).ToList());
+        IntermediateVectorGroupSpecializationType product = new(unresolvedVector.Type, unresolvedVector.TypeLocation, vector.Result, derivations.Result, conversions.Result, membersByDimension,
+            unitInclusions.Result.SelectMany((list) => list.Units).ToList(), unitExclusions.Result.SelectMany((list) => list.Units).ToList());
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
