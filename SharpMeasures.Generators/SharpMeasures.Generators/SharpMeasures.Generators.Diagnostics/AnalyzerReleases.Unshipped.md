@@ -1,4 +1,4 @@
-﻿; Unshipped analyzer release
+; Unshipped analyzer release
 ; https://github.com/dotnet/roslyn-analyzers/blob/main/src/Microsoft.CodeAnalysis.Analyzers/ReleaseTrackingAnalyzers.Help.md
 
 ### New Rules
@@ -42,9 +42,8 @@ Measures1200 | Usage | Info | Expected both unit name and symbol
 Measures1220 | Naming | Warning | Invalid name of constant
 Measures1221 | Naming | Warning | Invalid name for multiples of constant
 Measures1222 | Naming | Warning | Duplicate name of constant
-Measures1223 | Naming | Warning | Duplicate name for multiples of constant
-Measures1224 | Naming | Warning | Constant shares name with unit
-Measures1225 | Usage | Info | Constant multiples is disabled
+Measures1223 | Naming | Warning | Constant shares name with unit
+Measures1224 | Usage | Info | Constant multiples is disabled
 Measures1240 | Usage | Warning | Unrecognized cast operator behaviour
 Measures1241 | Usage | Warning | Quantity convertible to itself
 Measures1260 | Usage | Warning | Contradictory attributes

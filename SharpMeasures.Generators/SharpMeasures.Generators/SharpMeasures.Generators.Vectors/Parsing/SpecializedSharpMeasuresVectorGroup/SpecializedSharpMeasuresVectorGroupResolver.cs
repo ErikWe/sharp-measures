@@ -21,6 +21,7 @@ internal interface ISpecializedSharpMeasuresVectorGroupResolutionDiagnostics
     public abstract Diagnostic? TypeAlreadyScalar(ISpecializedSharpMeasuresVectorGroupResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition);
     public abstract Diagnostic? TypeAlreadyVector(ISpecializedSharpMeasuresVectorGroupResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition);
     public abstract Diagnostic? OriginalNotVectorGroup(ISpecializedSharpMeasuresVectorGroupResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition);
+    public abstract Diagnostic? RootVectorGroupNotResolved(ISpecializedSharpMeasuresVectorGroupResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition);
     public abstract Diagnostic? TypeNotScalar(ISpecializedSharpMeasuresVectorGroupResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition);
     public abstract Diagnostic? DifferenceNotVectorGroup(ISpecializedSharpMeasuresVectorGroupResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition);
     public abstract Diagnostic? UnrecognizedDefaultUnit(ISpecializedSharpMeasuresVectorGroupResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition, IUnresolvedUnitType unit);
@@ -61,15 +62,16 @@ internal class SpecializedSharpMeasuresVectorGroupResolver
             return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresVectorGroupDefinition>(Diagnostics.TypeAlreadyVector(context, definition));
         }
 
-        var processedOriginalVector = ProcessOriginalVectorGroup(context, definition);
-        var allDiagnostics = processedOriginalVector.Diagnostics;
-
-        if (processedOriginalVector.LacksResult)
+        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.OriginalVectorGroup, out var originalVectorGroup) is false
+            || context.VectorPopulation.IndividualVectors.ContainsKey(definition.OriginalVectorGroup))
         {
-            return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresVectorGroupDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresVectorGroupDefinition>(Diagnostics.OriginalNotVectorGroup(context, definition));
         }
 
-        var vectorGroupBase = context.VectorPopulation.VectorGroupBases[context.Type.AsNamedType()];
+        if (context.VectorPopulation.VectorGroupBases.TryGetValue(context.Type.AsNamedType(), out var vectorGroupBase) is false)
+        {
+            return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresVectorGroupDefinition>(Diagnostics.RootVectorGroupNotResolved(context, definition));
+        }
 
         if (context.UnitPopulation.Units.TryGetValue(vectorGroupBase.Definition.Unit, out var unit) is false)
         {
@@ -80,7 +82,7 @@ internal class SpecializedSharpMeasuresVectorGroupResolver
         var processedDifference = ProcessDifference(context, definition);
         var processedDefaultUnitName = ProcessDefaultUnitName(context, definition, unit);
 
-        allDiagnostics = allDiagnostics.Concat(processedScalar.Diagnostics).Concat(processedDifference.Diagnostics).Concat(processedDefaultUnitName.Diagnostics);
+        var allDiagnostics = processedScalar.Diagnostics.Concat(processedDifference.Diagnostics).Concat(processedDefaultUnitName.Diagnostics);
 
         var resolvedScalar = ResolveScalar(context, definition);
 
@@ -93,22 +95,11 @@ internal class SpecializedSharpMeasuresVectorGroupResolver
 
         var resolvedGenerateDocumentation = ResolveGenerateDocumentation(context, definition);
 
-        SpecializedSharpMeasuresVectorGroupDefinition product = new(processedOriginalVector.Result, definition.InheritDerivations, definition.InheritConstants,
+        SpecializedSharpMeasuresVectorGroupDefinition product = new(originalVectorGroup, definition.InheritDerivations, definition.InheritConstants,
             definition.InheritConversions, definition.InheritUnits, unit, resolvedScalar, resolvedImplementSum, resolvedImplementDifference,
             resolvedDifference, resolvedDefaultUnit, resolvedDefaultUnitSymbol, resolvedGenerateDocumentation, SharpMeasuresVectorGroupLocations.Empty);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
-    }
-
-    private IOptionalWithDiagnostics<IUnresolvedVectorGroupType> ProcessOriginalVectorGroup(ISpecializedSharpMeasuresVectorGroupResolutionContext context,
-        UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition)
-    {
-        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.OriginalVectorGroup, out var vectorGroup) is false || context.VectorPopulation.IndividualVectors.ContainsKey(definition.OriginalVectorGroup))
-        {
-            return OptionalWithDiagnostics.Empty<IUnresolvedVectorGroupType>(Diagnostics.OriginalNotVectorGroup(context, definition));
-        }
-
-        return OptionalWithDiagnostics.Result(vectorGroup);
     }
 
     private IOptionalWithDiagnostics<IUnresolvedScalarType> ProcessScalar(ISpecializedSharpMeasuresVectorGroupResolutionContext context,

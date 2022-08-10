@@ -7,6 +7,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Providers;
 using SharpMeasures.Generators.Providers.DeclarationFilter;
+using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.Contexts.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
@@ -28,6 +29,7 @@ using SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVector;
 using SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVectorGroup;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -314,12 +316,16 @@ public static class VectorParser
             var convertibleVectors = ProcessingFilter.Create(Processers.ConvertibleVectorProcesser).Filter(convertibleQuantityProcessingContext, raw.Conversions);
 
             var includeUnits = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.UnitInclusions);
-            unitListProcessingContext.ListedItems.Clear();
-
             var excludeUnits = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.UnitExclusions);
 
             allDiagnostics = allDiagnostics.Concat(members.Diagnostics).Concat(derivations.Diagnostics).Concat(convertibleVectors.Diagnostics)
                 .Concat(includeUnits.Diagnostics).Concat(excludeUnits.Diagnostics);
+
+            if (includeUnits.HasResult && includeUnits.Result.Count > 0 && excludeUnits.HasResult && excludeUnits.Result.Count > 0)
+            {
+                allDiagnostics = allDiagnostics.Concat(new[] { VectorTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(raw.TypeLocation) });
+                excludeUnits = ResultWithDiagnostics.Construct(Array.Empty<UnresolvedUnitListDefinition>() as IReadOnlyList<UnresolvedUnitListDefinition>);
+            }
 
             var membersByDimension = members.Result.ToDictionary(static (member) => member.Dimension);
 
@@ -440,12 +446,16 @@ public static class VectorParser
             var convertibleVectors = ProcessingFilter.Create(Processers.ConvertibleVectorProcesser).Filter(convertibleQuantityProcessingContext, raw.Conversions);
 
             var includeUnits = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.UnitInclusions);
-            unitListProcessingContext.ListedItems.Clear();
-
             var excludeUnits = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.UnitExclusions);
 
             allDiagnostics = allDiagnostics.Concat(derivations.Diagnostics).Concat(constants.Diagnostics).Concat(convertibleVectors.Diagnostics)
                 .Concat(includeUnits.Diagnostics).Concat(excludeUnits.Diagnostics);
+
+            if (includeUnits.HasResult && includeUnits.Result.Count > 0 && excludeUnits.HasResult && excludeUnits.Result.Count > 0)
+            {
+                allDiagnostics = allDiagnostics.Concat(new[] { VectorTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(raw.TypeLocation) });
+                excludeUnits = ResultWithDiagnostics.Construct(Array.Empty<UnresolvedUnitListDefinition>() as IReadOnlyList<UnresolvedUnitListDefinition>);
+            }
 
             Dictionary<int, UnresolvedRegisterVectorGroupMemberDefinition> membersByDimension = new();
 

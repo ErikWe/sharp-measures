@@ -7,6 +7,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Providers;
 using SharpMeasures.Generators.Providers.DeclarationFilter;
+using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.Contexts.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
@@ -26,6 +27,7 @@ using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 using SharpMeasures.Generators.Scalars.Parsing.SpecializedSharpMeasuresScalar;
 using SharpMeasures.Generators.Unresolved.Scalars;
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -127,8 +129,7 @@ public static class ScalarParser
             var unitInclusions = IncludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
             var unitExclusions = ExcludeUnitsParser.Parser.ParseAllOccurrences(input.TypeSymbol);
 
-            TProduct product = FinalizeParse(definedType, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions,
-                unitInclusions, unitExclusions);
+            TProduct product = FinalizeParse(definedType, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInclusions, unitExclusions);
 
             return OptionalWithDiagnostics.Result(product);
         }
@@ -216,11 +217,24 @@ public static class ScalarParser
 
             var includeBases = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.BaseInclusions);
             var excludeBases = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.BaseExclusions);
+
             var includeUnits = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.UnitInclusions);
             var excludeUnits = ProcessingFilter.Create(Processers.UnitListProcesser).Filter(unitListProcessingContext, raw.UnitExclusions);
 
             allDiagnostics = allDiagnostics.Concat(derivations.Diagnostics).Concat(constants.Diagnostics).Concat(conversions.Diagnostics)
                 .Concat(includeBases.Diagnostics).Concat(excludeBases.Diagnostics).Concat(includeUnits.Diagnostics).Concat(excludeUnits.Diagnostics);
+
+            if (includeBases.HasResult && includeBases.Result.Count > 0 && excludeBases.HasResult && excludeBases.Result.Count > 0)
+            {
+                allDiagnostics = allDiagnostics.Concat(new[] { ScalarTypeDiagnostics.ContradictoryAttributes<IncludeBasesAttribute, ExcludeBasesAttribute>(raw.TypeLocation) });
+                excludeBases = ResultWithDiagnostics.Construct(Array.Empty<UnresolvedUnitListDefinition>() as IReadOnlyList<UnresolvedUnitListDefinition>);
+            }
+
+            if (includeUnits.HasResult && includeUnits.Result.Count > 0 && excludeUnits.HasResult && excludeUnits.Result.Count > 0)
+            {
+                allDiagnostics = allDiagnostics.Concat(new[] { ScalarTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(raw.TypeLocation) });
+                excludeUnits = ResultWithDiagnostics.Construct(Array.Empty<UnresolvedUnitListDefinition>() as IReadOnlyList<UnresolvedUnitListDefinition>);
+            }
 
             TProduct product = FinalizeProcess(raw.Type, raw.TypeLocation, scalar.Result, derivations.Result, constants.Result,
                 conversions.Result, includeBases.Result, excludeBases.Result, includeUnits.Result, excludeUnits.Result);
@@ -254,8 +268,7 @@ public static class ScalarParser
     private static class Processers
     {
         public static SharpMeasuresScalarProcesser SharpMeasuresScalarProcesser { get; } = new(SharpMeasuresScalarProcessingDiagnostics.Instance);
-        public static SpecializedSharpMeasuresScalarProcesser SpecializedSharpMeasuresScalarProcesser { get; }
-            = new(SpecializedSharpMeasuresScalarProcessingDiagnostics.Instance);
+        public static SpecializedSharpMeasuresScalarProcesser SpecializedSharpMeasuresScalarProcesser { get; } = new(SpecializedSharpMeasuresScalarProcessingDiagnostics.Instance);
 
         public static DerivedQuantityProcesser DerivedQuantityProcesser { get; } = new(DerivedQuantityProcessingDiagnostics.Instance);
         public static ScalarConstantProcesser ScalarConstantProcesser(NamedType unit) => new(new ScalarConstantProcessingDiagnostics(unit));

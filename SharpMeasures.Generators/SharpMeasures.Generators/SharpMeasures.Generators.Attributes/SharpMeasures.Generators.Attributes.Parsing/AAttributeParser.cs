@@ -128,7 +128,7 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
 
         int argumentIndexOffset = attributeData.ConstructorArguments.Length;
 
-        if (parameterSymbols[attributeData.ConstructorArguments.Length - 1].IsParams)
+        if (parameterSymbols[attributeData.ConstructorArguments.Length - 1].IsParams && attributeData.ConstructorArguments[attributeData.ConstructorArguments.Length - 1].Kind is TypedConstantKind.Array)
         {
             argumentIndexOffset += attributeData.ConstructorArguments[attributeData.ConstructorArguments.Length - 1].Values.Length - 1;
         }

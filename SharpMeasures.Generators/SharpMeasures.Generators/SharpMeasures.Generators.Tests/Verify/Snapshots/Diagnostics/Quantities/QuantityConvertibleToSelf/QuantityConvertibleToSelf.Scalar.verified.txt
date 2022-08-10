@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1241,
+    Title: Quantity convertible to itself,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (4,28)-(4,34),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} is marked as convertible to itself, which is not supported,
+    Message: Length is marked as convertible to itself, which is not supported,
+    Category: Usage,
+    CustomTags: []
+  }
+]

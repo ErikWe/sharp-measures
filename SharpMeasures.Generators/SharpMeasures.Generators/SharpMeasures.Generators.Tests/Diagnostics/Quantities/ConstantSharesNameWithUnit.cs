@@ -64,7 +64,7 @@ public class ConstantSharesNameWithUnit
     private static TextConfig ImplicitMultiplesWithUnitPlural { get; } = new("Kilometre", string.Empty, "MultiplesOfKilometre", DiagnosticsTarget.Attribute);
 
     [SuppressMessage("Design", "CA1034", Justification = "Test-method argument")]
-    public record struct TextConfig(string ConstantSingular, string ConstantMultiples, string UnitPlural, DiagnosticsTarget Target);
+    public readonly record struct TextConfig(string ConstantSingular, string ConstantMultiples, string UnitPlural, DiagnosticsTarget Target);
     public enum DiagnosticsTarget { Singular, Multiples, Attribute }
 
     private static GeneratorVerifier AssertExactlyConstantSharesNameWithUnitDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(ConstantSharesNameWithUnitDiagnostics);

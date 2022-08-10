@@ -33,6 +33,11 @@ public class QuantityConstantProcessingDiagnostics<TDefinition, TLocations> : IQ
         return DiagnosticConstruction.DuplicateConstantName(definition.Locations.Name?.AsRoslynLocation(), definition.Name!, context.Type.Name);
     }
 
+    public Diagnostic NameReservedByMultiples(IQuantityConstantProcessingContext context, TDefinition definition)
+    {
+        return DiagnosticConstruction.ConstantNameReservedByConstantMultiples(definition.Locations.Name?.AsRoslynLocation(), definition.Name!, context.Type.Name);
+    }
+
     public Diagnostic NullUnit(IQuantityConstantProcessingContext context, TDefinition definition)
     {
         if (Unit is null)
@@ -65,6 +70,21 @@ public class QuantityConstantProcessingDiagnostics<TDefinition, TLocations> : IQ
         }
 
         return DiagnosticConstruction.DuplicateConstantMultiplesName(definition.Locations.AttributeName.AsRoslynLocation(), interpretedMultiples, context.Type.Name);
+    }
+
+    public Diagnostic MultiplesReservedByName(IQuantityConstantProcessingContext context, TDefinition definition, string interpretedMultiples)
+    {
+        if (definition.Locations.ExplicitlySetMultiples)
+        {
+            return DiagnosticConstruction.ConstantMultiplesNameReversedByConstantName(definition.Locations.Multiples?.AsRoslynLocation(), interpretedMultiples, context.Type.Name);
+        }
+
+        return DiagnosticConstruction.ConstantMultiplesNameReversedByConstantName(definition.Locations.AttributeName.AsRoslynLocation(), interpretedMultiples, context.Type.Name);
+    }
+
+    public Diagnostic NameAndMultiplesIdentical(IQuantityConstantProcessingContext context, TDefinition definition)
+    {
+        return DiagnosticConstruction.ConstantIdenticalNameAndMultiples(definition.Locations.AttributeName.AsRoslynLocation(), definition.Name!);
     }
 
     public Diagnostic MultiplesDisabledButNameSpecified(IQuantityConstantProcessingContext context, TDefinition definition)

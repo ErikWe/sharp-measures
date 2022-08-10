@@ -15,12 +15,15 @@ public interface IQuantityConstantProcessingDiagnostics<TDefinition, TLocations>
     public abstract Diagnostic? NullName(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? EmptyName(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? DuplicateName(IQuantityConstantProcessingContext context, TDefinition definition);
+    public abstract Diagnostic? NameReservedByMultiples(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? NullUnit(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? EmptyUnit(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? NullMultiples(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? EmptyMultiples(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? InvalidMultiples(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? DuplicateMultiples(IQuantityConstantProcessingContext context, TDefinition definition, string interpretedMultiples);
+    public abstract Diagnostic? MultiplesReservedByName(IQuantityConstantProcessingContext context, TDefinition definition, string interpretedMultiples);
+    public abstract Diagnostic? NameAndMultiplesIdentical(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? MultiplesDisabledButNameSpecified(IQuantityConstantProcessingContext context, TDefinition definition);
 }
 
@@ -104,6 +107,16 @@ public abstract class AQuantityConstantProcesser<TContext, TDefinition, TLocatio
             return OptionalWithDiagnostics.Empty<string>(Diagnostics.DuplicateMultiples(context, definition, interpretedPlural));
         }
 
+        if (context.ReservedConstants.Contains(interpretedPlural))
+        {
+            return OptionalWithDiagnostics.Empty<string>(Diagnostics.MultiplesReservedByName(context, definition, interpretedPlural));
+        }
+
+        if (definition.Name == interpretedPlural)
+        {
+            return OptionalWithDiagnostics.Empty<string>(Diagnostics.NameAndMultiplesIdentical(context, definition));
+        }
+
         return OptionalWithDiagnostics.Result(interpretedPlural);
     }
 
@@ -127,6 +140,11 @@ public abstract class AQuantityConstantProcesser<TContext, TDefinition, TLocatio
         if (context.ReservedConstants.Contains(definition.Name))
         {
             return ValidityWithDiagnostics.Invalid(Diagnostics.DuplicateName(context, definition));
+        }
+
+        if (context.ReservedConstantMultiples.Contains(definition.Name))
+        {
+            return ValidityWithDiagnostics.Invalid(Diagnostics.NameReservedByMultiples(context, definition));
         }
 
         return ValidityWithDiagnostics.Valid;

@@ -73,7 +73,17 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DuplicateConstantName,
         title: "Duplicate name of constant",
-        messageFormat: "{0} already defines a constant with the name \"{1}\"",
+        messageFormat: "{0} already defines a constant \"{1}\"",
+        category: "Naming",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor ConstantNameReservedByConstantMultiples = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.DuplicateConstantName,
+        title: "Duplicate name of constant",
+        messageFormat: "{0} already defines a constant with multiples \"{1}\"",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -81,13 +91,33 @@ public static partial class DiagnosticRules
 
     public static readonly DiagnosticDescriptor DuplicateConstantMultiplesName = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.DuplicateConstantMultiplesName,
+        id: DiagnosticIDs.DuplicateConstantName,
         title: "Duplicate name for multiples of constant",
         messageFormat: "{0} already defines a constant with multiples \"{1}\"",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
+
+    public static readonly DiagnosticDescriptor ConstantMultiplesNameReservedByConstantName = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.DuplicateConstantName,
+        title: "Duplicate name for multiples of constant",
+        messageFormat: "{0} already defines a constant \"{1}\"",
+        category: "Naming",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor IdenticalConstantNameAndConstantMultiples = new DiagnosticDescriptor
+        (
+            id: DiagnosticIDs.DuplicateConstantName,
+            title: "Constant uses same name for multiples",
+            messageFormat: "\"{0}\" is used for both the name of a constant and for multiples of that constant",
+            category: "Naming",
+            defaultSeverity: DiagnosticSeverity.Warning,
+            isEnabledByDefault: true
+        );
 
     public static readonly DiagnosticDescriptor ConstantSharesNameWithUnit = new DiagnosticDescriptor
     (
@@ -146,8 +176,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.QuantityGroupMissingRoot,
         title: "Quantity group missing root quantity",
-        messageFormat: "Could not identify the root of the group of associated quantities. Exactly one quantity in the group should be decorated " +
-            "with the attribute {0}.",
+        messageFormat: "Could not identify the root of the group of associated quantities. Exactly one quantity in the group should be decorated with the attribute {0}.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -212,7 +241,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DifferenceDisabledButQuantitySpecified,
         title: "Difference is disabled but a quantity was specified",
-        messageFormat: "Difference is not implemented for {0}, but a quantity that represents difference was specified. Enable difference or do not specify the quantity.",
+        messageFormat: "{0} does not implement difference, but a quantity representing difference was specified. Enable difference or do not specify the quantity.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true,

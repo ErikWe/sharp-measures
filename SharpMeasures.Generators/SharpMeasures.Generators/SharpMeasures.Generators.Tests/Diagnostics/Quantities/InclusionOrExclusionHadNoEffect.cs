@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics.Quantities;
 
 using SharpMeasures.Generators.Diagnostics;
+using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
 
 using System.Collections.Generic;
@@ -14,228 +15,74 @@ using Xunit;
 public class InclusionOrExclusionHadNoEffect
 {
     [Fact]
-    public Task IncludeUnit_SameAttribute_ExactListAndVerify()
+    public Task VerifyInclusionOrExclusionHadNoEffectDiagnosticsMessage() => AssertSameAttribute(IncludeBasesAttribute).VerifyDiagnostics();
+
+    [Theory]
+    [MemberData(nameof(Attributes))]
+    public void SameAttribute(string attribute) => AssertSameAttribute(attribute);
+
+    [Theory]
+    [MemberData(nameof(Attributes))]
+    public void MultipleAttributes(string attribute) => AssertMultipleAttributes(attribute);
+
+    public static IEnumerable<object[]> Attributes => new object[][]
     {
-        string source = """
-            using SharpMeasures.Generators.Quantities;
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
+        new[] { IncludeUnitsAttribute },
+        new[] { ExcludeUnitsAttribute },
+        new[] { IncludeBasesAttribute },
+        new[] { ExcludeBasesAttribute }
+    };
 
-            [IncludeUnits("Metre", "Metre")]
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-            
-            [FixedUnit("Metre", "Metres")]
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-            """;
+    private static string IncludeUnitsAttribute { get; } = "IncludeUnits";
+    private static string ExcludeUnitsAttribute { get; } = "ExcludeUnits";
+    private static string IncludeBasesAttribute { get; } = "IncludeBases";
+    private static string ExcludeBasesAttribute { get; } = "ExcludeBases";
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task ExcludeUnit_SameAttribute_ExactListAndVerify()
-    {
-        string source = """
-            using SharpMeasures.Generators.Quantities;
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-
-            [ExcludeUnits("Metre", "Metre")]
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-            
-            [FixedUnit("Metre", "Metres")]
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-            """;
-
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task IncludeBase_SameAttribute_ExactListAndVerify()
-    {
-        string source = """
-            using SharpMeasures.Generators.Quantities;
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-
-            [IncludeBases("Metre", "Metre")]
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-            
-            [FixedUnit("Metre", "Metres")]
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-            """;
-
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task ExcludeBase_SameAttribute_ExactListAndVerify()
-    {
-        string source = """
-            using SharpMeasures.Generators.Quantities;
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-
-            [ExcludeBases("Metre", "Metre")]
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-            
-            [FixedUnit("Metre", "Metres")]
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-            """;
-
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task IncludeUnit_AlreadyIncluded_ResizedVector_ExactListAndVerify()
-    {
-        string source = """
-            using SharpMeasures.Generators.Quantities;
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Vectors;
-
-            [IncludeUnits("Metre")]
-            [ResizedSharpMeasuresVector(typeof(Position3))]
-            public partial class Position2 { }
-
-            [IncludeUnits("Metre")]
-            [SharpMeasuresVector(typeof(UnitOfLength))]
-            public partial class Position3 { }
-
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-            
-            [FixedUnit("Metre", "Metres")]
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-            """;
-
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task IncludeUnit_NotExcludedImplicit_ResizedVector_ExactListAndVerify()
-    {
-        string source = """
-            using SharpMeasures.Generators.Quantities;
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Vectors;
-
-            [IncludeUnits("Metre")]
-            [ResizedSharpMeasuresVector(typeof(Position3))]
-            public partial class Position2 { }
-
-            [SharpMeasuresVector(typeof(UnitOfLength))]
-            public partial class Position3 { }
-
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-            
-            [FixedUnit("Metre", "Metres")]
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-            """;
-
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task IncludeUnit_NotExcludedExplicit_ResizedVector_ExactListAndVerify()
-    {
-        string source = """
-            using SharpMeasures.Generators.Quantities;
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Units.Utility;
-            using SharpMeasures.Generators.Vectors;
-
-            [IncludeUnits("Metre")]
-            [ResizedSharpMeasuresVector(typeof(Position3))]
-            public partial class Position2 { }
-
-            [ExcludeUnits("Kilometre")]
-            [SharpMeasuresVector(typeof(UnitOfLength))]
-            public partial class Position3 { }
-
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-            
-            [FixedUnit("Metre", "Metres")]
-            [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-            """;
-
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task ExcludeUnit_AlreadyExcluded_ResizedVector_ExactListAndVerify()
-    {
-        string source = """
-            using SharpMeasures.Generators.Quantities;
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Vectors;
-
-            [ExcludeUnits("Metre")]
-            [ResizedSharpMeasuresVector(typeof(Position3))]
-            public partial class Position2 { }
-
-            [ExcludeUnits("Metre")]
-            [SharpMeasuresVector(typeof(UnitOfLength))]
-            public partial class Position3 { }
-
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-            
-            [FixedUnit("Metre", "Metres")]
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-            """;
-
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task IncludeUnit_NotIncluded_ResizedVector_ExactListAndVerify()
-    {
-        string source = """
-            using SharpMeasures.Generators.Quantities;
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Units.Utility;
-            using SharpMeasures.Generators.Vectors;
-
-            [ExcludeUnits("Metre")]
-            [ResizedSharpMeasuresVector(typeof(Position3))]
-            public partial class Position2 { }
-
-            [IncludeUnits("Kilometre")]
-            [SharpMeasuresVector(typeof(UnitOfLength))]
-            public partial class Position3 { }
-
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-            
-            [FixedUnit("Metre", "Metres")]
-            [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-            """;
-
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
-
-    private static GeneratorVerifier AssertExactlyInclusionOrExclusionHadNoEffectDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InclusionOrExclusionHadNoEffectDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static GeneratorVerifier AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InclusionOrExclusionHadNoEffectDiagnostics);
     private static IReadOnlyCollection<string> InclusionOrExclusionHadNoEffectDiagnostics { get; } = new string[] { DiagnosticIDs.InclusionOrExclusionHadNoEffect };
+
+    private static string SameAttributeText(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [{{attribute}}("Metre", "Metre")]
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertSameAttribute(string attribute)
+    {
+        var source = SameAttributeText(attribute);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", prefix: $"{attribute}(\"Metre\", ");
+
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string MultipleAttributesText(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [{{attribute}}("Metre")]
+        [{{attribute}}("Metre")] // <-
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertMultipleAttributes(string attribute)
+    {
+        var source = MultipleAttributesText(attribute);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", postfix: ")] // <-");
+
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
 }

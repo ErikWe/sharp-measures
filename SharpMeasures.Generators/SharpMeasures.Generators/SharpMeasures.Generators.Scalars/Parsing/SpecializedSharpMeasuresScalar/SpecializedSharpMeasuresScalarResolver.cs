@@ -21,6 +21,7 @@ internal interface ISpecializedSharpMeasuresScalarResolutionDiagnostics
     public abstract Diagnostic? TypeAlreadyUnit(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? TypeAlreadyScalar(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? OriginalNotScalar(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition);
+    public abstract Diagnostic? RootScalarNotResolved(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? TypeNotVector(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? DifferenceNotScalar(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? UnrecognizedDefaultUnit(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition, IUnresolvedUnitType unit);
@@ -59,15 +60,15 @@ internal class SpecializedSharpMeasuresScalarResolver : IProcesser<ISpecializedS
             return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresScalarDefinition>(Diagnostics.TypeAlreadyScalar(context, definition));
         }
 
-        var processedOriginalScalar = ProcessOriginalScalar(context, definition);
-        var allDiagnostics = processedOriginalScalar.Diagnostics;
-
-        if (processedOriginalScalar.LacksResult)
+        if (context.ScalarPopulation.Scalars.TryGetValue(definition.OriginalScalar, out var originalScalar) is false)
         {
-            return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresScalarDefinition>(allDiagnostics);
+            return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresScalarDefinition>(Diagnostics.OriginalNotScalar(context, definition));
         }
 
-        var scalarBase = context.ScalarPopulation.ScalarBases[context.Type.AsNamedType()];
+        if (context.ScalarPopulation.ScalarBases.TryGetValue(context.Type.AsNamedType(), out var scalarBase) is false)
+        {
+            return OptionalWithDiagnostics.Empty<SpecializedSharpMeasuresScalarDefinition>(Diagnostics.RootScalarNotResolved(context, definition));
+        }
 
         if (context.UnitPopulation.Units.TryGetValue(scalarBase.Definition.Unit, out var unit) is false)
         {
@@ -75,7 +76,7 @@ internal class SpecializedSharpMeasuresScalarResolver : IProcesser<ISpecializedS
         }
 
         var processedVector = ProcessVector(context, definition);
-        allDiagnostics = processedVector.Diagnostics;
+        var allDiagnostics = processedVector.Diagnostics;
 
         var processedDifference = ProcessDifference(context, definition);
 
@@ -107,22 +108,12 @@ internal class SpecializedSharpMeasuresScalarResolver : IProcesser<ISpecializedS
 
         var resolvedGenerateDocumentation = ResolveGenerateDocumentation(context, definition);
 
-        SpecializedSharpMeasuresScalarDefinition product = new(processedOriginalScalar.Result, definition.InheritDerivations, definition.InheritConstants,
+        SpecializedSharpMeasuresScalarDefinition product = new(originalScalar, definition.InheritDerivations, definition.InheritConstants,
             definition.InheritConversions, definition.InheritBases, definition.InheritUnits, unit, resolvedVector, scalarBase.Definition.UseUnitBias, resolvedImplementSum,
             resolvedImplementDifference, resolvedDifference, resolvedDefaultUnit, resolvedDefaultUnitSymbol, resolvedReciprocal, resolvedSquare, resolvedCube,
             resolvedSquareRoot, resolvedCubeRoot, resolvedGenerateDocumentation, SharpMeasuresScalarLocations.Empty);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
-    }
-
-    private IOptionalWithDiagnostics<IUnresolvedScalarType> ProcessOriginalScalar(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition)
-    {
-        if (context.ScalarPopulation.Scalars.TryGetValue(definition.OriginalScalar, out var scalar) is false)
-        {
-            return OptionalWithDiagnostics.Empty<IUnresolvedScalarType>(Diagnostics.OriginalNotScalar(context, definition));
-        }
-
-        return OptionalWithDiagnostics.Result(scalar);
     }
 
     private IOptionalWithDiagnostics<IUnresolvedVectorGroupType> ProcessVector(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition)

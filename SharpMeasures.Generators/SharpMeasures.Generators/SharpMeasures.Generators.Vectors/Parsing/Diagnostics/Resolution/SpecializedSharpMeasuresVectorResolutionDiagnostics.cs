@@ -32,6 +32,11 @@ internal class SpecializedSharpMeasuresVectorResolutionDiagnostics : ISpecialize
         return DiagnosticConstruction.TypeNotVector(definition.Locations.OriginalVector?.AsRoslynLocation(), definition.OriginalVector.Name);
     }
 
+    public Diagnostic RootVectorNotResolved(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition)
+    {
+        return DiagnosticConstruction.QuantityGroupMissingRoot<SharpMeasuresVectorAttribute>(definition.Locations.AttributeName.AsRoslynLocation());
+    }
+
     public Diagnostic TypeNotScalar(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition)
     {
         return DiagnosticConstruction.TypeNotScalar(definition.Locations.Scalar?.AsRoslynLocation(), definition.Scalar!.Value.Name);

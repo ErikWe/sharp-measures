@@ -2,20 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Equatables;
-using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing;
-using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
-using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
-using SharpMeasures.Generators.Vectors.Diagnostics;
-using SharpMeasures.Generators.Vectors.Parsing;
-using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Quantities.Parsing.UnitList;
-
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 

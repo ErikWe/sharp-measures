@@ -43,9 +43,24 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.DuplicateConstantName, location, quantityTypeName, constantName);
     }
 
+    public static Diagnostic ConstantNameReservedByConstantMultiples(Location? location, string constantName, string quantityTypeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.ConstantNameReservedByConstantMultiples, location, quantityTypeName, constantName);
+    }
+
     public static Diagnostic DuplicateConstantMultiplesName(Location? location, string constantMultiplesName, string quantityTypeName)
     {
         return Diagnostic.Create(DiagnosticRules.DuplicateConstantMultiplesName, location, quantityTypeName, constantMultiplesName);
+    }
+
+    public static Diagnostic ConstantMultiplesNameReversedByConstantName(Location? location, string constantMultiplesName, string quantityTypeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.ConstantMultiplesNameReservedByConstantName, location, quantityTypeName, constantMultiplesName);
+    }
+
+    public static Diagnostic ConstantIdenticalNameAndMultiples(Location? location, string name)
+    {
+        return Diagnostic.Create(DiagnosticRules.IdenticalConstantNameAndConstantMultiples, location, name);
     }
 
     public static Diagnostic ConstantSharesNameWithUnit(Location? location, string sharedName, string quantityTypeName)
