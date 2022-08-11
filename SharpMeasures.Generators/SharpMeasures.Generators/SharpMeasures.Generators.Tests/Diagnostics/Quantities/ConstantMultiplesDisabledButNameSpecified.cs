@@ -80,7 +80,7 @@ public class ConstantMultiplesBisabledButNameSpecified
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, GenerateMultiplesProperty = false, Multiples = "MetreOnes")]
+        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, GenerateMultiplesProperty = false, Multiples = "MultiplesOfMetreOnes")]
         [SharpMeasuresVector(typeof(UnitOfLength))]
         public partial class Position3 { }
 
@@ -94,7 +94,7 @@ public class ConstantMultiplesBisabledButNameSpecified
 
     private static GeneratorVerifier AssertVector()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(VectorText, target: "\"MetreOnes\"", prefix: "Multiples = ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(VectorText, target: "\"MultiplesOfMetreOnes\"", prefix: "Multiples = ");
 
         return AssertExactlyConstantMultiplesDisabledButNameSpecifiedDiagnostics(VectorText).AssertDiagnosticsLocation(expectedLocation, VectorText);
     }
@@ -104,7 +104,7 @@ public class ConstantMultiplesBisabledButNameSpecified
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, GenerateMultiplesProperty = false, Multiples = "MetreOnes")]
+        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, GenerateMultiplesProperty = false, Multiples = "MultiplesOfMetreOnes")]
         [SpecializedSharpMeasuresVector(typeof(Position3))]
         public partial class Displacement3 { }
 
@@ -121,7 +121,7 @@ public class ConstantMultiplesBisabledButNameSpecified
 
     private static GeneratorVerifier AssertSpecializedVector()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText, target: "\"MetreOnes\"", prefix: "Multiples = ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText, target: "\"MultiplesOfMetreOnes\"", prefix: "Multiples = ");
 
         return AssertExactlyConstantMultiplesDisabledButNameSpecifiedDiagnostics(SpecializedVectorText).AssertDiagnosticsLocation(expectedLocation, SpecializedVectorText);
     }
@@ -131,7 +131,7 @@ public class ConstantMultiplesBisabledButNameSpecified
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, GenerateMultiplesProperty = false, Multiples = "MetreOnes")]
+        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, GenerateMultiplesProperty = false, Multiples = "MultiplesOfMetreOnes")]
         [SharpMeasuresVectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 
@@ -148,7 +148,7 @@ public class ConstantMultiplesBisabledButNameSpecified
 
     private static GeneratorVerifier AssertVectorGroupMember()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(VectorGroupMemberText, target: "\"MetreOnes\"", prefix: "Multiples = ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(VectorGroupMemberText, target: "\"MultiplesOfMetreOnes\"", prefix: "Multiples = ");
 
         return AssertExactlyConstantMultiplesDisabledButNameSpecifiedDiagnostics(VectorGroupMemberText).AssertDiagnosticsLocation(expectedLocation, VectorGroupMemberText);
     }
