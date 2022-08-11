@@ -42,7 +42,7 @@ public static class StaticBuilding
 
     public static void AppendEqualsObjectMethod(StringBuilder source, Indentation indentation, string type)
     {
-        source.AppendLine($"{indentation}public override bool Equals(object? obj) => return obj is {type} other && Equals(other);");
+        source.AppendLine($"{indentation}public override bool Equals(object? obj) => obj is {type} other && Equals(other);");
     }
 
     public static void AppendReferenceTypeEqualityOperator(StringBuilder source, Indentation indentation, string type)
