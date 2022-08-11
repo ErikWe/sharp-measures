@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics.Vectors;
 
 using SharpMeasures.Generators.Diagnostics;
+using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
 
 using System.Collections.Generic;
@@ -14,63 +15,35 @@ using Xunit;
 public class MissingVectorDimension
 {
     [Fact]
-    public Task NoNumber_ExactListAndVerify()
+    public Task VerifyMissingVectorDimensionDiagnosticsMessage() => AssertVector(NoNumberName).VerifyDiagnostics();
+
+    [Theory]
+    [MemberData(nameof(MissingVectorDimensionNames))]
+    public void Vector(string vectorName) => AssertVector(vectorName);
+
+    [Theory]
+    [MemberData(nameof(MissingVectorDimensionNames))]
+    public void VectorGroupMember(string vectorName) => AssertVectorGroupMember(vectorName);
+
+    public static IEnumerable<object[]> MissingVectorDimensionNames => new object[][]
     {
-        string source = Text("LengthVector");
+        new[] { NoNumberName },
+        new[] { NumberInMiddleName }
+    };
 
-        return AssertExactlyMissingVectorDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
+    private static string NoNumberName { get; } = "LengthVector";
+    private static string NumberInMiddleName { get; } = "Position2Vector";
 
-    [Fact]
-    public Task NumberInMiddle_ExactListAndVerify()
-    {
-        string source = Text("Position3D");
-
-        return AssertExactlyMissingVectorDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task NumberAndUnderscore_ExactListAndVerify()
-    {
-        string source = Text("Position3_");
-
-        return AssertExactlyMissingVectorDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task ResizedNoNumber_ExactListAndVerify()
-    {
-        string source = ResizedText("LengthVector");
-
-        return AssertExactlyMissingVectorDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task ResizedNumberInMiddle_ExactListAndVerify()
-    {
-        string source = ResizedText("Position2D");
-
-        return AssertExactlyMissingVectorDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
-
-    [Fact]
-    public Task ResizedNumberAndUnderscore_ExactListAndVerify()
-    {
-        string source = ResizedText("Position2_");
-
-        return AssertExactlyMissingVectorDimensionDiagnosticsWithValidLocation(source).VerifyDiagnostics();
-    }
-
-    private static GeneratorVerifier AssertExactlyMissingVectorDimensionDiagnosticsWithValidLocation(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(MissingVectorDimensionDiagnostics).AssertAllDiagnosticsValidLocation();
+    private static GeneratorVerifier AssertExactlyMissingVectorDimensionDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(MissingVectorDimensionDiagnostics);
     private static IReadOnlyCollection<string> MissingVectorDimensionDiagnostics { get; } = new string[] { DiagnosticIDs.MissingVectorDimension };
 
-    private static string Text(string name) => $$"""
+    private static string VectorText(string vectorName) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
         [SharpMeasuresVector(typeof(UnitOfLength))]
-        public partial class {{name}} { }
+        public partial class {{vectorName}} { }
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
@@ -79,16 +52,24 @@ public class MissingVectorDimension
         public partial class UnitOfLength { }
         """;
 
-    private static string ResizedText(string name) => $$"""
+    private static GeneratorVerifier AssertVector(string vectorName)
+    {
+        var source = VectorText(vectorName);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "SharpMeasuresVector");
+
+        return AssertExactlyMissingVectorDimensionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string VectorGroupMemberText(string vectorName) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [ResizedSharpMeasuresVector(typeof(Position3))]
-        public partial class {{name}} { }
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class {{vectorName}} { }
 
-        [SharpMeasuresVector(typeof(UnitOfLength))]
-        public partial class Position3 { }
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
@@ -96,4 +77,12 @@ public class MissingVectorDimension
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
+
+    private static GeneratorVerifier AssertVectorGroupMember(string vectorName)
+    {
+        var source = VectorGroupMemberText(vectorName);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "SharpMeasuresVectorGroupMember");
+
+        return AssertExactlyMissingVectorDimensionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
 }
