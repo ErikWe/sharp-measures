@@ -39,7 +39,7 @@ internal class SharpMeasuresVectorProcessingDiagnostics : ISharpMeasuresVectorPr
 
     public Diagnostic VectorNameAndDimensionMismatch(IProcessingContext context, RawSharpMeasuresVectorDefinition definition, int interpretedDimension)
     {
-        return DiagnosticConstruction.VectorNameAndDimensionMismatch(definition.Locations.Dimension?.AsRoslynLocation(), context.Type.Name, interpretedDimension, definition.Dimension);
+        return DiagnosticConstruction.VectorNameAndDimensionMismatch(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name, interpretedDimension, definition.Dimension);
     }
 
     public Diagnostic NullDifferenceQuantity(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)

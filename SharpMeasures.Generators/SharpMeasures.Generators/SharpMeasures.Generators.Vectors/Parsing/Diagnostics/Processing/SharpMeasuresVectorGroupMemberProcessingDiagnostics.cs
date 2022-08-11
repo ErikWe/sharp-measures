@@ -34,6 +34,6 @@ internal class SharpMeasuresVectorGroupMemberProcessingDiagnostics : ISharpMeasu
 
     public Diagnostic VectorNameAndDimensionMismatch(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition, int interpretedDimension)
     {
-        return DiagnosticConstruction.VectorNameAndDimensionMismatch(definition.Locations.Dimension?.AsRoslynLocation(), context.Type.Name, interpretedDimension, definition.Dimension);
+        return DiagnosticConstruction.VectorNameAndDimensionMismatch(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name, interpretedDimension, definition.Dimension);
     }
 }
