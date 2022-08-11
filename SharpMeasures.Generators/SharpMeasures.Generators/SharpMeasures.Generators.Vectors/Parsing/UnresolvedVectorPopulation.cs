@@ -45,7 +45,7 @@ internal class UnresolvedVectorPopulation : IUnresolvedVectorPopulationWithData
 
         foreach (var individualVector in (individualVectorBases as IEnumerable<IUnresolvedIndividualVectorType>).Concat(individualVectorSpecializations))
         {
-            if (individualVectorPopulation.TryAdd(individualVector.Type.AsNamedType(), individualVector))
+            if (individualVectorPopulation.TryAdd(individualVector.Type.AsNamedType(), individualVector) is false)
             {
                 duplicateIndividualVectorPopulation.TryAdd(individualVector.Type.AsNamedType(), individualVector);
             }
@@ -58,7 +58,7 @@ internal class UnresolvedVectorPopulation : IUnresolvedVectorPopulationWithData
 
         foreach (var vectorGroupMember in vectorGroupMembers)
         {
-            if (vectorGroupMemberPopulation.TryAdd(vectorGroupMember.Type.AsNamedType(), vectorGroupMember))
+            if (vectorGroupMemberPopulation.TryAdd(vectorGroupMember.Type.AsNamedType(), vectorGroupMember) is false)
             {
                 duplicateVectorGroupMemberPopulation.TryAdd(vectorGroupMember.Type.AsNamedType(), vectorGroupMember);
             }

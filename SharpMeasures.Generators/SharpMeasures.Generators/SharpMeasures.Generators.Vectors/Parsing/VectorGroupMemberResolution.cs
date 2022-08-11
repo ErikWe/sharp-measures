@@ -36,7 +36,7 @@ internal class VectorGroupMemberResolution
             static (vector) => vector.UnitInclusions, static (vector) => vector.UnitExclusions, static (vector) => vector.IncludedUnits,
             static (vector) => Array.Empty<IUnresolvedUnitInstance>());
 
-        var inheritedConstants = ResolveCollection(intermediateMember, vectorPopulation, static (vector) => vector.Definition.InheritConstants,
+        var inheritedConstants = ResolveInheritedCollection(intermediateMember, vectorPopulation, static (vector) => vector.Definition.InheritConstants,
             (vector) => vector.MembersByDimension.Values.SelectMany(vectorGroupConstants),
             (vector) => vector.MembersByDimension.Values.SelectMany(vectorGroupConstants));
 
@@ -205,12 +205,22 @@ internal class VectorGroupMemberResolution
         }
     }
 
-    private static IReadOnlyList<T> ResolveCollection<T>(IIntermediateVectorGroupMemberType member, IIntermediateVectorGroupPopulation vectorPopulation,
+    private static IReadOnlyList<T> ResolveInheritedCollection<T>(IIntermediateVectorGroupMemberType member, IIntermediateVectorGroupPopulation vectorPopulation,
         Func<IIntermediateVectorGroupSpecializationType, bool> shouldInherit, Func<IIntermediateVectorGroupSpecializationType, IEnumerable<T>> specializationTransform,
         Func<IVectorGroupType, IEnumerable<T>> baseTransform)
+        => ResolveCollection(member, vectorPopulation, shouldInherit, specializationTransform, baseTransform, onlyInherited: true);
+
+    private static IReadOnlyList<T> ResolveCollection<T>(IIntermediateVectorGroupMemberType member, IIntermediateVectorGroupPopulation vectorPopulation,
+        Func<IIntermediateVectorGroupSpecializationType, bool> shouldInherit, Func<IIntermediateVectorGroupSpecializationType, IEnumerable<T>> specializationTransform,
+        Func<IVectorGroupType, IEnumerable<T>> baseTransform, bool onlyInherited = false)
     {
         if (vectorPopulation.VectorGroupBases.TryGetValue(member.Definition.VectorGroup.Type.AsNamedType(), out var vectorGroupBase))
         {
+            if (onlyInherited)
+            {
+                return Array.Empty<T>();
+            }
+
             return ResolveCollection(vectorGroupBase, baseTransform);
         }
 
@@ -233,17 +243,20 @@ internal class VectorGroupMemberResolution
 
     private static IReadOnlyList<T> ResolveCollection<T>(IIntermediateVectorGroupSpecializationType vector, IIntermediateVectorGroupPopulation vectorPopulation,
         Func<IIntermediateVectorGroupSpecializationType, bool> shouldInherit, Func<IIntermediateVectorGroupSpecializationType, IEnumerable<T>> specializationTransform,
-        Func<IVectorGroupType, IEnumerable<T>> baseTransform)
+        Func<IVectorGroupType, IEnumerable<T>> baseTransform, bool onlyInherited = false)
     {
         List<T> items = new();
 
-        recursivelyAdd(vector);
+        recursivelyAdd(vector, onlyInherited);
 
         return items;
 
-        void recursivelyAdd(IIntermediateVectorGroupSpecializationType vector)
+        void recursivelyAdd(IIntermediateVectorGroupSpecializationType vector, bool onlyInherited = false)
         {
-            items.AddRange(specializationTransform(vector));
+            if (onlyInherited is false)
+            {
+                items.AddRange(specializationTransform(vector));
+            }
 
             if (shouldInherit(vector))
             {
