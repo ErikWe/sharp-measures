@@ -56,6 +56,5 @@ Measures1422 | Usage | Warning | Vector group already contains dimension
 Measures1423 | Usage | Warning | No vector of appropiate dimension in group
 Measures1424 | Usage | Warning | Vector name and dimension mismatch
 Measures1440 | Usage | Warning | Invalid dimension of vector constant
-Measures1460 | Usage | Info | Vector group already specified
 Measures1900 | Documentation | Warning | Unresolved documentation dependency
 Measures1901 | Documentation | Warning | Documentation tag not found

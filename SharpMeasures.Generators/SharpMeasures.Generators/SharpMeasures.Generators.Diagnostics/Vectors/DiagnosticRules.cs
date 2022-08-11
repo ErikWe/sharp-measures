@@ -74,15 +74,4 @@ public static partial class DiagnosticRules
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
-
-    public static readonly DiagnosticDescriptor VectorGroupAlreadySpecified = new DiagnosticDescriptor
-    (
-        id: DiagnosticIDs.VectorGroupAlreadySpecified,
-        title: "Vector group already specified",
-        messageFormat: "The vector group to which {0} belongs has already been specified",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Info,
-        isEnabledByDefault: true,
-        customTags: WellKnownDiagnosticTags.Unnecessary
-    );
 }

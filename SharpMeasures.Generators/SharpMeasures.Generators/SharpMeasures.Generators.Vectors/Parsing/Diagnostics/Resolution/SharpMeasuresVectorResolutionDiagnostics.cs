@@ -38,8 +38,7 @@ internal class SharpMeasuresVectorResolutionDiagnostics : ISharpMeasuresVectorRe
 
     public Diagnostic DifferenceVectorGroupLacksMatchingDimension(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition)
     {
-        return DiagnosticConstruction.VectorGroupsLacksMemberOfDimension(definition.Locations.Difference?.AsRoslynLocation(), definition.Difference.Name,
-            definition.Dimension);
+        return DiagnosticConstruction.VectorGroupsLacksMemberOfDimension(definition.Locations.Difference?.AsRoslynLocation(), definition.Difference.Name, definition.Dimension);
     }
 
     public Diagnostic UnrecognizedDefaultUnit(ISharpMeasuresVectorResolutionContext context, UnresolvedSharpMeasuresVectorDefinition definition)

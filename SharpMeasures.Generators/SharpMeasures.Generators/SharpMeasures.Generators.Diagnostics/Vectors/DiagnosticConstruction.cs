@@ -40,9 +40,4 @@ public static partial class DiagnosticConstruction
     {
         return Diagnostic.Create(DiagnosticRules.VectorConstantInvalidDimension, location, expectedDimension.ToString(CultureInfo.InvariantCulture), constantDimension, vectorName);
     }
-
-    public static Diagnostic VectorGroupAlreadySpecified(Location? location, string vectorName)
-    {
-        return Diagnostic.Create(DiagnosticRules.VectorGroupAlreadySpecified, location, vectorName);
-    }
 }

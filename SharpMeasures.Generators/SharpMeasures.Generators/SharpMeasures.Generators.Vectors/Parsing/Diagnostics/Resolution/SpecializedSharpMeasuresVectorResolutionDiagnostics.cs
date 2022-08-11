@@ -2,10 +2,8 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 using SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVector;
 
 internal class SpecializedSharpMeasuresVectorResolutionDiagnostics : ISpecializedSharpMeasuresVectorResolutionDiagnostics
@@ -54,14 +52,12 @@ internal class SpecializedSharpMeasuresVectorResolutionDiagnostics : ISpecialize
         return DiagnosticConstruction.TypeNotVector(definition.Locations.Difference?.AsRoslynLocation(), definition.Difference!.Value.Name);
     }
 
-    public Diagnostic DifferenceVectorGroupLacksMatchingDimension(ISpecializedSharpMeasuresVectorResolutionContext context,
-        UnresolvedSpecializedSharpMeasuresVectorDefinition definition, int dimension)
+    public Diagnostic DifferenceVectorGroupLacksMatchingDimension(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition, int dimension)
     {
         return DiagnosticConstruction.VectorGroupsLacksMemberOfDimension(definition.Locations.Difference?.AsRoslynLocation(), definition.Difference!.Value.Name, dimension);
     }
 
-    public Diagnostic UnrecognizedDefaultUnit(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition,
-        IUnresolvedUnitType unit)
+    public Diagnostic UnrecognizedDefaultUnit(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition, IUnresolvedUnitType unit)
     {
         return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.DefaultUnitName?.AsRoslynLocation(), definition.DefaultUnitName!, unit.Type.Name);
     }

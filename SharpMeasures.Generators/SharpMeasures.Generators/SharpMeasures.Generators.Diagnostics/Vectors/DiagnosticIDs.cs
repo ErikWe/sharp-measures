@@ -9,6 +9,4 @@ public static partial class DiagnosticIDs
     public const string VectorNameAndDimensionMismatch = $"{Prefix}{Numbering.Hundreds.Vectors}24";
 
     public const string VectorConstantInvalidDimension = $"{Prefix}{Numbering.Hundreds.Vectors}40";
-
-    public const string VectorGroupAlreadySpecified = $"{Prefix}{Numbering.Hundreds.Vectors}60";
 }
