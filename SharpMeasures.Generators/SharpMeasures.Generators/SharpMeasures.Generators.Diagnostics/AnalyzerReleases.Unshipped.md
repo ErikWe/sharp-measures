@@ -52,7 +52,7 @@ Measures1262 | Usage | Info | Inclusion or exclusion had no effect
 Measures1263 | Usage | Info | Difference is disabled but a quantity was specified
 Measures1420 | Usage | Warning | Invalid vector dimension
 Measures1421 | Usage | Warning | Missing vector dimension
-Measures1422 | Usage | Warning | Duplicate vector dimension
+Measures1422 | Usage | Warning | Vector group already contains dimension
 Measures1423 | Usage | Warning | No vector of appropiate dimension in group
 Measures1424 | Usage | Warning | Vector name and dimension mismatch
 Measures1440 | Usage | Warning | Invalid dimension of vector constant

@@ -38,8 +38,8 @@ public static partial class DiagnosticRules
     public static readonly DiagnosticDescriptor DuplicateVectorDimension = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DuplicateVectorDimension,
-        title: "Duplicate vector dimension",
-        messageFormat: "The group of resized vectors already contains a vector of dimension {0}",
+        title: "Vector group already contains dimension",
+        messageFormat: "Vector group {0} already contains a member of dimension {1}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -49,7 +49,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.VectorGroupLacksMemberOfDimension,
         title: "No vector of appropiate dimension in group",
-        messageFormat: "The vector group {0} does not contain a member of dimension {1}",
+        messageFormat: "Vector group {0} does not contain a member of dimension {1}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

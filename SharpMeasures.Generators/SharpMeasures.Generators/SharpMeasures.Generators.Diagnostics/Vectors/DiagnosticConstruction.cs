@@ -11,19 +11,19 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.InvalidVectorDimension, location, dimension.ToString(CultureInfo.InvariantCulture));
     }
 
-    public static Diagnostic InvalidInterpretedVectorDimension(Location? location, string vectorName, int interpretedDimension)
+    public static Diagnostic InvalidInterpretedVectorDimension(Location? location, string vectorType, int interpretedDimension)
     {
-        return Diagnostic.Create(DiagnosticRules.InvalidInterpretedVectorDimension, location, vectorName, interpretedDimension.ToString(CultureInfo.InvariantCulture));
+        return Diagnostic.Create(DiagnosticRules.InvalidInterpretedVectorDimension, location, vectorType, interpretedDimension.ToString(CultureInfo.InvariantCulture));
     }
 
-    public static Diagnostic MissingVectorDimension(Location? location, string vectorName)
+    public static Diagnostic MissingVectorDimension(Location? location, string vectorType)
     {
-        return Diagnostic.Create(DiagnosticRules.MissingVectorDimension, location, vectorName);
+        return Diagnostic.Create(DiagnosticRules.MissingVectorDimension, location, vectorType);
     }
 
-    public static Diagnostic DuplicateVectorDimension(Location? location, int dimension)
+    public static Diagnostic DuplicateVectorDimension(Location? location, string vectorGroupType, int dimension)
     {
-        return Diagnostic.Create(DiagnosticRules.DuplicateVectorDimension, location, dimension.ToString(CultureInfo.InvariantCulture));
+        return Diagnostic.Create(DiagnosticRules.DuplicateVectorDimension, location, vectorGroupType, dimension.ToString(CultureInfo.InvariantCulture));
     }
 
     public static Diagnostic VectorGroupsLacksMemberOfDimension(Location? location, string vectorGroupType, int expectedDimension)
@@ -38,8 +38,7 @@ public static partial class DiagnosticConstruction
 
     public static Diagnostic VectorConstantInvalidDimension(Location? location, int expectedDimension, int constantDimension, string vectorName)
     {
-        return Diagnostic.Create(DiagnosticRules.VectorConstantInvalidDimension, location, expectedDimension.ToString(CultureInfo.InvariantCulture),
-            constantDimension, vectorName);
+        return Diagnostic.Create(DiagnosticRules.VectorConstantInvalidDimension, location, expectedDimension.ToString(CultureInfo.InvariantCulture), constantDimension, vectorName);
     }
 
     public static Diagnostic VectorGroupAlreadySpecified(Location? location, string vectorName)

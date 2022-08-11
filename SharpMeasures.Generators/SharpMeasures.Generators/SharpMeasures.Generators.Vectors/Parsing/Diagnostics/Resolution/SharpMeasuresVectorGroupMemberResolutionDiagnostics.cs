@@ -39,4 +39,14 @@ internal class SharpMeasuresVectorGroupMemberResolutionDiagnostics : ISharpMeasu
     {
         return DiagnosticConstruction.TypeNotVectorGroup(definition.Locations.VectorGroup?.AsRoslynLocation(), definition.VectorGroup.Name);
     }
+
+    public Diagnostic VectorGroupAlreadyContainsDimension(ISharpMeasuresVectorGroupMemberResolutionContext context, UnresolvedSharpMeasuresVectorGroupMemberDefinition definition)
+    {
+        if (definition.Locations.ExplicitlySetDimension)
+        {
+            return DiagnosticConstruction.DuplicateVectorDimension(definition.Locations.Dimension?.AsRoslynLocation(), definition.VectorGroup.Name, definition.Dimension);
+        }
+
+        return DiagnosticConstruction.DuplicateVectorDimension(definition.Locations.AttributeName.AsRoslynLocation(), definition.VectorGroup.Name, definition.Dimension);
+    }
 }

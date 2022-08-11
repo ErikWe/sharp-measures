@@ -22,6 +22,7 @@ internal interface ISharpMeasuresVectorGroupMemberResolutionDiagnostics
     public abstract Diagnostic? TypeAlreadyVectorGroup(ISharpMeasuresVectorGroupMemberResolutionContext context, UnresolvedSharpMeasuresVectorGroupMemberDefinition definition);
     public abstract Diagnostic? TypeAlreadyVectorGroupMember(ISharpMeasuresVectorGroupMemberResolutionContext context, UnresolvedSharpMeasuresVectorGroupMemberDefinition definition);
     public abstract Diagnostic? TypeNotVectorGroup(ISharpMeasuresVectorGroupMemberResolutionContext context, UnresolvedSharpMeasuresVectorGroupMemberDefinition definition);
+    public abstract Diagnostic? VectorGroupAlreadyContainsDimension(ISharpMeasuresVectorGroupMemberResolutionContext context, UnresolvedSharpMeasuresVectorGroupMemberDefinition definition);
 }
 
 internal interface ISharpMeasuresVectorGroupMemberResolutionContext : IProcessingContext
@@ -41,8 +42,7 @@ internal class SharpMeasuresVectorGroupMemberResolver
         Diagnostics = diagnostics;
     }
 
-    public IOptionalWithDiagnostics<SharpMeasuresVectorGroupMemberDefinition> Process(ISharpMeasuresVectorGroupMemberResolutionContext context,
-        UnresolvedSharpMeasuresVectorGroupMemberDefinition definition)
+    public IOptionalWithDiagnostics<SharpMeasuresVectorGroupMemberDefinition> Process(ISharpMeasuresVectorGroupMemberResolutionContext context, UnresolvedSharpMeasuresVectorGroupMemberDefinition definition)
     {
         if (context.UnitPopulation.Units.ContainsKey(context.Type.AsNamedType()))
         {
@@ -112,6 +112,11 @@ internal class SharpMeasuresVectorGroupMemberResolver
             return OptionalWithDiagnostics.Empty<IUnresolvedVectorGroupType>(Diagnostics.TypeNotVectorGroup(context, definition));
         }
 
+        if (context.VectorPopulation.VectorGroupMembersByGroup[definition.VectorGroup].VectorGroupMembersByDimension[definition.Dimension].Type != context.Type)
+        {
+            return OptionalWithDiagnostics.Empty<IUnresolvedVectorGroupType>(Diagnostics.VectorGroupAlreadyContainsDimension(context, definition));
+        }
+
         return OptionalWithDiagnostics.Result(vectorGroup);
     }
 
@@ -152,8 +157,7 @@ internal class SharpMeasuresVectorGroupMemberResolver
         return RecursivelySearchForDefined(vector, context.VectorPopulation, static (vector) => vector.GenerateDocumentation);
     }
 
-    private static T? RecursivelySearch<T>(IUnresolvedVectorGroup vector, IUnresolvedVectorPopulation vectorPopulation, Func<IUnresolvedVectorGroup, bool> predicate,
-        Func<IUnresolvedVectorGroup, T?> transform)
+    private static T? RecursivelySearch<T>(IUnresolvedVectorGroup vector, IUnresolvedVectorPopulation vectorPopulation, Func<IUnresolvedVectorGroup, bool> predicate, Func<IUnresolvedVectorGroup, T?> transform)
     {
         if (predicate(vector))
         {
