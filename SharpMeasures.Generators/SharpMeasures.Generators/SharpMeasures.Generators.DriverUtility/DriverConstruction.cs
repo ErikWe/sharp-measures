@@ -16,6 +16,12 @@ public static class DriverConstruction
     public static GeneratorDriver ConstructAndRun(string source, IIncrementalGenerator generator, string documentationDirectory)
         => Run(source, Construct(generator, documentationDirectory));
 
+    public static GeneratorDriver ConstructAndRun<TGenerator>(string source, string documentationDirectory, out Compilation compilation) where TGenerator : IIncrementalGenerator, new()
+            => ConstructAndRun(source, new TGenerator(), documentationDirectory, out compilation);
+
+    public static GeneratorDriver ConstructAndRun(string source, IIncrementalGenerator generator, string documentationDirectory, out Compilation compilation)
+        => RunAndUpdateCompilation(source, Construct(generator, documentationDirectory), out compilation);
+
     public static GeneratorDriver Construct<TGenerator>(string documentationDirectory) where TGenerator : IIncrementalGenerator, new()
         => Construct(new TGenerator(), documentationDirectory);
 
@@ -35,13 +41,17 @@ public static class DriverConstruction
             .Select(static (assembly) => MetadataReference.CreateFromFile(assembly.Location))
             .Cast<MetadataReference>();
 
-        return CSharpCompilation.Create("SharpMeasuresTesting", new[] { syntaxTree }, references,
-            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+        return CSharpCompilation.Create("SharpMeasuresTesting", new[] { syntaxTree }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
     }
 
     public static GeneratorDriver Run(string source, GeneratorDriver driver)
     {
         return driver.RunGenerators(CreateCompilation(source));
+    }
+
+    public static GeneratorDriver RunAndUpdateCompilation(string source, GeneratorDriver driver, out Compilation compilation)
+    {
+        return driver.RunGeneratorsAndUpdateCompilation(CreateCompilation(source), out compilation, out _);
     }
 
     private static ImmutableArray<AdditionalText> GetAdditionalFiles(string documentationDirectory)
