@@ -33,7 +33,7 @@ public class TypeNotPartial
     public Task VectorGroup() => AssertVectorGroup().VerifyDiagnostics();
 
     [Fact]
-    public Task SpecializedVectorGroupy() => AssertSpecializedVectorGroup().VerifyDiagnostics();
+    public Task SpecializedVectorGroup() => AssertSpecializedVectorGroup().VerifyDiagnostics();
 
     [Fact]
     public Task VectorGroupMember() => AssertVectorGroupMember().VerifyDiagnostics();

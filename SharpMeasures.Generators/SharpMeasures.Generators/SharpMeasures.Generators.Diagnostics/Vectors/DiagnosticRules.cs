@@ -79,7 +79,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.VectorConstantInvalidDimension,
         title: "Invalid dimension of vector constant",
-        messageFormat: "Expected {0} elements, as {2} has dimension {0} - but received {1} element(s)",
+        messageFormat: "Expected {0} elements, as the dimension of {2} is {0} - but received {1} element(s)",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
