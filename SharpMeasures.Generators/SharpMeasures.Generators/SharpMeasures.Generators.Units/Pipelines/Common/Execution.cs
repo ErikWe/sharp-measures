@@ -29,26 +29,22 @@ internal static class Execution
 
         private DataModel Data { get; }
 
-        private UsingsCollector UsingsCollector { get; }
         private InterfaceCollector InterfaceCollector { get; }
 
         private Composer(DataModel data)
         {
             Data = data;
 
-            UsingsCollector = UsingsCollector.Delayed(Builder, Data.Unit.Namespace);
             InterfaceCollector = InterfaceCollector.Delayed(Builder);
-
-            UsingsCollector.AddUsings("SharpMeasures", Data.Quantity.Namespace, "System");
 
             if (Data.BiasTerm is false)
             {
-                InterfaceCollector.AddInterface($"IComparable<{Data.Unit.Name}>");
+                InterfaceCollector.AddInterface($"global::System.IComparable<{Data.Unit.Name}>");
             }
 
             if (Data.Unit.IsRecord is false)
             {
-                InterfaceCollector.AddInterface($"IEquatable<{Data.Unit.Name}>");
+                InterfaceCollector.AddInterface($"global::System.IEquatable<{Data.Unit.Name}>");
             }
         }
 
@@ -58,8 +54,6 @@ internal static class Execution
 
             NamespaceBuilding.AppendNamespace(Builder, Data.Unit.Namespace);
 
-            UsingsCollector.MarkInsertionPoint();
-
             AppendDocumentation(new Indentation(0), Data.Documentation.Header());
             Builder.Append(Data.Unit.ComposeDeclaration());
 
@@ -68,7 +62,6 @@ internal static class Execution
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
 
             InterfaceCollector.InsertInterfacesOnNewLines(new Indentation(1));
-            UsingsCollector.InsertUsings();
         }
 
         private string Retrieve()
@@ -124,7 +117,7 @@ internal static class Execution
             if (Data.BiasTerm)
             {
                 AppendDocumentation(indentation, Data.Documentation.Bias());
-                Builder.AppendLine($"{indentation}public Scalar Bias {{ get; }}");
+                Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar Bias {{ get; }}");
             }
         }
 
@@ -134,12 +127,12 @@ internal static class Execution
 
             if (Data.Quantity.IsReferenceType)
             {
-                Builder.AppendLine($"""{indentation}/// <exception cref="ArgumentNullException"/>""");
+                Builder.AppendLine($"""{indentation}/// <exception cref="global::System.ArgumentNullException"/>""");
             }
 
             if (Data.BiasTerm)
             {
-                Builder.AppendLine($"{indentation}private {Data.Unit.Name}({Data.Quantity.FullyQualifiedName} {Data.QuantityParameterName}, Scalar bias)");
+                Builder.AppendLine($"{indentation}private {Data.Unit.Name}({Data.Quantity.FullyQualifiedName} {Data.QuantityParameterName}, global::SharpMeasures.Scalar bias)");
             }
             else
             {
@@ -150,7 +143,7 @@ internal static class Execution
 
             if (Data.Quantity.IsReferenceType)
             {
-                Builder.AppendLine($"{indentation.Increased}ArgumentNullException.ThrowIfNull({Data.QuantityParameterName});");
+                Builder.AppendLine($"{indentation.Increased}global::System.ArgumentNullException.ThrowIfNull({Data.QuantityParameterName});");
                 Builder.AppendLine();
             }
 
@@ -169,7 +162,7 @@ internal static class Execution
             string expression = Data.BiasTerm ? $"{Data.Quantity.Name} * scale, Bias / scale" : $"{Data.Quantity.Name} * scale";
 
             AppendDocumentation(indentation, Data.Documentation.ScaledBy());
-            Builder.AppendLine($"{indentation}public {Data.Unit.Name} ScaledBy(Scalar scale) => new({expression});");
+            Builder.AppendLine($"{indentation}public {Data.Unit.Name} ScaledBy(global::SharpMeasures.Scalar scale) => new({expression});");
         }
 
         private void ComposeWithPrefix(Indentation indentation)
@@ -178,10 +171,10 @@ internal static class Execution
 
             AppendDocumentation(indentation, Data.Documentation.WithPrefix());
             Builder.AppendLine($$"""
-                {{indentation}}/// <exception cref="ArgumentNullException"/>
-                {{indentation}}public {{Data.Unit.Name}} WithPrefix<TPrefix>(TPrefix prefix) where TPrefix : IPrefix
+                {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                {{indentation}}public {{Data.Unit.Name}} WithPrefix<TPrefix>(TPrefix prefix) where TPrefix : global::SharpMeasures.IPrefix
                 {{indentation}}{
-                {{indentation.Increased}}ArgumentNullException.ThrowIfNull(prefix);
+                {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(prefix);
 
                 {{indentation.Increased}}return new({{expression}});
                 {{indentation}}}
@@ -196,7 +189,7 @@ internal static class Execution
             }
 
             AppendDocumentation(indentation, Data.Documentation.WithBias());
-            Builder.AppendLine($"{indentation}public {Data.Unit.Name} WithBias(Scalar bias) => new({Data.Quantity.Name}, Bias + bias);");
+            Builder.AppendLine($"{indentation}public {Data.Unit.Name} WithBias(global::SharpMeasures.Scalar bias) => new({Data.Quantity.Name}, Bias + bias);");
         }
 
         private void ComposeToString(Indentation indentation)
@@ -227,8 +220,7 @@ internal static class Execution
             string biasEqualityText = Data.BiasTerm ? " && Bias == other.Bias" : string.Empty;
 
             AppendDocumentation(indentation, Data.Documentation.EqualsSameTypeMethod());
-            Builder.AppendLine($"{indentation}public{virtualText} bool Equals({Data.Unit.Name}? other) => other is not null " +
-                $"&& {Data.Quantity.Name} == other.{Data.Quantity.Name}{biasEqualityText};");
+            Builder.AppendLine($"{indentation}public{virtualText} bool Equals({Data.Unit.Name}? other) => other is not null && {Data.Quantity.Name} == other.{Data.Quantity.Name}{biasEqualityText};");
 
             Builder.AppendLine();
 
