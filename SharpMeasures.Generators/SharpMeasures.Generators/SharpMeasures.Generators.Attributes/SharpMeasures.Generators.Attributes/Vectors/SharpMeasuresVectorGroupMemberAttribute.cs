@@ -10,10 +10,10 @@ public sealed class SharpMeasuresVectorGroupMemberAttribute : Attribute
     public Type VectorGroup { get; }
 
     /// <inheritdoc cref="SharpMeasuresVectorAttribute.Dimension"/>
-    public int Dimension { get; }
+    public int Dimension { get; init; }
 
     /// <summary><inheritdoc cref="SharpMeasuresVectorAttribute.GenerateDocumentation" path="/summary"/> By default, the behaviour is inherited from the vector group.</summary>
-    public bool GenerateDocumentation { get; }
+    public bool GenerateDocumentation { get; init; }
 
     /// <inheritdoc cref="SharpMeasuresVectorGroupMemberAttribute"/>
     /// <param name="vectorGroup"><inheritdoc cref="VectorGroup" path="/summary"/><para><inheritdoc cref="VectorGroup" path="/remarks"/></para></param>

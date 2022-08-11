@@ -13,7 +13,9 @@ using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 internal interface ISpecializedSharpMeasuresVectorResolutionDiagnostics
 {
@@ -22,6 +24,7 @@ internal interface ISpecializedSharpMeasuresVectorResolutionDiagnostics
     public abstract Diagnostic? TypeAlreadyVector(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? OriginalNotVector(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? RootVectorNotResolved(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition);
+    public abstract Diagnostic? VectorNameAndDimensionMismatch(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition, int interpretedDimension, int inheritedDimension);
     public abstract Diagnostic? TypeNotScalar(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? DifferenceNotVector(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? DifferenceVectorGroupLacksMatchingDimension(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition, int dimension);
@@ -77,11 +80,13 @@ internal class SpecializedSharpMeasuresVectorResolver
             return OptionalWithDiagnostics.EmptyWithoutDiagnostics<SpecializedSharpMeasuresVectorDefinition>();
         }
 
+        var dimensionValidity = CheckDimensionValidity(context, definition, vectorBase.Definition.Dimension);
+
         var processedVector = ProcessScalar(context, definition);
         var processedDifference = ProcessDifference(context, definition, vectorBase.Definition.Dimension);
         var processedDefaultUnitName = ProcessDefaultUnitName(context, definition, unit);
 
-        var allDiagnostics = processedVector.Diagnostics.Concat(processedDifference.Diagnostics).Concat(processedDefaultUnitName.Diagnostics);
+        var allDiagnostics = dimensionValidity.Diagnostics.Concat(processedVector.Diagnostics).Concat(processedDifference.Diagnostics).Concat(processedDefaultUnitName.Diagnostics);
 
         var resolvedScalar = ResolveScalar(context, definition);
 
@@ -99,6 +104,18 @@ internal class SpecializedSharpMeasuresVectorResolver
             resolvedDifference, resolvedDefaultUnit, resolvedDefaultUnitSymbol, resolvedGenerateDocumentation, SharpMeasuresVectorLocations.Empty);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
+    }
+
+    private IValidityWithDiagnostics CheckDimensionValidity(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition, int dimension)
+    {
+        var trailingNumber = Regex.Match(context.Type.Name, @"\d+$", RegexOptions.RightToLeft);
+
+        if (trailingNumber.Success && int.TryParse(trailingNumber.Value, NumberStyles.None, CultureInfo.InvariantCulture, out int result) && result != dimension)
+        {
+            return ValidityWithDiagnostics.ValidWithDiagnostics(Diagnostics.VectorNameAndDimensionMismatch(context, definition, result, dimension));
+        }
+
+        return ValidityWithDiagnostics.Valid;
     }
 
     private IOptionalWithDiagnostics<IUnresolvedScalarType> ProcessScalar(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition)

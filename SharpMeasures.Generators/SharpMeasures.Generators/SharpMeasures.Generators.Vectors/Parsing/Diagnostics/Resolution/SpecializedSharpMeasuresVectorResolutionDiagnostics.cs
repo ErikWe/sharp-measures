@@ -2,8 +2,10 @@
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Unresolved.Units;
+using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 using SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVector;
 
 internal class SpecializedSharpMeasuresVectorResolutionDiagnostics : ISpecializedSharpMeasuresVectorResolutionDiagnostics
@@ -35,6 +37,11 @@ internal class SpecializedSharpMeasuresVectorResolutionDiagnostics : ISpecialize
     public Diagnostic RootVectorNotResolved(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition)
     {
         return DiagnosticConstruction.QuantityGroupMissingRoot<SharpMeasuresVectorAttribute>(definition.Locations.AttributeName.AsRoslynLocation());
+    }
+
+    public Diagnostic VectorNameAndDimensionMismatch(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition, int interpretedDimension, int inheritedDimension)
+    {
+        return DiagnosticConstruction.VectorNameAndDimensionMismatch(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name, interpretedDimension, inheritedDimension);
     }
 
     public Diagnostic TypeNotScalar(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition)

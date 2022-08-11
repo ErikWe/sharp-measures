@@ -50,11 +50,11 @@ Measures1260 | Usage | Warning | Contradictory attributes
 Measures1261 | Usage | Warning | Quantity group missing root quantity
 Measures1262 | Usage | Info | Inclusion or exclusion had no effect
 Measures1263 | Usage | Info | Difference is disabled but a quantity was specified
-Measures1400 | Usage | Warning | Vector not member of vector group
 Measures1420 | Usage | Warning | Invalid vector dimension
 Measures1421 | Usage | Warning | Missing vector dimension
 Measures1422 | Usage | Warning | Duplicate vector dimension
 Measures1423 | Usage | Warning | No vector of appropiate dimension in group
+Measures1424 | Usage | Warning | Vector name and dimension mismatch
 Measures1440 | Usage | Warning | Invalid dimension of vector constant
 Measures1460 | Usage | Info | Vector group already specified
 Measures1900 | Documentation | Warning | Unresolved documentation dependency

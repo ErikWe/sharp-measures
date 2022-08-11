@@ -17,6 +17,7 @@ internal interface ISharpMeasuresVectorProcessingDiagnostics
     public abstract Diagnostic? MissingDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? InvalidDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? InvalidInterpretedDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition, int dimension);
+    public abstract Diagnostic? VectorNameAndDimensionMismatch(IProcessingContext context, RawSharpMeasuresVectorDefinition definition, int interpretedDimension);
 
     public abstract Diagnostic? DifferenceDisabledButQuantitySpecified(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? NullDifferenceQuantity(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
@@ -54,6 +55,11 @@ internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, Raw
         var product = ProcessDefinition(context, definition);
         allDiagnostics = allDiagnostics.Concat(product);
 
+        if (product.LacksResult)
+        {
+            return OptionalWithDiagnostics.Empty<UnresolvedSharpMeasuresVectorDefinition>(allDiagnostics);
+        }
+
         return OptionalWithDiagnostics.Result(product.Result, allDiagnostics);
     }
 
@@ -84,14 +90,9 @@ internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, Raw
 
     private IOptionalWithDiagnostics<int> ProcessDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)
     {
-        if (definition.Locations.ExplicitlySetDimension)
+        if (definition.Locations.ExplicitlySetDimension && definition.Dimension < 2)
         {
-            if (definition.Dimension < 2)
-            {
-                return OptionalWithDiagnostics.Empty<int>(Diagnostics.InvalidDimension(context, definition));
-            }
-
-            return OptionalWithDiagnostics.Result(definition.Dimension);
+            return OptionalWithDiagnostics.Empty<int>(Diagnostics.InvalidDimension(context, definition));
         }
 
         var trailingNumber = Regex.Match(context.Type.Name, @"\d+$", RegexOptions.RightToLeft);
@@ -99,13 +100,26 @@ internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, Raw
         {
             if (int.TryParse(trailingNumber.Value, NumberStyles.None, CultureInfo.InvariantCulture, out int result))
             {
-                if (result < 2)
+                if (definition.Locations.ExplicitlySetDimension is false)
                 {
-                    return OptionalWithDiagnostics.Empty<int>(Diagnostics.InvalidInterpretedDimension(context, definition, result));
+                    if (result < 2)
+                    {
+                        return OptionalWithDiagnostics.Empty<int>(Diagnostics.InvalidInterpretedDimension(context, definition, result));
+                    }
+
+                    return OptionalWithDiagnostics.Result(result);
                 }
 
-                return OptionalWithDiagnostics.Result(result);
+                if (result != definition.Dimension)
+                {
+                    return OptionalWithDiagnostics.Result(definition.Dimension, Diagnostics.VectorNameAndDimensionMismatch(context, definition, result));
+                }
             }
+        }
+
+        if (definition.Locations.ExplicitlySetDimension)
+        {
+            return OptionalWithDiagnostics.Result(definition.Dimension);
         }
 
         return OptionalWithDiagnostics.Empty<int>(Diagnostics.MissingDimension(context, definition));
