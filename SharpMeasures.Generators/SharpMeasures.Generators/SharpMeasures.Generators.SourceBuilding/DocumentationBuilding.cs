@@ -9,6 +9,11 @@ public static class DocumentationBuilding
 
     public static void AppendDocumentation(StringBuilder source, Indentation indentation, string text)
     {
+        if (text.Length is 0)
+        {
+            return;
+        }
+
         string indentedTagContent = NewLineRegex.Replace(text, $"$0{indentation}");
 
         source.AppendLine(indentedTagContent);
