@@ -4,20 +4,11 @@ using SharpMeasures.Generators.Tests.Verify;
 
 internal static class CommonResults
 {
-    public static GeneratorVerifier Length_OnlyFixedMetre { get; }
-        = GeneratorVerifier.Construct<SharpMeasuresGenerator>(Length_OnlyFixedMetre_Source);
-
-    public static GeneratorVerifier Length_NoDefinitions { get; }
-        = GeneratorVerifier.Construct<SharpMeasuresGenerator>(Length_NoDefinitions_Source);
-
-    public static GeneratorVerifier Temperature_OnlyFixedKelvin { get; }
-        = GeneratorVerifier.Construct<SharpMeasuresGenerator>(Temperature_OnlyFixedKelvin_Source);
-
-    public static GeneratorVerifier Temperature_NoDefinitions { get; }
-        = GeneratorVerifier.Construct<SharpMeasuresGenerator>(Temperature_NoDefinitions_Source);
-
-    public static GeneratorVerifier LengthTimeSpeed_NoDerivable { get; }
-        = GeneratorVerifier.Construct<SharpMeasuresGenerator>(LengthTimeSpeed_NoDerivable_Source);
+    public static GeneratorVerifier Length_OnlyFixedMetre { get; } = GeneratorVerifier.Construct<SharpMeasuresGenerator>(Length_OnlyFixedMetre_Source);
+    public static GeneratorVerifier Length_NoDefinitions { get; } = GeneratorVerifier.Construct<SharpMeasuresGenerator>(Length_NoDefinitions_Source);
+    public static GeneratorVerifier Temperature_OnlyFixedKelvin { get; } = GeneratorVerifier.Construct<SharpMeasuresGenerator>(Temperature_OnlyFixedKelvin_Source);
+    public static GeneratorVerifier Temperature_NoDefinitions { get; } = GeneratorVerifier.Construct<SharpMeasuresGenerator>(Temperature_NoDefinitions_Source);
+    public static GeneratorVerifier LengthTimeSpeed_NoDerivable { get; } = GeneratorVerifier.Construct<SharpMeasuresGenerator>(LengthTimeSpeed_NoDerivable_Source);
 
     private const string Length_OnlyFixedMetre_Source = """
         using SharpMeasures.Generators.Scalars;
