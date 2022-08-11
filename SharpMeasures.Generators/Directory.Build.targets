@@ -26,5 +26,9 @@
         <PackageReference Update="xunit" Version="2.4.1" />
         <PackageReference Update="xunit.runner.visualstudio" Version="2.4.3" />
     </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Update="SharpMeasures.Base" Version="0.2.2.25" />
+    </ItemGroup>
     
 </Project>
