@@ -36,6 +36,11 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.VectorNameAndDimensionMismatch, location, vectorType, interpretedDimension, specifiedDimension);
     }
 
+    public static Diagnostic VectorGroupNameSuggestsDimension(Location? location, string vectorGroupType, int interpretedDimension)
+    {
+        return Diagnostic.Create(DiagnosticRules.VectorGroupNameSuggestsDimension, location, vectorGroupType, interpretedDimension);
+    }
+
     public static Diagnostic VectorConstantInvalidDimension(Location? location, int expectedDimension, int constantDimension, string vectorName)
     {
         return Diagnostic.Create(DiagnosticRules.VectorConstantInvalidDimension, location, expectedDimension.ToString(CultureInfo.InvariantCulture), constantDimension, vectorName);

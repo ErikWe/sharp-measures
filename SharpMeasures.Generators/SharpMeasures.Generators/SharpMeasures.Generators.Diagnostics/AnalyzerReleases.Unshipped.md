@@ -54,7 +54,8 @@ Measures1420 | Usage | Warning | Invalid vector dimension
 Measures1421 | Usage | Warning | Missing vector dimension
 Measures1422 | Usage | Warning | Vector group already contains dimension
 Measures1423 | Usage | Warning | No vector of appropiate dimension in group
-Measures1424 | Usage | Warning | Vector name and dimension mismatch
+Measures1424 | Naming | Warning | Vector name and dimension mismatch
+Measures1425 | Naming | Warning | Vector group name suggests dimension
 Measures1440 | Usage | Warning | Invalid dimension of vector constant
 Measures1900 | Documentation | Warning | Unresolved documentation dependency
 Measures1901 | Documentation | Warning | Documentation tag not found

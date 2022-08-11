@@ -5,9 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 
-using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 internal interface ISharpMeasuresVectorGroupMemberProcessingDiagnostics
 {
@@ -71,25 +69,21 @@ internal class SharpMeasuresVectorGroupMemberProcesser
             return OptionalWithDiagnostics.Empty<int>(Diagnostics.InvalidDimension(context, definition));
         }
 
-        var trailingNumber = Regex.Match(context.Type.Name, @"\d+$", RegexOptions.RightToLeft);
-        if (trailingNumber.Success)
+        if (Utility.InterpretDimensionFromName(context.Type.Name) is int result)
         {
-            if (int.TryParse(trailingNumber.Value, NumberStyles.None, CultureInfo.InvariantCulture, out int result))
+            if (definition.Locations.ExplicitlySetDimension is false)
             {
-                if (definition.Locations.ExplicitlySetDimension is false)
+                if (result < 2)
                 {
-                    if (result < 2)
-                    {
-                        return OptionalWithDiagnostics.Empty<int>(Diagnostics.InvalidInterpretedDimension(context, definition, result));
-                    }
-
-                    return OptionalWithDiagnostics.Result(result);
+                    return OptionalWithDiagnostics.Empty<int>(Diagnostics.InvalidInterpretedDimension(context, definition, result));
                 }
 
-                if (result != definition.Dimension)
-                {
-                    return OptionalWithDiagnostics.Result(definition.Dimension, Diagnostics.VectorNameAndDimensionMismatch(context, definition, result));
-                }
+                return OptionalWithDiagnostics.Result(result);
+            }
+
+            if (result != definition.Dimension)
+            {
+                return OptionalWithDiagnostics.Result(definition.Dimension, Diagnostics.VectorNameAndDimensionMismatch(context, definition, result));
             }
         }
 

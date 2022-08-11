@@ -60,7 +60,17 @@ public static partial class DiagnosticRules
         id: DiagnosticIDs.VectorNameAndDimensionMismatch,
         title: "Vector name and dimension mismatch",
         messageFormat: "The name of vector {0} suggests that the dimension should be {1}, but the dimension was specified as {2}",
-        category: "Usage",
+        category: "Naming",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor VectorGroupNameSuggestsDimension = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.VectorGroupNameSuggestsDimension,
+        title: "Vector group name suggests dimension",
+        messageFormat: "The name of vector group {0} suggests dimension {1}, but a vector group allows members of any dimension",
+        category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );

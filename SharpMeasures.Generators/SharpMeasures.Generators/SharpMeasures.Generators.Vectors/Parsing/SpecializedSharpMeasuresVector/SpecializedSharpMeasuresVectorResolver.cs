@@ -13,9 +13,7 @@ using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 internal interface ISpecializedSharpMeasuresVectorResolutionDiagnostics
 {
@@ -108,9 +106,7 @@ internal class SpecializedSharpMeasuresVectorResolver
 
     private IValidityWithDiagnostics CheckDimensionValidity(ISpecializedSharpMeasuresVectorResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorDefinition definition, int dimension)
     {
-        var trailingNumber = Regex.Match(context.Type.Name, @"\d+$", RegexOptions.RightToLeft);
-
-        if (trailingNumber.Success && int.TryParse(trailingNumber.Value, NumberStyles.None, CultureInfo.InvariantCulture, out int result) && result != dimension)
+        if (Utility.InterpretDimensionFromName(context.Type.Name) is int result && result != dimension)
         {
             return ValidityWithDiagnostics.ValidWithDiagnostics(Diagnostics.VectorNameAndDimensionMismatch(context, definition, result, dimension));
         }

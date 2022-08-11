@@ -9,6 +9,8 @@ using System.Linq;
 
 internal interface ISharpMeasuresVectorGroupProcessingDiagnostics
 {
+    public abstract Diagnostic? NameSuggestsDimension(IProcessingContext context, RawSharpMeasuresVectorGroupDefinition definition, int interpretedDimension);
+
     public abstract Diagnostic? NullUnit(IProcessingContext context, RawSharpMeasuresVectorGroupDefinition definition);
     public abstract Diagnostic? NullScalar(IProcessingContext context, RawSharpMeasuresVectorGroupDefinition definition);
 
@@ -98,7 +100,17 @@ internal class SharpMeasuresVectorGroupProcesser : AProcesser<IProcessingContext
 
     private IValidityWithDiagnostics CheckValidity(IProcessingContext context, RawSharpMeasuresVectorGroupDefinition definition)
     {
-        return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckUnitValidity, CheckScalarValidity, CheckDifferenceValidity);
+        return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckNameValidity, CheckUnitValidity, CheckScalarValidity, CheckDifferenceValidity);
+    }
+
+    private IValidityWithDiagnostics CheckNameValidity(IProcessingContext context, RawSharpMeasuresVectorGroupDefinition definition)
+    {
+        if (Utility.InterpretDimensionFromName(context.Type.Name) is int result)
+        {
+            return ValidityWithDiagnostics.ValidWithDiagnostics(Diagnostics.NameSuggestsDimension(context, definition, result));
+        }
+
+        return ValidityWithDiagnostics.Valid;
     }
 
     private IValidityWithDiagnostics CheckUnitValidity(IProcessingContext context, RawSharpMeasuresVectorGroupDefinition definition)
