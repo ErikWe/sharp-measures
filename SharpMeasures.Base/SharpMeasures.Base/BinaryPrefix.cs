@@ -3,9 +3,7 @@
 using System;
 
 /// <summary>Describes a binary prefix. Common <see cref="BinaryPrefix"/> exists as static properties.</summary>
-public readonly record struct BinaryPrefix :
-    IPrefix,
-    IComparable<BinaryPrefix>
+public readonly record struct BinaryPrefix : IPrefix, IComparable<BinaryPrefix>
 {
     /// <summary>Denotes that the value should be scaled by [2^80 = (1 024)^8]. Usually written as [Yi].</summary>
     public static BinaryPrefix Yobi { get; } = ThousandTwentyFourToThePower(8);

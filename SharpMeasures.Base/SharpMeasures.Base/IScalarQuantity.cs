@@ -11,9 +11,7 @@ public interface IScalarQuantity
 
 /// <inheritdoc cref="IScalarQuantity" path="/summary"/>
 /// <typeparam name="TSelf">The self-type, <see langword="this"/>.</typeparam>
-public interface IScalarQuantity<TSelf>
-    : IScalarQuantity
-    where TSelf : IScalarQuantity<TSelf>
+public interface IScalarQuantity<TSelf> : IScalarQuantity where TSelf : IScalarQuantity<TSelf>
 {
     /// <summary>Constructs a new <typeparamref name="TSelf"/> representing { <paramref name="magnitude"/> }.</summary>
     /// <param name="magnitude">The magnitude of the constructed <typeparamref name="TSelf"/>.</param>

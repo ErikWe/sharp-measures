@@ -1,36 +1,11 @@
 ﻿namespace SharpMeasures;
 
 using SharpMeasures.Maths;
-using SharpMeasures.ScalarAbstractions;
-using SharpMeasures.Vector3Abstractions;
 
 using System;
 
 /// <summary>A measure of a scalar quantity that is not covered by a designated type.</summary>
-public readonly record struct Unhandled :
-    IComparable<Unhandled>,
-    IScalarQuantity<Unhandled>,
-    IReciprocalScalarQuantity<Unhandled>,
-    ISquareScalarQuantity<Unhandled>,
-    ICubeScalarQuantity<Unhandled>,
-    ISquareRootScalarQuantity<Unhandled>,
-    ICubeRootScalarQuantity<Unhandled>,
-    IAddendScalarQuantity<Unhandled>,
-    IMinuendScalarQuantity<Unhandled>,
-    ISubtrahendScalarQuantity<Unhandled>,
-    IFactorScalarQuantity<Unhandled, Unhandled, Unhandled>,
-    IDividendScalarQuantity<Unhandled, Unhandled, Unhandled>,
-    IDivisorScalarQuantity<Unhandled, Unhandled, Unhandled>,
-    IFactor3ScalarQuantity<Unhandled, Unhandled3, Unhandled3>,
-    IDivisor3ScalarQuantity<Unhandled, Unhandled3, Unhandled3>,
-    IAddendScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
-    IMinuendScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
-    ISubtrahendScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
-    IFactorScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
-    IDividendScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
-    IDivisorScalarQuantity<Unhandled, Unhandled, IScalarQuantity>,
-    IFactor3ScalarQuantity<Unhandled, Unhandled3, IVector3Quantity>,
-    IDivisor3ScalarQuantity<Unhandled, Unhandled3, IVector3Quantity>
+public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparable<Unhandled>
 {
     /// <summary>The <see cref="Unhandled"/> representing { 0 }.</summary>
     public static Unhandled Zero { get; } = new(0);
@@ -100,49 +75,14 @@ public readonly record struct Unhandled :
     /// <inheritdoc/>
     public Unhandled Subtract(Unhandled subtrahend) => this - subtrahend;
     /// <inheritdoc/>
-    Unhandled ISubtrahendScalarQuantity<Unhandled, Unhandled>.SubtractFrom(Unhandled minuend) => minuend - this;
-    /// <inheritdoc/>
     public Unhandled Multiply(Unhandled factor) => this * factor;
     /// <inheritdoc/>
     public Unhandled Divide(Unhandled divisor) => this / divisor;
-    /// <inheritdoc/>
-    Unhandled IDivisorScalarQuantity<Unhandled, Unhandled>.DivideInto(Unhandled dividend) => dividend / this;
 
     /// <inheritdoc/>
     public Unhandled Multiply(Scalar factor) => this * factor;
     /// <inheritdoc/>
     public Unhandled Divide(Scalar divisor) => this / divisor;
-
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    Unhandled IAddendScalarQuantity<Unhandled, IScalarQuantity>.Add(IScalarQuantity addend) => this + addend;
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    Unhandled IMinuendScalarQuantity<Unhandled, IScalarQuantity>.Subtract(IScalarQuantity subtrahend) => this - subtrahend;
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    Unhandled ISubtrahendScalarQuantity<Unhandled, IScalarQuantity>.SubtractFrom(IScalarQuantity minuend) => minuend - this;
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    Unhandled IFactorScalarQuantity<Unhandled, IScalarQuantity>.Multiply(IScalarQuantity factor) => this * factor;
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    Unhandled IDividendScalarQuantity<Unhandled, IScalarQuantity>.Divide(IScalarQuantity divisor) => this / divisor;
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    Unhandled IDivisorScalarQuantity<Unhandled, IScalarQuantity>.DivideInto(IScalarQuantity dividend) => dividend / this;
-
-    /// <inheritdoc/>
-    Unhandled3 IFactor3ScalarQuantity<Unhandled3, Unhandled3>.Multiply(Unhandled3 factor) => this * factor;
-    /// <inheritdoc/>
-    Unhandled3 IDivisor3ScalarQuantity<Unhandled3, Unhandled3>.DivideInto(Unhandled3 dividend) => dividend / this;
-
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    Unhandled3 IFactor3ScalarQuantity<Unhandled3, IVector3Quantity>.Multiply(IVector3Quantity factor) => this * factor;
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentNullException"/>
-    Unhandled3 IDivisor3ScalarQuantity<Unhandled3, IVector3Quantity>.DivideInto(IVector3Quantity dividend) => dividend / this;
 
     /// <inheritdoc/>
     public static Unhandled operator +(Unhandled x) => x;
@@ -239,10 +179,6 @@ public readonly record struct Unhandled :
 
     /// <inheritdoc/>
     public static Unhandled3 operator *(Unhandled a, Unhandled3 b) => new(a * b.X, a * b.Y, a * b.Z);
-    /// <inheritdoc/>
-    static Unhandled3 IFactor3ScalarQuantity<Unhandled, Unhandled3, Unhandled3>.operator *(Unhandled3 a, Unhandled b) => new(a.X * b, a.Y * b, a.Z * b);
-    /// <inheritdoc/>
-    static Unhandled3 IDivisor3ScalarQuantity<Unhandled, Unhandled3, Unhandled3>.operator /(Unhandled3 a, Unhandled b) => new(a.X / b, a.Y / b, a.Z / b);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>

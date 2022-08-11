@@ -1,21 +1,12 @@
 ﻿namespace SharpMeasures;
 
 using SharpMeasures.Maths;
-using SharpMeasures.Vector3Abstractions;
 
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 
 /// <summary>A pure three-dimensional vector, representing { X, Y, Z }.</summary>
-public readonly record struct Vector3 :
-    IVector3Quantity<Vector3>,
-    IAddendVector3Quantity<Vector3>,
-    IMinuendVector3Quantity<Vector3>,
-    ISubtrahendVector3Quantity<Vector3>,
-    IFactorVector3Quantity<Vector3, Vector3, Scalar>,
-    IDividendVector3Quantity<Vector3, Vector3, Scalar>,
-    IDotFactorVector3Quantity<Scalar, Vector3>,
-    ICrossFactorVector3Quantity<Vector3, Vector3>
+public readonly record struct Vector3 : IVector3Quantity<Vector3>
 {
     /// <summary>The <see cref="Vector3"/> representing { 0, 0, 0 }.</summary>
     public static Vector3 Zero { get; } = (0, 0, 0);
@@ -91,8 +82,6 @@ public readonly record struct Vector3 :
     /// <inheritdoc/>
     public Vector3 Subtract(Vector3 subtrahend) => this - subtrahend;
     /// <inheritdoc/>
-    Vector3 ISubtrahendVector3Quantity<Vector3, Vector3>.SubtractFrom(Vector3 minuend) => minuend - this;
-    /// <inheritdoc/>
     public Vector3 Multiply(Scalar factor) => this * factor;
     /// <inheritdoc/>
     public Vector3 Divide(Scalar divisor) => this / divisor;
@@ -102,8 +91,6 @@ public readonly record struct Vector3 :
     public Scalar Dot(Vector3 factor) => ScalarMaths.Dot3(this, factor);
     /// <inheritdoc/>
     public Vector3 Cross(Vector3 factor) => VectorMaths.Cross(this, factor);
-    /// <inheritdoc/>
-    Vector3 ICrossFactorVector3Quantity<Vector3, Vector3>.CrossInto(Vector3 factor) => VectorMaths.Cross(factor, this);
 
     /// <inheritdoc/>
     public static Vector3 operator +(Vector3 a) => a;

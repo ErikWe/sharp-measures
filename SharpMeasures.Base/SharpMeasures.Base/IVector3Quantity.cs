@@ -25,9 +25,7 @@ public interface IVector3Quantity
 
 /// <inheritdoc cref="IVector3Quantity" path="/summary"/>
 /// <typeparam name="TSelf">The self-type, <see langword="this"/>.</typeparam>
-public interface IVector3Quantity<TSelf> :
-    IVector3Quantity
-    where TSelf : IVector3Quantity<TSelf>
+public interface IVector3Quantity<TSelf> : IVector3Quantity where TSelf : IVector3Quantity<TSelf>
 {
     /// <summary>Constructs a new <typeparamref name="TSelf"/> representing { <paramref name="x"/>, <paramref name="y"/>, <paramref name="z"/> }.</summary>
     /// <param name="x">The magnitude of the X-component of the constructed <typeparamref name="TSelf"/>.</param>

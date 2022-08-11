@@ -3,9 +3,7 @@
 using System;
 
 /// <summary>Describes a metric prefix. Common <see cref="MetricPrefix"/> exists as static properties.</summary>
-public readonly record struct MetricPrefix :
-    IPrefix,
-    IComparable<MetricPrefix>
+public readonly record struct MetricPrefix : IPrefix, IComparable<MetricPrefix>
 {
     /// <summary>Denotes that the value should be scaled by one septillion [10^24 = (1 000)^8]. Usually written as [Y].</summary>
     public static MetricPrefix Yotta { get; } = ThousandToThePower(8);

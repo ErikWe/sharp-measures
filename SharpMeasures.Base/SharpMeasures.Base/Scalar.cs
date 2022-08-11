@@ -1,29 +1,12 @@
 ﻿namespace SharpMeasures;
 
 using SharpMeasures.Maths;
-using SharpMeasures.ScalarAbstractions;
-using SharpMeasures.Vector3Abstractions;
 
 using System;
 using System.Diagnostics.CodeAnalysis;
 
 /// <summary>A pure scalar.</summary>
-public readonly partial record struct Scalar :
-    IComparable<Scalar>,
-    IScalarQuantity<Scalar>,
-    IReciprocalScalarQuantity<Scalar>,
-    ISquareScalarQuantity<Scalar>,
-    ICubeScalarQuantity<Scalar>,
-    ISquareRootScalarQuantity<Scalar>,
-    ICubeRootScalarQuantity<Scalar>,
-    IAddendScalarQuantity<Scalar>,
-    IMinuendScalarQuantity<Scalar>,
-    ISubtrahendScalarQuantity<Scalar>,
-    IFactorScalarQuantity<Scalar, Scalar, Scalar>,
-    IDividendScalarQuantity<Scalar, Scalar, Scalar>,
-    IDivisorScalarQuantity<Scalar, Scalar, Scalar>,
-    IFactor3ScalarQuantity<Vector3, Vector3>,
-    IDivisor3ScalarQuantity<Vector3, Vector3>
+public readonly partial record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scalar>
 {
     /// <summary>The <see cref="Scalar"/> representing { 0 }.</summary>
     public static Scalar Zero { get; } = 0;
@@ -111,8 +94,6 @@ public readonly partial record struct Scalar :
     public Scalar Add(Scalar addend) => this + addend;
     /// <inheritdoc/>
     public Scalar Subtract(Scalar subtrahend) => this - subtrahend;
-    /// <inheritdoc/>
-    Scalar ISubtrahendScalarQuantity<Scalar, Scalar>.SubtractFrom(Scalar minuend) => minuend - this;
 
     /// <summary>Computes { <see langword="this"/> % <paramref name="divisor"/> }.</summary>
     /// <param name="divisor">The divisor of { <see langword="this"/> % <paramref name="divisor"/> }.</param>
@@ -121,8 +102,6 @@ public readonly partial record struct Scalar :
     public Scalar Multiply(Scalar factor) => this * factor;
     /// <inheritdoc/>
     public Scalar Divide(Scalar divisor) => this / divisor;
-    /// <inheritdoc/>
-    Scalar IDivisorScalarQuantity<Scalar, Scalar>.DivideInto(Scalar dividend) => dividend / this;
 
     /// <inheritdoc/>
     public Vector3 Multiply(Vector3 factor) => this * factor;
