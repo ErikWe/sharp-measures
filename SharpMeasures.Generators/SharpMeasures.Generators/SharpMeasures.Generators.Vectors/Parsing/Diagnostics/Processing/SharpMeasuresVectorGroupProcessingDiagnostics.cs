@@ -12,6 +12,11 @@ internal class SharpMeasuresVectorGroupProcessingDiagnostics : ISharpMeasuresVec
 
     private SharpMeasuresVectorGroupProcessingDiagnostics() { }
 
+    public Diagnostic NameSuggestsDimension(IProcessingContext context, RawSharpMeasuresVectorGroupDefinition definition, int interpretedDImension)
+    {
+        return DiagnosticConstruction.VectorGroupNameSuggestsDimension(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name, interpretedDImension);
+    }
+
     public Diagnostic NullUnit(IProcessingContext context, RawSharpMeasuresVectorGroupDefinition definition)
     {
         return DiagnosticConstruction.NullTypeNotUnit(definition.Locations.Unit?.AsRoslynLocation());
