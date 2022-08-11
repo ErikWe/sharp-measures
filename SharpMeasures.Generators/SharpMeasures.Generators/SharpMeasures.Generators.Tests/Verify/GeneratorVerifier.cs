@@ -20,22 +20,35 @@ using Xunit;
 internal class GeneratorVerifier
 {
     public static GeneratorVerifier Construct<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator());
-    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator) => new(DriverConstruction.ConstructAndRun(source, generator, ProjectPath.Path + @"\Documentation"));
-
+    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator)
+    {
+        var driver = DriverConstruction.ConstructAndRun(source, generator, ProjectPath.Path + @"\Documentation", out var compilation);
+        
+        return new(driver, compilation);
+    }
     private GeneratorDriverRunResult RunResult { get; }
+    private Compilation Compilation { get; }
 
     private IEnumerable<GeneratedSourceResult> Output { get; }
     private int OutputCount { get; }
 
     private ImmutableArray<Diagnostic> Diagnostics => RunResult.Diagnostics;
 
-    private GeneratorVerifier(GeneratorDriver driver)
+    private GeneratorVerifier(GeneratorDriver driver, Compilation compilation)
     {
         RunResult = driver.GetRunResult();
+        Compilation = compilation;
 
         Output = RunResult.Results.SelectMany(static (result) => result.GeneratedSources);
 
         OutputCount = Output.Count();
+    }
+
+    public GeneratorVerifier AssertNoCompilationDiagnostics()
+    {
+        Assert.Empty(Compilation.GetDiagnostics());
+
+        return this;
     }
 
     public GeneratorVerifier AssertNoSourceGenerated()
@@ -329,6 +342,18 @@ internal class GeneratorVerifier
         }
 
         return Task.WhenAll(tasks);
+    }
+
+    public Task VerifyMatchingSourceNames(string regexPattern)
+    {
+        return VerifyMatchingSourceNames(new Regex(regexPattern));
+    }
+
+    public Task VerifyMatchingSourceNames(Regex regex)
+    {
+        IEnumerable<string> matchingSourceNames = Output.Select(static (result) => result.HintName).Where((sourceName) => regex.IsMatch(sourceName));
+
+        return VerifyListedSourceNames(matchingSourceNames);
     }
 
     public async Task VerifyDiagnostics()
