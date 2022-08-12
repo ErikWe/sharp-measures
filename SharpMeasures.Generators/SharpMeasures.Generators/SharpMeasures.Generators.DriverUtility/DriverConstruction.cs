@@ -10,6 +10,10 @@ using System.Linq;
 
 public static class DriverConstruction
 {
+    private static LanguageVersion LanguageVersion { get; } = LanguageVersion.Preview;
+    
+    private static CSharpParseOptions ParseOptions { get; } = new(languageVersion: LanguageVersion);
+
     public static GeneratorDriver ConstructAndRun<TGenerator>(string source, string documentationDirectory) where TGenerator : IIncrementalGenerator, new()
         => ConstructAndRun(source, new TGenerator(), documentationDirectory);
 
@@ -29,12 +33,12 @@ public static class DriverConstruction
     {
         ImmutableArray<AdditionalText> additionalFiles = GetAdditionalFiles(documentationDirectory);
 
-        return CSharpGeneratorDriver.Create(generator).AddAdditionalTexts(additionalFiles);
+        return CSharpGeneratorDriver.Create(generator).AddAdditionalTexts(additionalFiles).WithUpdatedParseOptions(ParseOptions);
     }
 
     public static Compilation CreateCompilation(string source)
     {
-        SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source);
+        SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source, ParseOptions);
 
         IEnumerable<MetadataReference> references = AssemblyLoader.ReferencedAssemblies
             .Where(static (assembly) => assembly.IsDynamic is false)
