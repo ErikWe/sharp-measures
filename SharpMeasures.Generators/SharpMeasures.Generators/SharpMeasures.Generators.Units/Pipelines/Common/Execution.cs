@@ -162,7 +162,7 @@ internal static class Execution
             string expression = Data.BiasTerm ? $"{Data.Quantity.Name} * scale, Bias / scale" : $"{Data.Quantity.Name} * scale";
 
             AppendDocumentation(indentation, Data.Documentation.ScaledBy());
-            Builder.AppendLine($"{indentation}public {Data.Unit.Name} ScaledBy(global::SharpMeasures.Scalar scale) => new({expression});");
+            Builder.AppendLine($"{indentation}public {Data.Unit.FullyQualifiedName} ScaledBy(global::SharpMeasures.Scalar scale) => new({expression});");
         }
 
         private void ComposeWithPrefix(Indentation indentation)
@@ -172,7 +172,7 @@ internal static class Execution
             AppendDocumentation(indentation, Data.Documentation.WithPrefix());
             Builder.AppendLine($$"""
                 {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                {{indentation}}public {{Data.Unit.Name}} WithPrefix<TPrefix>(TPrefix prefix) where TPrefix : global::SharpMeasures.IPrefix
+                {{indentation}}public {{Data.Unit.FullyQualifiedName}} WithPrefix<TPrefix>(TPrefix prefix) where TPrefix : global::SharpMeasures.IPrefix
                 {{indentation}}{
                 {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(prefix);
 
@@ -195,8 +195,8 @@ internal static class Execution
         private void ComposeToString(Indentation indentation)
         {
             string expression = Data.BiasTerm
-                ? $"{{typeof({Data.Unit.Name})}}: [{{{Data.Quantity.Name}}} + {{Bias}}]"
-                : $"{{typeof({Data.Unit.Name})}}: [{{{Data.Quantity.Name}}}]";
+                ? $"{{typeof({Data.Unit.FullyQualifiedName})}}: [{{{Data.Quantity.Name}}} + {{Bias}}]"
+                : $"{{typeof({Data.Unit.FullyQualifiedName})}}: [{{{Data.Quantity.Name}}}]";
 
             AppendDocumentation(indentation, Data.Documentation.ToStringDocumentation());
             Builder.AppendLine($"{indentation}public override string ToString() => \"{expression}\";");
@@ -220,19 +220,19 @@ internal static class Execution
             string biasEqualityText = Data.BiasTerm ? " && Bias == other.Bias" : string.Empty;
 
             AppendDocumentation(indentation, Data.Documentation.EqualsSameTypeMethod());
-            Builder.AppendLine($"{indentation}public{virtualText} bool Equals({Data.Unit.Name}? other) => other is not null && {Data.Quantity.Name} == other.{Data.Quantity.Name}{biasEqualityText};");
+            Builder.AppendLine($"{indentation}public{virtualText} bool Equals({Data.Unit.FullyQualifiedName}? other) => other is not null && {Data.Quantity.Name} == other.{Data.Quantity.Name}{biasEqualityText};");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.EqualsObjectMethod());
-            StaticBuilding.AppendEqualsObjectMethod(Builder, indentation, Data.Unit.Name);
+            StaticBuilding.AppendEqualsObjectMethod(Builder, indentation, Data.Unit.FullyQualifiedName);
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.EqualitySameTypeOperator());
-            StaticBuilding.AppendReferenceTypeEqualityOperator(Builder, indentation, Data.Unit.Name);
+            StaticBuilding.AppendReferenceTypeEqualityOperator(Builder, indentation, Data.Unit.FullyQualifiedName);
             AppendDocumentation(indentation, Data.Documentation.InequalitySameTypeOperator());
-            StaticBuilding.AppendReferenceTypeInequalityOperator(Builder, indentation, Data.Unit.Name);
+            StaticBuilding.AppendReferenceTypeInequalityOperator(Builder, indentation, Data.Unit.FullyQualifiedName);
         }
 
         private void ComposeValueTypeEquality(Indentation indentation)
@@ -241,7 +241,7 @@ internal static class Execution
 
             AppendDocumentation(indentation, Data.Documentation.EqualsSameTypeMethod());
             Builder.AppendLine($$"""
-                {{indentation}}public bool Equals({{Data.Unit.Name}} other)
+                {{indentation}}public bool Equals({{Data.Unit.FullyQualifiedName}} other)
                 {{indentation.Increased}}=> {{Data.Quantity.Name}} == other.{{Data.Quantity.Name}}{{biasEqualityText}};
                 """);
 
@@ -288,44 +288,44 @@ internal static class Execution
         private void ComposeReferenceTypeComparisons(Indentation indentation)
         {
             AppendDocumentation(indentation, Data.Documentation.CompareToSameType());
-            Builder.AppendLine($"{indentation}public int CompareTo({Data.Unit.Name}? other) " +
+            Builder.AppendLine($"{indentation}public int CompareTo({Data.Unit.FullyQualifiedName}? other) " +
                 $"=> {Data.Quantity.Name}.Magnitude.Value.CompareTo(other?.{Data.Quantity.Name}.Magnitude.Value);");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.LessThanSameType());
-            Builder.AppendLine($"{indentation}public static bool operator <({Data.Unit.Name}? x, {Data.Unit.Name}? y) " +
+            Builder.AppendLine($"{indentation}public static bool operator <({Data.Unit.FullyQualifiedName}? x, {Data.Unit.FullyQualifiedName}? y) " +
                 $"=> x?.{Data.Quantity.Name}.Magnitude.Value < y?.{Data.Quantity.Name}.Magnitude.Value;");
             AppendDocumentation(indentation, Data.Documentation.GreaterThanSameType());
-            Builder.AppendLine($"{indentation}public static bool operator >({Data.Unit.Name}? x, {Data.Unit.Name}? y) " +
+            Builder.AppendLine($"{indentation}public static bool operator >({Data.Unit.FullyQualifiedName}? x, {Data.Unit.FullyQualifiedName}? y) " +
                 $"=> x?.{Data.Quantity.Name}.Magnitude.Value > y?.{Data.Quantity.Name}.Magnitude.Value;");
             AppendDocumentation(indentation, Data.Documentation.LessThanOrEqualSameType());
-            Builder.AppendLine($"{indentation}public static bool operator <=({Data.Unit.Name}? x, {Data.Unit.Name}? y) " +
+            Builder.AppendLine($"{indentation}public static bool operator <=({Data.Unit.FullyQualifiedName}? x, {Data.Unit.FullyQualifiedName}? y) " +
                 $"=> x?.{Data.Quantity.Name}.Magnitude.Value <= y?.{Data.Quantity.Name}.Magnitude.Value;");
             AppendDocumentation(indentation, Data.Documentation.GreaterThanOrEqualSameType());
-            Builder.AppendLine($"{indentation}public static bool operator >=({Data.Unit.Name}? x, {Data.Unit.Name}? y) " +
+            Builder.AppendLine($"{indentation}public static bool operator >=({Data.Unit.FullyQualifiedName}? x, {Data.Unit.FullyQualifiedName}? y) " +
                 $"=> x?.{Data.Quantity.Name}.Magnitude.Value >= y?.{Data.Quantity.Name}.Magnitude.Value;");
         }
 
         private void ComposeValueTypeComparisons(Indentation indentation)
         {
             AppendDocumentation(indentation, Data.Documentation.CompareToSameType());
-            Builder.AppendLine($"{indentation}public int CompareTo({Data.Unit.Name} other) " +
+            Builder.AppendLine($"{indentation}public int CompareTo({Data.Unit.FullyQualifiedName} other) " +
                 $"=> {Data.Quantity.Name}.Magnitude.Value.CompareTo(other.{Data.Quantity.Name}.Magnitude.Value);");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.LessThanSameType());
-            Builder.AppendLine($"{indentation}public static bool operator <({Data.Unit.Name} x, {Data.Unit.Name} y) " +
+            Builder.AppendLine($"{indentation}public static bool operator <({Data.Unit.FullyQualifiedName} x, {Data.Unit.FullyQualifiedName} y) " +
                 $"=> x.{Data.Quantity.Name}.Magnitude.Value < y.{Data.Quantity.Name}.Magnitude.Value;");
             AppendDocumentation(indentation, Data.Documentation.GreaterThanSameType());
-            Builder.AppendLine($"{indentation}public static bool operator >({Data.Unit.Name} x, {Data.Unit.Name} y) " +
+            Builder.AppendLine($"{indentation}public static bool operator >({Data.Unit.FullyQualifiedName} x, {Data.Unit.FullyQualifiedName} y) " +
                 $"=> x.{Data.Quantity.Name}.Magnitude.Value > y.{Data.Quantity.Name}.Magnitude.Value;");
             AppendDocumentation(indentation, Data.Documentation.LessThanOrEqualSameType());
-            Builder.AppendLine($"{indentation}public static bool operator <=({Data.Unit.Name} x, {Data.Unit.Name} y) " +
+            Builder.AppendLine($"{indentation}public static bool operator <=({Data.Unit.FullyQualifiedName} x, {Data.Unit.FullyQualifiedName} y) " +
                 $"=> x.{Data.Quantity.Name}.Magnitude.Value <= y.{Data.Quantity.Name}.Magnitude.Value;");
             AppendDocumentation(indentation, Data.Documentation.GreaterThanOrEqualSameType());
-            Builder.AppendLine($"{indentation}public static bool operator >=({Data.Unit.Name} x, {Data.Unit.Name} y) " +
+            Builder.AppendLine($"{indentation}public static bool operator >=({Data.Unit.FullyQualifiedName} x, {Data.Unit.FullyQualifiedName} y) " +
                 $"=> x.{Data.Quantity.Name}.Magnitude.Value >= y.{Data.Quantity.Name}.Magnitude.Value;");
         }
 

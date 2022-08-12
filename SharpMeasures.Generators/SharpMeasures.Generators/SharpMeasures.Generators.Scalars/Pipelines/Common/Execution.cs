@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.SourceBuilding;
 
+using System.Collections.Generic;
 using System.Text;
 
 internal static class Execution
@@ -29,24 +30,9 @@ internal static class Execution
 
         private DataModel Data { get; }
 
-        private InterfaceCollector InterfaceCollector { get; }
-
         private Composer(DataModel data)
         {
             Data = data;
-
-            InterfaceCollector = InterfaceCollector.Delayed(Builder);
-
-            InterfaceCollector.AddInterfaces
-            (
-                $"IComparable<{Data.Scalar.Name}>",
-                $"IScalarQuantity<{Data.Scalar.Name}>"
-            );
-
-            if (Data.Scalar.IsRecord is false)
-            {
-                InterfaceCollector.AddInterface($"IEquatable<{Data.Scalar.Name}>");
-            }
         }
 
         private void Compose()
@@ -55,21 +41,10 @@ internal static class Execution
 
             NamespaceBuilding.AppendNamespace(Builder, Data.Scalar.Namespace);
 
-            UsingsBuilding.AppendUsings(Builder, Data.Scalar.Namespace, new string[]
-            {
-                "SharpMeasures",
-                Data.Unit.Namespace,
-                "System"
-            });
-
             AppendDocumentation(new Indentation(0), Data.Documentation.Header());
             Builder.Append(Data.Scalar.ComposeDeclaration());
 
-            InterfaceBuilding.AppendInterfaceImplementationOnNewLines(Builder, new Indentation(1), new string[]
-            {
-                $"IComparable<{Data.Scalar.Name}>",
-                $"IScalarQuantity<{Data.Scalar.Name}>"
-            });
+            AppendInterfaces();
 
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
         }
@@ -79,29 +54,40 @@ internal static class Execution
             return Builder.ToString();
         }
 
+        private void AppendInterfaces()
+        {
+            List<string> interfaceNames = new()
+            {
+                $"global::System.IComparable<{Data.Scalar.FullyQualifiedName}>",
+                $"global::SharpMeasures.IScalarQuantity<{Data.Scalar.FullyQualifiedName}>"
+            };
+
+            if (Data.Scalar.IsRecord is false)
+            {
+                interfaceNames.Add($"global::System.IEquatable<{Data.Scalar.FullyQualifiedName}>");
+            }
+
+            InterfaceBuilding.AppendInterfaceImplementationOnNewLines(Builder, new Indentation(1), interfaceNames);
+        }
+
         private void ComposeTypeBlock(Indentation indentation)
         {
             if (Data.UseUnitBias is false)
             {
                 AppendDocumentation(indentation, Data.Documentation.Zero());
-                Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} Zero {{ get; }} = new(0);");
+                Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} Zero {{ get; }} = new(0);");
 
                 Builder.AppendLine();
             }
 
-            AppendDocumentation(indentation, Data.Documentation.WithMagnitude());
-            Builder.AppendLine($"{indentation}static {Data.Scalar.Name} IScalarQuantity<{Data.Scalar.Name}>.WithMagnitude(Scalar magnitude) => new(magnitude);");
-
-            Builder.AppendLine();
-
             AppendDocumentation(indentation, Data.Documentation.Magnitude());
-            Builder.AppendLine($"{indentation}public Scalar Magnitude {{ get; }}");
+            Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar Magnitude {{ get; }}");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.ScalarConstructor());
             Builder.AppendLine($$"""
-                {{indentation}}public {{Data.Scalar.Name}}(Scalar magnitude)
+                {{indentation}}public {{Data.Scalar.Name}}(global::SharpMeasures.Scalar magnitude)
                 {{indentation}}{
                 {{indentation.Increased}}Magnitude = magnitude;
                 {{indentation}}}
@@ -136,17 +122,22 @@ internal static class Execution
 
             Builder.AppendLine();
 
+            AppendDocumentation(indentation, Data.Documentation.WithMagnitude());
+            Builder.AppendLine($"{indentation}static {Data.Scalar.FullyQualifiedName} global::SharpMeasures.IScalarQuantity<{Data.Scalar.FullyQualifiedName}>.WithMagnitude(global::SharpMeasures.Scalar magnitude) => new(magnitude);");
+
+            Builder.AppendLine();
+
             if (Data.Unit.IsReferenceType)
             {
                 Builder.AppendLine($$"""
                     {{indentation}}/// <summary>Computes the represented magnitude based on a magnitude, <paramref name="magnitude"/>, expressed in
                     {{indentation}}/// a certain unit <paramref name="{{Data.UnitParameterName}}"/>.</summary>
                     {{indentation}}/// <param name="magnitude">The magnitude expressed in a certain unit <paramref name="{{Data.UnitParameterName}}"/>.</param>
-                    {{indentation}}/// <param name="{{Data.UnitParameterName}}">The {{Data.Unit.Name}} in which <paramref name="magnitude"/> is expressed.</param>
-                    {{indentation}}/// <exception cref="ArgumentNullException"/>
-                    {{indentation}}private static Scalar ComputeRepresentedMagnitude(Scalar magnitude, {{Data.Unit.Name}} {{Data.UnitParameterName}})
+                    {{indentation}}/// <param name="{{Data.UnitParameterName}}">The <see cref="{{Data.Unit.FullyQualifiedName}}"/> in which <paramref name="magnitude"/> is expressed.</param>
+                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                    {{indentation}}private static global::SharpMeasures.Scalar ComputeRepresentedMagnitude(global::SharpMeasures.Scalar magnitude, {{Data.Unit.FullyQualifiedName}} {{Data.UnitParameterName}})
                     {{indentation}}{
-                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull({{Data.UnitParameterName}});
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull({{Data.UnitParameterName}});
                     
                     {{indentation.Increased}}return {{ConstructorComputation(Data)}};
                     {{indentation}}}
@@ -160,14 +151,14 @@ internal static class Execution
 
             if (Data.Unit.IsReferenceType)
             {
-                Builder.AppendLine($"""{indentation}/// <exception cref="ArgumentNullException"/>""");
+                Builder.AppendLine($"""{indentation}/// <exception cref="global::System.ArgumentNullException"/>""");
             }
 
-            Builder.AppendLine($"{indentation}public {Data.Scalar.Name}(Scalar magnitude, {Data.Unit.Name} {Data.UnitParameterName})");
+            Builder.AppendLine($"{indentation}public {Data.Scalar.Name}(global::SharpMeasures.Scalar magnitude, {Data.Unit.FullyQualifiedName} {Data.UnitParameterName})");
 
             if (Data.Unit.IsReferenceType)
             {
-                Builder.AppendLine($"{indentation.Increased}: this(ComputeRepresentedMagnitude(magnitude, {Data.UnitParameterName}) {{ }}");
+                Builder.AppendLine($"{indentation.Increased}: this(ComputeRepresentedMagnitude(magnitude, {Data.UnitParameterName})) {{ }}");
             }
             else
             {
@@ -181,16 +172,16 @@ internal static class Execution
 
             if (Data.Unit.IsReferenceType)
             {
-                Builder.AppendLine($"""{indentation}/// <exception cref="ArgumentNullException"/>""");
+                Builder.AppendLine($"""{indentation}/// <exception cref="global::System.ArgumentNullException"/>""");
             }
 
-            Builder.AppendLine($"{indentation}public Scalar InUnit({Data.Unit.Name} {Data.UnitParameterName})");
+            Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar InUnit({Data.Unit.FullyQualifiedName} {Data.UnitParameterName})");
             
             if (Data.Unit.IsReferenceType)
             {
                 Builder.AppendLine($$"""
                     {{indentation}}{
-                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull({{Data.UnitParameterName}}); 
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull({{Data.UnitParameterName}}); 
                     
                     {{indentation.Increased}}return new({{InUnitComputation(Data)}});
                     {{indentation}}}
@@ -205,11 +196,11 @@ internal static class Execution
         private void ComposeToString(Indentation indentation)
         {
             AppendDocumentation(indentation, Data.Documentation.ToStringDocumentation());
-            Builder.Append($$"""{{indentation}}public override string ToString() => $"{typeof({{Data.Scalar.Name}})}: [{""");
+            Builder.Append($$"""{{indentation}}public override string ToString() => $"{typeof({{Data.Scalar.FullyQualifiedName}})}: [{""");
 
             if (Data.DefaultUnit is not null)
             {
-                Builder.Append($"InUnit({Data.Unit.Name}.{Data.DefaultUnit.Name}).Value");
+                Builder.Append($"InUnit({Data.Unit.FullyQualifiedName}.{Data.DefaultUnit.Name}).Value");
             }
             else
             {
@@ -243,40 +234,39 @@ internal static class Execution
             string virtualText = Data.Scalar.IsSealed ? string.Empty : " virtual";
 
             AppendDocumentation(indentation, Data.Documentation.EqualsSameTypeMethod());
-            Builder.AppendLine($"{indentation}public{virtualText} bool Equals({Data.Scalar.Name}? other) => other is not null " +
-                $"&& Magnitude.Value == other.Magnitude.Value;");
+            Builder.AppendLine($"{indentation}public{virtualText} bool Equals({Data.Scalar.FullyQualifiedName}? other) => other is not null && Magnitude.Value == other.Magnitude.Value;");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.EqualsObjectMethod());
-            StaticBuilding.AppendEqualsObjectMethod(Builder, indentation, Data.Scalar.Name);
+            StaticBuilding.AppendEqualsObjectMethod(Builder, indentation, Data.Scalar.FullyQualifiedName);
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.EqualitySameTypeOperator());
-            Builder.AppendLine($"{indentation}public static bool operator ==({Data.Scalar.Name}? lhs, {Data.Scalar.Name}? rhs) => lhs?.Equals(rhs) ?? rhs is null;");
+            Builder.AppendLine($"{indentation}public static bool operator ==({Data.Scalar.FullyQualifiedName}? lhs, {Data.Scalar.FullyQualifiedName}? rhs) => lhs?.Equals(rhs) ?? rhs is null;");
 
             AppendDocumentation(indentation, Data.Documentation.InequalitySameTypeOperator());
-            Builder.AppendLine($"{indentation}public static bool operator !=({Data.Scalar.Name}? lhs, {Data.Scalar.Name}? rhs) => (lhs == rhs) is false;");
+            Builder.AppendLine($"{indentation}public static bool operator !=({Data.Scalar.FullyQualifiedName}? lhs, {Data.Scalar.FullyQualifiedName}? rhs) => (lhs == rhs) is false;");
         }
 
         private void ComposeValueTypeEquality(Indentation indentation)
         {
             AppendDocumentation(indentation, Data.Documentation.EqualsSameTypeMethod());
-            Builder.AppendLine($$"""{{indentation}}public bool Equals({{Data.Scalar.Name}} other) => Magnitude.Value == other.Magnitude.Value;""");
+            Builder.AppendLine($$"""{{indentation}}public bool Equals({{Data.Scalar.FullyQualifiedName}} other) => Magnitude.Value == other.Magnitude.Value;""");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.EqualsObjectMethod());
-            StaticBuilding.AppendEqualsObjectMethod(Builder, indentation, Data.Scalar.Name);
+            StaticBuilding.AppendEqualsObjectMethod(Builder, indentation, Data.Scalar.FullyQualifiedName);
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.EqualitySameTypeOperator());
-            Builder.AppendLine($"{indentation}public static bool operator ==({Data.Scalar.Name} lhs, {Data.Scalar.Name} rhs) => lhs.Equals(rhs);");
+            Builder.AppendLine($"{indentation}public static bool operator ==({Data.Scalar.FullyQualifiedName} lhs, {Data.Scalar.FullyQualifiedName} rhs) => lhs.Equals(rhs);");
 
             AppendDocumentation(indentation, Data.Documentation.InequalitySameTypeOperator());
-            Builder.AppendLine($"{indentation}public static bool operator !=({Data.Scalar.Name} lhs, {Data.Scalar.Name} rhs) => (lhs == rhs) is false;");
+            Builder.AppendLine($"{indentation}public static bool operator !=({Data.Scalar.FullyQualifiedName} lhs, {Data.Scalar.FullyQualifiedName} rhs) => (lhs == rhs) is false;");
         }
 
         private void ComposeGetHashCode(Indentation indentation)
@@ -300,42 +290,42 @@ internal static class Execution
         private void ComposeReferenceTypeComparisons(Indentation indentation)
         {
             AppendDocumentation(indentation, Data.Documentation.CompareToSameType());
-            Builder.AppendLine($"{indentation}public int CompareTo({Data.Scalar.Name}? other) => Magnitude.Value.CompareTo(other?.Magnitude.Value);");
+            Builder.AppendLine($"{indentation}public int CompareTo({Data.Scalar.FullyQualifiedName}? other) => Magnitude.Value.CompareTo(other?.Magnitude.Value);");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.LessThanSameType());
-            Builder.AppendLine($"{indentation}public static bool operator <({Data.Scalar.Name}? x, {Data.Scalar.Name}? y) " +
+            Builder.AppendLine($"{indentation}public static bool operator <({Data.Scalar.FullyQualifiedName}? x, {Data.Scalar.FullyQualifiedName}? y) " +
                 $"=> x?.Magnitude.Value < y?.Magnitude.Value;");
             AppendDocumentation(indentation, Data.Documentation.GreaterThanSameType());
-            Builder.AppendLine($"{indentation}public static bool operator >({Data.Scalar.Name}? x, {Data.Scalar.Name}? y) " +
+            Builder.AppendLine($"{indentation}public static bool operator >({Data.Scalar.FullyQualifiedName}? x, {Data.Scalar.FullyQualifiedName}? y) " +
                 $"=> x?.Magnitude.Value > y?.Magnitude.Value;");
             AppendDocumentation(indentation, Data.Documentation.LessThanOrEqualSameType());
-            Builder.AppendLine($"{indentation}public static bool operator <=({Data.Scalar.Name}? x, {Data.Scalar.Name}? y) " +
+            Builder.AppendLine($"{indentation}public static bool operator <=({Data.Scalar.FullyQualifiedName}? x, {Data.Scalar.FullyQualifiedName}? y) " +
                 $"=> x?.Magnitude.Value <= y?.Magnitude.Value;");
             AppendDocumentation(indentation, Data.Documentation.GreaterThanOrEqualSameType());
-            Builder.AppendLine($"{indentation}public static bool operator >=({Data.Scalar.Name}? x, {Data.Scalar.Name}? y) " +
+            Builder.AppendLine($"{indentation}public static bool operator >=({Data.Scalar.FullyQualifiedName}? x, {Data.Scalar.FullyQualifiedName}? y) " +
                 $"=> x?.Magnitude.Value >= y?.Magnitude.Value;");
         }
 
         private void ComposeValueTypeComparisons(Indentation indentation)
         {
             AppendDocumentation(indentation, Data.Documentation.CompareToSameType());
-            Builder.AppendLine($"{indentation}public int CompareTo({Data.Scalar.Name} other) => Magnitude.Value.CompareTo(other.Magnitude.Value);");
+            Builder.AppendLine($"{indentation}public int CompareTo({Data.Scalar.FullyQualifiedName} other) => Magnitude.Value.CompareTo(other.Magnitude.Value);");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.LessThanSameType());
-            Builder.AppendLine($"{indentation}public static bool operator <({Data.Scalar.Name} x, {Data.Scalar.Name} y) " +
+            Builder.AppendLine($"{indentation}public static bool operator <({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) " +
                 $"=> x.Magnitude.Value < y.Magnitude.Value;");
             AppendDocumentation(indentation, Data.Documentation.GreaterThanSameType());
-            Builder.AppendLine($"{indentation}public static bool operator >({Data.Scalar.Name} x, {Data.Scalar.Name} y) " +
+            Builder.AppendLine($"{indentation}public static bool operator >({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) " +
                 $"=> x.Magnitude.Value > y.Magnitude.Value;");
             AppendDocumentation(indentation, Data.Documentation.LessThanOrEqualSameType());
-            Builder.AppendLine($"{indentation}public static bool operator <=({Data.Scalar.Name} x, {Data.Scalar.Name} y) " +
+            Builder.AppendLine($"{indentation}public static bool operator <=({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) " +
                 $"=> x.Magnitude.Value <= y.Magnitude.Value;");
             AppendDocumentation(indentation, Data.Documentation.GreaterThanOrEqualSameType());
-            Builder.AppendLine($"{indentation}public static bool operator >=({Data.Scalar.Name} x, {Data.Scalar.Name} y) " +
+            Builder.AppendLine($"{indentation}public static bool operator >=({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) " +
                 $"=> x.Magnitude.Value >= y.Magnitude.Value;");
         }
 

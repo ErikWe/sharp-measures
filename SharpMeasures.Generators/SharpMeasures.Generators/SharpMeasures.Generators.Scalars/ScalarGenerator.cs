@@ -61,8 +61,7 @@ internal class ScalarGenerator : IScalarGenerator
         VectorsGenerator.Initialize(context, reducedScalars);
     }
 
-    private static DataModel ReduceToDataModel
-        ((ScalarType Scalar, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken _)
+    private static DataModel ReduceToDataModel ((ScalarType Scalar, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken _)
     {
         return new(input.Scalar, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
     }

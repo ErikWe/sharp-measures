@@ -50,7 +50,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     }
 
     public string UnitBase(IUnresolvedUnitInstance unitInstance)
-        => $$"""/// <summary>The {{ScalarReference}} representing { 1 [<see cref="{{Unit.Type.Name}}.{{unitInstance.Name}}"/>] }.</summary>""";
+        => $$"""/// <summary>The {{ScalarReference}} representing { 1 [<see cref="{{Unit.Type.FullyQualifiedName}}.{{unitInstance.Name}}"/>] }.</summary>""";
 
     public string WithMagnitude() => "/// <inheritdoc/>";
 
@@ -64,13 +64,12 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     {
         var commonText = $"""
             /// <summary>The magnitude of <see langword="this"/>, expressed in an arbitrary unit.</summary>
-            /// <remarks>In most cases, expressing the magnitude in a certain {UnitReference} should be preferred. This can be achieved through
-            /// <see cref="InUnit({Unit.Type.Name})"/>
+            /// <remarks>In most cases, expressing the magnitude in a certain {UnitReference} should be preferre. This is achieved using <see cref="InUnit({Unit.Type.FullyQualifiedName})"/>
             """;
 
         if (ExampleUnit is not null)
         {
-            commonText = $"""{commonText} or an associated property - such as <see cref="{ExampleUnit.Plural}"/>""";
+            commonText = $"""{commonText} or an associated property - for example, <see cref="{ExampleUnit.Plural}"/>""";
         }
 
         return $"{commonText}.</remarks>";
@@ -79,7 +78,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     public string ScalarConstructor() => $$"""
         /// <summary>Constructs a new {{ScalarReference}} representing { <paramref name="magnitude"/> }, expressed in an arbitrary unit.</summary>
         /// <param name="magnitude">The magnitude represented by the constructed {{ScalarReference}}, expressed in an arbitrary unit.</param>
-        /// <remarks>Consider preferring construction through <see cref="{{Type.Name}}(Scalar, {{Unit.Type.Name}})"/>, where the magnitude is expressed in
+        /// <remarks>Consider preferring construction through <see cref="{{Type.FullyQualifiedName}}(global::SharpMeasures.Scalar, {{Unit.Type.FullyQualifiedName}})"/>, where the magnitude is expressed in
         /// a certain {{UnitReference}}.</remarks>
         """;
 
@@ -96,7 +95,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
             return $"""
                 {commonText}
                 /// <remarks>A {ScalarReference} may also be constructed as demonstrated below.
-                /// <code>{ScalarReference} x = 2.3 * <see cref="{Type.Name}.One{ExampleBase.Name}"/>;</code>
+                /// <code>{ScalarReference} x = 2.3 * <see cref="{Type.FullyQualifiedName}.One{ExampleBase.Name}"/>;</code>
                 /// </remarks>
                 """;
         }
@@ -110,33 +109,33 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         """;
 
     public string InConstantMultiples(IScalarConstant constant) => $"""
-        /// <summary>The magnitude of <see langword="this", expressed in multiples of <see cref="{Type.Name}.{constant.Name}"/>.</summary>
+        /// <summary>The magnitude of <see langword="this", expressed in multiples of <see cref="{Type.FullyQualifiedName}.{constant.Name}"/>.</summary>
         """;
 
     public string InSpecifiedUnit(IUnresolvedUnitInstance unitInstance) => $"""
-        /// <summary>The magnitude of <see langword="this"/>, expressed in <see cref="{Unit.Type.Name}.{unitInstance.Name}"/>.</summary>
+        /// <summary>The magnitude of <see langword="this"/>, expressed in <see cref="{Unit.Type.FullyQualifiedName}.{unitInstance.Name}"/>.</summary>
         """;
 
     public string Conversion(IUnresolvedScalarType scalar) => $"""
-        /// <summary>Converts <see langword="this"/> to the equivalent <see cref="{scalar.Type.Name}"/>.</summary>
+        /// <summary>Converts <see langword="this"/> to the equivalent <see cref="{scalar.Type.FullyQualifiedName}"/>.</summary>
         """;
 
     public string CastConversion(IUnresolvedScalarType scalar) => $"""
-        /// <summary>Converts <paramref name="x"/> to the equivalent <see cref="{scalar.Type.Name}"/>.</summary>
-        /// <param name="x">This {ScalarReference} is converted to the equivalent <see cref="{scalar.Type.Name}"/>.</param>
+        /// <summary>Converts <paramref name="x"/> to the equivalent <see cref="{scalar.Type.FullyQualifiedName}"/>.</summary>
+        /// <param name="x">This {ScalarReference} is converted to the equivalent <see cref="{scalar.Type.FullyQualifiedName}"/>.</param>
         """;
     
-    public string IsNaN() => """/// <inheritdoc cref="Scalar.IsNaN"/>""";
-    public string IsZero() => """/// <inheritdoc cref="Scalar.IsZero"/>""";
-    public string IsPositive() => """/// <inheritdoc cref="Scalar.IsPositive"/>""";
-    public string IsNegative() => """/// <inheritdoc cref="Scalar.IsNegative"/>""";
-    public string IsFinite() => """/// <inheritdoc cref="Scalar.IsFinite"/>""";
-    public string IsInfinite() => """/// <inheritdoc cref="Scalar.IsInfinite"/>""";
-    public string IsPositiveInfinity() => """/// <inheritdoc cref="Scalar.IsPositiveInfinity"/>""";
-    public string IsNegativeInfinity() => """/// <inheritdoc cref="Scalar.IsNegativeInfinity"/>""";
+    public string IsNaN() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.IsNaN"/>""";
+    public string IsZero() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.IsZero"/>""";
+    public string IsPositive() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.IsPositive"/>""";
+    public string IsNegative() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.IsNegative"/>""";
+    public string IsFinite() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.IsFinite"/>""";
+    public string IsInfinite() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.IsInfinite"/>""";
+    public string IsPositiveInfinity() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.IsPositiveInfinity"/>""";
+    public string IsNegativeInfinity() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.IsNegativeInfinity"/>""";
 
-    public string Absolute() => """/// <inheritdoc cref="Scalar.Absolute"/>""";
-    public string Sign() => """/// <inheritdoc cref="Scalar.Sign"/>""";
+    public string Absolute() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.Absolute"/>""";
+    public string Sign() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.Sign"/>""";
 
     public string Reciprocal() => InheritDoc;
     public string Square() => InheritDoc;
@@ -150,12 +149,12 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
 
         if (DefaultUnit is not null && DefaultUnitSymbol is not null)
         {
-            return $"""{commonText}, the magnitude expressed in <see cref="{Unit.Type.Name}.{DefaultUnit}"/>, and the symbol [{DefaultUnitSymbol}].</summary>""";
+            return $"""{commonText}, the magnitude expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnit}"/>, and the symbol [{DefaultUnitSymbol}].</summary>""";
         }
 
         if (DefaultUnit is not null)
         {
-            return $"""{commonText} and the magnitude expressed in <see cref="{Unit.Type.Name}.{DefaultUnit}"/>.</summary>""";
+            return $"""{commonText} and the magnitude expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnit}"/>.</summary>""";
         }
 
         if (DefaultUnitSymbol is not null)
@@ -169,27 +168,18 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     public string EqualsSameTypeMethod() => InheritDoc;
     public string EqualsObjectMethod() => InheritDoc;
 
-    public string EqualitySameTypeOperator()
-    {
-        string text = $"""/// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent equivalent magnitudes.""";
+    public string EqualitySameTypeOperator() => """
+        /// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent equivalent magnitudes.</summary>
+        /// /// <param name="lhs">The left-hand side of the equality check.</param>
+        /// <param name="rhs">The right-hand side of the equality check.</param>
+        """;
 
-        return $"""
-            {text}.</summary>
-            /// <param name="lhs">The left-hand side of the equality check.</param>
-            /// <param name="rhs">The right-hand side of the equality check.</param>
-            """;
-    }
-
-    public string InequalitySameTypeOperator()
-    {
-        string text = $"""/// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent inequivalent magnitudes.""";
-
-        return $"""
-            {text}.</summary>
-            /// <param name="lhs">The left-hand side of the inequality check.</param>
-            /// <param name="rhs">The right-hand side of the inequality check.</param>
-            """;
-    }
+    public string InequalitySameTypeOperator() => """
+        /// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent inequivalent magnitudes.</summary>
+        /// <param name="lhs">The left-hand side of the inequality check.</param>
+        /// <param name="rhs">The right-hand side of the inequality check.</param>/// <param name="lhs">The left-hand side of the inequality check.</param>
+        /// <param name="rhs">The right-hand side of the inequality check.</param>
+        """;
 
     public string GetHashCodeDocumentation() => InheritDoc;
 
@@ -198,7 +188,6 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
 
     public string AddSameTypeMethod() => InheritDoc;
     public string SubtractSameTypeMethod() => InheritDoc;
-    public string SubtractFromSameTypeMethod() => InheritDoc;
 
     public string AddDifferenceMethod() => InheritDoc;
     public string SubtractDifferenceMethod() => InheritDoc;
@@ -232,15 +221,15 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     public string MultiplyVectorOperatorLHS(int dimension) => InheritDoc;
     public string MultiplyVectorOperatorRHS(int dimension) => InheritDoc;
 
-    public string CompareToSameType() => """/// <inheritdoc cref="Scalar.CompareTo(Scalar)"/>""";
+    public string CompareToSameType() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.CompareTo(global::SharpMeasures.Scalar)"/>""";
 
-    public string LessThanSameType()=> $$"""/// <inheritdoc cref="Scalar.operator &lt;(Scalar, Scalar)"/>""";
-    public string GreaterThanSameType() => $$"""/// <inheritdoc cref="Scalar.operator &gt;(Scalar, Scalar)"/>""";
-    public string LessThanOrEqualSameType() => $$"""/// <inheritdoc cref="Scalar.operator &lt;=(Scalar, Scalar)"/>""";
-    public string GreaterThanOrEqualSameType() => $$"""/// <inheritdoc cref="Scalar.operator &gt;=(Scalar, Scalar)"/>""";
+    public string LessThanSameType()=> $$"""/// <inheritdoc cref="global::SharpMeasures.Scalar.operator &lt;(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
+    public string GreaterThanSameType() => $$"""/// <inheritdoc cref="global::SharpMeasures.Scalar.operator &gt;(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
+    public string LessThanOrEqualSameType() => $$"""/// <inheritdoc cref="global::SharpMeasures.Scalar.operator &lt;=(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
+    public string GreaterThanOrEqualSameType() => $$"""/// <inheritdoc cref="global::SharpMeasures.Scalar.operator &gt;=(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
 
-    private string ScalarReference => $"""<see cref="{Type.Name}"/>""";
-    private string UnitReference => $"""<see cref="{Unit.Type.Name}"/>""";
+    private string ScalarReference => $"""<see cref="{Type.FullyQualifiedName}"/>""";
+    private string UnitReference => $"""<see cref="{Unit.Type.FullyQualifiedName}"/>""";
 
     private static string InheritDoc => "/// <inheritdoc/>";
 

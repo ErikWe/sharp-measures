@@ -53,8 +53,7 @@ internal class UnitGenerator : IUnitGenerator
         return (data.Model, data.Model.Unit.Definition.GenerateDocumentation ?? data.Default);
     }
 
-    private static DataModel AppendDocumentationFile
-        ((DataModel Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
+    private static DataModel AppendDocumentationFile ((DataModel Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
     {
         if (input.GenerateDocumentation)
         {

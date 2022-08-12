@@ -76,7 +76,6 @@ internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocume
 
     public string AddSameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.AddSameTypeMethod());
     public string SubtractSameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.SubtractSameTypeMethod());
-    public string SubtractFromSameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.SubtractFromSameTypeMethod());
 
     public string AddDifferenceMethod() => FromFileOrDefault(static (strategy) => strategy.AddDifferenceMethod());
     public string SubtractDifferenceMethod() => FromFileOrDefault(static (strategy) => strategy.SubtractDifferenceMethod());

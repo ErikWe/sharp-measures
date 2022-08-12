@@ -29,50 +29,13 @@ internal static class Execution
 
         private DataModel Data { get; }
 
-        private UsingsCollector UsingsCollector { get; }
         private InterfaceCollector InterfaceCollector { get; }
 
         private Composer(DataModel data)
         {
             Data = data;
 
-            UsingsCollector = UsingsCollector.Delayed(Builder, data.Scalar.Namespace);
             InterfaceCollector = InterfaceCollector.Delayed(Builder);
-
-            UsingsCollector.AddUsings("SharpMeasures", "SharpMeasures.ScalarAbstractions", "System");
-
-            InterfaceCollector.AddInterfaces(new []
-            {
-                $"IFactorScalarQuantity<{Data.Scalar.Name}, {Data.Scalar.Name}, Scalar>",
-                $"IDividendScalarQuantity<{Data.Scalar.Name}, {Data.Scalar.Name}, Scalar>"
-            });
-
-            if (Data.ImplementSum)
-            {
-                InterfaceCollector.AddInterface($"IAddendScalarQuantity<{Data.Scalar.Name}>");
-            }
-
-            if (Data.ImplementDifference)
-            {
-                if (Data.Difference == Data.Scalar.AsNamedType())
-                {
-                    InterfaceCollector.AddInterfaces
-                    (
-                        $"IMinuendScalarQuantity<{Data.Scalar.Name}>",
-                        $"ISubtrahendScalarQuantity<{Data.Scalar.Name}>"
-                    );
-                }
-                else
-                {
-                    InterfaceCollector.AddInterfaces
-                    (
-                        $"IMinuendScalarQuantity<{Data.Scalar.Name}, {Data.Difference.Name}, {Data.Scalar.Name}>",
-                        $"ISubtrahendScalarQuantity<{Data.Scalar.Name}, {Data.Difference.Name}, {Data.Scalar.Name}>",
-                        $"IAddendScalarQuantity<{Data.Scalar.Name}, {Data.Scalar.Name}, {Data.Difference.Name}>",
-                        $"IMinuendScalarQuantity<{Data.Scalar.Name}, {Data.Scalar.Name}, {Data.Difference.Name}>"
-                    );
-                }
-            }
         }
 
         private void Compose()
@@ -81,8 +44,6 @@ internal static class Execution
 
             NamespaceBuilding.AppendNamespace(Builder, Data.Scalar.Namespace);
 
-            UsingsCollector.MarkInsertionPoint();
-
             Builder.Append(Data.Scalar.ComposeDeclaration());
 
             InterfaceCollector.MarkInsertionPoint();
@@ -90,7 +51,6 @@ internal static class Execution
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
 
             InterfaceCollector.InsertInterfacesOnNewLines(new Indentation(1));
-            UsingsCollector.InsertUsings();
         }
 
         private string Retrieve()
@@ -120,12 +80,12 @@ internal static class Execution
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.Absolute());
-            Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Absolute() => new(Math.Abs(Magnitude.Value));");
+            Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Absolute() => new(global::System.Math.Abs(Magnitude.Value));");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.Sign());
-            Builder.AppendLine($"{indentation}public int Sign() => Math.Sign(Magnitude.Value);");
+            Builder.AppendLine($"{indentation}public int Sign() => global::System.Math.Sign(Magnitude.Value);");
 
             Builder.AppendLine();
 
@@ -151,36 +111,34 @@ internal static class Execution
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.UnaryPlusMethod());
-            Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Plus() => this;");
+            Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Plus() => this;");
             AppendDocumentation(indentation, Data.Documentation.NegateMethod());
-            Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Negate() => this;");
+            Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Negate() => this;");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.MultiplyScalarMethod());
-            Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Multiply(Scalar factor) => new(Magnitude.Value * factor.Value);");
+            Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Multiply(global::SharpMeasures.Scalar factor) => new(Magnitude.Value * factor.Value);");
             AppendDocumentation(indentation, Data.Documentation.DivideScalarMethod());
-            Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Divide(Scalar divisor) => new(Magnitude.Value / divisor.Value);");
+            Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Divide(global::SharpMeasures.Scalar divisor) => new(Magnitude.Value / divisor.Value);");
 
             Builder.AppendLine();
 
             if (Data.Square is not null)
             {
-                InterfaceCollector.AddInterfaces($"IMultiplicableScalar<{Data.Square.Value.Name}, {Data.Scalar.Name}>");
-
                 AppendDocumentation(indentation, Data.Documentation.MultiplySameTypeMethod());
-                Builder.AppendLine($"{indentation}public {Data.Square.Value.Name} Multiply({Data.Scalar.Name} factor) => new(Magnitude.Value * factor.Magnitude.Value);");
+                Builder.AppendLine($"{indentation}public {Data.Square.Value.FullyQualifiedName} Multiply({Data.Scalar.FullyQualifiedName} factor) => new(Magnitude.Value * factor.Magnitude.Value);");
             }
 
             AppendDocumentation(indentation, Data.Documentation.DivideSameTypeMethod());
-            Builder.AppendLine($"{indentation}public Scalar Divide({Data.Scalar.Name} divisor) => new(Magnitude.Value / divisor.Magnitude.Value);");
+            Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar Divide({Data.Scalar.FullyQualifiedName} divisor) => new(Magnitude.Value / divisor.Magnitude.Value);");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.UnaryPlusOperator());
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} operator +({Data.Scalar.Name} x) => x;");
+            Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator +({Data.Scalar.FullyQualifiedName} x) => x;");
             AppendDocumentation(indentation, Data.Documentation.NegateOperator());
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} operator -({Data.Scalar.Name} x) => -x;");
+            Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator -({Data.Scalar.FullyQualifiedName} x) => new(-x.Magnitude);");
 
             if (Data.ImplementSum || Data.ImplementDifference)
             {
@@ -202,25 +160,27 @@ internal static class Execution
             if (Data.Square is not null)
             {
                 AppendDocumentation(indentation, Data.Documentation.MultiplySameTypeOperator());
-                Builder.AppendLine($"{indentation}public static {Data.Square.Value.Name} operator *({Data.Scalar.Name} x, {Data.Scalar.Name} y) => new(x.Magnitude.Value * y.Magnitude.Value);");
+                Builder.AppendLine($"{indentation}public static {Data.Square.Value.FullyQualifiedName} operator *({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) " +
+                    "=> new(x.Magnitude.Value * y.Magnitude.Value);");
             }
 
             AppendDocumentation(indentation, Data.Documentation.DivideSameTypeOperator());
-            Builder.AppendLine($"{indentation}public static Scalar operator /({Data.Scalar.Name} x, {Data.Scalar.Name} y) => new(x.Magnitude.Value / y.Magnitude.Value);");
+            Builder.AppendLine($"{indentation}public static global::SharpMeasures.Scalar operator /({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) " +
+                "=> new(x.Magnitude.Value / y.Magnitude.Value);");
 
             Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorLHS());
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} operator *({Data.Scalar.Name} x, Scalar y) => new(x.Magnitude.Value * y.Value);");
+            Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator *({Data.Scalar.FullyQualifiedName} x, global::SharpMeasures.Scalar y) => new(x.Magnitude.Value * y.Value);");
             AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorRHS());
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} operator *(Scalar x, {Data.Scalar.Name} y) => new(x.Value * y.Magnitude.Value);");
+            Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator *(global::SharpMeasures.Scalar x, {Data.Scalar.FullyQualifiedName} y) => new(x.Value * y.Magnitude.Value);");
             AppendDocumentation(indentation, Data.Documentation.DivideScalarOperatorLHS());
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} operator /({Data.Scalar.Name} x, Scalar y) => new(x.Magnitude.Value / y.Value);");
+            Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator /({Data.Scalar.FullyQualifiedName} x, global::SharpMeasures.Scalar y) => new(x.Magnitude.Value / y.Value);");
 
             if (Data.Reciprocal is not null)
             {
                 AppendDocumentation(indentation, Data.Documentation.DivideScalarOperatorRHS());
-                Builder.AppendLine($"{indentation}public static {Data.Reciprocal.Value.Name} operator /(Scalar x, {Data.Scalar.Name} y) => new(x.Value / y.Magnitude.Value);");
+                Builder.AppendLine($"{indentation}public static {Data.Reciprocal.Value.FullyQualifiedName} operator /(global::SharpMeausures.Scalar x, {Data.Scalar.FullyQualifiedName} y) => new(x.Value / y.Magnitude.Value);");
             }
         }
 
@@ -230,46 +190,32 @@ internal static class Execution
 
             if (Data.Reciprocal is not null)
             {
-                UsingsCollector.AddUsing(Data.Reciprocal.Value.Namespace);
-
                 AppendDocumentation(indentation, Data.Documentation.Reciprocal());
-                Builder.AppendLine($"{indentation}public {Data.Reciprocal.Value.Name} Reciprocal() => new(1 / Magnitude.Value);");
+                Builder.AppendLine($"{indentation}public {Data.Reciprocal.Value.FullyQualifiedName} Reciprocal() => new(1 / Magnitude.Value);");
             }
 
             if (Data.Square is not null)
             {
-                UsingsCollector.AddUsing(Data.Square.Value.Namespace);
-                UsingsCollector.AddUsing("System");
-
                 AppendDocumentation(indentation, Data.Documentation.Square());
-                Builder.AppendLine($"{indentation}public {Data.Square.Value.Name} Square() => new(Math.Pow(Magnitude.Value, 2));");
+                Builder.AppendLine($"{indentation}public {Data.Square.Value.FullyQualifiedName} Square() => new(global::System.Math.Pow(Magnitude.Value, 2));");
             }
 
             if (Data.Cube is not null)
             {
-                UsingsCollector.AddUsing(Data.Cube.Value.Namespace);
-                UsingsCollector.AddUsing("System");
-
                 AppendDocumentation(indentation, Data.Documentation.Cube());
-                Builder.AppendLine($"{indentation}public {Data.Cube.Value.Name} Cube() => new(Math.Pow(Magnitude.Value, 3));");
+                Builder.AppendLine($"{indentation}public {Data.Cube.Value.FullyQualifiedName} Cube() => new(global::System.Math.Pow(Magnitude.Value, 3));");
             }
 
             if (Data.SquareRoot is not null)
             {
-                UsingsCollector.AddUsing(Data.SquareRoot.Value.Namespace);
-                UsingsCollector.AddUsing("System");
-
                 AppendDocumentation(indentation, Data.Documentation.SquareRoot());
-                Builder.AppendLine($"{indentation}public {Data.SquareRoot.Value.Name} SquareRoot() => new(Math.Sqrt(Magnitude.Value));");
+                Builder.AppendLine($"{indentation}public {Data.SquareRoot.Value.FullyQualifiedName} SquareRoot() => new(global::System.Math.Sqrt(Magnitude.Value));");
             }
 
             if (Data.CubeRoot is not null)
             {
-                UsingsCollector.AddUsing(Data.CubeRoot.Value.Namespace);
-                UsingsCollector.AddUsing("System");
-
                 AppendDocumentation(indentation, Data.Documentation.CubeRoot());
-                Builder.AppendLine($"{indentation}public {Data.CubeRoot.Value.Name} CubeRoot() => new(Math.Cbrt(Magnitude.Value));");
+                Builder.AppendLine($"{indentation}public {Data.CubeRoot.Value.FullyQualifiedName} CubeRoot() => new(global::System.Math.Cbrt(Magnitude.Value));");
             }
 
             if (Builder.Length > startLength)
@@ -287,7 +233,7 @@ internal static class Execution
                 string parameterName = SourceBuildingUtility.ToParameterName(Data.Reciprocal.Value.Name);
 
                 AppendDocumentation(indentation, Data.Documentation.FromReciprocal());
-                Builder.AppendLine($"{indentation}public {Data.Scalar.Name} From({Data.Reciprocal.Value.Name} {parameterName}) => " +
+                Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} From({Data.Reciprocal.Value.FullyQualifiedName} {parameterName}) => " +
                     $"new(1 / {parameterName}.Magnitude.Value);");
             }
 
@@ -296,8 +242,8 @@ internal static class Execution
                 string parameterName = SourceBuildingUtility.ToParameterName(Data.Square.Value.Name);
 
                 AppendDocumentation(indentation, Data.Documentation.FromSquare());
-                Builder.AppendLine($"{indentation}public {Data.Scalar.Name} From({Data.Square.Value.Name} {parameterName}) => " +
-                    $"new(Math.Sqrt({parameterName}.Magnitude.Value));");
+                Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} From({Data.Square.Value.FullyQualifiedName} {parameterName}) => " +
+                    $"new(global::System.Math.Sqrt({parameterName}.Magnitude.Value));");
             }
 
             if (Data.Cube is not null)
@@ -306,7 +252,7 @@ internal static class Execution
 
                 AppendDocumentation(indentation, Data.Documentation.FromCube());
                 Builder.AppendLine($"{indentation}public {Data.Scalar.Name} From({Data.Cube.Value.Name} {parameterName}) => " +
-                    $"new(Math.Cbrt({parameterName}.Magnitude.Value));");
+                    $"new(global::System.Math.Cbrt({parameterName}.Magnitude.Value));");
             }
 
             if (Data.SquareRoot is not null)
@@ -314,8 +260,8 @@ internal static class Execution
                 string parameterName = SourceBuildingUtility.ToParameterName(Data.SquareRoot.Value.Name);
 
                 AppendDocumentation(indentation, Data.Documentation.FromSquareRoot());
-                Builder.AppendLine($"{indentation}public {Data.Scalar.Name} From({Data.SquareRoot.Value.Name} {parameterName}) => " +
-                    $"new(Math.Pow({parameterName}.Magnitude.Value, 2));");
+                Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} From({Data.SquareRoot.Value.FullyQualifiedName} {parameterName}) => " +
+                    $"new(global::System.Math.Pow({parameterName}.Magnitude.Value, 2));");
             }
 
             if (Data.CubeRoot is not null)
@@ -323,8 +269,8 @@ internal static class Execution
                 string parameterName = SourceBuildingUtility.ToParameterName(Data.CubeRoot.Value.Name);
 
                 AppendDocumentation(indentation, Data.Documentation.FromCubeRoot());
-                Builder.AppendLine($"{indentation}public {Data.Scalar.Name} From({Data.CubeRoot.Value.Name} {parameterName}) => " +
-                    $"new(Math.Pow({parameterName}.Magnitude.Value, 3));");
+                Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} From({Data.CubeRoot.Value.FullyQualifiedName} {parameterName}) => " +
+                    $"new(global::System.Math.Pow({parameterName}.Magnitude.Value, 3));");
             }
 
             if (Builder.Length > startLength)
@@ -340,10 +286,10 @@ internal static class Execution
             if (Data.Scalar.IsReferenceType)
             {
                 Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="ArgumentNullException"/>
-                    {{indentation}}public {{Data.Scalar.Name}} Add({{Data.Scalar.Name}} addend)
+                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                    {{indentation}}public {{Data.Scalar.FullyQualifiedName}} Add({{Data.Scalar.FullyQualifiedName}} addend)
                     {{indentation}}{
-                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(addend);
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(addend);
                         
                     {{indentation.Increased}}return new(Magnitude.Value + addend.Magnitude.Value);
                     {{indentation}}}
@@ -351,7 +297,7 @@ internal static class Execution
             }
             else
             {
-                Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Add({Data.Scalar.Name} addend) => new(Magnitude.Value + addend.Magnitude.Value);");
+                Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Add({Data.Scalar.FullyQualifiedName} addend) => new(Magnitude.Value + addend.Magnitude.Value);");
             }
         }
 
@@ -373,35 +319,20 @@ internal static class Execution
             {
                 AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeMethod());
                 Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="ArgumentNullException"/>
-                    {{indentation}}public {{Data.Difference.Name}} Subtract({{Data.Scalar.Name}} subtrahend)
+                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                    {{indentation}}public {{Data.Difference.FullyQualifiedName}} Subtract({{Data.Scalar.FullyQualifiedName}} subtrahend)
                     {{indentation}}{
-                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(subtrahend);
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(subtrahend);
 
                     {{indentation.Increased}}return new(Magnitude.Value - subtrahend.Magnitude.Value);
-                    {{indentation}}}
-                    """);
-
-                AppendDocumentation(indentation, Data.Documentation.SubtractFromSameTypeMethod());
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="ArgumentNullException"/>
-                    {{indentation}}public {{Data.Difference.Name}} SubtractFrom({{Data.Scalar.Name}} minuend)
-                    {{indentation}}{
-                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(minuend);
-
-                    {{indentation.Increased}}return new(minuend.Magnitude.Value - Magnitude.Value);
                     {{indentation}}}
                     """);
             }
             else
             {
                 AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeMethod());
-                Builder.Append($"{indentation}public {Data.Difference.Name} Subtract({Data.Scalar.Name} subtrahend) " +
+                Builder.Append($"{indentation}public {Data.Difference.FullyQualifiedName} Subtract({Data.Scalar.FullyQualifiedName} subtrahend) " +
                     $"=> new(Magnitude.Value - subtrahend.Magnitude.Value);");
-
-                AppendDocumentation(indentation, Data.Documentation.SubtractFromSameTypeMethod());
-                Builder.Append($"{indentation}public {Data.Difference.Name} SubtractFrom({Data.Scalar.Name} minuend) " +
-                    $"=> new(minuend.Magnitude.Value - Magnitude.Value);");
             }
         }
 
@@ -411,10 +342,10 @@ internal static class Execution
             {
                 AppendDocumentation(indentation, Data.Documentation.AddDifferenceMethod());
                 Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="ArgumentNullException"/>
-                    {{indentation}}public {{Data.Scalar.Name}} Add({{Data.Difference.Name}} addend)
-                    {{indentation}}}
-                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(addend);
+                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                    {{indentation}}public {{Data.Scalar.FullyQualifiedName}} Add({{Data.Difference.FullyQualifiedName}} addend)
+                    {{indentation}}{
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(addend);
 
                     {{indentation.Increased}}return new(Magnitude.Value + addend.Magnitude.Value);
                     {{indentation}}}
@@ -422,10 +353,10 @@ internal static class Execution
 
                 AppendDocumentation(indentation, Data.Documentation.SubtractDifferenceMethod());
                 Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="ArgumentNullException"/>
-                    {{indentation}}public {{Data.Scalar.Name}} Subtract({{Data.Difference.Name}} subtrahend)
-                    {{indentation}}}
-                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(subtrahend);
+                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                    {{indentation}}public {{Data.Scalar.FullyQualifiedName}} Subtract({{Data.Difference.FullyQualifiedName}} subtrahend)
+                    {{indentation}}{
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(subtrahend);
 
                     {{indentation.Increased}}return new(Magnitude.Value - subtrahend.Magnitude.Value);
                     {{indentation}}}
@@ -434,44 +365,29 @@ internal static class Execution
             else
             {
                 AppendDocumentation(indentation, Data.Documentation.AddDifferenceMethod());
-                Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Add({Data.Difference.Name} addend) => new(Magnitude.Value + addend.Magnitude.Value);");
+                Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Add({Data.Difference.FullyQualifiedName} addend) => new(Magnitude.Value + addend.Magnitude.Value);");
 
                 AppendDocumentation(indentation, Data.Documentation.SubtractDifferenceMethod());
-                Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Subtract({Data.Difference.Name} subtrahend) => new(Magnitude.Value - subtrahend.Magnitude.Value);");
+                Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Subtract({Data.Difference.FullyQualifiedName} subtrahend) => new(Magnitude.Value - subtrahend.Magnitude.Value);");
             }
 
             if (Data.Scalar.IsReferenceType)
             {
                 AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeMethod());
                 Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="ArgumentNullException"/>
-                    {{indentation}}public {{Data.Difference.Name}} Subtract({{Data.Scalar.Name}} subtrahend)
-                    {{indentation}}}
-                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(subtrahend);
+                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                    {{indentation}}public {{Data.Difference.FullyQualifiedName}} Subtract({{Data.Scalar.FullyQualifiedName}} subtrahend)
+                    {{indentation}}{
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(subtrahend);
 
                     {{indentation.Increased}}return new(Magnitude.Value - subtrahend.Magnitude.Value);
-                    {{indentation}}}
-                    """);
-
-                AppendDocumentation(indentation, Data.Documentation.SubtractFromSameTypeMethod());
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="ArgumentNullException"/>
-                    {{indentation}}{{Data.Difference.Name}} ISubtrahendScalarQuantity<{{Data.Scalar.Name}}, {{Data.Difference.Name}}, {{Data.Scalar.Name}}>SubtractFrom({{Data.Scalar.Name}} minuend)
-                    {{indentation}}}
-                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(minuend);
-
-                    {{indentation.Increased}}return new(minuend.Magnitude.Value - Magnitude.Value);
                     {{indentation}}}
                     """);
             }
             else
             {
                 AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeMethod());
-                Builder.AppendLine($"{indentation}public {Data.Difference.Name} Subtract({Data.Scalar.Name} subtrahend) => new(Magnitude.Value - subtrahend.Magnitude.Value);");
-
-                AppendDocumentation(indentation, Data.Documentation.SubtractFromSameTypeMethod());
-                Builder.AppendLine($"{indentation}{Data.Difference.Name} ISubtrahendScalarQuantity<{Data.Scalar.Name}, {Data.Difference.Name}, {Data.Scalar.Name}>" +
-                    $".SubtractFrom({Data.Scalar.Name} minuend) => new(minuend.Magnitude.Value - Magnitude.Value);");
+                Builder.AppendLine($"{indentation}public {Data.Difference.FullyQualifiedName} Subtract({Data.Scalar.FullyQualifiedName} subtrahend) => new(Magnitude.Value - subtrahend.Magnitude.Value);");
             }
         }
 
@@ -482,11 +398,11 @@ internal static class Execution
             if (Data.Scalar.IsReferenceType)
             {
                 Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="ArgumentNullException"/>
-                    {{indentation}}public static {{Data.Scalar.Name}} operator +({{Data.Scalar.Name}} x, {{Data.Scalar.Name}} y)
-                    {{indentation}}}
-                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(x);
-                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(y);
+                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                    {{indentation}}public static {{Data.Scalar.FullyQualifiedName}} operator +({{Data.Scalar.FullyQualifiedName}} x, {{Data.Scalar.FullyQualifiedName}} y)
+                    {{indentation}}{
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(x);
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(y);
 
                     {{indentation.Increased}}return new(x.Magnitude.Value * y.Magnitude.Value);
                     {{indentation}}}
@@ -494,7 +410,7 @@ internal static class Execution
             }
             else
             {
-                Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} operator +({Data.Scalar.Name} x, {Data.Scalar.Name} y) => new(x.Magnitude.Value + y.Magnitude.Value);");
+                Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator +({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) => new(x.Magnitude.Value + y.Magnitude.Value);");
             }
         }
 
@@ -513,22 +429,22 @@ internal static class Execution
         private void ComposeDifferenceOperatorAsSameType(Indentation indentation)
         {
             AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeOperator());
-            Builder.AppendLine($"{indentation}public static {Data.Difference.Name} operator -({Data.Scalar.Name} x, {Data.Scalar.Name} y) => new(x.Magnitude.Value - y.Magnitude.Value);");
+            Builder.AppendLine($"{indentation}public static {Data.Difference.FullyQualifiedName} operator -({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) => new(x.Magnitude.Value - y.Magnitude.Value);");
         }
 
         private void ComposeDifferenceOperatorAsDifferentType(Indentation indentation)
         {
             AppendDocumentation(indentation, Data.Documentation.AddDifferenceOperatorLHS());
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} operator +({Data.Scalar.Name} x, {Data.Difference.Name} y) => new(x.Magnitude.Value + y.Magnitude.Value);");
+            Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator +({Data.Scalar.FullyQualifiedName} x, {Data.Difference.FullyQualifiedName} y) => new(x.Magnitude.Value + y.Magnitude.Value);");
 
             AppendDocumentation(indentation, Data.Documentation.AddDifferenceOperatorRHS());
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} operator +({Data.Difference.Name} x, {Data.Scalar.Name} y) => new(x.Magnitude.Value + y.Magnitude.Value);");
+            Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator +({Data.Difference.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) => new(x.Magnitude.Value + y.Magnitude.Value);");
 
             AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeOperator());
-            Builder.AppendLine($"{indentation}public static {Data.Difference.Name} operator -({Data.Scalar.Name} x, {Data.Scalar.Name} y) => new(x.Magnitude.Value - y.Magnitude.Value);");
+            Builder.AppendLine($"{indentation}public static {Data.Difference.FullyQualifiedName} operator -({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) => new(x.Magnitude.Value - y.Magnitude.Value);");
 
             AppendDocumentation(indentation, Data.Documentation.SubtractDifferenceOperatorLHS());
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} operator -({Data.Scalar.Name} x, {Data.Difference.Name} y) => new(x.Magnitude.Value - y.Magnitude.Value);");
+            Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator -({Data.Scalar.FullyQualifiedName} x, {Data.Difference.FullyQualifiedName} y) => new(x.Magnitude.Value - y.Magnitude.Value);");
         }
 
         private void AppendDocumentation(Indentation indentation, string text)

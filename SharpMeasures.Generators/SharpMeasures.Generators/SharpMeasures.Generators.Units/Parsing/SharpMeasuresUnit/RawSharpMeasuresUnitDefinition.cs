@@ -10,7 +10,7 @@ internal record class RawSharpMeasuresUnitDefinition : IOpenAttributeDefinition<
 
     public bool BiasTerm { get; init; }
 
-    public bool GenerateDocumentation { get; init; }
+    public bool? GenerateDocumentation { get; init; }
 
     public SharpMeasuresUnitLocations Locations { get; private init; }
 

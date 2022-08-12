@@ -69,7 +69,6 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
 
     public string AddSameTypeMethod() => "Method_Add_SameType";
     public string SubtractSameTypeMethod() => "Method_Subtract_SameType";
-    public string SubtractFromSameTypeMethod() => "Method_SubtractFrom_SameType";
 
     public string AddDifferenceMethod() => "Method_Add_Difference";
     public string SubtractDifferenceMethod() => "Method_Subtract_Difference";
