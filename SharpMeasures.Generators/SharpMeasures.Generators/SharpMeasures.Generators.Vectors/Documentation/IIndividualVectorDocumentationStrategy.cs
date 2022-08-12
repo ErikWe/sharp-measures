@@ -63,7 +63,6 @@ internal interface IIndividualVectorDocumentationStrategy
 
     public abstract string AddSameTypeMethod();
     public abstract string SubtractSameTypeMethod();
-    public abstract string SubtractFromSameTypeMethod();
 
     public abstract string AddDifferenceMethod();
     public abstract string SubtractDifferenceMethod();

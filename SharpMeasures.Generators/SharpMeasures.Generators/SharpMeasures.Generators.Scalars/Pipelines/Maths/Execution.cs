@@ -93,19 +93,18 @@ internal static class Execution
 
             ComposeFromPowerFunctions(indentation);
 
-            if (Data.ImplementSum || Data.ImplementDifference)
-            {
-                Builder.AppendLine();
-            }
-
             if (Data.ImplementSum)
             {
                 ComposeSumMethod(indentation);
+
+                Builder.AppendLine();
             }
 
             if (Data.ImplementDifference)
             {
                 ComposeDifferenceMethod(indentation);
+
+                Builder.AppendLine();
             }
 
             Builder.AppendLine();
@@ -113,7 +112,7 @@ internal static class Execution
             AppendDocumentation(indentation, Data.Documentation.UnaryPlusMethod());
             Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Plus() => this;");
             AppendDocumentation(indentation, Data.Documentation.NegateMethod());
-            Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Negate() => this;");
+            Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Negate() => new(-Magnitude.Value);");
 
             Builder.AppendLine();
 
@@ -126,62 +125,45 @@ internal static class Execution
 
             if (Data.Square is not null)
             {
-                AppendDocumentation(indentation, Data.Documentation.MultiplySameTypeMethod());
-                Builder.AppendLine($"{indentation}public {Data.Square.Value.FullyQualifiedName} Multiply({Data.Scalar.FullyQualifiedName} factor) => new(Magnitude.Value * factor.Magnitude.Value);");
+                ComposeMultiplySameTypeMethod(indentation);
+
+                Builder.AppendLine();
             }
 
-            AppendDocumentation(indentation, Data.Documentation.DivideSameTypeMethod());
-            Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar Divide({Data.Scalar.FullyQualifiedName} divisor) => new(Magnitude.Value / divisor.Magnitude.Value);");
+            ComposeDivideSameTypeMethod(indentation);
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, Data.Documentation.UnaryPlusOperator());
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator +({Data.Scalar.FullyQualifiedName} x) => x;");
-            AppendDocumentation(indentation, Data.Documentation.NegateOperator());
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator -({Data.Scalar.FullyQualifiedName} x) => new(-x.Magnitude);");
+            ComposeUnaryOperators(indentation);
 
-            if (Data.ImplementSum || Data.ImplementDifference)
-            {
-                Builder.AppendLine();
-            }
+            Builder.AppendLine();
 
             if (Data.ImplementSum)
             {
                 ComposeSumOperator(indentation);
+
+                Builder.AppendLine();
             }
 
             if (Data.ImplementDifference)
             {
                 ComposeDifferenceOperator(indentation);
-            }
 
-            Builder.AppendLine();
+                Builder.AppendLine();
+            }
 
             if (Data.Square is not null)
             {
-                AppendDocumentation(indentation, Data.Documentation.MultiplySameTypeOperator());
-                Builder.AppendLine($"{indentation}public static {Data.Square.Value.FullyQualifiedName} operator *({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) " +
-                    "=> new(x.Magnitude.Value * y.Magnitude.Value);");
+                ComposeMultiplySameTypeOperator(indentation);
+
+                Builder.AppendLine();
             }
 
-            AppendDocumentation(indentation, Data.Documentation.DivideSameTypeOperator());
-            Builder.AppendLine($"{indentation}public static global::SharpMeasures.Scalar operator /({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) " +
-                "=> new(x.Magnitude.Value / y.Magnitude.Value);");
+            ComposeDivideSameTypeOperator(indentation);
 
             Builder.AppendLine();
 
-            AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorLHS());
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator *({Data.Scalar.FullyQualifiedName} x, global::SharpMeasures.Scalar y) => new(x.Magnitude.Value * y.Value);");
-            AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorRHS());
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator *(global::SharpMeasures.Scalar x, {Data.Scalar.FullyQualifiedName} y) => new(x.Value * y.Magnitude.Value);");
-            AppendDocumentation(indentation, Data.Documentation.DivideScalarOperatorLHS());
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator /({Data.Scalar.FullyQualifiedName} x, global::SharpMeasures.Scalar y) => new(x.Magnitude.Value / y.Value);");
-
-            if (Data.Reciprocal is not null)
-            {
-                AppendDocumentation(indentation, Data.Documentation.DivideScalarOperatorRHS());
-                Builder.AppendLine($"{indentation}public static {Data.Reciprocal.Value.FullyQualifiedName} operator /(global::SharpMeausures.Scalar x, {Data.Scalar.FullyQualifiedName} y) => new(x.Value / y.Magnitude.Value);");
-            }
+            ComposeMultiplyAndDivideScalarOperators(indentation);
         }
 
         private void ComposePowerFunctions(Indentation indentation)
@@ -391,6 +373,77 @@ internal static class Execution
             }
         }
 
+        private void ComposeMultiplySameTypeMethod(Indentation indentation)
+        {
+            AppendDocumentation(indentation, Data.Documentation.MultiplySameTypeMethod());
+
+            if (Data.Scalar.IsReferenceType)
+            {
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                    {{indentation}}public {{Data.Square!.Value.FullyQualifiedName}} Multiply({{Data.Scalar.FullyQualifiedName}} factor)
+                    {{indentation}}{
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(factor);
+                        
+                    {{indentation.Increased}}return new(Magnitude.Value * factor.Magnitude.Value):
+                    {{indentation}}}
+                    """);
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation}public {Data.Square!.Value.FullyQualifiedName} Multiply({Data.Scalar.FullyQualifiedName} factor) => new(Magnitude.Value * factor.Magnitude.Value);");
+            }
+        }
+
+        private void ComposeDivideSameTypeMethod(Indentation indentation)
+        {
+            AppendDocumentation(indentation, Data.Documentation.DivideSameTypeMethod());
+
+            if (Data.Scalar.IsReferenceType)
+            {
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                    {{indentation}}public global::SharpMeasures.Scalar Divide({{Data.Scalar.FullyQualifiedName}} divisor)
+                    {{indentation}}{
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(divisor);
+
+                    {{indentation.Increased}}return new(Magnitude.Value / divisor.Magnitude.Value);
+                    {{indentation}}}
+                    """);
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar Divide({Data.Scalar.FullyQualifiedName} divisor) => new(Magnitude.Value / divisor.Magnitude.Value);");
+            }
+        }
+
+        private void ComposeUnaryOperators(Indentation indentation)
+        {
+            AppendDocumentation(indentation, Data.Documentation.UnaryPlusOperator());
+            Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator +({Data.Scalar.FullyQualifiedName} x) => x;");
+
+            AppendDocumentation(indentation, Data.Documentation.NegateOperator());
+
+            if (Data.Scalar.IsReferenceType)
+            {
+                Builder.AppendLine();
+
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                    {{indentation}}public static {{Data.Scalar.FullyQualifiedName}} operator -({{Data.Scalar.FullyQualifiedName}} x)
+                    {{indentation}}{
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(x);
+
+                    {{indentation.Increased}}return new(-x.Magnitude);
+                    {{indentation}}}
+                    """);
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator -({Data.Scalar.FullyQualifiedName} x) => new(-x.Magnitude);");
+            }
+        }
+
         private void ComposeSumOperator(Indentation indentation)
         {
             AppendDocumentation(indentation, Data.Documentation.AddSameTypeOperator());
@@ -404,7 +457,7 @@ internal static class Execution
                     {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(x);
                     {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(y);
 
-                    {{indentation.Increased}}return new(x.Magnitude.Value * y.Magnitude.Value);
+                    {{indentation.Increased}}return new(x.Magnitude.Value + y.Magnitude.Value);
                     {{indentation}}}
                     """);
             }
@@ -445,6 +498,146 @@ internal static class Execution
 
             AppendDocumentation(indentation, Data.Documentation.SubtractDifferenceOperatorLHS());
             Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator -({Data.Scalar.FullyQualifiedName} x, {Data.Difference.FullyQualifiedName} y) => new(x.Magnitude.Value - y.Magnitude.Value);");
+        }
+
+        private void ComposeMultiplySameTypeOperator(Indentation indentation)
+        {
+            AppendDocumentation(indentation, Data.Documentation.MultiplySameTypeOperator());
+
+            if (Data.Scalar.IsReferenceType)
+            {
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                    {{indentation}}public static {{Data.Square!.Value.FullyQualifiedName}} operator *({{Data.Scalar.FullyQualifiedName}} x, {{Data.Scalar.FullyQualifiedName}} y)
+                    {{indentation}}{
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(x);
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(y);
+                    
+                    {{indentation.Increased}}return new(x.Magnitude.Value * y.Magnitude.Value);
+                    {{indentation}}}
+                    """);
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation}public static {Data.Square!.Value.FullyQualifiedName} operator *({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) " +
+                    "=> new(x.Magnitude.Value * y.Magnitude.Value);");
+            }
+        }
+
+        private void ComposeDivideSameTypeOperator(Indentation indentation)
+        {
+            AppendDocumentation(indentation, Data.Documentation.DivideSameTypeOperator());
+
+            if (Data.Scalar.IsReferenceType)
+            {
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                    {{indentation}}public static global::SharpMeasures.Scalar operator /({{Data.Scalar.FullyQualifiedName}} x, {{Data.Scalar.FullyQualifiedName}} y)
+                    {{indentation}}{
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(x);
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(y);
+                    
+                    {{indentation.Increased}}return new(x.Magnitude.Value / y.Magnitude.Value);
+                    {{indentation}}}
+                    """);
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation}public static global::SharpMeasures.Scalar operator /({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) " +
+                    "=> new(x.Magnitude.Value / y.Magnitude.Value);");
+            }
+        }
+
+        private void ComposeMultiplyAndDivideScalarOperators(Indentation indentation)
+        {
+            AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorLHS());
+
+            if (Data.Scalar.IsReferenceType)
+            {
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                    {{indentation}}public static {{Data.Scalar.FullyQualifiedName}} operator *({{Data.Scalar.FullyQualifiedName}} x, global::SharpMeasures.Scalar y)
+                    {{indentation}}{
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(x);
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(y);
+                    
+                    {{indentation.Increased}}return new(x.Magnitude.Value * y.Value);
+                    {{indentation}}}
+                    """);
+
+                Builder.AppendLine();
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator *({Data.Scalar.FullyQualifiedName} x, global::SharpMeasures.Scalar y) => new(x.Magnitude.Value * y.Value);");
+            }
+
+            AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorRHS());
+
+            if (Data.Scalar.IsReferenceType)
+            {
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                    {{indentation}}public static {{Data.Scalar.FullyQualifiedName}} operator *(global::SharpMeasures.Scalar x, {{Data.Scalar.FullyQualifiedName}} y)
+                    {{indentation}}{
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(x);
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(y);
+                    
+                    {{indentation.Increased}}return new(x.Value * y.Magnitude.Value);
+                    {{indentation}}}
+                    """);
+
+                Builder.AppendLine();
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator *(global::SharpMeasures.Scalar x, {Data.Scalar.FullyQualifiedName} y) => new(x.Value * y.Magnitude.Value);");
+            }
+            
+            AppendDocumentation(indentation, Data.Documentation.DivideScalarOperatorLHS());
+
+            if (Data.Scalar.IsReferenceType)
+            {
+                Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                    {{indentation}}public static {{Data.Scalar.FullyQualifiedName}} operator /({{Data.Scalar.FullyQualifiedName}} x, global::SharpMeasures.Scalar y)
+                    {{indentation}}{
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(x);
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(y);
+                    
+                    {{indentation.Increased}}return new(x.Magnitude.Value / y.Value);
+                    {{indentation}}}
+                    """);
+            }
+            else
+            {
+                Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator /({Data.Scalar.FullyQualifiedName} x, global::SharpMeasures.Scalar y) => new(x.Magnitude.Value / y.Value);");
+            }
+
+            if (Data.Reciprocal is not null)
+            {
+                AppendDocumentation(indentation, Data.Documentation.DivideScalarOperatorRHS());
+        
+                if (Data.Scalar.IsReferenceType)
+                {
+                    Builder.AppendLine();
+
+                    Builder.AppendLine($$"""
+                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                    {{indentation}}public static {{Data.Reciprocal.Value.FullyQualifiedName}} operator /(global::SharpMeasures.Scalar x, {{Data.Scalar.FullyQualifiedName}} y)
+                    {{indentation}}{
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(x);
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(y);
+                    
+                    {{indentation.Increased}}return new(x.Value / y.Magnitude.Value);
+                    {{indentation}}}
+                    """);
+                }
+                else
+                {
+                    Builder.AppendLine($"{indentation}public static {Data.Reciprocal.Value.FullyQualifiedName} operator /(global::SharpMeausures.Scalar x, {Data.Scalar.FullyQualifiedName} y) => new(x.Value / y.Magnitude.Value);");
+                }
+            }
         }
 
         private void AppendDocumentation(Indentation indentation, string text)

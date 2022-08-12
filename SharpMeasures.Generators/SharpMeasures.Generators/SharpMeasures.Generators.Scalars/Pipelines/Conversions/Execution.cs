@@ -3,10 +3,9 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Utility;
 using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Utility;
 
 using System;
 using System.Text;
@@ -15,11 +14,6 @@ internal static class Execution
 {
     public static void Execute(SourceProductionContext context, DataModel data)
     {
-        if (data.Conversions.Count is 0)
-        {
-            return;
-        }
-
         string source = Composer.Compose(data);
 
         context.AddSource($"{data.Scalar.Name}_Conversions.g.cs", SourceText.From(source, Encoding.UTF8));
@@ -80,7 +74,7 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
-            foreach (ConvertibleScalarDefinition definition in Data.Conversions)
+            foreach (IConvertibleScalar definition in Data.Conversions)
             {
                 foreach (IUnresolvedScalarType scalar in definition.Scalars)
                 {
@@ -89,7 +83,7 @@ internal static class Execution
                 }
             }
 
-            foreach (ConvertibleScalarDefinition definition in Data.Conversions)
+            foreach (IConvertibleScalar definition in Data.Conversions)
             {
                 if (definition.CastOperatorBehaviour is ConversionOperatorBehaviour.None)
                 {

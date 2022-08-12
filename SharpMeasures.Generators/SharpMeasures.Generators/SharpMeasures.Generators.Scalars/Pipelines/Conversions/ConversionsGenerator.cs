@@ -9,13 +9,18 @@ internal static class ConversionsGenerator
 {
     public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Scalars.DataModel> inputProvider)
     {
-        var reduced = inputProvider.Select(Reduce);
+        var filteredAndReduced = inputProvider.Select(Reduce).WhereNotNull();
 
-        context.RegisterSourceOutput(reduced, Execution.Execute);
+        context.RegisterSourceOutput(filteredAndReduced, Execution.Execute);
     }
 
-    private static DataModel Reduce(Scalars.DataModel input, CancellationToken _)
+    private static DataModel? Reduce(Scalars.DataModel input, CancellationToken _)
     {
+        if (input.Scalar.Conversions.Count is 0)
+        {
+            return null;
+        }
+
         return new(input.Scalar.Type, input.Scalar.Conversions, input.Documentation);
     }
 }

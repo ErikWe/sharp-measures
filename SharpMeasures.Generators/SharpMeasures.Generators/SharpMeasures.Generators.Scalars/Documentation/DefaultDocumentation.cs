@@ -64,7 +64,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     {
         var commonText = $"""
             /// <summary>The magnitude of <see langword="this"/>, expressed in an arbitrary unit.</summary>
-            /// <remarks>In most cases, expressing the magnitude in a certain {UnitReference} should be preferre. This is achieved using <see cref="InUnit({Unit.Type.FullyQualifiedName})"/>
+            /// <remarks>In most cases, expressing the magnitude in a certain {UnitReference} should be preferre. This is achieved through <see cref="InUnit({Unit.Type.FullyQualifiedName})"/>
             """;
 
         if (ExampleUnit is not null)
@@ -159,7 +159,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
 
         if (DefaultUnitSymbol is not null)
         {
-            return $"""{commonText}, the magnitude expressed in an arbitrary unit, and the symbol [{DefaultUnitSymbol}].</summary>""";
+            return $"""{commonText}, the magnitude expressed in an arbitrary unit, followed by the symbol [{DefaultUnitSymbol}].</summary>""";
         }
 
         return $"""{commonText} and the magnitude expressed in an arbitrary unit.</summary>""";

@@ -21,21 +21,27 @@ public class ValidCases
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
 
-            [SharpMeasuresScalar(typeof(UnitOfTime))]
-            public partial class Time { }
-
             [SharpMeasuresUnit(typeof(Length))]
-            [FixedUnit("Metre", "Metres")]
-            [PrefixedUnit("Kilometre", "Kilometres", MetricPrefix.Kilo)]
             public partial class UnitOfLength { }
-
-            [DerivableUnit("1", typeof(UnitOfLength), typeof(UnitOfTime), "{0} / {1}")]
-            [DerivedUnit("MetrePerSecond", "MetresPerSecond", "1", "Metre", "Second")]
-            public partial class UnitOfSpeed { }
             """;
 
-        string[] verifiedSources = new[] { "UnitOfLength_Common.g.cs" };
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoCompilationDiagnostics().VerifyMatchingSourceNames(@"UnitOfLength_\S+\.g\.cs");
+    }
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyListedSourceNames(verifiedSources);
+    [Fact]
+    public Task BiasedUnit_Verify()
+    {
+        string source = """
+            using SharpMeasures.Generators.Scalars;
+            using SharpMeasures.Generators.Units;
+
+            [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+            public partial class TemperatureDifference { }
+
+            [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+            public partial class UnitOfTemperature { }
+            """;
+
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames(@"UnitOfTemperature_\S+\.g\.cs");
     }
 }

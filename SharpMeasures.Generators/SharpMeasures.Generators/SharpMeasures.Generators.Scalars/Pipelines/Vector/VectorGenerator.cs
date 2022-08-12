@@ -8,9 +8,9 @@ internal static class VectorsGenerator
 {
     public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Scalars.DataModel> inputProvider)
     {
-        var reducedAndFiltered = inputProvider.Select(Reduce).WhereNotNull();
+        var filteredAndReduced = inputProvider.Select(Reduce).WhereNotNull();
 
-        context.RegisterSourceOutput(reducedAndFiltered, Execution.Execute);
+        context.RegisterSourceOutput(filteredAndReduced, Execution.Execute);
     }
 
     private static DataModel? Reduce(Scalars.DataModel input, CancellationToken _)

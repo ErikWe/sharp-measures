@@ -10,7 +10,7 @@ internal static class CommonTextBuilders
 
         string deconstructComponentsComponent(int componentIndex, int dimension)
         {
-            return $"out {componentName} {VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension)}";
+            return $"out {componentName} {VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension)}";
         }
     }
 

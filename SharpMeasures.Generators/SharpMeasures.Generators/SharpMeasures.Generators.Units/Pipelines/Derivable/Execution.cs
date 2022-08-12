@@ -15,11 +15,6 @@ internal static class Execution
 {
     public static void Execute(SourceProductionContext context, DataModel data)
     {
-        if (data.Derivations.Any() is false)
-        {
-            return;
-        }
-
         string source = Composer.ComposeAndReportDiagnostics(data);
 
         context.AddSource($"{data.Unit.Name}_Derivable.g.cs", SourceText.From(source, Encoding.UTF8));
@@ -35,30 +30,23 @@ internal static class Execution
         }
 
         private StringBuilder Builder { get; } = new();
-        private UsingsCollector UsingsCollector { get; }
 
         private DataModel Data { get; }
 
         private Composer(DataModel data)
         {
             Data = data;
-
-            UsingsCollector = UsingsCollector.Delayed(Builder, data.Unit.Namespace);
         }
 
         private void Compose()
         {
             StaticBuilding.AppendHeaderAndDirectives(Builder);
 
-            UsingsCollector.MarkInsertionPoint();
-
             NamespaceBuilding.AppendNamespace(Builder, Data.Unit);
 
             Builder.Append(Data.Unit.ComposeDeclaration());
 
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0);
-
-            UsingsCollector.InsertUsings();
         }
 
         private string Retrieve()
@@ -83,11 +71,10 @@ internal static class Execution
 
             if (anyNullableTypes)
             {
-                UsingsCollector.AddUsings("System");
-                Builder.AppendLine($"""{indentation}/// <exception cref="ArgumentNullException"/>""");
+                Builder.AppendLine($"""{indentation}/// <exception cref="global::System.ArgumentNullException"/>""");
             }
 
-            Builder.Append($"{indentation}public static {Data.Unit.Name} From(");
+            Builder.Append($"{indentation}public static {Data.Unit.FullyQualifiedName} From(");
             IterativeBuilding.AppendEnumerable(Builder, signatureComponents, ", ", ")");
 
             if (anyNullableTypes)
@@ -110,7 +97,7 @@ internal static class Execution
             {
                 if (signatureUnitTypeEnumerator.Current.Type.IsReferenceType)
                 {
-                    Builder.AppendLine($"{indentation.Increased}ArgumentNullException.ThrowIfNull({parameterEnumerator.Current});");
+                    Builder.AppendLine($"{indentation.Increased}global::System.ArgumentNullException.ThrowIfNull({parameterEnumerator.Current});");
                 }
             }
 
@@ -126,8 +113,7 @@ internal static class Execution
 
             while (parameterEnumerator.MoveNext() && signatureUnitTypeEnumerator.MoveNext())
             {
-                UsingsCollector.AddUsing(signatureUnitTypeEnumerator.Current.Type.Namespace);
-                yield return $"{signatureUnitTypeEnumerator.Current.Type.Name} {parameterEnumerator.Current}";
+                yield return $"{signatureUnitTypeEnumerator.Current.Type.FullyQualifiedName} {parameterEnumerator.Current}";
             }
         }
 

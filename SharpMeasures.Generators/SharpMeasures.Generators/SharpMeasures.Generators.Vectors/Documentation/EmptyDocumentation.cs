@@ -56,7 +56,6 @@ internal class EmptyDocumentation : IVectorGroupDocumentationStrategy, IIndividu
     string IIndividualVectorDocumentationStrategy.SubtractDifferenceOperatorLHS() => string.Empty;
     string IIndividualVectorDocumentationStrategy.AddSameTypeMethod() => string.Empty;
     string IIndividualVectorDocumentationStrategy.SubtractSameTypeMethod() => string.Empty;
-    string IIndividualVectorDocumentationStrategy.SubtractFromSameTypeMethod() => string.Empty;
     string IIndividualVectorDocumentationStrategy.AddDifferenceMethod() => string.Empty;
     string IIndividualVectorDocumentationStrategy.SubtractDifferenceMethod() => string.Empty;
     string IIndividualVectorDocumentationStrategy.MultiplyScalarMethod() => string.Empty;

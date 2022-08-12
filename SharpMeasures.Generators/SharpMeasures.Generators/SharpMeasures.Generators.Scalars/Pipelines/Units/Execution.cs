@@ -11,11 +11,6 @@ internal static class Execution
 {
     public static void Execute(SourceProductionContext context, DataModel data)
     {
-        if (data.IncludedBases.Count is 0 && data.IncluedUnits.Count is 0 && data.Constants.Count is 0)
-        {
-            return;
-        }
-
         string source = Composer.Compose(data);
 
         context.AddSource($"{data.Scalar.Name}_Units.g.cs", SourceText.From(source, Encoding.UTF8));
@@ -45,12 +40,6 @@ internal static class Execution
 
             NamespaceBuilding.AppendNamespace(Builder, Data.Scalar.Namespace);
 
-            UsingsBuilding.AppendUsings(Builder, Data.Scalar.Namespace, new string[]
-            {
-                "SharpMeasures",
-                Data.Unit.Namespace
-            });
-
             Builder.Append(Data.Scalar.ComposeDeclaration());
 
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
@@ -66,8 +55,7 @@ internal static class Execution
             foreach (var constant in Data.Constants)
             {
                 AppendDocumentation(indentation, Data.Documentation.Constant(constant));
-                Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} {constant.Name} => " +
-                    $"new({constant.Value}, {Data.Unit.Name}.{constant.Unit.Name});");
+                Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} {constant.Name} => new({constant.Value}, {Data.Unit.FullyQualifiedName}.{constant.Unit.Name});");
             }
 
             if (Data.Constants.Count > 0)
@@ -78,8 +66,7 @@ internal static class Execution
             foreach (var includedBase in Data.IncludedBases)
             {
                 AppendDocumentation(indentation, Data.Documentation.UnitBase(includedBase));
-                Builder.AppendLine($"{indentation}public static {Data.Scalar.Name} One{includedBase.Name} => " +
-                    $"{Data.Unit.Name}.{includedBase.Name}.{Data.UnitQuantity.Name};");
+                Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} One{includedBase.Name} => {Data.Unit.FullyQualifiedName}.{includedBase.Name}.{Data.UnitQuantity.Name};");
             }
 
             if (Data.IncludedBases.Count > 0)
@@ -96,7 +83,7 @@ internal static class Execution
                     anyAccessedConstant = true;
 
                     AppendDocumentation(indentation, Data.Documentation.InConstantMultiples(constant));
-                    Builder.AppendLine($"{indentation}public Scalar {constant.Multiples!} => Magnitude.Value / {constant.Name}.Magnitude.Value;");
+                    Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar {constant.Multiples!} => Magnitude.Value / {constant.Name}.Magnitude.Value;");
                 }
             }
 
@@ -108,7 +95,7 @@ internal static class Execution
             foreach (var includedUnit in Data.IncluedUnits)
             {
                 AppendDocumentation(indentation, Data.Documentation.InSpecifiedUnit(includedUnit));
-                Builder.AppendLine($"{indentation}public Scalar {includedUnit.Plural} => InUnit({Data.Unit.Name}.{includedUnit.Name});");
+                Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar {includedUnit.Plural} => InUnit({Data.Unit.FullyQualifiedName}.{includedUnit.Name});");
             }
         }
 

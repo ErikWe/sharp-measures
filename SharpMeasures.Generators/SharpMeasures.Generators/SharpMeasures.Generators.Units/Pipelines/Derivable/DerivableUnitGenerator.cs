@@ -9,13 +9,18 @@ internal static class DerivableUnitGenerator
 {
     public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Units.DataModel> inputProvider)
     {
-        var reduced = inputProvider.Select(ReduceToDataModel);
+        var filteredAndReduced = inputProvider.Select(ReduceToDataModel).WhereNotNull();
 
-        context.RegisterSourceOutput(reduced, Execution.Execute);
+        context.RegisterSourceOutput(filteredAndReduced, Execution.Execute);
     }
 
-    private static DataModel ReduceToDataModel(Units.DataModel input, CancellationToken _)
+    private static DataModel? ReduceToDataModel(Units.DataModel input, CancellationToken _)
     {
+        if (input.Unit.UnitDerivations.Any() is false)
+        {
+            return null;
+        }
+
         return new(input.Unit.Type, input.Unit.Definition.Quantity.Type.AsNamedType(), input.Unit.UnitDerivations, input.Documentation);
     }
 }

@@ -98,14 +98,14 @@ internal class DefaultIndividualVectorDocumentation : IIndividualVectorDocumenta
     public string ScalarsConstructor() => $$"""
         /// <summary>Constructs a new {{VectorReference}} representing { {{Texts.ParameterTuple()}} }, expressed in an arbitrary unit.</summary>
         {{Texts.ScalarsConstructor()}}
-        /// <remarks>Consider preferring construction through <see cref="{{Type.Name}}({{ConstantVectorTexts.UnnamedScalars(Dimension)}}, {{Unit.Type.Name}})"/>,
+        /// <remarks>Consider preferring construction through <see cref="{{Type.FullyQualifiedName}}({{ConstantVectorTexts.UnnamedScalars(Dimension)}}, {{Unit.Type.FullyQualifiedName}})"/>,
         /// where the components are expressed in a certain {{UnitReference}}.</remarks>
         """;
 
     public string VectorConstructor() => $"""
         /// <summary>Constructs a new {VectorReference} components of magnitudes <paramref name="components"/>, expressed in an arbitrary unit.</summary>
-        /// <param name="components">The magnitudes of the components of the constructed <see cref="Unhandled3"/>, expressed in an arbitrary unit.</param>
-        /// <remarks>Consider preferring construction through <see cref="{Type.Name}(Vector{Dimension}, {Unit.Type.Name})"/>,
+        /// <param name="components">The magnitudes of the components of the constructed {VectorReference}, expressed in an arbitrary unit.</param>
+        /// <remarks>Consider preferring construction through <see cref="{Type.FullyQualifiedName}(global::SharpMeasures.Vector{Dimension}, {Unit.Type.FullyQualifiedName})"/>,
         /// where the components are expressed in a certain {UnitReference}.</remarks>
         """;
 
@@ -122,7 +122,7 @@ internal class DefaultIndividualVectorDocumentation : IIndividualVectorDocumenta
             commonText = $"""
                 {commonText}
                 /// <remarks>A {VectorReference} may also be constructed as demonstrated below.
-                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Type.Name}.One{ExampleScalarBase.Name}"/>;</code>
+                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Type.FullyQualifiedName}.One{ExampleScalarBase.Name}"/>;</code>
                 /// </remarks>
                 """;
         }
@@ -133,7 +133,7 @@ internal class DefaultIndividualVectorDocumentation : IIndividualVectorDocumenta
     {
         var commonText = $"""
             /// <summary>Constructs a new {VectorReference} components of magnitudes <paramref name="components"/>, expressed in <paramref name="{UnitParameterName}"/>.</summary>
-            /// <param name="components">The magnitudes of the components of the constructed <see cref="Unhandled3"/>, expressed in <paramref name="{UnitParameterName}"/>.</param>
+            /// <param name="components">The magnitudes of the components of the constructed {VectorReference}, expressed in <paramref name="{UnitParameterName}"/>.</param>
             """;
 
         if (Scalar is not null && ExampleScalarBase is not null)
@@ -141,7 +141,7 @@ internal class DefaultIndividualVectorDocumentation : IIndividualVectorDocumenta
             commonText = $"""
                 {commonText}
                 /// <remarks>A {VectorReference} may also be constructed as demonstrated below.
-                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Type.Name}.One{ExampleScalarBase.Name}"/>;</code>
+                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Type.FullyQualifiedName}.One{ExampleScalarBase.Name}"/>;</code>
                 /// </remarks>
                 """;
         }
@@ -165,8 +165,8 @@ internal class DefaultIndividualVectorDocumentation : IIndividualVectorDocumenta
     {
         var commonText = $"""
             /// <summary>The magnitudes of the components of <see langword="this"/>, expressed in an arbitrary unit.</summary>
-            /// <remarks>In most cases, expressing the magnitudes in a certain {UnitReference} should be preferred. This can be achieved through
-            /// <see cref="InUnit({Unit.Type.Name})"/>
+            /// <remarks>In most cases, expressing the magnitudes in a certain {UnitReference} should be preferred. This is achieved through
+            /// <see cref="InUnit({Unit.Type.FullyQualifiedName})"/>
             """;
 
         if (ExampleUnit is not null)
@@ -196,10 +196,10 @@ internal class DefaultIndividualVectorDocumentation : IIndividualVectorDocumenta
         /// <param name="a">This {VectorReference} is converted to the equivalent <see cref="{vectorGroupMember.Type.Name}"/>.</param>
         """;
 
-    public string IsNaN() => """/// <inheritdoc cref="Vector3.IsNaN"/>""";
-    public string IsZero() => """/// <inheritdoc cref="Vector3.IsZero"/>""";
-    public string IsFinite() => """/// <inheritdoc cref="Vector3.IsFinite"/>""";
-    public string IsInfinite() => """/// <inheritdoc cref="Vector3.IsInfinite"/>""";
+    public string IsNaN() => $"""/// <inheritdoc cref="global::SharpMeasures.Vector{Dimension}.IsNaN"/>""";
+    public string IsZero() => $"""/// <inheritdoc cref="global::SharpMeasures.Vector{Dimension}.IsZero"/>""";
+    public string IsFinite() => $"""/// <inheritdoc cref="global::SharpMeasures.Vector{Dimension}.IsFinite"/>""";
+    public string IsInfinite() => $"""/// <inheritdoc cref="global::SharpMeasures.Vector{Dimension}.IsInfinite"/>""";
 
     public string Magnitude() => InheritDoc;
     public string SquaredMagnitude() => InheritDoc;
@@ -216,17 +216,17 @@ internal class DefaultIndividualVectorDocumentation : IIndividualVectorDocumenta
 
         if (DefaultUnit is not null && DefaultUnitSymbol is not null)
         {
-            return $"""{commonText}, the components expressed in <see cref="{Unit.Type.Name}.{DefaultUnit}"/>, and the symbol [{DefaultUnitSymbol}].</summary>""";
+            return $"""{commonText}, the components expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnit}"/>, and the symbol [{DefaultUnitSymbol}].</summary>""";
         }
 
         if (DefaultUnit is not null)
         {
-            return $"""{commonText} and the components expressed in <see cref="{Unit.Type.Name}.{DefaultUnit}"/>.</summary>""";
+            return $"""{commonText} and the components expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnit}"/>.</summary>""";
         }
 
         if (DefaultUnitSymbol is not null)
         {
-            return $"""{commonText}, the components expressed in an arbitrary unit, and the symbol [{DefaultUnitSymbol}].</summary>""";
+            return $"""{commonText}, the components expressed in an arbitrary unit, follow by the symbol [{DefaultUnitSymbol}].</summary>""";
         }
 
         return $"""{commonText} and the components expressed in an arbitrary unit.</summary>""";
@@ -235,27 +235,17 @@ internal class DefaultIndividualVectorDocumentation : IIndividualVectorDocumenta
     public string EqualsSameTypeMethod() => InheritDoc;
     public string EqualsObjectMethod() => InheritDoc;
 
-    public string EqualitySameTypeOperator()
-    {
-        string text = $"""/// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent equivalent components.""";
-
-        return $"""
-            {text}.</summary>
+    public string EqualitySameTypeOperator() => $"""
+            /// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent equivalent components.</summary>
             /// <param name="lhs">The left-hand side of the equality check.</param>
             /// <param name="rhs">The right-hand side of the equality check.</param>
             """;
-    }
 
-    public string InequalitySameTypeOperator()
-    {
-        string text = $"""/// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent inequivalent components.""";
-
-        return $"""
-            {text}.</summary>
+    public string InequalitySameTypeOperator() => $"""
+            /// <summary>Indicates whether <paramref name="lhs"/> and <paramref name="rhs"/> represent inequivalent components.</summary>
             /// <param name="lhs">The left-hand side of the inequality check.</param>
             /// <param name="rhs">The right-hand side of the inequality check.</param>
             """;
-    }
 
     public string GetHashCodeDocumentation() => InheritDoc;
 
@@ -269,7 +259,6 @@ internal class DefaultIndividualVectorDocumentation : IIndividualVectorDocumenta
 
     public string AddSameTypeMethod() => InheritDoc;
     public string SubtractSameTypeMethod() => InheritDoc;
-    public string SubtractFromSameTypeMethod() => InheritDoc;
 
     public string AddDifferenceMethod() => InheritDoc;
     public string SubtractDifferenceMethod() => InheritDoc;
@@ -291,9 +280,9 @@ internal class DefaultIndividualVectorDocumentation : IIndividualVectorDocumenta
     public string MultiplyScalarOperatorRHS() => InheritDoc;
     public string DivideScalarOperatorLHS() => InheritDoc;
 
-    private string VectorReference => $"""<see cref="{Type.Name}"/>""";
-    private string UnitReference => $"""<see cref="{Unit.Type.Name}"/>""";
-    private string ScalarReference => $"""<see cref={Scalar?.Type.Name}"/>""";
+    private string VectorReference => $"""<see cref="{Type.FullyQualifiedName}"/>""";
+    private string UnitReference => $"""<see cref="{Unit.Type.FullyQualifiedName}"/>""";
+    private string ScalarReference => $"""<see cref={Scalar?.Type.FullyQualifiedName}"/>""";
 
     private static string InheritDoc => "/// <inheritdoc/>";
 
@@ -388,9 +377,8 @@ internal class DefaultIndividualVectorDocumentation : IIndividualVectorDocumenta
         }
     }
 
-    public virtual bool Equals(DefaultIndividualVectorDocumentation? other) => other is not null && Type == other.Type
-        && Dimension == other.Dimension && Unit == other.Unit && Scalar == other.Scalar && DefaultUnit == other.DefaultUnit
-        && DefaultUnitSymbol == other.DefaultUnitSymbol;
+    public virtual bool Equals(DefaultIndividualVectorDocumentation? other) => other is not null && Type == other.Type && Dimension == other.Dimension && Unit == other.Unit && Scalar == other.Scalar
+        && DefaultUnit == other.DefaultUnit && DefaultUnitSymbol == other.DefaultUnitSymbol;
 
     public override bool Equals(object? obj) => obj is DefaultIndividualVectorDocumentation other && Equals(other);
     

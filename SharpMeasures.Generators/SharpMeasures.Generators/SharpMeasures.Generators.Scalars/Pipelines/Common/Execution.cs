@@ -196,7 +196,7 @@ internal static class Execution
         private void ComposeToString(Indentation indentation)
         {
             AppendDocumentation(indentation, Data.Documentation.ToStringDocumentation());
-            Builder.Append($$"""{{indentation}}public override string ToString() => $"{typeof({{Data.Scalar.FullyQualifiedName}})}: [{""");
+            Builder.Append($$"""{{indentation}}public override string ToString() => $"{typeof({{Data.Scalar.FullyQualifiedName}})}: {""");
 
             if (Data.DefaultUnit is not null)
             {
@@ -214,7 +214,7 @@ internal static class Execution
                 Builder.Append($" [{Data.DefaultUnitSymbol}]");
             }
 
-            Builder.AppendLine($"]\";");
+            Builder.AppendLine($"\";");
         }
 
         private void ComposeEquality(Indentation indentation)
@@ -246,6 +246,8 @@ internal static class Execution
             AppendDocumentation(indentation, Data.Documentation.EqualitySameTypeOperator());
             Builder.AppendLine($"{indentation}public static bool operator ==({Data.Scalar.FullyQualifiedName}? lhs, {Data.Scalar.FullyQualifiedName}? rhs) => lhs?.Equals(rhs) ?? rhs is null;");
 
+            Builder.AppendLine();
+
             AppendDocumentation(indentation, Data.Documentation.InequalitySameTypeOperator());
             Builder.AppendLine($"{indentation}public static bool operator !=({Data.Scalar.FullyQualifiedName}? lhs, {Data.Scalar.FullyQualifiedName}? rhs) => (lhs == rhs) is false;");
         }
@@ -264,6 +266,8 @@ internal static class Execution
 
             AppendDocumentation(indentation, Data.Documentation.EqualitySameTypeOperator());
             Builder.AppendLine($"{indentation}public static bool operator ==({Data.Scalar.FullyQualifiedName} lhs, {Data.Scalar.FullyQualifiedName} rhs) => lhs.Equals(rhs);");
+
+            Builder.AppendLine();
 
             AppendDocumentation(indentation, Data.Documentation.InequalitySameTypeOperator());
             Builder.AppendLine($"{indentation}public static bool operator !=({Data.Scalar.FullyQualifiedName} lhs, {Data.Scalar.FullyQualifiedName} rhs) => (lhs == rhs) is false;");

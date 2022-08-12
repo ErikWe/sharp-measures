@@ -26,6 +26,7 @@ public static class ConstantVectorTexts
         public static string Negate(int dimension) => Builders.Upper.Negate.GetText(dimension);
         public static string NegateA(int dimension) => Builders.Upper.NegateA.GetText(dimension);
         public static string AddBVector(int dimension) => Builders.Upper.AddBVector.GetText(dimension);
+        public static string SubtractBVector(int dimension) => Builders.Upper.SubtractBVector.GetText(dimension);
         public static string MultiplyAScalar(int dimension) => Builders.Upper.MultiplyAScalar.GetText(dimension);
         public static string MultiplyBScalar(int dimension) => Builders.Upper.MultiplyBScalar.GetText(dimension);
         public static string DivideAScalar(int dimension) => Builders.Upper.DivideAScalar.GetText(dimension);
@@ -44,7 +45,7 @@ public static class ConstantVectorTexts
     public static class Builders
     {
         public static VectorTextBuilder Zeros { get; } = new("0", ", ");
-        public static VectorTextBuilder UnnamedScalars { get; } = new("Scalar", ", ");
+        public static VectorTextBuilder UnnamedScalars { get; } = new("global::SharpMeasures.Scalar", ", ");
         public static VectorTextBuilder SampleValues { get; } = new(SampleValuesDelegate, ", ");
         public static VectorTextBuilder DeconstructScalarHeader { get; } = new(DeconstructScalarHeaderDelegate, ", ");
         public static VectorTextBuilder MultiplyScalarLHS { get; } = new(MultiplyScalarLHSDelegate, ", ");
@@ -65,6 +66,7 @@ public static class ConstantVectorTexts
             public static VectorTextBuilder Negate { get; } = new(NegateDelegate, ", ");
             public static VectorTextBuilder NegateA { get; } = new(NegateADelegate, ", ");
             public static VectorTextBuilder AddBVector { get; } = new(AddBVectorDelegate, ", ");
+            public static VectorTextBuilder SubtractBVector { get; } = new(SubtractBVectorDelegate, ", ");
             public static VectorTextBuilder MultiplyAScalar { get; } = new(MultiplyAScalarDelegate, ", ");
             public static VectorTextBuilder MultiplyBScalar { get; } = new(MultiplyBScalarDelegate, ", ");
             public static VectorTextBuilder DivideAScalar { get; } = new(DivideAScalarDelegate, ", ");
@@ -81,7 +83,7 @@ public static class ConstantVectorTexts
 
             private static string ScalarDelegate(int componentIndex, int dimension)
             {
-                return $"Scalar {GetComponentName(componentIndex, dimension)}";
+                return $"global::SharpMeasures.Scalar {GetComponentName(componentIndex, dimension)}";
             }
 
             private static string MagnitudeDelegate(int componentIndex, int dimension)
@@ -134,7 +136,14 @@ public static class ConstantVectorTexts
             {
                 string componentName = GetComponentName(componentIndex, dimension);
 
-                return $"{componentName} + b.{componentName}";
+                return $"a.{componentName} + b.{componentName}";
+            }
+
+            private static string SubtractBVectorDelegate(int componentIndex, int dimension)
+            {
+                string componentName = GetComponentName(componentIndex, dimension);
+
+                return $"a.{componentName} - b.{componentName}";
             }
 
             private static string MultiplyAScalarDelegate(int componentIndex, int dimension)
@@ -176,12 +185,12 @@ public static class ConstantVectorTexts
 
             private static string ScalarDelegate(int componentIndex, int dimension)
             {
-                return $"Scalar {GetComponentName(componentIndex, dimension)}";
+                return $"global::SharpMeasures.Scalar {GetComponentName(componentIndex, dimension)}";
             }
 
             private static string NewScalarDelegate(int componentIndex, int dimension)
             {
-                return $"new Scalar({GetComponentName(componentIndex, dimension)})";
+                return $"new global::SharpMeasures.Scalar({GetComponentName(componentIndex, dimension)})";
             }
 
             private static string MagnitudeDelegate(int componentIndex, int dimension)
@@ -199,7 +208,7 @@ public static class ConstantVectorTexts
 
         private static string DeconstructScalarHeaderDelegate(int componentIndex, int dimension)
         {
-            return $"out Scalar {VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension)}";
+            return $"out global::SharpMeasures.Scalar {VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension)}";
         }
 
         private static string MultiplyScalarLHSDelegate(int componentIndex, int dimension)

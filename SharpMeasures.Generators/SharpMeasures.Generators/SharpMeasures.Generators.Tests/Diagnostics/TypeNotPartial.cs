@@ -53,13 +53,15 @@ public class TypeNotPartial
 
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
+
+        internal class TestException : System.Exception { }
         """;
 
     private static GeneratorVerifier AssertUnit()
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(UnitText, target: "UnitOfLength2", prefix: "public class ");
 
-        return AssertExactlyTypeNotPartialDiagnostics(UnitText).AssertDiagnosticsLocation(expectedLocation, UnitText);
+        return AssertExactlyTypeNotPartialDiagnostics(UnitText).AssertNoCompilationDiagnostics().AssertDiagnosticsLocation(expectedLocation, UnitText);
     }
 
     private static string ScalarText => """
@@ -80,7 +82,7 @@ public class TypeNotPartial
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(ScalarText, target: "Length2", prefix: "public class ");
 
-        return AssertExactlyTypeNotPartialDiagnostics(ScalarText).AssertDiagnosticsLocation(expectedLocation, ScalarText);
+        return AssertExactlyTypeNotPartialDiagnostics(ScalarText).AssertNoCompilationDiagnostics().AssertDiagnosticsLocation(expectedLocation, ScalarText);
     }
 
     private static string SpecializedScalarText => """
@@ -101,7 +103,7 @@ public class TypeNotPartial
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText, target: "Length2", prefix: "public class ");
 
-        return AssertExactlyTypeNotPartialDiagnostics(SpecializedScalarText).AssertDiagnosticsLocation(expectedLocation, SpecializedScalarText);
+        return AssertExactlyTypeNotPartialDiagnostics(SpecializedScalarText).AssertNoCompilationDiagnostics().AssertDiagnosticsLocation(expectedLocation, SpecializedScalarText);
     }
 
     private static string VectorText => """
@@ -123,7 +125,7 @@ public class TypeNotPartial
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(VectorText, target: "Position3", prefix: "public class ");
 
-        return AssertExactlyTypeNotPartialDiagnostics(VectorText).AssertDiagnosticsLocation(expectedLocation, VectorText);
+        return AssertExactlyTypeNotPartialDiagnostics(VectorText).AssertNoCompilationDiagnostics().AssertDiagnosticsLocation(expectedLocation, VectorText);
     }
 
     private static string SpecializedVectorText => """
@@ -148,7 +150,7 @@ public class TypeNotPartial
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText, target: "Displacement3", prefix: "public class ");
 
-        return AssertExactlyTypeNotPartialDiagnostics(SpecializedVectorText).AssertDiagnosticsLocation(expectedLocation, SpecializedVectorText);
+        return AssertExactlyTypeNotPartialDiagnostics(SpecializedVectorText).AssertNoCompilationDiagnostics().AssertDiagnosticsLocation(expectedLocation, SpecializedVectorText);
     }
 
     private static string VectorGroupText => """
@@ -170,7 +172,7 @@ public class TypeNotPartial
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(VectorGroupText, target: "Position", prefix: "public static class ");
 
-        return AssertExactlyTypeNotPartialDiagnostics(VectorGroupText).AssertDiagnosticsLocation(expectedLocation, VectorGroupText);
+        return AssertExactlyTypeNotPartialDiagnostics(VectorGroupText).AssertNoCompilationDiagnostics().AssertDiagnosticsLocation(expectedLocation, VectorGroupText);
     }
 
     private static string SpecializedVectorGroupText => """
@@ -195,7 +197,7 @@ public class TypeNotPartial
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText, target: "Displacement", prefix: "public static class ");
 
-        return AssertExactlyTypeNotPartialDiagnostics(SpecializedVectorGroupText).AssertDiagnosticsLocation(expectedLocation, SpecializedVectorGroupText);
+        return AssertExactlyTypeNotPartialDiagnostics(SpecializedVectorGroupText).AssertNoCompilationDiagnostics().AssertDiagnosticsLocation(expectedLocation, SpecializedVectorGroupText);
     }
 
     private static string VectorGroupMemberText => """
@@ -220,6 +222,6 @@ public class TypeNotPartial
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(VectorGroupMemberText, target: "Position3", prefix: "public class ");
 
-        return AssertExactlyTypeNotPartialDiagnostics(VectorGroupMemberText).AssertDiagnosticsLocation(expectedLocation, VectorGroupMemberText);
+        return AssertExactlyTypeNotPartialDiagnostics(VectorGroupMemberText).AssertNoCompilationDiagnostics().AssertDiagnosticsLocation(expectedLocation, VectorGroupMemberText);
     }
 }

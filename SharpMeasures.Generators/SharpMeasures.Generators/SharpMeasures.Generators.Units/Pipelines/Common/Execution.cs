@@ -143,7 +143,7 @@ internal static class Execution
 
             if (Data.Quantity.IsReferenceType)
             {
-                Builder.AppendLine($"{indentation.Increased}global::System.ArgumentNullException.ThrowIfNull({Data.QuantityParameterName});");
+                //Builder.AppendLine($"{indentation.Increased}global::System.ArgumentNullException.ThrowIfNull({Data.QuantityParameterName});"); //TODO: Uncomment
                 Builder.AppendLine();
             }
 
@@ -154,7 +154,7 @@ internal static class Execution
                 Builder.AppendLine($"{indentation.Increased}Bias = bias;");
             }
 
-            BlockBuilding.AppendClosingBracket(Builder, indentation);
+            BlockBuilding.AppendClosingBracket(Builder, indentation, finalNewLine: true);
         }
 
         private void ComposeScaledBy(Indentation indentation)
@@ -231,6 +231,9 @@ internal static class Execution
 
             AppendDocumentation(indentation, Data.Documentation.EqualitySameTypeOperator());
             StaticBuilding.AppendReferenceTypeEqualityOperator(Builder, indentation, Data.Unit.FullyQualifiedName);
+
+            Builder.AppendLine();
+
             AppendDocumentation(indentation, Data.Documentation.InequalitySameTypeOperator());
             StaticBuilding.AppendReferenceTypeInequalityOperator(Builder, indentation, Data.Unit.FullyQualifiedName);
         }
@@ -254,6 +257,9 @@ internal static class Execution
 
             AppendDocumentation(indentation, Data.Documentation.EqualitySameTypeOperator());
             StaticBuilding.AppendValueTypeEqualityOperator(Builder, indentation, Data.Unit.Name);
+
+            Builder.AppendLine();
+
             AppendDocumentation(indentation, Data.Documentation.InequalitySameTypeOperator());
             StaticBuilding.AppendValueTypeInequalityOperator(Builder, indentation, Data.Unit.Name);
         }

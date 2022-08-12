@@ -17,7 +17,7 @@ internal static class Execution
     {
         string source = Composer.Compose(data);
 
-        context.AddSource($"{data.Vector.Name}_{data.Dimension}_Conversions.g.cs", SourceText.From(source, Encoding.UTF8));
+        context.AddSource($"{data.Vector.Name}_Conversions.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer
@@ -32,19 +32,10 @@ internal static class Execution
         private StringBuilder Builder { get; } = new();
 
         private DataModel Data { get; }
-        private UsingsCollector UsingsCollector { get; }
 
         private Composer(DataModel data)
         {
             Data = data;
-
-            UsingsCollector = UsingsCollector.Delayed(Builder, Data.Vector.Namespace);
-            UsingsCollector.AddUsing("SharpMeasures");
-
-            if (Data.Vector.IsReferenceType)
-            {
-                UsingsCollector.AddUsing("System");
-            }
         }
 
         private void Compose()
@@ -53,13 +44,9 @@ internal static class Execution
 
             NamespaceBuilding.AppendNamespace(Builder, Data.Vector.Namespace);
 
-            UsingsCollector.MarkInsertionPoint();
-
             Builder.AppendLine(Data.Vector.ComposeDeclaration());
 
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0);
-
-            UsingsCollector.InsertUsings();
         }
 
         private string Retrieve()
@@ -109,10 +96,8 @@ internal static class Execution
 
         private void ComposeInstanceConversion(IUnresolvedVectorGroupMemberType vectorGroupMember, Indentation indentation)
         {
-            UsingsCollector.AddUsing(vectorGroupMember.Type.Namespace);
-
             AppendDocumentation(indentation, Data.Documentation.Conversion(vectorGroupMember));
-            Builder.AppendLine($"{indentation}public {vectorGroupMember.Type.Name} As{vectorGroupMember.Type.Name} => new(Components);");
+            Builder.AppendLine($"{indentation}public {vectorGroupMember.Type.FullyQualifiedName} As{vectorGroupMember.Type.Name} => new(Components);");
         }
 
         private void ComposeExplicitOperatorConversion(IUnresolvedVectorGroupMemberType vectorGroupMember, Indentation indentation)
@@ -128,10 +113,10 @@ internal static class Execution
             if (Data.Vector.IsReferenceType)
             {
                 Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="ArgumentNullException"/>
-                    {{indentation}}public static {{behaviour}} operator {{vectorGroupMember.Type.Name}}({{Data.Vector.Name}} a)
+                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                    {{indentation}}public static {{behaviour}} operator {{vectorGroupMember.Type.Name}}({{Data.Vector.FullyQualifiedName}} a)
                     {{indentation}}{
-                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(a);
+                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(a);
 
                     {{indentation.Increased}}return new(a.Components);
                     {{indentation}}}
@@ -139,7 +124,7 @@ internal static class Execution
             }
             else
             {
-                Builder.AppendLine($"{indentation}public static {behaviour} operator {vectorGroupMember.Type.Name}({Data.Vector.Name} a) => new(a.Components);");
+                Builder.AppendLine($"{indentation}public static {behaviour} operator {vectorGroupMember.Type.Name}({Data.Vector.FullyQualifiedName} a) => new(a.Components);");
             }
         }
 

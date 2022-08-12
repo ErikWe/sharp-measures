@@ -43,12 +43,6 @@ internal static class Execution
 
             NamespaceBuilding.AppendNamespace(Builder, Data.Vector.Namespace);
 
-            UsingsBuilding.AppendUsings(Builder, Data.Vector.Namespace, new string[]
-            {
-                "SharpMeasures",
-                Data.Unit.Type.Namespace
-            });
-
             Builder.Append(Data.Vector.ComposeDeclaration());
 
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0);
@@ -64,8 +58,7 @@ internal static class Execution
             foreach (IVectorConstant constant in Data.Constants)
             {
                 AppendDocumentation(indentation, Data.Documentation.Constant(constant));
-                Builder.AppendLine($"{indentation}public static {Data.Vector.Name} {constant.Name} => " +
-                    $"new(({ComposeConstant(constant)}), {Data.Unit.Type.Name}.{constant.Unit.Name});");
+                Builder.AppendLine($"{indentation}public static {Data.Vector.FullyQualifiedName} {constant.Name} => new(({ComposeConstant(constant)}), {Data.Unit.Type.FullyQualifiedName}.{constant.Unit.Name});");
             }
 
             Builder.AppendLine();
@@ -75,7 +68,7 @@ internal static class Execution
                 if (constant.GenerateMultiplesProperty)
                 {
                     AppendDocumentation(indentation, Data.Documentation.InConstantMultiples(constant));
-                    Builder.AppendLine($"{indentation}public Vector{Data.Dimension} {constant.Multiples!} => new({ComposeConstantElementwiseDivision(constant)});");
+                    Builder.AppendLine($"{indentation}public global::SharpMeasures.Vector{Data.Dimension} {constant.Multiples!} => new({ComposeConstantElementwiseDivision(constant)});");
                 }
             }
 
@@ -84,7 +77,7 @@ internal static class Execution
             foreach (IUnresolvedUnitInstance includedUnit in Data.Units)
             {
                 AppendDocumentation(indentation, Data.Documentation.InSpecifiedUnit(includedUnit));
-                Builder.AppendLine($"{indentation}public static Vector{Data.Dimension} {includedUnit.Plural} => InUnit({Data.Unit.Type.Name}.{includedUnit.Name});");
+                Builder.AppendLine($"{indentation}public static global::SharpMeasures.Vector{Data.Dimension} {includedUnit.Plural} => InUnit({Data.Unit.Type.FullyQualifiedName}.{includedUnit.Name});");
             }
         }
 

@@ -9,13 +9,18 @@ internal static class IndividualVectorConversionsGenerator
 {
     public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<IndividualVectorDataModel> inputProvider)
     {
-        var reduced = inputProvider.Select(Reduce);
+        var filteredAndReduced = inputProvider.Select(Reduce).WhereNotNull();
 
-        context.RegisterSourceOutput(reduced, Execution.Execute);
+        context.RegisterSourceOutput(filteredAndReduced, Execution.Execute);
     }
 
-    private static DataModel Reduce(IndividualVectorDataModel input, CancellationToken _)
+    private static DataModel? Reduce(IndividualVectorDataModel input, CancellationToken _)
     {
+        if (input.Vector.Conversions.Count is 0)
+        {
+            return null;
+        }
+
         return new(input.Vector.Type, input.Vector.Definition.Dimension, input.Vector.Conversions, input.VectorPopulation.VectorGroups, input.Documentation);
     }
 }

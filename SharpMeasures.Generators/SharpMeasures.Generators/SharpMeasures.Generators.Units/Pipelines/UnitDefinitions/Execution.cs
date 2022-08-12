@@ -15,19 +15,12 @@ using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 internal static class Execution
 {
     public static void Execute(SourceProductionContext context, DataModel result)
     {
-        if (result.FixedUnit is null && result.DerivedUnits.Any() is false && result.UnitAliases.Any() is false && result.BiasedUnits.Any() is false
-            && result.PrefixedUnits.Any() is false && result.ScaledUnits.Any() is false)
-        {
-            return;
-        }
-
         string source = Composer.Compose(context, result);
 
         context.AddSource($"{result.Unit.Name}_Definitions.g.cs", SourceText.From(source, Encoding.UTF8));
@@ -45,7 +38,6 @@ internal static class Execution
 
         private SourceProductionContext Context { get; }
         private StringBuilder Builder { get; } = new();
-        private UsingsCollector UsingsCollector { get; }
 
         private DataModel Data { get; }
 
@@ -57,10 +49,6 @@ internal static class Execution
         {
             Context = context;
             Data = data;
-            UsingsCollector = UsingsCollector.Delayed(Builder, data.Unit.Namespace);
-
-            UsingsCollector.AddUsing("SharpMeasures");
-            UsingsCollector.AddUsing(Data.Quantity.Namespace);
         }
 
         private void Compose()
@@ -69,13 +57,9 @@ internal static class Execution
 
             NamespaceBuilding.AppendNamespace(Builder, Data.Unit.Namespace);
 
-            UsingsCollector.MarkInsertionPoint();
-
             Builder.Append(Data.Unit.ComposeDeclaration());
 
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
-
-            UsingsCollector.InsertUsings();
         }
 
         private void ReportDiagnostics()
@@ -106,15 +90,15 @@ internal static class Execution
             ImplementedDefinitions.Add(Data.FixedUnit.Name);
 
             AppendDocumentation(indentation, Data.Documentation.Definition(Data.FixedUnit));
-            Builder.Append($"{indentation}public static {Data.Unit.Name} {Data.FixedUnit.Name} {{ get; }}");
+            Builder.Append($"{indentation}public static {Data.Unit.FullyQualifiedName} {Data.FixedUnit.Name} {{ get; }}");
 
             if (Data.BiasTerm)
             {
-                Builder.AppendLine($" = new(new {Data.Quantity.Name}(1), new Scalar(0));");
+                Builder.AppendLine($" = new(new {Data.Quantity.FullyQualifiedName}(1), new Scalar(0));");
             }
             else
             {
-                Builder.AppendLine($" = new(new {Data.Quantity.Name}(1));");
+                Builder.AppendLine($" = new(new {Data.Quantity.FullyQualifiedName}(1));");
             }
         }
 
@@ -125,7 +109,7 @@ internal static class Execution
                 ImplementedDefinitions.Add(derivedUnit.Name);
 
                 AppendDocumentation(indentation, Data.Documentation.Definition(derivedUnit));
-                Builder.Append($"{indentation}public static {Data.Unit.Name} {derivedUnit.Name} {{ get; }} = ");
+                Builder.Append($"{indentation}public static {Data.Unit.FullyQualifiedName} {derivedUnit.Name} {{ get; }} = ");
 
                 IterativeBuilding.AppendEnumerable(Builder, "From(", arguments(), ", ", $");{Environment.NewLine}");
 
@@ -136,8 +120,7 @@ internal static class Execution
 
                     while (signatureIterator.MoveNext() && unitIterator.MoveNext())
                     {
-                        UsingsCollector.AddUsing(signatureIterator.Current.Namespace);
-                        yield return $"{signatureIterator.Current.Name}.{unitIterator.Current}";
+                        yield return $"{signatureIterator.Current.FullyQualifiedName}.{unitIterator.Current}";
                     }
                 }
             }
@@ -154,7 +137,7 @@ internal static class Execution
                 if (ImplementedDefinitions.Contains(dependantUnits[i].DependantOn.Name))
                 {
                     AppendDocumentation(indentation, Data.Documentation.Definition(dependantUnits[i]));
-                    Builder.Append($"{indentation}public static {Data.Unit.Name} {dependantUnits[i].Name} ");
+                    Builder.Append($"{indentation}public static {Data.Unit.FullyQualifiedName} {dependantUnits[i].Name} ");
 
                     if (dependantUnits[i] is UnresolvedUnitAliasDefinition unitAlias)
                     {
@@ -208,8 +191,8 @@ internal static class Execution
         private void AppendPrefixed(UnresolvedPrefixedUnitDefinition prefixedUnit)
         {
             string prefixText = prefixedUnit.Locations.ExplicitlySetMetricPrefixName
-                ? $"MetricPrefix.{prefixedUnit.MetricPrefix}"
-                : $"BinaryPrefix.{prefixedUnit.BinaryPrefix}";
+                ? $"global::SharpMeasures.MetricPrefix.{prefixedUnit.MetricPrefix}"
+                : $"global::SharpMeasures.BinaryPrefix.{prefixedUnit.BinaryPrefix}";
 
             Builder.Append($"{{ get; }} = {prefixedUnit.From}.WithPrefix({prefixText})");
         }
@@ -255,8 +238,7 @@ internal static class Execution
         {
             foreach (var dependantUnit in dependantUnits)
             {
-                Diagnostic diagnostics = DiagnosticConstruction.CyclicUnitDependency(dependantUnit.Locations.DependantOn?.AsRoslynLocation(),
-                    dependantUnit.Name, Data.Unit.Name);
+                Diagnostic diagnostics = DiagnosticConstruction.CyclicUnitDependency(dependantUnit.Locations.DependantOn?.AsRoslynLocation(), dependantUnit.Name, Data.Unit.Name);
 
                 Diagnostics.Add(diagnostics);
             }
