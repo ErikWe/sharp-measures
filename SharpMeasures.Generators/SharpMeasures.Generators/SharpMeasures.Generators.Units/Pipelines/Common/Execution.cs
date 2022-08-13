@@ -127,7 +127,7 @@ internal static class Execution
 
             if (Data.Quantity.IsReferenceType)
             {
-                Builder.AppendLine($"""{indentation}/// <exception cref="global::System.ArgumentNullException"/>""");
+                DocumentationBuilding.AppendArgumentNullExceptionTag(Builder, indentation);
             }
 
             if (Data.BiasTerm)
@@ -143,7 +143,8 @@ internal static class Execution
 
             if (Data.Quantity.IsReferenceType)
             {
-                //Builder.AppendLine($"{indentation.Increased}global::System.ArgumentNullException.ThrowIfNull({Data.QuantityParameterName});"); //TODO: Uncomment
+                StaticBuilding.AppendNullArgumentGuard(Builder, indentation, Data.QuantityParameterName);
+
                 Builder.AppendLine();
             }
 
@@ -171,10 +172,10 @@ internal static class Execution
 
             AppendDocumentation(indentation, Data.Documentation.WithPrefix());
             Builder.AppendLine($$"""
-                {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
+                {{indentation}}{{DocumentationBuilding.ArgumentNullExceptionTag}}
                 {{indentation}}public {{Data.Unit.FullyQualifiedName}} WithPrefix<TPrefix>(TPrefix prefix) where TPrefix : global::SharpMeasures.IPrefix
                 {{indentation}}{
-                {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(prefix);
+                {{indentation.Increased}}{{StaticBuilding.NullArgumentGuard("prefix")}}
 
                 {{indentation.Increased}}return new({{expression}});
                 {{indentation}}}

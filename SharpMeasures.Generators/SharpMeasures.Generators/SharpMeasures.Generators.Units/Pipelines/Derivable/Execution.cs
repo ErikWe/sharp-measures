@@ -8,7 +8,6 @@ using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 using SharpMeasures.Generators.Unresolved.Units;
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 internal static class Execution
@@ -71,7 +70,7 @@ internal static class Execution
 
             if (anyNullableTypes)
             {
-                Builder.AppendLine($"""{indentation}/// <exception cref="global::System.ArgumentNullException"/>""");
+                DocumentationBuilding.AppendArgumentNullExceptionTag(Builder, indentation);
             }
 
             Builder.Append($"{indentation}public static {Data.Unit.FullyQualifiedName} From(");
@@ -97,7 +96,7 @@ internal static class Execution
             {
                 if (signatureUnitTypeEnumerator.Current.Type.IsReferenceType)
                 {
-                    Builder.AppendLine($"{indentation.Increased}global::System.ArgumentNullException.ThrowIfNull({parameterEnumerator.Current});");
+                    StaticBuilding.AppendNullArgumentGuard(Builder, indentation.Increased, parameterEnumerator.Current);
                 }
             }
 
@@ -106,7 +105,7 @@ internal static class Execution
             Builder.AppendLine($$"""{{indentation}}}""");
         }
 
-        private IEnumerable<string> GetSignatureComponents(DerivableUnitDefinition definition)
+        private static IEnumerable<string> GetSignatureComponents(DerivableUnitDefinition definition)
         {
             IEnumerator<string> parameterEnumerator = definition.ParameterNames.GetEnumerator();
             IEnumerator<IUnresolvedUnitType> signatureUnitTypeEnumerator = definition.Signature.GetEnumerator();
