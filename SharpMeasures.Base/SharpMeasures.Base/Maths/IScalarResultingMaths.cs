@@ -39,6 +39,13 @@ public interface IScalarResultingMaths<TResult> where TResult : IScalarQuantity<
         where TCube : IScalarQuantity;
 
     /// <summary>Computes the magnitude / norm / length of <paramref name="vector"/>.</summary>
+    /// <typeparam name="TVector">The two-dimensional vector quantity for which the magnitude is computed.</typeparam>
+    /// <param name="vector">The magnitude of this <typeparamref name="TVector"/> is computed.</param>
+    /// <remarks>For improved performance, consider prefering <see cref="SquaredMagnitude2{TVector}(TVector)"/> when applicable.</remarks>
+    public abstract TResult Magnitude2<TVector>(TVector vector)
+        where TVector : IVector2Quantity;
+
+    /// <summary>Computes the magnitude / norm / length of <paramref name="vector"/>.</summary>
     /// <typeparam name="TVector">The three-dimensional vector quantity for which the magnitude is computed.</typeparam>
     /// <param name="vector">The magnitude of this <typeparamref name="TVector"/> is computed.</param>
     /// <remarks>For improved performance, consider prefering <see cref="SquaredMagnitude3{TVector}(TVector)"/> when applicable.</remarks>
@@ -46,10 +53,25 @@ public interface IScalarResultingMaths<TResult> where TResult : IScalarQuantity<
         where TVector : IVector3Quantity;
 
     /// <summary>Computes the square of the magnitude / norm / length of <paramref name="vector"/>.</summary>
+    /// <typeparam name="TVector">The two-dimensional vector quantity for which the squared magnitude is computed.</typeparam>
+    /// <param name="vector">The squared magnitude of this <typeparamref name="TVector"/> is computed.</param>
+    public abstract TResult SquaredMagnitude2<TVector>(TVector vector)
+        where TVector : IVector2Quantity;
+
+    /// <summary>Computes the square of the magnitude / norm / length of <paramref name="vector"/>.</summary>
     /// <typeparam name="TVector">The three-dimensional vector quantity for which the squared magnitude is computed.</typeparam>
     /// <param name="vector">The squared magnitude of this <typeparamref name="TVector"/> is computed.</param>
     public abstract TResult SquaredMagnitude3<TVector>(TVector vector)
         where TVector : IVector3Quantity;
+
+    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
+    /// <typeparam name="TFactor1">The two-dimensional vector quantity that represents the first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</typeparam>
+    /// <typeparam name="TFactor2">The two-dimensional vector quantity that represents the second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }..</typeparam>
+    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    public abstract TResult Dot2<TFactor1, TFactor2>(TFactor1 a, TFactor2 b)
+        where TFactor1 : IVector2Quantity
+        where TFactor2 : IVector2Quantity;
 
     /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
     /// <typeparam name="TFactor1">The three-dimensional vector quantity that represents the first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</typeparam>

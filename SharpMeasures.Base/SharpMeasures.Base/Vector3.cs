@@ -10,7 +10,7 @@ public readonly record struct Vector3 : IVector3Quantity<Vector3>
 {
     /// <summary>The <see cref="Vector3"/> representing { 0, 0, 0 }.</summary>
     public static Vector3 Zero { get; } = (0, 0, 0);
-    /// <summary>The <see cref="Vector3"/> representing (1, 1, 1).</summary>
+    /// <summary>The <see cref="Vector3"/> representing { 1, 1, 1 }.</summary>
     public static Vector3 Ones { get; } = (1, 1, 1);
 
     /// <inheritdoc/>
