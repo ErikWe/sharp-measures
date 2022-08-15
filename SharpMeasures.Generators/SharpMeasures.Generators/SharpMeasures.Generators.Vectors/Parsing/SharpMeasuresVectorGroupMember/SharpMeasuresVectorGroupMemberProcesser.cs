@@ -64,7 +64,7 @@ internal class SharpMeasuresVectorGroupMemberProcesser
 
     private IOptionalWithDiagnostics<int> ProcessDimension(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition)
     {
-        if (definition.Locations.ExplicitlySetDimension && definition.Dimension < 2)
+        if (definition.Locations.ExplicitlySetDimension && Utility.CheckVectorDimensionValidity(definition.Dimension) is false)
         {
             return OptionalWithDiagnostics.Empty<int>(Diagnostics.InvalidDimension(context, definition));
         }
@@ -73,7 +73,7 @@ internal class SharpMeasuresVectorGroupMemberProcesser
         {
             if (definition.Locations.ExplicitlySetDimension is false)
             {
-                if (result < 2)
+                if (Utility.CheckVectorDimensionValidity(result) is false)
                 {
                     return OptionalWithDiagnostics.Empty<int>(Diagnostics.InvalidInterpretedDimension(context, definition, result));
                 }

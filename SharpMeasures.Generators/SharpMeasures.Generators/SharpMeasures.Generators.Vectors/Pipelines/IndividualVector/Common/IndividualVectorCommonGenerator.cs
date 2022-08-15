@@ -19,7 +19,6 @@ internal static class IndividualVectorCommonGenerator
     {
         return new(input.Vector.Type, input.Vector.Definition.Dimension, input.Vector.Definition.Scalar?.Type.AsNamedType(), input.Vector.Definition.Scalar?.Definition.Square,
             input.Vector.Definition.Unit.Type.AsNamedType(), input.Vector.Definition.Unit.Definition.Quantity,
-            SourceBuildingUtility.ToParameterName(input.Vector.Definition.Unit.Type.Name), input.Vector.Definition.DefaultUnit, input.Vector.Definition.DefaultUnitSymbol,
-            input.Documentation);
+            SourceBuildingUtility.ToParameterName(input.Vector.Definition.Unit.Type.Name), input.Vector.Definition.DefaultUnit, input.Vector.Definition.DefaultUnitSymbol, input.Documentation);
     }
 }

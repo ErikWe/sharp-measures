@@ -4,11 +4,13 @@ using Microsoft.CodeAnalysis;
 
 public static partial class DiagnosticRules
 {
+    private static string ValidVectorDimensions { get; } = "[2, 3]";
+
     public static readonly DiagnosticDescriptor InvalidVectorDimension = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidVectorDimension,
         title: "Invalid vector dimension",
-        messageFormat: "{0} is not a valid vector dimension, a value greater than 1 was expected",
+        messageFormat: $"{{0}} is not a valid vector dimension, one of {ValidVectorDimensions} was expected",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -18,7 +20,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InvalidVectorDimension,
         title: "Invalid vector dimension",
-        messageFormat: "Interpreted the dimension of {0} as {1}, which is not a valid dimension - a value greater than 1 was expected",
+        messageFormat: $"Interpreted the dimension of {{0}} as {{1}}, which is not a valid dimension - one of {ValidVectorDimensions} was expected",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

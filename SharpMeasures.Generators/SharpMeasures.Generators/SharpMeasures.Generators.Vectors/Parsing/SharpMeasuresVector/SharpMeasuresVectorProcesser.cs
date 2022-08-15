@@ -88,7 +88,7 @@ internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, Raw
 
     private IOptionalWithDiagnostics<int> ProcessDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition)
     {
-        if (definition.Locations.ExplicitlySetDimension && definition.Dimension < 2)
+        if (definition.Locations.ExplicitlySetDimension && Utility.CheckVectorDimensionValidity(definition.Dimension) is false)
         {
             return OptionalWithDiagnostics.Empty<int>(Diagnostics.InvalidDimension(context, definition));
         }
@@ -97,7 +97,7 @@ internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, Raw
         {
             if (definition.Locations.ExplicitlySetDimension is false)
             {
-                if (result < 2)
+                if (Utility.CheckVectorDimensionValidity(result) is false)
                 {
                     return OptionalWithDiagnostics.Empty<int>(Diagnostics.InvalidInterpretedDimension(context, definition, result));
                 }

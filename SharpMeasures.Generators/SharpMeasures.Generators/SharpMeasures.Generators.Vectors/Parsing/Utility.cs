@@ -5,6 +5,8 @@ using System.Text.RegularExpressions;
 
 internal static class Utility
 {
+    public static bool CheckVectorDimensionValidity(int dimension) => dimension is 2 or 3;
+
     public static int? InterpretDimensionFromName(string name)
     {
         var trailingNumber = Regex.Match(name, @"\d+$", RegexOptions.RightToLeft);
