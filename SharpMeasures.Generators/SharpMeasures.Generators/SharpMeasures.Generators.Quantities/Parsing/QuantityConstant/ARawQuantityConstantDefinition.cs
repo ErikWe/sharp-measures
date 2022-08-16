@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-public abstract record class ARawQuantityConstantDefinition<TDefinition, TLocations> : ARawAttributeDefinition<TDefinition, TLocations>
+public abstract record class ARawQuantityConstantDefinition<TDefinition, TLocations> : AUnprocessedAttributeDefinition<TDefinition, TLocations>
     where TDefinition : ARawQuantityConstantDefinition<TDefinition, TLocations>
     where TLocations : AQuantityConstantLocations<TLocations>
 {

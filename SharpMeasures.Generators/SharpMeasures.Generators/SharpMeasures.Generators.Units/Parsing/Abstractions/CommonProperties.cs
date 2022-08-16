@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 internal static class CommonProperties
 {
     public static IAttributeProperty<TDefinition> Name<TDefinition, TLocations>(string name)
-        where TDefinition : IOpenRawUnitDefinition<TDefinition, TLocations>
+        where TDefinition : IOpenUnprocessedUnitDefinition<TDefinition, TLocations>
         where TLocations : IOpenUnitLocations<TLocations>
     {
         return new AttributeProperty<TDefinition, TLocations, string>
@@ -17,7 +17,7 @@ internal static class CommonProperties
     }
 
     public static IAttributeProperty<TDefinition> Plural<TDefinition, TLocations>(string name)
-        where TDefinition : IOpenRawUnitDefinition<TDefinition, TLocations>
+        where TDefinition : IOpenUnprocessedUnitDefinition<TDefinition, TLocations>
         where TLocations : IOpenUnitLocations<TLocations>
     {
         return new AttributeProperty<TDefinition, TLocations, string>
@@ -29,7 +29,7 @@ internal static class CommonProperties
     }
 
     public static IAttributeProperty<TDefinition> DependantOn<TDefinition, TLocations>(string name)
-        where TDefinition : IOpenRawDependantUnitDefinition<TDefinition, TLocations>
+        where TDefinition : IOpenUnprocessedDependantUnitDefinition<TDefinition, TLocations>
         where TLocations : IOpenDependantUnitLocations<TLocations>
     {
         return new AttributeProperty<TDefinition, TLocations, string>

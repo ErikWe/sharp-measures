@@ -6,9 +6,9 @@ using SharpMeasures.Generators.Quantities.Parsing.Contexts.Resolution;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Resolution;
 using SharpMeasures.Generators.Quantities.Parsing.UnitList;
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Vectors;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Resolution;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Resolution;
@@ -19,7 +19,7 @@ using System.Collections.Generic;
 internal static class IndividualVectorTypeResolution
 {
     public static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ResolveDerivations(DefinedType type,
-        IEnumerable<UnresolvedDerivedQuantityDefinition> unresolvedDerivations, IUnresolvedScalarPopulation scalarPopulation, IUnresolvedVectorPopulation vectorPopulation)
+        IEnumerable<UnresolvedDerivedQuantityDefinition> unresolvedDerivations, IRawScalarPopulation scalarPopulation, IRawVectorPopulation vectorPopulation)
     {
         DerivedQuantityResolutionContext derivedQuantityResolutionContext = new(type, scalarPopulation, vectorPopulation);
 
@@ -27,7 +27,7 @@ internal static class IndividualVectorTypeResolution
     }
 
     public static IResultWithDiagnostics<IReadOnlyList<VectorConstantDefinition>> ResolveConstants(DefinedType type,
-        IEnumerable<UnresolvedVectorConstantDefinition> unresolvedConstants, IUnresolvedUnitType unit, int dimension)
+        IEnumerable<UnresolvedVectorConstantDefinition> unresolvedConstants, IRawUnitType unit, int dimension)
     {
         VectorConstantResolutionContext vectorConstantResolutionContext = new(type, unit, dimension);
 
@@ -35,14 +35,14 @@ internal static class IndividualVectorTypeResolution
     }
 
     public static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ResolveConversions(DefinedType type,
-        IEnumerable<UnresolvedConvertibleVectorDefinition> unresolvedConversions, IUnresolvedVectorPopulation vectorPopulation)
+        IEnumerable<UnresolvedConvertibleVectorDefinition> unresolvedConversions, IRawVectorPopulation vectorPopulation)
     {
         ConvertibleVectorResolutionContext convertibleVectorResolutionContext = new(type, vectorPopulation);
 
         return ProcessingFilter.Create(ConvertibleVectorResolver).Filter(convertibleVectorResolutionContext, unresolvedConversions);
     }
 
-    public static IResultWithDiagnostics<IReadOnlyList<UnitListDefinition>> ResolveUnitList(DefinedType type, IUnresolvedUnitType unit,
+    public static IResultWithDiagnostics<IReadOnlyList<UnitListDefinition>> ResolveUnitList(DefinedType type, IRawUnitType unit,
         IReadOnlyList<UnresolvedUnitListDefinition> unresolvedUnitList)
     {
         UnitListResolutionContext unitListResolutionContext = new(type, unit);

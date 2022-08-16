@@ -4,7 +4,7 @@ using SharpMeasures.Equatables;
 
 using System.Collections.Generic;
 
-public abstract record class ARawItemListDefinition<TItem, TDefinition, TLocations> : ARawAttributeDefinition<TDefinition, TLocations>,
+public abstract record class ARawItemListDefinition<TItem, TDefinition, TLocations> : AUnprocessedAttributeDefinition<TDefinition, TLocations>,
     IOpenItemListDefinition<TItem, TDefinition, TLocations>
     where TDefinition : ARawItemListDefinition<TItem, TDefinition, TLocations>
     where TLocations : IItemListLocations

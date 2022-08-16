@@ -7,11 +7,11 @@ using System.Collections.Generic;
 
 internal static class BiasedUnitProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawBiasedUnitDefinition>> AllProperties => new IAttributeProperty<RawBiasedUnitDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<UnprocessedBiasedUnitDefinition>> AllProperties => new IAttributeProperty<UnprocessedBiasedUnitDefinition>[]
     {
-        CommonProperties.Name<RawBiasedUnitDefinition, BiasedUnitLocations>(nameof(BiasedUnitAttribute.Name)),
-        CommonProperties.Plural<RawBiasedUnitDefinition, BiasedUnitLocations>(nameof(BiasedUnitAttribute.Plural)),
-        CommonProperties.DependantOn<RawBiasedUnitDefinition, BiasedUnitLocations>(nameof(BiasedUnitAttribute.From)),
+        CommonProperties.Name<UnprocessedBiasedUnitDefinition, BiasedUnitLocations>(nameof(BiasedUnitAttribute.Name)),
+        CommonProperties.Plural<UnprocessedBiasedUnitDefinition, BiasedUnitLocations>(nameof(BiasedUnitAttribute.Plural)),
+        CommonProperties.DependantOn<UnprocessedBiasedUnitDefinition, BiasedUnitLocations>(nameof(BiasedUnitAttribute.From)),
         Bias,
         Expression
     };

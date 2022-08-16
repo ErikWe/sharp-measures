@@ -2,14 +2,14 @@
 
 using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 
 internal record class SpecializedSharpMeasuresScalarDefinition : SharpMeasuresScalarDefinition, IScalarSpecialization
 {
-    public IUnresolvedScalarType OriginalScalar { get; }
+    public IRawScalarType OriginalScalar { get; }
 
     public bool InheritDerivations { get; }
     public bool InheritConstants { get; }
@@ -17,10 +17,10 @@ internal record class SpecializedSharpMeasuresScalarDefinition : SharpMeasuresSc
     public bool InheritBases { get; }
     public bool InheritUnits { get; }
 
-    public SpecializedSharpMeasuresScalarDefinition(IUnresolvedScalarType originalScalar, bool inheritDerivations, bool inheritConstants, bool inheritConversions,
-        bool inheritBases, bool inheritUnits, IUnresolvedUnitType unit, IUnresolvedVectorGroupType? vectorGroup, bool useUnitBias, bool implementSum,
-        bool implementDifference, IUnresolvedScalarType difference, IUnresolvedUnitInstance? defaultUnit, string? defaultUnitSymbol, IUnresolvedScalarType? reciprocal,
-        IUnresolvedScalarType? square, IUnresolvedScalarType? cube, IUnresolvedScalarType? squareRoot, IUnresolvedScalarType? cubeRoot, bool? generateDocumentation,
+    public SpecializedSharpMeasuresScalarDefinition(IRawScalarType originalScalar, bool inheritDerivations, bool inheritConstants, bool inheritConversions,
+        bool inheritBases, bool inheritUnits, IRawUnitType unit, IRawVectorGroupType? vectorGroup, bool useUnitBias, bool implementSum,
+        bool implementDifference, IRawScalarType difference, IRawUnitInstance? defaultUnit, string? defaultUnitSymbol, IRawScalarType? reciprocal,
+        IRawScalarType? square, IRawScalarType? cube, IRawScalarType? squareRoot, IRawScalarType? cubeRoot, bool? generateDocumentation,
         SharpMeasuresScalarLocations locations)
         : base(unit, vectorGroup, useUnitBias, implementSum, implementDifference, difference, defaultUnit, defaultUnitSymbol, reciprocal, square, cube, squareRoot, cubeRoot,
             generateDocumentation, locations)

@@ -26,12 +26,15 @@ internal static class Execution
         }
 
         private StringBuilder Builder { get; } = new();
+        private NewlineSeparationHandler SeparationHandler { get; }
 
         private DataModel Data { get; }
 
         private Composer(DataModel data)
         {
             Data = data;
+
+            SeparationHandler = new(Builder);
         }
 
         private void Compose()
@@ -52,326 +55,253 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
+            SeparationHandler.MarkUnncecessary();
+
+            AppendUnaryMethods(indentation);
+            
             if (Data.ImplementSum)
             {
-                ComposeSumMethod(indentation);
-
-                Builder.AppendLine();
+                AppendSumMethod(indentation);
             }
 
             if (Data.ImplementDifference)
             {
-                ComposeDifferenceMethod(indentation);
-
-                Builder.AppendLine();
+                AppendDifferenceMethod(indentation);
             }
+
+            AppendMultiplyAndDivideScalarMethods(indentation);
+
+            AppendUnaryOperators(indentation);
+
+            if (Data.ImplementSum)
+            {
+                AppendSumOperator(indentation);
+            }
+
+            if (Data.ImplementDifference)
+            {
+                AppendDifferenceOperator(indentation);
+            }
+
+            AppendMultiplyScalarLHS(indentation);
+            ComposeMultiplyScalarRHS(indentation);
+            ComposeDivideScalarLHS(indentation);
+
+            ComposeMathUtility(indentation);
+        }
+
+        private void AppendUnaryMethods(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
 
             AppendDocumentation(indentation, Data.Documentation.UnaryPlusMethod());
             Builder.AppendLine($"{indentation}public {Data.Vector.FullyQualifiedName} Plus() => this;");
+
             AppendDocumentation(indentation, Data.Documentation.NegateMethod());
             Builder.AppendLine($"{indentation}public {Data.Vector.FullyQualifiedName} Negate() => new({ConstantVectorTexts.Upper.Negate(Data.Dimension)});");
+        }
 
-            Builder.AppendLine();
+        private void AppendSumMethod(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = $"public {Data.Vector.FullyQualifiedName} Add";
+            var expression = $"new({ConstantVectorTexts.Upper.AddAddendVector(Data.Dimension)})";
+            var parameters = new[] { (Data.Vector.AsNamedType(), "addend") };
+
+            AppendDocumentation(indentation, Data.Documentation.AddSameTypeMethod());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+        }
+
+        private void AppendDifferenceMethod(Indentation indentation)
+        {
+            AppendSubtractSameTypeMethod(indentation);
+            
+            if (Data.Difference != Data.Vector.AsNamedType())
+            {
+                AppendAddDifferenceMethod(indentation);
+                AppendSubtractDifferenceMethod(indentation);
+            }
+        }
+
+        private void AppendSubtractSameTypeMethod(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = $"public {Data.Difference.FullyQualifiedName} Subtract";
+            var expression = $"new({ConstantVectorTexts.Upper.SubtractSubtrahendVector(Data.Dimension)})";
+            var parameters = new[] { (Data.Vector.AsNamedType(), "subtrahend") };
+
+            AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeMethod());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+        }
+
+        private void AppendAddDifferenceMethod(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = $"public {Data.Vector.FullyQualifiedName} Add";
+            var expression = $"new({ConstantVectorTexts.Upper.AddAddendVector(Data.Dimension)})";
+            var parameters = new[] { (Data.Difference, "addend") };
+
+            AppendDocumentation(indentation, Data.Documentation.AddDifferenceMethod());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+        }
+
+        private void AppendSubtractDifferenceMethod(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = $"public {Data.Vector.FullyQualifiedName} Subtract";
+            var expression = $"new({ConstantVectorTexts.Upper.SubtractSubtrahendVector(Data.Dimension)})";
+            var parameters = new[] { (Data.Difference, "subtrahend") };
+
+            AppendDocumentation(indentation, Data.Documentation.SubtractDifferenceMethod());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+        }
+
+        private void AppendMultiplyAndDivideScalarMethods(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
 
             AppendDocumentation(indentation, Data.Documentation.MultiplyScalarMethod());
             Builder.AppendLine($"{indentation}public {Data.Vector.FullyQualifiedName} Multiply(global::SharpMeasures.Scalar factor) => new({ConstantVectorTexts.Upper.MultiplyFactorScalar(Data.Dimension)});");
 
-            Builder.AppendLine();
+            SeparationHandler.Add();
 
             AppendDocumentation(indentation, Data.Documentation.DivideScalarMethod());
             Builder.AppendLine($"{indentation}public {Data.Vector.FullyQualifiedName} Divide(global::SharpMeasures.Scalar divisor) => new({ConstantVectorTexts.Upper.DivideDivisorScalar(Data.Dimension)});");
+        }
 
-            Builder.AppendLine();
+        private void AppendUnaryOperators(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
 
             AppendDocumentation(indentation, Data.Documentation.UnaryPlusOperator());
             Builder.AppendLine($"{indentation}public static {Data.Vector.FullyQualifiedName} operator +({Data.Vector.FullyQualifiedName} a) => a;");
 
             if (Data.Vector.IsReferenceType)
             {
-                Builder.AppendLine();
+                SeparationHandler.Add();
             }
 
-            ComposeNegate(indentation);
+            var methodNameAndModifiers = $"public static {Data.Vector.FullyQualifiedName} operator -";
+            var expression = $"new({ConstantVectorTexts.Upper.NegateA(Data.Dimension)})";
+            var parameters = new[] { (Data.Vector.AsNamedType(), "a") };
 
-            if (Data.ImplementSum || Data.ImplementDifference)
-            {
-                Builder.AppendLine();
-            }
-
-            if (Data.ImplementSum)
-            {
-                ComposeSumOperator(indentation);
-            }
-
-            if (Data.ImplementDifference)
-            {
-                ComposeDifferenceOperator(indentation);
-            }
-
-            Builder.AppendLine();
-
-            ComposeMultiplyScalarLHS(indentation);
-
-            if (Data.Vector.IsReferenceType)
-            {
-                Builder.AppendLine();
-            }
-
-            ComposeMultiplyScalarRHS(indentation);
-
-            if (Data.Vector.IsReferenceType)
-            {
-                Builder.AppendLine();
-            }
-
-            ComposeDivideScalarLHS(indentation);
-
-            Builder.AppendLine();
-
-            ComposeMathUtility(indentation);
-        }
-
-        private void ComposeNegate(Indentation indentation)
-        {
             AppendDocumentation(indentation, Data.Documentation.NegateOperator());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+        }
 
-            if (Data.Vector.IsReferenceType)
-            {
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public static {{Data.Vector.FullyQualifiedName}} operator -({{Data.Vector.FullyQualifiedName}} a)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(a);
+        private void AppendSumOperator(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
 
-                    {{indentation.Increased}}return new({{ConstantVectorTexts.Upper.NegateA(Data.Dimension)}});
-                    {{indentation}}}
-                    """);
-            }
-            else
+            var methodNameAndModifiers = $"public static {Data.Vector.FullyQualifiedName} operator +";
+            var expression = $"new({ConstantVectorTexts.Upper.AddBVector(Data.Dimension)})";
+            var parameters = new[] { (Data.Vector.AsNamedType(), "a"), (Data.Vector.AsNamedType(), "b") };
+
+            AppendDocumentation(indentation, Data.Documentation.AddSameTypeOperator());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+        }
+
+        private void AppendDifferenceOperator(Indentation indentation)
+        {
+            AppendSubtractSameTypeOperator(indentation);
+            
+            if (Data.Difference != Data.Vector.AsNamedType())
             {
-                Builder.AppendLine($"{indentation}public static {Data.Vector.FullyQualifiedName} operator -({Data.Vector.FullyQualifiedName} a) => ({ConstantVectorTexts.Upper.NegateA(Data.Dimension)});");
+                AppendAddDifferenceOperators(indentation);
+                AppendSubtractDifferenceOperator(indentation);
             }
         }
 
-        private void ComposeMultiplyScalarLHS(Indentation indentation)
+        private void AppendSubtractSameTypeOperator(Indentation indentation)
         {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = $"public static {Data.Difference.FullyQualifiedName} operator -";
+            var expression = $"new({ConstantVectorTexts.Upper.SubtractBVector(Data.Dimension)})";
+            var parameters = new[] { (Data.Vector.AsNamedType(), "a"), (Data.Vector.AsNamedType(), "b") };
+
+            AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeOperator());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+        }
+
+        private void AppendAddDifferenceOperators(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = $"public static {Data.Vector.FullyQualifiedName} operator +";
+            var expression = $"new({ConstantVectorTexts.Upper.SubtractBVector(Data.Dimension)})";
+
+            var lhsParameters = new[] { (Data.Vector.AsNamedType(), "a"), (Data.Difference, "b") };
+            var rhsParameters = new[] { (Data.Difference, "a"), (Data.Vector.AsNamedType(), "b") };
+
+            AppendDocumentation(indentation, Data.Documentation.AddDifferenceOperatorLHS());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, lhsParameters);
+            
+            if (Data.Vector.IsReferenceType || (Data.Difference.IsReferenceType))
+            {
+                SeparationHandler.Add();
+            }
+
+            AppendDocumentation(indentation, Data.Documentation.AddDifferenceOperatorRHS());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, rhsParameters);
+        }
+
+        private void AppendSubtractDifferenceOperator(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = $"public static {Data.Vector.FullyQualifiedName} operator -";
+            var expression = $"new({ConstantVectorTexts.Upper.SubtractBVector(Data.Dimension)})";
+            var parameters = new[] { (Data.Vector.AsNamedType(), "a"), (Data.Difference, "b") };
+
+            AppendDocumentation(indentation, Data.Documentation.SubtractDifferenceOperatorLHS());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+        }
+
+        private void AppendMultiplyScalarLHS(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = $"public static {Data.Vector.FullyQualifiedName} operator *";
+            var expression = $"new({ConstantVectorTexts.Upper.MultiplyAScalar(Data.Dimension)})";
+            var parameters = new[] { (Data.Vector.AsNamedType(), "a"), (new NamedType("Scalar", "SharpMeasures", true), "b") };
+
             AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorLHS());
-
-            if (Data.Vector.IsReferenceType)
-            {
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public static {{Data.Vector.FullyQualifiedName}} operator *({{Data.Vector.FullyQualifiedName}} a, global::SharpMeasures.Scalar b)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(a);
-
-                    {{indentation.Increased}}return new({{ConstantVectorTexts.Upper.MultiplyAScalar(Data.Dimension)}});
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                Builder.AppendLine($"{indentation}public static {Data.Vector.FullyQualifiedName} operator *({Data.Vector.FullyQualifiedName} a, global::SharpMeasures.Scalar b) => ({ConstantVectorTexts.Upper.MultiplyAScalar(Data.Dimension)});");
-            }
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
         private void ComposeMultiplyScalarRHS(Indentation indentation)
         {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = $"public static {Data.Vector.FullyQualifiedName} operator *";
+            var expression = $"new({ConstantVectorTexts.Upper.MultiplyBScalar(Data.Dimension)})";
+            var parameters = new[] { (new NamedType("Scalar", "SharpMeasures", true), "a"), (Data.Vector.AsNamedType(), "b") };
+
             AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorRHS());
-
-            if (Data.Vector.IsReferenceType)
-            {
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public static {{Data.Vector.FullyQualifiedName}} operator *(global::SharpMeasures.Scalar a, {{Data.Vector.FullyQualifiedName}} b)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(b);
-
-                    {{indentation.Increased}}return new({{ConstantVectorTexts.Upper.MultiplyBScalar(Data.Dimension)}});
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                Builder.AppendLine($"{indentation}public static {Data.Vector.FullyQualifiedName} operator *(global::SharpMeasures.Scalar a, {Data.Vector.FullyQualifiedName} b) => ({ConstantVectorTexts.Upper.MultiplyBScalar(Data.Dimension)});");
-            }
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
         private void ComposeDivideScalarLHS(Indentation indentation)
         {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = $"public static {Data.Vector.FullyQualifiedName} operator /";
+            var expression = $"new({ConstantVectorTexts.Upper.DivideAScalar(Data.Dimension)})";
+            var parameters = new[] { (Data.Vector.AsNamedType(), "a"), (new NamedType("Scalar", "SharpMeasures", true), "b") };
+
             AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorRHS());
-
-            if (Data.Vector.IsReferenceType)
-            {
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public static {{Data.Vector.FullyQualifiedName}} operator /({{Data.Vector.FullyQualifiedName}} a, global::SharpMeasures.Scalar b)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(a);
-
-                    {{indentation.Increased}}return new({{ConstantVectorTexts.Upper.DivideAScalar(Data.Dimension)}});
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                Builder.AppendLine($"{indentation}public static {Data.Vector.FullyQualifiedName} operator /({Data.Vector.FullyQualifiedName} a, global::SharpMeasures.Scalar b) => ({ConstantVectorTexts.Upper.DivideAScalar(Data.Dimension)});");
-            }
-        }
-
-        private void ComposeSumMethod(Indentation indentation)
-        {
-            AppendDocumentation(indentation, Data.Documentation.AddSameTypeMethod());
-
-            if (Data.Vector.IsReferenceType)
-            {
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public {{Data.Vector.FullyQualifiedName}} Add({{Data.Vector.FullyQualifiedName}} addend)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(addend);
-                        
-                    {{indentation.Increased}}return new({{ConstantVectorTexts.Upper.AddAddendVector(Data.Dimension)}});
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                Builder.AppendLine($"{indentation}public {Data.Vector.FullyQualifiedName} Add({Data.Vector.FullyQualifiedName} addend) => new({ConstantVectorTexts.Upper.AddAddendVector(Data.Dimension)});");
-            }
-        }
-
-        private void ComposeDifferenceMethod(Indentation indentation)
-        {
-            if (Data.Difference == Data.Vector.AsNamedType())
-            {
-                ComposeDifferenceMethodAsSameType(indentation);
-            }
-            else
-            {
-                ComposeDifferenceMethodAsDifferentType(indentation);
-            }
-        }
-
-        private void ComposeDifferenceMethodAsSameType(Indentation indentation)
-        {
-            if (Data.Vector.IsReferenceType)
-            {
-                AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeMethod());
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public {{Data.Difference.FullyQualifiedName}} Subtract({{Data.Vector.FullyQualifiedName}} subtrahend)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(subtrahend);
-
-                    {{indentation.Increased}}return new({{ConstantVectorTexts.Upper.SubtractSubtrahendVector(Data.Dimension)}});
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeMethod());
-                Builder.Append($"{indentation}public {Data.Difference.FullyQualifiedName} Subtract({Data.Vector.FullyQualifiedName} subtrahend) " +
-                    $"=> ({ConstantVectorTexts.Upper.SubtractSubtrahendVector(Data.Dimension)});");
-            }
-        }
-
-        private void ComposeDifferenceMethodAsDifferentType(Indentation indentation)
-        {
-            if (Data.Difference.IsReferenceType)
-            {
-                AppendDocumentation(indentation, Data.Documentation.AddDifferenceMethod());
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public {{Data.Vector.FullyQualifiedName}} Add({{Data.Difference.FullyQualifiedName}} addend)
-                    {{indentation}}}
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(addend);
-
-                    {{indentation.Increased}}return ({{ConstantVectorTexts.Upper.AddAddendVector(Data.Dimension)}});
-                    {{indentation}}}
-                    """);
-
-                AppendDocumentation(indentation, Data.Documentation.SubtractDifferenceMethod());
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public {{Data.Vector.FullyQualifiedName}} Subtract({{Data.Difference.FullyQualifiedName}} subtrahend)
-                    {{indentation}}}
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(subtrahend);
-
-                    {{indentation.Increased}}return ({{ConstantVectorTexts.Upper.SubtractSubtrahendVector(Data.Dimension)}});
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                AppendDocumentation(indentation, Data.Documentation.AddDifferenceMethod());
-                Builder.AppendLine($"{indentation}public {Data.Vector.FullyQualifiedName} Add({Data.Difference.FullyQualifiedName} addend) => ({ConstantVectorTexts.Upper.AddAddendVector(Data.Dimension)});");
-
-                AppendDocumentation(indentation, Data.Documentation.SubtractDifferenceMethod());
-                Builder.AppendLine($"{indentation}public {Data.Vector.FullyQualifiedName} Subtract({Data.Difference.FullyQualifiedName} subtrahend) => ({ConstantVectorTexts.Upper.SubtractSubtrahendVector(Data.Dimension)});");
-            }
-
-            if (Data.Vector.IsReferenceType)
-            {
-                AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeMethod());
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public {{Data.Difference.FullyQualifiedName}} Subtract({{Data.Vector.FullyQualifiedName}} subtrahend)
-                    {{indentation}}}
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(subtrahend);
-
-                    {{indentation.Increased}}return ({{ConstantVectorTexts.Upper.SubtractSubtrahendVector(Data.Dimension)}});
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeMethod());
-                Builder.AppendLine($"{indentation}public {Data.Difference.FullyQualifiedName} Subtract({Data.Vector.FullyQualifiedName} subtrahend) => ({ConstantVectorTexts.Upper.SubtractSubtrahendVector(Data.Dimension)});");
-            }
-        }
-
-        private void ComposeSumOperator(Indentation indentation)
-        {
-            AppendDocumentation(indentation, Data.Documentation.AddSameTypeOperator());
-            Builder.AppendLine($"{indentation}public static {Data.Vector.FullyQualifiedName} operator +({Data.Vector.FullyQualifiedName} a, {Data.Vector.FullyQualifiedName} b) => new({ConstantVectorTexts.Upper.AddBVector(Data.Dimension)});");
-        }
-
-        private void ComposeDifferenceOperator(Indentation indentation)
-        {
-            if (Data.Difference == Data.Vector.AsNamedType())
-            {
-                ComposeDifferenceOperatorAsSameType(indentation);
-            }
-            else
-            {
-                ComposeDifferenceOperatorAsDifferentType(indentation);
-            }
-        }
-
-        private void ComposeDifferenceOperatorAsSameType(Indentation indentation)
-        {
-            AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeOperator());
-            Builder.AppendLine($"{indentation}public static {Data.Difference.FullyQualifiedName} operator -({Data.Vector.FullyQualifiedName} a, {Data.Vector.FullyQualifiedName} b) => new({ConstantVectorTexts.Upper.SubtractBVector(Data.Dimension)});");
-        }
-
-        private void ComposeDifferenceOperatorAsDifferentType(Indentation indentation)
-        {
-            AppendDocumentation(indentation, Data.Documentation.AddDifferenceOperatorLHS());
-            Builder.AppendLine($"{indentation}public static {Data.Vector.FullyQualifiedName} operator +({Data.Vector.FullyQualifiedName} a, {Data.Difference.FullyQualifiedName} b) => new({ConstantVectorTexts.Upper.SubtractBVector(Data.Dimension)});");
-
-            AppendDocumentation(indentation, Data.Documentation.AddDifferenceOperatorRHS());
-            Builder.AppendLine($"{indentation}public static {Data.Vector.FullyQualifiedName} operator +({Data.Difference.FullyQualifiedName} a, {Data.Vector.FullyQualifiedName} b) => new({ConstantVectorTexts.Upper.SubtractBVector(Data.Dimension)});");
-
-            AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeOperator());
-            Builder.AppendLine($"{indentation}public static {Data.Difference.FullyQualifiedName} operator -({Data.Vector.FullyQualifiedName} a, {Data.Vector.FullyQualifiedName} b) => new({ConstantVectorTexts.Upper.SubtractBVector(Data.Dimension)});");
-
-            AppendDocumentation(indentation, Data.Documentation.SubtractDifferenceOperatorLHS());
-            Builder.AppendLine($"{indentation}public static {Data.Vector.FullyQualifiedName} operator -({Data.Vector.FullyQualifiedName} a, {Data.Difference.FullyQualifiedName} b) => new({ConstantVectorTexts.Upper.SubtractBVector(Data.Dimension)});");
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
         private void ComposeMathUtility(Indentation indentation)
         {
+            SeparationHandler.AddIfNecessary();
+
             if (Data.Scalar is null)
             {
                 Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in a pure <see cref=\"global::SharpMeasures.Scalar\"/>.</summary>");
@@ -382,7 +312,7 @@ internal static class Execution
                 Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in a pure <see cref=\"global::SharpMeasures.Scalar\"/>.</summary>");
                 Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IScalarResultingMaths<global::SharpMeasures.Scalar> PureScalarMaths {{ get; }} = global::SharpMeasures.Maths.MathFactory.ScalarResult();");
 
-                Builder.AppendLine();
+                SeparationHandler.Add();
 
                 Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in <see cref=\"{Data.Scalar.Value.FullyQualifiedName}\"/>.</summary>");
                 Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IScalarResultingMaths<{Data.Scalar.Value.FullyQualifiedName}> ScalarMaths {{ get; }} " +
@@ -391,14 +321,14 @@ internal static class Execution
 
             if (Data.SquaredScalar is not null)
             {
-                Builder.AppendLine();
+                SeparationHandler.Add();
 
                 Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in <see cref=\"{Data.SquaredScalar.Value.FullyQualifiedName}\"/>.</summary>");
                 Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IScalarResultingMaths<{Data.SquaredScalar.Value.Name}> SquaredScalarMaths {{ get; }} " +
                     $"= global::SharpMeasures.Maths.MathFactory.ScalarResult<{Data.SquaredScalar.Value.Name}();");
             }
 
-            Builder.AppendLine();
+            SeparationHandler.Add();
 
             Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in <see cref=\"{Data.Vector.FullyQualifiedName}\"/>.</summary>");
             Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IVector{Data.Dimension}ResultingMaths<{Data.Vector.FullyQualifiedName}> VectorMaths {{ get; }} " +

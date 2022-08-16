@@ -2,7 +2,7 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +18,8 @@ internal record class ScalarType : IScalarType
     public IReadOnlyList<IScalarConstant> Constants => constants;
     public IReadOnlyList<IConvertibleScalar> Conversions => conversions;
 
-    public IReadOnlyList<IUnresolvedUnitInstance> IncludedBases => includedBases;
-    public IReadOnlyList<IUnresolvedUnitInstance> IncludedUnits => includedUnits;
+    public IReadOnlyList<IRawUnitInstance> IncludedBases => includedBases;
+    public IReadOnlyList<IRawUnitInstance> IncludedUnits => includedUnits;
 
     public IReadOnlyDictionary<string, IScalarConstant> ConstantsByName => constantsByName;
     public IReadOnlyDictionary<string, IScalarConstant> ConstantsByMultiplesName => constantsByMultiplesName;
@@ -28,8 +28,8 @@ internal record class ScalarType : IScalarType
     private ReadOnlyEquatableList<IScalarConstant> constants { get; }
     private ReadOnlyEquatableList<IConvertibleScalar> conversions { get; }
 
-    private ReadOnlyEquatableList<IUnresolvedUnitInstance> includedBases { get; }
-    private ReadOnlyEquatableList<IUnresolvedUnitInstance> includedUnits { get; }
+    private ReadOnlyEquatableList<IRawUnitInstance> includedBases { get; }
+    private ReadOnlyEquatableList<IRawUnitInstance> includedUnits { get; }
 
     private ReadOnlyEquatableDictionary<string, IScalarConstant> constantsByName { get; }
     private ReadOnlyEquatableDictionary<string, IScalarConstant> constantsByMultiplesName { get; }
@@ -40,8 +40,8 @@ internal record class ScalarType : IScalarType
     IReadOnlyList<IConvertibleQuantity> IQuantityType.Conversions => Conversions;
 
     public ScalarType(DefinedType type, MinimalLocation typeLocation, IScalar definition, IReadOnlyList<IDerivedQuantity> derivations,
-        IReadOnlyList<IScalarConstant> constants, IReadOnlyList<IConvertibleScalar> conversions, IReadOnlyList<IUnresolvedUnitInstance> includedBases,
-        IReadOnlyList<IUnresolvedUnitInstance> includedUnits)
+        IReadOnlyList<IScalarConstant> constants, IReadOnlyList<IConvertibleScalar> conversions, IReadOnlyList<IRawUnitInstance> includedBases,
+        IReadOnlyList<IRawUnitInstance> includedUnits)
     {
         Type = type;
         TypeLocation = typeLocation;

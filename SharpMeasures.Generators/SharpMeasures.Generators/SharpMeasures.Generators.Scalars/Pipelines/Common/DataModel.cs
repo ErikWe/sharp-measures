@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Pipelines.Common;
 
 using SharpMeasures.Generators.Scalars.Documentation;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 internal readonly record struct DataModel
 {
@@ -13,12 +13,12 @@ internal readonly record struct DataModel
 
     public bool UseUnitBias { get; }
 
-    public IUnresolvedUnitInstance? DefaultUnit { get; }
+    public IRawUnitInstance? DefaultUnit { get; }
     public string? DefaultUnitSymbol { get; }
 
     public IDocumentationStrategy Documentation { get; }
 
-    public DataModel(DefinedType scalar, NamedType unit, NamedType unitQuantity, string unitParameterName, bool useUnitBias, IUnresolvedUnitInstance? defaultUnit,
+    public DataModel(DefinedType scalar, NamedType unit, NamedType unitQuantity, string unitParameterName, bool useUnitBias, IRawUnitInstance? defaultUnit,
         string? defaultUnitSymbol, IDocumentationStrategy documentation)
     {
         Scalar = scalar;

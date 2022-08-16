@@ -1,10 +1,10 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Vectors;
 
-internal interface IIndividualVectorSpecialization : IIndividualVector
+internal interface IIndividualVectorSpecialization : IVector
 {
-    public abstract IUnresolvedIndividualVectorType OriginalIndividualVector { get; }
+    public abstract IRawVectorType OriginalIndividualVector { get; }
 
     public abstract bool InheritDerivations { get; }
     public abstract bool InheritConstants { get; }

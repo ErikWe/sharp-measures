@@ -3,7 +3,7 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Unresolved.Units;
+using SharpMeasures.Generators.Raw.Units;
 using SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVectorGroup;
 
 internal class SpecializedSharpMeasuresVectorGroupResolutionDiagnostics : ISpecializedSharpMeasuresVectorGroupResolutionDiagnostics
@@ -47,7 +47,7 @@ internal class SpecializedSharpMeasuresVectorGroupResolutionDiagnostics : ISpeci
         return DiagnosticConstruction.TypeNotVectorGroup(definition.Locations.Difference?.AsRoslynLocation(), definition.Difference!.Value.Name);
     }
 
-    public Diagnostic UnrecognizedDefaultUnit(ISpecializedSharpMeasuresVectorGroupResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition, IUnresolvedUnitType unit)
+    public Diagnostic UnrecognizedDefaultUnit(ISpecializedSharpMeasuresVectorGroupResolutionContext context, UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition, IRawUnitType unit)
     {
         return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.DefaultUnitName?.AsRoslynLocation(), definition.DefaultUnitName!, unit.Type.Name);
     }

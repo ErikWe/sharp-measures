@@ -1,9 +1,8 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
-
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 using System.Collections.Generic;
 
 internal interface IIntermediateIndividualVectorSpecializationType
@@ -17,8 +16,8 @@ internal interface IIntermediateIndividualVectorSpecializationType
     public abstract IReadOnlyList<IVectorConstant> Constants { get; }
     public abstract IReadOnlyList<IConvertibleVector> Conversions { get; }
 
-    public abstract IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> MembersByDimension { get; }
+    public abstract IReadOnlyDictionary<int, IRawVectorGroupMemberType> MembersByDimension { get; }
 
-    public abstract IReadOnlyList<IUnresolvedUnitInstance> UnitInclusions { get; }
-    public abstract IReadOnlyList<IUnresolvedUnitInstance> UnitExclusions { get; }
+    public abstract IReadOnlyList<IRawUnitInstance> UnitInclusions { get; }
+    public abstract IReadOnlyList<IRawUnitInstance> UnitExclusions { get; }
 }

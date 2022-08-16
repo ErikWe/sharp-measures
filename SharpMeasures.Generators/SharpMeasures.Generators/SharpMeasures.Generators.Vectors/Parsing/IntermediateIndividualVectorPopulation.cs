@@ -7,13 +7,13 @@ using System.Collections.Generic;
 
 internal class IntermediateIndividualVectorPopulation : IIntermediateIndividualVectorPopulation
 {
-    public IReadOnlyDictionary<NamedType, IIndividualVectorType> VectorBases => vectorBases;
+    public IReadOnlyDictionary<NamedType, IVectorType> VectorBases => vectorBases;
     public IReadOnlyDictionary<NamedType, IIntermediateIndividualVectorSpecializationType> VectorSpecializations => vectorSpecializations;
 
-    private ReadOnlyEquatableDictionary<NamedType, IIndividualVectorType> vectorBases { get; }
+    private ReadOnlyEquatableDictionary<NamedType, IVectorType> vectorBases { get; }
     private ReadOnlyEquatableDictionary<NamedType, IIntermediateIndividualVectorSpecializationType> vectorSpecializations { get; }
 
-    public IntermediateIndividualVectorPopulation(IReadOnlyDictionary<NamedType, IIndividualVectorType> vectorBases,
+    public IntermediateIndividualVectorPopulation(IReadOnlyDictionary<NamedType, IVectorType> vectorBases,
         IReadOnlyDictionary<NamedType, IIntermediateIndividualVectorSpecializationType> vectorSpecializations)
     {
         this.vectorBases = vectorBases.AsReadOnlyEquatable();

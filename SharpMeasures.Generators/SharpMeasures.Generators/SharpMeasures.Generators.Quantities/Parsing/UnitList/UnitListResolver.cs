@@ -4,8 +4,8 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System.Collections.Generic;
 
@@ -16,7 +16,7 @@ public interface IUnitListResolutionDiagnostics
 
 public interface IUnitListResolutionContext : IProcessingContext
 {
-    public IUnresolvedUnitType Unit { get; }
+    public IRawUnitType Unit { get; }
 }
 
 public class UnitListResolver : IProcesser<IUnitListResolutionContext, UnresolvedUnitListDefinition, UnitListDefinition>
@@ -31,7 +31,7 @@ public class UnitListResolver : IProcesser<IUnitListResolutionContext, Unresolve
     public IOptionalWithDiagnostics<UnitListDefinition> Process(IUnitListResolutionContext context, UnresolvedUnitListDefinition definition)
     {
         List<Diagnostic> allDiagnostics = new();
-        List<IUnresolvedUnitInstance> units = new();
+        List<IRawUnitInstance> units = new();
 
         for (var i = 0; i < definition.Units.Count; i++)
         {

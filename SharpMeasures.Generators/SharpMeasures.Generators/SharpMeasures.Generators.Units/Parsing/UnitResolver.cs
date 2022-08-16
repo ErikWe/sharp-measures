@@ -15,7 +15,7 @@ using SharpMeasures.Generators.Units.Parsing.PrefixedUnit;
 using SharpMeasures.Generators.Units.Parsing.ScaledUnit;
 using SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
 using SharpMeasures.Generators.Units.Parsing.UnitAlias;
-using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Raw.Scalars;
 
 using System.Collections.Immutable;
 using System.Linq;
@@ -23,23 +23,23 @@ using System.Threading;
 
 public interface IUnitResolver
 {
-    public abstract (IncrementalValueProvider<IUnitPopulation>, IUnitGenerator) Resolve(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnresolvedScalarPopulation> scalarPopulationProvider);
+    public abstract (IncrementalValueProvider<IUnitPopulation>, IUnitGenerator) Resolve(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IRawScalarPopulation> scalarPopulationProvider);
 }
 
 internal class UnitResolver : IUnitResolver
 {
-    private IncrementalValueProvider<IUnresolvedUnitPopulationWithData> UnitPopulationProvider { get; }
+    private IncrementalValueProvider<IRawUnitPopulationWithData> UnitPopulationProvider { get; }
 
     private IncrementalValuesProvider<UnresolvedUnitType> UnitProvider { get; }
 
-    internal UnitResolver(IncrementalValueProvider<IUnresolvedUnitPopulationWithData> unitPopulationProvider, IncrementalValuesProvider<UnresolvedUnitType> unitProvider)
+    internal UnitResolver(IncrementalValueProvider<IRawUnitPopulationWithData> unitPopulationProvider, IncrementalValuesProvider<UnresolvedUnitType> unitProvider)
     {
         UnitPopulationProvider = unitPopulationProvider;
 
         UnitProvider = unitProvider;
     }
 
-    public (IncrementalValueProvider<IUnitPopulation>, IUnitGenerator) Resolve(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnresolvedScalarPopulation> scalarPopulationProvider)
+    public (IncrementalValueProvider<IUnitPopulation>, IUnitGenerator) Resolve(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IRawScalarPopulation> scalarPopulationProvider)
     {
         var resolved = UnitProvider.Combine(UnitPopulationProvider, scalarPopulationProvider).Select(ResolveUnit).ReportDiagnostics(context);
         var population = resolved.Select(ExtractInterface).Collect().Select(CreatePopulation);
@@ -47,7 +47,7 @@ internal class UnitResolver : IUnitResolver
         return (population, new UnitGenerator(resolved));
     }
 
-    private IOptionalWithDiagnostics<UnitType> ResolveUnit ((UnresolvedUnitType Unit, IUnresolvedUnitPopulationWithData UnitPopulation, IUnresolvedScalarPopulation ScalarPopulation) input, CancellationToken _)
+    private IOptionalWithDiagnostics<UnitType> ResolveUnit ((UnresolvedUnitType Unit, IRawUnitPopulationWithData UnitPopulation, IRawScalarPopulation ScalarPopulation) input, CancellationToken _)
     {
         SharpMeasuresUnitResolutionContext unitResolutionContext = new(input.Unit.Type, input.UnitPopulation, input.ScalarPopulation);
 

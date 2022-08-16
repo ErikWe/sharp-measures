@@ -3,8 +3,8 @@
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
@@ -22,10 +22,10 @@ internal record class IntermediateIndividualVectorSpecializationType : IIntermed
     public IReadOnlyList<VectorConstantDefinition> Constants => constants;
     public IReadOnlyList<ConvertibleVectorDefinition> Conversions => conversions;
 
-    public IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> MembersByDimension => membersByDimension;
+    public IReadOnlyDictionary<int, IRawVectorGroupMemberType> MembersByDimension => membersByDimension;
 
-    public IReadOnlyList<IUnresolvedUnitInstance> UnitInclusions => unitInclusions;
-    public IReadOnlyList<IUnresolvedUnitInstance> UnitExclusions => unitExclusions;
+    public IReadOnlyList<IRawUnitInstance> UnitInclusions => unitInclusions;
+    public IReadOnlyList<IRawUnitInstance> UnitExclusions => unitExclusions;
 
     IReadOnlyList<IDerivedQuantity> IIntermediateIndividualVectorSpecializationType.Derivations => Derivations;
     IReadOnlyList<IVectorConstant> IIntermediateIndividualVectorSpecializationType.Constants => Constants;
@@ -35,14 +35,14 @@ internal record class IntermediateIndividualVectorSpecializationType : IIntermed
     private ReadOnlyEquatableList<VectorConstantDefinition> constants { get; }
     private ReadOnlyEquatableList<ConvertibleVectorDefinition> conversions { get; }
 
-    private ReadOnlyEquatableDictionary<int, IUnresolvedVectorGroupMemberType> membersByDimension { get; }
+    private ReadOnlyEquatableDictionary<int, IRawVectorGroupMemberType> membersByDimension { get; }
 
-    private ReadOnlyEquatableList<IUnresolvedUnitInstance> unitInclusions { get; }
-    private ReadOnlyEquatableList<IUnresolvedUnitInstance> unitExclusions { get; }
+    private ReadOnlyEquatableList<IRawUnitInstance> unitInclusions { get; }
+    private ReadOnlyEquatableList<IRawUnitInstance> unitExclusions { get; }
 
     public IntermediateIndividualVectorSpecializationType(DefinedType type, MinimalLocation typeLocation, IIndividualVectorSpecialization definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
-        IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> membersByDimension,
-        IReadOnlyList<IUnresolvedUnitInstance> unitInclusions, IReadOnlyList<IUnresolvedUnitInstance> unitExclusions)
+        IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyDictionary<int, IRawVectorGroupMemberType> membersByDimension,
+        IReadOnlyList<IRawUnitInstance> unitInclusions, IReadOnlyList<IRawUnitInstance> unitExclusions)
     {
         Type = type;
         TypeLocation = typeLocation;

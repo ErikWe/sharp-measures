@@ -1,10 +1,10 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 
 internal class IndividualVectorDocumentationTags : IIndividualVectorDocumentationStrategy, IEquatable<IndividualVectorDocumentationTags>
 {
@@ -38,10 +38,10 @@ internal class IndividualVectorDocumentationTags : IIndividualVectorDocumentatio
 
     public string InUnit() => "InUnit";
     public string InConstantMultiples(IVectorConstant constant) => $"InMultiplesOf_{constant.Name}";
-    public string InSpecifiedUnit(IUnresolvedUnitInstance unitInstance) => $"InUnit_{unitInstance.Name}";
+    public string InSpecifiedUnit(IRawUnitInstance unitInstance) => $"InUnit_{unitInstance.Name}";
 
-    public string Conversion(IUnresolvedVectorGroupMemberType vectorGroupMember) => $"As_{vectorGroupMember.Type.Name}";
-    public string CastConversion(IUnresolvedVectorGroupMemberType vectorGroupMember) => $"Operator_Cast_{vectorGroupMember.Type.Name}";
+    public string Conversion(IRawVectorGroupMemberType vectorGroupMember) => $"As_{vectorGroupMember.Type.Name}";
+    public string CastConversion(IRawVectorGroupMemberType vectorGroupMember) => $"Operator_Cast_{vectorGroupMember.Type.Name}";
 
     public string IsNaN() => "IsNaN";
     public string IsZero() => "IsZero";

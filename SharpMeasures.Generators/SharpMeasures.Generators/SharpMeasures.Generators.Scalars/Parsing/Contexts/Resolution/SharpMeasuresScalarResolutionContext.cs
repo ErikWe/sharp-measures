@@ -3,17 +3,17 @@
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Vectors;
 
 internal record class SharpMeasuresScalarResolutionContext : SimpleProcessingContext, ISharpMeasuresScalarResolutionContext
 {
-    public IUnresolvedUnitPopulation UnitPopulation { get; }
+    public IRawUnitPopulation UnitPopulation { get; }
     public IUnresolvedScalarPopulationWithData ScalarPopulation { get; }
-    public IUnresolvedVectorPopulation VectorPopulation { get; }
+    public IRawVectorPopulation VectorPopulation { get; }
 
-    public SharpMeasuresScalarResolutionContext(DefinedType type, IUnresolvedUnitPopulation unitPopulation, IUnresolvedScalarPopulationWithData scalarPopulation,
-        IUnresolvedVectorPopulation vectorPopulation) : base(type)
+    public SharpMeasuresScalarResolutionContext(DefinedType type, IRawUnitPopulation unitPopulation, IUnresolvedScalarPopulationWithData scalarPopulation,
+        IRawVectorPopulation vectorPopulation) : base(type)
     {
         UnitPopulation = unitPopulation;
         ScalarPopulation = scalarPopulation;

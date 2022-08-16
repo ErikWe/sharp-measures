@@ -4,9 +4,9 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Unresolved.Vectors;
 
 using System.Text;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 
 internal static class Execution
 {
@@ -27,17 +27,15 @@ internal static class Execution
         }
 
         private StringBuilder Builder { get; } = new();
+        private NewlineSeparationHandler SeparationHandler { get; }
 
         private DataModel Data { get; }
-
-        private UsingsCollector UsingsCollector { get; }
 
         private Composer(DataModel data)
         {
             Data = data;
 
-            UsingsCollector = UsingsCollector.Delayed(Builder, data.Scalar.Namespace);
-            UsingsCollector.AddUsing("SharpMeasures");
+            SeparationHandler = new(Builder);
         }
 
         private void Compose()
@@ -46,13 +44,9 @@ internal static class Execution
 
             NamespaceBuilding.AppendNamespace(Builder, Data.Scalar.Namespace);
 
-            UsingsCollector.MarkInsertionPoint();
-
             Builder.Append(Data.Scalar.ComposeDeclaration());
 
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0);
-
-            UsingsCollector.InsertUsings();
         }
 
         private string Retrieve()
@@ -62,52 +56,40 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
+            SeparationHandler.MarkUnncecessary();
+
             foreach (var vector in Data.VectorGroup.MembersByDimension)
             {
-                UsingsCollector.AddUsing(vector.Value.Type.Namespace);
-                
-                ComposeForVector(indentation, vector.Value, vector.Key);
-                Builder.AppendLine();
+                AppendMultiplyVectorMethod(indentation, vector.Value, vector.Key);
+                AppendMultiplyVectorOperators(indentation, vector.Value, vector.Key);
             }
         }
 
-        private void ComposeForVector(Indentation indentation, IUnresolvedVectorGroupMemberType vectorGroupMember, int dimension)
+        private void AppendMultiplyVectorMethod(Indentation indentation, IRawVectorGroupMemberType vectorGroupMember, int dimension)
         {
+            SeparationHandler.AddIfNecessary();
+
             AppendDocumentation(indentation, Data.Documentation.MultiplyVectorMethod(dimension));
             Builder.AppendLine($"{indentation}public {vectorGroupMember.Type.Name} Multiply(Vector{dimension} factor) => new(Magnitude.Value * factor);");
+        }
 
-            Builder.AppendLine();
+        private void AppendMultiplyVectorOperators(Indentation indentation, IRawVectorGroupMemberType vectorGroupMember, int dimension)
+        {
+            SeparationHandler.AddIfNecessary();
 
-            if (Data.Scalar.IsReferenceType)
-            {
-                AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorLHS(dimension));
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="ArgumentNullException"/>
-                    {{indentation}}{
-                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(x);
+            NamedType vectorType = new($"Vector{dimension}", "SharpMeasures", true);
 
-                    {{indentation.Increased}}return new(x.Magnitude.Value * y);
-                    {{indentation}}}
-                    """);
+            var methodNameAndModifiers = $"public static {vectorGroupMember.Type.Name} operator *";
+            var expression = "new(x.Magnitude.Value * y)";
 
-                AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorRHS(dimension));
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="ArgumentNullException"/>
-                    {{indentation}}{
-                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(y);
+            var lhsParameters = new[] { (Data.Scalar.AsNamedType(), "x"), (vectorType, "y") };
+            var rhsParameters = new[] { (vectorType, "x"), (Data.Scalar.AsNamedType(), "y") };
 
-                    {{indentation.Increased}}return new(x * y.Magnitude.Value);
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorLHS(dimension));
-                Builder.AppendLine($"{indentation}public static {vectorGroupMember.Type.Name} operator *({Data.Scalar.Name} x, Vector{dimension} y) => new(x.Magnitude.Value * y);");
+            AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorLHS(dimension));
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, lhsParameters);
 
-                AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorRHS(dimension));
-                Builder.AppendLine($"{indentation}public static {vectorGroupMember.Type.Name} operator *(Vector{dimension} x, {Data.Scalar.Name} y) => new(x * y.Magnitude.Value);");
-            }
+            AppendDocumentation(indentation, Data.Documentation.MultiplyVectorOperatorRHS(dimension));
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, rhsParameters);
         }
 
         private void AppendDocumentation(Indentation indentation, string text)

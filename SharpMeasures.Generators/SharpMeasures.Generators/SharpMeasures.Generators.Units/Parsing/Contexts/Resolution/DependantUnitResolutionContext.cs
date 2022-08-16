@@ -2,15 +2,15 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System.Collections.Generic;
 
 internal record class DependantUnitResolutionContext : SimpleProcessingContext, IDependantUnitResolutionContext
 {
-    public IReadOnlyDictionary<string, IUnresolvedUnitInstance> UnitsByName { get; }
+    public IReadOnlyDictionary<string, IRawUnitInstance> UnitsByName { get; }
 
-    public DependantUnitResolutionContext(DefinedType type, IReadOnlyDictionary<string, IUnresolvedUnitInstance> unitsByName) : base(type)
+    public DependantUnitResolutionContext(DefinedType type, IReadOnlyDictionary<string, IRawUnitInstance> unitsByName) : base(type)
     {
         UnitsByName = unitsByName;
     }

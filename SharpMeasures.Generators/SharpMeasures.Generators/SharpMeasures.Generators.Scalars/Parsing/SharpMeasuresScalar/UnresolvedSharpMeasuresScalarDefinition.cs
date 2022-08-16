@@ -1,23 +1,23 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Unresolved.Quantities;
-using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Raw.Quantities;
+using SharpMeasures.Generators.Raw.Scalars;
 
-internal record class UnresolvedSharpMeasuresScalarDefinition : AAttributeDefinition<SharpMeasuresScalarLocations>, IUnresolvedScalarBase
+internal record class UnresolvedSharpMeasuresScalarDefinition : AAttributeDefinition<SharpMeasuresScalarLocations>, IRawScalarBase
 {
     public NamedType Unit { get; }
-    public NamedType? VectorGroup { get; }
+    public NamedType? Vector { get; }
 
     public bool UseUnitBias { get; }
 
     public bool ImplementSum { get; }
-    bool? IUnresolvedQuantity.ImplementSum => ImplementSum;
+    bool? IRawQuantity.ImplementSum => ImplementSum;
     public bool ImplementDifference { get; }
-    bool? IUnresolvedQuantity.ImplementDifference => ImplementDifference;
+    bool? IRawQuantity.ImplementDifference => ImplementDifference;
 
     public NamedType Difference { get; }
-    NamedType? IUnresolvedQuantity.Difference => Difference;
+    NamedType? IRawQuantity.Difference => Difference;
 
     public string? DefaultUnitName { get; }
     public string? DefaultUnitSymbol { get; }
@@ -36,7 +36,7 @@ internal record class UnresolvedSharpMeasuresScalarDefinition : AAttributeDefini
         : base(locations)
     {
         Unit = unit;
-        VectorGroup = vectorGroup;
+        Vector = vectorGroup;
 
         UseUnitBias = useUnitBias;
 

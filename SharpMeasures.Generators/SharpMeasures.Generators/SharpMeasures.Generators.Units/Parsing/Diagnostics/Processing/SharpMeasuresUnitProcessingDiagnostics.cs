@@ -12,7 +12,7 @@ internal class SharpMeasuresUnitProcessingDiagnostics : ISharpMeasuresUnitProces
 
     private SharpMeasuresUnitProcessingDiagnostics() { }
 
-    public Diagnostic NullQuantity(IProcessingContext context, RawSharpMeasuresUnitDefinition definition)
+    public Diagnostic NullQuantity(IProcessingContext context, UnprocessedSharpMeasuresUnitDefinition definition)
     {
         return DiagnosticConstruction.NullTypeNotScalar(definition.Locations.Quantity?.AsRoslynLocation());
     }

@@ -1,20 +1,23 @@
 ﻿namespace SharpMeasures.Generators.Scalars;
 
+using OneOf;
+
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Vectors;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 
 public interface IScalar : IQuantity
 {
     public abstract bool UseUnitBias { get; }
 
-    public abstract IUnresolvedVectorGroupType? VectorGroup { get; }
+    public abstract OneOf<IRawVectorType, IRawVectorGroupType, IRawVectorGroupMemberType>? Vector { get; }
 
-    new public abstract IUnresolvedScalarType Difference { get; }
+    new public abstract IRawScalarType Difference { get; }
 
-    public abstract IUnresolvedScalarType? Reciprocal { get; }
-    public abstract IUnresolvedScalarType? Square { get; }
-    public abstract IUnresolvedScalarType? Cube { get; }
-    public abstract IUnresolvedScalarType? SquareRoot { get; }
-    public abstract IUnresolvedScalarType? CubeRoot { get; }
+    public abstract IRawScalarType? Reciprocal { get; }
+    public abstract IRawScalarType? Square { get; }
+    public abstract IRawScalarType? Cube { get; }
+    public abstract IRawScalarType? SquareRoot { get; }
+    public abstract IRawScalarType? CubeRoot { get; }
 }

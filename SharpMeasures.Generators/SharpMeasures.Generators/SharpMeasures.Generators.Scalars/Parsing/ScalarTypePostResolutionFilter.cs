@@ -6,14 +6,14 @@ using SharpMeasures.Generators.Scalars.Parsing.Contexts.PostResolutionFilter;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 using SharpMeasures.Generators.Scalars.Parsing.Diagnostics.PostResolutionFilter;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System.Collections.Generic;
 using System.Linq;
 
 internal static class ScalarTypePostResolutionFilter
 {
-    public static IResultWithDiagnostics<IReadOnlyList<IScalarConstant>> FilterAndCombineConstants(DefinedType type, IEnumerable<ScalarConstantDefinition> definedConstants, IReadOnlyList<IScalarConstant> inheritedConstants, IReadOnlyList<IUnresolvedUnitInstance> IncludedBases, IReadOnlyList<IUnresolvedUnitInstance> IncludedUnits)
+    public static IResultWithDiagnostics<IReadOnlyList<IScalarConstant>> FilterAndCombineConstants(DefinedType type, IEnumerable<ScalarConstantDefinition> definedConstants, IReadOnlyList<IScalarConstant> inheritedConstants, IReadOnlyList<IRawUnitInstance> IncludedBases, IReadOnlyList<IRawUnitInstance> IncludedUnits)
     {
         HashSet<string> inheritedConstantNames = new(inheritedConstants.Select(static (constant) => constant.Name));
         HashSet<string> inheritedConstantMultiplesNames = new(inheritedConstants.Where(static (constant) => constant.GenerateMultiplesProperty).Select(static (constant) => constant.Multiples!));

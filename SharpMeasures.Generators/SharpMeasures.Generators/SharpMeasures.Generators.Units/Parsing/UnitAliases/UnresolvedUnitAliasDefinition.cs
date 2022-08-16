@@ -1,9 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.UnitAlias;
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
-internal record class UnresolvedUnitAliasDefinition : AUnresolvedDependantUnitDefinition<UnitAliasLocations>, IUnresolvedUnitAlias
+internal record class UnresolvedUnitAliasDefinition : ARawDependantUnitDefinition<UnitAliasLocations>, IRawUnitAlias
 {
     public string AliasOf => DependantOn;
 

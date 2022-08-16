@@ -1,10 +1,10 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Unresolved.Quantities;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Quantities;
+using SharpMeasures.Generators.Raw.Vectors;
 
-internal record class UnresolvedSharpMeasuresVectorDefinition : AAttributeDefinition<SharpMeasuresVectorLocations>, IUnresolvedIndividualVectorBase
+internal record class UnresolvedSharpMeasuresVectorDefinition : AAttributeDefinition<SharpMeasuresVectorLocations>, IRawVectorBase
 {
     public NamedType Unit { get; }
     public NamedType? Scalar { get; }
@@ -12,12 +12,12 @@ internal record class UnresolvedSharpMeasuresVectorDefinition : AAttributeDefini
     public int Dimension { get; }
 
     public bool ImplementSum { get; }
-    bool? IUnresolvedQuantity.ImplementSum => ImplementSum;
+    bool? IRawQuantity.ImplementSum => ImplementSum;
     public bool ImplementDifference { get; }
-    bool? IUnresolvedQuantity.ImplementDifference => ImplementDifference;
+    bool? IRawQuantity.ImplementDifference => ImplementDifference;
 
     public NamedType Difference { get; }
-    NamedType? IUnresolvedQuantity.Difference => Difference;
+    NamedType? IRawQuantity.Difference => Difference;
 
     public string? DefaultUnitName { get; }
     public string? DefaultUnitSymbol { get; }

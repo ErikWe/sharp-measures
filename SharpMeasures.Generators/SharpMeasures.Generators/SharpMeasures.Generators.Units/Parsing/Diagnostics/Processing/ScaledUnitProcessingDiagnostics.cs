@@ -6,18 +6,18 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.Parsing.ScaledUnit;
 
-internal class ScaledUnitProcessingDiagnostics : ADependantUnitProcessingDiagnostics<RawScaledUnitDefinition, ScaledUnitLocations>, IScaledUnitProcessingDiagnostics
+internal class ScaledUnitProcessingDiagnostics : ADependantUnitProcessingDiagnostics<UnprocessedScaledUnitDefinition, ScaledUnitLocations>, IScaledUnitProcessingDiagnostics
 {
     public static ScaledUnitProcessingDiagnostics Instance { get; } = new();
 
     private ScaledUnitProcessingDiagnostics() { }
 
-    public Diagnostic NullExpression(IUnitProcessingContext context, RawScaledUnitDefinition definition)
+    public Diagnostic NullExpression(IUnitProcessingContext context, UnprocessedScaledUnitDefinition definition)
     {
         return DiagnosticConstruction.NullScaledUnitExpression(definition.Locations.Expression?.AsRoslynLocation());
     }
 
-    public Diagnostic EmptyExpression(IUnitProcessingContext context, RawScaledUnitDefinition definition)
+    public Diagnostic EmptyExpression(IUnitProcessingContext context, UnprocessedScaledUnitDefinition definition)
     {
         return DiagnosticConstruction.EmptyScaledUnitExpression(definition.Locations.Expression?.AsRoslynLocation());
     }

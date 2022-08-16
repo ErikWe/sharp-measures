@@ -31,9 +31,19 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.DuplicateUnitName, location, unitTypeName, unitName);
     }
 
+    public static Diagnostic UnitNameReservedByUnitPlural(Location? location, string unitName, string unitTypeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.UnitNameReservedByUnitPluralForm, location, unitTypeName, unitName);
+    }
+
     public static Diagnostic DuplicateUnitPluralForm(Location? location, string unitPluralForm, string unitTypeName)
     {
         return Diagnostic.Create(DiagnosticRules.DuplicateUnitPluralForm, location, unitTypeName, unitPluralForm);
+    }
+
+    public static Diagnostic UnitPluralFormReservedByUnitName(Location? location, string unitPluralForm, string unitTypeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.UnitPluralFormReservedByUnitName, location, unitTypeName, unitPluralForm);
     }
 
     public static Diagnostic UnrecognizedUnitName(Location? location, string unitName, string unitTypeName)

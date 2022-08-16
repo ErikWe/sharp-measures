@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Units.Parsing.ScaledUnit;
 
-internal class ScaledUnitResolutionDiagnostics : ADependantUnitResolutionDiagnostics<UnresolvedScaledUnitDefinition, ScaledUnitLocations>
+internal class ScaledUnitResolutionDiagnostics : ADependantUnitResolutionDiagnostics<RawScaledUnitDefinition, ScaledUnitLocations>
 {
     public static ScaledUnitResolutionDiagnostics Instance { get; } = new();
 

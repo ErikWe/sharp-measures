@@ -1,9 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Unresolved.Quantities;
+using SharpMeasures.Generators.Raw.Quantities;
 
-public abstract record class AUnresolvedQuantityConstantDefinition<TLocations> : AAttributeDefinition<TLocations>, IUnresolvedQuantityConstant
+public abstract record class AUnresolvedQuantityConstantDefinition<TLocations> : AAttributeDefinition<TLocations>, IRawQuantityConstant
     where TLocations : AQuantityConstantLocations<TLocations>
 {
     public string Name { get; }

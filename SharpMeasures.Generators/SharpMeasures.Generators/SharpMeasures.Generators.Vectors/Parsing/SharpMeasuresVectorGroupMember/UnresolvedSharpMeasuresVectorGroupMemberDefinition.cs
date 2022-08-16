@@ -1,9 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 
-internal record class UnresolvedSharpMeasuresVectorGroupMemberDefinition : AAttributeDefinition<SharpMeasuresVectorGroupMemberLocations>, IUnresolvedVectorGroupMember
+internal record class UnresolvedSharpMeasuresVectorGroupMemberDefinition : AAttributeDefinition<SharpMeasuresVectorGroupMemberLocations>, IRawVectorGroupMember
 {
     public NamedType VectorGroup { get; }
 

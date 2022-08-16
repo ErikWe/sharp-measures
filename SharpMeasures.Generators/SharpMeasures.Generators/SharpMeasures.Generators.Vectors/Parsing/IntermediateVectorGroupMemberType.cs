@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing;
 
 using SharpMeasures.Equatables;
+using SharpMeasures.Generators.Vectors.Groups;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 

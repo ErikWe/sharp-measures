@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Pipelines.IndividualVector.Common;
 
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 using SharpMeasures.Generators.Vectors.Documentation;
 
 internal readonly record struct DataModel
@@ -16,13 +16,13 @@ internal readonly record struct DataModel
     public NamedType UnitQuantity { get; }
     public string UnitParameterName { get; }
 
-    public IUnresolvedUnitInstance? DefaultUnit { get; }
+    public IRawUnitInstance? DefaultUnit { get; }
     public string? DefaultUnitSymbol { get; }
 
     public IIndividualVectorDocumentationStrategy Documentation { get; }
 
     public DataModel(DefinedType vector, int dimension, NamedType? scalar, NamedType? squaredScalar, NamedType unit, NamedType unitQuantity, string unitParameterName,
-        IUnresolvedUnitInstance? defaultUnit, string? defaultUnitSymbol, IIndividualVectorDocumentationStrategy documentation)
+        IRawUnitInstance? defaultUnit, string? defaultUnitSymbol, IIndividualVectorDocumentationStrategy documentation)
     {
         Vector = vector;
 

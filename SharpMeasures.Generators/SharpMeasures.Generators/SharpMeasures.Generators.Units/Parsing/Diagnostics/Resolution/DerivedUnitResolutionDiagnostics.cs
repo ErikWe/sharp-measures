@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.DerivedUnit;
-using SharpMeasures.Generators.Unresolved.Units;
+using SharpMeasures.Generators.Raw.Units;
 
 internal class DerivedUnitResolutionDiagnostics : IDerivedUnitResolutionDiagnostics
 {
@@ -12,12 +12,12 @@ internal class DerivedUnitResolutionDiagnostics : IDerivedUnitResolutionDiagnost
 
     private DerivedUnitResolutionDiagnostics() { }
 
-    public Diagnostic InvalidUnitListLength(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition, UnresolvedUnitDerivationSignature signature)
+    public Diagnostic InvalidUnitListLength(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition, RawUnitDerivationSignature signature)
     {
         return DiagnosticConstruction.IncompatibleDerivedUnitListSize(definition.Locations.UnitsCollection?.AsRoslynLocation(), signature.Count, definition.Units.Count);
     }
 
-    public Diagnostic UnrecognizedUnit(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition, int index, IUnresolvedUnitType unitType)
+    public Diagnostic UnrecognizedUnit(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition, int index, IRawUnitType unitType)
     {
         return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.UnitsElements[index].AsRoslynLocation(), definition.Units[index], unitType.Type.Name);
     }

@@ -122,7 +122,7 @@ public abstract class AQuantityConstantProcesser<TContext, TDefinition, TLocatio
 
     protected virtual IValidityWithDiagnostics CheckValidity(TContext context, TDefinition definition)
     {
-        return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckNameValidity, CheckUnitValidity);
+        return IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, CheckNameValidity, CheckUnitValidity);
     }
 
     private IValidityWithDiagnostics CheckNameValidity(TContext context, TDefinition definition)

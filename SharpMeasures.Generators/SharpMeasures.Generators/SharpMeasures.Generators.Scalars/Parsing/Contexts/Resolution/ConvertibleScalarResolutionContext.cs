@@ -2,15 +2,15 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
-using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Raw.Scalars;
 
 internal record class ConvertibleScalarResolutionContext : SimpleProcessingContext, IConvertibleScalarResolutionContext
 {
     public bool UseUnitBias { get; }
 
-    public IUnresolvedScalarPopulation ScalarPopulation { get; }
+    public IRawScalarPopulation ScalarPopulation { get; }
 
-    public ConvertibleScalarResolutionContext(DefinedType type, bool useUnitBias, IUnresolvedScalarPopulation scalarPopulation) : base(type)
+    public ConvertibleScalarResolutionContext(DefinedType type, bool useUnitBias, IRawScalarPopulation scalarPopulation) : base(type)
     {
         UseUnitBias = useUnitBias;
 

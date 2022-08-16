@@ -1,13 +1,13 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.SpecializedSharpMeasuresScalar;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Unresolved.Quantities;
-using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Raw.Quantities;
+using SharpMeasures.Generators.Raw.Scalars;
 
-internal record class UnresolvedSpecializedSharpMeasuresScalarDefinition : AAttributeDefinition<SpecializedSharpMeasuresScalarLocations>, IUnresolvedScalarSpecialization
+internal record class UnresolvedSpecializedSharpMeasuresScalarDefinition : AAttributeDefinition<SpecializedSharpMeasuresScalarLocations>, IRawScalarSpecialization
 {
     public NamedType OriginalScalar { get; }
-    NamedType IUnresolvedQuantitySpecialization.OriginalQuantity => OriginalScalar;
+    NamedType IRawQuantitySpecialization.OriginalQuantity => OriginalScalar;
 
     public bool InheritDerivations { get; }
     public bool InheritConstants { get; }
@@ -15,7 +15,7 @@ internal record class UnresolvedSpecializedSharpMeasuresScalarDefinition : AAttr
     public bool InheritBases { get; }
     public bool InheritUnits { get; }
 
-    public NamedType? VectorGroup { get; }
+    public NamedType? Vector { get; }
 
     public bool? ImplementSum { get; }
     public bool? ImplementDifference { get; }
@@ -47,7 +47,7 @@ internal record class UnresolvedSpecializedSharpMeasuresScalarDefinition : AAttr
         InheritBases = inheritBases;
         InheritUnits = inheritUnits;
 
-        VectorGroup = vectorGroup;
+        Vector = vectorGroup;
 
         ImplementSum = implementSum;
         ImplementDifference = implementDifference;

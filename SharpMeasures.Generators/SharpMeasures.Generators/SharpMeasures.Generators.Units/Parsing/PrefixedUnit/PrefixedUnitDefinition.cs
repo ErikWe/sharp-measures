@@ -3,24 +3,24 @@
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.UnitInstances;
 using SharpMeasures.Generators.Units.Utility;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 internal record class PrefixedUnitDefinition : ADependantUnitDefinition<PrefixedUnitLocations>, IPrefixedUnit
 {
-    public IUnresolvedUnitInstance From => DependantOn;
+    public IRawUnitInstance From => DependantOn;
 
     public MetricPrefixName? MetricPrefix { get; }
     public BinaryPrefixName? BinaryPrefix { get; }
 
     public PrefixType SpecifiedPrefixType => MetricPrefix is null ? PrefixType.Binary : PrefixType.Metric;
 
-    public PrefixedUnitDefinition(string name, string plural, IUnresolvedUnitInstance from, MetricPrefixName metricPrefix, PrefixedUnitLocations locations)
+    public PrefixedUnitDefinition(string name, string plural, IRawUnitInstance from, MetricPrefixName metricPrefix, PrefixedUnitLocations locations)
         : base(name, plural, from, locations)
     {
         MetricPrefix = metricPrefix;
     }
 
-    public PrefixedUnitDefinition(string name, string plural, IUnresolvedUnitInstance from, BinaryPrefixName binaryPrefix, PrefixedUnitLocations locations)
+    public PrefixedUnitDefinition(string name, string plural, IRawUnitInstance from, BinaryPrefixName binaryPrefix, PrefixedUnitLocations locations)
         : base(name, plural, from, locations)
     {
         BinaryPrefix = binaryPrefix;

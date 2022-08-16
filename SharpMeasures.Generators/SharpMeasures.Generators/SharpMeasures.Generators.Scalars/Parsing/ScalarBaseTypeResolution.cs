@@ -9,9 +9,9 @@ using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 using SharpMeasures.Generators.Scalars.Parsing.Diagnostics.Resolution;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors;
 
 using System;
 using System.Collections.Generic;
@@ -20,12 +20,12 @@ using System.Threading;
 
 internal static class ScalarBaseTypeResolution
 {
-    public static IOptionalWithDiagnostics<ScalarType> Resolve((UnresolvedScalarBaseType Scalar, IUnresolvedUnitPopulation UnitPopulation,
-        IUnresolvedScalarPopulationWithData ScalarPopulation, IUnresolvedVectorPopulation VectorPopulation) input, CancellationToken _)
+    public static IOptionalWithDiagnostics<ScalarType> Resolve((UnresolvedScalarBaseType Scalar, IRawUnitPopulation UnitPopulation,
+        IUnresolvedScalarPopulationWithData ScalarPopulation, IRawVectorPopulation VectorPopulation) input, CancellationToken _)
         => Resolve(input.Scalar, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
 
-    public static IOptionalWithDiagnostics<ScalarType> Resolve(UnresolvedScalarBaseType unresolvedScalar, IUnresolvedUnitPopulation unitPopulation,
-        IUnresolvedScalarPopulationWithData scalarPopulation, IUnresolvedVectorPopulation vectorPopulation)
+    public static IOptionalWithDiagnostics<ScalarType> Resolve(UnresolvedScalarBaseType unresolvedScalar, IRawUnitPopulation unitPopulation,
+        IUnresolvedScalarPopulationWithData scalarPopulation, IRawVectorPopulation vectorPopulation)
     {
         SharpMeasuresScalarResolutionContext scalarResolutionContext = new(unresolvedScalar.Type, unitPopulation, scalarPopulation, vectorPopulation);
 
@@ -61,14 +61,14 @@ internal static class ScalarBaseTypeResolution
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static IReadOnlyList<IUnresolvedUnitInstance> GetIncludedUnits(IUnresolvedUnitType unit, IEnumerable<IUnitList> inclusions, IEnumerable<IUnitList> exclusions)
+    private static IReadOnlyList<IRawUnitInstance> GetIncludedUnits(IRawUnitType unit, IEnumerable<IUnitList> inclusions, IEnumerable<IUnitList> exclusions)
     {
         if (inclusions.Any())
         {
             return inclusions.SelectMany(static (unitList) => unitList).ToList();
         }
 
-        HashSet<IUnresolvedUnitInstance> includedUnits = new(unit.UnitsByName.Values);
+        HashSet<IRawUnitInstance> includedUnits = new(unit.UnitsByName.Values);
 
         foreach (var exclusion in exclusions.SelectMany(static (unitList) => unitList))
         {

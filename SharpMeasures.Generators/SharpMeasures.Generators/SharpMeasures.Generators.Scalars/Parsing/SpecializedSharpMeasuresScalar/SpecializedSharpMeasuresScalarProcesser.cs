@@ -109,7 +109,7 @@ internal class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProcessingC
 
     private IValidityWithDiagnostics CheckValidity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
     {
-        return IterativeValidity.DiagnoseAndMergeWhileValid(validities());
+        return IterativeValidation.DiagnoseAndMergeWhileValid(validities());
 
         IEnumerable<IValidityWithDiagnostics> validities()
         {

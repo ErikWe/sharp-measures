@@ -7,10 +7,10 @@ using SharpMeasures.Generators.Diagnostics;
 
 internal interface ISharpMeasuresUnitProcessingDiagnostics
 {
-    public abstract Diagnostic? NullQuantity(IProcessingContext context, RawSharpMeasuresUnitDefinition definition);
+    public abstract Diagnostic? NullQuantity(IProcessingContext context, UnprocessedSharpMeasuresUnitDefinition definition);
 }
 
-internal class SharpMeasuresUnitProcesser : AProcesser<IProcessingContext, RawSharpMeasuresUnitDefinition, UnresolvedSharpMeasuresUnitDefinition>
+internal class SharpMeasuresUnitProcesser : AProcesser<IProcessingContext, UnprocessedSharpMeasuresUnitDefinition, RawSharpMeasuresUnitDefinition>
 {
     private ISharpMeasuresUnitProcessingDiagnostics Diagnostics { get; }
 
@@ -19,24 +19,25 @@ internal class SharpMeasuresUnitProcesser : AProcesser<IProcessingContext, RawSh
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<UnresolvedSharpMeasuresUnitDefinition> Process(IProcessingContext context, RawSharpMeasuresUnitDefinition definition)
+    public override IOptionalWithDiagnostics<RawSharpMeasuresUnitDefinition> Process(IProcessingContext context, UnprocessedSharpMeasuresUnitDefinition definition)
     {
-        if (VerifyRequiredPropertiesSet(definition) is false)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedSharpMeasuresUnitDefinition>();
-        }
-
-        if (definition.Quantity is null)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedSharpMeasuresUnitDefinition>(Diagnostics.NullQuantity(context, definition));
-        }
-
-        UnresolvedSharpMeasuresUnitDefinition product = new(definition.Quantity.Value, definition.BiasTerm, definition.GenerateDocumentation, definition.Locations);
-        return OptionalWithDiagnostics.Result(product);
+        var requiredProperties = VerifyRequiredPropertiesSet(definition);
+        var processedQuantity = requiredProperties.Validate(context, definition, ValidateQuantityNotNull);
+        return processedQuantity.Transform(definition, ProduceResult);
     }
 
-    private static bool VerifyRequiredPropertiesSet(RawSharpMeasuresUnitDefinition definition)
+    private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(UnprocessedSharpMeasuresUnitDefinition definition)
     {
-        return definition.Locations.ExplicitlySetQuantity;
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Locations.ExplicitlySetQuantity);
+    }
+
+    private IValidityWithDiagnostics ValidateQuantityNotNull(IProcessingContext context, UnprocessedSharpMeasuresUnitDefinition definition)
+    {
+        return ValidityWithDiagnostics.Conditional(definition.Quantity is not null, () => Diagnostics.NullQuantity(context, definition));
+    }
+
+    private static RawSharpMeasuresUnitDefinition ProduceResult(UnprocessedSharpMeasuresUnitDefinition definition)
+    {
+        return new(definition.Quantity!.Value, definition.BiasTerm, definition.GenerateDocumentation, definition.Locations);
     }
 }

@@ -1,10 +1,10 @@
 ﻿namespace SharpMeasures.Generators.Units;
 
-using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Raw.Scalars;
 
 public interface IUnit : ISharpMeasuresObject
 {
-    public abstract IUnresolvedScalarType Quantity { get; }
+    public abstract IRawScalarType Quantity { get; }
 
     public abstract bool BiasTerm { get; }
 }

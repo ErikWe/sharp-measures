@@ -5,22 +5,22 @@ using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.UnitList;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
-using SharpMeasures.Generators.Unresolved.Quantities;
-using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Raw.Quantities;
+using SharpMeasures.Generators.Raw.Scalars;
 
 using System.Collections.Generic;
 using System.Linq;
 
-internal abstract record class AUnresolvedScalarType<TDefinition> : IUnresolvedScalarType
-    where TDefinition : IUnresolvedScalar
+internal abstract record class AUnresolvedScalarType<TDefinition> : IRawScalarType
+    where TDefinition : IRawScalar
 {
     public DefinedType Type { get; }
     public MinimalLocation TypeLocation { get; }
 
     public TDefinition Definition { get; }
     ISharpMeasuresObject ISharpMeasuresObjectType.Definition => Definition;
-    IUnresolvedQuantity IUnresolvedQuantityType.Definition => Definition;
-    IUnresolvedScalar IUnresolvedScalarType.Definition => Definition;
+    IRawQuantity IRawQuantityType.Definition => Definition;
+    IRawScalar IRawScalarType.Definition => Definition;
 
     public IReadOnlyList<UnresolvedDerivedQuantityDefinition> Derivations => derivations;
     public IReadOnlyList<UnresolvedScalarConstantDefinition> Constants => constants;
@@ -32,8 +32,8 @@ internal abstract record class AUnresolvedScalarType<TDefinition> : IUnresolvedS
     public IReadOnlyList<UnresolvedUnitListDefinition> UnitInclusions => unitInclusions;
     public IReadOnlyList<UnresolvedUnitListDefinition> UnitExclusions => unitExclusions;
 
-    public IReadOnlyDictionary<string, IUnresolvedScalarConstant> ConstantsByName => constantsByName;
-    public IReadOnlyDictionary<string, IUnresolvedScalarConstant> ConstantsByMultiplesName => constantsByMultiplesName;
+    public IReadOnlyDictionary<string, IRawScalarConstant> ConstantsByName => constantsByName;
+    public IReadOnlyDictionary<string, IRawScalarConstant> ConstantsByMultiplesName => constantsByMultiplesName;
 
     private ReadOnlyEquatableList<UnresolvedDerivedQuantityDefinition> derivations { get; }
     private ReadOnlyEquatableList<UnresolvedScalarConstantDefinition> constants { get; }
@@ -45,17 +45,17 @@ internal abstract record class AUnresolvedScalarType<TDefinition> : IUnresolvedS
     private ReadOnlyEquatableList<UnresolvedUnitListDefinition> unitInclusions { get; }
     private ReadOnlyEquatableList<UnresolvedUnitListDefinition> unitExclusions { get; }
 
-    private ReadOnlyEquatableDictionary<string, IUnresolvedScalarConstant> constantsByName { get; }
-    private ReadOnlyEquatableDictionary<string, IUnresolvedScalarConstant> constantsByMultiplesName { get; }
+    private ReadOnlyEquatableDictionary<string, IRawScalarConstant> constantsByName { get; }
+    private ReadOnlyEquatableDictionary<string, IRawScalarConstant> constantsByMultiplesName { get; }
 
-    IReadOnlyList<IUnresolvedDerivedQuantity> IUnresolvedQuantityType.Derivations => Derivations;
-    IReadOnlyList<IUnresolvedScalarConstant> IUnresolvedScalarType.Constants => Constants;
-    IReadOnlyList<IUnresolvedConvertibleQuantity> IUnresolvedQuantityType.Conversions => Conversions;
-    IReadOnlyList<IUnresolvedConvertibleScalar> IUnresolvedScalarType.Conversions => Conversions;
-    IReadOnlyList<IUnresolvedUnitList> IUnresolvedScalarType.BaseInclusions => BaseInclusions;
-    IReadOnlyList<IUnresolvedUnitList> IUnresolvedScalarType.BaseExclusion => BaseExclusions;
-    IReadOnlyList<IUnresolvedUnitList> IUnresolvedQuantityType.UnitInclusions => UnitInclusions;
-    IReadOnlyList<IUnresolvedUnitList> IUnresolvedQuantityType.UnitExclusions => UnitExclusions;
+    IReadOnlyList<IRawDerivedQuantity> IRawQuantityType.Derivations => Derivations;
+    IReadOnlyList<IRawScalarConstant> IRawScalarType.Constants => Constants;
+    IReadOnlyList<IRawConvertibleQuantity> IRawQuantityType.Conversions => Conversions;
+    IReadOnlyList<IRawConvertibleScalar> IRawScalarType.Conversions => Conversions;
+    IReadOnlyList<IRawUnitList> IRawScalarType.BaseInclusions => BaseInclusions;
+    IReadOnlyList<IRawUnitList> IRawScalarType.BaseExclusion => BaseExclusions;
+    IReadOnlyList<IRawUnitList> IRawQuantityType.UnitInclusions => UnitInclusions;
+    IReadOnlyList<IRawUnitList> IRawQuantityType.UnitExclusions => UnitExclusions;
 
     protected AUnresolvedScalarType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations,
         IReadOnlyList<UnresolvedScalarConstantDefinition> constants, IReadOnlyList<UnresolvedConvertibleScalarDefinition> conversions,
@@ -81,10 +81,10 @@ internal abstract record class AUnresolvedScalarType<TDefinition> : IUnresolvedS
         constantsByMultiplesName = ConstructConstantsByMultiplesNameDictionary();
     }
 
-    private ReadOnlyEquatableDictionary<string, IUnresolvedScalarConstant> ConstructConstantsByNameDictionary()
-        => (Constants as IEnumerable<IUnresolvedScalarConstant>).ToDictionary(static (constant) => constant.Name).AsReadOnlyEquatable();
+    private ReadOnlyEquatableDictionary<string, IRawScalarConstant> ConstructConstantsByNameDictionary()
+        => (Constants as IEnumerable<IRawScalarConstant>).ToDictionary(static (constant) => constant.Name).AsReadOnlyEquatable();
 
-    private ReadOnlyEquatableDictionary<string, IUnresolvedScalarConstant> ConstructConstantsByMultiplesNameDictionary()
-        => (Constants as IEnumerable<IUnresolvedScalarConstant>).Where(static (constant) => constant.Multiples is not null)
+    private ReadOnlyEquatableDictionary<string, IRawScalarConstant> ConstructConstantsByMultiplesNameDictionary()
+        => (Constants as IEnumerable<IRawScalarConstant>).Where(static (constant) => constant.Multiples is not null)
         .ToDictionary(static (constant) => constant.Multiples!).AsReadOnlyEquatable();
 }

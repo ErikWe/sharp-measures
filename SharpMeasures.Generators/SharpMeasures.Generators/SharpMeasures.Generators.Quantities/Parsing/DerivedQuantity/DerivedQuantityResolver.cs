@@ -4,9 +4,9 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Unresolved.Quantities;
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Quantities;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Vectors;
 
 public interface IDerivedQuantityResolutionDiagnostics
 {
@@ -15,8 +15,8 @@ public interface IDerivedQuantityResolutionDiagnostics
 
 public interface IDerivedQuantityResolutionContext : IProcessingContext
 {
-    public abstract IUnresolvedScalarPopulation ScalarPopulation { get; }
-    public abstract IUnresolvedVectorPopulation VectorPopulation { get; }
+    public abstract IRawScalarPopulation ScalarPopulation { get; }
+    public abstract IRawVectorPopulation VectorPopulation { get; }
 }
 
 public class DerivedQuantityResolver : AProcesser<IDerivedQuantityResolutionContext,  UnresolvedDerivedQuantityDefinition, DerivedQuantityDefinition>
@@ -46,7 +46,7 @@ public class DerivedQuantityResolver : AProcesser<IDerivedQuantityResolutionCont
 
     private IOptionalWithDiagnostics<QuantityDerivationSignature> ResolveSignature(IDerivedQuantityResolutionContext context, UnresolvedDerivedQuantityDefinition definition)
     {
-        var quantities = new IUnresolvedQuantityType[definition.Signature.Count];
+        var quantities = new IRawQuantityType[definition.Signature.Count];
 
         for (int i = 0; i < quantities.Length; i++)
         {
@@ -63,19 +63,19 @@ public class DerivedQuantityResolver : AProcesser<IDerivedQuantityResolutionCont
         return OptionalWithDiagnostics.Result(new QuantityDerivationSignature(quantities));
     }
 
-    private IOptionalWithDiagnostics<IUnresolvedQuantityType> ResolveSignatureComponent(IDerivedQuantityResolutionContext context, UnresolvedDerivedQuantityDefinition definition,
+    private IOptionalWithDiagnostics<IRawQuantityType> ResolveSignatureComponent(IDerivedQuantityResolutionContext context, UnresolvedDerivedQuantityDefinition definition,
         int index)
     {
         if (context.ScalarPopulation.Scalars.TryGetValue(definition.Signature[index], out var scalar))
         {
-            return OptionalWithDiagnostics.Result(scalar as IUnresolvedQuantityType);
+            return OptionalWithDiagnostics.Result(scalar as IRawQuantityType);
         }
 
         if (context.VectorPopulation.IndividualVectors.TryGetValue(definition.Signature[index], out var vector))
         {
-            return OptionalWithDiagnostics.Result(vector as IUnresolvedQuantityType);
+            return OptionalWithDiagnostics.Result(vector as IRawQuantityType);
         }
 
-        return OptionalWithDiagnostics.Empty<IUnresolvedQuantityType>(Diagnostics.TypeNotQuantity(context, definition, index));
+        return OptionalWithDiagnostics.Empty<IRawQuantityType>(Diagnostics.TypeNotQuantity(context, definition, index));
     }
 }

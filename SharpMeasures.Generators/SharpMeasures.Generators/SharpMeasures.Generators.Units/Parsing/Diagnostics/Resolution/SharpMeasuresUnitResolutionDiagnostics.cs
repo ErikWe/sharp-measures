@@ -11,17 +11,17 @@ internal class SharpMeasuresUnitResolutionDiagnostics : ISharpMeasuresUnitResolu
 
     private SharpMeasuresUnitResolutionDiagnostics() { }
 
-    public Diagnostic TypeAlreadyUnit(ISharpMeasuresUnitResolutionContext context, UnresolvedSharpMeasuresUnitDefinition definition)
+    public Diagnostic TypeAlreadyUnit(ISharpMeasuresUnitResolutionContext context, RawSharpMeasuresUnitDefinition definition)
     {
         return DiagnosticConstruction.UnitTypeAlreadyDefinedAsUnit(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
-    public Diagnostic QuantityNotScalar(ISharpMeasuresUnitResolutionContext context, UnresolvedSharpMeasuresUnitDefinition definition)
+    public Diagnostic QuantityNotScalar(ISharpMeasuresUnitResolutionContext context, RawSharpMeasuresUnitDefinition definition)
     {
         return DiagnosticConstruction.TypeNotScalar(definition.Locations.Quantity?.AsRoslynLocation(), definition.Quantity.Name);
     }
 
-    public Diagnostic QuantityBiased(ISharpMeasuresUnitResolutionContext context, UnresolvedSharpMeasuresUnitDefinition definition)
+    public Diagnostic QuantityBiased(ISharpMeasuresUnitResolutionContext context, RawSharpMeasuresUnitDefinition definition)
     {
         return DiagnosticConstruction.TypeNotUnbiasedScalar(definition.Locations.Quantity?.AsRoslynLocation(), definition.Quantity.Name);
     }

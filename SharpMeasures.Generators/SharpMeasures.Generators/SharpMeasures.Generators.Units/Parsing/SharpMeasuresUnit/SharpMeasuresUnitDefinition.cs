@@ -1,25 +1,18 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Raw.Scalars;
 
-internal record class SharpMeasuresUnitDefinition : IAttributeDefinition<SharpMeasuresUnitLocations>, IUnit
+internal record class SharpMeasuresUnitDefinition : ASharpMeasuresObjectDefinition<SharpMeasuresUnitLocations>, IUnit
 {
-    public IUnresolvedScalarType Quantity { get; }
+    public IRawScalarType Quantity { get; }
 
     public bool BiasTerm { get; }
 
-    public bool? GenerateDocumentation { get; }
-
-    public SharpMeasuresUnitLocations Locations { get; }
-
-    public SharpMeasuresUnitDefinition(IUnresolvedScalarType quantity, bool biasTerm, bool? generateDocumentation, SharpMeasuresUnitLocations locations)
+    public SharpMeasuresUnitDefinition(IRawScalarType quantity, bool biasTerm, bool? generateDocumentation, SharpMeasuresUnitLocations locations) : base(generateDocumentation, locations)
     {
         Quantity = quantity;
 
         BiasTerm = biasTerm;
-        GenerateDocumentation = generateDocumentation;
-
-        Locations = locations;
     }
 }

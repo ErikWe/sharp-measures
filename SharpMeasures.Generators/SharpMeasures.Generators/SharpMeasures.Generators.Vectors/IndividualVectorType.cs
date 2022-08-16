@@ -2,13 +2,12 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
-
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 using System.Collections.Generic;
 using System.Linq;
 
-internal record class IndividualVectorType : VectorGroupType, IIndividualVectorType
+internal record class IndividualVectorType : VectorGroupType, IVectorType
 {
     public IReadOnlyList<IVectorConstant> Constants => constants;
 
@@ -20,11 +19,11 @@ internal record class IndividualVectorType : VectorGroupType, IIndividualVectorT
     private ReadOnlyEquatableDictionary<string, IVectorConstant> constantsByName { get; }
     private ReadOnlyEquatableDictionary<string, IVectorConstant> constantsByMultiplesName { get; }
 
-    IIndividualVector IIndividualVectorType.Definition => (IIndividualVector)Definition;
+    IVector IVectorType.Definition => (IVector)Definition;
 
-    public IndividualVectorType(DefinedType type, MinimalLocation typeLocation, IIndividualVector definition,
-        IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> membersByDimension, IReadOnlyList<IDerivedQuantity> derivations,
-        IReadOnlyList<IVectorConstant> constants, IReadOnlyList<IConvertibleVector> conversions, IReadOnlyList<IUnresolvedUnitInstance> includedUnits)
+    public IndividualVectorType(DefinedType type, MinimalLocation typeLocation, IVector definition,
+        IReadOnlyDictionary<int, IRawVectorGroupMemberType> membersByDimension, IReadOnlyList<IDerivedQuantity> derivations,
+        IReadOnlyList<IVectorConstant> constants, IReadOnlyList<IConvertibleVector> conversions, IReadOnlyList<IRawUnitInstance> includedUnits)
         : base(type, typeLocation, definition, membersByDimension, derivations, conversions, includedUnits)
     {
         this.constants = constants.AsReadOnlyEquatable();

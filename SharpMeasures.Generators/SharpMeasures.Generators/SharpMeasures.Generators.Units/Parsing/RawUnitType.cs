@@ -19,28 +19,28 @@ internal record class RawUnitType
     public DefinedType Type { get; }
     public MinimalLocation TypeLocation { get; }
 
-    public RawSharpMeasuresUnitDefinition Definition { get; }
+    public UnprocessedSharpMeasuresUnitDefinition Definition { get; }
 
-    public RawFixedUnitDefinition? FixedUnit { get; }
+    public UnprocessedFixedUnitDefinition? FixedUnit { get; }
     public IEnumerable<RawDerivableUnitDefinition> UnitDerivations => unitDerivations;
 
     public IEnumerable<RawUnitAliasDefinition> UnitAliases => unitAliases;
-    public IEnumerable<RawBiasedUnitDefinition> BiasedUnits => biasedUnits;
+    public IEnumerable<UnprocessedBiasedUnitDefinition> BiasedUnits => biasedUnits;
     public IEnumerable<RawDerivedUnitDefinition> DerivedUnits => derivedUnits;
     public IEnumerable<RawPrefixedUnitDefinition> PrefixedUnits => prefixedUnits;
-    public IEnumerable<RawScaledUnitDefinition> ScaledUnits => scaledUnits;
+    public IEnumerable<UnprocessedScaledUnitDefinition> ScaledUnits => scaledUnits;
 
     private EquatableEnumerable<RawDerivableUnitDefinition> unitDerivations { get; }
 
     private EquatableEnumerable<RawUnitAliasDefinition> unitAliases { get; }
     private EquatableEnumerable<RawDerivedUnitDefinition> derivedUnits { get; }
-    private EquatableEnumerable<RawBiasedUnitDefinition> biasedUnits { get; }
+    private EquatableEnumerable<UnprocessedBiasedUnitDefinition> biasedUnits { get; }
     private EquatableEnumerable<RawPrefixedUnitDefinition> prefixedUnits { get; }
-    private EquatableEnumerable<RawScaledUnitDefinition> scaledUnits { get; }
+    private EquatableEnumerable<UnprocessedScaledUnitDefinition> scaledUnits { get; }
 
-    public RawUnitType(DefinedType type, MinimalLocation unitLocation, RawSharpMeasuresUnitDefinition unitDefinition, RawFixedUnitDefinition? fixedUnit,
+    public RawUnitType(DefinedType type, MinimalLocation unitLocation, UnprocessedSharpMeasuresUnitDefinition unitDefinition, UnprocessedFixedUnitDefinition? fixedUnit,
         IEnumerable<RawDerivableUnitDefinition> unitDerivations, IEnumerable<RawUnitAliasDefinition> unitAliases, IEnumerable<RawDerivedUnitDefinition> derivedUnits,
-        IEnumerable<RawBiasedUnitDefinition> biasedUnits, IEnumerable<RawPrefixedUnitDefinition> prefixedUnits, IEnumerable<RawScaledUnitDefinition> scaledUnits)
+        IEnumerable<UnprocessedBiasedUnitDefinition> biasedUnits, IEnumerable<RawPrefixedUnitDefinition> prefixedUnits, IEnumerable<UnprocessedScaledUnitDefinition> scaledUnits)
     {
         Type = type;
         TypeLocation = unitLocation;
@@ -56,6 +56,6 @@ internal record class RawUnitType
         this.scaledUnits = scaledUnits.AsEquatable();
     }
 
-    public IEnumerable<IRawUnitDefinition<IUnitLocations>> AllUnitInstances => (new[] { FixedUnit } as IEnumerable<IRawUnitDefinition<IUnitLocations>>)
+    public IEnumerable<IUnprocessedUnitDefinition<IUnitLocations>> AllUnitInstances => (new[] { FixedUnit } as IEnumerable<IUnprocessedUnitDefinition<IUnitLocations>>)
         .Concat(UnitAliases).Concat(BiasedUnits).Concat(DerivedUnits).Concat(PrefixedUnits).Concat(ScaledUnits);
 }

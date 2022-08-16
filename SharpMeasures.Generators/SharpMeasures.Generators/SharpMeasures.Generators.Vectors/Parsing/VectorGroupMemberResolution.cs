@@ -2,10 +2,11 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
+using SharpMeasures.Generators.Vectors.Groups;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Resolution;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Resolution;
@@ -34,7 +35,7 @@ internal class VectorGroupMemberResolution
 
         var includedUnits = GetIncludedUnits(intermediateMember, intermediateMember.Definition.Unit, vectorPopulation, static (vector) => vector.Definition.InheritUnits,
             static (vector) => vector.UnitInclusions, static (vector) => vector.UnitExclusions, static (vector) => vector.IncludedUnits,
-            static (vector) => Array.Empty<IUnresolvedUnitInstance>());
+            static (vector) => Array.Empty<IRawUnitInstance>());
 
         var inheritedConstants = ResolveInheritedCollection(intermediateMember, vectorPopulation, static (vector) => vector.Definition.InheritConstants,
             (vector) => vector.MembersByDimension.Values.SelectMany(vectorGroupConstants),
@@ -49,7 +50,7 @@ internal class VectorGroupMemberResolution
 
         return OptionalWithDiagnostics.Result(reduced, allDiagnostics);
         
-        IEnumerable<IVectorConstant> vectorGroupConstants(IUnresolvedVectorGroupMemberType member)
+        IEnumerable<IVectorConstant> vectorGroupConstants(IRawVectorGroupMemberType member)
         {
             if (vectorPopulation.VectorGroupMembers.TryGetValue(member.Type.AsNamedType(), out var memberType))
             {
@@ -60,12 +61,12 @@ internal class VectorGroupMemberResolution
         }
     }
 
-    public static IOptionalWithDiagnostics<IntermediateVectorGroupMemberType> Resolve((UnresolvedVectorGroupMemberType Member, IUnresolvedUnitPopulation UnitPopulation,
-        IUnresolvedScalarPopulation ScalarPopulation, IUnresolvedVectorPopulationWithData VectorPopulation) input, CancellationToken _)
+    public static IOptionalWithDiagnostics<IntermediateVectorGroupMemberType> Resolve((UnresolvedVectorGroupMemberType Member, IRawUnitPopulation UnitPopulation,
+        IRawScalarPopulation ScalarPopulation, IUnresolvedVectorPopulationWithData VectorPopulation) input, CancellationToken _)
         => Resolve(input.Member, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
 
-    public static IOptionalWithDiagnostics<IntermediateVectorGroupMemberType> Resolve(UnresolvedVectorGroupMemberType unresolvedMember, IUnresolvedUnitPopulation unitPopulation,
-        IUnresolvedScalarPopulation scalarPopulation, IUnresolvedVectorPopulationWithData vectorPopulation)
+    public static IOptionalWithDiagnostics<IntermediateVectorGroupMemberType> Resolve(UnresolvedVectorGroupMemberType unresolvedMember, IRawUnitPopulation unitPopulation,
+        IRawScalarPopulation scalarPopulation, IUnresolvedVectorPopulationWithData vectorPopulation)
     {
         SharpMeasuresVectorGroupMemberResolutionContext memberResolutionContext = new(unresolvedMember.Type, unitPopulation, scalarPopulation, vectorPopulation);
 
@@ -97,14 +98,14 @@ internal class VectorGroupMemberResolution
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<VectorConstantDefinition>> ResolveConstants(DefinedType type,
-        IEnumerable<UnresolvedVectorConstantDefinition> unresolvedConstants, IUnresolvedUnitType unit, int dimension)
+        IEnumerable<UnresolvedVectorConstantDefinition> unresolvedConstants, IRawUnitType unit, int dimension)
     {
         VectorConstantResolutionContext vectorConstantResolutionContext = new(type, unit, dimension);
 
         return ProcessingFilter.Create(VectorConstantResolver).Filter(vectorConstantResolutionContext, unresolvedConstants);
     }
 
-    private static IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> ResolveMembersByDimension(IntermediateVectorGroupMemberType member, IIntermediateVectorGroupPopulation vectorPopulation)
+    private static IReadOnlyDictionary<int, IRawVectorGroupMemberType> ResolveMembersByDimension(IntermediateVectorGroupMemberType member, IIntermediateVectorGroupPopulation vectorPopulation)
     {
         if (vectorPopulation.VectorGroupBases.TryGetValue(member.Definition.VectorGroup.Type.AsNamedType(), out var vectorGroupBase))
         {
@@ -116,15 +117,15 @@ internal class VectorGroupMemberResolution
             return vectorGroupSpecialization.MembersByDimension;
         }
 
-        return new Dictionary<int, IUnresolvedVectorGroupMemberType>();
+        return new Dictionary<int, IRawVectorGroupMemberType>();
     }
 
-    private static IReadOnlyList<IUnresolvedUnitInstance> GetIncludedUnits(IntermediateVectorGroupMemberType member, IUnresolvedUnitType unit,
+    private static IReadOnlyList<IRawUnitInstance> GetIncludedUnits(IntermediateVectorGroupMemberType member, IRawUnitType unit,
         IIntermediateVectorGroupPopulation vectorPopulation, Func<IIntermediateVectorGroupSpecializationType, bool> shouldInherit,
-        Func<IIntermediateVectorGroupSpecializationType, IEnumerable<IUnresolvedUnitInstance>> specializationInclusions,
-        Func<IIntermediateVectorGroupSpecializationType, IEnumerable<IUnresolvedUnitInstance>> specializationExclusions,
-        Func<IVectorGroupType, IEnumerable<IUnresolvedUnitInstance>> baseInclusions,
-        Func<IVectorGroupType, IEnumerable<IUnresolvedUnitInstance>> baseExclusions)
+        Func<IIntermediateVectorGroupSpecializationType, IEnumerable<IRawUnitInstance>> specializationInclusions,
+        Func<IIntermediateVectorGroupSpecializationType, IEnumerable<IRawUnitInstance>> specializationExclusions,
+        Func<IVectorGroupType, IEnumerable<IRawUnitInstance>> baseInclusions,
+        Func<IVectorGroupType, IEnumerable<IRawUnitInstance>> baseExclusions)
     {
         if (vectorPopulation.VectorGroupBases.TryGetValue(member.Definition.VectorGroup.Type.AsNamedType(), out var vectorGroupBase))
         {
@@ -136,20 +137,20 @@ internal class VectorGroupMemberResolution
             return GetIncludedUnits(vectorGroupSpecialization, unit, vectorPopulation, shouldInherit, specializationInclusions, specializationExclusions, baseInclusions, baseExclusions);
         }
 
-        return Array.Empty<IUnresolvedUnitInstance>();
+        return Array.Empty<IRawUnitInstance>();
     }
 
-    private static IReadOnlyList<IUnresolvedUnitInstance> GetIncludedUnits(IVectorGroupType vector, IUnresolvedUnitType unit,
-        Func<IVectorGroupType, IEnumerable<IUnresolvedUnitInstance>> baseInclusions,
-        Func<IVectorGroupType, IEnumerable<IUnresolvedUnitInstance>> baseExclusions)
+    private static IReadOnlyList<IRawUnitInstance> GetIncludedUnits(IVectorGroupType vector, IRawUnitType unit,
+        Func<IVectorGroupType, IEnumerable<IRawUnitInstance>> baseInclusions,
+        Func<IVectorGroupType, IEnumerable<IRawUnitInstance>> baseExclusions)
     {
-        HashSet<IUnresolvedUnitInstance> includedUnits = new(unit.UnitsByName.Values);
+        HashSet<IRawUnitInstance> includedUnits = new(unit.UnitsByName.Values);
 
         performModification(baseInclusions(vector), baseExclusions(vector));
 
         return includedUnits.ToList();
 
-        void performModification(IEnumerable<IUnresolvedUnitInstance> inclusions, IEnumerable<IUnresolvedUnitInstance> exclusions)
+        void performModification(IEnumerable<IRawUnitInstance> inclusions, IEnumerable<IRawUnitInstance> exclusions)
         {
             if (inclusions.Any())
             {
@@ -162,14 +163,14 @@ internal class VectorGroupMemberResolution
         }
     }
 
-    private static IReadOnlyList<IUnresolvedUnitInstance> GetIncludedUnits(IIntermediateVectorGroupSpecializationType vector, IUnresolvedUnitType unit,
+    private static IReadOnlyList<IRawUnitInstance> GetIncludedUnits(IIntermediateVectorGroupSpecializationType vector, IRawUnitType unit,
         IIntermediateVectorGroupPopulation vectorPopulation, Func<IIntermediateVectorGroupSpecializationType, bool> shouldInherit,
-        Func<IIntermediateVectorGroupSpecializationType, IEnumerable<IUnresolvedUnitInstance>> specializationInclusions,
-        Func<IIntermediateVectorGroupSpecializationType, IEnumerable<IUnresolvedUnitInstance>> specializationExclusions,
-        Func<IVectorGroupType, IEnumerable<IUnresolvedUnitInstance>> baseInclusions,
-        Func<IVectorGroupType, IEnumerable<IUnresolvedUnitInstance>> baseExclusions)
+        Func<IIntermediateVectorGroupSpecializationType, IEnumerable<IRawUnitInstance>> specializationInclusions,
+        Func<IIntermediateVectorGroupSpecializationType, IEnumerable<IRawUnitInstance>> specializationExclusions,
+        Func<IVectorGroupType, IEnumerable<IRawUnitInstance>> baseInclusions,
+        Func<IVectorGroupType, IEnumerable<IRawUnitInstance>> baseExclusions)
     {
-        HashSet<IUnresolvedUnitInstance> includedUnits = new(unit.UnitsByName.Values);
+        HashSet<IRawUnitInstance> includedUnits = new(unit.UnitsByName.Values);
 
         recursivelyModify(vector);
 
@@ -192,7 +193,7 @@ internal class VectorGroupMemberResolution
             performModification(specializationInclusions(vector), specializationExclusions(vector));
         }
 
-        void performModification(IEnumerable<IUnresolvedUnitInstance> inclusions, IEnumerable<IUnresolvedUnitInstance> exclusions)
+        void performModification(IEnumerable<IRawUnitInstance> inclusions, IEnumerable<IRawUnitInstance> exclusions)
         {
             if (inclusions.Any())
             {

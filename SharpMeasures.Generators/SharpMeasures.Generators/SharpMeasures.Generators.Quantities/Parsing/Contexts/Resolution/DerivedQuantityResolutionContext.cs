@@ -2,15 +2,15 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Vectors;
 
 public record class DerivedQuantityResolutionContext : SimpleProcessingContext, IDerivedQuantityResolutionContext
 {
-    public IUnresolvedScalarPopulation ScalarPopulation { get; }
-    public IUnresolvedVectorPopulation VectorPopulation { get; }
+    public IRawScalarPopulation ScalarPopulation { get; }
+    public IRawVectorPopulation VectorPopulation { get; }
 
-    public DerivedQuantityResolutionContext(DefinedType type, IUnresolvedScalarPopulation scalarPopulation, IUnresolvedVectorPopulation vectorPopulation) : base(type)
+    public DerivedQuantityResolutionContext(DefinedType type, IRawScalarPopulation scalarPopulation, IRawVectorPopulation vectorPopulation) : base(type)
     {
         ScalarPopulation = scalarPopulation;
         VectorPopulation = vectorPopulation;

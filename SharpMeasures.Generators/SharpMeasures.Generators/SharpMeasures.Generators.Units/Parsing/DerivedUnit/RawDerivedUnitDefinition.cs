@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
 using System.Collections.Generic;
 
-internal record class RawDerivedUnitDefinition : ARawUnitDefinition<RawDerivedUnitDefinition, DerivedUnitLocations>
+internal record class RawDerivedUnitDefinition : AUnprocessedUnitDefinition<RawDerivedUnitDefinition, DerivedUnitLocations>
 {
     public static RawDerivedUnitDefinition Empty { get; } = new();
 

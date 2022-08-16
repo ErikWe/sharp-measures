@@ -1,11 +1,11 @@
 ﻿namespace SharpMeasures.Generators.Quantities;
 
 using SharpMeasures.Equatables;
-using SharpMeasures.Generators.Unresolved.Quantities;
+using SharpMeasures.Generators.Raw.Quantities;
 
 using System.Collections.Generic;
 
-public class QuantityDerivationSignature : ReadOnlyEquatableList<IUnresolvedQuantityType>
+public class QuantityDerivationSignature : ReadOnlyEquatableList<IRawQuantityType>
 {
-    public QuantityDerivationSignature(IReadOnlyList<IUnresolvedQuantityType> types) : base(types) { }
+    public QuantityDerivationSignature(IReadOnlyList<IRawQuantityType> types) : base(types) { }
 }

@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Pipelines.Vectors;
 
 using SharpMeasures.Generators.Scalars.Documentation;
-using SharpMeasures.Generators.Vectors;
+using SharpMeasures.Generators.Vectors.Groups;
 
 internal readonly record struct DataModel
 {

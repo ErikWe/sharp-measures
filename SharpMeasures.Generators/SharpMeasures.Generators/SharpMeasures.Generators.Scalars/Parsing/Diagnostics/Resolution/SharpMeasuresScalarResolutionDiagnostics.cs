@@ -28,7 +28,7 @@ internal class SharpMeasuresScalarResolutionDiagnostics : ISharpMeasuresScalarRe
 
     public Diagnostic TypeNotVector(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition)
     {
-        return DiagnosticConstruction.TypeNotVector(definition.Locations.Vector?.AsRoslynLocation(), definition.VectorGroup!.Value.Name);
+        return DiagnosticConstruction.TypeNotVector(definition.Locations.Vector?.AsRoslynLocation(), definition.Vector!.Value.Name);
     }
 
     public Diagnostic DifferenceNotScalar(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition)

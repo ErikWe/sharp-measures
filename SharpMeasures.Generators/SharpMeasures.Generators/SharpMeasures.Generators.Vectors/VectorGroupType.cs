@@ -2,9 +2,9 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
-
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
+using SharpMeasures.Generators.Vectors.Groups;
 using System.Collections.Generic;
 
 internal record class VectorGroupType : IVectorGroupType
@@ -14,19 +14,19 @@ internal record class VectorGroupType : IVectorGroupType
 
     public IVectorGroup Definition { get; }
 
-    public IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> MembersByDimension => registeredMembersByDimension;
+    public IReadOnlyDictionary<int, IRawVectorGroupMemberType> MembersByDimension => registeredMembersByDimension;
 
     public IReadOnlyList<IDerivedQuantity> Derivations => derivations;
     public IReadOnlyList<IConvertibleVector> Conversions => conversions;
 
-    public IReadOnlyList<IUnresolvedUnitInstance> IncludedUnits => includedUnits;
+    public IReadOnlyList<IRawUnitInstance> IncludedUnits => includedUnits;
 
-    private ReadOnlyEquatableDictionary<int, IUnresolvedVectorGroupMemberType> registeredMembersByDimension { get; }
+    private ReadOnlyEquatableDictionary<int, IRawVectorGroupMemberType> registeredMembersByDimension { get; }
 
     private ReadOnlyEquatableList<IDerivedQuantity> derivations { get; }
     private ReadOnlyEquatableList<IConvertibleVector> conversions { get; }
 
-    private ReadOnlyEquatableList<IUnresolvedUnitInstance> includedUnits { get; }
+    private ReadOnlyEquatableList<IRawUnitInstance> includedUnits { get; }
 
     ISharpMeasuresObject ISharpMeasuresObjectType.Definition => Definition;
     IQuantity IQuantityType.Definition => Definition;
@@ -37,8 +37,8 @@ internal record class VectorGroupType : IVectorGroupType
     IReadOnlyList<IConvertibleVector> IVectorGroupType.Conversions => Conversions;
 
     public VectorGroupType(DefinedType type, MinimalLocation typeLocation, IVectorGroup definition,
-        IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> registeredMembersByDimension, IReadOnlyList<IDerivedQuantity> derivations,
-        IReadOnlyList<IConvertibleVector> conversions, IReadOnlyList<IUnresolvedUnitInstance> includedUnits)
+        IReadOnlyDictionary<int, IRawVectorGroupMemberType> registeredMembersByDimension, IReadOnlyList<IDerivedQuantity> derivations,
+        IReadOnlyList<IConvertibleVector> conversions, IReadOnlyList<IRawUnitInstance> includedUnits)
     {
         Type = type;
         TypeLocation = typeLocation;

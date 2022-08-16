@@ -6,15 +6,15 @@ using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
-using SharpMeasures.Generators.Unresolved.Quantities;
-using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Raw.Quantities;
+using SharpMeasures.Generators.Raw.Scalars;
 
 using System.Collections.Generic;
 
-internal record class UnresolvedScalarBaseType : AUnresolvedScalarType<UnresolvedSharpMeasuresScalarDefinition>, IUnresolvedScalarBaseType
+internal record class UnresolvedScalarBaseType : AUnresolvedScalarType<UnresolvedSharpMeasuresScalarDefinition>, IRawScalarBaseType
 {
-    IUnresolvedScalarBase IUnresolvedScalarBaseType.Definition => Definition;
-    IUnresolvedQuantityBase IUnresolvedQuantityBaseType.Definition => Definition;
+    IRawScalarBase IRawScalarBaseType.Definition => Definition;
+    IRawQuantityBase IRawQuantityBaseType.Definition => Definition;
 
     public UnresolvedScalarBaseType(DefinedType type, MinimalLocation typeLocation, UnresolvedSharpMeasuresScalarDefinition definition,
         IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedScalarConstantDefinition> constants,

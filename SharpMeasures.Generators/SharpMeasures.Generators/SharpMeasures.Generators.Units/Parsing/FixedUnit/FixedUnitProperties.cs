@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 internal static class FixedUnitProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawFixedUnitDefinition>> AllProperties => new IAttributeProperty<RawFixedUnitDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<UnprocessedFixedUnitDefinition>> AllProperties => new IAttributeProperty<UnprocessedFixedUnitDefinition>[]
     {
-        CommonProperties.Name<RawFixedUnitDefinition, FixedUnitLocations>(nameof(FixedUnitAttribute.Name)),
-        CommonProperties.Plural<RawFixedUnitDefinition, FixedUnitLocations>(nameof(FixedUnitAttribute.Plural))
+        CommonProperties.Name<UnprocessedFixedUnitDefinition, FixedUnitLocations>(nameof(FixedUnitAttribute.Name)),
+        CommonProperties.Plural<UnprocessedFixedUnitDefinition, FixedUnitLocations>(nameof(FixedUnitAttribute.Plural))
     };
 }

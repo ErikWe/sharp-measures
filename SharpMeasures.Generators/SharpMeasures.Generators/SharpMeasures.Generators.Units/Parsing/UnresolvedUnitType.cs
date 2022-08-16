@@ -9,60 +9,60 @@ using SharpMeasures.Generators.Units.Parsing.PrefixedUnit;
 using SharpMeasures.Generators.Units.Parsing.ScaledUnit;
 using SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
 using SharpMeasures.Generators.Units.Parsing.UnitAlias;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System.Collections.Generic;
 using System.Linq;
 
-internal class UnresolvedUnitType : IUnresolvedUnitType
+internal class UnresolvedUnitType : IRawUnitType
 {
     public DefinedType Type { get; }
     public MinimalLocation TypeLocation { get; }
 
-    public UnresolvedSharpMeasuresUnitDefinition Definition { get; }
+    public RawSharpMeasuresUnitDefinition Definition { get; }
 
-    public UnresolvedFixedUnitDefinition? FixedUnit { get; }
+    public RawFixedUnitDefinition? FixedUnit { get; }
     public IReadOnlyList<UnresolvedDerivableUnitDefinition> UnitDerivations => unitDerivations;
 
     public IReadOnlyList<UnresolvedUnitAliasDefinition> UnitAliases => unitAliases;
-    public IReadOnlyList<UnresolvedBiasedUnitDefinition> BiasedUnits => biasedUnits;
+    public IReadOnlyList<RawBiasedUnitDefinition> BiasedUnits => biasedUnits;
     public IReadOnlyList<UnresolvedDerivedUnitDefinition> DerivedUnits => derivedUnits;
     public IReadOnlyList<UnresolvedPrefixedUnitDefinition> PrefixedUnits => prefixedUnits;
-    public IReadOnlyList<UnresolvedScaledUnitDefinition> ScaledUnits => scaledUnits;
+    public IReadOnlyList<RawScaledUnitDefinition> ScaledUnits => scaledUnits;
 
-    public IReadOnlyDictionary<string, IUnresolvedUnitInstance> UnitsByName => unitsByName;
-    public IReadOnlyDictionary<string, IUnresolvedUnitInstance> UnitsByPluralName => unitsByPluralName;
-    public IReadOnlyDictionary<string, IUnresolvedDerivableUnit> DerivationsByID => derivationsByID;
+    public IReadOnlyDictionary<string, IRawUnitInstance> UnitsByName => unitsByName;
+    public IReadOnlyDictionary<string, IRawUnitInstance> UnitsByPluralName => unitsByPluralName;
+    public IReadOnlyDictionary<string, IRawDerivableUnit> DerivationsByID => derivationsByID;
 
     private ReadOnlyEquatableList<UnresolvedDerivableUnitDefinition> unitDerivations { get; }
 
     private ReadOnlyEquatableList<UnresolvedUnitAliasDefinition> unitAliases { get; }
     private ReadOnlyEquatableList<UnresolvedDerivedUnitDefinition> derivedUnits { get; }
-    private ReadOnlyEquatableList<UnresolvedBiasedUnitDefinition> biasedUnits { get; }
+    private ReadOnlyEquatableList<RawBiasedUnitDefinition> biasedUnits { get; }
     private ReadOnlyEquatableList<UnresolvedPrefixedUnitDefinition> prefixedUnits { get; }
-    private ReadOnlyEquatableList<UnresolvedScaledUnitDefinition> scaledUnits { get; }
+    private ReadOnlyEquatableList<RawScaledUnitDefinition> scaledUnits { get; }
 
-    private ReadOnlyEquatableDictionary<string, IUnresolvedUnitInstance> unitsByName { get; }
-    private ReadOnlyEquatableDictionary<string, IUnresolvedUnitInstance> unitsByPluralName { get; }
-    private ReadOnlyEquatableDictionary<string, IUnresolvedDerivableUnit> derivationsByID { get; }
+    private ReadOnlyEquatableDictionary<string, IRawUnitInstance> unitsByName { get; }
+    private ReadOnlyEquatableDictionary<string, IRawUnitInstance> unitsByPluralName { get; }
+    private ReadOnlyEquatableDictionary<string, IRawDerivableUnit> derivationsByID { get; }
 
     ISharpMeasuresObject ISharpMeasuresObjectType.Definition => Definition;
-    IUnresolvedUnit IUnresolvedUnitType.Definition => Definition;
+    IRawUnit IRawUnitType.Definition => Definition;
 
-    IUnresolvedFixedUnit? IUnresolvedUnitType.FixedUnit => FixedUnit;
-    IReadOnlyList<IUnresolvedDerivableUnit> IUnresolvedUnitType.UnitDerivations => UnitDerivations;
+    IRawFixedUnit? IRawUnitType.FixedUnit => FixedUnit;
+    IReadOnlyList<IRawDerivableUnit> IRawUnitType.UnitDerivations => UnitDerivations;
 
-    IReadOnlyList<IUnresolvedUnitAlias> IUnresolvedUnitType.UnitAliases => UnitAliases;
-    IReadOnlyList<IUnresolvedBiasedUnit> IUnresolvedUnitType.BiasedUnits => BiasedUnits;
-    IReadOnlyList<IUnresolvedDerivedUnit> IUnresolvedUnitType.DerivedUnits => DerivedUnits;
-    IReadOnlyList<IUnresolvedPrefixedUnit> IUnresolvedUnitType.PrefixedUnits => PrefixedUnits;
-    IReadOnlyList<IUnresolvedScaledUnit> IUnresolvedUnitType.ScaledUnits => ScaledUnits;
+    IReadOnlyList<IRawUnitAlias> IRawUnitType.UnitAliases => UnitAliases;
+    IReadOnlyList<IRawBiasedUnit> IRawUnitType.BiasedUnits => BiasedUnits;
+    IReadOnlyList<IRawDerivedUnit> IRawUnitType.DerivedUnits => DerivedUnits;
+    IReadOnlyList<IRawPrefixedUnit> IRawUnitType.PrefixedUnits => PrefixedUnits;
+    IReadOnlyList<IRawScaledUnit> IRawUnitType.ScaledUnits => ScaledUnits;
 
-    public UnresolvedUnitType(DefinedType type, MinimalLocation unitLocation, UnresolvedSharpMeasuresUnitDefinition definition, UnresolvedFixedUnitDefinition? fixedUnit,
+    public UnresolvedUnitType(DefinedType type, MinimalLocation unitLocation, RawSharpMeasuresUnitDefinition definition, RawFixedUnitDefinition? fixedUnit,
         IReadOnlyList<UnresolvedDerivableUnitDefinition> unitDerivations, IReadOnlyList<UnresolvedUnitAliasDefinition> unitAliases,
-        IReadOnlyList<UnresolvedDerivedUnitDefinition> derivedUnits, IReadOnlyList<UnresolvedBiasedUnitDefinition> biasedUnits,
-        IReadOnlyList<UnresolvedPrefixedUnitDefinition> prefixedUnits, IReadOnlyList<UnresolvedScaledUnitDefinition> scaledUnits)
+        IReadOnlyList<UnresolvedDerivedUnitDefinition> derivedUnits, IReadOnlyList<RawBiasedUnitDefinition> biasedUnits,
+        IReadOnlyList<UnresolvedPrefixedUnitDefinition> prefixedUnits, IReadOnlyList<RawScaledUnitDefinition> scaledUnits)
     {
         Type = type;
         TypeLocation = unitLocation;
@@ -83,9 +83,9 @@ internal class UnresolvedUnitType : IUnresolvedUnitType
         derivationsByID = ConstructDerivationsByIDDictionary();
     }
 
-    private IEnumerable<IUnresolvedUnitInstance> AllUnits()
+    private IEnumerable<IRawUnitInstance> AllUnits()
     {
-        var allUnits = (UnitAliases as IEnumerable<IUnresolvedUnitInstance>).Concat(BiasedUnits).Concat(DerivedUnits).Concat(PrefixedUnits).Concat(ScaledUnits);
+        var allUnits = (UnitAliases as IEnumerable<IRawUnitInstance>).Concat(BiasedUnits).Concat(DerivedUnits).Concat(PrefixedUnits).Concat(ScaledUnits);
 
         if (FixedUnit is not null)
         {
@@ -95,15 +95,15 @@ internal class UnresolvedUnitType : IUnresolvedUnitType
         return allUnits;
     }
 
-    private ReadOnlyEquatableDictionary<string, IUnresolvedUnitInstance> ConstructUnitsByNameDictionary()
+    private ReadOnlyEquatableDictionary<string, IRawUnitInstance> ConstructUnitsByNameDictionary()
         => AllUnits().ToDictionary(static (unit) => unit.Name).AsReadOnlyEquatable();
 
-    private ReadOnlyEquatableDictionary<string, IUnresolvedUnitInstance> ConstructUnitsByPluralNameDictionary()
+    private ReadOnlyEquatableDictionary<string, IRawUnitInstance> ConstructUnitsByPluralNameDictionary()
         => AllUnits().ToDictionary(static (unit) => unit.Plural).AsReadOnlyEquatable();
 
-    private ReadOnlyEquatableDictionary<string, IUnresolvedDerivableUnit> ConstructDerivationsByIDDictionary()
+    private ReadOnlyEquatableDictionary<string, IRawDerivableUnit> ConstructDerivationsByIDDictionary()
     {
-        Dictionary<string, IUnresolvedDerivableUnit> derivationsDictionary = new(UnitDerivations.Count);
+        Dictionary<string, IRawDerivableUnit> derivationsDictionary = new(UnitDerivations.Count);
 
         foreach (var derivation in UnitDerivations)
         {

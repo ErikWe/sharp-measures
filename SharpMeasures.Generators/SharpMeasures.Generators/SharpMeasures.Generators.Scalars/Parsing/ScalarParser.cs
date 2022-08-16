@@ -25,7 +25,7 @@ using SharpMeasures.Generators.Scalars.Parsing.IncludeBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 using SharpMeasures.Generators.Scalars.Parsing.SpecializedSharpMeasuresScalar;
-using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Raw.Scalars;
 
 using System;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ using System.Threading;
 
 public static class ScalarParser
 {
-    public static (IncrementalValueProvider<IUnresolvedScalarPopulation>, IScalarResolver) Attach(IncrementalGeneratorInitializationContext context)
+    public static (IncrementalValueProvider<IRawScalarPopulation>, IScalarResolver) Attach(IncrementalGeneratorInitializationContext context)
     {
         var scalarBaseSymbols = AttachSymbolProvider<SharpMeasuresScalarAttribute>(context, BaseDeclarationFilters);
         var scalarSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresScalarAttribute>(context, SpecializedDeclarationFilters);
@@ -69,12 +69,12 @@ public static class ScalarParser
         return DeclarationSymbolProvider.ConstructForValueType(IntermediateResult.Construct).Attach(filteredDeclarations, context.CompilationProvider);
     }
 
-    private static IUnresolvedScalarBaseType ExtractInterface(IUnresolvedScalarBaseType scalarType, CancellationToken _) => scalarType;
-    private static IUnresolvedScalarSpecializationType ExtractInterface(IUnresolvedScalarSpecializationType scalarType, CancellationToken _) => scalarType;
-    private static IUnresolvedScalarPopulation ExtractInterface(IUnresolvedScalarPopulation population, CancellationToken _) => population;
+    private static IRawScalarBaseType ExtractInterface(IRawScalarBaseType scalarType, CancellationToken _) => scalarType;
+    private static IRawScalarSpecializationType ExtractInterface(IRawScalarSpecializationType scalarType, CancellationToken _) => scalarType;
+    private static IRawScalarPopulation ExtractInterface(IRawScalarPopulation population, CancellationToken _) => population;
 
     private static IUnresolvedScalarPopulationWithData CreatePopulation
-        ((ImmutableArray<IUnresolvedScalarBaseType> Bases, ImmutableArray<IUnresolvedScalarSpecializationType> Specializations) scalars, CancellationToken _)
+        ((ImmutableArray<IRawScalarBaseType> Bases, ImmutableArray<IRawScalarSpecializationType> Specializations) scalars, CancellationToken _)
     {
         return UnresolvedScalarPopulation.Build(scalars.Bases, scalars.Specializations);
     }
@@ -185,7 +185,7 @@ public static class ScalarParser
     }
 
     private abstract class AScalarProcesser<TDefinition, TRaw, TProduct>
-        where TDefinition : IUnresolvedScalar
+        where TDefinition : IRawScalar
         where TRaw : ARawScalarType
         where TProduct : AUnresolvedScalarType<TDefinition>
     {

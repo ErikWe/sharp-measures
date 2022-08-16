@@ -1,29 +1,18 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
 
 using SharpMeasures.Generators.Attributes.Parsing;
+using SharpMeasures.Generators.Raw.Units;
 
-internal record class RawSharpMeasuresUnitDefinition : IOpenAttributeDefinition<RawSharpMeasuresUnitDefinition, SharpMeasuresUnitLocations>
+internal record class RawSharpMeasuresUnitDefinition : ASharpMeasuresObjectDefinition<SharpMeasuresUnitLocations>, IRawUnit
 {
-    public static RawSharpMeasuresUnitDefinition Empty { get; } = new(SharpMeasuresUnitLocations.Empty);
+    public NamedType Quantity { get; }
 
-    public NamedType? Quantity { get; init; }
+    public bool BiasTerm { get; }
 
-    public bool BiasTerm { get; init; }
-
-    public bool? GenerateDocumentation { get; init; }
-
-    public SharpMeasuresUnitLocations Locations { get; private init; }
-
-    private RawSharpMeasuresUnitDefinition(SharpMeasuresUnitLocations locations)
+    public RawSharpMeasuresUnitDefinition(NamedType quantity, bool biasTerm, bool? generateDocumentation, SharpMeasuresUnitLocations locations) : base(generateDocumentation, locations)
     {
-        Locations = locations;
+        Quantity = quantity;
+
+        BiasTerm = biasTerm;
     }
-
-    protected RawSharpMeasuresUnitDefinition WithLocations(SharpMeasuresUnitLocations locations) => this with
-    {
-        Locations = locations
-    };
-
-    RawSharpMeasuresUnitDefinition IOpenAttributeDefinition<RawSharpMeasuresUnitDefinition, SharpMeasuresUnitLocations>.WithLocations(SharpMeasuresUnitLocations locations)
-        => WithLocations(locations);
 }

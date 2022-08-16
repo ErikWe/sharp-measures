@@ -2,6 +2,7 @@
 
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Vectors.Groups;
 
 internal abstract record class ADataModel<TVectorType, TDocumentation>
     where TVectorType : IVectorGroupType

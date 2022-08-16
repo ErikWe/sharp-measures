@@ -3,11 +3,15 @@
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 
-internal class FixedUnitResolver : AProcesser<IProcessingContext, UnresolvedFixedUnitDefinition, FixedUnitDefinition>
+internal class FixedUnitResolver : AProcesser<IProcessingContext, RawFixedUnitDefinition, FixedUnitDefinition>
 {
-    public override IOptionalWithDiagnostics<FixedUnitDefinition> Process(IProcessingContext context, UnresolvedFixedUnitDefinition definition)
+    public override IOptionalWithDiagnostics<FixedUnitDefinition> Process(IProcessingContext context, RawFixedUnitDefinition definition)
     {
-        FixedUnitDefinition product = new(definition.Name, definition.Plural, definition.Locations);
-        return OptionalWithDiagnostics.Result(product);
+        return OptionalWithDiagnostics.Result(ProduceResult(definition));
+    }
+
+    private static FixedUnitDefinition ProduceResult(RawFixedUnitDefinition definition)
+    {
+        return new(definition.Name, definition.Plural, definition.Locations);
     }
 }

@@ -4,12 +4,12 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System.Collections.Generic;
 
 internal interface IDependantUnitResolutionDiagnostics<in TDefinition, in TLocations>
-    where TDefinition : IUnresolvedUnitDefinition<TLocations>
+    where TDefinition : IRawUnitDefinition<TLocations>
     where TLocations : IUnitLocations
 {
     public abstract Diagnostic? UnrecognizedDependency(IDependantUnitResolutionContext context, TDefinition definition);
@@ -17,12 +17,12 @@ internal interface IDependantUnitResolutionDiagnostics<in TDefinition, in TLocat
 
 internal interface IDependantUnitResolutionContext : IProcessingContext
 {
-    public abstract IReadOnlyDictionary<string, IUnresolvedUnitInstance> UnitsByName { get; }
+    public abstract IReadOnlyDictionary<string, IRawUnitInstance> UnitsByName { get; }
 }
 
 internal abstract class ADependantUnitResolver<TContext, TDefinition, TLocations, TProduct> : AActionableProcesser<TContext, TDefinition, TProduct>
     where TContext : IDependantUnitResolutionContext
-    where TDefinition : IUnresolvedDependantUnitDefinition<TLocations>
+    where TDefinition : IRawDependantUnitDefinition<TLocations>
     where TLocations : IDependantUnitLocations
     where TProduct : IDependantUnitDefinition<TLocations>
 {
@@ -33,13 +33,10 @@ internal abstract class ADependantUnitResolver<TContext, TDefinition, TLocations
         Diagnostics = diagnostics;
     }
 
-    protected IOptionalWithDiagnostics<IUnresolvedUnitInstance> ProcessDependantOn(TContext context, TDefinition definition)
+    protected IOptionalWithDiagnostics<IRawUnitInstance> ProcessDependantOn(TContext context, TDefinition definition)
     {
-        if (context.UnitsByName.TryGetValue(definition.DependantOn, out var dependantOn) is false)
-        {
-            return OptionalWithDiagnostics.Empty<IUnresolvedUnitInstance>(Diagnostics.UnrecognizedDependency(context, definition));
-        }
+        var dependantOnCorrectlyResolved = context.UnitsByName.TryGetValue(definition.DependantOn, out var dependantOn);
 
-        return OptionalWithDiagnostics.Result(dependantOn);
+        return OptionalWithDiagnostics.Conditional(dependantOnCorrectlyResolved, dependantOn, () => Diagnostics.UnrecognizedDependency(context, definition));
     }
 }

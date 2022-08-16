@@ -109,7 +109,7 @@ internal class SharpMeasuresScalarProcesser : AProcesser<IProcessingContext, Raw
 
     private IValidityWithDiagnostics CheckValidity(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
     {
-        return IterativeValidity.DiagnoseAndMergeWhileValid(validities());
+        return IterativeValidation.DiagnoseAndMergeWhileValid(validities());
 
         IEnumerable<IValidityWithDiagnostics> validities()
         {

@@ -2,11 +2,11 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Vectors;
 
 using System.Collections.Generic;
 
-internal record class UnresolvedVectorConstantDefinition : AUnresolvedQuantityConstantDefinition<VectorConstantLocations>, IUnresolvedVectorConstant
+internal record class UnresolvedVectorConstantDefinition : AUnresolvedQuantityConstantDefinition<VectorConstantLocations>, IRawVectorConstant
 {
     public IReadOnlyList<double> Value => value;
 

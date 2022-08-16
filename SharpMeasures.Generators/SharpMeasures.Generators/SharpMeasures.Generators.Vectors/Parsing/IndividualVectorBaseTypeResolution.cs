@@ -2,10 +2,9 @@
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 using SharpMeasures.Generators.Vectors;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Resolution;
@@ -19,15 +18,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 
 internal static class IndividualVectorBaseTypeResolution
 {
-    public static IOptionalWithDiagnostics<IndividualVectorType> Resolve((UnresolvedIndividualVectorBaseType Vector, IUnresolvedUnitPopulation UnitPopulation,
-        IUnresolvedScalarPopulation ScalarPopulation, IUnresolvedVectorPopulationWithData VectorPopulation) input, CancellationToken _)
+    public static IOptionalWithDiagnostics<IndividualVectorType> Resolve((UnresolvedIndividualVectorBaseType Vector, IRawUnitPopulation UnitPopulation,
+        IRawScalarPopulation ScalarPopulation, IUnresolvedVectorPopulationWithData VectorPopulation) input, CancellationToken _)
         => Resolve(input.Vector, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
 
-    public static IOptionalWithDiagnostics<IndividualVectorType> Resolve(UnresolvedIndividualVectorBaseType unresolvedVector, IUnresolvedUnitPopulation unitPopulation,
-        IUnresolvedScalarPopulation scalarPopulation, IUnresolvedVectorPopulationWithData vectorPopulation)
+    public static IOptionalWithDiagnostics<IndividualVectorType> Resolve(UnresolvedIndividualVectorBaseType unresolvedVector, IRawUnitPopulation unitPopulation,
+        IRawScalarPopulation scalarPopulation, IUnresolvedVectorPopulationWithData vectorPopulation)
     {
         SharpMeasuresVectorResolutionContext vectorResolutionContext = new(unresolvedVector.Type, unitPopulation, scalarPopulation, vectorPopulation);
 
@@ -60,14 +60,14 @@ internal static class IndividualVectorBaseTypeResolution
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static IReadOnlyList<IUnresolvedUnitInstance> GetIncludedUnits(IUnresolvedUnitType unit, IEnumerable<IUnitList> inclusions, IEnumerable<IUnitList> exclusions)
+    private static IReadOnlyList<IRawUnitInstance> GetIncludedUnits(IRawUnitType unit, IEnumerable<IUnitList> inclusions, IEnumerable<IUnitList> exclusions)
     {
         if (inclusions.Any())
         {
             return inclusions.SelectMany(static (unitList) => unitList).ToList();
         }
 
-        HashSet<IUnresolvedUnitInstance> includedUnits = new(unit.UnitsByName.Values);
+        HashSet<IRawUnitInstance> includedUnits = new(unit.UnitsByName.Values);
 
         foreach (var exclusion in exclusions.SelectMany(static (unitList) => unitList))
         {
@@ -77,12 +77,12 @@ internal static class IndividualVectorBaseTypeResolution
         return includedUnits.ToList();
     }
 
-    private static IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> MockMembersPopulation(UnresolvedIndividualVectorBaseType unresolvedType, SharpMeasuresVectorDefinition vector)
+    private static IReadOnlyDictionary<int, IRawVectorGroupMemberType> MockMembersPopulation(UnresolvedIndividualVectorBaseType unresolvedType, SharpMeasuresVectorDefinition vector)
     {
         UnresolvedSharpMeasuresVectorGroupMemberDefinition mockedMember = new(unresolvedType.Type.AsNamedType(), vector.Dimension, false, SharpMeasuresVectorGroupMemberLocations.Empty);
         UnresolvedVectorGroupMemberType mockedType = new(unresolvedType.Type, unresolvedType.TypeLocation, mockedMember, unresolvedType.Constants);
 
-        return new Dictionary<int, IUnresolvedVectorGroupMemberType>(1)
+        return new Dictionary<int, IRawVectorGroupMemberType>(1)
         {
             { vector.Dimension, mockedType }
         };

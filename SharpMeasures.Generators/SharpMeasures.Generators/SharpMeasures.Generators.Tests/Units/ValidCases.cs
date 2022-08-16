@@ -25,7 +25,7 @@ public class ValidCases
             public partial class UnitOfLength { }
             """;
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoCompilationDiagnostics().VerifyMatchingSourceNames(@"UnitOfLength_\S+\.g\.cs");
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames(@"UnitOfLength_\S+\.g\.cs");
     }
 
     [Fact]

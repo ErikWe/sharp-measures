@@ -2,32 +2,32 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Unresolved.Quantities;
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Quantities;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 
-internal record class SharpMeasuresVectorDefinition : AAttributeDefinition<SharpMeasuresVectorLocations>, IIndividualVector
+internal record class SharpMeasuresVectorDefinition : AAttributeDefinition<SharpMeasuresVectorLocations>, IVector
 {
-    public IUnresolvedUnitType Unit { get; }
-    public IUnresolvedScalarType? Scalar { get; }
+    public IRawUnitType Unit { get; }
+    public IRawScalarType? Scalar { get; }
 
     public int Dimension { get; }
 
     public bool ImplementSum { get; }
     public bool ImplementDifference { get; }
 
-    public IUnresolvedVectorGroupType Difference { get; }
-    IUnresolvedQuantityType IQuantity.Difference => Difference;
+    public IRawVectorGroupType Difference { get; }
+    IRawQuantityType IQuantity.Difference => Difference;
 
-    public IUnresolvedUnitInstance? DefaultUnit { get; }
+    public IRawUnitInstance? DefaultUnit { get; }
     public string? DefaultUnitSymbol { get; }
 
     public bool? GenerateDocumentation { get; }
 
-    public SharpMeasuresVectorDefinition(IUnresolvedUnitType unit, IUnresolvedScalarType? scalar, int dimension, bool implementSum, bool implementDifference,
-        IUnresolvedVectorGroupType difference, IUnresolvedUnitInstance? defaultUnit, string? defaultUnitSymbol, bool? generateDocumentation, SharpMeasuresVectorLocations locations)
+    public SharpMeasuresVectorDefinition(IRawUnitType unit, IRawScalarType? scalar, int dimension, bool implementSum, bool implementDifference,
+        IRawVectorGroupType difference, IRawUnitInstance? defaultUnit, string? defaultUnitSymbol, bool? generateDocumentation, SharpMeasuresVectorLocations locations)
         : base(locations)
     {
         Unit = unit;

@@ -3,19 +3,19 @@
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System.Collections.Generic;
 
-internal record class DerivedUnitDefinition : AUnresolvedUnitDefinition<DerivedUnitLocations>, IDerivedUnit
+internal record class DerivedUnitDefinition : ARawUnitDefinition<DerivedUnitLocations>, IDerivedUnit
 {
-    public UnresolvedUnitDerivationSignature Signature { get; }
-    public IReadOnlyList<IUnresolvedUnitInstance> Units => units;
+    public RawUnitDerivationSignature Signature { get; }
+    public IReadOnlyList<IRawUnitInstance> Units => units;
 
-    private ReadOnlyEquatableList<IUnresolvedUnitInstance> units { get; }
+    private ReadOnlyEquatableList<IRawUnitInstance> units { get; }
 
-    public DerivedUnitDefinition(string name, string plural, UnresolvedUnitDerivationSignature signature, IReadOnlyList<IUnresolvedUnitInstance> units,
+    public DerivedUnitDefinition(string name, string plural, RawUnitDerivationSignature signature, IReadOnlyList<IRawUnitInstance> units,
         DerivedUnitLocations locations)
         : base(name, plural, locations)
     {

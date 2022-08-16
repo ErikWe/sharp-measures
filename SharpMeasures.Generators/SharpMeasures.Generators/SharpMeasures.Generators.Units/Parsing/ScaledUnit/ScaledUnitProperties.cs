@@ -7,11 +7,11 @@ using System.Collections.Generic;
 
 internal static class ScaledUnitProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawScaledUnitDefinition>> AllProperties => new IAttributeProperty<RawScaledUnitDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<UnprocessedScaledUnitDefinition>> AllProperties => new IAttributeProperty<UnprocessedScaledUnitDefinition>[]
     {
-        CommonProperties.Name<RawScaledUnitDefinition, ScaledUnitLocations>(nameof(ScaledUnitAttribute.Name)),
-        CommonProperties.Plural<RawScaledUnitDefinition, ScaledUnitLocations>(nameof(ScaledUnitAttribute.Plural)),
-        CommonProperties.DependantOn<RawScaledUnitDefinition, ScaledUnitLocations>(nameof(ScaledUnitAttribute.From)),
+        CommonProperties.Name<UnprocessedScaledUnitDefinition, ScaledUnitLocations>(nameof(ScaledUnitAttribute.Name)),
+        CommonProperties.Plural<UnprocessedScaledUnitDefinition, ScaledUnitLocations>(nameof(ScaledUnitAttribute.Plural)),
+        CommonProperties.DependantOn<UnprocessedScaledUnitDefinition, ScaledUnitLocations>(nameof(ScaledUnitAttribute.From)),
         Scale,
         Expression
     };

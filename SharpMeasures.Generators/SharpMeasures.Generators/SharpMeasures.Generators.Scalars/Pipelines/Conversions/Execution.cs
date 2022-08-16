@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Raw.Scalars;
 using SharpMeasures.Generators.Utility;
 
 using System;
@@ -29,31 +29,24 @@ internal static class Execution
         }
 
         private StringBuilder Builder { get; } = new();
-        private UsingsCollector UsingsCollector { get; }
-        private InterfaceCollector InterfaceCollector { get; }
+        private NewlineSeparationHandler SeparationHandler { get; }
 
         private DataModel Data { get; }
+
+        private InterfaceCollector InterfaceCollector { get; }
 
         private Composer(DataModel data)
         {
             Data = data;
 
-            UsingsCollector = UsingsCollector.Delayed(Builder, data.Scalar.Namespace);
+            SeparationHandler = new(Builder);
+
             InterfaceCollector = InterfaceCollector.Delayed(Builder);
-
-            UsingsCollector.AddUsing("SharpMeasures.ScalarAbstractions");
-
-            if (Data.Scalar.IsReferenceType)
-            {
-                UsingsCollector.AddUsing("System");
-            }
         }
 
         private void Compose()
         {
             StaticBuilding.AppendHeaderAndDirectives(Builder);
-
-            UsingsCollector.MarkInsertionPoint();
 
             NamespaceBuilding.AppendNamespace(Builder, Data.Scalar.Namespace);
 
@@ -64,7 +57,6 @@ internal static class Execution
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0);
 
             InterfaceCollector.InsertInterfacesOnNewLines(new Indentation(1));
-            UsingsCollector.InsertUsings();
         }
 
         private string Retrieve()
@@ -74,12 +66,13 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
+            SeparationHandler.MarkUnncecessary();
+
             foreach (IConvertibleScalar definition in Data.Conversions)
             {
-                foreach (IUnresolvedScalarType scalar in definition.Scalars)
+                foreach (IRawScalarType scalar in definition.Scalars)
                 {
-                    ComposeInstanceConversion(indentation, scalar);
-                    Builder.AppendLine();
+                    AppendInstanceConversion(indentation, scalar);
                 }
             }
 
@@ -90,62 +83,41 @@ internal static class Execution
                     continue;
                 }
 
-                Action<Indentation, IUnresolvedScalarType> composer = definition.CastOperatorBehaviour switch
+                Action<Indentation, IRawScalarType> composer = definition.CastOperatorBehaviour switch
                 {
-                    ConversionOperatorBehaviour.Explicit => ComposeExplicitOperatorConversion,
-                    ConversionOperatorBehaviour.Implicit => ComposeImplicitOperatorConversion,
+                    ConversionOperatorBehaviour.Explicit => AppendExplicitOperatorConversion,
+                    ConversionOperatorBehaviour.Implicit => AppendImplicitOperatorConversion,
                     _ => throw new NotSupportedException("Invalid cast operation")
                 };
 
-                foreach (IUnresolvedScalarType scalar in definition.Scalars)
+                foreach (IRawScalarType scalar in definition.Scalars)
                 {
                     composer(indentation, scalar);
-                    Builder.AppendLine();
                 }
             }
-
-            SourceBuildingUtility.RemoveOneNewLine(Builder);
         }
 
-        private void ComposeInstanceConversion(Indentation indentation, IUnresolvedScalarType scalar)
+        private void AppendInstanceConversion(Indentation indentation, IRawScalarType scalar)
         {
+            SeparationHandler.AddIfNecessary();
+
             AppendDocumentation(indentation, Data.Documentation.Conversion(scalar));
-            Builder.AppendLine($"{indentation}public {scalar.Type.Name} As{scalar.Type.Name} => new(Magnitude);");
+            Builder.AppendLine($"{indentation}public {scalar.Type.FullyQualifiedName} As{scalar.Type.Name} => new(Magnitude);");
         }
 
-        private void ComposeExplicitOperatorConversion(Indentation indentation, IUnresolvedScalarType scalar)
-            => ComposeOperatorConversion(indentation, scalar, "explicit");
+        private void AppendExplicitOperatorConversion(Indentation indentation, IRawScalarType scalar)
+            => AppendOperatorConversion(indentation, scalar, "explicit");
 
-        private void ComposeImplicitOperatorConversion(Indentation indentation, IUnresolvedScalarType scalar)
-            => ComposeOperatorConversion(indentation, scalar, "implicit");
+        private void AppendImplicitOperatorConversion(Indentation indentation, IRawScalarType scalar)
+            => AppendOperatorConversion(indentation, scalar, "implicit");
 
-        private void ComposeOperatorConversion(Indentation indentation, IUnresolvedScalarType scalar, string behaviour)
+        private void AppendOperatorConversion(Indentation indentation, IRawScalarType scalar, string behaviour)
         {
+            SeparationHandler.AddIfNecessary();
+
             AppendDocumentation(indentation, Data.Documentation.CastConversion(scalar));
 
-            if (Data.Scalar.IsReferenceType)
-            {
-                Builder.AppendLine($"""{indentation}/// <exception cref="ArgumentNullException"/>""");
-            }
-
-            Builder.Append($"{indentation}public static {behaviour} operator {scalar.Type.Name}({Data.Scalar.Name} x)");
-
-            if (Data.Scalar.IsReferenceType)
-            {
-                Builder.AppendLine();
-
-                Builder.AppendLine($$"""
-                    {{indentation}}{
-                    {{indentation.Increased}}ArgumentNullException.ThrowIfNull(x);
-
-                    {{indentation.Increased}}return new(x.Magnitude);
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                Builder.AppendLine(" => new(x.Magnitude);");
-            }
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, $"public static {behaviour} operator {scalar.Type.Name}", "new(x.Magnitude)", (Data.Scalar.AsNamedType(), "x"));
         }
 
         private void AppendDocumentation(Indentation indentation, string text)

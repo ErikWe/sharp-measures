@@ -15,7 +15,8 @@ using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.UnitList;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Vectors;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics;
@@ -35,7 +36,7 @@ using System.Threading;
 
 public static class VectorParser
 {
-    public static (IncrementalValueProvider<IUnresolvedVectorPopulation>, IVectorResolver) Attach(IncrementalGeneratorInitializationContext context)
+    public static (IncrementalValueProvider<IRawVectorPopulation>, IVectorResolver) Attach(IncrementalGeneratorInitializationContext context)
     {
         var vectorGroupBaseSymbols = AttachSymbolProvider<SharpMeasuresVectorGroupAttribute>(context, GroupBaseDeclarationFilters);
         var vectorGroupSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresVectorGroupAttribute>(context, GroupSpecializationDeclarationFilters);
@@ -94,19 +95,19 @@ public static class VectorParser
         return DeclarationSymbolProvider.ConstructForValueType(IntermediateResult.Construct).Attach(filteredDeclarations, context.CompilationProvider);
     }
 
-    private static IUnresolvedVectorGroupBaseType ExtractInterface(IUnresolvedVectorGroupBaseType vectorGroupType, CancellationToken _) => vectorGroupType;
-    private static IUnresolvedVectorGroupSpecializationType ExtractInterface(IUnresolvedVectorGroupSpecializationType vectorGroupType, CancellationToken _) => vectorGroupType;
-    private static IUnresolvedVectorGroupMemberType ExtractInterface(IUnresolvedVectorGroupMemberType groupMemberType, CancellationToken _) => groupMemberType;
+    private static IRawVectorGroupBaseType ExtractInterface(IRawVectorGroupBaseType vectorGroupType, CancellationToken _) => vectorGroupType;
+    private static IRawVectorGroupSpecializationType ExtractInterface(IRawVectorGroupSpecializationType vectorGroupType, CancellationToken _) => vectorGroupType;
+    private static IRawVectorGroupMemberType ExtractInterface(IRawVectorGroupMemberType groupMemberType, CancellationToken _) => groupMemberType;
 
-    private static IUnresolvedIndividualVectorBaseType ExtractInterface(IUnresolvedIndividualVectorBaseType vectorType, CancellationToken _) => vectorType;
-    private static IUnresolvedIndividualVectorSpecializationType ExtractInterface(IUnresolvedIndividualVectorSpecializationType vectorType, CancellationToken _) => vectorType;
+    private static IRawVectorBaseType ExtractInterface(IRawVectorBaseType vectorType, CancellationToken _) => vectorType;
+    private static IRawVectorSpecializationType ExtractInterface(IRawVectorSpecializationType vectorType, CancellationToken _) => vectorType;
 
-    private static IUnresolvedVectorPopulation ExtractInterface(IUnresolvedVectorPopulation population, CancellationToken _) => population;
+    private static IRawVectorPopulation ExtractInterface(IRawVectorPopulation population, CancellationToken _) => population;
 
     private static IUnresolvedVectorPopulationWithData CreatePopulation
-        ((ImmutableArray<IUnresolvedVectorGroupBaseType> BaseGroups, ImmutableArray<IUnresolvedVectorGroupSpecializationType> SpecializedGroups,
-        ImmutableArray<IUnresolvedVectorGroupMemberType> GroupMembers, ImmutableArray<IUnresolvedIndividualVectorBaseType> Bases,
-        ImmutableArray<IUnresolvedIndividualVectorSpecializationType> Specialized) vectors, CancellationToken _)
+        ((ImmutableArray<IRawVectorGroupBaseType> BaseGroups, ImmutableArray<IRawVectorGroupSpecializationType> SpecializedGroups,
+        ImmutableArray<IRawVectorGroupMemberType> GroupMembers, ImmutableArray<IRawVectorBaseType> Bases,
+        ImmutableArray<IRawVectorSpecializationType> Specialized) vectors, CancellationToken _)
     {
         return UnresolvedVectorPopulation.Build(vectors.BaseGroups, vectors.SpecializedGroups, vectors.GroupMembers, vectors.Bases, vectors.Specialized);
     }
@@ -284,7 +285,7 @@ public static class VectorParser
     }
 
     private abstract class AVectorGroupProcesser<TDefinition, TRaw, TProduct>
-        where TDefinition : IUnresolvedVectorGroup
+        where TDefinition : IRawVectorGroup
         where TRaw : ARawVectorGroupType
         where TProduct : AUnresolvedVectorGroupType<TDefinition>
     {
@@ -398,7 +399,7 @@ public static class VectorParser
     }
 
     private abstract class AIndividualVectorProcesser<TDefinition, TRaw, TProduct>
-        where TDefinition : IUnresolvedIndividualVector
+        where TDefinition : IRawVector
         where TRaw : ARawIndividualVectorType
         where TProduct : AUnresolvedIndividualVectorType<TDefinition>
     {

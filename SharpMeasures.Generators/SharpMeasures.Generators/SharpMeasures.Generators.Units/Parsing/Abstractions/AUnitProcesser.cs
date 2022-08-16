@@ -6,20 +6,23 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Attributes.Parsing.Utility;
 using SharpMeasures.Generators.Diagnostics;
 
+using System;
 using System.Collections.Generic;
 
 internal interface IUnitProcessingDiagnostics<in TDefinition, in TLocations>
-    where TDefinition : IRawUnitDefinition<TLocations>
+    where TDefinition : IUnprocessedUnitDefinition<TLocations>
     where TLocations : IUnitLocations
 {
     public abstract Diagnostic? NullUnitName(IUnitProcessingContext context, TDefinition definition);
     public abstract Diagnostic? EmptyUnitName(IUnitProcessingContext context, TDefinition definition);
     public abstract Diagnostic? DuplicateUnitName(IUnitProcessingContext context, TDefinition definition);
+    public abstract Diagnostic? UnitNameReservedByUnitPluralForm(IUnitProcessingContext context, TDefinition definition);
 
     public abstract Diagnostic? NullUnitPluralForm(IUnitProcessingContext context, TDefinition definition);
     public abstract Diagnostic? EmptyUnitPluralForm(IUnitProcessingContext context, TDefinition definition);
     public abstract Diagnostic? InvalidUnitPluralForm(IUnitProcessingContext context, TDefinition definition);
     public abstract Diagnostic? DuplicateUnitPluralForm(IUnitProcessingContext context, TDefinition definition, string interpretedPlural);
+    public abstract Diagnostic? UnitPluralFormReservedByUnitName(IUnitProcessingContext context, TDefinition definition, string interpretedPlural);
 }
 
 internal interface IUnitProcessingContext : IProcessingContext
@@ -30,9 +33,9 @@ internal interface IUnitProcessingContext : IProcessingContext
 
 internal abstract class AUnitProcesser<TContext, TDefinition, TLocations, TProduct> : AActionableProcesser<TContext, TDefinition, TProduct>
     where TContext : IUnitProcessingContext
-    where TDefinition : IRawUnitDefinition<TLocations>
+    where TDefinition : IUnprocessedUnitDefinition<TLocations>
     where TLocations : IUnitLocations
-    where TProduct : IUnresolvedUnitDefinition<TLocations>
+    where TProduct : IRawUnitDefinition<TLocations>
 {
     private IUnitProcessingDiagnostics<TDefinition, TLocations> Diagnostics { get; }
 
@@ -47,60 +50,82 @@ internal abstract class AUnitProcesser<TContext, TDefinition, TLocations, TProdu
         context.ReservedUnitPlurals.Add(product.Plural);
     }
 
-    protected virtual bool VerifyRequiredPropertiesSet(TDefinition definition)
+    protected virtual IValidityWithDiagnostics VerifyRequiredPropertiesSet(TDefinition definition)
     {
-        return definition.Locations.ExplicitlySetName && definition.Locations.ExplicitlySetPlural;
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Locations.ExplicitlySetName && definition.Locations.ExplicitlySetPlural);
     }
 
-    protected IValidityWithDiagnostics CheckUnitValidity(TContext context, TDefinition definition)
+    protected IValidityWithDiagnostics ValidateUnitName(TContext context, TDefinition definition)
     {
-        return CheckNameValidity(context, definition);
+        return IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, ValidateUnitNameNotNull, ValidateUnitNameNotEmpty, ValidateUnitNameNotDuplicate, ValidateUnitNameNotReservedByPlural);
     }
 
-    private IValidityWithDiagnostics CheckNameValidity(TContext context, TDefinition definition)
+    private IValidityWithDiagnostics ValidateUnitNameNotNull(TContext context, TDefinition definition)
     {
-        if (definition.Name is null)
-        {
-            return ValidityWithDiagnostics.Invalid(Diagnostics.NullUnitName(context, definition));
-        }
+        return ValidityWithDiagnostics.Conditional(definition.Name is not null, () => Diagnostics.NullUnitName(context, definition));
+    }
 
-        if (definition.Name.Length is 0)
-        {
-            return ValidityWithDiagnostics.Invalid(Diagnostics.EmptyUnitName(context, definition));
-        }
+    private IValidityWithDiagnostics ValidateUnitNameNotEmpty(TContext context, TDefinition definition)
+    {
+        return ValidityWithDiagnostics.Conditional(definition.Name!.Length is not 0, () => Diagnostics.EmptyUnitName(context, definition));
+    }
 
-        if (context.ReservedUnits.Contains(definition.Name))
-        {
-            return ValidityWithDiagnostics.Invalid(Diagnostics.DuplicateUnitName(context, definition));
-        }
+    private IValidityWithDiagnostics ValidateUnitNameNotDuplicate(TContext context, TDefinition definition)
+    {
+        return ValidityWithDiagnostics.Conditional(context.ReservedUnits.Contains(definition.Name!) is false, () => Diagnostics.DuplicateUnitName(context, definition));
+    }
 
-        return ValidityWithDiagnostics.Valid;
+    private IValidityWithDiagnostics ValidateUnitNameNotReservedByPlural(TContext context, TDefinition definition)
+    {
+        return ValidityWithDiagnostics.Conditional(context.ReservedUnitPlurals.Contains($"One{definition.Name!}") is false, () => Diagnostics.UnitNameReservedByUnitPluralForm(context, definition));
     }
 
     protected IOptionalWithDiagnostics<string> ProcessPlural(TContext context, TDefinition definition)
     {
-        if (definition.Plural is null)
-        {
-            return OptionalWithDiagnostics.Empty<string>(Diagnostics.NullUnitPluralForm(context, definition));
-        }
+        var rawValid = IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, ValidateUnitPluralNotNull, ValidateUnitPluralNotEmpty);
+        var interpretedPluralForm = rawValid.Transform(definition, InterpretPluralForm);
+        var correctlyInterpreted = interpretedPluralForm.Merge(context, definition, ProcessInterpretedPluralForm);
+        return correctlyInterpreted.Validate(context, definition, ValidateInterpretedPluralForm);
+    }
 
-        if (definition.Plural.Length is 0)
-        {
-            return OptionalWithDiagnostics.Empty<string>(Diagnostics.EmptyUnitPluralForm(context, definition));
-        }
+    private IValidityWithDiagnostics ValidateUnitPluralNotNull(TContext context, TDefinition definition)
+    {
+        return ValidityWithDiagnostics.Conditional(definition.Plural is not null, () => Diagnostics.NullUnitPluralForm(context, definition));
+    }
 
-        string? interpretedPlural = SimpleTextExpression.Interpret(definition.Name, definition.Plural);
+    private IValidityWithDiagnostics ValidateUnitPluralNotEmpty(TContext context, TDefinition definition)
+    {
+        return ValidityWithDiagnostics.Conditional(definition.Plural!.Length is not 0, () => Diagnostics.EmptyUnitPluralForm(context, definition));
+    }
 
-        if (interpretedPlural is null)
-        {
-            return OptionalWithDiagnostics.Empty<string>(Diagnostics.InvalidUnitPluralForm(context, definition));
-        }
+    private static string? InterpretPluralForm(TDefinition definition) => SimpleTextExpression.Interpret(definition.Name, definition.Plural);
 
-        if (context.ReservedUnitPlurals.Contains(interpretedPlural))
-        {
-            return OptionalWithDiagnostics.Empty<string>(Diagnostics.DuplicateUnitPluralForm(context, definition, interpretedPlural));
-        }
+    private IOptionalWithDiagnostics<string> ProcessInterpretedPluralForm(TContext context, TDefinition definition, string? interpretedPluralForm)
+    {
+        return OptionalWithDiagnostics.Conditional(interpretedPluralForm is not null, interpretedPluralForm!, () => Diagnostics.InvalidUnitPluralForm(context, definition));
+    }
 
-        return OptionalWithDiagnostics.Result(interpretedPlural);
+    private IValidityWithDiagnostics ValidateInterpretedPluralForm(TContext context, TDefinition definition, string interpretedPluralForm)
+    {
+        return IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, interpretedPluralForm, ValidateUnitPluralNotDuplicate, ValidateUnitPluralNotReservedByName, ValidateUnitPluralNotSameAsName);
+    }
+
+    private IValidityWithDiagnostics ValidateUnitPluralNotDuplicate(TContext context, TDefinition definition, string interpretedPluralForm)
+    {
+        return ValidityWithDiagnostics.Conditional(context.ReservedUnitPlurals.Contains(interpretedPluralForm) is false, () => Diagnostics.DuplicateUnitPluralForm(context, definition, interpretedPluralForm));
+    }
+
+    private IValidityWithDiagnostics ValidateUnitPluralNotReservedByName(TContext context, TDefinition definition, string interpretedPluralForm)
+    {
+        var unitPluralReservedByName = interpretedPluralForm.StartsWith("One", StringComparison.InvariantCulture) && context.ReservedUnits.Contains(interpretedPluralForm.Substring(3));
+
+        return ValidityWithDiagnostics.Conditional(unitPluralReservedByName is false, () => Diagnostics.UnitPluralFormReservedByUnitName(context, definition, interpretedPluralForm));
+    }
+
+    private IValidityWithDiagnostics ValidateUnitPluralNotSameAsName(TContext context, TDefinition definition, string interpretedPluralForm)
+    {
+        var unitPluralSameAsName = interpretedPluralForm.StartsWith("One", StringComparison.InvariantCulture) && interpretedPluralForm.Substring(3) == definition.Name;
+
+        return ValidityWithDiagnostics.Conditional(unitPluralSameAsName is false, () => Diagnostics.UnitPluralFormReservedByUnitName(context, definition, interpretedPluralForm));
     }
 }

@@ -3,7 +3,7 @@
 using SharpMeasures.Generators.Attributes.Parsing;
 
 internal record class RawSpecializedSharpMeasuresVectorGroupDefinition :
-    ARawAttributeDefinition<RawSpecializedSharpMeasuresVectorGroupDefinition, SpecializedSharpMeasuresVectorGroupLocations>
+    AUnprocessedAttributeDefinition<RawSpecializedSharpMeasuresVectorGroupDefinition, SpecializedSharpMeasuresVectorGroupLocations>
 {
     public static RawSpecializedSharpMeasuresVectorGroupDefinition Empty => new();
 

@@ -4,8 +4,8 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 public interface IQuantityConstantResolutionDiagnostics<TDefinition, TLocations>
     where TDefinition : AUnresolvedQuantityConstantDefinition<TLocations>
@@ -16,7 +16,7 @@ public interface IQuantityConstantResolutionDiagnostics<TDefinition, TLocations>
 
 public interface IQuantityConstantResolutionContext : IProcessingContext
 {
-    public abstract IUnresolvedUnitType Unit { get; }
+    public abstract IRawUnitType Unit { get; }
 }
 
 public abstract class AQuantityConstantResolver<TContext, TDefinition, TLocations, TProduct> : AProcesser<TContext, TDefinition, TProduct>
@@ -32,11 +32,11 @@ public abstract class AQuantityConstantResolver<TContext, TDefinition, TLocation
         Diagnostics = diagnostics;
     }
 
-    protected IOptionalWithDiagnostics<IUnresolvedUnitInstance> ResolveUnit(TContext context, TDefinition definition)
+    protected IOptionalWithDiagnostics<IRawUnitInstance> ResolveUnit(TContext context, TDefinition definition)
     {
         if (context.Unit.UnitsByName.TryGetValue(definition.Unit, out var unit) is false)
         {
-            return OptionalWithDiagnostics.Empty<IUnresolvedUnitInstance>(Diagnostics.UnrecognizedUnit(context, definition));
+            return OptionalWithDiagnostics.Empty<IRawUnitInstance>(Diagnostics.UnrecognizedUnit(context, definition));
         }
 
         return OptionalWithDiagnostics.Result(unit);

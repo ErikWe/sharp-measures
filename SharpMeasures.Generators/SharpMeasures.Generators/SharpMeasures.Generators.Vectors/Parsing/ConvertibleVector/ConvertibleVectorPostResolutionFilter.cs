@@ -4,8 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Unresolved.Vectors;
-
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 using System.Collections.Generic;
 
 internal interface IConvertibleVectorPostResolutionFilterDiagnostics
@@ -37,9 +36,9 @@ internal class ConvertibleVectorPostResolutionFilter : AProcesser<IConvertibleVe
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private IResultWithDiagnostics<IReadOnlyList<IUnresolvedVectorGroupType>> FilterVectors(IConvertibleVectorPostResolutionFilterContext context, ConvertibleVectorDefinition definition)
+    private IResultWithDiagnostics<IReadOnlyList<IRawVectorGroupType>> FilterVectors(IConvertibleVectorPostResolutionFilterContext context, ConvertibleVectorDefinition definition)
     {
-        List<IUnresolvedVectorGroupType> vectors = new(definition.VectorGroups.Count);
+        List<IRawVectorGroupType> vectors = new(definition.VectorGroups.Count);
         List<Diagnostic> allDiagnostics = new();
 
         for (int i = 0; i < definition.VectorGroups.Count; i++)
@@ -58,6 +57,6 @@ internal class ConvertibleVectorPostResolutionFilter : AProcesser<IConvertibleVe
             context.ListedVectors.Add(definition.VectorGroups[i].Type.AsNamedType());
         }
 
-        return ResultWithDiagnostics.Construct(vectors as IReadOnlyList<IUnresolvedVectorGroupType>, allDiagnostics);
+        return ResultWithDiagnostics.Construct(vectors as IReadOnlyList<IRawVectorGroupType>, allDiagnostics);
     }
 }

@@ -10,16 +10,16 @@ using SharpMeasures.Generators.Scalars.Parsing.Contexts.Resolution;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 using SharpMeasures.Generators.Scalars.Parsing.Diagnostics.Resolution;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Vectors;
 
 using System.Collections.Generic;
 
 internal static class ScalarTypeResolution
 {
     public static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ResolveDerivations(DefinedType type,
-        IEnumerable<UnresolvedDerivedQuantityDefinition> unresolvedDerivations, IUnresolvedScalarPopulation scalarPopulation, IUnresolvedVectorPopulation vectorPopulation)
+        IEnumerable<UnresolvedDerivedQuantityDefinition> unresolvedDerivations, IRawScalarPopulation scalarPopulation, IRawVectorPopulation vectorPopulation)
     {
         DerivedQuantityResolutionContext derivedQuantityResolutionContext = new(type, scalarPopulation, vectorPopulation);
 
@@ -27,7 +27,7 @@ internal static class ScalarTypeResolution
     }
 
     public static IResultWithDiagnostics<IReadOnlyList<ScalarConstantDefinition>> ResolveConstants(DefinedType type,
-        IEnumerable<UnresolvedScalarConstantDefinition> unresolvedConstants, IUnresolvedUnitType unit)
+        IEnumerable<UnresolvedScalarConstantDefinition> unresolvedConstants, IRawUnitType unit)
     {
         QuantityConstantResolutionContext quantityConstantResolutionContext = new(type, unit);
 
@@ -35,14 +35,14 @@ internal static class ScalarTypeResolution
     }
 
     public static IResultWithDiagnostics<IReadOnlyList<ConvertibleScalarDefinition>> ResolveConversions(DefinedType type,
-        IEnumerable<UnresolvedConvertibleScalarDefinition> unresolvedConversions, IUnresolvedScalarPopulation scalarPopulation, bool useUnitBias)
+        IEnumerable<UnresolvedConvertibleScalarDefinition> unresolvedConversions, IRawScalarPopulation scalarPopulation, bool useUnitBias)
     {
         ConvertibleScalarResolutionContext convertibleScalarResolutionContext = new(type, useUnitBias, scalarPopulation);
 
         return ProcessingFilter.Create(ConvertibleScalarResolver).Filter(convertibleScalarResolutionContext, unresolvedConversions);
     }
 
-    public static IResultWithDiagnostics<IReadOnlyList<UnitListDefinition>> ResolveUnitList(DefinedType type, IUnresolvedUnitType unit,
+    public static IResultWithDiagnostics<IReadOnlyList<UnitListDefinition>> ResolveUnitList(DefinedType type, IRawUnitType unit,
         IReadOnlyList<UnresolvedUnitListDefinition> unresolvedUnitList)
     {
         UnitListResolutionContext unitListResolutionContext = new(type, unit);

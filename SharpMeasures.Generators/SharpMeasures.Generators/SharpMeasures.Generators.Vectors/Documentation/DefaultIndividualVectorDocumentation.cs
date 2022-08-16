@@ -2,29 +2,29 @@
 
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 
 internal class DefaultIndividualVectorDocumentation : IIndividualVectorDocumentationStrategy, IEquatable<DefaultIndividualVectorDocumentation>
 {
     private DefinedType Type { get; }
     private int Dimension { get; }
-    private IUnresolvedUnitType Unit { get; }
+    private IRawUnitType Unit { get; }
     private IScalarType? Scalar { get; }
 
-    private IUnresolvedUnitInstance? DefaultUnit { get; }
+    private IRawUnitInstance? DefaultUnit { get; }
     private string? DefaultUnitSymbol { get; }
 
     private string UnitParameterName { get; }
 
-    private IUnresolvedUnitInstance? ExampleScalarBase { get; }
-    private IUnresolvedUnitInstance? ExampleUnit { get; }
+    private IRawUnitInstance? ExampleScalarBase { get; }
+    private IRawUnitInstance? ExampleUnit { get; }
 
     private bool HasComponent => Scalar is not null;
 
@@ -184,14 +184,14 @@ internal class DefaultIndividualVectorDocumentation : IIndividualVectorDocumenta
     public string InConstantMultiples(IVectorConstant constant) => $"""
         /// <summary>The components of <see langword="this", expressed in multiples of <see cref="{VectorReference}.{constant.Name}"/>.</summary>
         """;
-    public string InSpecifiedUnit(IUnresolvedUnitInstance unitInstance) => $"""
+    public string InSpecifiedUnit(IRawUnitInstance unitInstance) => $"""
         /// <summary>The components of <see langword="this"/>, expressed in <see cref="{UnitReference}.{unitInstance.Name}"/>.</summary>
         """;
 
-    public string Conversion(IUnresolvedVectorGroupMemberType vectorGroupMember) => $"""
+    public string Conversion(IRawVectorGroupMemberType vectorGroupMember) => $"""
         /// <summary>Converts <see langword="this"/> to the equivalent <see cref="{vectorGroupMember.Type.Name}"/>.</summary>
         """;
-    public string CastConversion(IUnresolvedVectorGroupMemberType vectorGroupMember) => $"""
+    public string CastConversion(IRawVectorGroupMemberType vectorGroupMember) => $"""
         /// <summary>Converts <paramref name="a"/> to the equivalent <see cref="{vectorGroupMember.Type.Name}"/>.</summary>
         /// <param name="a">This {VectorReference} is converted to the equivalent <see cref="{vectorGroupMember.Type.Name}"/>.</param>
         """;

@@ -2,18 +2,18 @@
 
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.UnitList;
-using SharpMeasures.Generators.Unresolved.Quantities;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Quantities;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroup;
 
 using System.Collections.Generic;
 
-internal record class UnresolvedVectorGroupBaseType : AUnresolvedVectorGroupType<UnresolvedSharpMeasuresVectorGroupDefinition>, IUnresolvedVectorGroupBaseType
+internal record class UnresolvedVectorGroupBaseType : AUnresolvedVectorGroupType<UnresolvedSharpMeasuresVectorGroupDefinition>, IRawVectorGroupBaseType
 {
-    IUnresolvedVectorGroupBase IUnresolvedVectorGroupBaseType.Definition => Definition;
-    IUnresolvedQuantityBase IUnresolvedQuantityBaseType.Definition => Definition;
+    IRawVectorGroupBase IRawVectorGroupBaseType.Definition => Definition;
+    IRawQuantityBase IRawQuantityBaseType.Definition => Definition;
 
     public UnresolvedVectorGroupBaseType(DefinedType type, MinimalLocation typeLocation, UnresolvedSharpMeasuresVectorGroupDefinition definition,
         IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,

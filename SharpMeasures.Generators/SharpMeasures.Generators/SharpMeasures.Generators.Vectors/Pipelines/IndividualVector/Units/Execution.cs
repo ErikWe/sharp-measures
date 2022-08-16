@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System.Collections.Generic;
 using System.Globalization;
@@ -29,12 +29,15 @@ internal static class Execution
         }
 
         private StringBuilder Builder { get; } = new();
+        private NewlineSeparationHandler SeparationHandler { get; }
 
         private DataModel Data { get; }
 
         private Composer(DataModel data)
         {
             Data = data;
+
+            SeparationHandler = new(Builder);
         }
 
         private void Compose()
@@ -55,29 +58,21 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
+            SeparationHandler.MarkUnncecessary();
+
+            AppendConstants(indentation);
+            AppendConstantMultiples(indentation);
+            AppendUnitPlural(indentation);
+        }
+
+        private void AppendConstants(Indentation indentation)
+        {
             foreach (IVectorConstant constant in Data.Constants)
             {
+                SeparationHandler.AddIfNecessary();
+
                 AppendDocumentation(indentation, Data.Documentation.Constant(constant));
                 Builder.AppendLine($"{indentation}public static {Data.Vector.FullyQualifiedName} {constant.Name} => new(({ComposeConstant(constant)}), {Data.Unit.Type.FullyQualifiedName}.{constant.Unit.Name});");
-            }
-
-            Builder.AppendLine();
-
-            foreach (IVectorConstant constant in Data.Constants)
-            {
-                if (constant.GenerateMultiplesProperty)
-                {
-                    AppendDocumentation(indentation, Data.Documentation.InConstantMultiples(constant));
-                    Builder.AppendLine($"{indentation}public global::SharpMeasures.Vector{Data.Dimension} {constant.Multiples!} => new({ComposeConstantElementwiseDivision(constant)});");
-                }
-            }
-
-            Builder.AppendLine();
-
-            foreach (IUnresolvedUnitInstance includedUnit in Data.Units)
-            {
-                AppendDocumentation(indentation, Data.Documentation.InSpecifiedUnit(includedUnit));
-                Builder.AppendLine($"{indentation}public static global::SharpMeasures.Vector{Data.Dimension} {includedUnit.Plural} => InUnit({Data.Unit.Type.FullyQualifiedName}.{includedUnit.Name});");
             }
         }
 
@@ -94,6 +89,20 @@ internal static class Execution
                 foreach (double component in constant.Value)
                 {
                     yield return component.ToString(CultureInfo.InvariantCulture);
+                }
+            }
+        }
+
+        private void AppendConstantMultiples(Indentation indentation)
+        {
+            foreach (IVectorConstant constant in Data.Constants)
+            {
+                if (constant.GenerateMultiplesProperty)
+                {
+                    SeparationHandler.AddIfNecessary();
+
+                    AppendDocumentation(indentation, Data.Documentation.InConstantMultiples(constant));
+                    Builder.AppendLine($"{indentation}public global::SharpMeasures.Vector{Data.Dimension} {constant.Multiples!} => new({ComposeConstantElementwiseDivision(constant)});");
                 }
             }
         }
@@ -120,6 +129,15 @@ internal static class Execution
                 {
                     yield return $"{VectorTextBuilder.GetUpperCasedComponentName(i, Data.Dimension)}.Magnitude.Value / {constant.Value[i]}";
                 }
+            }
+        }
+
+        private void AppendUnitPlural(Indentation indentation)
+        {
+            foreach (IRawUnitInstance includedUnit in Data.Units)
+            {
+                AppendDocumentation(indentation, Data.Documentation.InSpecifiedUnit(includedUnit));
+                Builder.AppendLine($"{indentation}public static global::SharpMeasures.Vector{Data.Dimension} {includedUnit.Plural} => InUnit({Data.Unit.Type.FullyQualifiedName}.{includedUnit.Name});");
             }
         }
 

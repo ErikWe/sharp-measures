@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Utility;
-using SharpMeasures.Generators.Unresolved.Quantities;
+using SharpMeasures.Generators.Raw.Quantities;
 
 using System;
 using System.Collections.Generic;
@@ -27,7 +27,7 @@ public interface IConvertibleQuantityProcessingContext : IProcessingContext
 }
 
 public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProcesser<IConvertibleQuantityProcessingContext, RawConvertibleQuantityDefinition, TProduct>
-    where TProduct : IUnresolvedConvertibleQuantity
+    where TProduct : IRawConvertibleQuantity
 {
     private IConvertibleQuantityProcessingDiagnostics Diagnostics { get; }
 
@@ -91,7 +91,7 @@ public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProce
 
     protected IValidityWithDiagnostics CheckValidity(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
     {
-        return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckQuantitiesValidity, CheckCastOperatorBehaviourValidity);
+        return IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, CheckQuantitiesValidity, CheckCastOperatorBehaviourValidity);
     }
 
     private IValidityWithDiagnostics CheckQuantitiesValidity(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)

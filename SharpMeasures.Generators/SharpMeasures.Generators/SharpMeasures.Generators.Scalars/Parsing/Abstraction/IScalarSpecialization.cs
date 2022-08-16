@@ -1,10 +1,10 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 
-using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Raw.Scalars;
 
 internal interface IScalarSpecialization : IScalar
 {
-    public abstract IUnresolvedScalarType OriginalScalar { get; }
+    public abstract IRawScalarType OriginalScalar { get; }
 
     public abstract bool InheritDerivations { get; }
     public abstract bool InheritConstants { get; }

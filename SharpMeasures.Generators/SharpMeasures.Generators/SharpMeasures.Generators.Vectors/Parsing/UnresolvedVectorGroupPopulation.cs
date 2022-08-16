@@ -1,17 +1,17 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing;
 
 using SharpMeasures.Equatables;
-using SharpMeasures.Generators.Unresolved.Vectors;
-
+using SharpMeasures.Generators.Raw.Vectors;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 using System.Collections.Generic;
 
-internal class UnresolvedVectorGroupPopulation : IUnresolvedVectorGroupPopulation
+internal class UnresolvedVectorGroupPopulation : IRawVectorGroupPopulation
 {
-    public IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> VectorGroupMembersByDimension => vectorGroupMembersByDimension;
+    public IReadOnlyDictionary<int, IRawVectorGroupMemberType> VectorGroupMembersByDimension => vectorGroupMembersByDimension;
 
-    private ReadOnlyEquatableDictionary<int, IUnresolvedVectorGroupMemberType> vectorGroupMembersByDimension { get; }
+    private ReadOnlyEquatableDictionary<int, IRawVectorGroupMemberType> vectorGroupMembersByDimension { get; }
 
-    public UnresolvedVectorGroupPopulation(IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> vectorGroupMembersByDimension)
+    public UnresolvedVectorGroupPopulation(IReadOnlyDictionary<int, IRawVectorGroupMemberType> vectorGroupMembersByDimension)
     {
         this.vectorGroupMembersByDimension = vectorGroupMembersByDimension.AsReadOnlyEquatable();
     }

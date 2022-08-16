@@ -1,12 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.FixedUnit;
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
-internal record class RawFixedUnitDefinition : ARawUnitDefinition<RawFixedUnitDefinition, FixedUnitLocations>
+internal record class RawFixedUnitDefinition : ARawUnitDefinition<FixedUnitLocations>, IRawFixedUnit
 {
-    public static RawFixedUnitDefinition Empty { get; } = new();
-
-    protected override RawFixedUnitDefinition Definition => this;
-
-    private RawFixedUnitDefinition() : base(FixedUnitLocations.Empty) { }
+    public RawFixedUnitDefinition(string name, string plural, FixedUnitLocations locations) : base(name, plural, locations) { }
 }

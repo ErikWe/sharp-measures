@@ -1,16 +1,16 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.BiasedUnit;
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
-internal record class RawBiasedUnitDefinition : ARawDependantUnitDefinition<RawBiasedUnitDefinition, BiasedUnitLocations>
+internal record class RawBiasedUnitDefinition : ARawDependantUnitDefinition<BiasedUnitLocations>, IRawBiasedUnit
 {
-    internal static RawBiasedUnitDefinition Empty { get; } = new();
+    public string From => DependantOn;
 
-    public string? From => DependantOn;
-    public double Bias { get; init; }
-    public string? Expression { get; init; }
+    public string Expression { get; }
 
-    protected override RawBiasedUnitDefinition Definition => this;
-
-    private RawBiasedUnitDefinition() : base(BiasedUnitLocations.Empty) { }
+    public RawBiasedUnitDefinition(string name, string plural, string from, string expression, BiasedUnitLocations locations) : base(name, plural, from, locations)
+    {
+        Expression = expression;
+    }
 }

@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class RawSharpMeasuresVectorGroupMemberDefinition : ARawAttributeDefinition<RawSharpMeasuresVectorGroupMemberDefinition, SharpMeasuresVectorGroupMemberLocations>
+internal record class RawSharpMeasuresVectorGroupMemberDefinition : AUnprocessedAttributeDefinition<RawSharpMeasuresVectorGroupMemberDefinition, SharpMeasuresVectorGroupMemberLocations>
 {
     public static RawSharpMeasuresVectorGroupMemberDefinition Empty { get; } = new(SharpMeasuresVectorGroupMemberLocations.Empty);
 

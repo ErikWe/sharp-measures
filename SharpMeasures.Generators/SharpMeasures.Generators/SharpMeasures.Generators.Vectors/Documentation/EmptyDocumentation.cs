@@ -1,8 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
-
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 using System;
 
 internal class EmptyDocumentation : IVectorGroupDocumentationStrategy, IIndividualVectorDocumentationStrategy, IEquatable<EmptyDocumentation>
@@ -27,9 +26,9 @@ internal class EmptyDocumentation : IVectorGroupDocumentationStrategy, IIndividu
     string IIndividualVectorDocumentationStrategy.ComponentMagnitude(int _) => string.Empty;
     string IIndividualVectorDocumentationStrategy.InUnit() => string.Empty;
     string IIndividualVectorDocumentationStrategy.InConstantMultiples(IVectorConstant _) => string.Empty;
-    string IIndividualVectorDocumentationStrategy.InSpecifiedUnit(IUnresolvedUnitInstance _) => string.Empty;
-    string IIndividualVectorDocumentationStrategy.Conversion(IUnresolvedVectorGroupMemberType _) => string.Empty;
-    string IIndividualVectorDocumentationStrategy.CastConversion(IUnresolvedVectorGroupMemberType _) => string.Empty;
+    string IIndividualVectorDocumentationStrategy.InSpecifiedUnit(IRawUnitInstance _) => string.Empty;
+    string IIndividualVectorDocumentationStrategy.Conversion(IRawVectorGroupMemberType _) => string.Empty;
+    string IIndividualVectorDocumentationStrategy.CastConversion(IRawVectorGroupMemberType _) => string.Empty;
     string IIndividualVectorDocumentationStrategy.IsNaN() => string.Empty;
     string IIndividualVectorDocumentationStrategy.IsZero() => string.Empty;
     string IIndividualVectorDocumentationStrategy.IsFinite() => string.Empty;

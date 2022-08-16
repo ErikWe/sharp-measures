@@ -2,7 +2,7 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Vectors.Documentation;
-
+using SharpMeasures.Generators.Vectors.Groups;
 using System.Collections.Generic;
 
 internal readonly record struct DataModel

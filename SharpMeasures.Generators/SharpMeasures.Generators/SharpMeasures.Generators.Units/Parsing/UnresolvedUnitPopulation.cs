@@ -2,18 +2,18 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
-using SharpMeasures.Generators.Unresolved.Units;
+using SharpMeasures.Generators.Raw.Units;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-internal class UnresolvedUnitPopulation : IUnresolvedUnitPopulationWithData
+internal class UnresolvedUnitPopulation : IRawUnitPopulationWithData
 {
-    public static UnresolvedUnitPopulation Build(ImmutableArray<IUnresolvedUnitType> units)
+    public static UnresolvedUnitPopulation Build(ImmutableArray<IRawUnitType> units)
     {
-        Dictionary<NamedType, IUnresolvedUnitType> unitPopulation = new(units.Length);
+        Dictionary<NamedType, IRawUnitType> unitPopulation = new(units.Length);
 
-        Dictionary<NamedType, IUnresolvedUnitType> duplicatePopulation = new();
+        Dictionary<NamedType, IRawUnitType> duplicatePopulation = new();
 
         foreach (var unit in units)
         {
@@ -28,13 +28,13 @@ internal class UnresolvedUnitPopulation : IUnresolvedUnitPopulationWithData
         return new(unitPopulation, duplicatePopulation);
     }
 
-    public IReadOnlyDictionary<NamedType, IUnresolvedUnitType> Units => units;
-    public IReadOnlyDictionary<NamedType, IUnresolvedUnitType> DuplicatelyDefined => duplicatelyDefined;
+    public IReadOnlyDictionary<NamedType, IRawUnitType> Units => units;
+    public IReadOnlyDictionary<NamedType, IRawUnitType> DuplicatelyDefinedUnits => duplicatelyDefined;
 
-    private ReadOnlyEquatableDictionary<NamedType, IUnresolvedUnitType> units { get; }
-    private ReadOnlyEquatableDictionary<NamedType, IUnresolvedUnitType> duplicatelyDefined { get; }
+    private ReadOnlyEquatableDictionary<NamedType, IRawUnitType> units { get; }
+    private ReadOnlyEquatableDictionary<NamedType, IRawUnitType> duplicatelyDefined { get; }
 
-    public UnresolvedUnitPopulation(IReadOnlyDictionary<NamedType, IUnresolvedUnitType> units, IReadOnlyDictionary<NamedType, IUnresolvedUnitType> duplicatelyDefined)
+    public UnresolvedUnitPopulation(IReadOnlyDictionary<NamedType, IRawUnitType> units, IReadOnlyDictionary<NamedType, IRawUnitType> duplicatelyDefined)
     {
         this.units = units.AsReadOnlyEquatable();
         this.duplicatelyDefined = duplicatelyDefined.AsReadOnlyEquatable();

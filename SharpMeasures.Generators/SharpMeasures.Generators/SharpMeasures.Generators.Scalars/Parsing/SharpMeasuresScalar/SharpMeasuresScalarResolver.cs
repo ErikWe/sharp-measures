@@ -6,13 +6,14 @@ using SharpMeasures.Generators;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors;
 
 using System;
 using System.Linq;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 
 internal interface ISharpMeasuresScalarResolutionDiagnostics
 {
@@ -31,9 +32,9 @@ internal interface ISharpMeasuresScalarResolutionDiagnostics
 
 internal interface ISharpMeasuresScalarResolutionContext : IProcessingContext
 {
-    public abstract IUnresolvedUnitPopulation UnitPopulation { get; }
+    public abstract IRawUnitPopulation UnitPopulation { get; }
     public abstract IUnresolvedScalarPopulationWithData ScalarPopulation { get; }
-    public abstract IUnresolvedVectorPopulation VectorPopulation { get; }
+    public abstract IRawVectorPopulation VectorPopulation { get; }
 }
 
 internal class SharpMeasuresScalarResolver : IProcesser<ISharpMeasuresScalarResolutionContext, UnresolvedSharpMeasuresScalarDefinition, SharpMeasuresScalarDefinition>
@@ -84,38 +85,38 @@ internal class SharpMeasuresScalarResolver : IProcesser<ISharpMeasuresScalarReso
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private IOptionalWithDiagnostics<IUnresolvedUnitType> ProcessUnit(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition)
+    private IOptionalWithDiagnostics<IRawUnitType> ProcessUnit(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition)
     {
         if (context.UnitPopulation.Units.TryGetValue(definition.Unit, out var unit) is false)
         {
-            return OptionalWithDiagnostics.Empty<IUnresolvedUnitType>(Diagnostics.TypeNotUnit(context, definition));
+            return OptionalWithDiagnostics.Empty<IRawUnitType>(Diagnostics.TypeNotUnit(context, definition));
         }
 
         if (definition.UseUnitBias && unit.Definition.BiasTerm is false)
         {
-            return OptionalWithDiagnostics.Empty<IUnresolvedUnitType>(Diagnostics.UnitNotIncludingBiasTerm(context, definition));
+            return OptionalWithDiagnostics.Empty<IRawUnitType>(Diagnostics.UnitNotIncludingBiasTerm(context, definition));
         }
 
         return OptionalWithDiagnostics.Result(unit);
     }
 
-    private IOptionalWithDiagnostics<IUnresolvedVectorGroupType> ProcessVector(ISharpMeasuresScalarResolutionContext context,
+    private IOptionalWithDiagnostics<IRawVectorGroupType> ProcessVector(ISharpMeasuresScalarResolutionContext context,
         UnresolvedSharpMeasuresScalarDefinition definition)
     {
-        if (definition.VectorGroup is null)
+        if (definition.Vector is null)
         {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<IUnresolvedVectorGroupType>();
+            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<IRawVectorGroupType>();
         }
 
-        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.VectorGroup.Value, out var vectorGroup) is false)
+        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.Vector.Value, out var vectorGroup) is false)
         {
-            return OptionalWithDiagnostics.Empty<IUnresolvedVectorGroupType>(Diagnostics.TypeNotVector(context, definition));
+            return OptionalWithDiagnostics.Empty<IRawVectorGroupType>(Diagnostics.TypeNotVector(context, definition));
         }
 
         return OptionalWithDiagnostics.Result(vectorGroup);
     }
 
-    private IResultWithDiagnostics<IUnresolvedScalarType> ProcessDifference(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition)
+    private IResultWithDiagnostics<IRawScalarType> ProcessDifference(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition)
     {
         if (context.ScalarPopulation.Scalars.TryGetValue(definition.Difference, out var difference) is false)
         {
@@ -128,36 +129,36 @@ internal class SharpMeasuresScalarResolver : IProcesser<ISharpMeasuresScalarReso
         return ResultWithDiagnostics.Construct(difference);
     }
 
-    private IResultWithDiagnostics<IUnresolvedUnitInstance?> ProcessDefaultUnitName(ISharpMeasuresScalarResolutionContext context,
-        UnresolvedSharpMeasuresScalarDefinition definition, IUnresolvedUnitType unit)
+    private IResultWithDiagnostics<IRawUnitInstance?> ProcessDefaultUnitName(ISharpMeasuresScalarResolutionContext context,
+        UnresolvedSharpMeasuresScalarDefinition definition, IRawUnitType unit)
     {
         if (definition.DefaultUnitName is null)
         {
-            return ResultWithDiagnostics.Construct<IUnresolvedUnitInstance?>(null);
+            return ResultWithDiagnostics.Construct<IRawUnitInstance?>(null);
         }
 
         if (unit.UnitsByName.TryGetValue(definition.DefaultUnitName, out var unitInstance) is false)
         {
-            return ResultWithDiagnostics.Construct<IUnresolvedUnitInstance?>(null, Diagnostics.UnrecognizedDefaultUnit(context, definition));
+            return ResultWithDiagnostics.Construct<IRawUnitInstance?>(null, Diagnostics.UnrecognizedDefaultUnit(context, definition));
         }
 
-        return ResultWithDiagnostics.Construct<IUnresolvedUnitInstance?>(unitInstance);
+        return ResultWithDiagnostics.Construct<IRawUnitInstance?>(unitInstance);
     }
 
-    private static IResultWithDiagnostics<IUnresolvedScalarType?> ProcessPowerQuantity(ISharpMeasuresScalarResolutionContext context,
+    private static IResultWithDiagnostics<IRawScalarType?> ProcessPowerQuantity(ISharpMeasuresScalarResolutionContext context,
         UnresolvedSharpMeasuresScalarDefinition definition, NamedType? quantity,
         Func<ISharpMeasuresScalarResolutionContext, UnresolvedSharpMeasuresScalarDefinition, Diagnostic?> typeNotScalarDiagnosticsDelegate)
     {
         if (quantity is null)
         {
-            return ResultWithDiagnostics.Construct<IUnresolvedScalarType?>(null);
+            return ResultWithDiagnostics.Construct<IRawScalarType?>(null);
         }
 
         if (context.ScalarPopulation.Scalars.TryGetValue(quantity.Value, out var scalar) is false)
         {
-            return ResultWithDiagnostics.Construct<IUnresolvedScalarType?>(null, typeNotScalarDiagnosticsDelegate(context, definition));
+            return ResultWithDiagnostics.Construct<IRawScalarType?>(null, typeNotScalarDiagnosticsDelegate(context, definition));
         }
 
-        return ResultWithDiagnostics.Construct<IUnresolvedScalarType?>(scalar);
+        return ResultWithDiagnostics.Construct<IRawScalarType?>(scalar);
     }
 }

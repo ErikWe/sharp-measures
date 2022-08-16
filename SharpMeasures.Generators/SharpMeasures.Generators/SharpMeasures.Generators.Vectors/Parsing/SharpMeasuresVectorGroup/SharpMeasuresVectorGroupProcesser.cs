@@ -100,7 +100,7 @@ internal class SharpMeasuresVectorGroupProcesser : AProcesser<IProcessingContext
 
     private IValidityWithDiagnostics CheckValidity(IProcessingContext context, RawSharpMeasuresVectorGroupDefinition definition)
     {
-        return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckNameValidity, CheckUnitValidity, CheckScalarValidity, CheckDifferenceValidity);
+        return IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, CheckNameValidity, CheckUnitValidity, CheckScalarValidity, CheckDifferenceValidity);
     }
 
     private IValidityWithDiagnostics CheckNameValidity(IProcessingContext context, RawSharpMeasuresVectorGroupDefinition definition)

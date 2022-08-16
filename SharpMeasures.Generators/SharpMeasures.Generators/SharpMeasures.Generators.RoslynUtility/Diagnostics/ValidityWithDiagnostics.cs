@@ -5,25 +5,50 @@ using Microsoft.CodeAnalysis;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 
 public interface IValidityWithDiagnostics : IEnumerable<Diagnostic>
 {
-    public delegate bool DMergeOperation(bool left, bool right);
+    public enum ValidityState { Valid, Invalid }
 
-    public enum State { Valid, Invalid }
-    public enum MergeOperation { AND, OR, XOR, NOR }
+    public delegate IValidityWithDiagnostics DValidity();
+    public delegate IValidityWithDiagnostics DValidity<T>(T parameter);
+    public delegate IValidityWithDiagnostics DValidity<T1, T2>(T1 parameter1, T2 parameter2);
+    public delegate IValidityWithDiagnostics DValidity<T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3);
 
-    public abstract State Validity { get; }
+    public delegate IOptionalWithDiagnostics<T> DOptional<T>();
+    public delegate IOptionalWithDiagnostics<T> DOptional<T, T1>(T1 parameter);
+    public delegate IOptionalWithDiagnostics<T> DOptional<T, T1, T2>(T1 parameter1, T2 parameter2);
+    public delegate IOptionalWithDiagnostics<T> DOptional<T, T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3);
+
+    public delegate T DResult<T>();
+    public delegate T DResult<T, T1>(T1 parameter);
+    public delegate T DResult<T, T1, T2>(T1 parameter1, T2 parameter2);
+    public delegate T DResult<T, T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3);
+
+    public abstract ValidityState Validity { get; }
     public abstract bool IsValid { get; }
     public abstract bool IsInvalid { get; }
 
     public abstract IEnumerable<Diagnostic> Diagnostics { get; }
 
-    public abstract IValidityWithDiagnostics Merge(DMergeOperation operation, IValidityWithDiagnostics other);
-    public abstract IValidityWithDiagnostics Merge(IValidityWithDiagnostics other);
-    public abstract IValidityWithDiagnostics Merge(MergeOperation operation, IValidityWithDiagnostics other);
+    public abstract IValidityWithDiagnostics Validate(IValidityWithDiagnostics other);
+    public abstract IValidityWithDiagnostics Validate(DValidity otherDelegate);
+    public abstract IValidityWithDiagnostics Validate<T>(T parameter, DValidity<T> otherDelegate);
+    public abstract IValidityWithDiagnostics Validate<T1, T2>(T1 parameter1, T2 parameter2, DValidity<T1, T2> otherDelegate);
+    public abstract IValidityWithDiagnostics Validate<T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3, DValidity<T1, T2, T3> otherDelegate);
+
+    public abstract IOptionalWithDiagnostics<T> Merge<T>(IOptionalWithDiagnostics<T> transform);
+    public abstract IOptionalWithDiagnostics<T> Merge<T>(DOptional<T> transform);
+    public abstract IOptionalWithDiagnostics<T> Merge<T, T1>(T1 parameter, DOptional<T, T1> transform);
+    public abstract IOptionalWithDiagnostics<T> Merge<T, T1, T2>(T1 parameter1, T2 parameter2, DOptional<T, T1, T2> transform);
+    public abstract IOptionalWithDiagnostics<T> Merge<T, T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3, DOptional<T, T1, T2, T3> transform);
+
+    public abstract IOptionalWithDiagnostics<T> Transform<T>(T result);
+    public abstract IOptionalWithDiagnostics<T> Transform<T>(DResult<T> resultDelegate);
+    public abstract IOptionalWithDiagnostics<T> Transform<T, T1>(T1 parameter, DResult<T, T1> resultDelegate);
+    public abstract IOptionalWithDiagnostics<T> Transform<T, T1, T2>(T1 parameter1, T2 parameter2, DResult<T, T1, T2> resultDelegate);
+    public abstract IOptionalWithDiagnostics<T> Transform<T, T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3, DResult<T, T1, T2, T3> resultDelegate);
 }
 
 public static class ValidityWithDiagnostics
@@ -68,24 +93,16 @@ public static class ValidityWithDiagnostics
         return Invalid(new[] { diagnostics });
     }
 
-    internal static IValidityWithDiagnostics.DMergeOperation GetMergeOperationDelegate(IValidityWithDiagnostics.MergeOperation mergeOperation)
-    {
-        return mergeOperation switch
-        {
-            IValidityWithDiagnostics.MergeOperation.AND => MergeOperations.AND,
-            IValidityWithDiagnostics.MergeOperation.OR => MergeOperations.OR,
-            IValidityWithDiagnostics.MergeOperation.XOR => MergeOperations.XOR,
-            IValidityWithDiagnostics.MergeOperation.NOR => MergeOperations.NOR,
-            _ => throw new InvalidEnumArgumentException(nameof(mergeOperation), (int)mergeOperation, typeof(IValidityWithDiagnostics.MergeOperation))
-        };
-    }
+    public static IValidityWithDiagnostics ConditionalWithoutDiagnostics(bool condition) => Conditional(condition, () => null);
 
-    internal static class MergeOperations
+    public static IValidityWithDiagnostics Conditional(bool condition, Func<Diagnostic?> invalidDiagnostics)
     {
-        public static bool AND(bool left, bool right) => left & right;
-        public static bool OR(bool left, bool right) => left | right;
-        public static bool XOR(bool left, bool right) => left ^ right;
-        public static bool NOR(bool left, bool right) => (left & right) is false;
+        if (condition is false)
+        {
+            return Invalid(invalidDiagnostics());
+        }
+
+        return Valid;
     }
 
     private class SimpleValidityWithDiagnostics : IValidityWithDiagnostics
@@ -96,7 +113,7 @@ public static class ValidityWithDiagnostics
 
         public bool IsValid { get; }
         public bool IsInvalid => IsValid is false;
-        public IValidityWithDiagnostics.State Validity => IsValid ? IValidityWithDiagnostics.State.Valid : IValidityWithDiagnostics.State.Invalid;
+        public IValidityWithDiagnostics.ValidityState Validity => IsValid ? IValidityWithDiagnostics.ValidityState.Valid : IValidityWithDiagnostics.ValidityState.Invalid;
 
         public IEnumerable<Diagnostic> Diagnostics { get; }
 
@@ -106,23 +123,115 @@ public static class ValidityWithDiagnostics
             Diagnostics = diagnostics;
         }
 
-        public SimpleValidityWithDiagnostics Merge(IValidityWithDiagnostics.DMergeOperation mergeOperation, IValidityWithDiagnostics other)
+        public IValidityWithDiagnostics Validate(IValidityWithDiagnostics other) => new SimpleValidityWithDiagnostics(IsValid && other.IsValid, Diagnostics.Concat(other.Diagnostics));
+
+        public IValidityWithDiagnostics Validate(IValidityWithDiagnostics.DValidity otherDelegate)
         {
-            return new(mergeOperation(IsValid, other.IsValid), Diagnostics.Concat(other.Diagnostics));
+            if (IsInvalid)
+            {
+                return this;
+            }
+
+            return Validate(otherDelegate());
         }
 
-        public SimpleValidityWithDiagnostics Merge(IValidityWithDiagnostics other) => Merge(MergeOperations.AND, other);
+        public IValidityWithDiagnostics Validate<T>(T parameter, IValidityWithDiagnostics.DValidity<T> otherDelegate)
+        {
+            return Validate(wrappedDelegate);
 
-        public SimpleValidityWithDiagnostics Merge(IValidityWithDiagnostics.MergeOperation operation, IValidityWithDiagnostics other)
-            => Merge(GetMergeOperationDelegate(operation), other);
+            IValidityWithDiagnostics wrappedDelegate() => otherDelegate(parameter);
+        }
+
+        public IValidityWithDiagnostics Validate<T1, T2>(T1 parameter1, T2 parameter2, IValidityWithDiagnostics.DValidity<T1, T2> otherDelegate)
+        {
+            return Validate(wrappedDelegate);
+
+            IValidityWithDiagnostics wrappedDelegate() => otherDelegate(parameter1, parameter2);
+        }
+
+        public IValidityWithDiagnostics Validate<T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3, IValidityWithDiagnostics.DValidity<T1, T2, T3> otherDelegate)
+        {
+            return Validate(wrappedDelegate);
+
+            IValidityWithDiagnostics wrappedDelegate() => otherDelegate(parameter1, parameter2, parameter3);
+        }
+
+        public IOptionalWithDiagnostics<T> Merge<T>(IOptionalWithDiagnostics<T> result) => Merge<T>(() => result);
+
+        public IOptionalWithDiagnostics<T> Merge<T>(IValidityWithDiagnostics.DOptional<T> transform)
+        {
+            if (IsInvalid)
+            {
+                return OptionalWithDiagnostics.Empty<T>(Diagnostics);
+            }
+
+            var result = transform();
+
+            var allDiagnostics = Diagnostics.Concat(result.Diagnostics);
+
+            if (result.HasResult)
+            {
+                return OptionalWithDiagnostics.Result(result.Result, allDiagnostics);
+            }
+
+            return OptionalWithDiagnostics.Empty<T>(allDiagnostics);
+        }
+
+        public IOptionalWithDiagnostics<T> Merge<T, T1>(T1 parameter, IValidityWithDiagnostics.DOptional<T, T1> transform)
+        {
+            return Merge(wrappedTransform);
+
+            IOptionalWithDiagnostics<T> wrappedTransform() => transform(parameter);
+        }
+
+        public IOptionalWithDiagnostics<T> Merge<T, T1, T2>(T1 parameter1, T2 parameter2, IValidityWithDiagnostics.DOptional<T, T1, T2> transform)
+        {
+            return Merge(wrappedTransform);
+
+            IOptionalWithDiagnostics<T> wrappedTransform() => transform(parameter1, parameter2);
+        }
+
+        public IOptionalWithDiagnostics<T> Merge<T, T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3, IValidityWithDiagnostics.DOptional<T, T1, T2, T3> transform)
+        {
+            return Merge(wrappedTransform);
+
+            IOptionalWithDiagnostics<T> wrappedTransform() => transform(parameter1, parameter2, parameter3);
+        }
+
+        public IOptionalWithDiagnostics<T> Transform<T>(T result) => Transform(() => result);
+
+        public IOptionalWithDiagnostics<T> Transform<T>(IValidityWithDiagnostics.DResult<T> resultDelegate)
+        {
+            if (IsInvalid)
+            {
+                return OptionalWithDiagnostics.Empty<T>(Diagnostics);
+            }
+
+            return OptionalWithDiagnostics.Result(resultDelegate(), Diagnostics);
+        }
+
+        public IOptionalWithDiagnostics<T> Transform<T, T1>(T1 parameter, IValidityWithDiagnostics.DResult<T, T1> resultDelegate)
+        {
+            return Transform(wrappedResultDelegate);
+
+            T wrappedResultDelegate() => resultDelegate(parameter);
+        }
+
+        public IOptionalWithDiagnostics<T> Transform<T, T1, T2>(T1 parameter1, T2 parameter2, IValidityWithDiagnostics.DResult<T, T1, T2> resultDelegate)
+        {
+            return Transform(wrappedResultDelegate);
+
+            T wrappedResultDelegate() => resultDelegate(parameter1, parameter2);
+        }
+
+        public IOptionalWithDiagnostics<T> Transform<T, T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3, IValidityWithDiagnostics.DResult<T, T1, T2, T3> resultDelegate)
+        {
+            return Transform(wrappedResultDelegate);
+
+            T wrappedResultDelegate() => resultDelegate(parameter1, parameter2, parameter3);
+        }
 
         public IEnumerator<Diagnostic> GetEnumerator() => Diagnostics.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        IValidityWithDiagnostics IValidityWithDiagnostics.Merge(IValidityWithDiagnostics.DMergeOperation operation, IValidityWithDiagnostics other)
-            => Merge(operation, other);
-        IValidityWithDiagnostics IValidityWithDiagnostics.Merge(IValidityWithDiagnostics other) => Merge(other);
-        IValidityWithDiagnostics IValidityWithDiagnostics.Merge(IValidityWithDiagnostics.MergeOperation operation, IValidityWithDiagnostics other)
-            => Merge(operation, other);
     }
 }

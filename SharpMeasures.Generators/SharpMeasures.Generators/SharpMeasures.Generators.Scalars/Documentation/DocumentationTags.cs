@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System;
 
@@ -15,7 +15,7 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
 
     public string Zero() => "Zero";
     public string Constant(IScalarConstant constant) => $"Constant_{constant.Name}";
-    public string UnitBase(IUnresolvedUnitInstance unitInstance) => $"One_{unitInstance.Name}";
+    public string UnitBase(IRawUnitInstance unitInstance) => $"One_{unitInstance.Name}";
 
     public string WithMagnitude() => "WithMagnitude";
 
@@ -31,10 +31,10 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string Magnitude() => "Magnitude";
     public string InUnit() => "InUnit";
     public string InConstantMultiples(IScalarConstant constant) => $"InMultiplesOf_{constant.Name}";
-    public string InSpecifiedUnit(IUnresolvedUnitInstance unitInstance) => $"InUnit_{unitInstance.Name}";
+    public string InSpecifiedUnit(IRawUnitInstance unitInstance) => $"InUnit_{unitInstance.Name}";
 
-    public string Conversion(IUnresolvedScalarType scalar) => $"As_{scalar.Type.Name}";
-    public string CastConversion(IUnresolvedScalarType scalar) => $"Operator_Cast_{scalar.Type.Name}";
+    public string Conversion(IRawScalarType scalar) => $"As_{scalar.Type.Name}";
+    public string CastConversion(IRawScalarType scalar) => $"Operator_Cast_{scalar.Type.Name}";
 
     public string IsNaN() => "IsNaN";
     public string IsZero() => "IsZero";

@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 
 internal interface IIndividualVectorDocumentationStrategy
 {
@@ -27,10 +27,10 @@ internal interface IIndividualVectorDocumentationStrategy
 
     public abstract string InUnit();
     public abstract string InConstantMultiples(IVectorConstant constant);
-    public abstract string InSpecifiedUnit(IUnresolvedUnitInstance unitInstance);
+    public abstract string InSpecifiedUnit(IRawUnitInstance unitInstance);
 
-    public abstract string Conversion(IUnresolvedVectorGroupMemberType vectorGroupMember);
-    public abstract string CastConversion(IUnresolvedVectorGroupMemberType vectorGroupMember);
+    public abstract string Conversion(IRawVectorGroupMemberType vectorGroupMember);
+    public abstract string CastConversion(IRawVectorGroupMemberType vectorGroupMember);
 
     public abstract string IsNaN();
     public abstract string IsZero();

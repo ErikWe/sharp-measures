@@ -1,16 +1,16 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.ScaledUnit;
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
-internal record class RawScaledUnitDefinition : ARawDependantUnitDefinition<RawScaledUnitDefinition, ScaledUnitLocations>
+internal record class RawScaledUnitDefinition : ARawDependantUnitDefinition<ScaledUnitLocations>, IRawScaledUnit
 {
-    public static RawScaledUnitDefinition Empty { get; } = new();
+    public string From => DependantOn;
 
-    public string? From => DependantOn;
-    public double Scale { get; init; }
-    public string? Expression { get; init; }
+    public string Expression { get; }
 
-    protected override RawScaledUnitDefinition Definition => this;
-
-    private RawScaledUnitDefinition() : base(ScaledUnitLocations.Empty) { }
+    public RawScaledUnitDefinition(string name, string plural, string from, string expression, ScaledUnitLocations locations) : base(name, plural, from, locations)
+    {
+        Expression = expression;
+    }
 }

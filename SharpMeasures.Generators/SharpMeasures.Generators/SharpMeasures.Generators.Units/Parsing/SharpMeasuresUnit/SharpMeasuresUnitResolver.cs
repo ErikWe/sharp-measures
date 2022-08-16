@@ -5,22 +5,22 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
-using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Raw.Scalars;
 
 internal interface ISharpMeasuresUnitResolutionDiagnostics
 {
-    public abstract Diagnostic? TypeAlreadyUnit(ISharpMeasuresUnitResolutionContext context, UnresolvedSharpMeasuresUnitDefinition definition);
-    public abstract Diagnostic? QuantityNotScalar(ISharpMeasuresUnitResolutionContext context, UnresolvedSharpMeasuresUnitDefinition definition);
-    public abstract Diagnostic? QuantityBiased(ISharpMeasuresUnitResolutionContext context, UnresolvedSharpMeasuresUnitDefinition definition);
+    public abstract Diagnostic? TypeAlreadyUnit(ISharpMeasuresUnitResolutionContext context, RawSharpMeasuresUnitDefinition definition);
+    public abstract Diagnostic? QuantityNotScalar(ISharpMeasuresUnitResolutionContext context, RawSharpMeasuresUnitDefinition definition);
+    public abstract Diagnostic? QuantityBiased(ISharpMeasuresUnitResolutionContext context, RawSharpMeasuresUnitDefinition definition);
 }
 
 internal interface ISharpMeasuresUnitResolutionContext : IProcessingContext
 {
-    public abstract IUnresolvedUnitPopulationWithData UnitPopulation { get; }
-    public abstract IUnresolvedScalarPopulation ScalarPopulation { get; }
+    public abstract IRawUnitPopulationWithData UnitPopulation { get; }
+    public abstract IRawScalarPopulation ScalarPopulation { get; }
 }
 
-internal class SharpMeasuresUnitResolver : AProcesser<ISharpMeasuresUnitResolutionContext, UnresolvedSharpMeasuresUnitDefinition, SharpMeasuresUnitDefinition>
+internal class SharpMeasuresUnitResolver : AProcesser<ISharpMeasuresUnitResolutionContext, RawSharpMeasuresUnitDefinition, SharpMeasuresUnitDefinition>
 {
     private ISharpMeasuresUnitResolutionDiagnostics Diagnostics { get; }
 
@@ -29,24 +29,34 @@ internal class SharpMeasuresUnitResolver : AProcesser<ISharpMeasuresUnitResoluti
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<SharpMeasuresUnitDefinition> Process(ISharpMeasuresUnitResolutionContext context, UnresolvedSharpMeasuresUnitDefinition definition)
+    public override IOptionalWithDiagnostics<SharpMeasuresUnitDefinition> Process(ISharpMeasuresUnitResolutionContext context, RawSharpMeasuresUnitDefinition definition)
     {
-        if (context.UnitPopulation.DuplicatelyDefined.ContainsKey(context.Type.AsNamedType()))
-        {
-            return OptionalWithDiagnostics.Empty<SharpMeasuresUnitDefinition>(Diagnostics.TypeAlreadyUnit(context, definition));
-        }
+        var typeNotAlreadyUnit = ValidateTypeNotAlreadyUnit(context, definition);
+        var scalarBase = typeNotAlreadyUnit.Merge(context, definition, ResolveQuantity).Validate(context, definition, ValidateQuantityNotBiased);
+        return scalarBase.Transform(definition, ProduceResult);
+    }
 
-        if (context.ScalarPopulation.ScalarBases.TryGetValue(definition.Quantity, out var baseQuantity) is false)
-        {
-            return OptionalWithDiagnostics.Empty<SharpMeasuresUnitDefinition>(Diagnostics.QuantityNotScalar(context, definition));
-        }
+    private IValidityWithDiagnostics ValidateTypeNotAlreadyUnit(ISharpMeasuresUnitResolutionContext context, RawSharpMeasuresUnitDefinition definition)
+    {
+        var typeAlreadyUnit = context.UnitPopulation.DuplicatelyDefinedUnits.ContainsKey(context.Type.AsNamedType());
 
-        if (baseQuantity.Definition.UseUnitBias)
-        {
-            return OptionalWithDiagnostics.Empty<SharpMeasuresUnitDefinition>(Diagnostics.QuantityBiased(context, definition));
-        }
+        return ValidityWithDiagnostics.Conditional(typeAlreadyUnit is false, () => Diagnostics.TypeAlreadyUnit(context, definition));
+    }
 
-        SharpMeasuresUnitDefinition product = new(baseQuantity, definition.BiasTerm, definition.GenerateDocumentation, definition.Locations);
-        return OptionalWithDiagnostics.Result(product);
+    private IOptionalWithDiagnostics<IRawScalarBaseType> ResolveQuantity(ISharpMeasuresUnitResolutionContext context, RawSharpMeasuresUnitDefinition definition)
+    {
+        var scalarBaseCorrectlyResolved = context.ScalarPopulation.ScalarBases.TryGetValue(definition.Quantity, out var scalarBase);
+
+        return OptionalWithDiagnostics.Conditional(scalarBaseCorrectlyResolved, scalarBase, () => Diagnostics.QuantityNotScalar(context, definition));
+    }
+
+    private IValidityWithDiagnostics ValidateQuantityNotBiased(ISharpMeasuresUnitResolutionContext context, RawSharpMeasuresUnitDefinition definition, IRawScalarBaseType scalarBase)
+    {
+        return ValidityWithDiagnostics.Conditional(scalarBase.Definition.UseUnitBias, () => Diagnostics.QuantityBiased(context, definition));
+    }
+
+    private static SharpMeasuresUnitDefinition ProduceResult(RawSharpMeasuresUnitDefinition definition, IRawScalarBaseType scalarBase)
+    {
+        return new(scalarBase, definition.BiasTerm, definition.GenerateDocumentation, definition.Locations);
     }
 }

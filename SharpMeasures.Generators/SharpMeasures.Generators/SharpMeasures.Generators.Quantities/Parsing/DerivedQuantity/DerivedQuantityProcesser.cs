@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Unresolved.Quantities;
+using SharpMeasures.Generators.Raw.Quantities;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,7 @@ public interface IDerivedQuantityProcessingDiagnostics
 
 public interface IDerivedQuantityProcessingContext : IProcessingContext
 {
-    public abstract HashSet<UnresolvedQuantityDerivationSignature> ListedDerivations { get; }
+    public abstract HashSet<RawQuantityDerivationSignature> ListedDerivations { get; }
 }
 
 public class DerivedQuantityProcesser : AActionableProcesser<IDerivedQuantityProcessingContext, RawDerivedQuantityDefinition, UnresolvedDerivedQuantityDefinition>
@@ -76,16 +76,16 @@ public class DerivedQuantityProcesser : AActionableProcesser<IDerivedQuantityPro
         return ValidityWithDiagnostics.Valid;
     }
 
-    private IOptionalWithDiagnostics<UnresolvedQuantityDerivationSignature> ProcessSignature(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
+    private IOptionalWithDiagnostics<RawQuantityDerivationSignature> ProcessSignature(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         if (definition.Signature is null)
         {
-            return OptionalWithDiagnostics.Empty<UnresolvedQuantityDerivationSignature>(Diagnostics.NullSignature(context, definition));
+            return OptionalWithDiagnostics.Empty<RawQuantityDerivationSignature>(Diagnostics.NullSignature(context, definition));
         }
 
         if (definition.Signature.Count is 0)
         {
-            return OptionalWithDiagnostics.Empty<UnresolvedQuantityDerivationSignature>(Diagnostics.EmptySignature(context, definition));
+            return OptionalWithDiagnostics.Empty<RawQuantityDerivationSignature>(Diagnostics.EmptySignature(context, definition));
         }
 
         NamedType[] definiteSignature = new NamedType[definition.Signature.Count];
@@ -94,13 +94,13 @@ public class DerivedQuantityProcesser : AActionableProcesser<IDerivedQuantityPro
         {
             if (definition.Signature[i] is not NamedType signatureComponent)
             {
-                return OptionalWithDiagnostics.Empty<UnresolvedQuantityDerivationSignature>(Diagnostics.NullSignatureElement(context, definition, i));
+                return OptionalWithDiagnostics.Empty<RawQuantityDerivationSignature>(Diagnostics.NullSignatureElement(context, definition, i));
             }
 
             definiteSignature[i] = signatureComponent;
         }
 
-        var derivableSignature = new UnresolvedQuantityDerivationSignature(definiteSignature);
+        var derivableSignature = new RawQuantityDerivationSignature(definiteSignature);
 
         return OptionalWithDiagnostics.Result(derivableSignature);
     }

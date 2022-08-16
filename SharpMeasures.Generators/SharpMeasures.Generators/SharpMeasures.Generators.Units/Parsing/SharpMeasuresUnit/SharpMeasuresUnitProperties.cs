@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 internal static class SharpMeasuresUnitProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawSharpMeasuresUnitDefinition>> AllProperties => new IAttributeProperty<RawSharpMeasuresUnitDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<UnprocessedSharpMeasuresUnitDefinition>> AllProperties => new IAttributeProperty<UnprocessedSharpMeasuresUnitDefinition>[]
     {
         Quantity,
         BiasTerm,

@@ -1,11 +1,11 @@
 ﻿namespace SharpMeasures.Generators.Quantities.Parsing.UnitList;
 
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
-using SharpMeasures.Generators.Unresolved.Quantities;
+using SharpMeasures.Generators.Raw.Quantities;
 
 using System.Collections.Generic;
 
-public record class UnresolvedUnitListDefinition : AItemListDefinition<string, UnitListLocations>, IUnresolvedUnitList
+public record class UnresolvedUnitListDefinition : AItemListDefinition<string, UnitListLocations>, IRawUnitList
 {
     public IReadOnlyList<string> Units => Items;
 

@@ -1,17 +1,17 @@
 ﻿namespace SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Unresolved.Quantities;
+using SharpMeasures.Generators.Raw.Quantities;
 
-public record class UnresolvedDerivedQuantityDefinition : AAttributeDefinition<DerivedQuantityLocations>, IUnresolvedDerivedQuantity
+public record class UnresolvedDerivedQuantityDefinition : AAttributeDefinition<DerivedQuantityLocations>, IRawDerivedQuantity
 {
     public string Expression { get; }
-    public UnresolvedQuantityDerivationSignature Signature { get; }
+    public RawQuantityDerivationSignature Signature { get; }
 
     public bool ImplementOperators { get; }
     public bool ImplementAlgebraicallyEquivalentDerivations { get; }
 
-    public UnresolvedDerivedQuantityDefinition(string expression, UnresolvedQuantityDerivationSignature signature, bool implementOperators,
+    public UnresolvedDerivedQuantityDefinition(string expression, RawQuantityDerivationSignature signature, bool implementOperators,
         bool implementAlgebraicallyEquivalentDerivations, DerivedQuantityLocations locations) : base(locations)
     {
         Expression = expression;

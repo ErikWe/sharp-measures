@@ -26,6 +26,7 @@ internal static class Execution
         }
 
         private StringBuilder Builder { get; } = new();
+        private NewlineSeparationHandler SeparationHandler { get; }
 
         private DataModel Data { get; }
 
@@ -33,6 +34,8 @@ internal static class Execution
 
         private Composer(DataModel data)
         {
+            SeparationHandler = new(Builder);
+
             Data = data;
 
             InterfaceCollector = InterfaceCollector.Delayed(Builder);
@@ -60,6 +63,56 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
+            SeparationHandler.MarkUnncecessary();
+
+            AppendCommonProperties(indentation);
+            AppendPowerFunctions(indentation);
+            AppendFromPowerFunctions(indentation);
+
+            if (Data.ImplementSum)
+            {
+                AppendSumMethod(indentation);
+            }
+
+            if (Data.ImplementDifference)
+            {
+                AppendDifferenceMethods(indentation);
+            }
+
+            AppendUnaryMethods(indentation);
+            AppendMultiplyAndDivideScalarMethods(indentation);
+
+            if (Data.Square is not null)
+            {
+                AppendMultiplySameTypeMethod(indentation);
+            }
+
+            AppendDivideSameTypeMethod(indentation);
+            AppendUnaryOperators(indentation);
+
+            if (Data.ImplementSum)
+            {
+                AppendSumOperator(indentation);
+            }
+
+            if (Data.ImplementDifference)
+            {
+                AppendDifferenceOperator(indentation);
+            }
+
+            if (Data.Square is not null)
+            {
+                AppendMultiplySameTypeOperator(indentation);
+            }
+
+            AppendDivideSameTypeOperator(indentation);
+            AppendMultiplyAndDivideScalarOperators(indentation);
+        }
+
+        private void AppendCommonProperties(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
+
             AppendDocumentation(indentation, Data.Documentation.IsNaN());
             Builder.AppendLine($"{indentation}public bool IsNaN => double.IsNaN(Magnitude.Value);");
             AppendDocumentation(indentation, Data.Documentation.IsZero());
@@ -77,98 +130,20 @@ internal static class Execution
             AppendDocumentation(indentation, Data.Documentation.IsNegativeInfinity());
             Builder.AppendLine($"{indentation}public bool IsNegativeInfinity => double.IsNegativeInfinity(Magnitude.Value);");
 
-            Builder.AppendLine();
+            SeparationHandler.Add();
 
             AppendDocumentation(indentation, Data.Documentation.Absolute());
             Builder.AppendLine($"{indentation}public {Data.Scalar.Name} Absolute() => new(global::System.Math.Abs(Magnitude.Value));");
 
-            Builder.AppendLine();
+            SeparationHandler.Add();
 
             AppendDocumentation(indentation, Data.Documentation.Sign());
             Builder.AppendLine($"{indentation}public int Sign() => global::System.Math.Sign(Magnitude.Value);");
-
-            Builder.AppendLine();
-
-            ComposePowerFunctions(indentation);
-
-            ComposeFromPowerFunctions(indentation);
-
-            if (Data.ImplementSum)
-            {
-                ComposeSumMethod(indentation);
-
-                Builder.AppendLine();
-            }
-
-            if (Data.ImplementDifference)
-            {
-                ComposeDifferenceMethod(indentation);
-
-                Builder.AppendLine();
-            }
-
-            Builder.AppendLine();
-
-            AppendDocumentation(indentation, Data.Documentation.UnaryPlusMethod());
-            Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Plus() => this;");
-            AppendDocumentation(indentation, Data.Documentation.NegateMethod());
-            Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Negate() => new(-Magnitude.Value);");
-
-            Builder.AppendLine();
-
-            AppendDocumentation(indentation, Data.Documentation.MultiplyScalarMethod());
-            Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Multiply(global::SharpMeasures.Scalar factor) => new(Magnitude.Value * factor.Value);");
-            AppendDocumentation(indentation, Data.Documentation.DivideScalarMethod());
-            Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Divide(global::SharpMeasures.Scalar divisor) => new(Magnitude.Value / divisor.Value);");
-
-            Builder.AppendLine();
-
-            if (Data.Square is not null)
-            {
-                ComposeMultiplySameTypeMethod(indentation);
-
-                Builder.AppendLine();
-            }
-
-            ComposeDivideSameTypeMethod(indentation);
-
-            Builder.AppendLine();
-
-            ComposeUnaryOperators(indentation);
-
-            Builder.AppendLine();
-
-            if (Data.ImplementSum)
-            {
-                ComposeSumOperator(indentation);
-
-                Builder.AppendLine();
-            }
-
-            if (Data.ImplementDifference)
-            {
-                ComposeDifferenceOperator(indentation);
-
-                Builder.AppendLine();
-            }
-
-            if (Data.Square is not null)
-            {
-                ComposeMultiplySameTypeOperator(indentation);
-
-                Builder.AppendLine();
-            }
-
-            ComposeDivideSameTypeOperator(indentation);
-
-            Builder.AppendLine();
-
-            ComposeMultiplyAndDivideScalarOperators(indentation);
         }
 
-        private void ComposePowerFunctions(Indentation indentation)
+        private void AppendPowerFunctions(Indentation indentation)
         {
-            int startLength = Builder.Length;
+            SeparationHandler.AddIfNecessary();
 
             if (Data.Reciprocal is not null)
             {
@@ -199,445 +174,348 @@ internal static class Execution
                 AppendDocumentation(indentation, Data.Documentation.CubeRoot());
                 Builder.AppendLine($"{indentation}public {Data.CubeRoot.Value.FullyQualifiedName} CubeRoot() => new(global::System.Math.Cbrt(Magnitude.Value));");
             }
-
-            if (Builder.Length > startLength)
-            {
-                Builder.AppendLine();
-            }
         }
 
-        private void ComposeFromPowerFunctions(Indentation indentation)
+        private void AppendFromPowerFunctions(Indentation indentation)
         {
-            int startLength = Builder.Length;
+            SeparationHandler.AddIfNecessary();
+
+            string methodNameAndModifiers = $"public {Data.Scalar.FullyQualifiedName} From";
+
+            bool? previousWasExpressionBody = null;
 
             if (Data.Reciprocal is not null)
             {
                 string parameterName = SourceBuildingUtility.ToParameterName(Data.Reciprocal.Value.Name);
 
+                var expression = $"new(1 / {parameterName}.Magnitude.Value)";
+                var parameters = new[] { (Data.Reciprocal.Value, parameterName) };
+
                 AppendDocumentation(indentation, Data.Documentation.FromReciprocal());
-                Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} From({Data.Reciprocal.Value.FullyQualifiedName} {parameterName}) => " +
-                    $"new(1 / {parameterName}.Magnitude.Value);");
+                StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+
+                previousWasExpressionBody = Data.Reciprocal.Value.IsValueType;
             }
 
             if (Data.Square is not null)
             {
+                if (previousWasExpressionBody is not true || Data.Square.Value.IsReferenceType)
+                {
+                    SeparationHandler.AddIfNecessary();
+                }
+
                 string parameterName = SourceBuildingUtility.ToParameterName(Data.Square.Value.Name);
 
+                string expression = $"new(global::System.Math.Sqrt({parameterName}.Magnitude.Value))";
+                var parameters = new[] { (Data.Square.Value, parameterName) };
+
                 AppendDocumentation(indentation, Data.Documentation.FromSquare());
-                Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} From({Data.Square.Value.FullyQualifiedName} {parameterName}) => " +
-                    $"new(global::System.Math.Sqrt({parameterName}.Magnitude.Value));");
+                StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+
+                previousWasExpressionBody = Data.Square.Value.IsValueType;
             }
 
             if (Data.Cube is not null)
             {
+                if (previousWasExpressionBody is not true || Data.Cube.Value.IsReferenceType)
+                {
+                    SeparationHandler.AddIfNecessary();
+                }
+
                 string parameterName = SourceBuildingUtility.ToParameterName(Data.Cube.Value.Name);
 
+                var expression = $"new(global::System.Math.Cbrt({parameterName}.Magnitude.Value))";
+                var parameters = new[] { (Data.Cube.Value, parameterName) };
+
                 AppendDocumentation(indentation, Data.Documentation.FromCube());
-                Builder.AppendLine($"{indentation}public {Data.Scalar.Name} From({Data.Cube.Value.Name} {parameterName}) => " +
-                    $"new(global::System.Math.Cbrt({parameterName}.Magnitude.Value));");
+                StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+
+                previousWasExpressionBody = Data.Cube.Value.IsValueType;
             }
 
             if (Data.SquareRoot is not null)
             {
+                if (previousWasExpressionBody is not true || Data.SquareRoot.Value.IsReferenceType)
+                {
+                    SeparationHandler.AddIfNecessary();
+                }
+
                 string parameterName = SourceBuildingUtility.ToParameterName(Data.SquareRoot.Value.Name);
 
+                var expression = $"new(global::System.Math.Pow({parameterName}.Magnitude.Value, 2))";
+                var parameters = new[] { (Data.SquareRoot.Value, parameterName) };
+
                 AppendDocumentation(indentation, Data.Documentation.FromSquareRoot());
-                Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} From({Data.SquareRoot.Value.FullyQualifiedName} {parameterName}) => " +
-                    $"new(global::System.Math.Pow({parameterName}.Magnitude.Value, 2));");
+                StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+
+                previousWasExpressionBody = Data.SquareRoot.Value.IsValueType;
             }
 
             if (Data.CubeRoot is not null)
             {
+                if (previousWasExpressionBody is not true || Data.CubeRoot.Value.IsReferenceType)
+                {
+                    SeparationHandler.AddIfNecessary();
+                }
+
                 string parameterName = SourceBuildingUtility.ToParameterName(Data.CubeRoot.Value.Name);
 
+                var expression = $"new(global::System.Math.Pow({parameterName}.Magnitude.Value, 3))";
+                var parameters = new[] { (Data.CubeRoot.Value, parameterName) };
+
                 AppendDocumentation(indentation, Data.Documentation.FromCubeRoot());
-                Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} From({Data.CubeRoot.Value.FullyQualifiedName} {parameterName}) => " +
-                    $"new(global::System.Math.Pow({parameterName}.Magnitude.Value, 3));");
-            }
-
-            if (Builder.Length > startLength)
-            {
-                Builder.AppendLine();
+                StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
             }
         }
 
-        private void ComposeSumMethod(Indentation indentation)
+        private void AppendSumMethod(Indentation indentation)
         {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = $"public {Data.Scalar.FullyQualifiedName} Add";
+            var expression = "new(Magnitude.Value + addend.Magnitude.Value)";
+            var parameters = new[] { (Data.Scalar.AsNamedType(), "addend") };
+
             AppendDocumentation(indentation, Data.Documentation.AddSameTypeMethod());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+        }
 
-            if (Data.Scalar.IsReferenceType)
+        private void AppendDifferenceMethods(Indentation indentation)
+        {
+            AppendSubtractSameTypeMetod(indentation);
+            
+            if (Data.Difference != Data.Scalar.AsNamedType())
             {
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public {{Data.Scalar.FullyQualifiedName}} Add({{Data.Scalar.FullyQualifiedName}} addend)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(addend);
-                        
-                    {{indentation.Increased}}return new(Magnitude.Value + addend.Magnitude.Value);
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Add({Data.Scalar.FullyQualifiedName} addend) => new(Magnitude.Value + addend.Magnitude.Value);");
+                AppendAddDifferenceMethod(indentation);
+                AppendSubtractDifferenceMethod(indentation);
             }
         }
 
-        private void ComposeDifferenceMethod(Indentation indentation)
+        private void AppendSubtractSameTypeMetod(Indentation indentation)
         {
-            if (Data.Difference == Data.Scalar.AsNamedType())
-            {
-                ComposeDifferenceMethodAsSameType(indentation);
-            }
-            else
-            {
-                ComposeDifferenceMethodAsDifferentType(indentation);   
-            }
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifier = $"public {Data.Difference.FullyQualifiedName} Subtract";
+            var expression = "new(Magnitude.Value - subtrahend.Magnitude.Value)";
+            var parameters = new[] { (Data.Scalar.AsNamedType(), "subtrahend") };
+
+            AppendDocumentation(indentation, Data.Documentation.AddDifferenceMethod());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifier, expression, parameters);
         }
 
-        private void ComposeDifferenceMethodAsSameType(Indentation indentation)
+        private void AppendAddDifferenceMethod(Indentation indentation)
         {
-            if (Data.Scalar.IsReferenceType)
-            {
-                AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeMethod());
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public {{Data.Difference.FullyQualifiedName}} Subtract({{Data.Scalar.FullyQualifiedName}} subtrahend)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(subtrahend);
+            SeparationHandler.AddIfNecessary();
 
-                    {{indentation.Increased}}return new(Magnitude.Value - subtrahend.Magnitude.Value);
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeMethod());
-                Builder.Append($"{indentation}public {Data.Difference.FullyQualifiedName} Subtract({Data.Scalar.FullyQualifiedName} subtrahend) " +
-                    $"=> new(Magnitude.Value - subtrahend.Magnitude.Value);");
-            }
+            var methodNameAndModifiers = $"public {Data.Scalar.FullyQualifiedName} Add";
+            var expression = "new(Magnitude.Value + addend.Magnitude.Value";
+            var parameters = new[] { (Data.Difference, "addend") };
+
+            AppendDocumentation(indentation, Data.Documentation.AddDifferenceMethod());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
-        private void ComposeDifferenceMethodAsDifferentType(Indentation indentation)
+        private void AppendSubtractDifferenceMethod(Indentation indentation)
         {
-            if (Data.Difference.IsReferenceType)
-            {
-                AppendDocumentation(indentation, Data.Documentation.AddDifferenceMethod());
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public {{Data.Scalar.FullyQualifiedName}} Add({{Data.Difference.FullyQualifiedName}} addend)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(addend);
+            SeparationHandler.AddIfNecessary();
 
-                    {{indentation.Increased}}return new(Magnitude.Value + addend.Magnitude.Value);
-                    {{indentation}}}
-                    """);
+            var methodNameAndModifiers = $"public {Data.Scalar.FullyQualifiedName} Subtract";
+            var expression = "new(Magnitude.Value - subtrahend.Magnitude.Value";
+            var parameters = new[] { (Data.Difference, "subtrahend") };
 
-                AppendDocumentation(indentation, Data.Documentation.SubtractDifferenceMethod());
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public {{Data.Scalar.FullyQualifiedName}} Subtract({{Data.Difference.FullyQualifiedName}} subtrahend)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(subtrahend);
-
-                    {{indentation.Increased}}return new(Magnitude.Value - subtrahend.Magnitude.Value);
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                AppendDocumentation(indentation, Data.Documentation.AddDifferenceMethod());
-                Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Add({Data.Difference.FullyQualifiedName} addend) => new(Magnitude.Value + addend.Magnitude.Value);");
-
-                AppendDocumentation(indentation, Data.Documentation.SubtractDifferenceMethod());
-                Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Subtract({Data.Difference.FullyQualifiedName} subtrahend) => new(Magnitude.Value - subtrahend.Magnitude.Value);");
-            }
-
-            if (Data.Scalar.IsReferenceType)
-            {
-                AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeMethod());
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public {{Data.Difference.FullyQualifiedName}} Subtract({{Data.Scalar.FullyQualifiedName}} subtrahend)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(subtrahend);
-
-                    {{indentation.Increased}}return new(Magnitude.Value - subtrahend.Magnitude.Value);
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeMethod());
-                Builder.AppendLine($"{indentation}public {Data.Difference.FullyQualifiedName} Subtract({Data.Scalar.FullyQualifiedName} subtrahend) => new(Magnitude.Value - subtrahend.Magnitude.Value);");
-            }
+            AppendDocumentation(indentation, Data.Documentation.SubtractDifferenceMethod());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
-        private void ComposeMultiplySameTypeMethod(Indentation indentation)
+        private void AppendUnaryMethods(Indentation indentation)
         {
+            SeparationHandler.AddIfNecessary();
+
+            AppendDocumentation(indentation, Data.Documentation.UnaryPlusMethod());
+            Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Plus() => this;");
+            AppendDocumentation(indentation, Data.Documentation.NegateMethod());
+            Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Negate() => new(-Magnitude.Value);");
+        }
+
+        private void AppendMultiplyAndDivideScalarMethods(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
+
+            AppendDocumentation(indentation, Data.Documentation.MultiplyScalarMethod());
+            Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Multiply(global::SharpMeasures.Scalar factor) => new(Magnitude.Value * factor.Value);");
+            AppendDocumentation(indentation, Data.Documentation.DivideScalarMethod());
+            Builder.AppendLine($"{indentation}public {Data.Scalar.FullyQualifiedName} Divide(global::SharpMeasures.Scalar divisor) => new(Magnitude.Value / divisor.Value);");
+        }
+
+        private void AppendMultiplySameTypeMethod(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = $"public {Data.Square!.Value.FullyQualifiedName} Multiply";
+            var expression = "new(Magnitude.Value * factor.Magnitude.Value";
+            var parameters = new[] { (Data.Scalar.AsNamedType(), "factor") };
+
             AppendDocumentation(indentation, Data.Documentation.MultiplySameTypeMethod());
-
-            if (Data.Scalar.IsReferenceType)
-            {
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public {{Data.Square!.Value.FullyQualifiedName}} Multiply({{Data.Scalar.FullyQualifiedName}} factor)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(factor);
-                        
-                    {{indentation.Increased}}return new(Magnitude.Value * factor.Magnitude.Value):
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                Builder.AppendLine($"{indentation}public {Data.Square!.Value.FullyQualifiedName} Multiply({Data.Scalar.FullyQualifiedName} factor) => new(Magnitude.Value * factor.Magnitude.Value);");
-            }
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
-        private void ComposeDivideSameTypeMethod(Indentation indentation)
+        private void AppendDivideSameTypeMethod(Indentation indentation)
         {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = "public global::SharpMeasures.Scalar Divide";
+            var expression = "new(Magnitude.Value / divisor.Magnitude.Value)";
+            var parameters = new[] { (Data.Scalar.AsNamedType(), "divisor") };
+
             AppendDocumentation(indentation, Data.Documentation.DivideSameTypeMethod());
-
-            if (Data.Scalar.IsReferenceType)
-            {
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public global::SharpMeasures.Scalar Divide({{Data.Scalar.FullyQualifiedName}} divisor)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(divisor);
-
-                    {{indentation.Increased}}return new(Magnitude.Value / divisor.Magnitude.Value);
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar Divide({Data.Scalar.FullyQualifiedName} divisor) => new(Magnitude.Value / divisor.Magnitude.Value);");
-            }
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
-        private void ComposeUnaryOperators(Indentation indentation)
+        private void AppendUnaryOperators(Indentation indentation)
         {
+            SeparationHandler.AddIfNecessary();
+
             AppendDocumentation(indentation, Data.Documentation.UnaryPlusOperator());
             Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator +({Data.Scalar.FullyQualifiedName} x) => x;");
 
+            if (Data.Scalar.IsReferenceType)
+            {
+                SeparationHandler.Add();
+            }
+
+            var methodNameAndModifiers = $"public static {Data.Scalar.FullyQualifiedName} operator -";
+            var expression = "new(-x.Magnitude)";
+            var parameters = new[] { (Data.Scalar.AsNamedType(), "x") };
+
             AppendDocumentation(indentation, Data.Documentation.NegateOperator());
-
-            if (Data.Scalar.IsReferenceType)
-            {
-                Builder.AppendLine();
-
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public static {{Data.Scalar.FullyQualifiedName}} operator -({{Data.Scalar.FullyQualifiedName}} x)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(x);
-
-                    {{indentation.Increased}}return new(-x.Magnitude);
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator -({Data.Scalar.FullyQualifiedName} x) => new(-x.Magnitude);");
-            }
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
-        private void ComposeSumOperator(Indentation indentation)
+        private void AppendSumOperator(Indentation indentation)
         {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = $"public static {Data.Scalar.FullyQualifiedName} operator +";
+            var expression = "new(x.Magnitude.Value + y.Magnitude.Value)";
+            var parameters = new[] { (Data.Scalar.AsNamedType(), "x"), (Data.Scalar.AsNamedType(), "y") };
+
             AppendDocumentation(indentation, Data.Documentation.AddSameTypeOperator());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+        }
 
-            if (Data.Scalar.IsReferenceType)
-            {
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public static {{Data.Scalar.FullyQualifiedName}} operator +({{Data.Scalar.FullyQualifiedName}} x, {{Data.Scalar.FullyQualifiedName}} y)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(x);
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(y);
+        private void AppendDifferenceOperator(Indentation indentation)
+        {
+            AppendSubtractSameTypeOperator(indentation);
 
-                    {{indentation.Increased}}return new(x.Magnitude.Value + y.Magnitude.Value);
-                    {{indentation}}}
-                    """);
-            }
-            else
+            if (Data.Difference != Data.Scalar.AsNamedType())
             {
-                Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator +({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) => new(x.Magnitude.Value + y.Magnitude.Value);");
+                AppendAddDifferenceOperators(indentation);
+                AppendSubtractDifferenceOperator(indentation);
             }
         }
 
-        private void ComposeDifferenceOperator(Indentation indentation)
+        private void AppendSubtractSameTypeOperator(Indentation indentation)
         {
-            if (Data.Difference == Data.Scalar.AsNamedType())
-            {
-                ComposeDifferenceOperatorAsSameType(indentation);
-            }
-            else
-            {
-                ComposeDifferenceOperatorAsDifferentType(indentation);
-            }
-        }
+            SeparationHandler.AddIfNecessary();
 
-        private void ComposeDifferenceOperatorAsSameType(Indentation indentation)
-        {
+            var methodNameAndModifiers = $"public static {Data.Difference.FullyQualifiedName} operator -";
+            var expression = "new(x.Magnitude.Value - y.Magnitude.Value)";
+            var parameters = new[] { (Data.Scalar.AsNamedType(), "x"), (Data.Scalar.AsNamedType(), "y") };
+
             AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeOperator());
-            Builder.AppendLine($"{indentation}public static {Data.Difference.FullyQualifiedName} operator -({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) => new(x.Magnitude.Value - y.Magnitude.Value);");
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
-        private void ComposeDifferenceOperatorAsDifferentType(Indentation indentation)
+        private void AppendAddDifferenceOperators(Indentation indentation)
         {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = $"public static {Data.Scalar.FullyQualifiedName} operator +";
+            var expression = "new(x.Magnitude.Value + y.Magnitude.Value)";
+
+            var lhsParameters = new[] { (Data.Scalar.AsNamedType(), "x"), (Data.Difference, "y") };
+            var rhsParameters = new[] { (Data.Difference, "x"), (Data.Scalar.AsNamedType(), "y") };
+
             AppendDocumentation(indentation, Data.Documentation.AddDifferenceOperatorLHS());
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator +({Data.Scalar.FullyQualifiedName} x, {Data.Difference.FullyQualifiedName} y) => new(x.Magnitude.Value + y.Magnitude.Value);");
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, lhsParameters);
+
+            if (Data.Scalar.IsReferenceType || (Data.Difference.IsReferenceType))
+            {
+                SeparationHandler.Add();
+            }
 
             AppendDocumentation(indentation, Data.Documentation.AddDifferenceOperatorRHS());
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator +({Data.Difference.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) => new(x.Magnitude.Value + y.Magnitude.Value);");
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, rhsParameters);
+        }
 
-            AppendDocumentation(indentation, Data.Documentation.SubtractSameTypeOperator());
-            Builder.AppendLine($"{indentation}public static {Data.Difference.FullyQualifiedName} operator -({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) => new(x.Magnitude.Value - y.Magnitude.Value);");
+        private void AppendSubtractDifferenceOperator(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = $"public static {Data.Scalar.FullyQualifiedName} operator -";
+            var expression = "new(x.Magnitude.Value - y.Magnitude.Value)";
+            var parameters = new[] { (Data.Scalar.AsNamedType(), "x"), (Data.Difference, "y") };
 
             AppendDocumentation(indentation, Data.Documentation.SubtractDifferenceOperatorLHS());
-            Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator -({Data.Scalar.FullyQualifiedName} x, {Data.Difference.FullyQualifiedName} y) => new(x.Magnitude.Value - y.Magnitude.Value);");
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
-        private void ComposeMultiplySameTypeOperator(Indentation indentation)
+        private void AppendMultiplySameTypeOperator(Indentation indentation)
         {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = $"public static {Data.Square!.Value.FullyQualifiedName} operator *";
+            var expression = "new(x.Magnitude.Value * y.Magnitude.Value)";
+            var parameters = new[] { (Data.Scalar.AsNamedType(), "x"), (Data.Scalar.AsNamedType(), "y") };
+
             AppendDocumentation(indentation, Data.Documentation.MultiplySameTypeOperator());
-
-            if (Data.Scalar.IsReferenceType)
-            {
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public static {{Data.Square!.Value.FullyQualifiedName}} operator *({{Data.Scalar.FullyQualifiedName}} x, {{Data.Scalar.FullyQualifiedName}} y)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(x);
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(y);
-                    
-                    {{indentation.Increased}}return new(x.Magnitude.Value * y.Magnitude.Value);
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                Builder.AppendLine($"{indentation}public static {Data.Square!.Value.FullyQualifiedName} operator *({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) " +
-                    "=> new(x.Magnitude.Value * y.Magnitude.Value);");
-            }
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
-        private void ComposeDivideSameTypeOperator(Indentation indentation)
+        private void AppendDivideSameTypeOperator(Indentation indentation)
         {
+            SeparationHandler.AddIfNecessary();
+
+            var methodNameAndModifiers = "public static global::SharpMeasures.Scalar operator /";
+            var expression = "new(x.Magnitude.Value / y.Magnitude.Value)";
+            var parameters = new[] { (Data.Scalar.AsNamedType(), "x"), (Data.Scalar.AsNamedType(), "y") };
+
             AppendDocumentation(indentation, Data.Documentation.DivideSameTypeOperator());
-
-            if (Data.Scalar.IsReferenceType)
-            {
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public static global::SharpMeasures.Scalar operator /({{Data.Scalar.FullyQualifiedName}} x, {{Data.Scalar.FullyQualifiedName}} y)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(x);
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(y);
-                    
-                    {{indentation.Increased}}return new(x.Magnitude.Value / y.Magnitude.Value);
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                Builder.AppendLine($"{indentation}public static global::SharpMeasures.Scalar operator /({Data.Scalar.FullyQualifiedName} x, {Data.Scalar.FullyQualifiedName} y) " +
-                    "=> new(x.Magnitude.Value / y.Magnitude.Value);");
-            }
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
-        private void ComposeMultiplyAndDivideScalarOperators(Indentation indentation)
+        private void AppendMultiplyAndDivideScalarOperators(Indentation indentation)
         {
+            SeparationHandler.AddIfNecessary();
+
+            var multiplyMethodNameAndModifiers = $"public static {Data.Scalar.FullyQualifiedName} operator *";
+            var divideMethodNameAndModifiers = $"public static {Data.Scalar.FullyQualifiedName} operator /";
+
+            var multiplyLHSExpression = "new(x.Magnitude.Value * y.Value)";
+            var multiplyRHSExpression = "new(x.Value * y.Magnitude.Value)";
+            var divideExpression = "new(x.Magnitude.Value / y.Value)";
+
+            var LHSParameters = new[] { (Data.Scalar.AsNamedType(), "x"), (new NamedType("Scalar", "SharpMeasures", true), "y") };
+            var RHSParameters = new[] { (new NamedType("Scalar", "SharpMeasures", true), "x"), (Data.Scalar.AsNamedType(), "y") };
+
             AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorLHS());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, multiplyMethodNameAndModifiers, multiplyLHSExpression, LHSParameters);
 
             if (Data.Scalar.IsReferenceType)
             {
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public static {{Data.Scalar.FullyQualifiedName}} operator *({{Data.Scalar.FullyQualifiedName}} x, global::SharpMeasures.Scalar y)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(x);
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(y);
-                    
-                    {{indentation.Increased}}return new(x.Magnitude.Value * y.Value);
-                    {{indentation}}}
-                    """);
-
-                Builder.AppendLine();
-            }
-            else
-            {
-                Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator *({Data.Scalar.FullyQualifiedName} x, global::SharpMeasures.Scalar y) => new(x.Magnitude.Value * y.Value);");
+                SeparationHandler.Add();
             }
 
             AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorRHS());
-
-            if (Data.Scalar.IsReferenceType)
-            {
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public static {{Data.Scalar.FullyQualifiedName}} operator *(global::SharpMeasures.Scalar x, {{Data.Scalar.FullyQualifiedName}} y)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(x);
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(y);
-                    
-                    {{indentation.Increased}}return new(x.Value * y.Magnitude.Value);
-                    {{indentation}}}
-                    """);
-
-                Builder.AppendLine();
-            }
-            else
-            {
-                Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator *(global::SharpMeasures.Scalar x, {Data.Scalar.FullyQualifiedName} y) => new(x.Value * y.Magnitude.Value);");
-            }
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, multiplyMethodNameAndModifiers, multiplyRHSExpression, RHSParameters);
             
-            AppendDocumentation(indentation, Data.Documentation.DivideScalarOperatorLHS());
-
             if (Data.Scalar.IsReferenceType)
             {
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public static {{Data.Scalar.FullyQualifiedName}} operator /({{Data.Scalar.FullyQualifiedName}} x, global::SharpMeasures.Scalar y)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(x);
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(y);
-                    
-                    {{indentation.Increased}}return new(x.Magnitude.Value / y.Value);
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} operator /({Data.Scalar.FullyQualifiedName} x, global::SharpMeasures.Scalar y) => new(x.Magnitude.Value / y.Value);");
+                SeparationHandler.Add();
             }
 
-            if (Data.Reciprocal is not null)
-            {
-                AppendDocumentation(indentation, Data.Documentation.DivideScalarOperatorRHS());
-        
-                if (Data.Scalar.IsReferenceType)
-                {
-                    Builder.AppendLine();
-
-                    Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public static {{Data.Reciprocal.Value.FullyQualifiedName}} operator /(global::SharpMeasures.Scalar x, {{Data.Scalar.FullyQualifiedName}} y)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(x);
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(y);
-                    
-                    {{indentation.Increased}}return new(x.Value / y.Magnitude.Value);
-                    {{indentation}}}
-                    """);
-                }
-                else
-                {
-                    Builder.AppendLine($"{indentation}public static {Data.Reciprocal.Value.FullyQualifiedName} operator /(global::SharpMeausures.Scalar x, {Data.Scalar.FullyQualifiedName} y) => new(x.Value / y.Magnitude.Value);");
-                }
-            }
+            AppendDocumentation(indentation, Data.Documentation.DivideScalarOperatorLHS());
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, divideMethodNameAndModifiers, divideExpression, LHSParameters);
         }
 
         private void AppendDocumentation(Indentation indentation, string text)

@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.Contexts.Resolution;
 
 using SharpMeasures.Generators.Units.Parsing.BiasedUnit;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System.Collections.Generic;
 
@@ -9,7 +9,7 @@ internal record class BiasedUnitResolutionContext : DependantUnitResolutionConte
 {
     public bool UnitIncludesBiasTerm { get; }
 
-    public BiasedUnitResolutionContext(DefinedType type, bool unitIncludesBiasTerm, IReadOnlyDictionary<string, IUnresolvedUnitInstance> unitsByName) : base(type, unitsByName)
+    public BiasedUnitResolutionContext(DefinedType type, bool unitIncludesBiasTerm, IReadOnlyDictionary<string, IRawUnitInstance> unitsByName) : base(type, unitsByName)
     {
         UnitIncludesBiasTerm = unitIncludesBiasTerm;
     }

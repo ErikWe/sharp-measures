@@ -4,8 +4,8 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Unresolved.Vectors;
-
+using SharpMeasures.Generators.Raw.Vectors;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 using System.Collections.Generic;
 
 internal interface IConvertibleIndividualVectorResolutionDiagnostics
@@ -15,7 +15,7 @@ internal interface IConvertibleIndividualVectorResolutionDiagnostics
 
 internal interface IConvertibleIndividualVectorResolutionContext : IProcessingContext
 {
-    public abstract IUnresolvedVectorPopulation VectorPopulation { get; }
+    public abstract IRawVectorPopulation VectorPopulation { get; }
 }
 
 internal class ConvertibleIndividualVectorResolver : IProcesser<IConvertibleIndividualVectorResolutionContext, UnresolvedConvertibleVectorDefinition, ConvertibleVectorDefinition>
@@ -29,7 +29,7 @@ internal class ConvertibleIndividualVectorResolver : IProcesser<IConvertibleIndi
 
     public IOptionalWithDiagnostics<ConvertibleVectorDefinition> Process(IConvertibleIndividualVectorResolutionContext context, UnresolvedConvertibleVectorDefinition definition)
     {
-        List<IUnresolvedVectorGroupType> quantities = new(definition.VectorGroups.Count);
+        List<IRawVectorGroupType> quantities = new(definition.VectorGroups.Count);
         List<Diagnostic> allDiagnostics = new();
 
         var index = -1;

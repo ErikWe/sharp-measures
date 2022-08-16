@@ -4,8 +4,8 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Vectors;
 
 using System.Collections.Immutable;
 using System.Linq;
@@ -13,7 +13,7 @@ using System.Threading;
 
 public interface IScalarResolver
 {
-    public abstract (IncrementalValueProvider<IScalarPopulation>, IScalarGenerator) Resolve(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnresolvedUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IUnresolvedVectorPopulation> vectorPopulationProvider);
+    public abstract (IncrementalValueProvider<IScalarPopulation>, IScalarGenerator) Resolve(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IRawUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IRawVectorPopulation> vectorPopulationProvider);
 }
 
 internal class ScalarResolver : IScalarResolver
@@ -31,7 +31,7 @@ internal class ScalarResolver : IScalarResolver
         ScalarSpecializationProvider = scalarSpecializationProvider;
     }
 
-    public (IncrementalValueProvider<IScalarPopulation>, IScalarGenerator) Resolve(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnresolvedUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IUnresolvedVectorPopulation> vectorPopulationProvider)
+    public (IncrementalValueProvider<IScalarPopulation>, IScalarGenerator) Resolve(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IRawUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IRawVectorPopulation> vectorPopulationProvider)
     {
         var resolvedScalarBases = ScalarBaseProvider.Combine(unitPopulationProvider, ScalarPopulationProvider, vectorPopulationProvider).Select(ScalarBaseTypeResolution.Resolve).ReportDiagnostics(context);
 

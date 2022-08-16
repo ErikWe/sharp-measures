@@ -3,9 +3,9 @@
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.UnitInstances;
 using SharpMeasures.Generators.Units.Utility;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
-internal record class UnresolvedPrefixedUnitDefinition : AUnresolvedDependantUnitDefinition<PrefixedUnitLocations>, IUnresolvedPrefixedUnit
+internal record class UnresolvedPrefixedUnitDefinition : ARawDependantUnitDefinition<PrefixedUnitLocations>, IRawPrefixedUnit
 {
     public string From => DependantOn;
 

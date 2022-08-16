@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Raw.Scalars;
 
 using System.Collections.Generic;
 
@@ -37,9 +37,9 @@ internal class ConvertibleScalarPostResolutionFilter : AProcesser<IConvertibleSc
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private IResultWithDiagnostics<IReadOnlyList<IUnresolvedScalarType>> FilterScalars(IConvertibleScalarPostResolutionFilterContext context, ConvertibleScalarDefinition definition)
+    private IResultWithDiagnostics<IReadOnlyList<IRawScalarType>> FilterScalars(IConvertibleScalarPostResolutionFilterContext context, ConvertibleScalarDefinition definition)
     {
-        List<IUnresolvedScalarType> scalars = new(definition.Scalars.Count);
+        List<IRawScalarType> scalars = new(definition.Scalars.Count);
         List<Diagnostic> allDiagnostics = new();
 
         for (int i = 0; i < definition.Scalars.Count; i++)
@@ -58,6 +58,6 @@ internal class ConvertibleScalarPostResolutionFilter : AProcesser<IConvertibleSc
             context.ListedScalars.Add(definition.Scalars[i].Type.AsNamedType());
         }
 
-        return ResultWithDiagnostics.Construct(scalars as IReadOnlyList<IUnresolvedScalarType>, allDiagnostics);
+        return ResultWithDiagnostics.Construct(scalars as IReadOnlyList<IRawScalarType>, allDiagnostics);
     }
 }

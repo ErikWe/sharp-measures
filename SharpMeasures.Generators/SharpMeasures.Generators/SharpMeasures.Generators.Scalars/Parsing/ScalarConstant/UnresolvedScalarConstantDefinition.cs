@@ -1,9 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 
-using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Raw.Scalars;
 using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
-internal record class UnresolvedScalarConstantDefinition : AUnresolvedQuantityConstantDefinition<ScalarConstantLocations>, IUnresolvedScalarConstant
+internal record class UnresolvedScalarConstantDefinition : AUnresolvedQuantityConstantDefinition<ScalarConstantLocations>, IRawScalarConstant
 {
     public double Value { get; }
 

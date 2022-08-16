@@ -1,9 +1,8 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
 using SharpMeasures.Generators.Documentation;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
-
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 using System;
 
 internal class IndividualVectorFileDocumentation : IIndividualVectorDocumentationStrategy, IEquatable<IndividualVectorFileDocumentation>
@@ -44,10 +43,10 @@ internal class IndividualVectorFileDocumentation : IIndividualVectorDocumentatio
 
     public string InUnit() => FromFileOrDefault(static (strategy) => strategy.InUnit());
     public string InConstantMultiples(IVectorConstant constant) => FromFileOrDefault((strategy) => strategy.InConstantMultiples(constant));
-    public string InSpecifiedUnit(IUnresolvedUnitInstance unitInstance) => FromFileOrDefault((strategy) => strategy.InSpecifiedUnit(unitInstance));
+    public string InSpecifiedUnit(IRawUnitInstance unitInstance) => FromFileOrDefault((strategy) => strategy.InSpecifiedUnit(unitInstance));
 
-    public string Conversion(IUnresolvedVectorGroupMemberType vectorGroupMember) => FromFileOrDefault((strategy) => strategy.Conversion(vectorGroupMember));
-    public string CastConversion(IUnresolvedVectorGroupMemberType vectorGroupMember) => FromFileOrDefault((strategy) => strategy.CastConversion(vectorGroupMember));
+    public string Conversion(IRawVectorGroupMemberType vectorGroupMember) => FromFileOrDefault((strategy) => strategy.Conversion(vectorGroupMember));
+    public string CastConversion(IRawVectorGroupMemberType vectorGroupMember) => FromFileOrDefault((strategy) => strategy.CastConversion(vectorGroupMember));
 
     public string IsNaN() => FromFileOrDefault(static (strategy) => strategy.IsNaN());
     public string IsZero() => FromFileOrDefault(static (strategy) => strategy.IsZero());

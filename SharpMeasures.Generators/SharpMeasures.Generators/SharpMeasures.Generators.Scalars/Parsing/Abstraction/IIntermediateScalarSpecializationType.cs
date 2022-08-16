@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System.Collections.Generic;
 
@@ -15,9 +15,9 @@ internal interface IIntermediateScalarSpecializationType
     public abstract IReadOnlyList<IScalarConstant> Constants { get; }
     public abstract IReadOnlyList<IConvertibleScalar> Conversions { get; }
 
-    public abstract IReadOnlyList<IUnresolvedUnitInstance> BaseInclusions { get; }
-    public abstract IReadOnlyList<IUnresolvedUnitInstance> BaseExclusions { get; }
+    public abstract IReadOnlyList<IRawUnitInstance> BaseInclusions { get; }
+    public abstract IReadOnlyList<IRawUnitInstance> BaseExclusions { get; }
 
-    public abstract IReadOnlyList<IUnresolvedUnitInstance> UnitInclusions { get; }
-    public abstract IReadOnlyList<IUnresolvedUnitInstance> UnitExclusions { get; }
+    public abstract IReadOnlyList<IRawUnitInstance> UnitInclusions { get; }
+    public abstract IReadOnlyList<IRawUnitInstance> UnitExclusions { get; }
 }

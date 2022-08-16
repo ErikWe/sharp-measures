@@ -26,12 +26,15 @@ internal static class Execution
         }
 
         private StringBuilder Builder { get; } = new();
+        private NewlineSeparationHandler SeparationHandler { get; }
 
         private DataModel Data { get; }
 
         private Composer(DataModel data)
         {
             Data = data;
+
+            SeparationHandler = new(Builder);
         }
 
         private void Compose()
@@ -52,45 +55,54 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
+            SeparationHandler.MarkUnncecessary();
+
+            AppendConstantBases(indentation);
+            AppendUnitBases(indentation);
+
+            AppendConstantMultiples(indentation);
+            AppendUnitPlurals(indentation);
+        }
+
+        private void AppendConstantBases(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
+
             foreach (var constant in Data.Constants)
             {
                 AppendDocumentation(indentation, Data.Documentation.Constant(constant));
                 Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} {constant.Name} => new({constant.Value}, {Data.Unit.FullyQualifiedName}.{constant.Unit.Name});");
             }
+        }
 
-            if (Data.Constants.Count > 0)
-            {
-                Builder.AppendLine();
-            }
+        private void AppendUnitBases(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
 
             foreach (var includedBase in Data.IncludedBases)
             {
                 AppendDocumentation(indentation, Data.Documentation.UnitBase(includedBase));
                 Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} One{includedBase.Name} => {Data.Unit.FullyQualifiedName}.{includedBase.Name}.{Data.UnitQuantity.Name};");
             }
+        }
 
-            if (Data.IncludedBases.Count > 0)
-            {
-                Builder.AppendLine();
-            }
-
-            bool anyAccessedConstant = false;
+        private void AppendConstantMultiples(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
 
             foreach (var constant in Data.Constants)
             {
                 if (constant.GenerateMultiplesProperty)
                 {
-                    anyAccessedConstant = true;
-
                     AppendDocumentation(indentation, Data.Documentation.InConstantMultiples(constant));
                     Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar {constant.Multiples!} => Magnitude.Value / {constant.Name}.Magnitude.Value;");
                 }
             }
+        }
 
-            if (anyAccessedConstant)
-            {
-                Builder.AppendLine();
-            }
+        private void AppendUnitPlurals(Indentation indentation)
+        {
+            SeparationHandler.AddIfNecessary();
 
             foreach (var includedUnit in Data.IncluedUnits)
             {

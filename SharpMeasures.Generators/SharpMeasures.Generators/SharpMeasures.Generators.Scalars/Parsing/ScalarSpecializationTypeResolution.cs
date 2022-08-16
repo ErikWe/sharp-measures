@@ -6,9 +6,9 @@ using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.Contexts.Resolution;
 using SharpMeasures.Generators.Scalars.Parsing.Diagnostics.Resolution;
 using SharpMeasures.Generators.Scalars.Parsing.SpecializedSharpMeasuresScalar;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors;
 
 using System;
 using System.Collections.Generic;
@@ -32,11 +32,11 @@ internal static class ScalarSpecializationTypeResolution
 
         var includedBases = GetIncludedUnits(intermediateScalar, intermediateScalar.Definition.Unit, scalarPopulation, static (scalar) => scalar.Definition.InheritBases,
             static (scalar) => scalar.BaseInclusions, static (scalar) => scalar.BaseExclusions, static (scalar) => scalar.IncludedBases,
-            static (scalar) => Array.Empty<IUnresolvedUnitInstance>());
+            static (scalar) => Array.Empty<IRawUnitInstance>());
 
         var includedUnits = GetIncludedUnits(intermediateScalar, intermediateScalar.Definition.Unit, scalarPopulation, static (scalar) => scalar.Definition.InheritUnits,
             static (scalar) => scalar.UnitInclusions, static (scalar) => scalar.UnitExclusions, static (scalar) => scalar.IncludedUnits,
-            static (scalar) => Array.Empty<IUnresolvedUnitInstance>());
+            static (scalar) => Array.Empty<IRawUnitInstance>());
 
         var inheritedConstants = ResolveInheritedCollection(intermediateScalar, scalarPopulation, static (scalar) => scalar.Definition.InheritConstants,
             static (scalar) => scalar.Constants, static (scalar) => scalar.Constants);
@@ -49,12 +49,12 @@ internal static class ScalarSpecializationTypeResolution
         return OptionalWithDiagnostics.Result(reduced, allDiagnostics);
     }
 
-    public static IOptionalWithDiagnostics<IntermediateScalarSpecializationType> Resolve((UnresolvedScalarSpecializationType Scalar, IUnresolvedUnitPopulation UnitPopulation,
-        IUnresolvedScalarPopulationWithData ScalarPopulation, IUnresolvedVectorPopulation VectorPopulation) input, CancellationToken _)
+    public static IOptionalWithDiagnostics<IntermediateScalarSpecializationType> Resolve((UnresolvedScalarSpecializationType Scalar, IRawUnitPopulation UnitPopulation,
+        IUnresolvedScalarPopulationWithData ScalarPopulation, IRawVectorPopulation VectorPopulation) input, CancellationToken _)
         => Resolve(input.Scalar, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
 
     public static IOptionalWithDiagnostics<IntermediateScalarSpecializationType> Resolve(UnresolvedScalarSpecializationType unresolvedScalar,
-        IUnresolvedUnitPopulation unitPopulation, IUnresolvedScalarPopulationWithData scalarPopulation, IUnresolvedVectorPopulation vectorPopulation)
+        IRawUnitPopulation unitPopulation, IUnresolvedScalarPopulationWithData scalarPopulation, IRawVectorPopulation vectorPopulation)
     {
         SpecializedSharpMeasuresScalarResolutionContext scalarResolutionContext = new(unresolvedScalar.Type, unitPopulation, scalarPopulation, vectorPopulation);
 
@@ -86,14 +86,14 @@ internal static class ScalarSpecializationTypeResolution
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static IReadOnlyList<IUnresolvedUnitInstance> GetIncludedUnits(IIntermediateScalarSpecializationType scalar, IUnresolvedUnitType unit,
+    private static IReadOnlyList<IRawUnitInstance> GetIncludedUnits(IIntermediateScalarSpecializationType scalar, IRawUnitType unit,
         IIntermediateScalarPopulation scalarPopulation, Func<IIntermediateScalarSpecializationType, bool> shouldInherit,
-        Func<IIntermediateScalarSpecializationType, IEnumerable<IUnresolvedUnitInstance>> specializationInclusions,
-        Func<IIntermediateScalarSpecializationType, IEnumerable<IUnresolvedUnitInstance>> specializationExclusions,
-        Func<IScalarType, IEnumerable<IUnresolvedUnitInstance>> baseInclusions,
-        Func<IScalarType, IEnumerable<IUnresolvedUnitInstance>> baseExclusions)
+        Func<IIntermediateScalarSpecializationType, IEnumerable<IRawUnitInstance>> specializationInclusions,
+        Func<IIntermediateScalarSpecializationType, IEnumerable<IRawUnitInstance>> specializationExclusions,
+        Func<IScalarType, IEnumerable<IRawUnitInstance>> baseInclusions,
+        Func<IScalarType, IEnumerable<IRawUnitInstance>> baseExclusions)
     {
-        HashSet<IUnresolvedUnitInstance> includedUnits = new(unit.UnitsByName.Values);
+        HashSet<IRawUnitInstance> includedUnits = new(unit.UnitsByName.Values);
 
         recursivelyModify(scalar);
 
@@ -116,7 +116,7 @@ internal static class ScalarSpecializationTypeResolution
             performModification(specializationInclusions(scalar), specializationExclusions(scalar));
         }
 
-        void performModification(IEnumerable<IUnresolvedUnitInstance> inclusions, IEnumerable<IUnresolvedUnitInstance> exclusions)
+        void performModification(IEnumerable<IRawUnitInstance> inclusions, IEnumerable<IRawUnitInstance> exclusions)
         {
             if (inclusions.Any())
             {

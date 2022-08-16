@@ -9,14 +9,14 @@ using SharpMeasures.Generators.Vectors.Parsing.Contexts.PostResolutionFilter;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.PostResolutionFilter;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System.Collections.Generic;
 using System.Linq;
 
 internal static class VectorTypePostResolutionFilter
 {
-    public static IResultWithDiagnostics<IReadOnlyList<IVectorConstant>> FilterAndCombineConstants(DefinedType type, IEnumerable<VectorConstantDefinition> definedConstants, IReadOnlyList<IVectorConstant> inheritedConstants, IReadOnlyList<IUnresolvedUnitInstance> IncludedUnits)
+    public static IResultWithDiagnostics<IReadOnlyList<IVectorConstant>> FilterAndCombineConstants(DefinedType type, IEnumerable<VectorConstantDefinition> definedConstants, IReadOnlyList<IVectorConstant> inheritedConstants, IReadOnlyList<IRawUnitInstance> IncludedUnits)
     {
         HashSet<string> inheritedConstantNames = new(inheritedConstants.Select(static (constant) => constant.Name));
         HashSet<string> inheritedConstantMultiplesNames = new(inheritedConstants.Where(static (constant) => constant.GenerateMultiplesProperty).Select(static (constant) => constant.Multiples!));

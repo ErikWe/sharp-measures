@@ -53,7 +53,7 @@ internal class PrefixedUnitProcesser : ADependantUnitProcesser<IUnitProcessingCo
 
     private IValidityWithDiagnostics CheckValidity(IUnitProcessingContext context, RawPrefixedUnitDefinition definition)
     {
-        return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckDependantUnitValidity, CheckPrefixValidity);
+        return IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, CheckDependantUnitValidity, CheckPrefixValidity);
     }
 
     private IValidityWithDiagnostics CheckPrefixValidity(IUnitProcessingContext context, RawPrefixedUnitDefinition definition)

@@ -7,7 +7,7 @@ using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
 internal abstract class ADependantUnitProcessingDiagnostics<TRawDefinition, TLocations> : AUnitProcessingDiagnostics<TRawDefinition, TLocations>,
     IDependantUnitProcessingDiagnostics<TRawDefinition, TLocations>
-    where TRawDefinition : IRawDependantUnitDefinition<TLocations>
+    where TRawDefinition : IUnprocessedDependantUnitDefinition<TLocations>
     where TLocations : IDependantUnitLocations
 {
     public Diagnostic NullDependency(IUnitProcessingContext context, TRawDefinition definition)

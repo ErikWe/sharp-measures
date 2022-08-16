@@ -7,6 +7,7 @@ using SharpMeasures.Generators.Documentation;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Documentation;
+using SharpMeasures.Generators.Vectors.Groups;
 using SharpMeasures.Generators.Vectors.Pipelines.IndividualVector.Common;
 using SharpMeasures.Generators.Vectors.Pipelines.IndividualVector.Conversions;
 using SharpMeasures.Generators.Vectors.Pipelines.IndividualVector.Maths;
@@ -134,7 +135,7 @@ internal class VectorGenerator : IVectorGenerator
     private static IndividualVectorDataModel AppendDocumentation
         ((IndividualVectorDataModel Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
     {
-        return AppendDocumentation<IndividualVectorDataModel, IIndividualVectorType, IIndividualVectorDocumentationStrategy>(input.Model, input.GenerateDocumentation,
+        return AppendDocumentation<IndividualVectorDataModel, IVectorType, IIndividualVectorDocumentationStrategy>(input.Model, input.GenerateDocumentation,
             input.DocumentationDictionary, static (model) => new DefaultIndividualVectorDocumentation(model),
             (file, documentation) => new IndividualVectorFileDocumentation(input.Model.Vector.Definition.Dimension, file, documentation));
     }

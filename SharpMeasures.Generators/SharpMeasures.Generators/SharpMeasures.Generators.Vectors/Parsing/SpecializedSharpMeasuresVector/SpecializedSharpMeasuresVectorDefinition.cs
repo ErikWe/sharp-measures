@@ -1,24 +1,25 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVector;
 
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 
 internal record class SpecializedSharpMeasuresVectorDefinition : SharpMeasuresVectorDefinition, IIndividualVectorSpecialization
 {
-    public IUnresolvedIndividualVectorType OriginalIndividualVector { get; }
+    public IRawVectorType OriginalIndividualVector { get; }
 
     public bool InheritDerivations { get; }
     public bool InheritConstants { get; }
     public bool InheritConversions { get; }
     public bool InheritUnits { get; }
 
-    public SpecializedSharpMeasuresVectorDefinition(IUnresolvedIndividualVectorType originalIndividualVector, bool inheritDerivations, bool inheritConstants,
-        bool inheritConversions, bool inheritUnits, IUnresolvedUnitType unit, IUnresolvedScalarType? scalar, int dimension, bool implementSum, bool implementDifference,
-        IUnresolvedVectorGroupType difference, IUnresolvedUnitInstance? defaultUnit, string? defaultUnitSymbol, bool? generateDocumentation,
+    public SpecializedSharpMeasuresVectorDefinition(IRawVectorType originalIndividualVector, bool inheritDerivations, bool inheritConstants,
+        bool inheritConversions, bool inheritUnits, IRawUnitType unit, IRawScalarType? scalar, int dimension, bool implementSum, bool implementDifference,
+        IRawVectorGroupType difference, IRawUnitInstance? defaultUnit, string? defaultUnitSymbol, bool? generateDocumentation,
         SharpMeasuresVectorLocations locations)
         : base(unit, scalar, dimension, implementSum, implementDifference, difference, defaultUnit, defaultUnitSymbol, generateDocumentation, locations)
     {

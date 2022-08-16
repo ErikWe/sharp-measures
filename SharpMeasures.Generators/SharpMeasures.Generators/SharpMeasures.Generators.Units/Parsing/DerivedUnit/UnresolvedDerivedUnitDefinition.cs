@@ -2,11 +2,11 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System.Collections.Generic;
 
-internal record class UnresolvedDerivedUnitDefinition : AUnresolvedUnitDefinition<DerivedUnitLocations>, IUnresolvedDerivedUnit
+internal record class UnresolvedDerivedUnitDefinition : ARawUnitDefinition<DerivedUnitLocations>, IRawDerivedUnit
 {
     public string? DerivationID { get; }
     public IReadOnlyList<string> Units => units;

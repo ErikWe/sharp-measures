@@ -2,9 +2,9 @@
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 using SharpMeasures.Generators.Vectors;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Resolution;
@@ -17,12 +17,12 @@ using System.Threading;
 
 internal static class VectorGroupBaseTypeResolution
 {
-    public static IOptionalWithDiagnostics<VectorGroupType> Resolve((UnresolvedVectorGroupBaseType Vector, IUnresolvedUnitPopulation UnitPopulation,
-        IUnresolvedScalarPopulation ScalarPopulation, IUnresolvedVectorPopulationWithData VectorPopulation) input, CancellationToken _)
+    public static IOptionalWithDiagnostics<VectorGroupType> Resolve((UnresolvedVectorGroupBaseType Vector, IRawUnitPopulation UnitPopulation,
+        IRawScalarPopulation ScalarPopulation, IUnresolvedVectorPopulationWithData VectorPopulation) input, CancellationToken _)
         => Resolve(input.Vector, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
 
-    public static IOptionalWithDiagnostics<VectorGroupType> Resolve(UnresolvedVectorGroupBaseType unresolvedVector, IUnresolvedUnitPopulation unitPopulation,
-        IUnresolvedScalarPopulation scalarPopulation, IUnresolvedVectorPopulationWithData vectorPopulation)
+    public static IOptionalWithDiagnostics<VectorGroupType> Resolve(UnresolvedVectorGroupBaseType unresolvedVector, IRawUnitPopulation unitPopulation,
+        IRawScalarPopulation scalarPopulation, IUnresolvedVectorPopulationWithData vectorPopulation)
     {
         SharpMeasuresVectorGroupResolutionContext vectorResolutionContext = new(unresolvedVector.Type, unitPopulation, scalarPopulation, vectorPopulation);
 
@@ -53,14 +53,14 @@ internal static class VectorGroupBaseTypeResolution
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static IReadOnlyList<IUnresolvedUnitInstance> GetIncludedUnits(IUnresolvedUnitType unit, IEnumerable<IUnitList> inclusions, IEnumerable<IUnitList> exclusions)
+    private static IReadOnlyList<IRawUnitInstance> GetIncludedUnits(IRawUnitType unit, IEnumerable<IUnitList> inclusions, IEnumerable<IUnitList> exclusions)
     {
         if (inclusions.Any())
         {
             return inclusions.SelectMany(static (unitList) => unitList).ToList();
         }
 
-        HashSet<IUnresolvedUnitInstance> includedUnits = new(unit.UnitsByName.Values);
+        HashSet<IRawUnitInstance> includedUnits = new(unit.UnitsByName.Values);
 
         foreach (var exclusion in exclusions.SelectMany(static (unitList) => unitList))
         {

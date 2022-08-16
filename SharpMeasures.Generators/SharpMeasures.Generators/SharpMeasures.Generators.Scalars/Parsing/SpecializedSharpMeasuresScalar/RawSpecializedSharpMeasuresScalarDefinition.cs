@@ -3,7 +3,7 @@
 using SharpMeasures.Generators.Attributes.Parsing;
 
 internal record class RawSpecializedSharpMeasuresScalarDefinition :
-    ARawAttributeDefinition<RawSpecializedSharpMeasuresScalarDefinition, SpecializedSharpMeasuresScalarLocations>
+    AUnprocessedAttributeDefinition<RawSpecializedSharpMeasuresScalarDefinition, SpecializedSharpMeasuresScalarLocations>
 {
     public static RawSpecializedSharpMeasuresScalarDefinition Empty => new();
 

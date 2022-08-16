@@ -6,6 +6,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="OneOf" PrivateAssets="all" />
+    </ItemGroup>
+    
+    <ItemGroup>
         <ProjectReference Include="..\..\..\SharpMeasures.Equatables\SharpMeasures.Equatables.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\..\..\SharpMeasures.Utility\SharpMeasures.Utility.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\..\SharpMeasures.Generators.RoslynUtility\SharpMeasures.Generators.RoslynUtility.csproj" PrivateAssets="all" />

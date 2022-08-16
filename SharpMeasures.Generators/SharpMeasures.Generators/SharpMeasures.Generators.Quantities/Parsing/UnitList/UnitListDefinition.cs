@@ -1,23 +1,23 @@
 ﻿namespace SharpMeasures.Generators.Quantities.Parsing.UnitList;
 
 using SharpMeasures.Equatables;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System.Collections;
 using System.Collections.Generic;
 
 public record class UnitListDefinition : IUnitList
 {
-    public IReadOnlyList<IUnresolvedUnitInstance> Units => units;
-    private ReadOnlyEquatableList<IUnresolvedUnitInstance> units { get; }
+    public IReadOnlyList<IRawUnitInstance> Units => units;
+    private ReadOnlyEquatableList<IRawUnitInstance> units { get; }
 
-    public IUnresolvedUnitInstance this[int index] => Units[index];
+    public IRawUnitInstance this[int index] => Units[index];
     public int Count => Units.Count;
 
-    public IEnumerator<IUnresolvedUnitInstance> GetEnumerator() => Units.GetEnumerator();
+    public IEnumerator<IRawUnitInstance> GetEnumerator() => Units.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    public UnitListDefinition(IReadOnlyList<IUnresolvedUnitInstance> units)
+    public UnitListDefinition(IReadOnlyList<IRawUnitInstance> units)
     {
         this.units = units.AsReadOnlyEquatable();
     }

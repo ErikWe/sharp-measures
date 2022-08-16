@@ -1,24 +1,24 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVectorGroup;
 
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroup;
 
 internal record class SpecializedSharpMeasuresVectorGroupDefinition : SharpMeasuresVectorGroupDefinition, IVectorGroupSpecialization
 {
-    public IUnresolvedVectorGroupType OriginalVectorGroup { get; }
+    public IRawVectorGroupType OriginalVectorGroup { get; }
 
     public bool InheritDerivations { get; }
     public bool InheritConstants { get; }
     public bool InheritConversions { get; }
     public bool InheritUnits { get; }
 
-    public SpecializedSharpMeasuresVectorGroupDefinition(IUnresolvedVectorGroupType originalVectorGroup, bool inheritDerivations, bool inheritConstants,
-        bool inheritConversions, bool inheritUnits, IUnresolvedUnitType unit, IUnresolvedScalarType? scalar, bool implementSum, bool implementDifference,
-        IUnresolvedVectorGroupType difference, IUnresolvedUnitInstance? defaultUnit, string? defaultUnitSymbol, bool? generateDocumentation,
+    public SpecializedSharpMeasuresVectorGroupDefinition(IRawVectorGroupType originalVectorGroup, bool inheritDerivations, bool inheritConstants,
+        bool inheritConversions, bool inheritUnits, IRawUnitType unit, IRawScalarType? scalar, bool implementSum, bool implementDifference,
+        IRawVectorGroupType difference, IRawUnitInstance? defaultUnit, string? defaultUnitSymbol, bool? generateDocumentation,
         SharpMeasuresVectorGroupLocations locations)
         : base(unit, scalar, implementSum, implementDifference, difference, defaultUnit, defaultUnitSymbol, generateDocumentation, locations)
     {

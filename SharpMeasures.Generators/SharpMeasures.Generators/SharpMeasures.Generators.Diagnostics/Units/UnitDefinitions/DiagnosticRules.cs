@@ -51,17 +51,37 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DuplicateUnitName,
         title: "Duplicate unit name",
-        messageFormat: "{0} already defines a unit with the name \"{1}\"",
+        messageFormat: "{0} already defines a unit \"{1}\"",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
 
+    public static readonly DiagnosticDescriptor UnitNameReservedByUnitPluralForm = new DiagnosticDescriptor
+   (
+       id: DiagnosticIDs.DuplicateUnitName,
+       title: "Duplicate unit name",
+       messageFormat: "{0} already associates the singular form of \"{1}\" with another unit",
+       category: "Naming",
+       defaultSeverity: DiagnosticSeverity.Warning,
+       isEnabledByDefault: true
+   );
+
     public static readonly DiagnosticDescriptor DuplicateUnitPluralForm = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DuplicateUnitPluralForm,
         title: "Duplicate unit plural form",
-        messageFormat: "{0} already defines a unit with the plural form \"{1}\"",
+        messageFormat: "{0} already defines a unit with plural form \"{1}\"",
+        category: "Naming",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor UnitPluralFormReservedByUnitName = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.DuplicateUnitPluralForm,
+        title: "Duplicate unit plural form",
+        messageFormat: "{0} already associates \"{1}\" with the singular form of another unit",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

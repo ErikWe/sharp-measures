@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Unresolved.Units;
+using SharpMeasures.Generators.Raw.Units;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +50,7 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
             return OptionalWithDiagnostics.Empty<UnresolvedDerivableUnitDefinition>();
         }
 
-        var expressionValidity = IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckDerivationIDValidity, CheckExpressionValidity);
+        var expressionValidity = IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, CheckDerivationIDValidity, CheckExpressionValidity);
         IEnumerable<Diagnostic> allDiagnostics = expressionValidity.Diagnostics;
 
         if (expressionValidity.IsInvalid)
@@ -105,16 +105,16 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
         return ValidityWithDiagnostics.Valid;
     }
 
-    private IOptionalWithDiagnostics<UnresolvedUnitDerivationSignature> ProcessSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
+    private IOptionalWithDiagnostics<RawUnitDerivationSignature> ProcessSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
         if (definition.Signature is null)
         {
-            return OptionalWithDiagnostics.Empty<UnresolvedUnitDerivationSignature>(Diagnostics.NullSignature(context, definition));
+            return OptionalWithDiagnostics.Empty<RawUnitDerivationSignature>(Diagnostics.NullSignature(context, definition));
         }
 
         if (definition.Signature.Count is 0)
         {
-            return OptionalWithDiagnostics.Empty<UnresolvedUnitDerivationSignature>(Diagnostics.EmptySignature(context, definition));
+            return OptionalWithDiagnostics.Empty<RawUnitDerivationSignature>(Diagnostics.EmptySignature(context, definition));
         }
 
         NamedType[] definiteSignature = new NamedType[definition.Signature.Count];
@@ -123,13 +123,13 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
         {
             if (definition.Signature[i] is not NamedType signatureComponent)
             {
-                return OptionalWithDiagnostics.Empty<UnresolvedUnitDerivationSignature>(Diagnostics.NullSignatureElement(context, definition, i));
+                return OptionalWithDiagnostics.Empty<RawUnitDerivationSignature>(Diagnostics.NullSignatureElement(context, definition, i));
             }
 
             definiteSignature[i] = signatureComponent;
         }
 
-        var derivableSignature = new UnresolvedUnitDerivationSignature(definiteSignature);
+        var derivableSignature = new RawUnitDerivationSignature(definiteSignature);
 
         return OptionalWithDiagnostics.Result(derivableSignature);
     }

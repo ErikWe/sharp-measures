@@ -18,7 +18,7 @@ using SharpMeasures.Generators.Units.Parsing.PrefixedUnit;
 using SharpMeasures.Generators.Units.Parsing.ScaledUnit;
 using SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
 using SharpMeasures.Generators.Units.Parsing.UnitAlias;
-using SharpMeasures.Generators.Unresolved.Units;
+using SharpMeasures.Generators.Raw.Units;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -28,7 +28,7 @@ using SharpMeasures.Generators.Providers.DeclarationFilter;
 
 public static class UnitParser
 {
-    public static (IncrementalValueProvider<IUnresolvedUnitPopulation>, IUnitResolver) Attach(IncrementalGeneratorInitializationContext context)
+    public static (IncrementalValueProvider<IRawUnitPopulation>, IUnitResolver) Attach(IncrementalGeneratorInitializationContext context)
     {
         var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<SharpMeasuresUnitAttribute>(context.SyntaxProvider);
         var filteredDeclarations = FilteredDeclarationProvider.Construct<TypeDeclarationSyntax>(DeclarationFilters).AttachAndReport(context, declarations);
@@ -44,7 +44,7 @@ public static class UnitParser
 
     private static IOptionalWithDiagnostics<RawUnitType> ParseAttributes(IntermediateResult input, CancellationToken _)
     {
-        if (SharpMeasuresUnitParser.Parser.ParseFirstOccurrence(input.TypeSymbol) is not RawSharpMeasuresUnitDefinition unit)
+        if (SharpMeasuresUnitParser.Parser.ParseFirstOccurrence(input.TypeSymbol) is not UnprocessedSharpMeasuresUnitDefinition unit)
         {
             return OptionalWithDiagnostics.EmptyWithoutDiagnostics<RawUnitType>();
         }
@@ -84,11 +84,11 @@ public static class UnitParser
 
         var fixedUnit = rawUnitType.FixedUnit is not null
             ? Processers.FixedUnitProcesser.Process(unitInstanceProcessingContext, rawUnitType.FixedUnit)
-            : OptionalWithDiagnostics.Empty<UnresolvedFixedUnitDefinition>();
+            : OptionalWithDiagnostics.Empty<RawFixedUnitDefinition>();
 
         var unitDerivations = ProcessingFilter.Create(Processers.DerivableUnitProcesser).Filter(derivableUnitProcessingContext, rawUnitType.UnitDerivations);
 
-        Dictionary<string, UnresolvedUnitDerivationSignature> availableSignatureIDs
+        Dictionary<string, RawUnitDerivationSignature> availableSignatureIDs
             = unitDerivations.Result.Where(static (x) => x.DerivationID is not null).ToDictionary(static (x) => x.DerivationID!, static (x) => x.Signature);
 
         var unitAliases = ProcessingFilter.Create(Processers.UnitAliasProcesser).Filter(unitInstanceProcessingContext, rawUnitType.UnitAliases);
@@ -106,10 +106,10 @@ public static class UnitParser
         return OptionalWithDiagnostics.Result(unitType, allDiagnostics);
     }
 
-    private static IUnresolvedUnitType ExtractInterface(UnresolvedUnitType unitType, CancellationToken _) => unitType;
-    private static IUnresolvedUnitPopulation ExtractInterface(IUnresolvedUnitPopulation population, CancellationToken _) => population;
+    private static IRawUnitType ExtractInterface(UnresolvedUnitType unitType, CancellationToken _) => unitType;
+    private static IRawUnitPopulation ExtractInterface(IRawUnitPopulation population, CancellationToken _) => population;
 
-    private static IUnresolvedUnitPopulationWithData CreatePopulation(ImmutableArray<IUnresolvedUnitType> units, CancellationToken _)
+    private static IRawUnitPopulationWithData CreatePopulation(ImmutableArray<IRawUnitType> units, CancellationToken _)
     {
         return UnresolvedUnitPopulation.Build(units);
     }

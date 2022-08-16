@@ -3,11 +3,12 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal interface IBiasedUnitResolutionDiagnostics : IDependantUnitResolutionDiagnostics<UnresolvedBiasedUnitDefinition, BiasedUnitLocations>
+internal interface IBiasedUnitResolutionDiagnostics : IDependantUnitResolutionDiagnostics<RawBiasedUnitDefinition, BiasedUnitLocations>
 {
-    public abstract Diagnostic? UnitNotIncludingBiasTerm(IBiasedUnitResolutionContext context, UnresolvedBiasedUnitDefinition definition);
+    public abstract Diagnostic? UnitNotIncludingBiasTerm(IBiasedUnitResolutionContext context, RawBiasedUnitDefinition definition);
 }
 
 internal interface IBiasedUnitResolutionContext : IDependantUnitResolutionContext
@@ -15,7 +16,7 @@ internal interface IBiasedUnitResolutionContext : IDependantUnitResolutionContex
     public abstract bool UnitIncludesBiasTerm { get; }
 }
 
-internal class BiasedUnitResolver : ADependantUnitResolver<IBiasedUnitResolutionContext, UnresolvedBiasedUnitDefinition, BiasedUnitLocations, BiasedUnitDefinition>
+internal class BiasedUnitResolver : ADependantUnitResolver<IBiasedUnitResolutionContext, RawBiasedUnitDefinition, BiasedUnitLocations, BiasedUnitDefinition>
 {
     private IBiasedUnitResolutionDiagnostics Diagnostics { get; }
 
@@ -24,22 +25,20 @@ internal class BiasedUnitResolver : ADependantUnitResolver<IBiasedUnitResolution
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<BiasedUnitDefinition> Process(IBiasedUnitResolutionContext context, UnresolvedBiasedUnitDefinition definition)
+    public override IOptionalWithDiagnostics<BiasedUnitDefinition> Process(IBiasedUnitResolutionContext context, RawBiasedUnitDefinition definition)
     {
-        if (context.UnitIncludesBiasTerm is false)
-        {
-            return OptionalWithDiagnostics.Empty<BiasedUnitDefinition>(Diagnostics.UnitNotIncludingBiasTerm(context, definition));
-        }
+        var unitBiased = ValidateUnitIncludesBiasTerm(context, definition);
+        var dependantOn = unitBiased.Merge(context, definition, ProcessDependantOn);
+        return dependantOn.Transform(definition, ProduceResult);
+    }
 
-        var processedDependency = ProcessDependantOn(context, definition);
-        var allDiagnostics = processedDependency.Diagnostics;
+    private IValidityWithDiagnostics ValidateUnitIncludesBiasTerm(IBiasedUnitResolutionContext context, RawBiasedUnitDefinition definition)
+    {
+        return ValidityWithDiagnostics.Conditional(context.UnitIncludesBiasTerm, () => Diagnostics.UnitNotIncludingBiasTerm(context, definition));
+    }
 
-        if (processedDependency.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<BiasedUnitDefinition>(allDiagnostics);
-        }
-
-        var product = new BiasedUnitDefinition(definition.Name, definition.Plural, processedDependency.Result, definition.Expression, definition.Locations);
-        return OptionalWithDiagnostics.Result(product, allDiagnostics);
+    private static BiasedUnitDefinition ProduceResult(RawBiasedUnitDefinition definition, IRawUnitInstance dependantOn)
+    {
+        return new(definition.Name, definition.Plural, dependantOn, definition.Expression, definition.Locations);
     }
 }

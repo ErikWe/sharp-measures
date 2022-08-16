@@ -6,15 +6,14 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
 using System.Globalization;
-using System.Linq;
 
-internal interface IBiasedUnitProcessingDiagnostics : IDependantUnitProcessingDiagnostics<RawBiasedUnitDefinition, BiasedUnitLocations>
+internal interface IBiasedUnitProcessingDiagnostics : IDependantUnitProcessingDiagnostics<UnprocessedBiasedUnitDefinition, BiasedUnitLocations>
 {
-    public abstract Diagnostic? NullExpression(IUnitProcessingContext context, RawBiasedUnitDefinition definition);
-    public abstract Diagnostic? EmptyExpression(IUnitProcessingContext context, RawBiasedUnitDefinition definition);
+    public abstract Diagnostic? NullExpression(IUnitProcessingContext context, UnprocessedBiasedUnitDefinition definition);
+    public abstract Diagnostic? EmptyExpression(IUnitProcessingContext context, UnprocessedBiasedUnitDefinition definition);
 }
 
-internal class BiasedUnitProcesser : ADependantUnitProcesser<IUnitProcessingContext, RawBiasedUnitDefinition, BiasedUnitLocations, UnresolvedBiasedUnitDefinition>
+internal class BiasedUnitProcesser : ADependantUnitProcesser<IUnitProcessingContext, UnprocessedBiasedUnitDefinition, BiasedUnitLocations, RawBiasedUnitDefinition>
 {
     private IBiasedUnitProcessingDiagnostics Diagnostics { get; }
 
@@ -23,59 +22,43 @@ internal class BiasedUnitProcesser : ADependantUnitProcesser<IUnitProcessingCont
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<UnresolvedBiasedUnitDefinition> Process(IUnitProcessingContext context, RawBiasedUnitDefinition definition)
+    public override IOptionalWithDiagnostics<RawBiasedUnitDefinition> Process(IUnitProcessingContext context, UnprocessedBiasedUnitDefinition definition)
     {
-        if (VerifyRequiredPropertiesSet(definition) is false)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedBiasedUnitDefinition>();
-        }
-
-        var validity = IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckDependantUnitValidity, CheckExpressionValidity);
-        var allDiagnostics = validity.Diagnostics;
-
-        if (validity.IsInvalid)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedBiasedUnitDefinition>(allDiagnostics);
-        }
-
-        var processedPlural = ProcessPlural(context, definition);
-        allDiagnostics = allDiagnostics.Concat(processedPlural.Diagnostics);
-
-        if (processedPlural.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedBiasedUnitDefinition>(allDiagnostics);
-        }
-
-        var product = CreateProduct(definition, processedPlural.Result);
-        return OptionalWithDiagnostics.Result(product, allDiagnostics);
+        var requiredPropertiesSet = VerifyRequiredPropertiesSet(definition);
+        var unitValidity = requiredPropertiesSet.Validate(context, definition, ValidateUnitName);
+        var expressionValidity = unitValidity.Validate(context, definition, ValidateExpression);
+        var processedPlural = unitValidity.Merge(context, definition, ProcessPlural);
+        return processedPlural.Transform(definition, ProduceResult);
     }
 
-    protected override bool VerifyRequiredPropertiesSet(RawBiasedUnitDefinition definition)
+    protected override IValidityWithDiagnostics VerifyRequiredPropertiesSet(UnprocessedBiasedUnitDefinition definition)
     {
-        return base.VerifyRequiredPropertiesSet(definition) && (definition.Locations.ExplicitlySetBias || definition.Locations.ExplicitlySetExpression);
+        var requiredPropertiesSet = definition.Locations.ExplicitlySetBias || definition.Locations.ExplicitlySetExpression;
+
+        return base.VerifyRequiredPropertiesSet(definition).Validate(ValidityWithDiagnostics.ConditionalWithoutDiagnostics(requiredPropertiesSet));
     }
 
-    private IValidityWithDiagnostics CheckExpressionValidity(IUnitProcessingContext context, RawBiasedUnitDefinition definition)
+    private IValidityWithDiagnostics ValidateExpression(IUnitProcessingContext context, UnprocessedBiasedUnitDefinition definition)
     {
         if (definition.Locations.ExplicitlySetExpression is false)
         {
             return ValidityWithDiagnostics.Valid;
         }
 
-        if (definition.Expression is null)
-        {
-            return ValidityWithDiagnostics.Invalid(Diagnostics.NullExpression(context, definition));
-        }
-
-        if (definition.Expression.Length is 0)
-        {
-            return ValidityWithDiagnostics.Invalid(Diagnostics.EmptyExpression(context, definition));
-        }
-
-        return ValidityWithDiagnostics.Valid;
+        return IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, ValidateExpressionNotNull, ValidateExpressionNotEmpty);
     }
 
-    private static UnresolvedBiasedUnitDefinition CreateProduct(RawBiasedUnitDefinition definition, string interpretedPlural)
+    private IValidityWithDiagnostics ValidateExpressionNotNull(IUnitProcessingContext context, UnprocessedBiasedUnitDefinition definition)
+    {
+        return ValidityWithDiagnostics.Conditional(definition.Expression is not null, () => Diagnostics.NullExpression(context, definition));
+    }
+
+    private IValidityWithDiagnostics ValidateExpressionNotEmpty(IUnitProcessingContext context, UnprocessedBiasedUnitDefinition definition)
+    {
+        return ValidityWithDiagnostics.Conditional(definition.Expression!.Length is not 0, () => Diagnostics.EmptyExpression(context, definition));
+    }
+
+    private static RawBiasedUnitDefinition ProduceResult(UnprocessedBiasedUnitDefinition definition, string interpretedPlural)
     {
         if (definition.Locations.ExplicitlySetBias)
         {

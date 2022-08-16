@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 
 using System.Collections.Generic;
 
-public record class RawDerivedQuantityDefinition : ARawAttributeDefinition<RawDerivedQuantityDefinition, DerivedQuantityLocations>
+public record class RawDerivedQuantityDefinition : AUnprocessedAttributeDefinition<RawDerivedQuantityDefinition, DerivedQuantityLocations>
 {
     public static RawDerivedQuantityDefinition Empty { get; } = new(DerivedQuantityLocations.Empty);
 

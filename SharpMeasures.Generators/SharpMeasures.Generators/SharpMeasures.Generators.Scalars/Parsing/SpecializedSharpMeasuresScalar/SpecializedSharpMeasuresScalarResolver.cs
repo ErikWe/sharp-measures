@@ -7,14 +7,15 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 
 internal interface ISpecializedSharpMeasuresScalarResolutionDiagnostics
 {
@@ -24,7 +25,7 @@ internal interface ISpecializedSharpMeasuresScalarResolutionDiagnostics
     public abstract Diagnostic? RootScalarNotResolved(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? TypeNotVector(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? DifferenceNotScalar(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? UnrecognizedDefaultUnit(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition, IUnresolvedUnitType unit);
+    public abstract Diagnostic? UnrecognizedDefaultUnit(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition, IRawUnitType unit);
     public abstract Diagnostic? ReciprocalNotScalar(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? SquareNotScalar(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? CubeNotScalar(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition);
@@ -34,9 +35,9 @@ internal interface ISpecializedSharpMeasuresScalarResolutionDiagnostics
 
 internal interface ISpecializedSharpMeasuresScalarResolutionContext : IProcessingContext
 {
-    public abstract IUnresolvedUnitPopulation UnitPopulation { get; }
+    public abstract IRawUnitPopulation UnitPopulation { get; }
     public abstract IUnresolvedScalarPopulationWithData ScalarPopulation { get; }
-    public abstract IUnresolvedVectorPopulation VectorPopulation { get; }
+    public abstract IRawVectorPopulation VectorPopulation { get; }
 }
 
 internal class SpecializedSharpMeasuresScalarResolver : IProcesser<ISpecializedSharpMeasuresScalarResolutionContext, UnresolvedSpecializedSharpMeasuresScalarDefinition, SpecializedSharpMeasuresScalarDefinition>
@@ -116,134 +117,134 @@ internal class SpecializedSharpMeasuresScalarResolver : IProcesser<ISpecializedS
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private IOptionalWithDiagnostics<IUnresolvedVectorGroupType> ProcessVector(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition)
+    private IOptionalWithDiagnostics<IRawVectorGroupType> ProcessVector(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition)
     {
-        if (definition.VectorGroup is null)
+        if (definition.Vector is null)
         {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<IUnresolvedVectorGroupType>();
+            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<IRawVectorGroupType>();
         }
 
-        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.VectorGroup.Value, out var vectorGroup) is false)
+        if (context.VectorPopulation.VectorGroups.TryGetValue(definition.Vector.Value, out var vectorGroup) is false)
         {
-            return OptionalWithDiagnostics.Empty<IUnresolvedVectorGroupType>(Diagnostics.TypeNotVector(context, definition));
+            return OptionalWithDiagnostics.Empty<IRawVectorGroupType>(Diagnostics.TypeNotVector(context, definition));
         }
 
         return OptionalWithDiagnostics.Result(vectorGroup);
     }
 
-    private IOptionalWithDiagnostics<IUnresolvedScalarType> ProcessDifference(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition)
+    private IOptionalWithDiagnostics<IRawScalarType> ProcessDifference(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition)
     {
         if (definition.Difference is null)
         {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<IUnresolvedScalarType>();
+            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<IRawScalarType>();
         }
 
         if (context.ScalarPopulation.Scalars.TryGetValue(definition.Difference.Value, out var scalar) is false)
         {
-            return OptionalWithDiagnostics.Empty<IUnresolvedScalarType>(Diagnostics.DifferenceNotScalar(context, definition));
+            return OptionalWithDiagnostics.Empty<IRawScalarType>(Diagnostics.DifferenceNotScalar(context, definition));
         }
 
         return OptionalWithDiagnostics.Result(scalar);
     }
 
-    private IResultWithDiagnostics<IUnresolvedUnitInstance?> ProcessDefaultUnitName(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition, IUnresolvedUnitType unit)
+    private IResultWithDiagnostics<IRawUnitInstance?> ProcessDefaultUnitName(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition, IRawUnitType unit)
     {
         if (definition.DefaultUnitName is null)
         {
-            return ResultWithDiagnostics.Construct<IUnresolvedUnitInstance?>(null);
+            return ResultWithDiagnostics.Construct<IRawUnitInstance?>(null);
         }
 
         if (unit.UnitsByName.TryGetValue(definition.DefaultUnitName, out var unitInstance) is false)
         {
-            return ResultWithDiagnostics.Construct<IUnresolvedUnitInstance?>(null, Diagnostics.UnrecognizedDefaultUnit(context, definition, unit));
+            return ResultWithDiagnostics.Construct<IRawUnitInstance?>(null, Diagnostics.UnrecognizedDefaultUnit(context, definition, unit));
         }
 
-        return ResultWithDiagnostics.Construct<IUnresolvedUnitInstance?>(unitInstance);
+        return ResultWithDiagnostics.Construct<IRawUnitInstance?>(unitInstance);
     }
 
-    private static IResultWithDiagnostics<IUnresolvedScalarType?> ProcessPowerQuantity(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition, NamedType? quantity, Func<ISpecializedSharpMeasuresScalarResolutionContext, UnresolvedSpecializedSharpMeasuresScalarDefinition, Diagnostic?> typeNotScalarDiagnosticsDelegate)
+    private static IResultWithDiagnostics<IRawScalarType?> ProcessPowerQuantity(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition, NamedType? quantity, Func<ISpecializedSharpMeasuresScalarResolutionContext, UnresolvedSpecializedSharpMeasuresScalarDefinition, Diagnostic?> typeNotScalarDiagnosticsDelegate)
     {
         if (quantity is null)
         {
-            return ResultWithDiagnostics.Construct<IUnresolvedScalarType?>(null);
+            return ResultWithDiagnostics.Construct<IRawScalarType?>(null);
         }
 
         if (context.ScalarPopulation.Scalars.TryGetValue(quantity.Value, out var scalar) is false)
         {
-            return ResultWithDiagnostics.Construct<IUnresolvedScalarType?>(null, typeNotScalarDiagnosticsDelegate(context, definition));
+            return ResultWithDiagnostics.Construct<IRawScalarType?>(null, typeNotScalarDiagnosticsDelegate(context, definition));
         }
 
-        return ResultWithDiagnostics.Construct<IUnresolvedScalarType?>(scalar);
+        return ResultWithDiagnostics.Construct<IRawScalarType?>(scalar);
     }
 
-    private static IUnresolvedVectorGroupType? ResolveVector(ISpecializedSharpMeasuresScalarResolutionContext context, IUnresolvedScalar scalar)
+    private static IRawVectorGroupType? ResolveVector(ISpecializedSharpMeasuresScalarResolutionContext context, IRawScalar scalar)
     {
-        return RecursivelySearchForDefinedVector(scalar, context.ScalarPopulation, context.VectorPopulation, static (scalar) => scalar.VectorGroup);
+        return RecursivelySearchForDefinedVector(scalar, context.ScalarPopulation, context.VectorPopulation, static (scalar) => scalar.Vector);
     }
 
-    private static bool ResolveImplementSum(ISpecializedSharpMeasuresScalarResolutionContext context, IUnresolvedScalar scalar)
+    private static bool ResolveImplementSum(ISpecializedSharpMeasuresScalarResolutionContext context, IRawScalar scalar)
     {
         return RecursivelySearchForDefined(scalar, context.ScalarPopulation, static (scalar) => scalar.ImplementSum)!.Value;
     }
 
-    private static bool ResolveImplementDifference(ISpecializedSharpMeasuresScalarResolutionContext context, IUnresolvedScalar scalar)
+    private static bool ResolveImplementDifference(ISpecializedSharpMeasuresScalarResolutionContext context, IRawScalar scalar)
     {
         return RecursivelySearchForDefined(scalar, context.ScalarPopulation, static (scalar) => scalar.ImplementDifference)!.Value;
     }
 
-    private static IUnresolvedScalarType ResolveDifference(ISpecializedSharpMeasuresScalarResolutionContext context, IUnresolvedScalar scalar)
+    private static IRawScalarType ResolveDifference(ISpecializedSharpMeasuresScalarResolutionContext context, IRawScalar scalar)
     {
         return RecursivelySearchForDefinedScalar(scalar, context.ScalarPopulation, static (scalar) => scalar.Difference)!;
     }
 
-    private static IUnresolvedUnitInstance? ResolveDefaultUnit(ISpecializedSharpMeasuresScalarResolutionContext context, IUnresolvedScalar scalar, IUnresolvedUnitType unit)
+    private static IRawUnitInstance? ResolveDefaultUnit(ISpecializedSharpMeasuresScalarResolutionContext context, IRawScalar scalar, IRawUnitType unit)
     {
         return RecursivelySearchForDefinedUnitInstance(scalar, context.ScalarPopulation, unit, static (scalar) => scalar.DefaultUnitName);
     }
 
-    private static string? ResolveDefaultUnitSymbol(ISpecializedSharpMeasuresScalarResolutionContext context, IUnresolvedScalar scalar)
+    private static string? ResolveDefaultUnitSymbol(ISpecializedSharpMeasuresScalarResolutionContext context, IRawScalar scalar)
     {
         return RecursivelySearchForDefined(scalar, context.ScalarPopulation, static (scalar) => scalar.DefaultUnitSymbol);
     }
 
-    private static IUnresolvedScalarType? ResolveReciprocal(ISpecializedSharpMeasuresScalarResolutionContext context, IUnresolvedScalar scalar)
+    private static IRawScalarType? ResolveReciprocal(ISpecializedSharpMeasuresScalarResolutionContext context, IRawScalar scalar)
     {
         return RecursivelySearchForDefinedScalar(scalar, context.ScalarPopulation, static (scalar) => scalar.Reciprocal);
     }
 
-    private static IUnresolvedScalarType? ResolveSquare(ISpecializedSharpMeasuresScalarResolutionContext context, IUnresolvedScalar scalar)
+    private static IRawScalarType? ResolveSquare(ISpecializedSharpMeasuresScalarResolutionContext context, IRawScalar scalar)
     {
         return RecursivelySearchForDefinedScalar(scalar, context.ScalarPopulation, static (scalar) => scalar.Square);
     }
 
-    private static IUnresolvedScalarType? ResolveCube(ISpecializedSharpMeasuresScalarResolutionContext context, IUnresolvedScalar scalar)
+    private static IRawScalarType? ResolveCube(ISpecializedSharpMeasuresScalarResolutionContext context, IRawScalar scalar)
     {
         return RecursivelySearchForDefinedScalar(scalar, context.ScalarPopulation, static (scalar) => scalar.Cube);
     }
 
-    private static IUnresolvedScalarType? ResolveSquareRoot(ISpecializedSharpMeasuresScalarResolutionContext context, IUnresolvedScalar scalar)
+    private static IRawScalarType? ResolveSquareRoot(ISpecializedSharpMeasuresScalarResolutionContext context, IRawScalar scalar)
     {
         return RecursivelySearchForDefinedScalar(scalar, context.ScalarPopulation, static (scalar) => scalar.SquareRoot);
     }
 
-    private static IUnresolvedScalarType? ResolveCubeRoot(ISpecializedSharpMeasuresScalarResolutionContext context, IUnresolvedScalar scalar)
+    private static IRawScalarType? ResolveCubeRoot(ISpecializedSharpMeasuresScalarResolutionContext context, IRawScalar scalar)
     {
         return RecursivelySearchForDefinedScalar(scalar, context.ScalarPopulation, static (scalar) => scalar.CubeRoot);
     }
 
-    private static bool? ResolveGenerateDocumentation(ISpecializedSharpMeasuresScalarResolutionContext context, IUnresolvedScalar scalar)
+    private static bool? ResolveGenerateDocumentation(ISpecializedSharpMeasuresScalarResolutionContext context, IRawScalar scalar)
     {
         return RecursivelySearchForDefined(scalar, context.ScalarPopulation, static (scalar) => scalar.GenerateDocumentation);
     }
 
-    private static T? RecursivelySearch<T>(IUnresolvedScalar scalar, IUnresolvedScalarPopulation scalarPopulation, Func<IUnresolvedScalar, bool> predicate, Func<IUnresolvedScalar, T?> transform)
+    private static T? RecursivelySearch<T>(IRawScalar scalar, IRawScalarPopulation scalarPopulation, Func<IRawScalar, bool> predicate, Func<IRawScalar, T?> transform)
     {
         if (predicate(scalar))
         {
             return transform(scalar);
         }
 
-        if (scalar is IUnresolvedScalarSpecialization scalarSpecialization && scalarPopulation.Scalars.TryGetValue(scalarSpecialization.OriginalQuantity, out var originalScalar))
+        if (scalar is IRawScalarSpecialization scalarSpecialization && scalarPopulation.Scalars.TryGetValue(scalarSpecialization.OriginalQuantity, out var originalScalar))
         {
             return RecursivelySearch(originalScalar.Definition, scalarPopulation, predicate, transform);
         }
@@ -251,16 +252,16 @@ internal class SpecializedSharpMeasuresScalarResolver : IProcesser<ISpecializedS
         return default;
     }
 
-    private static T? RecursivelySearchForDefined<T>(IUnresolvedScalar scalar, IUnresolvedScalarPopulation scalarPopulation, Func<IUnresolvedScalar, T?> transform)
+    private static T? RecursivelySearchForDefined<T>(IRawScalar scalar, IRawScalarPopulation scalarPopulation, Func<IRawScalar, T?> transform)
     {
         return RecursivelySearch<T>(scalar, scalarPopulation, (scalar) => transform(scalar) is not null, transform);
     }
 
-    private static T? RecursivelySearchForDefinedPopulationItem<T>(IUnresolvedScalar scalar, IUnresolvedScalarPopulation scalarPopulation, IReadOnlyDictionary<NamedType, T> population, Func<IUnresolvedScalar, NamedType?> transform)
+    private static T? RecursivelySearchForDefinedPopulationItem<T>(IRawScalar scalar, IRawScalarPopulation scalarPopulation, IReadOnlyDictionary<NamedType, T> population, Func<IRawScalar, NamedType?> transform)
     {
         return RecursivelySearchForDefined(scalar, scalarPopulation, transformWrapper);
 
-        T? transformWrapper(IUnresolvedScalar scalar)
+        T? transformWrapper(IRawScalar scalar)
         {
             NamedType? value = transform(scalar);
 
@@ -278,11 +279,11 @@ internal class SpecializedSharpMeasuresScalarResolver : IProcesser<ISpecializedS
         }
     }
 
-    private static T? RecursivelySearchForDefinedPopulationItem<T>(IUnresolvedScalar scalar, IUnresolvedScalarPopulation scalarPopulation, IReadOnlyDictionary<string, T> population, Func<IUnresolvedScalar, string?> transform)
+    private static T? RecursivelySearchForDefinedPopulationItem<T>(IRawScalar scalar, IRawScalarPopulation scalarPopulation, IReadOnlyDictionary<string, T> population, Func<IRawScalar, string?> transform)
     {
         return RecursivelySearchForDefined(scalar, scalarPopulation, transformWrapper);
 
-        T? transformWrapper(IUnresolvedScalar scalar)
+        T? transformWrapper(IRawScalar scalar)
         {
             string? value = transform(scalar);
 
@@ -300,17 +301,17 @@ internal class SpecializedSharpMeasuresScalarResolver : IProcesser<ISpecializedS
         }
     }
 
-    private static IUnresolvedScalarType? RecursivelySearchForDefinedScalar(IUnresolvedScalar scalar, IUnresolvedScalarPopulation scalarPopulation, Func<IUnresolvedScalar, NamedType?> transform)
+    private static IRawScalarType? RecursivelySearchForDefinedScalar(IRawScalar scalar, IRawScalarPopulation scalarPopulation, Func<IRawScalar, NamedType?> transform)
     {
         return RecursivelySearchForDefinedPopulationItem(scalar, scalarPopulation, scalarPopulation.Scalars, transform);
     }
 
-    private static IUnresolvedVectorGroupType? RecursivelySearchForDefinedVector(IUnresolvedScalar scalar, IUnresolvedScalarPopulation scalarPopulation, IUnresolvedVectorPopulation vectorPopulation, Func<IUnresolvedScalar, NamedType?> transform)
+    private static IRawVectorGroupType? RecursivelySearchForDefinedVector(IRawScalar scalar, IRawScalarPopulation scalarPopulation, IRawVectorPopulation vectorPopulation, Func<IRawScalar, NamedType?> transform)
     {
         return RecursivelySearchForDefinedPopulationItem(scalar, scalarPopulation, vectorPopulation.VectorGroups, transform);
     }
 
-    private static IUnresolvedUnitInstance? RecursivelySearchForDefinedUnitInstance(IUnresolvedScalar scalar, IUnresolvedScalarPopulation scalarPopulation, IUnresolvedUnitType unit, Func<IUnresolvedScalar, string?> transform)
+    private static IRawUnitInstance? RecursivelySearchForDefinedUnitInstance(IRawScalar scalar, IRawScalarPopulation scalarPopulation, IRawUnitType unit, Func<IRawScalar, string?> transform)
     {
         return RecursivelySearchForDefinedPopulationItem(scalar, scalarPopulation, unit.UnitsByName, transform);
     }

@@ -3,7 +3,7 @@
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.Utility;
 
-internal record class RawPrefixedUnitDefinition : ARawDependantUnitDefinition<RawPrefixedUnitDefinition, PrefixedUnitLocations>
+internal record class RawPrefixedUnitDefinition : AUnprocessedDependantUnitDefinition<RawPrefixedUnitDefinition, PrefixedUnitLocations>
 {
     public static RawPrefixedUnitDefinition Empty { get; } = new();
 

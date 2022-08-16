@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 internal interface IDocumentationStrategy
 {
@@ -9,7 +9,7 @@ internal interface IDocumentationStrategy
 
     public abstract string Zero();
     public abstract string Constant(IScalarConstant constant);
-    public abstract string UnitBase(IUnresolvedUnitInstance unitInstance);
+    public abstract string UnitBase(IRawUnitInstance unitInstance);
 
     public abstract string WithMagnitude();
 
@@ -25,10 +25,10 @@ internal interface IDocumentationStrategy
     public abstract string Magnitude();
     public abstract string InUnit();
     public abstract string InConstantMultiples(IScalarConstant constant);
-    public abstract string InSpecifiedUnit(IUnresolvedUnitInstance unitInstance);
+    public abstract string InSpecifiedUnit(IRawUnitInstance unitInstance);
 
-    public abstract string Conversion(IUnresolvedScalarType scalar);
-    public abstract string CastConversion(IUnresolvedScalarType scalar);
+    public abstract string Conversion(IRawScalarType scalar);
+    public abstract string CastConversion(IRawScalarType scalar);
 
     public abstract string IsNaN();
     public abstract string IsZero();

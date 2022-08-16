@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Raw.Scalars;
 
 using System.Collections.Generic;
 
@@ -18,7 +18,7 @@ internal interface IConvertibleScalarResolutionDiagnostics
 internal interface IConvertibleScalarResolutionContext : IProcessingContext
 {
     public abstract bool UseUnitBias { get; }
-    public abstract IUnresolvedScalarPopulation ScalarPopulation { get; }
+    public abstract IRawScalarPopulation ScalarPopulation { get; }
 }
 
 internal class ConvertibleScalarResolver : IProcesser<IConvertibleScalarResolutionContext, UnresolvedConvertibleScalarDefinition, ConvertibleScalarDefinition>
@@ -32,7 +32,7 @@ internal class ConvertibleScalarResolver : IProcesser<IConvertibleScalarResoluti
 
     public IOptionalWithDiagnostics<ConvertibleScalarDefinition> Process(IConvertibleScalarResolutionContext context, UnresolvedConvertibleScalarDefinition definition)
     {
-        List<IUnresolvedScalarType> quantities = new(definition.Scalars.Count);
+        List<IRawScalarType> quantities = new(definition.Scalars.Count);
         List<Diagnostic> allDiagnostics = new();
 
         var index = 0;

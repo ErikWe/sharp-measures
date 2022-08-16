@@ -1,14 +1,15 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVector;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Unresolved.Quantities;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Quantities;
+using SharpMeasures.Generators.Raw.Vectors;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 
-internal record class UnresolvedSpecializedSharpMeasuresVectorDefinition : AAttributeDefinition<SpecializedSharpMeasuresVectorLocations>, IUnresolvedIndividualVectorSpecialization
+internal record class UnresolvedSpecializedSharpMeasuresVectorDefinition : AAttributeDefinition<SpecializedSharpMeasuresVectorLocations>, IRawVectorSpecialization
 {
     public NamedType OriginalVector { get; }
-    NamedType IUnresolvedQuantitySpecialization.OriginalQuantity => OriginalVector;
-    NamedType IUnresolvedVectorGroupSpecialization.OriginalVectorGroup => OriginalVector;
+    NamedType IRawQuantitySpecialization.OriginalQuantity => OriginalVector;
+    NamedType IRawVectorGroupSpecialization.OriginalVectorGroup => OriginalVector;
 
     public bool InheritDerivations { get; }
     public bool InheritConstants { get; }

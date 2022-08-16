@@ -1,10 +1,10 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing;
 
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 using SharpMeasures.Generators.Vectors;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Resolution;
@@ -36,7 +36,7 @@ internal static class IndividualVectorSpecializationTypeResolution
 
         var includedUnits = GetIncludedUnits(intermediateVector, intermediateVector.Definition.Unit, vectorPopulation, static (vector) => vector.Definition.InheritUnits,
             static (vector) => vector.UnitInclusions, static (vector) => vector.UnitExclusions, static (vector) => vector.IncludedUnits,
-            static (vector) => Array.Empty<IUnresolvedUnitInstance>());
+            static (vector) => Array.Empty<IRawUnitInstance>());
 
         var inheritedConstants = ResolveInheritedCollection(intermediateVector, vectorPopulation, static (scalar) => scalar.Definition.InheritConstants,
             static (scalar) => scalar.Constants, static (scalar) => scalar.Constants);
@@ -52,11 +52,11 @@ internal static class IndividualVectorSpecializationTypeResolution
     }
 
     public static IOptionalWithDiagnostics<IntermediateIndividualVectorSpecializationType> Resolve((UnresolvedIndividualVectorSpecializationType Vector,
-        IUnresolvedUnitPopulation UnitPopulation, IUnresolvedScalarPopulation ScalarPopulation, IUnresolvedVectorPopulationWithData VectorPopulation) input, CancellationToken _)
+        IRawUnitPopulation UnitPopulation, IRawScalarPopulation ScalarPopulation, IUnresolvedVectorPopulationWithData VectorPopulation) input, CancellationToken _)
         => Resolve(input.Vector, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
 
     public static IOptionalWithDiagnostics<IntermediateIndividualVectorSpecializationType> Resolve(UnresolvedIndividualVectorSpecializationType unresolvedVector,
-        IUnresolvedUnitPopulation unitPopulation, IUnresolvedScalarPopulation scalarPopulation, IUnresolvedVectorPopulationWithData vectorPopulation)
+        IRawUnitPopulation unitPopulation, IRawScalarPopulation scalarPopulation, IUnresolvedVectorPopulationWithData vectorPopulation)
     {
         SpecializedSharpMeasuresVectorResolutionContext vectorResolutionContext = new(unresolvedVector.Type, unitPopulation, scalarPopulation, vectorPopulation);
 
@@ -85,14 +85,14 @@ internal static class IndividualVectorSpecializationTypeResolution
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
     
-    private static IReadOnlyList<IUnresolvedUnitInstance> GetIncludedUnits(IIntermediateIndividualVectorSpecializationType vector, IUnresolvedUnitType unit,
+    private static IReadOnlyList<IRawUnitInstance> GetIncludedUnits(IIntermediateIndividualVectorSpecializationType vector, IRawUnitType unit,
         IIntermediateIndividualVectorPopulation vectorPopulation, Func<IIntermediateIndividualVectorSpecializationType, bool> shouldInherit,
-        Func<IIntermediateIndividualVectorSpecializationType, IEnumerable<IUnresolvedUnitInstance>> specializationInclusions,
-        Func<IIntermediateIndividualVectorSpecializationType, IEnumerable<IUnresolvedUnitInstance>> specializationExclusions,
-        Func<IIndividualVectorType, IEnumerable<IUnresolvedUnitInstance>> baseInclusions,
-        Func<IIndividualVectorType, IEnumerable<IUnresolvedUnitInstance>> baseExclusions)
+        Func<IIntermediateIndividualVectorSpecializationType, IEnumerable<IRawUnitInstance>> specializationInclusions,
+        Func<IIntermediateIndividualVectorSpecializationType, IEnumerable<IRawUnitInstance>> specializationExclusions,
+        Func<IVectorType, IEnumerable<IRawUnitInstance>> baseInclusions,
+        Func<IVectorType, IEnumerable<IRawUnitInstance>> baseExclusions)
     {
-        HashSet<IUnresolvedUnitInstance> includedUnits = new(unit.UnitsByName.Values);
+        HashSet<IRawUnitInstance> includedUnits = new(unit.UnitsByName.Values);
 
         recursivelyModify(vector);
 
@@ -115,7 +115,7 @@ internal static class IndividualVectorSpecializationTypeResolution
             performModification(specializationInclusions(vector), specializationExclusions(vector));
         }
 
-        void performModification(IEnumerable<IUnresolvedUnitInstance> inclusions, IEnumerable<IUnresolvedUnitInstance> exclusions)
+        void performModification(IEnumerable<IRawUnitInstance> inclusions, IEnumerable<IRawUnitInstance> exclusions)
         {
             if (inclusions.Any())
             {
@@ -130,12 +130,12 @@ internal static class IndividualVectorSpecializationTypeResolution
 
     private static IReadOnlyList<T> ResolveInheritedCollection<T>(IIntermediateIndividualVectorSpecializationType vector, IIntermediateIndividualVectorPopulation VectorPopulation,
         Func<IIntermediateIndividualVectorSpecializationType, bool> shouldInherit, Func<IIntermediateIndividualVectorSpecializationType, IEnumerable<T>> specializationTransform,
-        Func<IIndividualVectorType, IEnumerable<T>> baseTransform)
+        Func<IVectorType, IEnumerable<T>> baseTransform)
         => ResolveCollection(vector, VectorPopulation, shouldInherit, specializationTransform, baseTransform, onlyInherited: true);
 
     private static IReadOnlyList<T> ResolveCollection<T>(IIntermediateIndividualVectorSpecializationType vector, IIntermediateIndividualVectorPopulation vectorPopulation,
         Func<IIntermediateIndividualVectorSpecializationType, bool> shouldInherit, Func<IIntermediateIndividualVectorSpecializationType, IEnumerable<T>> specializationTransform,
-        Func<IIndividualVectorType, IEnumerable<T>> baseTransform, bool onlyInherited = false)
+        Func<IVectorType, IEnumerable<T>> baseTransform, bool onlyInherited = false)
     {
         List<T> items = new();
 
@@ -166,12 +166,12 @@ internal static class IndividualVectorSpecializationTypeResolution
         }
     }
 
-    private static IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> MockMembersPopulation(UnresolvedIndividualVectorSpecializationType unresolvedType, SpecializedSharpMeasuresVectorDefinition vector)
+    private static IReadOnlyDictionary<int, IRawVectorGroupMemberType> MockMembersPopulation(UnresolvedIndividualVectorSpecializationType unresolvedType, SpecializedSharpMeasuresVectorDefinition vector)
     {
         UnresolvedSharpMeasuresVectorGroupMemberDefinition mockedMember = new(unresolvedType.Type.AsNamedType(), vector.Dimension, false, SharpMeasuresVectorGroupMemberLocations.Empty);
         UnresolvedVectorGroupMemberType mockedType = new(unresolvedType.Type, unresolvedType.TypeLocation, mockedMember, unresolvedType.Constants);
 
-        return new Dictionary<int, IUnresolvedVectorGroupMemberType>(1)
+        return new Dictionary<int, IRawVectorGroupMemberType>(1)
         {
             { vector.Dimension, mockedType }
         };

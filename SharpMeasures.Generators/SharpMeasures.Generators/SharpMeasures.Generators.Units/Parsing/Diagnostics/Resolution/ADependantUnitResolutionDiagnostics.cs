@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
 internal abstract class ADependantUnitResolutionDiagnostics<TUnresolvedDefinition, TLocations> : IDependantUnitResolutionDiagnostics<TUnresolvedDefinition, TLocations>
-    where TUnresolvedDefinition : IUnresolvedDependantUnitDefinition<TLocations>
+    where TUnresolvedDefinition : IRawDependantUnitDefinition<TLocations>
     where TLocations : IDependantUnitLocations
 {
     public Diagnostic UnrecognizedDependency(IDependantUnitResolutionContext context, TUnresolvedDefinition definition)

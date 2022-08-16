@@ -19,12 +19,13 @@ using Xunit;
 [UsesVerify]
 internal class GeneratorVerifier
 {
-    public static GeneratorVerifier Construct<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator());
-    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator)
+    public static GeneratorVerifier Construct<TGenerator>(string source, bool assertNoCompilationErrors = true) where TGenerator : IIncrementalGenerator, new()
+        => Construct(source, new TGenerator(), assertNoCompilationErrors);
+    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator, bool assertNoCompilationErrors = true)
     {
         var driver = DriverConstruction.ConstructAndRun(source, generator, ProjectPath.Path + @"\Documentation", out var compilation);
         
-        return new(driver, compilation);
+        return new(driver, compilation, assertNoCompilationErrors);
     }
     private GeneratorDriverRunResult RunResult { get; }
     private Compilation Compilation { get; }
@@ -34,7 +35,7 @@ internal class GeneratorVerifier
 
     private ImmutableArray<Diagnostic> Diagnostics => RunResult.Diagnostics;
 
-    private GeneratorVerifier(GeneratorDriver driver, Compilation compilation)
+    private GeneratorVerifier(GeneratorDriver driver, Compilation compilation, bool assertNoCompilationErrors = true)
     {
         RunResult = driver.GetRunResult();
         Compilation = compilation;
@@ -42,13 +43,11 @@ internal class GeneratorVerifier
         Output = RunResult.Results.SelectMany(static (result) => result.GeneratedSources);
 
         OutputCount = Output.Count();
-    }
 
-    public GeneratorVerifier AssertNoCompilationDiagnostics()
-    {
-        Assert.Empty(Compilation.GetDiagnostics());
-
-        return this;
+        if (assertNoCompilationErrors)
+        {
+            Assert.Empty(Compilation.GetDiagnostics());
+        }
     }
 
     public GeneratorVerifier AssertNoSourceGenerated()

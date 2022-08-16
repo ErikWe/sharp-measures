@@ -16,6 +16,7 @@ public static class ConstantVectorTexts
     {
         public static string Name(int dimension) => Builders.Upper.Name.GetText(dimension);
         public static string ComponentsAccess(int dimension) => Builders.Upper.ComponentsAccess.GetText(dimension);
+        public static string ComponentsPropertyAccess(int dimension) => Builders.Upper.ComponentsPropertyAccess.GetText(dimension);
         public static string Scalar(int dimension) => Builders.Upper.Scalar.GetText(dimension);
         public static string Magnitude(int dimension) => Builders.Upper.Magnitude.GetText(dimension);
         public static string AddAddendVector(int dimension) => Builders.Upper.AddAddendVector.GetText(dimension);
@@ -56,6 +57,7 @@ public static class ConstantVectorTexts
         {
             public static VectorTextBuilder Name { get; } = new(NameDelegate, ", ");
             public static VectorTextBuilder ComponentsAccess { get; } = new(ComponentsAccessDelegate, ", ");
+            public static VectorTextBuilder ComponentsPropertyAccess { get; } = new(ComponentsPropertyAccessDelegate, ", ");
             public static VectorTextBuilder Scalar { get; } = new(ScalarDelegate, ", ");
             public static VectorTextBuilder Magnitude { get; } = new(MagnitudeDelegate, ", ");
             public static VectorTextBuilder AddAddendVector { get; } = new(AddAddendVectorDelegate, ", ");
@@ -79,6 +81,11 @@ public static class ConstantVectorTexts
             private static string ComponentsAccessDelegate(int componentIndex, int dimension)
             {
                 return $"components.{GetComponentName(componentIndex, dimension)}";
+            }
+
+            private static string ComponentsPropertyAccessDelegate(int componentIndex, int dimension)
+            {
+                return $"Components.{GetComponentName(componentIndex, dimension)}";
             }
 
             private static string ScalarDelegate(int componentIndex, int dimension)

@@ -102,7 +102,7 @@ internal class SpecializedSharpMeasuresVectorProcesser : AProcesser<IProcessingC
 
     private IValidityWithDiagnostics CheckValidity(IProcessingContext context, RawSpecializedSharpMeasuresVectorDefinition definition)
     {
-        return IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckOriginalVectorValidity, CheckScalarValidity, CheckDifferenceValidity);
+        return IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, CheckOriginalVectorValidity, CheckScalarValidity, CheckDifferenceValidity);
     }
 
     private IValidityWithDiagnostics CheckOriginalVectorValidity(IProcessingContext context, RawSpecializedSharpMeasuresVectorDefinition definition)

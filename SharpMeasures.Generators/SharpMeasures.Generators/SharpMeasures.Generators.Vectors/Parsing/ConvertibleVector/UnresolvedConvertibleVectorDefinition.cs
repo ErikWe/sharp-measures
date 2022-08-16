@@ -2,17 +2,18 @@
 
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
-using SharpMeasures.Generators.Unresolved.Quantities;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Quantities;
+using SharpMeasures.Generators.Raw.Vectors;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 using SharpMeasures.Generators.Utility;
 
 using System.Collections.Generic;
 
-internal record class UnresolvedConvertibleVectorDefinition : AItemListDefinition<NamedType, ConvertibleQuantityLocations>, IUnresolvedConvertibleVector
+internal record class UnresolvedConvertibleVectorDefinition : AItemListDefinition<NamedType, ConvertibleQuantityLocations>, IRawConvertibleVectorGroup
 {
     public IReadOnlyList<NamedType> VectorGroups => Items;
 
-    IReadOnlyList<NamedType> IUnresolvedConvertibleQuantity.Quantities => VectorGroups;
+    IReadOnlyList<NamedType> IRawConvertibleQuantity.Quantities => VectorGroups;
 
     public bool Bidirectional { get; }
     public ConversionOperatorBehaviour CastOperatorBehaviour { get; }

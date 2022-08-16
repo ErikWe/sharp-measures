@@ -2,39 +2,39 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Unresolved.Quantities;
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Quantities;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 
 internal record class SharpMeasuresScalarDefinition : AAttributeDefinition<SharpMeasuresScalarLocations>, IScalar
 {
-    public IUnresolvedUnitType Unit { get; }
-    public IUnresolvedVectorGroupType? VectorGroup { get; }
+    public IRawUnitType Unit { get; }
+    public IRawVectorGroupType? VectorGroup { get; }
 
     public bool UseUnitBias { get; }
 
     public bool ImplementSum { get; }
     public bool ImplementDifference { get; }
 
-    public IUnresolvedScalarType Difference { get; }
-    IUnresolvedQuantityType IQuantity.Difference => Difference;
+    public IRawScalarType Difference { get; }
+    IRawQuantityType IQuantity.Difference => Difference;
 
-    public IUnresolvedUnitInstance? DefaultUnit { get; }
+    public IRawUnitInstance? DefaultUnit { get; }
     public string? DefaultUnitSymbol { get; }
 
-    public IUnresolvedScalarType? Reciprocal { get; }
-    public IUnresolvedScalarType? Square { get; }
-    public IUnresolvedScalarType? Cube { get; }
-    public IUnresolvedScalarType? SquareRoot { get; }
-    public IUnresolvedScalarType? CubeRoot { get; }
+    public IRawScalarType? Reciprocal { get; }
+    public IRawScalarType? Square { get; }
+    public IRawScalarType? Cube { get; }
+    public IRawScalarType? SquareRoot { get; }
+    public IRawScalarType? CubeRoot { get; }
 
     public bool? GenerateDocumentation { get; }
 
-    public SharpMeasuresScalarDefinition(IUnresolvedUnitType unit, IUnresolvedVectorGroupType? vectorGroup, bool useUnitBias, bool implementSum, bool implementDifference,
-        IUnresolvedScalarType difference, IUnresolvedUnitInstance? defaultUnit, string? defaultUnitSymbol, IUnresolvedScalarType? reciprocal,
-        IUnresolvedScalarType? square, IUnresolvedScalarType? cube, IUnresolvedScalarType? squareRoot, IUnresolvedScalarType? cubeRoot, bool? generateDocumentation,
+    public SharpMeasuresScalarDefinition(IRawUnitType unit, IRawVectorGroupType? vectorGroup, bool useUnitBias, bool implementSum, bool implementDifference,
+        IRawScalarType difference, IRawUnitInstance? defaultUnit, string? defaultUnitSymbol, IRawScalarType? reciprocal,
+        IRawScalarType? square, IRawScalarType? cube, IRawScalarType? squareRoot, IRawScalarType? cubeRoot, bool? generateDocumentation,
         SharpMeasuresScalarLocations locations)
         : base(locations)
     {

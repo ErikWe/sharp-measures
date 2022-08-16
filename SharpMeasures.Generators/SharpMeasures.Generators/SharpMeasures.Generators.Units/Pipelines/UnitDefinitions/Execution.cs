@@ -11,7 +11,7 @@ using SharpMeasures.Generators.Units.Parsing.DerivedUnit;
 using SharpMeasures.Generators.Units.Parsing.PrefixedUnit;
 using SharpMeasures.Generators.Units.Parsing.ScaledUnit;
 using SharpMeasures.Generators.Units.Parsing.UnitAlias;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System;
 using System.Collections.Generic;
@@ -116,7 +116,7 @@ internal static class Execution
                 IEnumerable<string> arguments()
                 {
                     IEnumerator<NamedType> signatureIterator = derivedUnit.Signature.GetEnumerator();
-                    IEnumerator<IUnresolvedUnitInstance> unitIterator = derivedUnit.Units.GetEnumerator();
+                    IEnumerator<IRawUnitInstance> unitIterator = derivedUnit.Units.GetEnumerator();
 
                     while (signatureIterator.MoveNext() && unitIterator.MoveNext())
                     {
@@ -143,7 +143,7 @@ internal static class Execution
                     {
                         AppendAlias(unitAlias);
                     }
-                    else if (dependantUnits[i] is UnresolvedScaledUnitDefinition scaledUnit)
+                    else if (dependantUnits[i] is RawScaledUnitDefinition scaledUnit)
                     {
                         AppendScaled(scaledUnit);
                     }
@@ -151,7 +151,7 @@ internal static class Execution
                     {
                         AppendPrefixed(prefixedUnit);
                     }
-                    else if (dependantUnits[i] is UnresolvedBiasedUnitDefinition biasedUnit)
+                    else if (dependantUnits[i] is RawBiasedUnitDefinition biasedUnit)
                     {
                         AppendBiased(biasedUnit);
                     }
@@ -183,7 +183,7 @@ internal static class Execution
             Builder.Append($"=> {unitAlias.AliasOf}");
         }
 
-        private void AppendScaled(UnresolvedScaledUnitDefinition scaledUnit)
+        private void AppendScaled(RawScaledUnitDefinition scaledUnit)
         {
             Builder.Append($"{{ get; }} = {scaledUnit.From}.ScaledBy({scaledUnit.Expression})");
         }
@@ -197,7 +197,7 @@ internal static class Execution
             Builder.Append($"{{ get; }} = {prefixedUnit.From}.WithPrefix({prefixText})");
         }
 
-        private void AppendBiased(UnresolvedBiasedUnitDefinition biasedUnit)
+        private void AppendBiased(RawBiasedUnitDefinition biasedUnit)
         {
             Builder.Append($"{{ get; }} = {biasedUnit.From}.WithBias({biasedUnit.Expression})");
         }

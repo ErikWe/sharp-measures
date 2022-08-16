@@ -3,8 +3,8 @@
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 
@@ -20,10 +20,10 @@ internal record class IntermediateVectorGroupSpecializationType : IIntermediateV
     public IReadOnlyList<DerivedQuantityDefinition> Derivations => derivations;
     public IReadOnlyList<ConvertibleVectorDefinition> Conversions => conversions;
 
-    public IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> MembersByDimension => membersByDimension;
+    public IReadOnlyDictionary<int, IRawVectorGroupMemberType> MembersByDimension => membersByDimension;
 
-    public IReadOnlyList<IUnresolvedUnitInstance> UnitInclusions => unitInclusions;
-    public IReadOnlyList<IUnresolvedUnitInstance> UnitExclusions => unitExclusions;
+    public IReadOnlyList<IRawUnitInstance> UnitInclusions => unitInclusions;
+    public IReadOnlyList<IRawUnitInstance> UnitExclusions => unitExclusions;
 
     IReadOnlyList<IDerivedQuantity> IIntermediateVectorGroupSpecializationType.Derivations => Derivations;
     IReadOnlyList<IConvertibleVector> IIntermediateVectorGroupSpecializationType.Conversions => Conversions;
@@ -31,14 +31,14 @@ internal record class IntermediateVectorGroupSpecializationType : IIntermediateV
     private ReadOnlyEquatableList<DerivedQuantityDefinition> derivations { get; }
     private ReadOnlyEquatableList<ConvertibleVectorDefinition> conversions { get; }
 
-    private ReadOnlyEquatableDictionary<int, IUnresolvedVectorGroupMemberType> membersByDimension { get; }
+    private ReadOnlyEquatableDictionary<int, IRawVectorGroupMemberType> membersByDimension { get; }
 
-    private ReadOnlyEquatableList<IUnresolvedUnitInstance> unitInclusions { get; }
-    private ReadOnlyEquatableList<IUnresolvedUnitInstance> unitExclusions { get; }
+    private ReadOnlyEquatableList<IRawUnitInstance> unitInclusions { get; }
+    private ReadOnlyEquatableList<IRawUnitInstance> unitExclusions { get; }
 
     public IntermediateVectorGroupSpecializationType(DefinedType type, MinimalLocation typeLocation, IVectorGroupSpecialization definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
-        IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyDictionary<int, IUnresolvedVectorGroupMemberType> membersByDimension, IReadOnlyList<IUnresolvedUnitInstance> unitInclusions,
-        IReadOnlyList<IUnresolvedUnitInstance> unitExclusions)
+        IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyDictionary<int, IRawVectorGroupMemberType> membersByDimension, IReadOnlyList<IRawUnitInstance> unitInclusions,
+        IReadOnlyList<IRawUnitInstance> unitExclusions)
     {
         Type = type;
         TypeLocation = typeLocation;

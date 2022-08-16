@@ -1,31 +1,32 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing;
 
 using SharpMeasures.Equatables;
-using SharpMeasures.Generators.Unresolved.Vectors;
+using SharpMeasures.Generators.Raw.Vectors;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System.Collections.Generic;
 using System.Linq;
 
-internal record class UnresolvedVectorGroupMemberType : IUnresolvedVectorGroupMemberType
+internal record class UnresolvedVectorGroupMemberType : IRawVectorGroupMemberType
 {
     public DefinedType Type { get; }
     public MinimalLocation TypeLocation { get; }
 
     public UnresolvedSharpMeasuresVectorGroupMemberDefinition Definition { get; }
     ISharpMeasuresObject ISharpMeasuresObjectType.Definition => Definition;
-    IUnresolvedVectorGroupMember IUnresolvedVectorGroupMemberType.Definition => Definition;
+    IRawVectorGroupMember IRawVectorGroupMemberType.Definition => Definition;
 
     public IReadOnlyList<UnresolvedVectorConstantDefinition> Constants => constants;
 
-    public IReadOnlyDictionary<string, IUnresolvedVectorConstant> ConstantsByName => constantsByName;
-    public IReadOnlyDictionary<string, IUnresolvedVectorConstant> ConstantsByMultiplesName => constantsByMultiplesName;
+    public IReadOnlyDictionary<string, IRawVectorConstant> ConstantsByName => constantsByName;
+    public IReadOnlyDictionary<string, IRawVectorConstant> ConstantsByMultiplesName => constantsByMultiplesName;
 
     private ReadOnlyEquatableList<UnresolvedVectorConstantDefinition> constants { get; }
 
-    private ReadOnlyEquatableDictionary<string, IUnresolvedVectorConstant> constantsByName { get; }
-    private ReadOnlyEquatableDictionary<string, IUnresolvedVectorConstant> constantsByMultiplesName { get; }
+    private ReadOnlyEquatableDictionary<string, IRawVectorConstant> constantsByName { get; }
+    private ReadOnlyEquatableDictionary<string, IRawVectorConstant> constantsByMultiplesName { get; }
 
     public UnresolvedVectorGroupMemberType(DefinedType type, MinimalLocation typeLocation, UnresolvedSharpMeasuresVectorGroupMemberDefinition definition,
         IReadOnlyList<UnresolvedVectorConstantDefinition> constants)
@@ -41,10 +42,10 @@ internal record class UnresolvedVectorGroupMemberType : IUnresolvedVectorGroupMe
         constantsByMultiplesName = ConstructConstantsByMultiplesNameDictionary();
     }
 
-    private ReadOnlyEquatableDictionary<string, IUnresolvedVectorConstant> ConstructConstantsByNameDictionary()
-        => (Constants as IEnumerable<IUnresolvedVectorConstant>).ToDictionary(static (constant) => constant.Name).AsReadOnlyEquatable();
+    private ReadOnlyEquatableDictionary<string, IRawVectorConstant> ConstructConstantsByNameDictionary()
+        => (Constants as IEnumerable<IRawVectorConstant>).ToDictionary(static (constant) => constant.Name).AsReadOnlyEquatable();
 
-    private ReadOnlyEquatableDictionary<string, IUnresolvedVectorConstant> ConstructConstantsByMultiplesNameDictionary()
-        => (Constants as IEnumerable<IUnresolvedVectorConstant>).Where(static (constant) => constant.Multiples is not null)
+    private ReadOnlyEquatableDictionary<string, IRawVectorConstant> ConstructConstantsByMultiplesNameDictionary()
+        => (Constants as IEnumerable<IRawVectorConstant>).Where(static (constant) => constant.Multiples is not null)
         .ToDictionary(static (constant) => constant.Multiples!).AsReadOnlyEquatable();
 }

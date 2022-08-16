@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars.Parsing.SpecializedSharpMeasuresScalar;
-using SharpMeasures.Generators.Unresolved.Units;
+using SharpMeasures.Generators.Raw.Units;
 
 internal class SpecializedSharpMeasuresScalarResolutionDiagnostics : ISpecializedSharpMeasuresScalarResolutionDiagnostics
 {
@@ -34,7 +34,7 @@ internal class SpecializedSharpMeasuresScalarResolutionDiagnostics : ISpecialize
 
     public Diagnostic TypeNotVector(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition)
     {
-        return DiagnosticConstruction.TypeNotVector(definition.Locations.Vector?.AsRoslynLocation(), definition.VectorGroup!.Value.Name);
+        return DiagnosticConstruction.TypeNotVector(definition.Locations.Vector?.AsRoslynLocation(), definition.Vector!.Value.Name);
     }
 
     public Diagnostic DifferenceNotScalar(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition)
@@ -43,7 +43,7 @@ internal class SpecializedSharpMeasuresScalarResolutionDiagnostics : ISpecialize
     }
 
     public Diagnostic UnrecognizedDefaultUnit(ISpecializedSharpMeasuresScalarResolutionContext context, UnresolvedSpecializedSharpMeasuresScalarDefinition definition,
-        IUnresolvedUnitType unit)
+        IRawUnitType unit)
     {
         return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.DefaultUnitName?.AsRoslynLocation(), definition.DefaultUnitName!, unit.Type.Name);
     }

@@ -5,8 +5,8 @@ using SharpMeasures.Generators.Attributes.Parsing;
 internal abstract record class AUnitDefinition<TLocations> : AAttributeDefinition<TLocations>, IUnitDefinition<TLocations>
     where TLocations : AUnitLocations<TLocations>
 {
-    public string Name { get; private init; }
-    public string Plural { get; private init; }
+    public string Name { get; }
+    public string Plural { get; }
 
     protected AUnitDefinition(string name, string plural, TLocations locations) : base(locations)
     {

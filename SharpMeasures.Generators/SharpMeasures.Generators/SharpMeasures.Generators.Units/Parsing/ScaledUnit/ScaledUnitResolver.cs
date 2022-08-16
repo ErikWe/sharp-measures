@@ -3,11 +3,11 @@
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal class ScaledUnitResolver : ADependantUnitResolver<IDependantUnitResolutionContext, UnresolvedScaledUnitDefinition, ScaledUnitLocations, ScaledUnitDefinition>
+internal class ScaledUnitResolver : ADependantUnitResolver<IDependantUnitResolutionContext, RawScaledUnitDefinition, ScaledUnitLocations, ScaledUnitDefinition>
 {
-    public ScaledUnitResolver(IDependantUnitResolutionDiagnostics<UnresolvedScaledUnitDefinition, ScaledUnitLocations> diagnostics) : base(diagnostics) { }
+    public ScaledUnitResolver(IDependantUnitResolutionDiagnostics<RawScaledUnitDefinition, ScaledUnitLocations> diagnostics) : base(diagnostics) { }
 
-    public override IOptionalWithDiagnostics<ScaledUnitDefinition> Process(IDependantUnitResolutionContext context, UnresolvedScaledUnitDefinition definition)
+    public override IOptionalWithDiagnostics<ScaledUnitDefinition> Process(IDependantUnitResolutionContext context, RawScaledUnitDefinition definition)
     {
         var processedDependency = ProcessDependantOn(context, definition);
         var allDiagnostics = processedDependency.Diagnostics;

@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
 
-using Microsoft.CodeAnalysis.Text;
-
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
@@ -80,9 +78,12 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ConvertibleScalarLocation_SingleAttribute => ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleScalarText_SingleAttribute, target: "Length", prefix: "ConvertibleQuantity(typeof(Length), ");
+    private static GeneratorVerifier AssertConvertibleScalar_SingleAttribute()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleScalarText_SingleAttribute, target: "Length", prefix: "ConvertibleQuantity(typeof(Length), ");
 
-    private static GeneratorVerifier AssertConvertibleScalar_SingleAttribute() => AssertExactlyDuplicateListingDiagnostics(ConvertibleScalarText_SingleAttribute).AssertDiagnosticsLocation(ConvertibleScalarLocation_SingleAttribute, ConvertibleScalarText_SingleAttribute);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleScalarText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleScalarText_SingleAttribute);
+    }
 
     private static string ConvertibleScalarText_MultipleAttributes => """
         using SharpMeasures.Generators.Quantities;
@@ -101,9 +102,12 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ConvertibleScalarLocation_MultipleAttributes => ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleScalarText_MultipleAttributes, target: "Length", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
+    private static GeneratorVerifier AssertConvertibleScalar_MultipleAttributes()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleScalarText_MultipleAttributes, target: "Length", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-    private static GeneratorVerifier AssertConvertibleScalar_MultipleAttributes() => AssertExactlyDuplicateListingDiagnostics(ConvertibleScalarText_MultipleAttributes).AssertDiagnosticsLocation(ConvertibleScalarLocation_MultipleAttributes, ConvertibleScalarText_MultipleAttributes);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleScalarText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation, ConvertibleScalarText_MultipleAttributes);
+    }
 
     private static string ConvertibleSpecializedScalarText_SingleAttribute => """
         using SharpMeasures.Generators.Quantities;
@@ -121,9 +125,12 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ConvertibleSpecializedScalarLocation_SingleAttribute => ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedScalarText_SingleAttribute, target: "Length", prefix: "ConvertibleQuantity(typeof(Length), ");
+    private static GeneratorVerifier AssertConvertibleSpecializedScalar_SingleAttribute()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedScalarText_SingleAttribute, target: "Length", prefix: "ConvertibleQuantity(typeof(Length), ");
 
-    private static GeneratorVerifier AssertConvertibleSpecializedScalar_SingleAttribute() => AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedScalarText_SingleAttribute).AssertDiagnosticsLocation(ConvertibleSpecializedScalarLocation_SingleAttribute, ConvertibleScalarText_SingleAttribute);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedScalarText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleScalarText_SingleAttribute);
+    }
 
     private static string ConvertibleSpecializedScalarText_MultipleAttributes => """
         using SharpMeasures.Generators.Quantities;
@@ -142,9 +149,12 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ConvertibleSpecializedScalarLocation_MultipleAttributes => ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedScalarText_MultipleAttributes, target: "Length", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
+    private static GeneratorVerifier AssertConvertibleSpecializedScalar_MultipleAttributes()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedScalarText_MultipleAttributes, target: "Length", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-    private static GeneratorVerifier AssertConvertibleSpecializedScalar_MultipleAttributes() => AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedScalarText_MultipleAttributes).AssertDiagnosticsLocation(ConvertibleSpecializedScalarLocation_MultipleAttributes, ConvertibleSpecializedScalarText_MultipleAttributes);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedScalarText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation, ConvertibleSpecializedScalarText_MultipleAttributes);
+    }
 
     private static string ConvertibleSpecializedScalarText_InheritedAttribute => """
         using SharpMeasures.Generators.Quantities;
@@ -166,9 +176,12 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ConvertibleSpecializedScalarLocation_InheritedAttribute => ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedScalarText_InheritedAttribute, target: "Height", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
+    private static GeneratorVerifier AssertConvertibleSpecializedScalar_InheritedAttribute()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedScalarText_InheritedAttribute, target: "Height", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-    private static GeneratorVerifier AssertConvertibleSpecializedScalar_InheritedAttribute() => AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedScalarText_InheritedAttribute).AssertDiagnosticsLocation(ConvertibleSpecializedScalarLocation_InheritedAttribute, ConvertibleSpecializedScalarText_InheritedAttribute);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedScalarText_InheritedAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleSpecializedScalarText_InheritedAttribute);
+    }
 
     private static string ConvertibleVectorText_SingleAttribute => """
         using SharpMeasures.Generators.Quantities;
@@ -190,9 +203,12 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ConvertibleVectorLocation_SingleAttribute => ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorText_SingleAttribute, target: "Position3", prefix: "ConvertibleQuantity(typeof(Position3), ");
+    private static GeneratorVerifier AssertConvertibleVector_SingleAttribute()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorText_SingleAttribute, target: "Position3", prefix: "ConvertibleQuantity(typeof(Position3), ");
 
-    private static GeneratorVerifier AssertConvertibleVector_SingleAttribute() => AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorText_SingleAttribute).AssertDiagnosticsLocation(ConvertibleVectorLocation_SingleAttribute, ConvertibleVectorText_SingleAttribute);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleVectorText_SingleAttribute);
+    }
 
     private static string ConvertibleVectorText_MultipleAttributes => """
         using SharpMeasures.Generators.Quantities;
@@ -215,9 +231,12 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ConvertibleVectorLocation_MultipleAttributes => ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorText_MultipleAttributes, target: "Position3", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
+    private static GeneratorVerifier AssertConvertibleVector_MultipleAttributes()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorText_MultipleAttributes, target: "Position3", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-    private static GeneratorVerifier AssertConvertibleVector_MultipleAttributes() => AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorText_MultipleAttributes).AssertDiagnosticsLocation(ConvertibleVectorLocation_MultipleAttributes, ConvertibleVectorText_MultipleAttributes);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation, ConvertibleVectorText_MultipleAttributes);
+    }
 
     private static string ConvertibleSpecializedVectorText_SingleAttribute => """
         using SharpMeasures.Generators.Quantities;
@@ -239,9 +258,12 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ConvertibleSpecializedVectorLocation_SingleAttribute => ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorText_SingleAttribute, target: "Position3", prefix: "ConvertibleQuantity(typeof(Position3), ");
+    private static GeneratorVerifier AssertConvertibleSpecializedVector_SingleAttribute()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorText_SingleAttribute, target: "Position3", prefix: "ConvertibleQuantity(typeof(Position3), ");
 
-    private static GeneratorVerifier AssertConvertibleSpecializedVector_SingleAttribute() => AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorText_SingleAttribute).AssertDiagnosticsLocation(ConvertibleSpecializedVectorLocation_SingleAttribute, ConvertibleSpecializedVectorText_SingleAttribute);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleSpecializedVectorText_SingleAttribute);
+    }
 
     private static string ConvertibleSpecializedVectorText_MultipleAttributes => """
         using SharpMeasures.Generators.Quantities;
@@ -264,9 +286,12 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ConvertibleSpecializedVectorLocation_MultipleAttributes => ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorText_MultipleAttributes, target: "Position3", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
+    private static GeneratorVerifier AssertConvertibleSpecializedVector_MultipleAttributes()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorText_MultipleAttributes, target: "Position3", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-    private static GeneratorVerifier AssertConvertibleSpecializedVector_MultipleAttributes() => AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorText_MultipleAttributes).AssertDiagnosticsLocation(ConvertibleSpecializedVectorLocation_MultipleAttributes, ConvertibleSpecializedVectorText_MultipleAttributes);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation, ConvertibleSpecializedVectorText_MultipleAttributes);
+    }
 
     private static string ConvertibleSpecializedVectorText_InheritedAttribute => """
         using SharpMeasures.Generators.Quantities;
@@ -292,9 +317,12 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ConvertibleSpecializedVectorLocation_InheritedAttribute => ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorText_InheritedAttribute, target: "Size3", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
+    private static GeneratorVerifier AssertConvertibleSpecializedVector_InheritedAttribute()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorText_InheritedAttribute, target: "Size3", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-    private static GeneratorVerifier AssertConvertibleSpecializedVector_InheritedAttribute() => AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorText_InheritedAttribute).AssertDiagnosticsLocation(ConvertibleSpecializedVectorLocation_InheritedAttribute, ConvertibleSpecializedVectorText_InheritedAttribute);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorText_InheritedAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleSpecializedVectorText_InheritedAttribute);
+    }
 
     private static string ConvertibleVectorGroupText_SingleAttribute => """
         using SharpMeasures.Generators.Quantities;
@@ -316,9 +344,12 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ConvertibleVectorGroupLocation_SingleAttribute => ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorGroupText_SingleAttribute, target: "Position", prefix: "ConvertibleQuantity(typeof(Position), ");
+    private static GeneratorVerifier AssertConvertibleVectorGroup_SingleAttribute()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorGroupText_SingleAttribute, target: "Position", prefix: "ConvertibleQuantity(typeof(Position), ");
 
-    private static GeneratorVerifier AssertConvertibleVectorGroup_SingleAttribute() => AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorGroupText_SingleAttribute).AssertDiagnosticsLocation(ConvertibleVectorGroupLocation_SingleAttribute, ConvertibleVectorGroupText_SingleAttribute);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorGroupText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleVectorGroupText_SingleAttribute);
+    }
 
     private static string ConvertibleVectorGroupText_MultipleAttributes => """
         using SharpMeasures.Generators.Quantities;
@@ -341,9 +372,12 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ConvertibleVectorGroupLocation_MultipleAttributes => ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorGroupText_MultipleAttributes, target: "Position", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
+    private static GeneratorVerifier AssertConvertibleVectorGroup_MultipleAttributes()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorGroupText_MultipleAttributes, target: "Position", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-    private static GeneratorVerifier AssertConvertibleVectorGroup_MultipleAttributes() => AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorGroupText_MultipleAttributes).AssertDiagnosticsLocation(ConvertibleVectorGroupLocation_MultipleAttributes, ConvertibleVectorGroupText_MultipleAttributes);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorGroupText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation, ConvertibleVectorGroupText_MultipleAttributes);
+    }
 
     private static string ConvertibleSpecializedVectorGroupText_SingleAttribute => """
         using SharpMeasures.Generators.Quantities;
@@ -365,9 +399,12 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ConvertibleSpecializedVectorGroupLocation_SingleAttribute => ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorGroupText_SingleAttribute, target: "Position", prefix: "ConvertibleQuantity(typeof(Position), ");
+    private static GeneratorVerifier AssertConvertibleSpecializedVectorGroup_SingleAttribute()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorGroupText_SingleAttribute, target: "Position", prefix: "ConvertibleQuantity(typeof(Position), ");
 
-    private static GeneratorVerifier AssertConvertibleSpecializedVectorGroup_SingleAttribute() => AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorGroupText_SingleAttribute).AssertDiagnosticsLocation(ConvertibleSpecializedVectorGroupLocation_SingleAttribute, ConvertibleSpecializedVectorGroupText_SingleAttribute);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorGroupText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleSpecializedVectorGroupText_SingleAttribute);
+    }
 
     private static string ConvertibleSpecializedVectorGroupText_MultipleAttributes => """
         using SharpMeasures.Generators.Quantities;
@@ -390,9 +427,12 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ConvertibleSpecializedVectorGroupLocation_MultipleAttributes => ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorGroupText_MultipleAttributes, target: "Position", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
+    private static GeneratorVerifier AssertConvertibleSpecializedVectorGroup_MultipleAttributes()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorGroupText_MultipleAttributes, target: "Position", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-    private static GeneratorVerifier AssertConvertibleSpecializedVectorGroup_MultipleAttributes() => AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorGroupText_MultipleAttributes).AssertDiagnosticsLocation(ConvertibleSpecializedVectorGroupLocation_MultipleAttributes, ConvertibleSpecializedVectorGroupText_MultipleAttributes);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorGroupText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation, ConvertibleSpecializedVectorGroupText_MultipleAttributes);
+    }
 
     private static string ConvertibleSpecializedVectorGroupText_InheritedAttribute => """
         using SharpMeasures.Generators.Quantities;
@@ -418,7 +458,10 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static TextSpan ConvertibleSpecializedVectorGroupLocation_InheritedAttribute => ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorGroupText_InheritedAttribute, target: "Size", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
+    private static GeneratorVerifier AssertConvertibleSpecializedVectorGroup_InheritedAttribute()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorGroupText_InheritedAttribute, target: "Size", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-    private static GeneratorVerifier AssertConvertibleSpecializedVectorGroup_InheritedAttribute() => AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorGroupText_InheritedAttribute).AssertDiagnosticsLocation(ConvertibleSpecializedVectorGroupLocation_InheritedAttribute, ConvertibleSpecializedVectorGroupText_InheritedAttribute);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorGroupText_InheritedAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleSpecializedVectorGroupText_InheritedAttribute);
+    }
 }

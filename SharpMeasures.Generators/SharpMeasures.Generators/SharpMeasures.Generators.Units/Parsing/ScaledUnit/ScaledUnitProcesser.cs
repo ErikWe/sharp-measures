@@ -6,15 +6,14 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
 using System.Globalization;
-using System.Linq;
 
-internal interface IScaledUnitProcessingDiagnostics : IDependantUnitProcessingDiagnostics<RawScaledUnitDefinition, ScaledUnitLocations>
+internal interface IScaledUnitProcessingDiagnostics : IDependantUnitProcessingDiagnostics<UnprocessedScaledUnitDefinition, ScaledUnitLocations>
 {
-    public abstract Diagnostic? NullExpression(IUnitProcessingContext context, RawScaledUnitDefinition definition);
-    public abstract Diagnostic? EmptyExpression(IUnitProcessingContext context, RawScaledUnitDefinition definition);
+    public abstract Diagnostic? NullExpression(IUnitProcessingContext context, UnprocessedScaledUnitDefinition definition);
+    public abstract Diagnostic? EmptyExpression(IUnitProcessingContext context, UnprocessedScaledUnitDefinition definition);
 }
 
-internal class ScaledUnitProcesser : ADependantUnitProcesser<IUnitProcessingContext, RawScaledUnitDefinition, ScaledUnitLocations, UnresolvedScaledUnitDefinition>
+internal class ScaledUnitProcesser : ADependantUnitProcesser<IUnitProcessingContext, UnprocessedScaledUnitDefinition, ScaledUnitLocations, RawScaledUnitDefinition>
 {
     private IScaledUnitProcessingDiagnostics Diagnostics { get; }
 
@@ -23,59 +22,43 @@ internal class ScaledUnitProcesser : ADependantUnitProcesser<IUnitProcessingCont
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<UnresolvedScaledUnitDefinition> Process(IUnitProcessingContext context, RawScaledUnitDefinition definition)
+    public override IOptionalWithDiagnostics<RawScaledUnitDefinition> Process(IUnitProcessingContext context, UnprocessedScaledUnitDefinition definition)
     {
-        if (VerifyRequiredPropertiesSet(definition) is false)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedScaledUnitDefinition>();
-        }
-
-        var validity = IterativeValidity.DiagnoseAndMergeWhileValid(context, definition, CheckDependantUnitValidity, CheckExpressionValidity);
-        var allDiagnostics = validity.Diagnostics;
-        
-        if (validity.IsInvalid)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedScaledUnitDefinition>(allDiagnostics);
-        }
-
-        var processedPlural = ProcessPlural(context, definition);
-        allDiagnostics = allDiagnostics.Concat(processedPlural.Diagnostics);
-
-        if (processedPlural.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedScaledUnitDefinition>(allDiagnostics);
-        }
-
-        var product = CreateProduct(definition, processedPlural.Result);
-        return OptionalWithDiagnostics.Result(product, allDiagnostics);
+        var requiredPropertiesSet = VerifyRequiredPropertiesSet(definition);
+        var unitValidity = requiredPropertiesSet.Validate(context, definition, ValidateUnitName);
+        var expressionValidity = unitValidity.Validate(context, definition, ValidateExpression);
+        var processedPlural = unitValidity.Merge(context, definition, ProcessPlural);
+        return processedPlural.Transform(definition, ProduceResult);
     }
 
-    protected override bool VerifyRequiredPropertiesSet(RawScaledUnitDefinition definition)
+    protected override IValidityWithDiagnostics VerifyRequiredPropertiesSet(UnprocessedScaledUnitDefinition definition)
     {
-        return base.VerifyRequiredPropertiesSet(definition) && (definition.Locations.ExplicitlySetScale || definition.Locations.ExplicitlySetExpression);
+        var requiredPropertiesSet = definition.Locations.ExplicitlySetScale || definition.Locations.ExplicitlySetExpression;
+
+        return base.VerifyRequiredPropertiesSet(definition).Validate(ValidityWithDiagnostics.ConditionalWithoutDiagnostics(requiredPropertiesSet));
     }
 
-    private IValidityWithDiagnostics CheckExpressionValidity(IUnitProcessingContext context, RawScaledUnitDefinition definition)
+    private IValidityWithDiagnostics ValidateExpression(IUnitProcessingContext context, UnprocessedScaledUnitDefinition definition)
     {
         if (definition.Locations.ExplicitlySetExpression is false)
         {
             return ValidityWithDiagnostics.Valid;
         }
 
-        if (definition.Expression is null)
-        {
-            return ValidityWithDiagnostics.Invalid(Diagnostics.NullExpression(context, definition));
-        }
-
-        if (definition.Expression.Length is 0)
-        {
-            return ValidityWithDiagnostics.Invalid(Diagnostics.EmptyExpression(context, definition));
-        }
-
-        return ValidityWithDiagnostics.Valid;
+        return IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, ValidateExpressionNotNull, ValidateExpressionNotEmpty);
     }
 
-    private static UnresolvedScaledUnitDefinition CreateProduct(RawScaledUnitDefinition definition, string interpretedPlural)
+    private IValidityWithDiagnostics ValidateExpressionNotNull(IUnitProcessingContext context, UnprocessedScaledUnitDefinition definition)
+    {
+        return ValidityWithDiagnostics.Conditional(definition.Expression is not null, () => Diagnostics.NullExpression(context, definition));
+    }
+
+    private IValidityWithDiagnostics ValidateExpressionNotEmpty(IUnitProcessingContext context, UnprocessedScaledUnitDefinition definition)
+    {
+        return ValidityWithDiagnostics.Conditional(definition.Expression!.Length is not 0, () => Diagnostics.EmptyExpression(context, definition));
+    }
+
+    private static RawScaledUnitDefinition ProduceResult(UnprocessedScaledUnitDefinition definition, string interpretedPlural)
     {
         if (definition.Locations.ExplicitlySetScale)
         {

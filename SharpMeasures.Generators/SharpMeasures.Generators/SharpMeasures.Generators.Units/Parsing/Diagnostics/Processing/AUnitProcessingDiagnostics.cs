@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
 internal abstract class AUnitProcessingDiagnostics<TRawDefinition, TLocations> : IUnitProcessingDiagnostics<TRawDefinition, TLocations>
-    where TRawDefinition : IRawUnitDefinition<TLocations>
+    where TRawDefinition : IUnprocessedUnitDefinition<TLocations>
     where TLocations : IUnitLocations
 {
     public Diagnostic NullUnitName(IUnitProcessingContext context, TRawDefinition definition)

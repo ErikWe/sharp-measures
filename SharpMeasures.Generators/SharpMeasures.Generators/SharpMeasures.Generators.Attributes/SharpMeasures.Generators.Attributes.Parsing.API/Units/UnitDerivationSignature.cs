@@ -1,11 +1,11 @@
 ﻿namespace SharpMeasures.Generators.Units;
 
 using SharpMeasures.Equatables;
-using SharpMeasures.Generators.Unresolved.Units;
+using SharpMeasures.Generators.Raw.Units;
 
 using System.Collections.Generic;
 
-public class UnitDerivationSignature : ReadOnlyEquatableList<IUnresolvedUnitType>
+public class UnitDerivationSignature : ReadOnlyEquatableList<IRawUnitType>
 {
-    public UnitDerivationSignature(IReadOnlyList<IUnresolvedUnitType> units) : base(units) { }
+    public UnitDerivationSignature(IReadOnlyList<IRawUnitType> units) : base(units) { }
 }

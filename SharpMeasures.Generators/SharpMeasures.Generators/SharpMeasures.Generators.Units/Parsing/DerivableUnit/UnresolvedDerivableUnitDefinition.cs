@@ -1,18 +1,18 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Unresolved.Units;
+using SharpMeasures.Generators.Raw.Units;
 
-internal record class UnresolvedDerivableUnitDefinition : IAttributeDefinition<DerivableUnitLocations>, IUnresolvedDerivableUnit
+internal record class UnresolvedDerivableUnitDefinition : IAttributeDefinition<DerivableUnitLocations>, IRawDerivableUnit
 {
     public string? DerivationID { get; }
 
     public string Expression { get; }
-    public UnresolvedUnitDerivationSignature Signature { get; }
+    public RawUnitDerivationSignature Signature { get; }
 
     public DerivableUnitLocations Locations { get; }
 
-    public UnresolvedDerivableUnitDefinition(string? derivationID, string expression, UnresolvedUnitDerivationSignature signature, DerivableUnitLocations locations)
+    public UnresolvedDerivableUnitDefinition(string? derivationID, string expression, RawUnitDerivationSignature signature, DerivableUnitLocations locations)
     {
         DerivationID = derivationID;
 

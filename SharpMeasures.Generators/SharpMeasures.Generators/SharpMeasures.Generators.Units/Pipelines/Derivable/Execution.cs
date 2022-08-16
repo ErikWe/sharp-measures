@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
-using SharpMeasures.Generators.Unresolved.Units;
+using SharpMeasures.Generators.Raw.Units;
 
 using System.Collections.Generic;
 using System.Text;
@@ -57,76 +57,29 @@ internal static class Execution
         {
             foreach (DerivableUnitDefinition definition in Data.Derivations)
             {
-                ComposeDefinition(definition, indentation);
+                AppendDefinition(definition, indentation);
             }
         }
 
-        private void ComposeDefinition(DerivableUnitDefinition definition, Indentation indentation)
+        private void AppendDefinition(DerivableUnitDefinition definition, Indentation indentation)
         {
-            IEnumerable<string> signatureComponents = GetSignatureComponents(definition);
-            bool anyNullableTypes = AnyReferenceTypesInSignature(definition);
+            var methodNameAndModifiers = $"public static {Data.Unit.FullyQualifiedName} From";
+            var expression = $"new({definition.Expression})";
+            var parameters = GetSignatureComponents(definition);
 
             AppendDocumentation(indentation, Data.Documentation.Derivation(definition.Signature));
-
-            if (anyNullableTypes)
-            {
-                DocumentationBuilding.AppendArgumentNullExceptionTag(Builder, indentation);
-            }
-
-            Builder.Append($"{indentation}public static {Data.Unit.FullyQualifiedName} From(");
-            IterativeBuilding.AppendEnumerable(Builder, signatureComponents, ", ", ")");
-
-            if (anyNullableTypes)
-            {
-                ComposeDefinitionWithReferenceTypeArgument(definition, indentation);
-                return;
-            }
-            
-            Builder.AppendLine($" => new({definition.Expression});");
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation,methodNameAndModifiers, expression, parameters);
         }
 
-        private void ComposeDefinitionWithReferenceTypeArgument(DerivableUnitDefinition definition, Indentation indentation)
+        private static IEnumerable<(NamedType Type, string Name)> GetSignatureComponents(DerivableUnitDefinition definition)
         {
             IEnumerator<string> parameterEnumerator = definition.ParameterNames.GetEnumerator();
-            IEnumerator<IUnresolvedUnitType> signatureUnitTypeEnumerator = definition.Signature.GetEnumerator();
-
-            Builder.AppendLine($$"""{{indentation}}{""");
+            IEnumerator<IRawUnitType> signatureUnitTypeEnumerator = definition.Signature.GetEnumerator();
 
             while (parameterEnumerator.MoveNext() && signatureUnitTypeEnumerator.MoveNext())
             {
-                if (signatureUnitTypeEnumerator.Current.Type.IsReferenceType)
-                {
-                    StaticBuilding.AppendNullArgumentGuard(Builder, indentation.Increased, parameterEnumerator.Current);
-                }
+                yield return (signatureUnitTypeEnumerator.Current.Type.AsNamedType(), parameterEnumerator.Current);
             }
-
-            Builder.AppendLine();
-            Builder.AppendLine($"{indentation.Increased}return new({definition.Expression});");
-            Builder.AppendLine($$"""{{indentation}}}""");
-        }
-
-        private static IEnumerable<string> GetSignatureComponents(DerivableUnitDefinition definition)
-        {
-            IEnumerator<string> parameterEnumerator = definition.ParameterNames.GetEnumerator();
-            IEnumerator<IUnresolvedUnitType> signatureUnitTypeEnumerator = definition.Signature.GetEnumerator();
-
-            while (parameterEnumerator.MoveNext() && signatureUnitTypeEnumerator.MoveNext())
-            {
-                yield return $"{signatureUnitTypeEnumerator.Current.Type.FullyQualifiedName} {parameterEnumerator.Current}";
-            }
-        }
-
-        private static bool AnyReferenceTypesInSignature(DerivableUnitDefinition definition)
-        {
-            foreach (var unitType in definition.Signature)
-            {
-                if (unitType.Type.IsReferenceType)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         private void AppendDocumentation(Indentation indentation, string text)

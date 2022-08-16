@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class SharpMeasuresUnitProperty<TPropertyType> : AttributeProperty<RawSharpMeasuresUnitDefinition, SharpMeasuresUnitLocations, TPropertyType>
+internal record class SharpMeasuresUnitProperty<TPropertyType> : AttributeProperty<UnprocessedSharpMeasuresUnitDefinition, SharpMeasuresUnitLocations, TPropertyType>
 {
     public SharpMeasuresUnitProperty(string name, string parameterName, DTypeSetter setter, DSingleLocationSetter locator) : base(name, parameterName, setter, locator) { }
     public SharpMeasuresUnitProperty(string name, DTypeSetter setter, DSingleLocationSetter locator) : base(name, setter, locator) { }

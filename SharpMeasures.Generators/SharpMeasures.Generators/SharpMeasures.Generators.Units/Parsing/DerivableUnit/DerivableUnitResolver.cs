@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Unresolved.Units;
+using SharpMeasures.Generators.Raw.Units;
 
 using System.Collections.Generic;
 using System.Globalization;
@@ -17,7 +17,7 @@ internal interface IDerivableUnitResolutionDiagnostics
 
 internal interface IDerivableUnitResolutionContext : IProcessingContext
 {
-    public abstract IUnresolvedUnitPopulation UnitPopulation { get; }
+    public abstract IRawUnitPopulation UnitPopulation { get; }
 }
 
 internal class DerivableUnitResolver : AProcesser<IDerivableUnitResolutionContext, UnresolvedDerivableUnitDefinition, DerivableUnitDefinition>
@@ -48,11 +48,11 @@ internal class DerivableUnitResolver : AProcesser<IDerivableUnitResolutionContex
 
     private IOptionalWithDiagnostics<UnitDerivationSignature> ProcessSignature(IDerivableUnitResolutionContext context, UnresolvedDerivableUnitDefinition definition)
     {
-        var units = new IUnresolvedUnitType[definition.Signature.Count];
+        var units = new IRawUnitType[definition.Signature.Count];
 
         for (int i = 0; i < definition.Signature.Count; i++)
         {
-            if (context.UnitPopulation.Units.TryGetValue(definition.Signature[i], out IUnresolvedUnitType unit) is false)
+            if (context.UnitPopulation.Units.TryGetValue(definition.Signature[i], out IRawUnitType unit) is false)
             {
                 return OptionalWithDiagnostics.Empty<UnitDerivationSignature>(Diagnostics.SignatureElementNotUnit(context, definition, i));
             }
@@ -106,7 +106,7 @@ internal class DerivableUnitResolver : AProcesser<IDerivableUnitResolutionContex
 
         return parameterNames;
 
-        void countParameter(IUnresolvedUnitType signatureComponent)
+        void countParameter(IRawUnitType signatureComponent)
         {
             if (counts.TryGetValue(signatureComponent.Type.Name, out int count))
             {
@@ -118,7 +118,7 @@ internal class DerivableUnitResolver : AProcesser<IDerivableUnitResolutionContex
             }
         }
 
-        string appendParameterNumber(string text, IUnresolvedUnitType signatureComponent)
+        string appendParameterNumber(string text, IRawUnitType signatureComponent)
         {
             int count = counts[signatureComponent.Type.Name];
 

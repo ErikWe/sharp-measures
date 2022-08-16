@@ -4,12 +4,12 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Unresolved.Vectors;
 using SharpMeasures.Generators.Utility;
 
 using System;
 using System.Linq;
 using System.Text;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
 
 internal static class Execution
 {
@@ -30,12 +30,15 @@ internal static class Execution
         }
 
         private StringBuilder Builder { get; } = new();
+        private NewlineSeparationHandler SeparationHandler { get; }
 
         private DataModel Data { get; }
 
         private Composer(DataModel data)
         {
             Data = data;
+
+            SeparationHandler = new(Builder);
         }
 
         private void Compose()
@@ -56,13 +59,15 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
+            SeparationHandler.MarkUnncecessary();
+
             foreach (var convertibleVectorGroup in Data.Conversions.SelectMany(static (x) => x.VectorGroups))
             {
                 if (Data.VectorGroupPopulation.TryGetValue(convertibleVectorGroup.Type.AsNamedType(), out var resolvedVectorGroup))
                 {
                     if (resolvedVectorGroup.MembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
                     {
-                        ComposeInstanceConversion(correspondingMember, indentation);
+                        AppendInstanceConversions(correspondingMember, indentation);
                     }
                 }
             }
@@ -74,10 +79,10 @@ internal static class Execution
                     continue;
                 }
 
-                Action<IUnresolvedVectorGroupMemberType, Indentation> composer = convertibleVectorGroups.CastOperatorBehaviour switch
+                Action<IRawVectorGroupMemberType, Indentation> composer = convertibleVectorGroups.CastOperatorBehaviour switch
                 {
-                    ConversionOperatorBehaviour.Explicit => ComposeExplicitOperatorConversion,
-                    ConversionOperatorBehaviour.Implicit => ComposeImplicitOperatorConversion,
+                    ConversionOperatorBehaviour.Explicit => AppendExplicitOperatorConversion,
+                    ConversionOperatorBehaviour.Implicit => AppendImplicitOperatorConversion,
                     _ => throw new NotSupportedException("Invalid cast operation")
                 };
 
@@ -94,38 +99,29 @@ internal static class Execution
             }
         }
 
-        private void ComposeInstanceConversion(IUnresolvedVectorGroupMemberType vectorGroupMember, Indentation indentation)
+        private void AppendInstanceConversions(IRawVectorGroupMemberType vectorGroupMember, Indentation indentation)
         {
+            SeparationHandler.AddIfNecessary();
+
             AppendDocumentation(indentation, Data.Documentation.Conversion(vectorGroupMember));
             Builder.AppendLine($"{indentation}public {vectorGroupMember.Type.FullyQualifiedName} As{vectorGroupMember.Type.Name} => new(Components);");
         }
 
-        private void ComposeExplicitOperatorConversion(IUnresolvedVectorGroupMemberType vectorGroupMember, Indentation indentation)
-            => ComposeOperatorConversion(vectorGroupMember, indentation, "explicit");
+        private void AppendExplicitOperatorConversion(IRawVectorGroupMemberType vectorGroupMember, Indentation indentation)
+            => AppendOperatorConversion(vectorGroupMember, indentation, "explicit");
 
-        private void ComposeImplicitOperatorConversion(IUnresolvedVectorGroupMemberType vectorGroupMember, Indentation indentation)
-            => ComposeOperatorConversion(vectorGroupMember, indentation, "implicit");
+        private void AppendImplicitOperatorConversion(IRawVectorGroupMemberType vectorGroupMember, Indentation indentation)
+            => AppendOperatorConversion(vectorGroupMember, indentation, "implicit");
 
-        private void ComposeOperatorConversion(IUnresolvedVectorGroupMemberType vectorGroupMember, Indentation indentation, string behaviour)
+        private void AppendOperatorConversion(IRawVectorGroupMemberType vectorGroupMember, Indentation indentation, string behaviour)
         {
-            AppendDocumentation(indentation, Data.Documentation.CastConversion(vectorGroupMember));
-            
-            if (Data.Vector.IsReferenceType)
-            {
-                Builder.AppendLine($$"""
-                    {{indentation}}/// <exception cref="global::System.ArgumentNullException"/>
-                    {{indentation}}public static {{behaviour}} operator {{vectorGroupMember.Type.Name}}({{Data.Vector.FullyQualifiedName}} a)
-                    {{indentation}}{
-                    {{indentation.Increased}}global::System.ArgumentNullException.ThrowIfNull(a);
+            SeparationHandler.AddIfNecessary();
 
-                    {{indentation.Increased}}return new(a.Components);
-                    {{indentation}}}
-                    """);
-            }
-            else
-            {
-                Builder.AppendLine($"{indentation}public static {behaviour} operator {vectorGroupMember.Type.Name}({Data.Vector.FullyQualifiedName} a) => new(a.Components);");
-            }
+            var methodNameAndModifiers = $"public static {behaviour} operator {vectorGroupMember.Type.Name}";
+            var expression = "new(a.Components)";
+            var parameters = new[] { (Data.Vector.AsNamedType(), "a") };
+
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
         private void AppendDocumentation(Indentation indentation, string text)

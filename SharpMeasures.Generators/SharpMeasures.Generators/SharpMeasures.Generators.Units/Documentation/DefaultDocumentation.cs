@@ -2,14 +2,14 @@
 
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units.UnitInstances;
-using SharpMeasures.Generators.Unresolved.Scalars;
+using SharpMeasures.Generators.Raw.Scalars;
 
 using System;
 
 internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<DefaultDocumentation>
 {
     private DefinedType UnitType { get; }
-    private IUnresolvedScalarType Quantity { get; }
+    private IRawScalarType Quantity { get; }
 
     private bool BiasTerm { get; }
 

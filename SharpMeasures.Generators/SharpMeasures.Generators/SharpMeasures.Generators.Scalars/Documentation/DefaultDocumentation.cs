@@ -1,9 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System;
 using System.Globalization;
@@ -11,15 +11,15 @@ using System.Globalization;
 internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<DefaultDocumentation>
 {
     private DefinedType Type { get; }
-    private IUnresolvedUnitType Unit { get; }
+    private IRawUnitType Unit { get; }
 
-    private IUnresolvedUnitInstance? DefaultUnit { get; }
+    private IRawUnitInstance? DefaultUnit { get; }
     private string? DefaultUnitSymbol { get; }
 
     private string UnitParameterName { get; }
 
-    private IUnresolvedUnitInstance? ExampleBase { get; }
-    private IUnresolvedUnitInstance? ExampleUnit { get; }
+    private IRawUnitInstance? ExampleBase { get; }
+    private IRawUnitInstance? ExampleUnit { get; }
 
     public DefaultDocumentation(DataModel model)
     {
@@ -49,7 +49,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         return $$"""/// <summary>The {{ScalarReference}} representing the constant {{constant.Name}}, with value { {{value}} [{{constant.Unit.Plural}}] }.</summary>""";
     }
 
-    public string UnitBase(IUnresolvedUnitInstance unitInstance)
+    public string UnitBase(IRawUnitInstance unitInstance)
         => $$"""/// <summary>The {{ScalarReference}} representing { 1 [<see cref="{{Unit.Type.FullyQualifiedName}}.{{unitInstance.Name}}"/>] }.</summary>""";
 
     public string WithMagnitude() => "/// <inheritdoc/>";
@@ -112,15 +112,15 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         /// <summary>The magnitude of <see langword="this", expressed in multiples of <see cref="{Type.FullyQualifiedName}.{constant.Name}"/>.</summary>
         """;
 
-    public string InSpecifiedUnit(IUnresolvedUnitInstance unitInstance) => $"""
+    public string InSpecifiedUnit(IRawUnitInstance unitInstance) => $"""
         /// <summary>The magnitude of <see langword="this"/>, expressed in <see cref="{Unit.Type.FullyQualifiedName}.{unitInstance.Name}"/>.</summary>
         """;
 
-    public string Conversion(IUnresolvedScalarType scalar) => $"""
+    public string Conversion(IRawScalarType scalar) => $"""
         /// <summary>Converts <see langword="this"/> to the equivalent <see cref="{scalar.Type.FullyQualifiedName}"/>.</summary>
         """;
 
-    public string CastConversion(IUnresolvedScalarType scalar) => $"""
+    public string CastConversion(IRawScalarType scalar) => $"""
         /// <summary>Converts <paramref name="x"/> to the equivalent <see cref="{scalar.Type.FullyQualifiedName}"/>.</summary>
         /// <param name="x">This {ScalarReference} is converted to the equivalent <see cref="{scalar.Type.FullyQualifiedName}"/>.</param>
         """;

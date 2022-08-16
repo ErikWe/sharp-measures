@@ -2,8 +2,9 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Unresolved.Scalars;
-using SharpMeasures.Generators.Unresolved.Units;
+using SharpMeasures.Generators.Raw.Scalars;
+using SharpMeasures.Generators.Raw.Units;
+using SharpMeasures.Generators.Vectors.Groups;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
 using System.Collections.Immutable;
@@ -13,7 +14,7 @@ using System.Threading;
 public interface IVectorResolver
 {
     public abstract (IncrementalValueProvider<IVectorPopulation>, IVectorGenerator) Resolve(IncrementalGeneratorInitializationContext context,
-        IncrementalValueProvider<IUnresolvedUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IUnresolvedScalarPopulation> scalarPopulationProvider);
+        IncrementalValueProvider<IRawUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IRawScalarPopulation> scalarPopulationProvider);
 }
 
 internal class VectorResolver : IVectorResolver
@@ -42,7 +43,7 @@ internal class VectorResolver : IVectorResolver
     }
 
     public (IncrementalValueProvider<IVectorPopulation>, IVectorGenerator) Resolve(IncrementalGeneratorInitializationContext context,
-        IncrementalValueProvider<IUnresolvedUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IUnresolvedScalarPopulation> scalarPopulationProvider)
+        IncrementalValueProvider<IRawUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IRawScalarPopulation> scalarPopulationProvider)
     {
         var resolvedVectorGroupBases = BaseVectorGroupProvider.Combine(unitPopulationProvider, scalarPopulationProvider, VectorPopulationProvider)
             .Select(VectorGroupBaseTypeResolution.Resolve).ReportDiagnostics(context);
@@ -96,7 +97,7 @@ internal class VectorResolver : IVectorResolver
     private static IVectorGroupMemberType ExtractInterface(IVectorGroupMemberType groupMemberType, CancellationToken _) => groupMemberType;
     private static IIntermediateVectorGroupMemberType ExtractInterface(IIntermediateVectorGroupMemberType vectorgroupMember, CancellationToken _) => vectorgroupMember;
 
-    private static IIndividualVectorType ExtractInterface(IIndividualVectorType vectorType, CancellationToken _) => vectorType;
+    private static IVectorType ExtractInterface(IVectorType vectorType, CancellationToken _) => vectorType;
     private static IIntermediateIndividualVectorSpecializationType ExtractInterface(IIntermediateIndividualVectorSpecializationType vectorType, CancellationToken _)
         => vectorType;
 
@@ -108,15 +109,15 @@ internal class VectorResolver : IVectorResolver
     }
 
     private static IIntermediateIndividualVectorPopulation CreateIntermediatePopulation
-        ((ImmutableArray<IIndividualVectorType> Bases, ImmutableArray<IIntermediateIndividualVectorSpecializationType> Specializations) vectors, CancellationToken _)
+        ((ImmutableArray<IVectorType> Bases, ImmutableArray<IIntermediateIndividualVectorSpecializationType> Specializations) vectors, CancellationToken _)
     {
         return new IntermediateIndividualVectorPopulation(vectors.Bases.ToDictionary(static (scalar) => scalar.Type.AsNamedType()),
             vectors.Specializations.ToDictionary(static (scalar) => scalar.Type.AsNamedType()));
     }
 
     private static IVectorPopulation CreatePopulation((ImmutableArray<IVectorGroupType> GroupBases, ImmutableArray<IVectorGroupType> GroupSpecializations,
-        ImmutableArray<IVectorGroupMemberType> GroupMembers, ImmutableArray<IIndividualVectorType> IndividualBases,
-        ImmutableArray<IIndividualVectorType> IndividualSpecializations) vectors, CancellationToken _)
+        ImmutableArray<IVectorGroupMemberType> GroupMembers, ImmutableArray<IVectorType> IndividualBases,
+        ImmutableArray<IVectorType> IndividualSpecializations) vectors, CancellationToken _)
     {
         return new VectorPopulation
         (

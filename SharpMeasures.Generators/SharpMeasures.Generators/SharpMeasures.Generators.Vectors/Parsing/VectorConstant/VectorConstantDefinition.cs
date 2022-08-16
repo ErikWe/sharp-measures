@@ -2,7 +2,7 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
-using SharpMeasures.Generators.Unresolved.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System.Collections.Generic;
 
@@ -12,7 +12,7 @@ internal record class VectorConstantDefinition : AQuantityConstantDefinition<Vec
 
     private ReadOnlyEquatableList<double> value { get; }
 
-    public VectorConstantDefinition(string name, IUnresolvedUnitInstance unit, IReadOnlyList<double> value, bool generateMultiplesProperty, string? multiples,
+    public VectorConstantDefinition(string name, IRawUnitInstance unit, IReadOnlyList<double> value, bool generateMultiplesProperty, string? multiples,
         VectorConstantLocations locations)
         : base(name, unit, generateMultiplesProperty, multiples, locations)
     {
