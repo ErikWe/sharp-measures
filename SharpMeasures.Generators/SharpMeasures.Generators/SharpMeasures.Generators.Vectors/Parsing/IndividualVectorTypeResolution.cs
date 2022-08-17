@@ -19,7 +19,7 @@ using System.Collections.Generic;
 internal static class IndividualVectorTypeResolution
 {
     public static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ResolveDerivations(DefinedType type,
-        IEnumerable<UnresolvedDerivedQuantityDefinition> unresolvedDerivations, IRawScalarPopulation scalarPopulation, IRawVectorPopulation vectorPopulation)
+        IEnumerable<RawDerivedQuantityDefinition> unresolvedDerivations, IRawScalarPopulation scalarPopulation, IRawVectorPopulation vectorPopulation)
     {
         DerivedQuantityResolutionContext derivedQuantityResolutionContext = new(type, scalarPopulation, vectorPopulation);
 
@@ -43,7 +43,7 @@ internal static class IndividualVectorTypeResolution
     }
 
     public static IResultWithDiagnostics<IReadOnlyList<UnitListDefinition>> ResolveUnitList(DefinedType type, IRawUnitType unit,
-        IReadOnlyList<UnresolvedUnitListDefinition> unresolvedUnitList)
+        IReadOnlyList<RawUnitListDefinition> unresolvedUnitList)
     {
         UnitListResolutionContext unitListResolutionContext = new(type, unit);
 

@@ -27,9 +27,9 @@ internal abstract record class AUnresolvedIndividualVectorType<TDefinition> : AU
 
     IReadOnlyList<IRawVectorConstant> IRawVectorType.Constants => Constants;
 
-    protected AUnresolvedIndividualVectorType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations,
+    protected AUnresolvedIndividualVectorType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<RawDerivedQuantityDefinition> derivations,
         IReadOnlyList<UnresolvedVectorConstantDefinition> constants, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions,
-        IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
+        IReadOnlyList<RawUnitListDefinition> unitInclusions, IReadOnlyList<RawUnitListDefinition> unitExclusions)
         : base(type, typeLocation, definition, derivations, conversions, unitInclusions, unitExclusions)
     {
         this.constants = constants.AsReadOnlyEquatable();

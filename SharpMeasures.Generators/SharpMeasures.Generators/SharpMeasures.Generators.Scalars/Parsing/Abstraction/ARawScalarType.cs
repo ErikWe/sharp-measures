@@ -13,29 +13,29 @@ internal abstract record class ARawScalarType
     public DefinedType Type { get; }
     public MinimalLocation TypeLocation { get; }
 
-    public IEnumerable<RawDerivedQuantityDefinition> Derivations => derivations;
+    public IEnumerable<UnprocessedDerivedQuantityDefinition> Derivations => derivations;
     public IEnumerable<RawScalarConstantDefinition> Constants => constants;
-    public IEnumerable<RawConvertibleQuantityDefinition> Conversions => conversions;
+    public IEnumerable<UnprocessedConvertibleQuantityDefinition> Conversions => conversions;
 
-    public IEnumerable<RawUnitListDefinition> BaseInclusions => baseInclusions;
-    public IEnumerable<RawUnitListDefinition> BaseExclusions => baseExclusions;
+    public IEnumerable<UnprocessedUnitListDefinition> BaseInclusions => baseInclusions;
+    public IEnumerable<UnprocessedUnitListDefinition> BaseExclusions => baseExclusions;
 
-    public IEnumerable<RawUnitListDefinition> UnitInclusions => unitInclusions;
-    public IEnumerable<RawUnitListDefinition> UnitExclusions => unitExclusions;
+    public IEnumerable<UnprocessedUnitListDefinition> UnitInclusions => unitInclusions;
+    public IEnumerable<UnprocessedUnitListDefinition> UnitExclusions => unitExclusions;
 
-    private EquatableEnumerable<RawDerivedQuantityDefinition> derivations { get; }
+    private EquatableEnumerable<UnprocessedDerivedQuantityDefinition> derivations { get; }
     private EquatableEnumerable<RawScalarConstantDefinition> constants { get; }
-    private EquatableEnumerable<RawConvertibleQuantityDefinition> conversions { get; }
+    private EquatableEnumerable<UnprocessedConvertibleQuantityDefinition> conversions { get; }
 
-    private EquatableEnumerable<RawUnitListDefinition> baseInclusions { get; }
-    private EquatableEnumerable<RawUnitListDefinition> baseExclusions { get; }
+    private EquatableEnumerable<UnprocessedUnitListDefinition> baseInclusions { get; }
+    private EquatableEnumerable<UnprocessedUnitListDefinition> baseExclusions { get; }
 
-    private EquatableEnumerable<RawUnitListDefinition> unitInclusions { get; }
-    private EquatableEnumerable<RawUnitListDefinition> unitExclusions { get; }
+    private EquatableEnumerable<UnprocessedUnitListDefinition> unitInclusions { get; }
+    private EquatableEnumerable<UnprocessedUnitListDefinition> unitExclusions { get; }
 
-    protected ARawScalarType(DefinedType type, MinimalLocation typeLocation, IEnumerable<RawDerivedQuantityDefinition> derivations,
-        IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawUnitListDefinition> baseInclusions,
-        IEnumerable<RawUnitListDefinition> baseExclusions, IEnumerable<RawUnitListDefinition> unitInclusions, IEnumerable<RawUnitListDefinition> unitExclusions)
+    protected ARawScalarType(DefinedType type, MinimalLocation typeLocation, IEnumerable<UnprocessedDerivedQuantityDefinition> derivations,
+        IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<UnprocessedConvertibleQuantityDefinition> conversions, IEnumerable<UnprocessedUnitListDefinition> baseInclusions,
+        IEnumerable<UnprocessedUnitListDefinition> baseExclusions, IEnumerable<UnprocessedUnitListDefinition> unitInclusions, IEnumerable<UnprocessedUnitListDefinition> unitExclusions)
     {
         Type = type;
         TypeLocation = typeLocation;

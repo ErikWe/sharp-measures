@@ -2,23 +2,21 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System.Collections.Generic;
 
-internal record class RawDerivedUnitDefinition : AUnprocessedUnitDefinition<RawDerivedUnitDefinition, DerivedUnitLocations>
+internal record class RawDerivedUnitDefinition : ARawUnitDefinition<DerivedUnitLocations>, IRawDerivedUnit
 {
-    public static RawDerivedUnitDefinition Empty { get; } = new();
+    public string? DerivationID { get; }
+    public IReadOnlyList<string> Units => units;
 
-    public string? DerivationID { get; init; }
-    public IReadOnlyList<string?> Units
+    private ReadOnlyEquatableList<string> units { get; }
+
+    public RawDerivedUnitDefinition(string name, string plural, string? signatureID, IReadOnlyList<string> units, DerivedUnitLocations locations)
+        : base(name, plural, locations)
     {
-        get => units;
-        init => units = value.AsReadOnlyEquatable(); 
+        DerivationID = signatureID;
+        this.units = units.AsReadOnlyEquatable();
     }
-
-    private ReadOnlyEquatableList<string?> units { get; init; } = ReadOnlyEquatableList<string?>.Empty;
-
-    protected override RawDerivedUnitDefinition Definition => this;
-
-    private RawDerivedUnitDefinition() : base(DerivedUnitLocations.Empty) { }
 }

@@ -21,17 +21,17 @@ internal abstract record class AUnresolvedVectorGroupType<TDefinition> : IRawVec
     IRawQuantity IRawQuantityType.Definition => Definition;
     IRawVectorGroup IRawVectorGroupType.Definition => Definition;
 
-    public IReadOnlyList<UnresolvedDerivedQuantityDefinition> Derivations => derivations;
+    public IReadOnlyList<RawDerivedQuantityDefinition> Derivations => derivations;
     public IReadOnlyList<UnresolvedConvertibleVectorDefinition> Conversions => conversions;
 
-    public IReadOnlyList<UnresolvedUnitListDefinition> UnitInclusions => unitInclusions;
-    public IReadOnlyList<UnresolvedUnitListDefinition> UnitExclusions => unitExclusions;
+    public IReadOnlyList<RawUnitListDefinition> UnitInclusions => unitInclusions;
+    public IReadOnlyList<RawUnitListDefinition> UnitExclusions => unitExclusions;
 
-    private ReadOnlyEquatableList<UnresolvedDerivedQuantityDefinition> derivations { get; }
+    private ReadOnlyEquatableList<RawDerivedQuantityDefinition> derivations { get; }
     private ReadOnlyEquatableList<UnresolvedConvertibleVectorDefinition> conversions { get; }
 
-    private ReadOnlyEquatableList<UnresolvedUnitListDefinition> unitInclusions { get; }
-    private ReadOnlyEquatableList<UnresolvedUnitListDefinition> unitExclusions { get; }
+    private ReadOnlyEquatableList<RawUnitListDefinition> unitInclusions { get; }
+    private ReadOnlyEquatableList<RawUnitListDefinition> unitExclusions { get; }
 
     IReadOnlyList<IRawDerivedQuantity> IRawQuantityType.Derivations => Derivations;
     IReadOnlyList<IRawConvertibleVectorGroup> IRawVectorGroupType.Conversions => Conversions;
@@ -39,8 +39,8 @@ internal abstract record class AUnresolvedVectorGroupType<TDefinition> : IRawVec
     IReadOnlyList<IRawUnitList> IRawQuantityType.UnitInclusions => UnitInclusions;
     IReadOnlyList<IRawUnitList> IRawQuantityType.UnitExclusions => UnitExclusions;
 
-    protected AUnresolvedVectorGroupType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations,
-        IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
+    protected AUnresolvedVectorGroupType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<RawDerivedQuantityDefinition> derivations,
+        IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<RawUnitListDefinition> unitInclusions, IReadOnlyList<RawUnitListDefinition> unitExclusions)
     {
         Type = type;
         TypeLocation = typeLocation;

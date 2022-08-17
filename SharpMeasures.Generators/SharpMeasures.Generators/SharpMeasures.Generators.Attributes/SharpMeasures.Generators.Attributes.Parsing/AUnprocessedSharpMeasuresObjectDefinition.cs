@@ -4,7 +4,7 @@ public abstract record class AUnprocessedSharpMeasuresObjectDefinition<TDefiniti
     where TDefinition : AUnprocessedAttributeDefinition<TDefinition, TLocations>
     where TLocations : IAttributeLocations
 {
-    public bool? GenerateDocumentation { get; protected init; }
+    public bool? GenerateDocumentation { get; init; }
 
     protected AUnprocessedSharpMeasuresObjectDefinition(TLocations locations) : base(locations) { }
 }

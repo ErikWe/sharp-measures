@@ -79,25 +79,25 @@ public static class ScalarParser
         return UnresolvedScalarPopulation.Build(scalars.Bases, scalars.Specializations);
     }
 
-    private class ScalarBaseParser : AScalarParser<RawSharpMeasuresScalarDefinition, RawScalarBaseType>
+    private class ScalarBaseParser : AScalarParser<UnprocessedSharpMeasuresScalarDefinition, RawScalarBaseType>
     {
-        protected override RawScalarBaseType FinalizeParse(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresScalarDefinition definition,
-            IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
-            IEnumerable<RawUnitListDefinition> baseInclusions, IEnumerable<RawUnitListDefinition> baseExclusions, IEnumerable<RawUnitListDefinition> unitInclusions,
-            IEnumerable<RawUnitListDefinition> unitExclusions)
+        protected override RawScalarBaseType FinalizeParse(DefinedType type, MinimalLocation typeLocation, UnprocessedSharpMeasuresScalarDefinition definition,
+            IEnumerable<UnprocessedDerivedQuantityDefinition> derivations, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<UnprocessedConvertibleQuantityDefinition> conversions,
+            IEnumerable<UnprocessedUnitListDefinition> baseInclusions, IEnumerable<UnprocessedUnitListDefinition> baseExclusions, IEnumerable<UnprocessedUnitListDefinition> unitInclusions,
+            IEnumerable<UnprocessedUnitListDefinition> unitExclusions)
         {
             return new(type, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInclusions, unitExclusions);
         }
 
-        protected override IAttributeParser<RawSharpMeasuresScalarDefinition> Parser => SharpMeasuresScalarParser.Parser;
+        protected override IAttributeParser<UnprocessedSharpMeasuresScalarDefinition> Parser => SharpMeasuresScalarParser.Parser;
     }
 
     private class ScalarSpecializationParser : AScalarParser<RawSpecializedSharpMeasuresScalarDefinition, RawScalarSpecializationType>
     {
         protected override RawScalarSpecializationType FinalizeParse(DefinedType type, MinimalLocation typeLocation, RawSpecializedSharpMeasuresScalarDefinition definition,
-            IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
-            IEnumerable<RawUnitListDefinition> baseInclusions, IEnumerable<RawUnitListDefinition> baseExclusions, IEnumerable<RawUnitListDefinition> unitInclusions,
-            IEnumerable<RawUnitListDefinition> unitExclusions)
+            IEnumerable<UnprocessedDerivedQuantityDefinition> derivations, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<UnprocessedConvertibleQuantityDefinition> conversions,
+            IEnumerable<UnprocessedUnitListDefinition> baseInclusions, IEnumerable<UnprocessedUnitListDefinition> baseExclusions, IEnumerable<UnprocessedUnitListDefinition> unitInclusions,
+            IEnumerable<UnprocessedUnitListDefinition> unitExclusions)
         {
             return new(type, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInclusions, unitExclusions);
         }
@@ -134,27 +134,27 @@ public static class ScalarParser
             return OptionalWithDiagnostics.Result(product);
         }
 
-        protected abstract TProduct FinalizeParse(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations,
-            IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawUnitListDefinition> baseInclusions,
-            IEnumerable<RawUnitListDefinition> baseExclusions, IEnumerable<RawUnitListDefinition> unitInclusions, IEnumerable<RawUnitListDefinition> unitExclusions);
+        protected abstract TProduct FinalizeParse(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IEnumerable<UnprocessedDerivedQuantityDefinition> derivations,
+            IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<UnprocessedConvertibleQuantityDefinition> conversions, IEnumerable<UnprocessedUnitListDefinition> baseInclusions,
+            IEnumerable<UnprocessedUnitListDefinition> baseExclusions, IEnumerable<UnprocessedUnitListDefinition> unitInclusions, IEnumerable<UnprocessedUnitListDefinition> unitExclusions);
 
         protected abstract IAttributeParser<TDefinition> Parser { get; }
     }
 
-    private class ScalarBaseProcesser : AScalarProcesser<UnresolvedSharpMeasuresScalarDefinition, RawScalarBaseType, UnresolvedScalarBaseType>
+    private class ScalarBaseProcesser : AScalarProcesser<RawSharpMeasuresScalarDefinition, RawScalarBaseType, UnresolvedScalarBaseType>
     {
-        protected override UnresolvedScalarBaseType FinalizeProcess(DefinedType type, MinimalLocation typeLocation, UnresolvedSharpMeasuresScalarDefinition definition,
-            IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedScalarConstantDefinition> constants,
-            IReadOnlyList<UnresolvedConvertibleScalarDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> baseInclusions,
-            IReadOnlyList<UnresolvedUnitListDefinition> baseExclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
-            IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
+        protected override UnresolvedScalarBaseType FinalizeProcess(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresScalarDefinition definition,
+            IReadOnlyList<RawDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedScalarConstantDefinition> constants,
+            IReadOnlyList<UnresolvedConvertibleScalarDefinition> conversions, IReadOnlyList<RawUnitListDefinition> baseInclusions,
+            IReadOnlyList<RawUnitListDefinition> baseExclusions, IReadOnlyList<RawUnitListDefinition> unitInclusions,
+            IReadOnlyList<RawUnitListDefinition> unitExclusions)
         {
             return new(type, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInclusions, unitExclusions);
         }
 
-        protected override NamedType? GetUnit(UnresolvedSharpMeasuresScalarDefinition scalar) => scalar.Unit;
+        protected override NamedType? GetUnit(RawSharpMeasuresScalarDefinition scalar) => scalar.Unit;
 
-        protected override IOptionalWithDiagnostics<UnresolvedSharpMeasuresScalarDefinition> ProcessScalar(RawScalarBaseType raw)
+        protected override IOptionalWithDiagnostics<RawSharpMeasuresScalarDefinition> ProcessScalar(RawScalarBaseType raw)
         {
             var processingContext = new SimpleProcessingContext(raw.Type);
 
@@ -166,10 +166,10 @@ public static class ScalarParser
         : AScalarProcesser<UnresolvedSpecializedSharpMeasuresScalarDefinition, RawScalarSpecializationType, UnresolvedScalarSpecializationType>
     {
         protected override UnresolvedScalarSpecializationType FinalizeProcess(DefinedType type, MinimalLocation typeLocation,
-            UnresolvedSpecializedSharpMeasuresScalarDefinition definition, IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations,
+            UnresolvedSpecializedSharpMeasuresScalarDefinition definition, IReadOnlyList<RawDerivedQuantityDefinition> derivations,
             IReadOnlyList<UnresolvedScalarConstantDefinition> constants, IReadOnlyList<UnresolvedConvertibleScalarDefinition> conversions,
-            IReadOnlyList<UnresolvedUnitListDefinition> baseInclusions, IReadOnlyList<UnresolvedUnitListDefinition> baseExclusions,
-            IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
+            IReadOnlyList<RawUnitListDefinition> baseInclusions, IReadOnlyList<RawUnitListDefinition> baseExclusions,
+            IReadOnlyList<RawUnitListDefinition> unitInclusions, IReadOnlyList<RawUnitListDefinition> unitExclusions)
         {
             return new(type, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInclusions, unitExclusions);
         }
@@ -227,13 +227,13 @@ public static class ScalarParser
             if (includeBases.HasResult && includeBases.Result.Count > 0 && excludeBases.HasResult && excludeBases.Result.Count > 0)
             {
                 allDiagnostics = allDiagnostics.Concat(new[] { ScalarTypeDiagnostics.ContradictoryAttributes<IncludeBasesAttribute, ExcludeBasesAttribute>(raw.TypeLocation) });
-                excludeBases = ResultWithDiagnostics.Construct(Array.Empty<UnresolvedUnitListDefinition>() as IReadOnlyList<UnresolvedUnitListDefinition>);
+                excludeBases = ResultWithDiagnostics.Construct(Array.Empty<RawUnitListDefinition>() as IReadOnlyList<RawUnitListDefinition>);
             }
 
             if (includeUnits.HasResult && includeUnits.Result.Count > 0 && excludeUnits.HasResult && excludeUnits.Result.Count > 0)
             {
                 allDiagnostics = allDiagnostics.Concat(new[] { ScalarTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(raw.TypeLocation) });
-                excludeUnits = ResultWithDiagnostics.Construct(Array.Empty<UnresolvedUnitListDefinition>() as IReadOnlyList<UnresolvedUnitListDefinition>);
+                excludeUnits = ResultWithDiagnostics.Construct(Array.Empty<RawUnitListDefinition>() as IReadOnlyList<RawUnitListDefinition>);
             }
 
             TProduct product = FinalizeProcess(raw.Type, raw.TypeLocation, scalar.Result, derivations.Result, constants.Result,
@@ -243,10 +243,10 @@ public static class ScalarParser
         }
 
         protected abstract TProduct FinalizeProcess(DefinedType type, MinimalLocation typeLocation, TDefinition definition,
-            IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedScalarConstantDefinition> constants,
-            IReadOnlyList<UnresolvedConvertibleScalarDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> baseInclusions,
-            IReadOnlyList<UnresolvedUnitListDefinition> baseExclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
-            IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions);
+            IReadOnlyList<RawDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedScalarConstantDefinition> constants,
+            IReadOnlyList<UnresolvedConvertibleScalarDefinition> conversions, IReadOnlyList<RawUnitListDefinition> baseInclusions,
+            IReadOnlyList<RawUnitListDefinition> baseExclusions, IReadOnlyList<RawUnitListDefinition> unitInclusions,
+            IReadOnlyList<RawUnitListDefinition> unitExclusions);
 
         protected abstract NamedType? GetUnit(TDefinition scalar);
 

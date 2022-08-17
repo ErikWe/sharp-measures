@@ -14,8 +14,8 @@ internal abstract record class ARawIndividualVectorType : ARawVectorGroupType
 
     private EquatableEnumerable<RawVectorConstantDefinition> constants { get; }
 
-    protected ARawIndividualVectorType(DefinedType type, MinimalLocation typeLocation, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawVectorConstantDefinition> constants,
-        IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawUnitListDefinition> unitInclusions, IEnumerable<RawUnitListDefinition> unitExclusions)
+    protected ARawIndividualVectorType(DefinedType type, MinimalLocation typeLocation, IEnumerable<UnprocessedDerivedQuantityDefinition> derivations, IEnumerable<RawVectorConstantDefinition> constants,
+        IEnumerable<UnprocessedConvertibleQuantityDefinition> conversions, IEnumerable<UnprocessedUnitListDefinition> unitInclusions, IEnumerable<UnprocessedUnitListDefinition> unitExclusions)
         : base(type, typeLocation, derivations, conversions, unitInclusions, unitExclusions)
     {
         this.constants = constants.AsEquatable();

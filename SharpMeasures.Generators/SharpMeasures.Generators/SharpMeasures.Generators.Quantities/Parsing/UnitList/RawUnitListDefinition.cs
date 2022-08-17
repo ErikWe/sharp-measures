@@ -1,16 +1,13 @@
 ﻿namespace SharpMeasures.Generators.Quantities.Parsing.UnitList;
 
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
+using SharpMeasures.Generators.Raw.Quantities;
 
 using System.Collections.Generic;
 
-public record class RawUnitListDefinition : ARawItemListDefinition<string?, RawUnitListDefinition, UnitListLocations>
+public record class RawUnitListDefinition : AItemListDefinition<string, UnitListLocations>, IRawUnitList
 {
-    public static RawUnitListDefinition Empty => new();
+    public IReadOnlyList<string> Units => Items;
 
-    public IReadOnlyList<string?> Units => Items;
-
-    protected override RawUnitListDefinition Definition => this;
-
-    private RawUnitListDefinition() : base(UnitListLocations.Empty) { }
+    public RawUnitListDefinition(IReadOnlyList<string> units, UnitListLocations locations, IReadOnlyList<int> locationMap) : base(units, locations, locationMap) { }
 }

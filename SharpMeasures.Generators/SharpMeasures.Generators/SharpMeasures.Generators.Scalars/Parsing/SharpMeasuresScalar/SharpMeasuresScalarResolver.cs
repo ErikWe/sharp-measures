@@ -2,32 +2,34 @@
 
 using Microsoft.CodeAnalysis;
 
+using OneOf;
+
 using SharpMeasures.Generators;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
+using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
 using SharpMeasures.Generators.Raw.Scalars;
 using SharpMeasures.Generators.Raw.Units;
-using SharpMeasures.Generators.Raw.Units.UnitInstances;
 using SharpMeasures.Generators.Raw.Vectors;
+using SharpMeasures.Generators.Raw.Vectors.Groups;
+using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 
 using System;
 using System.Linq;
-using SharpMeasures.Generators.Raw.Vectors.Groups;
 
-internal interface ISharpMeasuresScalarResolutionDiagnostics
+internal interface ISharpMeasuresScalarResolutionDiagnostics : IDefaultUnitResolutionDiagnostics
 {
-    public abstract Diagnostic? TypeAlreadyUnit(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? TypeNotUnit(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? UnitNotIncludingBiasTerm(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? TypeNotVector(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? DifferenceNotScalar(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? UnrecognizedDefaultUnit(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? ReciprocalNotScalar(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? SquareNotScalar(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? CubeNotScalar(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? SquareRootNotScalar(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? CubeRootNotScalar(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition);
+    public abstract Diagnostic? TypeAlreadyUnit(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition);
+    public abstract Diagnostic? TypeAlreadyScalar(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition);
+    public abstract Diagnostic? TypeNotUnit(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition);
+    public abstract Diagnostic? UnitNotIncludingBiasTerm(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition);
+    public abstract Diagnostic? TypeNotVector(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition);
+    public abstract Diagnostic? DifferenceNotScalar(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition);
+    public abstract Diagnostic? ReciprocalNotScalar(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition);
+    public abstract Diagnostic? SquareNotScalar(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition);
+    public abstract Diagnostic? CubeNotScalar(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition);
+    public abstract Diagnostic? SquareRootNotScalar(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition);
+    public abstract Diagnostic? CubeRootNotScalar(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition);
 }
 
 internal interface ISharpMeasuresScalarResolutionContext : IProcessingContext
@@ -37,7 +39,7 @@ internal interface ISharpMeasuresScalarResolutionContext : IProcessingContext
     public abstract IRawVectorPopulation VectorPopulation { get; }
 }
 
-internal class SharpMeasuresScalarResolver : IProcesser<ISharpMeasuresScalarResolutionContext, UnresolvedSharpMeasuresScalarDefinition, SharpMeasuresScalarDefinition>
+internal class SharpMeasuresScalarResolver : IProcesser<ISharpMeasuresScalarResolutionContext, RawSharpMeasuresScalarDefinition, SharpMeasuresScalarDefinition>
 {
     private ISharpMeasuresScalarResolutionDiagnostics Diagnostics { get; }
 
@@ -46,27 +48,21 @@ internal class SharpMeasuresScalarResolver : IProcesser<ISharpMeasuresScalarReso
         Diagnostics = diagnostics;
     }
 
-    public IOptionalWithDiagnostics<SharpMeasuresScalarDefinition> Process(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition)
+    public IOptionalWithDiagnostics<SharpMeasuresScalarDefinition> Process(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition)
     {
-        if (context.UnitPopulation.Units.ContainsKey(context.Type.AsNamedType()))
-        {
-            return OptionalWithDiagnostics.Empty<SharpMeasuresScalarDefinition>(Diagnostics.TypeAlreadyUnit(context, definition));
-        }
+        var unit = ValidateTypeNotAlreadyUnit(context, definition)
+            .Validate(() => ValidateTypeNotAlreadyScalar(context, definition))
+            .Merge(() => ResolveUnit(context, definition))
+            .Validate((unit) => ValidateUnitNotIncorrectlyUnbiased(context, definition, unit));
 
-        var processedUnit = ProcessUnit(context, definition);
-        var allDiagnostics = processedUnit.Diagnostics;
 
-        if (processedUnit.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<SharpMeasuresScalarDefinition>(allDiagnostics);
-        }
 
         var processedVector = ProcessVector(context, definition);
         allDiagnostics = allDiagnostics.Concat(processedVector.Diagnostics);
 
         var processedDifference = ProcessDifference(context, definition);
 
-        var processedDefaultUnitName = ProcessDefaultUnitName(context, definition, processedUnit.Result);
+        var processedDefaultUnitName = DefaultUnitResolver.Resolve(context, Diagnostics, definition, processedUnit.Result);
 
         var processedReciprocal = ProcessPowerQuantity(context, definition, definition.Reciprocal, Diagnostics.ReciprocalNotScalar);
         var processedSquare = ProcessPowerQuantity(context, definition, definition.Square, Diagnostics.SquareNotScalar);
@@ -85,23 +81,40 @@ internal class SharpMeasuresScalarResolver : IProcesser<ISharpMeasuresScalarReso
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private IOptionalWithDiagnostics<IRawUnitType> ProcessUnit(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition)
+    private IValidityWithDiagnostics ValidateTypeNotAlreadyUnit(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition)
     {
-        if (context.UnitPopulation.Units.TryGetValue(definition.Unit, out var unit) is false)
-        {
-            return OptionalWithDiagnostics.Empty<IRawUnitType>(Diagnostics.TypeNotUnit(context, definition));
-        }
+        var typeAlreadyUnit = context.UnitPopulation.Units.ContainsKey(context.Type.AsNamedType());
 
-        if (definition.UseUnitBias && unit.Definition.BiasTerm is false)
-        {
-            return OptionalWithDiagnostics.Empty<IRawUnitType>(Diagnostics.UnitNotIncludingBiasTerm(context, definition));
-        }
-
-        return OptionalWithDiagnostics.Result(unit);
+        return ValidityWithDiagnostics.Conditional(typeAlreadyUnit is false, () => Diagnostics.TypeAlreadyUnit(context, definition));
     }
 
-    private IOptionalWithDiagnostics<IRawVectorGroupType> ProcessVector(ISharpMeasuresScalarResolutionContext context,
-        UnresolvedSharpMeasuresScalarDefinition definition)
+    private IValidityWithDiagnostics ValidateTypeNotAlreadyScalar(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition)
+    {
+        var typeAlreadyScalar = context.ScalarPopulation.DuplicatelyDefined.ContainsKey(context.Type.AsNamedType());
+
+        return ValidityWithDiagnostics.Conditional(typeAlreadyScalar is false, () => Diagnostics.TypeAlreadyScalar(context, definition));
+    }
+
+    private IOptionalWithDiagnostics<IRawUnitType> ResolveUnit(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition)
+    {
+        var unitCorrectlyResolved = context.UnitPopulation.Units.TryGetValue(definition.Unit, out var unit);
+
+        return OptionalWithDiagnostics.Conditional(unitCorrectlyResolved, unit, () => Diagnostics.TypeNotUnit(context, definition));
+    }
+
+    private IValidityWithDiagnostics ValidateUnitNotIncorrectlyUnbiased(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition, IRawUnitType unit)
+    {
+        var unitNotIncorrectlyUnbiased = definition.UseUnitBias is false || unit.Definition.BiasTerm;
+
+        return ValidityWithDiagnostics.Conditional(unitNotIncorrectlyUnbiased, () => Diagnostics.UnitNotIncludingBiasTerm(context, definition));
+    }
+
+    private IOptionalWithDiagnostics<OneOf<IRawVectorType, IRawVectorGroupType, IRawVectorGroupMemberType>> ResolveVector(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition)
+    {
+
+    }
+
+    private IOptionalWithDiagnostics<IRawVectorGroupType> ProcessVector(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition)
     {
         if (definition.Vector is null)
         {
@@ -116,7 +129,7 @@ internal class SharpMeasuresScalarResolver : IProcesser<ISharpMeasuresScalarReso
         return OptionalWithDiagnostics.Result(vectorGroup);
     }
 
-    private IResultWithDiagnostics<IRawScalarType> ProcessDifference(ISharpMeasuresScalarResolutionContext context, UnresolvedSharpMeasuresScalarDefinition definition)
+    private IResultWithDiagnostics<IRawScalarType> ProcessDifference(ISharpMeasuresScalarResolutionContext context, RawSharpMeasuresScalarDefinition definition)
     {
         if (context.ScalarPopulation.Scalars.TryGetValue(definition.Difference, out var difference) is false)
         {
@@ -129,25 +142,9 @@ internal class SharpMeasuresScalarResolver : IProcesser<ISharpMeasuresScalarReso
         return ResultWithDiagnostics.Construct(difference);
     }
 
-    private IResultWithDiagnostics<IRawUnitInstance?> ProcessDefaultUnitName(ISharpMeasuresScalarResolutionContext context,
-        UnresolvedSharpMeasuresScalarDefinition definition, IRawUnitType unit)
-    {
-        if (definition.DefaultUnitName is null)
-        {
-            return ResultWithDiagnostics.Construct<IRawUnitInstance?>(null);
-        }
-
-        if (unit.UnitsByName.TryGetValue(definition.DefaultUnitName, out var unitInstance) is false)
-        {
-            return ResultWithDiagnostics.Construct<IRawUnitInstance?>(null, Diagnostics.UnrecognizedDefaultUnit(context, definition));
-        }
-
-        return ResultWithDiagnostics.Construct<IRawUnitInstance?>(unitInstance);
-    }
-
     private static IResultWithDiagnostics<IRawScalarType?> ProcessPowerQuantity(ISharpMeasuresScalarResolutionContext context,
-        UnresolvedSharpMeasuresScalarDefinition definition, NamedType? quantity,
-        Func<ISharpMeasuresScalarResolutionContext, UnresolvedSharpMeasuresScalarDefinition, Diagnostic?> typeNotScalarDiagnosticsDelegate)
+        RawSharpMeasuresScalarDefinition definition, NamedType? quantity,
+        Func<ISharpMeasuresScalarResolutionContext, RawSharpMeasuresScalarDefinition, Diagnostic?> typeNotScalarDiagnosticsDelegate)
     {
         if (quantity is null)
         {

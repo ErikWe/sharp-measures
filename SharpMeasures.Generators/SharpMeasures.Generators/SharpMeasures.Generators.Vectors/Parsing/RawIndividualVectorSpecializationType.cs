@@ -14,8 +14,8 @@ internal record class RawIndividualVectorSpecializationType : ARawIndividualVect
     public RawSpecializedSharpMeasuresVectorDefinition Definition { get; }
 
     public RawIndividualVectorSpecializationType(DefinedType type, MinimalLocation typeLocation, RawSpecializedSharpMeasuresVectorDefinition definition,
-        IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
-        IEnumerable<RawUnitListDefinition> unitInclusions, IEnumerable<RawUnitListDefinition> unitExclusions)
+        IEnumerable<UnprocessedDerivedQuantityDefinition> derivations, IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<UnprocessedConvertibleQuantityDefinition> conversions,
+        IEnumerable<UnprocessedUnitListDefinition> unitInclusions, IEnumerable<UnprocessedUnitListDefinition> unitExclusions)
         : base(type, typeLocation, derivations, constants, conversions, unitInclusions, unitExclusions)
     {
         Definition = definition;

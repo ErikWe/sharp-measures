@@ -12,8 +12,8 @@ internal record class RawVectorGroupSpecializationType : ARawVectorGroupType
 {
     public RawSpecializedSharpMeasuresVectorGroupDefinition Definition { get; }
 
-    public RawVectorGroupSpecializationType(DefinedType type, MinimalLocation typeLocation, RawSpecializedSharpMeasuresVectorGroupDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations,
-        IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawUnitListDefinition> unitInclusions, IEnumerable<RawUnitListDefinition> unitExclusions)
+    public RawVectorGroupSpecializationType(DefinedType type, MinimalLocation typeLocation, RawSpecializedSharpMeasuresVectorGroupDefinition definition, IEnumerable<UnprocessedDerivedQuantityDefinition> derivations,
+        IEnumerable<UnprocessedConvertibleQuantityDefinition> conversions, IEnumerable<UnprocessedUnitListDefinition> unitInclusions, IEnumerable<UnprocessedUnitListDefinition> unitExclusions)
         : base(type, typeLocation, derivations, conversions, unitInclusions, unitExclusions)
     {
         Definition = definition;

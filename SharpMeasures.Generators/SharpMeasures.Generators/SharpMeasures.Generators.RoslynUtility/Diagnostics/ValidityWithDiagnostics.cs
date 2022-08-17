@@ -12,19 +12,9 @@ public interface IValidityWithDiagnostics : IEnumerable<Diagnostic>
     public enum ValidityState { Valid, Invalid }
 
     public delegate IValidityWithDiagnostics DValidity();
-    public delegate IValidityWithDiagnostics DValidity<T>(T parameter);
-    public delegate IValidityWithDiagnostics DValidity<T1, T2>(T1 parameter1, T2 parameter2);
-    public delegate IValidityWithDiagnostics DValidity<T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3);
-
     public delegate IOptionalWithDiagnostics<T> DOptional<T>();
-    public delegate IOptionalWithDiagnostics<T> DOptional<T, T1>(T1 parameter);
-    public delegate IOptionalWithDiagnostics<T> DOptional<T, T1, T2>(T1 parameter1, T2 parameter2);
-    public delegate IOptionalWithDiagnostics<T> DOptional<T, T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3);
-
+    public delegate IResultWithDiagnostics<T> DResultWithDiagnostics<T>();
     public delegate T DResult<T>();
-    public delegate T DResult<T, T1>(T1 parameter);
-    public delegate T DResult<T, T1, T2>(T1 parameter1, T2 parameter2);
-    public delegate T DResult<T, T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3);
 
     public abstract ValidityState Validity { get; }
     public abstract bool IsValid { get; }
@@ -34,21 +24,12 @@ public interface IValidityWithDiagnostics : IEnumerable<Diagnostic>
 
     public abstract IValidityWithDiagnostics Validate(IValidityWithDiagnostics other);
     public abstract IValidityWithDiagnostics Validate(DValidity otherDelegate);
-    public abstract IValidityWithDiagnostics Validate<T>(T parameter, DValidity<T> otherDelegate);
-    public abstract IValidityWithDiagnostics Validate<T1, T2>(T1 parameter1, T2 parameter2, DValidity<T1, T2> otherDelegate);
-    public abstract IValidityWithDiagnostics Validate<T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3, DValidity<T1, T2, T3> otherDelegate);
 
     public abstract IOptionalWithDiagnostics<T> Merge<T>(IOptionalWithDiagnostics<T> transform);
     public abstract IOptionalWithDiagnostics<T> Merge<T>(DOptional<T> transform);
-    public abstract IOptionalWithDiagnostics<T> Merge<T, T1>(T1 parameter, DOptional<T, T1> transform);
-    public abstract IOptionalWithDiagnostics<T> Merge<T, T1, T2>(T1 parameter1, T2 parameter2, DOptional<T, T1, T2> transform);
-    public abstract IOptionalWithDiagnostics<T> Merge<T, T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3, DOptional<T, T1, T2, T3> transform);
 
     public abstract IOptionalWithDiagnostics<T> Transform<T>(T result);
     public abstract IOptionalWithDiagnostics<T> Transform<T>(DResult<T> resultDelegate);
-    public abstract IOptionalWithDiagnostics<T> Transform<T, T1>(T1 parameter, DResult<T, T1> resultDelegate);
-    public abstract IOptionalWithDiagnostics<T> Transform<T, T1, T2>(T1 parameter1, T2 parameter2, DResult<T, T1, T2> resultDelegate);
-    public abstract IOptionalWithDiagnostics<T> Transform<T, T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3, DResult<T, T1, T2, T3> resultDelegate);
 }
 
 public static class ValidityWithDiagnostics
@@ -105,11 +86,21 @@ public static class ValidityWithDiagnostics
         return Valid;
     }
 
+    public static IValidityWithDiagnostics Conditional(bool condition, Func<Diagnostic?> validDiagnostics, Func<Diagnostic?> invalidDiagnostics)
+    {
+        if (condition is false)
+        {
+            return Invalid(invalidDiagnostics());
+        }
+
+        return ValidWithDiagnostics(validDiagnostics());
+    }
+
     private class SimpleValidityWithDiagnostics : IValidityWithDiagnostics
     {
-        public static SimpleValidityWithDiagnostics Valid => WithoutDiagnositics(true);
-        public static SimpleValidityWithDiagnostics InvalidWithoutDiagnostics => WithoutDiagnositics(false);
-        public static SimpleValidityWithDiagnostics WithoutDiagnositics(bool isValid) => new(isValid, Array.Empty<Diagnostic>());
+        public static SimpleValidityWithDiagnostics Valid => WithoutDiagnostics(true);
+        public static SimpleValidityWithDiagnostics InvalidWithoutDiagnostics => WithoutDiagnostics(false);
+        public static SimpleValidityWithDiagnostics WithoutDiagnostics(bool isValid) => new(isValid, Array.Empty<Diagnostic>());
 
         public bool IsValid { get; }
         public bool IsInvalid => IsValid is false;
@@ -135,27 +126,6 @@ public static class ValidityWithDiagnostics
             return Validate(otherDelegate());
         }
 
-        public IValidityWithDiagnostics Validate<T>(T parameter, IValidityWithDiagnostics.DValidity<T> otherDelegate)
-        {
-            return Validate(wrappedDelegate);
-
-            IValidityWithDiagnostics wrappedDelegate() => otherDelegate(parameter);
-        }
-
-        public IValidityWithDiagnostics Validate<T1, T2>(T1 parameter1, T2 parameter2, IValidityWithDiagnostics.DValidity<T1, T2> otherDelegate)
-        {
-            return Validate(wrappedDelegate);
-
-            IValidityWithDiagnostics wrappedDelegate() => otherDelegate(parameter1, parameter2);
-        }
-
-        public IValidityWithDiagnostics Validate<T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3, IValidityWithDiagnostics.DValidity<T1, T2, T3> otherDelegate)
-        {
-            return Validate(wrappedDelegate);
-
-            IValidityWithDiagnostics wrappedDelegate() => otherDelegate(parameter1, parameter2, parameter3);
-        }
-
         public IOptionalWithDiagnostics<T> Merge<T>(IOptionalWithDiagnostics<T> result) => Merge<T>(() => result);
 
         public IOptionalWithDiagnostics<T> Merge<T>(IValidityWithDiagnostics.DOptional<T> transform)
@@ -177,27 +147,6 @@ public static class ValidityWithDiagnostics
             return OptionalWithDiagnostics.Empty<T>(allDiagnostics);
         }
 
-        public IOptionalWithDiagnostics<T> Merge<T, T1>(T1 parameter, IValidityWithDiagnostics.DOptional<T, T1> transform)
-        {
-            return Merge(wrappedTransform);
-
-            IOptionalWithDiagnostics<T> wrappedTransform() => transform(parameter);
-        }
-
-        public IOptionalWithDiagnostics<T> Merge<T, T1, T2>(T1 parameter1, T2 parameter2, IValidityWithDiagnostics.DOptional<T, T1, T2> transform)
-        {
-            return Merge(wrappedTransform);
-
-            IOptionalWithDiagnostics<T> wrappedTransform() => transform(parameter1, parameter2);
-        }
-
-        public IOptionalWithDiagnostics<T> Merge<T, T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3, IValidityWithDiagnostics.DOptional<T, T1, T2, T3> transform)
-        {
-            return Merge(wrappedTransform);
-
-            IOptionalWithDiagnostics<T> wrappedTransform() => transform(parameter1, parameter2, parameter3);
-        }
-
         public IOptionalWithDiagnostics<T> Transform<T>(T result) => Transform(() => result);
 
         public IOptionalWithDiagnostics<T> Transform<T>(IValidityWithDiagnostics.DResult<T> resultDelegate)
@@ -208,27 +157,6 @@ public static class ValidityWithDiagnostics
             }
 
             return OptionalWithDiagnostics.Result(resultDelegate(), Diagnostics);
-        }
-
-        public IOptionalWithDiagnostics<T> Transform<T, T1>(T1 parameter, IValidityWithDiagnostics.DResult<T, T1> resultDelegate)
-        {
-            return Transform(wrappedResultDelegate);
-
-            T wrappedResultDelegate() => resultDelegate(parameter);
-        }
-
-        public IOptionalWithDiagnostics<T> Transform<T, T1, T2>(T1 parameter1, T2 parameter2, IValidityWithDiagnostics.DResult<T, T1, T2> resultDelegate)
-        {
-            return Transform(wrappedResultDelegate);
-
-            T wrappedResultDelegate() => resultDelegate(parameter1, parameter2);
-        }
-
-        public IOptionalWithDiagnostics<T> Transform<T, T1, T2, T3>(T1 parameter1, T2 parameter2, T3 parameter3, IValidityWithDiagnostics.DResult<T, T1, T2, T3> resultDelegate)
-        {
-            return Transform(wrappedResultDelegate);
-
-            T wrappedResultDelegate() => resultDelegate(parameter1, parameter2, parameter3);
         }
 
         public IEnumerator<Diagnostic> GetEnumerator() => Diagnostics.GetEnumerator();

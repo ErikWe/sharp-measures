@@ -4,11 +4,11 @@ using SharpMeasures.Generators.Attributes.Parsing;
 
 public static class ConvertibleQuantityParser
 {
-    public static IAttributeParser<RawConvertibleQuantityDefinition> Parser { get; } = new AttributeParser();
+    public static IAttributeParser<UnprocessedConvertibleQuantityDefinition> Parser { get; } = new AttributeParser();
 
-    private static RawConvertibleQuantityDefinition DefaultDefinition() => RawConvertibleQuantityDefinition.Empty;
+    private static UnprocessedConvertibleQuantityDefinition DefaultDefinition() => UnprocessedConvertibleQuantityDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawConvertibleQuantityDefinition, ConvertibleQuantityLocations, ConvertibleQuantityAttribute>
+    private class AttributeParser : AAttributeParser<UnprocessedConvertibleQuantityDefinition, ConvertibleQuantityLocations, ConvertibleQuantityAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, ConvertibleQuantityProperties.AllProperties) { }
     }

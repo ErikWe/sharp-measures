@@ -8,7 +8,7 @@ using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 using System.Diagnostics.CodeAnalysis;
 
 public class QuantityConstantResolutionDiagnostics<TDefinition, TLocations> : IQuantityConstantResolutionDiagnostics<TDefinition, TLocations>
-    where TDefinition : AUnresolvedQuantityConstantDefinition<TLocations>
+    where TDefinition : ARawQuantityConstantDefinition<TLocations>
     where TLocations : AQuantityConstantLocations<TLocations>
 {
     [SuppressMessage("Design", "CA1000", Justification = "Property")]

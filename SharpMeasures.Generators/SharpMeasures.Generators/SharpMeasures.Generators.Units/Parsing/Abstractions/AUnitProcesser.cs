@@ -57,7 +57,10 @@ internal abstract class AUnitProcesser<TContext, TDefinition, TLocations, TProdu
 
     protected IValidityWithDiagnostics ValidateUnitName(TContext context, TDefinition definition)
     {
-        return IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, ValidateUnitNameNotNull, ValidateUnitNameNotEmpty, ValidateUnitNameNotDuplicate, ValidateUnitNameNotReservedByPlural);
+        return ValidateUnitNameNotNull(context, definition)
+            .Validate(() => ValidateUnitNameNotEmpty(context, definition))
+            .Validate(() => ValidateUnitNameNotDuplicate(context, definition))
+            .Validate(() => ValidateUnitNameNotReservedByPlural(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateUnitNameNotNull(TContext context, TDefinition definition)
@@ -82,10 +85,11 @@ internal abstract class AUnitProcesser<TContext, TDefinition, TLocations, TProdu
 
     protected IOptionalWithDiagnostics<string> ProcessPlural(TContext context, TDefinition definition)
     {
-        var rawValid = IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, ValidateUnitPluralNotNull, ValidateUnitPluralNotEmpty);
-        var interpretedPluralForm = rawValid.Transform(definition, InterpretPluralForm);
-        var correctlyInterpreted = interpretedPluralForm.Merge(context, definition, ProcessInterpretedPluralForm);
-        return correctlyInterpreted.Validate(context, definition, ValidateInterpretedPluralForm);
+        return ValidateUnitPluralNotNull(context, definition)
+            .Validate(() => ValidateUnitPluralNotEmpty(context, definition))
+            .Transform(() => InterpretPluralForm(definition))
+            .Merge((interpretedPlural) => ProcessInterpretedPluralForm(context, definition, interpretedPlural))
+            .Validate((interpretedPlural) => ValidateInterpretedPluralForm(context, definition, interpretedPlural));
     }
 
     private IValidityWithDiagnostics ValidateUnitPluralNotNull(TContext context, TDefinition definition)
@@ -107,7 +111,9 @@ internal abstract class AUnitProcesser<TContext, TDefinition, TLocations, TProdu
 
     private IValidityWithDiagnostics ValidateInterpretedPluralForm(TContext context, TDefinition definition, string interpretedPluralForm)
     {
-        return IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, interpretedPluralForm, ValidateUnitPluralNotDuplicate, ValidateUnitPluralNotReservedByName, ValidateUnitPluralNotSameAsName);
+        return ValidateUnitPluralNotDuplicate(context, definition, interpretedPluralForm)
+            .Validate(() => ValidateUnitPluralNotReservedByName(context, definition, interpretedPluralForm))
+            .Validate(() => ValidateUnitPluralNotSameAsName(context, definition, interpretedPluralForm));
     }
 
     private IValidityWithDiagnostics ValidateUnitPluralNotDuplicate(TContext context, TDefinition definition, string interpretedPluralForm)

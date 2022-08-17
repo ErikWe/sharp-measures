@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
 using System.Collections.Generic;
 
-internal record class RawVectorConstantDefinition : ARawQuantityConstantDefinition<RawVectorConstantDefinition, VectorConstantLocations>
+internal record class RawVectorConstantDefinition : AUnprocessedQuantityConstantDefinition<RawVectorConstantDefinition, VectorConstantLocations>
 {
     public static RawVectorConstantDefinition Empty { get; } = new();
 

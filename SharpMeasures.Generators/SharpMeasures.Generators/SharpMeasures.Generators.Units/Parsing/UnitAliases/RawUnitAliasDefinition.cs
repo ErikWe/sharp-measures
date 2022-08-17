@@ -1,14 +1,11 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.UnitAlias;
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
-internal record class RawUnitAliasDefinition : AUnprocessedDependantUnitDefinition<RawUnitAliasDefinition, UnitAliasLocations>
+internal record class RawUnitAliasDefinition : ARawDependantUnitDefinition<UnitAliasLocations>, IRawUnitAlias
 {
-    public static RawUnitAliasDefinition Empty { get; } = new();
+    public string AliasOf => DependantOn;
 
-    public string? AliasOf => DependantOn;
-
-    protected override RawUnitAliasDefinition Definition => this;
-
-    private RawUnitAliasDefinition() : base(UnitAliasLocations.Empty) { }
+    public RawUnitAliasDefinition(string name, string plural, string aliasOf, UnitAliasLocations locations) : base(name, plural, aliasOf, locations) { }
 }

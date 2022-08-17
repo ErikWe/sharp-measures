@@ -8,7 +8,7 @@ using SharpMeasures.Generators.Raw.Units;
 using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 public interface IQuantityConstantResolutionDiagnostics<TDefinition, TLocations>
-    where TDefinition : AUnresolvedQuantityConstantDefinition<TLocations>
+    where TDefinition : ARawQuantityConstantDefinition<TLocations>
     where TLocations : AQuantityConstantLocations<TLocations>
 {
     public abstract Diagnostic? UnrecognizedUnit(IQuantityConstantResolutionContext context, TDefinition definition);
@@ -21,7 +21,7 @@ public interface IQuantityConstantResolutionContext : IProcessingContext
 
 public abstract class AQuantityConstantResolver<TContext, TDefinition, TLocations, TProduct> : AProcesser<TContext, TDefinition, TProduct>
     where TContext : IQuantityConstantResolutionContext
-    where TDefinition : AUnresolvedQuantityConstantDefinition<TLocations>
+    where TDefinition : ARawQuantityConstantDefinition<TLocations>
     where TLocations : AQuantityConstantLocations<TLocations>
     where TProduct : AQuantityConstantDefinition<TLocations>
 {
@@ -34,11 +34,8 @@ public abstract class AQuantityConstantResolver<TContext, TDefinition, TLocation
 
     protected IOptionalWithDiagnostics<IRawUnitInstance> ResolveUnit(TContext context, TDefinition definition)
     {
-        if (context.Unit.UnitsByName.TryGetValue(definition.Unit, out var unit) is false)
-        {
-            return OptionalWithDiagnostics.Empty<IRawUnitInstance>(Diagnostics.UnrecognizedUnit(context, definition));
-        }
+        var unitCorrectlyResolved = context.Unit.UnitsByName.TryGetValue(definition.Unit, out var unit);
 
-        return OptionalWithDiagnostics.Result(unit);
+        return OptionalWithDiagnostics.Conditional(unitCorrectlyResolved, unit, () => Diagnostics.UnrecognizedUnit(context, definition));
     }
 }

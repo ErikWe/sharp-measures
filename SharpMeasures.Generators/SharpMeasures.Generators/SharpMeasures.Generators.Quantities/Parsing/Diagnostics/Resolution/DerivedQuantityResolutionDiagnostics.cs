@@ -11,7 +11,7 @@ public class DerivedQuantityResolutionDiagnostics : IDerivedQuantityResolutionDi
 
     private DerivedQuantityResolutionDiagnostics() { }
 
-    public Diagnostic TypeNotQuantity(IDerivedQuantityResolutionContext context, UnresolvedDerivedQuantityDefinition definition, int index)
+    public Diagnostic TypeNotQuantity(IDerivedQuantityResolutionContext context, RawDerivedQuantityDefinition definition, int index)
     {
         return DiagnosticConstruction.TypeNotQuantity(definition.Locations.SignatureElements[index].AsRoslynLocation(), definition.Signature[index].Name);
     }

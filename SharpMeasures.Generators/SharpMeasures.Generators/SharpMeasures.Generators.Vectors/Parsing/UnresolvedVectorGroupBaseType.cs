@@ -16,7 +16,7 @@ internal record class UnresolvedVectorGroupBaseType : AUnresolvedVectorGroupType
     IRawQuantityBase IRawQuantityBaseType.Definition => Definition;
 
     public UnresolvedVectorGroupBaseType(DefinedType type, MinimalLocation typeLocation, UnresolvedSharpMeasuresVectorGroupDefinition definition,
-        IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
-        IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
+        IReadOnlyList<RawDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<RawUnitListDefinition> unitInclusions,
+        IReadOnlyList<RawUnitListDefinition> unitExclusions)
         : base(type, typeLocation, definition, derivations, conversions, unitInclusions, unitExclusions) { }
 }

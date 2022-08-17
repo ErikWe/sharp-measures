@@ -20,7 +20,7 @@ internal class ScalarConstantProcesser
             return OptionalWithDiagnostics.Empty<UnresolvedScalarConstantDefinition>();
         }
 
-        var validity = CheckValidity(context, definition);
+        var validity = Validate(context, definition);
         IEnumerable<Diagnostic> allDiagnostics = validity.Diagnostics;
 
         if (validity.IsInvalid)

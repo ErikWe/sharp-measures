@@ -11,11 +11,11 @@ using System.Collections.Generic;
 
 internal record class RawScalarBaseType : ARawScalarType
 {
-    public RawSharpMeasuresScalarDefinition Definition { get; }
+    public UnprocessedSharpMeasuresScalarDefinition Definition { get; }
 
-    public RawScalarBaseType(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresScalarDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations,
-        IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawUnitListDefinition> baseInclusions,
-        IEnumerable<RawUnitListDefinition> baseExclusions, IEnumerable<RawUnitListDefinition> unitInclusions, IEnumerable<RawUnitListDefinition> unitExclusions)
+    public RawScalarBaseType(DefinedType type, MinimalLocation typeLocation, UnprocessedSharpMeasuresScalarDefinition definition, IEnumerable<UnprocessedDerivedQuantityDefinition> derivations,
+        IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<UnprocessedConvertibleQuantityDefinition> conversions, IEnumerable<UnprocessedUnitListDefinition> baseInclusions,
+        IEnumerable<UnprocessedUnitListDefinition> baseExclusions, IEnumerable<UnprocessedUnitListDefinition> unitInclusions, IEnumerable<UnprocessedUnitListDefinition> unitExclusions)
         : base(type, typeLocation, derivations, constants, conversions, baseInclusions, baseExclusions, unitInclusions, unitExclusions)
     {
         Definition = definition;

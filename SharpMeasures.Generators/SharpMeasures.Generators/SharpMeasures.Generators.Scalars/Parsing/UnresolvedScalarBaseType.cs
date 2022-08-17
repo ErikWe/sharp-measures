@@ -11,15 +11,15 @@ using SharpMeasures.Generators.Raw.Scalars;
 
 using System.Collections.Generic;
 
-internal record class UnresolvedScalarBaseType : AUnresolvedScalarType<UnresolvedSharpMeasuresScalarDefinition>, IRawScalarBaseType
+internal record class UnresolvedScalarBaseType : AUnresolvedScalarType<RawSharpMeasuresScalarDefinition>, IRawScalarBaseType
 {
     IRawScalarBase IRawScalarBaseType.Definition => Definition;
     IRawQuantityBase IRawQuantityBaseType.Definition => Definition;
 
-    public UnresolvedScalarBaseType(DefinedType type, MinimalLocation typeLocation, UnresolvedSharpMeasuresScalarDefinition definition,
-        IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedScalarConstantDefinition> constants,
-        IReadOnlyList<UnresolvedConvertibleScalarDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> baseInclusions,
-        IReadOnlyList<UnresolvedUnitListDefinition> baseExclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
-        IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
+    public UnresolvedScalarBaseType(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresScalarDefinition definition,
+        IReadOnlyList<RawDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedScalarConstantDefinition> constants,
+        IReadOnlyList<UnresolvedConvertibleScalarDefinition> conversions, IReadOnlyList<RawUnitListDefinition> baseInclusions,
+        IReadOnlyList<RawUnitListDefinition> baseExclusions, IReadOnlyList<RawUnitListDefinition> unitInclusions,
+        IReadOnlyList<RawUnitListDefinition> unitExclusions)
         : base(type, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInclusions, unitExclusions) { }
 }

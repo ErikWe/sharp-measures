@@ -7,15 +7,14 @@ using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.Utility;
 
 using System;
-using System.Linq;
 
-internal interface IPrefixedUnitProcessingDiagnostics : IDependantUnitProcessingDiagnostics<RawPrefixedUnitDefinition, PrefixedUnitLocations>
+internal interface IPrefixedUnitProcessingDiagnostics : IDependantUnitProcessingDiagnostics<UnprocessedPrefixedUnitDefinition, PrefixedUnitLocations>
 {
-    public abstract Diagnostic? UnrecognizedMetricPrefix(IUnitProcessingContext context, RawPrefixedUnitDefinition definition);
-    public abstract Diagnostic? UnrecognizedBinaryPrefix(IUnitProcessingContext context, RawPrefixedUnitDefinition definition);
+    public abstract Diagnostic? UnrecognizedMetricPrefix(IUnitProcessingContext context, UnprocessedPrefixedUnitDefinition definition);
+    public abstract Diagnostic? UnrecognizedBinaryPrefix(IUnitProcessingContext context, UnprocessedPrefixedUnitDefinition definition);
 }
 
-internal class PrefixedUnitProcesser : ADependantUnitProcesser<IUnitProcessingContext, RawPrefixedUnitDefinition, PrefixedUnitLocations, UnresolvedPrefixedUnitDefinition>
+internal class PrefixedUnitProcesser : ADependantUnitProcesser<IUnitProcessingContext, UnprocessedPrefixedUnitDefinition, PrefixedUnitLocations, RawPrefixedUnitDefinition>
 {
     private IPrefixedUnitProcessingDiagnostics Diagnostics { get; }
 
@@ -24,53 +23,48 @@ internal class PrefixedUnitProcesser : ADependantUnitProcesser<IUnitProcessingCo
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<UnresolvedPrefixedUnitDefinition> Process(IUnitProcessingContext context, RawPrefixedUnitDefinition definition)
+    public override IOptionalWithDiagnostics<RawPrefixedUnitDefinition> Process(IUnitProcessingContext context, UnprocessedPrefixedUnitDefinition definition)
     {
-        var validity = CheckValidity(context, definition);
-        var allDiagnostics = validity.Diagnostics;
-
-        if (validity.IsInvalid)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedPrefixedUnitDefinition>(allDiagnostics);
-        }
-
-        var processedPlural = ProcessPlural(context, definition);
-        allDiagnostics = allDiagnostics.Concat(processedPlural.Diagnostics);
-
-        if (processedPlural.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedPrefixedUnitDefinition>(allDiagnostics);
-        }
-
-        var product = CreateProduct(definition, processedPlural.Result);
-        return OptionalWithDiagnostics.Result(product, allDiagnostics);
+        return ValidateUnitName(context, definition)
+            .Validate(() => ValidateDependantOn(context, definition))
+            .Validate(() => ValidatePrefix(context, definition))
+            .Merge(() => ProcessPlural(context, definition))
+            .Transform((interpretedPlural) => ProduceResult(definition, interpretedPlural));
     }
 
-    protected override bool VerifyRequiredPropertiesSet(RawPrefixedUnitDefinition definition)
-    {
-        return base.VerifyRequiredPropertiesSet(definition) && (definition.Locations.ExplicitlySetMetricPrefixName || definition.Locations.ExplicitlySetBinaryPrefixName);
-    }
-
-    private IValidityWithDiagnostics CheckValidity(IUnitProcessingContext context, RawPrefixedUnitDefinition definition)
-    {
-        return IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, CheckDependantUnitValidity, CheckPrefixValidity);
-    }
-
-    private IValidityWithDiagnostics CheckPrefixValidity(IUnitProcessingContext context, RawPrefixedUnitDefinition definition)
+    private static RawPrefixedUnitDefinition ProduceResult(UnprocessedPrefixedUnitDefinition definition, string interpretedPlural)
     {
         if (definition.Locations.ExplicitlySetMetricPrefixName)
         {
-            return CheckMetricPrefixValidity(context, definition);
+            return new(definition.Name!, interpretedPlural, definition.From!, definition.MetricPrefixName, definition.Locations);
         }
-        else if (definition.Locations.ExplicitlySetBinaryPrefixName)
+
+        return new(definition.Name!, interpretedPlural, definition.From!, definition.BinaryPrefixName, definition.Locations);
+    }
+
+    protected override IValidityWithDiagnostics VerifyRequiredPropertiesSet(UnprocessedPrefixedUnitDefinition definition)
+    {
+        var requiredPropertiesSet = definition.Locations.ExplicitlySetMetricPrefixName || definition.Locations.ExplicitlySetBinaryPrefixName;
+
+        return base.VerifyRequiredPropertiesSet(definition).Validate(() => ValidityWithDiagnostics.ConditionalWithoutDiagnostics(requiredPropertiesSet));
+    }
+
+    private IValidityWithDiagnostics ValidatePrefix(IUnitProcessingContext context, UnprocessedPrefixedUnitDefinition definition)
+    {
+        if (definition.Locations.ExplicitlySetMetricPrefixName)
         {
-            return CheckBinaryPrefixValidity(context, definition);
+            return ValidateMetricPrefix(context, definition);
+        }
+        
+        if (definition.Locations.ExplicitlySetBinaryPrefixName)
+        {
+            return ValidateBinaryPrefix(context, definition);
         }
 
         return ValidityWithDiagnostics.InvalidWithoutDiagnostics;
     }
 
-    private IValidityWithDiagnostics CheckMetricPrefixValidity(IUnitProcessingContext context, RawPrefixedUnitDefinition definition)
+    private IValidityWithDiagnostics ValidateMetricPrefix(IUnitProcessingContext context, UnprocessedPrefixedUnitDefinition definition)
     {
         if (Enum.IsDefined(typeof(MetricPrefixName), definition.MetricPrefixName) is false)
         {
@@ -80,7 +74,7 @@ internal class PrefixedUnitProcesser : ADependantUnitProcesser<IUnitProcessingCo
         return ValidityWithDiagnostics.Valid;
     }
 
-    private IValidityWithDiagnostics CheckBinaryPrefixValidity(IUnitProcessingContext context, RawPrefixedUnitDefinition definition)
+    private IValidityWithDiagnostics ValidateBinaryPrefix(IUnitProcessingContext context, UnprocessedPrefixedUnitDefinition definition)
     {
         if (Enum.IsDefined(typeof(BinaryPrefixName), definition.BinaryPrefixName) is false)
         {
@@ -88,15 +82,5 @@ internal class PrefixedUnitProcesser : ADependantUnitProcesser<IUnitProcessingCo
         }
 
         return ValidityWithDiagnostics.Valid;
-    }
-
-    private static UnresolvedPrefixedUnitDefinition CreateProduct(RawPrefixedUnitDefinition definition, string interpretedPlural)
-    {
-        if (definition.Locations.ExplicitlySetMetricPrefixName)
-        {
-            return new(definition.Name!, interpretedPlural, definition.From!, definition.MetricPrefixName, definition.Locations);
-        }
-
-        return new(definition.Name!, interpretedPlural, definition.From!, definition.BinaryPrefixName, definition.Locations);
     }
 }

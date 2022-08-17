@@ -10,7 +10,7 @@ using SharpMeasures.Generators.Raw.Vectors;
 
 public interface IDerivedQuantityResolutionDiagnostics
 {
-    public abstract Diagnostic? TypeNotQuantity(IDerivedQuantityResolutionContext context, UnresolvedDerivedQuantityDefinition definition, int index);
+    public abstract Diagnostic? TypeNotQuantity(IDerivedQuantityResolutionContext context, RawDerivedQuantityDefinition definition, int index);
 }
 
 public interface IDerivedQuantityResolutionContext : IProcessingContext
@@ -19,7 +19,7 @@ public interface IDerivedQuantityResolutionContext : IProcessingContext
     public abstract IRawVectorPopulation VectorPopulation { get; }
 }
 
-public class DerivedQuantityResolver : AProcesser<IDerivedQuantityResolutionContext,  UnresolvedDerivedQuantityDefinition, DerivedQuantityDefinition>
+public class DerivedQuantityResolver : AProcesser<IDerivedQuantityResolutionContext,  RawDerivedQuantityDefinition, DerivedQuantityDefinition>
 {
     private IDerivedQuantityResolutionDiagnostics Diagnostics { get; }
 
@@ -28,23 +28,18 @@ public class DerivedQuantityResolver : AProcesser<IDerivedQuantityResolutionCont
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<DerivedQuantityDefinition> Process(IDerivedQuantityResolutionContext context, UnresolvedDerivedQuantityDefinition definition)
+    public override IOptionalWithDiagnostics<DerivedQuantityDefinition> Process(IDerivedQuantityResolutionContext context, RawDerivedQuantityDefinition definition)
     {
-        var processedSignature = ResolveSignature(context, definition);
-        var allDiagnostics = processedSignature.Diagnostics;
-
-        if (processedSignature.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<DerivedQuantityDefinition>(allDiagnostics);
-        }
-
-        DerivedQuantityDefinition product = new(definition.Expression, processedSignature.Result, definition.ImplementOperators,
-            definition.ImplementAlgebraicallyEquivalentDerivations, definition.Locations);
-
-        return OptionalWithDiagnostics.Result(product, allDiagnostics);
+        return ResolveSignature(context, definition)
+            .Transform((signature) => ProduceResult(definition, signature));
     }
 
-    private IOptionalWithDiagnostics<QuantityDerivationSignature> ResolveSignature(IDerivedQuantityResolutionContext context, UnresolvedDerivedQuantityDefinition definition)
+    private static DerivedQuantityDefinition ProduceResult(RawDerivedQuantityDefinition definition, QuantityDerivationSignature signature)
+    {
+        return new(definition.Expression, signature, definition.ImplementOperators, definition.ImplementAlgebraicallyEquivalentDerivations, definition.Locations);
+    }
+
+    private IOptionalWithDiagnostics<QuantityDerivationSignature> ResolveSignature(IDerivedQuantityResolutionContext context, RawDerivedQuantityDefinition definition)
     {
         var quantities = new IRawQuantityType[definition.Signature.Count];
 
@@ -63,8 +58,7 @@ public class DerivedQuantityResolver : AProcesser<IDerivedQuantityResolutionCont
         return OptionalWithDiagnostics.Result(new QuantityDerivationSignature(quantities));
     }
 
-    private IOptionalWithDiagnostics<IRawQuantityType> ResolveSignatureComponent(IDerivedQuantityResolutionContext context, UnresolvedDerivedQuantityDefinition definition,
-        int index)
+    private IOptionalWithDiagnostics<IRawQuantityType> ResolveSignatureComponent(IDerivedQuantityResolutionContext context, RawDerivedQuantityDefinition definition, int index)
     {
         if (context.ScalarPopulation.Scalars.TryGetValue(definition.Signature[index], out var scalar))
         {

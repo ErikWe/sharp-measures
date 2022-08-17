@@ -1,36 +1,24 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 
-using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Attributes.Parsing;
+using SharpMeasures.Generators.Raw.Units;
 
-using System.Collections.Generic;
-
-internal record class RawDerivableUnitDefinition : IOpenAttributeDefinition<RawDerivableUnitDefinition, DerivableUnitLocations>
+internal record class RawDerivableUnitDefinition : IAttributeDefinition<DerivableUnitLocations>, IRawDerivableUnit
 {
-    public static RawDerivableUnitDefinition Empty { get; } = new(DerivableUnitLocations.Empty);
+    public string? DerivationID { get; }
 
-    public string? Expression { get; init; }
-    public string? DerivationID { get; init; }
-    public IReadOnlyList<NamedType?>? Signature
+    public string Expression { get; }
+    public RawUnitDerivationSignature Signature { get; }
+
+    public DerivableUnitLocations Locations { get; }
+
+    public RawDerivableUnitDefinition(string? derivationID, string expression, RawUnitDerivationSignature signature, DerivableUnitLocations locations)
     {
-        get => signature;
-        init => signature = value?.AsReadOnlyEquatable();
-    }
+        DerivationID = derivationID;
 
-    private ReadOnlyEquatableList<NamedType?>? signature { get; init; }
+        Expression = expression;
+        Signature = signature;
 
-    public DerivableUnitLocations Locations { get; private init; }
-
-    private RawDerivableUnitDefinition(DerivableUnitLocations locations)
-    {
         Locations = locations;
     }
-
-    protected RawDerivableUnitDefinition WithLocations(DerivableUnitLocations locations) => this with
-    {
-        Locations = locations
-    };
-
-    RawDerivableUnitDefinition IOpenAttributeDefinition<RawDerivableUnitDefinition, DerivableUnitLocations>.WithLocations(DerivableUnitLocations locations)
-        => WithLocations(locations);
 }

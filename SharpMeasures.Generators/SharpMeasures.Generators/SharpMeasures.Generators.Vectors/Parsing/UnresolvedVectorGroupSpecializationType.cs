@@ -17,7 +17,7 @@ internal record class UnresolvedVectorGroupSpecializationType : AUnresolvedVecto
     IRawVectorGroupSpecialization IRawVectorGroupSpecializationType.Definition => Definition;
 
     public UnresolvedVectorGroupSpecializationType(DefinedType type, MinimalLocation typeLocation, UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition,
-        IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
-        IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
+        IReadOnlyList<RawDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<RawUnitListDefinition> unitInclusions,
+        IReadOnlyList<RawUnitListDefinition> unitExclusions)
         : base(type, typeLocation, definition, derivations, conversions, unitInclusions, unitExclusions) { }
 }

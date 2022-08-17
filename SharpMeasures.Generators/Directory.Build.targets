@@ -18,10 +18,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Update="OneOf" Version="3.0.223" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Update="Verify.SourceGenerators" Version="1.3.0" />
         <PackageReference Update="Verify.Xunit" Version="16.4.2" />
     </ItemGroup>

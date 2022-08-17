@@ -13,9 +13,9 @@ internal record class RawIndividualVectorBaseType : ARawIndividualVectorType
 {
     public RawSharpMeasuresVectorDefinition Definition { get; }
 
-    public RawIndividualVectorBaseType(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresVectorDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations,
-        IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawUnitListDefinition> unitInclusions,
-        IEnumerable<RawUnitListDefinition> unitExclusions)
+    public RawIndividualVectorBaseType(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresVectorDefinition definition, IEnumerable<UnprocessedDerivedQuantityDefinition> derivations,
+        IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<UnprocessedConvertibleQuantityDefinition> conversions, IEnumerable<UnprocessedUnitListDefinition> unitInclusions,
+        IEnumerable<UnprocessedUnitListDefinition> unitExclusions)
         : base(type, typeLocation, derivations, constants, conversions, unitInclusions, unitExclusions)
     {
         Definition = definition;

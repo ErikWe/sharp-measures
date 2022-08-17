@@ -12,11 +12,11 @@ using System.Linq;
 
 internal interface IDerivedUnitResolutionDiagnostics
 {
-    public abstract Diagnostic? UnitNotDerivable(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition);
-    public abstract Diagnostic? AmbiguousSignatureNotSpecified(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition);
-    public abstract Diagnostic? UnrecognizedDerivationID(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition);
-    public abstract Diagnostic? InvalidUnitListLength(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition, RawUnitDerivationSignature signature);
-    public abstract Diagnostic? UnrecognizedUnit(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition, int index, IRawUnitType unitType);
+    public abstract Diagnostic? UnitNotDerivable(IDerivedUnitResolutionContext context, RawDerivedUnitDefinition definition);
+    public abstract Diagnostic? AmbiguousSignatureNotSpecified(IDerivedUnitResolutionContext context, RawDerivedUnitDefinition definition);
+    public abstract Diagnostic? UnrecognizedDerivationID(IDerivedUnitResolutionContext context, RawDerivedUnitDefinition definition);
+    public abstract Diagnostic? InvalidUnitListLength(IDerivedUnitResolutionContext context, RawDerivedUnitDefinition definition, RawUnitDerivationSignature signature);
+    public abstract Diagnostic? UnrecognizedUnit(IDerivedUnitResolutionContext context, RawDerivedUnitDefinition definition, int index, IRawUnitType unitType);
 }
 
 internal interface IDerivedUnitResolutionContext : IProcessingContext
@@ -26,7 +26,7 @@ internal interface IDerivedUnitResolutionContext : IProcessingContext
     public abstract IRawUnitPopulation UnitPopulation { get; }
 }
 
-internal class DerivedUnitResolver : AProcesser<IDerivedUnitResolutionContext, UnresolvedDerivedUnitDefinition, DerivedUnitDefinition>
+internal class DerivedUnitResolver : AProcesser<IDerivedUnitResolutionContext, RawDerivedUnitDefinition, DerivedUnitDefinition>
 {
     private IDerivedUnitResolutionDiagnostics Diagnostics { get; }
 
@@ -35,38 +35,21 @@ internal class DerivedUnitResolver : AProcesser<IDerivedUnitResolutionContext, U
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<DerivedUnitDefinition> Process(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition)
+    public override IOptionalWithDiagnostics<DerivedUnitDefinition> Process(IDerivedUnitResolutionContext context, RawDerivedUnitDefinition definition)
     {
-        var signatureIDValidity = CheckSignatureIDValidity(context, definition);
-        var allDiagnostics = signatureIDValidity.Diagnostics;
+        var signature = CheckSignatureIDValidity(context, definition)
+            .Merge(() => ProcessSignature(context, definition));
 
-        if (signatureIDValidity.IsInvalid)
-        {
-            return OptionalWithDiagnostics.Empty<DerivedUnitDefinition>(allDiagnostics);
-        }
-
-        var processedSignature = ProcessSignature(context, definition);
-        allDiagnostics = allDiagnostics.Concat(processedSignature.Diagnostics);
-
-        if (processedSignature.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<DerivedUnitDefinition>(allDiagnostics);
-        }
-
-        var processedUnits = ProcessUnits(context, definition, processedSignature.Result);
-        allDiagnostics = allDiagnostics.Concat(processedUnits.Diagnostics);
-
-        if (processedUnits.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<DerivedUnitDefinition>(allDiagnostics);
-        }
-
-        DerivedUnitDefinition product = new(definition.Name, definition.Plural, processedSignature.Result, processedUnits.Result, definition.Locations);
-
-        return OptionalWithDiagnostics.Result(product, allDiagnostics);
+        return signature.Reduce().Merge(() => ProcessUnits(context, definition, signature.Result))
+            .Transform((units) => ProduceResult(definition, signature.Result, units));
     }
 
-    private IValidityWithDiagnostics CheckSignatureIDValidity(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition)
+    private static DerivedUnitDefinition ProduceResult(RawDerivedUnitDefinition definition, RawUnitDerivationSignature signature, IReadOnlyList<IRawUnitInstance> units)
+    {
+        return new(definition.Name, definition.Plural, signature, units, definition.Locations);
+    }
+
+    private IValidityWithDiagnostics CheckSignatureIDValidity(IDerivedUnitResolutionContext context, RawDerivedUnitDefinition definition)
     {
         if (context.DerivationsByID.Count is 0 && context.UnnamedDerivation is null)
         {
@@ -86,7 +69,7 @@ internal class DerivedUnitResolver : AProcesser<IDerivedUnitResolutionContext, U
         return ValidityWithDiagnostics.Valid;
     }
 
-    private IOptionalWithDiagnostics<RawUnitDerivationSignature> ProcessSignature(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition)
+    private IOptionalWithDiagnostics<RawUnitDerivationSignature> ProcessSignature(IDerivedUnitResolutionContext context, RawDerivedUnitDefinition definition)
     {
         if (definition.DerivationID is null || definition.DerivationID.Length is 0)
         {
@@ -106,7 +89,7 @@ internal class DerivedUnitResolver : AProcesser<IDerivedUnitResolutionContext, U
         return OptionalWithDiagnostics.Result(derivation.Signature);
     }
 
-    private IOptionalWithDiagnostics<IReadOnlyList<IRawUnitInstance>> ProcessUnits(IDerivedUnitResolutionContext context, UnresolvedDerivedUnitDefinition definition,
+    private IOptionalWithDiagnostics<IReadOnlyList<IRawUnitInstance>> ProcessUnits(IDerivedUnitResolutionContext context, RawDerivedUnitDefinition definition,
         RawUnitDerivationSignature signature)
     {
         if (definition.Units.Count != signature.Count)

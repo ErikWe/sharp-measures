@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Raw.Vectors;
 
 using System.Collections.Generic;
 
-internal record class UnresolvedVectorConstantDefinition : AUnresolvedQuantityConstantDefinition<VectorConstantLocations>, IRawVectorConstant
+internal record class UnresolvedVectorConstantDefinition : ARawQuantityConstantDefinition<VectorConstantLocations>, IRawVectorConstant
 {
     public IReadOnlyList<double> Value => value;
 

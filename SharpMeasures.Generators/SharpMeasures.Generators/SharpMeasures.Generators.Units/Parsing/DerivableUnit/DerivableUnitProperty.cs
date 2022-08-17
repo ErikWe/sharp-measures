@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class DerivableUnitProperty<TPropertyType> : AttributeProperty<RawDerivableUnitDefinition, DerivableUnitLocations, TPropertyType>
+internal record class DerivableUnitProperty<TPropertyType> : AttributeProperty<UnprocessedDerivableUnitDefinition, DerivableUnitLocations, TPropertyType>
 {
     public DerivableUnitProperty(string name, string parameterName, DTypeSetter setter, DSingleLocationSetter locator) : base(name, parameterName, setter, locator) { }
     public DerivableUnitProperty(string name, DTypeSetter setter, DSingleLocationSetter locator) : base(name, setter, locator) { }

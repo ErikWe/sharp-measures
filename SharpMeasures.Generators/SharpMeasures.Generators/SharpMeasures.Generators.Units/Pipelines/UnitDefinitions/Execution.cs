@@ -139,7 +139,7 @@ internal static class Execution
                     AppendDocumentation(indentation, Data.Documentation.Definition(dependantUnits[i]));
                     Builder.Append($"{indentation}public static {Data.Unit.FullyQualifiedName} {dependantUnits[i].Name} ");
 
-                    if (dependantUnits[i] is UnresolvedUnitAliasDefinition unitAlias)
+                    if (dependantUnits[i] is RawUnitAliasDefinition unitAlias)
                     {
                         AppendAlias(unitAlias);
                     }
@@ -147,7 +147,7 @@ internal static class Execution
                     {
                         AppendScaled(scaledUnit);
                     }
-                    else if (dependantUnits[i] is UnresolvedPrefixedUnitDefinition prefixedUnit)
+                    else if (dependantUnits[i] is RawPrefixedUnitDefinition prefixedUnit)
                     {
                         AppendPrefixed(prefixedUnit);
                     }
@@ -178,7 +178,7 @@ internal static class Execution
             CreateCyclicDependencyDiagnostics(dependantUnits);
         }
 
-        private void AppendAlias(UnresolvedUnitAliasDefinition unitAlias)
+        private void AppendAlias(RawUnitAliasDefinition unitAlias)
         {
             Builder.Append($"=> {unitAlias.AliasOf}");
         }
@@ -188,7 +188,7 @@ internal static class Execution
             Builder.Append($"{{ get; }} = {scaledUnit.From}.ScaledBy({scaledUnit.Expression})");
         }
 
-        private void AppendPrefixed(UnresolvedPrefixedUnitDefinition prefixedUnit)
+        private void AppendPrefixed(RawPrefixedUnitDefinition prefixedUnit)
         {
             string prefixText = prefixedUnit.Locations.ExplicitlySetMetricPrefixName
                 ? $"global::SharpMeasures.MetricPrefix.{prefixedUnit.MetricPrefix}"

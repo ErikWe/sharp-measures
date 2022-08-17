@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
-internal record class RawScalarConstantDefinition : ARawQuantityConstantDefinition<RawScalarConstantDefinition, ScalarConstantLocations>
+internal record class RawScalarConstantDefinition : AUnprocessedQuantityConstantDefinition<RawScalarConstantDefinition, ScalarConstantLocations>
 {
     public static RawScalarConstantDefinition Empty { get; } = new();
 

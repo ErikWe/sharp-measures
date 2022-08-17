@@ -1,8 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 
 using SharpMeasures.Generators.Attributes.Parsing;
+using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
 
-internal record class SharpMeasuresScalarLocations : AAttributeLocations<SharpMeasuresScalarLocations>
+internal record class SharpMeasuresScalarLocations : AAttributeLocations<SharpMeasuresScalarLocations>, IDefaultUnitLocations
 {
     public static SharpMeasuresScalarLocations Empty => new();
 

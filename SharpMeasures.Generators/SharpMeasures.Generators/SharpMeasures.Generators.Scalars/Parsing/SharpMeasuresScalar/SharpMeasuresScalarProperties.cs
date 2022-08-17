@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 internal static class SharpMeasuresScalarProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawSharpMeasuresScalarDefinition>> AllProperties => new IAttributeProperty<RawSharpMeasuresScalarDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<UnprocessedSharpMeasuresScalarDefinition>> AllProperties => new IAttributeProperty<UnprocessedSharpMeasuresScalarDefinition>[]
     {
         Unit,
         Vector,

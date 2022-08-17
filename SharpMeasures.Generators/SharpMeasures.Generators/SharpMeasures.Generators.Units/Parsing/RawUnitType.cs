@@ -22,25 +22,25 @@ internal record class RawUnitType
     public UnprocessedSharpMeasuresUnitDefinition Definition { get; }
 
     public UnprocessedFixedUnitDefinition? FixedUnit { get; }
-    public IEnumerable<RawDerivableUnitDefinition> UnitDerivations => unitDerivations;
+    public IEnumerable<UnprocessedDerivableUnitDefinition> UnitDerivations => unitDerivations;
 
-    public IEnumerable<RawUnitAliasDefinition> UnitAliases => unitAliases;
+    public IEnumerable<UnprocessedUnitAliasDefinition> UnitAliases => unitAliases;
     public IEnumerable<UnprocessedBiasedUnitDefinition> BiasedUnits => biasedUnits;
-    public IEnumerable<RawDerivedUnitDefinition> DerivedUnits => derivedUnits;
-    public IEnumerable<RawPrefixedUnitDefinition> PrefixedUnits => prefixedUnits;
+    public IEnumerable<UnprocessedDerivedUnitDefinition> DerivedUnits => derivedUnits;
+    public IEnumerable<UnprocessedPrefixedUnitDefinition> PrefixedUnits => prefixedUnits;
     public IEnumerable<UnprocessedScaledUnitDefinition> ScaledUnits => scaledUnits;
 
-    private EquatableEnumerable<RawDerivableUnitDefinition> unitDerivations { get; }
+    private EquatableEnumerable<UnprocessedDerivableUnitDefinition> unitDerivations { get; }
 
-    private EquatableEnumerable<RawUnitAliasDefinition> unitAliases { get; }
-    private EquatableEnumerable<RawDerivedUnitDefinition> derivedUnits { get; }
+    private EquatableEnumerable<UnprocessedUnitAliasDefinition> unitAliases { get; }
+    private EquatableEnumerable<UnprocessedDerivedUnitDefinition> derivedUnits { get; }
     private EquatableEnumerable<UnprocessedBiasedUnitDefinition> biasedUnits { get; }
-    private EquatableEnumerable<RawPrefixedUnitDefinition> prefixedUnits { get; }
+    private EquatableEnumerable<UnprocessedPrefixedUnitDefinition> prefixedUnits { get; }
     private EquatableEnumerable<UnprocessedScaledUnitDefinition> scaledUnits { get; }
 
     public RawUnitType(DefinedType type, MinimalLocation unitLocation, UnprocessedSharpMeasuresUnitDefinition unitDefinition, UnprocessedFixedUnitDefinition? fixedUnit,
-        IEnumerable<RawDerivableUnitDefinition> unitDerivations, IEnumerable<RawUnitAliasDefinition> unitAliases, IEnumerable<RawDerivedUnitDefinition> derivedUnits,
-        IEnumerable<UnprocessedBiasedUnitDefinition> biasedUnits, IEnumerable<RawPrefixedUnitDefinition> prefixedUnits, IEnumerable<UnprocessedScaledUnitDefinition> scaledUnits)
+        IEnumerable<UnprocessedDerivableUnitDefinition> unitDerivations, IEnumerable<UnprocessedUnitAliasDefinition> unitAliases, IEnumerable<UnprocessedDerivedUnitDefinition> derivedUnits,
+        IEnumerable<UnprocessedBiasedUnitDefinition> biasedUnits, IEnumerable<UnprocessedPrefixedUnitDefinition> prefixedUnits, IEnumerable<UnprocessedScaledUnitDefinition> scaledUnits)
     {
         Type = type;
         TypeLocation = unitLocation;

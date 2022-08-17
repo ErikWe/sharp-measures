@@ -3,30 +3,27 @@
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
 using System;
 
-internal class PrefixedUnitResolver : ADependantUnitResolver<IDependantUnitResolutionContext, UnresolvedPrefixedUnitDefinition, PrefixedUnitLocations, PrefixedUnitDefinition>
+internal class PrefixedUnitResolver : ADependantUnitResolver<IDependantUnitResolutionContext, RawPrefixedUnitDefinition, PrefixedUnitLocations, PrefixedUnitDefinition>
 {
-    public PrefixedUnitResolver(IDependantUnitResolutionDiagnostics<UnresolvedPrefixedUnitDefinition, PrefixedUnitLocations> diagnostics) : base(diagnostics) { }
+    public PrefixedUnitResolver(IDependantUnitResolutionDiagnostics<RawPrefixedUnitDefinition, PrefixedUnitLocations> diagnostics) : base(diagnostics) { }
 
-    public override IOptionalWithDiagnostics<PrefixedUnitDefinition> Process(IDependantUnitResolutionContext context, UnresolvedPrefixedUnitDefinition definition)
+    public override IOptionalWithDiagnostics<PrefixedUnitDefinition> Process(IDependantUnitResolutionContext context, RawPrefixedUnitDefinition definition)
     {
-        var processedDependency = ProcessDependantOn(context, definition);
-        var allDiagnostics = processedDependency.Diagnostics;
+        return ProcessDependantOn(context, definition)
+            .Transform((dependantOn) => ProduceResult(definition, dependantOn));
+    }
 
-        if (processedDependency.LacksResult)
+    private static PrefixedUnitDefinition ProduceResult(RawPrefixedUnitDefinition definition, IRawUnitInstance from)
+    {
+        return definition.SpecifiedPrefixType switch
         {
-            return OptionalWithDiagnostics.Empty<PrefixedUnitDefinition>(allDiagnostics);
-        }
-
-        PrefixedUnitDefinition product = definition.SpecifiedPrefixType switch
-        {
-            PrefixType.Metric => new(definition.Name, definition.Plural, processedDependency.Result, definition.MetricPrefix!.Value, definition.Locations),
-            PrefixType.Binary => new(definition.Name, definition.Plural, processedDependency.Result, definition.BinaryPrefix!.Value, definition.Locations),
+            PrefixType.Metric => new(definition.Name, definition.Plural, from, definition.MetricPrefix!.Value, definition.Locations),
+            PrefixType.Binary => new(definition.Name, definition.Plural, from, definition.BinaryPrefix!.Value, definition.Locations),
             _ => throw new NotSupportedException()
         };
-
-        return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 }

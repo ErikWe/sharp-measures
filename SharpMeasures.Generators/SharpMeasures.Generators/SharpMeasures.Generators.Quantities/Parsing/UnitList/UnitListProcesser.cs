@@ -8,12 +8,12 @@ using SharpMeasures.Generators.Diagnostics;
 using System;
 using System.Collections.Generic;
 
-public interface IUnitListProcessingDiagnostics : IUniqueItemListProcessingDiagnostics<string?, string, RawUnitListDefinition, UnitListLocations>
+public interface IUnitListProcessingDiagnostics : IUniqueItemListProcessingDiagnostics<string?, string, UnprocessedUnitListDefinition, UnitListLocations>
 {
-    public abstract Diagnostic? EmptyItem(IUniqueItemListProcessingContext<string> context, RawUnitListDefinition definition, int index);
+    public abstract Diagnostic? EmptyItem(IUniqueItemListProcessingContext<string> context, UnprocessedUnitListDefinition definition, int index);
 }
 
-public class UnitListProcesser : AUniqueItemListProcesser<string?, string, IUniqueItemListProcessingContext<string>, RawUnitListDefinition, UnitListLocations, UnresolvedUnitListDefinition>
+public class UnitListProcesser : AUniqueItemListProcesser<string?, string, IUniqueItemListProcessingContext<string>, UnprocessedUnitListDefinition, UnitListLocations, RawUnitListDefinition>
 {
     private IUnitListProcessingDiagnostics Diagnostics { get; }
 
@@ -22,7 +22,7 @@ public class UnitListProcesser : AUniqueItemListProcesser<string?, string, IUniq
         Diagnostics = diagnostics;
     }
 
-    protected override IOptionalWithDiagnostics<string> ProcessItem(IUniqueItemListProcessingContext<string> context, RawUnitListDefinition definition, int index)
+    protected override IOptionalWithDiagnostics<string> ProcessItem(IUniqueItemListProcessingContext<string> context, UnprocessedUnitListDefinition definition, int index)
     {
         if (definition.Units[index]?.Length is 0)
         {
@@ -35,6 +35,6 @@ public class UnitListProcesser : AUniqueItemListProcesser<string?, string, IUniq
     protected override string UpgradeItem(string? item) => UpgradeNullItem(item);
     protected override string UpgradeNullItem(string? item) => item ?? throw new ArgumentNullException(nameof(item));
 
-    protected override UnresolvedUnitListDefinition ConstructProduct(IReadOnlyList<string> items, RawUnitListDefinition definition, IReadOnlyList<int> locationMap)
+    protected override RawUnitListDefinition ConstructProduct(IReadOnlyList<string> items, UnprocessedUnitListDefinition definition, IReadOnlyList<int> locationMap)
         => new(items, definition.Locations, locationMap);
 }

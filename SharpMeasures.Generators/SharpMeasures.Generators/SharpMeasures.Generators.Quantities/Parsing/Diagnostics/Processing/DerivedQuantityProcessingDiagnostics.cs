@@ -11,24 +11,24 @@ public class DerivedQuantityProcessingDiagnostics : IDerivedQuantityProcessingDi
 
     private DerivedQuantityProcessingDiagnostics() { }
 
-    public Diagnostic NullExpression(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
+    public Diagnostic NullExpression(IDerivedQuantityProcessingContext context, UnprocessedDerivedQuantityDefinition definition)
     {
         return DiagnosticConstruction.NullDerivationExpression(definition.Locations.Expression?.AsRoslynLocation());
     }
 
-    public Diagnostic EmptyExpression(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition) => NullExpression(context, definition);
+    public Diagnostic EmptyExpression(IDerivedQuantityProcessingContext context, UnprocessedDerivedQuantityDefinition definition) => NullExpression(context, definition);
 
-    public Diagnostic NullSignature(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
+    public Diagnostic NullSignature(IDerivedQuantityProcessingContext context, UnprocessedDerivedQuantityDefinition definition)
     {
         return DiagnosticConstruction.NullDerivationSignature(definition.Locations.SignatureCollection?.AsRoslynLocation());
     }
 
-    public Diagnostic EmptySignature(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
+    public Diagnostic EmptySignature(IDerivedQuantityProcessingContext context, UnprocessedDerivedQuantityDefinition definition)
     {
         return DiagnosticConstruction.EmptyQuantityDerivationSignature(definition.Locations.SignatureCollection?.AsRoslynLocation());
     }
 
-    public Diagnostic NullSignatureElement(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition, int index)
+    public Diagnostic NullSignatureElement(IDerivedQuantityProcessingContext context, UnprocessedDerivedQuantityDefinition definition, int index)
     {
         return DiagnosticConstruction.NullTypeNotQuantity(definition.Locations.SignatureElements[index].AsRoslynLocation());
     }

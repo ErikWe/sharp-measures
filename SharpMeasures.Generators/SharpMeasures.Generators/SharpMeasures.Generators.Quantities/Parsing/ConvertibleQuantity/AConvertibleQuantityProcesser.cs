@@ -13,12 +13,12 @@ using System.Linq;
 
 public interface IConvertibleQuantityProcessingDiagnostics
 {
-    public abstract Diagnostic? EmptyQuantityList(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition);
-    public abstract Diagnostic? NullQuantity(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, int index);
-    public abstract Diagnostic? DuplicateQuantity(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, int index);
-    public abstract Diagnostic? ConvertibleToSelf(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, int index);
+    public abstract Diagnostic? EmptyQuantityList(IConvertibleQuantityProcessingContext context, UnprocessedConvertibleQuantityDefinition definition);
+    public abstract Diagnostic? NullQuantity(IConvertibleQuantityProcessingContext context, UnprocessedConvertibleQuantityDefinition definition, int index);
+    public abstract Diagnostic? DuplicateQuantity(IConvertibleQuantityProcessingContext context, UnprocessedConvertibleQuantityDefinition definition, int index);
+    public abstract Diagnostic? ConvertibleToSelf(IConvertibleQuantityProcessingContext context, UnprocessedConvertibleQuantityDefinition definition, int index);
 
-    public abstract Diagnostic? UnrecognizedCastOperatorBehaviour(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition);
+    public abstract Diagnostic? UnrecognizedCastOperatorBehaviour(IConvertibleQuantityProcessingContext context, UnprocessedConvertibleQuantityDefinition definition);
 }
 
 public interface IConvertibleQuantityProcessingContext : IProcessingContext
@@ -26,7 +26,7 @@ public interface IConvertibleQuantityProcessingContext : IProcessingContext
     public abstract HashSet<NamedType> ListedQuantities { get; }
 }
 
-public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProcesser<IConvertibleQuantityProcessingContext, RawConvertibleQuantityDefinition, TProduct>
+public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProcesser<IConvertibleQuantityProcessingContext, UnprocessedConvertibleQuantityDefinition, TProduct>
     where TProduct : IRawConvertibleQuantity
 {
     private IConvertibleQuantityProcessingDiagnostics Diagnostics { get; }
@@ -36,7 +36,7 @@ public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProce
         Diagnostics = diagnostics;
     }
 
-    public override void OnSuccessfulProcess(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, TProduct product)
+    public override void OnSuccessfulProcess(IConvertibleQuantityProcessingContext context, UnprocessedConvertibleQuantityDefinition definition, TProduct product)
     {
         foreach (var quantity in product.Quantities)
         {
@@ -44,7 +44,7 @@ public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProce
         }
     }
 
-    protected IResultWithDiagnostics<(IReadOnlyList<NamedType> Quantities, IReadOnlyList<int> LocationMap)> ProcessQuantities(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
+    protected IResultWithDiagnostics<(IReadOnlyList<NamedType> Quantities, IReadOnlyList<int> LocationMap)> ProcessQuantities(IConvertibleQuantityProcessingContext context, UnprocessedConvertibleQuantityDefinition definition)
     {
         HashSet<NamedType> quantities = new();
         List<int> locationMap = new(definition.Quantities.Count);
@@ -89,28 +89,21 @@ public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProce
         return ResultWithDiagnostics.Construct<(IReadOnlyList<NamedType>, IReadOnlyList<int>)>((quantities.ToList(), locationMap), allDiagnostics);
     }
 
-    protected IValidityWithDiagnostics CheckValidity(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
+    protected IValidityWithDiagnostics Validate(IConvertibleQuantityProcessingContext context, UnprocessedConvertibleQuantityDefinition definition)
     {
-        return IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, CheckQuantitiesValidity, CheckCastOperatorBehaviourValidity);
+        return ValidateNotZeroQuantities(context, definition)
+            .Validate(() => ValidateCastOperatorBehaviourDefined(context, definition));
     }
 
-    private IValidityWithDiagnostics CheckQuantitiesValidity(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
+    private IValidityWithDiagnostics ValidateNotZeroQuantities(IConvertibleQuantityProcessingContext context, UnprocessedConvertibleQuantityDefinition definition)
     {
-        if (definition.Quantities.Count is 0)
-        {
-            return ValidityWithDiagnostics.Invalid(Diagnostics.EmptyQuantityList(context, definition));
-        }
-
-        return ValidityWithDiagnostics.Valid;
+        return ValidityWithDiagnostics.Conditional(definition.Quantities.Count > 0, () => Diagnostics.EmptyQuantityList(context, definition));
     }
 
-    private IValidityWithDiagnostics CheckCastOperatorBehaviourValidity(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
+    private IValidityWithDiagnostics ValidateCastOperatorBehaviourDefined(IConvertibleQuantityProcessingContext context, UnprocessedConvertibleQuantityDefinition definition)
     {
-        if (Enum.IsDefined(typeof(ConversionOperatorBehaviour), definition.CastOperatorBehaviour) is false)
-        {
-            return ValidityWithDiagnostics.Invalid(Diagnostics.UnrecognizedCastOperatorBehaviour(context, definition));
-        }
+        var enumDefined = Enum.IsDefined(typeof(ConversionOperatorBehaviour), definition.CastOperatorBehaviour);
 
-        return ValidityWithDiagnostics.Valid;
+        return ValidityWithDiagnostics.Conditional(enumDefined, () => Diagnostics.UnrecognizedCastOperatorBehaviour(context, definition));
     }
 }

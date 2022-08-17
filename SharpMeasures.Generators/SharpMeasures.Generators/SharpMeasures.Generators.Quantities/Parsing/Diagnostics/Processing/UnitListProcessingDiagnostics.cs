@@ -13,7 +13,7 @@ public class UnitListProcessingDiagnostics : IUnitListProcessingDiagnostics
 
     private UnitListProcessingDiagnostics() { }
 
-    public Diagnostic EmptyItemList(IProcessingContext context, RawUnitListDefinition definition)
+    public Diagnostic EmptyItemList(IProcessingContext context, UnprocessedUnitListDefinition definition)
     {
         if (definition.Locations.ExplicitlySetUnits)
         {
@@ -23,14 +23,14 @@ public class UnitListProcessingDiagnostics : IUnitListProcessingDiagnostics
         return DiagnosticConstruction.EmptyUnitList(definition.Locations.Attribute.AsRoslynLocation());
     }
 
-    public Diagnostic NullItem(IProcessingContext context, RawUnitListDefinition definition, int index)
+    public Diagnostic NullItem(IProcessingContext context, UnprocessedUnitListDefinition definition, int index)
     {
         return DiagnosticConstruction.NullUnrecognizedUnitNameUnknownType(definition.Locations.UnitsElements[index].AsRoslynLocation());
     }
 
-    public Diagnostic EmptyItem(IUniqueItemListProcessingContext<string> context, RawUnitListDefinition definition, int index) => NullItem(context, definition, index);
+    public Diagnostic EmptyItem(IUniqueItemListProcessingContext<string> context, UnprocessedUnitListDefinition definition, int index) => NullItem(context, definition, index);
 
-    public Diagnostic DuplicateItem(IUniqueItemListProcessingContext<string> context, RawUnitListDefinition definition, int index)
+    public Diagnostic DuplicateItem(IUniqueItemListProcessingContext<string> context, UnprocessedUnitListDefinition definition, int index)
     {
         return DiagnosticConstruction.UnitAlreadyListed(definition.Locations.UnitsElements[index].AsRoslynLocation(), definition.Units[index]!);
     }

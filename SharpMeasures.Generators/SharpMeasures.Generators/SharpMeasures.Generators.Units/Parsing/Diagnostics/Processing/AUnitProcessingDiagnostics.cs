@@ -21,6 +21,11 @@ internal abstract class AUnitProcessingDiagnostics<TRawDefinition, TLocations> :
         return DiagnosticConstruction.DuplicateUnitName(definition.Locations.Name?.AsRoslynLocation(), definition.Name!, context.Type.Name);
     }
 
+    public Diagnostic UnitNameReservedByUnitPluralForm(IUnitProcessingContext context, TRawDefinition definition)
+    {
+        return DiagnosticConstruction.UnitNameReservedByUnitPlural(definition.Locations.Name?.AsRoslynLocation(), definition.Name!, context.Type.Name);
+    }
+
     public Diagnostic NullUnitPluralForm(IUnitProcessingContext context, TRawDefinition definition)
     {
         return DiagnosticConstruction.NullUnitPluralForm(definition.Locations.Plural?.AsRoslynLocation());
@@ -36,5 +41,10 @@ internal abstract class AUnitProcessingDiagnostics<TRawDefinition, TLocations> :
     public Diagnostic DuplicateUnitPluralForm(IUnitProcessingContext context, TRawDefinition definition, string interpretedPlural)
     {
         return DiagnosticConstruction.DuplicateUnitPluralForm(definition.Locations.Plural?.AsRoslynLocation(), interpretedPlural, context.Type.Name);
+    }
+
+    public Diagnostic UnitPluralFormReservedByUnitName(IUnitProcessingContext context, TRawDefinition definition, string interpretedPlural)
+    {
+        return DiagnosticConstruction.UnitPluralFormReservedByUnitName(definition.Locations.Plural?.AsRoslynLocation(), interpretedPlural, context.Type.Name);
     }
 }

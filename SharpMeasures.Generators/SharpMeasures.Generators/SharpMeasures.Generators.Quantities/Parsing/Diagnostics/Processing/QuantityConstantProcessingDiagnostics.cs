@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
 public class QuantityConstantProcessingDiagnostics<TDefinition, TLocations> : IQuantityConstantProcessingDiagnostics<TDefinition, TLocations>
-    where TDefinition : ARawQuantityConstantDefinition<TDefinition, TLocations>
+    where TDefinition : AUnprocessedQuantityConstantDefinition<TDefinition, TLocations>
     where TLocations : AQuantityConstantLocations<TLocations>
 {
     private NamedType? Unit { get; }

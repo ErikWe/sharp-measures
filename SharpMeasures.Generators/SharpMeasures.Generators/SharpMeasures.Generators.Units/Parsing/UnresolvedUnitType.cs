@@ -23,24 +23,24 @@ internal class UnresolvedUnitType : IRawUnitType
     public RawSharpMeasuresUnitDefinition Definition { get; }
 
     public RawFixedUnitDefinition? FixedUnit { get; }
-    public IReadOnlyList<UnresolvedDerivableUnitDefinition> UnitDerivations => unitDerivations;
+    public IReadOnlyList<RawDerivableUnitDefinition> UnitDerivations => unitDerivations;
 
-    public IReadOnlyList<UnresolvedUnitAliasDefinition> UnitAliases => unitAliases;
+    public IReadOnlyList<RawUnitAliasDefinition> UnitAliases => unitAliases;
     public IReadOnlyList<RawBiasedUnitDefinition> BiasedUnits => biasedUnits;
-    public IReadOnlyList<UnresolvedDerivedUnitDefinition> DerivedUnits => derivedUnits;
-    public IReadOnlyList<UnresolvedPrefixedUnitDefinition> PrefixedUnits => prefixedUnits;
+    public IReadOnlyList<RawDerivedUnitDefinition> DerivedUnits => derivedUnits;
+    public IReadOnlyList<RawPrefixedUnitDefinition> PrefixedUnits => prefixedUnits;
     public IReadOnlyList<RawScaledUnitDefinition> ScaledUnits => scaledUnits;
 
     public IReadOnlyDictionary<string, IRawUnitInstance> UnitsByName => unitsByName;
     public IReadOnlyDictionary<string, IRawUnitInstance> UnitsByPluralName => unitsByPluralName;
     public IReadOnlyDictionary<string, IRawDerivableUnit> DerivationsByID => derivationsByID;
 
-    private ReadOnlyEquatableList<UnresolvedDerivableUnitDefinition> unitDerivations { get; }
+    private ReadOnlyEquatableList<RawDerivableUnitDefinition> unitDerivations { get; }
 
-    private ReadOnlyEquatableList<UnresolvedUnitAliasDefinition> unitAliases { get; }
-    private ReadOnlyEquatableList<UnresolvedDerivedUnitDefinition> derivedUnits { get; }
+    private ReadOnlyEquatableList<RawUnitAliasDefinition> unitAliases { get; }
+    private ReadOnlyEquatableList<RawDerivedUnitDefinition> derivedUnits { get; }
     private ReadOnlyEquatableList<RawBiasedUnitDefinition> biasedUnits { get; }
-    private ReadOnlyEquatableList<UnresolvedPrefixedUnitDefinition> prefixedUnits { get; }
+    private ReadOnlyEquatableList<RawPrefixedUnitDefinition> prefixedUnits { get; }
     private ReadOnlyEquatableList<RawScaledUnitDefinition> scaledUnits { get; }
 
     private ReadOnlyEquatableDictionary<string, IRawUnitInstance> unitsByName { get; }
@@ -60,9 +60,9 @@ internal class UnresolvedUnitType : IRawUnitType
     IReadOnlyList<IRawScaledUnit> IRawUnitType.ScaledUnits => ScaledUnits;
 
     public UnresolvedUnitType(DefinedType type, MinimalLocation unitLocation, RawSharpMeasuresUnitDefinition definition, RawFixedUnitDefinition? fixedUnit,
-        IReadOnlyList<UnresolvedDerivableUnitDefinition> unitDerivations, IReadOnlyList<UnresolvedUnitAliasDefinition> unitAliases,
-        IReadOnlyList<UnresolvedDerivedUnitDefinition> derivedUnits, IReadOnlyList<RawBiasedUnitDefinition> biasedUnits,
-        IReadOnlyList<UnresolvedPrefixedUnitDefinition> prefixedUnits, IReadOnlyList<RawScaledUnitDefinition> scaledUnits)
+        IReadOnlyList<RawDerivableUnitDefinition> unitDerivations, IReadOnlyList<RawUnitAliasDefinition> unitAliases,
+        IReadOnlyList<RawDerivedUnitDefinition> derivedUnits, IReadOnlyList<RawBiasedUnitDefinition> biasedUnits,
+        IReadOnlyList<RawPrefixedUnitDefinition> prefixedUnits, IReadOnlyList<RawScaledUnitDefinition> scaledUnits)
     {
         Type = type;
         TypeLocation = unitLocation;

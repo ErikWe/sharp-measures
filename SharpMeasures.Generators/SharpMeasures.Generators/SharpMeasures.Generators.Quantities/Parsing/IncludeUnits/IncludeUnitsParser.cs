@@ -5,11 +5,11 @@ using SharpMeasures.Generators.Quantities.Parsing.UnitList;
 
 public static class IncludeUnitsParser
 {
-    public static IAttributeParser<RawUnitListDefinition> Parser { get; } = new AttributeParser();
+    public static IAttributeParser<UnprocessedUnitListDefinition> Parser { get; } = new AttributeParser();
 
-    private static RawUnitListDefinition DefaultDefinition() => RawUnitListDefinition.Empty;
+    private static UnprocessedUnitListDefinition DefaultDefinition() => UnprocessedUnitListDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawUnitListDefinition, UnitListLocations, IncludeUnitsAttribute>
+    private class AttributeParser : AAttributeParser<UnprocessedUnitListDefinition, UnitListLocations, IncludeUnitsAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, IncludeUnitsProperties.AllProperties) { }
     }

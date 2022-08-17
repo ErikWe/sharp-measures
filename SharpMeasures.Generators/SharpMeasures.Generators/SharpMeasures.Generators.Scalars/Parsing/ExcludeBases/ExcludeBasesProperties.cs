@@ -8,8 +8,8 @@ using System.Collections.Generic;
 
 internal static class ExcludeBasesProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawUnitListDefinition>> AllProperties => new IAttributeProperty<RawUnitListDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<UnprocessedUnitListDefinition>> AllProperties => new IAttributeProperty<UnprocessedUnitListDefinition>[]
     {
-        CommonProperties.Items<string?, RawUnitListDefinition, UnitListLocations>(nameof(ExcludeBasesAttribute.ExcludedBases))
+        CommonProperties.Items<string?, UnprocessedUnitListDefinition, UnitListLocations>(nameof(ExcludeBasesAttribute.ExcludedBases))
     };
 }

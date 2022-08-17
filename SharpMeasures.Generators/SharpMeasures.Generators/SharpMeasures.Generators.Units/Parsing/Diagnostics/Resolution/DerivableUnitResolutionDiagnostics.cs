@@ -11,7 +11,7 @@ internal class DerivableUnitResolutionDiagnostics : IDerivableUnitResolutionDiag
 
     private DerivableUnitResolutionDiagnostics() { }
 
-    public Diagnostic SignatureElementNotUnit(IDerivableUnitResolutionContext context, UnresolvedDerivableUnitDefinition definition, int index)
+    public Diagnostic SignatureElementNotUnit(IDerivableUnitResolutionContext context, RawDerivableUnitDefinition definition, int index)
     {
         return DiagnosticConstruction.TypeNotUnit(definition.Locations.SignatureElements[index].AsRoslynLocation(), definition.Signature[index].Name);
     }

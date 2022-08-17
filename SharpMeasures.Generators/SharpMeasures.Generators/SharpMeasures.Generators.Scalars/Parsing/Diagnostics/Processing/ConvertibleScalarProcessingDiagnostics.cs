@@ -12,7 +12,7 @@ internal class ConvertibleScalarProcessingDiagnostics : AConvertibleQuantityProc
 
     private ConvertibleScalarProcessingDiagnostics() { }
 
-    public override Diagnostic NullQuantity(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, int index)
+    public override Diagnostic NullQuantity(IConvertibleQuantityProcessingContext context, UnprocessedConvertibleQuantityDefinition definition, int index)
     {
         return DiagnosticConstruction.NullTypeNotScalar(definition.Locations.QuantitiesElements[index].AsRoslynLocation());
     }

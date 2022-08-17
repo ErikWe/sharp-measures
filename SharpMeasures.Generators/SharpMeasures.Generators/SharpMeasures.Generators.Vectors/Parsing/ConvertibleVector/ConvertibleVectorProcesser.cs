@@ -9,9 +9,9 @@ internal class ConvertibleVectorProcesser : AConvertibleQuantityProcesser<Unreso
 {
     public ConvertibleVectorProcesser(IConvertibleQuantityProcessingDiagnostics diagnostics) : base(diagnostics) { }
 
-    public override IOptionalWithDiagnostics<UnresolvedConvertibleVectorDefinition> Process(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
+    public override IOptionalWithDiagnostics<UnresolvedConvertibleVectorDefinition> Process(IConvertibleQuantityProcessingContext context, UnprocessedConvertibleQuantityDefinition definition)
     {
-        var validity = CheckValidity(context, definition);
+        var validity = Validate(context, definition);
         var allDiagnostics = validity.Diagnostics;
 
         if (validity.IsInvalid)

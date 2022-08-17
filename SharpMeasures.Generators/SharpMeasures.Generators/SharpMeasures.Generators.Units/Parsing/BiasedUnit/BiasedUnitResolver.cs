@@ -27,18 +27,18 @@ internal class BiasedUnitResolver : ADependantUnitResolver<IBiasedUnitResolution
 
     public override IOptionalWithDiagnostics<BiasedUnitDefinition> Process(IBiasedUnitResolutionContext context, RawBiasedUnitDefinition definition)
     {
-        var unitBiased = ValidateUnitIncludesBiasTerm(context, definition);
-        var dependantOn = unitBiased.Merge(context, definition, ProcessDependantOn);
-        return dependantOn.Transform(definition, ProduceResult);
+        return ValidateUnitIncludesBiasTerm(context, definition)
+            .Merge(() => ProcessDependantOn(context, definition))
+            .Transform((dependantOn) => ProduceResult(definition, dependantOn));
+    }
+
+    private static BiasedUnitDefinition ProduceResult(RawBiasedUnitDefinition definition, IRawUnitInstance from)
+    {
+        return new(definition.Name, definition.Plural, from, definition.Expression, definition.Locations);
     }
 
     private IValidityWithDiagnostics ValidateUnitIncludesBiasTerm(IBiasedUnitResolutionContext context, RawBiasedUnitDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(context.UnitIncludesBiasTerm, () => Diagnostics.UnitNotIncludingBiasTerm(context, definition));
-    }
-
-    private static BiasedUnitDefinition ProduceResult(RawBiasedUnitDefinition definition, IRawUnitInstance dependantOn)
-    {
-        return new(definition.Name, definition.Plural, dependantOn, definition.Expression, definition.Locations);
     }
 }

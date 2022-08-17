@@ -1,17 +1,28 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.PrefixedUnit;
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
+using SharpMeasures.Generators.Units.UnitInstances;
 using SharpMeasures.Generators.Units.Utility;
+using SharpMeasures.Generators.Raw.Units.UnitInstances;
 
-internal record class RawPrefixedUnitDefinition : AUnprocessedDependantUnitDefinition<RawPrefixedUnitDefinition, PrefixedUnitLocations>
+internal record class RawPrefixedUnitDefinition : ARawDependantUnitDefinition<PrefixedUnitLocations>, IRawPrefixedUnit
 {
-    public static RawPrefixedUnitDefinition Empty { get; } = new();
+    public string From => DependantOn;
 
-    public string? From => DependantOn;
-    public MetricPrefixName MetricPrefixName { get; init; }
-    public BinaryPrefixName BinaryPrefixName { get; init; }
+    public MetricPrefixName? MetricPrefix { get; }
+    public BinaryPrefixName? BinaryPrefix { get; }
 
-    protected override RawPrefixedUnitDefinition Definition => this;
+    public PrefixType SpecifiedPrefixType => MetricPrefix is null ? PrefixType.Binary : PrefixType.Metric;
 
-    private RawPrefixedUnitDefinition() : base(PrefixedUnitLocations.Empty) { }
+    public RawPrefixedUnitDefinition(string name, string plural, string from, MetricPrefixName metricPrefix, PrefixedUnitLocations locations)
+        : base(name, plural, from, locations)
+    {
+        MetricPrefix = metricPrefix;
+    }
+
+    public RawPrefixedUnitDefinition(string name, string plural, string from, BinaryPrefixName binaryPrefix, PrefixedUnitLocations locations)
+        : base(name, plural, from, locations)
+    {
+        BinaryPrefix = binaryPrefix;
+    }
 }

@@ -1,17 +1,21 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 
+using OneOf;
+
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;
+using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
 using SharpMeasures.Generators.Raw.Quantities;
 using SharpMeasures.Generators.Raw.Scalars;
 using SharpMeasures.Generators.Raw.Units;
 using SharpMeasures.Generators.Raw.Units.UnitInstances;
+using SharpMeasures.Generators.Raw.Vectors;
 using SharpMeasures.Generators.Raw.Vectors.Groups;
 
-internal record class SharpMeasuresScalarDefinition : AAttributeDefinition<SharpMeasuresScalarLocations>, IScalar
+internal record class SharpMeasuresScalarDefinition : AAttributeDefinition<SharpMeasuresScalarLocations>, IScalar, IDefaultUnitDefinition
 {
     public IRawUnitType Unit { get; }
-    public IRawVectorGroupType? VectorGroup { get; }
+    public OneOf<IRawVectorType, IRawVectorGroupType, IRawVectorGroupMemberType>? Vector { get; }
 
     public bool UseUnitBias { get; }
 
@@ -32,14 +36,15 @@ internal record class SharpMeasuresScalarDefinition : AAttributeDefinition<Sharp
 
     public bool? GenerateDocumentation { get; }
 
-    public SharpMeasuresScalarDefinition(IRawUnitType unit, IRawVectorGroupType? vectorGroup, bool useUnitBias, bool implementSum, bool implementDifference,
-        IRawScalarType difference, IRawUnitInstance? defaultUnit, string? defaultUnitSymbol, IRawScalarType? reciprocal,
-        IRawScalarType? square, IRawScalarType? cube, IRawScalarType? squareRoot, IRawScalarType? cubeRoot, bool? generateDocumentation,
-        SharpMeasuresScalarLocations locations)
+    IDefaultUnitLocations IDefaultUnitDefinition.DefaultUnitLocations => Locations;
+
+    public SharpMeasuresScalarDefinition(IRawUnitType unit, OneOf<IRawVectorType, IRawVectorGroupType, IRawVectorGroupMemberType>? vector, bool useUnitBias, bool implementSum, bool implementDifference,
+        IRawScalarType difference, IRawUnitInstance? defaultUnit, string? defaultUnitSymbol, IRawScalarType? reciprocal, IRawScalarType? square, IRawScalarType? cube, IRawScalarType? squareRoot,
+        IRawScalarType? cubeRoot, bool? generateDocumentation, SharpMeasuresScalarLocations locations)
         : base(locations)
     {
         Unit = unit;
-        VectorGroup = vectorGroup;
+        Vector = vector;
 
         UseUnitBias = useUnitBias;
 

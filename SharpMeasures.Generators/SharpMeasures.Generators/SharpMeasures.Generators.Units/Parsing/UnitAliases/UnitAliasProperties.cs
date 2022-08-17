@@ -7,10 +7,10 @@ using System.Collections.Generic;
 
 internal static class UnitAliasProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawUnitAliasDefinition>> AllProperties => new IAttributeProperty<RawUnitAliasDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<UnprocessedUnitAliasDefinition>> AllProperties => new IAttributeProperty<UnprocessedUnitAliasDefinition>[]
     {
-        CommonProperties.Name<RawUnitAliasDefinition, UnitAliasLocations>(nameof(UnitAliasAttribute.Name)),
-        CommonProperties.Plural<RawUnitAliasDefinition, UnitAliasLocations>(nameof(UnitAliasAttribute.Plural)),
-        CommonProperties.DependantOn<RawUnitAliasDefinition, UnitAliasLocations>(nameof(UnitAliasAttribute.AliasOf)),
+        CommonProperties.Name<UnprocessedUnitAliasDefinition, UnitAliasLocations>(nameof(UnitAliasAttribute.Name)),
+        CommonProperties.Plural<UnprocessedUnitAliasDefinition, UnitAliasLocations>(nameof(UnitAliasAttribute.Plural)),
+        CommonProperties.DependantOn<UnprocessedUnitAliasDefinition, UnitAliasLocations>(nameof(UnitAliasAttribute.AliasOf)),
     };
 }

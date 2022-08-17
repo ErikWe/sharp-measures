@@ -12,20 +12,20 @@ internal abstract record class ARawVectorGroupType
     public DefinedType Type { get; }
     public MinimalLocation TypeLocation { get; }
 
-    public IEnumerable<RawDerivedQuantityDefinition> Derivations => derivations;
-    public IEnumerable<RawConvertibleQuantityDefinition> Conversions => conversions;
+    public IEnumerable<UnprocessedDerivedQuantityDefinition> Derivations => derivations;
+    public IEnumerable<UnprocessedConvertibleQuantityDefinition> Conversions => conversions;
 
-    public IEnumerable<RawUnitListDefinition> UnitInclusions => unitInclusions;
-    public IEnumerable<RawUnitListDefinition> UnitExclusions => unitExclusions;
+    public IEnumerable<UnprocessedUnitListDefinition> UnitInclusions => unitInclusions;
+    public IEnumerable<UnprocessedUnitListDefinition> UnitExclusions => unitExclusions;
 
-    private EquatableEnumerable<RawDerivedQuantityDefinition> derivations { get; }
-    private EquatableEnumerable<RawConvertibleQuantityDefinition> conversions { get; }
+    private EquatableEnumerable<UnprocessedDerivedQuantityDefinition> derivations { get; }
+    private EquatableEnumerable<UnprocessedConvertibleQuantityDefinition> conversions { get; }
 
-    private EquatableEnumerable<RawUnitListDefinition> unitInclusions { get; }
-    private EquatableEnumerable<RawUnitListDefinition> unitExclusions { get; }
+    private EquatableEnumerable<UnprocessedUnitListDefinition> unitInclusions { get; }
+    private EquatableEnumerable<UnprocessedUnitListDefinition> unitExclusions { get; }
 
-    protected ARawVectorGroupType(DefinedType type, MinimalLocation typeLocation, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawConvertibleQuantityDefinition> conversions,
-        IEnumerable<RawUnitListDefinition> unitInclusions, IEnumerable<RawUnitListDefinition> unitExclusions)
+    protected ARawVectorGroupType(DefinedType type, MinimalLocation typeLocation, IEnumerable<UnprocessedDerivedQuantityDefinition> derivations, IEnumerable<UnprocessedConvertibleQuantityDefinition> conversions,
+        IEnumerable<UnprocessedUnitListDefinition> unitInclusions, IEnumerable<UnprocessedUnitListDefinition> unitExclusions)
     {
         Type = type;
         TypeLocation = typeLocation;

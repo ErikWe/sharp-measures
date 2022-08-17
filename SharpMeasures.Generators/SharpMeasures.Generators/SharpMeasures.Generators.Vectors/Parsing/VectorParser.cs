@@ -115,8 +115,8 @@ public static class VectorParser
     private class VectorGroupBaseParser : AVectorGroupParser<RawSharpMeasuresVectorGroupDefinition, RawVectorGroupBaseType>
     {
         protected override RawVectorGroupBaseType FinalizeParse(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresVectorGroupDefinition definition,
-            IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawUnitListDefinition> unitInclusions,
-            IEnumerable<RawUnitListDefinition> unitExclusions)
+            IEnumerable<UnprocessedDerivedQuantityDefinition> derivations, IEnumerable<UnprocessedConvertibleQuantityDefinition> conversions, IEnumerable<UnprocessedUnitListDefinition> unitInclusions,
+            IEnumerable<UnprocessedUnitListDefinition> unitExclusions)
         {
             return new(type, typeLocation, definition, derivations, conversions, unitInclusions, unitExclusions);
         }
@@ -127,8 +127,8 @@ public static class VectorParser
     private class VectorGroupSpecializationParser : AVectorGroupParser<RawSpecializedSharpMeasuresVectorGroupDefinition, RawVectorGroupSpecializationType>
     {
         protected override RawVectorGroupSpecializationType FinalizeParse(DefinedType type, MinimalLocation typeLocation, RawSpecializedSharpMeasuresVectorGroupDefinition definition,
-            IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawUnitListDefinition> unitInclusions,
-            IEnumerable<RawUnitListDefinition> unitExclusions)
+            IEnumerable<UnprocessedDerivedQuantityDefinition> derivations, IEnumerable<UnprocessedConvertibleQuantityDefinition> conversions, IEnumerable<UnprocessedUnitListDefinition> unitInclusions,
+            IEnumerable<UnprocessedUnitListDefinition> unitExclusions)
         {
             return new(type, typeLocation, definition, derivations, conversions, unitInclusions, unitExclusions);
         }
@@ -161,8 +161,8 @@ public static class VectorParser
             return OptionalWithDiagnostics.Result(product);
         }
 
-        protected abstract TProduct FinalizeParse(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations,
-            IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawUnitListDefinition> unitInclusions, IEnumerable<RawUnitListDefinition> unitExclusions);
+        protected abstract TProduct FinalizeParse(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IEnumerable<UnprocessedDerivedQuantityDefinition> derivations,
+            IEnumerable<UnprocessedConvertibleQuantityDefinition> conversions, IEnumerable<UnprocessedUnitListDefinition> unitInclusions, IEnumerable<UnprocessedUnitListDefinition> unitExclusions);
 
         protected abstract IAttributeParser<TDefinition> Parser { get; }
     }
@@ -191,8 +191,8 @@ public static class VectorParser
     private class IndividualVectorBaseParser : AIndividualVectorParser<RawSharpMeasuresVectorDefinition, RawIndividualVectorBaseType>
     {
         protected override RawIndividualVectorBaseType FinalizeParse(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresVectorDefinition definition,
-            IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawVectorConstantDefinition> constants,
-            IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawUnitListDefinition> unitInclusions, IEnumerable<RawUnitListDefinition> unitExclusions)
+            IEnumerable<UnprocessedDerivedQuantityDefinition> derivations, IEnumerable<RawVectorConstantDefinition> constants,
+            IEnumerable<UnprocessedConvertibleQuantityDefinition> conversions, IEnumerable<UnprocessedUnitListDefinition> unitInclusions, IEnumerable<UnprocessedUnitListDefinition> unitExclusions)
         {
             return new(type, typeLocation, definition, derivations, constants, conversions, unitInclusions, unitExclusions);
         }
@@ -203,8 +203,8 @@ public static class VectorParser
     private class IndividualVectorSpecializationParser : AIndividualVectorParser<RawSpecializedSharpMeasuresVectorDefinition, RawIndividualVectorSpecializationType>
     {
         protected override RawIndividualVectorSpecializationType FinalizeParse(DefinedType type, MinimalLocation typeLocation,
-            RawSpecializedSharpMeasuresVectorDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawVectorConstantDefinition> constants,
-            IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawUnitListDefinition> unitInclusions, IEnumerable<RawUnitListDefinition> unitExclusions)
+            RawSpecializedSharpMeasuresVectorDefinition definition, IEnumerable<UnprocessedDerivedQuantityDefinition> derivations, IEnumerable<RawVectorConstantDefinition> constants,
+            IEnumerable<UnprocessedConvertibleQuantityDefinition> conversions, IEnumerable<UnprocessedUnitListDefinition> unitInclusions, IEnumerable<UnprocessedUnitListDefinition> unitExclusions)
         {
             return new(type, typeLocation, definition, derivations, constants, conversions, unitInclusions, unitExclusions);
         }
@@ -239,8 +239,8 @@ public static class VectorParser
         }
 
         protected abstract TProduct FinalizeParse(DefinedType type, MinimalLocation typeLocation, TDefinition definition,
-            IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
-            IEnumerable<RawUnitListDefinition> unitInclusions, IEnumerable<RawUnitListDefinition> unitExclusions);
+            IEnumerable<UnprocessedDerivedQuantityDefinition> derivations, IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<UnprocessedConvertibleQuantityDefinition> conversions,
+            IEnumerable<UnprocessedUnitListDefinition> unitInclusions, IEnumerable<UnprocessedUnitListDefinition> unitExclusions);
 
         protected abstract IAttributeParser<TDefinition> Parser { get; }
     }
@@ -248,8 +248,8 @@ public static class VectorParser
     private class VectorGroupBaseProcesser : AVectorGroupProcesser<UnresolvedSharpMeasuresVectorGroupDefinition, RawVectorGroupBaseType, UnresolvedVectorGroupBaseType>
     {
         protected override UnresolvedVectorGroupBaseType FinalizeProcess(DefinedType type, MinimalLocation typeLocation, UnresolvedSharpMeasuresVectorGroupDefinition definition,
-            IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
-            IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
+            IReadOnlyList<RawDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<RawUnitListDefinition> unitInclusions,
+            IReadOnlyList<RawUnitListDefinition> unitExclusions)
         {
             return new(type, typeLocation, definition, derivations, conversions, unitInclusions, unitExclusions);
         }
@@ -268,8 +268,8 @@ public static class VectorParser
         UnresolvedVectorGroupSpecializationType>
     {
         protected override UnresolvedVectorGroupSpecializationType FinalizeProcess(DefinedType type, MinimalLocation typeLocation,
-            UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition, IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations,
-            IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
+            UnresolvedSpecializedSharpMeasuresVectorGroupDefinition definition, IReadOnlyList<RawDerivedQuantityDefinition> derivations,
+            IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<RawUnitListDefinition> unitInclusions, IReadOnlyList<RawUnitListDefinition> unitExclusions)
         {
             return new(type, typeLocation, definition, derivations, conversions, unitInclusions, unitExclusions);
         }
@@ -316,7 +316,7 @@ public static class VectorParser
             if (includeUnits.HasResult && includeUnits.Result.Count > 0 && excludeUnits.HasResult && excludeUnits.Result.Count > 0)
             {
                 allDiagnostics = allDiagnostics.Concat(new[] { VectorTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(raw.TypeLocation) });
-                excludeUnits = ResultWithDiagnostics.Construct(Array.Empty<UnresolvedUnitListDefinition>() as IReadOnlyList<UnresolvedUnitListDefinition>);
+                excludeUnits = ResultWithDiagnostics.Construct(Array.Empty<RawUnitListDefinition>() as IReadOnlyList<RawUnitListDefinition>);
             }
 
             var product = FinalizeProcess(raw.Type, raw.TypeLocation, vectorGroup.Result, derivations.Result, convertibleVectors.Result, includeUnits.Result, excludeUnits.Result);
@@ -324,8 +324,8 @@ public static class VectorParser
             return OptionalWithDiagnostics.Result(product, allDiagnostics);
         }
 
-        protected abstract TProduct FinalizeProcess(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations,
-            IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions);
+        protected abstract TProduct FinalizeProcess(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<RawDerivedQuantityDefinition> derivations,
+            IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<RawUnitListDefinition> unitInclusions, IReadOnlyList<RawUnitListDefinition> unitExclusions);
 
         protected abstract NamedType? GetUnit(TDefinition scalar);
 
@@ -362,8 +362,8 @@ public static class VectorParser
         UnresolvedIndividualVectorBaseType>
     {
         protected override UnresolvedIndividualVectorBaseType FinalizeProcess(DefinedType type, MinimalLocation typeLocation, UnresolvedSharpMeasuresVectorDefinition definition,
-            IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedVectorConstantDefinition> constants, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions,
-            IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
+            IReadOnlyList<RawDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedVectorConstantDefinition> constants, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions,
+            IReadOnlyList<RawUnitListDefinition> unitInclusions, IReadOnlyList<RawUnitListDefinition> unitExclusions)
         {
             return new(type, typeLocation, definition, derivations, constants, conversions, unitInclusions, unitExclusions);
         }
@@ -382,8 +382,8 @@ public static class VectorParser
         UnresolvedIndividualVectorSpecializationType>
     {
         protected override UnresolvedIndividualVectorSpecializationType FinalizeProcess(DefinedType type, MinimalLocation typeLocation, UnresolvedSpecializedSharpMeasuresVectorDefinition definition,
-            IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedVectorConstantDefinition> constants, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions,
-            IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
+            IReadOnlyList<RawDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedVectorConstantDefinition> constants, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions,
+            IReadOnlyList<RawUnitListDefinition> unitInclusions, IReadOnlyList<RawUnitListDefinition> unitExclusions)
         {
             return new(type, typeLocation, definition, derivations, constants, conversions, unitInclusions, unitExclusions);
         }
@@ -438,7 +438,7 @@ public static class VectorParser
             if (includeUnits.HasResult && includeUnits.Result.Count > 0 && excludeUnits.HasResult && excludeUnits.Result.Count > 0)
             {
                 allDiagnostics = allDiagnostics.Concat(new[] { VectorTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(raw.TypeLocation) });
-                excludeUnits = ResultWithDiagnostics.Construct(Array.Empty<UnresolvedUnitListDefinition>() as IReadOnlyList<UnresolvedUnitListDefinition>);
+                excludeUnits = ResultWithDiagnostics.Construct(Array.Empty<RawUnitListDefinition>() as IReadOnlyList<RawUnitListDefinition>);
             }
 
             TProduct product = FinalizeProcess(raw.Type, raw.TypeLocation, vector.Result, derivations.Result, constants.Result, convertibleVectors.Result, includeUnits.Result, excludeUnits.Result);
@@ -446,9 +446,9 @@ public static class VectorParser
             return OptionalWithDiagnostics.Result(product, allDiagnostics);
         }
 
-        protected abstract TProduct FinalizeProcess(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations,
-            IReadOnlyList<UnresolvedVectorConstantDefinition> constants, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
-            IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions);
+        protected abstract TProduct FinalizeProcess(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<RawDerivedQuantityDefinition> derivations,
+            IReadOnlyList<UnresolvedVectorConstantDefinition> constants, IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<RawUnitListDefinition> unitInclusions,
+            IReadOnlyList<RawUnitListDefinition> unitExclusions);
 
         protected abstract NamedType? GetUnit(TDefinition vector);
 

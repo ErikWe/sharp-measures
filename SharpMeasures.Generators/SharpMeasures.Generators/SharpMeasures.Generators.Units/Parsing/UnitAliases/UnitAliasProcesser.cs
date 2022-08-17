@@ -3,36 +3,21 @@
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-using System.Linq;
-
-internal class UnitAliasProcesser : ADependantUnitProcesser<IUnitProcessingContext, RawUnitAliasDefinition, UnitAliasLocations, UnresolvedUnitAliasDefinition>
+internal class UnitAliasProcesser : ADependantUnitProcesser<IUnitProcessingContext, UnprocessedUnitAliasDefinition, UnitAliasLocations, RawUnitAliasDefinition>
 {
-    public UnitAliasProcesser(IDependantUnitProcessingDiagnostics<RawUnitAliasDefinition, UnitAliasLocations> diagnostics) : base(diagnostics) { }
+    public UnitAliasProcesser(IDependantUnitProcessingDiagnostics<UnprocessedUnitAliasDefinition, UnitAliasLocations> diagnostics) : base(diagnostics) { }
 
-    public override IOptionalWithDiagnostics<UnresolvedUnitAliasDefinition> Process(IUnitProcessingContext context, RawUnitAliasDefinition definition)
+    public override IOptionalWithDiagnostics<RawUnitAliasDefinition> Process(IUnitProcessingContext context, UnprocessedUnitAliasDefinition definition)
     {
-        if (VerifyRequiredPropertiesSet(definition) is false)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedUnitAliasDefinition>();
-        }
+        return VerifyRequiredPropertiesSet(definition)
+            .Validate(() => ValidateUnitName(context, definition))
+            .Validate(() => ValidateDependantOn(context, definition))
+            .Merge(() => ProcessPlural(context, definition))
+            .Transform((interpretedPlural) => ProduceResult(definition, interpretedPlural));
+    }
 
-        var validity = CheckDependantUnitValidity(context, definition);
-        var allDiagnostics = validity.Diagnostics;
-
-        if (validity.IsInvalid)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedUnitAliasDefinition>(allDiagnostics);
-        }
-
-        var processedPlural = ProcessPlural(context, definition);
-        allDiagnostics = allDiagnostics.Concat(processedPlural.Diagnostics);
-
-        if (processedPlural.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedUnitAliasDefinition>(allDiagnostics);
-        }
-
-        UnresolvedUnitAliasDefinition product = new(definition.Name!, processedPlural.Result, definition.AliasOf!, definition.Locations);
-        return OptionalWithDiagnostics.Result(product, allDiagnostics);
+    private static RawUnitAliasDefinition ProduceResult(UnprocessedUnitAliasDefinition definition, string interpretedPlural)
+    {
+        return new(definition.Name!, interpretedPlural, definition.AliasOf!, definition.Locations);
     }
 }

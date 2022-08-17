@@ -19,8 +19,8 @@ internal record class UnresolvedIndividualVectorBaseType : AUnresolvedIndividual
     IRawVectorBase IRawVectorBaseType.Definition => Definition;
 
     public UnresolvedIndividualVectorBaseType(DefinedType type, MinimalLocation typeLocation, UnresolvedSharpMeasuresVectorDefinition definition,
-        IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedVectorConstantDefinition> constants,
-        IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
-        IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
+        IReadOnlyList<RawDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedVectorConstantDefinition> constants,
+        IReadOnlyList<UnresolvedConvertibleVectorDefinition> conversions, IReadOnlyList<RawUnitListDefinition> unitInclusions,
+        IReadOnlyList<RawUnitListDefinition> unitExclusions)
         : base(type, typeLocation, definition, derivations, constants, conversions, unitInclusions, unitExclusions) { }
 }

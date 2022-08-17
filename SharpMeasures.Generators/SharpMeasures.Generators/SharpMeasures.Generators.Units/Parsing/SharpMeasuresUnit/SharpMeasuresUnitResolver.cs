@@ -31,9 +31,15 @@ internal class SharpMeasuresUnitResolver : AProcesser<ISharpMeasuresUnitResoluti
 
     public override IOptionalWithDiagnostics<SharpMeasuresUnitDefinition> Process(ISharpMeasuresUnitResolutionContext context, RawSharpMeasuresUnitDefinition definition)
     {
-        var typeNotAlreadyUnit = ValidateTypeNotAlreadyUnit(context, definition);
-        var scalarBase = typeNotAlreadyUnit.Merge(context, definition, ResolveQuantity).Validate(context, definition, ValidateQuantityNotBiased);
-        return scalarBase.Transform(definition, ProduceResult);
+        return ValidateTypeNotAlreadyUnit(context, definition)
+            .Merge(() => ResolveQuantity(context, definition))
+            .Validate((scalarBase) => ValidateQuantityNotBiased(context, definition, scalarBase))
+            .Transform((scalarBase) => ProduceResult(definition, scalarBase));
+    }
+
+    private static SharpMeasuresUnitDefinition ProduceResult(RawSharpMeasuresUnitDefinition definition, IRawScalarBaseType scalarBase)
+    {
+        return new(scalarBase, definition.BiasTerm, definition.GenerateDocumentation, definition.Locations);
     }
 
     private IValidityWithDiagnostics ValidateTypeNotAlreadyUnit(ISharpMeasuresUnitResolutionContext context, RawSharpMeasuresUnitDefinition definition)
@@ -53,10 +59,5 @@ internal class SharpMeasuresUnitResolver : AProcesser<ISharpMeasuresUnitResoluti
     private IValidityWithDiagnostics ValidateQuantityNotBiased(ISharpMeasuresUnitResolutionContext context, RawSharpMeasuresUnitDefinition definition, IRawScalarBaseType scalarBase)
     {
         return ValidityWithDiagnostics.Conditional(scalarBase.Definition.UseUnitBias, () => Diagnostics.QuantityBiased(context, definition));
-    }
-
-    private static SharpMeasuresUnitDefinition ProduceResult(RawSharpMeasuresUnitDefinition definition, IRawScalarBaseType scalarBase)
-    {
-        return new(scalarBase, definition.BiasTerm, definition.GenerateDocumentation, definition.Locations);
     }
 }

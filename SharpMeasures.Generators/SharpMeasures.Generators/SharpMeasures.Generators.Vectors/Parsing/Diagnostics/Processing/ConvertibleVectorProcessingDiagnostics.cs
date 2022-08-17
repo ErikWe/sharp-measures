@@ -12,7 +12,7 @@ internal class ConvertibleVectorProcessingDiagnostics : AConvertibleQuantityProc
 
     private ConvertibleVectorProcessingDiagnostics() { }
 
-    public override Diagnostic NullQuantity(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, int index)
+    public override Diagnostic NullQuantity(IConvertibleQuantityProcessingContext context, UnprocessedConvertibleQuantityDefinition definition, int index)
     {
         return DiagnosticConstruction.NullTypeNotVector(definition.Locations.QuantitiesElements[index].AsRoslynLocation());
     }

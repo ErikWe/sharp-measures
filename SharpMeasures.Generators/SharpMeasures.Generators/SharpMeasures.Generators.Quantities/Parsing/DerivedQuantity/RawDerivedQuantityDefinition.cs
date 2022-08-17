@@ -1,27 +1,23 @@
 ﻿namespace SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 
-using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Attributes.Parsing;
+using SharpMeasures.Generators.Raw.Quantities;
 
-using System.Collections.Generic;
-
-public record class RawDerivedQuantityDefinition : AUnprocessedAttributeDefinition<RawDerivedQuantityDefinition, DerivedQuantityLocations>
+public record class RawDerivedQuantityDefinition : AAttributeDefinition<DerivedQuantityLocations>, IRawDerivedQuantity
 {
-    public static RawDerivedQuantityDefinition Empty { get; } = new(DerivedQuantityLocations.Empty);
+    public string Expression { get; }
+    public RawQuantityDerivationSignature Signature { get; }
 
-    public string? Expression { get; init; }
-    public IReadOnlyList<NamedType?> Signature
+    public bool ImplementOperators { get; }
+    public bool ImplementAlgebraicallyEquivalentDerivations { get; }
+
+    public RawDerivedQuantityDefinition(string expression, RawQuantityDerivationSignature signature, bool implementOperators,
+        bool implementAlgebraicallyEquivalentDerivations, DerivedQuantityLocations locations) : base(locations)
     {
-        get => signature;
-        init => signature = value.AsReadOnlyEquatable();
+        Expression = expression;
+        Signature = signature;
+
+        ImplementOperators = implementOperators;
+        ImplementAlgebraicallyEquivalentDerivations = implementAlgebraicallyEquivalentDerivations;
     }
-
-    public bool ImplementOperators { get; init; }
-    public bool ImplementAlgebraicallyEquivalentDerivations { get; init; }
-
-    private ReadOnlyEquatableList<NamedType?> signature { get; init; } = ReadOnlyEquatableList<NamedType?>.Empty;
-
-    protected override RawDerivedQuantityDefinition Definition => this;
-
-    private RawDerivedQuantityDefinition(DerivedQuantityLocations locations) : base(locations) { }
 }

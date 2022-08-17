@@ -10,9 +10,9 @@ using System.Collections.Generic;
 
 internal static class ConvertibleQuantityProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawConvertibleQuantityDefinition>> AllProperties => new IAttributeProperty<RawConvertibleQuantityDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<UnprocessedConvertibleQuantityDefinition>> AllProperties => new IAttributeProperty<UnprocessedConvertibleQuantityDefinition>[]
     {
-        CommonProperties.Items<INamedTypeSymbol, NamedType?, RawConvertibleQuantityDefinition, ConvertibleQuantityLocations>
+        CommonProperties.Items<INamedTypeSymbol, NamedType?, UnprocessedConvertibleQuantityDefinition, ConvertibleQuantityLocations>
             (nameof(ConvertibleQuantityAttribute.Quantities), static (x) => x?.AsNamedType()),
         Bidirectional,
         CastOperatorBehaviour

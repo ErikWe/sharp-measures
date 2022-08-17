@@ -7,10 +7,10 @@ using System.Collections.Generic;
 
 internal static class DerivedUnitProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawDerivedUnitDefinition>> AllProperties => new IAttributeProperty<RawDerivedUnitDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<UnprocessedDerivedUnitDefinition>> AllProperties => new IAttributeProperty<UnprocessedDerivedUnitDefinition>[]
     {
-        CommonProperties.Name<RawDerivedUnitDefinition, DerivedUnitLocations>(nameof(DerivedUnitAttribute.Name)),
-        CommonProperties.Plural<RawDerivedUnitDefinition, DerivedUnitLocations>(nameof(DerivedUnitAttribute.Plural)),
+        CommonProperties.Name<UnprocessedDerivedUnitDefinition, DerivedUnitLocations>(nameof(DerivedUnitAttribute.Name)),
+        CommonProperties.Plural<UnprocessedDerivedUnitDefinition, DerivedUnitLocations>(nameof(DerivedUnitAttribute.Plural)),
         DerivationID,
         Units
     };

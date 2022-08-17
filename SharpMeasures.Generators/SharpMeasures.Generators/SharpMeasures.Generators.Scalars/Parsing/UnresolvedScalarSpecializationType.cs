@@ -17,9 +17,9 @@ internal record class UnresolvedScalarSpecializationType : AUnresolvedScalarType
     IRawScalarSpecialization IRawScalarSpecializationType.Definition => Definition;
 
     public UnresolvedScalarSpecializationType(DefinedType type, MinimalLocation typeLocation, UnresolvedSpecializedSharpMeasuresScalarDefinition definition,
-        IReadOnlyList<UnresolvedDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedScalarConstantDefinition> constants,
-        IReadOnlyList<UnresolvedConvertibleScalarDefinition> conversions, IReadOnlyList<UnresolvedUnitListDefinition> baseInclusions,
-        IReadOnlyList<UnresolvedUnitListDefinition> baseExclusions, IReadOnlyList<UnresolvedUnitListDefinition> unitInclusions,
-        IReadOnlyList<UnresolvedUnitListDefinition> unitExclusions)
+        IReadOnlyList<RawDerivedQuantityDefinition> derivations, IReadOnlyList<UnresolvedScalarConstantDefinition> constants,
+        IReadOnlyList<UnresolvedConvertibleScalarDefinition> conversions, IReadOnlyList<RawUnitListDefinition> baseInclusions,
+        IReadOnlyList<RawUnitListDefinition> baseExclusions, IReadOnlyList<RawUnitListDefinition> unitInclusions,
+        IReadOnlyList<RawUnitListDefinition> unitExclusions)
         : base(type, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInclusions, unitExclusions) { }
 }

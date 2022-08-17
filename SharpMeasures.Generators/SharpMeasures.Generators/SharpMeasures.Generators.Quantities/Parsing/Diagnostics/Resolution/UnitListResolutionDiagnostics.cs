@@ -11,7 +11,7 @@ public class UnitListResolutionDiagnostics : IUnitListResolutionDiagnostics
 
     private UnitListResolutionDiagnostics() { }
 
-    public Diagnostic UnrecognizedUnit(IUnitListResolutionContext context, UnresolvedUnitListDefinition definition, int index)
+    public Diagnostic UnrecognizedUnit(IUnitListResolutionContext context, RawUnitListDefinition definition, int index)
     {
         return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.UnitsElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Units[index], context.Unit.Type.Name);
     }

@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Vectors;
 
-using OneOf;
-
 using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Raw.Scalars;
 using SharpMeasures.Generators.Raw.Vectors;
@@ -13,5 +11,5 @@ public interface IVector : IQuantity
 
     public abstract IRawScalarType? Scalar { get; }
 
-    new public abstract OneOf<IRawVectorType, IRawVectorGroupType, IRawVectorGroupMemberType> Difference { get; }
+    new public abstract IRawVectorType Difference { get; }
 }

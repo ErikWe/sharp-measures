@@ -6,16 +6,15 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
 using System.Collections.Generic;
-using System.Linq;
 
-internal interface IDerivedUnitProcessingDiagnostics : IUnitProcessingDiagnostics<RawDerivedUnitDefinition, DerivedUnitLocations>
+internal interface IDerivedUnitProcessingDiagnostics : IUnitProcessingDiagnostics<UnprocessedDerivedUnitDefinition, DerivedUnitLocations>
 {
-    public abstract Diagnostic? EmptyUnitList(IUnitProcessingContext context, RawDerivedUnitDefinition definition);
-    public abstract Diagnostic? NullUnitElement(IUnitProcessingContext context, RawDerivedUnitDefinition definition, int index);
-    public abstract Diagnostic? EmptyUnitElement(IUnitProcessingContext context, RawDerivedUnitDefinition definition, int index);
+    public abstract Diagnostic? EmptyUnitList(IUnitProcessingContext context, UnprocessedDerivedUnitDefinition definition);
+    public abstract Diagnostic? NullUnitElement(IUnitProcessingContext context, UnprocessedDerivedUnitDefinition definition, int index);
+    public abstract Diagnostic? EmptyUnitElement(IUnitProcessingContext context, UnprocessedDerivedUnitDefinition definition, int index);
 }
 
-internal class DerivedUnitProcesser : AUnitProcesser<IUnitProcessingContext, RawDerivedUnitDefinition, DerivedUnitLocations, UnresolvedDerivedUnitDefinition>
+internal class DerivedUnitProcesser : AUnitProcesser<IUnitProcessingContext, UnprocessedDerivedUnitDefinition, DerivedUnitLocations, RawDerivedUnitDefinition>
 {
     private IDerivedUnitProcessingDiagnostics Diagnostics { get; }
 
@@ -24,43 +23,22 @@ internal class DerivedUnitProcesser : AUnitProcesser<IUnitProcessingContext, Raw
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<UnresolvedDerivedUnitDefinition> Process(IUnitProcessingContext context, RawDerivedUnitDefinition definition)
+    public override IOptionalWithDiagnostics<RawDerivedUnitDefinition> Process(IUnitProcessingContext context, UnprocessedDerivedUnitDefinition definition)
     {
-        if (VerifyRequiredPropertiesSet(definition) is false)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedDerivedUnitDefinition>();
-        }
+        var interpretedPlural = VerifyRequiredPropertiesSet(definition)
+            .Validate(() => ValidateUnitName(context, definition))
+            .Merge(() => ProcessPlural(context, definition));
 
-        var validity = CheckUnitValidity(context, definition);
-        IEnumerable<Diagnostic> allDiagnostics = validity.Diagnostics;
-
-        if (validity.IsInvalid)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedDerivedUnitDefinition>(allDiagnostics);
-        }
-
-        var processedPlural = ProcessPlural(context, definition);
-        allDiagnostics = allDiagnostics.Concat(processedPlural.Diagnostics);
-
-        if (processedPlural.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedDerivedUnitDefinition>(allDiagnostics);
-        }
-
-        var processedUnits = ProcessUnits(context, definition);
-        allDiagnostics = allDiagnostics.Concat(processedUnits.Diagnostics);
-
-        if (processedUnits.LacksResult)
-        {
-            return OptionalWithDiagnostics.Empty<UnresolvedDerivedUnitDefinition>(allDiagnostics);
-        }
-
-        UnresolvedDerivedUnitDefinition product = new(definition.Name!, processedPlural.Result, definition.DerivationID, processedUnits.Result, definition.Locations);
-
-        return OptionalWithDiagnostics.Result(product, allDiagnostics);
+        return interpretedPlural.Reduce().Merge(() => ProcessUnits(context, definition))
+            .Transform((units) => ProduceResult(definition, interpretedPlural.Result, units));
     }
 
-    private IOptionalWithDiagnostics<IReadOnlyList<string>> ProcessUnits(IUnitProcessingContext context, RawDerivedUnitDefinition definition)
+    private static RawDerivedUnitDefinition ProduceResult(UnprocessedDerivedUnitDefinition definition, string interpretedPlural, IReadOnlyList<string> units)
+    {
+        return new(definition.Name!, interpretedPlural, definition.DerivationID, units, definition.Locations);
+    }
+
+    private IOptionalWithDiagnostics<IReadOnlyList<string>> ProcessUnits(IUnitProcessingContext context, UnprocessedDerivedUnitDefinition definition)
     {
         if (definition.Units.Count is 0)
         {

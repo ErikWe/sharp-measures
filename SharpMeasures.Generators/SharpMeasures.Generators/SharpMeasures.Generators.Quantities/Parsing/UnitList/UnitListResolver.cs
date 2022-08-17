@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 public interface IUnitListResolutionDiagnostics
 {
-    public abstract Diagnostic? UnrecognizedUnit(IUnitListResolutionContext context, UnresolvedUnitListDefinition definition, int index);
+    public abstract Diagnostic? UnrecognizedUnit(IUnitListResolutionContext context, RawUnitListDefinition definition, int index);
 }
 
 public interface IUnitListResolutionContext : IProcessingContext
@@ -19,7 +19,7 @@ public interface IUnitListResolutionContext : IProcessingContext
     public IRawUnitType Unit { get; }
 }
 
-public class UnitListResolver : IProcesser<IUnitListResolutionContext, UnresolvedUnitListDefinition, UnitListDefinition>
+public class UnitListResolver : IProcesser<IUnitListResolutionContext, RawUnitListDefinition, UnitListDefinition>
 {
     private IUnitListResolutionDiagnostics Diagnostics { get; }
 
@@ -28,7 +28,7 @@ public class UnitListResolver : IProcesser<IUnitListResolutionContext, Unresolve
         Diagnostics = diagnostics;
     }
 
-    public IOptionalWithDiagnostics<UnitListDefinition> Process(IUnitListResolutionContext context, UnresolvedUnitListDefinition definition)
+    public IOptionalWithDiagnostics<UnitListDefinition> Process(IUnitListResolutionContext context, RawUnitListDefinition definition)
     {
         List<Diagnostic> allDiagnostics = new();
         List<IRawUnitInstance> units = new();

@@ -24,11 +24,22 @@ internal class ScaledUnitProcesser : ADependantUnitProcesser<IUnitProcessingCont
 
     public override IOptionalWithDiagnostics<RawScaledUnitDefinition> Process(IUnitProcessingContext context, UnprocessedScaledUnitDefinition definition)
     {
-        var requiredPropertiesSet = VerifyRequiredPropertiesSet(definition);
-        var unitValidity = requiredPropertiesSet.Validate(context, definition, ValidateUnitName);
-        var expressionValidity = unitValidity.Validate(context, definition, ValidateExpression);
-        var processedPlural = unitValidity.Merge(context, definition, ProcessPlural);
-        return processedPlural.Transform(definition, ProduceResult);
+        return VerifyRequiredPropertiesSet(definition)
+            .Validate(() => ValidateUnitName(context, definition))
+            .Validate(() => ValidateDependantOn(context, definition))
+            .Validate(() => ValidateExpression(context, definition))
+            .Merge(() => ProcessPlural(context, definition))
+            .Transform((interpretedPlural) => ProduceResult(definition, interpretedPlural));
+    }
+
+    private static RawScaledUnitDefinition ProduceResult(UnprocessedScaledUnitDefinition definition, string interpretedPlural)
+    {
+        if (definition.Locations.ExplicitlySetScale)
+        {
+            return new(definition.Name!, interpretedPlural, definition.From!, definition.Scale.ToString(CultureInfo.InvariantCulture), definition.Locations);
+        }
+
+        return new(definition.Name!, interpretedPlural, definition.From!, definition.Expression!, definition.Locations);
     }
 
     protected override IValidityWithDiagnostics VerifyRequiredPropertiesSet(UnprocessedScaledUnitDefinition definition)
@@ -45,7 +56,8 @@ internal class ScaledUnitProcesser : ADependantUnitProcesser<IUnitProcessingCont
             return ValidityWithDiagnostics.Valid;
         }
 
-        return IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, ValidateExpressionNotNull, ValidateExpressionNotEmpty);
+        return ValidateExpressionNotNull(context, definition)
+            .Validate(() => ValidateExpressionNotEmpty(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateExpressionNotNull(IUnitProcessingContext context, UnprocessedScaledUnitDefinition definition)
@@ -56,15 +68,5 @@ internal class ScaledUnitProcesser : ADependantUnitProcesser<IUnitProcessingCont
     private IValidityWithDiagnostics ValidateExpressionNotEmpty(IUnitProcessingContext context, UnprocessedScaledUnitDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.Expression!.Length is not 0, () => Diagnostics.EmptyExpression(context, definition));
-    }
-
-    private static RawScaledUnitDefinition ProduceResult(UnprocessedScaledUnitDefinition definition, string interpretedPlural)
-    {
-        if (definition.Locations.ExplicitlySetScale)
-        {
-            return new(definition.Name!, interpretedPlural, definition.From!, definition.Scale.ToString(CultureInfo.InvariantCulture), definition.Locations);
-        }
-
-        return new(definition.Name!, interpretedPlural, definition.From!, definition.Expression!, definition.Locations);
     }
 }

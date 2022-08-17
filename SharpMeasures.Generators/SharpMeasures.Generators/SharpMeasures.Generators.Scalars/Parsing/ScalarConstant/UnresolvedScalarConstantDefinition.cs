@@ -3,7 +3,7 @@
 using SharpMeasures.Generators.Raw.Scalars;
 using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
-internal record class UnresolvedScalarConstantDefinition : AUnresolvedQuantityConstantDefinition<ScalarConstantLocations>, IRawScalarConstant
+internal record class UnresolvedScalarConstantDefinition : ARawQuantityConstantDefinition<ScalarConstantLocations>, IRawScalarConstant
 {
     public double Value { get; }
 

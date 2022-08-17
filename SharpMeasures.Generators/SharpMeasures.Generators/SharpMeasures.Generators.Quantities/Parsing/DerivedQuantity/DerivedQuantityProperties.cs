@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 internal static class DerivedQuantityProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawDerivedQuantityDefinition>> AllProperties => new IAttributeProperty<RawDerivedQuantityDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<UnprocessedDerivedQuantityDefinition>> AllProperties => new IAttributeProperty<UnprocessedDerivedQuantityDefinition>[]
     {
         Expression,
         Signature,

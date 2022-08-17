@@ -10,9 +10,9 @@ internal class ConvertibleScalarProcesser : AConvertibleQuantityProcesser<Unreso
     public ConvertibleScalarProcesser(IConvertibleQuantityProcessingDiagnostics diagnostics) : base(diagnostics) { }
 
     public override IOptionalWithDiagnostics<UnresolvedConvertibleScalarDefinition> Process(IConvertibleQuantityProcessingContext context,
-        RawConvertibleQuantityDefinition definition)
+        UnprocessedConvertibleQuantityDefinition definition)
     {
-        var validity = CheckValidity(context, definition);
+        var validity = Validate(context, definition);
         var allDiagnostics = validity.Diagnostics;
 
         if (validity.IsInvalid)

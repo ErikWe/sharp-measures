@@ -31,9 +31,11 @@ internal abstract class ADependantUnitProcesser<TContext, TDefinition, TLocation
         return base.VerifyRequiredPropertiesSet(definition).Validate(ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Locations.ExplicitlySetDependantOn));
     }
 
-    protected IValidityWithDiagnostics CheckDependantOnValidity(TContext context, TDefinition definition)
+    protected IValidityWithDiagnostics ValidateDependantOn(TContext context, TDefinition definition)
     {
-        return IterativeValidation.DiagnoseAndMergeWhileValid(context, definition, ValidateDependantOnNotNull, ValidateDependantOnNotEmpty, ValidateNotDependantOnSelf);
+        return ValidateDependantOnNotNull(context, definition)
+            .Validate(() => ValidateDependantOnNotEmpty(context, definition))
+            .Validate(() => ValidateNotDependantOnSelf(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateDependantOnNotNull(TContext context, TDefinition definition)
