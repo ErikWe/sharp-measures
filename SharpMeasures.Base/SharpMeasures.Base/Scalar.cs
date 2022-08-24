@@ -6,7 +6,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 
 /// <summary>A pure scalar.</summary>
-public readonly partial record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scalar>
+public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scalar>
 {
     /// <summary>The <see cref="Scalar"/> representing { 0 }.</summary>
     public static Scalar Zero { get; } = 0;

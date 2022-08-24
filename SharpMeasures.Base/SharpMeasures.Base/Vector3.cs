@@ -39,13 +39,13 @@ public readonly record struct Vector3 : IVector3Quantity<Vector3>
         Z = z;
     }
 
-    /// <summary>Indicates whether any of the X, Y, and Z components represented by <see langword="this"/> represents { <see cref="double.NaN"/> }.</summary>
+    /// <summary>Indicates whether any of the X, Y, or Z components represented by <see langword="this"/> represents { <see cref="double.NaN"/> }.</summary>
     public bool IsNaN => X.IsNaN || Y.IsNaN || Z.IsNaN;
     /// <summary>Indicates whether <see langword="this"/> represents { 0, 0, 0 }.</summary>
     public bool IsZero => (X.Value, Y.Value, Z.Value) is (0, 0, 0);
     /// <summary>Indicates whether the X, Y, and Z components represented by <see langword="this"/> represent finite values.</summary>
     public bool IsFinite => X.IsFinite && Y.IsFinite && Z.IsFinite;
-    /// <summary>Indicates whether any of the X, Y, and Z components represented by <see langword="this"/> represents an infinite value.</summary>
+    /// <summary>Indicates whether any of the X, Y, or Z components represented by <see langword="this"/> represents an infinite value.</summary>
     public bool IsInfinite => X.IsInfinite || Y.IsInfinite || Z.IsInfinite;
 
     /// <inheritdoc/>
