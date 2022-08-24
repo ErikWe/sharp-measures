@@ -101,7 +101,7 @@ internal class SharpMeasuresVectorValidator : IProcesser<ISharpMeasuresVectorVal
 
     private IValidityWithDiagnostics ValidateScalarIsScalar(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition)
     {
-        var scalarIsNotScalar = definition.Scalar is null || context.ScalarPopulation.Scalars.ContainsKey(definition.Scalar.Value) is false;
+        var scalarIsNotScalar = definition.Scalar is not null && context.ScalarPopulation.Scalars.ContainsKey(definition.Scalar.Value) is false;
 
         return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(scalarIsNotScalar, () => Diagnostics.TypeNotScalar(context, definition));
     }
