@@ -15,17 +15,20 @@ internal static class ScalarBaseResolver
 {
     public static IncrementalValuesProvider<ResolvedScalarType> Resolve(IncrementalValuesProvider<ScalarBaseType> scalarProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider)
     {
-        return scalarProvider.Combine(unitPopulationProvider).Select(Resolve);
+        return scalarProvider.Combine(unitPopulationProvider).Select(Resolve).WhereResult();
     }
 
-    private static ResolvedScalarType Resolve((ScalarBaseType UnresolvedScalar, IUnitPopulation UnitPopulation) input, CancellationToken _)
+    private static Optional<ResolvedScalarType> Resolve((ScalarBaseType UnresolvedScalar, IUnitPopulation UnitPopulation) input, CancellationToken _)
     {
-        var unit = input.UnitPopulation.Units[input.UnresolvedScalar.Definition.Unit];
+        if (input.UnitPopulation.Units.TryGetValue(input.UnresolvedScalar.Definition.Unit, out var unit) is false)
+        {
+            return new Optional<ResolvedScalarType>();
+        }
 
         var includedBases = ResolveUnitInclusions(unit, input.UnresolvedScalar.BaseInclusions, () => input.UnresolvedScalar.BaseExclusions);
         var includedUnits = ResolveUnitInclusions(unit, input.UnresolvedScalar.UnitInclusions, () => input.UnresolvedScalar.UnitExclusions);
 
-        return new(input.UnresolvedScalar.Type, input.UnresolvedScalar.TypeLocation, input.UnresolvedScalar.Definition.Unit, input.UnresolvedScalar.Definition.UseUnitBias,
+        return new ResolvedScalarType(input.UnresolvedScalar.Type, input.UnresolvedScalar.TypeLocation, input.UnresolvedScalar.Definition.Unit, input.UnresolvedScalar.Definition.UseUnitBias,
             input.UnresolvedScalar.Definition.Vector, input.UnresolvedScalar.Definition.Reciprocal, input.UnresolvedScalar.Definition.Square, input.UnresolvedScalar.Definition.Cube,
             input.UnresolvedScalar.Definition.SquareRoot, input.UnresolvedScalar.Definition.CubeRoot, input.UnresolvedScalar.Definition.ImplementSum, input.UnresolvedScalar.Definition.ImplementDifference,
             input.UnresolvedScalar.Definition.Difference, input.UnresolvedScalar.Definition.DefaultUnitName, input.UnresolvedScalar.Definition.DefaultUnitSymbol, input.UnresolvedScalar.Derivations,
