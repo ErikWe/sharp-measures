@@ -60,7 +60,7 @@ internal class SpecializedSharpMeasuresScalarValidator : IProcesser<ISpecialized
         var vector = ValidateVectorIsVector(context, definition).Transform(definition.Vector);
         var difference = ValidateDifferenceIsScalar(context, definition).Transform(definition.Difference);
 
-        var unit = context.VectorPopulation.VectorBases[context.Type.AsNamedType()].Definition.Unit;
+        var unit = context.ScalarPopulation.ScalarBases[context.Type.AsNamedType()].Definition.Unit;
         var defaultUnitValidity = DefaultUnitValidator.Validate(context, Diagnostics, definition, context.UnitPopulation, unit);
 
         var defaultUnitName = defaultUnitValidity.Transform(definition.DefaultUnitName);
@@ -104,7 +104,7 @@ internal class SpecializedSharpMeasuresScalarValidator : IProcesser<ISpecialized
 
     private IValidityWithDiagnostics ValidateOriginalScalarIsScalar(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition)
     {
-        var originalScalarIsScalar = context.ScalarPopulation.Scalars.ContainsKey(context.Type.AsNamedType());
+        var originalScalarIsScalar = context.ScalarPopulation.Scalars.ContainsKey(definition.OriginalScalar);
 
         return ValidityWithDiagnostics.Conditional(originalScalarIsScalar, () => Diagnostics.OriginalNotScalar(context, definition));
     }
@@ -125,15 +125,15 @@ internal class SpecializedSharpMeasuresScalarValidator : IProcesser<ISpecialized
 
     private IValidityWithDiagnostics ValidateVectorIsVector(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition)
     {
-        var vectorIsNotVector = definition.Vector is null || context.VectorPopulation.Vectors.ContainsKey(definition.Vector.Value) is false
-            || context.VectorPopulation.Groups.ContainsKey(definition.Vector.Value) is false || context.VectorPopulation.GroupMembers.ContainsKey(definition.Vector.Value) is false;
+        var vectorIsNotVector = definition.Vector is not null && (context.VectorPopulation.Vectors.ContainsKey(definition.Vector.Value) is false
+            || context.VectorPopulation.Groups.ContainsKey(definition.Vector.Value) is false || context.VectorPopulation.GroupMembers.ContainsKey(definition.Vector.Value) is false);
 
         return ValidityWithDiagnostics.Conditional(vectorIsNotVector is false, () => Diagnostics.TypeNotVector(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateDifferenceIsScalar(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition)
     {
-        var differenceIsNotScalar = definition.Difference is null || context.ScalarPopulation.Scalars.ContainsKey(definition.Difference.Value) is false;
+        var differenceIsNotScalar = definition.Difference is not null && context.ScalarPopulation.Scalars.ContainsKey(definition.Difference.Value) is false;
 
         return ValidityWithDiagnostics.Conditional(differenceIsNotScalar is false, () => Diagnostics.DifferenceNotScalar(context, definition));
     }
@@ -141,7 +141,7 @@ internal class SpecializedSharpMeasuresScalarValidator : IProcesser<ISpecialized
     private static IValidityWithDiagnostics ValidatePowerIsScalar(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition, NamedType? powerQuantity,
         Func<ISpecializedSharpMeasuresScalarValidationContext, SpecializedSharpMeasuresScalarDefinition, Diagnostic?> typeNotScalarDiagnosticsDelegate)
     {
-        var powerQuantityIsNotScalar = powerQuantity is null || context.ScalarPopulation.Scalars.ContainsKey(powerQuantity.Value) is false;
+        var powerQuantityIsNotScalar = powerQuantity is not null && context.ScalarPopulation.Scalars.ContainsKey(powerQuantity.Value) is false;
 
         return ValidityWithDiagnostics.Conditional(powerQuantityIsNotScalar is false, () => typeNotScalarDiagnosticsDelegate(context, definition));
     }
