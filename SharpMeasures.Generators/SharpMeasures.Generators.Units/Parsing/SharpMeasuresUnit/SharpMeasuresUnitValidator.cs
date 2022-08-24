@@ -53,6 +53,6 @@ internal class SharpMeasuresUnitValidator : AValidator<ISharpMeasuresUnitValidat
 
     private IValidityWithDiagnostics ValidateQuantityNotBiased(ISharpMeasuresUnitValidationContext context, SharpMeasuresUnitDefinition definition, IScalarBaseType scalarBase)
     {
-        return ValidityWithDiagnostics.Conditional(scalarBase.Definition.UseUnitBias, () => Diagnostics.QuantityBiased(context, definition));
+        return ValidityWithDiagnostics.Conditional(scalarBase.Definition.UseUnitBias is false, () => Diagnostics.QuantityBiased(context, definition));
     }
 }
