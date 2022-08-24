@@ -108,7 +108,7 @@ internal class UnitType : IUnitType
             }
         }
 
-        if (derivationsDictionary.Count is 0)
+        if (derivationsDictionary.Count is 0 && UnitDerivations.Count > 0)
         {
             derivationsDictionary.Add("default", UnitDerivations.Single());
         }
