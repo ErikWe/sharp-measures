@@ -37,7 +37,7 @@ public static partial class ScalarParser
     private static IncrementalValuesProvider<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)> AttachSymbolProvider<TAttribute>(IncrementalGeneratorInitializationContext context)
     {
         var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<TAttribute>(context.SyntaxProvider);
-        var filteredDeclarations = FilteredDeclarationProvider.Construct<TypeDeclarationSyntax>(DeclarationFilters).AttachAndReport(context, declarations);
+        var filteredDeclarations = FilteredDeclarationProvider.Construct<TypeDeclarationSyntax>(DeclarationFilters<TAttribute>()).AttachAndReport(context, declarations);
 
         return DeclarationSymbolProvider.Construct<TypeDeclarationSyntax>().Attach(filteredDeclarations, context.CompilationProvider);
     }
@@ -52,9 +52,9 @@ public static partial class ScalarParser
         return ScalarPopulation.Build(scalars.Bases, scalars.Specializations);
     }
 
-    private static IEnumerable<IDeclarationFilter> DeclarationFilters { get; } = new IDeclarationFilter[]
+    private static IEnumerable<IDeclarationFilter> DeclarationFilters<TAttribute>() => new IDeclarationFilter[]
     {
-        new PartialDeclarationFilter(ScalarBaseTypeDiagnostics.TypeNotPartial),
-        new NonStaticDeclarationFilter(ScalarBaseTypeDiagnostics.TypeStatic)
+        new PartialDeclarationFilter(ScalarTypeDiagnostics.TypeNotPartial<TAttribute>),
+        new NonStaticDeclarationFilter(ScalarTypeDiagnostics.TypeStatic<TAttribute>)
     };
 }

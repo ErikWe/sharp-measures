@@ -17,12 +17,12 @@ public static class VectorParser
 {
     public static (IncrementalValueProvider<IVectorPopulation>, IVectorValidator) Attach(IncrementalGeneratorInitializationContext context)
     {
-        var groupBaseSymbols = AttachSymbolProvider<SharpMeasuresVectorGroupAttribute>(context, VectorGroupDeclarationFilters);
-        var groupSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresVectorGroupAttribute>(context, VectorGroupDeclarationFilters);
-        var groupMemberSymbols = AttachSymbolProvider<SharpMeasuresVectorGroupMemberAttribute>(context, VectorDeclarationFilters);
+        var groupBaseSymbols = AttachSymbolProvider<SharpMeasuresVectorGroupAttribute>(context, VectorGroupDeclarationFilters<SharpMeasuresVectorGroupAttribute>());
+        var groupSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresVectorGroupAttribute>(context, VectorGroupDeclarationFilters<SpecializedSharpMeasuresVectorGroupAttribute>());
+        var groupMemberSymbols = AttachSymbolProvider<SharpMeasuresVectorGroupMemberAttribute>(context, VectorDeclarationFilters<SharpMeasuresVectorGroupMemberAttribute>());
 
-        var vectorBaseSymbols = AttachSymbolProvider<SharpMeasuresVectorAttribute>(context, VectorDeclarationFilters);
-        var vectorSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresVectorAttribute>(context, VectorDeclarationFilters);
+        var vectorBaseSymbols = AttachSymbolProvider<SharpMeasuresVectorAttribute>(context, VectorDeclarationFilters<SharpMeasuresVectorAttribute>());
+        var vectorSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresVectorAttribute>(context, VectorDeclarationFilters<SpecializedSharpMeasuresVectorAttribute>());
 
         GroupBaseProcesser groupBaseProcesser = new();
         GroupSpecializationProcesser groupSpecializationProcesser = new();
@@ -72,15 +72,15 @@ public static class VectorParser
         return VectorPopulation.Build(vectors.VectorBases, vectors.VectorSpecializations, vectors.GroupBases, vectors.GroupSpecializations, vectors.GroupMembers);
     }
 
-    private static IEnumerable<IDeclarationFilter> VectorGroupDeclarationFilters { get; } = new IDeclarationFilter[]
+    private static IEnumerable<IDeclarationFilter> VectorGroupDeclarationFilters<TAttribute>() => new IDeclarationFilter[]
     {
-        new PartialDeclarationFilter(GroupBaseTypeDiagnostics.TypeNotPartial),
-        new StaticDeclarationFilter(GroupBaseTypeDiagnostics.TypeNotStatic)
+        new PartialDeclarationFilter(VectorTypeDiagnostics.TypeNotPartial<TAttribute>),
+        new StaticDeclarationFilter(VectorTypeDiagnostics.TypeNotStatic<TAttribute>)
     };
 
-    private static IEnumerable<IDeclarationFilter> VectorDeclarationFilters { get; } = new IDeclarationFilter[]
+    private static IEnumerable<IDeclarationFilter> VectorDeclarationFilters<TAttribute>() => new IDeclarationFilter[]
     {
-        new PartialDeclarationFilter(GroupMemberTypeDiagnostics.TypeNotPartial),
-        new NonStaticDeclarationFilter(GroupMemberTypeDiagnostics.TypeStatic)
+        new PartialDeclarationFilter(VectorTypeDiagnostics.TypeNotPartial<TAttribute>),
+        new NonStaticDeclarationFilter(VectorTypeDiagnostics.TypeStatic<TAttribute>)
     };
 }
