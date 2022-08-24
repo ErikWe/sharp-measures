@@ -18,6 +18,9 @@ public static partial class RoslynUtilityExtensions
     public static IncrementalValuesProvider<IResultWithDiagnostics<T>> WhereResult<T>(this IncrementalValuesProvider<IOptionalWithDiagnostics<T>> provider)
         => provider.Where(static (result) => result.HasResult).Select(static (result, _) => ResultWithDiagnostics.Construct(result.Result, result.Diagnostics));
 
+    public static IncrementalValuesProvider<T> WhereResult<T>(this IncrementalValuesProvider<Optional<T>> provider)
+        => provider.Where(static (result) => result.HasValue).Select(static (result, _) => result.Value);
+
     public static IncrementalValuesProvider<(T1, T2, T3)> Combine<T1, T2, T3>(this IncrementalValuesProvider<T1> provider1, IncrementalValueProvider<T2> provider2,
         IncrementalValueProvider<T3> provider3)
     {
