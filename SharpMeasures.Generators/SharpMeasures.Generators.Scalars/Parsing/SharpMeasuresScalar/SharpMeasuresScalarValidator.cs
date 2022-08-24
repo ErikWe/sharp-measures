@@ -116,15 +116,15 @@ internal class SharpMeasuresScalarValidator : IProcesser<ISharpMeasuresScalarVal
 
     private IValidityWithDiagnostics ValidateVectorIsVector(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition)
     {
-        var vectorIsNotVector = definition.Vector is null || context.VectorPopulation.Vectors.ContainsKey(definition.Vector.Value) is false
-            || context.VectorPopulation.Groups.ContainsKey(definition.Vector.Value) is false || context.VectorPopulation.GroupMembers.ContainsKey(definition.Vector.Value) is false;
+        var vectorIsNotVector = definition.Vector is not null && (context.VectorPopulation.Vectors.ContainsKey(definition.Vector.Value) is false
+            || context.VectorPopulation.Groups.ContainsKey(definition.Vector.Value) is false || context.VectorPopulation.GroupMembers.ContainsKey(definition.Vector.Value) is false);
 
         return ValidityWithDiagnostics.Conditional(vectorIsNotVector is false, () => Diagnostics.TypeNotVector(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateDifferenceIsScalar(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition)
     {
-        var differenceIsNotScalar = definition.Difference is null || context.ScalarPopulation.Scalars.ContainsKey(definition.Difference.Value) is false;
+        var differenceIsNotScalar = definition.Difference is not null && context.ScalarPopulation.Scalars.ContainsKey(definition.Difference.Value) is false;
 
         return ValidityWithDiagnostics.Conditional(differenceIsNotScalar is false, () => Diagnostics.DifferenceNotScalar(context, definition));
     }
@@ -132,7 +132,7 @@ internal class SharpMeasuresScalarValidator : IProcesser<ISharpMeasuresScalarVal
     private static IValidityWithDiagnostics ValidatePowerIsScalar(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition, NamedType? powerQuantity,
         Func<ISharpMeasuresScalarValidationContext, SharpMeasuresScalarDefinition, Diagnostic?> typeNotScalarDiagnosticsDelegate)
     {
-        var powerQuantityIsNotScalar = powerQuantity is null || context.ScalarPopulation.Scalars.ContainsKey(powerQuantity.Value) is false;
+        var powerQuantityIsNotScalar = powerQuantity is not null && context.ScalarPopulation.Scalars.ContainsKey(powerQuantity.Value) is false;
 
         return ValidityWithDiagnostics.Conditional(powerQuantityIsNotScalar is false, () => typeNotScalarDiagnosticsDelegate(context, definition));
     }
