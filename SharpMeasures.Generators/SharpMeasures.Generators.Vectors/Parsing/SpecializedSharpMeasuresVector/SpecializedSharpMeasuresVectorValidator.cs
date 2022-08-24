@@ -117,7 +117,7 @@ internal class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpecialized
         int? interpretedDimension = DimensionParsingUtility.InterpretDimensionFromName(context.Type.Name);
         int actualDimension = context.VectorPopulation.VectorBases[context.Type.AsNamedType()].Definition.Dimension;
 
-        return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(actualDimension == interpretedDimension, () => Diagnostics.VectorNameAndDimensionConflict(context, definition, interpretedDimension!.Value, actualDimension));
+        return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(actualDimension != interpretedDimension, () => Diagnostics.VectorNameAndDimensionConflict(context, definition, interpretedDimension!.Value, actualDimension));
     }
 
     private static IValidityWithDiagnostics ValidateUnitIsUnit(ISpecializedSharpMeasuresVectorValidationContext context)
@@ -129,7 +129,7 @@ internal class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpecialized
 
     private IValidityWithDiagnostics ValidateScalarIsScalar(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition)
     {
-        var scalarIsNotScalar = definition.Scalar is null || context.ScalarPopulation.Scalars.ContainsKey(definition.Scalar.Value) is false;
+        var scalarIsNotScalar = definition.Scalar is not null && context.ScalarPopulation.Scalars.ContainsKey(definition.Scalar.Value) is false;
 
         return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(scalarIsNotScalar, () => Diagnostics.TypeNotScalar(context, definition));
     }

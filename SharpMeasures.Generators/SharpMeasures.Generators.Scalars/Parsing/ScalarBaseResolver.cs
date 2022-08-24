@@ -18,21 +18,21 @@ internal static class ScalarBaseResolver
         return scalarProvider.Combine(unitPopulationProvider).Select(Resolve).WhereResult();
     }
 
-    private static Optional<ResolvedScalarType> Resolve((ScalarBaseType UnresolvedScalar, IUnitPopulation UnitPopulation) input, CancellationToken _)
+    private static Optional<ResolvedScalarType> Resolve((ScalarBaseType UnvalidatedScalar, IUnitPopulation UnitPopulation) input, CancellationToken _)
     {
-        if (input.UnitPopulation.Units.TryGetValue(input.UnresolvedScalar.Definition.Unit, out var unit) is false)
+        if (input.UnitPopulation.Units.TryGetValue(input.UnvalidatedScalar.Definition.Unit, out var unit) is false)
         {
             return new Optional<ResolvedScalarType>();
         }
 
-        var includedBases = ResolveUnitInclusions(unit, input.UnresolvedScalar.BaseInclusions, () => input.UnresolvedScalar.BaseExclusions);
-        var includedUnits = ResolveUnitInclusions(unit, input.UnresolvedScalar.UnitInclusions, () => input.UnresolvedScalar.UnitExclusions);
+        var includedBases = ResolveUnitInclusions(unit, input.UnvalidatedScalar.BaseInclusions, () => input.UnvalidatedScalar.BaseExclusions);
+        var includedUnits = ResolveUnitInclusions(unit, input.UnvalidatedScalar.UnitInclusions, () => input.UnvalidatedScalar.UnitExclusions);
 
-        return new ResolvedScalarType(input.UnresolvedScalar.Type, input.UnresolvedScalar.TypeLocation, input.UnresolvedScalar.Definition.Unit, input.UnresolvedScalar.Definition.UseUnitBias,
-            input.UnresolvedScalar.Definition.Vector, input.UnresolvedScalar.Definition.Reciprocal, input.UnresolvedScalar.Definition.Square, input.UnresolvedScalar.Definition.Cube,
-            input.UnresolvedScalar.Definition.SquareRoot, input.UnresolvedScalar.Definition.CubeRoot, input.UnresolvedScalar.Definition.ImplementSum, input.UnresolvedScalar.Definition.ImplementDifference,
-            input.UnresolvedScalar.Definition.Difference, input.UnresolvedScalar.Definition.DefaultUnitName, input.UnresolvedScalar.Definition.DefaultUnitSymbol, input.UnresolvedScalar.Derivations,
-            input.UnresolvedScalar.Constants, input.UnresolvedScalar.Conversions, includedBases, includedUnits, input.UnresolvedScalar.Definition.GenerateDocumentation);
+        return new ResolvedScalarType(input.UnvalidatedScalar.Type, input.UnvalidatedScalar.TypeLocation, input.UnvalidatedScalar.Definition.Unit, input.UnvalidatedScalar.Definition.UseUnitBias,
+            input.UnvalidatedScalar.Definition.Vector, input.UnvalidatedScalar.Definition.Reciprocal, input.UnvalidatedScalar.Definition.Square, input.UnvalidatedScalar.Definition.Cube,
+            input.UnvalidatedScalar.Definition.SquareRoot, input.UnvalidatedScalar.Definition.CubeRoot, input.UnvalidatedScalar.Definition.ImplementSum, input.UnvalidatedScalar.Definition.ImplementDifference,
+            input.UnvalidatedScalar.Definition.Difference, input.UnvalidatedScalar.Definition.DefaultUnitName, input.UnvalidatedScalar.Definition.DefaultUnitSymbol, input.UnvalidatedScalar.Derivations,
+            input.UnvalidatedScalar.Constants, input.UnvalidatedScalar.Conversions, includedBases, includedUnits, input.UnvalidatedScalar.Definition.GenerateDocumentation);
     }
 
     private static IReadOnlyList<string> ResolveUnitInclusions(IUnitType unit, IEnumerable<IUnitList> inclusions, Func<IEnumerable<IUnitList>> exclusionsDelegate)

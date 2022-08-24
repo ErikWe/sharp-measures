@@ -73,7 +73,7 @@ internal static class ScalarSpecializationValidator
         var constants = ValidateConstants(input.UnvalidatedScalar, unit, allBases, allUnits, input.ScalarPopulation);
         var conversions = ValidateConversions(input.UnvalidatedScalar, input.ScalarPopulation);
 
-        ScalarSpecializationType product = new(input.UnvalidatedScalar.Type, input.UnvalidatedScalar.TypeLocation, input.UnvalidatedScalar.Definition, derivations.Result, constants.Result,
+        ScalarSpecializationType product = new(input.UnvalidatedScalar.Type, input.UnvalidatedScalar.TypeLocation, scalar.Result, derivations.Result, constants.Result,
             conversions.Result, baseInclusions.Result, baseExclusions.Result, unitInclusions.Result, unitExclusions.Result);
 
         var allDiagnostics = scalar.Concat(derivations).Concat(constants).Concat(conversions).Concat(baseInclusions).Concat(baseExclusions).Concat(unitInclusions).Concat(unitExclusions);

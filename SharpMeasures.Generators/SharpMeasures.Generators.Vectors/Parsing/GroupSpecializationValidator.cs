@@ -41,9 +41,9 @@ internal static class GroupSpecializationValidator
             return vector.AsEmptyOptional<GroupSpecializationType>();
         }
 
-        var vectorBase = input.VectorPopulation.VectorBases[input.UnvalidatedVector.Type.AsNamedType()];
+        var groupBase = input.VectorPopulation.GroupBases[input.UnvalidatedVector.Type.AsNamedType()];
 
-        var unit = input.UnitPopulation.Units[vectorBase.Definition.Unit];
+        var unit = input.UnitPopulation.Units[groupBase.Definition.Unit];
 
         var inheritedUnits = GetUnitInclusions(input.UnvalidatedVector, input.VectorPopulation, unit.UnitsByName.Values, unit, static (vector) => vector.Definition.InheritUnits, onlyInherited: true);
 
@@ -58,7 +58,7 @@ internal static class GroupSpecializationValidator
         var derivations = ValidateDerivations(input.UnvalidatedVector, input.ScalarPopulation, input.VectorPopulation);
         var conversions = ValidateConversions(input.UnvalidatedVector, input.VectorPopulation);
 
-        GroupSpecializationType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, input.UnvalidatedVector.Definition, derivations.Result, conversions.Result,
+        GroupSpecializationType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, derivations.Result, conversions.Result,
             unitExclusions.Result, unitExclusions.Result);
 
         var allDiagnostics = vector.Concat(derivations).Concat(conversions).Concat(unitInclusions).Concat(unitExclusions);

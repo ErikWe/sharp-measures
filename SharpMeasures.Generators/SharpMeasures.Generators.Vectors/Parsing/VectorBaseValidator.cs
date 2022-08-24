@@ -48,7 +48,7 @@ internal static class VectorBaseValidator
         var unitInclusions = ValidateUnitList(input.UnvalidatedVector, input.UnitPopulation, input.UnvalidatedVector.UnitInclusions, UnitInclusionFilter);
         var unitExclusions = ValidateUnitList(input.UnvalidatedVector, input.UnitPopulation, input.UnvalidatedVector.UnitInclusions, UnitExclusionFilter);
 
-        VectorBaseType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, input.UnvalidatedVector.Definition, input.UnvalidatedVector.Derivations,
+        VectorBaseType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, input.UnvalidatedVector.Derivations,
             input.UnvalidatedVector.Constants, input.UnvalidatedVector.Conversions, unitInclusions.Result, unitExclusions.Result);
 
         var allDiagnostics = vector.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitInclusions).Concat(unitExclusions);

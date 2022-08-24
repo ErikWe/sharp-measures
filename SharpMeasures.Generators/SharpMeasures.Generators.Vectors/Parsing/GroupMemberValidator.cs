@@ -64,7 +64,7 @@ internal static class GroupMemberValidator
         var constants = ValidateConstants(input.UnvalidatedVector, input.VectorPopulation, unit, allUnits);
         var conversions = ValidateConversions(input.UnvalidatedVector, input.VectorPopulation);
 
-        GroupMemberType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, input.UnvalidatedVector.Definition, input.UnvalidatedVector.Derivations,
+        GroupMemberType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, input.UnvalidatedVector.Derivations,
             input.UnvalidatedVector.Constants, input.UnvalidatedVector.Conversions, unitInclusions.Result, unitExclusions.Result);
 
         var allDiagnostics = vector.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitInclusions).Concat(unitExclusions);

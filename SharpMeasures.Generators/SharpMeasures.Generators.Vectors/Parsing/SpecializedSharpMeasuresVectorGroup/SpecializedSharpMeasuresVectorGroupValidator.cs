@@ -127,14 +127,14 @@ internal class SpecializedSharpMeasuresVectorGroupValidator : IProcesser<ISpecia
 
     private IValidityWithDiagnostics ValidateScalarIsScalar(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition)
     {
-        var scalarIsNotScalar = definition.Scalar is null || context.ScalarPopulation.Scalars.ContainsKey(definition.Scalar.Value) is false;
+        var scalarIsNotScalar = definition.Scalar is not null && context.ScalarPopulation.Scalars.ContainsKey(definition.Scalar.Value) is false;
 
         return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(scalarIsNotScalar, () => Diagnostics.TypeNotScalar(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateDifferenceIsVectorGroup(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition)
     {
-        var differenceIsNotVectorGroup = definition.Difference is null || context.VectorPopulation.Groups.ContainsKey(definition.Difference.Value) is false;
+        var differenceIsNotVectorGroup = definition.Difference is not null && context.VectorPopulation.Groups.ContainsKey(definition.Difference.Value) is false;
 
         return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(differenceIsNotVectorGroup, () => Diagnostics.DifferenceNotVectorGroup(context, definition));
     }

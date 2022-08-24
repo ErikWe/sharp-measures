@@ -64,7 +64,7 @@ internal static class VectorSpecializationValidator
         var constants = ValidateConstants(input.UnvalidatedVector, input.VectorPopulation, vectorBase.Definition.Dimension, unit, allUnits);
         var conversions = ValidateConversions(input.UnvalidatedVector, input.VectorPopulation);
 
-        VectorSpecializationType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, input.UnvalidatedVector.Definition, derivations.Result, constants.Result, conversions.Result,
+        VectorSpecializationType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result,
             unitInclusions.Result, unitExclusions.Result);
 
         var allDiagnostics = vector.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitInclusions).Concat(unitExclusions);

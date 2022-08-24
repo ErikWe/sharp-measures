@@ -44,7 +44,7 @@ internal static class GroupBaseValidator
         var unitInclusions = ValidateUnitList(input.UnvalidatedVector, input.UnitPopulation, input.UnvalidatedVector.UnitInclusions, UnitInclusionFilter);
         var unitExclusions = ValidateUnitList(input.UnvalidatedVector, input.UnitPopulation, input.UnvalidatedVector.UnitInclusions, UnitExclusionFilter);
 
-        GroupBaseType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, input.UnvalidatedVector.Definition, input.UnvalidatedVector.Derivations,
+        GroupBaseType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, input.UnvalidatedVector.Derivations,
             input.UnvalidatedVector.Conversions, unitInclusions.Result, unitExclusions.Result);
 
         var allDiagnostics = vector.Concat(derivations).Concat(conversions).Concat(unitInclusions).Concat(unitExclusions);
