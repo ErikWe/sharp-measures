@@ -53,8 +53,6 @@ public class TypeNotPartial
 
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
-
-        internal class TestException : System.Exception { }
         """;
 
     private static GeneratorVerifier AssertUnit()
