@@ -3,7 +3,6 @@
 using SharpMeasures.Maths;
 
 using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
 
 /// <summary>A pure two-dimensional vector, representing { X, Y }.</summary>
 public readonly record struct Vector2 : IVector2Quantity<Vector2>
@@ -105,7 +104,7 @@ public readonly record struct Vector2 : IVector2Quantity<Vector2>
     /// <summary>Constructs the <see cref="Vector2"/> with the elements of <paramref name="components"/> as components.</summary>
     [SuppressMessage("Usage", "CA2225", Justification = "Behaviour can be achieved through a constructor")]
     public static implicit operator Vector2((Scalar X, Scalar Y) components) => new(components.X, components.Y);
-
+    
     /// <summary>Describes mathematical operations that result in a pure <see cref="Scalar"/>.</summary>
     private static IScalarResultingMaths<Scalar> ScalarMaths { get; } = MathFactory.ScalarResult();
     /// <summary>Describes mathematical operations that result in a <see cref="Unhandled"/>.</summary>
