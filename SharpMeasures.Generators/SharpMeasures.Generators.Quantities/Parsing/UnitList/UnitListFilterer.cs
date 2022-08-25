@@ -51,7 +51,7 @@ public class UnitListFilterer : AProcesser<IUnitListFilteringContext, UnitListDe
             }
         }
 
-        return OptionalWithDiagnostics.ConditionalWithoutDiagnostics(validUnits.Count is not 0, () => new UnitListDefinition(validUnits, definition.Locations, locationMap));
+        return OptionalWithDiagnostics.ConditionalWithDefiniteDiagnostics(validUnits.Count is not 0, () => new UnitListDefinition(validUnits, definition.Locations, locationMap), allDiagnostics);
     }
 
     private IValidityWithDiagnostics ValidateUnitRecognized(IUnitListFilteringContext context, UnitListDefinition definition, int index)
