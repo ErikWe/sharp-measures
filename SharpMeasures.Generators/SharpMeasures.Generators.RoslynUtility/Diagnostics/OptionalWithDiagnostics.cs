@@ -82,23 +82,54 @@ public static class OptionalWithDiagnostics
     public static IOptionalWithDiagnostics<T> ConditionalWithoutDiagnostics<T>(bool condition, T result) => ConditionalWithoutDiagnostics(condition, () => result);
     public static IOptionalWithDiagnostics<T> ConditionalWithoutDiagnostics<T>(bool condition, Func<T> resultDelegate)
     {
-        if (condition is false)
+        if (condition)
         {
-            return EmptyWithoutDiagnostics<T>();
+            return Result(resultDelegate());
         }
 
-        return Result(resultDelegate());
+        return EmptyWithoutDiagnostics<T>();
+    }
+
+    public static IOptionalWithDiagnostics<T> Conditional<T>(bool condition, T result, Func<IEnumerable<Diagnostic>> invalidDiagnosticsDelegate) => Conditional(condition, () => result, invalidDiagnosticsDelegate);
+    public static IOptionalWithDiagnostics<T> Conditional<T>(bool condition, Func<T> resultDelegate, Func<IEnumerable<Diagnostic>> invalidDiagnosticsDelegate)
+    {
+        if (condition)
+        {
+            return Result(resultDelegate());
+        }
+
+        return Empty<T>(invalidDiagnosticsDelegate());
     }
 
     public static IOptionalWithDiagnostics<T> Conditional<T>(bool condition, T result, Func<Diagnostic?> invalidDiagnostics) => Conditional(condition, () => result, invalidDiagnostics);
     public static IOptionalWithDiagnostics<T> Conditional<T>(bool condition, Func<T> resultDelegate, Func<Diagnostic?> invalidDiagnostics)
     {
-        if (condition is false)
+        if (condition)
         {
-            return Empty<T>(invalidDiagnostics());
+            return Result(resultDelegate());
         }
 
-        return Result(resultDelegate());
+        return Empty<T>(invalidDiagnostics());
+    }
+
+    public static IOptionalWithDiagnostics<T> Conditional<T>(bool condition, T result, IEnumerable<Diagnostic> invalidDiagnostics) => Conditional(condition, result, () => invalidDiagnostics);
+    public static IOptionalWithDiagnostics<T> Conditional<T>(bool condition, Func<T> resultDelegate, IEnumerable<Diagnostic> invalidDiagnostics) => Conditional(condition, resultDelegate, () => invalidDiagnostics);
+
+    public static IOptionalWithDiagnostics<T> Conditional<T>(bool condition, T result, Diagnostic? invalidDiagnostics) => Conditional(condition, result, () => invalidDiagnostics);
+    public static IOptionalWithDiagnostics<T> Conditional<T>(bool condition, Func<T> resultDelegate, Diagnostic? invalidDiagnostics) => Conditional(condition, resultDelegate, () => invalidDiagnostics);
+
+    public static IOptionalWithDiagnostics<T> ConditionalWithDefiniteDiagnostics<T>(bool condition, T result, params Diagnostic[] diagnostics) => ConditionalWithDefiniteDiagnostics(condition, () => result, diagnostics);
+    public static IOptionalWithDiagnostics<T> ConditionalWithDefiniteDiagnostics<T>(bool condition, Func<T> resultDelegate, params Diagnostic[] diagnostics) => ConditionalWithDefiniteDiagnostics(condition, resultDelegate, diagnostics as IEnumerable<Diagnostic>);
+
+    public static IOptionalWithDiagnostics<T> ConditionalWithDefiniteDiagnostics<T>(bool condition, T result, IEnumerable<Diagnostic> diagnostics) => ConditionalWithDefiniteDiagnostics(condition, () => result, diagnostics);
+    public static IOptionalWithDiagnostics<T> ConditionalWithDefiniteDiagnostics<T>(bool condition, Func<T> resultDelegate, IEnumerable<Diagnostic> diagnostics)
+    {
+        if (condition)
+        {
+            return Result(resultDelegate(), diagnostics);
+        }
+
+        return Empty<T>(diagnostics);
     }
 
     private class SimpleOptionalWithDiagnostics<T> : IOptionalWithDiagnostics<T>

@@ -58,6 +58,16 @@ public static class ValidityWithDiagnostics
         return ValidWithDiagnostics(new[] { diagnostics });
     }
 
+    public static IValidityWithDiagnostics ValidWithConditionalDiagnostics(bool condition, Func<IEnumerable<Diagnostic>> diagnostics)
+    {
+        if (condition)
+        {
+            return ValidWithDiagnostics(diagnostics());
+        }
+
+        return Valid;
+    }
+
     public static IValidityWithDiagnostics ValidWithConditionalDiagnostics(bool condition, Func<Diagnostic?> diagnostics)
     {
         if (condition)
@@ -85,27 +95,61 @@ public static class ValidityWithDiagnostics
         return Invalid(new[] { diagnostics });
     }
 
-    public static IValidityWithDiagnostics ConditionalWithoutDiagnostics(bool condition) => Conditional(condition, () => null);
+    public static IValidityWithDiagnostics ConditionalWithoutDiagnostics(bool condition)
+    {
+        if (condition)
+        {
+            return Valid;
+        }
+
+        return InvalidWithoutDiagnostics;
+    }
+
+    public static IValidityWithDiagnostics Conditional(bool condition, Func<IEnumerable<Diagnostic>> invalidDiagnostics)
+    {
+        if (condition)
+        {
+            return Valid;
+        }
+
+        return Invalid(invalidDiagnostics());
+    }
+
+    public static IValidityWithDiagnostics Conditional(bool condition, Func<IEnumerable<Diagnostic>> validDiagnostics, Func<IEnumerable<Diagnostic>> invalidDiagnostics)
+    {
+        if (condition)
+        {
+            return ValidWithDiagnostics(validDiagnostics());
+        }
+
+        return Invalid(invalidDiagnostics());
+    }
 
     public static IValidityWithDiagnostics Conditional(bool condition, Func<Diagnostic?> invalidDiagnostics)
     {
-        if (condition is false)
+        if (condition)
         {
-            return Invalid(invalidDiagnostics());
+            return Valid;
         }
 
-        return Valid;
+        return Invalid(invalidDiagnostics());
     }
 
     public static IValidityWithDiagnostics Conditional(bool condition, Func<Diagnostic?> validDiagnostics, Func<Diagnostic?> invalidDiagnostics)
     {
-        if (condition is false)
+        if (condition)
         {
-            return Invalid(invalidDiagnostics());
+            return ValidWithDiagnostics(validDiagnostics());
         }
 
-        return ValidWithDiagnostics(validDiagnostics());
+        return Invalid(invalidDiagnostics());
     }
+
+    public static IValidityWithDiagnostics Conditional(bool condition, IEnumerable<Diagnostic> invalidDiagnostics) => Conditional(condition, () => invalidDiagnostics);
+    public static IValidityWithDiagnostics Conditional(bool condition, IEnumerable<Diagnostic> validDiagnostics, IEnumerable<Diagnostic> invalidDiagnostics) => Conditional(condition, () => validDiagnostics, () => invalidDiagnostics);
+
+    public static IValidityWithDiagnostics Conditional(bool condition, Diagnostic? invalidDiagnostics) => Conditional(condition, () => invalidDiagnostics);
+    public static IValidityWithDiagnostics Conditional(bool condition, Diagnostic? validDiagnostics, Diagnostic? invalidDiagnostics) => Conditional(condition, () => validDiagnostics, () => invalidDiagnostics);
 
     private class SimpleValidityWithDiagnostics : IValidityWithDiagnostics
     {
