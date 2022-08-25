@@ -65,7 +65,7 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
             return definition;
         }
 
-        definition = AddAttributeLocation(definition, attributeSyntax.GetLocation().Minimize(), attributeSyntax.Name.GetLocation().Minimize());
+        definition = AddAttributeLocation(definition, attributeSyntax);
         definition = AddConstructorArguments(definition, attributeData, attributeSyntax, parameterSymbols);
         definition = AddNamedArguments(definition, attributeData, attributeSyntax, parameterSymbols);
         definition = AddCustomData(definition, attributeData, attributeSyntax, parameterSymbols);
@@ -174,11 +174,14 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
         return property.Setter(definition, value.Value);
     }
 
-    private static TDefinition AddAttributeLocation(TDefinition definition, MinimalLocation attributeLocation, MinimalLocation attributeNameLocation)
+    private static TDefinition AddAttributeLocation(TDefinition definition, AttributeSyntax attributeSyntax)
     {
-        var modifiedLocations = definition.Locations.WithAttribute(attributeLocation, attributeNameLocation);
+        if (attributeSyntax.Name is QualifiedNameSyntax qualifiedName)
+        {
+            return definition.WithLocations(definition.Locations.WithAttribute(attributeSyntax.GetLocation().Minimize(), qualifiedName.Right.GetLocation().Minimize()));
+        }
 
-        return definition.WithLocations(modifiedLocations);
+        return definition.WithLocations(definition.Locations.WithAttribute(attributeSyntax.GetLocation().Minimize(), attributeSyntax.Name.GetLocation().Minimize()));
     }
 
     private static object?[]? ParseArray(TypedConstant value)
