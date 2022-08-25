@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Vectors.Parsing;
+﻿namespace SharpMeasures.Generators.Vectors.Parsing;
 
 using Microsoft.CodeAnalysis;
 
@@ -48,8 +48,7 @@ internal static class VectorBaseValidator
         var unitInclusions = ValidateUnitList(input.UnvalidatedVector, input.UnitPopulation, input.UnvalidatedVector.UnitInclusions, UnitInclusionFilter);
         var unitExclusions = ValidateUnitList(input.UnvalidatedVector, input.UnitPopulation, input.UnvalidatedVector.UnitExclusions, UnitExclusionFilter);
 
-        VectorBaseType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, input.UnvalidatedVector.Derivations,
-            input.UnvalidatedVector.Constants, input.UnvalidatedVector.Conversions, unitInclusions.Result, unitExclusions.Result);
+        VectorBaseType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result, unitInclusions.Result, unitExclusions.Result);
 
         var allDiagnostics = vector.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitInclusions).Concat(unitExclusions);
 

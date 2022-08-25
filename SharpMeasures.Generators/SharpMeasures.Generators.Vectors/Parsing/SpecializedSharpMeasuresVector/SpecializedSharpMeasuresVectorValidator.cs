@@ -118,7 +118,7 @@ internal class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpecialized
         int? interpretedDimension = DimensionParsingUtility.InterpretDimensionFromName(context.Type.Name);
         int actualDimension = context.VectorPopulation.VectorBases[context.Type.AsNamedType()].Definition.Dimension;
 
-        return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(actualDimension != interpretedDimension, () => Diagnostics.VectorNameAndDimensionConflict(context, definition, interpretedDimension!.Value, actualDimension));
+        return ValidityWithDiagnostics.Conditional(actualDimension == interpretedDimension, () => Diagnostics.VectorNameAndDimensionConflict(context, definition, interpretedDimension!.Value, actualDimension));
     }
 
     private static IValidityWithDiagnostics ValidateUnitIsUnit(ISpecializedSharpMeasuresVectorValidationContext context)
