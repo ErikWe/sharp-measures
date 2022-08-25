@@ -100,7 +100,7 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
 
     private IOptionalWithDiagnostics<IReadOnlyList<NamedType>> ProcessSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
-        IOptionalWithDiagnostics<IList<NamedType>> signature = OptionalWithDiagnostics.Result(new NamedType[definition.Signature!.Count] as IList<NamedType>);
+        IOptionalWithDiagnostics<NamedType[]> signature = OptionalWithDiagnostics.Result(new NamedType[definition.Signature!.Count]);
 
         for (int i = 0; i < definition.Signature.Count; i++)
         {
@@ -110,14 +110,14 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
         return signature.Transform((signature) => (IReadOnlyList<NamedType>)signature);
     }
 
-    private IOptionalWithDiagnostics<IList<NamedType>> ProcessSignatureElement(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int index, IList<NamedType> signature)
+    private IOptionalWithDiagnostics<NamedType[]> ProcessSignatureElement(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int index, NamedType[] signature)
     {
         if (definition.Signature![index] is not NamedType signatureElement)
         {
-            return OptionalWithDiagnostics.Empty<IList<NamedType>>(Diagnostics.NullSignatureElement(context, definition, index));
+            return OptionalWithDiagnostics.Empty<NamedType[]>(Diagnostics.NullSignatureElement(context, definition, index));
         }
 
-        signature.Add(signatureElement);
+        signature[index] = signatureElement;
 
         return OptionalWithDiagnostics.Result(signature);
     }
