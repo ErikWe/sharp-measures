@@ -46,7 +46,10 @@ internal class VectorPopulation : IVectorPopulationWithData
         {
             if (groupMemberPopulation.TryAdd(groupMember.Type.AsNamedType(), groupMember))
             {
-                groupMembersByGroup[groupMember.Definition.VectorGroup].TryAdd(groupMember.Definition.Dimension, groupMember);
+                if (groupMembersByGroup.TryGetValue(groupMember.Definition.VectorGroup, out var group))
+                {
+                    group.TryAdd(groupMember.Definition.Dimension, groupMember);
+                }
 
                 continue;
             }
