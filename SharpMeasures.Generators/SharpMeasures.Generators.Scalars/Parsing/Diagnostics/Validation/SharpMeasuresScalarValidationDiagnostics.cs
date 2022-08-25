@@ -20,11 +20,6 @@ internal class SharpMeasuresScalarValidationDiagnostics : ISharpMeasuresScalarVa
         return DiagnosticConstruction.ScalarTypeAlreadyDefinedAsUnit(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
-    public Diagnostic TypeAlreadyScalar(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition)
-    {
-        return DiagnosticConstruction.ScalarTypeAlreadyDefinedAsScalar(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
-    }
-
     public Diagnostic TypeNotUnit(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition)
     {
         return DiagnosticConstruction.TypeNotUnit(definition.Locations.Unit?.AsRoslynLocation(), definition.Unit.Name);

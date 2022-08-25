@@ -16,7 +16,6 @@ using System.Linq;
 internal interface ISharpMeasuresScalarValidationDiagnostics : IDefaultUnitValidationDiagnostics
 {
     public abstract Diagnostic? TypeAlreadyUnit(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? TypeAlreadyScalar(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? TypeNotUnit(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? UnitNotIncludingBiasTerm(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? TypeNotVector(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition);
@@ -47,7 +46,6 @@ internal class SharpMeasuresScalarValidator : IProcesser<ISharpMeasuresScalarVal
     public IOptionalWithDiagnostics<SharpMeasuresScalarDefinition> Process(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition)
     {
         var validity = ValidateTypeNotAlreadyUnit(context, definition)
-            .Validate(() => ValidateTypeNotAlreadyScalar(context, definition))
             .Merge(() => ResolveUnit(context, definition))
             .Validate((unit) => ValidateUnitNotIncorrectlyUnbiased(context, definition, unit))
             .Reduce();
@@ -91,13 +89,6 @@ internal class SharpMeasuresScalarValidator : IProcesser<ISharpMeasuresScalarVal
         var typeAlreadyUnit = context.UnitPopulation.Units.ContainsKey(context.Type.AsNamedType());
 
         return ValidityWithDiagnostics.Conditional(typeAlreadyUnit is false, () => Diagnostics.TypeAlreadyUnit(context, definition));
-    }
-
-    private IValidityWithDiagnostics ValidateTypeNotAlreadyScalar(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition)
-    {
-        var typeAlreadyScalar = context.ScalarPopulation.DuplicatelyDefinedScalars.ContainsKey(context.Type.AsNamedType());
-
-        return ValidityWithDiagnostics.Conditional(typeAlreadyScalar is false, () => Diagnostics.TypeAlreadyScalar(context, definition));
     }
 
     private IOptionalWithDiagnostics<IUnitType> ResolveUnit(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition)

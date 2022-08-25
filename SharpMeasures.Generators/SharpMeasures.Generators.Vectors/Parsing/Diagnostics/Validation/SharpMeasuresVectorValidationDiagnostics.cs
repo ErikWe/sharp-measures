@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Validation;
+﻿namespace SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Validation;
 
 using Microsoft.CodeAnalysis;
 
@@ -23,11 +23,6 @@ internal class SharpMeasuresVectorValidationDiagnostics : ISharpMeasuresVectorVa
     public Diagnostic TypeAlreadyScalar(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition)
     {
         return DiagnosticConstruction.VectorTypeAlreadyDefinedAsScalar(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
-    }
-
-    public Diagnostic TypeAlreadyVector(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition)
-    {
-        return DiagnosticConstruction.VectorTypeAlreadyDefinedAsVector(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
     public Diagnostic TypeNotUnit(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition)

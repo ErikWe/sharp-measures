@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
+﻿namespace SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 
 using Microsoft.CodeAnalysis;
 
@@ -15,7 +15,6 @@ internal interface ISharpMeasuresVectorValidationDiagnostics : IDefaultUnitValid
 {
     public abstract Diagnostic? TypeAlreadyUnit(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? TypeAlreadyScalar(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition);
-    public abstract Diagnostic? TypeAlreadyVector(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? TypeNotUnit(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? TypeNotScalar(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? DifferenceNotVector(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition);
@@ -43,7 +42,6 @@ internal class SharpMeasuresVectorValidator : IProcesser<ISharpMeasuresVectorVal
     {
         var validity = ValidateTypeNotAlreadyUnit(context, definition)
             .Validate(() => ValidateTypeNotAlreadyScalar(context, definition))
-            .Validate(() => ValidateTypeNotAlreadyVector(context, definition))
             .Merge(() => ResolveUnit(context, definition))
             .Reduce();
 
@@ -86,13 +84,6 @@ internal class SharpMeasuresVectorValidator : IProcesser<ISharpMeasuresVectorVal
         return ValidityWithDiagnostics.Conditional(typeAlreadyScalar is false, () => Diagnostics.TypeAlreadyScalar(context, definition));
     }
 
-    private IValidityWithDiagnostics ValidateTypeNotAlreadyVector(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition)
-    {
-        var typeAlreadyVector = context.VectorPopulation.DuplicatelyDefinedVectors.ContainsKey(context.Type.AsNamedType());
-
-        return ValidityWithDiagnostics.Conditional(typeAlreadyVector is false, () => Diagnostics.TypeAlreadyVector(context, definition));
-    }
-
     private IOptionalWithDiagnostics<IUnitType> ResolveUnit(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition)
     {
         var correctlyResolvedUnit = context.UnitPopulation.Units.TryGetValue(definition.Unit, out var unit);
@@ -104,7 +95,7 @@ internal class SharpMeasuresVectorValidator : IProcesser<ISharpMeasuresVectorVal
     {
         var scalarIsNotScalar = definition.Scalar is not null && context.ScalarPopulation.Scalars.ContainsKey(definition.Scalar.Value) is false;
 
-        return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(scalarIsNotScalar, () => Diagnostics.TypeNotScalar(context, definition));
+        return ValidityWithDiagnostics.Conditional(scalarIsNotScalar is false, () => Diagnostics.TypeNotScalar(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateDifference(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition)
@@ -131,6 +122,6 @@ internal class SharpMeasuresVectorValidator : IProcesser<ISharpMeasuresVectorVal
             return ValidityWithDiagnostics.Conditional(groupMember.Definition.Dimension == definition.Dimension, () => Diagnostics.DifferenceVectorInvalidDimension(context, definition, groupMember.Definition.Dimension));
         }
 
-        return ValidityWithDiagnostics.ValidWithDiagnostics(Diagnostics.DifferenceNotVector(context, definition));
+        return ValidityWithDiagnostics.Invalid(Diagnostics.DifferenceNotVector(context, definition));
     }
 }

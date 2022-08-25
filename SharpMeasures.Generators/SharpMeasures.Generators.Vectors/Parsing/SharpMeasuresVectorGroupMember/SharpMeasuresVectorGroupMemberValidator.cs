@@ -14,7 +14,6 @@ internal interface ISharpMeasuresVectorGroupMemberValidationDiagnostics
     public abstract Diagnostic? TypeAlreadyScalar(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition);
     public abstract Diagnostic? TypeAlreadyVector(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition);
     public abstract Diagnostic? TypeAlreadyVectorGroup(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition);
-    public abstract Diagnostic? TypeAlreadyVectorGroupMember(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition);
     public abstract Diagnostic? TypeNotVectorGroup(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition);
     public abstract Diagnostic? VectorGroupAlreadyContainsDimension(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition);
 }
@@ -41,7 +40,6 @@ internal class SharpMeasuresVectorGroupMemberValidator : IValidator<ISharpMeasur
             .Validate(() => ValidateTypeNotAlreadyScalar(context, definition))
             .Validate(() => ValidateTypeNotAlreadyVector(context, definition))
             .Validate(() => ValidateTypeNotAlreadyVectorGroup(context, definition))
-            .Validate(() => ValidateTypeNotAlreadyVectorGroupMember(context, definition))
             .Validate(() => ValidateVectorGroupIsVectorGroup(context, definition))
             .Validate(() => ValidateVectorGroupNotAlreadyHasDimension(context, definition));
     }
@@ -72,13 +70,6 @@ internal class SharpMeasuresVectorGroupMemberValidator : IValidator<ISharpMeasur
         var typeAlreadyVectorGroup = context.VectorPopulation.Groups.ContainsKey(context.Type.AsNamedType());
 
         return ValidityWithDiagnostics.Conditional(typeAlreadyVectorGroup is false, () => Diagnostics.TypeAlreadyVectorGroup(context, definition));
-    }
-
-    private IValidityWithDiagnostics ValidateTypeNotAlreadyVectorGroupMember(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition)
-    {
-        var typeAlreadyVectorGroupMember = context.VectorPopulation.DuplicatelyDefinedGroupMembers.ContainsKey(context.Type.AsNamedType());
-
-        return ValidityWithDiagnostics.Conditional(typeAlreadyVectorGroupMember is false, () => Diagnostics.TypeAlreadyVectorGroupMember(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateVectorGroupIsVectorGroup(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition)
