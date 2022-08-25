@@ -46,7 +46,7 @@ internal class GeneratorVerifier
 
         if (assertNoCompilationErrors)
         {
-            Assert.Empty(Compilation.GetDiagnostics());
+            Assert.Empty(Compilation.GetDiagnostics().Where(static (diagnostics) => diagnostics.Location.SourceTree?.FilePath.Length > 0));
         }
     }
 
