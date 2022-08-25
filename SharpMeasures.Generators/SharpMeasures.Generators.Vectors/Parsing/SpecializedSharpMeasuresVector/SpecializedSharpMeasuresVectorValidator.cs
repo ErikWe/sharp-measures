@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVector;
+﻿namespace SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVector;
 
 using Microsoft.CodeAnalysis;
 
@@ -132,7 +132,7 @@ internal class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpecialized
     {
         var scalarIsNotScalar = definition.Scalar is not null && context.ScalarPopulation.Scalars.ContainsKey(definition.Scalar.Value) is false;
 
-        return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(scalarIsNotScalar, () => Diagnostics.TypeNotScalar(context, definition));
+        return ValidityWithDiagnostics.Conditional(scalarIsNotScalar is false, () => Diagnostics.TypeNotScalar(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateDifference(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition)
@@ -161,6 +161,6 @@ internal class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpecialized
             return ValidityWithDiagnostics.Conditional(groupMember.Definition.Dimension == dimension, () => Diagnostics.DifferenceVectorInvalidDimension(context, definition, dimension, groupMember.Definition.Dimension));
         }
 
-        return ValidityWithDiagnostics.ValidWithDiagnostics(Diagnostics.DifferenceNotVector(context, definition));
+        return ValidityWithDiagnostics.Invalid(Diagnostics.DifferenceNotVector(context, definition));
     }
 }

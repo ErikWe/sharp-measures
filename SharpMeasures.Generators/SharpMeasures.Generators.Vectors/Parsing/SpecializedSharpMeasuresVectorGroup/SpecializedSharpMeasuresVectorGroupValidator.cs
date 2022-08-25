@@ -129,13 +129,13 @@ internal class SpecializedSharpMeasuresVectorGroupValidator : IProcesser<ISpecia
     {
         var scalarIsNotScalar = definition.Scalar is not null && context.ScalarPopulation.Scalars.ContainsKey(definition.Scalar.Value) is false;
 
-        return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(scalarIsNotScalar, () => Diagnostics.TypeNotScalar(context, definition));
+        return ValidityWithDiagnostics.Conditional(scalarIsNotScalar is false, () => Diagnostics.TypeNotScalar(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateDifferenceIsVectorGroup(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition)
     {
         var differenceIsNotVectorGroup = definition.Difference is not null && context.VectorPopulation.Groups.ContainsKey(definition.Difference.Value) is false;
 
-        return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(differenceIsNotVectorGroup, () => Diagnostics.DifferenceNotVectorGroup(context, definition));
+        return ValidityWithDiagnostics.Conditional(differenceIsNotVectorGroup is false, () => Diagnostics.DifferenceNotVectorGroup(context, definition));
     }
 }
