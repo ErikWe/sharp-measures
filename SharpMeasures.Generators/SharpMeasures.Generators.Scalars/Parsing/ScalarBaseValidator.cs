@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Scalars.Parsing;
+namespace SharpMeasures.Generators.Scalars.Parsing;
 
 using Microsoft.CodeAnalysis;
 
@@ -47,9 +47,9 @@ internal static class ScalarBaseValidator
         var conversions = ValidateConversions(input.UnvalidatedScalar, input.ScalarPopulation);
 
         var baseInclusions = ValidateUnitList(input.UnvalidatedScalar, input.UnitPopulation, input.UnvalidatedScalar.BaseInclusions, UnitInclusionFilter);
-        var baseExclusions = ValidateUnitList(input.UnvalidatedScalar, input.UnitPopulation, input.UnvalidatedScalar.BaseInclusions, UnitExclusionFilter);
+        var baseExclusions = ValidateUnitList(input.UnvalidatedScalar, input.UnitPopulation, input.UnvalidatedScalar.BaseExclusions, UnitExclusionFilter);
         var unitInclusions = ValidateUnitList(input.UnvalidatedScalar, input.UnitPopulation, input.UnvalidatedScalar.UnitInclusions, UnitInclusionFilter);
-        var unitExclusions = ValidateUnitList(input.UnvalidatedScalar, input.UnitPopulation, input.UnvalidatedScalar.UnitInclusions, UnitExclusionFilter);
+        var unitExclusions = ValidateUnitList(input.UnvalidatedScalar, input.UnitPopulation, input.UnvalidatedScalar.UnitExclusions, UnitExclusionFilter);
 
         ScalarBaseType product = new(input.UnvalidatedScalar.Type, input.UnvalidatedScalar.TypeLocation, scalar.Result, input.UnvalidatedScalar.Derivations,
             input.UnvalidatedScalar.Constants, input.UnvalidatedScalar.Conversions, baseInclusions.Result, baseExclusions.Result, unitInclusions.Result, unitExclusions.Result);
