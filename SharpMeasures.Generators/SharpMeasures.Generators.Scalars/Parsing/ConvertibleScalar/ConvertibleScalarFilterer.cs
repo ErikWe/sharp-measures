@@ -74,9 +74,9 @@ internal class ConvertibleScalarFilterer : IProcesser<IConvertibleScalarFilterin
 
     private IOptionalWithDiagnostics<IScalarBaseType> ResolveScalarBase(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index)
     {
-        var scalarIsScalar = context.ScalarPopulation.ScalarBases.TryGetValue(definition.Scalars[index], out var scalarBase);
+        var correctlyResolvedScalar = context.ScalarPopulation.ScalarBases.TryGetValue(definition.Scalars[index], out var scalarBase);
 
-        return OptionalWithDiagnostics.Conditional(scalarIsScalar, scalarBase, () => Diagnostics.TypeNotScalar(context, definition, index));
+        return OptionalWithDiagnostics.Conditional(correctlyResolvedScalar, scalarBase, () => Diagnostics.TypeNotScalar(context, definition, index));
     }
 
     private IValidityWithDiagnostics ValidateScalarNotUnexpectedlyBiased(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index, IScalarBaseType scalarBase)
