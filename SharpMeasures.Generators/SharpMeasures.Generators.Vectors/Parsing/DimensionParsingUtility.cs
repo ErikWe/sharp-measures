@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 internal static class DimensionParsingUtility
 {
-    public static bool CheckVectorDimensionValidity(int dimension) => dimension is 2 or 3;
+    public static bool CheckVectorDimensionValidity(int dimension) => dimension is >= 2 and <= 4;
 
     public static int? InterpretDimensionFromName(string name)
     {
