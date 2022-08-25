@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVector;
+namespace SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVector;
 
 using Microsoft.CodeAnalysis;
 
@@ -145,19 +145,19 @@ internal class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpecialized
 
         if (context.VectorPopulation.VectorBases.TryGetValue(definition.Difference.Value, out var vector))
         {
-            return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(vector.Definition.Dimension != dimension, () => Diagnostics.DifferenceVectorGroupLacksMatchingDimension(context, definition, dimension));
+            return ValidityWithDiagnostics.Conditional(vector.Definition.Dimension == dimension, () => Diagnostics.DifferenceVectorInvalidDimension(context, definition, dimension, vector.Definition.Dimension));
         }
 
-        if (context.VectorPopulation.GroupBases.TryGetValue(definition.Difference.Value, out var vectorGroup))
+        if (context.VectorPopulation.GroupBases.TryGetValue(definition.Difference.Value, out var group))
         {
             var groupHasMemberOfMatchingDimension = context.VectorPopulation.GroupMembersByGroup[definition.Difference.Value].GroupMembersByDimension.ContainsKey(dimension);
 
-            return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(groupHasMemberOfMatchingDimension is false, () => Diagnostics.DifferenceVectorGroupLacksMatchingDimension(context, definition, dimension));
+            return ValidityWithDiagnostics.Conditional(groupHasMemberOfMatchingDimension, () => Diagnostics.DifferenceVectorGroupLacksMatchingDimension(context, definition, dimension));
         }
 
-        if (context.VectorPopulation.GroupMembers.TryGetValue(definition.Difference.Value, out var vectorGroupMember))
+        if (context.VectorPopulation.GroupMembers.TryGetValue(definition.Difference.Value, out var groupMember))
         {
-            return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(vectorGroupMember.Definition.Dimension != dimension, () => Diagnostics.DifferenceVectorGroupLacksMatchingDimension(context, definition, dimension));
+            return ValidityWithDiagnostics.Conditional(groupMember.Definition.Dimension == dimension, () => Diagnostics.DifferenceVectorInvalidDimension(context, definition, dimension, groupMember.Definition.Dimension));
         }
 
         return ValidityWithDiagnostics.ValidWithDiagnostics(Diagnostics.DifferenceNotVector(context, definition));

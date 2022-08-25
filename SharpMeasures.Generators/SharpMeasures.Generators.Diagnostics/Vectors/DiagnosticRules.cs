@@ -37,6 +37,16 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
+    public static readonly DiagnosticDescriptor VectorUnexpectedDimension = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.VectorUnexpectedDimension,
+        title: "Vector of unexpected dimension",
+        messageFormat: "Expected a vector of dimension {0}, but {1} is of dimension {2}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
     public static readonly DiagnosticDescriptor DuplicateVectorDimension = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DuplicateVectorDimension,

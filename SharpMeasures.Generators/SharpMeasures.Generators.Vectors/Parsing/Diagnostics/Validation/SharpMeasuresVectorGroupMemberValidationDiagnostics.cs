@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Validation;
+namespace SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Validation;
 
 using Microsoft.CodeAnalysis;
 
@@ -25,6 +25,7 @@ internal class SharpMeasuresVectorGroupMemberValidationDiagnostics : ISharpMeasu
     {
         return DiagnosticConstruction.VectorGroupMemberTypeAlreadyDefinedAsVector(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
+
     public Diagnostic TypeAlreadyVectorGroup(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition)
     {
         return DiagnosticConstruction.VectorGroupMemberTypeAlreadyDefinedAsVectorGroup(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);

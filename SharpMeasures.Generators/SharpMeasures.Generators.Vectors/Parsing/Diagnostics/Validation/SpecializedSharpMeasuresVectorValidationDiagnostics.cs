@@ -55,6 +55,11 @@ internal class SpecializedSharpMeasuresVectorValidationDiagnostics : ISpecialize
         return DiagnosticConstruction.TypeNotVector(definition.Locations.Difference?.AsRoslynLocation(), definition.Difference!.Value.Name);
     }
 
+    public Diagnostic DifferenceVectorInvalidDimension(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition, int expectedDimension, int actualDimension)
+    {
+        return DiagnosticConstruction.VectorUnexpectedDimension(definition.Locations.Difference?.AsRoslynLocation(), definition.Difference!.Value.Name, expectedDimension, actualDimension);
+    }
+
     public Diagnostic DifferenceVectorGroupLacksMatchingDimension(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition, int dimension)
     {
         return DiagnosticConstruction.VectorGroupsLacksMemberOfDimension(definition.Locations.Difference?.AsRoslynLocation(), definition.Difference!.Value.Name, dimension);

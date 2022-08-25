@@ -21,6 +21,11 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.MissingVectorDimension, location, vectorType);
     }
 
+    public static Diagnostic VectorUnexpectedDimension(Location? location, string vectorType, int expectedDimension, int actualDimension)
+    {
+        return Diagnostic.Create(DiagnosticRules.VectorUnexpectedDimension, location, actualDimension.ToString(CultureInfo.InvariantCulture), vectorType, actualDimension.ToString(CultureInfo.InvariantCulture));
+    }
+
     public static Diagnostic DuplicateVectorDimension(Location? location, string vectorGroupType, int dimension)
     {
         return Diagnostic.Create(DiagnosticRules.DuplicateVectorDimension, location, vectorGroupType, dimension.ToString(CultureInfo.InvariantCulture));

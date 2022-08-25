@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Validation;
+namespace SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Validation;
 
 using Microsoft.CodeAnalysis;
 
@@ -43,6 +43,11 @@ internal class SharpMeasuresVectorValidationDiagnostics : ISharpMeasuresVectorVa
     public Diagnostic DifferenceNotVector(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition)
     {
         return DiagnosticConstruction.TypeNotVector(definition.Locations.Difference?.AsRoslynLocation(), definition.Difference!.Value.Name);
+    }
+
+    public Diagnostic DifferenceVectorInvalidDimension(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition, int dimension)
+    {
+        return DiagnosticConstruction.VectorUnexpectedDimension(definition.Locations.Difference?.AsRoslynLocation(), definition.Difference!.Value.Name, definition.Dimension, dimension);
     }
 
     public Diagnostic DifferenceVectorGroupLacksMatchingDimension(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition)
