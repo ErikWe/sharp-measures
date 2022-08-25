@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Vectors.Parsing;
+﻿namespace SharpMeasures.Generators.Vectors.Parsing;
 
 using Microsoft.CodeAnalysis;
 
@@ -67,7 +67,7 @@ internal static class GroupBaseValidator
 
     private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ValidateConversions(GroupBaseType vectorType, IVectorPopulation vectorPopulation)
     {
-        var filteringContext = new ConvertibleVectorFilteringContext(vectorType.Type, VectorType.Vector, vectorPopulation, new HashSet<NamedType>());
+        var filteringContext = new ConvertibleVectorFilteringContext(vectorType.Type, VectorType.Group, vectorPopulation, new HashSet<NamedType>());
 
         return ProcessingFilter.Create(ConvertibleVectorFilterer).Filter(filteringContext, vectorType.Conversions);
     }

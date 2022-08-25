@@ -84,7 +84,7 @@ internal static class GroupSpecializationValidator
     {
         var inheritedConversions = CollectInheritedItems(vectorType, vectorPopulation, static (vector) => vector.Conversions.SelectMany(static (vectorList) => vectorList.Vectors), static (vector) => vector.Definition.InheritConversions);
 
-        var filteringContext = new ConvertibleVectorFilteringContext(vectorType.Type, VectorType.Vector, vectorPopulation, new HashSet<NamedType>(inheritedConversions));
+        var filteringContext = new ConvertibleVectorFilteringContext(vectorType.Type, VectorType.Group, vectorPopulation, new HashSet<NamedType>(inheritedConversions));
 
         return ProcessingFilter.Create(ConvertibleVectorFilterer).Filter(filteringContext, vectorType.Conversions);
     }
