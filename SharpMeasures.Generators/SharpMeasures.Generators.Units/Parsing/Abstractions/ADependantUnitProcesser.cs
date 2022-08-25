@@ -50,6 +50,6 @@ internal abstract class ADependantUnitProcesser<TContext, TDefinition, TLocation
 
     private IValidityWithDiagnostics ValidateNotDependantOnSelf(TContext context, TDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.DependantOn == definition.Name, () => Diagnostics.DependantOnSelf(context, definition));
+        return ValidityWithDiagnostics.Conditional(definition.DependantOn != definition.Name, () => Diagnostics.DependantOnSelf(context, definition));
     }
 }
