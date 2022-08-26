@@ -47,7 +47,7 @@ internal class DerivedUnitProcesser : AUnitProcesser<IUnitProcessingContext, Raw
     private IOptionalWithDiagnostics<IReadOnlyList<string>> ProcessUnits(IUnitProcessingContext context, RawDerivedUnitDefinition definition)
     {
         var units = ValidateUnitListNotEmpty(context, definition)
-            .Transform(() => new string[definition.Units.Count] as IList<string>);
+            .Transform(() => new string[definition.Units.Count]);
 
         for (int i = 0; i < definition.Units.Count; i++)
         {
@@ -62,16 +62,16 @@ internal class DerivedUnitProcesser : AUnitProcesser<IUnitProcessingContext, Raw
         return ValidityWithDiagnostics.Conditional(definition.Units.Count is not 0, () => Diagnostics.EmptyUnitList(context, definition));
     }
 
-    private IOptionalWithDiagnostics<IList<string>> ProcessElement(IUnitProcessingContext context, RawDerivedUnitDefinition definition, int index, IList<string> units)
+    private IOptionalWithDiagnostics<string[]> ProcessElement(IUnitProcessingContext context, RawDerivedUnitDefinition definition, int index, string[] units)
     {
         return ValidateElementNotNull(context, definition, index)
             .Validate(() => ValidateElementNotEmpty(context, definition, index))
             .Transform(() => AppendValidElement(definition, index, units));
     }
 
-    private static IList<string> AppendValidElement(RawDerivedUnitDefinition definition, int index, IList<string> units)
+    private static string[] AppendValidElement(RawDerivedUnitDefinition definition, int index, string[] units)
     {
-        units.Add(definition.Units[index]!);
+        units[index] = definition.Units[index]!;
 
         return units;
     }
