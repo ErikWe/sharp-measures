@@ -10,8 +10,12 @@ internal record class DependantUnitValidationContext : SimpleProcessingContext, 
 {
     public IReadOnlyDictionary<string, IUnitInstance> UnitsByName { get; }
 
-    public DependantUnitValidationContext(DefinedType type, IReadOnlyDictionary<string, IUnitInstance> unitsByName) : base(type)
+    public HashSet<IDependantUnitInstance> CyclicDependantUnits { get; }
+
+    public DependantUnitValidationContext(DefinedType type, IReadOnlyDictionary<string, IUnitInstance> unitsByName, HashSet<IDependantUnitInstance> cyclicDependantUnits) : base(type)
     {
         UnitsByName = unitsByName;
+
+        CyclicDependantUnits = cyclicDependantUnits;
     }
 }

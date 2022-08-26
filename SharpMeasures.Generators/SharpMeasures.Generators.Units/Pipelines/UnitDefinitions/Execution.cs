@@ -1,9 +1,8 @@
-﻿namespace SharpMeasures.Generators.Units.Pipelines.UnitDefinitions;
+namespace SharpMeasures.Generators.Units.Pipelines.UnitDefinitions;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.Parsing.BiasedUnit;
@@ -21,33 +20,28 @@ internal static class Execution
 {
     public static void Execute(SourceProductionContext context, DataModel result)
     {
-        string source = Composer.Compose(context, result);
+        string source = Composer.Compose(result);
 
         context.AddSource($"{result.Unit.Name}_Definitions.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer
     {
-        public static string Compose(SourceProductionContext context, DataModel data)
+        public static string Compose(DataModel data)
         {
-            Composer composer = new(context, data);
+            Composer composer = new(data);
             composer.Compose();
-            composer.ReportDiagnostics();
             return composer.Retrieve();
         }
 
-        private SourceProductionContext Context { get; }
         private StringBuilder Builder { get; } = new();
 
         private DataModel Data { get; }
 
         private HashSet<string> ImplementedDefinitions { get; } = new();
 
-        private List<Diagnostic> Diagnostics { get; } = new();
-
-        private Composer(SourceProductionContext context, DataModel data)
+        private Composer(DataModel data)
         {
-            Context = context;
             Data = data;
         }
 
@@ -60,11 +54,6 @@ internal static class Execution
             Builder.Append(Data.Unit.ComposeDeclaration());
 
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
-        }
-
-        private void ReportDiagnostics()
-        {
-            Context.ReportDiagnostics(Diagnostics);
         }
 
         private string Retrieve()
@@ -184,8 +173,6 @@ internal static class Execution
                 AppendDependantUnits(indentation, dependantUnits);
                 return;
             }
-
-            CreateCyclicDependencyDiagnostics(dependantUnits);
         }
 
         private void AppendAlias(RawUnitAliasDefinition unitAlias)
@@ -242,16 +229,6 @@ internal static class Execution
         private void AppendDocumentation(Indentation indentation, string text)
         {
             DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
-        }
-
-        private void CreateCyclicDependencyDiagnostics(IList<IDependantUnitDefinition<IDependantUnitLocations>> dependantUnits)
-        {
-            foreach (var dependantUnit in dependantUnits)
-            {
-                Diagnostic diagnostics = DiagnosticConstruction.CyclicUnitDependency(dependantUnit.Locations.DependantOn?.AsRoslynLocation(), dependantUnit.Name, Data.Unit.Name);
-
-                Diagnostics.Add(diagnostics);
-            }
         }
     }
 }

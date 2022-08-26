@@ -13,4 +13,9 @@ internal abstract class ADependantUnitValidationDiagnostics<TDefinition, TLocati
     {
         return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.DependantOn?.AsRoslynLocation(), definition.DependantOn!, context.Type.Name);
     }
+
+    public Diagnostic CyclicDependency(IDependantUnitValidationContext context, TDefinition definition)
+    {
+        return DiagnosticConstruction.CyclicUnitDependency(definition.Locations.DependantOn?.AsRoslynLocation(), definition.Name, context.Type.Name);
+    }
 }

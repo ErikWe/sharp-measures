@@ -9,7 +9,7 @@ internal record class BiasedUnitValidationContext : DependantUnitValidationConte
 {
     public bool UnitIncludesBiasTerm { get; }
 
-    public BiasedUnitValidationContext(DefinedType type, bool unitIncludesBiasTerm, IReadOnlyDictionary<string, IUnitInstance> unitsByName) : base(type, unitsByName)
+    public BiasedUnitValidationContext(DefinedType type, bool unitIncludesBiasTerm, IReadOnlyDictionary<string, IUnitInstance> unitsByName, HashSet<IDependantUnitInstance> cyclicDependantUnits) : base(type, unitsByName, cyclicDependantUnits)
     {
         UnitIncludesBiasTerm = unitIncludesBiasTerm;
     }

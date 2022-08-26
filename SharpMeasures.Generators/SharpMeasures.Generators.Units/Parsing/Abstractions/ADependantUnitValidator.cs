@@ -13,11 +13,14 @@ internal interface IDependantUnitValidationDiagnostics<in TDefinition, in TLocat
     where TLocations : IDependantUnitLocations
 {
     public abstract Diagnostic? UnrecognizedDependency(IDependantUnitValidationContext context, TDefinition definition);
+    public abstract Diagnostic? CyclicDependency(IDependantUnitValidationContext context, TDefinition definition);
 }
 
 internal interface IDependantUnitValidationContext : IValidationContext
 {
     public abstract IReadOnlyDictionary<string, IUnitInstance> UnitsByName { get; }
+
+    public abstract HashSet<IDependantUnitInstance> CyclicDependantUnits { get; } 
 }
 
 internal abstract class ADependantUnitValidator<TContext, TDefinition, TLocations> : AActionableValidator<TContext, TDefinition>
@@ -34,13 +37,21 @@ internal abstract class ADependantUnitValidator<TContext, TDefinition, TLocation
 
     public override IValidityWithDiagnostics Validate(TContext context, TDefinition definition)
     {
-        return ValidateDependantOn(context, definition);
+        return ValidateDependantOnIsUnit(context, definition)
+            .Validate(() => ValidateNotCyclicDependency(context, definition));
     }
 
-    protected IValidityWithDiagnostics ValidateDependantOn(TContext context, TDefinition definition)
+    private IValidityWithDiagnostics ValidateDependantOnIsUnit(TContext context, TDefinition definition)
     {
         var dependantOnCorrectlyResolved = context.UnitsByName.ContainsKey(definition.DependantOn);
 
         return ValidityWithDiagnostics.Conditional(dependantOnCorrectlyResolved, () => Diagnostics.UnrecognizedDependency(context, definition));
+    }
+
+    private IValidityWithDiagnostics ValidateNotCyclicDependency(TContext context, TDefinition definition)
+    {
+        var dependantUnitHasCyclicDependency = context.CyclicDependantUnits.Contains(definition);
+
+        return ValidityWithDiagnostics.Conditional(dependantUnitHasCyclicDependency is false, () => Diagnostics.CyclicDependency(context, definition));
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Units.Parsing;
+namespace SharpMeasures.Generators.Units.Parsing;
 
 using Microsoft.CodeAnalysis;
 
@@ -61,11 +61,13 @@ internal class UnitValidator : IUnitValidator
 
         var derivations = ValidateDerivations(input.UnvalidatedUnit, input.UnitPopulation);
 
-        var unitInstanceValidationContext = new DependantUnitValidationContext(input.UnvalidatedUnit.Type, input.UnvalidatedUnit.UnitsByName);
+        var cyclicDependantUnits = GetCyclicDependantUnits(input.UnvalidatedUnit);
+
+        var unitInstanceValidationContext = new DependantUnitValidationContext(input.UnvalidatedUnit.Type, input.UnvalidatedUnit.UnitsByName, cyclicDependantUnits);
 
         var unitAliases = ValidateUnitAliases(input.UnvalidatedUnit, unitInstanceValidationContext);
         var derivedUnits = ValidateDerivedUnits(input.UnvalidatedUnit, input.UnitPopulation);
-        var biasedUnits = ValidateBiasedUnits(input.UnvalidatedUnit);
+        var biasedUnits = ValidateBiasedUnits(input.UnvalidatedUnit, cyclicDependantUnits);
         var prefixedUnits = ValidatePrefixedUnits(input.UnvalidatedUnit, unitInstanceValidationContext);
         var scaledUnits = ValidateScaledUnits(input.UnvalidatedUnit, unitInstanceValidationContext);
 
@@ -91,6 +93,38 @@ internal class UnitValidator : IUnitValidator
         return ValidityFilter.Create(DerivableUnitValidator).Filter(validationContext, unitType.UnitDerivations);
     }
 
+    private static HashSet<IDependantUnitInstance> GetCyclicDependantUnits(UnitType unitType)
+    {
+        HashSet<IDependantUnitInstance> unresolvedUnitInstances = new((unitType.UnitAliases as IEnumerable<IDependantUnitInstance>).Concat(unitType.BiasedUnits).Concat(unitType.PrefixedUnits).Concat(unitType.ScaledUnits));
+        HashSet<string> resolvedUnitInstances = new(unitType.DerivedUnits.Select(static (unit) => unit.Name));
+
+        if (unitType.FixedUnit is not null)
+        {
+            resolvedUnitInstances.Add(unitType.FixedUnit.Name);
+        }
+
+        while (true)
+        {
+            int initialLength = unresolvedUnitInstances.Count;
+
+            foreach (var unresolvedUnitInstance in unresolvedUnitInstances)
+            {
+                if (resolvedUnitInstances.Contains(unresolvedUnitInstance.DependantOn))
+                {
+                    resolvedUnitInstances.Add(unresolvedUnitInstance.Name);
+                    unresolvedUnitInstances.Remove(unresolvedUnitInstance);
+                }
+            }
+
+            if (unresolvedUnitInstances.Count == initialLength)
+            {
+                break;
+            }
+        }
+
+        return unresolvedUnitInstances;
+    }
+
     private static IResultWithDiagnostics<IReadOnlyList<UnitAliasDefinition>> ValidateUnitAliases(UnitType unitType, IDependantUnitValidationContext validationContext)
     {
         return ValidityFilter.Create(UnitAliasValidator).Filter(validationContext, unitType.UnitAliases);
@@ -105,9 +139,9 @@ internal class UnitValidator : IUnitValidator
         return ValidityFilter.Create(DerivedUnitValidator).Filter(validationContext, unitType.DerivedUnits);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<BiasedUnitDefinition>> ValidateBiasedUnits(UnitType unitType)
+    private static IResultWithDiagnostics<IReadOnlyList<BiasedUnitDefinition>> ValidateBiasedUnits(UnitType unitType, HashSet<IDependantUnitInstance> cyclicDependantUnits)
     {
-        var validationContext = new BiasedUnitValidationContext(unitType.Type, unitType.Definition.BiasTerm, unitType.UnitsByName);
+        var validationContext = new BiasedUnitValidationContext(unitType.Type, unitType.Definition.BiasTerm, unitType.UnitsByName, cyclicDependantUnits);
 
         return ValidityFilter.Create(BiasedUnitValidator).Filter(validationContext, unitType.BiasedUnits);
     }
