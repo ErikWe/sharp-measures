@@ -98,12 +98,14 @@ internal static class VectorBaseValidator
 
     private static IReadOnlyList<string> GetUnitInclusions(IUnitType unit, IEnumerable<IUnitList> inclusions, Func<IEnumerable<IUnitList>> exclusionsDelegate)
     {
+        HashSet<string> includedUnits = new(unit.UnitsByName.Keys);
+
         if (inclusions.Any())
         {
-            return inclusions.SelectMany(static (unitList) => unitList.Units).ToList();
-        }
+            includedUnits.IntersectWith(inclusions.SelectMany(static (unitList) => unitList.Units).ToList());
 
-        HashSet<string> includedUnits = new(unit.UnitsByName.Keys);
+            return includedUnits.ToList();
+        }
 
         includedUnits.ExceptWith(exclusionsDelegate().SelectMany(static (unitList) => unitList.Units));
 
