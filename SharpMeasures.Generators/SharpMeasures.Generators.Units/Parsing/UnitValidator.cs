@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Units.Parsing;
+﻿namespace SharpMeasures.Generators.Units.Parsing;
 
 using Microsoft.CodeAnalysis;
 
@@ -15,6 +15,7 @@ using SharpMeasures.Generators.Units.Parsing.PrefixedUnit;
 using SharpMeasures.Generators.Units.Parsing.ScaledUnit;
 using SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
 using SharpMeasures.Generators.Units.Parsing.UnitAlias;
+using SharpMeasures.Generators.Units.UnitInstances;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -134,7 +135,7 @@ internal class UnitValidator : IUnitValidator
     {
         var unnamedUnitDerivation = unitType.UnitDerivations.Count == 1 && unitType.UnitDerivations[0].DerivationID is null ? unitType.UnitDerivations[0] : null;
 
-        var validationContext = new DerivedUnitValidationContext(unitType.Type, unnamedUnitDerivation, unitType.UnitsByName, unitType.DerivationsByID, unitPopulation);
+        var validationContext = new DerivedUnitValidationContext(unitType.Type, unnamedUnitDerivation, unitType.DerivationsByID, unitPopulation);
 
         return ValidityFilter.Create(DerivedUnitValidator).Filter(validationContext, unitType.DerivedUnits);
     }

@@ -5,22 +5,20 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.DerivedUnit;
 
-using System.Collections.Generic;
-
 internal class DerivedUnitValidationDiagnostics : IDerivedUnitValidationDiagnostics
 {
     public static DerivedUnitValidationDiagnostics Instance { get; } = new();
 
     private DerivedUnitValidationDiagnostics() { }
 
-    public Diagnostic InvalidUnitListLength(IDerivedUnitValidationContext context, DerivedUnitDefinition definition, IReadOnlyList<string> signature)
+    public Diagnostic InvalidUnitListLength(IDerivedUnitValidationContext context, DerivedUnitDefinition definition, int signatureLength)
     {
-        return DiagnosticConstruction.IncompatibleDerivedUnitListSize(definition.Locations.UnitsCollection?.AsRoslynLocation(), signature.Count, definition.Units.Count);
+        return DiagnosticConstruction.IncompatibleDerivedUnitListSize(definition.Locations.UnitsCollection?.AsRoslynLocation(), signatureLength, definition.Units.Count);
     }
 
-    public Diagnostic UnrecognizedUnit(IDerivedUnitValidationContext context, DerivedUnitDefinition definition, int index, IUnitType unitType)
+    public Diagnostic UnrecognizedUnit(IDerivedUnitValidationContext context, DerivedUnitDefinition definition, int index, NamedType unitType)
     {
-        return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.UnitsElements[index].AsRoslynLocation(), definition.Units[index], unitType.Type.Name);
+        return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.UnitsElements[index].AsRoslynLocation(), definition.Units[index], unitType.Name);
     }
 
     public Diagnostic UnitNotDerivable(IDerivedUnitValidationContext context, DerivedUnitDefinition definition)
