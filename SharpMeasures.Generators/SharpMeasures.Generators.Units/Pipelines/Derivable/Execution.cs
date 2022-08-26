@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Units.Pipelines.Derivable;
+namespace SharpMeasures.Generators.Units.Pipelines.Derivable;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -45,7 +45,7 @@ internal static class Execution
 
             Builder.Append(Data.Unit.ComposeDeclaration());
 
-            BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0);
+            BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
         }
 
         private string Retrieve()

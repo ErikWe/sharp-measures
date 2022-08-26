@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Maths;
+namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Maths;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -45,7 +45,7 @@ internal static class Execution
 
             Builder.AppendLine(Data.Vector.ComposeDeclaration());
 
-            BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0);
+            BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
         }
 
         private string Retrieve()

@@ -53,7 +53,7 @@ internal static class Execution
 
             InterfaceCollector.MarkInsertionPoint();
 
-            BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0);
+            BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
 
             InterfaceCollector.InsertInterfacesOnNewLines(new Indentation(1));
         }

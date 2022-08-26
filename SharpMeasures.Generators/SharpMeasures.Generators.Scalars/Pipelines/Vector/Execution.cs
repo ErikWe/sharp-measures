@@ -45,7 +45,7 @@ internal static class Execution
 
             Builder.Append(Data.Scalar.ComposeDeclaration());
 
-            BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0);
+            BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
         }
 
         private string Retrieve()

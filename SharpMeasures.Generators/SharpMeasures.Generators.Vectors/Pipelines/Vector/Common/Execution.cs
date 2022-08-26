@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Common;
+namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Common;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -58,7 +58,7 @@ internal static class Execution
                 $"global::SharpMeasures.IVector{Data.Dimension}Quantity<{Data.Vector.FullyQualifiedName}>"
             });
 
-            BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0);
+            BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
         }
 
         private string Retrieve()
