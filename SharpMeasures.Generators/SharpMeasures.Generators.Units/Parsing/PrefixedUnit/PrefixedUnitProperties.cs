@@ -13,21 +13,21 @@ internal static class PrefixedUnitProperties
         CommonProperties.Name<RawPrefixedUnitDefinition, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.Name)),
         CommonProperties.Plural<RawPrefixedUnitDefinition, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.Plural)),
         CommonProperties.DependantOn<RawPrefixedUnitDefinition, PrefixedUnitLocations>(nameof(PrefixedUnitAttribute.From)),
-        MetricPrefixName,
-        BinaryPrefixName
+        MetricPrefix,
+        BinaryPrefix
     };
 
-    private static PrefixedUnitProperty<int> MetricPrefixName { get; } = new
+    private static PrefixedUnitProperty<int> MetricPrefix { get; } = new
     (
-        name: nameof(PrefixedUnitAttribute.MetricPrefixName),
-        setter: static (definition, metricPrefixName) => definition with { MetricPrefixName = (MetricPrefixName)metricPrefixName },
-        locator: static (locations, metricPrefixNameLocation) => locations with { MetricPrefixName = metricPrefixNameLocation }
+        name: nameof(PrefixedUnitAttribute.MetricPrefix),
+        setter: static (definition, metricPrefix) => definition with { MetricPrefix = (MetricPrefixName)metricPrefix },
+        locator: static (locations, metricPrefixLocation) => locations with { MetricPrefix = metricPrefixLocation }
     );
 
-    private static PrefixedUnitProperty<int> BinaryPrefixName { get; } = new
+    private static PrefixedUnitProperty<int> BinaryPrefix { get; } = new
     (
-        name: nameof(PrefixedUnitAttribute.BinaryPrefixName),
-        setter: static (definition, binaryPrefixName) => definition with { BinaryPrefixName = (BinaryPrefixName)binaryPrefixName },
-        locator: static (locations, binaryPrefixNameLocation) => locations with { BinaryPrefixName = binaryPrefixNameLocation }
+        name: nameof(PrefixedUnitAttribute.BinaryPrefix),
+        setter: static (definition, binaryPrefix) => definition with { BinaryPrefix = (BinaryPrefixName)binaryPrefix },
+        locator: static (locations, binaryPrefixLocation) => locations with { BinaryPrefix = binaryPrefixLocation }
     );
 }

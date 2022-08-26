@@ -14,11 +14,11 @@ internal class PrefixedUnitProcessingDiagnostics : ADependantUnitProcessingDiagn
 
     public Diagnostic UnrecognizedMetricPrefix(IUnitProcessingContext context, RawPrefixedUnitDefinition definition)
     {
-        return DiagnosticConstruction.UnrecognizedPrefix(definition.Locations.MetricPrefixName?.AsRoslynLocation(), definition.MetricPrefixName);
+        return DiagnosticConstruction.UnrecognizedPrefix(definition.Locations.MetricPrefix?.AsRoslynLocation(), definition.MetricPrefix);
     }
 
     public Diagnostic UnrecognizedBinaryPrefix(IUnitProcessingContext context, RawPrefixedUnitDefinition definition)
     {
-        return DiagnosticConstruction.UnrecognizedPrefix(definition.Locations.BinaryPrefixName?.AsRoslynLocation(), definition.BinaryPrefixName);
+        return DiagnosticConstruction.UnrecognizedPrefix(definition.Locations.BinaryPrefix?.AsRoslynLocation(), definition.BinaryPrefix);
     }
 }

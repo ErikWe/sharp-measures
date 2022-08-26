@@ -7,12 +7,12 @@ internal record class PrefixedUnitLocations : ADependantUnitLocations<PrefixedUn
     public static PrefixedUnitLocations Empty { get; } = new();
 
     public MinimalLocation? From => DependantOn;
-    public MinimalLocation? MetricPrefixName { get; init; }
-    public MinimalLocation? BinaryPrefixName { get; init; }
+    public MinimalLocation? MetricPrefix { get; init; }
+    public MinimalLocation? BinaryPrefix { get; init; }
 
     public bool ExplicitlySetFrom => ExplicitlySetDependantOn;
-    public bool ExplicitlySetMetricPrefixName => MetricPrefixName is not null;
-    public bool ExplicitlySetBinaryPrefixName => BinaryPrefixName is not null;
+    public bool ExplicitlySetMetricPrefix => MetricPrefix is not null;
+    public bool ExplicitlySetBinaryPrefix => BinaryPrefix is not null;
 
     protected override PrefixedUnitLocations Locations => this;
 

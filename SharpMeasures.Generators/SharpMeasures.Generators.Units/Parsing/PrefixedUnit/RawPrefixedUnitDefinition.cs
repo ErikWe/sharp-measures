@@ -8,8 +8,8 @@ internal record class RawPrefixedUnitDefinition : ARawDependantUnitDefinition<Ra
     public static RawPrefixedUnitDefinition Empty { get; } = new();
 
     public string? From => DependantOn;
-    public MetricPrefixName MetricPrefixName { get; init; }
-    public BinaryPrefixName BinaryPrefixName { get; init; }
+    public MetricPrefixName MetricPrefix { get; init; }
+    public BinaryPrefixName BinaryPrefix { get; init; }
 
     protected override RawPrefixedUnitDefinition Definition => this;
 
