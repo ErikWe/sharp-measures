@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1122,
+    Title: Unit does not support biased instances,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (7,1)-(7,11),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The biased unit "{0}" could not be implemented, as {1} does not include a bias term,
+    Message: The biased unit "Metre2" could not be implemented, as UnitOfLength does not include a bias term,
+    Category: Usage,
+    CustomTags: []
+  }
+]

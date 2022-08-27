@@ -32,6 +32,12 @@ public static class MathFactory
         return PureVector3ResultingMaths.Instance;
     }
 
+    /// <summary>Retrieves a description of mathematical operations that result in a pure <see cref="SharpMeasures.Vector4"/>.</summary>
+    public static IVector4ResultingMaths<SharpMeasures.Vector4> Vector4Result()
+    {
+        return PureVector4ResultingMaths.Instance;
+    }
+
     /// <summary>Retrieves a description of mathematical operations that result in a two-dimensional vector quantity <typeparamref name="TResult"/>.</summary>
     /// <typeparam name="TResult">The two-dimensional vector quantity that is the result of the described mathematical operations.</typeparam>
     public static IVector2ResultingMaths<TResult> Vector2Result<TResult>()
@@ -46,6 +52,14 @@ public static class MathFactory
         where TResult : IVector3Quantity<TResult>
     {
         return Vector3ResultingMaths<TResult>.Instance;
+    }
+
+    /// <summary>Retrieves a description of mathematical operations that result in a four-dimensional vector quantity <typeparamref name="TResult"/>.</summary>
+    /// <typeparam name="TResult">The four-dimensional vector quantity that is the result of the described mathematical operations.</typeparam>
+    public static IVector4ResultingMaths<TResult> Vector4Result<TResult>()
+        where TResult : IVector4Quantity<TResult>
+    {
+        return Vector4ResultingMaths<TResult>.Instance;
     }
 
     /// <summary>Provides implementations of common mathematical operations.</summary>
@@ -119,6 +133,13 @@ public static class MathFactory
             return SquaredMagnitude3(vector).SquareRoot();
         }
 
+        /// <inheritdoc cref="IScalarResultingMaths{TResult}.Magnitude4{TVector}(TVector)"/>
+        public static Scalar Magnitude4<TVector>(TVector vector)
+            where TVector : IVector4Quantity
+        {
+            return SquaredMagnitude4(vector).SquareRoot();
+        }
+
         /// <inheritdoc cref="IScalarResultingMaths{TResult}.SquaredMagnitude2{TVector}(TVector)"/>
         public static Scalar SquaredMagnitude2<TVector>(TVector vector)
             where TVector : IVector2Quantity
@@ -131,6 +152,13 @@ public static class MathFactory
             where TVector : IVector3Quantity
         {
             return Dot3(vector, vector);
+        }
+
+        /// <inheritdoc cref="IScalarResultingMaths{TResult}.SquaredMagnitude4{TVector}(TVector)"/>
+        public static Scalar SquaredMagnitude4<TVector>(TVector vector)
+            where TVector : IVector4Quantity
+        {
+            return Dot4(vector, vector);
         }
 
         /// <inheritdoc cref="IScalarResultingMaths{TResult}.Dot2{TFactor1, TFactor2}(TFactor1, TFactor2)"/>
@@ -147,6 +175,14 @@ public static class MathFactory
             where TFactor2 : IVector3Quantity
         {
             return a.X.Value * b.X.Value + a.Y.Value * b.Y.Value + a.Z.Value * b.Z.Value;
+        }
+
+        /// <inheritdoc cref="IScalarResultingMaths{TResult}.Dot4{TFactor1, TFactor2}(TFactor1, TFactor2)"/>
+        public static Scalar Dot4<TFactor1, TFactor2>(TFactor1 a, TFactor2 b)
+            where TFactor1 : IVector4Quantity
+            where TFactor2 : IVector4Quantity
+        {
+            return a.X.Value * b.X.Value + a.Y.Value * b.Y.Value + a.Z.Value * b.Z.Value + a.W.Value * b.W.Value;
         }
 
         /// <inheritdoc cref="IVector3ResultingMaths{TResult}.Cross{TFactor1, TFactor2}(TFactor1, TFactor2)"/>
@@ -176,6 +212,14 @@ public static class MathFactory
             where TVector : IVector3Quantity<TVector>
         {
             return vector / Magnitude3(vector);
+        }
+
+        /// <inheritdoc cref="IVector4ResultingMaths{TResult}.Normalize(TResult)"/>
+        /// <typeparam name="TVector">The four-dimensional vector quantity that is normalized.</typeparam>
+        public static TVector Normalize4<TVector>(TVector vector)
+            where TVector : IVector4Quantity<TVector>
+        {
+            return vector / Magnitude4(vector);
         }
 
         /// <inheritdoc cref="IVector3ResultingMaths{TResult}.Transform(TResult, Matrix4x4)"/>
@@ -256,6 +300,13 @@ public static class MathFactory
         }
 
         /// <inheritdoc/>
+        public Scalar Magnitude4<TVector>(TVector vector)
+            where TVector : IVector4Quantity
+        {
+            return MathImplementations.Magnitude4(vector);
+        }
+
+        /// <inheritdoc/>
         public Scalar SquaredMagnitude2<TVector>(TVector vector)
             where TVector : IVector2Quantity
         {
@@ -267,6 +318,13 @@ public static class MathFactory
             where TVector : IVector3Quantity
         {
             return MathImplementations.SquaredMagnitude3(vector);
+        }
+
+        /// <inheritdoc/>
+        public Scalar SquaredMagnitude4<TVector>(TVector vector)
+            where TVector : IVector4Quantity
+        {
+            return MathImplementations.SquaredMagnitude4(vector);
         }
 
         /// <inheritdoc/>
@@ -283,6 +341,14 @@ public static class MathFactory
             where TFactor2 : IVector3Quantity
         {
             return MathImplementations.Dot3(a, b);
+        }
+
+        /// <inheritdoc/>
+        public Scalar Dot4<TFactor1, TFactor2>(TFactor1 a, TFactor2 b)
+            where TFactor1 : IVector4Quantity
+            where TFactor2 : IVector4Quantity
+        {
+            return MathImplementations.Dot4(a, b);
         }
     }
 
@@ -353,6 +419,13 @@ public static class MathFactory
         }
 
         /// <inheritdoc/>
+        public TResult Magnitude4<TVector>(TVector vector)
+            where TVector : IVector4Quantity
+        {
+            return TResult.WithMagnitude(MathImplementations.Magnitude4(vector));
+        }
+
+        /// <inheritdoc/>
         public TResult SquaredMagnitude2<TVector>(TVector vector)
             where TVector : IVector2Quantity
         {
@@ -364,6 +437,13 @@ public static class MathFactory
             where TVector : IVector3Quantity
         {
             return TResult.WithMagnitude(MathImplementations.SquaredMagnitude3(vector));
+        }
+
+        /// <inheritdoc/>
+        public TResult SquaredMagnitude4<TVector>(TVector vector)
+            where TVector : IVector4Quantity
+        {
+            return TResult.WithMagnitude(MathImplementations.SquaredMagnitude4(vector));
         }
 
         /// <inheritdoc/>
@@ -380,6 +460,14 @@ public static class MathFactory
             where TFactor2 : IVector3Quantity
         {
             return TResult.WithMagnitude(MathImplementations.Dot3(a, b));
+        }
+
+        /// <inheritdoc/>
+        public TResult Dot4<TFactor1, TFactor2>(TFactor1 a, TFactor2 b)
+            where TFactor1 : IVector4Quantity
+            where TFactor2 : IVector4Quantity
+        {
+            return TResult.WithMagnitude(MathImplementations.Dot4(a, b));
         }
     }
 
@@ -426,6 +514,22 @@ public static class MathFactory
         public SharpMeasures.Vector3 Transform(SharpMeasures.Vector3 factor, Matrix4x4 transform)
         {
             return MathImplementations.Transform(factor, transform);
+        }
+    }
+
+    /// <summary>Describes mathematical operations that result in a pure <see cref="SharpMeasures.Vector4"/>.</summary>
+    private class PureVector4ResultingMaths : IVector4ResultingMaths<SharpMeasures.Vector4>
+    {
+        /// <summary>Retrieves the singleton instance of <see cref="PureVector4ResultingMaths"/>.</summary>
+        public static PureVector4ResultingMaths Instance { get; } = new();
+
+        /// <summary>Constructs a new <see cref="PureVector4ResultingMaths"/>.</summary>
+        private PureVector4ResultingMaths() { }
+
+        /// <inheritdoc/>
+        public SharpMeasures.Vector4 Normalize(SharpMeasures.Vector4 vector)
+        {
+            return MathImplementations.Normalize4(vector);
         }
     }
 
@@ -476,6 +580,24 @@ public static class MathFactory
         public TResult Transform(TResult factor, Matrix4x4 transform)
         {
             return TResult.WithComponents(MathImplementations.Transform(factor, transform));
+        }
+    }
+
+    /// <summary>Describes mathematical operations that result in a four-dimensional vector quantity <typeparamref name="TResult"/>.</summary>
+    /// <typeparam name="TResult">The four-dimensional vector quantity that is the result of the described mathematical operations.</typeparam>
+    private class Vector4ResultingMaths<TResult> : IVector4ResultingMaths<TResult>
+        where TResult : IVector4Quantity<TResult>
+    {
+        /// <summary>Retrieves the singleton instance of <see cref="Vector4ResultingMaths{TResult}"/>.</summary>
+        public static Vector4ResultingMaths<TResult> Instance { get; } = new();
+
+        /// <summary>Constructs a new <see cref="PureVector4ResultingMaths"/>.</summary>
+        private Vector4ResultingMaths() { }
+
+        /// <inheritdoc/>
+        public TResult Normalize(TResult vector)
+        {
+            return MathImplementations.Normalize4(vector);
         }
     }
 }

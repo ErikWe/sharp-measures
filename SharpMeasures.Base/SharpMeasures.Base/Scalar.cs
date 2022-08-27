@@ -6,7 +6,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 
 /// <summary>A pure scalar.</summary>
-public readonly partial record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scalar>
+public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scalar>
 {
     /// <summary>The <see cref="Scalar"/> representing { 0 }.</summary>
     public static Scalar Zero { get; } = 0;
@@ -103,10 +103,35 @@ public readonly partial record struct Scalar : IScalarQuantity<Scalar>, ICompara
     /// <inheritdoc/>
     public Scalar Divide(Scalar divisor) => this / divisor;
 
-    /// <inheritdoc/>
+    /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
+    /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
+    public Vector2 Multiply(Vector2 factor) => this * factor;
+    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
+    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
+    public Vector2 DivideInto(Vector2 dividend) => dividend / this;
+    /// <summary>Computes { <paramref name="dividend"/> % <see langword="this"/> }.</summary>
+    /// <param name="dividend">The dividend of { <paramref name="dividend"/> % <see langword="this"/> }.</param>
+    public Vector2 Remainder(Vector2 dividend) => dividend % this;
+
+    /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
+    /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
     public Vector3 Multiply(Vector3 factor) => this * factor;
-    /// <inheritdoc/>
+    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
+    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
     public Vector3 DivideInto(Vector3 dividend) => dividend / this;
+    /// <summary>Computes { <paramref name="dividend"/> % <see langword="this"/> }.</summary>
+    /// <param name="dividend">The dividend of { <paramref name="dividend"/> % <see langword="this"/> }.</param>
+    public Vector3 Remainder(Vector3 dividend) => dividend % this;
+
+    /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
+    /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
+    public Vector4 Multiply(Vector4 factor) => this * factor;
+    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
+    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
+    public Vector4 DivideInto(Vector4 dividend) => dividend / this;
+    /// <summary>Computes { <paramref name="dividend"/> % <see langword="this"/> }.</summary>
+    /// <param name="dividend">The dividend of { <paramref name="dividend"/> % <see langword="this"/> }.</param>
+    public Vector4 Remainder(Vector4 dividend) => dividend % this;
 
     /// <inheritdoc/>
     public static Scalar operator +(Scalar x) => x;
@@ -126,6 +151,57 @@ public readonly partial record struct Scalar : IScalarQuantity<Scalar>, ICompara
     public static Scalar operator *(Scalar x, Scalar y) => x.Value * y.Value;
     /// <inheritdoc/>
     public static Scalar operator /(Scalar x, Scalar y) => x.Value / y.Value;
+
+    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    public static Vector2 operator *(Scalar a, (double X, double Y) b) => (a * b.X, a * b.Y);
+    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    public static Vector2 operator *((double X, double Y) a, Scalar b) => (a.X * b, a.Y * b);
+    /// <summary>Computes { <paramref name="a"/> / <paramref name="b"/> }.</summary>
+    /// <param name="a">The dividend of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    /// <param name="b">The divisor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    public static Vector2 operator /((double X, double Y) a, Scalar b) => (a.X / b, a.Y / b);
+    /// <summary>Computes { <paramref name="a"/> % <paramref name="b"/> }.</summary>
+    /// <param name="a">The dividend of { <paramref name="a"/> % <paramref name="b"/> }.</param>
+    /// <param name="b">The divisor of { <paramref name="a"/> % <paramref name="b"/> }.</param>
+    public static Vector2 operator %((double X, double Y) a, Scalar b) => (a.X % b, a.Y % b);
+
+    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    public static Vector3 operator *(Scalar a, (double X, double Y, double Z) b) => (a * b.X, a * b.Y, a * b.Z);
+    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    public static Vector3 operator *((double X, double Y, double Z) a, Scalar b) => (a.X * b, a.Y * b, a.Z * b);
+    /// <summary>Computes { <paramref name="a"/> / <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    public static Vector3 operator /((double X, double Y, double Z) a, Scalar b) => (a.X / b, a.Y / b, a.Z / b);
+    /// <summary>Computes { <paramref name="a"/> % <paramref name="b"/> }.</summary>
+    /// <param name="a">The dividend of { <paramref name="a"/> % <paramref name="b"/> }.</param>
+    /// <param name="b">The divisor of { <paramref name="a"/> % <paramref name="b"/> }.</param>
+    public static Vector3 operator %((double X, double Y, double Z) a, Scalar b) => (a.X % b, a.Y % b, a.Z % b);
+
+    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    public static Vector4 operator *(Scalar a, (double X, double Y, double Z, double W) b) => (a * b.X, a * b.Y, a * b.Z, a * b.W);
+    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    public static Vector4 operator *((double X, double Y, double Z, double W) a, Scalar b) => (a.X * b, a.Y * b, a.Z * b, a.W * b);
+    /// <summary>Computes { <paramref name="a"/> / <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    public static Vector4 operator /((double X, double Y, double Z, double W) a, Scalar b) => (a.X / b, a.Y / b, a.Z / b, a.W / b);
+    /// <summary>Computes { <paramref name="a"/> % <paramref name="b"/> }.</summary>
+    /// <param name="a">The dividend of { <paramref name="a"/> % <paramref name="b"/> }.</param>
+    /// <param name="b">The divisor of { <paramref name="a"/> % <paramref name="b"/> }.</param>
+    public static Vector4 operator %((double X, double Y, double Z, double W) a, Scalar b) => (a.X % b, a.Y % b, a.Z % b, a.W % b);
 
     /// <summary>Determines the truthfulness of { <paramref name="x"/> &lt; <paramref name="y"/> }.</summary>
     /// <param name="x">Assumed lesser than <paramref name="y"/>.</param>

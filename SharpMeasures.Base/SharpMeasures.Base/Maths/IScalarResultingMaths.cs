@@ -52,6 +52,13 @@ public interface IScalarResultingMaths<TResult> where TResult : IScalarQuantity<
     public abstract TResult Magnitude3<TVector>(TVector vector)
         where TVector : IVector3Quantity;
 
+    /// <summary>Computes the magnitude / norm / length of <paramref name="vector"/>.</summary>
+    /// <typeparam name="TVector">The four-dimensional vector quantity for which the magnitude is computed.</typeparam>
+    /// <param name="vector">The magnitude of this <typeparamref name="TVector"/> is computed.</param>
+    /// <remarks>For improved performance, consider prefering <see cref="SquaredMagnitude4{TVector}(TVector)"/> when applicable.</remarks>
+    public abstract TResult Magnitude4<TVector>(TVector vector)
+        where TVector : IVector4Quantity;
+
     /// <summary>Computes the square of the magnitude / norm / length of <paramref name="vector"/>.</summary>
     /// <typeparam name="TVector">The two-dimensional vector quantity for which the squared magnitude is computed.</typeparam>
     /// <param name="vector">The squared magnitude of this <typeparamref name="TVector"/> is computed.</param>
@@ -63,6 +70,12 @@ public interface IScalarResultingMaths<TResult> where TResult : IScalarQuantity<
     /// <param name="vector">The squared magnitude of this <typeparamref name="TVector"/> is computed.</param>
     public abstract TResult SquaredMagnitude3<TVector>(TVector vector)
         where TVector : IVector3Quantity;
+
+    /// <summary>Computes the square of the magnitude / norm / length of <paramref name="vector"/>.</summary>
+    /// <typeparam name="TVector">The four-dimensional vector quantity for which the squared magnitude is computed.</typeparam>
+    /// <param name="vector">The squared magnitude of this <typeparamref name="TVector"/> is computed.</param>
+    public abstract TResult SquaredMagnitude4<TVector>(TVector vector)
+        where TVector : IVector4Quantity;
 
     /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
     /// <typeparam name="TFactor1">The two-dimensional vector quantity that represents the first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</typeparam>
@@ -81,4 +94,13 @@ public interface IScalarResultingMaths<TResult> where TResult : IScalarQuantity<
     public abstract TResult Dot3<TFactor1, TFactor2>(TFactor1 a, TFactor2 b)
         where TFactor1 : IVector3Quantity
         where TFactor2 : IVector3Quantity;
+
+    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
+    /// <typeparam name="TFactor1">The four-dimensional vector quantity that represents the first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</typeparam>
+    /// <typeparam name="TFactor2">The four-dimensional vector quantity that represents the second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }..</typeparam>
+    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    public abstract TResult Dot4<TFactor1, TFactor2>(TFactor1 a, TFactor2 b)
+        where TFactor1 : IVector4Quantity
+        where TFactor2 : IVector4Quantity;
 }

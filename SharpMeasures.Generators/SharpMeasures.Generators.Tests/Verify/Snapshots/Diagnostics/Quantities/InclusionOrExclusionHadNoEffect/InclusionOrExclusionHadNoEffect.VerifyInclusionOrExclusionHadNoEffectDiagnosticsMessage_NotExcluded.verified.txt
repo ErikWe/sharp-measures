@@ -1,0 +1,17 @@
+﻿[
+  {
+    Id: Measures1241,
+    Title: Inclusion or exclusion had no effect,
+    Severity: Info,
+    WarningLevel: 1,
+    Location: : (6,14)-(6,21),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Including "{0}" had no effect, as the unit was already included. To modify the set of included units, change the stacking mode to SharpMeasures.Generators.Utility.InclusionStackingMode.Intersection - or instead use {1}.,
+    Message: Including "Metre" had no effect, as the unit was already included. To modify the set of included units, change the stacking mode to SharpMeasures.Generators.Utility.InclusionStackingMode.Intersection - or instead use SharpMeasures.Generators.Scalars.ExcludeBases.,
+    Category: Usage,
+    CustomTags: [
+      Unnecessary
+    ]
+  }
+]

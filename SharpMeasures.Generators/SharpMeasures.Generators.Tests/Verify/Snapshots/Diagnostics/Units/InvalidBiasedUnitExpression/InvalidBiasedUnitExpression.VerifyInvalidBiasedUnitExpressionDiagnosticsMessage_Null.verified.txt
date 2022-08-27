@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1121,
+    Title: Invalid biased unit expression,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (7,44)-(7,48),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The expression describing the bias must be defined,
+    Message: The expression describing the bias must be defined,
+    Category: Usage,
+    CustomTags: []
+  }
+]

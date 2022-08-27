@@ -83,6 +83,30 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     public Unhandled Multiply(Scalar factor) => this * factor;
     /// <inheritdoc/>
     public Unhandled Divide(Scalar divisor) => this / divisor;
+    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
+    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
+    public Unhandled DivideInto(Scalar dividend) => dividend / this;
+
+    /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
+    /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
+    public Unhandled2 Multiply(Vector2 factor) => this * factor;
+    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
+    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
+    public Unhandled2 DivideInto(Vector2 dividend) => dividend / this;
+
+    /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
+    /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
+    public Unhandled3 Multiply(Vector3 factor) => this * factor;
+    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
+    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
+    public Unhandled3 DivideInto(Vector3 dividend) => dividend / this;
+
+    /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
+    /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
+    public Unhandled4 Multiply(Vector4 factor) => this * factor;
+    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
+    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
+    public Unhandled4 DivideInto(Vector4 dividend) => dividend / this;
 
     /// <inheritdoc/>
     public static Unhandled operator +(Unhandled x) => x;
@@ -104,6 +128,49 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     public static Unhandled operator *(Scalar x, Unhandled y) => new(x * y.Magnitude);
     /// <inheritdoc/>
     public static Unhandled operator /(Unhandled x, Scalar y) => new(x.Magnitude / y);
+    /// <summary>Computes { <paramref name="x"/> / <paramref name="y"/> }.</summary>
+    /// <param name="x">The dividend of { <paramref name="x"/> / <paramref name="y"/> }.</param>
+    /// <param name="y">The divisor of { <paramref name="x"/> / <paramref name="y"/> }.</param>
+    public static Unhandled operator /(Scalar x, Unhandled y) => new(x / y.Magnitude);
+
+    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    public static Unhandled2 operator *(Unhandled a, Vector2 b) => (a * b.X, a * b.Y);
+    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    public static Unhandled2 operator *(Vector2 a, Unhandled b) => (a.X * b, a.Y * b);
+    /// <summary>Computes { <paramref name="a"/> / <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    public static Unhandled2 operator /(Vector2 a, Unhandled b) => (a.X / b, a.Y / b);
+
+    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    public static Unhandled3 operator *(Unhandled a, Vector3 b) => (a * b.X, a * b.Y, a * b.Z);
+    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    public static Unhandled3 operator *(Vector3 a, Unhandled b) => (a.X * b, a.Y * b, a.Z * b);
+    /// <summary>Computes { <paramref name="a"/> / <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    public static Unhandled3 operator /(Vector3 a, Unhandled b) => (a.X / b, a.Y / b, a.Z / b);
+
+    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    public static Unhandled4 operator *(Unhandled a, Vector4 b) => (a * b.X, a * b.Y, a * b.Z, a * b.W);
+    /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
+    public static Unhandled4 operator *(Vector4 a, Unhandled b) => (a.X * b, a.Y * b, a.Z * b, a.W * b);
+    /// <summary>Computes { <paramref name="a"/> / <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    public static Unhandled4 operator /(Vector4 a, Unhandled b) => (a.X / b, a.Y / b, a.Z / b, a.W / b);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentNullException"/>

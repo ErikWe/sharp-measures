@@ -209,7 +209,7 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
         return (a.X / b, a.Y / b, a.Z / b);
     }
 
-    /// <summary>Constructs the <see cref="Vector3"/> with the elements of <paramref name="components"/> as components.</summary>
+    /// <summary>Constructs the <see cref="Unhandled3"/> with the elements of <paramref name="components"/> as components.</summary>
     [SuppressMessage("Usage", "CA2225", Justification = "Behaviour can be achieved through a constructor")]
     public static implicit operator Unhandled3((Unhandled X, Unhandled Y, Unhandled Z) components) => new(components.X, components.Y, components.Z);
 
