@@ -189,11 +189,11 @@ internal static class Execution
             SeparationHandler.AddIfNecessary();
 
             string expression = Data.BiasTerm
-                ? $"{{typeof({Data.Unit.FullyQualifiedName})}}: [{{{Data.Quantity.Name}}} + {{Bias}}]"
-                : $"{{typeof({Data.Unit.FullyQualifiedName})}}: [{{{Data.Quantity.Name}}}]";
+                ? $"\"{{{Data.Quantity.Name}}} + {{Bias}}\""
+                : $"{Data.Quantity.Name}.ToString()";
 
             AppendDocumentation(indentation, Data.Documentation.ToStringDocumentation());
-            Builder.AppendLine($"{indentation}public override string ToString() => \"{expression}\";");
+            Builder.AppendLine($"{indentation}public override string ToString() => {expression};");
         }
 
         private void AppendEquality(Indentation indentation)

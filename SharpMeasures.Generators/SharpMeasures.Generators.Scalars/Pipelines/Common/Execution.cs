@@ -188,7 +188,7 @@ internal static class Execution
             SeparationHandler.AddIfNecessary();
 
             AppendDocumentation(indentation, Data.Documentation.ToStringDocumentation());
-            Builder.Append($$"""{{indentation}}public override string ToString() => $"{typeof({{Data.Scalar.FullyQualifiedName}})}: {""");
+            Builder.Append($$"""{{indentation}}public override string ToString() => $"{""");
 
             if (Data.DefaultUnitName is not null)
             {

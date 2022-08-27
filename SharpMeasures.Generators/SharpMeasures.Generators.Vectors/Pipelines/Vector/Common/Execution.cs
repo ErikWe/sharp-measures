@@ -368,7 +368,7 @@ internal static class Execution
             
             if (Data.DefaultUnitName is null)
             {
-                Builder.Append($$"""{{indentation}}public override string ToString() => $"{typeof({{Data.Vector.FullyQualifiedName}})}: ({{ConstantVectorTexts.Upper.ComponentsPropertyAccess(Data.Dimension)}})""");
+                Builder.Append($$"""{{indentation}}public override string ToString() => $"({{ConstantVectorTexts.Upper.ComponentsPropertyAccess(Data.Dimension)}})""");
             }
             else
             {
@@ -377,7 +377,7 @@ internal static class Execution
                     {{indentation}}{
                     {{indentation.Increased}}var components = InUnit({{Data.Unit.FullyQualifiedName}}.{{Data.DefaultUnitName}});
 
-                    {{indentation.Increased}}return $"{typeof({{Data.Vector.FullyQualifiedName}})}: ({{ConstantVectorTexts.Upper.ComponentsPropertyAccess(Data.Dimension)}})
+                    {{indentation.Increased}}return $"({{ConstantVectorTexts.Upper.ComponentsPropertyAccess(Data.Dimension)}})
                     """);
 
                 SeparationHandler.Add();
