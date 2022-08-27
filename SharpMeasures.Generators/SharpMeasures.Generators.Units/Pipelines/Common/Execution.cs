@@ -88,7 +88,10 @@ internal static class Execution
                 AppendGetHashCode(indentation);
             }
 
-            AppendComparisons(indentation);
+            if (Data.BiasTerm is false)
+            {
+                AppendComparisons(indentation);
+            }
         }
 
         private void AppendProperties(Indentation indentation)
