@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Common;
+﻿namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Common;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -153,7 +153,7 @@ internal static class Execution
             for (int i = 0; i < Data.Dimension; i++)
             {
                 AppendDocumentation(indentation, Data.Documentation.ComponentMagnitude(i));
-                Builder.AppendLine($"{indentation}global::SharpMeasures.Scalar global::SharpMeasures.IVector{Data.Dimension}.{Texts.Upper.ComponentName(i)} => {Texts.Upper.ComponentName(i)}.Magnitude;");
+                Builder.AppendLine($"{indentation}global::SharpMeasures.Scalar global::SharpMeasures.IVector{Data.Dimension}Quantity.{Texts.Upper.ComponentName(i)} => {Texts.Upper.ComponentName(i)}.Magnitude;");
             }
 
             SeparationHandler.Add();

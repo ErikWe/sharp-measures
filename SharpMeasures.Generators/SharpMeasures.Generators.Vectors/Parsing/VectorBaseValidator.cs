@@ -8,7 +8,8 @@ using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.Contexts.Validation;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Validation;
-using SharpMeasures.Generators.Quantities.Parsing.UnitList;
+using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
@@ -45,8 +46,10 @@ internal static class VectorBaseValidator
         var constants = ValidateConstants(input.UnvalidatedVector, input.UnitPopulation);
         var conversions = ValidateConversions(input.UnvalidatedVector, input.VectorPopulation);
 
-        var unitInclusions = ValidateUnitList(input.UnvalidatedVector, input.UnitPopulation, input.UnvalidatedVector.UnitInclusions, UnitInclusionFilter);
-        var unitExclusions = ValidateUnitList(input.UnvalidatedVector, input.UnitPopulation, input.UnvalidatedVector.UnitExclusions, UnitExclusionFilter);
+        var availableUnits = new HashSet<string>(input.UnitPopulation.Units[input.UnvalidatedVector.Definition.Unit].UnitsByName.Keys);
+
+        var unitInclusions = ValidateIncludeUnits(input.UnvalidatedVector, input.UnitPopulation, availableUnits);
+        var unitExclusions = ValidateExcludeUnits(input.UnvalidatedVector, input.UnitPopulation, availableUnits);
 
         VectorBaseType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result, unitInclusions.Result, unitExclusions.Result);
 
@@ -89,11 +92,18 @@ internal static class VectorBaseValidator
         return ProcessingFilter.Create(ConvertibleVectorFilterer).Filter(filteringContext, vectorType.Conversions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<UnitListDefinition>> ValidateUnitList(VectorBaseType vectorType, IUnitPopulation unitPopulation, IEnumerable<UnitListDefinition> unitList, IProcesser<IUnitListFilteringContext, UnitListDefinition, UnitListDefinition> filter)
+    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ValidateIncludeUnits(VectorBaseType vectorType, IUnitPopulation unitPopulation, HashSet<string> availableUnits)
     {
-        var filteringContext = new UnitListFilteringContext(vectorType.Type, unitPopulation.Units[vectorType.Definition.Unit], new HashSet<string>());
+        var filteringContext = new IncludeUnitsFilteringContext(vectorType.Type, unitPopulation.Units[vectorType.Definition.Unit], availableUnits);
 
-        return ProcessingFilter.Create(filter).Filter(filteringContext, unitList);
+        return ProcessingFilter.Create(IncludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInclusions);
+    }
+
+    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ValidateExcludeUnits(VectorBaseType vectorType, IUnitPopulation unitPopulation, HashSet<string> availableUnits)
+    {
+        var filteringContext = new ExcludeUnitsFilteringContext(vectorType.Type, unitPopulation.Units[vectorType.Definition.Unit], availableUnits);
+
+        return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, vectorType.UnitExclusions);
     }
 
     private static IReadOnlyList<string> GetUnitInclusions(IUnitType unit, IEnumerable<IUnitList> inclusions, Func<IEnumerable<IUnitList>> exclusionsDelegate)
@@ -118,6 +128,6 @@ internal static class VectorBaseValidator
     private static VectorConstantValidator VectorConstantValidator { get; } = new(VectorConstantValidationDiagnostics.Instance);
     private static ConvertibleVectorFilterer ConvertibleVectorFilterer { get; } = new(ConvertibleVectorFilteringDiagnostics.Instance);
 
-    private static UnitListFilterer UnitInclusionFilter { get; } = new(UnitInclusionFilteringDiagnostics.Instance);
-    private static UnitListFilterer UnitExclusionFilter { get; } = new(UnitExclusionFilteringDiagnostics.Instance);
+    private static IncludeUnitsFilterer IncludeUnitsFilterer { get; } = new(IncludeUnitsFilteringDiagnostics.Instance);
+    private static ExcludeUnitsFilterer ExcludeUnitsFilterer { get; } = new(ExcludeUnitsFilteringDiagnostics.Instance);
 }

@@ -3,8 +3,11 @@
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
-using SharpMeasures.Generators.Quantities.Parsing.UnitList;
+using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
+using SharpMeasures.Generators.Scalars.Parsing.ExcludeBases;
+using SharpMeasures.Generators.Scalars.Parsing.IncludeBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 
 using System.Collections.Generic;
@@ -22,11 +25,11 @@ internal record class AScalarType<TDefinition> : IScalarType
     public IReadOnlyList<ScalarConstantDefinition> Constants => constants;
     public IReadOnlyList<ConvertibleScalarDefinition> Conversions => conversions;
 
-    public IReadOnlyList<UnitListDefinition> BaseInclusions => baseInclusions;
-    public IReadOnlyList<UnitListDefinition> BaseExclusions => baseExclusions;
+    public IReadOnlyList<IncludeBasesDefinition> BaseInclusions => baseInclusions;
+    public IReadOnlyList<ExcludeBasesDefinition> BaseExclusions => baseExclusions;
 
-    public IReadOnlyList<UnitListDefinition> UnitInclusions => unitInclusions;
-    public IReadOnlyList<UnitListDefinition> UnitExclusions => unitExclusions;
+    public IReadOnlyList<IncludeUnitsDefinition> UnitInclusions => unitInclusions;
+    public IReadOnlyList<ExcludeUnitsDefinition> UnitExclusions => unitExclusions;
 
     public IReadOnlyDictionary<string, IScalarConstant> ConstantsByName => constantsByName;
     public IReadOnlyDictionary<string, IScalarConstant> ConstantsByMultiplesName => constantsByMultiplesName;
@@ -35,11 +38,11 @@ internal record class AScalarType<TDefinition> : IScalarType
     private ReadOnlyEquatableList<ScalarConstantDefinition> constants { get; }
     private ReadOnlyEquatableList<ConvertibleScalarDefinition> conversions { get; }
 
-    private ReadOnlyEquatableList<UnitListDefinition> baseInclusions { get; }
-    private ReadOnlyEquatableList<UnitListDefinition> baseExclusions { get; }
+    private ReadOnlyEquatableList<IncludeBasesDefinition> baseInclusions { get; }
+    private ReadOnlyEquatableList<ExcludeBasesDefinition> baseExclusions { get; }
 
-    private ReadOnlyEquatableList<UnitListDefinition> unitInclusions { get; }
-    private ReadOnlyEquatableList<UnitListDefinition> unitExclusions { get; }
+    private ReadOnlyEquatableList<IncludeUnitsDefinition> unitInclusions { get; }
+    private ReadOnlyEquatableList<ExcludeUnitsDefinition> unitExclusions { get; }
 
     private ReadOnlyEquatableDictionary<string, IScalarConstant> constantsByName { get; }
     private ReadOnlyEquatableDictionary<string, IScalarConstant> constantsByMultiplesName { get; }
@@ -60,8 +63,8 @@ internal record class AScalarType<TDefinition> : IScalarType
     IReadOnlyList<IUnitList> IQuantityType.UnitExclusions => UnitExclusions;
 
     protected AScalarType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ScalarConstantDefinition> constants,
-        IReadOnlyList<ConvertibleScalarDefinition> conversions, IReadOnlyList<UnitListDefinition> baseInclusions, IReadOnlyList<UnitListDefinition> baseExclusions, IReadOnlyList<UnitListDefinition> unitInclusions,
-        IReadOnlyList<UnitListDefinition> unitExclusions)
+        IReadOnlyList<ConvertibleScalarDefinition> conversions, IReadOnlyList<IncludeBasesDefinition> baseInclusions, IReadOnlyList<ExcludeBasesDefinition> baseExclusions,
+        IReadOnlyList<IncludeUnitsDefinition> unitInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitExclusions)
     {
         Type = type;
         TypeLocation = typeLocation;

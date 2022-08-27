@@ -89,6 +89,11 @@ public record class AttributeProperty<TDefinition, TPropertyType> : AttributePro
 
         TDefinition wrapper(TDefinition definition, object? obj)
         {
+            if (typeof(TPropertyType).IsEnum && obj is int)
+            {
+                return setter(definition, (TPropertyType)obj);
+            }
+
             if (obj is not TPropertyType value)
             {
                 if (obj is object[] objArray)

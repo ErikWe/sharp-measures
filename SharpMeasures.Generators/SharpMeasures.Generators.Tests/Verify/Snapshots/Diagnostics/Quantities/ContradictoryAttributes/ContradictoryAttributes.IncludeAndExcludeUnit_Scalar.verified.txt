@@ -1,6 +1,6 @@
 ﻿[
   {
-    Id: Measures1260,
+    Id: Measures1240,
     Title: Contradictory attributes,
     Severity: Warning,
     WarningLevel: 1,

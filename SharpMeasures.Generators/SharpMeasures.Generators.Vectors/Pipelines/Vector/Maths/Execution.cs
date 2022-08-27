@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Maths;
+﻿namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Maths;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;

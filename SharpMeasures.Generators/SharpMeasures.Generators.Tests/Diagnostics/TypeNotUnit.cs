@@ -177,6 +177,7 @@ public class TypeNotUnit
     private static string DerivableUnitArgumentText(SourceSubtext unitType) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
 
         [DerivableUnit("{0}", {{unitType}})]
         [SharpMeasuresUnit(typeof(Length))]

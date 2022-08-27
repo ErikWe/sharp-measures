@@ -259,7 +259,8 @@ public static partial class DiagnosticRules
         messageFormat: "Expected at least one {0}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
-        isEnabledByDefault: true
+        isEnabledByDefault: true,
+        customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
     public static readonly DiagnosticDescriptor DuplicateListing = new DiagnosticDescriptor
@@ -271,5 +272,15 @@ public static partial class DiagnosticRules
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true,
         customTags: WellKnownDiagnosticTags.Unnecessary
+    );
+
+    public static readonly DiagnosticDescriptor UnrecognizedEnumValue = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.UnrecognizedEnumValue,
+        title: "Unrecognized enum value",
+        messageFormat: "{0} was not recognized as a {1}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
     );
 }

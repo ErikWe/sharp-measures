@@ -127,16 +127,6 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor UnrecognizedPrefix = new DiagnosticDescriptor
-    (
-        id: DiagnosticIDs.UnrecognizedPrefix,
-        title: "Prefix not recognized",
-        messageFormat: "{0} was not recognized as a {1}",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
-        isEnabledByDefault: true
-    );
-
     public static readonly DiagnosticDescriptor NullScaledUnitExpression = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidScaledUnitExpression,

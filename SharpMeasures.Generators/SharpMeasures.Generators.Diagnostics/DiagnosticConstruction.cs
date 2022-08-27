@@ -211,4 +211,9 @@ public static partial class DiagnosticConstruction
 
     public static Diagnostic DuplicateUnitListing(Location? location, string unitName) => DuplicateListing(location, "unit", unitName);
     public static Diagnostic DuplicateQuantityListing(Location? location, string quantityName) => DuplicateListing(location, "quantity", quantityName);
+
+    public static Diagnostic UnrecognizedEnumValue<TEnum>(Location? location, TEnum value)
+    {
+        return Diagnostic.Create(DiagnosticRules.UnrecognizedEnumValue, location, value, typeof(TEnum).Name);
+    }
 }

@@ -67,7 +67,12 @@ public class EmptyList
 
     public static IEnumerable<object[]> QuantityAttributesAndArguments()
     {
-        IEnumerable<(string AttributeName, string Type)> attributes = new[] { ("ConvertibleQuantity", "System.Type"), ("IncludeUnits", "string"), ("ExcludeUnits", "string") };
+        IEnumerable<(string AttributeName, string Type)> attributes = new[]
+        {
+            ("ConvertibleQuantity", "System.Type"),
+            ("IncludeUnits", "string"),
+            ("ExcludeUnits", "string")
+        };
 
         foreach ((var attributeName, var type) in attributes)
         {
@@ -80,7 +85,11 @@ public class EmptyList
 
     public static IEnumerable<object[]> ScalarAttributesAndArguments()
     {
-        IEnumerable<(string AttributeName, string Type)> additionalAttributes = new[] { ("IncludeBases", "string"), ("ExcludeBases", "string") };
+        IEnumerable<(string AttributeName, string Type)> additionalAttributes = new[]
+        {
+            ("IncludeBases", "string"),
+            ("ExcludeBases", "string")
+        };
 
         foreach (var originalList in QuantityAttributesAndArguments())
         {

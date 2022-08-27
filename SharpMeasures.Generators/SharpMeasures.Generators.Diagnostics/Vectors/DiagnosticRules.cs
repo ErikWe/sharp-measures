@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 public static partial class DiagnosticRules
 {
-    private static string ValidVectorDimensions { get; } = "[2, 3]";
+    private static string ValidVectorDimensions { get; } = "[2, 3, 4]";
 
     public static readonly DiagnosticDescriptor InvalidVectorDimension = new DiagnosticDescriptor
     (

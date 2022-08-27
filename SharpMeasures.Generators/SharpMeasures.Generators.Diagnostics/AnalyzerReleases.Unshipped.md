@@ -28,10 +28,9 @@ Measures1102 | Naming | Warning | Duplicate unit name
 Measures1103 | Naming | Warning | Duplicate unit plural form
 Measures1104 | Usage | Warning | Expected the name of a unit
 Measures1105 | Usage | Warning | Cyclic unit dependency
-Measures1120 | Usage | Warning | Prefix not recognized
-Measures1121 | Usage | Warning | Invalid scaled unit expression
-Measures1122 | Usage | Warning | Invalid biased unit expression
-Measures1123 | Usage | Warning | Unit does not support biased instances
+Measures1120 | Usage | Warning | Invalid scaled unit expression
+Measures1121 | Usage | Warning | Invalid biased unit expression
+Measures1122 | Usage | Warning | Unit does not support biased instances
 Measures1140 | Usage | Warning | Unnamed derivation signature
 Measures1141 | Usage | Warning | Ambiguous unit derivation signature
 Measures1142 | Usage | Warning | Duplicate derivation ID
@@ -39,17 +38,17 @@ Measures1143 | Usage | Warning | Derivation ID not recognized
 Measures1144 | Usage | Warning | Unit list not matching signature
 Measures1145 | Usage | Warning | Unit not derivable
 Measures1200 | Usage | Info | Expected both unit name and symbol
+Measures1201 | Usage | Warning | Quantity group missing root quantity
+Measures1202 | Usage | Info | Difference is disabled but a quantity was specified
 Measures1220 | Naming | Warning | Invalid name of constant
 Measures1221 | Naming | Warning | Invalid name for multiples of constant
 Measures1222 | Naming | Warning | Duplicate name of constant
 Measures1223 | Naming | Warning | Constant shares name with unit
 Measures1224 | Usage | Info | Constant multiples is disabled
-Measures1240 | Usage | Warning | Unrecognized cast operator behaviour
-Measures1241 | Usage | Warning | Quantity convertible to itself
-Measures1260 | Usage | Warning | Contradictory attributes
-Measures1261 | Usage | Warning | Quantity group missing root quantity
-Measures1262 | Usage | Info | Inclusion or exclusion had no effect
-Measures1263 | Usage | Info | Difference is disabled but a quantity was specified
+Measures1225 | Usage | Warning | Quantity convertible to itself
+Measures1240 | Usage | Warning | Contradictory attributes
+Measures1241 | Usage | Info | Inclusion or exclusion had no effect
+Measures1242 | Usage | Info | Union inclusion stacking mode is redundant
 Measures1420 | Usage | Warning | Invalid vector dimension
 Measures1421 | Usage | Warning | Missing vector dimension
 Measures1422 | Usage | Warning | Vector of unexpected dimension
@@ -58,5 +57,6 @@ Measures1424 | Usage | Warning | No vector of appropiate dimension in group
 Measures1425 | Naming | Warning | Vector name and dimension conflict
 Measures1426 | Naming | Warning | Vector group name suggests dimension
 Measures1440 | Usage | Warning | Invalid dimension of vector constant
+Measures1800 | Usage | Warning | Unrecognized enum value
 Measures1900 | Documentation | Warning | Unresolved documentation dependency
 Measures1901 | Documentation | Warning | Documentation tag not found

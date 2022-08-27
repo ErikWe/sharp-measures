@@ -7,8 +7,6 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
-using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
-using SharpMeasures.Generators.Quantities.Parsing.UnitList;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Processing;
@@ -35,15 +33,15 @@ internal static class GroupMemberProcesser
         var constants = CommonProcessing.ParseAndProcessConstants(typeSymbol, null);
         var conversions = CommonProcessing.ParseAndProcessConversions(typeSymbol);
 
-        var includeUnits = CommonProcessing.ParseAndProcessUnitList(typeSymbol, IncludeUnitsParser.Parser);
-        var excludeUnits = CommonProcessing.ParseAndProcessUnitList(typeSymbol, ExcludeUnitsParser.Parser);
+        var includeUnits = CommonProcessing.ParseAndProcessIncludeUnits(typeSymbol);
+        var excludeUnits = CommonProcessing.ParseAndProcessExcludeUnits(typeSymbol);
 
         var allDiagnostics = vector.Diagnostics.Concat(derivations).Concat(constants).Concat(conversions).Concat(includeUnits).Concat(excludeUnits);
 
         if (includeUnits.HasResult && includeUnits.Result.Count > 0 && excludeUnits.HasResult && excludeUnits.Result.Count > 0)
         {
-            allDiagnostics = allDiagnostics.Concat(new[] { VectorTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(declaration.GetLocation().Minimize()) });
-            excludeUnits = ResultWithDiagnostics.Construct(Array.Empty<UnitListDefinition>() as IReadOnlyList<UnitListDefinition>);
+            allDiagnostics = allDiagnostics.Concat(new[] { VectorTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(declaration.Identifier.GetLocation().Minimize()) });
+            excludeUnits = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
         }
 
         GroupMemberType product = new(typeSymbol.AsDefinedType(), declaration.GetLocation().Minimize(), vector.Result, derivations.Result, constants.Result, conversions.Result, includeUnits.Result, excludeUnits.Result);

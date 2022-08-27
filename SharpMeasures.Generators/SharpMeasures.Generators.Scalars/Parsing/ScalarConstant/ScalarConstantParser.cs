@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities.Utility;
-
 using System.Collections.Immutable;
 
 internal static class ScalarConstantParser

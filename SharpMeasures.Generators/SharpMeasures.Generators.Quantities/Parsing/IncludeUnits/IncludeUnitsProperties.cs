@@ -2,14 +2,22 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
-using SharpMeasures.Generators.Quantities.Parsing.UnitList;
+using SharpMeasures.Generators.Utility;
 
 using System.Collections.Generic;
 
 internal static class IncludeUnitsProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawUnitListDefinition>> AllProperties => new IAttributeProperty<RawUnitListDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<RawIncludeUnitsDefinition>> AllProperties => new IAttributeProperty<RawIncludeUnitsDefinition>[]
     {
-        CommonProperties.Items<string?, RawUnitListDefinition, UnitListLocations>(nameof(IncludeUnitsAttribute.IncludedUnits))
+        CommonProperties.Items<string?, RawIncludeUnitsDefinition, IncludeUnitsLocations>(nameof(IncludeUnitsAttribute.IncludedUnits)),
+        StackingMode
     };
+
+    private static IncludeUnitsProperty<InclusionStackingMode> StackingMode { get; } = new
+    (
+        name: nameof(IncludeUnitsAttribute.StackingMode),
+        setter: static (definition, stackingMode) => definition with { StackingMode = stackingMode },
+        locator: static (locations, stackingModeLocation) => locations with { StackingMode = stackingModeLocation }
+    );
 }

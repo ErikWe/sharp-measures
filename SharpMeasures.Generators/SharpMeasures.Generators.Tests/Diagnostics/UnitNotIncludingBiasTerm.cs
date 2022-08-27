@@ -21,7 +21,6 @@ public class UnitNotIncludingBiasTerm
     private static IReadOnlyCollection<string> UnitNotIncludingBiasTermDiagnostics { get; } = new string[] { DiagnosticIDs.UnitNotIncludingBiasTerm };
 
     private static string BiasedScalarText => """
-        using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 

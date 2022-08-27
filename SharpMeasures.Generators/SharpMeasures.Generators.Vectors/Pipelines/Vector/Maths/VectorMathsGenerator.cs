@@ -23,11 +23,11 @@ internal static class VectorMathsGenerator
 
     private static NamedType? GetSquaredScalar(VectorDataModel model)
     {
-        if (model.Vector.Scalar is null)
+        if (model.Vector.Scalar is not null && model.ScalarPopulation.Scalars.TryGetValue(model.Vector.Scalar.Value, out var scalar))
         {
-            return null;
+            return scalar.Square;
         }
 
-        return model.ScalarPopulation.Scalars[model.Vector.Scalar.Value].Square;
+        return null;
     }
 }

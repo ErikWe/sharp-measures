@@ -2,8 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Units.Utility;
-
 public static partial class DiagnosticConstruction
 {
     public static Diagnostic InvalidUnitName(Location? location, string unitName)
@@ -64,21 +62,6 @@ public static partial class DiagnosticConstruction
     public static Diagnostic CyclicUnitDependency(Location? location, string unitName, string unitTypeName)
     {
         return Diagnostic.Create(DiagnosticRules.CyclicUnitDependency, location, unitName, unitTypeName);
-    }
-
-    public static Diagnostic UnrecognizedPrefix(Location? location, MetricPrefixName metricPrefix)
-    {
-        return UnrecognizedPrefix(location, metricPrefix.ToString(), typeof(MetricPrefixName).Name);
-    }
-
-    public static Diagnostic UnrecognizedPrefix(Location? location, BinaryPrefixName binaryPrefix)
-    {
-        return UnrecognizedPrefix(location, binaryPrefix.ToString(), typeof(BinaryPrefixName).Name);
-    }
-
-    public static Diagnostic UnrecognizedPrefix(Location? location, string prefix, string prefixTypeName)
-    {
-        return Diagnostic.Create(DiagnosticRules.UnrecognizedPrefix, location, prefix, prefixTypeName);
     }
 
     public static Diagnostic NullScaledUnitExpression(Location? location)

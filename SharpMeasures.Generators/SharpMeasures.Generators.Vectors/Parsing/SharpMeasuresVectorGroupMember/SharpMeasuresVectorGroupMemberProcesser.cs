@@ -63,7 +63,7 @@ internal class SharpMeasuresVectorGroupMemberProcesser : AProcesser<IProcessingC
     {
         int? dimension = DimensionParsingUtility.InterpretDimensionFromName(context.Type.Name) ?? definition.Dimension;
 
-        return OptionalWithDiagnostics.Conditional(dimension is not null, dimension!.Value, () => Diagnostics.MissingDimension(context, definition));
+        return OptionalWithDiagnostics.Conditional(dimension is not null, () => dimension!.Value, () => Diagnostics.MissingDimension(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateInterpretedDimensionNotInvalid(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition, int dimension)

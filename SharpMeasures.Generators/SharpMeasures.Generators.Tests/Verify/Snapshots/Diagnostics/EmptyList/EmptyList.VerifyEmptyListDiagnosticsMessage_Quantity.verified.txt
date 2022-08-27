@@ -10,6 +10,8 @@
     MessageFormat: Expected at least one {0},
     Message: Expected at least one quantity,
     Category: Usage,
-    CustomTags: []
+    CustomTags: [
+      Unnecessary
+    ]
   }
 ]

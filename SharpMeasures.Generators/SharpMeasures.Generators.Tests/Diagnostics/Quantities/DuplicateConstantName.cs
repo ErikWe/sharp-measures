@@ -28,10 +28,10 @@ public class DuplicateConstantName
     public Task VerifyDuplicateConstantName_MultiplesWithSingular() => AssertScalar(ExplicitMultiplesWithSingular).VerifyDiagnostics();
 
     [Fact]
-    public Task VerifyDuplicateConstantName_MultiplesWithMultiples() => AssertScalar(ExplicitMultiplesWithMultiples).VerifyDiagnostics();
+    public Task VerifyDuplicateConstantName_MultiplesWithMultiples() => AssertScalar(ExplicitMultiplesWithExplicitMultiples).VerifyDiagnostics();
 
     [Fact]
-    public Task VerifyDuplicateConstantName_SameConstant() => AssertScalar(SameConstant).VerifyDiagnostics();
+    public Task VerifyDuplicateConstantName_SingleConstantSameNameAndMultiples() => AssertScalar(SingleConstantSameNameAndMultiples).VerifyDiagnostics();
 
     [Theory]
     [MemberData(nameof(DuplicateNames))]
@@ -43,6 +43,10 @@ public class DuplicateConstantName
 
     [Theory]
     [MemberData(nameof(DuplicateNames))]
+    public void SpecializedScalar_Inherited(TextConfig config) => AssertSpecializedScalar_Inherited(config);
+
+    [Theory]
+    [MemberData(nameof(DuplicateNames))]
     public void Vector(TextConfig config) => AssertVector(config);
 
     [Theory]
@@ -51,7 +55,15 @@ public class DuplicateConstantName
 
     [Theory]
     [MemberData(nameof(DuplicateNames))]
+    public void SpecializedVector_Inherited(TextConfig config) => AssertSpecializedVector_Inherited(config);
+
+    [Theory]
+    [MemberData(nameof(DuplicateNames))]
     public void VectorGroupMember(TextConfig config) => AssertVectorGroupMember(config);
+
+    [Theory]
+    [MemberData(nameof(DuplicateNames))]
+    public void VectorGroupMember_Inherited(TextConfig config) => AssertVectorGroupMember_Inherited(config);
 
     public static IEnumerable<object[]> DuplicateNames => new object[][]
     {
@@ -59,19 +71,21 @@ public class DuplicateConstantName
         new object[] { SingularWithExplicitMultiples },
         new object[] { SingularWithImplicitMultiples },
         new object[] { ExplicitMultiplesWithSingular },
-        new object[] { ExplicitMultiplesWithMultiples },
+        new object[] { ExplicitMultiplesWithExplicitMultiples },
+        new object[] { ExplicitMultiplesWithImplicitMultiples },
         new object[] { ImplicitMultiplesWithSingular },
-        new object[] { ImplicitMultiplesWithMultiples }
+        new object[] { ImplicitMultiplesWithExplicitMultiples }
     };
 
     private static TextConfig SingularWithSingular { get; } = new("Kilometre", string.Empty, "Kilometre", string.Empty, DiagnosticsTarget.Singular);
     private static TextConfig SingularWithExplicitMultiples { get; } = new("Kilometre", "Kilometres", "Kilometres", string.Empty, DiagnosticsTarget.Singular);
     private static TextConfig SingularWithImplicitMultiples { get; } = new("Kilometre", string.Empty, "MultiplesOfKilometre", string.Empty, DiagnosticsTarget.Singular);
     private static TextConfig ExplicitMultiplesWithSingular { get; } = new("Kilometre", string.Empty, "Kilometre2", "Kilometre", DiagnosticsTarget.Multiples);
-    private static TextConfig ExplicitMultiplesWithMultiples { get; } = new("Kilometre", string.Empty, "Kilometre2", "MultiplesOfKilometre", DiagnosticsTarget.Multiples);
+    private static TextConfig ExplicitMultiplesWithExplicitMultiples { get; } = new("Kilometre", "MultiplesOfKilometre", "Kilometre2", "MultiplesOfKilometre", DiagnosticsTarget.Multiples);
+    private static TextConfig ExplicitMultiplesWithImplicitMultiples { get; } = new("Kilometre", string.Empty, "Kilometre2", "MultiplesOfKilometre", DiagnosticsTarget.Multiples);
     private static TextConfig ImplicitMultiplesWithSingular { get; } = new("MultiplesOfKilometre", string.Empty, "Kilometre", string.Empty, DiagnosticsTarget.Attribute);
-    private static TextConfig ImplicitMultiplesWithMultiples { get; } = new("Kilometre2", "MultiplesOfKilometre", "Kilometre", string.Empty, DiagnosticsTarget.Attribute);
-    private static TextConfig SameConstant { get; } = new("Kilometre2", string.Empty, "Kilometre", "Kilometre", DiagnosticsTarget.Attribute);
+    private static TextConfig ImplicitMultiplesWithExplicitMultiples { get; } = new("Kilometre2", "MultiplesOfKilometre", "Kilometre", string.Empty, DiagnosticsTarget.Attribute);
+    private static TextConfig SingleConstantSameNameAndMultiples { get; } = new("Kilometre2", string.Empty, "Kilometre", "Kilometre", DiagnosticsTarget.Attribute);
 
     [SuppressMessage("Design", "CA1034", Justification = "Test-method argument")]
     public readonly record struct TextConfig(string FirstSingular, string FirstMultiples, string SecondSingular, string SecondMultiples, DiagnosticsTarget Target);
@@ -137,6 +151,32 @@ public class DuplicateConstantName
         return AssertExactlyDuplicateConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
 
+    private static string SpecializedScalarText_Inherited(TextConfig config) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [ScalarConstant("{{config.SecondSingular}}", "Meter", 1000{{(config.SecondMultiples.Length > 0 ? $", Multiples = \"{config.SecondMultiples}\"" : string.Empty)}})]
+        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        public partial class Distance { }
+
+        [ScalarConstant("{{config.FirstSingular}}", "Metre", 1000{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [UnitAlias("Meter", "Meters", "Metre")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertSpecializedScalar_Inherited(TextConfig config)
+    {
+        var source = SpecializedScalarText_Inherited(config);
+        var expectedLocation = ParseExpectedLocation(source, config, "ScalarConstant");
+
+        return AssertExactlyDuplicateConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
     private static string VectorText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -194,6 +234,36 @@ public class DuplicateConstantName
         return AssertExactlyDuplicateConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
     }
 
+    private static string SpecializedVectorText_Inherited(TextConfig config) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [VectorConstant("{{config.SecondSingular}}", "Meter", 1, 1, 1{{(config.SecondMultiples.Length > 0 ? $", Multiples = \"{config.SecondMultiples}\"" : string.Empty)}})]
+        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        public partial class Displacement3 { }
+
+        [VectorConstant("{{config.FirstSingular}}", "Metre", 1, 1, 1{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [UnitAlias("Meter", "Meters", "Metre")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertSpecializedVector_Inherited(TextConfig config)
+    {
+        var source = SpecializedVectorText_Inherited(config);
+        var expectedLocation = ParseExpectedLocation(source, config, "VectorConstant");
+
+        return AssertExactlyDuplicateConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
     private static string VectorGroupMemberText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -219,6 +289,42 @@ public class DuplicateConstantName
     private static GeneratorVerifier AssertVectorGroupMember(TextConfig config)
     {
         var source = VectorGroupMemberText(config);
+        var expectedLocation = ParseExpectedLocation(source, config, "VectorConstant");
+
+        return AssertExactlyDuplicateConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+    }
+
+    private static string VectorGroupMemberText_Inherited(TextConfig config) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [VectorConstant("{{config.SecondSingular}}", "Meter", 1, 1, 1{{(config.SecondMultiples.Length > 0 ? $", Multiples = \"{config.SecondMultiples}\"" : string.Empty)}})]
+        [SharpMeasuresVectorGroupMember(typeof(Displacement))]
+        public partial class Displacement3 { }
+
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        public static partial class Displacement { }
+
+        [VectorConstant("{{config.FirstSingular}}", "Metre", 1, 1, 1{{(config.FirstMultiples.Length > 0 ? $", Multiples = \"{config.FirstMultiples}\"" : string.Empty)}})]
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Position3 { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [UnitAlias("Meter", "Meters", "Metre")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertVectorGroupMember_Inherited(TextConfig config)
+    {
+        var source = VectorGroupMemberText_Inherited(config);
         var expectedLocation = ParseExpectedLocation(source, config, "VectorConstant");
 
         return AssertExactlyDuplicateConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);

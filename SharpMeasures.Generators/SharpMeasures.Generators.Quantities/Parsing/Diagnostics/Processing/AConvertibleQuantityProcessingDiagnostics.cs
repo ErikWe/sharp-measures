@@ -9,8 +9,7 @@ public abstract class AConvertibleQuantityProcessingDiagnostics : IConvertibleQu
 {
     public Diagnostic UnrecognizedCastOperatorBehaviour(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
     {
-        return DiagnosticConstruction.UnrecognizedConversionOperationBehaviour(definition.Locations.CastOperatorBehaviour?.AsRoslynLocation(),
-            definition.CastOperatorBehaviour);
+        return DiagnosticConstruction.UnrecognizedEnumValue(definition.Locations.CastOperatorBehaviour?.AsRoslynLocation(), definition.CastOperatorBehaviour);
     }
 
     public Diagnostic EmptyQuantityList(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)

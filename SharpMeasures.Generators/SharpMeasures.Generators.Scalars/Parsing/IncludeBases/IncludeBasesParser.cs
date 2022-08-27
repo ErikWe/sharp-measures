@@ -1,15 +1,14 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.IncludeBases;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Quantities.Parsing.UnitList;
 
 internal static class IncludeBasesParser
 {
-    public static IAttributeParser<RawUnitListDefinition> Parser { get; } = new AttributeParser();
+    public static IAttributeParser<RawIncludeBasesDefinition> Parser { get; } = new AttributeParser();
 
-    private static RawUnitListDefinition DefaultDefinition() => RawUnitListDefinition.Empty;
+    private static RawIncludeBasesDefinition DefaultDefinition() => RawIncludeBasesDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawUnitListDefinition, UnitListLocations, IncludeBasesAttribute>
+    private class AttributeParser : AAttributeParser<RawIncludeBasesDefinition, IncludeBasesLocations, IncludeBasesAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, IncludeBasesProperties.AllProperties) { }
     }

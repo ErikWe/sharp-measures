@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Diagnostics;
 
 using Microsoft.CodeAnalysis;
-
 using SharpMeasures.Generators.Quantities.Utility;
 using SharpMeasures.Generators.Utility;
 
@@ -15,6 +14,27 @@ public static partial class DiagnosticRules
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor QuantityGroupMissingRoot = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.QuantityGroupMissingRoot,
+        title: "Quantity group missing root quantity",
+        messageFormat: "Could not identify the root of the group of associated quantities. Exactly one quantity in the group should be decorated with the attribute {0}.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor DifferenceDisabledButQuantitySpecified = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.DifferenceDisabledButQuantitySpecified,
+        title: "Difference is disabled but a quantity was specified",
+        messageFormat: "{0} does not implement difference, but a quantity representing difference was specified. Enable difference or do not specify the quantity.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Info,
+        isEnabledByDefault: true,
+        customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
     public static readonly DiagnosticDescriptor DefineQuantityDefaultSymbol = new DiagnosticDescriptor
@@ -141,16 +161,6 @@ public static partial class DiagnosticRules
         customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
-    public static readonly DiagnosticDescriptor UnrecognizedCastOperatorBehaviour = new DiagnosticDescriptor
-    (
-        id: DiagnosticIDs.UnrecognizedCastOperatorBehaviour,
-        title: "Unrecognized cast operator behaviour",
-        messageFormat: $"{{0}} was not recognized as a {typeof(ConversionOperatorBehaviour).Name}",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
-        isEnabledByDefault: true
-    );
-
     public static readonly DiagnosticDescriptor QuantityConvertibleToSelf = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.QuantityConvertibleToSelf,
@@ -172,76 +182,55 @@ public static partial class DiagnosticRules
         customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
-    public static readonly DiagnosticDescriptor QuantityGroupMissingRoot = new DiagnosticDescriptor
-    (
-        id: DiagnosticIDs.QuantityGroupMissingRoot,
-        title: "Quantity group missing root quantity",
-        messageFormat: "Could not identify the root of the group of associated quantities. Exactly one quantity in the group should be decorated with the attribute {0}.",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
-        isEnabledByDefault: true
-    );
-
-    public static readonly DiagnosticDescriptor UnitAlreadyIncluded = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor IncludingAlreadyIncludedUnitWithIntersection = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
         title: "Inclusion or exclusion had no effect",
-        messageFormat: "Including \"{0}\" had no effect, as \"{0}\" was already included",
+        messageFormat: $"Including \"{{0}}\" had no effect, as the unit was already included",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true,
         customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
-    public static readonly DiagnosticDescriptor UnitNotIncluded = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor IncludingAlreadyIncludedUnitWithUnion = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
         title: "Inclusion or exclusion had no effect",
-        messageFormat: "Excluding \"{0}\" had no effect, as \"{0}\" was not included",
+        messageFormat: $"Including \"{{0}}\" had no effect, as the unit was already included. To modify the set of included units, change the stacking mode to {typeof(InclusionStackingMode).FullName}.{nameof(InclusionStackingMode.Intersection)} - or instead use {{1}}.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true,
         customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
-    public static readonly DiagnosticDescriptor UnitAlreadyExcluded = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor ExcludingAlreadyExcludedUnit = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
         title: "Inclusion or exclusion had no effect",
-        messageFormat: "Excluding \"{0}\" had no effect, as \"{0}\" was already excluded",
+        messageFormat: "Excluding \"{0}\" had no effect, as the unit was already excluded",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true,
         customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
-    public static readonly DiagnosticDescriptor UnitNotExcluded = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor IncludingExcludedUnit = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
         title: "Inclusion or exclusion had no effect",
-        messageFormat: "Including \"{0}\" had no effect, as \"{0}\" was not excluded",
+        messageFormat: $"Could not include \"{{0}}\" as the unit was already excluded. To include an excluded unit, change the stacking mode to {typeof(InclusionStackingMode).FullName}.{nameof(InclusionStackingMode.Union)}.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true,
         customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
-    public static readonly DiagnosticDescriptor UnitAlreadyListed = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor UnionInclusionStackingModeRedundant = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
-        title: "Inclusion or exclusion had no effect",
-        messageFormat: "Including or excluding \"{0}\" had no effect, as \"{0}\" was already listed",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Info,
-        isEnabledByDefault: true,
-        customTags: WellKnownDiagnosticTags.Unnecessary
-    );
-
-    public static readonly DiagnosticDescriptor DifferenceDisabledButQuantitySpecified = new DiagnosticDescriptor
-    (
-        id: DiagnosticIDs.DifferenceDisabledButQuantitySpecified,
-        title: "Difference is disabled but a quantity was specified",
-        messageFormat: "{0} does not implement difference, but a quantity representing difference was specified. Enable difference or do not specify the quantity.",
+        id: DiagnosticIDs.UnionInclusionStackingModeRedundant,
+        title: "Union inclusion stacking mode is redundant",
+        messageFormat: $"As {{0}} includes all units, using {typeof(InclusionStackingMode).FullName}.{nameof(InclusionStackingMode.Union)} is redundant",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true,

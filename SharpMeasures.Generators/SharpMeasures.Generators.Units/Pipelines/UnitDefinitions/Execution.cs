@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Units.Pipelines.UnitDefinitions;
+﻿namespace SharpMeasures.Generators.Units.Pipelines.UnitDefinitions;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -83,7 +83,7 @@ internal static class Execution
 
             if (Data.BiasTerm)
             {
-                Builder.AppendLine($" = new(new {Data.Quantity.FullyQualifiedName}(1), new Scalar(0));");
+                Builder.AppendLine($" = new(new {Data.Quantity.FullyQualifiedName}(1), new global::SharpMeasures.Scalar(0));");
             }
             else
             {
@@ -138,19 +138,19 @@ internal static class Execution
                     AppendDocumentation(indentation, Data.Documentation.Definition(dependantUnits[i]));
                     Builder.Append($"{indentation}public static {Data.Unit.FullyQualifiedName} {dependantUnits[i].Name} ");
 
-                    if (dependantUnits[i] is RawUnitAliasDefinition unitAlias)
+                    if (dependantUnits[i] is UnitAliasDefinition unitAlias)
                     {
                         AppendAlias(unitAlias);
                     }
-                    else if (dependantUnits[i] is RawScaledUnitDefinition scaledUnit)
+                    else if (dependantUnits[i] is ScaledUnitDefinition scaledUnit)
                     {
                         AppendScaled(scaledUnit);
                     }
-                    else if (dependantUnits[i] is RawPrefixedUnitDefinition prefixedUnit)
+                    else if (dependantUnits[i] is PrefixedUnitDefinition prefixedUnit)
                     {
                         AppendPrefixed(prefixedUnit);
                     }
-                    else if (dependantUnits[i] is RawBiasedUnitDefinition biasedUnit)
+                    else if (dependantUnits[i] is BiasedUnitDefinition biasedUnit)
                     {
                         AppendBiased(biasedUnit);
                     }
@@ -175,26 +175,26 @@ internal static class Execution
             }
         }
 
-        private void AppendAlias(RawUnitAliasDefinition unitAlias)
+        private void AppendAlias(UnitAliasDefinition unitAlias)
         {
             Builder.Append($"=> {unitAlias.AliasOf}");
         }
 
-        private void AppendScaled(RawScaledUnitDefinition scaledUnit)
+        private void AppendScaled(ScaledUnitDefinition scaledUnit)
         {
             Builder.Append($"{{ get; }} = {scaledUnit.From}.ScaledBy({scaledUnit.Expression})");
         }
 
-        private void AppendPrefixed(RawPrefixedUnitDefinition prefixedUnit)
+        private void AppendPrefixed(PrefixedUnitDefinition prefixedUnit)
         {
-            string prefixText = prefixedUnit.Locations.ExplicitlySetMetricPrefixName
-                ? $"global::SharpMeasures.MetricPrefix.{prefixedUnit.MetricPrefixName}"
-                : $"global::SharpMeasures.BinaryPrefix.{prefixedUnit.BinaryPrefixName}";
+            string prefixText = prefixedUnit.Locations.ExplicitlySetMetricPrefix
+                ? $"global::SharpMeasures.MetricPrefix.{prefixedUnit.MetricPrefix}"
+                : $"global::SharpMeasures.BinaryPrefix.{prefixedUnit.BinaryPrefix}";
 
             Builder.Append($"{{ get; }} = {prefixedUnit.From}.WithPrefix({prefixText})");
         }
 
-        private void AppendBiased(RawBiasedUnitDefinition biasedUnit)
+        private void AppendBiased(BiasedUnitDefinition biasedUnit)
         {
             Builder.Append($"{{ get; }} = {biasedUnit.From}.WithBias({biasedUnit.Expression})");
         }
@@ -203,22 +203,22 @@ internal static class Execution
         {
             List<IDependantUnitDefinition<IDependantUnitLocations>> result = new();
 
-            foreach (UnitAliasDefinition unitAlias in Data.UnitAliases)
+            foreach (var unitAlias in Data.UnitAliases)
             {
                 result.Add(unitAlias);
             }
 
-            foreach (BiasedUnitDefinition biasedUnit in Data.BiasedUnits)
+            foreach (var biasedUnit in Data.BiasedUnits)
             {
                 result.Add(biasedUnit);
             }
 
-            foreach (PrefixedUnitDefinition prefixedUnit in Data.PrefixedUnits)
+            foreach (var prefixedUnit in Data.PrefixedUnits)
             {
                 result.Add(prefixedUnit);
             }
 
-            foreach (ScaledUnitDefinition scaledUnit in Data.ScaledUnits)
+            foreach (var scaledUnit in Data.ScaledUnits)
             {
                 result.Add(scaledUnit);
             }

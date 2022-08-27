@@ -8,7 +8,6 @@ using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
-using SharpMeasures.Generators.Quantities.Parsing.UnitList;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics;
 
@@ -33,15 +32,15 @@ internal abstract class AVectorGroupProcesser<TDefinition, TProduct>
         var derivations = CommonProcessing.ParseAndProcessDerivations(typeSymbol);
         var conversions = CommonProcessing.ParseAndProcessConversions(typeSymbol);
 
-        var includeUnits = CommonProcessing.ParseAndProcessUnitList(typeSymbol, IncludeUnitsParser.Parser);
-        var excludeUnits = CommonProcessing.ParseAndProcessUnitList(typeSymbol, ExcludeUnitsParser.Parser);
+        var includeUnits = CommonProcessing.ParseAndProcessIncludeUnits(typeSymbol);
+        var excludeUnits = CommonProcessing.ParseAndProcessExcludeUnits(typeSymbol);
 
         var allDiagnostics = vector.Diagnostics.Concat(derivations).Concat(conversions).Concat(includeUnits).Concat(excludeUnits);
 
         if (includeUnits.HasResult && includeUnits.Result.Count > 0 && excludeUnits.HasResult && excludeUnits.Result.Count > 0)
         {
-            allDiagnostics = allDiagnostics.Concat(new[] { VectorTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(declaration.GetLocation().Minimize()) });
-            excludeUnits = ResultWithDiagnostics.Construct(Array.Empty<UnitListDefinition>() as IReadOnlyList<UnitListDefinition>);
+            allDiagnostics = allDiagnostics.Concat(new[] { VectorTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(declaration.Identifier.GetLocation().Minimize()) });
+            excludeUnits = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
         }
 
         TProduct product = FinalizeProcess(typeSymbol.AsDefinedType(), declaration.GetLocation().Minimize(), vector.Result, derivations.Result, conversions.Result, includeUnits.Result, excludeUnits.Result);
@@ -50,7 +49,7 @@ internal abstract class AVectorGroupProcesser<TDefinition, TProduct>
     }
 
     protected abstract TProduct FinalizeProcess(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
-        IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<UnitListDefinition> unitInclusions, IReadOnlyList<UnitListDefinition> unitExclusions);
+        IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitExclusions);
 
     protected abstract IOptionalWithDiagnostics<TDefinition> ParseAndProcessVector(INamedTypeSymbol typeSymbol);
 }

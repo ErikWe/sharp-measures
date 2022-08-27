@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Units.Pipelines.Derivable;
+﻿namespace SharpMeasures.Generators.Units.Pipelines.Derivable;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -66,7 +66,7 @@ internal static class Execution
             var parameterNames = GetSignatureParameterNames(definition.Signature);
 
             var methodNameAndModifiers = $"public static {Data.Unit.FullyQualifiedName} From";
-            var expression = $"new({ProcessExpression(definition, parameterNames, Data.UnitPopulation)})";
+            var expression = $"new(new {Data.Quantity.FullyQualifiedName}({ProcessExpression(definition, parameterNames, Data.UnitPopulation)}))";
             var parameters = GetSignatureComponents(definition, parameterNames);
 
             AppendDocumentation(indentation, Data.Documentation.Derivation(definition.Signature));

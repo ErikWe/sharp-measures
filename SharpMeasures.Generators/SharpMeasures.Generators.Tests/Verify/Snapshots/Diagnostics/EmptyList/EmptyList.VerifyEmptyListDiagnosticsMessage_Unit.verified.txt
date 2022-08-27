@@ -10,6 +10,8 @@
     MessageFormat: Expected at least one {0},
     Message: Expected at least one unit,
     Category: Usage,
-    CustomTags: []
+    CustomTags: [
+      Unnecessary
+    ]
   }
 ]

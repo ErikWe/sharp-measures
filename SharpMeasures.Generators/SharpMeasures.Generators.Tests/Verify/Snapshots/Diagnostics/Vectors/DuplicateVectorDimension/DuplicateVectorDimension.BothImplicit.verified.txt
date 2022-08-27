@@ -1,6 +1,6 @@
 ﻿[
   {
-    Id: Measures1422,
+    Id: Measures1423,
     Title: Vector group already contains dimension,
     Severity: Warning,
     WarningLevel: 1,

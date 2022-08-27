@@ -16,6 +16,7 @@ public static partial class DiagnosticIDs
             public const string Quantities = $"{Thousands.SourceGenerators}2";
             public const string Scalars = $"{Thousands.SourceGenerators}3";
             public const string Vectors = $"{Thousands.SourceGenerators}4";
+            public const string External = $"{Thousands.SourceGenerators}8";
             public const string Documentation = $"{Thousands.SourceGenerators}9";
         }
     }
@@ -42,4 +43,6 @@ public static partial class DiagnosticIDs
 
     public const string EmptyList = $"{Prefix}{Numbering.Hundreds.Misc}80";
     public const string DuplicateListing = $"{Prefix}{Numbering.Hundreds.Misc}81";
+
+    public const string UnrecognizedEnumValue = $"{Prefix}{Numbering.Hundreds.External}00";
 }

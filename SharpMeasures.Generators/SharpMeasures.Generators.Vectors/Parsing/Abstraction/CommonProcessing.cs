@@ -8,7 +8,8 @@ using SharpMeasures.Generators.Quantities.Parsing.Contexts.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Processing;
-using SharpMeasures.Generators.Quantities.Parsing.UnitList;
+using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
@@ -48,13 +49,22 @@ internal static class CommonProcessing
         return ProcessingFilter.Create(ConvertibleVectorProcesser).Filter(processingContext, rawConvertibles);
     }
 
-    public static IResultWithDiagnostics<IReadOnlyList<UnitListDefinition>> ParseAndProcessUnitList(INamedTypeSymbol typeSymbol, IAttributeParser<RawUnitListDefinition> parser)
+    public static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ParseAndProcessIncludeUnits(INamedTypeSymbol typeSymbol)
     {
-        var rawLists = parser.ParseAllOccurrences(typeSymbol);
+        var rawIncludeUnits = IncludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
 
-        UnitListProcessingContext processingContext = new(typeSymbol.AsDefinedType());
+        IncludeUnitsProcessingContext processingContext = new(typeSymbol.AsDefinedType());
 
-        return ProcessingFilter.Create(UnitListProcesser).Filter(processingContext, rawLists);
+        return ProcessingFilter.Create(IncludeUnitsProcesser).Filter(processingContext, rawIncludeUnits);
+    }
+
+    public static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ParseAndProcessExcludeUnits(INamedTypeSymbol typeSymbol)
+    {
+        var rawExcludeUnits = ExcludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
+
+        ExcludeUnitsProcessingContext processingContext = new(typeSymbol.AsDefinedType());
+
+        return ProcessingFilter.Create(ExcludeUnitsProcesser).Filter(processingContext, rawExcludeUnits);
     }
 
     private static DerivedQuantityProcesser DerivedQuantityProcesser { get; } = new(DerivedQuantityProcessingDiagnostics.Instance);
@@ -62,5 +72,6 @@ internal static class CommonProcessing
     private static VectorConstantProcesser VectorConstantProcesserForUnknownUnit { get; } = new(new VectorConstantProcessingDiagnostics());
     private static ConvertibleVectorProcesser ConvertibleVectorProcesser { get; } = new(ConvertibleVectorProcessingDiagnostics.Instance);
 
-    private static UnitListProcesser UnitListProcesser { get; } = new(UnitListProcessingDiagnostics.Instance);
+    private static IncludeUnitsProcesser IncludeUnitsProcesser { get; } = new(IncludeUnitsProcessingDiagnostics.Instance);
+    private static ExcludeUnitsProcesser ExcludeUnitsProcesser { get; } = new(ExcludeUnitsProcessingDiagnostics.Instance);
 }

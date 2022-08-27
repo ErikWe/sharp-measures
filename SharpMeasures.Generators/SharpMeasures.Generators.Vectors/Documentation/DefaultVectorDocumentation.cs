@@ -36,22 +36,54 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
         Dimension = model.Vector.Dimension;
         Unit = model.UnitPopulation.Units[model.Vector.Unit];
 
-        DefaultUnit = model.Vector.DefaultUnitName is not null ? Unit.UnitsByName[model.Vector.DefaultUnitName] : null;
+        DefaultUnit = GetDefaultUnit(model, Unit);
         DefaultUnitSymbol = model.Vector.DefaultUnitSymbol;
 
         UnitParameterName = SourceBuildingUtility.ToParameterName(Unit.Type.Name);
 
-        if (model.Vector.Scalar is not null)
-        {
-            var scalar = model.ScalarPopulation.Scalars[model.Vector.Scalar.Value];
-            var scalarUnit = model.UnitPopulation.Units[model.ScalarPopulation.Scalars[model.Vector.Scalar.Value].Unit];
-
-            ExampleScalarBase = scalar.IncludedBases.Count > 0 ? scalarUnit.UnitsByName[scalar.IncludedBases[0]] : null;
-        }
-
-        ExampleUnit = model.Vector.IncludedUnits.Count > 0 ? Unit.UnitsByName[model.Vector.IncludedUnits[0]] : null;
+        ExampleScalarBase = GetExampleScalarBase(model);
+        ExampleUnit = GetExampleUnit(model, Unit);
 
         Texts = new(Dimension, VectorReference, UnitParameterName);
+    }
+
+    private static IUnitInstance? GetDefaultUnit(VectorDataModel model, IUnitType unit)
+    {
+        if (model.Vector.DefaultUnitName is not null && unit.UnitsByName.TryGetValue(model.Vector.DefaultUnitName, out var defaultUnit))
+        {
+            return defaultUnit;
+        }
+
+        return null;
+    }
+
+    private static IUnitInstance? GetExampleScalarBase(VectorDataModel model)
+    {
+        if (model.Vector.Scalar is not null && model.ScalarPopulation.Scalars.TryGetValue(model.Vector.Scalar.Value, out var scalar) && model.UnitPopulation.Units.TryGetValue(scalar.Unit, out var scalarUnit))
+        {
+            foreach (var includedBaseName in scalar.IncludedBases)
+            {
+                if (scalarUnit.UnitsByName.TryGetValue(includedBaseName, out var includedBase))
+                {
+                    return includedBase;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static IUnitInstance? GetExampleUnit(VectorDataModel model, IUnitType unit)
+    {
+        foreach (var includedUnitName in model.Vector.IncludedUnits)
+        {
+            if (unit.UnitsByName.TryGetValue(includedUnitName, out var includedUnit))
+            {
+                return includedUnit;
+            }
+        }
+
+        return null;
     }
 
     public string Header() => HasComponent switch

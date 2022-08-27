@@ -2,8 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Utility;
-
 using System;
 
 public static partial class DiagnosticConstruction
@@ -16,6 +14,16 @@ public static partial class DiagnosticConstruction
     public static Diagnostic DefineQuantityDefaultSymbol(Location? location, string quantityTypeName)
     {
         return Diagnostic.Create(DiagnosticRules.DefineQuantityDefaultSymbol, location, quantityTypeName);
+    }
+
+    public static Diagnostic DifferenceDisabledButQuantitySpecified(Location? location, string quantityTypeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.DifferenceDisabledButQuantitySpecified, location, quantityTypeName);
+    }
+
+    public static Diagnostic QuantityGroupMissingRoot<TAttribute>(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.QuantityGroupMissingRoot, location, typeof(TAttribute).FullName);
     }
 
     public static Diagnostic InvalidConstantName(Location? location, string constantName)
@@ -73,11 +81,6 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.ConstantMultiplesDisabledButNameSpecified, location, singularForm);
     }
 
-    public static Diagnostic UnrecognizedConversionOperationBehaviour(Location? location, ConversionOperatorBehaviour conversionOperationBehaviour)
-    {
-        return Diagnostic.Create(DiagnosticRules.UnrecognizedCastOperatorBehaviour, location, conversionOperationBehaviour.ToString());
-    }
-
     public static Diagnostic QuantityConvertibleToSelf(Location? location, string quantityTypeName)
     {
         return Diagnostic.Create(DiagnosticRules.QuantityConvertibleToSelf, location, quantityTypeName);
@@ -99,38 +102,28 @@ public static partial class DiagnosticConstruction
             Utility.AttributeName(exclusionAttributeName));
     }
 
-    public static Diagnostic QuantityGroupMissingRoot<TAttribute>(Location? location)
+    public static Diagnostic IncludingAlreadyIncludedUnitWithIntersection(Location? location, string unitName)
     {
-        return Diagnostic.Create(DiagnosticRules.QuantityGroupMissingRoot, location, typeof(TAttribute).FullName);
+        return Diagnostic.Create(DiagnosticRules.IncludingAlreadyIncludedUnitWithIntersection, location, unitName);
     }
 
-    public static Diagnostic UnitAlreadyIncluded(Location? location, string unitName)
+    public static Diagnostic IncludingAlreadyIncludedUnitWithUnion<TOppositeAttribute>(Location? location, string unitName)
     {
-        return Diagnostic.Create(DiagnosticRules.UnitAlreadyIncluded, location, unitName);
+        return Diagnostic.Create(DiagnosticRules.IncludingAlreadyIncludedUnitWithUnion, location, unitName, Utility.AttributeName(typeof(TOppositeAttribute).FullName));
     }
 
-    public static Diagnostic UnitNotIncluded(Location? location, string unitName)
+    public static Diagnostic ExcludingAlreadyExcludedUnit(Location? location, string unitName)
     {
-        return Diagnostic.Create(DiagnosticRules.UnitNotIncluded, location, unitName);
+        return Diagnostic.Create(DiagnosticRules.ExcludingAlreadyExcludedUnit, location, unitName);
     }
 
-    public static Diagnostic UnitAlreadyExcluded(Location? location, string unitName)
+    public static Diagnostic IncludingExcludedUnit(Location? location, string unitName)
     {
-        return Diagnostic.Create(DiagnosticRules.UnitAlreadyExcluded, location, unitName);
+        return Diagnostic.Create(DiagnosticRules.IncludingExcludedUnit, location, unitName);
     }
 
-    public static Diagnostic UnitNotExcluded(Location? location, string unitName)
+    public static Diagnostic UnionInclusionStackingModeRedundant(Location? location, string quantityTypeName)
     {
-        return Diagnostic.Create(DiagnosticRules.UnitNotExcluded, location, unitName);
-    }
-
-    public static Diagnostic UnitAlreadyListed(Location? location, string unitName)
-    {
-        return Diagnostic.Create(DiagnosticRules.UnitAlreadyListed, location, unitName);
-    }
-
-    public static Diagnostic DifferenceDisabledButQuantitySpecified(Location? location, string quantityTypeName)
-    {
-        return Diagnostic.Create(DiagnosticRules.DifferenceDisabledButQuantitySpecified, location, quantityTypeName);
+        return Diagnostic.Create(DiagnosticRules.UnionInclusionStackingModeRedundant, location, quantityTypeName);
     }
 }

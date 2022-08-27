@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Units;
+﻿namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Units;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -137,7 +137,7 @@ internal static class Execution
             foreach (IUnitInstance includedUnit in Data.IncluedUnits)
             {
                 AppendDocumentation(indentation, Data.Documentation.InSpecifiedUnit(includedUnit));
-                Builder.AppendLine($"{indentation}public static global::SharpMeasures.Vector{Data.Dimension} {includedUnit.Plural} => InUnit({Data.Unit.FullyQualifiedName}.{includedUnit.Name});");
+                Builder.AppendLine($"{indentation}public global::SharpMeasures.Vector{Data.Dimension} {includedUnit.Plural} => InUnit({Data.Unit.FullyQualifiedName}.{includedUnit.Name});");
             }
         }
 

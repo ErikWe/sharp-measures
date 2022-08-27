@@ -9,7 +9,7 @@ using System.Collections.Immutable;
 
 public interface IAttributeParser<TDefinition>
 {
-    public abstract TDefinition Parse(AttributeData attributeData);
+    public abstract TDefinition? Parse(AttributeData attributeData);
     public abstract IEnumerable<TDefinition> Parse(IEnumerable<AttributeData> attributeData);
 
     public abstract TDefinition? ParseFirstOccurrence(INamedTypeSymbol typeSymbol);
@@ -51,7 +51,7 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
     protected AAttributeParser(Func<TDefinition> defaultValueConstructor, IEnumerable<IAttributeProperty<TDefinition>> properties)
         : this(defaultValueConstructor, properties.ToImmutableDictionary(static (x) => x.ParameterName), properties.ToImmutableDictionary(static (x) => x.Name)) { }
 
-    public TDefinition Parse(AttributeData attributeData)
+    public TDefinition? Parse(AttributeData attributeData)
     {
         if (attributeData.GetSyntax() is not AttributeSyntax attributeSyntax)
         {
@@ -62,7 +62,7 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
 
         if (attributeData.AttributeConstructor?.Parameters is not ImmutableArray<IParameterSymbol> parameterSymbols)
         {
-            return definition;
+            return default;
         }
 
         definition = AddAttributeLocation(definition, attributeSyntax);
@@ -77,7 +77,10 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
     {
         foreach (AttributeData data in attributeData)
         {
-            yield return Parse(data);
+            if (Parse(data) is TDefinition definition)
+            {
+                yield return definition;
+            }
         }
     }
 
