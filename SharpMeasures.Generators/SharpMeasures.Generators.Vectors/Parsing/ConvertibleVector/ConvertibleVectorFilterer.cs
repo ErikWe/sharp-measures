@@ -11,7 +11,6 @@ internal interface IConvertibleVectorFilteringDiagnostics
 {
     public abstract Diagnostic? TypeNotVector(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index);
     public abstract Diagnostic? TypeNotVectorGroup(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index);
-    public abstract Diagnostic? TypeNotVectorGroupMember(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index);
     public abstract Diagnostic? DuplicateVector(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index);
 }
 
@@ -72,27 +71,15 @@ internal class ConvertibleVectorFilterer : IProcesser<IConvertibleVectorFilterin
 
     private IValidityWithDiagnostics ValidateVectorIsOfExpectedVectorType(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index)
     {
-        if (context.VectorType is VectorType.Vector)
-        {
-            var vectorIsVector = context.VectorPopulation.Vectors.ContainsKey(definition.Vectors[index]);
-
-            return ValidityWithDiagnostics.Conditional(vectorIsVector, () => Diagnostics.TypeNotVector(context, definition, index));
-        }
-
+        var vectorIsGroup = context.VectorPopulation.Groups.ContainsKey(definition.Vectors[index]);
+        
         if (context.VectorType is VectorType.Group)
         {
-            var vectorIsGroup = context.VectorPopulation.Groups.ContainsKey(definition.Vectors[index]);
-
             return ValidityWithDiagnostics.Conditional(vectorIsGroup, () => Diagnostics.TypeNotVectorGroup(context, definition, index));
         }
 
-        if (context.VectorType is VectorType.GroupMember)
-        {
-            var vectorIsGroupMember = context.VectorPopulation.GroupMembers.ContainsKey(definition.Vectors[index]);
+        var vectorIsAnyVectorType = vectorIsGroup || context.VectorPopulation.Vectors.ContainsKey(definition.Vectors[index]) || context.VectorPopulation.GroupMembers.ContainsKey(definition.Vectors[index]);
 
-            return ValidityWithDiagnostics.Conditional(vectorIsGroupMember, () => Diagnostics.TypeNotVectorGroupMember(context, definition, index));
-        }
-
-        return ValidityWithDiagnostics.InvalidWithoutDiagnostics;
+        return ValidityWithDiagnostics.Conditional(vectorIsAnyVectorType, () => Diagnostics.TypeNotVector(context, definition, index));
     }
 }

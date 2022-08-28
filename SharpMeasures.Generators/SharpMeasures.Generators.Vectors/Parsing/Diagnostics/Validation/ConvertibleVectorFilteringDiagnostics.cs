@@ -21,11 +21,6 @@ internal class ConvertibleVectorFilteringDiagnostics : IConvertibleVectorFilteri
         return DiagnosticConstruction.TypeNotVectorGroup(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Vectors[index].Name);
     }
 
-    public Diagnostic TypeNotVectorGroupMember(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index)
-    {
-        return DiagnosticConstruction.TypeNotVectorGroupMember(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Vectors[index].Name);
-    }
-
     public Diagnostic DuplicateVector(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index)
     {
         return DiagnosticConstruction.DuplicateQuantityListing(definition.Locations.QuantitiesElements[index].AsRoslynLocation(), definition.Vectors[index].Name);
