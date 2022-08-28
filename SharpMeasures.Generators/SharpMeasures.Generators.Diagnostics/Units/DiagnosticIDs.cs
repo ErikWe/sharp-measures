@@ -8,6 +8,7 @@ public static partial class DiagnosticIDs
     public const string DuplicateUnitPluralForm = $"{Prefix}{Numbering.Hundreds.Units}03";
     public const string UnrecognizedUnitName = $"{Prefix}{Numbering.Hundreds.Units}04";
     public const string CyclicUnitDependency = $"{Prefix}{Numbering.Hundreds.Units}05";
+    public const string DerivableUnitShouldNotUseFixed = $"{Prefix}{Numbering.Hundreds.Units}06";
 
     public const string InvalidScaledUnitExpression = $"{Prefix}{Numbering.Hundreds.Units}20";
     public const string InvalidBiasedUnitExpression = $"{Prefix}{Numbering.Hundreds.Units}21";

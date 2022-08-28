@@ -64,6 +64,11 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.CyclicUnitDependency, location, unitName, unitTypeName);
     }
 
+    public static Diagnostic DerivableUnitShouldNotUseFixed(Location? location, string unitTypeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.DerivableUnitShouldNotUseFixed, location, unitTypeName);
+    }
+
     public static Diagnostic NullScaledUnitExpression(Location? location)
     {
         return Diagnostic.Create(DiagnosticRules.NullScaledUnitExpression, location);

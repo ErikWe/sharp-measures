@@ -28,6 +28,7 @@ Measures1102 | Naming | Warning | Duplicate unit name
 Measures1103 | Naming | Warning | Duplicate unit plural form
 Measures1104 | Usage | Warning | Expected the name of a unit
 Measures1105 | Usage | Warning | Cyclic unit dependency
+Measures1106 | Usage | Warning | Derivable unit should not use FixedUnit
 Measures1120 | Usage | Warning | Invalid scaled unit expression
 Measures1121 | Usage | Warning | Invalid biased unit expression
 Measures1122 | Usage | Warning | Unit does not support biased instances

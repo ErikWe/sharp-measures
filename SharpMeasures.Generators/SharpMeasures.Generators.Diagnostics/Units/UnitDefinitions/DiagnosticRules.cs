@@ -127,6 +127,16 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
+    public static readonly DiagnosticDescriptor DerivableUnitShouldNotUseFixed = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.DerivableUnitShouldNotUseFixed,
+        title: "Derivable unit should not use FixedUnit",
+        messageFormat: $"As {{0}} can be derived from other units, defining instances through {Utility.AttributeName(typeof(FixedUnitAttribute).Name)} would result in multiple independent units",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
     public static readonly DiagnosticDescriptor NullScaledUnitExpression = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InvalidScaledUnitExpression,

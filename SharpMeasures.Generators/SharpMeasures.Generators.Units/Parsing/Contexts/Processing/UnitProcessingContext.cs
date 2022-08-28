@@ -7,8 +7,12 @@ using System.Collections.Generic;
 
 internal record class UnitProcessingContext : SimpleProcessingContext, IUnitProcessingContext
 {
-    public HashSet<string> ReservedUnits { get; } = new();
-    public HashSet<string> ReservedUnitPlurals { get; } = new();
+    public HashSet<string> ReservedUnits { get; }
+    public HashSet<string> ReservedUnitPlurals { get; }
 
-    public UnitProcessingContext(DefinedType type) : base(type) { }
+    public UnitProcessingContext(DefinedType type, HashSet<string> reservedUnits, HashSet<string> reservedUnitPlurals) : base(type)
+    {
+        ReservedUnits = reservedUnits;
+        ReservedUnitPlurals = reservedUnitPlurals;
+    }
 }

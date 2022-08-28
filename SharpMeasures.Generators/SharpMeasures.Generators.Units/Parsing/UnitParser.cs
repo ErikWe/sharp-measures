@@ -53,9 +53,13 @@ public static class UnitParser
 
         var derivations = ParseAndProcessDerivations(input.TypeSymbol, unit.Result.BiasTerm);
 
-        UnitProcessingContext unitInstanceProcessingContext = new(input.TypeSymbol.AsDefinedType());
+        HashSet<string> reservedUnits = new();
+        HashSet<string> reservedUnitPlurals = new();
 
-        var fixedUnit = ParseAndProcessFixedUnit(input.TypeSymbol, unitInstanceProcessingContext);
+        var fixedUnit = ParseAndProcessFixedUnit(input.TypeSymbol, derivations.Result.Count > 0, reservedUnits, reservedUnitPlurals);
+
+        UnitProcessingContext unitInstanceProcessingContext = new(input.TypeSymbol.AsDefinedType(), reservedUnits, reservedUnitPlurals);
+
         var unitAliases = ParseAndProcessUnitAliases(input.TypeSymbol, unitInstanceProcessingContext);
         var derivedUnits = ParseAndProcessDerivedUnits(input.TypeSymbol, unitInstanceProcessingContext);
         var biasedUnits = ParseAndProcessBiasedUnits(input.TypeSymbol, unitInstanceProcessingContext);
@@ -91,12 +95,14 @@ public static class UnitParser
         return ProcessingFilter.Create(Processers.DerivableUnitProcesser).Filter(processingContext, rawDerivations);
     }
 
-    private static IOptionalWithDiagnostics<FixedUnitDefinition> ParseAndProcessFixedUnit(INamedTypeSymbol typeSymbol, IUnitProcessingContext processingContext)
+    private static IOptionalWithDiagnostics<FixedUnitDefinition> ParseAndProcessFixedUnit(INamedTypeSymbol typeSymbol, bool unitIsDerivable, HashSet<string> reservedUnits, HashSet<string> reservedUnitPlurals)
     {
         if (FixedUnitParser.Parser.ParseFirstOccurrence(typeSymbol) is not RawFixedUnitDefinition rawFixedUnit)
         {
             return OptionalWithDiagnostics.EmptyWithoutDiagnostics<FixedUnitDefinition>();
         }
+
+        var processingContext = new FixedUnitProcessingContext(typeSymbol.AsDefinedType(), reservedUnits, reservedUnitPlurals, unitIsDerivable);
 
         return Processers.FixedUnitProcesser.Process(processingContext, rawFixedUnit);
     }
