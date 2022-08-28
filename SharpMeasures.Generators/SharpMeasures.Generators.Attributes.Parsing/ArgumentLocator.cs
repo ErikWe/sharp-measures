@@ -44,8 +44,13 @@ internal static class ArgumentLocator
         return expressions[index].GetLocation().Minimize();
     }
 
-    public static (MinimalLocation Collection, IReadOnlyList<MinimalLocation> Elements) FromArrayOrParamsList(AttributeArgumentListSyntax argumentList, int index)
+    public static (MinimalLocation Collection, IReadOnlyList<MinimalLocation> Elements) FromArrayOrParamsList(AttributeArgumentListSyntax argumentList, int index, bool definitelyParams)
     {
+        if (definitelyParams)
+        {
+            return FromParamsList(argumentList, index);
+        }
+
         if (AttemptFromArray(argumentList.Arguments[index].Expression) is var locatedArray and not null)
         {
             return locatedArray.Value;

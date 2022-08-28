@@ -115,8 +115,10 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
                 continue;
             }
 
-            definition = SetConstructorArgument(definition, property, parameterSymbols[i], attributeData.ConstructorArguments, i);
-            definition = property.Locator(definition, attributeSyntax.ArgumentList!, i);
+            bool definitelyParams = parameterSymbols[i].IsParams && attributeSyntax.ArgumentList!.Arguments.Count > i + 1 && attributeSyntax.ArgumentList!.Arguments[i + 1].NameColon is null;
+
+            definition = SetConstructorArgument(definition, property, attributeData.ConstructorArguments, i);
+            definition = property.Locator(definition, attributeSyntax.ArgumentList!, i, definitelyParams);
         }
 
         return definition;
@@ -151,17 +153,11 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
         return definition;
     }
 
-    private static TDefinition SetConstructorArgument(TDefinition definition, IAttributeProperty<TDefinition> property,
-        IParameterSymbol parameterSymbol, IReadOnlyList<TypedConstant> arguments, int argumentIndex)
+    private static TDefinition SetConstructorArgument(TDefinition definition, IAttributeProperty<TDefinition> property, IReadOnlyList<TypedConstant> arguments, int argumentIndex)
     {
         if (arguments[argumentIndex].Kind is TypedConstantKind.Array)
         {
             return property.Setter(definition, ParseArray(arguments[argumentIndex]));
-        }
-        
-        if (parameterSymbol.IsParams)
-        {
-            return property.Setter(definition, ParseParams(arguments, argumentIndex));
         }
 
         return property.Setter(definition, arguments[argumentIndex].Value);
@@ -202,16 +198,5 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
         }
 
         return arrayValues;
-    }
-
-    private static object?[] ParseParams(IReadOnlyList<TypedConstant> values, int startIndex)
-    {
-        object?[] paramsValues = new object[values.Count - startIndex];
-        for (int i = 0; i < values.Count - startIndex; i++)
-        {
-            paramsValues[i] = values[startIndex + i].Value;
-        }
-
-        return paramsValues;
     }
 }

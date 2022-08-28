@@ -15,7 +15,7 @@ public interface IAttributeProperty
 public interface IAttributeProperty<TDefinition> : IAttributeProperty
 {
     public delegate TDefinition DSetter(TDefinition definition, object? obj);
-    public delegate TDefinition DLocator(TDefinition definition, AttributeArgumentListSyntax argumentList, int index);
+    public delegate TDefinition DLocator(TDefinition definition, AttributeArgumentListSyntax argumentList, int index, bool defenitelyParams = false);
 
     public abstract DSetter Setter { get; }
     public abstract DLocator Locator { get; }
@@ -53,7 +53,7 @@ public record class AttributeProperty<TDefinition> : IAttributeProperty<TDefinit
     {
         return wrapper;
 
-        TDefinition wrapper(TDefinition definition, AttributeArgumentListSyntax argumentList, int index)
+        TDefinition wrapper(TDefinition definition, AttributeArgumentListSyntax argumentList, int index, bool _)
         {
             return locator(definition, ArgumentLocator.SimpleArgument(argumentList, index));
         }
@@ -63,9 +63,9 @@ public record class AttributeProperty<TDefinition> : IAttributeProperty<TDefinit
     {
         return wrapper;
 
-        TDefinition wrapper(TDefinition definition, AttributeArgumentListSyntax argumentList, int index)
+        TDefinition wrapper(TDefinition definition, AttributeArgumentListSyntax argumentList, int index, bool definitelyParams)
         {
-            (var collection, var elements) = ArgumentLocator.FromArrayOrParamsList(argumentList, index);
+            (var collection, var elements) = ArgumentLocator.FromArrayOrParamsList(argumentList, index, definitelyParams);
 
             return locator(definition, collection, elements);
         }
