@@ -41,4 +41,9 @@
         <ProjectReference Include="..\SharpMeasures.Generators.Units\SharpMeasures.Generators.Units.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Units\Definitions\Derived\" />
+      <Folder Include="Verify\Snapshots\Units\VerifyGeneratedCode\" />
+    </ItemGroup>
+
 </Project>

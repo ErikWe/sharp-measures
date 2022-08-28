@@ -131,6 +131,23 @@ internal class GeneratorVerifier
         return this;
     }
 
+    public GeneratorVerifier AssertNoListedSourceNameGenerated(params string[] forbiddenSourceNames)
+    {
+        return AssertNoListedSourceNameGenerated(forbiddenSourceNames as IEnumerable<string>);
+    }
+
+    public GeneratorVerifier AssertNoMatchingSourceNameGenerated(string forbiddenSourceNameRegexPattern)
+    {
+        return AssertNoMatchingSourceNameGenerated(new Regex(forbiddenSourceNameRegexPattern));
+    }
+
+    public GeneratorVerifier AssertNoMatchingSourceNameGenerated(Regex forbiddenSourceNamePattern)
+    {
+        Assert.Empty(Output.Where((result) => forbiddenSourceNamePattern.IsMatch(result.HintName)));
+
+        return this;
+    }
+
     public GeneratorVerifier AssertNoListedDiagnosticIDsReported(IEnumerable<string> forbiddenDiagnosticIDs)
     {
         foreach (string diagnosticID in forbiddenDiagnosticIDs)
@@ -348,9 +365,11 @@ internal class GeneratorVerifier
         return VerifyMatchingSourceNames(new Regex(regexPattern));
     }
 
-    public Task VerifyMatchingSourceNames(Regex regex)
+    public Task VerifyMatchingSourceNames(Regex pattern)
     {
-        IEnumerable<string> matchingSourceNames = Output.Select(static (result) => result.HintName).Where((sourceName) => regex.IsMatch(sourceName));
+        IEnumerable<string> matchingSourceNames = Output.Select(static (result) => result.HintName).Where((sourceName) => pattern.IsMatch(sourceName));
+
+        Assert.NotEmpty(matchingSourceNames);
 
         return VerifyListedSourceNames(matchingSourceNames);
     }

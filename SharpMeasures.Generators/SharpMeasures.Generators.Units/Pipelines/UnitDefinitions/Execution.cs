@@ -35,6 +35,7 @@ internal static class Execution
         }
 
         private StringBuilder Builder { get; } = new();
+        private NewlineSeparationHandler SeparationHandler { get; }
 
         private DataModel Data { get; }
 
@@ -43,6 +44,8 @@ internal static class Execution
         private Composer(DataModel data)
         {
             Data = data;
+
+            SeparationHandler = new(Builder);
         }
 
         private void Compose()
@@ -63,6 +66,8 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
+            SeparationHandler.MarkUnncecessary();
+
             AppendFixed(indentation);
             AppendDerived(indentation);
 
@@ -76,9 +81,11 @@ internal static class Execution
                 return;
             }
 
+            SeparationHandler.AddIfNecessary();
+
             ImplementedDefinitions.Add(Data.FixedUnit.Name);
 
-            AppendDocumentation(indentation, Data.Documentation.Definition(Data.FixedUnit));
+            AppendDocumentation(indentation, Data.Documentation.FixedDefinition(Data.FixedUnit));
             Builder.Append($"{indentation}public static {Data.Unit.FullyQualifiedName} {Data.FixedUnit.Name} {{ get; }}");
 
             if (Data.BiasTerm)
@@ -95,9 +102,11 @@ internal static class Execution
         {
             foreach (DerivedUnitDefinition derivedUnit in Data.DerivedUnits)
             {
+                SeparationHandler.AddIfNecessary();
+
                 ImplementedDefinitions.Add(derivedUnit.Name);
 
-                AppendDocumentation(indentation, Data.Documentation.Definition(derivedUnit));
+                AppendDocumentation(indentation, Data.Documentation.DerivedDefinition(derivedUnit));
                 Builder.Append($"{indentation}public static {Data.Unit.FullyQualifiedName} {derivedUnit.Name} {{ get; }} = ");
 
                 IterativeBuilding.AppendEnumerable(Builder, "From(", arguments(), ", ", $");{Environment.NewLine}");
@@ -135,23 +144,32 @@ internal static class Execution
             {
                 if (ImplementedDefinitions.Contains(dependantUnits[i].DependantOn))
                 {
-                    AppendDocumentation(indentation, Data.Documentation.Definition(dependantUnits[i]));
-                    Builder.Append($"{indentation}public static {Data.Unit.FullyQualifiedName} {dependantUnits[i].Name} ");
+                    SeparationHandler.AddIfNecessary();
+
+                    var commonDelegate = () => Builder.Append($"{indentation}public static {Data.Unit.FullyQualifiedName} {dependantUnits[i].Name} ");
 
                     if (dependantUnits[i] is UnitAliasDefinition unitAlias)
                     {
+                        AppendDocumentation(indentation, Data.Documentation.AliasDefinition(unitAlias));
+                        commonDelegate();
                         AppendAlias(unitAlias);
                     }
                     else if (dependantUnits[i] is ScaledUnitDefinition scaledUnit)
                     {
+                        AppendDocumentation(indentation, Data.Documentation.ScaledDefinition(scaledUnit));
+                        commonDelegate();
                         AppendScaled(scaledUnit);
                     }
                     else if (dependantUnits[i] is PrefixedUnitDefinition prefixedUnit)
                     {
+                        AppendDocumentation(indentation, Data.Documentation.PrefixedDefinition(prefixedUnit));
+                        commonDelegate();
                         AppendPrefixed(prefixedUnit);
                     }
                     else if (dependantUnits[i] is BiasedUnitDefinition biasedUnit)
                     {
+                        AppendDocumentation(indentation, Data.Documentation.BiasedDefinition(biasedUnit));
+                        commonDelegate();
                         AppendBiased(biasedUnit);
                     }
 

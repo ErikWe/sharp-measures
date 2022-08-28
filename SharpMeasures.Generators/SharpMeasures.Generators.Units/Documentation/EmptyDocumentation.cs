@@ -13,7 +13,12 @@ internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocu
 
     string IDocumentationStrategy.Header() => string.Empty;
     string IDocumentationStrategy.Derivation(IReadOnlyList<NamedType> _) => string.Empty;
-    string IDocumentationStrategy.Definition(IUnitInstance _) => string.Empty;
+    string IDocumentationStrategy.FixedDefinition(IFixedUnit _) => string.Empty;
+    string IDocumentationStrategy.DerivedDefinition(IDerivedUnit _) => string.Empty;
+    string IDocumentationStrategy.AliasDefinition(IUnitAlias _) => string.Empty;
+    string IDocumentationStrategy.BiasedDefinition(IBiasedUnit _) => string.Empty;
+    string IDocumentationStrategy.PrefixedDefinition(IPrefixedUnit _) => string.Empty;
+    string IDocumentationStrategy.ScaledDefinition(IScaledUnit _) => string.Empty;
     string IDocumentationStrategy.RepresentedQuantity() => string.Empty;
     string IDocumentationStrategy.Bias() => string.Empty;
     string IDocumentationStrategy.Constructor() => string.Empty;

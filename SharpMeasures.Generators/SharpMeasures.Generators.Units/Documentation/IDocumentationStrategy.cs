@@ -9,7 +9,12 @@ internal interface IDocumentationStrategy
     public abstract string Header();
 
     public abstract string Derivation(IReadOnlyList<NamedType> signature);
-    public abstract string Definition(IUnitInstance definition);
+    public abstract string FixedDefinition(IFixedUnit definition);
+    public abstract string DerivedDefinition(IDerivedUnit definition);
+    public abstract string AliasDefinition(IUnitAlias definition);
+    public abstract string BiasedDefinition(IBiasedUnit definition);
+    public abstract string PrefixedDefinition(IPrefixedUnit definition);
+    public abstract string ScaledDefinition(IScaledUnit definition);
 
     public abstract string RepresentedQuantity();
     public abstract string Bias();

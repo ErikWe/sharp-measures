@@ -17,7 +17,12 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string Header() => "Header";
 
     public string Derivation(IReadOnlyList<NamedType> signature) => $"From_{ParseDerivableSignature(signature)}";
-    public string Definition(IUnitInstance definition) => $"Definition_{definition.Name}";
+    public string FixedDefinition(IFixedUnit definition) => $"Definition_{definition.Name}";
+    public string DerivedDefinition(IDerivedUnit definition) => $"Definition_{definition.Name}";
+    public string AliasDefinition(IUnitAlias definition) => $"Definition_{definition.Name}";
+    public string BiasedDefinition(IBiasedUnit definition) => $"Definition_{definition.Name}";
+    public string PrefixedDefinition(IPrefixedUnit definition) => $"Definition_{definition.Name}";
+    public string ScaledDefinition(IScaledUnit definition) => $"Definition_{definition.Name}";
 
     public string RepresentedQuantity() => "Quantity";
     public string Bias() => "Bias";

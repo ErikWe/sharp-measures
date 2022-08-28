@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1146,
+    Title: Unit with bias term cannot be derived,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (18,1)-(18,14),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: As {0} includes a bias term, it can not be derived from other units,
+    Message: As UnitOfTemperature includes a bias term, it can not be derived from other units,
+    Category: Usage,
+    CustomTags: []
+  }
+]

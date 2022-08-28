@@ -10,242 +10,90 @@ using Xunit;
 public class AbortedCases
 {
     [Fact]
-    public void NoMatchingConstructor_NoAdditionalSource()
-    {
-        string source = """
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-
-            [SharpMeasuresScalar(typeof(UnitOfTime))]
-            public partial class Time { }
-
-            [SharpMeasuresScalar(typeof(UnitOfSpeed))]
-            public partial class Speed { }
-
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-
-            [SharpMeasuresUnit(typeof(Time))]
-            public partial class UnitOfTime { }
-
-            [DerivableUnit(7)]
-            [SharpMeasuresUnit(typeof(Speed))]
-            public partial class UnitOfSpeed { }
-            """;
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.LengthTimeSpeed_NoDerivable);
-    }
+    public void EmptyDerivationID() => AssertUnbiased(derivationID: "\"\"");
 
     [Fact]
-    public void IDEmpty_NoAdditionalSource()
-    {
-        string source = """
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-
-            [SharpMeasuresScalar(typeof(UnitOfTime))]
-            public partial class Time { }
-
-            [SharpMeasuresScalar(typeof(UnitOfSpeed))]
-            public partial class Speed { }
-
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-
-            [SharpMeasuresUnit(typeof(Time))]
-            public partial class UnitOfTime { }
-
-            [DerivableUnit("", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-            [SharpMeasuresUnit(typeof(Speed))]
-            public partial class UnitOfSpeed { }
-            """;
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.LengthTimeSpeed_NoDerivable);
-    }
+    public void NullDerivationID() => AssertUnbiased(derivationID: "null");
 
     [Fact]
-    public void IDNull_NoAdditionalSource()
-    {
-        string source = """
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-
-            [SharpMeasuresScalar(typeof(UnitOfTime))]
-            public partial class Time { }
-
-            [SharpMeasuresScalar(typeof(UnitOfSpeed))]
-            public partial class Speed { }
-
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-
-            [SharpMeasuresUnit(typeof(Time))]
-            public partial class UnitOfTime { }
-
-            [DerivableUnit(null, "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-            [SharpMeasuresUnit(typeof(Speed))]
-            public partial class UnitOfSpeed { }
-            """;
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.LengthTimeSpeed_NoDerivable);
-    }
+    public void DuplicateDerivationID() => AssertUnbiased(derivationID: "\"Length / Time\"");
 
     [Fact]
-    public void ExpressionEmpty_NoAdditionalSource()
-    {
-        string source = """
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-
-            [SharpMeasuresScalar(typeof(UnitOfTime))]
-            public partial class Time { }
-
-            [SharpMeasuresScalar(typeof(UnitOfSpeed))]
-            public partial class Speed { }
-
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-
-            [SharpMeasuresUnit(typeof(Time))]
-            public partial class UnitOfTime { }
-
-            [DerivableUnit("1", "", typeof(UnitOfLength), typeof(UnitOfTime))]
-            [SharpMeasuresUnit(typeof(Speed))]
-            public partial class UnitOfSpeed { }
-            """;
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.LengthTimeSpeed_NoDerivable);
-    }
+    public void EmptyExpression() => AssertUnbiased(expression: "\"\"");
 
     [Fact]
-    public void ExpressionNull_NoAdditionalSource()
-    {
-        string source = """
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-
-            [SharpMeasuresScalar(typeof(UnitOfTime))]
-            public partial class Time { }
-
-            [SharpMeasuresScalar(typeof(UnitOfSpeed))]
-            public partial class Speed { }
-
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-
-            [SharpMeasuresUnit(typeof(Time))]
-            public partial class UnitOfTime { }
-
-            [DerivableUnit("1", null, typeof(UnitOfLength), typeof(UnitOfTime))]
-            [SharpMeasuresUnit(typeof(Speed))]
-            public partial class UnitOfSpeed { }
-            """;
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.LengthTimeSpeed_NoDerivable);
-    }
+    public void NullExpression() => AssertUnbiased(expression: "(string)null");
 
     [Fact]
-    public void SignatureTypeNotUnit_NoAdditionalSource()
-    {
-        string source = """
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-
-            [SharpMeasuresScalar(typeof(UnitOfTime))]
-            public partial class Time { }
-
-            [SharpMeasuresScalar(typeof(UnitOfSpeed))]
-            public partial class Speed { }
-
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-
-            [SharpMeasuresUnit(typeof(Time))]
-            public partial class UnitOfTime { }
-
-            [DerivableUnit("1", "{0} / {1}", typeof(Length), typeof(UnitOfTime))]
-            [SharpMeasuresUnit(typeof(Speed))]
-            public partial class UnitOfSpeed { }
-            """;
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.LengthTimeSpeed_NoDerivable);
-    }
+    public void EmptySignature() => AssertUnbiased(signature: string.Empty);
 
     [Fact]
-    public void EmptySignature_NoAdditionalSource()
-    {
-        string source = """
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-
-            [SharpMeasuresScalar(typeof(UnitOfTime))]
-            public partial class Time { }
-
-            [SharpMeasuresScalar(typeof(UnitOfSpeed))]
-            public partial class Speed { }
-
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-
-            [SharpMeasuresUnit(typeof(Time))]
-            public partial class UnitOfTime { }
-
-            [DerivableUnit("1", "{0} / {1}")]
-            [SharpMeasuresUnit(typeof(Speed))]
-            public partial class UnitOfSpeed { }
-            """;
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.LengthTimeSpeed_NoDerivable);
-    }
+    public void NullSignatureElement() => AssertUnbiased(signature: ", null, typeof(UnitOfTime)");
 
     [Fact]
-    public void NullSignatureElement_NoAdditionalSource()
+    public void NonUnitSignatureElement() => AssertUnbiased(signature: ", typeof(Length), typeof(UnitOfTime)");
+
+    [Fact]
+    public void BiasedUnit() => AssertBiased();
+
+    private static string UnbiasedText(string derivationID, string expression, string signature) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        public partial class Time { }
+
+        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        public partial class Speed { }
+
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+
+        [SharpMeasuresUnit(typeof(Time))]
+        public partial class UnitOfTime { }
+
+        [DerivableUnit("Length / Time", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
+        [DerivableUnit({{derivationID}}, {{expression}}{{signature}})]
+        [SharpMeasuresUnit(typeof(Speed))]
+        public partial class UnitOfSpeed { }
+        """;
+
+    private static GeneratorVerifier AssertUnbiased(string derivationID = "\"1\"", string expression = "\"{0} / {1}\"", string signature = ", typeof(UnitOfLength), typeof(UnitOfTime)")
     {
-        string source = """
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
+        string source = UnbiasedText(derivationID, expression, signature);
 
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertSomeDiagnosticsReported().AssertIdenticalSources(CommonResults.LengthTimeSpeed_LengthOverTimeDerivation);
+    }
 
-            [SharpMeasuresScalar(typeof(UnitOfTime))]
-            public partial class Time { }
+    private static string BiasedText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
 
-            [SharpMeasuresScalar(typeof(UnitOfSpeed))]
-            public partial class Speed { }
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
 
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
+        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        public partial class Time { }
 
-            [SharpMeasuresUnit(typeof(Time))]
-            public partial class UnitOfTime { }
+        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        public partial class TemperatureDifference { }
 
-            [DerivableUnit("1", "{0} / {1}", null, typeof(UnitOfTime))]
-            [SharpMeasuresUnit(typeof(Speed))]
-            public partial class UnitOfSpeed { }
-            """;
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
 
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.LengthTimeSpeed_NoDerivable);
+        [SharpMeasuresUnit(typeof(Time))]
+        public partial class UnitOfTime { }
+
+        [DerivableUnit("Length / Time", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
+        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        public partial class UnitOfTemperature { }
+        """;
+
+    private static GeneratorVerifier AssertBiased()
+    {
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedText).AssertSomeDiagnosticsReported().AssertNoMatchingSourceNameGenerated("UnitOfTemperature_Derivable.g.cs");
     }
 }

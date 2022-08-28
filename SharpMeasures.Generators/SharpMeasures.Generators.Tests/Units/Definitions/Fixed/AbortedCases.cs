@@ -10,112 +10,33 @@ using Xunit;
 public class AbortedCases
 {
     [Fact]
-    public void NoMatchingConstructor_NoAdditionalSource()
-    {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
-
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public partial class Length { }
-
-[FixedUnit(""Metre"", 1)]
-[SharpMeasuresUnit(typeof(Length))]
-public partial class UnitOfLength { }
-";
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_NoDefinitions);
-    }
+    public void EmptyName() => Assert(name: "\"\"");
 
     [Fact]
-    public void NameNull_NoAdditionalSource()
-    {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
-
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public partial class Length { }
-
-[FixedUnit(null, ""Metres"", 1)]
-[SharpMeasuresUnit(typeof(Length))]
-public partial class UnitOfLength { }
-";
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_NoDefinitions);
-    }
+    public void NullName() => Assert(name: "null");
 
     [Fact]
-    public void PluralNull_NoAdditionalSource()
-    {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
-
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public partial class Length { }
-
-[FixedUnit(""Metre"", null, 1)]
-[SharpMeasuresUnit(typeof(Length))]
-public partial class UnitOfLength { }
-";
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_NoDefinitions);
-    }
+    public void EmptyPlural() => Assert(plural: "\"\"");
 
     [Fact]
-    public void ValueNull_NoAdditionalSource()
+    public void NullPlural() => Assert(plural: "null");
+
+    private static string Text(string name, string plural) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [FixedUnit({{name}}, {{plural}})]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier Assert(string name = "\"Metre\"", string plural = "\"Metres\"")
     {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
+        string source = Text(name, plural);
 
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public partial class Length { }
-
-[FixedUnit(""Metre"", ""Metres"", null)]
-[SharpMeasuresUnit(typeof(Length))]
-public partial class UnitOfLength { }
-";
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_NoDefinitions);
-    }
-
-    [Fact]
-    public void NameDuplicate_NoAdditionalSource()
-    {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
-
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public partial class Length { }
-
-[FixedUnit(""Metre"", ""Metres"", 1)]
-[FixedUnit(""Metre"", ""Meters"", 1)]
-[SharpMeasuresUnit(typeof(Length))]
-public partial class UnitOfLength { }
-";
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_OnlyFixedMetre);
-    }
-
-    [Fact]
-    public void PluralDuplicate_NoAdditionalSource()
-    {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
-
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public partial class Length { }
-
-[FixedUnit(""Metre"", ""Metres"", 1)]
-[FixedUnit(""Meter"", ""Metres"", 1)]
-[SharpMeasuresUnit(typeof(Length))]
-public partial class UnitOfLength { }
-";
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_OnlyFixedMetre);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertSomeDiagnosticsReported().AssertIdenticalSources(CommonResults.Length_NoDefinitions);
     }
 }

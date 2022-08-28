@@ -8,7 +8,8 @@ internal static class CommonResults
     public static GeneratorVerifier Length_NoDefinitions { get; } = GeneratorVerifier.Construct<SharpMeasuresGenerator>(Length_NoDefinitions_Source);
     public static GeneratorVerifier Temperature_OnlyFixedKelvin { get; } = GeneratorVerifier.Construct<SharpMeasuresGenerator>(Temperature_OnlyFixedKelvin_Source);
     public static GeneratorVerifier Temperature_NoDefinitions { get; } = GeneratorVerifier.Construct<SharpMeasuresGenerator>(Temperature_NoDefinitions_Source);
-    public static GeneratorVerifier LengthTimeSpeed_NoDerivable { get; } = GeneratorVerifier.Construct<SharpMeasuresGenerator>(LengthTimeSpeed_NoDerivable_Source);
+    public static GeneratorVerifier LengthTimeSpeed_NoDerivation { get; } = GeneratorVerifier.Construct<SharpMeasuresGenerator>(LengthTimeSpeed_NoDerivable_Source);
+    public static GeneratorVerifier LengthTimeSpeed_LengthOverTimeDerivation { get; } = GeneratorVerifier.Construct<SharpMeasuresGenerator>(LengthTimeSpeed_LengthOverTimeDerivation_Source);
 
     private const string Length_OnlyFixedMetre_Source = """
         using SharpMeasures.Generators.Scalars;
@@ -76,6 +77,30 @@ internal static class CommonResults
         [SharpMeasuresUnit(typeof(Time))]
         public partial class UnitOfTime { }
 
+        [SharpMeasuresUnit(typeof(Speed))]
+        public partial class UnitOfSpeed { }
+        """;
+
+    private const string LengthTimeSpeed_LengthOverTimeDerivation_Source = """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        public partial class Time { }
+
+        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        public partial class Speed { }
+
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+
+        [SharpMeasuresUnit(typeof(Time))]
+        public partial class UnitOfTime { }
+
+        [DerivableUnit("Length / Time", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
         [SharpMeasuresUnit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;

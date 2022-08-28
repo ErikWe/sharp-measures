@@ -10,134 +10,49 @@ using Xunit;
 public class AbortedCases
 {
     [Fact]
-    public void NoMatchingConstructor_NoAdditionalSource()
-    {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
-
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public partial class Length { }
-
-[FixedUnit(""Metre"", ""Metres"", 1)]
-[UnitAlias(""Meter"", ""Meters"")]
-[SharpMeasuresUnit(typeof(Length))]
-public partial class UnitOfLength { }
-";
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_OnlyFixedMetre);
-    }
+    public void EmptyName() => Assert(name: "\"\"");
 
     [Fact]
-    public void BaseUnitNotFound_NoAdditionalSource()
-    {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
-
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public partial class Length { }
-
-[FixedUnit(""Metre"", ""Metres"", 1)]
-[UnitAlias(""Meter"", ""Meters"", ""Invalid"")]
-[SharpMeasuresUnit(typeof(Length))]
-public partial class UnitOfLength { }
-";
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_OnlyFixedMetre);
-    }
+    public void NullName() => Assert(name: "null");
 
     [Fact]
-    public void NameNull_NoAdditionalSource()
-    {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
-
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public partial class Length { }
-
-[FixedUnit(""Metre"", ""Metres"", 1)]
-[UnitAlias(null, ""Meters"", ""Metre"")]
-[SharpMeasuresUnit(typeof(Length))]
-public partial class UnitOfLength { }
-";
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_OnlyFixedMetre);
-    }
+    public void EmptyPlural() => Assert(plural: "\"\"");
 
     [Fact]
-    public void PluralNull_NoAdditionalSource()
-    {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
-
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public partial class Length { }
-
-[FixedUnit(""Metre"", ""Metres"", 1)]
-[UnitAlias(""Meter"", null, ""Metre"")]
-[SharpMeasuresUnit(typeof(Length))]
-public partial class UnitOfLength { }
-";
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_OnlyFixedMetre);
-    }
+    public void NullPlural() => Assert(plural: "null");
 
     [Fact]
-    public void BaseUnitNull_NoAdditionalSource()
-    {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
-
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public partial class Length { }
-
-[FixedUnit(""Metre"", ""Metres"", 1)]
-[UnitAlias(""Meter"", ""Meters"", null)]
-[SharpMeasuresUnit(typeof(Length))]
-public partial class UnitOfLength { }
-";
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_OnlyFixedMetre);
-    }
+    public void EmptyAliasOf() => Assert(aliasOf: "\"\"");
 
     [Fact]
-    public void NameDuplicate_NoAdditionalSource()
-    {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
-
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public class Length { }
-
-[FixedUnit(""Metre"", ""Metres"", 1)]
-[UnitAlias(""Metre"", ""Meters"", ""Metre"")]
-[SharpMeasuresUnit(typeof(Length))]
-public partial class UnitOfLength { }
-";
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_OnlyFixedMetre);
-    }
+    public void NullAliasOf() => Assert(aliasOf: "null");
 
     [Fact]
-    public void PluralDuplicate_NoAdditionalSource()
+    public void DuplicateName() => Assert(name: "\"Metre\"");
+
+    [Fact]
+    public void DuplicatePlural() => Assert(plural: "\"Metres\"");
+
+    [Fact]
+    public void UnrecognizedAliasOf() => Assert(aliasOf: "\"Kilometre\"");
+
+    private static string Text(string name, string plural, string aliasOf) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [FixedUnit("Metre", "Metres", 1)]
+        [UnitAlias({{name}}, {{plural}}, {{aliasOf}})]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier Assert(string name = "\"Meter\"", string plural = "\"Meters\"", string aliasOf = "\"Metre\"")
     {
-        string source = @"
-using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units;
+        string source = Text(name, plural, aliasOf);
 
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public class Length { }
-
-[FixedUnit(""Metre"", ""Metres"", 1)]
-[UnitAlias(""Meter"", ""Metres"", ""Metre"")]
-[SharpMeasuresUnit(typeof(Length))]
-public partial class UnitOfLength { }
-";
-
-        GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(CommonResults.Length_OnlyFixedMetre);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertSomeDiagnosticsReported().AssertIdenticalSources(CommonResults.Length_OnlyFixedMetre);
     }
 }
