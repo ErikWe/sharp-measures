@@ -156,4 +156,14 @@ public static partial class DiagnosticRules
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
+
+    public static readonly DiagnosticDescriptor UnitWithBiasTermCannotBeDerived = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.UnitWithBiasTermCannotBeDerived,
+        title: "Unit with bias term cannot be derived",
+        messageFormat: "As {0} includes a bias term, it can not be derived from other units",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
 }

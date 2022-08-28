@@ -82,4 +82,9 @@ public static partial class DiagnosticConstruction
     {
         return Diagnostic.Create(DiagnosticRules.BiasedUnitDefinedButUnitNotBiased, location, unitName, unitTypeName);
     }
+
+    public static Diagnostic UnitWithBiasTermCannotBeDerived(Location? location, string unitTypeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.UnitWithBiasTermCannotBeDerived, location, unitTypeName);
+    }
 }

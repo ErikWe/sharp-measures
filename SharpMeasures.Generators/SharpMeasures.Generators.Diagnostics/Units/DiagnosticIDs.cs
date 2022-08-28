@@ -19,4 +19,5 @@ public static partial class DiagnosticIDs
     public const string UnrecognizedUnitDerivationID = $"{Prefix}{Numbering.Hundreds.Units}43";
     public const string IncompatibleDerivedUnitListSize = $"{Prefix}{Numbering.Hundreds.Units}44";
     public const string UnitNotDerivable = $"{Prefix}{Numbering.Hundreds.Units}45";
+    public const string UnitWithBiasTermCannotBeDerived = $"{Prefix}{Numbering.Hundreds.Units}46";
 }

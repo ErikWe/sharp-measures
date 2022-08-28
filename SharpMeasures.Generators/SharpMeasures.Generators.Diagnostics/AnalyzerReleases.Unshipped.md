@@ -37,6 +37,7 @@ Measures1142 | Usage | Warning | Duplicate derivation ID
 Measures1143 | Usage | Warning | Derivation ID not recognized
 Measures1144 | Usage | Warning | Unit list not matching signature
 Measures1145 | Usage | Warning | Unit not derivable
+Measures1146 | Usage | Warning | Unit with bias term cannot be derived
 Measures1200 | Usage | Info | Expected both unit name and symbol
 Measures1201 | Usage | Warning | Quantity group missing root quantity
 Measures1202 | Usage | Info | Difference is disabled but a quantity was specified

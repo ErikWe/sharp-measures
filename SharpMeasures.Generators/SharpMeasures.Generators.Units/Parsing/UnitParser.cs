@@ -51,7 +51,7 @@ public static class UnitParser
             return unit.AsEmptyOptional<UnitType>();
         }
 
-        var derivations = ParseAndProcessDerivations(input.TypeSymbol);
+        var derivations = ParseAndProcessDerivations(input.TypeSymbol, unit.Result.BiasTerm);
 
         UnitProcessingContext unitInstanceProcessingContext = new(input.TypeSymbol.AsDefinedType());
 
@@ -82,11 +82,11 @@ public static class UnitParser
         return Processers.SharpMeasuresUnitProcesser.Process(processingContext, rawUnit);
     }
 
-    private static IOptionalWithDiagnostics<IReadOnlyList<DerivableUnitDefinition>> ParseAndProcessDerivations(INamedTypeSymbol typeSymbol)
+    private static IOptionalWithDiagnostics<IReadOnlyList<DerivableUnitDefinition>> ParseAndProcessDerivations(INamedTypeSymbol typeSymbol, bool unitIncludesBiasTerm)
     {
         var rawDerivations = DerivableUnitParser.Parser.ParseAllOccurrences(typeSymbol);
 
-        var processingContext = new DerivableUnitProcessingContext(typeSymbol.AsDefinedType(), rawDerivations.Skip(1).Any());
+        var processingContext = new DerivableUnitProcessingContext(typeSymbol.AsDefinedType(), unitIncludesBiasTerm, rawDerivations.Skip(1).Any());
 
         return ProcessingFilter.Create(Processers.DerivableUnitProcesser).Filter(processingContext, rawDerivations);
     }

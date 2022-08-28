@@ -11,7 +11,7 @@ using VerifyXunit;
 using Xunit;
 
 [UsesVerify]
-public class FilteredListLocationTests
+public class FilteredListLocation
 {
     [Theory]
     [MemberData(nameof(UnitListAttributes))]
@@ -62,7 +62,7 @@ public class FilteredListLocationTests
         var source = UnitListText(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Kilometre\"");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnrecognizedUnitName, expectedLocation);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnrecognizedUnitName, expectedLocation, source);
     }
 
     private static string ConvertibleScalarText => """
@@ -85,7 +85,7 @@ public class FilteredListLocationTests
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleScalarText, target: "UnitOfLength");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleScalarText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotScalar, expectedLocation);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleScalarText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotScalar, expectedLocation, ConvertibleScalarText);
     }
 
     private static string ConvertibleSpecializedScalarText => """
@@ -108,7 +108,7 @@ public class FilteredListLocationTests
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedScalarText, target: "UnitOfLength");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedScalarText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotScalar, expectedLocation);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedScalarText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotScalar, expectedLocation, ConvertibleSpecializedScalarText);
     }
 
     private static string ConvertibleVectorText => """
@@ -135,7 +135,7 @@ public class FilteredListLocationTests
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorText, target: "UnitOfLength");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleVectorText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotVector, expectedLocation);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleVectorText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotVector, expectedLocation, ConvertibleVectorText);
     }
 
     private static string ConvertibleSpecializedVectorText => """
@@ -162,7 +162,7 @@ public class FilteredListLocationTests
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorText, target: "UnitOfLength");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedVectorText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotVector, expectedLocation);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedVectorText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotVector, expectedLocation, ConvertibleSpecializedVectorText);
     }
 
     private static string ConvertibleVectorGroupText => """
@@ -189,7 +189,7 @@ public class FilteredListLocationTests
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorGroupText, target: "UnitOfLength");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleVectorGroupText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotVectorGroup, expectedLocation);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleVectorGroupText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotVectorGroup, expectedLocation, ConvertibleVectorGroupText);
     }
 
     private static string ConvertibleSpecializedVectorGroupText => """
@@ -216,6 +216,6 @@ public class FilteredListLocationTests
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorGroupText, target: "UnitOfLength");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedVectorGroupText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotVectorGroup, expectedLocation);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedVectorGroupText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotVectorGroup, expectedLocation, ConvertibleSpecializedVectorGroupText);
     }
 }

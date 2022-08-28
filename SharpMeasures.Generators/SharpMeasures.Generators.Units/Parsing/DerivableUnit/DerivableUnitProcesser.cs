@@ -9,6 +9,7 @@ using System.Collections.Generic;
 
 internal interface IDerivableUnitProcessingDiagnostics
 {
+    public abstract Diagnostic? UnitIncludesBiasTerm(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? MultipleDerivationsButNotNamed(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? DuplicateDerivationID(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? NullExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
@@ -20,6 +21,8 @@ internal interface IDerivableUnitProcessingDiagnostics
 
 internal interface IDerivableUnitProcessingContext : IProcessingContext
 {
+    public abstract bool UnitIncludesBiasTerm { get; }
+
     public abstract bool MultipleDefinitions { get; }
     public abstract HashSet<string> ReservedIDs { get; }
 }
@@ -44,6 +47,7 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
     public override IOptionalWithDiagnostics<DerivableUnitDefinition> Process(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
         return VerifyRequiredPropertiesSet(definition)
+            .Validate(() => ValidateUnitNotIncludingBiasTerm(context, definition))
             .Validate(() => ValidateDerivationIDNotAmbiguous(context, definition))
             .Validate(() => ValidateDerivationIDNotDuplicate(context, definition))
             .Validate(() => ValidateExpressionNotNull(context, definition))
@@ -62,6 +66,11 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
     private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawDerivableUnitDefinition definition)
     {
         return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Locations.ExplicitlySetExpression);
+    }
+
+    private IValidityWithDiagnostics ValidateUnitNotIncludingBiasTerm(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
+    {
+        return ValidityWithDiagnostics.Conditional(context.UnitIncludesBiasTerm is false, () => Diagnostics.UnitIncludesBiasTerm(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateDerivationIDNotAmbiguous(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)

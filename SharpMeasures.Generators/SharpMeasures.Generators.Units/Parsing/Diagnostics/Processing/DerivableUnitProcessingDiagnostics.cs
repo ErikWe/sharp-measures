@@ -11,6 +11,11 @@ internal class DerivableUnitProcessingDiagnostics : IDerivableUnitProcessingDiag
 
     private DerivableUnitProcessingDiagnostics() { }
 
+    public Diagnostic UnitIncludesBiasTerm(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
+    {
+        return DiagnosticConstruction.UnitWithBiasTermCannotBeDerived(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
+    }
+
     public Diagnostic MultipleDerivationsButNotNamed(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
         return DiagnosticConstruction.MultipleDerivationSignaturesButNotNamed(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
