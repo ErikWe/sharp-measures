@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
+namespace SharpMeasures.Generators.Tests.Diagnostics;
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Utility;
@@ -53,6 +53,10 @@ public class EmptyList
     [Theory]
     [MemberData(nameof(QuantityAttributesAndArguments))]
     public void SpecializedVectorGroup(SourceSubtext attribute) => AssertSpecializedVectorGroupAttribute(attribute);
+
+    [Theory]
+    [MemberData(nameof(QuantityAttributesAndArguments))]
+    public void VectorGroupMember(SourceSubtext attribute) => AssertVectorGroupMemberAttribute(attribute);
 
     private static IEnumerable<object[]> Arguments(string type) => new object[][]
     {
