@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Tests.Diagnostics;
+namespace SharpMeasures.Generators.Tests.Diagnostics;
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Tests.Utility;
@@ -58,6 +58,15 @@ public class DuplicateListing
 
     [Fact]
     public void ConvertibleSpecializedVectorGroup_InheritedAttribute() => AssertConvertibleSpecializedVectorGroup_InheritedAttribute();
+
+    [Fact]
+    public void ConvertiblVectorGroupMember_SingleAttribute() => AssertConvertibleVectorGroupMember_SingleAttribute();
+
+    [Fact]
+    public void ConvertiblVectorGroupMember_MultipleAttributes() => AssertConvertibleVectorGroupMember_MultipleAttributes();
+
+    [Fact]
+    public void ConvertiblVectorGroupMember_InheritedAttributeFromGroup() => AssertConvertibleVectorGroupMember_InheritedAttributeFromGroup();
 
     private static GeneratorVerifier AssertExactlyDuplicateListingDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateListingDiagnostics);
     private static IReadOnlyCollection<string> DuplicateListingDiagnostics { get; } = new string[] { DiagnosticIDs.DuplicateListing };
