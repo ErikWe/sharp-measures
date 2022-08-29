@@ -44,7 +44,7 @@ public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProce
         }
     }
 
-    protected IResultWithDiagnostics<(IReadOnlyList<NamedType> Quantities, IReadOnlyList<int> LocationMap)> ProcessQuantities(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
+    protected IOptionalWithDiagnostics<(IReadOnlyList<NamedType> Quantities, IReadOnlyList<int> LocationMap)> ProcessQuantities(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
     {
         HashSet<NamedType> quantities = new();
         List<int> locationMap = new(definition.Quantities.Count);
@@ -86,7 +86,7 @@ public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProce
             locationMap.Add(i);
         }
 
-        return ResultWithDiagnostics.Construct<(IReadOnlyList<NamedType>, IReadOnlyList<int>)>((quantities.ToList(), locationMap), allDiagnostics);
+        return OptionalWithDiagnostics.Conditional<(IReadOnlyList<NamedType>, IReadOnlyList<int>)>(quantities.Count > 0, (quantities.ToList(), locationMap), allDiagnostics);
     }
 
     protected IValidityWithDiagnostics Validate(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)

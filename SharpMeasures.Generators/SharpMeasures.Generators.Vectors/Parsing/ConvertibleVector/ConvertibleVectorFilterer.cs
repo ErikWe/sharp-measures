@@ -66,8 +66,9 @@ internal class ConvertibleVectorFilterer : AActionableProcesser<IConvertibleVect
             allDiagnostics.AddRange(validity);
         }
 
-        ConvertibleVectorDefinition product = new(vectors, definition.Bidirectional, definition.CastOperatorBehaviour, definition.Locations, locationMap);
-        return OptionalWithDiagnostics.Result(product, allDiagnostics);
+        var productDelegate = () => new ConvertibleVectorDefinition(vectors, definition.Bidirectional, definition.CastOperatorBehaviour, definition.Locations, locationMap);
+
+        return OptionalWithDiagnostics.Conditional(vectors.Count > 0, productDelegate, allDiagnostics);
     }
 
     private IValidityWithDiagnostics ValidateVector(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index)

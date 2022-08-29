@@ -52,8 +52,9 @@ internal class ConvertibleScalarFilterer : IProcesser<IConvertibleScalarFilterin
             allDiagnostics.AddRange(validity);
         }
 
-        ConvertibleScalarDefinition product = new(scalars, definition.Bidirectional, definition.CastOperatorBehaviour, definition.Locations, locationMap);
-        return OptionalWithDiagnostics.Result(product, allDiagnostics);
+        var productDelegate = () => new ConvertibleScalarDefinition(scalars, definition.Bidirectional, definition.CastOperatorBehaviour, definition.Locations, locationMap);
+
+        return OptionalWithDiagnostics.Conditional(scalars.Count > 0, productDelegate, allDiagnostics);
     }
 
     private IValidityWithDiagnostics ValidateScalar(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index)
