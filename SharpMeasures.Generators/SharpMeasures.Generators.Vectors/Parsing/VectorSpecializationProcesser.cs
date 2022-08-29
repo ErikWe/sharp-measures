@@ -35,7 +35,7 @@ internal class VectorSpecializationProcesser : AVectorProcesser<SpecializedSharp
 
         var processingContext = new SimpleProcessingContext(typeSymbol.AsDefinedType());
 
-        return SpecializedSharpMeasuresVectorProcesser.Process(processingContext, rawScalar);
+        return ProcessingFilter.Create(SpecializedSharpMeasuresVectorProcesser).Filter(processingContext, rawScalar);
     }
 
     private static SpecializedSharpMeasuresVectorProcesser SpecializedSharpMeasuresVectorProcesser { get; } = new(SpecializedSharpMeasuresVectorProcessingDiagnostics.Instance);
