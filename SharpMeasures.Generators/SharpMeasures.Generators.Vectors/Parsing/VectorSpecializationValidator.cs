@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Vectors.Parsing;
+﻿namespace SharpMeasures.Generators.Vectors.Parsing;
 
 using Microsoft.CodeAnalysis;
 
@@ -59,7 +59,7 @@ internal static class VectorSpecializationValidator
 
         var derivations = ValidateDerivations(input.UnvalidatedVector, input.ScalarPopulation, input.VectorPopulation);
         var constants = ValidateConstants(input.UnvalidatedVector, input.VectorPopulation, vectorBase.Definition.Dimension, unit, allUnits);
-        var conversions = ValidateConversions(input.UnvalidatedVector, input.VectorPopulation);
+        var conversions = ValidateConversions(input.UnvalidatedVector, input.VectorPopulation, vectorBase.Definition.Dimension);
 
         VectorSpecializationType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result,
             unitInclusions.Result, unitExclusions.Result);
@@ -97,11 +97,11 @@ internal static class VectorSpecializationValidator
         return ValidityFilter.Create(VectorConstantValidator).Filter(validationContext, vectorType.Constants);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ValidateConversions(VectorSpecializationType vectorType, IVectorPopulation vectorPopulation)
+    private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ValidateConversions(VectorSpecializationType vectorType, IVectorPopulation vectorPopulation, int dimension)
     {
         var inheritedConversions = CollectInheritedItems(vectorType, vectorPopulation, static (vector) => vector.Conversions.SelectMany(static (vectorList) => vectorList.Vectors), static (vector) => vector.Definition.InheritConversions);
 
-        var filteringContext = new ConvertibleVectorFilteringContext(vectorType.Type, VectorType.Vector, vectorPopulation, new HashSet<NamedType>(inheritedConversions));
+        var filteringContext = new ConvertibleVectorFilteringContext(vectorType.Type, dimension, VectorType.Vector, vectorPopulation, new HashSet<NamedType>(inheritedConversions));
 
         return ProcessingFilter.Create(ConvertibleVectorFilterer).Filter(filteringContext, vectorType.Conversions);
     }

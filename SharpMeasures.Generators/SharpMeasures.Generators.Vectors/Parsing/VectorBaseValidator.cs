@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Vectors.Parsing;
+﻿namespace SharpMeasures.Generators.Vectors.Parsing;
 
 using Microsoft.CodeAnalysis;
 
@@ -87,7 +87,7 @@ internal static class VectorBaseValidator
 
     private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ValidateConversions(VectorBaseType vectorType, IVectorPopulation vectorPopulation)
     {
-        var filteringContext = new ConvertibleVectorFilteringContext(vectorType.Type, VectorType.Vector, vectorPopulation, new HashSet<NamedType>());
+        var filteringContext = new ConvertibleVectorFilteringContext(vectorType.Type, vectorType.Definition.Dimension, VectorType.Vector, vectorPopulation, new HashSet<NamedType>());
 
         return ProcessingFilter.Create(ConvertibleVectorFilterer).Filter(filteringContext, vectorType.Conversions);
     }
