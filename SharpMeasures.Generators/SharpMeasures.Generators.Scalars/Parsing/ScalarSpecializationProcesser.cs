@@ -38,7 +38,7 @@ internal class ScalarSpecializationProcesser : AScalarProcesser<SpecializedSharp
 
         var processingContext = new SimpleProcessingContext(typeSymbol.AsDefinedType());
 
-        return SpecializedSharpMeasuresScalarProcesser.Process(processingContext, rawScalar);
+        return ProcessingFilter.Create(SpecializedSharpMeasuresScalarProcesser).Filter(processingContext, rawScalar);
     }
 
     private static SpecializedSharpMeasuresScalarProcesser SpecializedSharpMeasuresScalarProcesser { get; } = new(SpecializedSharpMeasuresScalarProcessingDiagnostics.Instance);

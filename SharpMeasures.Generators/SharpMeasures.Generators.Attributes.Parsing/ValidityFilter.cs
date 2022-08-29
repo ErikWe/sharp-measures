@@ -12,6 +12,10 @@ public interface IValidityFilter<in TContext, TDefinition>
     where TContext : IValidationContext
 {
     public abstract IResultWithDiagnostics<IReadOnlyList<TDefinition>> Filter(TContext context, IEnumerable<TDefinition> definitions);
+    public abstract IOptionalWithDiagnostics<TDefinition> Filter(TContext context, TDefinition definition);
+
+    public abstract IValidityWithDiagnostics Validate(TContext context, IEnumerable<TDefinition> definitions);
+    public abstract IValidityWithDiagnostics Validate(TContext context, TDefinition definition);
 }
 
 public static class ValidityFilter
@@ -45,7 +49,7 @@ public static class ValidityFilter
 
             foreach (TDefinition definition in definitions)
             {
-                var validity = CheckValidity(context, definition);
+                var validity = Validate(context, definition);
 
                 diagnostics = diagnostics.Concat(validity.Diagnostics);
 
@@ -58,7 +62,24 @@ public static class ValidityFilter
             return ResultWithDiagnostics.Construct(validDefinitions as IReadOnlyList<TDefinition>, diagnostics);
         }
 
-        protected virtual IValidityWithDiagnostics CheckValidity(TContext context, TDefinition definition)
+        public IOptionalWithDiagnostics<TDefinition> Filter(TContext context, TDefinition definition)
+        {
+            return Validate(context, definition).Transform(definition);
+        }
+
+        public IValidityWithDiagnostics Validate(TContext context, IEnumerable<TDefinition> definitions)
+        {
+            var validity = ValidityWithDiagnostics.Valid;
+
+            foreach (var definition in definitions)
+            {
+                validity = validity.Validate(() => Validate(context, definitions));
+            }
+
+            return validity;
+        }
+
+        public virtual IValidityWithDiagnostics Validate(TContext context, TDefinition definition)
         {
             return Validator.Validate(context, definition);
         }
@@ -74,11 +95,11 @@ public static class ValidityFilter
             Validator = validator;
         }
 
-        protected override IValidityWithDiagnostics CheckValidity(TContext context, TDefinition definition)
+        public override IValidityWithDiagnostics Validate(TContext context, TDefinition definition)
         {
             Validator.OnStartValidation(context, definition);
             
-            var validity = base.CheckValidity(context, definition);
+            var validity = base.Validate(context, definition);
 
             if (validity.IsValid)
             {

@@ -82,7 +82,7 @@ internal static class ScalarSpecializationValidator
     {
         var validationContext = new SpecializedSharpMeasuresScalarValidationContext(scalarType.Type, unitPopulation, scalarPopulation, vectorPopulation);
 
-        return SpecializedSharpMeasuresScalarValidator.Process(validationContext, scalarType.Definition);
+        return ProcessingFilter.Create(SpecializedSharpMeasuresScalarValidator).Filter(validationContext, scalarType.Definition);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ValidateDerivations(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)

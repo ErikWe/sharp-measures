@@ -31,7 +31,7 @@ internal class GroupBaseProcesser : AVectorGroupProcesser<SharpMeasuresVectorGro
 
         var processingContext = new SimpleProcessingContext(typeSymbol.AsDefinedType());
 
-        return SharpMeasuresVectorGroupProcesser.Process(processingContext, rawVector);
+        return ProcessingFilter.Create(SharpMeasuresVectorGroupProcesser).Filter(processingContext, rawVector);
     }
 
     private static SharpMeasuresVectorGroupProcesser SharpMeasuresVectorGroupProcesser { get; } = new(SharpMeasuresVectorGroupProcessingDiagnostics.Instance);

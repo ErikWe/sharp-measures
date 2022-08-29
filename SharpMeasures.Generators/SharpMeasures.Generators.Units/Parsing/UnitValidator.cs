@@ -84,7 +84,7 @@ internal class UnitValidator : IUnitValidator
     {
         var validationContext = new SharpMeasuresUnitValidationContext(unitType.Type, unitPopulation, scalarPopulation);
 
-        return SharpMeasuresUnitValidator.Validate(validationContext, unitType.Definition);
+        return ValidityFilter.Create(SharpMeasuresUnitValidator).Validate(validationContext, unitType.Definition);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<DerivableUnitDefinition>> ValidateDerivations(UnitType unitType, IUnitPopulationWithData unitPopulation)

@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Vectors.Parsing;
+namespace SharpMeasures.Generators.Vectors.Parsing;
 
 using Microsoft.CodeAnalysis;
 
@@ -73,7 +73,7 @@ internal static class GroupMemberValidator
     {
         var validationContext = new SharpMeasuresVectorGroupMemberValidationContext(vectorType.Type, unitPopulation, scalarPopulation, vectorPopulation);
 
-        return SharpMeasuresVectorGroupMemberValidator.Validate(validationContext, vectorType.Definition).Transform(vectorType.Definition);
+        return ValidityFilter.Create(SharpMeasuresVectorGroupMemberValidator).Validate(validationContext, vectorType.Definition).Transform(vectorType.Definition);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ValidateDerivations(GroupMemberType vectorType, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)

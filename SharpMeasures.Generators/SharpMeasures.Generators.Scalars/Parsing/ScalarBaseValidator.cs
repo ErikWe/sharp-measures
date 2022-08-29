@@ -68,7 +68,7 @@ internal static class ScalarBaseValidator
     {
         var validationContext = new SharpMeasuresScalarValidationContext(scalarType.Type, unitPopulation, scalarPopulation, vectorPopulation);
 
-        return SharpMeasuresScalarValidator.Process(validationContext, scalarType.Definition);
+        return ProcessingFilter.Create(SharpMeasuresScalarValidator).Filter(validationContext, scalarType.Definition);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ValidateDerivations(ScalarBaseType scalarType, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)

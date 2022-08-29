@@ -32,7 +32,7 @@ internal class GroupSpecializationProcesser : AVectorGroupProcesser<SpecializedS
 
         var processingContext = new SimpleProcessingContext(typeSymbol.AsDefinedType());
 
-        return SpecializedSharpMeasuresVectorGroupProcesser.Process(processingContext, rawVector);
+        return ProcessingFilter.Create(SpecializedSharpMeasuresVectorGroupProcesser).Filter(processingContext, rawVector);
     }
 
     private static SpecializedSharpMeasuresVectorGroupProcesser SpecializedSharpMeasuresVectorGroupProcesser { get; } = new(SpecializedSharpMeasuresVectorGroupProcessingDiagnostics.Instance);

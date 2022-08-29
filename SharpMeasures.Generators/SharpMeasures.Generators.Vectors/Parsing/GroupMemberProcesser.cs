@@ -58,7 +58,7 @@ internal static class GroupMemberProcesser
 
         var processingContext = new SimpleProcessingContext(typeSymbol.AsDefinedType());
 
-        return SharpMeasuresVectorGroupMemberProcesser.Process(processingContext, rawVector);
+        return ProcessingFilter.Create(SharpMeasuresVectorGroupMemberProcesser).Filter(processingContext, rawVector);
     }
 
     private static SharpMeasuresVectorGroupMemberProcesser SharpMeasuresVectorGroupMemberProcesser { get; } = new(SharpMeasuresVectorGroupMemberProcessingDiagnostics.Instance);

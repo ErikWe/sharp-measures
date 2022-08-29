@@ -58,7 +58,7 @@ internal static class GroupBaseValidator
     {
         var validationContext = new SharpMeasuresVectorGroupValidationContext(vectorType.Type, unitPopulation, scalarPopulation, vectorPopulation);
 
-        return SharpMeasuresVectorGroupValidator.Process(validationContext, vectorType.Definition);
+        return ProcessingFilter.Create(SharpMeasuresVectorGroupValidator).Filter(validationContext, vectorType.Definition);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ValidateDerivations(GroupBaseType vectorType, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)

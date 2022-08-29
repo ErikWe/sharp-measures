@@ -35,7 +35,7 @@ internal class VectorBaseProcesser : AVectorProcesser<SharpMeasuresVectorDefinit
 
         var processingContext = new SimpleProcessingContext(typeSymbol.AsDefinedType());
 
-        return SharpMeasuresVectorProcesser.Process(processingContext, rawVector);
+        return ProcessingFilter.Create(SharpMeasuresVectorProcesser).Filter(processingContext, rawVector);
     }
 
     private static SharpMeasuresVectorProcesser SharpMeasuresVectorProcesser { get; } = new(SharpMeasuresVectorProcessingDiagnostics.Instance);

@@ -37,7 +37,7 @@ internal class ScalarBaseProcesser : AScalarProcesser<SharpMeasuresScalarDefinit
 
         var processingContext = new SimpleProcessingContext(typeSymbol.AsDefinedType());
 
-        return SharpMeasuresScalarProcesser.Process(processingContext, rawScalar);
+        return ProcessingFilter.Create(SharpMeasuresScalarProcesser).Filter(processingContext, rawScalar);
     }
 
     private static SharpMeasuresScalarProcesser SharpMeasuresScalarProcesser { get; } = new(SharpMeasuresScalarProcessingDiagnostics.Instance);

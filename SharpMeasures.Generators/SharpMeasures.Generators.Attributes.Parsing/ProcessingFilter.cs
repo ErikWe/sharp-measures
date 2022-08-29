@@ -12,6 +12,7 @@ public interface IProcessingFilter<in TContext, in TDefinition, TProduct>
     where TContext : IProcessingContext
 {
     public abstract IResultWithDiagnostics<IReadOnlyList<TProduct>> Filter(TContext context, IEnumerable<TDefinition> definitions);
+    public abstract IOptionalWithDiagnostics<TProduct> Filter(TContext context, TDefinition definition);
 }
 
 public interface IReprocessingFilter<in TContext, in TDefinition, TProduct>
@@ -28,8 +29,7 @@ public static class ProcessingFilter
         return new SimpleProcessingFilter<TContext, TDefinition, TProduct>(processer);
     }
 
-    public static IProcessingFilter<TContext, TDefinition, TProduct> Create<TContext, TDefinition, TProduct>
-        (IActionableProcesser<TContext, TDefinition, TProduct> processer)
+    public static IProcessingFilter<TContext, TDefinition, TProduct> Create<TContext, TDefinition, TProduct>(IActionableProcesser<TContext, TDefinition, TProduct> processer)
         where TContext : IProcessingContext
     {
         return new ActionableProcessingFilter<TContext, TDefinition, TProduct>(processer);
@@ -41,8 +41,7 @@ public static class ProcessingFilter
         return new SimpleReprocessingFilter<TContext, TDefinitionw, TProduct>(reprocesser);
     }
 
-    public static IReprocessingFilter<TContext, TDefinitionw, TProduct> Create<TContext, TDefinitionw, TProduct>
-        (IActionableReprocesser<TContext, TDefinitionw, TProduct> reprocesser)
+    public static IReprocessingFilter<TContext, TDefinitionw, TProduct> Create<TContext, TDefinitionw, TProduct>(IActionableReprocesser<TContext, TDefinitionw, TProduct> reprocesser)
         where TContext : IProcessingContext
     {
         return new ActionableReprocessingFilter<TContext, TDefinitionw, TProduct>(reprocesser);
@@ -75,6 +74,11 @@ public static class ProcessingFilter
             }
 
             return ResultWithDiagnostics.Construct(products as IReadOnlyList<TProduct>, diagnostics);
+        }
+
+        public IOptionalWithDiagnostics<TProduct> Filter(TContext context, TDefinition definition)
+        {
+            return Process(context, definition);
         }
 
         protected virtual IOptionalWithDiagnostics<TProduct> Process(TContext context, TDefinition definition)

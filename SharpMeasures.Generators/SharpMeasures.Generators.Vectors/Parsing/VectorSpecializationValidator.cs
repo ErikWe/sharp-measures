@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Vectors.Parsing;
+namespace SharpMeasures.Generators.Vectors.Parsing;
 
 using Microsoft.CodeAnalysis;
 
@@ -73,7 +73,7 @@ internal static class VectorSpecializationValidator
     {
         var validationContext = new SpecializedSharpMeasuresVectorValidationContext(vectorType.Type, unitPopulation, scalarPopulation, vectorPopulation);
 
-        return SpecializedSharpMeasuresVectorValidator.Process(validationContext, vectorType.Definition);
+        return ProcessingFilter.Create(SpecializedSharpMeasuresVectorValidator).Filter(validationContext, vectorType.Definition);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ValidateDerivations(VectorSpecializationType vectorType, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)

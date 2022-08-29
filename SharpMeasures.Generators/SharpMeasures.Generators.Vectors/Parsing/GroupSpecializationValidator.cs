@@ -67,7 +67,7 @@ internal static class GroupSpecializationValidator
     {
         var validationContext = new SpecializedSharpMeasuresVectorGroupValidationContext(vectorType.Type, unitPopulation, scalarPopulation, vectorPopulation);
 
-        return SpecializedSharpMeasuresVectorGroupValidator.Process(validationContext, vectorType.Definition);
+        return ProcessingFilter.Create(SpecializedSharpMeasuresVectorGroupValidator).Filter(validationContext, vectorType.Definition);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ValidateDerivations(GroupSpecializationType vectorType, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
