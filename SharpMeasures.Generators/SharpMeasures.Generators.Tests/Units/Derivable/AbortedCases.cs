@@ -65,7 +65,7 @@ public class AbortedCases
     {
         string source = UnbiasedText(derivationID, expression, signature);
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertSomeDiagnosticsReported().AssertIdenticalSources(CommonResults.LengthTimeSpeed_LengthOverTimeDerivation);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertSomeDiagnosticsReported().AssertIdenticalSources(UnbiasedIdentical);
     }
 
     private static string BiasedText => """
@@ -94,6 +94,56 @@ public class AbortedCases
 
     private static GeneratorVerifier AssertBiased()
     {
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedText).AssertSomeDiagnosticsReported().AssertNoMatchingSourceNameGenerated("UnitOfTemperature_Derivable.g.cs");
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedText).AssertSomeDiagnosticsReported().AssertIdenticalSources(BiasedIdentical);
     }
+
+    private static GeneratorVerifier UnbiasedIdentical { get; } = GeneratorVerifier.Construct<SharpMeasuresGenerator>(UnbiasedIdenticalText);
+    private static GeneratorVerifier BiasedIdentical { get; } = GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedIdenticalText);
+
+    private static string UnbiasedIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        public partial class Time { }
+        
+        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        public partial class Speed { }
+        
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        
+        [SharpMeasuresUnit(typeof(Time))]
+        public partial class UnitOfTime { }
+        
+        [DerivableUnit("Length / Time", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
+        [SharpMeasuresUnit(typeof(Speed))]
+        public partial class UnitOfSpeed { }
+        """;
+
+    private static string BiasedIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        public partial class Time { }
+        
+        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        public partial class TemperatureDifference { }
+        
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        
+        [SharpMeasuresUnit(typeof(Time))]
+        public partial class UnitOfTime { }
+        
+        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        public partial class UnitOfTemperature { }
+        """;
 }
