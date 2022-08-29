@@ -26,6 +26,9 @@ public class VectorGroupLacksMemberOfDimension
     [Fact]
     public void SpecializedVectorDifference_EmptyGroup() => AssertSpecializedVectorDifference_EmptyGroup();
 
+    [Fact]
+    public void ConvertibleVector() => AssertConvertibleVector();
+
     private static GeneratorVerifier AssertExactlyVectorGroupLacksMemberOfDimensionDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(VectorGroupLacksMemberOfDimensionDiagnostics);
     private static IReadOnlyCollection<string> VectorGroupLacksMemberOfDimensionDiagnostics { get; } = new string[] { DiagnosticIDs.VectorGroupLacksMemberOfDimension };
 
@@ -143,5 +146,32 @@ public class VectorGroupLacksMemberOfDimension
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(SpecializedVectorDifferenceText_EmptyGroup, target: "Displacement", prefix: "Difference = ");
 
         return AssertExactlyVectorGroupLacksMemberOfDimensionDiagnostics(SpecializedVectorDifferenceText_EmptyGroup).AssertDiagnosticsLocation(expectedLocation, SpecializedVectorDifferenceText_EmptyGroup);
+    }
+
+    private static string ConvertibleVectorText => """
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+        
+        [ConvertibleQuantity(typeof(Position))]
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Displacement3 { }
+        
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+        
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertConvertibleVector()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorText, target: "Position", prefix: "ConvertibleQuantity(");
+
+        return AssertExactlyVectorGroupLacksMemberOfDimensionDiagnostics(ConvertibleVectorText).AssertDiagnosticsLocation(expectedLocation, ConvertibleVectorText);
     }
 }
