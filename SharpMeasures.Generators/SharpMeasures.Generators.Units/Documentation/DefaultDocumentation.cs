@@ -46,12 +46,27 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         return text;
     }
 
-    public string FixedDefinition(IFixedUnit definition) => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference}.</summary>""";
+    public string FixedDefinition(IFixedUnit definition) => BiasTerm switch
+    {
+        true => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference} and an associated <see cref="global::SharpMeasures.Scalar"/> bias term.</summary>""",
+        false => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference}.</summary>"""
+    };
+
     public string DerivedDefinition(IDerivedUnit definition) => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference}.</summary>""";
     public string AliasDefinition(IUnitAlias definition) => $"""/// <summary>A {UnitReference}, acting as an alias for <see cref="{UnitType.FullyQualifiedName}.{definition.AliasOf}"/>.</summary>""";
-    public string BiasedDefinition(IBiasedUnit definition) => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference}.</summary>""";
-    public string PrefixedDefinition(IPrefixedUnit definition) => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference}.</summary>""";
-    public string ScaledDefinition(IScaledUnit definition) => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference}.</summary>""";
+    public string BiasedDefinition(IBiasedUnit definition) => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference} and an associated <see cref="global::SharpMeasures.Scalar"/> bias term.</summary>""";
+
+    public string PrefixedDefinition(IPrefixedUnit definition) => BiasTerm switch
+    {
+        true => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference} and an associated <see cref="global::SharpMeasures.Scalar"/> bias term.</summary>""",
+        false => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference}.</summary>"""
+    };
+
+    public string ScaledDefinition(IScaledUnit definition) => BiasTerm switch
+    {
+        true => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference} and an associated <see cref="global::SharpMeasures.Scalar"/> bias term.</summary>""",
+        false => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference}.</summary>"""
+    };
 
     public string RepresentedQuantity() => $"""/// <summary>The {QuantityReference} described by <see langword="this"/>.</summary>""";
     public string Bias() => """
