@@ -107,7 +107,7 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
         StringBuilder componentText = new();
         IterativeBuilding.AppendEnumerable(componentText, components(), ", ");
 
-        return $$"""/// <summary>The {{ScalarReference}} representing the constant {{constant.Name}}, with value { ({{componentText}}) [{{Unit.UnitsByName[constant.Unit].Plural}}] }.</summary>""";
+        return $$"""/// <summary>The {{ScalarReference}} representing the constant {{constant.Name}}, with value { ({{componentText}}) <see cref="{{Unit.Type.FullyQualifiedName}}.{{constant.Unit}}"/> }.</summary>""";
 
         IEnumerable<string> components()
         {

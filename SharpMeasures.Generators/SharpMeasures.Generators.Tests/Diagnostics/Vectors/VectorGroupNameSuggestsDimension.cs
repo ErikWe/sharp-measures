@@ -42,7 +42,7 @@ public class VectorGroupNameSuggestsDimension
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(VectorGroupText, target: "SharpMeasuresVectorGroup");
 
-        return AssertExactlyVectorGroupNameSuggestsDimensionDiagnostics(VectorGroupText).AssertDiagnosticsLocation(expectedLocation, VectorGroupText);
+        return AssertExactlyVectorGroupNameSuggestsDimensionDiagnostics(VectorGroupText).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string SpecializedVectorGroupText => $$"""
@@ -67,6 +67,6 @@ public class VectorGroupNameSuggestsDimension
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText, target: "SpecializedSharpMeasuresVectorGroup");
 
-        return AssertExactlyVectorGroupNameSuggestsDimensionDiagnostics(SpecializedVectorGroupText).AssertDiagnosticsLocation(expectedLocation, SpecializedVectorGroupText);
+        return AssertExactlyVectorGroupNameSuggestsDimensionDiagnostics(SpecializedVectorGroupText).AssertDiagnosticsLocation(expectedLocation);
     }
 }

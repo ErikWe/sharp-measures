@@ -54,7 +54,7 @@ public class DuplicateVectorDimension
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(BothImplicitText, target: "SharpMeasuresVectorGroupMember", postfix: "(typeof(Position))] // <-");
 
-        return AssertExactlyDuplicateVectorDimensionDiagnostics(BothImplicitText).AssertDiagnosticsLocation(expectedLocation, BothImplicitText);
+        return AssertExactlyDuplicateVectorDimensionDiagnostics(BothImplicitText).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical("Length3"));
     }
 
     private static string FirstExplicitText => """
@@ -82,7 +82,7 @@ public class DuplicateVectorDimension
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(FirstExplicitText, target: "SharpMeasuresVectorGroupMember", postfix: "(typeof(Position))]");
 
-        return AssertExactlyDuplicateVectorDimensionDiagnostics(FirstExplicitText).AssertDiagnosticsLocation(expectedLocation, FirstExplicitText);
+        return AssertExactlyDuplicateVectorDimensionDiagnostics(FirstExplicitText).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical("PositionN"));
     }
 
     private static string SecondExplicitText => """
@@ -110,7 +110,7 @@ public class DuplicateVectorDimension
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SecondExplicitText, target: "3", prefix: "Dimension = ");
 
-        return AssertExactlyDuplicateVectorDimensionDiagnostics(SecondExplicitText).AssertDiagnosticsLocation(expectedLocation, SecondExplicitText);
+        return AssertExactlyDuplicateVectorDimensionDiagnostics(SecondExplicitText).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical("Position3"));
     }
 
     private static string BothExplicitText => """
@@ -138,6 +138,26 @@ public class DuplicateVectorDimension
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(BothExplicitText, target: "3", prefix: "Dimension = ", postfix: ")] // <-");
 
-        return AssertExactlyDuplicateVectorDimensionDiagnostics(BothExplicitText).AssertDiagnosticsLocation(expectedLocation, BothExplicitText);
+        return AssertExactlyDuplicateVectorDimensionDiagnostics(BothExplicitText).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical("PositionX"));
     }
+
+    private static GeneratorVerifier Identical(string otherName) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText(otherName));
+
+    private static string IdenticalText(string otherName) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [SharpMeasuresVectorGroupMember(typeof(Position), Dimension = 3)]
+        public partial class {{otherName}} { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }

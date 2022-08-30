@@ -62,7 +62,7 @@ public class FilteredListLocation
         var source = UnitListText(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Kilometre\"");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnrecognizedUnitName, expectedLocation, source);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnrecognizedUnitName, expectedLocation);
     }
 
     private static string ConvertibleScalarText => """
@@ -85,7 +85,7 @@ public class FilteredListLocation
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleScalarText, target: "UnitOfLength");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleScalarText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotScalar, expectedLocation, ConvertibleScalarText);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleScalarText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotScalar, expectedLocation);
     }
 
     private static string ConvertibleSpecializedScalarText => """
@@ -108,7 +108,7 @@ public class FilteredListLocation
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedScalarText, target: "UnitOfLength");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedScalarText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotScalar, expectedLocation, ConvertibleSpecializedScalarText);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedScalarText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotScalar, expectedLocation);
     }
 
     private static string ConvertibleVectorText => """
@@ -135,7 +135,7 @@ public class FilteredListLocation
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorText, target: "UnitOfLength");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleVectorText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotVector, expectedLocation, ConvertibleVectorText);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleVectorText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotVector, expectedLocation);
     }
 
     private static string ConvertibleSpecializedVectorText => """
@@ -162,7 +162,7 @@ public class FilteredListLocation
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorText, target: "UnitOfLength");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedVectorText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotVector, expectedLocation, ConvertibleSpecializedVectorText);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedVectorText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotVector, expectedLocation);
     }
 
     private static string ConvertibleVectorGroupText => """
@@ -189,7 +189,7 @@ public class FilteredListLocation
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorGroupText, target: "UnitOfLength");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleVectorGroupText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotVectorGroup, expectedLocation, ConvertibleVectorGroupText);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleVectorGroupText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotVectorGroup, expectedLocation);
     }
 
     private static string ConvertibleSpecializedVectorGroupText => """
@@ -216,6 +216,6 @@ public class FilteredListLocation
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorGroupText, target: "UnitOfLength");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedVectorGroupText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotVectorGroup, expectedLocation, ConvertibleSpecializedVectorGroupText);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedVectorGroupText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotVectorGroup, expectedLocation);
     }
 }

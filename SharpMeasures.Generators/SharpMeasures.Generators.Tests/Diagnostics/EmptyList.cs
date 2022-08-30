@@ -140,7 +140,7 @@ public class EmptyList
         var source = ScalarAttributeText(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, attribute.Context);
 
-        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source).AssertIdenticalSources(ScalarAttributeIdentical);
+        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ScalarAttributeIdentical);
     }
 
     private static string SpecializedScalarAttributeText(SourceSubtext attribute) => $$"""
@@ -164,7 +164,7 @@ public class EmptyList
         var source = SpecializedScalarAttributeText(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, attribute.Context);
 
-        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source).AssertIdenticalSources(SpecializedScalarAttributeIdentical);
+        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarAttributeIdentical);
     }
 
     private static string VectorAttributeText(SourceSubtext attribute) => $$"""
@@ -189,7 +189,7 @@ public class EmptyList
         var source = VectorAttributeText(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, attribute.Context);
 
-        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source).AssertIdenticalSources(VectorAttributeIdentical);
+        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorAttributeIdentical);
     }
 
     private static string SpecializedVectorAttributeText(SourceSubtext attribute) => $$"""
@@ -217,7 +217,7 @@ public class EmptyList
         var source = SpecializedVectorAttributeText(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, attribute.Context);
 
-        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source).AssertIdenticalSources(SpecializedVectorAttributeIdentical);
+        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorAttributeIdentical);
     }
 
     private static string VectorGroupAttributeText(SourceSubtext attribute) => $$"""
@@ -242,7 +242,7 @@ public class EmptyList
         var source = VectorGroupAttributeText(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, attribute.Context);
 
-        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source).AssertIdenticalSources(VectorGroupAttributeIdentical);
+        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupAttributeIdentical);
     }
 
     private static string SpecializedVectorGroupAttributeText(SourceSubtext attribute) => $$"""
@@ -270,7 +270,7 @@ public class EmptyList
         var source = SpecializedVectorGroupAttributeText(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, attribute.Context);
 
-        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source).AssertIdenticalSources(SpecializedVectorGroupAttributeIdentical);
+        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorGroupAttributeIdentical);
     }
 
     private static string VectorGroupMemberAttributeText(SourceSubtext attribute) => $$"""
@@ -298,7 +298,7 @@ public class EmptyList
         var source = VectorGroupMemberAttributeText(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, attribute.Context);
 
-        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source).AssertIdenticalSources(VectorGroupMemberAttributeIdentical);
+        return AssertExactlyEmptyListDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberAttributeIdentical);
     }
 
     private static GeneratorVerifier ScalarAttributeIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ScalarAttributeIdenticalText);

@@ -26,11 +26,38 @@ public class InvalidScaledUnitExpression
     private static GeneratorVerifier AssertExactlyInvalidScaledUnitExpressionDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidScaledUnitExpressionDiagnostics);
     private static IReadOnlyCollection<string> InvalidScaledUnitExpressionDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidScaledUnitExpression };
 
-    private static GeneratorVerifier Assert(SourceSubtext expression)
-    {
-        var source = SourceTexts.Scaled(value: expression.ToString());
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, expression.Context.With(outerPrefix: "[ScaledUnit(\"Kilometre\", \"Kilometres\", \"Metre\", "));
+    public static string Text(SourceSubtext scale) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
 
-        return AssertExactlyInvalidScaledUnitExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres")]
+        [ScaledUnit("Kilometre", "Kilometres", "Metre", {{scale}})]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier Assert(SourceSubtext scale)
+    {
+        var source = Text(scale);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, scale.Context.With(outerPrefix: "[ScaledUnit(\"Kilometre\", \"Kilometres\", \"Metre\", "));
+
+        return AssertExactlyInvalidScaledUnitExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
+
+    private static GeneratorVerifier Identical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText);
+
+    public static string IdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }

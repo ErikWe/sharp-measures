@@ -42,6 +42,6 @@ public class NullFirstParamsArgument
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(DerivationUnitSignatureText, target: "null");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(DerivationUnitSignatureText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotUnit, expectedLocation, DerivationUnitSignatureText);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(DerivationUnitSignatureText).AssertSpecificDiagnosticsLocation(DiagnosticIDs.TypeNotUnit, expectedLocation);
     }
 }

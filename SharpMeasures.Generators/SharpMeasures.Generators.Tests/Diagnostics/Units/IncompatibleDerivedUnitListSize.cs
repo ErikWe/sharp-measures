@@ -66,6 +66,33 @@ public class IncompatibleDerivedUnitListSize
         var source = TwoElementSignatureText(units);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, units.Context.With(outerPrefix: "DerivedUnit(\"MetrePerSecond\", \"MetresPerSecond\", \"id\", "));
 
-        return AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(TwoElementSignatureIdentical);
     }
+
+    private static GeneratorVerifier TwoElementSignatureIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(TwoElementSignatureIdenticalText);
+
+    private static string TwoElementSignatureIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        public partial class Time { }
+
+        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        public partial class Speed { }
+
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+
+        [SharpMeasuresUnit(typeof(Time))]
+        public partial class UnitOfTime { }
+
+        [DerivableUnit("id", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
+        [SharpMeasuresUnit(typeof(Speed))]
+        public partial class UnitOfSpeed { }
+        """;
 }

@@ -6,8 +6,11 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities;
+using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
+using SharpMeasures.Generators.Vectors.Parsing.Contexts.Processing;
+using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
@@ -31,7 +34,7 @@ internal static class GroupMemberProcesser
 
         var derivations = CommonProcessing.ParseAndProcessDerivations(typeSymbol);
         var constants = CommonProcessing.ParseAndProcessConstants(typeSymbol, null);
-        var conversions = CommonProcessing.ParseAndProcessConversions(typeSymbol);
+        var conversions = ParseAndProcessConversions(typeSymbol, vector.Result.VectorGroup);
 
         var includeUnits = CommonProcessing.ParseAndProcessIncludeUnits(typeSymbol);
         var excludeUnits = CommonProcessing.ParseAndProcessExcludeUnits(typeSymbol);
@@ -61,5 +64,15 @@ internal static class GroupMemberProcesser
         return ProcessingFilter.Create(SharpMeasuresVectorGroupMemberProcesser).Filter(processingContext, rawVector);
     }
 
+    private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ParseAndProcessConversions(INamedTypeSymbol typeSymbol, NamedType group)
+    {
+        var rawConvertibles = ConvertibleQuantityParser.Parser.ParseAllOccurrences(typeSymbol);
+
+        ConvertibleVectorGroupMemberProcessingContext processingContext = new(typeSymbol.AsDefinedType(), group);
+
+        return ProcessingFilter.Create(ConvertibleVectorProcesser).Filter(processingContext, rawConvertibles);
+    }
+
     private static SharpMeasuresVectorGroupMemberProcesser SharpMeasuresVectorGroupMemberProcesser { get; } = new(SharpMeasuresVectorGroupMemberProcessingDiagnostics.Instance);
+    private static ConvertibleVectorGroupMemberrProcesser ConvertibleVectorProcesser { get; } = new(ConvertibleVectorProcessingDiagnostics.Instance);
 }

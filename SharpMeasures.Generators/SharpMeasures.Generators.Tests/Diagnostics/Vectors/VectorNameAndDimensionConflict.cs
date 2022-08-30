@@ -45,7 +45,7 @@ public class VectorNameAndDimensionConflict
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(VectorText, target: "SharpMeasuresVector");
 
-        return AssertExactlyVectorNameAndDimensionConflictDiagnostics(VectorText).AssertDiagnosticsLocation(expectedLocation, VectorText);
+        return AssertExactlyVectorNameAndDimensionConflictDiagnostics(VectorText).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string SpecializedVectorText => $$"""
@@ -70,7 +70,7 @@ public class VectorNameAndDimensionConflict
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText, target: "SpecializedSharpMeasuresVector");
 
-        return AssertExactlyVectorNameAndDimensionConflictDiagnostics(SpecializedVectorText).AssertDiagnosticsLocation(expectedLocation, SpecializedVectorText);
+        return AssertExactlyVectorNameAndDimensionConflictDiagnostics(SpecializedVectorText).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string VectorGroupMemberText => $$"""
@@ -95,6 +95,6 @@ public class VectorNameAndDimensionConflict
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(VectorGroupMemberText, target: "SharpMeasuresVectorGroupMember");
 
-        return AssertExactlyVectorNameAndDimensionConflictDiagnostics(VectorGroupMemberText).AssertDiagnosticsLocation(expectedLocation, VectorGroupMemberText);
+        return AssertExactlyVectorNameAndDimensionConflictDiagnostics(VectorGroupMemberText).AssertDiagnosticsLocation(expectedLocation);
     }
 }

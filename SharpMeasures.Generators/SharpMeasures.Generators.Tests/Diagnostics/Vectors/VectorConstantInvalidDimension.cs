@@ -81,7 +81,7 @@ public class VectorConstantInvalidDimension
         var source = VectorText(config.Text);
         var expectedLocation = ParseExpectedLocation(source, config);
 
-        return AssertExactlyVectorConstantInvalidDimensionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyVectorConstantInvalidDimensionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical);
     }
 
     private static string SpecializedVectorText(SourceSubtext vectorConstant) => $$"""
@@ -109,7 +109,7 @@ public class VectorConstantInvalidDimension
         var source = SpecializedVectorText(config.Text);
         var expectedLocation = ParseExpectedLocation(source, config);
 
-        return AssertExactlyVectorConstantInvalidDimensionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyVectorConstantInvalidDimensionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical);
     }
 
     private static string VectorGroupMemberText(SourceSubtext vectorConstant) => $$"""
@@ -137,6 +137,64 @@ public class VectorConstantInvalidDimension
         var source = VectorGroupMemberText(config.Text);
         var expectedLocation = ParseExpectedLocation(source, config);
 
-        return AssertExactlyVectorConstantInvalidDimensionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyVectorConstantInvalidDimensionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical);
     }
+
+    private static GeneratorVerifier VectorIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorIdenticalText);
+    private static GeneratorVerifier SpecializedVectorIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorIdenticalText);
+    private static GeneratorVerifier VectorGroupMemberIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberIdenticalText);
+
+    private static string VectorIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedVectorIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+        
+        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        public partial class Displacement3 { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+        
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorGroupMemberIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+        
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Displacement3 { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+        
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }

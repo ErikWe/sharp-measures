@@ -70,7 +70,7 @@ public class InvalidConstantName
         var source = ScalarText(constantName);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantName.Context.With(outerPrefix: "ScalarConstant("));
 
-        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ScalarIdentical);
     }
 
     private static string SpecializedScalarText(SourceSubtext constantName) => $$"""
@@ -94,7 +94,7 @@ public class InvalidConstantName
         var source = SpecializedScalarText(constantName);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantName.Context.With(outerPrefix: "ScalarConstant("));
 
-        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string VectorText(SourceSubtext constantName) => $$"""
@@ -119,7 +119,7 @@ public class InvalidConstantName
         var source = VectorText(constantName);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantName.Context.With(outerPrefix: "VectorConstant("));
 
-        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string SpecializedVectorText(SourceSubtext constantName) => $$"""
@@ -147,7 +147,7 @@ public class InvalidConstantName
         var source = SpecializedVectorText(constantName);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantName.Context.With(outerPrefix: "VectorConstant("));
 
-        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string VectorGroupMemberText(SourceSubtext constantName) => $$"""
@@ -175,6 +175,93 @@ public class InvalidConstantName
         var source = VectorGroupMemberText(constantName);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantName.Context.With(outerPrefix: "VectorConstant("));
 
-        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
+
+    private static GeneratorVerifier ScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ScalarIdenticalText);
+    private static GeneratorVerifier SpecializedScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedScalarIdenticalText);
+    private static GeneratorVerifier VectorIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorIdenticalText);
+    private static GeneratorVerifier SpecializedVectorIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorIdenticalText);
+    private static GeneratorVerifier VectorGroupMemberIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberIdenticalText);
+
+    private static string ScalarIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedScalarIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        public partial class Distance { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedVectorIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        public partial class Displacement3 { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorGroupMemberIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Position3 { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }

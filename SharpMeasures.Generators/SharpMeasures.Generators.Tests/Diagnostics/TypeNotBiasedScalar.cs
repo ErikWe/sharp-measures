@@ -40,6 +40,23 @@ public class TypeNotBiasedScalar
     {
         var expectedLocation = ExpectedDiagnosticsLocation.FromTypeofArgumentTextSpan(ConvertibleScalarText, target: "typeof(TemperatureDifference)", prefix: "ConvertibleQuantity(");
 
-        return AssertExactlyTypeNotBiasedScalarDiagnostics(ConvertibleScalarText).AssertDiagnosticsLocation(expectedLocation, ConvertibleScalarText);
+        return AssertExactlyTypeNotBiasedScalarDiagnostics(ConvertibleScalarText).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleScalarIdentical);
     }
+
+    private static GeneratorVerifier ConvertibleScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleScalarIdenticalText);
+
+    private static string ConvertibleScalarIdenticalText => """
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfTemperature), UseUnitBias = true)]
+        public partial class Temperature { }
+            
+        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        public partial class TemperatureDifference { }
+
+        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        public partial class UnitOfTemperature { }
+        """;
 }

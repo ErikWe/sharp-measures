@@ -90,7 +90,7 @@ public class UnionInclusionStackingModeRedundant
         var source = ScalarText(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "InclusionStackingMode.Union");
 
-        return AssertExactlyUnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnionInclusionStackingModeRedundant, expectedLocation, source);
+        return AssertExactlyUnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnionInclusionStackingModeRedundant, expectedLocation).AssertIdenticalSources(ScalarIdentical);
     }
 
     private static string SpecializedScalarText(string attribute, bool inherit) => $$"""
@@ -116,10 +116,10 @@ public class UnionInclusionStackingModeRedundant
         var source = SpecializedScalarText(attribute, inherit);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "InclusionStackingMode.Union");
 
-        return AssertExactlyUnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnionInclusionStackingModeRedundant, expectedLocation, source);
+        return AssertExactlyUnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnionInclusionStackingModeRedundant, expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical);
     }
 
-    private static string VectorText => $$"""
+    private static string VectorText => """
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -143,7 +143,7 @@ public class UnionInclusionStackingModeRedundant
         var source = VectorText;
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "InclusionStackingMode.Union");
 
-        return AssertExactlyUnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnionInclusionStackingModeRedundant, expectedLocation, source);
+        return AssertExactlyUnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnionInclusionStackingModeRedundant, expectedLocation).AssertIdenticalSources(VectorIdentical);
     }
 
     private static string SpecializedVectorText(bool inherit) => $$"""
@@ -173,10 +173,10 @@ public class UnionInclusionStackingModeRedundant
         var source = SpecializedVectorText(inherit);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "InclusionStackingMode.Union");
 
-        return AssertExactlyUnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnionInclusionStackingModeRedundant, expectedLocation, source);
+        return AssertExactlyUnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnionInclusionStackingModeRedundant, expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical);
     }
 
-    private static string VectorGroupText => $$"""
+    private static string VectorGroupText => """
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -200,7 +200,7 @@ public class UnionInclusionStackingModeRedundant
         var source = VectorGroupText;
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "InclusionStackingMode.Union");
 
-        return AssertExactlyUnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnionInclusionStackingModeRedundant, expectedLocation, source);
+        return AssertExactlyUnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnionInclusionStackingModeRedundant, expectedLocation).AssertIdenticalSources(VectorGroupIdentical);
     }
 
     private static string SpecializedVectorGroupText(bool inherit) => $$"""
@@ -230,7 +230,7 @@ public class UnionInclusionStackingModeRedundant
         var source = SpecializedVectorGroupText(inherit);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "InclusionStackingMode.Union");
 
-        return AssertExactlyUnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnionInclusionStackingModeRedundant, expectedLocation, source);
+        return AssertExactlyUnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnionInclusionStackingModeRedundant, expectedLocation).AssertIdenticalSources(SpecializedVectorGroupIdentical);
     }
 
     private static string VectorGroupMemberText(bool inheritFromMembers, bool inheritFromGroups) => $$"""
@@ -266,6 +266,149 @@ public class UnionInclusionStackingModeRedundant
         var source = VectorGroupMemberText(inheritFromMembers, inheritFromGroups);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "InclusionStackingMode.Union");
 
-        return AssertExactlyUnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnionInclusionStackingModeRedundant, expectedLocation, source);
+        return AssertExactlyUnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnionInclusionStackingModeRedundant, expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical);
     }
+
+    private static GeneratorVerifier ScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ScalarIdenticalText);
+    private static GeneratorVerifier SpecializedScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedScalarIdenticalText);
+    private static GeneratorVerifier VectorIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorIdenticalText);
+    private static GeneratorVerifier SpecializedVectorIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorIdenticalText);
+    private static GeneratorVerifier VectorGroupIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupIdenticalText);
+    private static GeneratorVerifier SpecializedVectorGroupIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorGroupIdenticalText);
+    private static GeneratorVerifier VectorGroupMemberIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberIdenticalText);
+
+    private static string ScalarIdenticalText => """
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Utility;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedScalarIdenticalText => """
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Utility;
+        
+        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        public partial class Distance { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorIdenticalText => """
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Utility;
+        using SharpMeasures.Generators.Vectors;
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedVectorIdenticalText => """
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Utility;
+        using SharpMeasures.Generators.Vectors;
+
+        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        public partial class Displacement3 { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorGroupIdenticalText => """
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Utility;
+        using SharpMeasures.Generators.Vectors;
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedVectorGroupIdenticalText => """
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Utility;
+        using SharpMeasures.Generators.Vectors;
+
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        public static partial class Displacement { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorGroupMemberIdenticalText => """
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Utility;
+        using SharpMeasures.Generators.Vectors;
+
+        [SharpMeasuresVectorGroupMember(typeof(Displacement))]
+        public partial class Displacement3 { }
+
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        public static partial class Displacement { }
+
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Posiiton3 { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }

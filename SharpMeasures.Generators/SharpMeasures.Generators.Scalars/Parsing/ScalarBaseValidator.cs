@@ -90,7 +90,7 @@ internal static class ScalarBaseValidator
 
         var validationContext = new ScalarConstantValidationContext(scalarType.Type, unit, new HashSet<string>(), new HashSet<string>(), includedUnitNames, incluedUnitPlurals);
 
-        return ValidityFilter.Create(ScalarConstantValidator).Filter(validationContext, scalarType.Constants);
+        return ProcessingFilter.Create(ScalarConstantValidator).Filter(validationContext, scalarType.Constants);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<ConvertibleScalarDefinition>> ValidateConversions(ScalarBaseType scalarType, IScalarPopulation scalarPopulation)

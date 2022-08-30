@@ -19,14 +19,16 @@ using Xunit;
 [UsesVerify]
 internal class GeneratorVerifier
 {
-    public static GeneratorVerifier Construct<TGenerator>(string source, bool assertNoCompilationErrors = true) where TGenerator : IIncrementalGenerator, new()
-        => Construct(source, new TGenerator(), assertNoCompilationErrors);
+    public static GeneratorVerifier Construct<TGenerator>(string source, bool assertNoCompilationErrors = true) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator(), assertNoCompilationErrors);
     public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator, bool assertNoCompilationErrors = true)
     {
         var driver = DriverConstruction.ConstructAndRun(source, generator, ProjectPath.Path + @"\Documentation", out var compilation);
         
-        return new(driver, compilation, assertNoCompilationErrors);
+        return new(source, driver, compilation, assertNoCompilationErrors);
     }
+
+    private string Source { get; }
+
     private GeneratorDriverRunResult RunResult { get; }
     private Compilation Compilation { get; }
 
@@ -35,8 +37,10 @@ internal class GeneratorVerifier
 
     private ImmutableArray<Diagnostic> Diagnostics => RunResult.Diagnostics;
 
-    private GeneratorVerifier(GeneratorDriver driver, Compilation compilation, bool assertNoCompilationErrors = true)
+    private GeneratorVerifier(string source, GeneratorDriver driver, Compilation compilation, bool assertNoCompilationErrors = true)
     {
+        Source = source;
+
         RunResult = driver.GetRunResult();
         Compilation = compilation;
 
@@ -178,23 +182,10 @@ internal class GeneratorVerifier
     {
         Assert.Contains(diagnosticsID, Diagnostics.Select(static (diagnostic) => diagnostic.Id));
 
-        var specifiedDiagnostics = Diagnostics.Where((diagnostic) => diagnostic.Id == diagnosticsID);
-
-        Assert.Single(specifiedDiagnostics);
-
-        Assert.Equal(expectedLocation, specifiedDiagnostics.First().Location.SourceSpan);
-
-        return this;
-    }
-
-    public GeneratorVerifier AssertSpecificDiagnosticsLocation(string diagnosticsID, TextSpan expectedLocation, string source)
-    {
-        Assert.Contains(diagnosticsID, Diagnostics.Select(static (diagnostic) => diagnostic.Id));
-
         var specifiedDiagnostics = Diagnostics.Where((diagnostic) => diagnostic.Id == diagnosticsID).Single();
 
-        var expectedText = source[expectedLocation.Start..expectedLocation.End];
-        var actualText = source[specifiedDiagnostics.Location.SourceSpan.Start..specifiedDiagnostics.Location.SourceSpan.End];
+        var expectedText = Source[expectedLocation.Start..expectedLocation.End];
+        var actualText = Source[specifiedDiagnostics.Location.SourceSpan.Start..specifiedDiagnostics.Location.SourceSpan.End];
 
         Assert.Equal(expectedText, actualText);
         Assert.Equal(expectedLocation, specifiedDiagnostics.Location.SourceSpan);
@@ -209,20 +200,8 @@ internal class GeneratorVerifier
             throw new NotSupportedException("More than 1 diagnostics detected, specify multiple locations");
         }
 
-        Assert.Equal(expectedLocation, Diagnostics[0].Location.SourceSpan);
-
-        return this;
-    }
-
-    public GeneratorVerifier AssertDiagnosticsLocation(TextSpan expectedLocation, string source)
-    {
-        if (Diagnostics.Length is not 1)
-        {
-            throw new NotSupportedException("More than 1 diagnostics detected, specify multiple locations");
-        }
-
-        var expectedText = source[expectedLocation.Start..expectedLocation.End];
-        var actualText = source[Diagnostics[0].Location.SourceSpan.Start..Diagnostics[0].Location.SourceSpan.End];
+        var expectedText = Source[expectedLocation.Start..expectedLocation.End];
+        var actualText = Source[Diagnostics[0].Location.SourceSpan.Start..Diagnostics[0].Location.SourceSpan.End];
 
         Assert.Equal(expectedText, actualText);
         Assert.Equal(expectedLocation, Diagnostics[0].Location.SourceSpan);
@@ -235,21 +214,8 @@ internal class GeneratorVerifier
         int index = 0;
         foreach (var expectedLocation in expectedLocations)
         {
-            Assert.Equal(expectedLocation, Diagnostics[index].Location.SourceSpan);
-
-            index += 1;
-        }
-
-        return this;
-    }
-
-    public GeneratorVerifier AssertDiagnosticsLocation(IEnumerable<TextSpan> expectedLocations, string source)
-    {
-        int index = 0;
-        foreach (var expectedLocation in expectedLocations)
-        {
-            var expectedText = source[expectedLocation.Start..expectedLocation.End];
-            var actualText = source[Diagnostics[index].Location.SourceSpan.Start..Diagnostics[index].Location.SourceSpan.End];
+            var expectedText = Source[expectedLocation.Start..expectedLocation.End];
+            var actualText = Source[Diagnostics[index].Location.SourceSpan.Start..Diagnostics[index].Location.SourceSpan.End];
 
             Assert.Equal(expectedText, actualText);
             Assert.Equal(expectedLocation, Diagnostics[index].Location.SourceSpan);
@@ -288,8 +254,7 @@ internal class GeneratorVerifier
 
         return this;
 
-        static (string, string, string) createIdentifier(GeneratorRunResult result, GeneratedSourceResult output)
-            => (result.Generator.GetGeneratorType().ToString(), output.HintName, removeStamp(output));
+        static (string, string, string) createIdentifier(GeneratorRunResult result, GeneratedSourceResult output) => (result.Generator.GetGeneratorType().ToString(), output.HintName, removeStamp(output));
 
         static string removeStamp(GeneratedSourceResult generatedSource) => StampRegex.Replace(generatedSource.SourceText.ToString(), StampReplacement);
     }
@@ -322,8 +287,7 @@ internal class GeneratorVerifier
 
         return this;
 
-        static (string, Diagnostic) createDiagnosticIdentifier(GeneratorRunResult result, Diagnostic diagnostic)
-            => (result.Generator.GetGeneratorType().ToString(), diagnostic);
+        static (string, Diagnostic) createDiagnosticIdentifier(GeneratorRunResult result, Diagnostic diagnostic) => (result.Generator.GetGeneratorType().ToString(), diagnostic);
     }
 
     public GeneratorVerifier AssertIdenticalSourcesAndDiagnostics(GeneratorVerifier expected)

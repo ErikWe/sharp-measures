@@ -39,7 +39,7 @@ public class UnitNotDerivable
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(WithoutIDText, target: "DerivedUnit");
 
-        return AssertExactlyUnitNotDerivableDiagnostics(WithoutIDText).AssertDiagnosticsLocation(expectedLocation, WithoutIDText);
+        return AssertExactlyUnitNotDerivableDiagnostics(WithoutIDText).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
 
     private static string WithIDText => """
@@ -58,6 +58,19 @@ public class UnitNotDerivable
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(WithIDText, target: "DerivedUnit");
 
-        return AssertExactlyUnitNotDerivableDiagnostics(WithIDText).AssertDiagnosticsLocation(expectedLocation, WithIDText);
+        return AssertExactlyUnitNotDerivableDiagnostics(WithIDText).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
+
+    private static GeneratorVerifier Identical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText);
+
+    private static string IdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }

@@ -56,6 +56,20 @@ public class TypeNotQuantity
         var source = DerivedScalarText(quantityType);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, quantityType.Context.With(outerPrefix: "DerivedQuantity(\"{0}\", "));
 
-        return AssertExactlyTypeNotQuantityDiagnosticsWithValidLocation(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyTypeNotQuantityDiagnosticsWithValidLocation(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(DerivedScalarIdentical);
     }
+
+    private static GeneratorVerifier DerivedScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(DerivedScalarIdenticalText);
+
+    private static string DerivedScalarIdenticalText => """
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }

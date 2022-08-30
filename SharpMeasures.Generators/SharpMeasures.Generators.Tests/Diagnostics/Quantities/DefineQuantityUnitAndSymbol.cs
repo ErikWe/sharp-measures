@@ -73,7 +73,7 @@ public class DefineQuantityUnitAndSymbol
         var source = ScalarText(argument);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, argument.Context.With(outerPrefix: "SharpMeasuresScalar(typeof(UnitOfLength), "));
 
-        return AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ScalarIdentical);
     }
 
     private static string SpecializedScalarText(SourceSubtext argument) => $$"""
@@ -96,7 +96,7 @@ public class DefineQuantityUnitAndSymbol
         var source = SpecializedScalarText(argument);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, argument.Context.With(outerPrefix: "SpecializedSharpMeasuresScalar(typeof(Length), "));
 
-        return AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical);
     }
 
     private static string VectorText(SourceSubtext argument) => $$"""
@@ -120,7 +120,7 @@ public class DefineQuantityUnitAndSymbol
         var source = VectorText(argument);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, argument.Context.With(outerPrefix: "SharpMeasuresVector(typeof(UnitOfLength), "));
 
-        return AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical);
     }
 
     private static string SpecializedVectorText(SourceSubtext argument) => $$"""
@@ -147,7 +147,7 @@ public class DefineQuantityUnitAndSymbol
         var source = SpecializedVectorText(argument);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, argument.Context.With(outerPrefix: "SpecializedSharpMeasuresVector(typeof(Position3), "));
 
-        return AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical);
     }
 
     private static string VectorGroupText(SourceSubtext argument) => $$"""
@@ -171,7 +171,7 @@ public class DefineQuantityUnitAndSymbol
         var source = VectorGroupText(argument);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, argument.Context.With(outerPrefix: "SharpMeasuresVectorGroup(typeof(UnitOfLength), "));
 
-        return AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupIdentical);
     }
 
     private static string SpecializedVectorGroupText(SourceSubtext argument) => $$"""
@@ -198,6 +198,110 @@ public class DefineQuantityUnitAndSymbol
         var source = SpecializedVectorGroupText(argument);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, argument.Context.With(outerPrefix: "SpecializedSharpMeasuresVectorGroup(typeof(Position), "));
 
-        return AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorGroupIdentical);
     }
+
+    private static GeneratorVerifier ScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ScalarIdenticalText);
+    private static GeneratorVerifier SpecializedScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedScalarIdenticalText);
+    private static GeneratorVerifier VectorIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorIdenticalText);
+    private static GeneratorVerifier SpecializedVectorIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorIdenticalText);
+    private static GeneratorVerifier VectorGroupIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupIdenticalText);
+    private static GeneratorVerifier SpecializedVectorGroupIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorGroupIdenticalText);
+
+    private static string ScalarIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres", 1)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedScalarIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        public partial class Distance { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres", 1)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres", 1)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedVectorIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        public partial class Displacement3 { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres", 1)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorGroupIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres", 1)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedVectorGroupIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        public static partial class Displacement { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres", 1)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }

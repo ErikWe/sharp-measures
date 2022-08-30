@@ -82,7 +82,7 @@ internal static class VectorBaseValidator
 
         var validationContext = new VectorConstantValidationContext(vectorType.Type, vectorType.Definition.Dimension, unit, new HashSet<string>(), new HashSet<string>(), incluedUnitPlurals);
 
-        return ValidityFilter.Create(VectorConstantValidator).Filter(validationContext, vectorType.Constants);
+        return ProcessingFilter.Create(VectorConstantValidator).Filter(validationContext, vectorType.Constants);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ValidateConversions(VectorBaseType vectorType, IVectorPopulation vectorPopulation)

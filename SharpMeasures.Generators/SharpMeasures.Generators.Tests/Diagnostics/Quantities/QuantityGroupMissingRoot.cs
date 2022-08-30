@@ -72,7 +72,7 @@ public class QuantityGroupMissingRoot
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText_Self, target: "SpecializedSharpMeasuresScalar");
 
-        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedScalarText_Self, 1).AssertDiagnosticsLocation(expectedLocation, SpecializedScalarText_Self);
+        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedScalarText_Self, 1).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
 
     private static string SpecializedScalarText_Loop => """
@@ -104,7 +104,7 @@ public class QuantityGroupMissingRoot
             ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText_Loop, target: "SpecializedSharpMeasuresScalar", postfix: "(typeof(Depth)")
         };
 
-        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedScalarText_Loop, 3).AssertDiagnosticsLocation(expectedLocations, SpecializedScalarText_Loop);
+        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedScalarText_Loop, 3).AssertDiagnosticsLocation(expectedLocations).AssertIdenticalSources(Identical);
     }
 
     private static string SpecializedScalarText_BranchedLoop => """
@@ -136,7 +136,7 @@ public class QuantityGroupMissingRoot
             ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarText_BranchedLoop, target: "SpecializedSharpMeasuresScalar", postfix: "(typeof(Width))] // 2nd")
         };
 
-        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedScalarText_BranchedLoop, 3).AssertDiagnosticsLocation(expectedLocations, SpecializedScalarText_BranchedLoop);
+        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedScalarText_BranchedLoop, 3).AssertDiagnosticsLocation(expectedLocations).AssertIdenticalSources(Identical);
     }
 
     private static string SpecializedVectorText_Self => """
@@ -158,7 +158,7 @@ public class QuantityGroupMissingRoot
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText_Self, target: "SpecializedSharpMeasuresVector");
 
-        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorText_Self, 1).AssertDiagnosticsLocation(expectedLocation, SpecializedVectorText_Self);
+        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorText_Self, 1).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
 
     private static string SpecializedVectorText_Loop => """
@@ -191,7 +191,7 @@ public class QuantityGroupMissingRoot
             ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText_Loop, target: "SpecializedSharpMeasuresVector", postfix: "(typeof(Offset3)")
         };
 
-        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorText_Loop, 3).AssertDiagnosticsLocation(expectedLocations, SpecializedVectorText_Loop);
+        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorText_Loop, 3).AssertDiagnosticsLocation(expectedLocations).AssertIdenticalSources(Identical);
     }
 
     private static string SpecializedVectorText_BranchedLoop => """
@@ -224,7 +224,7 @@ public class QuantityGroupMissingRoot
             ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorText_BranchedLoop, target: "SpecializedSharpMeasuresVector", postfix: "(typeof(Displacement3))] // 2nd")
         };
 
-        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorText_BranchedLoop, 3).AssertDiagnosticsLocation(expectedLocations, SpecializedVectorText_BranchedLoop);
+        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorText_BranchedLoop, 3).AssertDiagnosticsLocation(expectedLocations).AssertIdenticalSources(Identical);
     }
 
     private static string SpecializedVectorGroupText_Self => """
@@ -246,7 +246,7 @@ public class QuantityGroupMissingRoot
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText_Self, target: "SpecializedSharpMeasuresVectorGroup");
 
-        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorGroupText_Self, 1).AssertDiagnosticsLocation(expectedLocation, SpecializedVectorGroupText_Self);
+        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorGroupText_Self, 1).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
 
     private static string SpecializedVectorGroupText_Loop => """
@@ -279,7 +279,7 @@ public class QuantityGroupMissingRoot
             ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText_Loop, target: "SpecializedSharpMeasuresVectorGroup", postfix: "(typeof(Offset)")
         };
 
-        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorGroupText_Loop, 3).AssertDiagnosticsLocation(expectedLocations, SpecializedVectorGroupText_Loop);
+        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorGroupText_Loop, 3).AssertDiagnosticsLocation(expectedLocations).AssertIdenticalSources(Identical);
     }
 
     private static string SpecializedVectorGroupText_BranchedLoop => """
@@ -312,6 +312,19 @@ public class QuantityGroupMissingRoot
             ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorGroupText_BranchedLoop, target: "SpecializedSharpMeasuresVectorGroup", postfix: "(typeof(Displacement))] // 2nd")
         };
 
-        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorGroupText_BranchedLoop, 3).AssertDiagnosticsLocation(expectedLocations, SpecializedVectorGroupText_BranchedLoop);
+        return AssertExactlyQuantityGroupMissingRootDiagnostics(SpecializedVectorGroupText_BranchedLoop, 3).AssertDiagnosticsLocation(expectedLocations).AssertIdenticalSources(Identical);
     }
+
+    private static GeneratorVerifier Identical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText);
+
+    private static string IdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }

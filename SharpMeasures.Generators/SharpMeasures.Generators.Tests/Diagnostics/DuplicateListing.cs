@@ -91,8 +91,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleScalarText_SingleAttribute, target: "Length", prefix: "ConvertibleQuantity(typeof(Length), ");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleScalarText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleScalarText_SingleAttribute)
-            .AssertIdenticalSources(ConvertibleScalarIdentical);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleScalarText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleScalarIdentical);
     }
 
     private static string ConvertibleScalarText_MultipleAttributes => """
@@ -116,8 +115,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleScalarText_MultipleAttributes, target: "Length", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleScalarText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation, ConvertibleScalarText_MultipleAttributes)
-            .AssertIdenticalSources(ConvertibleScalarIdentical);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleScalarText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleScalarIdentical);
     }
 
     private static string ConvertibleSpecializedScalarText_SingleAttribute => """
@@ -140,8 +138,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedScalarText_SingleAttribute, target: "Length", prefix: "ConvertibleQuantity(typeof(Length), ");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedScalarText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleScalarText_SingleAttribute)
-            .AssertIdenticalSources(ConvertibleSpecializedScalarIdentical_InSpecialized);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedScalarText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedScalarIdentical_InSpecialized);
     }
 
     private static string ConvertibleSpecializedScalarText_MultipleAttributes => """
@@ -165,8 +162,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedScalarText_MultipleAttributes, target: "Length", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedScalarText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation, ConvertibleSpecializedScalarText_MultipleAttributes)
-            .AssertIdenticalSources(ConvertibleSpecializedScalarIdentical_InSpecialized);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedScalarText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedScalarIdentical_InSpecialized);
     }
 
     private static string ConvertibleSpecializedScalarText_InheritedAttribute => """
@@ -193,8 +189,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedScalarText_InheritedAttribute, target: "Height", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedScalarText_InheritedAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleSpecializedScalarText_InheritedAttribute)
-            .AssertIdenticalSources(ConvertibleSpecializedScalarIdentical_InOriginal);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedScalarText_InheritedAttribute).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedScalarIdentical_InOriginal);
     }
 
     private static string ConvertibleVectorText_SingleAttribute => """
@@ -221,8 +216,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorText_SingleAttribute, target: "Position3", prefix: "ConvertibleQuantity(typeof(Position3), ");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleVectorText_SingleAttribute)
-            .AssertIdenticalSources(ConvertibleVectorIdentical);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleVectorIdentical);
     }
 
     private static string ConvertibleVectorText_MultipleAttributes => """
@@ -250,8 +244,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorText_MultipleAttributes, target: "Position3", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation, ConvertibleVectorText_MultipleAttributes)
-            .AssertIdenticalSources(ConvertibleVectorIdentical);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleVectorIdentical);
     }
 
     private static string ConvertibleSpecializedVectorText_SingleAttribute => """
@@ -278,8 +271,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorText_SingleAttribute, target: "Position3", prefix: "ConvertibleQuantity(typeof(Position3), ");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleSpecializedVectorText_SingleAttribute)
-            .AssertIdenticalSources(ConvertibleSpecializedVectorIdentical_InSpecialized);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedVectorIdentical_InSpecialized);
     }
 
     private static string ConvertibleSpecializedVectorText_MultipleAttributes => """
@@ -307,8 +299,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorText_MultipleAttributes, target: "Position3", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation, ConvertibleSpecializedVectorText_MultipleAttributes)
-            .AssertIdenticalSources(ConvertibleSpecializedVectorIdentical_InSpecialized);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedVectorIdentical_InSpecialized);
     }
 
     private static string ConvertibleSpecializedVectorText_InheritedAttribute => """
@@ -339,8 +330,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorText_InheritedAttribute, target: "Size3", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorText_InheritedAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleSpecializedVectorText_InheritedAttribute)
-            .AssertIdenticalSources(ConvertibleSpecializedVectorIdentical_InOriginal);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorText_InheritedAttribute).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedVectorIdentical_InOriginal);
     }
 
     private static string ConvertibleVectorGroupText_SingleAttribute => """
@@ -367,8 +357,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorGroupText_SingleAttribute, target: "Position", prefix: "ConvertibleQuantity(typeof(Position), ");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorGroupText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleVectorGroupText_SingleAttribute)
-            .AssertIdenticalSources(ConvertibleVectorGroupIdentical);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorGroupText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleVectorGroupIdentical);
     }
 
     private static string ConvertibleVectorGroupText_MultipleAttributes => """
@@ -396,8 +385,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorGroupText_MultipleAttributes, target: "Position", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorGroupText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation, ConvertibleVectorGroupText_MultipleAttributes)
-            .AssertIdenticalSources(ConvertibleVectorGroupIdentical);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorGroupText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleVectorGroupIdentical);
     }
 
     private static string ConvertibleSpecializedVectorGroupText_SingleAttribute => """
@@ -424,8 +412,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorGroupText_SingleAttribute, target: "Position", prefix: "ConvertibleQuantity(typeof(Position), ");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorGroupText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleSpecializedVectorGroupText_SingleAttribute)
-            .AssertIdenticalSources(ConvertibleSpecializedVectorGroupIdentical_InSpecialized);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorGroupText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedVectorGroupIdentical_InSpecialized);
     }
 
     private static string ConvertibleSpecializedVectorGroupText_MultipleAttributes => """
@@ -453,8 +440,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorGroupText_MultipleAttributes, target: "Position", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorGroupText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation, ConvertibleSpecializedVectorGroupText_MultipleAttributes)
-            .AssertIdenticalSources(ConvertibleSpecializedVectorGroupIdentical_InSpecialized);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorGroupText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedVectorGroupIdentical_InSpecialized);
     }
 
     private static string ConvertibleSpecializedVectorGroupText_InheritedAttribute => """
@@ -485,8 +471,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorGroupText_InheritedAttribute, target: "Size", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorGroupText_InheritedAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleSpecializedVectorGroupText_InheritedAttribute)
-            .AssertIdenticalSources(ConvertibleSpecializedVectorGroupIdentical_InOriginal);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorGroupText_InheritedAttribute).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedVectorGroupIdentical_InOriginal);
     }
 
     private static string ConvertibleVectorGroupMemberText_SingleAttribute => """
@@ -516,8 +501,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorGroupMemberText_SingleAttribute, target: "Displacement3", prefix: "ConvertibleQuantity(typeof(Displacement3), ");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorGroupMemberText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation, ConvertibleVectorGroupMemberText_SingleAttribute)
-            .AssertIdenticalSources(ConvertibleVectorGroupMemberIdentical_InMember);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorGroupMemberText_SingleAttribute).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleVectorGroupMemberIdentical_InMember);
     }
 
     private static string ConvertibleVectorGroupMemberText_MultipleAttributes => """
@@ -548,8 +532,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorGroupMemberText_MultipleAttributes, target: "Displacement3", postfix: ")] // <-");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorGroupMemberText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation, ConvertibleVectorGroupMemberText_MultipleAttributes)
-            .AssertIdenticalSources(ConvertibleVectorGroupMemberIdentical_InMember);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorGroupMemberText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleVectorGroupMemberIdentical_InMember);
     }
 
     private static string ConvertibleVectorGroupMemberText_InheritedAttributeFromGroup => """
@@ -583,8 +566,7 @@ public class DuplicateListing
     {
         var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorGroupMemberText_InheritedAttributeFromGroup, target: "Displacement3");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorGroupMemberText_InheritedAttributeFromGroup).AssertDiagnosticsLocation(expectedLocation, ConvertibleVectorGroupMemberText_InheritedAttributeFromGroup)
-            .AssertIdenticalSources(ConvertibleVectorGroupMemberIdentical_InGroup);
+        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorGroupMemberText_InheritedAttributeFromGroup).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleVectorGroupMemberIdentical_InGroup);
     }
 
     private static GeneratorVerifier ConvertibleScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleScalarIdenticalText);

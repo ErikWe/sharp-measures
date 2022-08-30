@@ -26,7 +26,8 @@ public interface IConvertibleQuantityProcessingContext : IProcessingContext
     public abstract HashSet<NamedType> ListedQuantities { get; }
 }
 
-public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProcesser<IConvertibleQuantityProcessingContext, RawConvertibleQuantityDefinition, TProduct>
+public abstract class AConvertibleQuantityProcesser<TContext, TProduct> : AActionableProcesser<TContext, RawConvertibleQuantityDefinition, TProduct>
+    where TContext : IConvertibleQuantityProcessingContext
     where TProduct : IConvertibleQuantity
 {
     private IConvertibleQuantityProcessingDiagnostics Diagnostics { get; }
@@ -36,7 +37,7 @@ public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProce
         Diagnostics = diagnostics;
     }
 
-    public override void OnSuccessfulProcess(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, TProduct product)
+    public override void OnSuccessfulProcess(TContext context, RawConvertibleQuantityDefinition definition, TProduct product)
     {
         foreach (var quantity in product.Quantities)
         {
@@ -44,7 +45,7 @@ public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProce
         }
     }
 
-    protected IOptionalWithDiagnostics<(IReadOnlyList<NamedType> Quantities, IReadOnlyList<int> LocationMap)> ProcessQuantities(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
+    protected IOptionalWithDiagnostics<(IReadOnlyList<NamedType> Quantities, IReadOnlyList<int> LocationMap)> ProcessQuantities(TContext context, RawConvertibleQuantityDefinition definition)
     {
         HashSet<NamedType> quantities = new();
         List<int> locationMap = new(definition.Quantities.Count);
@@ -53,27 +54,16 @@ public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProce
 
         for (int i = 0; i < definition.Quantities.Count; i++)
         {
-            if (definition.Quantities[i] is not NamedType candidate)
+            var quantityValidity = ValidateQuantity(context, definition, i);
+
+            if (quantityValidity.IsInvalid)
             {
-                if (Diagnostics.NullQuantity(context, definition, i) is Diagnostic diagnostics)
-                {
-                    allDiagnostics.Add(diagnostics);
-                }
+                allDiagnostics.AddRange(quantityValidity);
 
                 continue;
             }
 
-            if (candidate == context.Type.AsNamedType())
-            {
-                if (Diagnostics.ConvertibleToSelf(context, definition, i) is Diagnostic diagnostics)
-                {
-                    allDiagnostics.Add(diagnostics);
-                }
-
-                continue;
-            }
-
-            if (context.ListedQuantities.Contains(candidate) || quantities.Add(candidate) is false)
+            if (quantities.Add(definition.Quantities[i]!.Value) is false)
             {
                 if (Diagnostics.DuplicateQuantity(context, definition, i) is Diagnostic diagnostics)
                 {
@@ -86,24 +76,50 @@ public abstract class AConvertibleQuantityProcesser<TProduct> : AActionableProce
             locationMap.Add(i);
         }
 
-        return OptionalWithDiagnostics.Conditional<(IReadOnlyList<NamedType>, IReadOnlyList<int>)>(quantities.Count > 0, (quantities.ToList(), locationMap), allDiagnostics);
+        return OptionalWithDiagnostics.ConditionalWithDefiniteDiagnostics<(IReadOnlyList<NamedType>, IReadOnlyList<int>)>(quantities.Count > 0, (quantities.ToList(), locationMap), allDiagnostics);
     }
 
-    protected IValidityWithDiagnostics Validate(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
+    protected IValidityWithDiagnostics Validate(TContext context, RawConvertibleQuantityDefinition definition)
     {
         return ValidateNotZeroQuantities(context, definition)
             .Validate(() => ValidateCastOperatorBehaviourDefined(context, definition));
     }
 
-    private IValidityWithDiagnostics ValidateNotZeroQuantities(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
+    private IValidityWithDiagnostics ValidateNotZeroQuantities(TContext context, RawConvertibleQuantityDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.Quantities.Count > 0, () => Diagnostics.EmptyQuantityList(context, definition));
     }
 
-    private IValidityWithDiagnostics ValidateCastOperatorBehaviourDefined(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
+    private IValidityWithDiagnostics ValidateCastOperatorBehaviourDefined(TContext context, RawConvertibleQuantityDefinition definition)
     {
         var enumDefined = Enum.IsDefined(typeof(ConversionOperatorBehaviour), definition.CastOperatorBehaviour);
 
         return ValidityWithDiagnostics.Conditional(enumDefined, () => Diagnostics.UnrecognizedCastOperatorBehaviour(context, definition));
+    }
+
+    protected virtual IValidityWithDiagnostics ValidateQuantity(TContext context, RawConvertibleQuantityDefinition definition, int index)
+    {
+        return ValidateQuantityNotNull(context, definition, index)
+            .Validate(() => ValidateQuantityNotSelf(context, definition, index))
+            .Validate(() => ValidateQuantityNotDuplicate(context, definition, index));
+    }
+
+    private IValidityWithDiagnostics ValidateQuantityNotNull(TContext context, RawConvertibleQuantityDefinition definition, int index)
+    {
+        return ValidityWithDiagnostics.Conditional(definition.Quantities[index] is not null, () => Diagnostics.NullQuantity(context, definition, index));
+    }
+
+    private IValidityWithDiagnostics ValidateQuantityNotSelf(TContext context, RawConvertibleQuantityDefinition definition, int index)
+    {
+        var quantityIsNotSelf = definition.Quantities[index]!.Value != context.Type.AsNamedType();
+
+        return ValidityWithDiagnostics.Conditional(quantityIsNotSelf, () => Diagnostics.ConvertibleToSelf(context, definition, index));
+    }
+
+    private IValidityWithDiagnostics ValidateQuantityNotDuplicate(TContext context, RawConvertibleQuantityDefinition definition, int index)
+    {
+        var quantityIsDuplicate = context.ListedQuantities.Contains(definition.Quantities[index]!.Value);
+
+        return ValidityWithDiagnostics.Conditional(quantityIsDuplicate is false, () => Diagnostics.DuplicateQuantity(context, definition, index));
     }
 }

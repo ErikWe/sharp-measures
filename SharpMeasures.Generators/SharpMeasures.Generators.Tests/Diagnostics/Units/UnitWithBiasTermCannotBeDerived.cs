@@ -48,6 +48,31 @@ public class UnitWithBiasTermCannotBeDerived
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(Text, target: "DerivableUnit");
 
-        return AssertExactlyUnitWithBiasTermCannotBeDerivedDiagnostics(Text).AssertDiagnosticsLocation(expectedLocation, Text);
+        return AssertExactlyUnitWithBiasTermCannotBeDerivedDiagnostics(Text).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
+
+    private static GeneratorVerifier Identical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText);
+
+    private static string IdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        public partial class Time { }
+        
+        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        public partial class TemperatureDifference { }
+        
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        
+        [SharpMeasuresUnit(typeof(Time))]
+        public partial class UnitOfTime { }
+        
+        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        public partial class UnitOfTemperature { }
+        """;
 }

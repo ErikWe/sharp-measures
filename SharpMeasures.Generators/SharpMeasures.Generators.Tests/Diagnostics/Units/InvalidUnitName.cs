@@ -30,11 +30,7 @@ public class InvalidUnitName
 
     [Theory]
     [MemberData(nameof(InvalidUnitNames))]
-    public void DerivedWithID(SourceSubtext name) => AssertDerived_WithID(name);
-
-    [Theory]
-    [MemberData(nameof(InvalidUnitNames))]
-    public void DerivedWithoutID(SourceSubtext name) => AssertDerived_WithoutID(name);
+    public void Derived(SourceSubtext name) => AssertDerived(name);
 
     [Theory]
     [MemberData(nameof(InvalidUnitNames))]
@@ -60,59 +56,209 @@ public class InvalidUnitName
     private static GeneratorVerifier AssertExactlyInvalidUnitNameDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidUnitNameDiagnostics);
     private static IReadOnlyCollection<string> InvalidUnitNameDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidUnitName };
 
+    private static string AliasText(SourceSubtext name) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres")]
+        [UnitAlias({{name}}, "Meters", "Metre")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
     private static GeneratorVerifier AssertAlias(SourceSubtext name)
     {
-        var source = SourceTexts.Alias(name: name.ToString());
+        var source = AliasText(name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "UnitAlias("));
 
-        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(NonDerivableIdentical);
     }
+
+    private static string BiasedText(SourceSubtext name) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        public partial class TemperatureDifference { }
+
+        [FixedUnit("Kelvin", "Kelvin")]
+        [BiasedUnit({{name}}, "Celsius", "Kelvin", -273.15)]
+        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        public partial class UnitOfTemperature { }
+        """;
 
     private static GeneratorVerifier AssertBiased(SourceSubtext name)
     {
-        var source = SourceTexts.Biased(name: name.ToString());
+        var source = BiasedText(name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "BiasedUnit("));
 
-        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(BiasedIdentical);
     }
 
-    private static GeneratorVerifier AssertDerived_WithID(SourceSubtext name)
+    private static string DerivedText(SourceSubtext name) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        public partial class Time { }
+
+        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        public partial class Speed { }
+
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+
+        [FixedUnit("Second", "Seconds")]
+        [SharpMeasuresUnit(typeof(Time))]
+        public partial class UnitOfTime { }
+
+        [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
+        [DerivedUnit({{name}}, "MetresPerSecond", new[] { "Metre", "Second" })]
+        [SharpMeasuresUnit(typeof(Speed))]
+        public partial class UnitOfSpeed { }
+        """;
+
+    private static GeneratorVerifier AssertDerived(SourceSubtext name)
     {
-        var source = SourceTexts.DerivedWithID(name: name.ToString());
+        var source = DerivedText(name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DerivedUnit("));
 
-        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(DerivableIdentical);
     }
 
-    private static GeneratorVerifier AssertDerived_WithoutID(SourceSubtext name)
-    {
-        var source = SourceTexts.DerivedWithoutID(name: name.ToString());
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DerivedUnit("));
+    private static string FixedText(SourceSubtext name) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
 
-        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
-    }
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit({{name}}, "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 
     private static GeneratorVerifier AssertFixed(SourceSubtext name)
     {
-        var source = SourceTexts.Fixed(name: name.ToString());
+        var source = FixedText(name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "FixedUnit("));
 
-        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(FixedIdentical);
     }
+
+    private static string PrefixedText(SourceSubtext name) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Units.Utility;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres")]
+        [PrefixedUnit({{name}}, "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 
     private static GeneratorVerifier AssertPrefixed(SourceSubtext name)
     {
-        var source = SourceTexts.Prefixed(name: name.ToString());
+        var source = PrefixedText(name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "PrefixedUnit("));
 
-        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(NonDerivableIdentical);
     }
+
+    private static string ScaledText(SourceSubtext name) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres")]
+        [ScaledUnit({{name}}, "Kilometres", "Metre", 1000)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 
     private static GeneratorVerifier AssertScaled(SourceSubtext name)
     {
-        var source = SourceTexts.Scaled(name: name.ToString());
+        var source = ScaledText(name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "ScaledUnit("));
 
-        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(NonDerivableIdentical);
     }
+
+    private static GeneratorVerifier NonDerivableIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(NonDerivableIdenticalText);
+    private static GeneratorVerifier BiasedIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedIdenticalText);
+    private static GeneratorVerifier DerivableIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(DerivableIdenticalText);
+    private static GeneratorVerifier FixedIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(FixedIdenticalText);
+
+    private static string NonDerivableIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string BiasedIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        public partial class TemperatureDifference { }
+
+        [FixedUnit("Kelvin", "Kelvin")]
+        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        public partial class UnitOfTemperature { }
+        """;
+
+    private static string DerivableIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        public partial class Time { }
+
+        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        public partial class Speed { }
+
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+
+        [FixedUnit("Second", "Seconds")]
+        [SharpMeasuresUnit(typeof(Time))]
+        public partial class UnitOfTime { }
+
+        [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
+        [SharpMeasuresUnit(typeof(Speed))]
+        public partial class UnitOfSpeed { }
+        """;
+
+    private static string FixedIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }

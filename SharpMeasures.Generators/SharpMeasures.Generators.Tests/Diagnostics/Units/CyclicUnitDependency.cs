@@ -60,7 +60,7 @@ public class CyclicUnitDependency
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(AliasText_Self, target: "\"Metre\"", prefix: "UnitAlias(\"Metre\", \"Metres\", ");
 
-        return AssertExactlyOneCyclicUnitDependencyDiagnostics(AliasText_Self).AssertDiagnosticsLocation(expectedLocation, AliasText_Self);
+        return AssertExactlyOneCyclicUnitDependencyDiagnostics(AliasText_Self).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(UnbiasedIdentical);
     }
 
     private static string AliasText_Loop => """
@@ -84,7 +84,7 @@ public class CyclicUnitDependency
             ExpectedDiagnosticsLocation.TextSpan(AliasText_Loop, target: "\"Metre\"", prefix: "UnitAlias(\"Meter\", \"Meters\", ")
         };
 
-        return AssertExactlyTwoCyclicUnitDependencyDiagnostics(AliasText_Loop).AssertDiagnosticsLocation(expectedLocations, AliasText_Loop);
+        return AssertExactlyTwoCyclicUnitDependencyDiagnostics(AliasText_Loop).AssertDiagnosticsLocation(expectedLocations).AssertIdenticalSources(UnbiasedIdentical);
     }
 
     private static string BiasedText_Self => """
@@ -103,7 +103,7 @@ public class CyclicUnitDependency
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(BiasedText_Self, target: "\"Kelvin\"", prefix: "BiasedUnit(\"Kelvin\", \"Kelvin\", ");
 
-        return AssertExactlyOneCyclicUnitDependencyDiagnostics(BiasedText_Self).AssertDiagnosticsLocation(expectedLocation, BiasedText_Self);
+        return AssertExactlyOneCyclicUnitDependencyDiagnostics(BiasedText_Self).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(BiasedIdentical);
     }
 
     private static string BiasedText_Loop => """
@@ -127,7 +127,7 @@ public class CyclicUnitDependency
             ExpectedDiagnosticsLocation.TextSpan(BiasedText_Loop, target: "\"Kelvin\"", prefix: "BiasedUnit(\"Celsius\", \"Celsius\", ")
         };
 
-        return AssertExactlyTwoCyclicUnitDependencyDiagnostics(BiasedText_Loop).AssertDiagnosticsLocation(expectedLocations, BiasedText_Loop);
+        return AssertExactlyTwoCyclicUnitDependencyDiagnostics(BiasedText_Loop).AssertDiagnosticsLocation(expectedLocations).AssertIdenticalSources(BiasedIdentical);
     }
 
     private static string PrefixedText_Self => """
@@ -147,7 +147,7 @@ public class CyclicUnitDependency
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(PrefixedText_Self, target: "\"Metre\"", prefix: "PrefixedUnit(\"Metre\", \"Metres\", ");
 
-        return AssertExactlyOneCyclicUnitDependencyDiagnostics(PrefixedText_Self).AssertDiagnosticsLocation(expectedLocation, PrefixedText_Self);
+        return AssertExactlyOneCyclicUnitDependencyDiagnostics(PrefixedText_Self).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(UnbiasedIdentical);
     }
 
     private static string PrefixedText_Loop => """
@@ -172,7 +172,7 @@ public class CyclicUnitDependency
             ExpectedDiagnosticsLocation.TextSpan(PrefixedText_Loop, target: "\"Metre\"", prefix: "PrefixedUnit(\"Kilometre\", \"Kilometres\", ")
         };
 
-        return AssertExactlyTwoCyclicUnitDependencyDiagnostics(PrefixedText_Loop).AssertDiagnosticsLocation(expectedLocations, PrefixedText_Loop);
+        return AssertExactlyTwoCyclicUnitDependencyDiagnostics(PrefixedText_Loop).AssertDiagnosticsLocation(expectedLocations).AssertIdenticalSources(UnbiasedIdentical);
     }
 
     private static string ScaledText_Self => """
@@ -191,7 +191,7 @@ public class CyclicUnitDependency
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(ScaledText_Self, target: "\"Metre\"", prefix: "ScaledUnit(\"Metre\", \"Metres\", ");
 
-        return AssertExactlyOneCyclicUnitDependencyDiagnostics(ScaledText_Self).AssertDiagnosticsLocation(expectedLocation, ScaledText_Self);
+        return AssertExactlyOneCyclicUnitDependencyDiagnostics(ScaledText_Self).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(UnbiasedIdentical);
     }
 
     private static string ScaledText_Loop => """
@@ -215,6 +215,31 @@ public class CyclicUnitDependency
             ExpectedDiagnosticsLocation.TextSpan(ScaledText_Loop, target: "\"Metre\"", prefix: "ScaledUnit(\"Kilometre\", \"Kilometres\", ")
         };
 
-        return AssertExactlyTwoCyclicUnitDependencyDiagnostics(ScaledText_Loop).AssertDiagnosticsLocation(expectedLocations, ScaledText_Loop);
+        return AssertExactlyTwoCyclicUnitDependencyDiagnostics(ScaledText_Loop).AssertDiagnosticsLocation(expectedLocations).AssertIdenticalSources(UnbiasedIdentical);
     }
+
+    private static GeneratorVerifier UnbiasedIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(UnbiasedIdenticalText);
+    private static GeneratorVerifier BiasedIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedIdenticalText);
+
+    private static string UnbiasedIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string BiasedIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        public partial class TemperatureDifference { }
+
+        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        public partial class UnitOfTemperature { }
+        """;
 }

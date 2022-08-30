@@ -49,6 +49,32 @@ public class DuplicateUnitDerivationID
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(Text, target: "\"id\"", postfix: ", \"{0} / {1}\", typeof(UnitOfLength), typeof(UnitOfTime))] // <-");
 
-        return AssertExactlyDuplicateUnitDerivationIDDiagnostics(Text).AssertDiagnosticsLocation(expectedLocation, Text);
+        return AssertExactlyDuplicateUnitDerivationIDDiagnostics(Text).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
+
+    private static GeneratorVerifier Identical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText);
+
+    private static string IdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        public partial class Time { }
+
+        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        public partial class Speed { }
+
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+
+        [SharpMeasuresUnit(typeof(Time))]
+        public partial class UnitOfTime { }
+
+        [DerivableUnit("id", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
+        [SharpMeasuresUnit(typeof(Speed))]
+        public partial class UnitOfSpeed { }
+        """;
 }

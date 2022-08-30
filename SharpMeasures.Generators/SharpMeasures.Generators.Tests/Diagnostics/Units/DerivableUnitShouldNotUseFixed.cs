@@ -49,6 +49,6 @@ public class DerivableUnitShouldNotUseFixed
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(Text, target: "FixedUnit");
 
-        return AssertExactlyDerivableUnitShouldNotUseFixedDiagnostics(Text).AssertDiagnosticsLocation(expectedLocation, Text);
+        return AssertExactlyDerivableUnitShouldNotUseFixedDiagnostics(Text).AssertDiagnosticsLocation(expectedLocation);
     }
 }

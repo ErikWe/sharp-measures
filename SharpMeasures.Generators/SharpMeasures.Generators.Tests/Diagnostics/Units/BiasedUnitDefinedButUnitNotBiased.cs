@@ -37,6 +37,20 @@ public class BiasedUnitDefinedButUnitNotBiased
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(Text, target: "BiasedUnit", postfix: "(\"Metre2\", \"Metres2\", \"Metre\", 1)]");
 
-        return AssertExactlyBiasedUnitDefinedButUnitNotBiasedDiagnostics(Text).AssertDiagnosticsLocation(expectedLocation, Text);
+        return AssertExactlyBiasedUnitDefinedButUnitNotBiasedDiagnostics(Text).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
+
+    private static GeneratorVerifier Identical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText);
+
+    private static string IdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }

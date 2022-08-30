@@ -26,11 +26,38 @@ public class InvalidBiasedUnitExpression
     private static GeneratorVerifier AssertExactlyInvalidBiasedUnitExpressionDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidBiasedUnitExpressionDiagnostics);
     private static IReadOnlyCollection<string> InvalidBiasedUnitExpressionDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidBiasedUnitExpression };
 
-    private static GeneratorVerifier Assert(SourceSubtext expression)
-    {
-        var source = SourceTexts.Biased(bias: expression.ToString());
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, expression.Context.With(outerPrefix: "[BiasedUnit(\"Celsius\", \"Celsius\", \"Kelvin\", "));
+    private static string Text(SourceSubtext bias) => $$"""
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
 
-        return AssertExactlyInvalidBiasedUnitExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        public partial class TemperatureDifference { }
+
+        [FixedUnit("Kelvin", "Kelvin")]
+        [BiasedUnit("Celsius", "Celsius", "Kelvin", {{bias}})]
+        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        public partial class UnitOfTemperature { }
+        """;
+
+    private static GeneratorVerifier Assert(SourceSubtext bias)
+    {
+        var source = Text(bias);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, bias.Context.With(outerPrefix: "[BiasedUnit(\"Celsius\", \"Celsius\", \"Kelvin\", "));
+
+        return AssertExactlyInvalidBiasedUnitExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
+
+    private static GeneratorVerifier Identical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText);
+
+    private static string IdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        public partial class TemperatureDifference { }
+
+        [FixedUnit("Kelvin", "Kelvin")]
+        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        public partial class UnitOfTemperature { }
+        """;
 }

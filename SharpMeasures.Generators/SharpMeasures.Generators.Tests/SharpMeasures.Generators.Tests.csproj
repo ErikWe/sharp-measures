@@ -42,7 +42,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Units\Definitions\Derived\" />
       <Folder Include="Verify\Snapshots\Units\VerifyGeneratedCode\" />
     </ItemGroup>
 

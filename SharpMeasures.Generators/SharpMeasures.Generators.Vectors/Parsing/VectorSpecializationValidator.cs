@@ -94,7 +94,7 @@ internal static class VectorSpecializationValidator
 
         var validationContext = new VectorConstantValidationContext(vectorType.Type, dimension, unit, inheritedConstantNames, inheritedConstantMultiples, incluedUnitPlurals);
 
-        return ValidityFilter.Create(VectorConstantValidator).Filter(validationContext, vectorType.Constants);
+        return ProcessingFilter.Create(VectorConstantValidator).Filter(validationContext, vectorType.Constants);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ValidateConversions(VectorSpecializationType vectorType, IVectorPopulation vectorPopulation, int dimension)

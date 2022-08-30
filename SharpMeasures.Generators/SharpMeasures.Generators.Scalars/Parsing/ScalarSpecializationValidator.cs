@@ -105,7 +105,7 @@ internal static class ScalarSpecializationValidator
 
         var validationContext = new ScalarConstantValidationContext(scalarType.Type, unit, inheritedConstantNames, inheritedConstantMultiples, includedUnitNames, incluedUnitPlurals);
 
-        return ValidityFilter.Create(ScalarConstantValidator).Filter(validationContext, scalarType.Constants);
+        return ProcessingFilter.Create(ScalarConstantValidator).Filter(validationContext, scalarType.Constants);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<ConvertibleScalarDefinition>> ValidateConversions(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation)

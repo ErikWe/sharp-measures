@@ -38,6 +38,19 @@ public class UnitNotIncludingBiasTerm
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(BiasedScalarText, target: "true", prefix: "UseUnitBias = ");
 
-        return AssertExactlyUnitNotIncludingBiasTermDiagnostics(BiasedScalarText).AssertDiagnosticsLocation(expectedLocation, BiasedScalarText);
+        return AssertExactlyUnitNotIncludingBiasTermDiagnostics(BiasedScalarText).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(BiasedScalarIdentical);
     }
+
+    private static GeneratorVerifier BiasedScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedScalarIdenticalText);
+
+    private static string BiasedScalarIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+            
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }

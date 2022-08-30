@@ -54,7 +54,7 @@ internal class ConvertibleScalarFilterer : IProcesser<IConvertibleScalarFilterin
 
         var productDelegate = () => new ConvertibleScalarDefinition(scalars, definition.Bidirectional, definition.CastOperatorBehaviour, definition.Locations, locationMap);
 
-        return OptionalWithDiagnostics.Conditional(scalars.Count > 0, productDelegate, allDiagnostics);
+        return OptionalWithDiagnostics.ConditionalWithDefiniteDiagnostics(scalars.Count > 0, productDelegate, allDiagnostics);
     }
 
     private IValidityWithDiagnostics ValidateScalar(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index)

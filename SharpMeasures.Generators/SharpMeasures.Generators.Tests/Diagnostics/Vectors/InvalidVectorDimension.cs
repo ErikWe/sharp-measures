@@ -36,13 +36,15 @@ public class InvalidVectorDimension
     public static IEnumerable<object[]> ImplicitInvalidVectorDimensions => new object[][]
     {
         new[] { "0" },
-        new[] { "1" }
+        new[] { "1" },
+        new[] { "42" }
     };
 
     public static IEnumerable<object[]> ExplicitInvalidVectorDimensions => new object[][]
     {
         new[] { "0" },
         new[] { "1" },
+        new[] { "42" },
         new[] { "-1" }
     };
 
@@ -69,7 +71,7 @@ public class InvalidVectorDimension
         var source = ImplicitVectorText(dimension);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "SharpMeasuresVector");
 
-        return AssertExactlyInvalidVectorDimensionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidVectorDimensionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical);
     }
 
     private static string ExplicitVectorText(string dimension) => $$"""
@@ -92,7 +94,7 @@ public class InvalidVectorDimension
         var source = ExplicitVectorText(dimension);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: dimension, prefix: "Dimension = ");
 
-        return AssertExactlyInvalidVectorDimensionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidVectorDimensionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical);
     }
 
     private static string ImplicitVectorGroupMemberText(string dimension) => $$"""
@@ -118,7 +120,7 @@ public class InvalidVectorDimension
         var source = ImplicitVectorGroupMemberText(dimension);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "SharpMeasuresVectorGroupMember");
 
-        return AssertExactlyInvalidVectorDimensionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidVectorDimensionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical);
     }
 
     private static string ExplicitVectorGroupMemberText(string dimension) => $$"""
@@ -144,6 +146,36 @@ public class InvalidVectorDimension
         var source = ExplicitVectorGroupMemberText(dimension);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: dimension, prefix: "Dimension = ");
 
-        return AssertExactlyInvalidVectorDimensionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidVectorDimensionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical);
     }
+
+    private static GeneratorVerifier VectorIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorIdenticalText);
+    private static GeneratorVerifier VectorGroupMemberIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberIdenticalText);
+
+    private static string VectorIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorGroupMemberIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }

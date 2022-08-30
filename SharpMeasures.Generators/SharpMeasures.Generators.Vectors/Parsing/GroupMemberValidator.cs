@@ -95,7 +95,7 @@ internal static class GroupMemberValidator
 
         var validationContext = new VectorConstantValidationContext(vectorType.Type, vectorType.Definition.Dimension, unit, inheritedConstantNames, inheritedConstantMultiples, incluedUnitPlurals);
 
-        return ValidityFilter.Create(VectorConstantValidator).Filter(validationContext, vectorType.Constants);
+        return ProcessingFilter.Create(VectorConstantValidator).Filter(validationContext, vectorType.Constants);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ValidateConversions(GroupMemberType vectorType, IVectorPopulation vectorPopulation)

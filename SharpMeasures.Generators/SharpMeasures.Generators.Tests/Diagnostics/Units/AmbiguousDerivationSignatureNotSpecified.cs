@@ -68,6 +68,35 @@ public class AmbiguousDerivationSignatureNotSpecified
         var source = Text(derivationIDWithoutComma);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivedUnit");
 
-        return AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
+
+    private static GeneratorVerifier Identical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText);
+
+    private static string IdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        public partial class Time { }
+
+        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        public partial class Speed { }
+
+        [FixedUnit("Metre", "Metres", 1)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+
+        [FixedUnit("Second", "Seconds", 1)]
+        [SharpMeasuresUnit(typeof(Time))]
+        public partial class UnitOfTime { }
+
+        [DerivableUnit("1", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
+        [DerivableUnit("2", "{1} / {0}", typeof(UnitOfTime), typeof(UnitOfLength))]
+        [SharpMeasuresUnit(typeof(Speed))]
+        public partial class UnitOfSpeed { }
+        """;
 }

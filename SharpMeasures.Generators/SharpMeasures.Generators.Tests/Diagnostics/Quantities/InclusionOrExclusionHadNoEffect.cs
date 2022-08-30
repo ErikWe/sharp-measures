@@ -141,7 +141,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = ScalarText_SameAttribute(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", prefix: $"{attribute}(\"Metre\", ");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ScalarIdentical_SameAttribute(attribute));
     }
 
     private static string ScalarText_MultipleAttributes(string attribute) => $$"""
@@ -164,7 +164,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = ScalarText_MultipleAttributes(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", postfix: ")] // <-");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ScalarIdentical_MultipleAttributes(attribute));
     }
 
     private static string SpecializedScalarText_SameAttribute(string attribute) => $$"""
@@ -189,7 +189,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = SpecializedScalarText_SameAttribute(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", prefix: $"{attribute}(\"Metre\", ");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical_SameAttribute(attribute));
     }
 
     private static string SpecializedScalarText_MultipleAttributes(string attribute) => $$"""
@@ -215,7 +215,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = SpecializedScalarText_MultipleAttributes(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", postfix: ")] // <-");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical_MultipleAttributes(attribute));
     }
 
     private static string SpecializedScalarText_Inherited(string attribute) => $$"""
@@ -244,7 +244,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = SpecializedScalarText_Inherited(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", postfix: $"{(attribute.StartsWith("Include", StringComparison.InvariantCulture) ? ", StackingMode = InclusionStackingMode.Union" : string.Empty)})] // <-");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical_Inherited(attribute));
     }
 
     private static string VectorText_SameAttribute(string attribute) => $$"""
@@ -270,7 +270,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = VectorText_SameAttribute(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", prefix: $"{attribute}(\"Metre\", ");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical_SameAttribute(attribute));
     }
 
     private static string VectorText_MultipleAttributes(string attribute) => $$"""
@@ -297,7 +297,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = VectorText_MultipleAttributes(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", postfix: ")] // <-");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical_MultipleAttributes(attribute));
     }
 
     private static string SpecializedVectorText_SameAttribute(string attribute) => $$"""
@@ -326,7 +326,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = SpecializedVectorText_SameAttribute(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", prefix: $"{attribute}(\"Metre\", ");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical_SameAttribute(attribute));
     }
 
     private static string SpecializedVectorText_MultipleAttributes(string attribute) => $$"""
@@ -356,7 +356,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = SpecializedVectorText_MultipleAttributes(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", postfix: ")] // <-");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical_MultipleAttributes(attribute));
     }
 
     private static string SpecializedVectorText_Inherited(string attribute) => $$"""
@@ -389,7 +389,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = SpecializedVectorText_Inherited(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", postfix: $"{(attribute.StartsWith("Include", StringComparison.InvariantCulture) ? ", StackingMode = InclusionStackingMode.Union" : string.Empty)})] // <-");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical_Inherited(attribute));
     }
 
     private static string VectorGroupText_SameAttribute(string attribute) => $$"""
@@ -415,7 +415,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = VectorGroupText_SameAttribute(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", prefix: $"{attribute}(\"Metre\", ");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupIdentical_SameAttribute(attribute));
     }
 
     private static string VectorGroupText_MultipleAttributes(string attribute) => $$"""
@@ -442,7 +442,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = VectorGroupText_MultipleAttributes(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", postfix: ")] // <-");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupIdentical_MultipleAttributes(attribute));
     }
 
     private static string SpecializedVectorGroupText_SameAttribute(string attribute) => $$"""
@@ -471,7 +471,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = SpecializedVectorGroupText_SameAttribute(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", prefix: $"{attribute}(\"Metre\", ");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorGroupIdentical_SameAttribute(attribute));
     }
 
     private static string SpecializedVectorGroupText_MultipleAttributes(string attribute) => $$"""
@@ -501,7 +501,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = SpecializedVectorGroupText_MultipleAttributes(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", postfix: ")] // <-");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorGroupIdentical_MultipleAttributes(attribute));
     }
 
     private static string SpecializedVectorGroupText_Inherited(string attribute) => $$"""
@@ -534,7 +534,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = SpecializedVectorGroupText_Inherited(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", postfix: $"{(attribute.StartsWith("Include", StringComparison.InvariantCulture) ? ", StackingMode = InclusionStackingMode.Union" : string.Empty)})] // <-");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorGroupIdentical_Inherited(attribute));
     }
 
     private static string VectorGroupMemberText_SameAttribute(string attribute) => $$"""
@@ -563,7 +563,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = VectorGroupMemberText_SameAttribute(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", prefix: $"{attribute}(\"Metre\", ");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical_SameAttribute(attribute));
     }
 
     private static string VectorGroupMemberText_MultipleAttributes(string attribute) => $$"""
@@ -593,7 +593,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = VectorGroupMemberText_MultipleAttributes(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", postfix: ")] // <-");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical_MultipleAttributes(attribute));
     }
 
     private static string VectorGroupMemberText_InheritedFromGroup(string attribute) => $$"""
@@ -626,7 +626,7 @@ public class InclusionOrExclusionHadNoEffect
         var source = VectorGroupMemberText_InheritedFromGroup(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Metre\"", postfix: $"{(attribute.StartsWith("Include", StringComparison.InvariantCulture) ? ", StackingMode = InclusionStackingMode.Union" : string.Empty)})] // <-");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical_InheritedFromGroup(attribute));
     }
 
     private static string VectorGroupMemberText_InheritedFromMember(string attribute) => $$"""
@@ -665,6 +665,408 @@ public class InclusionOrExclusionHadNoEffect
         var source = VectorGroupMemberText_InheritedFromMember(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: $"\"Metre\"", postfix: $"{(attribute.StartsWith("Include", StringComparison.InvariantCulture) ? ", StackingMode = InclusionStackingMode.Union" : string.Empty)})] // <-");
 
-        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInclusionOrExclusionHadNoEffectDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical_InheritedFromMember(attribute));
     }
+
+    private static GeneratorVerifier ScalarIdentical_SameAttribute(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ScalarIdenticalText_SameAttribute(attribute));
+    private static GeneratorVerifier ScalarIdentical_MultipleAttributes(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ScalarIdenticalText_MultipleAttributes(attribute));
+    private static GeneratorVerifier SpecializedScalarIdentical_SameAttribute(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedScalarIdenticalText_SameAttribute(attribute));
+    private static GeneratorVerifier SpecializedScalarIdentical_MultipleAttributes(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedScalarIdenticalText_MultipleAttributes(attribute));
+    private static GeneratorVerifier SpecializedScalarIdentical_Inherited(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedScalarIdenticalText_Inherited(attribute));
+    private static GeneratorVerifier VectorIdentical_SameAttribute(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorIdenticalText_SameAttribute(attribute));
+    private static GeneratorVerifier VectorIdentical_MultipleAttributes(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorIdenticalText_MultipleAttributes(attribute));
+    private static GeneratorVerifier SpecializedVectorIdentical_SameAttribute(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorIdenticalText_SameAttribute(attribute));
+    private static GeneratorVerifier SpecializedVectorIdentical_MultipleAttributes(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorIdenticalText_MultipleAttributes(attribute));
+    private static GeneratorVerifier SpecializedVectorIdentical_Inherited(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorIdenticalText_Inherited(attribute));
+    private static GeneratorVerifier VectorGroupIdentical_SameAttribute(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupIdenticalText_SameAttribute(attribute));
+    private static GeneratorVerifier VectorGroupIdentical_MultipleAttributes(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupIdenticalText_MultipleAttributes(attribute));
+    private static GeneratorVerifier SpecializedVectorGroupIdentical_SameAttribute(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorGroupIdenticalText_SameAttribute(attribute));
+    private static GeneratorVerifier SpecializedVectorGroupIdentical_MultipleAttributes(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorGroupIdenticalText_MultipleAttributes(attribute));
+    private static GeneratorVerifier SpecializedVectorGroupIdentical_Inherited(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorGroupIdenticalText_Inherited(attribute));
+    private static GeneratorVerifier VectorGroupMemberIdentical_SameAttribute(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberIdenticalText_SameAttribute(attribute));
+    private static GeneratorVerifier VectorGroupMemberIdentical_MultipleAttributes(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberIdenticalText_MultipleAttributes(attribute));
+    private static GeneratorVerifier VectorGroupMemberIdentical_InheritedFromGroup(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberIdenticalText_InheritedFromGroup(attribute));
+    private static GeneratorVerifier VectorGroupMemberIdentical_InheritedFromMember(string attribute) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberIdenticalText_InheritedFromMember(attribute));
+
+    private static string ScalarIdenticalText_SameAttribute(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [{{attribute}}("Metre")]
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string ScalarIdenticalText_MultipleAttributes(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [{{attribute}}("Metre")]
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedScalarIdenticalText_SameAttribute(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [{{attribute}}("Metre")]
+        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        public partial class Distance { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedScalarIdenticalText_MultipleAttributes(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [{{attribute}}("Metre")]
+        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        public partial class Distance { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedScalarIdenticalText_Inherited(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Units.Utility;
+        using SharpMeasures.Generators.Utility;
+
+        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        public partial class Distance { }
+
+        [{{attribute}}("Metre")]
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [FixedUnit("Metre", "Metres")]
+        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorIdenticalText_SameAttribute(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [{{attribute}}("Metre")]
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorIdenticalText_MultipleAttributes(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [{{attribute}}("Metre")]
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedVectorIdenticalText_SameAttribute(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [{{attribute}}("Metre")]
+        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        public partial class Displacement3 { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedVectorIdenticalText_MultipleAttributes(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [{{attribute}}("Metre")]
+        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        public partial class Displacement3 { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedVectorIdenticalText_Inherited(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Units.Utility;
+        using SharpMeasures.Generators.Utility;
+        using SharpMeasures.Generators.Vectors;
+
+        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        public partial class Displacement3 { }
+
+        [{{attribute}}("Metre")]
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorGroupIdenticalText_SameAttribute(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [{{attribute}}("Metre")]
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorGroupIdenticalText_MultipleAttributes(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [{{attribute}}("Metre")]
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedVectorGroupIdenticalText_SameAttribute(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [{{attribute}}("Metre")]
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        public static partial class Displacement { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedVectorGroupIdenticalText_MultipleAttributes(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [{{attribute}}("Metre")]
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        public static partial class Displacement { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedVectorGroupIdenticalText_Inherited(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Units.Utility;
+        using SharpMeasures.Generators.Utility;
+        using SharpMeasures.Generators.Vectors;
+
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        public static partial class Displacement { }
+
+        [{{attribute}}("Metre")]
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorGroupMemberIdenticalText_SameAttribute(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [{{attribute}}("Metre")]
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Position3 { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorGroupMemberIdenticalText_MultipleAttributes(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [{{attribute}}("Metre")]
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Position3 { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorGroupMemberIdenticalText_InheritedFromGroup(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Units.Utility;
+        using SharpMeasures.Generators.Utility;
+        using SharpMeasures.Generators.Vectors;
+
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Position3 { }
+
+        [{{attribute}}("Metre")]
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorGroupMemberIdenticalText_InheritedFromMember(string attribute) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Units.Utility;
+        using SharpMeasures.Generators.Utility;
+        using SharpMeasures.Generators.Vectors;
+
+        [SharpMeasuresVectorGroupMember(typeof(Displacement))]
+        public partial class Displacement3 { }
+
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+        public static partial class Displacement { }
+
+        [{{attribute}}("Metre")]
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Position3 { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }

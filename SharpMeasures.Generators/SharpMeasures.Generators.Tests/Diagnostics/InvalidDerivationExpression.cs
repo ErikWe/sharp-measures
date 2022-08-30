@@ -66,7 +66,7 @@ public class InvalidDerivationExpression
         var source = DerivableUnitText(expression);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, expression.Context.With(outerPrefix: "DerivableUnit("));
 
-        return AssertExactlyInvalidDerivationExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidDerivationExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(DerivableUnitIdentical);
     }
 
     private static string DerivedQuantityText(SourceSubtext expression) => $$"""
@@ -99,6 +99,56 @@ public class InvalidDerivationExpression
         var source = DerivedQuantityText(expression);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, expression.Context.With(outerPrefix: "DerivedQuantity("));
 
-        return AssertExactlyInvalidDerivationExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidDerivationExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(DerivableQuantityIdentical);
     }
+
+    private static GeneratorVerifier DerivableUnitIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(DerivableUnitIdenticalText);
+    private static GeneratorVerifier DerivableQuantityIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(DerivedQuantityIdenticalText);
+
+    private static string DerivableUnitIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresUnit(typeof(Speed))]
+        public partial class UnitOfSpeed { }
+
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+
+        [SharpMeasuresUnit(typeof(Time))]
+        public partial class UnitOfTime { }
+
+        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        public partial class Speed { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        public partial class Time { }
+        """;
+
+    private static string DerivedQuantityIdenticalText => """
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        public partial class Speed { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        public partial class Time { }
+
+        [SharpMeasuresUnit(typeof(Speed))]
+        public partial class UnitOfSpeed { }
+
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+
+        [SharpMeasuresUnit(typeof(Time))]
+        public partial class UnitOfTime { }
+        """;
 }

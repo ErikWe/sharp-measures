@@ -68,7 +68,7 @@ public class UnrecognizedEnumValue
         var source = PrefixedUnitText(prefix, type);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, prefix.Context.With(outerPrefix: $"PrefixedUnit(\"Kilometre\", \"Kilometres\", \"Metre\", ({type})"));
 
-        return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(PrefixUnitIdentical);
     }
 
     private static string CastOperatorBehaviourText(SourceSubtext castOperatorBehaviour) => $$"""
@@ -94,7 +94,7 @@ public class UnrecognizedEnumValue
         var source = CastOperatorBehaviourText(castOperatorBehaviour);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, castOperatorBehaviour.Context.With(outerPrefix: "CastOperatorBehaviour = (ConversionOperatorBehaviour)"));
 
-        return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(CastOperatorBehaviourIdentical);
     }
 
     private static string InclusionStackingModeText_Unit(SourceSubtext inclusionStackingMode) => $$"""
@@ -117,7 +117,7 @@ public class UnrecognizedEnumValue
         var source = InclusionStackingModeText_Unit(inclusionStackingMode);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, inclusionStackingMode.Context.With(outerPrefix: "StackingMode = (InclusionStackingMode)"));
 
-        return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(InclusionStackingModeIdentical_Unit);
     }
 
     private static string InclusionStackingModeText_Base(SourceSubtext inclusionStackingMode) => $$"""
@@ -139,6 +139,68 @@ public class UnrecognizedEnumValue
         var source = InclusionStackingModeText_Base(inclusionStackingMode);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, inclusionStackingMode.Context.With(outerPrefix: "StackingMode = (InclusionStackingMode)"));
 
-        return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(InclusionStackingModeIdentical_Base);
     }
+
+    private static GeneratorVerifier PrefixUnitIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(PrefixedUnitIdenticalText);
+    private static GeneratorVerifier CastOperatorBehaviourIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(CastOperatorBehaviourIdenticalText);
+    private static GeneratorVerifier InclusionStackingModeIdentical_Unit => GeneratorVerifier.Construct<SharpMeasuresGenerator>(InclusionStackingModeIdenticalText_Unit);
+    private static GeneratorVerifier InclusionStackingModeIdentical_Base => GeneratorVerifier.Construct<SharpMeasuresGenerator>(InclusionStackingModeIdenticalText_Base);
+
+    private static string PrefixedUnitIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Units.Utility;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres", 1)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string CastOperatorBehaviourIdenticalText => """
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Utility;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Distance { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string InclusionStackingModeIdenticalText_Unit => """
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Utility;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string InclusionStackingModeIdenticalText_Base => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Utility;
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }

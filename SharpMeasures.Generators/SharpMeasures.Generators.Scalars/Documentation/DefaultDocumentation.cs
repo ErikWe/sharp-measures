@@ -45,11 +45,11 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
             _ => constant.Value.ToString("0.####", CultureInfo.InvariantCulture)
         };
 
-        return $$"""/// <summary>The {{ScalarReference}} representing the constant {{constant.Name}}, with value { {{value}} [{{Unit.UnitsByName[constant.Unit].Plural}}] }.</summary>""";
+        return $$"""/// <summary>The {{ScalarReference}} representing the constant {{constant.Name}}, with value { {{value}} <see cref="{{Unit.Type.FullyQualifiedName}}.{{constant.Unit}}"/> }.</summary>""";
     }
 
     public string UnitBase(IUnitInstance unitInstance)
-        => $$"""/// <summary>The {{ScalarReference}} representing { 1 [<see cref="{{Unit.Type.FullyQualifiedName}}.{{unitInstance.Name}}"/>] }.</summary>""";
+        => $$"""/// <summary>The {{ScalarReference}} representing { 1 <see cref="{{Unit.Type.FullyQualifiedName}}.{{unitInstance.Name}}"/> }.</summary>""";
 
     public string WithMagnitude() => "/// <inheritdoc/>";
 

@@ -7,6 +7,7 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;
+using System.Linq;
 
 public interface IQuantityConstantValidationDiagnostics<TDefinition, TLocations>
     where TDefinition : AQuantityConstantDefinition<TLocations>
@@ -24,7 +25,7 @@ public interface IQuantityConstantValidationDiagnostics<TDefinition, TLocations>
     public abstract Diagnostic? MultiplesReservedByUnitPlural(IQuantityConstantValidationContext context, TDefinition definition);
 }
 
-public interface IQuantityConstantValidationContext : IValidationContext
+public interface IQuantityConstantValidationContext : IProcessingContext
 {
     public abstract IUnitType UnitType { get; }
 
@@ -34,7 +35,7 @@ public interface IQuantityConstantValidationContext : IValidationContext
     public abstract HashSet<string> IncludedUnitPlurals { get; }
 }
 
-public abstract class AQuantityConstantValidator<TContext, TDefinition, TLocations> : AValidator<TContext, TDefinition>
+public abstract class AQuantityConstantValidator<TContext, TDefinition, TLocations> : AProcesser<TContext, TDefinition, TDefinition>
     where TContext : IQuantityConstantValidationContext
     where TDefinition : AQuantityConstantDefinition<TLocations>
     where TLocations : AQuantityConstantLocations<TLocations>
@@ -46,14 +47,37 @@ public abstract class AQuantityConstantValidator<TContext, TDefinition, TLocatio
         Diagnostics = diagnostics;
     }
 
-    public override IValidityWithDiagnostics Validate(TContext context, TDefinition definition)
+    public override IOptionalWithDiagnostics<TDefinition> Process(TContext context, TDefinition definition)
+    {
+        var validity = ValidateConstant(context, definition);
+
+        if (validity.IsInvalid)
+        {
+            return validity.AsEmptyOptional<TDefinition>();
+        }
+
+        var multiplesValidity = ValidateMultiples(context, definition);
+        var allDiagnostics = validity.Diagnostics.Concat(multiplesValidity);
+
+        var product = ProduceResult(definition, multiplesValidity.IsValid && definition.GenerateMultiplesProperty);
+
+        return OptionalWithDiagnostics.Result(product, allDiagnostics);
+    }
+
+    protected abstract TDefinition ProduceResult(TDefinition definition, bool generateMultiples);
+
+    protected virtual IValidityWithDiagnostics ValidateConstant(TContext context, TDefinition definition)
     {
         return ValidateUnitExists(context, definition)
             .Validate(() => ValidateNameNotDuplicate(context, definition))
             .Validate(() => ValidateNameNotReservedByMultiples(context, definition))
-            .Validate(() => ValidateMultiplesNotDuplicate(context, definition))
+            .Validate(() => ValidateNameNotReservedByUnitPlural(context, definition));
+    }
+
+    protected virtual IValidityWithDiagnostics ValidateMultiples(TContext context, TDefinition definition)
+    {
+        return ValidateMultiplesNotDuplicate(context, definition)
             .Validate(() => ValidateMultiplesNotReservedByName(context, definition))
-            .Validate(() => ValidateNameNotReservedByUnitPlural(context, definition))
             .Validate(() => ValidateMultiplesNotReservedByUnitPlural(context, definition));
     }
 

@@ -70,7 +70,7 @@ public class InvalidConstantMultiplesName
         var source = ScalarText(constantMultiplesName);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantMultiplesName.Context.With(outerPrefix: "Multiples = "));
 
-        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ScalarIdentical);
     }
 
     private static string SpecializedScalarText(SourceSubtext constantMultiplesName) => $$"""
@@ -94,7 +94,7 @@ public class InvalidConstantMultiplesName
         var source = SpecializedScalarText(constantMultiplesName);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantMultiplesName.Context.With(outerPrefix: "Multiples = "));
 
-        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical);
     }
 
     private static string VectorText(SourceSubtext constantMultiplesName) => $$"""
@@ -119,7 +119,7 @@ public class InvalidConstantMultiplesName
         var source = VectorText(constantMultiplesName);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantMultiplesName.Context.With(outerPrefix: "Multiples = "));
 
-        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical);
     }
 
     private static string SpecializedVectorText(SourceSubtext constantMultiplesName) => $$"""
@@ -144,7 +144,7 @@ public class InvalidConstantMultiplesName
         var source = SpecializedVectorText(constantMultiplesName);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantMultiplesName.Context.With(outerPrefix: "Multiples = "));
 
-        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical);
     }
 
     private static string VectorGroupMemberText(SourceSubtext constantMultiplesName) => $$"""
@@ -172,6 +172,95 @@ public class InvalidConstantMultiplesName
         var source = VectorGroupMemberText(constantMultiplesName);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantMultiplesName.Context.With(outerPrefix: "Multiples = "));
 
-        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation, source);
+        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical);
     }
+
+    private static GeneratorVerifier ScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ScalarIdenticalText);
+    private static GeneratorVerifier SpecializedScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedScalarIdenticalText);
+    private static GeneratorVerifier VectorIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorIdenticalText);
+    private static GeneratorVerifier SpecializedVectorIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorIdenticalText);
+    private static GeneratorVerifier VectorGroupMemberIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberIdenticalText);
+
+    private static string ScalarIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [ScalarConstant("Planck", "Metre", 1.616255E-35, GenerateMultiplesProperty = false)]
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedScalarIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [ScalarConstant("Planck", "Metre", 1.616255E-35, GenerateMultiplesProperty = false)]
+        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        public partial class Distance { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, GenerateMultiplesProperty = false)]
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string SpecializedVectorIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, GenerateMultiplesProperty = false)]
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string VectorGroupMemberIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, GenerateMultiplesProperty = false)]
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Position3 { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnit("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }

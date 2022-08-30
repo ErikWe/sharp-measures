@@ -24,9 +24,14 @@ internal class VectorConstantValidator : AQuantityConstantValidator<IVectorConst
         Diagnostics = diagnostics;
     }
 
-    public override IValidityWithDiagnostics Validate(IVectorConstantValidationContext context, VectorConstantDefinition definition)
+    protected override VectorConstantDefinition ProduceResult(VectorConstantDefinition definition, bool generateMultiples)
     {
-        return base.Validate(context, definition)
+        return new(definition.Name, definition.Unit, definition.Value, generateMultiples, definition.Multiples, definition.Locations);
+    }
+
+    protected override IValidityWithDiagnostics ValidateConstant(IVectorConstantValidationContext context, VectorConstantDefinition definition)
+    {
+        return base.ValidateConstant(context, definition)
             .Validate(() => ValidateValueDimension(context, definition));
     }
 

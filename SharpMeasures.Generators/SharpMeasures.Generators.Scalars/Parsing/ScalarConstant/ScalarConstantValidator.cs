@@ -28,10 +28,20 @@ internal class ScalarConstantValidator : AQuantityConstantValidator<IScalarConst
         Diagnostics = diagnostics;
     }
 
-    public override IValidityWithDiagnostics Validate(IScalarConstantValidationContext context, ScalarConstantDefinition definition)
+    protected override ScalarConstantDefinition ProduceResult(ScalarConstantDefinition definition, bool generateMultiples)
     {
-        return base.Validate(context, definition)
-            .Validate(() => ValidateNameNotReservedByUnit(context, definition))
+        return new(definition.Name, definition.Unit, definition.Value, generateMultiples, definition.Multiples, definition.Locations);
+    }
+
+    protected override IValidityWithDiagnostics ValidateConstant(IScalarConstantValidationContext context, ScalarConstantDefinition definition)
+    {
+        return base.ValidateConstant(context, definition)
+            .Validate(() => ValidateNameNotReservedByUnit(context, definition));
+    }
+
+    protected override IValidityWithDiagnostics ValidateMultiples(IScalarConstantValidationContext context, ScalarConstantDefinition definition)
+    {
+        return base.ValidateMultiples(context, definition)
             .Validate(() => ValidateMultiplesNotReservedByUnit(context, definition));
     }
 

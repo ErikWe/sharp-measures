@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 
 using System.Collections.Generic;
 
-internal class ConvertibleVectorProcesser : AConvertibleQuantityProcesser<ConvertibleVectorDefinition>
+internal class ConvertibleVectorProcesser : AConvertibleQuantityProcesser<IConvertibleQuantityProcessingContext, ConvertibleVectorDefinition>
 {
     public ConvertibleVectorProcesser(IConvertibleQuantityProcessingDiagnostics diagnostics) : base(diagnostics) { }
 
