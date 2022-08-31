@@ -61,8 +61,8 @@ internal static class Execution
         {
             List<string> interfaceNames = new()
             {
-                $"global::System.IComparable<{Data.Scalar.FullyQualifiedName}>",
-                $"global::SharpMeasures.IScalarQuantity<{Data.Scalar.FullyQualifiedName}>"
+                $"global::SharpMeasures.IScalarQuantity<{Data.Scalar.FullyQualifiedName}>",
+                $"global::System.IComparable<{Data.Scalar.FullyQualifiedName}>"
             };
 
             if (Data.Scalar.IsRecord is false)
