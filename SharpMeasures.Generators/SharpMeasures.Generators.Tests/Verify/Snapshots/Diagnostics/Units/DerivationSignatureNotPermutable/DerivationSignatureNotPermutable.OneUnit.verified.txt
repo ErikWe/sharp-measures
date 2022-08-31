@@ -1,0 +1,17 @@
+﻿[
+  {
+    Id: Measures1148,
+    Title: Derivation signature is not permutable,
+    Severity: Info,
+    WarningLevel: 1,
+    Location: : (12,66)-(12,70),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The derivation signature cannot be permuted,
+    Message: The derivation signature cannot be permuted,
+    Category: Usage,
+    CustomTags: [
+      Unnecessary
+    ]
+  }
+]

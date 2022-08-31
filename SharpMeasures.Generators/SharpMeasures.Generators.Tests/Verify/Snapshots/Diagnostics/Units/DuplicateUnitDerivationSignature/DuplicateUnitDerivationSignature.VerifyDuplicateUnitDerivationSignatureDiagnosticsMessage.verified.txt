@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1143,
+    Title: Duplicate derivation signature,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (19,33)-(19,73),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} already defines a derivation with an identical signature,
+    Message: UnitOfSpeed already defines a derivation with an identical signature,
+    Category: Usage,
+    CustomTags: []
+  }
+]

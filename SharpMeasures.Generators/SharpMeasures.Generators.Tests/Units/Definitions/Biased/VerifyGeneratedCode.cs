@@ -27,6 +27,6 @@ public class VerifyGeneratedCode
             public partial class UnitOfTemperature { }
             """;
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfLength_Definitions.g.cs");
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfTemperature_Definitions.g.cs");
     }
 }
