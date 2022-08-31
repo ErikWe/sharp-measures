@@ -53,10 +53,7 @@ internal static class Execution
             AppendDocumentation(new Indentation(0), Data.Documentation.Header());
             Builder.Append(Data.Vector.ComposeDeclaration());
 
-            InterfaceBuilding.AppendInterfaceImplementationOnNewLines(Builder, new Indentation(1), new string[]
-            {
-                $"global::SharpMeasures.IVector{Data.Dimension}Quantity<{Data.Vector.FullyQualifiedName}>"
-            });
+            AppendInterfaces();
 
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
         }
@@ -64,6 +61,21 @@ internal static class Execution
         private string Retrieve()
         {
             return Builder.ToString();
+        }
+
+        private void AppendInterfaces()
+        {
+            List<string> interfaceNames = new()
+            {
+                $"global::SharpMeasures.IVector{Data.Dimension}Quantity<{Data.Vector.FullyQualifiedName}>"
+            };
+
+            if (Data.Vector.IsRecord is false)
+            {
+                interfaceNames.Add($"global::System.IEquatable<{Data.Vector.FullyQualifiedName}>");
+            }
+
+            InterfaceBuilding.AppendInterfaceImplementationOnNewLines(Builder, new Indentation(1), interfaceNames);
         }
 
         private void ComposeTypeBlock(Indentation indentation)
