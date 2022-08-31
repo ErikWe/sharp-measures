@@ -19,6 +19,11 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.DuplicateUnitDerivationID, location, unitTypeName, derivationID);
     }
 
+    public static Diagnostic DuplicateUnitDerivationSignature(Location? location, string unitTypeName)
+    {
+        return Diagnostic.Create(DiagnosticRules.DuplicateUnitDerivationSignature, location, unitTypeName);
+    }
+
     public static Diagnostic UnrecognizedUnitDerivationID(Location? location, string derivationID, string unitTypeName)
     {
         return Diagnostic.Create(DiagnosticRules.UnrecognizedUnitDerivationID, location, unitTypeName, derivationID);

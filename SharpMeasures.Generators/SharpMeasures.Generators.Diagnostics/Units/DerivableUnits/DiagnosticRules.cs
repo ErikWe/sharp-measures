@@ -36,6 +36,16 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
+    public static readonly DiagnosticDescriptor DuplicateUnitDerivationSignature = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.DuplicateUnitDerivationSignature,
+        title: "Duplicate derivation signature",
+        messageFormat: "{0} already defines a derivation with an identical signature",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
     public static readonly DiagnosticDescriptor UnrecognizedUnitDerivationID = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.UnrecognizedUnitDerivationID,

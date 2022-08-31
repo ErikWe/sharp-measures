@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Units.Parsing.DerivableUnit;
+namespace SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 
 using Microsoft.CodeAnalysis;
 
@@ -12,6 +12,7 @@ internal interface IDerivableUnitProcessingDiagnostics
     public abstract Diagnostic? UnitIncludesBiasTerm(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? MultipleDerivationsButNotNamed(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? DuplicateDerivationID(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
+    public abstract Diagnostic? DuplicateDerivationSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? NullExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? EmptyExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? NullSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
@@ -25,6 +26,7 @@ internal interface IDerivableUnitProcessingContext : IProcessingContext
 
     public abstract bool MultipleDefinitions { get; }
     public abstract HashSet<string> ReservedIDs { get; }
+    public abstract HashSet<DerivableUnitSignature> ReservedSignatures { get; }
 }
 
 internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProcessingContext, RawDerivableUnitDefinition, DerivableUnitDefinition>
@@ -42,6 +44,8 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
         {
             context.ReservedIDs.Add(product.DerivationID);
         }
+
+        context.ReservedSignatures.Add(new DerivableUnitSignature(product.Signature));
     }
 
     public override IOptionalWithDiagnostics<DerivableUnitDefinition> Process(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
@@ -55,6 +59,7 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
             .Validate(() => ValidateSignatureNotNull(context, definition))
             .Validate(() => ValidateSignatureNotEmpty(context, definition))
             .Merge(() => ProcessSignature(context, definition))
+            .Validate((signature) => ValidateDerivationSignatureNotDuplicate(context, definition, signature))
             .Transform((signature) => ProduceResult(definition, signature));
     }
 
@@ -129,5 +134,12 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
         signature[index] = signatureElement;
 
         return OptionalWithDiagnostics.Result(signature);
+    }
+
+    private IValidityWithDiagnostics ValidateDerivationSignatureNotDuplicate(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, IReadOnlyList<NamedType> signature)
+    {
+        var derivationSignatureNotDuplicate = context.ReservedSignatures.Contains(new DerivableUnitSignature(signature)) is false;
+
+        return ValidityWithDiagnostics.Conditional(derivationSignatureNotDuplicate, () => Diagnostics.DuplicateDerivationSignature(context, definition));
     }
 }

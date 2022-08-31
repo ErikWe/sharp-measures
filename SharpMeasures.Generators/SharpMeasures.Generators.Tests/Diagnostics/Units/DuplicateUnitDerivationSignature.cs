@@ -12,13 +12,13 @@ using VerifyXunit;
 using Xunit;
 
 [UsesVerify]
-public class DuplicateUnitDerivationID
+public class DuplicateUnitDerivationSignature
 {
     [Fact]
-    public Task VerifyDuplicateUnitDerivationIDDiagnosticsMessage() => Assert().VerifyDiagnostics();
+    public Task VerifyDuplicateUnitDerivationSignatureDiagnosticsMessage() => Assert().VerifyDiagnostics();
 
-    private static GeneratorVerifier AssertExactlyDuplicateUnitDerivationIDDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateUnitderivationIDDiagnostics);
-    private static IReadOnlyCollection<string> DuplicateUnitderivationIDDiagnostics { get; } = new string[] { DiagnosticIDs.DuplicateUnitDerivationID };
+    private static GeneratorVerifier AssertExactlyDuplicateUnitDerivationSignatureDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateUnitderivationSignatureDiagnostics);
+    private static IReadOnlyCollection<string> DuplicateUnitderivationSignatureDiagnostics { get; } = new string[] { DiagnosticIDs.DuplicateUnitDerivationSignature };
 
     private static string Text => """
         using SharpMeasures.Generators.Scalars;
@@ -39,17 +39,17 @@ public class DuplicateUnitDerivationID
         [SharpMeasuresUnit(typeof(Time))]
         public partial class UnitOfTime { }
 
-        [DerivableUnit("id", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-        [DerivableUnit("id", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))] // <-
+        [DerivableUnit("1", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
+        [DerivableUnit("2", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
         [SharpMeasuresUnit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
 
     private static GeneratorVerifier Assert()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(Text, target: "\"id\"", postfix: ", \"{0} / {1}\", typeof(UnitOfLength), typeof(UnitOfTime))] // <-");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(Text, target: "typeof(UnitOfLength), typeof(UnitOfTime)", prefix: "\"2\", \"{0} / {1}\", ");
 
-        return AssertExactlyDuplicateUnitDerivationIDDiagnostics(Text).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
+        return AssertExactlyDuplicateUnitDerivationSignatureDiagnostics(Text).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
 
     private static GeneratorVerifier Identical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText);

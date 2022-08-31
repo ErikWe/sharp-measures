@@ -26,6 +26,11 @@ internal class DerivableUnitProcessingDiagnostics : IDerivableUnitProcessingDiag
         return DiagnosticConstruction.DuplicateUnitDerivationID(definition.Locations.DerivationID?.AsRoslynLocation(), definition.DerivationID!, context.Type.Name);
     }
 
+    public Diagnostic DuplicateDerivationSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
+    {
+        return DiagnosticConstruction.DuplicateUnitDerivationSignature(definition.Locations.SignatureCollection?.AsRoslynLocation(), context.Type.Name);
+    }
+
     public Diagnostic NullExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
         return DiagnosticConstruction.NullDerivationExpression(definition.Locations.Expression?.AsRoslynLocation());
