@@ -308,20 +308,11 @@ internal class GeneratorVerifier
         await Verifier.Verify(Output.Select(static (result) => result.SourceText));
     }
 
-    public Task VerifyListedSourceNames(IEnumerable<string> sourceNames)
+    public async Task VerifyListedSourceNames(IEnumerable<string> sourceNames)
     {
         HashSet<string> includedNames = new(sourceNames);
 
-        IEnumerable<GeneratedSourceResult> filteredSources = Output.Where((result) => includedNames.Contains(result.HintName));
-
-        List<Task> tasks = new();
-
-        foreach (var source in filteredSources)
-        {
-            tasks.Add(Verifier.Verify(source));
-        }
-
-        return Task.WhenAll(tasks);
+        await Verifier.Verify(Output.Where((result) => includedNames.Contains(result.HintName)));
     }
 
     public Task VerifyMatchingSourceNames(string regexPattern)

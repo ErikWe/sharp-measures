@@ -22,6 +22,7 @@ internal static class Initializer
         VerifierSettings.DerivePathInfo(DerivePathInfo);
         VerifierSettings.AddScrubber(ScrubTimestamp);
         VerifierSettings.RegisterFileConverter<GeneratedSourceResult>(ConvertGeneratedSourceResult);
+        VerifierSettings.RegisterFileConverter<IEnumerable<GeneratedSourceResult>>(ConvertGeneratedSourceResult);
     }
 
     private static void ScrubTimestamp(StringBuilder source)
@@ -38,9 +39,14 @@ internal static class Initializer
         source.Insert(match.Index, match.Result("${header}<stamp>"));
     }
 
-    private static ConversionResult ConvertGeneratedSourceResult(GeneratedSourceResult target, IReadOnlyDictionary<string, object> context)
+    private static ConversionResult ConvertGeneratedSourceResult(GeneratedSourceResult target, IReadOnlyDictionary<string, object> _)
     {
         return new(null, new Target[] { SourceToTarget(target) });
+    }
+
+    private static ConversionResult ConvertGeneratedSourceResult(IEnumerable<GeneratedSourceResult> target, IReadOnlyDictionary<string, object> _)
+    {
+        return new(null, target.Select(static (source) => SourceToTarget(source)).ToArray());
     }
 
     private static Target SourceToTarget(GeneratedSourceResult source)
@@ -49,6 +55,7 @@ internal static class Initializer
             //HintName: {source.HintName}
             {source.SourceText}
             """;
+
         return new("cs", data);
     }
 
