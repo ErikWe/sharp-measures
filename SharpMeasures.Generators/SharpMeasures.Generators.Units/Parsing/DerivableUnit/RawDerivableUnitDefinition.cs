@@ -17,6 +17,8 @@ internal record class RawDerivableUnitDefinition : IOpenAttributeDefinition<RawD
         init => signature = value?.AsReadOnlyEquatable();
     }
 
+    public bool Permutations { get; init; }
+
     private ReadOnlyEquatableList<NamedType?>? signature { get; init; }
 
     public DerivableUnitLocations Locations { get; private init; }

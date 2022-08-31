@@ -19,9 +19,12 @@ internal record class DerivableUnitLocations : AAttributeLocations<DerivableUnit
         init => signatureElements = value.AsReadOnlyEquatable();
     }
 
+    public MinimalLocation? Permutations { get; init; }
+
     public bool ExplicitlySetExpression => Expression is not null;
     public bool ExplicitlySetDerivationID => DerivationID is not null;
     public bool ExplicitlySetSignature => SignatureCollection is not null;
+    public bool ExplicitlySetPermutations => Permutations is not null;
 
     protected override DerivableUnitLocations Locations => this;
 

@@ -12,7 +12,8 @@ internal static class DerivableUnitProperties
     {
         DerivationID,
         Expression,
-        Signature
+        Signature,
+        Permutations
     };
 
     private static DerivableUnitProperty<string> DerivationID { get; } = new
@@ -38,5 +39,12 @@ internal static class DerivableUnitProperties
             SignatureCollection = collectionLocation,
             SignatureElements = elementLocations
         }
+    );
+
+    private static DerivableUnitProperty<bool> Permutations { get; } = new
+    (
+        name: nameof(DerivableUnitAttribute.Permutations),
+        setter: static (definition, permutations) => definition with { Permutations = permutations },
+        locator: static (locations, permutationsLocation) => locations with { Permutations = permutationsLocation }
     );
 }

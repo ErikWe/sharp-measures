@@ -48,6 +48,11 @@ internal class DerivableUnitProcessingDiagnostics : IDerivableUnitProcessingDiag
         return DiagnosticConstruction.EmptyUnitDerivationSignature(definition.Locations.SignatureCollection?.AsRoslynLocation());
     }
 
+    public Diagnostic DerivationSignatureNotPermutable(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
+    {
+        return DiagnosticConstruction.DerivationSignatureNotPermutable(definition.Locations.Permutations?.AsRoslynLocation());
+    }
+
     public Diagnostic NullSignatureElement(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int index)
     {
         return DiagnosticConstruction.NullTypeNotUnit(definition.Locations.SignatureElements[index].AsRoslynLocation());

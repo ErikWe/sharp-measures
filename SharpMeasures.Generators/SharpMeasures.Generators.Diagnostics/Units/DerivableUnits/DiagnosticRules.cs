@@ -75,4 +75,15 @@ public static partial class DiagnosticRules
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
+
+    public static readonly DiagnosticDescriptor DerivationSignatureNotPermutable = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.DerivationSignatureNotPermutable,
+        title: "Derivation signature is not permutable",
+        messageFormat: $"The derivation signature cannot be permuted",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Info,
+        isEnabledByDefault: true,
+        customTags: WellKnownDiagnosticTags.Unnecessary
+    );
 }

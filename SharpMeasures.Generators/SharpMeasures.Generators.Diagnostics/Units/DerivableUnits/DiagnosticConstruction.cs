@@ -38,4 +38,9 @@ public static partial class DiagnosticConstruction
     {
         return Diagnostic.Create(DiagnosticRules.UnitNotDerivable, location, unitName);
     }
+
+    public static Diagnostic DerivationSignatureNotPermutable(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.DerivationSignatureNotPermutable, location);
+    }
 }

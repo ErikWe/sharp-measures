@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Units.Parsing.DerivableUnit;
+﻿namespace SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 
 using Microsoft.CodeAnalysis;
 
@@ -17,6 +17,7 @@ internal interface IDerivableUnitProcessingDiagnostics
     public abstract Diagnostic? EmptyExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? NullSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? EmptySignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
+    public abstract Diagnostic? DerivationSignatureNotPermutable(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? NullSignatureElement(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int index);
 }
 
@@ -58,6 +59,7 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
             .Validate(() => ValidateExpressionIsNotEmpty(context, definition))
             .Validate(() => ValidateSignatureNotNull(context, definition))
             .Validate(() => ValidateSignatureNotEmpty(context, definition))
+            .Validate(() => ValidatePermutationsNotRedundant(context, definition))
             .Merge(() => ProcessSignature(context, definition))
             .Validate((signature) => ValidateDerivationSignatureNotDuplicate(context, definition, signature))
             .Transform((signature) => ProduceResult(definition, signature));
@@ -65,7 +67,7 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
 
     private static DerivableUnitDefinition ProduceResult(RawDerivableUnitDefinition definition, IReadOnlyList<NamedType> signature)
     {
-        return new(definition.DerivationID, definition.Expression!, signature, definition.Locations);
+        return new(definition.DerivationID, definition.Expression!, signature, definition.Permutations, definition.Locations);
     }
 
     private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawDerivableUnitDefinition definition)
@@ -110,6 +112,26 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
     private IValidityWithDiagnostics ValidateSignatureNotEmpty(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.Signature!.Count is not 0, () => Diagnostics.EmptySignature(context, definition));
+    }
+
+    private IValidityWithDiagnostics ValidatePermutationsNotRedundant(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
+    {
+        var permutationsRedundant = definition.Locations.ExplicitlySetPermutations && definition.Permutations is true && (definition.Signature!.Count is 1 || allElementsSameType());
+
+        return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(permutationsRedundant, () => Diagnostics.DerivationSignatureNotPermutable(context, definition));
+
+        bool allElementsSameType()
+        {
+            foreach (var signatureElement in definition.Signature!)
+            {
+                if (signatureElement != definition.Signature![0])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 
     private IOptionalWithDiagnostics<IReadOnlyList<NamedType>> ProcessSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)

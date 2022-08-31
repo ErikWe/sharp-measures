@@ -8,6 +8,7 @@ using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 internal static class Execution
@@ -31,6 +32,8 @@ internal static class Execution
         private StringBuilder Builder { get; } = new();
 
         private DataModel Data { get; }
+
+        private HashSet<DerivableUnitSignature> ImplementedSignatures { get; } = new();
 
         private Composer(DataModel data)
         {
@@ -67,16 +70,64 @@ internal static class Execution
 
             var methodNameAndModifiers = $"public static {Data.Unit.FullyQualifiedName} From";
             var expression = $"new(new {Data.Quantity.FullyQualifiedName}({ProcessExpression(definition, parameterNames, Data.UnitPopulation)}))";
-            var parameters = GetSignatureComponents(definition, parameterNames);
 
-            AppendDocumentation(indentation, Data.Documentation.Derivation(definition.Signature));
+            foreach ((var permutedSignature, var permutedParameterNames) in GetPermutedSignatures(definition, parameterNames))
+            {
+                AppendPermutedDefinition(indentation, methodNameAndModifiers, expression, permutedSignature, permutedParameterNames);
+            }
+        }
+
+        private void AppendPermutedDefinition(Indentation indentation, string methodNameAndModifiers, string expression, DerivableUnitSignature signature, IReadOnlyList<string> parameterNames)
+        {
+            if (ImplementedSignatures.Add(signature) is false)
+            {
+                return;
+            }
+
+            var parameters = GetSignatureComponents(signature, parameterNames);
+
+            AppendDocumentation(indentation, Data.Documentation.Derivation(signature));
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
-        private static IEnumerable<(NamedType Type, string Name)> GetSignatureComponents(DerivableUnitDefinition definition, IReadOnlyList<string> parameterNames)
+        private static IEnumerable<(DerivableUnitSignature Signature, IReadOnlyList<string> ParameterNames)> GetPermutedSignatures(DerivableUnitDefinition definition, IReadOnlyList<string> parameterNames)
         {
-            IEnumerator<string> parameterEnumerator = parameterNames.GetEnumerator();
-            IEnumerator<NamedType> signatureUnitTypeEnumerator = definition.Signature.GetEnumerator();
+            if (definition.Permutations is false)
+            {
+                return new[] { (new DerivableUnitSignature(definition.Signature), parameterNames) };
+            }
+
+            return recurse(definition.Signature.ToArray(), parameterNames.ToArray(), 0);
+
+            static IEnumerable<(DerivableUnitSignature Signature, IReadOnlyList<string> ParameterNames)> recurse(NamedType[] signatureElements, string[] parameterNames, int fromIndex)
+            {
+                if (fromIndex == signatureElements.Length - 1)
+                {
+                    yield return (new DerivableUnitSignature(new List<NamedType>(signatureElements)), new List<string>(parameterNames));
+
+                    yield break;
+                }
+
+                for (int i = fromIndex; i < signatureElements.Length; i++)
+                {
+                    (signatureElements[fromIndex], signatureElements[i]) = (signatureElements[i], signatureElements[fromIndex]);
+                    (parameterNames[fromIndex], parameterNames[i]) = (parameterNames[i], parameterNames[fromIndex]);
+
+                    foreach (var signatureAndParameterNames in recurse(signatureElements, parameterNames, fromIndex + 1))
+                    {
+                        yield return signatureAndParameterNames;
+                    }
+
+                    (signatureElements[fromIndex], signatureElements[i]) = (signatureElements[i], signatureElements[fromIndex]);
+                    (parameterNames[fromIndex], parameterNames[i]) = (parameterNames[i], parameterNames[fromIndex]);
+                }
+            }
+        }
+
+        private static IEnumerable<(NamedType Type, string Name)> GetSignatureComponents(IReadOnlyList<NamedType> signature, IReadOnlyList<string> parameterNames)
+        {
+            var parameterEnumerator = parameterNames.GetEnumerator();
+            var signatureUnitTypeEnumerator = signature.GetEnumerator();
 
             while (parameterEnumerator.MoveNext() && signatureUnitTypeEnumerator.MoveNext())
             {
@@ -91,10 +142,10 @@ internal static class Execution
 
         private static string ProcessExpression(DerivableUnitDefinition definition, IEnumerable<string> parameterNames, IUnitPopulation unitPopulation)
         {
-            string[] parameterNameAndQuantity = new string[definition.Signature.Count];
+            var parameterNameAndQuantity = new string[definition.Signature.Count];
 
-            IEnumerator<string> parameterNameEnumerator = parameterNames.GetEnumerator();
-            IEnumerator<NamedType> quantityEnumerator = GetQuantitiesOfSignatureUnits(definition.Signature, unitPopulation).GetEnumerator();
+            var parameterNameEnumerator = parameterNames.GetEnumerator();
+            var quantityEnumerator = GetQuantitiesOfSignatureUnits(definition.Signature, unitPopulation).GetEnumerator();
 
             int index = 0;
             while (parameterNameEnumerator.MoveNext() && quantityEnumerator.MoveNext())
@@ -121,7 +172,7 @@ internal static class Execution
             int index = 0;
             foreach (var signatureComponent in signature)
             {
-                string name = SourceBuildingUtility.ToParameterName(signatureComponent.Name);
+                var name = SourceBuildingUtility.ToParameterName(signatureComponent.Name);
                 name = appendParameterNumber(name, signatureComponent);
 
                 parameterNames[index] = name;
@@ -144,7 +195,7 @@ internal static class Execution
 
             string appendParameterNumber(string text, NamedType signatureComponent)
             {
-                int count = counts[signatureComponent.Name];
+                var count = counts[signatureComponent.Name];
 
                 if (count == -1)
                 {

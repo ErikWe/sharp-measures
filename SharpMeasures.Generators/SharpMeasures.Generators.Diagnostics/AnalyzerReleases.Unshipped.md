@@ -40,6 +40,7 @@ Measures1144 | Usage | Warning | Derivation ID not recognized
 Measures1145 | Usage | Warning | Unit list not matching signature
 Measures1146 | Usage | Warning | Unit not derivable
 Measures1147 | Usage | Warning | Unit with bias term cannot be derived
+Measures1148 | Usage | Info | Derivation signature is not permutable
 Measures1200 | Usage | Info | Expected both unit name and symbol
 Measures1201 | Usage | Warning | Quantity group missing root quantity
 Measures1202 | Usage | Info | Difference is disabled but a quantity was specified

@@ -73,7 +73,7 @@ public class DuplicateUnitDerivationID
         [SharpMeasuresUnit(typeof(Time))]
         public partial class UnitOfTime { }
 
-        [DerivableUnit("{0} / {1}", new[] { typeof(UnitOfLength), typeof(UnitOfTime) })]
+        [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
         [SharpMeasuresUnit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;

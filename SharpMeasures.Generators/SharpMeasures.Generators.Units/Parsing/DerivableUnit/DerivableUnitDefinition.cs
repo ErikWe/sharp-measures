@@ -12,16 +12,20 @@ internal record class DerivableUnitDefinition : IAttributeDefinition<DerivableUn
     public string Expression { get; }
     public IReadOnlyList<NamedType> Signature => signature;
 
+    public bool Permutations { get; }
+
     private ReadOnlyEquatableList<NamedType> signature { get; }
 
     public DerivableUnitLocations Locations { get; }
 
-    public DerivableUnitDefinition(string? derivationID, string expression, IReadOnlyList<NamedType> signature, DerivableUnitLocations locations)
+    public DerivableUnitDefinition(string? derivationID, string expression, IReadOnlyList<NamedType> signature, bool permutations, DerivableUnitLocations locations)
     {
         DerivationID = derivationID;
 
         Expression = expression;
         this.signature = signature.AsReadOnlyEquatable();
+
+        Permutations = permutations;
 
         Locations = locations;
     }

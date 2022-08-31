@@ -8,4 +8,6 @@ public interface IDerivableUnit
 
     public abstract string Expression { get; }
     public abstract IReadOnlyList<NamedType> Signature { get; }
+
+    public abstract bool Permutations { get; }
 }

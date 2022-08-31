@@ -4,8 +4,7 @@ using SharpMeasures.Generators.Utility;
 
 using System;
 
-/// <summary>Describes how an instance of a unit may be derived from instances of other units. The defined derivation may then be used through
-/// <see cref="DerivedUnitAttribute"/>.</summary>
+/// <summary>Describes how an instance of a unit may be derived from instances of other units. The defined derivation may then be used through <see cref="DerivedUnitAttribute"/>.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class DerivableUnitAttribute : Attribute
 {
@@ -18,6 +17,8 @@ public sealed class DerivableUnitAttribute : Attribute
     public string Expression { get; }
     /// <summary>The unit may be derived from instances of these units, according to <see cref="Expression"/>.</summary>
     public Type[] Signature { get; }
+    /// <summary>Whether to also allow derivation using permutations of the signature. The default behaviour is <see langword="false"/>.</summary>
+    public bool Permutations { get; init; }
 
     /// <inheritdoc cref="DerivableUnitAttribute"/>
     /// <param name="derivationID"><inheritdoc cref="DerivationID" path="/summary"/><para><inheritdoc cref="DerivationID" path="/remarks"/></para></param>
