@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
-using SharpMeasures.Generators.Units.UnitInstances;
+using SharpMeasures.Generators.Units;
 
 internal interface IDocumentationStrategy
 {

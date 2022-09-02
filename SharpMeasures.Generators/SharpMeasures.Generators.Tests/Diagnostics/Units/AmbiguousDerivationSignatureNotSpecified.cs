@@ -48,17 +48,17 @@ public class AmbiguousDerivationSignatureNotSpecified
         [SharpMeasuresScalar(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
 
-        [FixedUnit("Second", "Seconds", 1)]
+        [FixedUnitInstance("Second", "Seconds")]
         [SharpMeasuresUnit(typeof(Time))]
         public partial class UnitOfTime { }
 
         [DerivableUnit("1", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
         [DerivableUnit("2", "{1} / {0}", typeof(UnitOfTime), typeof(UnitOfLength))]
-        [DerivedUnit("MetrePerSecond", "MetresPerSecond", {{derivationIDWithoutComma}}new[] { "Metre", "Second" })]
+        [DerivedUnitInstance("MetrePerSecond", "MetresPerSecond", {{derivationIDWithoutComma}}new[] { "Metre", "Second" })]
         [SharpMeasuresUnit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
@@ -66,7 +66,7 @@ public class AmbiguousDerivationSignatureNotSpecified
     private static GeneratorVerifier Assert(string derivationIDWithoutComma)
     {
         var source = Text(derivationIDWithoutComma);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivedUnit");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivedUnitInstance");
 
         return AssertExactlyAmbiguousDerivationSignatureNotSpecifiedDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
@@ -86,11 +86,11 @@ public class AmbiguousDerivationSignatureNotSpecified
         [SharpMeasuresScalar(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
 
-        [FixedUnit("Second", "Seconds", 1)]
+        [FixedUnitInstance("Second", "Seconds")]
         [SharpMeasuresUnit(typeof(Time))]
         public partial class UnitOfTime { }
 

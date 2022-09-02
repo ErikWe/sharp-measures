@@ -12,12 +12,12 @@ internal readonly record struct DataModel
 
     public bool UseUnitBias { get; }
 
-    public string? DefaultUnitName { get; }
-    public string? DefaultUnitSymbol { get; }
+    public string? DefaultUnitInstanceName { get; }
+    public string? DefaultUnitInstanceSymbol { get; }
 
     public IDocumentationStrategy Documentation { get; }
 
-    public DataModel(DefinedType scalar, NamedType unit, NamedType unitQuantity, string unitParameterName, bool useUnitBias, string? defaultUnitName, string? defaultUnitSymbol, IDocumentationStrategy documentation)
+    public DataModel(DefinedType scalar, NamedType unit, NamedType unitQuantity, string unitParameterName, bool useUnitBias, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IDocumentationStrategy documentation)
     {
         Scalar = scalar;
 
@@ -27,8 +27,8 @@ internal readonly record struct DataModel
 
         UseUnitBias = useUnitBias;
 
-        DefaultUnitName = defaultUnitName;
-        DefaultUnitSymbol = defaultUnitSymbol;
+        DefaultUnitInstanceName = defaultUnitInstanceName;
+        DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol;
 
         Documentation = documentation;
     }

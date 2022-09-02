@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
+using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors;
@@ -13,7 +13,7 @@ using SharpMeasures.Generators.Vectors;
 using System;
 using System.Linq;
 
-internal interface ISpecializedSharpMeasuresScalarValidationDiagnostics : IDefaultUnitValidationDiagnostics
+internal interface ISpecializedSharpMeasuresScalarValidationDiagnostics : IDefaultUnitInstanceValidationDiagnostics
 {
     public abstract Diagnostic? TypeAlreadyUnit(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? TypeAlreadyScalar(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition);
@@ -61,10 +61,10 @@ internal class SpecializedSharpMeasuresScalarValidator : IProcesser<ISpecialized
         var difference = ValidateDifferenceIsScalar(context, definition).Transform(definition.Difference);
 
         var unit = context.ScalarPopulation.ScalarBases[context.Type.AsNamedType()].Definition.Unit;
-        var defaultUnitValidity = DefaultUnitValidator.Validate(context, Diagnostics, definition, context.UnitPopulation, unit);
+        var defaultUnitInstanceValidity = DefaultUnitInstanceValidator.Validate(context, Diagnostics, definition, context.UnitPopulation, unit);
 
-        var defaultUnitName = defaultUnitValidity.Transform(definition.DefaultUnitName);
-        var defaultUnitSymbol = defaultUnitValidity.Transform(definition.DefaultUnitSymbol);
+        var defaultUnitInstanceName = defaultUnitInstanceValidity.Transform(definition.DefaultUnitInstanceName);
+        var defaultUnitInstanceSymbol = defaultUnitInstanceValidity.Transform(definition.DefaultUnitInstanceSymbol);
 
         var reciprocal = ValidatePowerIsScalar(context, definition, definition.Reciprocal, Diagnostics.ReciprocalNotScalar).Transform(definition.Reciprocal);
         var square = ValidatePowerIsScalar(context, definition, definition.Square, Diagnostics.SquareNotScalar).Transform(definition.Square);
@@ -72,19 +72,19 @@ internal class SpecializedSharpMeasuresScalarValidator : IProcesser<ISpecialized
         var squareRoot = ValidatePowerIsScalar(context, definition, definition.SquareRoot, Diagnostics.SquareRootNotScalar).Transform(definition.SquareRoot);
         var cubeRoot = ValidatePowerIsScalar(context, definition, definition.CubeRoot, Diagnostics.CubeRootNotScalar).Transform(definition.CubeRoot);
 
-        var product = ProduceResult(definition, vector.NullableResult, difference.NullableResult, defaultUnitName.NullableResult, defaultUnitSymbol.NullableResult, reciprocal.NullableResult,
-            square.NullableResult, cube.NullableResult, squareRoot.NullableResult, cubeRoot.NullableResult);
+        var product = ProduceResult(context, definition, vector.NullableValueResult(), difference.NullableValueResult(), defaultUnitInstanceName.NullableReferenceResult(), defaultUnitInstanceSymbol.NullableReferenceResult(), reciprocal.NullableValueResult(),
+            square.NullableValueResult(), cube.NullableValueResult(), squareRoot.NullableValueResult(), cubeRoot.NullableValueResult());
 
-        var allDiagnostics = validity.Diagnostics.Concat(vector).Concat(difference).Concat(defaultUnitValidity).Concat(reciprocal).Concat(square).Concat(cube).Concat(squareRoot).Concat(cubeRoot);
+        var allDiagnostics = validity.Diagnostics.Concat(vector).Concat(difference).Concat(defaultUnitInstanceValidity).Concat(reciprocal).Concat(square).Concat(cube).Concat(squareRoot).Concat(cubeRoot);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static SpecializedSharpMeasuresScalarDefinition ProduceResult(SpecializedSharpMeasuresScalarDefinition definition, NamedType? vector, NamedType? difference, string? defaultUnitName,
-        string? defaultUnitSymbol, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot)
+    private static SpecializedSharpMeasuresScalarDefinition ProduceResult(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition, NamedType? vector,
+        NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot)
     {
-        return new(definition.OriginalScalar, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritBases, definition.InheritUnits, vector,
-            definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitName, defaultUnitSymbol, reciprocal, square, cube, squareRoot, cubeRoot, definition.GenerateDocumentation,
+        return new(definition.OriginalQuantity, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritBases, definition.InheritUnits, vector,
+            definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, reciprocal, square, cube, squareRoot, cubeRoot, definition.GenerateDocumentation,
             definition.Locations);
     }
 
@@ -104,14 +104,14 @@ internal class SpecializedSharpMeasuresScalarValidator : IProcesser<ISpecialized
 
     private IValidityWithDiagnostics ValidateOriginalScalarIsScalar(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition)
     {
-        var originalScalarIsScalar = context.ScalarPopulation.Scalars.ContainsKey(definition.OriginalScalar);
+        var originalScalarIsScalar = context.ScalarPopulation.Scalars.ContainsKey(definition.OriginalQuantity);
 
         return ValidityWithDiagnostics.Conditional(originalScalarIsScalar, () => Diagnostics.OriginalNotScalar(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateScalarRootResolved(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition)
     {
-        var correctlyResolvedScalarBase = context.ScalarPopulation.ScalarBases.ContainsKey(definition.OriginalScalar);
+        var correctlyResolvedScalarBase = context.ScalarPopulation.ScalarBases.ContainsKey(definition.OriginalQuantity);
 
         return ValidityWithDiagnostics.Conditional(correctlyResolvedScalarBase, () => Diagnostics.RootScalarNotResolved(context, definition));
     }

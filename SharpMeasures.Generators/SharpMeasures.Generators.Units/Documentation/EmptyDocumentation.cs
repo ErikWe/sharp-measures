@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Units.Documentation;
 
-using SharpMeasures.Generators.Units.UnitInstances;
-
 using System;
 using System.Collections.Generic;
 
@@ -13,12 +11,12 @@ internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocu
 
     string IDocumentationStrategy.Header() => string.Empty;
     string IDocumentationStrategy.Derivation(IReadOnlyList<NamedType> _) => string.Empty;
-    string IDocumentationStrategy.FixedDefinition(IFixedUnit _) => string.Empty;
-    string IDocumentationStrategy.DerivedDefinition(IDerivedUnit _) => string.Empty;
-    string IDocumentationStrategy.AliasDefinition(IUnitAlias _) => string.Empty;
-    string IDocumentationStrategy.BiasedDefinition(IBiasedUnit _) => string.Empty;
-    string IDocumentationStrategy.PrefixedDefinition(IPrefixedUnit _) => string.Empty;
-    string IDocumentationStrategy.ScaledDefinition(IScaledUnit _) => string.Empty;
+    string IDocumentationStrategy.FixedUnitInstance(IFixedUnitInstance _) => string.Empty;
+    string IDocumentationStrategy.DerivedUnitInstance(IDerivedUnitInstance _) => string.Empty;
+    string IDocumentationStrategy.UnitAliasInstance(IUnitInstanceAlias _) => string.Empty;
+    string IDocumentationStrategy.BiasedUnitInstance(IBiasedUnitInstance _) => string.Empty;
+    string IDocumentationStrategy.PrefixedUnitInstance(IPrefixedUnitInstance _) => string.Empty;
+    string IDocumentationStrategy.ScaledUnitInstance(IScaledUnitInstance _) => string.Empty;
     string IDocumentationStrategy.RepresentedQuantity() => string.Empty;
     string IDocumentationStrategy.Bias() => string.Empty;
     string IDocumentationStrategy.Constructor() => string.Empty;

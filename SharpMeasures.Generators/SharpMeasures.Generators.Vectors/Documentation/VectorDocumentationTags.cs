@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Units.UnitInstances;
+using SharpMeasures.Generators.Units;
 
 using System;
 

@@ -62,14 +62,14 @@ public class UnionInclusionStackingModeRedundant
     public static IEnumerable<object[]> ScalarAttributes => new object[][]
     {
         new[] { IncludeUnitsAttribute },
-        new[] { IncludeBasesAttribute }
+        new[] { IncludeUnitBasesAttribute }
     };
 
     private static string IncludeUnitsAttribute { get; } = "IncludeUnits";
-    private static string IncludeBasesAttribute { get; } = "IncludeBases";
+    private static string IncludeUnitBasesAttribute { get; } = "IncludeUnitBases";
 
     private static GeneratorVerifier AssertExactlyUnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics);
-    private static IReadOnlyCollection<string> UnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics { get; } = new string[] { DiagnosticIDs.UnrecognizedUnitName, DiagnosticIDs.UnionInclusionStackingModeRedundant };
+    private static IReadOnlyCollection<string> UnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics { get; } = new string[] { DiagnosticIDs.UnrecognizedUnitInstanceName, DiagnosticIDs.UnionInclusionStackingModeRedundant };
 
     private static string ScalarText(string attribute) => $$"""
         using SharpMeasures.Generators.Quantities;
@@ -106,7 +106,7 @@ public class UnionInclusionStackingModeRedundant
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -133,7 +133,7 @@ public class UnionInclusionStackingModeRedundant
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -163,7 +163,7 @@ public class UnionInclusionStackingModeRedundant
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -190,7 +190,7 @@ public class UnionInclusionStackingModeRedundant
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -220,7 +220,7 @@ public class UnionInclusionStackingModeRedundant
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -256,7 +256,7 @@ public class UnionInclusionStackingModeRedundant
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -302,7 +302,7 @@ public class UnionInclusionStackingModeRedundant
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -320,7 +320,7 @@ public class UnionInclusionStackingModeRedundant
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -341,7 +341,7 @@ public class UnionInclusionStackingModeRedundant
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -359,7 +359,7 @@ public class UnionInclusionStackingModeRedundant
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -380,7 +380,7 @@ public class UnionInclusionStackingModeRedundant
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -407,7 +407,7 @@ public class UnionInclusionStackingModeRedundant
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
         
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;

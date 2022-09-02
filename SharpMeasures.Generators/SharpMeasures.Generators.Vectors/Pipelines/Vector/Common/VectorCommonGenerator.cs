@@ -21,8 +21,8 @@ internal static class VectorCommonGenerator
 
         string unitParameterName = SourceBuildingUtility.ToParameterName(model.Vector.Unit.Name);
 
-        return new(model.Vector.Type, model.Vector.Dimension, model.Vector.Scalar, GetSquaredScalar(model), model.Vector.Unit, unit.Definition.Quantity, unitParameterName, model.Vector.DefaultUnitName,
-            model.Vector.DefaultUnitSymbol, model.Documentation);
+        return new(model.Vector.Type, model.Vector.Dimension, model.Vector.Scalar, GetSquaredScalar(model), model.Vector.Unit, unit.Definition.Quantity, unitParameterName, model.Vector.DefaultUnitInstanceName,
+            model.Vector.DefaultUnitInstanceSymbol, model.Documentation);
     }
 
     private static NamedType? GetSquaredScalar(VectorDataModel model)

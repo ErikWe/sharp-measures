@@ -56,11 +56,11 @@ public sealed class SharpMeasuresVectorAttribute : Attribute
     /// <remarks>To disable support for computing the difference in the first place, use <see cref="ImplementDifference"/>.</remarks>
     public Type? Difference { get; init; }
 
-    /// <summary>The name of the default unit.</summary>
-    public string? DefaultUnitName { get; init; }
+    /// <summary>The name of the default unit instance.</summary>
+    public string? DefaultUnitInstanceName { get; init; }
 
-    /// <summary>The symbol of the default unit.</summary>
-    public string? DefaultUnitSymbol { get; init; }
+    /// <summary>The symbol of the default unit instance.</summary>
+    public string? DefaultUnitInstanceSymbol { get; init; }
 
     /// <summary>Dictates whether documentation should be generated for this quantity.</summary>
     /// <remarks>If this property is not explicitly set, the entry [<i>SharpMeasures_GenerateDocumentation</i>] in the global AnalyzerConfig

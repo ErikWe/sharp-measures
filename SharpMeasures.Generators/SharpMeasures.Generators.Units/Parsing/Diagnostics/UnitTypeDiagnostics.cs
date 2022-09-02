@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Units;
 
 internal static class UnitTypeDiagnostics
 {

@@ -42,8 +42,6 @@ public static class ResultWithDiagnostics
         public T Result { get; }
         public IEnumerable<Diagnostic> Diagnostics { get; }
 
-        T? IOptionalWithDiagnostics<T>.NullableResult => Result;
-
         public SimpleResultWithDiagnostics(T result, IEnumerable<Diagnostic> diagnostics)
         {
             Result = result;

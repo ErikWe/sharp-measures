@@ -11,6 +11,8 @@ internal record class VectorConstantDefinition : AQuantityConstantDefinition<Vec
 
     private ReadOnlyEquatableList<double> value { get; }
 
+    IVectorConstantLocations IVectorConstant.Locations => Locations;
+
     public VectorConstantDefinition(string name, string unit, IReadOnlyList<double> value, bool generateMultiplesProperty, string? multiples, VectorConstantLocations locations)
         : base(name, unit, generateMultiplesProperty, multiples, locations)
     {

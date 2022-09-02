@@ -11,13 +11,13 @@ public class ExcludeUnitsFilteringDiagnostics : IExcludeUnitsFilteringDiagnostic
 
     private ExcludeUnitsFilteringDiagnostics() { }
 
-    public Diagnostic UnrecognizedUnit(IExcludeUnitsFilteringContext context, ExcludeUnitsDefinition definition, int index)
+    public Diagnostic UnrecognizedUnitInstance(IExcludeUnitsFilteringContext context, ExcludeUnitsDefinition definition, int index)
     {
-        return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.ExcludeUnitsElements[definition.LocationMap[index]].AsRoslynLocation(), definition.ExcludedUnits[index], context.UnitType.Type.Name);
+        return DiagnosticConstruction.UnrecognizedUnitInstanceName(definition.Locations.UnitInstancesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.UnitInstances[index], context.UnitType.Type.Name);
     }
 
-    public Diagnostic? UnitAlreadyExcluded(IExcludeUnitsFilteringContext context, ExcludeUnitsDefinition definition, int index)
+    public Diagnostic? UnitInstanceAlreadyExcluded(IExcludeUnitsFilteringContext context, ExcludeUnitsDefinition definition, int index)
     {
-        return DiagnosticConstruction.ExcludingAlreadyExcludedUnit(definition.Locations.ExcludeUnitsElements[definition.LocationMap[index]].AsRoslynLocation(), definition.ExcludedUnits[index]);
+        return DiagnosticConstruction.ExcludingAlreadyExcludedUnitInstance(definition.Locations.UnitInstancesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.UnitInstances[index]);
     }
 }

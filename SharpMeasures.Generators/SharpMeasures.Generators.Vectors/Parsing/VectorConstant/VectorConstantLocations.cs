@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
 using System.Collections.Generic;
 
-internal record class VectorConstantLocations : AQuantityConstantLocations<VectorConstantLocations>
+internal record class VectorConstantLocations : AQuantityConstantLocations<VectorConstantLocations>, IVectorConstantLocations
 {
     public static VectorConstantLocations Empty { get; } = new();
 

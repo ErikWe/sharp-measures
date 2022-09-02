@@ -15,15 +15,15 @@ using Xunit;
 public class UnrecognizedEnumValue
 {
     [Fact]
-    public Task VerifyUnrecognizedPrefixDiagnosticsMessage() => AssertPrefixedUnit(NegativeOne, "MetricPrefixName").VerifyDiagnostics();
+    public Task VerifyUnrecognizedPrefixDiagnosticsMessage() => AssertPrefixedUnitInstance(NegativeOne, "MetricPrefixName").VerifyDiagnostics();
 
     [Theory]
     [MemberData(nameof(UnrecognizedEnumValues))]
-    public void PrefixedUnit_Binary(SourceSubtext prefix) => AssertPrefixedUnit(prefix, "BinaryPrefixName");
+    public void PrefixedUnitInstance_Binary(SourceSubtext prefix) => AssertPrefixedUnitInstance(prefix, "BinaryPrefixName");
 
     [Theory]
     [MemberData(nameof(UnrecognizedEnumValues))]
-    public void PrefixedUnit_Metric(SourceSubtext prefix) => AssertPrefixedUnit(prefix, "MetricPrefixName");
+    public void PrefixedUnitInstance_Metric(SourceSubtext prefix) => AssertPrefixedUnitInstance(prefix, "MetricPrefixName");
 
     [Theory]
     [MemberData(nameof(UnrecognizedEnumValues))]
@@ -57,16 +57,16 @@ public class UnrecognizedEnumValue
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres", 1)]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", ({{type}}){{prefix}})]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", ({{type}}){{prefix}})]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
-    private static GeneratorVerifier AssertPrefixedUnit(SourceSubtext prefix, string type)
+    private static GeneratorVerifier AssertPrefixedUnitInstance(SourceSubtext prefix, string type)
     {
         var source = PrefixedUnitText(prefix, type);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, prefix.Context.With(outerPrefix: $"PrefixedUnit(\"Kilometre\", \"Kilometres\", \"Metre\", ({type})"));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, prefix.Context.With(outerPrefix: $"PrefixedUnitInstance(\"Kilometre\", \"Kilometres\", \"Metre\", ({type})"));
 
         return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(PrefixUnitIdentical);
     }
@@ -84,7 +84,7 @@ public class UnrecognizedEnumValue
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -107,7 +107,7 @@ public class UnrecognizedEnumValue
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -125,11 +125,11 @@ public class UnrecognizedEnumValue
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Utility;
 
-        [IncludeBases("Metre", StackingMode = (InclusionStackingMode){{inclusionStackingMode}})]
+        [IncludeUnitBases("Metre", StackingMode = (InclusionStackingMode){{inclusionStackingMode}})]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -155,7 +155,7 @@ public class UnrecognizedEnumValue
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -172,7 +172,7 @@ public class UnrecognizedEnumValue
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -186,7 +186,7 @@ public class UnrecognizedEnumValue
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -199,7 +199,7 @@ public class UnrecognizedEnumValue
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;

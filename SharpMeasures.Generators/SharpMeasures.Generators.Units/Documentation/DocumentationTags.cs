@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Units.Documentation;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Units.UnitInstances;
 
 using System;
 using System.Collections.Generic;
@@ -16,13 +15,13 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
 
     public string Header() => "Header";
 
-    public string Derivation(IReadOnlyList<NamedType> signature) => $"From_{ParseDerivableSignature(signature)}";
-    public string FixedDefinition(IFixedUnit definition) => $"Definition_{definition.Name}";
-    public string DerivedDefinition(IDerivedUnit definition) => $"Definition_{definition.Name}";
-    public string AliasDefinition(IUnitAlias definition) => $"Definition_{definition.Name}";
-    public string BiasedDefinition(IBiasedUnit definition) => $"Definition_{definition.Name}";
-    public string PrefixedDefinition(IPrefixedUnit definition) => $"Definition_{definition.Name}";
-    public string ScaledDefinition(IScaledUnit definition) => $"Definition_{definition.Name}";
+    public string Derivation(IReadOnlyList<NamedType> signature) => $"Derivation_{ParseDerivableSignature(signature)}";
+    public string FixedUnitInstance(IFixedUnitInstance unitInstance) => $"UnitInstance_{unitInstance.Name}";
+    public string DerivedUnitInstance(IDerivedUnitInstance unitInstance) => $"UnitInstance_{unitInstance.Name}";
+    public string UnitAliasInstance(IUnitInstanceAlias unitInstance) => $"UnitInstance_{unitInstance.Name}";
+    public string BiasedUnitInstance(IBiasedUnitInstance unitInstance) => $"UnitInstance_{unitInstance.Name}";
+    public string PrefixedUnitInstance(IPrefixedUnitInstance unitInstance) => $"UnitInstance_{unitInstance.Name}";
+    public string ScaledUnitInstance(IScaledUnitInstance unitInstance) => $"UnitInstance_{unitInstance.Name}";
 
     public string RepresentedQuantity() => "Quantity";
     public string Bias() => "Bias";

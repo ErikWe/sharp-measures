@@ -12,17 +12,17 @@ using System.Collections.Generic;
 public interface IIncludeUnitsFilteringDiagnostics
 {
     public abstract Diagnostic? UnionInclusionStackingModeRedundant(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition);
-    public abstract Diagnostic? UnrecognizedUnit(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index);
-    public abstract Diagnostic? UnitAlreadyIncluded(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index);
-    public abstract Diagnostic? UnitExcluded(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index);
+    public abstract Diagnostic? UnrecognizedUnitInstance(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index);
+    public abstract Diagnostic? UnitInstanceAlreadyIncluded(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index);
+    public abstract Diagnostic? UnitInstanceExcluded(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index);
 }
 
 public interface IIncludeUnitsFilteringContext : IProcessingContext
 {
     public abstract IUnitType UnitType { get; }
 
-    public abstract bool AllUnitsIncluded { get; }
-    public abstract HashSet<string> IncludedUnits { get; }
+    public abstract bool AllUnitInstancesIncluded { get; }
+    public abstract HashSet<string> IncludedUnitInstances { get; }
 }
 
 public class IncludeUnitsFilterer : AProcesser<IIncludeUnitsFilteringContext, IncludeUnitsDefinition, IncludeUnitsDefinition>
@@ -36,57 +36,57 @@ public class IncludeUnitsFilterer : AProcesser<IIncludeUnitsFilteringContext, In
 
     public override IOptionalWithDiagnostics<IncludeUnitsDefinition> Process(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition)
     {
-        List<string> validUnits = new();
+        List<string> validUnitInstances = new();
         List<int> locationMap = new();
 
         List<Diagnostic> allDiagnostics = new();
 
-        for (var i = 0; i < definition.IncludedUnits.Count; i++)
+        for (var i = 0; i < definition.UnitInstances.Count; i++)
         {
-            var validity = ValidateUnitRecognized(context, definition, i)
-                .Validate(() => ValidateUnitNotAlreadyIncluded(context, definition, i))
-                .Validate(() => ValidateUnitNotExcluded(context, definition, i));
+            var validity = ValidateUnitInstanceRecognized(context, definition, i)
+                .Validate(() => ValidateUnitInstanceNotAlreadyIncluded(context, definition, i))
+                .Validate(() => ValidateUnitInstanceNotExcluded(context, definition, i));
 
             allDiagnostics.AddRange(validity);
 
             if (validity.IsValid)
             {
-                validUnits.Add(definition.IncludedUnits[i]);
+                validUnitInstances.Add(definition.UnitInstances[i]);
                 locationMap.Add(i);
             }
         }
 
-        var productCreationDelegate = () => new IncludeUnitsDefinition(validUnits, definition.StackingMode, definition.Locations, locationMap);
+        var productCreationDelegate = () => new IncludeUnitsDefinition(validUnitInstances, definition.StackingMode, definition.Locations, locationMap);
 
         return ValidateStackingModeIsNotRedundant(context, definition)
-            .Merge(() => OptionalWithDiagnostics.ConditionalWithDefiniteDiagnostics(validUnits.Count is not 0, productCreationDelegate, allDiagnostics));
+            .Merge(() => OptionalWithDiagnostics.ConditionalWithDefiniteDiagnostics(validUnitInstances.Count is not 0, productCreationDelegate, allDiagnostics));
     }
 
     private IValidityWithDiagnostics ValidateStackingModeIsNotRedundant(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition)
     {
-        var stackingModeIsRedundant = definition.Locations.ExplicitlySetStackingMode && definition.StackingMode is InclusionStackingMode.Union && context.AllUnitsIncluded;
+        var stackingModeIsRedundant = definition.Locations.ExplicitlySetStackingMode && definition.StackingMode is InclusionStackingMode.Union && context.AllUnitInstancesIncluded;
 
         return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(stackingModeIsRedundant, () => Diagnostics.UnionInclusionStackingModeRedundant(context, definition));
     }
 
-    private IValidityWithDiagnostics ValidateUnitRecognized(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index)
+    private IValidityWithDiagnostics ValidateUnitInstanceRecognized(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index)
     {
-        var recognizedUnit = context.UnitType.UnitsByName.ContainsKey(definition.IncludedUnits[index]);
+        var recognizedUnitInstance = context.UnitType.UnitInstancesByName.ContainsKey(definition.UnitInstances[index]);
 
-        return ValidityWithDiagnostics.Conditional(recognizedUnit, () => Diagnostics.UnrecognizedUnit(context, definition, index));
+        return ValidityWithDiagnostics.Conditional(recognizedUnitInstance, () => Diagnostics.UnrecognizedUnitInstance(context, definition, index));
     }
 
-    private IValidityWithDiagnostics ValidateUnitNotAlreadyIncluded(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index)
+    private IValidityWithDiagnostics ValidateUnitInstanceNotAlreadyIncluded(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index)
     {
-        var unitAlreadyIncluded = definition.StackingMode is InclusionStackingMode.Union && context.IncludedUnits.Contains(definition.IncludedUnits[index]);
+        var unitInstanceAlreadyIncluded = definition.StackingMode is InclusionStackingMode.Union && context.IncludedUnitInstances.Contains(definition.UnitInstances[index]);
 
-        return ValidityWithDiagnostics.Conditional(unitAlreadyIncluded is false, () => Diagnostics.UnitAlreadyIncluded(context, definition, index));
+        return ValidityWithDiagnostics.Conditional(unitInstanceAlreadyIncluded is false, () => Diagnostics.UnitInstanceAlreadyIncluded(context, definition, index));
     }
 
-    private IValidityWithDiagnostics ValidateUnitNotExcluded(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index)
+    private IValidityWithDiagnostics ValidateUnitInstanceNotExcluded(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index)
     {
-        var unitExcluded = definition.StackingMode is InclusionStackingMode.Intersection && context.IncludedUnits.Contains(definition.IncludedUnits[index]) is false;
+        var unitInstanceExcluded = definition.StackingMode is InclusionStackingMode.Intersection && context.IncludedUnitInstances.Contains(definition.UnitInstances[index]) is false;
 
-        return ValidityWithDiagnostics.Conditional(unitExcluded is false, () => Diagnostics.UnitExcluded(context, definition, index));
+        return ValidityWithDiagnostics.Conditional(unitInstanceExcluded is false, () => Diagnostics.UnitInstanceExcluded(context, definition, index));
     }
 }

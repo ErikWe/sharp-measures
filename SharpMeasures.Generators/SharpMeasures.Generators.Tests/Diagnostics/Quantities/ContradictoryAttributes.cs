@@ -55,8 +55,8 @@ public class Contrad6ictoryAttributes
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -82,8 +82,8 @@ public class Contrad6ictoryAttributes
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -110,8 +110,8 @@ public class Contrad6ictoryAttributes
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -141,8 +141,8 @@ public class Contrad6ictoryAttributes
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -169,8 +169,8 @@ public class Contrad6ictoryAttributes
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -200,8 +200,8 @@ public class Contrad6ictoryAttributes
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -231,8 +231,8 @@ public class Contrad6ictoryAttributes
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -250,13 +250,13 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Units.Utility;
 
-        [IncludeBases("Metre")]
-        [ExcludeBases("Kilometre")]
+        [IncludeUnitBases("Metre")]
+        [ExcludeUnitBases("Kilometre")]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -274,16 +274,16 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Units.Utility;
 
-        [IncludeBases("Metre")]
-        [ExcludeBases("Kilometre")]
+        [IncludeUnitBases("Metre")]
+        [ExcludeUnitBases("Kilometre")]
         [SpecializedSharpMeasuresScalar(typeof(Length))]
         public partial class Distance { }
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -315,8 +315,8 @@ public class Contrad6ictoryAttributes
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -334,8 +334,8 @@ public class Contrad6ictoryAttributes
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -355,8 +355,8 @@ public class Contrad6ictoryAttributes
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -378,8 +378,8 @@ public class Contrad6ictoryAttributes
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -398,8 +398,8 @@ public class Contrad6ictoryAttributes
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -421,8 +421,8 @@ public class Contrad6ictoryAttributes
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -444,8 +444,8 @@ public class Contrad6ictoryAttributes
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -456,12 +456,12 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Units.Utility;
 
-        [IncludeBases("Metre")]
+        [IncludeUnitBases("Metre")]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -472,15 +472,15 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Units.Utility;
 
-        [IncludeBases("Metre")]
+        [IncludeUnitBases("Metre")]
         [SpecializedSharpMeasuresScalar(typeof(Length))]
         public partial class Distance { }
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;

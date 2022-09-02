@@ -30,7 +30,7 @@ public class DuplicateUnitName
     public void ScaledUnit_ExactList() => AssertScaled();
 
     private static GeneratorVerifier AssertExactlyDuplicateUnitNameDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateUnitNameDiagnostics);
-    private static IReadOnlyCollection<string> DuplicateUnitNameDiagnostics { get; } = new string[] { DiagnosticIDs.DuplicateUnitName };
+    private static IReadOnlyCollection<string> DuplicateUnitNameDiagnostics { get; } = new string[] { DiagnosticIDs.DuplicateUnitInstanceName };
 
     private static string AliasText => """
         using SharpMeasures.Generators.Scalars;
@@ -39,9 +39,9 @@ public class DuplicateUnitName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [UnitAlias("Meter", "Meters", "Metre")]
-        [UnitAlias("Meter", "Meters2", "Metre")]
+        [FixedUnitInstance("Metre", "Metres")]
+        [UnitInstanceAlias("Meter", "Meters", "Metre")]
+        [UnitInstanceAlias("Meter", "Meters2", "Metre")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -61,9 +61,9 @@ public class DuplicateUnitName
         [SharpMeasuresScalar(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
 
-        [FixedUnit("Kelvin", "Kelvin")]
-        [BiasedUnit("Celsius", "Celsius", "Kelvin", -273.15)]
-        [BiasedUnit("Celsius", "Celsius2", "Kelvin", -273.15)]
+        [FixedUnitInstance("Kelvin", "Kelvin")]
+        [BiasedUnitInstance("Celsius", "Celsius", "Kelvin", -273.15)]
+        [BiasedUnitInstance("Celsius", "Celsius2", "Kelvin", -273.15)]
         [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
@@ -88,17 +88,17 @@ public class DuplicateUnitName
         [SharpMeasuresScalar(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
 
-        [FixedUnit("Second", "Seconds")]
+        [FixedUnitInstance("Second", "Seconds")]
         [SharpMeasuresUnit(typeof(Time))]
         public partial class UnitOfTime { }
 
         [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-        [DerivedUnit("MetrePerSecond", "MetresPerSecond", new[] { "Metre", "Second" })]
-        [DerivedUnit("MetrePerSecond", "MetresPerSecond2", new[] { "Metre", "Second" })]
+        [DerivedUnitInstance("MetrePerSecond", "MetresPerSecond", new[] { "Metre", "Second" })]
+        [DerivedUnitInstance("MetrePerSecond", "MetresPerSecond2", new[] { "Metre", "Second" })]
         [SharpMeasuresUnit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
@@ -118,9 +118,9 @@ public class DuplicateUnitName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
-        [PrefixedUnit("Kilometre", "Kilometres2", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [PrefixedUnitInstance("Kilometre", "Kilometres2", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -139,9 +139,9 @@ public class DuplicateUnitName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [ScaledUnit("Kilometre", "Kilometres", "Metre", 1000)]
-        [ScaledUnit("Kilometre", "Kilometres2", "Metre", 1000)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [ScaledUnitInstance("Kilometre", "Kilometres", "Metre", 1000)]
+        [ScaledUnitInstance("Kilometre", "Kilometres2", "Metre", 1000)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -166,8 +166,8 @@ public class DuplicateUnitName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [UnitAlias("Meter", "Meters", "Metre")]
+        [FixedUnitInstance("Metre", "Metres")]
+        [UnitInstanceAlias("Meter", "Meters", "Metre")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -180,8 +180,8 @@ public class DuplicateUnitName
         [SharpMeasuresScalar(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
 
-        [FixedUnit("Kelvin", "Kelvin")]
-        [BiasedUnit("Celsius", "Celsius", "Kelvin", -273.15)]
+        [FixedUnitInstance("Kelvin", "Kelvin")]
+        [BiasedUnitInstance("Celsius", "Celsius", "Kelvin", -273.15)]
         [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
@@ -199,16 +199,16 @@ public class DuplicateUnitName
         [SharpMeasuresScalar(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
 
-        [FixedUnit("Second", "Seconds")]
+        [FixedUnitInstance("Second", "Seconds")]
         [SharpMeasuresUnit(typeof(Time))]
         public partial class UnitOfTime { }
 
         [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-        [DerivedUnit("MetrePerSecond", "MetresPerSecond", new[] { "Metre", "Second" })]
+        [DerivedUnitInstance("MetrePerSecond", "MetresPerSecond", new[] { "Metre", "Second" })]
         [SharpMeasuresUnit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
@@ -221,8 +221,8 @@ public class DuplicateUnitName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -234,8 +234,8 @@ public class DuplicateUnitName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [ScaledUnit("Kilometre", "Kilometres", "Metre", 1000)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [ScaledUnitInstance("Kilometre", "Kilometres", "Metre", 1000)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;

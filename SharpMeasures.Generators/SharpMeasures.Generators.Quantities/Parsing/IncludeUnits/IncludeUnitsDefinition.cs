@@ -4,18 +4,17 @@ using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 using SharpMeasures.Generators.Utility;
 
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
-public record class IncludeUnitsDefinition : AItemListDefinition<string, IncludeUnitsLocations>, IUnitInclusionList
+public record class IncludeUnitsDefinition : AItemListDefinition<string, IncludeUnitsLocations>, IUnitInstanceInclusionList
 {
-    public IReadOnlyList<string> IncludedUnits => Items;
+    public IReadOnlyList<string> UnitInstances => Items;
 
     public InclusionStackingMode StackingMode { get; }
 
-    [SuppressMessage("Design", "CA1033", Justification = "Available under another name")]
-    IReadOnlyList<string> IUnitList.Units => IncludedUnits;
+    IUnitInstanceListLocations IUnitInstanceList.Locations => Locations;
+    IUnitInstanceInclusionListLocations IUnitInstanceInclusionList.Locations => Locations;
 
-    public IncludeUnitsDefinition(IReadOnlyList<string> includedUnits, InclusionStackingMode stackingMode, IncludeUnitsLocations locations, IReadOnlyList<int> locationMap) : base(includedUnits, locations, locationMap)
+    public IncludeUnitsDefinition(IReadOnlyList<string> unitInstances, InclusionStackingMode stackingMode, IncludeUnitsLocations locations, IReadOnlyList<int> locationMap) : base(unitInstances, locations, locationMap)
     {
         StackingMode = stackingMode;
     }

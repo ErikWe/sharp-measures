@@ -30,6 +30,6 @@ internal class VectorConstantProcesser : AQuantityConstantProcesser<IQuantityCon
 
     private static VectorConstantDefinition ProduceResult(RawVectorConstantDefinition definition, bool generateMultiples, string? multiplesName)
     {
-        return new(definition.Name!, definition.Unit!, definition.Value, generateMultiples, multiplesName, definition.Locations);
+        return new(definition.Name!, definition.UnitInstanceName!, definition.Value, generateMultiples, multiplesName, definition.Locations);
     }
 }

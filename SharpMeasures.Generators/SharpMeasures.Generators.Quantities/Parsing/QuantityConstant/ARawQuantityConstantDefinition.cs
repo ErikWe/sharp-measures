@@ -7,7 +7,7 @@ public abstract record class ARawQuantityConstantDefinition<TDefinition, TLocati
     where TLocations : AQuantityConstantLocations<TLocations>
 {
     public string? Name { get; init; }
-    public string? Unit { get; init; }
+    public string? UnitInstanceName { get; init; }
 
     public bool GenerateMultiplesProperty { get; init; }
     public string? Multiples { get; init; }

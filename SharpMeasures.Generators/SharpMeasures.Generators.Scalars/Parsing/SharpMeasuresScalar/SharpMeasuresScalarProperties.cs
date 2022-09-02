@@ -17,8 +17,8 @@ internal static class SharpMeasuresScalarProperties
         ImplementSum,
         ImplementDifference,
         Difference,
-        DefaultUnitName,
-        DefaultUnitSymbol,
+        DefaultUnitInstanceName,
+        DefaultUnitInstanceSymbol,
         Reciprocal,
         Square,
         Cube,
@@ -69,18 +69,18 @@ internal static class SharpMeasuresScalarProperties
         locator: static (locations, differenceLocation) => locations with { Difference = differenceLocation }
     );
 
-    private static SharpMeasuresScalarProperty<string> DefaultUnitName { get; } = new
+    private static SharpMeasuresScalarProperty<string> DefaultUnitInstanceName { get; } = new
     (
-        name: nameof(SharpMeasuresScalarAttribute.DefaultUnitName),
-        setter: static (definition, defaultUnitName) => definition with { DefaultUnitName = defaultUnitName },
-        locator: static (locations, defaultUnitNameLocation) => locations with { DefaultUnitName = defaultUnitNameLocation }
+        name: nameof(SharpMeasuresScalarAttribute.DefaultUnitInstanceName),
+        setter: static (definition, defaultUnitInstanceName) => definition with { DefaultUnitInstanceName = defaultUnitInstanceName },
+        locator: static (locations, defaultUnitInstanceNameLocation) => locations with { DefaultUnitInstanceName = defaultUnitInstanceNameLocation }
     );
 
-    private static SharpMeasuresScalarProperty<string> DefaultUnitSymbol { get; } = new
+    private static SharpMeasuresScalarProperty<string> DefaultUnitInstanceSymbol { get; } = new
     (
-        name: nameof(SharpMeasuresScalarAttribute.DefaultUnitSymbol),
-        setter: static (definition, defaultUnitSymbol) => definition with { DefaultUnitSymbol = defaultUnitSymbol },
-        locator: static (locations, defaultUnitSymbolLocation) => locations with { DefaultUnitSymbol = defaultUnitSymbolLocation }
+        name: nameof(SharpMeasuresScalarAttribute.DefaultUnitInstanceSymbol),
+        setter: static (definition, defaultUnitInstanceSymbol) => definition with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol },
+        locator: static (locations, defaultUnitInstanceSymbolLocation) => locations with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbolLocation }
     );
 
     private static SharpMeasuresScalarProperty<INamedTypeSymbol> Reciprocal { get; } = new

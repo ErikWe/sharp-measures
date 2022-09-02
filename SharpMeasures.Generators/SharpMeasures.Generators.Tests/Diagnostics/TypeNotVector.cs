@@ -212,7 +212,7 @@ public class TypeNotVector
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [SharpMeasuresVector(typeof(UnitOfLength))]
+        [SharpMeasuresVector(typeof(UnitOfLength), ImplementDifference = false)]
         public partial class Position3 { }
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
@@ -227,7 +227,7 @@ public class TypeNotVector
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        [SpecializedSharpMeasuresVector(typeof(Position3), ImplementDifference = false)]
         public partial class Displacement3 { }
 
         [SharpMeasuresVector(typeof(UnitOfLength))]

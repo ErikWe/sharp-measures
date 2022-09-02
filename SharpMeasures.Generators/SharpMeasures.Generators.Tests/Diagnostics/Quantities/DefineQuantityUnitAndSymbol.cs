@@ -50,8 +50,8 @@ public class DefineQuantityUnitAndSymbol
         new object[] { OnlySymbol }
     };
 
-    private static SourceSubtext OnlyName { get; } = SourceSubtext.Covered("\"Metre\"", prefix: "DefaultUnitName = ");
-    private static SourceSubtext OnlySymbol { get; } = SourceSubtext.Covered("\"m\"", prefix: "DefaultUnitSymbol = ");
+    private static SourceSubtext OnlyName { get; } = SourceSubtext.Covered("\"Metre\"", prefix: "DefaultUnitInstanceName = ");
+    private static SourceSubtext OnlySymbol { get; } = SourceSubtext.Covered("\"m\"", prefix: "DefaultUnitInstanceSymbol = ");
 
     private static GeneratorVerifier AssertExactlyDefineQuantityUnitAndSymbolDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DefineQuantityUnitAndSymbolDiagnostics);
     private static IReadOnlyCollection<string> DefineQuantityUnitAndSymbolDiagnostics { get; } = new string[] { DiagnosticIDs.DefineQuantityUnitAndSymbol };
@@ -63,7 +63,7 @@ public class DefineQuantityUnitAndSymbol
         [SharpMeasuresScalar(typeof(UnitOfLength), {{argument}})]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -86,7 +86,7 @@ public class DefineQuantityUnitAndSymbol
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -110,7 +110,7 @@ public class DefineQuantityUnitAndSymbol
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -137,7 +137,7 @@ public class DefineQuantityUnitAndSymbol
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -161,7 +161,7 @@ public class DefineQuantityUnitAndSymbol
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -188,7 +188,7 @@ public class DefineQuantityUnitAndSymbol
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -215,7 +215,7 @@ public class DefineQuantityUnitAndSymbol
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -230,7 +230,7 @@ public class DefineQuantityUnitAndSymbol
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -246,7 +246,7 @@ public class DefineQuantityUnitAndSymbol
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -265,7 +265,7 @@ public class DefineQuantityUnitAndSymbol
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -281,7 +281,7 @@ public class DefineQuantityUnitAndSymbol
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -300,7 +300,7 @@ public class DefineQuantityUnitAndSymbol
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;

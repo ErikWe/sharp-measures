@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Conversions;
 
 using SharpMeasures.Equatables;
+using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Vectors;
 using SharpMeasures.Generators.Vectors.Documentation;
 
@@ -14,14 +15,13 @@ internal readonly record struct DataModel
 
     public IResolvedVectorPopulation VectorPopulation { get; }
 
-    public IReadOnlyList<IConvertibleVector> Conversions => conversions;
+    public IReadOnlyList<IConvertibleQuantity> Conversions => conversions;
 
     public IVectorDocumentationStrategy Documentation { get; }
 
-    private ReadOnlyEquatableList<IConvertibleVector> conversions { get; }
+    private ReadOnlyEquatableList<IConvertibleQuantity> conversions { get; }
 
-    public DataModel(DefinedType vector, int dimension, IReadOnlyList<IConvertibleVector> conversions, IResolvedVectorPopulation vectorPopulation,
-        IVectorDocumentationStrategy documentation)
+    public DataModel(DefinedType vector, int dimension, IReadOnlyList<IConvertibleQuantity> conversions, IResolvedVectorPopulation vectorPopulation, IVectorDocumentationStrategy documentation)
     {
         Vector = vector;
 

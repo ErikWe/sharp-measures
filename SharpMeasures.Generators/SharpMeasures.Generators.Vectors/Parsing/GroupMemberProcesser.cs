@@ -36,18 +36,18 @@ internal static class GroupMemberProcesser
         var constants = CommonProcessing.ParseAndProcessConstants(typeSymbol, null);
         var conversions = ParseAndProcessConversions(typeSymbol, vector.Result.VectorGroup);
 
-        var includeUnits = CommonProcessing.ParseAndProcessIncludeUnits(typeSymbol);
-        var excludeUnits = CommonProcessing.ParseAndProcessExcludeUnits(typeSymbol);
+        var includeUnitInstances = CommonProcessing.ParseAndProcessIncludeUnitInstances(typeSymbol);
+        var excludeUnitInstances = CommonProcessing.ParseAndProcessExcludeUnitInstances(typeSymbol);
 
-        var allDiagnostics = vector.Diagnostics.Concat(derivations).Concat(constants).Concat(conversions).Concat(includeUnits).Concat(excludeUnits);
+        var allDiagnostics = vector.Diagnostics.Concat(derivations).Concat(constants).Concat(conversions).Concat(includeUnitInstances).Concat(excludeUnitInstances);
 
-        if (includeUnits.HasResult && includeUnits.Result.Count > 0 && excludeUnits.HasResult && excludeUnits.Result.Count > 0)
+        if (includeUnitInstances.HasResult && includeUnitInstances.Result.Count > 0 && excludeUnitInstances.HasResult && excludeUnitInstances.Result.Count > 0)
         {
             allDiagnostics = allDiagnostics.Concat(new[] { VectorTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(declaration.Identifier.GetLocation().Minimize()) });
-            excludeUnits = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
+            excludeUnitInstances = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
         }
 
-        GroupMemberType product = new(typeSymbol.AsDefinedType(), declaration.GetLocation().Minimize(), vector.Result, derivations.Result, constants.Result, conversions.Result, includeUnits.Result, excludeUnits.Result);
+        GroupMemberType product = new(typeSymbol.AsDefinedType(), declaration.GetLocation().Minimize(), vector.Result, derivations.Result, constants.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }

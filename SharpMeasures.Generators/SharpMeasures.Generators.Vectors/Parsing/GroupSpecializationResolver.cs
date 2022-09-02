@@ -28,26 +28,38 @@ internal static class GroupSpecializationResolver
         var derivations = CollectItems(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Definition.InheritDerivations);
         var conversions = CollectItems(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Conversions, static (vector) => vector.Definition.InheritConversions);
 
-        var includedUnits = ResolveUnitInclusions(input.UnresolvedVector, input.VectorPopulation, unit);
+        var includedUnitInstances = ResolveUnitInstanceInclusions(input.UnresolvedVector, input.VectorPopulation, unit);
 
         var scalar = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.Scalar);
 
         var implementSum = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.ImplementSum);
         var implementDifference = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.ImplementDifference);
-        var difference = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.Difference);
+        var difference = ResolveDifference(input.UnresolvedVector, input.VectorPopulation);
 
-        var defaultUnitName = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.DefaultUnitName);
-        var defaultUnitSymbol = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.DefaultUnitSymbol);
+        var defaultUnitInstanceName = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.DefaultUnitInstanceName);
+        var defaultUnitInstanceSymbol = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.DefaultUnitInstanceSymbol);
 
         var generateDocumentation = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.GenerateDocumentation);
 
         return new(input.UnresolvedVector.Type, input.UnresolvedVector.TypeLocation, unit.Type.AsNamedType(), scalar, implementSum!.Value, implementDifference!.Value, difference,
-            defaultUnitName, defaultUnitSymbol, membersByDimension, derivations, conversions, includedUnits, generateDocumentation);
+            defaultUnitInstanceName, defaultUnitInstanceSymbol, membersByDimension, derivations, conversions, includedUnitInstances, generateDocumentation);
     }
 
     private static IReadOnlyDictionary<int, NamedType> ResolveMembers(GroupSpecializationType vectorType, IVectorPopulation vectorPopulation)
     {
         return vectorPopulation.GroupMembersByGroup[vectorType.Type.AsNamedType()].GroupMembersByDimension.Transform(static (vector) => vector.Type.AsNamedType());
+    }
+
+    private static NamedType? ResolveDifference(GroupSpecializationType vectorType, IVectorPopulation vectorPopulation)
+    {
+        var difference = RecursivelySearchForMatching(vectorType, vectorPopulation, static (scalar) => scalar.Definition.Difference, static (vector, _) => vector.Definition.Locations.ExplicitlySetDifference);
+
+        if (difference is null && vectorType.Definition.Locations.ExplicitlySetDifference is false)
+        {
+            difference = vectorType.Type.AsNamedType();
+        }
+
+        return difference;
     }
 
     private static IReadOnlyList<T> CollectItems<T>(GroupSpecializationType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, IEnumerable<T>> itemsDelegate, Func<IVectorGroupSpecializationType, bool> shouldInherit)
@@ -64,14 +76,14 @@ internal static class GroupSpecializationResolver
 
             if (vector is IVectorGroupSpecializationType vectorSpecialization && shouldInherit(vectorSpecialization))
             {
-                recursivelyAddItems(vectorPopulation.Groups[vectorSpecialization.Definition.OriginalVectorGroup]);
+                recursivelyAddItems(vectorPopulation.Groups[vectorSpecialization.Definition.OriginalQuantity]);
             }
         }
     }
 
-    private static IReadOnlyList<string> ResolveUnitInclusions(GroupSpecializationType vectorType, IVectorPopulation vectorPopulation, IUnitType unit)
+    private static IReadOnlyList<string> ResolveUnitInstanceInclusions(GroupSpecializationType vectorType, IVectorPopulation vectorPopulation, IUnitType unit)
     {
-        HashSet<string> includedUnits = new(unit.UnitsByName.Keys);
+        HashSet<string> includedUnits = new(unit.UnitInstancesByName.Keys);
 
         recurisvelyModify(vectorType);
 
@@ -86,39 +98,46 @@ internal static class GroupSpecializationResolver
 
         void modify(IVectorGroupType vector)
         {
-            if (vector.UnitInclusions.Any())
+            if (vector.UnitInstanceInclusions.Any())
             {
-                includedUnits.IntersectWith(vector.UnitInclusions.SelectMany(static (unitList) => unitList.Units));
+                includedUnits.IntersectWith(vector.UnitInstanceInclusions.SelectMany(static (unitList) => unitList.UnitInstances));
 
                 return;
             }
 
-            includedUnits.ExceptWith(vector.UnitExclusions.SelectMany(static (unitList) => unitList.Units));
+            includedUnits.ExceptWith(vector.UnitInstanceExclusions.SelectMany(static (unitList) => unitList.UnitInstances));
         }
 
         void recurse(IVectorGroupType vector)
         {
             if (vector is IVectorGroupSpecializationType scalarSpecialization && scalarSpecialization.Definition.InheritUnits)
             {
-                recurisvelyModify(vectorPopulation.Groups[scalarSpecialization.Definition.OriginalVectorGroup]);
+                recurisvelyModify(vectorPopulation.Groups[scalarSpecialization.Definition.OriginalQuantity]);
             }
         }
     }
 
     private static T? RecursivelySearchForDefined<T>(GroupSpecializationType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, T?> itemDelegate)
     {
+        return RecursivelySearchForMatching(vectorType, vectorPopulation, itemDelegate, static (_, item) => item is not null);
+    }
+
+    private static T? RecursivelySearchForMatching<T>(GroupSpecializationType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, T?> itemDelegate, Func<IVectorGroupType, T?, bool> predicate)
+    {
         return recursivelySearch(vectorType);
 
         T? recursivelySearch(IVectorGroupType vector)
         {
-            if (itemDelegate(vector) is T item)
+            var item = itemDelegate(vector);
+
+            if (predicate(vector, item))
             {
                 return item;
             }
 
-            if (vector is IVectorGroupSpecializationType vectorSpecialization)
+            if (vector is IVectorGroupSpecializationType groupSpecialization)
             {
-                return recursivelySearch(vectorPopulation.Groups[vectorSpecialization.Definition.OriginalVectorGroup]);
+                return recursivelySearch(vectorPopulation.Groups[groupSpecialization.Definition.OriginalQuantity]);
             }
 
             return default;

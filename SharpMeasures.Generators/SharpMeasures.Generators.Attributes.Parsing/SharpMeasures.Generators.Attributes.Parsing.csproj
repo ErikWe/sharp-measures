@@ -11,7 +11,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SharpMeasures.Equatables\SharpMeasures.Equatables.csproj" PrivateAsset="all" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Attributes.API\SharpMeasures.Generators.Attributes.API.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SharpMeasures.Equatables\SharpMeasures.Equatables.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.RoslynUtility\SharpMeasures.Generators.RoslynUtility.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\SharpMeasures.Utility\SharpMeasures.Utility.csproj" PrivateAssets="all" />
     </ItemGroup>

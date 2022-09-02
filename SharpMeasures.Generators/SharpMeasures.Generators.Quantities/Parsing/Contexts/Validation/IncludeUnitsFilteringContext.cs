@@ -11,16 +11,16 @@ public record class IncludeUnitsFilteringContext : IIncludeUnitsFilteringContext
 
     public IUnitType UnitType { get; }
 
-    public bool AllUnitsIncluded { get; }
-    public HashSet<string> IncludedUnits { get; }
+    public bool AllUnitInstancesIncluded { get; }
+    public HashSet<string> IncludedUnitInstances { get; }
 
-    public IncludeUnitsFilteringContext(DefinedType type, IUnitType unitType, HashSet<string> includedUnits)
+    public IncludeUnitsFilteringContext(DefinedType type, IUnitType unitType, HashSet<string> includedUnitInstances)
     {
         Type = type;
 
         UnitType = unitType;
 
-        AllUnitsIncluded = unitType.UnitsByName.Count == includedUnits.Count;
-        IncludedUnits = includedUnits;
+        AllUnitInstancesIncluded = unitType.UnitInstancesByName.Count == includedUnitInstances.Count;
+        IncludedUnitInstances = includedUnitInstances;
     }
 }

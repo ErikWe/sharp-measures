@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Units.Documentation;
 
-using SharpMeasures.Generators.Units.UnitInstances;
-
 using System.Collections.Generic;
 
 internal interface IDocumentationStrategy
@@ -9,12 +7,12 @@ internal interface IDocumentationStrategy
     public abstract string Header();
 
     public abstract string Derivation(IReadOnlyList<NamedType> signature);
-    public abstract string FixedDefinition(IFixedUnit definition);
-    public abstract string DerivedDefinition(IDerivedUnit definition);
-    public abstract string AliasDefinition(IUnitAlias definition);
-    public abstract string BiasedDefinition(IBiasedUnit definition);
-    public abstract string PrefixedDefinition(IPrefixedUnit definition);
-    public abstract string ScaledDefinition(IScaledUnit definition);
+    public abstract string FixedUnitInstance(IFixedUnitInstance unitInstance);
+    public abstract string DerivedUnitInstance(IDerivedUnitInstance unitInstance);
+    public abstract string UnitAliasInstance(IUnitInstanceAlias unitInstance);
+    public abstract string BiasedUnitInstance(IBiasedUnitInstance unitInstance);
+    public abstract string PrefixedUnitInstance(IPrefixedUnitInstance unitInstance);
+    public abstract string ScaledUnitInstance(IScaledUnitInstance unitInstance);
 
     public abstract string RepresentedQuantity();
     public abstract string Bias();

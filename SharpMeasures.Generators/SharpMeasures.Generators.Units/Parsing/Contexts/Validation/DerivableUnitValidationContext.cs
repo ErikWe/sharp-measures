@@ -2,7 +2,6 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
-using SharpMeasures.Generators.Units;
 
 internal record class DerivableUnitValidationContext : SimpleProcessingContext, IDerivableUnitValidationContext
 {

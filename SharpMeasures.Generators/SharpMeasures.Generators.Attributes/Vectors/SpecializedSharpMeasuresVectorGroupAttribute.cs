@@ -59,13 +59,13 @@ public sealed class SpecializedSharpMeasuresVectorGroupAttribute : Attribute
     /// <remarks>To disable support for computing the differences in the first place, use <see cref="ImplementDifference"/>.</remarks>
     public Type? Difference { get; init; }
 
-    /// <summary><inheritdoc cref="SharpMeasuresVectorGroupAttribute.DefaultUnitName" path="/summary"/> By default, the value is inherited from the original group.</summary>
-    /// <remarks><inheritdoc cref="SharpMeasuresVectorGroupAttribute.DefaultUnitName" path="/remarks"/></remarks>
-    public string? DefaultUnitName { get; init; }
+    /// <summary><inheritdoc cref="SharpMeasuresVectorGroupAttribute.DefaultUnitInstanceName" path="/summary"/> By default, the value is inherited from the original group.</summary>
+    /// <remarks><inheritdoc cref="SharpMeasuresVectorGroupAttribute.DefaultUnitInstanceName" path="/remarks"/></remarks>
+    public string? DefaultUnitInstanceName { get; init; }
 
-    /// <summary><inheritdoc cref="SharpMeasuresVectorGroupAttribute.DefaultUnitSymbol" path="/summary"/> By default, the value is inherited from the original group.</summary>
-    /// <remarks><inheritdoc cref="SharpMeasuresVectorGroupAttribute.DefaultUnitSymbol" path="/remarks"/></remarks>
-    public string? DefaultUnitSymbol { get; init; }
+    /// <summary><inheritdoc cref="SharpMeasuresVectorGroupAttribute.DefaultUnitInstanceSymbol" path="/summary"/> By default, the value is inherited from the original group.</summary>
+    /// <remarks><inheritdoc cref="SharpMeasuresVectorGroupAttribute.DefaultUnitInstanceSymbol" path="/remarks"/></remarks>
+    public string? DefaultUnitInstanceSymbol { get; init; }
 
     /// <summary><inheritdoc cref="SharpMeasuresVectorGroupAttribute.GenerateDocumentation" path="/summary"/> By default, the behaviour is inherited from the original
     /// group.</summary>

@@ -11,7 +11,7 @@ using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 using SharpMeasures.Generators.Scalars.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Scalars.Parsing.ExcludeBases;
-using SharpMeasures.Generators.Scalars.Parsing.IncludeBases;
+using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 using SharpMeasures.Generators.Scalars.Parsing.SpecializedSharpMeasuresScalar;
 
@@ -21,7 +21,7 @@ internal class ScalarSpecializationProcesser : AScalarProcesser<SpecializedSharp
 {
     protected override ScalarSpecializationType FinalizeProcess(DefinedType type, MinimalLocation typeLocation, SpecializedSharpMeasuresScalarDefinition definition,
         IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ScalarConstantDefinition> constants, IReadOnlyList<ConvertibleScalarDefinition> conversions,
-        IReadOnlyList<IncludeBasesDefinition> baseInclusions, IReadOnlyList<ExcludeBasesDefinition> baseExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInclusions,
+        IReadOnlyList<IncludeUnitBasesDefinition> baseInclusions, IReadOnlyList<ExcludeUnitBasesDefinition> baseExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInclusions,
         IReadOnlyList<ExcludeUnitsDefinition> unitExclusions)
     {
         return new(type, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInclusions, unitExclusions);

@@ -17,11 +17,11 @@ using System;
 /// <description>Defines a constant of the scalar.</description>
 /// </item>
 /// <item>
-/// <term><see cref="IncludeBasesAttribute"/></term>
+/// <term><see cref="IncludeUnitBasesAttribute"/></term>
 /// <description>Dictates the units for which a static property representing the value { 1 } is implemented.</description>
 /// </item>
 /// <item>
-/// <term><see cref="ExcludeBasesAttribute"/></term>
+/// <term><see cref="ExcludeUnitBasesAttribute"/></term>
 /// <description>Dictates the units for which a static property representing the value { 1 } is <i>not</i> implemented.</description>
 /// </item>
 /// <item>
@@ -51,7 +51,7 @@ public sealed class SpecializedSharpMeasuresScalarAttribute : Attribute
     public bool InheritConversions { get; init; }
     /// <summary>Dictates whether this quantity inherits the bases of the original quantity. The default behaviour is <see langword="true"/>.</summary>
     /// <remarks>The bases are the units for which a static property representing the value { 1 } is implemented.
-    /// <para>The attributes <see cref="IncludeBasesAttribute"/> and <see cref="ExcludeBasesAttribute"/> enable more granular control of what bases are included.</para></remarks>
+    /// <para>The attributes <see cref="IncludeUnitBasesAttribute"/> and <see cref="ExcludeUnitBasesAttribute"/> enable more granular control of what bases are included.</para></remarks>
     public bool InheritBases { get; init; }
     /// <summary>Dictates whether this quantity inherits the units of the original quantity. The default behaviour is <see langword="true"/>.</summary>
     /// <remarks>The attributes <see cref="IncludeUnitsAttribute"/> and <see cref="ExcludeUnitsAttribute"/> enable more granular control of what units are included.</remarks>
@@ -75,11 +75,11 @@ public sealed class SpecializedSharpMeasuresScalarAttribute : Attribute
     /// <remarks>To disable support for computing the difference in the first place, use <see cref="ImplementDifference"/>.</remarks>
     public Type? Difference { get; init; }
 
-    /// <summary>The name of the default unit. By default, the value is inherited from the original quantity.</summary>
-    public string? DefaultUnitName { get; init; }
+    /// <summary>The name of the default unit instance. By default, the value is inherited from the original quantity.</summary>
+    public string? DefaultUnitInstanceName { get; init; }
 
-    /// <summary>The symbol of the default unit. By default, the value is inherited from the original quantity.</summary>
-    public string? DefaultUnitSymbol { get; init; }
+    /// <summary>The symbol of the default unit instance. By default, the value is inherited from the original quantity.</summary>
+    public string? DefaultUnitInstanceSymbol { get; init; }
 
     /// <summary><inheritdoc cref="SharpMeasuresScalarAttribute.Reciprocal" path="/summary"/> By default, the value is inherited from
     /// the original quantity.</summary>

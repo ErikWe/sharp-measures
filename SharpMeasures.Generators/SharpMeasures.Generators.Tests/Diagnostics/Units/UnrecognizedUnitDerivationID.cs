@@ -36,17 +36,17 @@ public class UnrecognizedUnitDerivationID
         [SharpMeasuresScalar(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
 
-        [FixedUnit("Second", "Seconds", 1)]
+        [FixedUnitInstance("Second", "Seconds")]
         [SharpMeasuresUnit(typeof(Time))]
         public partial class UnitOfTime { }
 
         [DerivableUnit("1", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
         [DerivableUnit("2", "{1} / {0}", typeof(UnitOfTime), typeof(UnitOfLength))]
-        [DerivedUnit("MetrePerSecond", "MetresPerSecond", "3", "Metre", "Second")]
+        [DerivedUnitInstance("MetrePerSecond", "MetresPerSecond", "3", "Metre", "Second")]
         [SharpMeasuresUnit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
@@ -71,16 +71,16 @@ public class UnrecognizedUnitDerivationID
         [SharpMeasuresScalar(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
 
-        [FixedUnit("Second", "Seconds", 1)]
+        [FixedUnitInstance("Second", "Seconds")]
         [SharpMeasuresUnit(typeof(Time))]
         public partial class UnitOfTime { }
 
         [DerivableUnit("1", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-        [DerivedUnit("MetrePerSecond", "MetresPerSecond", "2", "Metre", "Second")]
+        [DerivedUnitInstance("MetrePerSecond", "MetresPerSecond", "2", "Metre", "Second")]
         [SharpMeasuresUnit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
@@ -108,11 +108,11 @@ public class UnrecognizedUnitDerivationID
         [SharpMeasuresScalar(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
 
-        [FixedUnit("Second", "Seconds", 1)]
+        [FixedUnitInstance("Second", "Seconds")]
         [SharpMeasuresUnit(typeof(Time))]
         public partial class UnitOfTime { }
 
@@ -135,11 +135,11 @@ public class UnrecognizedUnitDerivationID
         [SharpMeasuresScalar(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
-        [FixedUnit("Metre", "Metres", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
 
-        [FixedUnit("Second", "Seconds", 1)]
+        [FixedUnitInstance("Second", "Seconds")]
         [SharpMeasuresUnit(typeof(Time))]
         public partial class UnitOfTime { }
 

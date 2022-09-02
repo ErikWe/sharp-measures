@@ -33,8 +33,8 @@ public class InvalidScaledUnitExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [ScaledUnit("Kilometre", "Kilometres", "Metre", {{scale}})]
+        [FixedUnitInstance("Metre", "Metres")]
+        [ScaledUnitInstance("Kilometre", "Kilometres", "Metre", {{scale}})]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -42,7 +42,7 @@ public class InvalidScaledUnitExpression
     private static GeneratorVerifier Assert(SourceSubtext scale)
     {
         var source = Text(scale);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, scale.Context.With(outerPrefix: "[ScaledUnit(\"Kilometre\", \"Kilometres\", \"Metre\", "));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, scale.Context.With(outerPrefix: "[ScaledUnitInstance(\"Kilometre\", \"Kilometres\", \"Metre\", "));
 
         return AssertExactlyInvalidScaledUnitExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
@@ -56,7 +56,7 @@ public class InvalidScaledUnitExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;

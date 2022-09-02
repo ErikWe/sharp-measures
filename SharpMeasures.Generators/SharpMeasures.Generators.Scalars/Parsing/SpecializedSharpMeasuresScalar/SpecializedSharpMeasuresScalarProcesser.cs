@@ -4,22 +4,17 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
+using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 
 using System;
 
-internal interface ISharpMeasuresScalarSpecializationProcessingDiagnostics : IDefaultUnitProcessingDiagnostics
+internal interface ISharpMeasuresScalarSpecializationProcessingDiagnostics : IDefaultUnitInstanceProcessingDiagnostics
 {
     public abstract Diagnostic? NullOriginalScalar(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? NullVector(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
 
     public abstract Diagnostic? NullDifferenceQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? DifferenceDisabledButQuantitySpecified(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
-
-    public abstract Diagnostic? NullDefaultUnit(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? EmptyDefaultUnit(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? SetDefaultSymbolButNotUnit(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? SetDefaultUnitButNotSymbol(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
 
     public abstract Diagnostic? NullReciprocalQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? NullSquareQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
@@ -49,25 +44,25 @@ internal class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProcessingC
             .Validate(() => ValidatePowerPropertyNotNull(definition.Locations.ExplicitlySetCube, definition.Cube, () => Diagnostics.NullCubeQuantity(context, definition)))
             .Validate(() => ValidatePowerPropertyNotNull(definition.Locations.ExplicitlySetSquareRoot, definition.SquareRoot, () => Diagnostics.NullSquareRootQuantity(context, definition)))
             .Validate(() => ValidatePowerPropertyNotNull(definition.Locations.ExplicitlySetCubeRoot, definition.CubeRoot, () => Diagnostics.NullCubeRootQuantity(context, definition)))
-            .Merge(() => DefaultUnitProcesser.Process(context, Diagnostics, definition))
-            .Transform((defaultUnit) => ProduceResult(definition, defaultUnit.Name, defaultUnit.Symbol));
+            .Merge(() => DefaultUnitInstanceProcesser.Process(context, Diagnostics, definition))
+            .Transform((defaultUnitInstance) => ProduceResult(definition, defaultUnitInstance.Name, defaultUnitInstance.Symbol));
     }
 
-    private static SpecializedSharpMeasuresScalarDefinition ProduceResult(RawSpecializedSharpMeasuresScalarDefinition definition, string? defaultUnitName, string? defaultUnitSymbol)
+    private static SpecializedSharpMeasuresScalarDefinition ProduceResult(RawSpecializedSharpMeasuresScalarDefinition definition, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
-        return new(definition.OriginalScalar!.Value, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritBases, definition.InheritUnits,
-            definition.Vector, definition.ImplementSum, definition.ImplementDifference, definition.Difference, defaultUnitName, defaultUnitSymbol, definition.Reciprocal, definition.Square, definition.Cube,
+        return new(definition.OriginalQuantity!.Value, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritBases, definition.InheritUnits,
+            definition.Vector, definition.ImplementSum, definition.ImplementDifference, definition.Difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.Reciprocal, definition.Square, definition.Cube,
             definition.SquareRoot, definition.CubeRoot, definition.GenerateDocumentation, definition.Locations);
     }
 
     private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawSpecializedSharpMeasuresScalarDefinition definition)
     {
-        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Locations.ExplicitlySetOriginalScalar);
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Locations.ExplicitlySetOriginalQuantity);
     }
 
     private IValidityWithDiagnostics ValidateOriginalScalar(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.OriginalScalar is not null, () => Diagnostics.NullOriginalScalar(context, definition));
+        return ValidityWithDiagnostics.Conditional(definition.OriginalQuantity is not null, () => Diagnostics.NullOriginalScalar(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateVectorNotNull(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)

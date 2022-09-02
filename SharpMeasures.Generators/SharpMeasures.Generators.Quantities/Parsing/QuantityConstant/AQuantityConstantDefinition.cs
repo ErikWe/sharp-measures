@@ -6,17 +6,18 @@ public abstract record class AQuantityConstantDefinition<TLocations> : AAttribut
     where TLocations : AQuantityConstantLocations<TLocations>
 {
     public string Name { get; }
-    public string Unit { get; }
+    public string UnitInstanceName { get; }
 
     public bool GenerateMultiplesProperty { get; }
     public string? Multiples { get; }
 
-    protected AQuantityConstantDefinition(string name, string unit, bool generateMultiplesProperty, string? multiples,
-        TLocations locations)
+    IQuantityConstantLocations IQuantityConstant.Locations => Locations;
+
+    protected AQuantityConstantDefinition(string name, string unitInstanceName, bool generateMultiplesProperty, string? multiples, TLocations locations)
         : base(locations)
     {
         Name = name;
-        Unit = unit;
+        UnitInstanceName = unitInstanceName;
 
         GenerateMultiplesProperty = generateMultiplesProperty;
         Multiples = multiples;

@@ -25,7 +25,7 @@ public sealed class DerivedQuantityAttribute : Attribute
 
     /// <summary>Dictates whether the algebraically equivalent derivations are also implemented. The default behaviour is <see langword="true"/>, but will silently
     /// fail if not applicable.</summary>
-    /// <remarks>For example; a definition { <i>Speed</i> = <i>Length</i> / <i>Time</i> } would result in the following implementations:
+    /// <remarks>For example; a definition { <i>Speed</i> = <i>Length</i> / <i>Time</i> } would result in the following derivations:
     /// <list type="bullet">
     /// <item>
     /// <term>Speed</term>

@@ -4,11 +4,11 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
+using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 
 using System;
 
-internal interface ISharpMeasuresScalarProcessingDiagnostics : IDefaultUnitProcessingDiagnostics
+internal interface ISharpMeasuresScalarProcessingDiagnostics : IDefaultUnitInstanceProcessingDiagnostics
 {
     public abstract Diagnostic? NullUnit(IProcessingContext context, RawSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? NullVector(IProcessingContext context, RawSharpMeasuresScalarDefinition definition);
@@ -44,14 +44,21 @@ internal class SharpMeasuresScalarProcesser : AProcesser<IProcessingContext, Raw
             .Validate(() => ValidatePowerPropertyNotNull(definition.Locations.ExplicitlySetCube, definition.Cube, () => Diagnostics.NullCubeQuantity(context, definition)))
             .Validate(() => ValidatePowerPropertyNotNull(definition.Locations.ExplicitlySetSquareRoot, definition.SquareRoot, () => Diagnostics.NullSquareRootQuantity(context, definition)))
             .Validate(() => ValidatePowerPropertyNotNull(definition.Locations.ExplicitlySetCubeRoot, definition.CubeRoot, () => Diagnostics.NullCubeRootQuantity(context, definition)))
-            .Merge(() => DefaultUnitProcesser.Process(context, Diagnostics, definition))
-            .Transform((defaultUnit) => ProduceResult(definition, defaultUnit.Name, defaultUnit.Symbol));
+            .Merge(() => DefaultUnitInstanceProcesser.Process(context, Diagnostics, definition))
+            .Transform((defaultUnitInstance) => ProduceResult(context, definition, defaultUnitInstance.Name, defaultUnitInstance.Symbol));
     }
 
-    private static SharpMeasuresScalarDefinition ProduceResult(RawSharpMeasuresScalarDefinition definition, string? defaultUnitName, string? defaultUnitSymbol)
+    private static SharpMeasuresScalarDefinition ProduceResult(IProcessingContext context, RawSharpMeasuresScalarDefinition definition, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
-        return new(definition.Unit!.Value, definition.Vector, definition.UseUnitBias, definition.ImplementSum, definition.ImplementDifference, definition.Difference, defaultUnitName, defaultUnitSymbol,
-            definition.Reciprocal, definition.Square, definition.Cube, definition.SquareRoot, definition.CubeRoot, definition.GenerateDocumentation, definition.Locations);
+        var difference = definition.Difference;
+
+        if (definition.Locations.ExplicitlySetDifference is false)
+        {
+            difference = context.Type.AsNamedType();
+        }
+
+        return new(definition.Unit!.Value, definition.Vector, definition.UseUnitBias, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName,
+            defaultUnitInstanceSymbol, definition.Reciprocal, definition.Square, definition.Cube, definition.SquareRoot, definition.CubeRoot, definition.GenerateDocumentation, definition.Locations);
     }
 
     private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawSharpMeasuresScalarDefinition definition)

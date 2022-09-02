@@ -193,7 +193,7 @@ public class TypeNotScalar
         var source = ScalarArgumentText(argument, argumentValue);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, argumentValue.Context.With(outerPrefix: $"{argument} = "));
 
-        return AssertExactlyTypeNotScalarDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ScalarArgumentIdentical);
+        return AssertExactlyTypeNotScalarDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ScalarArgumentIdentical(argument));
     }
 
     private static string SpecializedScalarOriginalScalarText(SourceSubtext originalScalarType) => $$"""
@@ -269,7 +269,7 @@ public class TypeNotScalar
         var source = SpecializedScalarArgumentText(argument, scalarType);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, scalarType.Context.With(outerPrefix: $"{argument} = "));
 
-        return AssertExactlyTypeNotScalarDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarArgumentIdentical);
+        return AssertExactlyTypeNotScalarDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarArgumentIdentical(argument));
     }
 
     private static string VectorScalarText(SourceSubtext scalarType) => $$"""
@@ -465,9 +465,9 @@ public class TypeNotScalar
     }
 
     private static GeneratorVerifier UnitQuantityIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(UnitQuantityIdenticalText);
-    private static GeneratorVerifier ScalarArgumentIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ScalarArgumentIdenticalText);
+    private static GeneratorVerifier ScalarArgumentIdentical(string argument) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ScalarArgumentIdenticalText(argument));
     private static GeneratorVerifier SpecializedScalarOriginalScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedScalarOriginalScalarIdenticalText);
-    private static GeneratorVerifier SpecializedScalarArgumentIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedScalarArgumentIdenticalText);
+    private static GeneratorVerifier SpecializedScalarArgumentIdentical(string argument) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedScalarArgumentIdenticalText(argument));
     private static GeneratorVerifier VectorScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorScalarIdenticalText);
     private static GeneratorVerifier SpecializedVectorScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorScalarIdenticalText);
     private static GeneratorVerifier VectorGroupScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupScalarIdenticalText);
@@ -501,12 +501,12 @@ public class TypeNotScalar
         public partial class UnitOfLength { }
         """;
 
-    private static string ScalarArgumentIdenticalText => $$"""
+    private static string ScalarArgumentIdenticalText(string argument) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        [SharpMeasuresScalar(typeof(UnitOfLength){{(argument is "Difference" ? ", ImplementDifference = false" : string.Empty)}})]
         public partial class Distance { }
 
         [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
@@ -558,12 +558,12 @@ public class TypeNotScalar
         public partial class UnitOfLength { }
         """;
 
-    private static string SpecializedScalarArgumentIdenticalText => """
+    private static string SpecializedScalarArgumentIdenticalText(string argument) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        [SpecializedSharpMeasuresScalar(typeof(Length){{(argument is "Difference" ? ", ImplementDifference = false" : string.Empty)}})]
         public partial class Distance { }
 
         [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
@@ -588,7 +588,7 @@ public class TypeNotScalar
         public partial class UnitOfLength { }
         """;
 
-    private static string VectorScalarIdenticalText => $$"""
+    private static string VectorScalarIdenticalText => """
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
@@ -708,7 +708,7 @@ public class TypeNotScalar
         public partial class UnitOfLength { }
         """;
 
-    private static string ConvertibleQuantityIdenticalText => $$"""
+    private static string ConvertibleQuantityIdenticalText => """
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;

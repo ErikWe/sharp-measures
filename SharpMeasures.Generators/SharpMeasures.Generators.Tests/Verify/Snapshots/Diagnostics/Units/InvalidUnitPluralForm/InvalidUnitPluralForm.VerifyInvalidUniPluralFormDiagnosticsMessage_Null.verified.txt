@@ -4,7 +4,7 @@
     Title: Invalid plural form of unit name,
     Severity: Warning,
     WarningLevel: 1,
-    Location: : (6,20)-(6,24),
+    Location: : (6,28)-(6,32),
     Description: ,
     HelpLink: ,
     MessageFormat: The plural form of the unit must be defined. Write the plural form explicitly, or use a suitable notation from SharpMeasures.Generators.Utility.CommonPluralNotations.,

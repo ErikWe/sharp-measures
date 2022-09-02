@@ -129,8 +129,8 @@ public class ConstantSharesNameWithUnit
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -150,12 +150,12 @@ public class ConstantSharesNameWithUnit
 
         [ScalarConstant("{{config.ConstantSingular}}", "Metre", 1000{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
         [IncludeUnits("Metre", "Kilometre")]
-        [IncludeBases("Metre", "Kilometre")]
+        [IncludeUnitBases("Metre", "Kilometre")]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -180,8 +180,8 @@ public class ConstantSharesNameWithUnit
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -201,15 +201,15 @@ public class ConstantSharesNameWithUnit
 
         [ScalarConstant("{{config.ConstantSingular}}", "Metre", 1000{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
         [IncludeUnits("Metre", "Kilometre")]
-        [IncludeBases("Metre", "Kilometre")]
+        [IncludeUnitBases("Metre", "Kilometre")]
         [SpecializedSharpMeasuresScalar(typeof(Length))]
         public partial class Distance { }
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -232,12 +232,12 @@ public class ConstantSharesNameWithUnit
         public partial class Distance { }
 
         [IncludeUnits("Metre", "Kilometre")]
-        [IncludeBases("Metre", "Kilometre")]
+        [IncludeUnitBases("Metre", "Kilometre")]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -263,8 +263,8 @@ public class ConstantSharesNameWithUnit
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -291,8 +291,8 @@ public class ConstantSharesNameWithUnit
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -321,8 +321,8 @@ public class ConstantSharesNameWithUnit
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -352,8 +352,8 @@ public class ConstantSharesNameWithUnit
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -383,8 +383,8 @@ public class ConstantSharesNameWithUnit
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -413,8 +413,8 @@ public class ConstantSharesNameWithUnit
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -444,8 +444,8 @@ public class ConstantSharesNameWithUnit
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -475,8 +475,8 @@ public class ConstantSharesNameWithUnit
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -512,8 +512,8 @@ public class ConstantSharesNameWithUnit
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -549,8 +549,8 @@ public class ConstantSharesNameWithUnit
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -590,8 +590,8 @@ public class ConstantSharesNameWithUnit
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
                 
-            [FixedUnit("Metre", "Metres")]
-            [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+            [FixedUnitInstance("Metre", "Metres")]
+            [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
@@ -622,8 +622,8 @@ public class ConstantSharesNameWithUnit
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres")]
-            [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+            [FixedUnitInstance("Metre", "Metres")]
+            [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
@@ -655,8 +655,8 @@ public class ConstantSharesNameWithUnit
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
 
-            [FixedUnit("Metre", "Metres")]
-            [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+            [FixedUnitInstance("Metre", "Metres")]
+            [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
@@ -691,8 +691,8 @@ public class ConstantSharesNameWithUnit
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
 
-            [FixedUnit("Metre", "Metres")]
-            [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+            [FixedUnitInstance("Metre", "Metres")]
+            [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
@@ -727,8 +727,8 @@ public class ConstantSharesNameWithUnit
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
 
-            [FixedUnit("Metre", "Metres")]
-            [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+            [FixedUnitInstance("Metre", "Metres")]
+            [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
@@ -769,8 +769,8 @@ public class ConstantSharesNameWithUnit
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
 
-            [FixedUnit("Metre", "Metres")]
-            [PrefixedUnit("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
+            [FixedUnitInstance("Metre", "Metres")]
+            [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """);

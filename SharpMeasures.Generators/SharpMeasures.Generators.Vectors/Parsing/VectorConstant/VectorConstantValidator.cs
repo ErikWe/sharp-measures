@@ -26,7 +26,7 @@ internal class VectorConstantValidator : AQuantityConstantValidator<IVectorConst
 
     protected override VectorConstantDefinition ProduceResult(VectorConstantDefinition definition, bool generateMultiples)
     {
-        return new(definition.Name, definition.Unit, definition.Value, generateMultiples, definition.Multiples, definition.Locations);
+        return new(definition.Name, definition.UnitInstanceName, definition.Value, generateMultiples, definition.Multiples, definition.Locations);
     }
 
     protected override IValidityWithDiagnostics ValidateConstant(IVectorConstantValidationContext context, VectorConstantDefinition definition)

@@ -4,14 +4,14 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
+using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
 using System.Linq;
 
-internal interface ISharpMeasuresVectorGroupValidationDiagnostics : IDefaultUnitValidationDiagnostics
+internal interface ISharpMeasuresVectorGroupValidationDiagnostics : IDefaultUnitInstanceValidationDiagnostics
 {
     public abstract Diagnostic? TypeAlreadyUnit(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition);
     public abstract Diagnostic? TypeAlreadyScalar(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition);
@@ -53,21 +53,22 @@ internal class SharpMeasuresVectorGroupValidator : IProcesser<ISharpMeasuresVect
         var scalar = ValidateScalarIsScalar(context, definition).Transform(definition.Scalar);
         var difference = ValidateDifferenceIsVectorGroup(context, definition).Transform(definition.Difference);
 
-        var defaultUnitValidity = DefaultUnitValidator.Validate(context, Diagnostics, definition, context.UnitPopulation, definition.Unit);
+        var defaultUnitInstanceValidity = DefaultUnitInstanceValidator.Validate(context, Diagnostics, definition, context.UnitPopulation, definition.Unit);
 
-        var defaultUnitName = defaultUnitValidity.Transform(definition.DefaultUnitName);
-        var defaultUnitSymbol = defaultUnitValidity.Transform(definition.DefaultUnitSymbol);
+        var defaultUnitInstanceName = defaultUnitInstanceValidity.Transform(definition.DefaultUnitInstanceName);
+        var defaultUnitInstanceSymbol = defaultUnitInstanceValidity.Transform(definition.DefaultUnitInstanceSymbol);
 
-        var product = ProduceResult(definition, scalar.NullableResult, difference.NullableResult, defaultUnitName.NullableResult, defaultUnitSymbol.NullableResult);
+        var product = ProduceResult(definition, scalar.NullableValueResult(), difference.NullableValueResult(), defaultUnitInstanceName.NullableReferenceResult(), defaultUnitInstanceSymbol.NullableReferenceResult());
 
-        var allDiagnostics = validity.Diagnostics.Concat(scalar).Concat(difference).Concat(defaultUnitValidity);
+        var allDiagnostics = validity.Diagnostics.Concat(scalar).Concat(difference).Concat(defaultUnitInstanceValidity);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static SharpMeasuresVectorGroupDefinition ProduceResult(SharpMeasuresVectorGroupDefinition definition, NamedType? scalar, NamedType? difference, string? defaultUnitName, string? defaultUnitSymbol)
+    private static SharpMeasuresVectorGroupDefinition ProduceResult(SharpMeasuresVectorGroupDefinition definition, NamedType? scalar, NamedType? difference,
+        string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
-        return new(definition.Unit, scalar, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitName, defaultUnitSymbol, definition.GenerateDocumentation, definition.Locations);
+        return new(definition.Unit, scalar, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.GenerateDocumentation, definition.Locations);
     }
 
     private IValidityWithDiagnostics ValidateTypeNotAlreadyUnit(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition)

@@ -1,9 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing;
 
-public interface IAttributeDefinition<out TLocations>
+public interface IAttributeDefinition<out TLocations> : IAttributeDefinition
     where TLocations : IAttributeLocations
 {
-    public abstract TLocations Locations { get; }
+    new public abstract TLocations Locations { get; }
 }
 
 public interface IOpenAttributeDefinition<out TDefinition, TLocations> : IAttributeDefinition<TLocations>

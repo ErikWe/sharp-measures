@@ -38,17 +38,17 @@ public class QuantityConstantProcessingDiagnostics<TDefinition, TLocations> : IQ
         return DiagnosticConstruction.ConstantNameReservedByConstantMultiples(definition.Locations.Name?.AsRoslynLocation(), definition.Name!, context.Type.Name);
     }
 
-    public Diagnostic NullUnit(IQuantityConstantProcessingContext context, TDefinition definition)
+    public Diagnostic NullUnitInstanceName(IQuantityConstantProcessingContext context, TDefinition definition)
     {
         if (Unit is null)
         {
-            return DiagnosticConstruction.NullUnrecognizedUnitNameUnknownType(definition.Locations.Unit?.AsRoslynLocation());
+            return DiagnosticConstruction.NullUnrecognizedUnitInstanceNameUnknownType(definition.Locations.UnitInstanceName?.AsRoslynLocation());
         }
 
-        return DiagnosticConstruction.NullUnrecognizedUnitName(definition.Locations.Unit?.AsRoslynLocation(), Unit.Value.Name);
+        return DiagnosticConstruction.NullUnrecognizedUnitInstanceName(definition.Locations.UnitInstanceName?.AsRoslynLocation(), Unit.Value.Name);
     }
 
-    public Diagnostic EmptyUnit(IQuantityConstantProcessingContext context, TDefinition definition) => NullUnit(context, definition);
+    public Diagnostic EmptyUnitInstanceName(IQuantityConstantProcessingContext context, TDefinition definition) => NullUnitInstanceName(context, definition);
 
     public Diagnostic NullMultiples(IQuantityConstantProcessingContext context, TDefinition definition)
     {

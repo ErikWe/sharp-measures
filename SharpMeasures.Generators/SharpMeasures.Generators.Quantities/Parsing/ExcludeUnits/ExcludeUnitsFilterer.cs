@@ -10,15 +10,15 @@ using System.Collections.Generic;
 
 public interface IExcludeUnitsFilteringDiagnostics
 {
-    public abstract Diagnostic? UnrecognizedUnit(IExcludeUnitsFilteringContext context, ExcludeUnitsDefinition definition, int index);
-    public abstract Diagnostic? UnitAlreadyExcluded(IExcludeUnitsFilteringContext context, ExcludeUnitsDefinition definition, int index);
+    public abstract Diagnostic? UnrecognizedUnitInstance(IExcludeUnitsFilteringContext context, ExcludeUnitsDefinition definition, int index);
+    public abstract Diagnostic? UnitInstanceAlreadyExcluded(IExcludeUnitsFilteringContext context, ExcludeUnitsDefinition definition, int index);
 }
 
 public interface IExcludeUnitsFilteringContext : IProcessingContext
 {
     public IUnitType UnitType { get; }
 
-    public HashSet<string> IncludedUnits { get; }
+    public HashSet<string> IncludedUnitInstances { get; }
 }
 
 public class ExcludeUnitsFilterer : AProcesser<IExcludeUnitsFilteringContext, ExcludeUnitsDefinition, ExcludeUnitsDefinition>
@@ -32,39 +32,39 @@ public class ExcludeUnitsFilterer : AProcesser<IExcludeUnitsFilteringContext, Ex
 
     public override IOptionalWithDiagnostics<ExcludeUnitsDefinition> Process(IExcludeUnitsFilteringContext context, ExcludeUnitsDefinition definition)
     {
-        List<string> validUnits = new();
+        List<string> validUnitInstances = new();
         List<int> locationMap = new();
 
         List<Diagnostic> allDiagnostics = new();
 
-        for (var i = 0; i < definition.ExcludedUnits.Count; i++)
+        for (var i = 0; i < definition.UnitInstances.Count; i++)
         {
-            var validity = ValidateUnitRecognized(context, definition, i)
-                .Validate(() => ValidateUnitNotAlreadyExcluded(context, definition, i));
+            var validity = ValidateUnitInstanceRecognized(context, definition, i)
+                .Validate(() => ValidateUnitInstanceNotAlreadyExcluded(context, definition, i));
 
             allDiagnostics.AddRange(validity);
 
             if (validity.IsValid)
             {
-                validUnits.Add(definition.ExcludedUnits[i]);
+                validUnitInstances.Add(definition.UnitInstances[i]);
                 locationMap.Add(i);
             }
         }
 
-        return OptionalWithDiagnostics.ConditionalWithDefiniteDiagnostics(validUnits.Count is not 0, () => new ExcludeUnitsDefinition(validUnits, definition.Locations, locationMap), allDiagnostics);
+        return OptionalWithDiagnostics.ConditionalWithDefiniteDiagnostics(validUnitInstances.Count is not 0, () => new ExcludeUnitsDefinition(validUnitInstances, definition.Locations, locationMap), allDiagnostics);
     }
 
-    private IValidityWithDiagnostics ValidateUnitRecognized(IExcludeUnitsFilteringContext context, ExcludeUnitsDefinition definition, int index)
+    private IValidityWithDiagnostics ValidateUnitInstanceRecognized(IExcludeUnitsFilteringContext context, ExcludeUnitsDefinition definition, int index)
     {
-        var recognizedUnit = context.UnitType.UnitsByName.ContainsKey(definition.ExcludedUnits[index]);
+        var recognizedUnitInstance = context.UnitType.UnitInstancesByName.ContainsKey(definition.UnitInstances[index]);
 
-        return ValidityWithDiagnostics.Conditional(recognizedUnit, () => Diagnostics.UnrecognizedUnit(context, definition, index));
+        return ValidityWithDiagnostics.Conditional(recognizedUnitInstance, () => Diagnostics.UnrecognizedUnitInstance(context, definition, index));
     }
 
-    private IValidityWithDiagnostics ValidateUnitNotAlreadyExcluded(IExcludeUnitsFilteringContext context, ExcludeUnitsDefinition definition, int index)
+    private IValidityWithDiagnostics ValidateUnitInstanceNotAlreadyExcluded(IExcludeUnitsFilteringContext context, ExcludeUnitsDefinition definition, int index)
     {
-        var unitNotAlreadyExcluded = context.IncludedUnits.Contains(definition.ExcludedUnits[index]);
+        var unitInstanceNotAlreadyExcluded = context.IncludedUnitInstances.Contains(definition.UnitInstances[index]);
 
-        return ValidityWithDiagnostics.Conditional(unitNotAlreadyExcluded, () => Diagnostics.UnitAlreadyExcluded(context, definition, index));
+        return ValidityWithDiagnostics.Conditional(unitInstanceNotAlreadyExcluded, () => Diagnostics.UnitInstanceAlreadyExcluded(context, definition, index));
     }
 }

@@ -13,15 +13,15 @@ public record class QuantityConstantValidationContext : SimpleProcessingContext,
     public HashSet<string> InheritedConstantNames { get; }
     public HashSet<string> InheritedConstantMultiples { get; }
 
-    public HashSet<string> IncludedUnitPlurals { get; }
+    public HashSet<string> IncludedUnitInstancePluralForms { get; }
 
-    public QuantityConstantValidationContext(DefinedType type, IUnitType unitType, HashSet<string> inheritedConstantNames, HashSet<string> inheritedConstantMultiples, HashSet<string> includedUnitPlurals) : base(type)
+    public QuantityConstantValidationContext(DefinedType type, IUnitType unitType, HashSet<string> inheritedConstantNames, HashSet<string> inheritedConstantMultiples, HashSet<string> includedUnitInstancePluralForms) : base(type)
     {
         UnitType = unitType;
 
         InheritedConstantNames = inheritedConstantNames;
         InheritedConstantMultiples = inheritedConstantMultiples;
 
-        IncludedUnitPlurals = includedUnitPlurals;
+        IncludedUnitInstancePluralForms = includedUnitInstancePluralForms;
     }
 }

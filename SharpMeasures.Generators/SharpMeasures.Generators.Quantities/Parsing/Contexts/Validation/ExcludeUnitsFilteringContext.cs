@@ -11,14 +11,14 @@ public record class ExcludeUnitsFilteringContext : IExcludeUnitsFilteringContext
 
     public IUnitType UnitType { get; }
 
-    public HashSet<string> IncludedUnits { get; }
+    public HashSet<string> IncludedUnitInstances { get; }
 
-    public ExcludeUnitsFilteringContext(DefinedType type, IUnitType unitType, HashSet<string> includedUnits)
+    public ExcludeUnitsFilteringContext(DefinedType type, IUnitType unitType, HashSet<string> includedUnitInstances)
     {
         Type = type;
 
         UnitType = unitType;
 
-        IncludedUnits = includedUnits;
+        IncludedUnitInstances = includedUnitInstances;
     }
 }

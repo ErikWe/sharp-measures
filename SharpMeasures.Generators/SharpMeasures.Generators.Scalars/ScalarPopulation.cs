@@ -43,7 +43,7 @@ internal class ScalarPopulation : IScalarPopulationWithData
 
             for (int i = 0; i < unassignedSpecializations.Count; i++)
             {
-                if (scalarBasePopulation.TryGetValue(unassignedSpecializations[i].Definition.OriginalScalar, out var scalarBase))
+                if (scalarBasePopulation.TryGetValue(unassignedSpecializations[i].Definition.OriginalQuantity, out var scalarBase))
                 {
                     scalarBasePopulation.TryAdd(unassignedSpecializations[i].Type.AsNamedType(), scalarBase);
 

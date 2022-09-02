@@ -1,6 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Pipelines.Conversions;
 
 using SharpMeasures.Equatables;
+using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Scalars.Documentation;
 
 using System.Collections.Generic;
@@ -9,13 +10,13 @@ internal readonly record struct DataModel
 {
     public DefinedType Scalar { get; }
 
-    public IReadOnlyList<IConvertibleScalar> Conversions => conversions;
+    public IReadOnlyList<IConvertibleQuantity> Conversions => conversions;
 
     public IDocumentationStrategy Documentation { get; }
 
-    private ReadOnlyEquatableList<IConvertibleScalar> conversions { get; }
+    private ReadOnlyEquatableList<IConvertibleQuantity> conversions { get; }
 
-    public DataModel(DefinedType scalar, IReadOnlyList<IConvertibleScalar> conversions, IDocumentationStrategy documentation)
+    public DataModel(DefinedType scalar, IReadOnlyList<IConvertibleQuantity> conversions, IDocumentationStrategy documentation)
     {
         Scalar = scalar;
 

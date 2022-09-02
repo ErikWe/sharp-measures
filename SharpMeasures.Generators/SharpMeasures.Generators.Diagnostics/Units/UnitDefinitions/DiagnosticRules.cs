@@ -7,9 +7,9 @@ using SharpMeasures.Generators.Utility;
 
 public static partial class DiagnosticRules
 {
-    public static readonly DiagnosticDescriptor InvalidUnitName = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor InvalidUnitInstanceName = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.InvalidUnitName,
+        id: DiagnosticIDs.InvalidUnitInstanceName,
         title: "Invalid unit name",
         messageFormat: "\"{0}\" can not be used as the name of a unit",
         category: "Naming",
@@ -17,9 +17,9 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor NullUnitName = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor NullUnitInstanceName = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.InvalidUnitName,
+        id: DiagnosticIDs.InvalidUnitInstanceName,
         title: "Invalid unit name",
         messageFormat: "The name of the unit must be defined",
         category: "Naming",
@@ -27,9 +27,9 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor InvalidUnitPluralForm = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor InvalidUnitInstancePluralForm = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.InvalidUnitPluralForm,
+        id: DiagnosticIDs.InvalidUnitInstancePluralForm,
         title: "Invalid plural form of unit name",
         messageFormat: $"\"{{0}}\" could not be used to construct the plural form of \"{{1}}\". Write the plural form explicitly, or use a suitable notation from {typeof(CommonPluralNotations).FullName}.",
         category: "Naming",
@@ -37,9 +37,9 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor NullUnitPluralForm = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor NullUnitInstancePluralForm = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.InvalidUnitPluralForm,
+        id: DiagnosticIDs.InvalidUnitInstancePluralForm,
         title: "Invalid plural form of unit name",
         messageFormat: $"The plural form of the unit must be defined. Write the plural form explicitly, or use a suitable notation from {typeof(CommonPluralNotations).FullName}.",
         category: "Naming",
@@ -47,9 +47,9 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor DuplicateUnitName = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor DuplicateUnitInstanceName = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.DuplicateUnitName,
+        id: DiagnosticIDs.DuplicateUnitInstanceName,
         title: "Duplicate unit name",
         messageFormat: "{0} already defines a unit \"{1}\"",
         category: "Naming",
@@ -57,9 +57,9 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor UnitNameReservedByUnitPluralForm = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor UnitInstanceNameReservedByUnitInstancePluralForm = new DiagnosticDescriptor
    (
-       id: DiagnosticIDs.DuplicateUnitName,
+       id: DiagnosticIDs.DuplicateUnitInstanceName,
        title: "Duplicate unit name",
        messageFormat: "{0} already associates the singular form of \"{1}\" with another unit",
        category: "Naming",
@@ -67,9 +67,9 @@ public static partial class DiagnosticRules
        isEnabledByDefault: true
    );
 
-    public static readonly DiagnosticDescriptor DuplicateUnitPluralForm = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor DuplicateUnitInstancePluralForm = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.DuplicateUnitPluralForm,
+        id: DiagnosticIDs.DuplicateUnitInstancePluralForm,
         title: "Duplicate unit plural form",
         messageFormat: "{0} already defines a unit with plural form \"{1}\"",
         category: "Naming",
@@ -77,9 +77,9 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor UnitPluralFormReservedByUnitName = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor UnitInstancePluralFormReservedByUnitInstanceName = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.DuplicateUnitPluralForm,
+        id: DiagnosticIDs.DuplicateUnitInstancePluralForm,
         title: "Duplicate unit plural form",
         messageFormat: "{0} already associates \"{1}\" with the singular form of another unit",
         category: "Naming",
@@ -87,19 +87,19 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor UnrecognizedUnitName = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor UnrecognizedUnitInstanceName = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.UnrecognizedUnitName,
+        id: DiagnosticIDs.UnrecognizedUnitInstanceName,
         title: "Expected the name of a unit",
-        messageFormat: $"\"{{0}}\" was not recognized as the name of a {{1}}. \"{{0}}\" should be defined through an attribute applied to {{1}} - for example, {Utility.FullAttributeName<FixedUnitAttribute>()}.",
+        messageFormat: $"\"{{0}}\" was not recognized as the name of a {{1}}. \"{{0}}\" should be defined through an attribute applied to {{1}} - for example, {Utility.FullAttributeName<FixedUnitInstanceAttribute>()}.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor NullUnrecognizedUnitName = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor NullUnrecognizedUnitInstanceName = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.UnrecognizedUnitName,
+        id: DiagnosticIDs.UnrecognizedUnitInstanceName,
         title: "Expected the name of a unit",
         messageFormat: "Expected the name of a {0}",
         category: "Usage",
@@ -107,9 +107,9 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor NullUnrecognizedUnitNameUnknownType = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor NullUnrecognizedUnitInstnaceNameUnknownType = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.UnrecognizedUnitName,
+        id: DiagnosticIDs.UnrecognizedUnitInstanceName,
         title: "Expected the name of a unit",
         messageFormat: "Expected the name of a unit",
         category: "Usage",
@@ -117,9 +117,9 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor CyclicUnitDependency = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor CyclicallyModifiedUnitInstances = new DiagnosticDescriptor
     (
-        id: DiagnosticIDs.CyclicUnitDependency,
+        id: DiagnosticIDs.CyclicallyModifiedUnitInstances,
         title: "Cyclic unit dependency",
         messageFormat: "\"{0}\" has a cyclic dependency on other instances of {1}",
         category: "Usage",
@@ -131,7 +131,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DerivableUnitShouldNotUseFixed,
         title: "Derivable unit should not use FixedUnit",
-        messageFormat: $"As {{0}} can be derived from other units, defining instances through {Utility.AttributeName(typeof(FixedUnitAttribute).Name)} would result in multiple independent units",
+        messageFormat: $"As {{0}} can be derived from other units, defining instances through {Utility.AttributeName(typeof(FixedUnitInstanceAttribute).Name)} would result in multiple independent units",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

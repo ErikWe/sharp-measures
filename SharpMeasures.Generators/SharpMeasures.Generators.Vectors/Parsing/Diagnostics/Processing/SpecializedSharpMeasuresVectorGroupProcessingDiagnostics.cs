@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
+using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVectorGroup;
 
@@ -21,7 +21,7 @@ internal class SpecializedSharpMeasuresVectorGroupProcessingDiagnostics : ISpeci
 
     public Diagnostic NullOriginalVectorGroup(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition)
     {
-        return DiagnosticConstruction.NullTypeNotVectorGroup(definition.Locations.OriginalVectorGroup?.AsRoslynLocation());
+        return DiagnosticConstruction.NullTypeNotVectorGroup(definition.Locations.OriginalQuantity?.AsRoslynLocation());
     }
 
     public Diagnostic NullScalar(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition)
@@ -39,23 +39,23 @@ internal class SpecializedSharpMeasuresVectorGroupProcessingDiagnostics : ISpeci
         return DiagnosticConstruction.DifferenceDisabledButQuantitySpecified(definition.Locations.Difference?.AsRoslynLocation(), context.Type.Name);
     }
 
-    public Diagnostic NullDefaultUnit(IProcessingContext context, IDefaultUnitDefinition definition)
+    public Diagnostic NullDefaultUnitInstanceName(IProcessingContext context, IDefaultUnitInstanceDefinition definition)
     {
-        return DefaultUnitProcessingDiagnostics.Instance.NullDefaultUnit(context, definition);
+        return DefaultUnitInstanceProcessingDiagnostics.Instance.NullDefaultUnitInstanceName(context, definition);
     }
 
-    public Diagnostic EmptyDefaultUnit(IProcessingContext context, IDefaultUnitDefinition definition)
+    public Diagnostic EmptyDefaultUnitInstanceName(IProcessingContext context, IDefaultUnitInstanceDefinition definition)
     {
-        return DefaultUnitProcessingDiagnostics.Instance.EmptyDefaultUnit(context, definition);
+        return DefaultUnitInstanceProcessingDiagnostics.Instance.EmptyDefaultUnitInstanceName(context, definition);
     }
 
-    public Diagnostic SetDefaultSymbolButNotUnit(IProcessingContext context, IDefaultUnitDefinition definition)
+    public Diagnostic SetDefaultUnitInstanceSymbolButNotName(IProcessingContext context, IDefaultUnitInstanceDefinition definition)
     {
-        return DefaultUnitProcessingDiagnostics.Instance.SetDefaultSymbolButNotUnit(context, definition);
+        return DefaultUnitInstanceProcessingDiagnostics.Instance.SetDefaultUnitInstanceSymbolButNotName(context, definition);
     }
 
-    public Diagnostic SetDefaultUnitButNotSymbol(IProcessingContext context, IDefaultUnitDefinition definition)
+    public Diagnostic SetDefaultUnitInstanceNameButNotSymbol(IProcessingContext context, IDefaultUnitInstanceDefinition definition)
     {
-        return DefaultUnitProcessingDiagnostics.Instance.SetDefaultUnitButNotSymbol(context, definition);
+        return DefaultUnitInstanceProcessingDiagnostics.Instance.SetDefaultUnitInstanceNameButNotSymbol(context, definition);
     }
 }

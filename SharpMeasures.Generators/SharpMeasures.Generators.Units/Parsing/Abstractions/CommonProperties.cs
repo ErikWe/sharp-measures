@@ -5,8 +5,8 @@ using SharpMeasures.Generators.Attributes.Parsing;
 internal static class CommonProperties
 {
     public static IAttributeProperty<TDefinition> Name<TDefinition, TLocations>(string name)
-        where TDefinition : IOpenRawUnitDefinition<TDefinition, TLocations>
-        where TLocations : IOpenUnitLocations<TLocations>
+        where TDefinition : IOpenRawUnitInstance<TDefinition, TLocations>
+        where TLocations : IOpenUnitInstanceLocations<TLocations>
     {
         return new AttributeProperty<TDefinition, TLocations, string>
         (
@@ -16,27 +16,27 @@ internal static class CommonProperties
         );
     }
 
-    public static IAttributeProperty<TDefinition> Plural<TDefinition, TLocations>(string name)
-        where TDefinition : IOpenRawUnitDefinition<TDefinition, TLocations>
-        where TLocations : IOpenUnitLocations<TLocations>
+    public static IAttributeProperty<TDefinition> PluralForm<TDefinition, TLocations>(string name)
+        where TDefinition : IOpenRawUnitInstance<TDefinition, TLocations>
+        where TLocations : IOpenUnitInstanceLocations<TLocations>
     {
         return new AttributeProperty<TDefinition, TLocations, string>
         (
             name: name,
-            setter: static (definition, plural) => definition.WithPlural(plural),
-            locator: static (locations, pluralLocation) => locations.WithPlural(pluralLocation)
+            setter: static (definition, pluralForm) => definition.WithPluralForm(pluralForm),
+            locator: static (locations, pluralFormLocation) => locations.WithPluralForm(pluralFormLocation)
         );
     }
 
-    public static IAttributeProperty<TDefinition> DependantOn<TDefinition, TLocations>(string name)
-        where TDefinition : IOpenRawDependantUnitDefinition<TDefinition, TLocations>
-        where TLocations : IOpenDependantUnitLocations<TLocations>
+    public static IAttributeProperty<TDefinition> OriginalUnitInstance<TDefinition, TLocations>(string name)
+        where TDefinition : IOpenRawModifiedUnitInstance<TDefinition, TLocations>
+        where TLocations : IOpenModifiedUnitInstanceLocations<TLocations>
     {
         return new AttributeProperty<TDefinition, TLocations, string>
         (
             name: name,
-            setter: static (definition, dependantOn) => definition.WithDependantOn(dependantOn),
-            locator: static (locations, dependantOnLocation) => locations.WithDependantOn(dependantOnLocation)
+            setter: static (definition, originalUnitInstance) => definition.WithOriginalUnitInstance(originalUnitInstance),
+            locator: static (locations, originalUnitInstanceLocation) => locations.WithOriginalUnitInstance(originalUnitInstanceLocation)
         );
     }
 }

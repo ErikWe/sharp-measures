@@ -4,9 +4,9 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
+using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 
-internal interface ISpecializedSharpMeasuresVectorProcessingDiagnostics : IDefaultUnitProcessingDiagnostics
+internal interface ISpecializedSharpMeasuresVectorProcessingDiagnostics : IDefaultUnitInstanceProcessingDiagnostics
 {
     public abstract Diagnostic? NullOriginalVector(IProcessingContext context, RawSpecializedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? NullScalar(IProcessingContext context, RawSpecializedSharpMeasuresVectorDefinition definition);
@@ -31,24 +31,24 @@ internal class SpecializedSharpMeasuresVectorProcesser : AProcesser<IProcessingC
             .Validate(() => ValidateScalarNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotUnexpectedlySpecified(context, definition))
-            .Merge(() => DefaultUnitProcesser.Process(context, Diagnostics, definition))
-            .Transform((defaultUnit) => ProduceResult(definition, defaultUnit.Name, defaultUnit.Symbol));
+            .Merge(() => DefaultUnitInstanceProcesser.Process(context, Diagnostics, definition))
+            .Transform((defaultUnitInstance) => ProduceResult(definition, defaultUnitInstance.Name, defaultUnitInstance.Symbol));
     }
 
-    private static SpecializedSharpMeasuresVectorDefinition ProduceResult(RawSpecializedSharpMeasuresVectorDefinition definition, string? defaultUnitName, string? defaultUnitSymbol)
+    private static SpecializedSharpMeasuresVectorDefinition ProduceResult(RawSpecializedSharpMeasuresVectorDefinition definition, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
-        return new(definition.OriginalVector!.Value, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritUnits, definition.Scalar, definition.ImplementSum,
-            definition.ImplementDifference, definition.Difference, defaultUnitName, defaultUnitSymbol, definition.GenerateDocumentation, definition.Locations);
+        return new(definition.OriginalQuantity!.Value, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritUnits, definition.Scalar, definition.ImplementSum,
+            definition.ImplementDifference, definition.Difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.GenerateDocumentation, definition.Locations);
     }
 
     private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawSpecializedSharpMeasuresVectorDefinition definition)
     {
-        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Locations.ExplicitlySetOriginalVector);
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Locations.ExplicitlySetOriginalQuantity);
     }
 
     private IValidityWithDiagnostics ValidateOriginalVectorNotNull(IProcessingContext context, RawSpecializedSharpMeasuresVectorDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.OriginalVector is not null, () => Diagnostics.NullOriginalVector(context, definition));
+        return ValidityWithDiagnostics.Conditional(definition.OriginalQuantity is not null, () => Diagnostics.NullOriginalVector(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateScalarNotNull(IProcessingContext context, RawSpecializedSharpMeasuresVectorDefinition definition)

@@ -63,13 +63,13 @@ public sealed class SpecializedSharpMeasuresVectorAttribute : Attribute
     /// <remarks>To disable support for computing the difference in the first place, use <see cref="ImplementDifference"/>.</remarks>
     public Type? Difference { get; init; }
 
-    /// <summary><inheritdoc cref="SharpMeasuresVectorAttribute.DefaultUnitName" path="/summary"/> By default, the value is inherited from the original quantity.</summary>
-    /// <remarks><inheritdoc cref="SharpMeasuresVectorAttribute.DefaultUnitName" path="/remarks"/></remarks>
-    public string? DefaultUnitName { get; init; }
+    /// <summary><inheritdoc cref="SharpMeasuresVectorAttribute.DefaultUnitInstanceName" path="/summary"/> By default, the value is inherited from the original quantity.</summary>
+    /// <remarks><inheritdoc cref="SharpMeasuresVectorAttribute.DefaultUnitInstanceName" path="/remarks"/></remarks>
+    public string? DefaultUnitInstanceName { get; init; }
 
-    /// <summary><inheritdoc cref="SharpMeasuresVectorAttribute.DefaultUnitSymbol" path="/summary"/> By default, the value is inherited from the original quantity.</summary>
-    /// <remarks><inheritdoc cref="SharpMeasuresVectorAttribute.DefaultUnitSymbol" path="/remarks"/></remarks>
-    public string? DefaultUnitSymbol { get; init; }
+    /// <summary><inheritdoc cref="SharpMeasuresVectorAttribute.DefaultUnitInstanceSymbol" path="/summary"/> By default, the value is inherited from the original quantity.</summary>
+    /// <remarks><inheritdoc cref="SharpMeasuresVectorAttribute.DefaultUnitInstanceSymbol" path="/remarks"/></remarks>
+    public string? DefaultUnitInstanceSymbol { get; init; }
 
     /// <summary><inheritdoc cref="SharpMeasuresVectorAttribute.GenerateDocumentation" path="/summary"/> By default, the behaviour is inherited from the original
     /// quantity.</summary>

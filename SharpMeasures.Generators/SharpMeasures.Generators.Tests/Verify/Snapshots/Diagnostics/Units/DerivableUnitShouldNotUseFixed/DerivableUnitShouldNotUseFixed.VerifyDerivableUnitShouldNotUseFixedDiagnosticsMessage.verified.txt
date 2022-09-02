@@ -4,11 +4,11 @@
     Title: Derivable unit should not use FixedUnit,
     Severity: Warning,
     WarningLevel: 1,
-    Location: : (19,1)-(19,10),
+    Location: : (19,1)-(19,18),
     Description: ,
     HelpLink: ,
-    MessageFormat: As {0} can be derived from other units, defining instances through FixedUnit would result in multiple independent units,
-    Message: As UnitOfSpeed can be derived from other units, defining instances through FixedUnit would result in multiple independent units,
+    MessageFormat: As {0} can be derived from other units, defining instances through FixedUnitInstance would result in multiple independent units,
+    Message: As UnitOfSpeed can be derived from other units, defining instances through FixedUnitInstance would result in multiple independent units,
     Category: Usage,
     CustomTags: []
   }

@@ -20,18 +20,18 @@ internal record class ResolvedVectorType : IResolvedVectorType
     public bool ImplementDifference { get; }
     public NamedType? Difference { get; }
 
-    public string? DefaultUnitName { get; }
-    public string? DefaultUnitSymbol { get; }
+    public string? DefaultUnitInstanceName { get; }
+    public string? DefaultUnitInstanceSymbol { get; }
 
     public IReadOnlyList<IDerivedQuantity> Derivations => derivations;
     public IReadOnlyList<IVectorConstant> Constants => constants;
-    public IReadOnlyList<IConvertibleVector> Conversions => conversions;
+    public IReadOnlyList<IConvertibleQuantity> Conversions => conversions;
 
-    public IReadOnlyList<string> IncludedUnits => includedUnits;
+    public IReadOnlyList<string> IncludedUnitInstanceNames => includedUnits;
 
     private ReadOnlyEquatableList<IDerivedQuantity> derivations { get; }
     private ReadOnlyEquatableList<IVectorConstant> constants { get; }
-    private ReadOnlyEquatableList<IConvertibleVector> conversions { get; }
+    private ReadOnlyEquatableList<IConvertibleQuantity> conversions { get; }
 
     private ReadOnlyEquatableList<string> includedUnits { get; }
 
@@ -39,9 +39,8 @@ internal record class ResolvedVectorType : IResolvedVectorType
 
     IReadOnlyList<IConvertibleQuantity> IResolvedQuantityType.Conversions => Conversions;
 
-    public ResolvedVectorType(DefinedType type, MinimalLocation typeLocation, int dimension, NamedType unit, NamedType? scalar, bool implementSum, bool implementDifference, NamedType? difference,
-        string? defaultUnitName, string? defaultUnitSymbol, IReadOnlyList<IDerivedQuantity> derivations, IReadOnlyList<IVectorConstant> constants, IReadOnlyList<IConvertibleVector> conversions,
-        IReadOnlyList<string> includedUnits, bool? generateDocumentation)
+    public ResolvedVectorType(DefinedType type, MinimalLocation typeLocation, int dimension, NamedType unit, NamedType? scalar, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol,
+        IReadOnlyList<IDerivedQuantity> derivations, IReadOnlyList<IVectorConstant> constants, IReadOnlyList<IConvertibleQuantity> conversions, IReadOnlyList<string> includedUnits, bool? generateDocumentation)
     {
         Type = type;
         TypeLocation = typeLocation;
@@ -56,8 +55,8 @@ internal record class ResolvedVectorType : IResolvedVectorType
         ImplementDifference = implementDifference;
         Difference = difference;
 
-        DefaultUnitName = defaultUnitName;
-        DefaultUnitSymbol = defaultUnitSymbol;
+        DefaultUnitInstanceName = defaultUnitInstanceName;
+        DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol;
 
         this.derivations = derivations.AsReadOnlyEquatable();
         this.constants = constants.AsReadOnlyEquatable();

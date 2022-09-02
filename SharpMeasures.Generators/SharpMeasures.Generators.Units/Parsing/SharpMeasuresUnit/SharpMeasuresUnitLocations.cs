@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class SharpMeasuresUnitLocations : AAttributeLocations<SharpMeasuresUnitLocations>
+internal record class SharpMeasuresUnitLocations : AAttributeLocations<SharpMeasuresUnitLocations>, IUnitLocations
 {
     public static SharpMeasuresUnitLocations Empty { get; } = new();
 
@@ -12,7 +12,7 @@ internal record class SharpMeasuresUnitLocations : AAttributeLocations<SharpMeas
     public MinimalLocation? GenerateDocumentation { get; init; }
 
     public bool ExplicitlySetQuantity => Quantity is not null;
-    public bool ExplicitlySetSupportsBiasedQuantities => BiasTerm is not null;
+    public bool ExplicitlySetBiasTerm => BiasTerm is not null;
     public bool ExplicitlySetGenerateDocumentation => GenerateDocumentation is not null;
 
     protected override SharpMeasuresUnitLocations Locations => this;

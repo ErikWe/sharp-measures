@@ -33,8 +33,8 @@ public class InvalidBiasedUnitExpression
         [SharpMeasuresScalar(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
 
-        [FixedUnit("Kelvin", "Kelvin")]
-        [BiasedUnit("Celsius", "Celsius", "Kelvin", {{bias}})]
+        [FixedUnitInstance("Kelvin", "Kelvin")]
+        [BiasedUnitInstance("Celsius", "Celsius", "Kelvin", {{bias}})]
         [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
@@ -42,7 +42,7 @@ public class InvalidBiasedUnitExpression
     private static GeneratorVerifier Assert(SourceSubtext bias)
     {
         var source = Text(bias);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, bias.Context.With(outerPrefix: "[BiasedUnit(\"Celsius\", \"Celsius\", \"Kelvin\", "));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, bias.Context.With(outerPrefix: "[BiasedUnitInstance(\"Celsius\", \"Celsius\", \"Kelvin\", "));
 
         return AssertExactlyInvalidBiasedUnitExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
@@ -56,7 +56,7 @@ public class InvalidBiasedUnitExpression
         [SharpMeasuresScalar(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
 
-        [FixedUnit("Kelvin", "Kelvin")]
+        [FixedUnitInstance("Kelvin", "Kelvin")]
         [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;

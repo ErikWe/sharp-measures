@@ -1,9 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
+using SharpMeasures.Generators.Quantities;
 
-internal record class RawSharpMeasuresScalarDefinition : ARawAttributeDefinition<RawSharpMeasuresScalarDefinition, SharpMeasuresScalarLocations>, IDefaultUnitDefinition
+internal record class RawSharpMeasuresScalarDefinition : ARawAttributeDefinition<RawSharpMeasuresScalarDefinition, SharpMeasuresScalarLocations>, IDefaultUnitInstanceDefinition
 {
     public static RawSharpMeasuresScalarDefinition Empty => new();
 
@@ -16,8 +16,8 @@ internal record class RawSharpMeasuresScalarDefinition : ARawAttributeDefinition
     public bool ImplementDifference { get; init; } = true;
     public NamedType? Difference { get; init; }
 
-    public string? DefaultUnitName { get; init; }
-    public string? DefaultUnitSymbol { get; init; }
+    public string? DefaultUnitInstanceName { get; init; }
+    public string? DefaultUnitInstanceSymbol { get; init; }
 
     public NamedType? Reciprocal { get; init; }
     public NamedType? Square { get; init; }
@@ -29,7 +29,7 @@ internal record class RawSharpMeasuresScalarDefinition : ARawAttributeDefinition
 
     protected override RawSharpMeasuresScalarDefinition Definition => this;
 
-    IDefaultUnitLocations IDefaultUnitDefinition.DefaultUnitLocations => Locations;
+    IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
     private RawSharpMeasuresScalarDefinition() : base(SharpMeasuresScalarLocations.Empty) { }
 }

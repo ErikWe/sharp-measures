@@ -43,23 +43,23 @@ internal class ConvertibleVectorFilterer : AActionableProcesser<IConvertibleVect
 
     public override void OnSuccessfulProcess(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, ConvertibleVectorDefinition product)
     {
-        SetMatchingConversionsAsListed(context, product.Vectors);
+        SetMatchingConversionsAsListed(context, product.Quantities);
     }
 
     public override IOptionalWithDiagnostics<ConvertibleVectorDefinition> Process(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition)
     {
-        List<NamedType> vectors = new(definition.Vectors.Count);
-        List<int> locationMap = new(definition.Vectors.Count);
+        List<NamedType> vectors = new(definition.Quantities.Count);
+        List<int> locationMap = new(definition.Quantities.Count);
 
         List<Diagnostic> allDiagnostics = new();
 
-        for (int i = 0; i < definition.Vectors.Count; i++)
+        for (int i = 0; i < definition.Quantities.Count; i++)
         {
             var validity = ValidateVector(context, definition, i);
 
             if (validity.IsValid)
             {
-                vectors.Add(definition.Vectors[i]);
+                vectors.Add(definition.Quantities[i]);
                 locationMap.Add(i);
             }
 
@@ -80,14 +80,14 @@ internal class ConvertibleVectorFilterer : AActionableProcesser<IConvertibleVect
 
     private IValidityWithDiagnostics ValidateVectorNotDuplicate(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index)
     {
-        var vectorIsExplicitlyDuplicate = context.ListedMatchingConversions.Contains(definition.Vectors[index]);
+        var vectorIsExplicitlyDuplicate = context.ListedMatchingConversions.Contains(definition.Quantities[index]);
 
         if (context.VectorType is VectorType.Group || vectorIsExplicitlyDuplicate)
         {
             return ValidityWithDiagnostics.Conditional(vectorIsExplicitlyDuplicate is false, Diagnostics.DuplicateVector(context, definition, index));
         }
 
-        var vectorIsImplictlyDuplicate = context.VectorPopulation.GroupMembersByGroup.TryGetValue(definition.Vectors[index], out var groupMembers)
+        var vectorIsImplictlyDuplicate = context.VectorPopulation.GroupMembersByGroup.TryGetValue(definition.Quantities[index], out var groupMembers)
             && groupMembers.GroupMembersByDimension.TryGetValue(context.Dimension, out var matchingVector)
             && context.ListedMatchingConversions.Contains(matchingVector.Type.AsNamedType());
 
@@ -96,14 +96,14 @@ internal class ConvertibleVectorFilterer : AActionableProcesser<IConvertibleVect
 
     private IValidityWithDiagnostics ValidateVectorIsOfExpectedVectorType(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index)
     {
-        var vectorIsGroup = context.VectorPopulation.Groups.ContainsKey(definition.Vectors[index]);
+        var vectorIsGroup = context.VectorPopulation.Groups.ContainsKey(definition.Quantities[index]);
         
         if (context.VectorType is VectorType.Group)
         {
             return ValidityWithDiagnostics.Conditional(vectorIsGroup, () => Diagnostics.TypeNotVectorGroup(context, definition, index));
         }
 
-        var vectorIsAnyVectorType = vectorIsGroup || context.VectorPopulation.Vectors.ContainsKey(definition.Vectors[index]) || context.VectorPopulation.GroupMembers.ContainsKey(definition.Vectors[index]);
+        var vectorIsAnyVectorType = vectorIsGroup || context.VectorPopulation.Vectors.ContainsKey(definition.Quantities[index]) || context.VectorPopulation.GroupMembers.ContainsKey(definition.Quantities[index]);
 
         return ValidityWithDiagnostics.Conditional(vectorIsAnyVectorType, () => Diagnostics.TypeNotVector(context, definition, index));
     }
@@ -112,19 +112,19 @@ internal class ConvertibleVectorFilterer : AActionableProcesser<IConvertibleVect
     {
         if (context.VectorType is VectorType.Vector or VectorType.GroupMember)
         {
-            if (context.VectorPopulation.Groups.ContainsKey(definition.Vectors[index]))
+            if (context.VectorPopulation.Groups.ContainsKey(definition.Quantities[index]))
             {
-                var vectorHasMemberOfMatchingDimension = context.VectorPopulation.GroupMembersByGroup[definition.Vectors[index]].GroupMembersByDimension.ContainsKey(context.Dimension);
+                var vectorHasMemberOfMatchingDimension = context.VectorPopulation.GroupMembersByGroup[definition.Quantities[index]].GroupMembersByDimension.ContainsKey(context.Dimension);
 
                 return ValidityWithDiagnostics.Conditional(vectorHasMemberOfMatchingDimension, () => Diagnostics.VectorGroupLacksMemberOfMatchingDimension(context, definition, index));
             }
 
-            if (context.VectorPopulation.VectorBases.TryGetValue(definition.Vectors[index], out var vector))
+            if (context.VectorPopulation.VectorBases.TryGetValue(definition.Quantities[index], out var vector))
             {
                 return ValidityWithDiagnostics.Conditional(vector.Definition.Dimension == context.Dimension, () => Diagnostics.VectorUnexpectedDimension(context, definition, index, vector.Definition.Dimension));
             }
 
-            var memberDimension = context.VectorPopulation.GroupMembers[definition.Vectors[index]].Definition.Dimension;
+            var memberDimension = context.VectorPopulation.GroupMembers[definition.Quantities[index]].Definition.Dimension;
 
             return ValidityWithDiagnostics.Conditional(memberDimension == context.Dimension, () => Diagnostics.VectorUnexpectedDimension(context, definition, index, memberDimension));
         }

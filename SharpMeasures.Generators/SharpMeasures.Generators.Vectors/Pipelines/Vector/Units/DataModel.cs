@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Units;
 
 using SharpMeasures.Equatables;
-using SharpMeasures.Generators.Units.UnitInstances;
+using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Documentation;
 
 using System.Collections.Generic;

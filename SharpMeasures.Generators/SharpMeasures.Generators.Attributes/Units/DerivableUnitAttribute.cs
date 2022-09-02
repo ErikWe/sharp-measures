@@ -4,11 +4,11 @@ using SharpMeasures.Generators.Utility;
 
 using System;
 
-/// <summary>Describes how an instance of a unit may be derived from instances of other units. The defined derivation may then be used through <see cref="DerivedUnitAttribute"/>.</summary>
+/// <summary>Describes how an instance of a unit may be derived from instances of other units. The defined derivation may then be used through <see cref="DerivedUnitInstanceAttribute"/>.</summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class DerivableUnitAttribute : Attribute
 {
-    /// <summary>A unique ID for this definition, used by <see cref="DerivedUnitAttribute"/> to specify a derivation.</summary>
+    /// <summary>A unique ID for this definition, used by <see cref="DerivedUnitInstanceAttribute"/> to specify a derivation.</summary>
     /// <remarks>This is only required to be explicitly specified if more than one derivation is defined for the unit.</remarks>
     public string? DerivationID { get; }
     /// <summary>The expression used to derive new instances of this unit. The types of <see cref="Signature"/> are inserted into this expression,

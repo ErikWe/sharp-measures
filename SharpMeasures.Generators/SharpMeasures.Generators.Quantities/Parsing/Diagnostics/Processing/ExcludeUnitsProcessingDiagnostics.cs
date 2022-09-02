@@ -15,9 +15,9 @@ public class ExcludeUnitsProcessingDiagnostics : IExcludeUnitsProcessingDiagnost
 
     public Diagnostic EmptyItemList(IProcessingContext context, RawExcludeUnitsDefinition definition)
     {
-        if (definition.Locations.ExplicitlySetExcludedUnits)
+        if (definition.Locations.ExplicitlySetUnitInstances)
         {
-            return DiagnosticConstruction.EmptyUnitList(definition.Locations.ExcludedUnitsCollection?.AsRoslynLocation());
+            return DiagnosticConstruction.EmptyUnitList(definition.Locations.UnitInstancesCollection?.AsRoslynLocation());
         }
 
         return DiagnosticConstruction.EmptyUnitList(definition.Locations.Attribute.AsRoslynLocation());
@@ -25,13 +25,13 @@ public class ExcludeUnitsProcessingDiagnostics : IExcludeUnitsProcessingDiagnost
 
     public Diagnostic NullItem(IProcessingContext context, RawExcludeUnitsDefinition definition, int index)
     {
-        return DiagnosticConstruction.NullUnrecognizedUnitNameUnknownType(definition.Locations.ExcludeUnitsElements[index].AsRoslynLocation());
+        return DiagnosticConstruction.NullUnrecognizedUnitInstanceNameUnknownType(definition.Locations.UnitInstancesElements[index].AsRoslynLocation());
     }
 
     public Diagnostic EmptyItem(IUniqueItemListProcessingContext<string> context, RawExcludeUnitsDefinition definition, int index) => NullItem(context, definition, index);
 
     public Diagnostic DuplicateItem(IUniqueItemListProcessingContext<string> context, RawExcludeUnitsDefinition definition, int index)
     {
-        return DiagnosticConstruction.ExcludingAlreadyExcludedUnit(definition.Locations.ExcludeUnitsElements[index].AsRoslynLocation(), definition.ExcludedUnits[index]!);
+        return DiagnosticConstruction.ExcludingAlreadyExcludedUnitInstance(definition.Locations.UnitInstancesElements[index].AsRoslynLocation(), definition.UnitInstances[index]!);
     }
 }

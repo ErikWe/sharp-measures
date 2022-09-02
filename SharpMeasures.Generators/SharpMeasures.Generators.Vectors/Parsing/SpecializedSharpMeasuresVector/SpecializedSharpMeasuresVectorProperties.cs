@@ -21,16 +21,16 @@ internal static class SpecializedSharpMeasuresVectorProperties
         ImplementSum,
         ImplementDifference,
         Difference,
-        DefaultUnitName,
-        DefaultUnitSymbol,
+        DefaultUnitInstanceName,
+        DefaultUnitInstanceSymbol,
         GenerateDocumentation
     };
 
     private static SpecializedSharpMeasuresVectorProperty<INamedTypeSymbol> OriginalVector { get; } = new
     (
         name: nameof(SpecializedSharpMeasuresVectorAttribute.OriginalVector),
-        setter: static (definition, originalVector) => definition with { OriginalVector = originalVector.AsNamedType() },
-        locator: static (locations, originalVectorLocation) => locations with { OriginalVector = originalVectorLocation }
+        setter: static (definition, originalQuantity) => definition with { OriginalQuantity = originalQuantity.AsNamedType() },
+        locator: static (locations, originalQuantityLocation) => locations with { OriginalQuantity = originalQuantityLocation }
     );
 
     private static SpecializedSharpMeasuresVectorProperty<bool> InheritDerivations { get; } = new
@@ -89,18 +89,18 @@ internal static class SpecializedSharpMeasuresVectorProperties
         locator: static (locations, differenceLocation) => locations with { Difference = differenceLocation }
     );
 
-    private static SpecializedSharpMeasuresVectorProperty<string> DefaultUnitName { get; } = new
+    private static SpecializedSharpMeasuresVectorProperty<string> DefaultUnitInstanceName { get; } = new
     (
-        name: nameof(SpecializedSharpMeasuresScalarAttribute.DefaultUnitName),
-        setter: static (definition, defaultUnitName) => definition with { DefaultUnitName = defaultUnitName },
-        locator: static (locations, defaultUnitNameLocation) => locations with { DefaultUnitName = defaultUnitNameLocation }
+        name: nameof(SpecializedSharpMeasuresScalarAttribute.DefaultUnitInstanceName),
+        setter: static (definition, defaultUnitInstanceName) => definition with { DefaultUnitInstanceName = defaultUnitInstanceName },
+        locator: static (locations, defaultUnitInstanceNameLocation) => locations with { DefaultUnitInstanceName = defaultUnitInstanceNameLocation }
     );
 
-    private static SpecializedSharpMeasuresVectorProperty<string> DefaultUnitSymbol { get; } = new
+    private static SpecializedSharpMeasuresVectorProperty<string> DefaultUnitInstanceSymbol { get; } = new
     (
-        name: nameof(SpecializedSharpMeasuresScalarAttribute.DefaultUnitSymbol),
-        setter: static (definition, defaultUnitSymbol) => definition with { DefaultUnitSymbol = defaultUnitSymbol },
-        locator: static (locations, defaultUnitSymbolLocation) => locations with { DefaultUnitSymbol = defaultUnitSymbolLocation }
+        name: nameof(SpecializedSharpMeasuresScalarAttribute.DefaultUnitInstanceSymbol),
+        setter: static (definition, defaultUnitInstanceSymbol) => definition with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol },
+        locator: static (locations, defaultUnitInstanceSymbolLocation) => locations with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbolLocation }
     );
 
     private static SpecializedSharpMeasuresVectorProperty<bool> GenerateDocumentation { get; } = new

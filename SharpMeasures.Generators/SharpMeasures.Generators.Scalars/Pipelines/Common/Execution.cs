@@ -190,9 +190,9 @@ internal static class Execution
             AppendDocumentation(indentation, Data.Documentation.ToStringDocumentation());
             Builder.Append($$"""{{indentation}}public override string ToString() => $"{""");
 
-            if (Data.DefaultUnitName is not null)
+            if (Data.DefaultUnitInstanceName is not null)
             {
-                Builder.Append($"InUnit({Data.Unit.FullyQualifiedName}.{Data.DefaultUnitName}).Value");
+                Builder.Append($"InUnit({Data.Unit.FullyQualifiedName}.{Data.DefaultUnitInstanceName}).Value");
             }
             else
             {
@@ -201,9 +201,9 @@ internal static class Execution
 
             Builder.Append('}');
 
-            if (Data.DefaultUnitSymbol is not null)
+            if (Data.DefaultUnitInstanceSymbol is not null)
             {
-                Builder.Append($" [{Data.DefaultUnitSymbol}]");
+                Builder.Append($" [{Data.DefaultUnitInstanceSymbol}]");
             }
 
             Builder.AppendLine($"\";");

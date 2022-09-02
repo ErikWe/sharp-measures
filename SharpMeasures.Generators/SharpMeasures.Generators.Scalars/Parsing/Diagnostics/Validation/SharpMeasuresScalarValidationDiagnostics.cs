@@ -4,10 +4,10 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
+using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Validation;
-using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
+using SharpMeasures.Generators.Units;
 
 internal class SharpMeasuresScalarValidationDiagnostics : ISharpMeasuresScalarValidationDiagnostics
 {
@@ -40,9 +40,9 @@ internal class SharpMeasuresScalarValidationDiagnostics : ISharpMeasuresScalarVa
         return DiagnosticConstruction.TypeNotScalar(definition.Locations.Difference?.AsRoslynLocation(), definition.Difference!.Value.Name);
     }
 
-    public Diagnostic UnrecognizedDefaultUnit(IProcessingContext context, IDefaultUnitDefinition definition, IUnitType unit)
+    public Diagnostic UnrecognizedDefaultUnitInstance(IProcessingContext context, IDefaultUnitInstanceDefinition definition, IUnitType unit)
     {
-        return DefaultUnitValidationDiagnostics.Instance.UnrecognizedDefaultUnit(context, definition, unit);
+        return DefaultUnitInstanceValidationDiagnostics.Instance.UnrecognizedDefaultUnitInstance(context, definition, unit);
     }
 
     public Diagnostic ReciprocalNotScalar(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition)

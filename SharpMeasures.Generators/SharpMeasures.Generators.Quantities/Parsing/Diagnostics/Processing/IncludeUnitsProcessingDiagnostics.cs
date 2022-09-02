@@ -20,9 +20,9 @@ public class IncludeUnitsProcessingDiagnostics : IIncludeUnitsProcessingDiagnost
 
     public Diagnostic EmptyItemList(IProcessingContext context, RawIncludeUnitsDefinition definition)
     {
-        if (definition.Locations.ExplicitlySetIncludedUnits)
+        if (definition.Locations.ExplicitlySetUnitInstances)
         {
-            return DiagnosticConstruction.EmptyUnitList(definition.Locations.IncludedUnitsCollection?.AsRoslynLocation());
+            return DiagnosticConstruction.EmptyUnitList(definition.Locations.UnitInstancesCollection?.AsRoslynLocation());
         }
 
         return DiagnosticConstruction.EmptyUnitList(definition.Locations.Attribute.AsRoslynLocation());
@@ -30,13 +30,13 @@ public class IncludeUnitsProcessingDiagnostics : IIncludeUnitsProcessingDiagnost
 
     public Diagnostic NullItem(IProcessingContext context, RawIncludeUnitsDefinition definition, int index)
     {
-        return DiagnosticConstruction.NullUnrecognizedUnitNameUnknownType(definition.Locations.IncludeUnitsElements[index].AsRoslynLocation());
+        return DiagnosticConstruction.NullUnrecognizedUnitInstanceNameUnknownType(definition.Locations.UnitInstancesElements[index].AsRoslynLocation());
     }
 
     public Diagnostic EmptyItem(IUniqueItemListProcessingContext<string> context, RawIncludeUnitsDefinition definition, int index) => NullItem(context, definition, index);
 
     public Diagnostic DuplicateItem(IUniqueItemListProcessingContext<string> context, RawIncludeUnitsDefinition definition, int index)
     {
-        return DiagnosticConstruction.IncludingAlreadyIncludedUnitWithIntersection(definition.Locations.IncludeUnitsElements[index].AsRoslynLocation(), definition.IncludedUnits[index]!);
+        return DiagnosticConstruction.IncludingAlreadyIncludedUnitInstanceWithIntersection(definition.Locations.UnitInstancesElements[index].AsRoslynLocation(), definition.UnitInstances[index]!);
     }
 }

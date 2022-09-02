@@ -16,7 +16,7 @@ using SharpMeasures.Generators.Scalars.Parsing.Contexts.Validation;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 using SharpMeasures.Generators.Scalars.Parsing.Diagnostics.Validation;
 using SharpMeasures.Generators.Scalars.Parsing.ExcludeBases;
-using SharpMeasures.Generators.Scalars.Parsing.IncludeBases;
+using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 using SharpMeasures.Generators.Units;
@@ -49,17 +49,17 @@ internal static class ScalarBaseValidator
         var constants = ValidateConstants(input.UnvalidatedScalar, input.UnitPopulation);
         var conversions = ValidateConversions(input.UnvalidatedScalar, input.ScalarPopulation);
 
-        var availableUnitsAndBases = new HashSet<string>(input.UnitPopulation.Units[input.UnvalidatedScalar.Definition.Unit].UnitsByName.Keys);
+        var includedUnitsInstanceNames = new HashSet<string>(input.UnitPopulation.Units[input.UnvalidatedScalar.Definition.Unit].UnitInstancesByName.Keys);
 
-        var baseInclusions = ValidateIncludeBases(input.UnvalidatedScalar, input.UnitPopulation, availableUnitsAndBases);
-        var baseExclusions = ValidateExcludeBases(input.UnvalidatedScalar, input.UnitPopulation, availableUnitsAndBases);
-        var unitInclusions = ValidateIncludeUnits(input.UnvalidatedScalar, input.UnitPopulation, availableUnitsAndBases);
-        var unitExclusions = ValidateExcludeUnits(input.UnvalidatedScalar, input.UnitPopulation, availableUnitsAndBases);
+        var unitBaseInclusions = ValidateIncludeUnitBaseInstances(input.UnvalidatedScalar, input.UnitPopulation, includedUnitsInstanceNames);
+        var unitBaseExclusions = ValidateExcludeUnitBaseInstances(input.UnvalidatedScalar, input.UnitPopulation, includedUnitsInstanceNames);
+        var unitInclusions = ValidateIncludeUnitInstances(input.UnvalidatedScalar, input.UnitPopulation, includedUnitsInstanceNames);
+        var unitExclusions = ValidateExcludeUnitInstances(input.UnvalidatedScalar, input.UnitPopulation, includedUnitsInstanceNames);
 
-        ScalarBaseType product = new(input.UnvalidatedScalar.Type, input.UnvalidatedScalar.TypeLocation, scalar.Result, derivations.Result, constants.Result, conversions.Result, baseInclusions.Result,
-            baseExclusions.Result, unitInclusions.Result, unitExclusions.Result);
+        ScalarBaseType product = new(input.UnvalidatedScalar.Type, input.UnvalidatedScalar.TypeLocation, scalar.Result, derivations.Result, constants.Result, conversions.Result, unitBaseInclusions.Result,
+            unitBaseExclusions.Result, unitInclusions.Result, unitExclusions.Result);
 
-        var allDiagnostics = scalar.Concat(derivations).Concat(constants).Concat(conversions).Concat(baseInclusions).Concat(baseExclusions).Concat(unitInclusions).Concat(unitExclusions);
+        var allDiagnostics = scalar.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitBaseInclusions).Concat(unitBaseExclusions).Concat(unitInclusions).Concat(unitExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
@@ -82,13 +82,13 @@ internal static class ScalarBaseValidator
     {
         var unit = unitPopulation.Units[scalarType.Definition.Unit];
 
-        var includedBases = GetUnitInclusions(unit, scalarType.BaseInclusions, () => scalarType.BaseExclusions);
-        var includedUnits = GetUnitInclusions(unit, scalarType.UnitInclusions, () => scalarType.UnitExclusions);
+        var includedUnitBases = GetUnitInclusions(unit, scalarType.UnitBaseInstanceInclusions, () => scalarType.UnitBaseInstanceExclusions);
+        var includedUnits = GetUnitInclusions(unit, scalarType.UnitInstanceInclusions, () => scalarType.UnitInstanceExclusions);
 
-        HashSet<string> includedUnitNames = new(includedBases);
-        HashSet<string> incluedUnitPlurals = new(includedUnits.Select((unitInstance) => unit.UnitsByName[unitInstance].Plural));
+        HashSet<string> includedUnitInstanceNames = new(includedUnitBases);
+        HashSet<string> incluedUnitInstancePluralForms = new(includedUnits.Select((unitInstance) => unit.UnitInstancesByName[unitInstance].PluralForm));
 
-        var validationContext = new ScalarConstantValidationContext(scalarType.Type, unit, new HashSet<string>(), new HashSet<string>(), includedUnitNames, incluedUnitPlurals);
+        var validationContext = new ScalarConstantValidationContext(scalarType.Type, unit, new HashSet<string>(), new HashSet<string>(), includedUnitInstanceNames, incluedUnitInstancePluralForms);
 
         return ProcessingFilter.Create(ScalarConstantValidator).Filter(validationContext, scalarType.Constants);
     }
@@ -100,48 +100,48 @@ internal static class ScalarBaseValidator
         return ProcessingFilter.Create(ConvertibleScalarFilterer).Filter(filteringContext, scalarType.Conversions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<IncludeBasesDefinition>> ValidateIncludeBases(ScalarBaseType scalarType, IUnitPopulation unitPopulation, HashSet<string> availableBases)
+    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitBasesDefinition>> ValidateIncludeUnitBaseInstances(ScalarBaseType scalarType, IUnitPopulation unitPopulation, HashSet<string> includedUnitInstanceNames)
     {
-        var filteringContext = new IncludeBasesFilteringContext(scalarType.Type, unitPopulation.Units[scalarType.Definition.Unit], availableBases);
+        var filteringContext = new IncludeBasesFilteringContext(scalarType.Type, unitPopulation.Units[scalarType.Definition.Unit], includedUnitInstanceNames);
 
-        return ProcessingFilter.Create(IncludeBasesFilterer).Filter(filteringContext, scalarType.BaseInclusions);
+        return ProcessingFilter.Create(IncludeBasesFilterer).Filter(filteringContext, scalarType.UnitBaseInstanceInclusions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ExcludeBasesDefinition>> ValidateExcludeBases(ScalarBaseType scalarType, IUnitPopulation unitPopulation, HashSet<string> availableBases)
+    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitBasesDefinition>> ValidateExcludeUnitBaseInstances(ScalarBaseType scalarType, IUnitPopulation unitPopulation, HashSet<string> includedUnitInstanceNames)
     {
-        var filteringContext = new ExcludeBasesFilteringContext(scalarType.Type, unitPopulation.Units[scalarType.Definition.Unit], availableBases);
+        var filteringContext = new ExcludeBasesFilteringContext(scalarType.Type, unitPopulation.Units[scalarType.Definition.Unit], includedUnitInstanceNames);
 
-        return ProcessingFilter.Create(ExcludeBasesFilterer).Filter(filteringContext, scalarType.BaseExclusions);
+        return ProcessingFilter.Create(ExcludeBasesFilterer).Filter(filteringContext, scalarType.UnitBaseInstanceExclusions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ValidateIncludeUnits(ScalarBaseType scalarType, IUnitPopulation unitPopulation, HashSet<string> availableUnits)
+    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ValidateIncludeUnitInstances(ScalarBaseType scalarType, IUnitPopulation unitPopulation, HashSet<string> includedUnitInstanceNames)
     {
-        var filteringContext = new IncludeUnitsFilteringContext(scalarType.Type, unitPopulation.Units[scalarType.Definition.Unit], availableUnits);
+        var filteringContext = new IncludeUnitsFilteringContext(scalarType.Type, unitPopulation.Units[scalarType.Definition.Unit], includedUnitInstanceNames);
 
-        return ProcessingFilter.Create(IncludeUnitsFilterer).Filter(filteringContext, scalarType.UnitInclusions);
+        return ProcessingFilter.Create(IncludeUnitsFilterer).Filter(filteringContext, scalarType.UnitInstanceInclusions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ValidateExcludeUnits(ScalarBaseType scalarType, IUnitPopulation unitPopulation, HashSet<string> availableUnits)
+    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ValidateExcludeUnitInstances(ScalarBaseType scalarType, IUnitPopulation unitPopulation, HashSet<string> includedUnitInstanceNames)
     {
-        var filteringContext = new ExcludeUnitsFilteringContext(scalarType.Type, unitPopulation.Units[scalarType.Definition.Unit], availableUnits);
+        var filteringContext = new ExcludeUnitsFilteringContext(scalarType.Type, unitPopulation.Units[scalarType.Definition.Unit], includedUnitInstanceNames);
 
-        return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, scalarType.UnitExclusions);
+        return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, scalarType.UnitInstanceExclusions);
     }
 
-    private static IReadOnlyList<string> GetUnitInclusions(IUnitType unit, IEnumerable<IUnitList> inclusions, Func<IEnumerable<IUnitList>> exclusionsDelegate)
+    private static IReadOnlyList<string> GetUnitInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
     {
-        HashSet<string> includedUnits = new(unit.UnitsByName.Keys);
+        HashSet<string> includedUnitInstances = new(unit.UnitInstancesByName.Keys);
 
         if (inclusions.Any())
         {
-            includedUnits.IntersectWith(inclusions.SelectMany(static (unitList) => unitList.Units));
+            includedUnitInstances.IntersectWith(inclusions.SelectMany(static (unitList) => unitList.UnitInstances));
 
-            return includedUnits.ToList();
+            return includedUnitInstances.ToList();
         }
 
-        includedUnits.ExceptWith(exclusionsDelegate().SelectMany(static (unitList) => unitList.Units));
+        includedUnitInstances.ExceptWith(exclusionsDelegate().SelectMany(static (unitList) => unitList.UnitInstances));
 
-        return includedUnits.ToList();
+        return includedUnitInstances.ToList();
     }
 
     private static SharpMeasuresScalarValidator SharpMeasuresScalarValidator { get; } = new(SharpMeasuresScalarValidationDiagnostics.Instance);
@@ -150,8 +150,8 @@ internal static class ScalarBaseValidator
     private static ScalarConstantValidator ScalarConstantValidator { get; } = new(ScalarConstantValidationDiagnostics.Instance);
     private static ConvertibleScalarFilterer ConvertibleScalarFilterer { get; } = new(ConvertibleScalarFilteringDiagnostics.Instance);
 
-    private static IncludeBasesFilterer IncludeBasesFilterer { get; } = new(IncludeBasesFilteringDiagnostics.Instance);
-    private static ExcludeBasesFilterer ExcludeBasesFilterer { get; } = new(ExcludeBasesFilteringDiagnostics.Instance);
+    private static IncludeUnitBasesFilterer IncludeBasesFilterer { get; } = new(IncludeBasesFilteringDiagnostics.Instance);
+    private static ExcludeUnitBasesFilterer ExcludeBasesFilterer { get; } = new(ExcludeBasesFilteringDiagnostics.Instance);
     private static IncludeUnitsFilterer IncludeUnitsFilterer { get; } = new(IncludeUnitsFilteringDiagnostics.Instance);
     private static ExcludeUnitsFilterer ExcludeUnitsFilterer { get; } = new(ExcludeUnitsFilteringDiagnostics.Instance);
 }

@@ -4,14 +4,14 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
+using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
 using System.Linq;
 
-internal interface ISpecializedSharpMeasuresVectorGroupValidationDiagnostics : IDefaultUnitValidationDiagnostics
+internal interface ISpecializedSharpMeasuresVectorGroupValidationDiagnostics : IDefaultUnitInstanceValidationDiagnostics
 {
     public abstract Diagnostic? TypeAlreadyUnit(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition);
     public abstract Diagnostic? TypeAlreadyScalar(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition);
@@ -58,22 +58,22 @@ internal class SpecializedSharpMeasuresVectorGroupValidator : IProcesser<ISpecia
         var difference = ValidateDifferenceIsVectorGroup(context, definition).Transform(definition.Difference);
 
         var unit = context.VectorPopulation.GroupBases[context.Type.AsNamedType()].Definition.Unit;
-        var defaultUnitValidity = DefaultUnitValidator.Validate(context, Diagnostics, definition, context.UnitPopulation, unit);
+        var defaultUnitInstanceValidity = DefaultUnitInstanceValidator.Validate(context, Diagnostics, definition, context.UnitPopulation, unit);
 
-        var defaultUnitName = defaultUnitValidity.Transform(definition.DefaultUnitName);
-        var defaultUnitSymbol = defaultUnitValidity.Transform(definition.DefaultUnitSymbol);
+        var defaultUnitInstanceName = defaultUnitInstanceValidity.Transform(definition.DefaultUnitInstanceName);
+        var defaultUnitInstanceSymbol = defaultUnitInstanceValidity.Transform(definition.DefaultUnitInstanceSymbol);
 
-        var product = ProduceResult(definition, scalar.NullableResult, difference.NullableResult, defaultUnitName.NullableResult, defaultUnitSymbol.NullableResult);
+        var product = ProduceResult(definition, scalar.NullableValueResult(), difference.NullableValueResult(), defaultUnitInstanceName.NullableReferenceResult(), defaultUnitInstanceSymbol.NullableReferenceResult());
 
-        var allDiagnostics = validity.Diagnostics.Concat(scalar).Concat(difference).Concat(defaultUnitValidity);
+        var allDiagnostics = validity.Diagnostics.Concat(scalar).Concat(difference).Concat(defaultUnitInstanceValidity);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static SpecializedSharpMeasuresVectorGroupDefinition ProduceResult(SpecializedSharpMeasuresVectorGroupDefinition definition, NamedType? scalar, NamedType? difference, string? defaultUnitName, string? defaultUnitSymbol)
+    private static SpecializedSharpMeasuresVectorGroupDefinition ProduceResult(SpecializedSharpMeasuresVectorGroupDefinition definition, NamedType? scalar, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
-        return new(definition.OriginalVectorGroup, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritUnits, scalar, definition.ImplementSum,
-            definition.ImplementDifference, difference, defaultUnitName, defaultUnitSymbol, definition.GenerateDocumentation, definition.Locations);
+        return new(definition.OriginalQuantity, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritUnits, scalar, definition.ImplementSum,
+            definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.GenerateDocumentation, definition.Locations);
     }
 
     private IValidityWithDiagnostics ValidateTypeNotAlreadyUnit(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition)
@@ -106,7 +106,7 @@ internal class SpecializedSharpMeasuresVectorGroupValidator : IProcesser<ISpecia
 
     private IValidityWithDiagnostics ValidateOriginalVectorGroupIsVectorGroup(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition)
     {
-        var originalVectorGroupIsVectorGroup = context.VectorPopulation.Groups.ContainsKey(definition.OriginalVectorGroup);
+        var originalVectorGroupIsVectorGroup = context.VectorPopulation.Groups.ContainsKey(definition.OriginalQuantity);
 
         return ValidityWithDiagnostics.Conditional(originalVectorGroupIsVectorGroup, () => Diagnostics.OriginalNotVectorGroup(context, definition));
     }

@@ -15,8 +15,8 @@ internal static class SharpMeasuresVectorGroupProperties
         ImplementSum,
         ImplementDifference,
         Difference,
-        DefaultUnitName,
-        DefaultUnitSymbol,
+        DefaultUnitInstanceName,
+        DefaultUnitInstanceSymbol,
         GenerateDocumentation
     };
 
@@ -55,18 +55,18 @@ internal static class SharpMeasuresVectorGroupProperties
         locator: static (locations, differenceLocation) => locations with { Difference = differenceLocation }
     );
 
-    private static SharpMeasuresVectorGroupProperty<string> DefaultUnitName { get; } = new
+    private static SharpMeasuresVectorGroupProperty<string> DefaultUnitInstanceName { get; } = new
     (
-        name: nameof(SharpMeasuresVectorGroupAttribute.DefaultUnitName),
-        setter: static (definition, defaultUnitName) => definition with { DefaultUnitName = defaultUnitName },
-        locator: static (locations, defaultUnitNameLocation) => locations with { DefaultUnitName = defaultUnitNameLocation }
+        name: nameof(SharpMeasuresVectorGroupAttribute.DefaultUnitInstanceName),
+        setter: static (definition, defaultUnitInstanceName) => definition with { DefaultUnitInstanceName = defaultUnitInstanceName },
+        locator: static (locations, defaultUnitInstanceNameLocation) => locations with { DefaultUnitInstanceName = defaultUnitInstanceNameLocation }
     );
 
-    private static SharpMeasuresVectorGroupProperty<string> DefaultUnitSymbol { get; } = new
+    private static SharpMeasuresVectorGroupProperty<string> DefaultUnitInstanceSymbol { get; } = new
     (
-        name: nameof(SharpMeasuresVectorGroupAttribute.DefaultUnitSymbol),
-        setter: static (definition, defaultUnitSymbol) => definition with { DefaultUnitSymbol = defaultUnitSymbol },
-        locator: static (locations, defaultUnitSymbolLocation) => locations with { DefaultUnitSymbol = defaultUnitSymbolLocation }
+        name: nameof(SharpMeasuresVectorGroupAttribute.DefaultUnitInstanceSymbol),
+        setter: static (definition, defaultUnitInstanceSymbol) => definition with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol },
+        locator: static (locations, defaultUnitInstanceSymbolLocation) => locations with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbolLocation }
     );
 
     private static SharpMeasuresVectorGroupProperty<bool> GenerateDocumentation { get; } = new

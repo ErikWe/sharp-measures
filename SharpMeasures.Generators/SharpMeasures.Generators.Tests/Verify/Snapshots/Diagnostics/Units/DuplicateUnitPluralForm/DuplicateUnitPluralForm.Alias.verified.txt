@@ -4,7 +4,7 @@
     Title: Duplicate unit plural form,
     Severity: Warning,
     WarningLevel: 1,
-    Location: : (8,21)-(8,29),
+    Location: : (8,29)-(8,37),
     Description: ,
     HelpLink: ,
     MessageFormat: {0} already defines a unit with plural form "{1}",

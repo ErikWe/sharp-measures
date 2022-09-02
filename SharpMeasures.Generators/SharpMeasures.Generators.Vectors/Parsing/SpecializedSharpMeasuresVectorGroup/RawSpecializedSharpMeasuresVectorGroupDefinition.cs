@@ -1,13 +1,13 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVectorGroup;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
+using SharpMeasures.Generators.Quantities;
 
-internal record class RawSpecializedSharpMeasuresVectorGroupDefinition : ARawAttributeDefinition<RawSpecializedSharpMeasuresVectorGroupDefinition, SpecializedSharpMeasuresVectorGroupLocations>, IDefaultUnitDefinition
+internal record class RawSpecializedSharpMeasuresVectorGroupDefinition : ARawAttributeDefinition<RawSpecializedSharpMeasuresVectorGroupDefinition, SpecializedSharpMeasuresVectorGroupLocations>, IDefaultUnitInstanceDefinition
 {
     public static RawSpecializedSharpMeasuresVectorGroupDefinition Empty => new();
 
-    public NamedType? OriginalVectorGroup { get; init; }
+    public NamedType? OriginalQuantity { get; init; }
 
     public bool InheritDerivations { get; init; } = true;
     public bool InheritConstants { get; init; } = true;
@@ -20,14 +20,14 @@ internal record class RawSpecializedSharpMeasuresVectorGroupDefinition : ARawAtt
     public bool? ImplementDifference { get; init; }
     public NamedType? Difference { get; init; }
 
-    public string? DefaultUnitName { get; init; }
-    public string? DefaultUnitSymbol { get; init; }
+    public string? DefaultUnitInstanceName { get; init; }
+    public string? DefaultUnitInstanceSymbol { get; init; }
 
     public bool? GenerateDocumentation { get; init; }
 
     protected override RawSpecializedSharpMeasuresVectorGroupDefinition Definition => this;
 
-    IDefaultUnitLocations IDefaultUnitDefinition.DefaultUnitLocations => Locations;
+    IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
     private RawSpecializedSharpMeasuresVectorGroupDefinition() : base(SpecializedSharpMeasuresVectorGroupLocations.Empty) { }
 }

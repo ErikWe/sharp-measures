@@ -16,16 +16,16 @@ internal static class UnitsGenerator
 
     private static DataModel? Reduce(Scalars.DataModel model, CancellationToken _)
     {
-        if (model.Scalar.IncludedBases.Count is 0 && model.Scalar.IncludedUnits.Count is 0 && model.Scalar.Constants.Count is 0)
+        if (model.Scalar.IncludedUnitBaseInstancesNames.Count is 0 && model.Scalar.IncludedUnitInstanceNames.Count is 0 && model.Scalar.Constants.Count is 0)
         {
             return null;
         }
 
         var unit = model.UnitPopulation.Units[model.Scalar.Unit];
 
-        var includedBases = model.Scalar.IncludedBases.Select((unitName) => unit.UnitsByName[unitName]).ToList();
-        var includedUnits = model.Scalar.IncludedUnits.Select((unitName) => unit.UnitsByName[unitName]).ToList();
+        var includedUnitBaseInstances = model.Scalar.IncludedUnitBaseInstancesNames.Select((unitName) => unit.UnitInstancesByName[unitName]).ToList();
+        var includedUnitInstances = model.Scalar.IncludedUnitInstanceNames.Select((unitName) => unit.UnitInstancesByName[unitName]).ToList();
 
-        return new(model.Scalar.Type, model.Scalar.Unit, unit.Definition.Quantity, includedBases, includedUnits, model.Scalar.Constants, model.Documentation);
+        return new(model.Scalar.Type, model.Scalar.Unit, unit.Definition.Quantity, includedUnitBaseInstances, includedUnitInstances, model.Scalar.Constants, model.Documentation);
     }
 }

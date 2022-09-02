@@ -378,7 +378,7 @@ internal static class Execution
 
             AppendDocumentation(indentation, Data.Documentation.ToStringDocumentation());
             
-            if (Data.DefaultUnitName is null)
+            if (Data.DefaultUnitInstanceName is null)
             {
                 Builder.Append($$"""{{indentation}}public override string ToString() => $"({{ConstantVectorTexts.Upper.ComponentsPropertyAccess(Data.Dimension)}})""");
             }
@@ -387,7 +387,7 @@ internal static class Execution
                 Builder.Append($$"""
                     {{indentation}}public override string ToString()
                     {{indentation}}{
-                    {{indentation.Increased}}var components = InUnit({{Data.Unit.FullyQualifiedName}}.{{Data.DefaultUnitName}});
+                    {{indentation.Increased}}var components = InUnit({{Data.Unit.FullyQualifiedName}}.{{Data.DefaultUnitInstanceName}});
 
                     {{indentation.Increased}}return $"({{ConstantVectorTexts.Upper.ComponentsPropertyAccess(Data.Dimension)}})
                     """);
@@ -395,16 +395,16 @@ internal static class Execution
                 SeparationHandler.Add();
             }
 
-            if (Data.DefaultUnitSymbol is not null)
+            if (Data.DefaultUnitInstanceSymbol is not null)
             {
-                Builder.Append($""" [{Data.DefaultUnitSymbol}]""");
+                Builder.Append($""" [{Data.DefaultUnitInstanceSymbol}]""");
             }
 
             Builder.AppendLine("""
                 ";
                 """);
 
-            if (Data.DefaultUnitName is not null)
+            if (Data.DefaultUnitInstanceName is not null)
             {
                 BlockBuilding.AppendClosingBracket(Builder, indentation, finalNewLine: true);
             }

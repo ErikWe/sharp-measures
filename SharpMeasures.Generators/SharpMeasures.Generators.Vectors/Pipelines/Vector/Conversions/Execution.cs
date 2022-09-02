@@ -72,7 +72,7 @@ internal static class Execution
         {
             SeparationHandler.MarkUnncecessary();
 
-            foreach (var convertibleVector in Data.Conversions.SelectMany(static (x) => x.Vectors))
+            foreach (var convertibleVector in Data.Conversions.SelectMany(static (x) => x.Quantities))
             {
                 if (Data.VectorPopulation.Groups.TryGetValue(convertibleVector, out var group))
                 {
@@ -102,7 +102,7 @@ internal static class Execution
                     _ => throw new NotSupportedException("Invalid cast operation")
                 };
 
-                foreach (var convertibleVector in convertibleVectors.Vectors)
+                foreach (var convertibleVector in convertibleVectors.Quantities)
                 {
                     if (Data.VectorPopulation.Groups.TryGetValue(convertibleVector, out var group))
                     {

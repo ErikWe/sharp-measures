@@ -20,8 +20,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.At
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Attributes.Parsing", "SharpMeasures.Generators.Attributes.Parsing\SharpMeasures.Generators.Attributes.Parsing.csproj", "{32C091A3-F310-47F0-9B37-CAFFA4BA0772}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Attributes.Parsing.API", "SharpMeasures.Generators.Attributes.Parsing.API\SharpMeasures.Generators.Attributes.Parsing.API.csproj", "{E08F32B3-2483-4863-BE15-0FBAEC92A7A6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Configuration", "SharpMeasures.Generators.Configuration\SharpMeasures.Generators.Configuration.csproj", "{9E01A951-70C9-43B6-8870-72623772E7CA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Diagnostics", "SharpMeasures.Generators.Diagnostics\SharpMeasures.Generators.Diagnostics.csproj", "{7CD30D7E-1516-46C9-AE28-7BB0823BE0EF}"
@@ -48,6 +46,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Ve
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Utility", "SharpMeasures.Utility\SharpMeasures.Utility.csproj", "{7382421B-1AD1-4CF8-928B-191E621A0154}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Attributes.API", "SharpMeasures.Generators.Attributes.API\SharpMeasures.Generators.Attributes.API.csproj", "{3580D0E5-83FA-409D-96C8-9412381DC172}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,10 +70,6 @@ Global
 		{32C091A3-F310-47F0-9B37-CAFFA4BA0772}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32C091A3-F310-47F0-9B37-CAFFA4BA0772}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32C091A3-F310-47F0-9B37-CAFFA4BA0772}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E08F32B3-2483-4863-BE15-0FBAEC92A7A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E08F32B3-2483-4863-BE15-0FBAEC92A7A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E08F32B3-2483-4863-BE15-0FBAEC92A7A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E08F32B3-2483-4863-BE15-0FBAEC92A7A6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9E01A951-70C9-43B6-8870-72623772E7CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9E01A951-70C9-43B6-8870-72623772E7CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E01A951-70C9-43B6-8870-72623772E7CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -126,6 +122,10 @@ Global
 		{7382421B-1AD1-4CF8-928B-191E621A0154}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7382421B-1AD1-4CF8-928B-191E621A0154}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7382421B-1AD1-4CF8-928B-191E621A0154}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3580D0E5-83FA-409D-96C8-9412381DC172}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3580D0E5-83FA-409D-96C8-9412381DC172}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3580D0E5-83FA-409D-96C8-9412381DC172}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3580D0E5-83FA-409D-96C8-9412381DC172}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Units.Documentation;
 
 using SharpMeasures.Generators.Documentation;
-using SharpMeasures.Generators.Units.UnitInstances;
 
 using System;
 using System.Collections.Generic;
@@ -20,12 +19,12 @@ internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocume
     public string Header() => FromFileOrDefault(static (strategy) => strategy.Header());
 
     public string Derivation(IReadOnlyList<NamedType> signature) => FromFileOrDefault((strategy) => strategy.Derivation(signature));
-    public string FixedDefinition(IFixedUnit definition) => FromFileOrDefault((strategy) => strategy.FixedDefinition(definition));
-    public string DerivedDefinition(IDerivedUnit definition) => FromFileOrDefault((strategy) => strategy.DerivedDefinition(definition));
-    public string AliasDefinition(IUnitAlias definition) => FromFileOrDefault((strategy) => strategy.AliasDefinition(definition));
-    public string BiasedDefinition(IBiasedUnit definition) => FromFileOrDefault((strategy) => strategy.BiasedDefinition(definition));
-    public string PrefixedDefinition(IPrefixedUnit definition) => FromFileOrDefault((strategy) => strategy.PrefixedDefinition(definition));
-    public string ScaledDefinition(IScaledUnit definition) => FromFileOrDefault((strategy) => strategy.ScaledDefinition(definition));
+    public string FixedUnitInstance(IFixedUnitInstance unitInstance) => FromFileOrDefault((strategy) => strategy.FixedUnitInstance(unitInstance));
+    public string DerivedUnitInstance(IDerivedUnitInstance unitInstance) => FromFileOrDefault((strategy) => strategy.DerivedUnitInstance(unitInstance));
+    public string UnitAliasInstance(IUnitInstanceAlias unitInstance) => FromFileOrDefault((strategy) => strategy.UnitAliasInstance(unitInstance));
+    public string BiasedUnitInstance(IBiasedUnitInstance unitInstance) => FromFileOrDefault((strategy) => strategy.BiasedUnitInstance(unitInstance));
+    public string PrefixedUnitInstance(IPrefixedUnitInstance unitInstance) => FromFileOrDefault((strategy) => strategy.PrefixedUnitInstance(unitInstance));
+    public string ScaledUnitInstance(IScaledUnitInstance unitInstance) => FromFileOrDefault((strategy) => strategy.ScaledUnitInstance(unitInstance));
 
     public string RepresentedQuantity() => FromFileOrDefault(static (strategy) => strategy.RepresentedQuantity());
     public string Bias() => FromFileOrDefault(static (strategy) => strategy.Bias());

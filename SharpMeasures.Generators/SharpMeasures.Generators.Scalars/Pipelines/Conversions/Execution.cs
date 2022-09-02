@@ -69,7 +69,7 @@ internal static class Execution
 
             foreach (var definition in Data.Conversions)
             {
-                foreach (NamedType scalar in definition.Scalars)
+                foreach (var scalar in definition.Quantities)
                 {
                     AppendInstanceConversion(indentation, scalar);
                 }
@@ -89,7 +89,7 @@ internal static class Execution
                     _ => throw new NotSupportedException("Invalid cast operation")
                 };
 
-                foreach (var scalar in definition.Scalars)
+                foreach (var scalar in definition.Quantities)
                 {
                     composer(indentation, scalar);
                 }

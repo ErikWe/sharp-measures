@@ -11,9 +11,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\SharpMeasures.Equatables\SharpMeasures.Equatables.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Attributes.API\SharpMeasures.Generators.Attributes.API.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.Attributes.Parsing\SharpMeasures.Generators.Attributes.Parsing.csproj" PrivateAssets="all" />
-        <ProjectReference Include="..\SharpMeasures.Generators.Attributes.Parsing.API\SharpMeasures.Generators.Attributes.Parsing.API.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.Diagnostics\SharpMeasures.Generators.Diagnostics.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.Units\SharpMeasures.Generators.Units.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.RoslynUtility\SharpMeasures.Generators.RoslynUtility.csproj" PrivateAssets="all" />

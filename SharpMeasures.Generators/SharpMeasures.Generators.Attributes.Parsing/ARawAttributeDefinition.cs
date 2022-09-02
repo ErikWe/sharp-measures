@@ -8,6 +8,8 @@ public abstract record class ARawAttributeDefinition<TDefinition, TLocations> : 
 
     public TLocations Locations { get; private init; }
 
+    IAttributeLocations IAttributeDefinition.Locations => Locations;
+
     protected ARawAttributeDefinition(TLocations locations)
     {
         Locations = locations;

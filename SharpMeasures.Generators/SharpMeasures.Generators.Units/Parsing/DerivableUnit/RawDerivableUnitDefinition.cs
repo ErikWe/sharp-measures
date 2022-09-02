@@ -5,9 +5,9 @@ using SharpMeasures.Generators.Attributes.Parsing;
 
 using System.Collections.Generic;
 
-internal record class RawDerivableUnitDefinition : IOpenAttributeDefinition<RawDerivableUnitDefinition, DerivableUnitLocations>
+internal record class RawDerivableUnitDefinition : ARawAttributeDefinition<RawDerivableUnitDefinition, DerivableUnitLocations>
 {
-    public static RawDerivableUnitDefinition Empty { get; } = new(DerivableUnitLocations.Empty);
+    public static RawDerivableUnitDefinition Empty { get; } = new();
 
     public string? Expression { get; init; }
     public string? DerivationID { get; init; }
@@ -21,18 +21,7 @@ internal record class RawDerivableUnitDefinition : IOpenAttributeDefinition<RawD
 
     private ReadOnlyEquatableList<NamedType?>? signature { get; init; }
 
-    public DerivableUnitLocations Locations { get; private init; }
+    protected override RawDerivableUnitDefinition Definition => this;
 
-    private RawDerivableUnitDefinition(DerivableUnitLocations locations)
-    {
-        Locations = locations;
-    }
-
-    protected RawDerivableUnitDefinition WithLocations(DerivableUnitLocations locations) => this with
-    {
-        Locations = locations
-    };
-
-    RawDerivableUnitDefinition IOpenAttributeDefinition<RawDerivableUnitDefinition, DerivableUnitLocations>.WithLocations(DerivableUnitLocations locations)
-        => WithLocations(locations);
+    private RawDerivableUnitDefinition() : base(DerivableUnitLocations.Empty) { }
 }

@@ -15,8 +15,9 @@ public record class DerivedQuantityDefinition : AAttributeDefinition<DerivedQuan
 
     private ReadOnlyEquatableList<NamedType> signature { get; }
 
-    public DerivedQuantityDefinition(string expression, IReadOnlyList<NamedType> signature, bool implementOperators,
-        bool implementAlgebraicallyEquivalentDerivations, DerivedQuantityLocations locations) : base(locations)
+    IDerivedQuantityLocations IDerivedQuantity.Locations => Locations;
+
+    public DerivedQuantityDefinition(string expression, IReadOnlyList<NamedType> signature, bool implementOperators, bool implementAlgebraicallyEquivalentDerivations, DerivedQuantityLocations locations) : base(locations)
     {
         Expression = expression;
         this.signature = signature.AsReadOnlyEquatable();

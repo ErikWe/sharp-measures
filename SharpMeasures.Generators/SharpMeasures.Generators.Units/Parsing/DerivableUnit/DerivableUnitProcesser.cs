@@ -25,8 +25,8 @@ internal interface IDerivableUnitProcessingContext : IProcessingContext
 {
     public abstract bool UnitIncludesBiasTerm { get; }
 
-    public abstract bool MultipleDefinitions { get; }
-    public abstract HashSet<string> ReservedIDs { get; }
+    public abstract bool UnitHasMultipleDerivations { get; }
+    public abstract HashSet<string> ReservedDerivationIDs { get; }
     public abstract HashSet<DerivableUnitSignature> ReservedSignatures { get; }
 }
 
@@ -43,7 +43,7 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
     {
         if (product.DerivationID is not null)
         {
-            context.ReservedIDs.Add(product.DerivationID);
+            context.ReservedDerivationIDs.Add(product.DerivationID);
         }
 
         context.ReservedSignatures.Add(new DerivableUnitSignature(product.Signature));
@@ -82,14 +82,14 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
 
     private IValidityWithDiagnostics ValidateDerivationIDNotAmbiguous(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
-        var ambiguousDerivation = definition.DerivationID is null or { Length: 0 } && context.MultipleDefinitions;
+        var ambiguousDerivation = definition.DerivationID is null or { Length: 0 } && context.UnitHasMultipleDerivations;
 
         return ValidityWithDiagnostics.Conditional(ambiguousDerivation is false, () => Diagnostics.MultipleDerivationsButNotNamed(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateDerivationIDNotDuplicate(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
-        var derivationIDNotDuplicate = definition.DerivationID is null or { Length: 0 } || context.ReservedIDs.Contains(definition.DerivationID!) is false;
+        var derivationIDNotDuplicate = definition.DerivationID is null or { Length: 0 } || context.ReservedDerivationIDs.Contains(definition.DerivationID!) is false;
 
         return ValidityWithDiagnostics.Conditional(derivationIDNotDuplicate, () => Diagnostics.DuplicateDerivationID(context, definition));
     }

@@ -4,7 +4,8 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
+using SharpMeasures.Generators.Quantities;
+using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Scalars.Parsing.SpecializedSharpMeasuresScalar;
 
 internal class SpecializedSharpMeasuresScalarProcessingDiagnostics : ISharpMeasuresScalarSpecializationProcessingDiagnostics
@@ -15,7 +16,7 @@ internal class SpecializedSharpMeasuresScalarProcessingDiagnostics : ISharpMeasu
 
     public Diagnostic NullOriginalScalar(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
     {
-        return DiagnosticConstruction.NullTypeNotScalar(definition.Locations.OriginalScalar?.AsRoslynLocation());
+        return DiagnosticConstruction.NullTypeNotScalar(definition.Locations.OriginalQuantity?.AsRoslynLocation());
     }
 
     public Diagnostic NullVector(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
@@ -33,38 +34,24 @@ internal class SpecializedSharpMeasuresScalarProcessingDiagnostics : ISharpMeasu
         return DiagnosticConstruction.DifferenceDisabledButQuantitySpecified(definition.Locations.Difference?.AsRoslynLocation(), context.Type.Name);
     }
 
-    public Diagnostic NullDefaultUnit(IProcessingContext context, IDefaultUnitDefinition definition)
+    public Diagnostic NullDefaultUnitInstanceName(IProcessingContext context, IDefaultUnitInstanceDefinition definition)
     {
-        return DiagnosticConstruction.NullUnrecognizedUnitNameUnknownType(definition.DefaultUnitLocations.DefaultUnitName?.AsRoslynLocation());
+        return DefaultUnitInstanceProcessingDiagnostics.Instance.NullDefaultUnitInstanceName(context, definition);
     }
 
-    public Diagnostic EmptyDefaultUnit(IProcessingContext context, IDefaultUnitDefinition definition) => NullDefaultUnit(context, definition);
-
-    public Diagnostic SetDefaultSymbolButNotUnit(IProcessingContext context, IDefaultUnitDefinition definition)
+    public Diagnostic EmptyDefaultUnitInstanceName(IProcessingContext context, IDefaultUnitInstanceDefinition definition)
     {
-        return DiagnosticConstruction.DefineQuantityDefaultUnit(definition.DefaultUnitLocations.DefaultUnitSymbol?.AsRoslynLocation(), context.Type.Name);
+        return DefaultUnitInstanceProcessingDiagnostics.Instance.EmptyDefaultUnitInstanceName(context, definition);
     }
 
-    public Diagnostic SetDefaultUnitButNotSymbol(IProcessingContext context, IDefaultUnitDefinition definition)
+    public Diagnostic SetDefaultUnitInstanceSymbolButNotName(IProcessingContext context, IDefaultUnitInstanceDefinition definition)
     {
-        return DiagnosticConstruction.DefineQuantityDefaultSymbol(definition.DefaultUnitLocations.DefaultUnitName?.AsRoslynLocation(), context.Type.Name);
+        return DefaultUnitInstanceProcessingDiagnostics.Instance.SetDefaultUnitInstanceSymbolButNotName(context, definition);
     }
 
-    public Diagnostic NullDefaultUnit(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
+    public Diagnostic SetDefaultUnitInstanceNameButNotSymbol(IProcessingContext context, IDefaultUnitInstanceDefinition definition)
     {
-        return DiagnosticConstruction.NullUnrecognizedUnitNameUnknownType(definition.Locations.DefaultUnitName?.AsRoslynLocation());
-    }
-
-    public Diagnostic EmptyDefaultUnit(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition) => NullDefaultUnit(context, definition);
-
-    public Diagnostic SetDefaultSymbolButNotUnit(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
-    {
-        return DiagnosticConstruction.DefineQuantityDefaultUnit(definition.Locations.DefaultUnitSymbol?.AsRoslynLocation(), context.Type.Name);
-    }
-
-    public Diagnostic SetDefaultUnitButNotSymbol(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
-    {
-        return DiagnosticConstruction.DefineQuantityDefaultSymbol(definition.Locations.DefaultUnitName?.AsRoslynLocation(), context.Type.Name);
+        return DefaultUnitInstanceProcessingDiagnostics.Instance.SetDefaultUnitInstanceNameButNotSymbol(context, definition);
     }
 
     public Diagnostic NullReciprocalQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)

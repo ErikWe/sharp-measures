@@ -12,18 +12,18 @@ internal class ScalarConstantValidationDiagnostics : QuantityConstantValidationD
 
     private ScalarConstantValidationDiagnostics() { }
 
-    public Diagnostic ConstantNameReservedByUnitBase(IScalarConstantValidationContext context, ScalarConstantDefinition definition)
+    public Diagnostic ConstantNameReservedByUnitInstanceName(IScalarConstantValidationContext context, ScalarConstantDefinition definition)
     {
-        return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.Name?.AsRoslynLocation(), definition.Name, context.Type.Name);
+        return DiagnosticConstruction.ConstantSharesNameWithUnitInstance(definition.Locations.Name?.AsRoslynLocation(), definition.Name, context.Type.Name);
     }
 
-    public Diagnostic ConstantMultiplesNameReservedByUnitBase(IScalarConstantValidationContext context, ScalarConstantDefinition definition)
+    public Diagnostic ConstantMultiplesNameReservedByUnitInstanceName(IScalarConstantValidationContext context, ScalarConstantDefinition definition)
     {
         if (definition.Locations.ExplicitlySetMultiples)
         {
-            return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.Multiples?.AsRoslynLocation(), definition.Multiples!, context.Type.Name);
+            return DiagnosticConstruction.ConstantSharesNameWithUnitInstance(definition.Locations.Multiples?.AsRoslynLocation(), definition.Multiples!, context.Type.Name);
         }
 
-        return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.AttributeName.AsRoslynLocation(), definition.Multiples!, context.Type.Name);
+        return DiagnosticConstruction.ConstantSharesNameWithUnitInstance(definition.Locations.AttributeName.AsRoslynLocation(), definition.Multiples!, context.Type.Name);
     }
 }

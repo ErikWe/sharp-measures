@@ -2,9 +2,8 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
 
-internal record class SharpMeasuresScalarDefinition : AAttributeDefinition<SharpMeasuresScalarLocations>, IScalarBase, IDefaultUnitDefinition
+internal record class SharpMeasuresScalarDefinition : AAttributeDefinition<SharpMeasuresScalarLocations>, IScalarBase, IDefaultUnitInstanceDefinition
 {
     public NamedType Unit { get; }
     public NamedType? Vector { get; }
@@ -15,8 +14,8 @@ internal record class SharpMeasuresScalarDefinition : AAttributeDefinition<Sharp
     public bool ImplementDifference { get; }
     public NamedType? Difference { get; }
 
-    public string? DefaultUnitName { get; }
-    public string? DefaultUnitSymbol { get; }
+    public string? DefaultUnitInstanceName { get; }
+    public string? DefaultUnitInstanceSymbol { get; }
 
     public NamedType? Reciprocal { get; }
     public NamedType? Square { get; }
@@ -29,10 +28,15 @@ internal record class SharpMeasuresScalarDefinition : AAttributeDefinition<Sharp
     bool? IQuantity.ImplementSum => ImplementSum;
     bool? IQuantity.ImplementDifference => ImplementDifference;
 
-    IDefaultUnitLocations IDefaultUnitDefinition.DefaultUnitLocations => Locations;
+    ISharpMeasuresObjectLocations ISharpMeasuresObject.Locations => Locations;
+    IQuantityLocations IQuantity.Locations => Locations;
+    IQuantityBaseLocations IQuantityBase.Locations => Locations;
+    IScalarLocations IScalar.Locations => Locations;
+    IScalarBaseLocations IScalarBase.Locations => Locations;
+    IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
-    public SharpMeasuresScalarDefinition(NamedType unit, NamedType? vector, bool useUnitBias, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitName,
-        string? defaultUnitSymbol, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot, bool? generateDocumentation, SharpMeasuresScalarLocations locations)
+    public SharpMeasuresScalarDefinition(NamedType unit, NamedType? vector, bool useUnitBias, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName,
+        string? defaultUnitInstanceSymbol, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot, bool? generateDocumentation, SharpMeasuresScalarLocations locations)
         : base(locations)
     {
         Unit = unit;
@@ -44,8 +48,8 @@ internal record class SharpMeasuresScalarDefinition : AAttributeDefinition<Sharp
         ImplementDifference = implementDifference;
         Difference = difference;
 
-        DefaultUnitName = defaultUnitName;
-        DefaultUnitSymbol = defaultUnitSymbol;
+        DefaultUnitInstanceName = defaultUnitInstanceName;
+        DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol;
 
         Reciprocal = reciprocal;
         Square = square;

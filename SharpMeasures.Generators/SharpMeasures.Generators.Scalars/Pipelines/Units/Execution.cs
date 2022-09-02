@@ -71,7 +71,7 @@ internal static class Execution
                 SeparationHandler.AddIfNecessary();
 
                 AppendDocumentation(indentation, Data.Documentation.Constant(constant));
-                Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} {constant.Name} => new({constant.Value}, {Data.Unit.FullyQualifiedName}.{constant.Unit});");
+                Builder.AppendLine($"{indentation}public static {Data.Scalar.FullyQualifiedName} {constant.Name} => new({constant.Value}, {Data.Unit.FullyQualifiedName}.{constant.UnitInstanceName});");
             }
         }
 
@@ -118,7 +118,7 @@ internal static class Execution
                 SeparationHandler.AddIfNecessary();
 
                 AppendDocumentation(indentation, Data.Documentation.InSpecifiedUnit(includedUnit));
-                Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar {includedUnit.Plural} => InUnit({Data.Unit.FullyQualifiedName}.{includedUnit.Name});");
+                Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar {includedUnit.PluralForm} => InUnit({Data.Unit.FullyQualifiedName}.{includedUnit.Name});");
             }
         }
 

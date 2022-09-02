@@ -6,8 +6,10 @@ internal record class ScalarConstantDefinition : AQuantityConstantDefinition<Sca
 {
     public double Value { get; }
 
-    public ScalarConstantDefinition(string name, string unit, double value, bool generateMultiplesProperty, string? multiples, ScalarConstantLocations locations)
-        : base(name, unit, generateMultiplesProperty, multiples, locations)
+    IScalarConstantLocations IScalarConstant.Locations => Locations;
+
+    public ScalarConstantDefinition(string name, string unitInstanceName, double value, bool generateMultiplesProperty, string? multiples, ScalarConstantLocations locations)
+        : base(name, unitInstanceName, generateMultiplesProperty, multiples, locations)
     {
         Value = value;
     }

@@ -13,26 +13,26 @@ internal class ConvertibleVectorFilteringDiagnostics : IConvertibleVectorFilteri
 
     public Diagnostic TypeNotVector(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index)
     {
-        return DiagnosticConstruction.TypeNotVector(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Vectors[index].Name);
+        return DiagnosticConstruction.TypeNotVector(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Quantities[index].Name);
     }
 
     public Diagnostic TypeNotVectorGroup(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index)
     {
-        return DiagnosticConstruction.TypeNotVectorGroup(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Vectors[index].Name);
+        return DiagnosticConstruction.TypeNotVectorGroup(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Quantities[index].Name);
     }
 
     public Diagnostic DuplicateVector(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index)
     {
-        return DiagnosticConstruction.DuplicateQuantityListing(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Vectors[index].Name);
+        return DiagnosticConstruction.DuplicateQuantityListing(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Quantities[index].Name);
     }
 
     public Diagnostic VectorUnexpectedDimension(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index, int dimension)
     {
-        return DiagnosticConstruction.VectorUnexpectedDimension(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Vectors[index].Name, context.Dimension, dimension);
+        return DiagnosticConstruction.VectorUnexpectedDimension(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Quantities[index].Name, context.Dimension, dimension);
     }
 
     public Diagnostic VectorGroupLacksMemberOfMatchingDimension(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index)
     {
-        return DiagnosticConstruction.VectorGroupsLacksMemberOfDimension(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Vectors[index].Name, context.Dimension);
+        return DiagnosticConstruction.VectorGroupsLacksMemberOfDimension(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Quantities[index].Name, context.Dimension);
     }
 }

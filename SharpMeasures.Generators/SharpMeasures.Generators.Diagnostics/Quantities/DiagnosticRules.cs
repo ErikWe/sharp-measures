@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Utility;
 
 public static partial class DiagnosticRules
 {
-    public static readonly DiagnosticDescriptor DefineQuantityDefaultUnit = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor DefineQuantityDefaultUnitInstanceName = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DefineQuantityUnitAndSymbol,
         title: "Expected both unit name and symbol",
@@ -37,7 +37,7 @@ public static partial class DiagnosticRules
         customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
-    public static readonly DiagnosticDescriptor DefineQuantityDefaultSymbol = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor DefineQuantityDefaultUnitInstanceSymbol = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DefineQuantityUnitAndSymbol,
         title: "Expected both unit name and symbol",
@@ -139,7 +139,7 @@ public static partial class DiagnosticRules
             isEnabledByDefault: true
         );
 
-    public static readonly DiagnosticDescriptor ConstantSharesNameWithUnit = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor ConstantSharesNameWithUnitInstance = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.ConstantSharesNameWithUnit,
         title: "Constant shares name with unit",
@@ -182,7 +182,7 @@ public static partial class DiagnosticRules
         customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
-    public static readonly DiagnosticDescriptor IncludingAlreadyIncludedUnitWithIntersection = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor IncludingAlreadyIncludedUnitInstanceWithIntersection = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
         title: "Inclusion or exclusion had no effect",
@@ -193,7 +193,7 @@ public static partial class DiagnosticRules
         customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
-    public static readonly DiagnosticDescriptor IncludingAlreadyIncludedUnitWithUnion = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor IncludingAlreadyIncludedUnitInstanceWithUnion = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
         title: "Inclusion or exclusion had no effect",
@@ -204,7 +204,7 @@ public static partial class DiagnosticRules
         customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
-    public static readonly DiagnosticDescriptor ExcludingAlreadyExcludedUnit = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor ExcludingAlreadyExcludedUnitInstance = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
         title: "Inclusion or exclusion had no effect",
@@ -215,7 +215,7 @@ public static partial class DiagnosticRules
         customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
-    public static readonly DiagnosticDescriptor IncludingExcludedUnit = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor IncludingExcludedUnitInstance = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.InclusionOrExclusionHadNoEffect,
         title: "Inclusion or exclusion had no effect",

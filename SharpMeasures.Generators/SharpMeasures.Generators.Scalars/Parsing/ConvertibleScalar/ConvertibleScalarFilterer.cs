@@ -34,18 +34,18 @@ internal class ConvertibleScalarFilterer : IProcesser<IConvertibleScalarFilterin
 
     public IOptionalWithDiagnostics<ConvertibleScalarDefinition> Process(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition)
     {
-        List<NamedType> scalars = new(definition.Scalars.Count);
-        List<int> locationMap = new(definition.Scalars.Count);
+        List<NamedType> scalars = new(definition.Quantities.Count);
+        List<int> locationMap = new(definition.Quantities.Count);
 
         List<Diagnostic> allDiagnostics = new();
 
-        for (int i = 0; i < definition.Scalars.Count; i++)
+        for (int i = 0; i < definition.Quantities.Count; i++)
         {
             var validity = ValidateScalar(context, definition, i);
 
             if (validity.IsValid)
             {
-                scalars.Add(definition.Scalars[i]);
+                scalars.Add(definition.Quantities[i]);
                 locationMap.Add(i);
             }
 
@@ -68,14 +68,14 @@ internal class ConvertibleScalarFilterer : IProcesser<IConvertibleScalarFilterin
 
     private IValidityWithDiagnostics ValidateScalarNotDuplicateWithInherited(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index)
     {
-        var scalarIsDuplicate = context.InheritedConversions.Contains(definition.Scalars[index]);
+        var scalarIsDuplicate = context.InheritedConversions.Contains(definition.Quantities[index]);
 
         return ValidityWithDiagnostics.Conditional(scalarIsDuplicate is false, () => Diagnostics.DuplicateScalar(context, definition, index));
     }
 
     private IOptionalWithDiagnostics<IScalarBaseType> ResolveScalarBase(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index)
     {
-        var correctlyResolvedScalar = context.ScalarPopulation.ScalarBases.TryGetValue(definition.Scalars[index], out var scalarBase);
+        var correctlyResolvedScalar = context.ScalarPopulation.ScalarBases.TryGetValue(definition.Quantities[index], out var scalarBase);
 
         return OptionalWithDiagnostics.Conditional(correctlyResolvedScalar, scalarBase, () => Diagnostics.TypeNotScalar(context, definition, index));
     }

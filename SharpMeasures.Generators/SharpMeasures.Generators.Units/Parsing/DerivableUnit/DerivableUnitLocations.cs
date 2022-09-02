@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 
 using System.Collections.Generic;
 
-internal record class DerivableUnitLocations : AAttributeLocations<DerivableUnitLocations>, IOpenAttributeLocations<DerivableUnitLocations>
+internal record class DerivableUnitLocations : AAttributeLocations<DerivableUnitLocations>, IDerivableUnitLocations
 {
     public static DerivableUnitLocations Empty { get; } = new();
 

@@ -2,7 +2,7 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Scalars.Documentation;
-using SharpMeasures.Generators.Units.UnitInstances;
+using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;
 

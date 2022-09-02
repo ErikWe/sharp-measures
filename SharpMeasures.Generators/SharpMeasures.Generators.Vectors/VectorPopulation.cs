@@ -86,7 +86,7 @@ internal class VectorPopulation : IVectorPopulationWithData
 
             for (int i = 0; i < unassignedGroupSpecializations.Count; i++)
             {
-                if (groupBasePopulation.TryGetValue(unassignedGroupSpecializations[i].Definition.OriginalVectorGroup, out var groupBase))
+                if (groupBasePopulation.TryGetValue(unassignedGroupSpecializations[i].Definition.OriginalQuantity, out var groupBase))
                 {
                     groupBasePopulation.TryAdd(unassignedGroupSpecializations[i].Type.AsNamedType(), groupBase);
 
@@ -107,7 +107,7 @@ internal class VectorPopulation : IVectorPopulationWithData
 
             for (int i = 0; i < unassignedVectorSpecializations.Count; i++)
             {
-                if (vectorBasePopulation.TryGetValue(unassignedVectorSpecializations[i].Definition.OriginalVector, out var vectorBase))
+                if (vectorBasePopulation.TryGetValue(unassignedVectorSpecializations[i].Definition.OriginalQuantity, out var vectorBase))
                 {
                     vectorBasePopulation.TryAdd(unassignedVectorSpecializations[i].Type.AsNamedType(), vectorBase);
 

@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
+using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors;
@@ -13,7 +13,7 @@ using SharpMeasures.Generators.Vectors;
 using System;
 using System.Linq;
 
-internal interface ISharpMeasuresScalarValidationDiagnostics : IDefaultUnitValidationDiagnostics
+internal interface ISharpMeasuresScalarValidationDiagnostics : IDefaultUnitInstanceValidationDiagnostics
 {
     public abstract Diagnostic? TypeAlreadyUnit(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? TypeNotUnit(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition);
@@ -58,10 +58,10 @@ internal class SharpMeasuresScalarValidator : IProcesser<ISharpMeasuresScalarVal
         var vector = ValidateVectorIsVector(context, definition).Transform(definition.Vector);
         var difference = ValidateDifferenceIsScalar(context, definition).Transform(definition.Difference);
 
-        var defaultUnitValidity = DefaultUnitValidator.Validate(context, Diagnostics, definition, context.UnitPopulation, definition.Unit);
+        var defaultUnitInstanceValidity = DefaultUnitInstanceValidator.Validate(context, Diagnostics, definition, context.UnitPopulation, definition.Unit);
 
-        var defaultUnitName = defaultUnitValidity.Transform(definition.DefaultUnitName);
-        var defaultUnitSymbol = defaultUnitValidity.Transform(definition.DefaultUnitSymbol);
+        var defaultUnitInstanceName = defaultUnitInstanceValidity.Transform(definition.DefaultUnitInstanceName);
+        var defaultUnitInstanceSymbol = defaultUnitInstanceValidity.Transform(definition.DefaultUnitInstanceSymbol);
 
         var reciprocal = ValidatePowerIsScalar(context, definition, definition.Reciprocal, Diagnostics.ReciprocalNotScalar).Transform(definition.Reciprocal);
         var square = ValidatePowerIsScalar(context, definition, definition.Square, Diagnostics.SquareNotScalar).Transform(definition.Square);
@@ -69,18 +69,18 @@ internal class SharpMeasuresScalarValidator : IProcesser<ISharpMeasuresScalarVal
         var squareRoot = ValidatePowerIsScalar(context, definition, definition.SquareRoot, Diagnostics.SquareRootNotScalar).Transform(definition.SquareRoot);
         var cubeRoot = ValidatePowerIsScalar(context, definition, definition.CubeRoot, Diagnostics.CubeRootNotScalar).Transform(definition.CubeRoot);
 
-        var product = ProduceResult(definition, vector.NullableResult, difference.NullableResult, defaultUnitName.NullableResult, defaultUnitSymbol.NullableResult, reciprocal.NullableResult,
-            square.NullableResult, cube.NullableResult, squareRoot.NullableResult, cubeRoot.NullableResult);
+        var product = ProduceResult(definition, vector.NullableValueResult(), difference.NullableValueResult(), defaultUnitInstanceName.NullableReferenceResult(), defaultUnitInstanceSymbol.NullableReferenceResult(), reciprocal.NullableValueResult(),
+            square.NullableValueResult(), cube.NullableValueResult(), squareRoot.NullableValueResult(), cubeRoot.NullableValueResult());
 
-        var allDiagnostics = validity.Diagnostics.Concat(vector).Concat(difference).Concat(defaultUnitValidity).Concat(reciprocal).Concat(square).Concat(cube).Concat(squareRoot).Concat(cubeRoot);
+        var allDiagnostics = validity.Diagnostics.Concat(vector).Concat(difference).Concat(defaultUnitInstanceValidity).Concat(reciprocal).Concat(square).Concat(cube).Concat(squareRoot).Concat(cubeRoot);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static SharpMeasuresScalarDefinition ProduceResult(SharpMeasuresScalarDefinition definition, NamedType? vector, NamedType? difference, string? defaultUnitName, string? defaultUnitSymbol,
-        NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot)
+    private static SharpMeasuresScalarDefinition ProduceResult(SharpMeasuresScalarDefinition definition, NamedType? vector, NamedType? difference,
+        string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot)
     {
-        return new(definition.Unit, vector, definition.UseUnitBias, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitName, defaultUnitSymbol, reciprocal, square, cube,
+        return new(definition.Unit, vector, definition.UseUnitBias, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, reciprocal, square, cube,
             squareRoot, cubeRoot, definition.GenerateDocumentation, definition.Locations);
     }
 

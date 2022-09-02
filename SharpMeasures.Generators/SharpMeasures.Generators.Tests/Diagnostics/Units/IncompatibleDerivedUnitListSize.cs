@@ -48,7 +48,7 @@ public class IncompatibleDerivedUnitListSize
         [SharpMeasuresScalar(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
 
@@ -56,7 +56,7 @@ public class IncompatibleDerivedUnitListSize
         public partial class UnitOfTime { }
 
         [DerivableUnit("id", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-        [DerivedUnit("MetrePerSecond", "MetresPerSecond", "id", {{units}})]
+        [DerivedUnitInstance("MetrePerSecond", "MetresPerSecond", "id", {{units}})]
         [SharpMeasuresUnit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
@@ -64,7 +64,7 @@ public class IncompatibleDerivedUnitListSize
     private static GeneratorVerifier AssertTwoElementSignature(SourceSubtext units)
     {
         var source = TwoElementSignatureText(units);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, units.Context.With(outerPrefix: "DerivedUnit(\"MetrePerSecond\", \"MetresPerSecond\", \"id\", "));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, units.Context.With(outerPrefix: "DerivedUnitInstance(\"MetrePerSecond\", \"MetresPerSecond\", \"id\", "));
 
         return AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(TwoElementSignatureIdentical);
     }
@@ -84,7 +84,7 @@ public class IncompatibleDerivedUnitListSize
         [SharpMeasuresScalar(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
 

@@ -6,14 +6,14 @@ using System;
 
 public static partial class DiagnosticConstruction
 {
-    public static Diagnostic DefineQuantityDefaultUnit(Location? location, string quantityTypeName)
+    public static Diagnostic DefineQuantityDefaultUnitInstanceName(Location? location, string quantityTypeName)
     {
-        return Diagnostic.Create(DiagnosticRules.DefineQuantityDefaultUnit, location, quantityTypeName);
+        return Diagnostic.Create(DiagnosticRules.DefineQuantityDefaultUnitInstanceName, location, quantityTypeName);
     }
 
-    public static Diagnostic DefineQuantityDefaultSymbol(Location? location, string quantityTypeName)
+    public static Diagnostic DefineQuantityDefaultUnitInstanceSymbol(Location? location, string quantityTypeName)
     {
-        return Diagnostic.Create(DiagnosticRules.DefineQuantityDefaultSymbol, location, quantityTypeName);
+        return Diagnostic.Create(DiagnosticRules.DefineQuantityDefaultUnitInstanceSymbol, location, quantityTypeName);
     }
 
     public static Diagnostic DifferenceDisabledButQuantitySpecified(Location? location, string quantityTypeName)
@@ -71,9 +71,9 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.IdenticalConstantNameAndConstantMultiples, location, name);
     }
 
-    public static Diagnostic ConstantSharesNameWithUnit(Location? location, string sharedName, string quantityTypeName)
+    public static Diagnostic ConstantSharesNameWithUnitInstance(Location? location, string sharedName, string quantityTypeName)
     {
-        return Diagnostic.Create(DiagnosticRules.ConstantSharesNameWithUnit, location, quantityTypeName, sharedName);
+        return Diagnostic.Create(DiagnosticRules.ConstantSharesNameWithUnitInstance, location, quantityTypeName, sharedName);
     }
 
     public static Diagnostic ConstantMultiplesDisabledButNameSpecified(Location? location, string singularForm)
@@ -102,24 +102,24 @@ public static partial class DiagnosticConstruction
             Utility.AttributeName(exclusionAttributeName));
     }
 
-    public static Diagnostic IncludingAlreadyIncludedUnitWithIntersection(Location? location, string unitName)
+    public static Diagnostic IncludingAlreadyIncludedUnitInstanceWithIntersection(Location? location, string unitName)
     {
-        return Diagnostic.Create(DiagnosticRules.IncludingAlreadyIncludedUnitWithIntersection, location, unitName);
+        return Diagnostic.Create(DiagnosticRules.IncludingAlreadyIncludedUnitInstanceWithIntersection, location, unitName);
     }
 
-    public static Diagnostic IncludingAlreadyIncludedUnitWithUnion<TOppositeAttribute>(Location? location, string unitName)
+    public static Diagnostic IncludingAlreadyIncludedUnitInstanceWithUnion<TOppositeAttribute>(Location? location, string unitName)
     {
-        return Diagnostic.Create(DiagnosticRules.IncludingAlreadyIncludedUnitWithUnion, location, unitName, Utility.AttributeName(typeof(TOppositeAttribute).FullName));
+        return Diagnostic.Create(DiagnosticRules.IncludingAlreadyIncludedUnitInstanceWithUnion, location, unitName, Utility.AttributeName(typeof(TOppositeAttribute).FullName));
     }
 
-    public static Diagnostic ExcludingAlreadyExcludedUnit(Location? location, string unitName)
+    public static Diagnostic ExcludingAlreadyExcludedUnitInstance(Location? location, string unitName)
     {
-        return Diagnostic.Create(DiagnosticRules.ExcludingAlreadyExcludedUnit, location, unitName);
+        return Diagnostic.Create(DiagnosticRules.ExcludingAlreadyExcludedUnitInstance, location, unitName);
     }
 
-    public static Diagnostic IncludingExcludedUnit(Location? location, string unitName)
+    public static Diagnostic IncludingExcludedUnitInstance(Location? location, string unitName)
     {
-        return Diagnostic.Create(DiagnosticRules.IncludingExcludedUnit, location, unitName);
+        return Diagnostic.Create(DiagnosticRules.IncludingExcludedUnitInstance, location, unitName);
     }
 
     public static Diagnostic UnionInclusionStackingModeRedundant(Location? location, string quantityTypeName)

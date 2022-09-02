@@ -54,7 +54,7 @@ public class InvalidUnitName
     private static SourceSubtext EmptyName { get; } = SourceSubtext.Covered("\"\"");
 
     private static GeneratorVerifier AssertExactlyInvalidUnitNameDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(InvalidUnitNameDiagnostics);
-    private static IReadOnlyCollection<string> InvalidUnitNameDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidUnitName };
+    private static IReadOnlyCollection<string> InvalidUnitNameDiagnostics { get; } = new string[] { DiagnosticIDs.InvalidUnitInstanceName };
 
     private static string AliasText(SourceSubtext name) => $$"""
         using SharpMeasures.Generators.Scalars;
@@ -63,8 +63,8 @@ public class InvalidUnitName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [UnitAlias({{name}}, "Meters", "Metre")]
+        [FixedUnitInstance("Metre", "Metres")]
+        [UnitInstanceAlias({{name}}, "Meters", "Metre")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -72,7 +72,7 @@ public class InvalidUnitName
     private static GeneratorVerifier AssertAlias(SourceSubtext name)
     {
         var source = AliasText(name);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "UnitAlias("));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "UnitInstanceAlias("));
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(NonDerivableIdentical);
     }
@@ -84,8 +84,8 @@ public class InvalidUnitName
         [SharpMeasuresScalar(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
 
-        [FixedUnit("Kelvin", "Kelvin")]
-        [BiasedUnit({{name}}, "Celsius", "Kelvin", -273.15)]
+        [FixedUnitInstance("Kelvin", "Kelvin")]
+        [BiasedUnitInstance({{name}}, "Celsius", "Kelvin", -273.15)]
         [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
@@ -93,7 +93,7 @@ public class InvalidUnitName
     private static GeneratorVerifier AssertBiased(SourceSubtext name)
     {
         var source = BiasedText(name);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "BiasedUnit("));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "BiasedUnitInstance("));
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(BiasedIdentical);
     }
@@ -111,16 +111,16 @@ public class InvalidUnitName
         [SharpMeasuresScalar(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
 
-        [FixedUnit("Second", "Seconds")]
+        [FixedUnitInstance("Second", "Seconds")]
         [SharpMeasuresUnit(typeof(Time))]
         public partial class UnitOfTime { }
 
         [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-        [DerivedUnit({{name}}, "MetresPerSecond", new[] { "Metre", "Second" })]
+        [DerivedUnitInstance({{name}}, "MetresPerSecond", new[] { "Metre", "Second" })]
         [SharpMeasuresUnit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
@@ -128,7 +128,7 @@ public class InvalidUnitName
     private static GeneratorVerifier AssertDerived(SourceSubtext name)
     {
         var source = DerivedText(name);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DerivedUnit("));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DerivedUnitInstance("));
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(DerivableIdentical);
     }
@@ -140,7 +140,7 @@ public class InvalidUnitName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit({{name}}, "Metres")]
+        [FixedUnitInstance({{name}}, "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -148,7 +148,7 @@ public class InvalidUnitName
     private static GeneratorVerifier AssertFixed(SourceSubtext name)
     {
         var source = FixedText(name);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "FixedUnit("));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "FixedUnitInstance("));
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(FixedIdentical);
     }
@@ -161,8 +161,8 @@ public class InvalidUnitName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [PrefixedUnit({{name}}, "Kilometres", "Metre", MetricPrefixName.Kilo)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance({{name}}, "Kilometres", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -170,7 +170,7 @@ public class InvalidUnitName
     private static GeneratorVerifier AssertPrefixed(SourceSubtext name)
     {
         var source = PrefixedText(name);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "PrefixedUnit("));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "PrefixedUnitInstance("));
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(NonDerivableIdentical);
     }
@@ -182,8 +182,8 @@ public class InvalidUnitName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [ScaledUnit({{name}}, "Kilometres", "Metre", 1000)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [ScaledUnitInstance({{name}}, "Kilometres", "Metre", 1000)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -191,7 +191,7 @@ public class InvalidUnitName
     private static GeneratorVerifier AssertScaled(SourceSubtext name)
     {
         var source = ScaledText(name);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "ScaledUnit("));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "ScaledUnitInstance("));
 
         return AssertExactlyInvalidUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(NonDerivableIdentical);
     }
@@ -208,7 +208,7 @@ public class InvalidUnitName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -220,7 +220,7 @@ public class InvalidUnitName
         [SharpMeasuresScalar(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
 
-        [FixedUnit("Kelvin", "Kelvin")]
+        [FixedUnitInstance("Kelvin", "Kelvin")]
         [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
@@ -238,11 +238,11 @@ public class InvalidUnitName
         [SharpMeasuresScalar(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
 
-        [FixedUnit("Second", "Seconds")]
+        [FixedUnitInstance("Second", "Seconds")]
         [SharpMeasuresUnit(typeof(Time))]
         public partial class UnitOfTime { }
 

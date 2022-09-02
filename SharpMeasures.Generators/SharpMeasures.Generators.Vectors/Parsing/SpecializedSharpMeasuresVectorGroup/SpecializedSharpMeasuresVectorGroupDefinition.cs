@@ -2,12 +2,11 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
 using SharpMeasures.Generators.Vectors;
 
-internal record class SpecializedSharpMeasuresVectorGroupDefinition : AAttributeDefinition<SpecializedSharpMeasuresVectorGroupLocations>, IVectorGroupSpecialization, IDefaultUnitDefinition
+internal record class SpecializedSharpMeasuresVectorGroupDefinition : AAttributeDefinition<SpecializedSharpMeasuresVectorGroupLocations>, IVectorGroupSpecialization, IDefaultUnitInstanceDefinition
 {
-    public NamedType OriginalVectorGroup { get; }
+    public NamedType OriginalQuantity { get; }
 
     public bool InheritDerivations { get; }
     public bool InheritConstants { get; }
@@ -20,21 +19,24 @@ internal record class SpecializedSharpMeasuresVectorGroupDefinition : AAttribute
     public bool? ImplementDifference { get; }
     public NamedType? Difference { get; }
 
-    public string? DefaultUnitName { get; }
-    public string? DefaultUnitSymbol { get; }
+    public string? DefaultUnitInstanceName { get; }
+    public string? DefaultUnitInstanceSymbol { get; }
 
     public bool? GenerateDocumentation { get; }
 
-    IDefaultUnitLocations IDefaultUnitDefinition.DefaultUnitLocations => Locations;
+    ISharpMeasuresObjectLocations ISharpMeasuresObject.Locations => Locations;
+    IQuantityLocations IQuantity.Locations => Locations;
+    IQuantitySpecializationLocations IQuantitySpecialization.Locations => Locations;
+    IVectorGroupLocations IVectorGroup.Locations => Locations;
+    IVectorGroupSpecializationLocations IVectorGroupSpecialization.Locations => Locations;
+    IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
-    NamedType IQuantitySpecialization.OriginalQuantity => OriginalVectorGroup;
-
-    public SpecializedSharpMeasuresVectorGroupDefinition(NamedType originalVectorGroup, bool inheritDerivations, bool inheritConstants, bool inheritConversions, bool inheritUnits,
-        NamedType? scalar, bool? implementSum, bool? implementDifference, NamedType? difference, string? defaultUnitName, string? defaultUnitSymbol, bool? generateDocumentation,
+    public SpecializedSharpMeasuresVectorGroupDefinition(NamedType originalQuantity, bool inheritDerivations, bool inheritConstants, bool inheritConversions, bool inheritUnits,
+        NamedType? scalar, bool? implementSum, bool? implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, bool? generateDocumentation,
         SpecializedSharpMeasuresVectorGroupLocations locations)
         : base(locations)
     {
-        OriginalVectorGroup = originalVectorGroup;
+        OriginalQuantity = originalQuantity;
 
         InheritDerivations = inheritDerivations;
         InheritConstants = inheritConstants;
@@ -47,8 +49,8 @@ internal record class SpecializedSharpMeasuresVectorGroupDefinition : AAttribute
         ImplementDifference = implementDifference;
         Difference = difference;
 
-        DefaultUnitName = defaultUnitName;
-        DefaultUnitSymbol = defaultUnitSymbol;
+        DefaultUnitInstanceName = defaultUnitInstanceName;
+        DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol;
 
         GenerateDocumentation = generateDocumentation;
     }

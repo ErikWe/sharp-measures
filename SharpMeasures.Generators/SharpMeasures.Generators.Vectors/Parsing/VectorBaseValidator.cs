@@ -46,14 +46,14 @@ internal static class VectorBaseValidator
         var constants = ValidateConstants(input.UnvalidatedVector, input.UnitPopulation);
         var conversions = ValidateConversions(input.UnvalidatedVector, input.VectorPopulation);
 
-        var availableUnits = new HashSet<string>(input.UnitPopulation.Units[input.UnvalidatedVector.Definition.Unit].UnitsByName.Keys);
+        var availableUnitInstanceNames = new HashSet<string>(input.UnitPopulation.Units[input.UnvalidatedVector.Definition.Unit].UnitInstancesByName.Keys);
 
-        var unitInclusions = ValidateIncludeUnits(input.UnvalidatedVector, input.UnitPopulation, availableUnits);
-        var unitExclusions = ValidateExcludeUnits(input.UnvalidatedVector, input.UnitPopulation, availableUnits);
+        var unitInstanceInclusions = ValidateIncludeUnits(input.UnvalidatedVector, input.UnitPopulation, availableUnitInstanceNames);
+        var unitInstanceExclusions = ValidateExcludeUnits(input.UnvalidatedVector, input.UnitPopulation, availableUnitInstanceNames);
 
-        VectorBaseType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result, unitInclusions.Result, unitExclusions.Result);
+        VectorBaseType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
 
-        var allDiagnostics = vector.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitInclusions).Concat(unitExclusions);
+        var allDiagnostics = vector.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
@@ -76,9 +76,9 @@ internal static class VectorBaseValidator
     {
         var unit = unitPopulation.Units[vectorType.Definition.Unit];
 
-        var includedUnits = GetUnitInclusions(unit, vectorType.UnitInclusions, () => vectorType.UnitExclusions);
+        var includedUnits = GetUnitInclusions(unit, vectorType.UnitInstanceInclusions, () => vectorType.UnitInstanceExclusions);
 
-        HashSet<string> incluedUnitPlurals = new(includedUnits.Select((unitInstance) => unit.UnitsByName[unitInstance].Plural));
+        HashSet<string> incluedUnitPlurals = new(includedUnits.Select((unitInstance) => unit.UnitInstancesByName[unitInstance].PluralForm));
 
         var validationContext = new VectorConstantValidationContext(vectorType.Type, vectorType.Definition.Dimension, unit, new HashSet<string>(), new HashSet<string>(), incluedUnitPlurals);
 
@@ -96,28 +96,28 @@ internal static class VectorBaseValidator
     {
         var filteringContext = new IncludeUnitsFilteringContext(vectorType.Type, unitPopulation.Units[vectorType.Definition.Unit], availableUnits);
 
-        return ProcessingFilter.Create(IncludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInclusions);
+        return ProcessingFilter.Create(IncludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInstanceInclusions);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ValidateExcludeUnits(VectorBaseType vectorType, IUnitPopulation unitPopulation, HashSet<string> availableUnits)
     {
         var filteringContext = new ExcludeUnitsFilteringContext(vectorType.Type, unitPopulation.Units[vectorType.Definition.Unit], availableUnits);
 
-        return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, vectorType.UnitExclusions);
+        return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInstanceExclusions);
     }
 
-    private static IReadOnlyList<string> GetUnitInclusions(IUnitType unit, IEnumerable<IUnitList> inclusions, Func<IEnumerable<IUnitList>> exclusionsDelegate)
+    private static IReadOnlyList<string> GetUnitInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
     {
-        HashSet<string> includedUnits = new(unit.UnitsByName.Keys);
+        HashSet<string> includedUnits = new(unit.UnitInstancesByName.Keys);
 
         if (inclusions.Any())
         {
-            includedUnits.IntersectWith(inclusions.SelectMany(static (unitList) => unitList.Units).ToList());
+            includedUnits.IntersectWith(inclusions.SelectMany(static (unitList) => unitList.UnitInstances).ToList());
 
             return includedUnits.ToList();
         }
 
-        includedUnits.ExceptWith(exclusionsDelegate().SelectMany(static (unitList) => unitList.Units));
+        includedUnits.ExceptWith(exclusionsDelegate().SelectMany(static (unitList) => unitList.UnitInstances));
 
         return includedUnits.ToList();
     }

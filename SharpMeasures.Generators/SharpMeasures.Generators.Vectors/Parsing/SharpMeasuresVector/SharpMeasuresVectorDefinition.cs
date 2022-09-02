@@ -2,9 +2,8 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
 
-internal record class SharpMeasuresVectorDefinition : AAttributeDefinition<SharpMeasuresVectorLocations>, IVectorBase, IDefaultUnitDefinition
+internal record class SharpMeasuresVectorDefinition : AAttributeDefinition<SharpMeasuresVectorLocations>, IVectorBase, IDefaultUnitInstanceDefinition
 {
     public NamedType Unit { get; }
     public NamedType? Scalar { get; }
@@ -15,17 +14,22 @@ internal record class SharpMeasuresVectorDefinition : AAttributeDefinition<Sharp
     public bool ImplementDifference { get; }
     public NamedType? Difference { get; }
 
-    public string? DefaultUnitName { get; }
-    public string? DefaultUnitSymbol { get; }
+    public string? DefaultUnitInstanceName { get; }
+    public string? DefaultUnitInstanceSymbol { get; }
 
     public bool? GenerateDocumentation { get; }
 
     bool? IQuantity.ImplementSum => ImplementSum;
     bool? IQuantity.ImplementDifference => ImplementDifference;
 
-    IDefaultUnitLocations IDefaultUnitDefinition.DefaultUnitLocations => Locations;
+    ISharpMeasuresObjectLocations ISharpMeasuresObject.Locations => Locations;
+    IQuantityLocations IQuantity.Locations => Locations;
+    IQuantityBaseLocations IQuantityBase.Locations => Locations;
+    IVectorLocations IVector.Locations => Locations;
+    IVectorBaseLocations IVectorBase.Locations => Locations;
+    IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
-    public SharpMeasuresVectorDefinition(NamedType unit, NamedType? scalar, int dimension, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitName, string? defaultUnitSymbol,
+    public SharpMeasuresVectorDefinition(NamedType unit, NamedType? scalar, int dimension, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol,
         bool? generateDocumentation, SharpMeasuresVectorLocations locations)
         : base(locations)
     {
@@ -39,8 +43,8 @@ internal record class SharpMeasuresVectorDefinition : AAttributeDefinition<Sharp
 
         Difference = difference;
 
-        DefaultUnitName = defaultUnitName;
-        DefaultUnitSymbol = defaultUnitSymbol;
+        DefaultUnitInstanceName = defaultUnitInstanceName;
+        DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol;
 
         GenerateDocumentation = generateDocumentation;
     }

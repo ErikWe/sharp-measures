@@ -13,21 +13,21 @@ internal class ConvertibleScalarFilteringDiagnostics : IConvertibleScalarFilteri
 
     public Diagnostic TypeNotScalar(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index)
     {
-        return DiagnosticConstruction.TypeNotScalar(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Scalars[index].Name);
+        return DiagnosticConstruction.TypeNotScalar(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Quantities[index].Name);
     }
 
     public Diagnostic ScalarNotUnbiased(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index)
     {
-        return DiagnosticConstruction.TypeNotUnbiasedScalar(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Scalars[index].Name);
+        return DiagnosticConstruction.TypeNotUnbiasedScalar(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Quantities[index].Name);
     }
 
     public Diagnostic ScalarNotBiased(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index)
     {
-        return DiagnosticConstruction.TypeNotBiasedScalar(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Scalars[index].Name);
+        return DiagnosticConstruction.TypeNotBiasedScalar(definition.Locations.QuantitiesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.Quantities[index].Name);
     }
 
     public Diagnostic DuplicateScalar(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index)
     {
-        return DiagnosticConstruction.DuplicateQuantityListing(definition.Locations.QuantitiesElements[index].AsRoslynLocation(), definition.Scalars[index].Name);
+        return DiagnosticConstruction.DuplicateQuantityListing(definition.Locations.QuantitiesElements[index].AsRoslynLocation(), definition.Quantities[index].Name);
     }
 }

@@ -15,13 +15,13 @@ internal readonly record struct DataModel
     public NamedType UnitQuantity { get; }
     public string UnitParameterName { get; }
 
-    public string? DefaultUnitName { get; }
-    public string? DefaultUnitSymbol { get; }
+    public string? DefaultUnitInstanceName { get; }
+    public string? DefaultUnitInstanceSymbol { get; }
 
     public IVectorDocumentationStrategy Documentation { get; }
 
     public DataModel(DefinedType vector, int dimension, NamedType? scalar, NamedType? squaredScalar, NamedType unit, NamedType unitQuantity, string unitParameterName,
-        string? defaultUnitName, string? defaultUnitSymbol, IVectorDocumentationStrategy documentation)
+        string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IVectorDocumentationStrategy documentation)
     {
         Vector = vector;
 
@@ -34,8 +34,8 @@ internal readonly record struct DataModel
         UnitQuantity = unitQuantity;
         UnitParameterName = unitParameterName;
 
-        DefaultUnitName = defaultUnitName;
-        DefaultUnitSymbol = defaultUnitSymbol;
+        DefaultUnitInstanceName = defaultUnitInstanceName;
+        DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol;
 
         Documentation = documentation;
     }

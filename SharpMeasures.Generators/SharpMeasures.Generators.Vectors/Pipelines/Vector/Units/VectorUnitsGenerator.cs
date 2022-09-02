@@ -16,14 +16,14 @@ internal static class VectorUnitsGenerator
 
     private static DataModel? Reduce(VectorDataModel model, CancellationToken _)
     {
-        if (model.Vector.IncludedUnits.Count is 0 && model.Vector.Constants.Count is 0)
+        if (model.Vector.IncludedUnitInstanceNames.Count is 0 && model.Vector.Constants.Count is 0)
         {
             return null;
         }
 
         var unit = model.UnitPopulation.Units[model.Vector.Unit];
 
-        var includedUnits = model.Vector.IncludedUnits.Select((unitName) => unit.UnitsByName[unitName]).ToList();
+        var includedUnits = model.Vector.IncludedUnitInstanceNames.Select((unitName) => unit.UnitInstancesByName[unitName]).ToList();
 
         return new(model.Vector.Type, model.Vector.Dimension, model.Vector.Scalar, model.Vector.Unit, unit.Definition.Quantity, includedUnits, model.Vector.Constants, model.Documentation);
     }

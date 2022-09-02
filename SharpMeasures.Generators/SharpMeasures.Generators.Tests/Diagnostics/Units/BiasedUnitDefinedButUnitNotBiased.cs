@@ -27,15 +27,15 @@ public class BiasedUnitDefinedButUnitNotBiased
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
-        [BiasedUnit("Metre2", "Metres2", "Metre", 1)]
+        [FixedUnitInstance("Metre", "Metres")]
+        [BiasedUnitInstance("Metre2", "Metres2", "Metre", 1)]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
     private static GeneratorVerifier Assert()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(Text, target: "BiasedUnit", postfix: "(\"Metre2\", \"Metres2\", \"Metre\", 1)]");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(Text, target: "BiasedUnitInstance", postfix: "(\"Metre2\", \"Metres2\", \"Metre\", 1)]");
 
         return AssertExactlyBiasedUnitDefinedButUnitNotBiasedDiagnostics(Text).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
     }
@@ -49,7 +49,7 @@ public class BiasedUnitDefinedButUnitNotBiased
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;

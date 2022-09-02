@@ -8,7 +8,7 @@ public record class RawExcludeUnitsDefinition : ARawItemListDefinition<string?, 
 {
     public static RawExcludeUnitsDefinition Empty => new();
 
-    public IReadOnlyList<string?> ExcludedUnits => Items;
+    public IReadOnlyList<string?> UnitInstances => Items;
 
     protected override RawExcludeUnitsDefinition Definition => this;
 

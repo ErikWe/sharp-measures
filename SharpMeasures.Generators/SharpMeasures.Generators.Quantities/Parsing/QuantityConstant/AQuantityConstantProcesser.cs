@@ -16,8 +16,8 @@ public interface IQuantityConstantProcessingDiagnostics<TDefinition, TLocations>
     public abstract Diagnostic? EmptyName(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? DuplicateName(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? NameReservedByMultiples(IQuantityConstantProcessingContext context, TDefinition definition);
-    public abstract Diagnostic? NullUnit(IQuantityConstantProcessingContext context, TDefinition definition);
-    public abstract Diagnostic? EmptyUnit(IQuantityConstantProcessingContext context, TDefinition definition);
+    public abstract Diagnostic? NullUnitInstanceName(IQuantityConstantProcessingContext context, TDefinition definition);
+    public abstract Diagnostic? EmptyUnitInstanceName(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? NullMultiples(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? EmptyMultiples(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? InvalidMultiples(IQuantityConstantProcessingContext context, TDefinition definition);
@@ -29,7 +29,7 @@ public interface IQuantityConstantProcessingDiagnostics<TDefinition, TLocations>
 
 public interface IQuantityConstantProcessingContext : IProcessingContext
 {
-    public abstract HashSet<string> ReservedConstants { get; }
+    public abstract HashSet<string> ReservedConstantNames { get; }
     public abstract HashSet<string> ReservedConstantMultiples { get; }
 }
 
@@ -48,7 +48,7 @@ public abstract class AQuantityConstantProcesser<TContext, TDefinition, TLocatio
 
     public override void OnSuccessfulProcess(TContext context, TDefinition definition, TProduct product)
     {
-        context.ReservedConstants.Add(product.Name);
+        context.ReservedConstantNames.Add(product.Name);
 
         if (product.Multiples is not null)
         {
@@ -58,7 +58,7 @@ public abstract class AQuantityConstantProcesser<TContext, TDefinition, TLocatio
 
     protected virtual IValidityWithDiagnostics VerifyRequiredPropertiesSet(TDefinition definition)
     {
-        var requiredPropertiesSet = definition.Locations.ExplicitlySetName && definition.Locations.ExplicitlySetUnit;
+        var requiredPropertiesSet = definition.Locations.ExplicitlySetName && definition.Locations.ExplicitlySetUnitInstanceName;
 
         return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(requiredPropertiesSet);
     }
@@ -78,7 +78,7 @@ public abstract class AQuantityConstantProcesser<TContext, TDefinition, TLocatio
     protected virtual IValidityWithDiagnostics Validate(TContext context, TDefinition definition)
     {
         return ValidateName(context, definition)
-            .Validate(() => ValidateUnit(context, definition));
+            .Validate(() => ValidateUnitInstanceName(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateName(TContext context, TDefinition definition)
@@ -101,7 +101,7 @@ public abstract class AQuantityConstantProcesser<TContext, TDefinition, TLocatio
 
     private IValidityWithDiagnostics ValidateNameNotDuplicate(TContext context, TDefinition definition)
     {
-        var nameDuplicate = context.ReservedConstants.Contains(definition.Name!);
+        var nameDuplicate = context.ReservedConstantNames.Contains(definition.Name!);
 
         return ValidityWithDiagnostics.Conditional(nameDuplicate is false, () => Diagnostics.DuplicateName(context, definition));
     }
@@ -113,20 +113,20 @@ public abstract class AQuantityConstantProcesser<TContext, TDefinition, TLocatio
         return ValidityWithDiagnostics.Conditional(nameReservedByMultiples is false, () => Diagnostics.NameReservedByMultiples(context, definition));
     }
 
-    private IValidityWithDiagnostics ValidateUnit(TContext context, TDefinition definition)
+    private IValidityWithDiagnostics ValidateUnitInstanceName(TContext context, TDefinition definition)
     {
-        return ValidateUnitNotNull(context, definition)
-            .Validate(() => ValidateUnitNotEmpty(context, definition));
+        return ValidateUnitInstanceNameNotNull(context, definition)
+            .Validate(() => ValidateUnitInstanceNameNotEmpty(context, definition));
     }
 
-    private IValidityWithDiagnostics ValidateUnitNotNull(TContext context, TDefinition definition)
+    private IValidityWithDiagnostics ValidateUnitInstanceNameNotNull(TContext context, TDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.Unit is not null, () => Diagnostics.NullUnit(context, definition));
+        return ValidityWithDiagnostics.Conditional(definition.UnitInstanceName is not null, () => Diagnostics.NullUnitInstanceName(context, definition));
     }
 
-    private IValidityWithDiagnostics ValidateUnitNotEmpty(TContext context, TDefinition definition)
+    private IValidityWithDiagnostics ValidateUnitInstanceNameNotEmpty(TContext context, TDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.Unit!.Length is not 0, () => Diagnostics.EmptyUnit(context, definition));
+        return ValidityWithDiagnostics.Conditional(definition.UnitInstanceName!.Length is not 0, () => Diagnostics.EmptyUnitInstanceName(context, definition));
     }
 
     private IOptionalWithDiagnostics<string> ProcessMultiples(TContext context, TDefinition definition)
@@ -189,7 +189,7 @@ public abstract class AQuantityConstantProcesser<TContext, TDefinition, TLocatio
 
     private IValidityWithDiagnostics ValidateMultiplesNotReservedByName(TContext context, TDefinition definition, string interpretedMultiples)
     {
-        var multiplesReservedByName = context.ReservedConstants.Contains(interpretedMultiples);
+        var multiplesReservedByName = context.ReservedConstantNames.Contains(interpretedMultiples);
 
         return ValidityWithDiagnostics.Conditional(multiplesReservedByName is false, () => Diagnostics.MultiplesReservedByName(context, definition, interpretedMultiples));
     }

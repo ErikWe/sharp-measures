@@ -9,7 +9,7 @@ public record class RawIncludeUnitsDefinition : ARawItemListDefinition<string?, 
 {
     public static RawIncludeUnitsDefinition Empty => new();
 
-    public IReadOnlyList<string?> IncludedUnits => Items;
+    public IReadOnlyList<string?> UnitInstances => Items;
 
     public InclusionStackingMode StackingMode { get; init; } = InclusionStackingMode.Intersection;
 

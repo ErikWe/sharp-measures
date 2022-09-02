@@ -29,8 +29,8 @@ internal static class ScalarSpecializationResolver
         var constants = CollectItems(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Constants, static (scalar) => scalar.Definition.InheritConstants);
         var conversions = CollectItems(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Conversions, static (scalar) => scalar.Definition.InheritConversions);
 
-        var includedBases = ResolveUnitInclusions(input.UnresolvedScalar, input.ScalarPopulation, unit, static (scalar) => scalar.BaseInclusions, static (scalar) => scalar.BaseExclusions, static (scalar) => scalar.Definition.InheritBases);
-        var includedUnits = ResolveUnitInclusions(input.UnresolvedScalar, input.ScalarPopulation, unit, static (scalar) => scalar.UnitInclusions, static (scalar) => scalar.UnitExclusions, static (scalar) => scalar.Definition.InheritUnits);
+        var includedUnitBaseInstances = ResolveUnitInclusions(input.UnresolvedScalar, input.ScalarPopulation, unit, static (scalar) => scalar.UnitBaseInstanceInclusions, static (scalar) => scalar.UnitBaseInstanceExclusions, static (scalar) => scalar.Definition.InheritBases);
+        var includedUnitInstances = ResolveUnitInclusions(input.UnresolvedScalar, input.ScalarPopulation, unit, static (scalar) => scalar.UnitInstanceInclusions, static (scalar) => scalar.UnitInstanceExclusions, static (scalar) => scalar.Definition.InheritUnits);
 
         var vector = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.Vector);
 
@@ -42,15 +42,27 @@ internal static class ScalarSpecializationResolver
 
         var implementSum = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.ImplementSum);
         var implementDifference = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.ImplementDifference);
-        var difference = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.Difference);
+        var difference = ResolveDifference(input.UnresolvedScalar, input.ScalarPopulation);
 
-        var defaultUnitName = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.DefaultUnitName);
-        var defaultUnitSymbol = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.DefaultUnitSymbol);
+        var defaultUnitInstanceName = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.DefaultUnitInstanceName);
+        var defaultUnitInstanceSymbol = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.DefaultUnitInstanceSymbol);
 
         var generateDocumentation = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.GenerateDocumentation);
 
         return new(input.UnresolvedScalar.Type, input.UnresolvedScalar.TypeLocation, unit.Type.AsNamedType(), scalarBase.Definition.UseUnitBias, vector, reciprocal, square, cube, squareRoot, cubeRoot,
-            implementSum!.Value, implementDifference!.Value, difference, defaultUnitName, defaultUnitSymbol, derivations, constants, conversions, includedBases, includedUnits, generateDocumentation);
+            implementSum!.Value, implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, derivations, constants, conversions, includedUnitBaseInstances, includedUnitInstances, generateDocumentation);
+    }
+
+    private static NamedType? ResolveDifference(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation)
+    {
+        var difference = RecursivelySearchForMatching(scalarType, scalarPopulation, static (scalar) => scalar.Definition.Difference, static (scalar, _) => scalar.Definition.Locations.ExplicitlySetDifference);
+
+        if (difference is null && scalarType.Definition.Locations.ExplicitlySetDifference is false)
+        {
+            difference = scalarType.Type.AsNamedType();
+        }
+
+        return difference;
     }
 
     private static IReadOnlyList<T> CollectItems<T>(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation, Func<IScalarType, IEnumerable<T>> itemsDelegate, Func<IScalarSpecializationType, bool> shouldInherit)
@@ -67,19 +79,19 @@ internal static class ScalarSpecializationResolver
 
             if (scalar is IScalarSpecializationType scalarSpecialization && shouldInherit(scalarSpecialization))
             {
-                recursivelyAddItems(scalarPopulation.Scalars[scalarSpecialization.Definition.OriginalScalar]);
+                recursivelyAddItems(scalarPopulation.Scalars[scalarSpecialization.Definition.OriginalQuantity]);
             }
         }
     }
 
-    private static IReadOnlyList<string> ResolveUnitInclusions(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation, IUnitType unit, Func<IScalarType, IEnumerable<IUnitList>> inclusionsDelegate,
-        Func<IScalarType, IEnumerable<IUnitList>> exclusionsDelegate, Func<IScalarSpecializationType, bool> shouldInherit)
+    private static IReadOnlyList<string> ResolveUnitInclusions(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation, IUnitType unit, Func<IScalarType, IEnumerable<IUnitInstanceList>> inclusionsDelegate,
+        Func<IScalarType, IEnumerable<IUnitInstanceList>> exclusionsDelegate, Func<IScalarSpecializationType, bool> shouldInherit)
     {
-        HashSet<string> includedUnits = new(unit.UnitsByName.Keys);
+        HashSet<string> includedUnitInstances = new(unit.UnitInstancesByName.Keys);
 
         recursivelyModify(scalarType);
 
-        return includedUnits.ToList();
+        return includedUnitInstances.ToList();
 
         void recursivelyModify(IScalarType scalar)
         {
@@ -94,37 +106,44 @@ internal static class ScalarSpecializationResolver
 
             if (inclusions.Any())
             {
-                includedUnits.IntersectWith(inclusions.SelectMany(static (unitList) => unitList.Units));
+                includedUnitInstances.IntersectWith(inclusions.SelectMany(static (unitList) => unitList.UnitInstances));
 
                 return;
             }
 
-            includedUnits.ExceptWith(exclusionsDelegate(scalar).SelectMany(static (unitList) => unitList.Units));
+            includedUnitInstances.ExceptWith(exclusionsDelegate(scalar).SelectMany(static (unitList) => unitList.UnitInstances));
         }
 
         void recurse(IScalarType scalar)
         {
             if (scalar is IScalarSpecializationType scalarSpecialization && shouldInherit(scalarSpecialization))
             {
-                recursivelyModify(scalarPopulation.Scalars[scalarSpecialization.Definition.OriginalScalar]);
+                recursivelyModify(scalarPopulation.Scalars[scalarSpecialization.Definition.OriginalQuantity]);
             }
         }
     }
 
     private static T? RecursivelySearchForDefined<T>(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation, Func<IScalarType, T?> itemDelegate)
     {
+        return RecursivelySearchForMatching(scalarType, scalarPopulation, itemDelegate, static (_, item) => item is not null);
+    }
+
+    private static T? RecursivelySearchForMatching<T>(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation, Func<IScalarType, T?> itemDelegate, Func<IScalarType, T?, bool> predicate)
+    {
         return recursivelySearch(scalarType);
 
         T? recursivelySearch(IScalarType scalar)
         {
-            if (itemDelegate(scalar) is T item)
+            var item = itemDelegate(scalar);
+            
+            if (predicate(scalar, item))
             {
                 return item;
             }
 
             if (scalar is IScalarSpecializationType scalarSpecialization)
             {
-                return recursivelySearch(scalarPopulation.Scalars[scalarSpecialization.Definition.OriginalScalar]);
+                return recursivelySearch(scalarPopulation.Scalars[scalarSpecialization.Definition.OriginalQuantity]);
             }
 
             return default;

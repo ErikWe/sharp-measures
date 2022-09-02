@@ -1,8 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
 
 using SharpMeasures.Generators.Attributes.Parsing;
+using SharpMeasures.Generators.Quantities;
 
-internal record class RawSharpMeasuresVectorGroupMemberDefinition : ARawAttributeDefinition<RawSharpMeasuresVectorGroupMemberDefinition, SharpMeasuresVectorGroupMemberLocations>
+internal record class RawSharpMeasuresVectorGroupMemberDefinition : ARawAttributeDefinition<RawSharpMeasuresVectorGroupMemberDefinition, SharpMeasuresVectorGroupMemberLocations>, IDefaultUnitInstanceDefinition
 {
     public static RawSharpMeasuresVectorGroupMemberDefinition Empty { get; } = new(SharpMeasuresVectorGroupMemberLocations.Empty);
 
@@ -21,7 +22,12 @@ internal record class RawSharpMeasuresVectorGroupMemberDefinition : ARawAttribut
 
     public bool? GenerateDocumentation { get; init; }
 
+    string? IDefaultUnitInstanceDefinition.DefaultUnitInstanceName => null;
+    string? IDefaultUnitInstanceDefinition.DefaultUnitInstanceSymbol => null;
+
     protected override RawSharpMeasuresVectorGroupMemberDefinition Definition => this;
+
+    IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
     private RawSharpMeasuresVectorGroupMemberDefinition(SharpMeasuresVectorGroupMemberLocations locations) : base(locations) { }
 }

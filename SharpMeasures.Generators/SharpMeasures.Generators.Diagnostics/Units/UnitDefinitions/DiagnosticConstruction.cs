@@ -4,64 +4,64 @@ using Microsoft.CodeAnalysis;
 
 public static partial class DiagnosticConstruction
 {
-    public static Diagnostic InvalidUnitName(Location? location, string unitName)
+    public static Diagnostic InvalidUnitInstanceName(Location? location, string unitName)
     {
-        return Diagnostic.Create(DiagnosticRules.InvalidUnitName, location, unitName);
+        return Diagnostic.Create(DiagnosticRules.InvalidUnitInstanceName, location, unitName);
     }
 
-    public static Diagnostic NullUnitName(Location? location)
+    public static Diagnostic NullUnitInstanceName(Location? location)
     {
-        return Diagnostic.Create(DiagnosticRules.NullUnitName, location);
+        return Diagnostic.Create(DiagnosticRules.NullUnitInstanceName, location);
     }
 
-    public static Diagnostic InvalidUnitPluralForm(Location? location, string pluralCode, string singularForm)
+    public static Diagnostic InvalidUnitInstancePluralForm(Location? location, string pluralCode, string singularForm)
     {
-        return Diagnostic.Create(DiagnosticRules.InvalidUnitPluralForm, location, pluralCode, singularForm);
+        return Diagnostic.Create(DiagnosticRules.InvalidUnitInstancePluralForm, location, pluralCode, singularForm);
     }
 
-    public static Diagnostic NullUnitPluralForm(Location? location)
+    public static Diagnostic NullUnitInstancePluralForm(Location? location)
     {
-        return Diagnostic.Create(DiagnosticRules.NullUnitPluralForm, location);
+        return Diagnostic.Create(DiagnosticRules.NullUnitInstancePluralForm, location);
     }
 
-    public static Diagnostic DuplicateUnitName(Location? location, string unitName, string unitTypeName)
+    public static Diagnostic DuplicateUnitInstanceName(Location? location, string unitName, string unitTypeName)
     {
-        return Diagnostic.Create(DiagnosticRules.DuplicateUnitName, location, unitTypeName, unitName);
+        return Diagnostic.Create(DiagnosticRules.DuplicateUnitInstanceName, location, unitTypeName, unitName);
     }
 
-    public static Diagnostic UnitNameReservedByUnitPlural(Location? location, string unitName, string unitTypeName)
+    public static Diagnostic UnitInstanceNameReservedByUnitInstancePluralForm(Location? location, string unitName, string unitTypeName)
     {
-        return Diagnostic.Create(DiagnosticRules.UnitNameReservedByUnitPluralForm, location, unitTypeName, unitName);
+        return Diagnostic.Create(DiagnosticRules.UnitInstanceNameReservedByUnitInstancePluralForm, location, unitTypeName, unitName);
     }
 
-    public static Diagnostic DuplicateUnitPluralForm(Location? location, string unitPluralForm, string unitTypeName)
+    public static Diagnostic DuplicateUnitInstancePluralForm(Location? location, string unitPluralForm, string unitTypeName)
     {
-        return Diagnostic.Create(DiagnosticRules.DuplicateUnitPluralForm, location, unitTypeName, unitPluralForm);
+        return Diagnostic.Create(DiagnosticRules.DuplicateUnitInstancePluralForm, location, unitTypeName, unitPluralForm);
     }
 
-    public static Diagnostic UnitPluralFormReservedByUnitName(Location? location, string unitPluralForm, string unitTypeName)
+    public static Diagnostic UnitInstancePluralFormReservedByUnitInstanceName(Location? location, string unitPluralForm, string unitTypeName)
     {
-        return Diagnostic.Create(DiagnosticRules.UnitPluralFormReservedByUnitName, location, unitTypeName, unitPluralForm);
+        return Diagnostic.Create(DiagnosticRules.UnitInstancePluralFormReservedByUnitInstanceName, location, unitTypeName, unitPluralForm);
     }
 
-    public static Diagnostic UnrecognizedUnitName(Location? location, string unitName, string unitTypeName)
+    public static Diagnostic UnrecognizedUnitInstanceName(Location? location, string unitName, string unitTypeName)
     {
-        return Diagnostic.Create(DiagnosticRules.UnrecognizedUnitName, location, unitName, unitTypeName);
+        return Diagnostic.Create(DiagnosticRules.UnrecognizedUnitInstanceName, location, unitName, unitTypeName);
     }
 
-    public static Diagnostic NullUnrecognizedUnitName(Location? location, string unitTypeName)
+    public static Diagnostic NullUnrecognizedUnitInstanceName(Location? location, string unitTypeName)
     {
-        return Diagnostic.Create(DiagnosticRules.NullUnrecognizedUnitName, location, unitTypeName);
+        return Diagnostic.Create(DiagnosticRules.NullUnrecognizedUnitInstanceName, location, unitTypeName);
     }
 
-    public static Diagnostic NullUnrecognizedUnitNameUnknownType(Location? location)
+    public static Diagnostic NullUnrecognizedUnitInstanceNameUnknownType(Location? location)
     {
-        return Diagnostic.Create(DiagnosticRules.NullUnrecognizedUnitNameUnknownType, location);
+        return Diagnostic.Create(DiagnosticRules.NullUnrecognizedUnitInstnaceNameUnknownType, location);
     }
 
-    public static Diagnostic CyclicUnitDependency(Location? location, string unitName, string unitTypeName)
+    public static Diagnostic CyclicallyModifiedUnitInstances(Location? location, string unitName, string unitTypeName)
     {
-        return Diagnostic.Create(DiagnosticRules.CyclicUnitDependency, location, unitName, unitTypeName);
+        return Diagnostic.Create(DiagnosticRules.CyclicallyModifiedUnitInstances, location, unitName, unitTypeName);
     }
 
     public static Diagnostic DerivableUnitShouldNotUseFixed(Location? location, string unitTypeName)

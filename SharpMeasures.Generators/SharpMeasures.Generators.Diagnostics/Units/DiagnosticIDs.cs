@@ -2,12 +2,12 @@
 
 public static partial class DiagnosticIDs
 {
-    public const string InvalidUnitName = $"{Prefix}{Numbering.Hundreds.Units}00";
-    public const string InvalidUnitPluralForm = $"{Prefix}{Numbering.Hundreds.Units}01";
-    public const string DuplicateUnitName = $"{Prefix}{Numbering.Hundreds.Units}02";
-    public const string DuplicateUnitPluralForm = $"{Prefix}{Numbering.Hundreds.Units}03";
-    public const string UnrecognizedUnitName = $"{Prefix}{Numbering.Hundreds.Units}04";
-    public const string CyclicUnitDependency = $"{Prefix}{Numbering.Hundreds.Units}05";
+    public const string InvalidUnitInstanceName = $"{Prefix}{Numbering.Hundreds.Units}00";
+    public const string InvalidUnitInstancePluralForm = $"{Prefix}{Numbering.Hundreds.Units}01";
+    public const string DuplicateUnitInstanceName = $"{Prefix}{Numbering.Hundreds.Units}02";
+    public const string DuplicateUnitInstancePluralForm = $"{Prefix}{Numbering.Hundreds.Units}03";
+    public const string UnrecognizedUnitInstanceName = $"{Prefix}{Numbering.Hundreds.Units}04";
+    public const string CyclicallyModifiedUnitInstances = $"{Prefix}{Numbering.Hundreds.Units}05";
     public const string DerivableUnitShouldNotUseFixed = $"{Prefix}{Numbering.Hundreds.Units}06";
 
     public const string InvalidScaledUnitExpression = $"{Prefix}{Numbering.Hundreds.Units}20";

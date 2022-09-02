@@ -11,8 +11,8 @@ public sealed class VectorConstantAttribute : Attribute
 {
     /// <summary>The name of the constant.</summary>
     public string Name { get; }
-    /// <summary>The name of the unit in which the value is specified.</summary>
-    public string Unit { get; }
+    /// <summary>The name of the unit instance in which the value is specified.</summary>
+    public string UnitInstanceName { get; }
     /// <summary>The value of the constant, in the specified unit.</summary>
     /// <remarks>The number of elements should match the dimension of the vector.</remarks>
     public double[] Value { get; }
@@ -30,12 +30,12 @@ public sealed class VectorConstantAttribute : Attribute
 
     /// <inheritdoc cref="VectorConstantAttribute"/>
     /// <param name="name"><inheritdoc cref="Name" path="/summary"/><para><inheritdoc cref="Name" path="/remarks"/></para></param>
-    /// <param name="unit"><inheritdoc cref="Unit" path="/summary"/><para><inheritdoc cref="Unit" path="/remarks"/></para></param>
+    /// <param name="unitInstanceName"><inheritdoc cref="UnitInstanceName" path="/summary"/><para><inheritdoc cref="UnitInstanceName" path="/remarks"/></para></param>
     /// <param name="value"><inheritdoc cref="Value" path="/summary"/><para><inheritdoc cref="Value" path="/remarks"/></para></param>
-    public VectorConstantAttribute(string name, string unit, params double[] value)
+    public VectorConstantAttribute(string name, string unitInstanceName, params double[] value)
     {
         Name = name;
-        Unit = unit;
+        UnitInstanceName = unitInstanceName;
         Value = value;
     }
 }

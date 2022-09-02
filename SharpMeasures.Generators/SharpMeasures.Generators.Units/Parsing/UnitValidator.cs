@@ -6,16 +6,15 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
-using SharpMeasures.Generators.Units.Parsing.BiasedUnit;
+using SharpMeasures.Generators.Units.Parsing.BiasedUnitInstance;
 using SharpMeasures.Generators.Units.Parsing.Contexts.Validation;
 using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
-using SharpMeasures.Generators.Units.Parsing.DerivedUnit;
+using SharpMeasures.Generators.Units.Parsing.DerivedUnitInstance;
 using SharpMeasures.Generators.Units.Parsing.Diagnostics.Validation;
-using SharpMeasures.Generators.Units.Parsing.PrefixedUnit;
-using SharpMeasures.Generators.Units.Parsing.ScaledUnit;
+using SharpMeasures.Generators.Units.Parsing.PrefixedUnitInstance;
+using SharpMeasures.Generators.Units.Parsing.ScaledUnitInstance;
 using SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
-using SharpMeasures.Generators.Units.Parsing.UnitAlias;
-using SharpMeasures.Generators.Units.UnitInstances;
+using SharpMeasures.Generators.Units.Parsing.UnitInstanceAlias;
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -62,20 +61,20 @@ internal class UnitValidator : IUnitValidator
 
         var derivations = ValidateDerivations(input.UnvalidatedUnit, input.UnitPopulation);
 
-        var cyclicDependantUnits = GetCyclicDependantUnits(input.UnvalidatedUnit);
+        var cyclicallyModifiedUnitInstances = GetCyclicallyModifiedUnitInstances(input.UnvalidatedUnit);
 
-        var unitInstanceValidationContext = new DependantUnitValidationContext(input.UnvalidatedUnit.Type, input.UnvalidatedUnit.UnitsByName, cyclicDependantUnits);
+        var unitInstanceValidationContext = new ModifiedUnitValidationContext(input.UnvalidatedUnit.Type, input.UnvalidatedUnit.UnitInstancesByName, cyclicallyModifiedUnitInstances);
 
-        var unitAliases = ValidateUnitAliases(input.UnvalidatedUnit, unitInstanceValidationContext);
-        var derivedUnits = ValidateDerivedUnits(input.UnvalidatedUnit, input.UnitPopulation);
-        var biasedUnits = ValidateBiasedUnits(input.UnvalidatedUnit, cyclicDependantUnits);
-        var prefixedUnits = ValidatePrefixedUnits(input.UnvalidatedUnit, unitInstanceValidationContext);
-        var scaledUnits = ValidateScaledUnits(input.UnvalidatedUnit, unitInstanceValidationContext);
+        var unitInstanceAliases = ValidateUnitInstanceAliases(input.UnvalidatedUnit, unitInstanceValidationContext);
+        var derivedUnitInstances = ValidateDerivedUnitInstances(input.UnvalidatedUnit, input.UnitPopulation);
+        var biasedUnitInstances = ValidateBiasedUnitInstances(input.UnvalidatedUnit, cyclicallyModifiedUnitInstances);
+        var prefixedUnitInstances = ValidatePrefixedUnitInstances(input.UnvalidatedUnit, unitInstanceValidationContext);
+        var scaledUnitInstances = ValidateScaledUnitInstances(input.UnvalidatedUnit, unitInstanceValidationContext);
 
-        UnitType unitType = new(input.UnvalidatedUnit.Type, input.UnvalidatedUnit.TypeLocation, input.UnvalidatedUnit.Definition, derivations.Result, input.UnvalidatedUnit.FixedUnit, unitAliases.Result,
-            derivedUnits.Result, biasedUnits.Result, prefixedUnits.Result, scaledUnits.Result);
+        UnitType unitType = new(input.UnvalidatedUnit.Type, input.UnvalidatedUnit.TypeLocation, input.UnvalidatedUnit.Definition, derivations.Result, input.UnvalidatedUnit.FixedUnitInstance, unitInstanceAliases.Result,
+            derivedUnitInstances.Result, biasedUnitInstances.Result, prefixedUnitInstances.Result, scaledUnitInstances.Result);
 
-        var allDiagnostics = unit.Concat(derivations).Concat(unitAliases).Concat(derivedUnits).Concat(biasedUnits).Concat(prefixedUnits).Concat(scaledUnits);
+        var allDiagnostics = unit.Concat(derivations).Concat(unitInstanceAliases).Concat(derivedUnitInstances).Concat(biasedUnitInstances).Concat(prefixedUnitInstances).Concat(scaledUnitInstances);
 
         return OptionalWithDiagnostics.Result(unitType, allDiagnostics);
     }
@@ -94,14 +93,14 @@ internal class UnitValidator : IUnitValidator
         return ValidityFilter.Create(DerivableUnitValidator).Filter(validationContext, unitType.UnitDerivations);
     }
 
-    private static HashSet<IDependantUnitInstance> GetCyclicDependantUnits(UnitType unitType)
+    private static HashSet<IModifiedUnitInstance> GetCyclicallyModifiedUnitInstances(UnitType unitType)
     {
-        HashSet<IDependantUnitInstance> unresolvedUnitInstances = new((unitType.UnitAliases as IEnumerable<IDependantUnitInstance>).Concat(unitType.BiasedUnits).Concat(unitType.PrefixedUnits).Concat(unitType.ScaledUnits));
-        HashSet<string> resolvedUnitInstances = new(unitType.DerivedUnits.Select(static (unit) => unit.Name));
+        HashSet<IModifiedUnitInstance> unresolvedUnitInstances = new((unitType.UnitInstanceAliases as IEnumerable<IModifiedUnitInstance>).Concat(unitType.BiasedUnitInstances).Concat(unitType.PrefixedUnitInstances).Concat(unitType.ScaledUnitInstances));
+        HashSet<string> resolvedUnitInstances = new(unitType.DerivedUnitInstances.Select(static (unit) => unit.Name));
 
-        if (unitType.FixedUnit is not null)
+        if (unitType.FixedUnitInstance is not null)
         {
-            resolvedUnitInstances.Add(unitType.FixedUnit.Name);
+            resolvedUnitInstances.Add(unitType.FixedUnitInstance.Name);
         }
 
         while (true)
@@ -110,7 +109,7 @@ internal class UnitValidator : IUnitValidator
 
             foreach (var unresolvedUnitInstance in unresolvedUnitInstances)
             {
-                if (resolvedUnitInstances.Contains(unresolvedUnitInstance.DependantOn))
+                if (resolvedUnitInstances.Contains(unresolvedUnitInstance.OriginalUnitInstance))
                 {
                     resolvedUnitInstances.Add(unresolvedUnitInstance.Name);
                     unresolvedUnitInstances.Remove(unresolvedUnitInstance);
@@ -126,35 +125,35 @@ internal class UnitValidator : IUnitValidator
         return unresolvedUnitInstances;
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<UnitAliasDefinition>> ValidateUnitAliases(UnitType unitType, IDependantUnitValidationContext validationContext)
+    private static IResultWithDiagnostics<IReadOnlyList<UnitInstanceAliasDefinition>> ValidateUnitInstanceAliases(UnitType unitType, IModifiedUnitInstanceValidationContext validationContext)
     {
-        return ValidityFilter.Create(UnitAliasValidator).Filter(validationContext, unitType.UnitAliases);
+        return ValidityFilter.Create(UnitInstanceAliasValidator).Filter(validationContext, unitType.UnitInstanceAliases);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<DerivedUnitDefinition>> ValidateDerivedUnits(UnitType unitType, IUnitPopulationWithData unitPopulation)
+    private static IResultWithDiagnostics<IReadOnlyList<DerivedUnitInstanceDefinition>> ValidateDerivedUnitInstances(UnitType unitType, IUnitPopulationWithData unitPopulation)
     {
         var unnamedUnitDerivation = unitType.UnitDerivations.Count == 1 && unitType.UnitDerivations[0].DerivationID is null ? unitType.UnitDerivations[0] : null;
 
-        var validationContext = new DerivedUnitValidationContext(unitType.Type, unnamedUnitDerivation, unitType.DerivationsByID, unitPopulation);
+        var validationContext = new DerivedUniInstancetValidationContext(unitType.Type, unnamedUnitDerivation, unitType.DerivationsByID, unitPopulation);
 
-        return ValidityFilter.Create(DerivedUnitValidator).Filter(validationContext, unitType.DerivedUnits);
+        return ValidityFilter.Create(DerivedUnitInstanceValidator).Filter(validationContext, unitType.DerivedUnitInstances);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<BiasedUnitDefinition>> ValidateBiasedUnits(UnitType unitType, HashSet<IDependantUnitInstance> cyclicDependantUnits)
+    private static IResultWithDiagnostics<IReadOnlyList<BiasedUnitInstanceDefinition>> ValidateBiasedUnitInstances(UnitType unitType, HashSet<IModifiedUnitInstance> cyclicDependantUnits)
     {
-        var validationContext = new BiasedUnitValidationContext(unitType.Type, unitType.Definition.BiasTerm, unitType.UnitsByName, cyclicDependantUnits);
+        var validationContext = new BiasedUnitInstanceValidationContext(unitType.Type, unitType.Definition.BiasTerm, unitType.UnitInstancesByName, cyclicDependantUnits);
 
-        return ValidityFilter.Create(BiasedUnitValidator).Filter(validationContext, unitType.BiasedUnits);
+        return ValidityFilter.Create(BiasedUnitInstanceValidator).Filter(validationContext, unitType.BiasedUnitInstances);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<PrefixedUnitDefinition>> ValidatePrefixedUnits(UnitType unitType, IDependantUnitValidationContext validationContext)
+    private static IResultWithDiagnostics<IReadOnlyList<PrefixedUnitInstanceDefinition>> ValidatePrefixedUnitInstances(UnitType unitType, IModifiedUnitInstanceValidationContext validationContext)
     {
-        return ValidityFilter.Create(PrefixedUnitValidator).Filter(validationContext, unitType.PrefixedUnits);
+        return ValidityFilter.Create(PrefixedUnitInstanceValidator).Filter(validationContext, unitType.PrefixedUnitInstances);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ScaledUnitDefinition>> ValidateScaledUnits(UnitType unitType, IDependantUnitValidationContext validationContext)
+    private static IResultWithDiagnostics<IReadOnlyList<ScaledUnitInstanceDefinition>> ValidateScaledUnitInstances(UnitType unitType, IModifiedUnitInstanceValidationContext validationContext)
     {
-        return ValidityFilter.Create(ScaledUnitValidator).Filter(validationContext, unitType.ScaledUnits);
+        return ValidityFilter.Create(ScaledUnitInstanceValidator).Filter(validationContext, unitType.ScaledUnitInstances);
     }
 
     private static IUnitType ExtractInterface(UnitType unitType, CancellationToken _) => unitType;
@@ -169,9 +168,9 @@ internal class UnitValidator : IUnitValidator
 
     private static DerivableUnitValidator DerivableUnitValidator { get; } = new(DerivableUnitValidationDiagnostics.Instance);
 
-    private static UnitAliasValidator UnitAliasValidator { get; } = new(UnitAliasValidationDiagnostics.Instance);
-    private static DerivedUnitValidator DerivedUnitValidator { get; } = new(DerivedUnitValidationDiagnostics.Instance);
-    private static BiasedUnitValidator BiasedUnitValidator { get; } = new(BiasedUnitValidationDiagnostics.Instance);
-    private static PrefixedUnitValidator PrefixedUnitValidator { get; } = new(PrefixedUnitValidationDiagnostics.Instance);
-    private static ScaledUnitValidator ScaledUnitValidator { get; } = new(ScaledUnitValidationDiagnostics.Instance);
+    private static UnitInstanceAliasValidator UnitInstanceAliasValidator { get; } = new(UnitInstanceAliasValidationDiagnostics.Instance);
+    private static DerivedUnitInstanceValidator DerivedUnitInstanceValidator { get; } = new(DerivedUnitInstanceValidationDiagnostics.Instance);
+    private static BiasedUnitInstanceValidator BiasedUnitInstanceValidator { get; } = new(BiasedUnitInstanceValidationDiagnostics.Instance);
+    private static PrefixedUnitInstanceValidator PrefixedUnitInstanceValidator { get; } = new(PrefixedUnitInstanceValidationDiagnostics.Instance);
+    private static ScaledUnitInstanceValidator ScaledUnitInstanceValidator { get; } = new(ScaledUnitInstanceValidationDiagnostics.Instance);
 }

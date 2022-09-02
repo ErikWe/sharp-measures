@@ -1,26 +1,26 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.Contexts.Validation;
 
-using SharpMeasures.Generators.Scalars.Parsing.IncludeBases;
+using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;
 
-internal record class IncludeBasesFilteringContext : IIncludeBasesFilteringContext
+internal record class IncludeBasesFilteringContext : IIncludeUnitBasesFilteringContext
 {
     public DefinedType Type { get; }
 
     public IUnitType UnitType { get; }
 
-    public bool AllBasesIncluded { get; }
-    public HashSet<string> IncludedBases { get; }
+    public bool AllAllUnitInstancesIncluded { get; }
+    public HashSet<string> IncludedUnitInstanceNames { get; }
 
-    public IncludeBasesFilteringContext(DefinedType type, IUnitType unitType, HashSet<string> includedBases)
+    public IncludeBasesFilteringContext(DefinedType type, IUnitType unitType, HashSet<string> includedUnitInstanceNames)
     {
         Type = type;
 
         UnitType = unitType;
 
-        AllBasesIncluded = unitType.UnitsByName.Count == includedBases.Count;
-        IncludedBases = includedBases;
+        AllAllUnitInstancesIncluded = unitType.UnitInstancesByName.Count == includedUnitInstanceNames.Count;
+        IncludedUnitInstanceNames = includedUnitInstanceNames;
     }
 }

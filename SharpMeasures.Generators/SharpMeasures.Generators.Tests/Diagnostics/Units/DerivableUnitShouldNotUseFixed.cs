@@ -40,14 +40,14 @@ public class DerivableUnitShouldNotUseFixed
         public partial class UnitOfTime { }
 
         [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-        [FixedUnit("MetrePerSecond", "MetresPerSecond")]
+        [FixedUnitInstance("MetrePerSecond", "MetresPerSecond")]
         [SharpMeasuresUnit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
 
     private static GeneratorVerifier Assert()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(Text, target: "FixedUnit");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(Text, target: "FixedUnitInstance");
 
         return AssertExactlyDerivableUnitShouldNotUseFixedDiagnostics(Text).AssertDiagnosticsLocation(expectedLocation);
     }

@@ -5,20 +5,20 @@ using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;
 
-public record class ExcludeBasesFilteringContext : IExcludeBasesFilteringContext
+public record class ExcludeBasesFilteringContext : IExcludeUnitBasesFilteringContext
 {
     public DefinedType Type { get; }
 
     public IUnitType UnitType { get; }
 
-    public HashSet<string> IncludedBases { get; }
+    public HashSet<string> IncludedUnitInstances { get; }
 
-    public ExcludeBasesFilteringContext(DefinedType type, IUnitType unitType, HashSet<string> includedBases)
+    public ExcludeBasesFilteringContext(DefinedType type, IUnitType unitType, HashSet<string> includedUnitInstances)
     {
         Type = type;
 
         UnitType = unitType;
 
-        IncludedBases = includedBases;
+        IncludedUnitInstances = includedUnitInstances;
     }
 }

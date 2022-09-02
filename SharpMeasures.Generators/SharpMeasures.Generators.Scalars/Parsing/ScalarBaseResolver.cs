@@ -25,29 +25,29 @@ internal static class ScalarBaseResolver
             return new Optional<ResolvedScalarType>();
         }
 
-        var includedBases = ResolveUnitInclusions(unit, input.UnvalidatedScalar.BaseInclusions, () => input.UnvalidatedScalar.BaseExclusions);
-        var includedUnits = ResolveUnitInclusions(unit, input.UnvalidatedScalar.UnitInclusions, () => input.UnvalidatedScalar.UnitExclusions);
+        var includedBases = ResolveUnitInclusions(unit, input.UnvalidatedScalar.UnitBaseInstanceInclusions, () => input.UnvalidatedScalar.UnitBaseInstanceExclusions);
+        var includedUnits = ResolveUnitInclusions(unit, input.UnvalidatedScalar.UnitInstanceInclusions, () => input.UnvalidatedScalar.UnitInstanceExclusions);
 
         return new ResolvedScalarType(input.UnvalidatedScalar.Type, input.UnvalidatedScalar.TypeLocation, input.UnvalidatedScalar.Definition.Unit, input.UnvalidatedScalar.Definition.UseUnitBias,
             input.UnvalidatedScalar.Definition.Vector, input.UnvalidatedScalar.Definition.Reciprocal, input.UnvalidatedScalar.Definition.Square, input.UnvalidatedScalar.Definition.Cube,
             input.UnvalidatedScalar.Definition.SquareRoot, input.UnvalidatedScalar.Definition.CubeRoot, input.UnvalidatedScalar.Definition.ImplementSum, input.UnvalidatedScalar.Definition.ImplementDifference,
-            input.UnvalidatedScalar.Definition.Difference, input.UnvalidatedScalar.Definition.DefaultUnitName, input.UnvalidatedScalar.Definition.DefaultUnitSymbol, input.UnvalidatedScalar.Derivations,
+            input.UnvalidatedScalar.Definition.Difference, input.UnvalidatedScalar.Definition.DefaultUnitInstanceName, input.UnvalidatedScalar.Definition.DefaultUnitInstanceSymbol, input.UnvalidatedScalar.Derivations,
             input.UnvalidatedScalar.Constants, input.UnvalidatedScalar.Conversions, includedBases, includedUnits, input.UnvalidatedScalar.Definition.GenerateDocumentation);
     }
 
-    private static IReadOnlyList<string> ResolveUnitInclusions(IUnitType unit, IEnumerable<IUnitList> inclusions, Func<IEnumerable<IUnitList>> exclusionsDelegate)
+    private static IReadOnlyList<string> ResolveUnitInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
     {
-        HashSet<string> includedUnits = new(unit.UnitsByName.Keys);
+        HashSet<string> includedUnitInstances = new(unit.UnitInstancesByName.Keys);
 
         if (inclusions.Any())
         {
-            includedUnits.IntersectWith(inclusions.SelectMany(static (unitList) => unitList.Units));
+            includedUnitInstances.IntersectWith(inclusions.SelectMany(static (unitList) => unitList.UnitInstances));
 
-            return includedUnits.ToList();
+            return includedUnitInstances.ToList();
         }
 
-        includedUnits.ExceptWith(exclusionsDelegate().SelectMany(static (unitList) => unitList.Units));
+        includedUnitInstances.ExceptWith(exclusionsDelegate().SelectMany(static (unitList) => unitList.UnitInstances));
 
-        return includedUnits.ToList();
+        return includedUnitInstances.ToList();
     }
 }

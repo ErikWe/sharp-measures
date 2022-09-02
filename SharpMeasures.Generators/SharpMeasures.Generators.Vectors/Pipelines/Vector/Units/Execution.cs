@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Units.UnitInstances;
 
 using System.Collections.Generic;
 using System.Globalization;
@@ -72,7 +71,7 @@ internal static class Execution
                 SeparationHandler.AddIfNecessary();
 
                 AppendDocumentation(indentation, Data.Documentation.Constant(constant));
-                Builder.AppendLine($"{indentation}public static {Data.Vector.FullyQualifiedName} {constant.Name} => new(({ComposeConstant(constant)}), {Data.Unit.FullyQualifiedName}.{constant.Unit});");
+                Builder.AppendLine($"{indentation}public static {Data.Vector.FullyQualifiedName} {constant.Name} => new(({ComposeConstant(constant)}), {Data.Unit.FullyQualifiedName}.{constant.UnitInstanceName});");
             }
         }
 
@@ -134,10 +133,10 @@ internal static class Execution
 
         private void AppendUnitPlural(Indentation indentation)
         {
-            foreach (IUnitInstance includedUnit in Data.IncluedUnits)
+            foreach (var includedUnit in Data.IncluedUnits)
             {
                 AppendDocumentation(indentation, Data.Documentation.InSpecifiedUnit(includedUnit));
-                Builder.AppendLine($"{indentation}public global::SharpMeasures.Vector{Data.Dimension} {includedUnit.Plural} => InUnit({Data.Unit.FullyQualifiedName}.{includedUnit.Name});");
+                Builder.AppendLine($"{indentation}public global::SharpMeasures.Vector{Data.Dimension} {includedUnit.PluralForm} => InUnit({Data.Unit.FullyQualifiedName}.{includedUnit.Name});");
             }
         }
 

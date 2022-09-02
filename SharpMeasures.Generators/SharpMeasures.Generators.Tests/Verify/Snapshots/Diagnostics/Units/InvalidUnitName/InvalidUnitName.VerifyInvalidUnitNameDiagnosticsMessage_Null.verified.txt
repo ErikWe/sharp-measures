@@ -4,7 +4,7 @@
     Title: Invalid unit name,
     Severity: Warning,
     WarningLevel: 1,
-    Location: : (6,11)-(6,15),
+    Location: : (6,19)-(6,23),
     Description: ,
     HelpLink: ,
     MessageFormat: The name of the unit must be defined,

@@ -4,9 +4,9 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
+using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 
-internal interface ISpecializedSharpMeasuresVectorGroupProcessingDiagnostics : IDefaultUnitProcessingDiagnostics
+internal interface ISpecializedSharpMeasuresVectorGroupProcessingDiagnostics : IDefaultUnitInstanceProcessingDiagnostics
 {
     public abstract Diagnostic? NameSuggestsDimension(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition, int interpretedDimension);
 
@@ -34,19 +34,19 @@ internal class SpecializedSharpMeasuresVectorGroupProcesser : AProcesser<IProces
             .Validate(() => ValidateScalarNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotUnexpectedlySpecified(context, definition))
-            .Merge(() => DefaultUnitProcesser.Process(context, Diagnostics, definition))
-            .Transform((defaultUnit) => ProduceResult(definition, defaultUnit.Name, defaultUnit.Symbol));
+            .Merge(() => DefaultUnitInstanceProcesser.Process(context, Diagnostics, definition))
+            .Transform((defaultUnitInstance) => ProduceResult(definition, defaultUnitInstance.Name, defaultUnitInstance.Symbol));
     }
 
-    private static SpecializedSharpMeasuresVectorGroupDefinition ProduceResult(RawSpecializedSharpMeasuresVectorGroupDefinition definition, string? defaultUnitName, string? defaultUnitSymbol)
+    private static SpecializedSharpMeasuresVectorGroupDefinition ProduceResult(RawSpecializedSharpMeasuresVectorGroupDefinition definition, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
-        return new(definition.OriginalVectorGroup!.Value, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritUnits, definition.Scalar,
-            definition.ImplementSum, definition.ImplementDifference, definition.Difference, defaultUnitName, defaultUnitSymbol, definition.GenerateDocumentation, definition.Locations);
+        return new(definition.OriginalQuantity!.Value, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritUnits, definition.Scalar,
+            definition.ImplementSum, definition.ImplementDifference, definition.Difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.GenerateDocumentation, definition.Locations);
     }
 
     private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawSpecializedSharpMeasuresVectorGroupDefinition definition)
     {
-        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Locations.ExplicitlySetOriginalVectorGroup);
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Locations.ExplicitlySetOriginalQuantity);
     }
 
     private IValidityWithDiagnostics ValidateNameNotSuggestingDimension(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition)
@@ -58,7 +58,7 @@ internal class SpecializedSharpMeasuresVectorGroupProcesser : AProcesser<IProces
 
     private IValidityWithDiagnostics ValidateOriginalVectorGroupNotNull(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.OriginalVectorGroup is not null, () => Diagnostics.NullOriginalVectorGroup(context, definition));
+        return ValidityWithDiagnostics.Conditional(definition.OriginalQuantity is not null, () => Diagnostics.NullOriginalVectorGroup(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateScalarNotNull(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition)

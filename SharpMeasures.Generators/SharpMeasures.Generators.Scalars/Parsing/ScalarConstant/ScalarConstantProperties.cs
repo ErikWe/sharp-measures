@@ -9,7 +9,7 @@ internal static class ScalarConstantProperties
     public static IReadOnlyList<IAttributeProperty<RawScalarConstantDefinition>> AllProperties => new IAttributeProperty<RawScalarConstantDefinition>[]
     {
         Name,
-        Unit,
+        UnitInstanceName,
         Value,
         GenerateMultiplesProperty,
         Multiples
@@ -22,11 +22,11 @@ internal static class ScalarConstantProperties
         locator: static (locations, nameLocation) => locations with { Name = nameLocation }
     );
 
-    private static ScalarConstantProperty<string> Unit { get; } = new
+    private static ScalarConstantProperty<string> UnitInstanceName { get; } = new
     (
-        name: nameof(ScalarConstantAttribute.Unit),
-        setter: static (definition, unit) => definition with { Unit = unit },
-        locator: static (locations, unitLocation) => locations with { Unit = unitLocation }
+        name: nameof(ScalarConstantAttribute.UnitInstanceName),
+        setter: static (definition, unitInstanceName) => definition with { UnitInstanceName = unitInstanceName },
+        locator: static (locations, unitInstanceNameLocation) => locations with { UnitInstanceName = unitInstanceNameLocation }
     );
 
     private static ScalarConstantProperty<double> Value { get; } = new

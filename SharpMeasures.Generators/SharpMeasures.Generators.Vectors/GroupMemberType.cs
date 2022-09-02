@@ -46,10 +46,9 @@ internal record class GroupMemberType : IVectorGroupMemberType
     IReadOnlyList<IDerivedQuantity> IQuantityType.Derivations => Derivations;
     IReadOnlyList<IVectorConstant> IVectorGroupMemberType.Constants => Constants;
     IReadOnlyList<IConvertibleQuantity> IQuantityType.Conversions => Conversions;
-    IReadOnlyList<IConvertibleVector> IVectorGroupMemberType.Conversions => Conversions;
 
-    IReadOnlyList<IUnitList> IQuantityType.UnitInclusions => UnitInclusions;
-    IReadOnlyList<IUnitList> IQuantityType.UnitExclusions => UnitExclusions;
+    IReadOnlyList<IUnitInstanceInclusionList> IQuantityType.UnitInstanceInclusions => UnitInclusions;
+    IReadOnlyList<IUnitInstanceList> IQuantityType.UnitInstanceExclusions => UnitExclusions;
 
     public GroupMemberType(DefinedType type, MinimalLocation typeLocation, SharpMeasuresVectorGroupMemberDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
         IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInclusions,

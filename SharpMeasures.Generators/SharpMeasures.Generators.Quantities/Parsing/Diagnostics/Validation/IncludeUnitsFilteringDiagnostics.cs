@@ -16,18 +16,18 @@ public class IncludeUnitsFilteringDiagnostics : IIncludeUnitsFilteringDiagnostic
         return DiagnosticConstruction.UnionInclusionStackingModeRedundant(definition.Locations.StackingMode?.AsRoslynLocation(), context.Type.Name);
     }
 
-    public Diagnostic UnrecognizedUnit(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index)
+    public Diagnostic UnrecognizedUnitInstance(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index)
     {
-        return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.IncludeUnitsElements[definition.LocationMap[index]].AsRoslynLocation(), definition.IncludedUnits[index], context.UnitType.Type.Name);
+        return DiagnosticConstruction.UnrecognizedUnitInstanceName(definition.Locations.UnitInstancesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.UnitInstances[index], context.UnitType.Type.Name);
     }
 
-    public Diagnostic UnitAlreadyIncluded(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index)
+    public Diagnostic UnitInstanceAlreadyIncluded(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index)
     {
-        return DiagnosticConstruction.IncludingAlreadyIncludedUnitWithUnion<ExcludeUnitsAttribute>(definition.Locations.IncludeUnitsElements[definition.LocationMap[index]].AsRoslynLocation(), definition.IncludedUnits[index]);
+        return DiagnosticConstruction.IncludingAlreadyIncludedUnitInstanceWithUnion<ExcludeUnitsAttribute>(definition.Locations.UnitInstancesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.UnitInstances[index]);
     }
 
-    public Diagnostic UnitExcluded(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index)
+    public Diagnostic UnitInstanceExcluded(IIncludeUnitsFilteringContext context, IncludeUnitsDefinition definition, int index)
     {
-        return DiagnosticConstruction.IncludingExcludedUnit(definition.Locations.IncludeUnitsElements[definition.LocationMap[index]].AsRoslynLocation(), definition.IncludedUnits[index]);
+        return DiagnosticConstruction.IncludingExcludedUnitInstance(definition.Locations.UnitInstancesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.UnitInstances[index]);
     }
 }

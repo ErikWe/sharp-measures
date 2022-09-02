@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Units.Documentation;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Units.UnitInstances;
 
 using System;
 using System.Collections.Generic;
@@ -46,23 +45,23 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         return text;
     }
 
-    public string FixedDefinition(IFixedUnit definition) => BiasTerm switch
+    public string FixedUnitInstance(IFixedUnitInstance unitInstance) => BiasTerm switch
     {
         true => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference} and an associated <see cref="global::SharpMeasures.Scalar"/> bias term.</summary>""",
         false => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference}.</summary>"""
     };
 
-    public string DerivedDefinition(IDerivedUnit definition) => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference}.</summary>""";
-    public string AliasDefinition(IUnitAlias definition) => $"""/// <summary>A {UnitReference}, acting as an alias for <see cref="{UnitType.FullyQualifiedName}.{definition.AliasOf}"/>.</summary>""";
-    public string BiasedDefinition(IBiasedUnit definition) => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference} and an associated <see cref="global::SharpMeasures.Scalar"/> bias term.</summary>""";
+    public string DerivedUnitInstance(IDerivedUnitInstance unitInstance) => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference}.</summary>""";
+    public string UnitAliasInstance(IUnitInstanceAlias unitInstance) => $"""/// <summary>A {UnitReference}, acting as an alias for <see cref="{UnitType.FullyQualifiedName}.{unitInstance.OriginalUnitInstance}"/>.</summary>""";
+    public string BiasedUnitInstance(IBiasedUnitInstance unitInstance) => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference} and an associated <see cref="global::SharpMeasures.Scalar"/> bias term.</summary>""";
 
-    public string PrefixedDefinition(IPrefixedUnit definition) => BiasTerm switch
+    public string PrefixedUnitInstance(IPrefixedUnitInstance unitInstance) => BiasTerm switch
     {
         true => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference} and an associated <see cref="global::SharpMeasures.Scalar"/> bias term.</summary>""",
         false => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference}.</summary>"""
     };
 
-    public string ScaledDefinition(IScaledUnit definition) => BiasTerm switch
+    public string ScaledUnitInstance(IScaledUnitInstance unitInstance) => BiasTerm switch
     {
         true => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference} and an associated <see cref="global::SharpMeasures.Scalar"/> bias term.</summary>""",
         false => $"""/// <summary>A {UnitReference}, describing a certain {QuantityReference}.</summary>"""

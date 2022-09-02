@@ -32,18 +32,18 @@ internal abstract class AVectorGroupProcesser<TDefinition, TProduct>
         var derivations = CommonProcessing.ParseAndProcessDerivations(typeSymbol);
         var conversions = CommonProcessing.ParseAndProcessConversions(typeSymbol);
 
-        var includeUnits = CommonProcessing.ParseAndProcessIncludeUnits(typeSymbol);
-        var excludeUnits = CommonProcessing.ParseAndProcessExcludeUnits(typeSymbol);
+        var includeUnitInstances = CommonProcessing.ParseAndProcessIncludeUnitInstances(typeSymbol);
+        var excludeUnitInstances = CommonProcessing.ParseAndProcessExcludeUnitInstances(typeSymbol);
 
-        var allDiagnostics = vector.Diagnostics.Concat(derivations).Concat(conversions).Concat(includeUnits).Concat(excludeUnits);
+        var allDiagnostics = vector.Diagnostics.Concat(derivations).Concat(conversions).Concat(includeUnitInstances).Concat(excludeUnitInstances);
 
-        if (includeUnits.HasResult && includeUnits.Result.Count > 0 && excludeUnits.HasResult && excludeUnits.Result.Count > 0)
+        if (includeUnitInstances.HasResult && includeUnitInstances.Result.Count > 0 && excludeUnitInstances.HasResult && excludeUnitInstances.Result.Count > 0)
         {
             allDiagnostics = allDiagnostics.Concat(new[] { VectorTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(declaration.Identifier.GetLocation().Minimize()) });
-            excludeUnits = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
+            excludeUnitInstances = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
         }
 
-        TProduct product = FinalizeProcess(typeSymbol.AsDefinedType(), declaration.GetLocation().Minimize(), vector.Result, derivations.Result, conversions.Result, includeUnits.Result, excludeUnits.Result);
+        TProduct product = FinalizeProcess(typeSymbol.AsDefinedType(), declaration.GetLocation().Minimize(), vector.Result, derivations.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }

@@ -308,16 +308,43 @@ internal class GeneratorVerifier
         await Verifier.Verify(Output.Select(static (result) => result.SourceText));
     }
 
-    public async Task VerifyListedSourceNames(IEnumerable<string> sourceNames)
+    private async Task VerifyListedSourceNames(IEnumerable<string> sourceNames)
     {
         HashSet<string> includedNames = new(sourceNames);
 
         await Verifier.Verify(Output.Where((result) => includedNames.Contains(result.HintName)));
     }
 
-    public Task VerifyMatchingSourceNames(string regexPattern)
+    public Task VerifyMatchingSourceNames(params string[] regexPatterns)
     {
-        return VerifyMatchingSourceNames(new Regex(regexPattern));
+        return VerifyMatchingSourceNames(regexPatterns.Select(static (pattern) => new Regex(pattern)));
+    }
+
+    public Task VerifyMatchingSourceNames(IEnumerable<Regex> patterns)
+    {
+        IEnumerable<string> matchingSourceNames = Output.Select(static (result) => result.HintName).Where(matches);
+
+        Assert.Equal(patterns.Count(), matchingSourceNames.Count());
+
+        return VerifyListedSourceNames(matchingSourceNames);
+
+        bool matches(string sourceName)
+        {
+            foreach (var pattern in patterns)
+            {
+                if (pattern.IsMatch(sourceName))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    public Task VerifyMatchingSourceNames(params Regex[] patterns)
+    {
+        return VerifyMatchingSourceNames(patterns as IEnumerable<Regex>);
     }
 
     public Task VerifyMatchingSourceNames(Regex pattern)

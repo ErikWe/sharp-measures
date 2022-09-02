@@ -4,9 +4,9 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
+using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 
-internal interface ISharpMeasuresVectorGroupProcessingDiagnostics : IDefaultUnitProcessingDiagnostics
+internal interface ISharpMeasuresVectorGroupProcessingDiagnostics : IDefaultUnitInstanceProcessingDiagnostics
 {
     public abstract Diagnostic? NameSuggestsDimension(IProcessingContext context, RawSharpMeasuresVectorGroupDefinition definition, int interpretedDimension);
 
@@ -34,13 +34,20 @@ internal class SharpMeasuresVectorGroupProcesser : AProcesser<IProcessingContext
             .Validate(() => ValidateScalarNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotUnexpectedlySpecified(context, definition))
-            .Merge(() => DefaultUnitProcesser.Process(context, Diagnostics, definition))
-            .Transform((defaultUnit) => ProduceResult(definition, defaultUnit.Name, defaultUnit.Symbol));
+            .Merge(() => DefaultUnitInstanceProcesser.Process(context, Diagnostics, definition))
+            .Transform((defaultUnitInstance) => ProduceResult(context, definition, defaultUnitInstance.Name, defaultUnitInstance.Symbol));
     }
 
-    private static SharpMeasuresVectorGroupDefinition ProduceResult(RawSharpMeasuresVectorGroupDefinition definition, string? defaultUnitName, string? defaultUnitSymbol)
+    private static SharpMeasuresVectorGroupDefinition ProduceResult(IProcessingContext context, RawSharpMeasuresVectorGroupDefinition definition, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
-        return new(definition.Unit!.Value, definition.Scalar, definition.ImplementSum, definition.ImplementDifference, definition.Difference, defaultUnitName, defaultUnitSymbol,
+        var difference = definition.Difference;
+
+        if (definition.Locations.ExplicitlySetDifference is false)
+        {
+            difference = context.Type.AsNamedType();
+        }
+
+        return new(definition.Unit!.Value, definition.Scalar, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol,
             definition.GenerateDocumentation, definition.Locations);
     }
 

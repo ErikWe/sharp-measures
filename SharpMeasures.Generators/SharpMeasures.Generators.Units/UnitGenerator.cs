@@ -9,7 +9,7 @@ using SharpMeasures.Generators.Units.Documentation;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.Pipelines.Common;
 using SharpMeasures.Generators.Units.Pipelines.Derivable;
-using SharpMeasures.Generators.Units.Pipelines.UnitDefinitions;
+using SharpMeasures.Generators.Units.Pipelines.UnitInstances;
 
 using System.Threading;
 
@@ -43,7 +43,7 @@ internal class UnitGenerator : IUnitGenerator
 
         CommonGenerator.Initialize(context, minimized);
         DerivableUnitGenerator.Initialize(context, minimized);
-        UnitDefinitionsGenerator.Initialize(context, minimized);
+        UnitInstancesGenerator.Initialize(context, minimized);
     }
 
     private static DataModel ReduceToDataModel((UnitType Unit, IUnitPopulationWithData UnitPopulation, IResolvedScalarPopulation ScalarPopulation) input, CancellationToken _)

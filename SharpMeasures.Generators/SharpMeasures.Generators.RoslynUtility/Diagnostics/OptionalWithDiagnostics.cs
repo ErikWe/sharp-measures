@@ -7,6 +7,39 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+public static class Extensions
+{
+    public static T? NullableValueResult<T>(this IOptionalWithDiagnostics<T?> optional) where T : struct
+    {
+        if (optional.LacksResult)
+        {
+            return null;
+        }
+
+        return optional.Result;
+    }
+
+    public static T? NullableValueResult<T>(this IOptionalWithDiagnostics<T> optional) where T : struct
+    {
+        if (optional.LacksResult)
+        {
+            return null;
+        }
+
+        return optional.Result;
+    }
+
+    public static T? NullableReferenceResult<T>(this IOptionalWithDiagnostics<T> optional) where T : class?
+    {
+        if (optional.LacksResult)
+        {
+            return default;
+        }
+
+        return optional.Result;
+    }
+}
+
 public interface IOptionalWithDiagnostics : IEnumerable<Diagnostic>
 {
     public abstract bool HasResult { get; }
@@ -26,7 +59,6 @@ public interface IOptionalWithDiagnostics<T> : IOptionalWithDiagnostics
     public delegate TNew DResult<TNew>(T result);
 
     public abstract T Result { get; }
-    public abstract T? NullableResult { get; }
 
     public abstract IOptionalWithDiagnostics<T> ConcatDiagnostics(params IEnumerable<Diagnostic>[] diagnostics);
 
@@ -144,19 +176,6 @@ public static class OptionalWithDiagnostics
                 if (LacksResult)
                 {
                     throw new OptionalLacksResultException();
-                }
-
-                return Optional.Value;
-            }
-        }
-
-        public T? NullableResult
-        {
-            get
-            {
-                if (LacksResult)
-                {
-                    return default;
                 }
 
                 return Optional.Value;

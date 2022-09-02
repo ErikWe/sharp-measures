@@ -4,6 +4,8 @@ public abstract record class AAttributeDefinition<TLocations> : IAttributeDefini
 {
     public TLocations Locations { get; private init; }
 
+    IAttributeLocations IAttributeDefinition.Locations => Locations;
+
     protected AAttributeDefinition(TLocations locations)
     {
         Locations = locations;

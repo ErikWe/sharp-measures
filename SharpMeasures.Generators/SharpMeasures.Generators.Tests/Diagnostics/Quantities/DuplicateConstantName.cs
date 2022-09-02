@@ -113,8 +113,8 @@ public class DuplicateConstantName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [UnitAlias("Meter", "Meters", "Metre")]
+        [FixedUnitInstance("Metre", "Metres")]
+        [UnitInstanceAlias("Meter", "Meters", "Metre")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -139,8 +139,8 @@ public class DuplicateConstantName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [UnitAlias("Meter", "Meters", "Metre")]
+        [FixedUnitInstance("Metre", "Metres")]
+        [UnitInstanceAlias("Meter", "Meters", "Metre")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -165,8 +165,8 @@ public class DuplicateConstantName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [UnitAlias("Meter", "Meters", "Metre")]
+        [FixedUnitInstance("Metre", "Metres")]
+        [UnitInstanceAlias("Meter", "Meters", "Metre")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -192,8 +192,8 @@ public class DuplicateConstantName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [UnitAlias("Meter", "Meters", "Metre")]
+        [FixedUnitInstance("Metre", "Metres")]
+        [UnitInstanceAlias("Meter", "Meters", "Metre")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -222,8 +222,8 @@ public class DuplicateConstantName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [UnitAlias("Meter", "Meters", "Metre")]
+        [FixedUnitInstance("Metre", "Metres")]
+        [UnitInstanceAlias("Meter", "Meters", "Metre")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -252,8 +252,8 @@ public class DuplicateConstantName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [UnitAlias("Meter", "Meters", "Metre")]
+        [FixedUnitInstance("Metre", "Metres")]
+        [UnitInstanceAlias("Meter", "Meters", "Metre")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -282,8 +282,8 @@ public class DuplicateConstantName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [UnitAlias("Meter", "Meters", "Metre")]
+        [FixedUnitInstance("Metre", "Metres")]
+        [UnitInstanceAlias("Meter", "Meters", "Metre")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -318,8 +318,8 @@ public class DuplicateConstantName
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
             
-        [FixedUnit("Metre", "Metres")]
-        [UnitAlias("Meter", "Meters", "Metre")]
+        [FixedUnitInstance("Metre", "Metres")]
+        [UnitInstanceAlias("Meter", "Meters", "Metre")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -361,8 +361,8 @@ public class DuplicateConstantName
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres")]
-            [UnitAlias("Meter", "Meters", "Metre")]
+            [FixedUnitInstance("Metre", "Metres")]
+            [UnitInstanceAlias("Meter", "Meters", "Metre")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
@@ -393,8 +393,8 @@ public class DuplicateConstantName
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
                 
-            [FixedUnit("Metre", "Metres")]
-            [UnitAlias("Meter", "Meters", "Metre")]
+            [FixedUnitInstance("Metre", "Metres")]
+            [UnitInstanceAlias("Meter", "Meters", "Metre")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
@@ -425,8 +425,8 @@ public class DuplicateConstantName
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres")]
-            [UnitAlias("Meter", "Meters", "Metre")]
+            [FixedUnitInstance("Metre", "Metres")]
+            [UnitInstanceAlias("Meter", "Meters", "Metre")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
@@ -458,8 +458,8 @@ public class DuplicateConstantName
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
-            [FixedUnit("Metre", "Metres")]
-            [UnitAlias("Meter", "Meters", "Metre")]
+            [FixedUnitInstance("Metre", "Metres")]
+            [UnitInstanceAlias("Meter", "Meters", "Metre")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
@@ -494,8 +494,8 @@ public class DuplicateConstantName
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
                 
-            [FixedUnit("Metre", "Metres")]
-            [UnitAlias("Meter", "Meters", "Metre")]
+            [FixedUnitInstance("Metre", "Metres")]
+            [UnitInstanceAlias("Meter", "Meters", "Metre")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
@@ -530,8 +530,8 @@ public class DuplicateConstantName
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
                 
-            [FixedUnit("Metre", "Metres")]
-            [UnitAlias("Meter", "Meters", "Metre")]
+            [FixedUnitInstance("Metre", "Metres")]
+            [UnitInstanceAlias("Meter", "Meters", "Metre")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
@@ -566,8 +566,8 @@ public class DuplicateConstantName
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
                 
-            [FixedUnit("Metre", "Metres")]
-            [UnitAlias("Meter", "Meters", "Metre")]
+            [FixedUnitInstance("Metre", "Metres")]
+            [UnitInstanceAlias("Meter", "Meters", "Metre")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """);
@@ -608,8 +608,8 @@ public class DuplicateConstantName
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
                 
-            [FixedUnit("Metre", "Metres")]
-            [UnitAlias("Meter", "Meters", "Metre")]
+            [FixedUnitInstance("Metre", "Metres")]
+            [UnitInstanceAlias("Meter", "Meters", "Metre")]
             [SharpMeasuresUnit(typeof(Length))]
             public partial class UnitOfLength { }
             """);

@@ -25,7 +25,7 @@ public class EmptyList
     [Fact]
     public Task VerifyEmptyListDiagnosticsMessage_Unit()
     {
-        var attribute = ParseAttributeAndArguments("IncludeBases", EmptyParamsList);
+        var attribute = ParseAttributeAndArguments("IncludeUnitBases", EmptyParamsList);
 
         return AssertScalarAttribute(attribute).VerifyDiagnostics();
     }
@@ -91,8 +91,8 @@ public class EmptyList
     {
         IEnumerable<(string AttributeName, string Type)> additionalAttributes = new[]
         {
-            ("IncludeBases", "string"),
-            ("ExcludeBases", "string")
+            ("IncludeUnitBases", "string"),
+            ("ExcludeUnitBases", "string")
         };
 
         foreach (var originalList in QuantityAttributesAndArguments())

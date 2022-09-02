@@ -16,8 +16,7 @@ internal record class VectorBaseType : AVectorType<SharpMeasuresVectorDefinition
     IQuantityBase IQuantityBaseType.Definition => Definition;
     IVectorBase IVectorBaseType.Definition => Definition;
 
-    public VectorBaseType(DefinedType type, MinimalLocation typeLocation, SharpMeasuresVectorDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
-        IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInclusions,
-        IReadOnlyList<ExcludeUnitsDefinition> unitExclusions)
-        : base(type, typeLocation, definition, derivations, constants, conversions, unitInclusions, unitExclusions) { }
+    public VectorBaseType(DefinedType type, MinimalLocation typeLocation, SharpMeasuresVectorDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions,
+        IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
+        : base(type, typeLocation, definition, derivations, constants, conversions, unitInstanceInclusions, unitInstanceExclusions) { }
 }

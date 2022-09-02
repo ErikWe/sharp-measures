@@ -1,9 +1,9 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
+using SharpMeasures.Generators.Quantities;
 
-internal record class SharpMeasuresVectorLocations : AAttributeLocations<SharpMeasuresVectorLocations>, IDefaultUnitLocations
+internal record class SharpMeasuresVectorLocations : AAttributeLocations<SharpMeasuresVectorLocations>, IVectorBaseLocations, IDefaultUnitInstanceLocations
 {
     public static SharpMeasuresVectorLocations Empty => new();
 
@@ -16,19 +16,23 @@ internal record class SharpMeasuresVectorLocations : AAttributeLocations<SharpMe
     public MinimalLocation? ImplementDifference { get; init; }
     public MinimalLocation? Difference { get; init; }
 
-    public MinimalLocation? DefaultUnitName { get; init; }
-    public MinimalLocation? DefaultUnitSymbol { get; init; }
+    public MinimalLocation? DefaultUnitInstanceName { get; init; }
+    public MinimalLocation? DefaultUnitInstanceSymbol { get; init; }
 
     public MinimalLocation? GenerateDocumentation { get; init; }
 
     public bool ExplicitlySetUnit => Unit is not null;
     public bool ExplicitlySetScalar => Scalar is not null;
+
     public bool ExplicitlySetDimension => Dimension is not null;
+
     public bool ExplicitlySetImplementSum => ImplementSum is not null;
     public bool ExplicitlySetImplementDifference => ImplementDifference is not null;
     public bool ExplicitlySetDifference => Difference is not null;
-    public bool ExplicitlySetDefaultUnitName => DefaultUnitName is not null;
-    public bool ExplicitlySetDefaultUnitSymbol => DefaultUnitSymbol is not null;
+
+    public bool ExplicitlySetDefaultUnitInstanceName => DefaultUnitInstanceName is not null;
+    public bool ExplicitlySetDefaultUnitInstanceSymbol => DefaultUnitInstanceSymbol is not null;
+
     public bool ExplicitlySetGenerateDocumentation => GenerateDocumentation is not null;
 
     protected override SharpMeasuresVectorLocations Locations => this;

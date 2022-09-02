@@ -16,11 +16,11 @@ using System;
 /// <description>Defines a constant of the scalar.</description>
 /// </item>
 /// <item>
-/// <term><see cref="IncludeBasesAttribute"/></term>
+/// <term><see cref="IncludeUnitBasesAttribute"/></term>
 /// <description>Dictates the units for which a static property representing the value { 1 } is implemented.</description>
 /// </item>
 /// <item>
-/// <term><see cref="ExcludeBasesAttribute"/></term>
+/// <term><see cref="ExcludeUnitBasesAttribute"/></term>
 /// <description>Dictates the units for which a static property representing the value { 1 } is <i>not</i> implemented.</description>
 /// </item>
 /// <item>
@@ -66,11 +66,11 @@ public sealed class SharpMeasuresScalarAttribute : Attribute
     /// <remarks>To disable support for computing the difference in the first place, use <see cref="ImplementDifference"/>.</remarks>
     public Type? Difference { get; init; }
 
-    /// <summary>The name of the default unit.</summary>
-    public string? DefaultUnitName { get; init; }
+    /// <summary>The name of the default unit instance.</summary>
+    public string? DefaultUnitInstanceName { get; init; }
 
-    /// <summary>The symbol of the default unit.</summary>
-    public string? DefaultUnitSymbol { get; init; }
+    /// <summary>The symbol of the default unit instance.</summary>
+    public string? DefaultUnitInstanceSymbol { get; init; }
 
     /// <summary>The scalar quantity that is considered the reciprocal, or inverse, of this quantity, if one exists.</summary>
     public Type? Reciprocal { get; init; }

@@ -8,11 +8,11 @@ using System.Collections.Generic;
 
 internal record class ScalarConstantValidationContext : QuantityConstantValidationContext, IScalarConstantValidationContext
 {
-    public HashSet<string> IncludedUnitNames { get; }
+    public HashSet<string> IncludedUnitInstanceNames { get; }
 
     public ScalarConstantValidationContext(DefinedType type, IUnitType unitType, HashSet<string> inheritedConstantNames, HashSet<string> inheritedConstantMuliplesNames, HashSet<string> includedUnitNames, HashSet<string> includedUnitPlurals)
         : base(type, unitType, inheritedConstantNames, inheritedConstantMuliplesNames, includedUnitPlurals)
     {
-        IncludedUnitNames = includedUnitNames;
+        IncludedUnitInstanceNames = includedUnitNames;
     }
 }

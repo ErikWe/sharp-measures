@@ -12,7 +12,6 @@ using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Units.UnitInstances;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Validation;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
@@ -45,26 +44,26 @@ internal static class GroupMemberValidator
 
         var unit = input.UnitPopulation.Units[input.VectorPopulation.GroupBases[input.UnvalidatedVector.Definition.VectorGroup].Definition.Unit];
 
-        var inheritedUnits = GetUnitInclusions(input.UnvalidatedVector, input.VectorPopulation, unit.UnitsByName.Values, unit, static (vector) => vector.Definition.InheritUnitsFromMembers,
+        var inheritedUnitInstances = GetUnitInstanceInclusions(input.UnvalidatedVector, input.VectorPopulation, unit.UnitInstancesByName.Values, unit, static (vector) => vector.Definition.InheritUnitsFromMembers,
             static (vector) => vector.Definition.InheritUnits, static (vector) => vector.Definition.InheritUnits, onlyInherited: true);
 
-        var inheritedUnitNames = new HashSet<string>(inheritedUnits.Select(static (unit) => unit.Name));
+        var inheritedUnitInstanceNames = new HashSet<string>(inheritedUnitInstances.Select(static (unit) => unit.Name));
 
-        var unitInclusions = ValidateIncludeUnits(input.UnvalidatedVector, unit, inheritedUnitNames);
-        var unitExclusions = ValidateExcludeUnits(input.UnvalidatedVector, unit, inheritedUnitNames);
+        var unitInstanceInclusions = ValidateIncludeUnitInstances(input.UnvalidatedVector, unit, inheritedUnitInstanceNames);
+        var unitInstanceExclusions = ValidateExcludeUnitInstances(input.UnvalidatedVector, unit, inheritedUnitInstanceNames);
 
-        var definedUnits = GetUnitInclusions(input.UnvalidatedVector, input.VectorPopulation, unit.UnitsByName.Values, unit, static (vector) => false,
+        var definedUnitInstances = GetUnitInstanceInclusions(input.UnvalidatedVector, input.VectorPopulation, unit.UnitInstancesByName.Values, unit, static (vector) => false,
             static (vector) => false, static (vector) => false);
 
-        var allUnits = inheritedUnits.Concat(definedUnits).ToList();
+        var allUnits = inheritedUnitInstances.Concat(definedUnitInstances).ToList();
 
         var derivations = ValidateDerivations(input.UnvalidatedVector, input.ScalarPopulation, input.VectorPopulation);
         var constants = ValidateConstants(input.UnvalidatedVector, input.VectorPopulation, unit, allUnits);
         var conversions = ValidateConversions(input.UnvalidatedVector, input.VectorPopulation);
 
-        GroupMemberType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result, unitInclusions.Result, unitExclusions.Result);
+        GroupMemberType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
 
-        var allDiagnostics = vector.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitInclusions).Concat(unitExclusions);
+        var allDiagnostics = vector.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
@@ -91,7 +90,7 @@ internal static class GroupMemberValidator
         HashSet<string> inheritedConstantNames = new(inheritedConstants.Select(static (constant) => constant.Name));
         HashSet<string> inheritedConstantMultiples = new(inheritedConstants.Where(static (constant) => constant.GenerateMultiplesProperty).Select(static (constant) => constant.Multiples!));
 
-        HashSet<string> incluedUnitPlurals = new(includedUnits.Select(static (unit) => unit.Plural));
+        HashSet<string> incluedUnitPlurals = new(includedUnits.Select(static (unit) => unit.PluralForm));
 
         var validationContext = new VectorConstantValidationContext(vectorType.Type, vectorType.Definition.Dimension, unit, inheritedConstantNames, inheritedConstantMultiples, incluedUnitPlurals);
 
@@ -100,8 +99,8 @@ internal static class GroupMemberValidator
 
     private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ValidateConversions(GroupMemberType vectorType, IVectorPopulation vectorPopulation)
     {
-        var inheritedConversions = CollectInheritedItems(vectorType, vectorPopulation, static (vector) => vector.Conversions.SelectMany(static (vectorList) => vectorList.Vectors),
-            static (vector) => vector.Conversions.SelectMany(static (vectorList) => vectorList.Vectors), static (vector) => vector.Definition.InheritConversionsFromMembers,
+        var inheritedConversions = CollectInheritedItems(vectorType, vectorPopulation, static (vector) => vector.Conversions.SelectMany(static (vectorList) => vectorList.Quantities),
+            static (vector) => vector.Conversions.SelectMany(static (vectorList) => vectorList.Quantities), static (vector) => vector.Definition.InheritConversionsFromMembers,
             static (vector) => vector.Definition.InheritConversions, static (vector) => vector.Definition.InheritConversions);
 
         var filteringContext = new ConvertibleVectorFilteringContext(vectorType.Type, vectorType.Definition.Dimension, VectorType.GroupMember, vectorPopulation, new HashSet<NamedType>(inheritedConversions));
@@ -109,23 +108,22 @@ internal static class GroupMemberValidator
         return ProcessingFilter.Create(ConvertibleVectorFilterer).Filter(filteringContext, vectorType.Conversions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ValidateIncludeUnits(GroupMemberType vectorType, IUnitType unit, HashSet<string> inheritedUnits)
+    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ValidateIncludeUnitInstances(GroupMemberType vectorType, IUnitType unit, HashSet<string> inheritedUnits)
     {
         var filteringContext = new IncludeUnitsFilteringContext(vectorType.Type, unit, inheritedUnits);
 
         return ProcessingFilter.Create(IncludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInclusions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ValidateExcludeUnits(GroupMemberType vectorType, IUnitType unit, HashSet<string> inheritedUnits)
+    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ValidateExcludeUnitInstances(GroupMemberType vectorType, IUnitType unit, HashSet<string> inheritedUnits)
     {
         var filteringContext = new ExcludeUnitsFilteringContext(vectorType.Type, unit, inheritedUnits);
 
         return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, vectorType.UnitExclusions);
     }
 
-    private static IEnumerable<T> CollectInheritedItems<T>(GroupMemberType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupMemberType, IEnumerable<T>> memberItemsDelegate,
-        Func<IVectorGroupType, IEnumerable<T>> groupItemsDelegate, Func<IVectorGroupMemberType, bool> shouldMemberInheritFromMembers, Func<IVectorGroupMemberType, bool> shouldMemberInheritFromGroup,
-        Func<IVectorGroupSpecializationType, bool> shouldGroupInherit)
+    private static IEnumerable<T> CollectInheritedItems<T>(GroupMemberType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupMemberType, IEnumerable<T>> memberItemsDelegate, Func<IVectorGroupType, IEnumerable<T>> groupItemsDelegate,
+        Func<IVectorGroupMemberType, bool> shouldMemberInheritFromMembers, Func<IVectorGroupMemberType, bool> shouldMemberInheritFromGroup, Func<IVectorGroupSpecializationType, bool> shouldGroupInherit)
     {
         List<T> items = new();
 
@@ -152,7 +150,7 @@ internal static class GroupMemberValidator
         {
             if (vectorGroup is IVectorGroupSpecializationType vectorGroupSpecialization)
             {
-                var originalVectorGroup = vectorPopulation.Groups[vectorGroupSpecialization.Definition.OriginalVectorGroup];
+                var originalVectorGroup = vectorPopulation.Groups[vectorGroupSpecialization.Definition.OriginalQuantity];
 
                 vectorPopulation.GroupMembersByGroup[originalVectorGroup.Type.AsNamedType()].GroupMembersByDimension.TryGetValue(vectorType.Definition.Dimension, out var originalCorrespondingMember);
 
@@ -164,7 +162,7 @@ internal static class GroupMemberValidator
         }
     }
 
-    private static IEnumerable<IUnitInstance> GetUnitInclusions(GroupMemberType vectorType, IVectorPopulation vectorPopulation, IEnumerable<IUnitInstance> initialUnits, IUnitType unit,
+    private static IEnumerable<IUnitInstance> GetUnitInstanceInclusions(GroupMemberType vectorType, IVectorPopulation vectorPopulation, IEnumerable<IUnitInstance> initialUnits, IUnitType unit,
         Func<IVectorGroupMemberType, bool> shouldMemberInheritFromMembers, Func<IVectorGroupMemberType, bool> shouldMemberInheritFromGroup, Func<IVectorGroupSpecializationType, bool> shouldGroupInherit,
         bool onlyInherited = false)
     {
@@ -178,18 +176,18 @@ internal static class GroupMemberValidator
         {
             if (shouldInheritFromGroup)
             {
-                modify(vectorGroup.UnitInclusions, vectorGroup.UnitExclusions);
+                modify(vectorGroup.UnitInstanceInclusions, vectorGroup.UnitInstanceExclusions);
             }
 
             if (shouldInheritFromMember && correspondingMember is not null)
             {
-                modify(correspondingMember.UnitInclusions, correspondingMember.UnitExclusions);
+                modify(correspondingMember.UnitInstanceInclusions, correspondingMember.UnitInstanceExclusions);
             }
 
             recurse(vectorGroup, correspondingMember, shouldInheritFromMember, shouldInheritFromGroup);
         }
 
-        void modify(IReadOnlyList<IUnitList> inclusions, IReadOnlyList<IUnitList> exclusions)
+        void modify(IReadOnlyList<IUnitInstanceList> inclusions, IReadOnlyList<IUnitInstanceList> exclusions)
         {
             if (inclusions.Any())
             {
@@ -200,11 +198,11 @@ internal static class GroupMemberValidator
 
             includedUnits.ExceptWith(listUnits(exclusions));
 
-            IEnumerable<IUnitInstance> listUnits(IEnumerable<IUnitList> unitLists)
+            IEnumerable<IUnitInstance> listUnits(IEnumerable<IUnitInstanceList> unitLists)
             {
-                foreach (var unitName in unitLists.SelectMany(static (unitList) => unitList.Units))
+                foreach (var unitName in unitLists.SelectMany(static (unitList) => unitList.UnitInstances))
                 {
-                    if (unit.UnitsByName.TryGetValue(unitName, out var unitInstance))
+                    if (unit.UnitInstancesByName.TryGetValue(unitName, out var unitInstance))
                     {
                         yield return unitInstance;
                     }
@@ -216,7 +214,7 @@ internal static class GroupMemberValidator
         {
             if (vectorGroup is IVectorGroupSpecializationType vectorGroupSpecialization)
             {
-                var originalVectorGroup = vectorPopulation.Groups[vectorGroupSpecialization.Definition.OriginalVectorGroup];
+                var originalVectorGroup = vectorPopulation.Groups[vectorGroupSpecialization.Definition.OriginalQuantity];
 
                 vectorPopulation.GroupMembersByGroup[originalVectorGroup.Type.AsNamedType()].GroupMembersByDimension.TryGetValue(vectorType.Definition.Dimension, out var originalCorrespondingMember);
 

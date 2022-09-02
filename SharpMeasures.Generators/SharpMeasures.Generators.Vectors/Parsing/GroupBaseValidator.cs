@@ -42,14 +42,14 @@ internal static class GroupBaseValidator
         var derivations = ValidateDerivations(input.UnvalidatedVector, input.ScalarPopulation, input.VectorPopulation);
         var conversions = ValidateConversions(input.UnvalidatedVector, input.VectorPopulation);
 
-        var availableUnits = new HashSet<string>(input.UnitPopulation.Units[input.UnvalidatedVector.Definition.Unit].UnitsByName.Keys);
+        var includedUnitInstanceNames = new HashSet<string>(input.UnitPopulation.Units[input.UnvalidatedVector.Definition.Unit].UnitInstancesByName.Keys);
 
-        var unitInclusions = ValidateIncludeUnits(input.UnvalidatedVector, input.UnitPopulation, availableUnits);
-        var unitExclusions = ValidateExcludeUnits(input.UnvalidatedVector, input.UnitPopulation, availableUnits);
+        var unitInstanceInclusions = ValidateIncludeUnitInstances(input.UnvalidatedVector, input.UnitPopulation, includedUnitInstanceNames);
+        var unitInstanceExclusions = ValidateExcludeUnitInstances(input.UnvalidatedVector, input.UnitPopulation, includedUnitInstanceNames);
 
-        GroupBaseType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, derivations.Result, conversions.Result, unitInclusions.Result, unitExclusions.Result);
+        GroupBaseType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, derivations.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
 
-        var allDiagnostics = vector.Concat(derivations).Concat(conversions).Concat(unitInclusions).Concat(unitExclusions);
+        var allDiagnostics = vector.Concat(derivations).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
@@ -75,16 +75,16 @@ internal static class GroupBaseValidator
         return ProcessingFilter.Create(ConvertibleVectorFilterer).Filter(filteringContext, vectorType.Conversions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ValidateIncludeUnits(GroupBaseType vectorType, IUnitPopulation unitPopulation, HashSet<string> availableUnits)
+    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ValidateIncludeUnitInstances(GroupBaseType vectorType, IUnitPopulation unitPopulation, HashSet<string> includedUnitInstanceNames)
     {
-        var filteringContext = new IncludeUnitsFilteringContext(vectorType.Type, unitPopulation.Units[vectorType.Definition.Unit], availableUnits);
+        var filteringContext = new IncludeUnitsFilteringContext(vectorType.Type, unitPopulation.Units[vectorType.Definition.Unit], includedUnitInstanceNames);
 
         return ProcessingFilter.Create(IncludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInclusions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ValidateExcludeUnits(GroupBaseType vectorType, IUnitPopulation unitPopulation, HashSet<string> availableUnits)
+    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ValidateExcludeUnitInstances(GroupBaseType vectorType, IUnitPopulation unitPopulation, HashSet<string> includedUnitInstanceNames)
     {
-        var filteringContext = new ExcludeUnitsFilteringContext(vectorType.Type, unitPopulation.Units[vectorType.Definition.Unit], availableUnits);
+        var filteringContext = new ExcludeUnitsFilteringContext(vectorType.Type, unitPopulation.Units[vectorType.Definition.Unit], includedUnitInstanceNames);
 
         return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, vectorType.UnitExclusions);
     }

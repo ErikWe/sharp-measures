@@ -1,15 +1,14 @@
 ﻿namespace SharpMeasures.Generators.Units;
 
 using SharpMeasures.Equatables;
-using SharpMeasures.Generators.Units.Parsing.BiasedUnit;
+using SharpMeasures.Generators.Units.Parsing.BiasedUnitInstance;
 using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
-using SharpMeasures.Generators.Units.Parsing.DerivedUnit;
-using SharpMeasures.Generators.Units.Parsing.FixedUnit;
-using SharpMeasures.Generators.Units.Parsing.PrefixedUnit;
-using SharpMeasures.Generators.Units.Parsing.ScaledUnit;
+using SharpMeasures.Generators.Units.Parsing.DerivedUnitInstance;
+using SharpMeasures.Generators.Units.Parsing.FixedUnitInstance;
+using SharpMeasures.Generators.Units.Parsing.PrefixedUnitInstance;
+using SharpMeasures.Generators.Units.Parsing.ScaledUnitInstance;
 using SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
-using SharpMeasures.Generators.Units.Parsing.UnitAlias;
-using SharpMeasures.Generators.Units.UnitInstances;
+using SharpMeasures.Generators.Units.Parsing.UnitInstanceAlias;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -23,44 +22,44 @@ internal class UnitType : IUnitType
 
     public IReadOnlyList<DerivableUnitDefinition> UnitDerivations => unitDerivations;
 
-    public FixedUnitDefinition? FixedUnit { get; }
-    public IReadOnlyList<UnitAliasDefinition> UnitAliases => unitAliases;
-    public IReadOnlyList<BiasedUnitDefinition> BiasedUnits => biasedUnits;
-    public IReadOnlyList<DerivedUnitDefinition> DerivedUnits => derivedUnits;
-    public IReadOnlyList<PrefixedUnitDefinition> PrefixedUnits => prefixedUnits;
-    public IReadOnlyList<ScaledUnitDefinition> ScaledUnits => scaledUnits;
+    public FixedUnitInstanceDefinition? FixedUnitInstance { get; }
+    public IReadOnlyList<UnitInstanceAliasDefinition> UnitInstanceAliases => unitInstanceAliases;
+    public IReadOnlyList<BiasedUnitInstanceDefinition> BiasedUnitInstances => biasedUnitInstances;
+    public IReadOnlyList<DerivedUnitInstanceDefinition> DerivedUnitInstances => derivedUnitInstances;
+    public IReadOnlyList<PrefixedUnitInstanceDefinition> PrefixedUnitInstances => prefixedUnitInstances;
+    public IReadOnlyList<ScaledUnitInstanceDefinition> ScaledUnitInstances => scaledUnitInstances;
 
-    public IReadOnlyDictionary<string, IUnitInstance> UnitsByName => unitsByName;
-    public IReadOnlyDictionary<string, IUnitInstance> UnitsByPluralName => unitsByPluralName;
+    public IReadOnlyDictionary<string, IUnitInstance> UnitInstancesByName => unitInstancesByName;
+    public IReadOnlyDictionary<string, IUnitInstance> UnitInstancesByPluralForm => unitInstancesByPluralForm;
     public IReadOnlyDictionary<string, IDerivableUnit> DerivationsByID => derivationsByID;
 
     private ReadOnlyEquatableList<DerivableUnitDefinition> unitDerivations { get; }
 
-    private ReadOnlyEquatableList<UnitAliasDefinition> unitAliases { get; }
-    private ReadOnlyEquatableList<DerivedUnitDefinition> derivedUnits { get; }
-    private ReadOnlyEquatableList<BiasedUnitDefinition> biasedUnits { get; }
-    private ReadOnlyEquatableList<PrefixedUnitDefinition> prefixedUnits { get; }
-    private ReadOnlyEquatableList<ScaledUnitDefinition> scaledUnits { get; }
+    private ReadOnlyEquatableList<UnitInstanceAliasDefinition> unitInstanceAliases { get; }
+    private ReadOnlyEquatableList<DerivedUnitInstanceDefinition> derivedUnitInstances { get; }
+    private ReadOnlyEquatableList<BiasedUnitInstanceDefinition> biasedUnitInstances { get; }
+    private ReadOnlyEquatableList<PrefixedUnitInstanceDefinition> prefixedUnitInstances { get; }
+    private ReadOnlyEquatableList<ScaledUnitInstanceDefinition> scaledUnitInstances { get; }
 
-    private ReadOnlyEquatableDictionary<string, IUnitInstance> unitsByName { get; }
-    private ReadOnlyEquatableDictionary<string, IUnitInstance> unitsByPluralName { get; }
+    private ReadOnlyEquatableDictionary<string, IUnitInstance> unitInstancesByName { get; }
+    private ReadOnlyEquatableDictionary<string, IUnitInstance> unitInstancesByPluralForm { get; }
     private ReadOnlyEquatableDictionary<string, IDerivableUnit> derivationsByID { get; }
 
     ISharpMeasuresObject ISharpMeasuresObjectType.Definition => Definition;
     IUnit IUnitType.Definition => Definition;
 
-    IFixedUnit? IUnitType.FixedUnit => FixedUnit;
+    IFixedUnitInstance? IUnitType.FixedUnitInstance => FixedUnitInstance;
     IReadOnlyList<IDerivableUnit> IUnitType.UnitDerivations => UnitDerivations;
 
-    IReadOnlyList<IUnitAlias> IUnitType.UnitAliases => UnitAliases;
-    IReadOnlyList<IBiasedUnit> IUnitType.BiasedUnits => BiasedUnits;
-    IReadOnlyList<IDerivedUnit> IUnitType.DerivedUnits => DerivedUnits;
-    IReadOnlyList<IPrefixedUnit> IUnitType.PrefixedUnits => PrefixedUnits;
-    IReadOnlyList<IScaledUnit> IUnitType.ScaledUnits => ScaledUnits;
+    IReadOnlyList<IUnitInstanceAlias> IUnitType.UnitInstanceAliases => UnitInstanceAliases;
+    IReadOnlyList<IBiasedUnitInstance> IUnitType.BiasedUnitInstances => BiasedUnitInstances;
+    IReadOnlyList<IDerivedUnitInstance> IUnitType.DerivedUnitInstances => DerivedUnitInstances;
+    IReadOnlyList<IPrefixedUnitInstance> IUnitType.PrefixedUnitInstances => PrefixedUnitInstances;
+    IReadOnlyList<IScaledUnitInstance> IUnitType.ScaledUnitInstances => ScaledUnitInstances;
 
-    public UnitType(DefinedType type, MinimalLocation unitLocation, SharpMeasuresUnitDefinition definition, IReadOnlyList<DerivableUnitDefinition> unitDerivations, FixedUnitDefinition? fixedUnit,
-        IReadOnlyList<UnitAliasDefinition> unitAliases, IReadOnlyList<DerivedUnitDefinition> derivedUnits, IReadOnlyList<BiasedUnitDefinition> biasedUnits, IReadOnlyList<PrefixedUnitDefinition> prefixedUnits,
-        IReadOnlyList<ScaledUnitDefinition> scaledUnits)
+    public UnitType(DefinedType type, MinimalLocation unitLocation, SharpMeasuresUnitDefinition definition, IReadOnlyList<DerivableUnitDefinition> unitDerivations, FixedUnitInstanceDefinition? fixedUnitInstance,
+        IReadOnlyList<UnitInstanceAliasDefinition> unitInstanceAliases, IReadOnlyList<DerivedUnitInstanceDefinition> derivedUnitInstances, IReadOnlyList<BiasedUnitInstanceDefinition> biasedUnitInstances, IReadOnlyList<PrefixedUnitInstanceDefinition> prefixedUnitInstances,
+        IReadOnlyList<ScaledUnitInstanceDefinition> scaledUnitInstances)
     {
         Type = type;
         TypeLocation = unitLocation;
@@ -69,32 +68,32 @@ internal class UnitType : IUnitType
 
         this.unitDerivations = unitDerivations.AsReadOnlyEquatable();
 
-        FixedUnit = fixedUnit;
-        this.unitAliases = unitAliases.AsReadOnlyEquatable();
-        this.derivedUnits = derivedUnits.AsReadOnlyEquatable();
-        this.biasedUnits = biasedUnits.AsReadOnlyEquatable();
-        this.prefixedUnits = prefixedUnits.AsReadOnlyEquatable();
-        this.scaledUnits = scaledUnits.AsReadOnlyEquatable();
+        FixedUnitInstance = fixedUnitInstance;
+        this.unitInstanceAliases = unitInstanceAliases.AsReadOnlyEquatable();
+        this.derivedUnitInstances = derivedUnitInstances.AsReadOnlyEquatable();
+        this.biasedUnitInstances = biasedUnitInstances.AsReadOnlyEquatable();
+        this.prefixedUnitInstances = prefixedUnitInstances.AsReadOnlyEquatable();
+        this.scaledUnitInstances = scaledUnitInstances.AsReadOnlyEquatable();
 
-        unitsByName = ConstructUnitsByNameDictionary();
-        unitsByPluralName = ConstructUnitsByPluralNameDictionary();
+        unitInstancesByName = ConstructUnitInstancesByNameDictionary();
+        unitInstancesByPluralForm = ConstructUnitInstancesByPluralFormDictionary();
         derivationsByID = ConstructDerivationsByIDDictionary();
     }
 
-    private IEnumerable<IUnitInstance> AllUnits()
+    private IEnumerable<IUnitInstance> AllUnitInstances()
     {
-        var allUnits = (UnitAliases as IEnumerable<IUnitInstance>).Concat(BiasedUnits).Concat(DerivedUnits).Concat(PrefixedUnits) .Concat(ScaledUnits);
+        var allUnitInstances = (UnitInstanceAliases as IEnumerable<IUnitInstance>).Concat(BiasedUnitInstances).Concat(DerivedUnitInstances).Concat(PrefixedUnitInstances) .Concat(ScaledUnitInstances);
 
-        if (FixedUnit is not null)
+        if (FixedUnitInstance is not null)
         {
-            allUnits = allUnits.Concat(new[] { FixedUnit });
+            allUnitInstances = allUnitInstances.Concat(new[] { FixedUnitInstance });
         }
 
-        return allUnits;
+        return allUnitInstances;
     }
 
-    private ReadOnlyEquatableDictionary<string, IUnitInstance> ConstructUnitsByNameDictionary() => AllUnits().ToDictionary(static (unit) => unit.Name).AsReadOnlyEquatable();
-    private ReadOnlyEquatableDictionary<string, IUnitInstance> ConstructUnitsByPluralNameDictionary() => AllUnits().ToDictionary(static (unit) => unit.Plural).AsReadOnlyEquatable();
+    private ReadOnlyEquatableDictionary<string, IUnitInstance> ConstructUnitInstancesByNameDictionary() => AllUnitInstances().ToDictionary(static (unitInstance) => unitInstance.Name).AsReadOnlyEquatable();
+    private ReadOnlyEquatableDictionary<string, IUnitInstance> ConstructUnitInstancesByPluralFormDictionary() => AllUnitInstances().ToDictionary(static (unitInstance) => unitInstance.PluralForm).AsReadOnlyEquatable();
 
     private ReadOnlyEquatableDictionary<string, IDerivableUnit> ConstructDerivationsByIDDictionary()
     {

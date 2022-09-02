@@ -25,8 +25,13 @@ internal record class SharpMeasuresVectorGroupMemberDefinition : AAttributeDefin
     bool? IQuantity.ImplementDifference => null;
     NamedType? IQuantity.Difference => null;
 
-    string? IQuantity.DefaultUnitName => null;
-    string? IQuantity.DefaultUnitSymbol => null;
+    string? IDefaultUnitInstanceDefinition.DefaultUnitInstanceName => null;
+    string? IDefaultUnitInstanceDefinition.DefaultUnitInstanceSymbol => null;
+
+    ISharpMeasuresObjectLocations ISharpMeasuresObject.Locations => Locations;
+    IQuantityLocations IQuantity.Locations => Locations;
+    IVectorGroupMemberLocations IVectorGroupMember.Locations => Locations;
+    IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
     public SharpMeasuresVectorGroupMemberDefinition(NamedType vectorGroup, bool inheritDerivations, bool inheritConversions, bool inheritUnits, bool inheritDerivationsFromMembers, bool inheritConstantsFromMembers,
         bool inheritConversionsFromMembers, bool inheritUnitsFromMembers, int dimension, bool? generateDocumentation, SharpMeasuresVectorGroupMemberLocations locations)

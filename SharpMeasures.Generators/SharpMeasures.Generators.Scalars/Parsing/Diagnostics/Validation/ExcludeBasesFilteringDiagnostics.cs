@@ -5,19 +5,19 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars.Parsing.ExcludeBases;
 
-internal class ExcludeBasesFilteringDiagnostics : IExcludeBasesFilteringDiagnostics
+internal class ExcludeBasesFilteringDiagnostics : IExcludeUnitBasesFilteringDiagnostics
 {
     public static ExcludeBasesFilteringDiagnostics Instance { get; } = new();
 
     private ExcludeBasesFilteringDiagnostics() { }
 
-    public Diagnostic UnrecognizedUnit(IExcludeBasesFilteringContext context, ExcludeBasesDefinition definition, int index)
+    public Diagnostic UnrecognizedUnitInstance(IExcludeUnitBasesFilteringContext context, ExcludeUnitBasesDefinition definition, int index)
     {
-        return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.ExcludeBasesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.ExcludedBases[index], context.UnitType.Type.Name);
+        return DiagnosticConstruction.UnrecognizedUnitInstanceName(definition.Locations.UnitInstancesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.UnitInstances[index], context.UnitType.Type.Name);
     }
 
-    public Diagnostic? BaseAlreadyExcluded(IExcludeBasesFilteringContext context, ExcludeBasesDefinition definition, int index)
+    public Diagnostic? UnitInstanceAlreadyExcluded(IExcludeUnitBasesFilteringContext context, ExcludeUnitBasesDefinition definition, int index)
     {
-        return DiagnosticConstruction.ExcludingAlreadyExcludedUnit(definition.Locations.ExcludeBasesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.ExcludedBases[index]);
+        return DiagnosticConstruction.ExcludingAlreadyExcludedUnitInstance(definition.Locations.UnitInstancesElements[definition.LocationMap[index]].AsRoslynLocation(), definition.UnitInstances[index]);
     }
 }

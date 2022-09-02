@@ -4,7 +4,7 @@ using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 
 using System.Collections.Generic;
 
-public record class ConvertibleQuantityLocations : AItemListLocations<ConvertibleQuantityLocations>
+public record class ConvertibleQuantityLocations : AItemListLocations<ConvertibleQuantityLocations>, IConvertibleQuantityLocations
 {
     internal static ConvertibleQuantityLocations Empty { get; } = new();
 
@@ -15,6 +15,8 @@ public record class ConvertibleQuantityLocations : AItemListLocations<Convertibl
     public MinimalLocation? CastOperatorBehaviour { get; init; }
 
     public bool ExplicitlySetQuantities => QuantitiesCollection is not null;
+
+    public bool ExplicitlySetBidirectional => Bidirectional is not null;
     public bool ExplicitlySetCastOperatorBehaviour => CastOperatorBehaviour is not null;
 
     protected override ConvertibleQuantityLocations Locations => this;

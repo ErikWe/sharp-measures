@@ -4,7 +4,7 @@
     Title: Invalid biased unit expression,
     Severity: Warning,
     WarningLevel: 1,
-    Location: : (7,44)-(7,48),
+    Location: : (7,52)-(7,56),
     Description: ,
     HelpLink: ,
     MessageFormat: The expression describing the bias must be defined,

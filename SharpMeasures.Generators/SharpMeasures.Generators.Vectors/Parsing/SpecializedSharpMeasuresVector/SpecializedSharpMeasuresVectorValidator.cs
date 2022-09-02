@@ -4,14 +4,14 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnit;
+using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
 using System.Linq;
 
-internal interface ISpecializedSharpMeasuresVectorValidationDiagnostics : IDefaultUnitValidationDiagnostics
+internal interface ISpecializedSharpMeasuresVectorValidationDiagnostics : IDefaultUnitInstanceValidationDiagnostics
 {
     public abstract Diagnostic? TypeAlreadyUnit(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? TypeAlreadyScalar(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition);
@@ -57,25 +57,25 @@ internal class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpecialized
         }
 
         var scalar = ValidateScalarIsScalar(context, definition).Transform(definition.Scalar);
-        var difference = ValidateDifference(context, definition).Transform(definition.Difference);
+        var difference = ValidateDifference(context, definition);
 
         var unit = context.VectorPopulation.VectorBases[context.Type.AsNamedType()].Definition.Unit;
-        var defaultUnitValidity = DefaultUnitValidator.Validate(context, Diagnostics, definition, context.UnitPopulation, unit);
+        var defaultUnitInstanceValidity = DefaultUnitInstanceValidator.Validate(context, Diagnostics, definition, context.UnitPopulation, unit);
 
-        var defaultUnitName = defaultUnitValidity.Transform(definition.DefaultUnitName);
-        var defaultUnitSymbol = defaultUnitValidity.Transform(definition.DefaultUnitSymbol);
+        var defaultUnitInstanceName = defaultUnitInstanceValidity.Transform(definition.DefaultUnitInstanceName);
+        var defaultUnitInstanceSymbol = defaultUnitInstanceValidity.Transform(definition.DefaultUnitInstanceSymbol);
 
-        var product = ProduceResult(definition, scalar.NullableResult, difference.NullableResult, defaultUnitName.NullableResult, defaultUnitSymbol.NullableResult);
+        var product = ProduceResult(definition, scalar.NullableValueResult(), difference.NullableValueResult(), defaultUnitInstanceName.NullableReferenceResult(), defaultUnitInstanceSymbol.NullableReferenceResult());
 
-        var allDiagnostics = validity.Diagnostics.Concat(scalar).Concat(difference).Concat(defaultUnitValidity);
+        var allDiagnostics = validity.Diagnostics.Concat(scalar).Concat(difference).Concat(defaultUnitInstanceValidity);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static SpecializedSharpMeasuresVectorDefinition ProduceResult(SpecializedSharpMeasuresVectorDefinition definition, NamedType? scalar, NamedType? difference, string? defaultUnitName, string? defaultUnitSymbol)
+    private static SpecializedSharpMeasuresVectorDefinition ProduceResult(SpecializedSharpMeasuresVectorDefinition definition, NamedType? scalar, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
-        return new(definition.OriginalVector, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritUnits, scalar, definition.ImplementSum,
-            definition.ImplementDifference, difference, defaultUnitName, defaultUnitSymbol, definition.GenerateDocumentation, definition.Locations);
+        return new(definition.OriginalQuantity, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritUnits, scalar, definition.ImplementSum,
+            definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.GenerateDocumentation, definition.Locations);
     }
 
     private IValidityWithDiagnostics ValidateTypeNotAlreadyUnit(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition)
@@ -101,7 +101,7 @@ internal class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpecialized
 
     private IValidityWithDiagnostics ValidateOriginalVectorIsVector(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition)
     {
-        var originalVectorIsVector = context.VectorPopulation.Vectors.ContainsKey(definition.OriginalVector);
+        var originalVectorIsVector = context.VectorPopulation.Vectors.ContainsKey(definition.OriginalQuantity);
 
         return ValidityWithDiagnostics.Conditional(originalVectorIsVector, () => Diagnostics.OriginalNotVector(context, definition));
     }
@@ -135,32 +135,32 @@ internal class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpecialized
         return ValidityWithDiagnostics.Conditional(scalarIsNotScalar is false, () => Diagnostics.TypeNotScalar(context, definition));
     }
 
-    private IValidityWithDiagnostics ValidateDifference(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition)
+    private IOptionalWithDiagnostics<NamedType> ValidateDifference(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition)
     {
         if (definition.Difference is null)
         {
-            return ValidityWithDiagnostics.Valid;
+            return OptionalWithDiagnostics.Empty<NamedType>();
         }
 
         int dimension = context.VectorPopulation.VectorBases[context.Type.AsNamedType()].Definition.Dimension;
 
         if (context.VectorPopulation.VectorBases.TryGetValue(definition.Difference.Value, out var vector))
         {
-            return ValidityWithDiagnostics.Conditional(vector.Definition.Dimension == dimension, () => Diagnostics.DifferenceVectorInvalidDimension(context, definition, dimension, vector.Definition.Dimension));
+            return OptionalWithDiagnostics.Conditional(vector.Definition.Dimension == dimension, definition.Difference.Value, () => Diagnostics.DifferenceVectorInvalidDimension(context, definition, dimension, vector.Definition.Dimension));
         }
 
         if (context.VectorPopulation.GroupBases.TryGetValue(definition.Difference.Value, out var group))
         {
-            var groupHasMemberOfMatchingDimension = context.VectorPopulation.GroupMembersByGroup[definition.Difference.Value].GroupMembersByDimension.ContainsKey(dimension);
+            var groupHasMemberOfMatchingDimension = context.VectorPopulation.GroupMembersByGroup[definition.Difference.Value].GroupMembersByDimension.TryGetValue(dimension, out var correspondingMember);
 
-            return ValidityWithDiagnostics.Conditional(groupHasMemberOfMatchingDimension, () => Diagnostics.DifferenceVectorGroupLacksMatchingDimension(context, definition, dimension));
+            return OptionalWithDiagnostics.Conditional(groupHasMemberOfMatchingDimension, () => correspondingMember.Type.AsNamedType(), () => Diagnostics.DifferenceVectorGroupLacksMatchingDimension(context, definition, dimension));
         }
 
         if (context.VectorPopulation.GroupMembers.TryGetValue(definition.Difference.Value, out var groupMember))
         {
-            return ValidityWithDiagnostics.Conditional(groupMember.Definition.Dimension == dimension, () => Diagnostics.DifferenceVectorInvalidDimension(context, definition, dimension, groupMember.Definition.Dimension));
+            return OptionalWithDiagnostics.Conditional(groupMember.Definition.Dimension == dimension, definition.Difference.Value, () => Diagnostics.DifferenceVectorInvalidDimension(context, definition, dimension, groupMember.Definition.Dimension));
         }
 
-        return ValidityWithDiagnostics.Invalid(Diagnostics.DifferenceNotVector(context, definition));
+        return OptionalWithDiagnostics.Empty<NamedType>(Diagnostics.DifferenceNotVector(context, definition));
     }
 }

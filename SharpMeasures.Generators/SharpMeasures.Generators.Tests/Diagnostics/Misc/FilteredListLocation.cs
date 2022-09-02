@@ -37,8 +37,8 @@ public class FilteredListLocation
 
     public static IEnumerable<object[]> UnitListAttributes => new object[][]
     {
-        new[] { "IncludeBases" },
-        new[] { "ExcludeBases" },
+        new[] { "IncludeUnitBases" },
+        new[] { "ExcludeUnitBases" },
         new[] { "IncludeUnits" },
         new[] { "ExcludeUnits" }
     };
@@ -52,7 +52,7 @@ public class FilteredListLocation
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [FixedUnit("Metre", "Metres")]
+        [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -62,7 +62,7 @@ public class FilteredListLocation
         var source = UnitListText(attribute);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "\"Kilometre\"");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnrecognizedUnitName, expectedLocation);
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertSpecificDiagnosticsLocation(DiagnosticIDs.UnrecognizedUnitInstanceName, expectedLocation);
     }
 
     private static string ConvertibleScalarText => """

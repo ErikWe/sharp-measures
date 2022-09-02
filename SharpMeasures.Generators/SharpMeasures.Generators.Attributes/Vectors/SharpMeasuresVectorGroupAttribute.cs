@@ -49,11 +49,11 @@ public sealed class SharpMeasuresVectorGroupAttribute : Attribute
     /// <remarks>To disable support for computing the differences in the first place, use <see cref="ImplementDifference"/>.</remarks>
     public Type? Difference { get; init; }
 
-    /// <summary>The name of the default unit of the quantities of this group.</summary>
-    public string? DefaultUnitName { get; init; }
+    /// <summary>The name of the default unit instance of the vectors of this group.</summary>
+    public string? DefaultUnitInstanceName { get; init; }
 
-    /// <summary>The symbol of the default unit of the quantities of this group.</summary>
-    public string? DefaultUnitSymbol { get; init; }
+    /// <summary>The symbol of the default unit instance of the vectors of this group.</summary>
+    public string? DefaultUnitInstanceSymbol { get; init; }
 
     /// <summary>Dictates whether documentation should be generated for the quantities in this group.</summary>
     /// <remarks>If this property is not explicitly set, the entry [<i>SharpMeasures_GenerateDocumentation</i>] in the global AnalyzerConfig

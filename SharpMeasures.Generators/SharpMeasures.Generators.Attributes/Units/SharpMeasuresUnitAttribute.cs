@@ -6,27 +6,27 @@ using System;
 /// <remarks>The following accompanying attributes may be used to enhance the unit:
 /// <list type="bullet">
 /// <item>
-/// <term><see cref="FixedUnitAttribute"/></term>
+/// <term><see cref="FixedUnitInstanceAttribute"/></term>
 /// <description>Defines an instance of the unit.</description>
 /// </item>
 /// <item>
-/// <term><see cref="ScaledUnitAttribute"/></term>
+/// <term><see cref="ScaledUnitInstanceAttribute"/></term>
 /// <description>Defines an instance of the unit by scaling another instance.</description>
 /// </item>
 /// <item>
-/// <term><see cref="PrefixedUnitAttribute"/></term>
+/// <term><see cref="PrefixedUnitInstanceAttribute"/></term>
 /// <description>Defines an instance of the unit by applying a prefix to another instance.</description>
 /// </item>
 /// <item>
-/// <term><see cref="BiasedUnitAttribute"/></term>
+/// <term><see cref="BiasedUnitInstanceAttribute"/></term>
 /// <description>Defines an instance of the unit according to a bias relative to another instance.</description>
 /// </item>
 /// <item>
-/// <term><see cref="DerivedUnitAttribute"/></term>
+/// <term><see cref="DerivedUnitInstanceAttribute"/></term>
 /// <description>Defines an instance of the unit using instances of another unit.</description>
 /// </item>
 /// <item>
-/// <term><see cref="UnitAliasAttribute"/></term>
+/// <term><see cref="UnitInstanceAliasAttribute"/></term>
 /// <description>Defines an instance of the unit as an alias of another instance.</description>
 /// </item>
 /// <item>

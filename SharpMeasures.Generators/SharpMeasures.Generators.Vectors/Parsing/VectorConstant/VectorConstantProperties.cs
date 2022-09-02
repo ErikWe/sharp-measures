@@ -24,9 +24,9 @@ internal static class VectorConstantProperties
 
     private static VectorConstantProperty<string> Unit { get; } = new
     (
-        name: nameof(VectorConstantAttribute.Unit),
-        setter: static (definition, unit) => definition with { Unit = unit },
-        locator: static (locations, unitLocation) => locations with { Unit = unitLocation }
+        name: nameof(VectorConstantAttribute.UnitInstanceName),
+        setter: static (definition, unit) => definition with { UnitInstanceName = unit },
+        locator: static (locations, unitLocation) => locations with { UnitInstanceName = unitLocation }
     );
 
     private static VectorConstantProperty<double[]> Value { get; } = new

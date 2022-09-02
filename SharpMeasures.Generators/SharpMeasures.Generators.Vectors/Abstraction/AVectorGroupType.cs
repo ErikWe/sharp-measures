@@ -36,10 +36,9 @@ internal record class AVectorGroupType<TDefinition> : IVectorGroupType
 
     IReadOnlyList<IDerivedQuantity> IQuantityType.Derivations => Derivations;
     IReadOnlyList<IConvertibleQuantity> IQuantityType.Conversions => Conversions;
-    IReadOnlyList<IConvertibleVector> IVectorGroupType.Conversions => Conversions;
 
-    IReadOnlyList<IUnitList> IQuantityType.UnitInclusions => UnitInclusions;
-    IReadOnlyList<IUnitList> IQuantityType.UnitExclusions => UnitExclusions;
+    IReadOnlyList<IUnitInstanceInclusionList> IQuantityType.UnitInstanceInclusions => UnitInclusions;
+    IReadOnlyList<IUnitInstanceList> IQuantityType.UnitInstanceExclusions => UnitExclusions;
 
     protected AVectorGroupType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
         IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitExclusions)

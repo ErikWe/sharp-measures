@@ -13,7 +13,7 @@ public interface IQuantityConstantValidationDiagnostics<TDefinition, TLocations>
     where TDefinition : AQuantityConstantDefinition<TLocations>
     where TLocations : AQuantityConstantLocations<TLocations>
 {
-    public abstract Diagnostic? UnrecognizedUnit(IQuantityConstantValidationContext context, TDefinition definition);
+    public abstract Diagnostic? UnrecognizedUnitInstanceName(IQuantityConstantValidationContext context, TDefinition definition);
 
     public abstract Diagnostic? DuplicateName(IQuantityConstantValidationContext context, TDefinition definition);
     public abstract Diagnostic? NameReservedByMultiples(IQuantityConstantValidationContext context, TDefinition definition);
@@ -21,8 +21,8 @@ public interface IQuantityConstantValidationDiagnostics<TDefinition, TLocations>
     public abstract Diagnostic? DuplicateMultiples(IQuantityConstantValidationContext context, TDefinition definition);
     public abstract Diagnostic? MultiplesReservedByName(IQuantityConstantValidationContext context, TDefinition definition);
 
-    public abstract Diagnostic? NameReservedByUnitPlural(IQuantityConstantValidationContext context, TDefinition definition);
-    public abstract Diagnostic? MultiplesReservedByUnitPlural(IQuantityConstantValidationContext context, TDefinition definition);
+    public abstract Diagnostic? NameReservedByUnitInstancePluralForm(IQuantityConstantValidationContext context, TDefinition definition);
+    public abstract Diagnostic? MultiplesReservedByUnitInstancePluralForm(IQuantityConstantValidationContext context, TDefinition definition);
 }
 
 public interface IQuantityConstantValidationContext : IProcessingContext
@@ -32,7 +32,7 @@ public interface IQuantityConstantValidationContext : IProcessingContext
     public abstract HashSet<string> InheritedConstantNames { get; }
     public abstract HashSet<string> InheritedConstantMultiples { get; }
 
-    public abstract HashSet<string> IncludedUnitPlurals { get; }
+    public abstract HashSet<string> IncludedUnitInstancePluralForms { get; }
 }
 
 public abstract class AQuantityConstantValidator<TContext, TDefinition, TLocations> : AProcesser<TContext, TDefinition, TDefinition>
@@ -68,10 +68,10 @@ public abstract class AQuantityConstantValidator<TContext, TDefinition, TLocatio
 
     protected virtual IValidityWithDiagnostics ValidateConstant(TContext context, TDefinition definition)
     {
-        return ValidateUnitExists(context, definition)
+        return ValidateUnitInstanceExists(context, definition)
             .Validate(() => ValidateNameNotDuplicate(context, definition))
             .Validate(() => ValidateNameNotReservedByMultiples(context, definition))
-            .Validate(() => ValidateNameNotReservedByUnitPlural(context, definition));
+            .Validate(() => ValidateNameNotReservedByUnitInstancePluralForm(context, definition));
     }
 
     protected virtual IValidityWithDiagnostics ValidateMultiples(TContext context, TDefinition definition)
@@ -81,11 +81,11 @@ public abstract class AQuantityConstantValidator<TContext, TDefinition, TLocatio
             .Validate(() => ValidateMultiplesNotReservedByUnitPlural(context, definition));
     }
 
-    private IValidityWithDiagnostics ValidateUnitExists(TContext context, TDefinition definition)
+    private IValidityWithDiagnostics ValidateUnitInstanceExists(TContext context, TDefinition definition)
     {
-        var unitExists = context.UnitType.UnitsByName.ContainsKey(definition.Unit);
+        var unitInstanceExists = context.UnitType.UnitInstancesByName.ContainsKey(definition.UnitInstanceName);
 
-        return ValidityWithDiagnostics.Conditional(unitExists, () => Diagnostics.UnrecognizedUnit(context, definition));
+        return ValidityWithDiagnostics.Conditional(unitInstanceExists, () => Diagnostics.UnrecognizedUnitInstanceName(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateNameNotDuplicate(TContext context, TDefinition definition)
@@ -116,17 +116,17 @@ public abstract class AQuantityConstantValidator<TContext, TDefinition, TLocatio
         return ValidityWithDiagnostics.Conditional(multiplesReservedByName is false, () => Diagnostics.MultiplesReservedByName(context, definition));
     }
 
-    private IValidityWithDiagnostics ValidateNameNotReservedByUnitPlural(TContext context, TDefinition definition)
+    private IValidityWithDiagnostics ValidateNameNotReservedByUnitInstancePluralForm(TContext context, TDefinition definition)
     {
-        var nameReservedByUnitPlural = context.IncludedUnitPlurals.Contains(definition.Name);
+        var nameReservedByUnitInstancePluralForm = context.IncludedUnitInstancePluralForms.Contains(definition.Name);
 
-        return ValidityWithDiagnostics.Conditional(nameReservedByUnitPlural is false, () => Diagnostics.NameReservedByUnitPlural(context, definition));
+        return ValidityWithDiagnostics.Conditional(nameReservedByUnitInstancePluralForm is false, () => Diagnostics.NameReservedByUnitInstancePluralForm(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateMultiplesNotReservedByUnitPlural(TContext context, TDefinition definition)
     {
-        var multiplesReservedByUnitPlural = definition.GenerateMultiplesProperty && context.IncludedUnitPlurals.Contains(definition.Multiples!);
+        var multiplesReservedByUnitInstancePluralForm = definition.GenerateMultiplesProperty && context.IncludedUnitInstancePluralForms.Contains(definition.Multiples!);
 
-        return ValidityWithDiagnostics.Conditional(multiplesReservedByUnitPlural is false, () => Diagnostics.MultiplesReservedByUnitPlural(context, definition));
+        return ValidityWithDiagnostics.Conditional(multiplesReservedByUnitInstancePluralForm is false, () => Diagnostics.MultiplesReservedByUnitInstancePluralForm(context, definition));
     }
 }

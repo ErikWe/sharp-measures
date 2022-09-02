@@ -9,14 +9,14 @@ internal record class DerivableUnitProcessingContext : SimpleProcessingContext, 
 {
     public bool UnitIncludesBiasTerm { get; }
 
-    public bool MultipleDefinitions { get; }
-    public HashSet<string> ReservedIDs { get; } = new();
+    public bool UnitHasMultipleDerivations { get; }
+    public HashSet<string> ReservedDerivationIDs { get; } = new();
     public HashSet<DerivableUnitSignature> ReservedSignatures { get; } = new();
 
     public DerivableUnitProcessingContext(DefinedType type, bool unitIncludesUnitTerm, bool multipleDefinitions) : base(type)
     {
         UnitIncludesBiasTerm = unitIncludesUnitTerm;
 
-        MultipleDefinitions = multipleDefinitions;
+        UnitHasMultipleDerivations = multipleDefinitions;
     }
 }

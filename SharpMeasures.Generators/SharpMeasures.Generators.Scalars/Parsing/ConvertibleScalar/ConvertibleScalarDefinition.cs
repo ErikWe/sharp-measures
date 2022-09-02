@@ -3,24 +3,21 @@
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
-using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Utility;
 
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
-public record class ConvertibleScalarDefinition : AItemListDefinition<NamedType, ConvertibleQuantityLocations>, IConvertibleScalar
+public record class ConvertibleScalarDefinition : AItemListDefinition<NamedType, ConvertibleQuantityLocations>, IConvertibleQuantity
 {
-    public IReadOnlyList<NamedType> Scalars => Items;
-
-    [SuppressMessage("Design", "CA1033", Justification = "Available under another name")]
-    IReadOnlyList<NamedType> IConvertibleQuantity.Quantities => Scalars;
+    public IReadOnlyList<NamedType> Quantities => Items;
 
     public bool Bidirectional { get; }
     public ConversionOperatorBehaviour CastOperatorBehaviour { get; }
 
-    public ConvertibleScalarDefinition(IReadOnlyList<NamedType> scalars, bool bidirectional, ConversionOperatorBehaviour castOperatorBehaviour, ConvertibleQuantityLocations locations, IReadOnlyList<int> locationMap)
-        : base(scalars, locations, locationMap)
+    IConvertibleQuantityLocations IConvertibleQuantity.Locations => Locations;
+
+    public ConvertibleScalarDefinition(IReadOnlyList<NamedType> quantities, bool bidirectional, ConversionOperatorBehaviour castOperatorBehaviour, ConvertibleQuantityLocations locations, IReadOnlyList<int> locationMap)
+        : base(quantities, locations, locationMap)
     {
         Bidirectional = bidirectional;
         CastOperatorBehaviour = castOperatorBehaviour;

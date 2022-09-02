@@ -12,7 +12,7 @@ internal static class SpecializedSharpMeasuresScalarProperties
     public static IReadOnlyList<IAttributeProperty<RawSpecializedSharpMeasuresScalarDefinition>> AllProperties
         => new IAttributeProperty<RawSpecializedSharpMeasuresScalarDefinition>[]
     {
-        OriginalScalar,
+        OriginalQuantity,
         InheritDerivations,
         InheritConstants,
         InheritConversions,
@@ -22,8 +22,8 @@ internal static class SpecializedSharpMeasuresScalarProperties
         ImplementSum,
         ImplementDifference,
         Difference,
-        DefaultUnitName,
-        DefaultUnitSymbol,
+        DefaultUnitInstanceName,
+        DefaultUnitInstanceSymbol,
         Reciprocal,
         Square,
         Cube,
@@ -32,11 +32,11 @@ internal static class SpecializedSharpMeasuresScalarProperties
         GenerateDocumentation
     };
 
-    private static SpecializedSharpMeasuresScalarProperty<INamedTypeSymbol> OriginalScalar { get; } = new
+    private static SpecializedSharpMeasuresScalarProperty<INamedTypeSymbol> OriginalQuantity { get; } = new
     (
         name: nameof(SpecializedSharpMeasuresScalarAttribute.OriginalScalar),
-        setter: static (definition, originalScalar) => definition with { OriginalScalar = originalScalar.AsNamedType() },
-        locator: static (locations, originalScalarLocation) => locations with { OriginalScalar = originalScalarLocation }
+        setter: static (definition, originalQuantity) => definition with { OriginalQuantity = originalQuantity.AsNamedType() },
+        locator: static (locations, originalQuantityLocation) => locations with { OriginalQuantity = originalQuantityLocation }
     );
 
     private static SpecializedSharpMeasuresScalarProperty<bool> InheritDerivations { get; } = new
@@ -102,18 +102,18 @@ internal static class SpecializedSharpMeasuresScalarProperties
         locator: static (locations, differenceLocation) => locations with { Difference = differenceLocation }
     );
 
-    private static SpecializedSharpMeasuresScalarProperty<string> DefaultUnitName { get; } = new
+    private static SpecializedSharpMeasuresScalarProperty<string> DefaultUnitInstanceName { get; } = new
     (
-        name: nameof(SpecializedSharpMeasuresScalarAttribute.DefaultUnitName),
-        setter: static (definition, defaultUnitName) => definition with { DefaultUnitName = defaultUnitName },
-        locator: static (locations, defaultUnitNameLocation) => locations with { DefaultUnitName = defaultUnitNameLocation }
+        name: nameof(SpecializedSharpMeasuresScalarAttribute.DefaultUnitInstanceName),
+        setter: static (definition, defaultUnitInstanceName) => definition with { DefaultUnitInstanceName = defaultUnitInstanceName },
+        locator: static (locations, defaultUnitInstanceNameLocation) => locations with { DefaultUnitInstanceName = defaultUnitInstanceNameLocation }
     );
 
-    private static SpecializedSharpMeasuresScalarProperty<string> DefaultUnitSymbol { get; } = new
+    private static SpecializedSharpMeasuresScalarProperty<string> DefaultUnitInstanceSymbol { get; } = new
     (
-        name: nameof(SpecializedSharpMeasuresScalarAttribute.DefaultUnitSymbol),
-        setter: static (definition, defaultUnitSymbol) => definition with { DefaultUnitSymbol = defaultUnitSymbol },
-        locator: static (locations, defaultUnitSymbolLocation) => locations with { DefaultUnitSymbol = defaultUnitSymbolLocation }
+        name: nameof(SpecializedSharpMeasuresScalarAttribute.DefaultUnitInstanceSymbol),
+        setter: static (definition, defaultUnitInstanceSymbol) => definition with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol },
+        locator: static (locations, defaultUnitInstanceSymbolLocation) => locations with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbolLocation }
     );
 
     private static SpecializedSharpMeasuresScalarProperty<INamedTypeSymbol> Reciprocal { get; } = new

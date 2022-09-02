@@ -16,9 +16,9 @@ public class QuantityConstantValidationDiagnostics<TDefinition, TLocations> : IQ
 
     protected QuantityConstantValidationDiagnostics() { }
 
-    public Diagnostic UnrecognizedUnit(IQuantityConstantValidationContext context, TDefinition definition)
+    public Diagnostic UnrecognizedUnitInstanceName(IQuantityConstantValidationContext context, TDefinition definition)
     {
-        return DiagnosticConstruction.UnrecognizedUnitName(definition.Locations.Unit?.AsRoslynLocation(), definition.Unit, context.UnitType.Type.Name);
+        return DiagnosticConstruction.UnrecognizedUnitInstanceName(definition.Locations.UnitInstanceName?.AsRoslynLocation(), definition.UnitInstanceName, context.UnitType.Type.Name);
     }
 
     public Diagnostic DuplicateName(IQuantityConstantValidationContext context, TDefinition definition)
@@ -51,18 +51,18 @@ public class QuantityConstantValidationDiagnostics<TDefinition, TLocations> : IQ
         return DiagnosticConstruction.ConstantMultiplesNameReversedByConstantName(definition.Locations.AttributeName.AsRoslynLocation(), definition.Multiples!, context.Type.Name);
     }
 
-    public Diagnostic NameReservedByUnitPlural(IQuantityConstantValidationContext context, TDefinition definition)
+    public Diagnostic NameReservedByUnitInstancePluralForm(IQuantityConstantValidationContext context, TDefinition definition)
     {
-        return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.Name?.AsRoslynLocation(), definition.Name, context.Type.Name);
+        return DiagnosticConstruction.ConstantSharesNameWithUnitInstance(definition.Locations.Name?.AsRoslynLocation(), definition.Name, context.Type.Name);
     }
 
-    public Diagnostic MultiplesReservedByUnitPlural(IQuantityConstantValidationContext context, TDefinition definition)
+    public Diagnostic MultiplesReservedByUnitInstancePluralForm(IQuantityConstantValidationContext context, TDefinition definition)
     {
         if (definition.Locations.ExplicitlySetMultiples)
         {
-            return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.Multiples?.AsRoslynLocation(), definition.Multiples!, context.Type.Name);
+            return DiagnosticConstruction.ConstantSharesNameWithUnitInstance(definition.Locations.Multiples?.AsRoslynLocation(), definition.Multiples!, context.Type.Name);
         }
 
-        return DiagnosticConstruction.ConstantSharesNameWithUnit(definition.Locations.AttributeName.AsRoslynLocation(), definition.Multiples!, context.Type.Name);
+        return DiagnosticConstruction.ConstantSharesNameWithUnitInstance(definition.Locations.AttributeName.AsRoslynLocation(), definition.Multiples!, context.Type.Name);
     }
 }

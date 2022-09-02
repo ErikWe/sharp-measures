@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 
 using System.Collections.Generic;
 
-internal record class DerivableUnitDefinition : IAttributeDefinition<DerivableUnitLocations>, IDerivableUnit
+internal record class DerivableUnitDefinition : AAttributeDefinition<DerivableUnitLocations>, IDerivableUnit
 {
     public string? DerivationID { get; }
 
@@ -16,9 +16,9 @@ internal record class DerivableUnitDefinition : IAttributeDefinition<DerivableUn
 
     private ReadOnlyEquatableList<NamedType> signature { get; }
 
-    public DerivableUnitLocations Locations { get; }
+    IDerivableUnitLocations IDerivableUnit.Locations => Locations;
 
-    public DerivableUnitDefinition(string? derivationID, string expression, IReadOnlyList<NamedType> signature, bool permutations, DerivableUnitLocations locations)
+    public DerivableUnitDefinition(string? derivationID, string expression, IReadOnlyList<NamedType> signature, bool permutations, DerivableUnitLocations locations) : base(locations)
     {
         DerivationID = derivationID;
 
@@ -26,7 +26,5 @@ internal record class DerivableUnitDefinition : IAttributeDefinition<DerivableUn
         this.signature = signature.AsReadOnlyEquatable();
 
         Permutations = permutations;
-
-        Locations = locations;
     }
 }

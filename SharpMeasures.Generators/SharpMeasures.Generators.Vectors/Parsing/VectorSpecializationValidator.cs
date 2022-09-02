@@ -12,7 +12,6 @@ using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Units.UnitInstances;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Validation;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
@@ -47,24 +46,24 @@ internal static class VectorSpecializationValidator
 
         var unit = input.UnitPopulation.Units[vectorBase.Definition.Unit];
 
-        var inheritedUnits = GetUnitInclusions(input.UnvalidatedVector, input.VectorPopulation, unit.UnitsByName.Values, unit, static (vector) => vector.Definition.InheritUnits, onlyInherited: true);
-        var inheritedUnitNames = new HashSet<string>(inheritedUnits.Select(static (unit) => unit.Name));
+        var inheritedUnitInstances = GetUnitInstanceInclusions(input.UnvalidatedVector, input.VectorPopulation, unit.UnitInstancesByName.Values, unit, static (vector) => vector.Definition.InheritUnits, onlyInherited: true);
+        var inheritedUnitInstanceNames = new HashSet<string>(inheritedUnitInstances.Select(static (unit) => unit.Name));
 
-        var unitInclusions = ValidateIncludeUnits(input.UnvalidatedVector, unit, inheritedUnitNames);
-        var unitExclusions = ValidateExcludeUnits(input.UnvalidatedVector, unit, inheritedUnitNames);
+        var unitInstanceInclusions = ValidateIncludeUnitInstances(input.UnvalidatedVector, unit, inheritedUnitInstanceNames);
+        var unitInstanceExclusions = ValidateExcludeUnitInstances(input.UnvalidatedVector, unit, inheritedUnitInstanceNames);
 
-        var definedUnits = GetUnitInclusions(input.UnvalidatedVector, input.VectorPopulation, inheritedUnits, unit, static (vector) => false);
+        var definedUnitInstances = GetUnitInstanceInclusions(input.UnvalidatedVector, input.VectorPopulation, inheritedUnitInstances, unit, static (vector) => false);
 
-        var allUnits = inheritedUnits.Concat(definedUnits).ToList();
+        var allUnitInstances = inheritedUnitInstances.Concat(definedUnitInstances).ToList();
 
         var derivations = ValidateDerivations(input.UnvalidatedVector, input.ScalarPopulation, input.VectorPopulation);
-        var constants = ValidateConstants(input.UnvalidatedVector, input.VectorPopulation, vectorBase.Definition.Dimension, unit, allUnits);
+        var constants = ValidateConstants(input.UnvalidatedVector, input.VectorPopulation, vectorBase.Definition.Dimension, unit, allUnitInstances);
         var conversions = ValidateConversions(input.UnvalidatedVector, input.VectorPopulation, vectorBase.Definition.Dimension);
 
         VectorSpecializationType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result,
-            unitInclusions.Result, unitExclusions.Result);
+            unitInstanceInclusions.Result, unitInstanceExclusions.Result);
 
-        var allDiagnostics = vector.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitInclusions).Concat(unitExclusions);
+        var allDiagnostics = vector.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
@@ -90,7 +89,7 @@ internal static class VectorSpecializationValidator
         HashSet<string> inheritedConstantNames = new(inheritedConstants.Select(static (constant) => constant.Name));
         HashSet<string> inheritedConstantMultiples = new(inheritedConstants.Where(static (constant) => constant.GenerateMultiplesProperty).Select(static (constant) => constant.Multiples!));
 
-        HashSet<string> incluedUnitPlurals = new(includedUnits.Select(static (unit) => unit.Plural));
+        HashSet<string> incluedUnitPlurals = new(includedUnits.Select(static (unit) => unit.PluralForm));
 
         var validationContext = new VectorConstantValidationContext(vectorType.Type, dimension, unit, inheritedConstantNames, inheritedConstantMultiples, incluedUnitPlurals);
 
@@ -99,32 +98,32 @@ internal static class VectorSpecializationValidator
 
     private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ValidateConversions(VectorSpecializationType vectorType, IVectorPopulation vectorPopulation, int dimension)
     {
-        var inheritedConversions = CollectInheritedItems(vectorType, vectorPopulation, static (vector) => vector.Conversions.SelectMany(static (vectorList) => vectorList.Vectors), static (vector) => vector.Definition.InheritConversions);
+        var inheritedConversions = CollectInheritedItems(vectorType, vectorPopulation, static (vector) => vector.Conversions.SelectMany(static (vectorList) => vectorList.Quantities), static (vector) => vector.Definition.InheritConversions);
 
         var filteringContext = new ConvertibleVectorFilteringContext(vectorType.Type, dimension, VectorType.Vector, vectorPopulation, new HashSet<NamedType>(inheritedConversions));
 
         return ProcessingFilter.Create(ConvertibleVectorFilterer).Filter(filteringContext, vectorType.Conversions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ValidateIncludeUnits(VectorSpecializationType vectorType, IUnitType unit, HashSet<string> inheritedUnits)
+    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ValidateIncludeUnitInstances(VectorSpecializationType vectorType, IUnitType unit, HashSet<string> inheritedUnits)
     {
         var filteringContext = new IncludeUnitsFilteringContext(vectorType.Type, unit, inheritedUnits);
 
-        return ProcessingFilter.Create(IncludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInclusions);
+        return ProcessingFilter.Create(IncludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInstanceInclusions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ValidateExcludeUnits(VectorSpecializationType vectorType, IUnitType unit, HashSet<string> inheritedUnits)
+    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ValidateExcludeUnitInstances(VectorSpecializationType vectorType, IUnitType unit, HashSet<string> inheritedUnits)
     {
         var filteringContext = new ExcludeUnitsFilteringContext(vectorType.Type, unit, inheritedUnits);
 
-        return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, vectorType.UnitExclusions);
+        return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInstanceExclusions);
     }
 
     private static IEnumerable<T> CollectInheritedItems<T>(VectorSpecializationType vectorType, IVectorPopulation vectorPopulation, Func<IVectorType, IEnumerable<T>> itemsDelegate, Func<IVectorSpecializationType, bool> shouldInherit)
     {
         List<T> items = new();
 
-        recursivelyAddItems(vectorPopulation.Vectors[vectorType.Definition.OriginalVector]);
+        recursivelyAddItems(vectorPopulation.Vectors[vectorType.Definition.OriginalQuantity]);
 
         return items;
 
@@ -134,12 +133,12 @@ internal static class VectorSpecializationValidator
 
             if (vector is IVectorSpecializationType vectorSpecialization && shouldInherit(vectorSpecialization))
             {
-                recursivelyAddItems(vectorPopulation.Vectors[vectorSpecialization.Definition.OriginalVector]);
+                recursivelyAddItems(vectorPopulation.Vectors[vectorSpecialization.Definition.OriginalQuantity]);
             }
         }
     }
 
-    private static IEnumerable<IUnitInstance> GetUnitInclusions(VectorSpecializationType vectorType, IVectorPopulation vectorPopulation, IEnumerable<IUnitInstance> initialUnits, IUnitType unit,
+    private static IEnumerable<IUnitInstance> GetUnitInstanceInclusions(VectorSpecializationType vectorType, IVectorPopulation vectorPopulation, IEnumerable<IUnitInstance> initialUnits, IUnitType unit,
         Func<IVectorSpecializationType, bool> shouldInherit, bool onlyInherited = false)
     {
         HashSet<IUnitInstance> includedUnits = new(initialUnits);
@@ -160,20 +159,20 @@ internal static class VectorSpecializationValidator
 
         void modify(IVectorType vector)
         {
-            if (vector.UnitInclusions.Any())
+            if (vector.UnitInstanceInclusions.Any())
             {
-                includedUnits.IntersectWith(listUnits(vector.UnitInclusions));
+                includedUnits.IntersectWith(listUnits(vector.UnitInstanceInclusions));
 
                 return;
             }
 
-            includedUnits.ExceptWith(listUnits(vector.UnitExclusions));
+            includedUnits.ExceptWith(listUnits(vector.UnitInstanceExclusions));
 
-            IEnumerable<IUnitInstance> listUnits(IEnumerable<IUnitList> unitLists)
+            IEnumerable<IUnitInstance> listUnits(IEnumerable<IUnitInstanceList> unitLists)
             {
-                foreach (var unitName in unitLists.SelectMany(static (unitList) => unitList.Units))
+                foreach (var unitName in unitLists.SelectMany(static (unitList) => unitList.UnitInstances))
                 {
-                    if (unit.UnitsByName.TryGetValue(unitName, out var unitInstance))
+                    if (unit.UnitInstancesByName.TryGetValue(unitName, out var unitInstance))
                     {
                         yield return unitInstance;
                     }
@@ -185,7 +184,7 @@ internal static class VectorSpecializationValidator
         {
             if (vector is IVectorSpecializationType vectorSpecialization && shouldInherit(vectorSpecialization))
             {
-                recurisvelyAdd(vectorPopulation.Vectors[vectorSpecialization.Definition.OriginalVector]);
+                recurisvelyAdd(vectorPopulation.Vectors[vectorSpecialization.Definition.OriginalQuantity]);
             }
         }
     }

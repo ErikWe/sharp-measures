@@ -49,7 +49,7 @@ internal static class CommonProcessing
         return ProcessingFilter.Create(ConvertibleVectorProcesser).Filter(processingContext, rawConvertibles);
     }
 
-    public static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ParseAndProcessIncludeUnits(INamedTypeSymbol typeSymbol)
+    public static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ParseAndProcessIncludeUnitInstances(INamedTypeSymbol typeSymbol)
     {
         var rawIncludeUnits = IncludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
 
@@ -58,7 +58,7 @@ internal static class CommonProcessing
         return ProcessingFilter.Create(IncludeUnitsProcesser).Filter(processingContext, rawIncludeUnits);
     }
 
-    public static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ParseAndProcessExcludeUnits(INamedTypeSymbol typeSymbol)
+    public static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ParseAndProcessExcludeUnitInstances(INamedTypeSymbol typeSymbol)
     {
         var rawExcludeUnits = ExcludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
 
