@@ -28,7 +28,7 @@ internal class ConvertibleVectorGroupMemberrProcesser : AConvertibleQuantityProc
 
     private static ConvertibleVectorDefinition ProduceResult(RawConvertibleQuantityDefinition definition, IReadOnlyList<NamedType> scalars, IReadOnlyList<int> locationMap)
     {
-        return new(scalars, definition.Bidirectional, definition.CastOperatorBehaviour, definition.Locations, locationMap);
+        return new(scalars, definition.ConversionDirection, definition.CastOperatorBehaviour, definition.Locations, locationMap);
     }
 
     protected override IValidityWithDiagnostics ValidateQuantity(IConvertibleVectorGroupMemberProcessingContext context, RawConvertibleQuantityDefinition definition, int index)

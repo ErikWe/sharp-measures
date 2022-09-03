@@ -18,6 +18,7 @@ public interface IConvertibleQuantityProcessingDiagnostics
     public abstract Diagnostic? DuplicateQuantity(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, int index);
     public abstract Diagnostic? ConvertibleToSelf(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition, int index);
 
+    public abstract Diagnostic? UnrecognizedConversionDirection(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition);
     public abstract Diagnostic? UnrecognizedCastOperatorBehaviour(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition);
 }
 
@@ -82,7 +83,8 @@ public abstract class AConvertibleQuantityProcesser<TContext, TProduct> : AActio
     protected IValidityWithDiagnostics Validate(TContext context, RawConvertibleQuantityDefinition definition)
     {
         return ValidateNotZeroQuantities(context, definition)
-            .Validate(() => ValidateCastOperatorBehaviourDefined(context, definition));
+            .Validate(() => ValidateCastOperatorBehaviourDefined(context, definition))
+            .Validate(() => ValidateConversionDirectionDefined(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateNotZeroQuantities(TContext context, RawConvertibleQuantityDefinition definition)
@@ -95,6 +97,13 @@ public abstract class AConvertibleQuantityProcesser<TContext, TProduct> : AActio
         var enumDefined = Enum.IsDefined(typeof(ConversionOperatorBehaviour), definition.CastOperatorBehaviour);
 
         return ValidityWithDiagnostics.Conditional(enumDefined, () => Diagnostics.UnrecognizedCastOperatorBehaviour(context, definition));
+    }
+
+    private IValidityWithDiagnostics ValidateConversionDirectionDefined(TContext context, RawConvertibleQuantityDefinition definition)
+    {
+        var enumDefined = Enum.IsDefined(typeof(QuantityConversionDirection), definition.ConversionDirection);
+
+        return ValidityWithDiagnostics.Conditional(enumDefined, () => Diagnostics.UnrecognizedConversionDirection(context, definition));
     }
 
     protected virtual IValidityWithDiagnostics ValidateQuantity(TContext context, RawConvertibleQuantityDefinition definition, int index)

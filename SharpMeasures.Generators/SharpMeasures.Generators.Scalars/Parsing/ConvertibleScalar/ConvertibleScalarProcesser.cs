@@ -18,6 +18,6 @@ internal class ConvertibleScalarProcesser : AConvertibleQuantityProcesser<IConve
 
     private static ConvertibleScalarDefinition ProduceResult(RawConvertibleQuantityDefinition definition, IReadOnlyList<NamedType> scalars, IReadOnlyList<int> locationMap)
     {
-        return new(scalars, definition.Bidirectional, definition.CastOperatorBehaviour, definition.Locations, locationMap);
+        return new(scalars, definition.ConversionDirection, definition.CastOperatorBehaviour, definition.Locations, locationMap);
     }
 }

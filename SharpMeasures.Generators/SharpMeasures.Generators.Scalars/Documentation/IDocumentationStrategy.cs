@@ -27,7 +27,9 @@ internal interface IDocumentationStrategy
     public abstract string InSpecifiedUnit(IUnitInstance unitInstance);
 
     public abstract string Conversion(NamedType scalar);
+    public abstract string AntidirectionalConversion(NamedType scalar);
     public abstract string CastConversion(NamedType scalar);
+    public abstract string AntidirectionalCastConversion(NamedType scalar);
 
     public abstract string IsNaN();
     public abstract string IsZero();

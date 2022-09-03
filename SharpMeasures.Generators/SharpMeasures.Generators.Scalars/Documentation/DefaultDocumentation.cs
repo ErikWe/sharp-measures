@@ -118,11 +118,21 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         /// <summary>Converts <see langword="this"/> to the equivalent <see cref="{scalar.FullyQualifiedName}"/>.</summary>
         """;
 
+    public string AntidirectionalConversion(NamedType scalar) => $"""
+        /// <summary>Converts <paramref name="{SourceBuildingUtility.ToParameterName(scalar.Name)}"/> to the equivalent {ScalarReference}.</summary>
+        /// <param name="{SourceBuildingUtility.ToParameterName(scalar.Name)}">This <see cref="{scalar.FullyQualifiedName}"/> is converted to the original {ScalarReference}.</param>
+        """;
+
     public string CastConversion(NamedType scalar) => $"""
         /// <summary>Converts <paramref name="x"/> to the equivalent <see cref="{scalar.FullyQualifiedName}"/>.</summary>
         /// <param name="x">This {ScalarReference} is converted to the equivalent <see cref="{scalar.FullyQualifiedName}"/>.</param>
         """;
-    
+
+    public string AntidirectionalCastConversion(NamedType scalar) => $"""
+        /// <summary>Converts <paramref name="x"/> to the equivalent {ScalarReference}.</summary>
+        /// <param name="x">This <see cref="{scalar.FullyQualifiedName}"/> is converted to the equivalent {ScalarReference}.</param>
+        """;
+
     public string IsNaN() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.IsNaN"/>""";
     public string IsZero() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.IsZero"/>""";
     public string IsPositive() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.IsPositive"/>""";

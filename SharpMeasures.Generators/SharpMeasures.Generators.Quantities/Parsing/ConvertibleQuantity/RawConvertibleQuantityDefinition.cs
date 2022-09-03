@@ -11,8 +11,8 @@ public record class RawConvertibleQuantityDefinition : ARawItemListDefinition<Na
 
     public IReadOnlyList<NamedType?> Quantities => Items;
 
-    public bool Bidirectional { get; init; }
-    public ConversionOperatorBehaviour CastOperatorBehaviour { get; init; }
+    public QuantityConversionDirection ConversionDirection { get; init; } = QuantityConversionDirection.Onedirectional;
+    public ConversionOperatorBehaviour CastOperatorBehaviour { get; init; } = ConversionOperatorBehaviour.Explicit;
 
     protected override RawConvertibleQuantityDefinition Definition => this;
 

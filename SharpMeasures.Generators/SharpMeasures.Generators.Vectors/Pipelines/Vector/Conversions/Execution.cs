@@ -7,7 +7,6 @@ using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Utility;
 
 using System;
-using System.Linq;
 using System.Text;
 
 internal static class Execution
@@ -70,83 +69,149 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
+            var initialLength = Builder.Length;
+
             SeparationHandler.MarkUnncecessary();
 
-            foreach (var convertibleVector in Data.Conversions.SelectMany(static (x) => x.Quantities))
+            foreach (var conversionDefinition in Data.Conversions)
             {
-                if (Data.VectorPopulation.Groups.TryGetValue(convertibleVector, out var group))
+                if (conversionDefinition.ConversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
                 {
-                    if (group.MembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
+                    foreach (var vector in conversionDefinition.Quantities)
                     {
-                        AppendInstanceConversions(correspondingMember, indentation);
+                        if (Data.VectorPopulation.Groups.TryGetValue(vector, out var group))
+                        {
+                            if (group.MembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
+                            {
+                                AppendNormalMethodConversion(indentation, correspondingMember);
+                            }
+                        }
+
+                        if (Data.VectorPopulation.Vectors.ContainsKey(vector))
+                        {
+                            AppendNormalMethodConversion(indentation, vector);
+                        }
                     }
                 }
 
-                if (Data.VectorPopulation.Vectors.ContainsKey(convertibleVector))
+                if (conversionDefinition.ConversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
                 {
-                    AppendInstanceConversions(convertibleVector, indentation);
+                    foreach (var vector in conversionDefinition.Quantities)
+                    {
+                        if (Data.VectorPopulation.Groups.TryGetValue(vector, out var group))
+                        {
+                            if (group.MembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
+                            {
+                                AppendAntidirectionalMethodConversion(indentation, correspondingMember);
+                            }
+                        }
+
+                        if (Data.VectorPopulation.Vectors.ContainsKey(vector))
+                        {
+                            AppendAntidirectionalMethodConversion(indentation, vector);
+                        }
+                    }
                 }
             }
 
-            foreach (var convertibleVectors in Data.Conversions)
+            foreach (var conversionDefinition in Data.Conversions)
             {
-                if (convertibleVectors.CastOperatorBehaviour is ConversionOperatorBehaviour.None)
+                if (conversionDefinition.CastOperatorBehaviour is ConversionOperatorBehaviour.None)
                 {
                     continue;
                 }
 
-                Action<NamedType, Indentation> composer = convertibleVectors.CastOperatorBehaviour switch
+                if (conversionDefinition.ConversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
                 {
-                    ConversionOperatorBehaviour.Explicit => AppendExplicitOperatorConversion,
-                    ConversionOperatorBehaviour.Implicit => AppendImplicitOperatorConversion,
-                    _ => throw new NotSupportedException("Invalid cast operation")
-                };
-
-                foreach (var convertibleVector in convertibleVectors.Quantities)
-                {
-                    if (Data.VectorPopulation.Groups.TryGetValue(convertibleVector, out var group))
+                    Action<Indentation, NamedType> composer = conversionDefinition.CastOperatorBehaviour switch
                     {
-                        if (group.MembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
+                        ConversionOperatorBehaviour.Explicit => (indentation, vector) => AppendNormalOperatorConversion(indentation, vector, "explicit"),
+                        ConversionOperatorBehaviour.Implicit => (indentation, vector) => AppendAntidirectionalOperatorConversion(indentation, vector, "implicit"),
+                        _ => throw new NotSupportedException("Invalid cast operation")
+                    };
+
+                    foreach (var vector in conversionDefinition.Quantities)
+                    {
+                        if (Data.VectorPopulation.Groups.TryGetValue(vector, out var group))
                         {
-                            composer(correspondingMember, indentation);
+                            if (group.MembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
+                            {
+                                composer(indentation, correspondingMember);
+                            }
+                        }
+
+                        if (Data.VectorPopulation.Vectors.ContainsKey(vector))
+                        {
+                            composer(indentation, vector);
                         }
                     }
+                }
 
-                    if (Data.VectorPopulation.Vectors.ContainsKey(convertibleVector))
+                if (conversionDefinition.ConversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
+                {
+                    Action<Indentation, NamedType> composer = conversionDefinition.CastOperatorBehaviour switch
                     {
-                        composer(convertibleVector, indentation);
+                        ConversionOperatorBehaviour.Explicit => (indentation, vector) => AppendAntidirectionalOperatorConversion(indentation, vector, "explicit"),
+                        ConversionOperatorBehaviour.Implicit => (indentation, vector) => AppendAntidirectionalOperatorConversion(indentation, vector, "implicit"),
+                        _ => throw new NotSupportedException("Invalid cast operation")
+                    };
+
+                    foreach (var vector in conversionDefinition.Quantities)
+                    {
+                        if (Data.VectorPopulation.Groups.TryGetValue(vector, out var group))
+                        {
+                            if (group.MembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
+                            {
+                                composer(indentation, correspondingMember);
+                            }
+                        }
+
+                        if (Data.VectorPopulation.Vectors.ContainsKey(vector))
+                        {
+                            composer(indentation, vector);
+                        }
                     }
                 }
             }
+
+            AnyConversions = Builder.Length > initialLength;
         }
 
-        private void AppendInstanceConversions(NamedType vectorGroupMember, Indentation indentation)
-        {
-            AnyConversions = true;
-
-            SeparationHandler.AddIfNecessary();
-
-            AppendDocumentation(indentation, Data.Documentation.Conversion(vectorGroupMember));
-            Builder.AppendLine($"{indentation}public {vectorGroupMember.FullyQualifiedName} As{vectorGroupMember.Name} => new(Components);");
-        }
-
-        private void AppendExplicitOperatorConversion(NamedType vectorGroupMember, Indentation indentation)
-            => AppendOperatorConversion(vectorGroupMember, indentation, "explicit");
-
-        private void AppendImplicitOperatorConversion(NamedType vectorGroupMember, Indentation indentation)
-            => AppendOperatorConversion(vectorGroupMember, indentation, "implicit");
-
-        private void AppendOperatorConversion(NamedType vectorGroupMember, Indentation indentation, string behaviour)
+        private void AppendNormalMethodConversion(Indentation indentation, NamedType vector)
         {
             SeparationHandler.AddIfNecessary();
 
-            AppendDocumentation(indentation, Data.Documentation.CastConversion(vectorGroupMember));
+            AppendDocumentation(indentation, Data.Documentation.Conversion(vector));
+            Builder.AppendLine($"{indentation}public {vector.FullyQualifiedName} As{vector.Name} => new(Components);");
+        }
 
-            var methodNameAndModifiers = $"public static {behaviour} operator {vectorGroupMember.Name}";
-            var expression = "new(a.Components)";
-            var parameters = new[] { (Data.Vector.AsNamedType(), "a") };
+        private void AppendAntidirectionalMethodConversion(Indentation indentation, NamedType vector)
+        {
+            var parameterName = SourceBuildingUtility.ToParameterName(vector.Name);
 
-            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
+            SeparationHandler.AddIfNecessary();
+
+            AppendDocumentation(indentation, Data.Documentation.AntidirectionalConversion(vector));
+
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, $"public {Data.Vector.Name} From", $"new({parameterName}.Components)", (vector, parameterName));
+        }
+
+        private void AppendNormalOperatorConversion(Indentation indentation, NamedType vector, string behaviour)
+        {
+            SeparationHandler.AddIfNecessary();
+
+            AppendDocumentation(indentation, Data.Documentation.CastConversion(vector));
+
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, $"public static {behaviour} operator {vector.Name}", "new(a.Components)", (Data.Vector.AsNamedType(), "a"));
+        }
+
+        private void AppendAntidirectionalOperatorConversion(Indentation indentation, NamedType vector, string behaviour)
+        {
+            SeparationHandler.AddIfNecessary();
+
+            AppendDocumentation(indentation, Data.Documentation.AntidirectionalCastConversion(vector));
+
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, $"public static {behaviour} operator {Data.Vector.Name}", "new(a.Components)", (vector, "a"));
         }
 
         private void AppendDocumentation(Indentation indentation, string text)

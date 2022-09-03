@@ -45,8 +45,10 @@ internal class VectorFileDocumentation : IVectorDocumentationStrategy, IEquatabl
     public string InConstantMultiples(IVectorConstant constant) => FromFileOrDefault((strategy) => strategy.InConstantMultiples(constant));
     public string InSpecifiedUnit(IUnitInstance unitInstance) => FromFileOrDefault((strategy) => strategy.InSpecifiedUnit(unitInstance));
 
-    public string Conversion(NamedType vectorGroupMember) => FromFileOrDefault((strategy) => strategy.Conversion(vectorGroupMember));
-    public string CastConversion(NamedType vectorGroupMember) => FromFileOrDefault((strategy) => strategy.CastConversion(vectorGroupMember));
+    public string Conversion(NamedType vector) => FromFileOrDefault((strategy) => strategy.Conversion(vector));
+    public string AntidirectionalConversion(NamedType vector) => FromFileOrDefault((strategy) => strategy.AntidirectionalConversion(vector));
+    public string CastConversion(NamedType vector) => FromFileOrDefault((strategy) => strategy.CastConversion(vector));
+    public string AntidirectionalCastConversion(NamedType vector) => FromFileOrDefault((strategy) => strategy.AntidirectionalCastConversion(vector));
 
     public string IsNaN() => FromFileOrDefault(static (strategy) => strategy.IsNaN());
     public string IsZero() => FromFileOrDefault(static (strategy) => strategy.IsZero());

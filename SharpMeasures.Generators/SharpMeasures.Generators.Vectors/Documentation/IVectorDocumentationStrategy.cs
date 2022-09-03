@@ -28,8 +28,10 @@ internal interface IVectorDocumentationStrategy
     public abstract string InConstantMultiples(IVectorConstant constant);
     public abstract string InSpecifiedUnit(IUnitInstance unitInstance);
 
-    public abstract string Conversion(NamedType vectorGroupMember);
-    public abstract string CastConversion(NamedType vectorGroupMember);
+    public abstract string Conversion(NamedType vector);
+    public abstract string AntidirectionalConversion(NamedType vector);
+    public abstract string CastConversion(NamedType vector);
+    public abstract string AntidirectionalCastConversion(NamedType vector);
 
     public abstract string IsNaN();
     public abstract string IsZero();

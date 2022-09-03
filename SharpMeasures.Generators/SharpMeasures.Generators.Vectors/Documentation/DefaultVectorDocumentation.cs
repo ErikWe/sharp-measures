@@ -222,12 +222,22 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
         /// <summary>The components of <see langword="this"/>, expressed in <see cref="{UnitReference}.{unitInstance.Name}"/>.</summary>
         """;
 
-    public string Conversion(NamedType vectorGroupMember) => $"""
-        /// <summary>Converts <see langword="this"/> to the equivalent <see cref="{vectorGroupMember.Name}"/>.</summary>
+    public string Conversion(NamedType vector) => $"""
+        /// <summary>Converts <see langword="this"/> to the equivalent <see cref="{vector.Name}"/>.</summary>
         """;
-    public string CastConversion(NamedType vectorGroupMember) => $"""
-        /// <summary>Converts <paramref name="a"/> to the equivalent <see cref="{vectorGroupMember.Name}"/>.</summary>
-        /// <param name="a">This {VectorReference} is converted to the equivalent <see cref="{vectorGroupMember.Name}"/>.</param>
+
+    public string AntidirectionalConversion(NamedType vector) => $"""
+        /// <summary>Converts <paramref name="{SourceBuildingUtility.ToParameterName(vector.Name)}"/> to the equivalent {VectorReference}.</summary>
+        /// <param name="a">This <see cref="{vector.FullyQualifiedName}"/> is converted to the equivalent {VectorReference}.</param>
+        """;
+    public string CastConversion(NamedType vector) => $"""
+        /// <summary>Converts <paramref name="a"/> to the equivalent <see cref="{vector.Name}"/>.</summary>
+        /// <param name="a">This {VectorReference} is converted to the equivalent <see cref="{vector.Name}"/>.</param>
+        """;
+
+    public string AntidirectionalCastConversion(NamedType vector) => $"""
+        /// <summary>Converts <paramref name="a"/> to the equivalent {VectorReference}.</summary>
+        /// <param name="a">This <see cref="{vector.FullyQualifiedName}"/> is converted to the equivalent {VectorReference}.</param>
         """;
 
     public string IsNaN() => $"""/// <inheritdoc cref="global::SharpMeasures.Vector{Dimension}.IsNaN"/>""";

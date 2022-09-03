@@ -40,7 +40,9 @@ internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocume
     public string InSpecifiedUnit(IUnitInstance unitInstance) => FromFileOrDefault((strategy) => strategy.InSpecifiedUnit(unitInstance));
 
     public string Conversion(NamedType scalar) => FromFileOrDefault((strategy) => strategy.Conversion(scalar));
+    public string AntidirectionalConversion(NamedType scalar) => FromFileOrDefault((strategy) => strategy.AntidirectionalConversion(scalar));
     public string CastConversion(NamedType scalar) => FromFileOrDefault((strategy) => strategy.CastConversion(scalar));
+    public string AntidirectionalCastConversion(NamedType scalar) => FromFileOrDefault((strategy) => strategy.AntidirectionalCastConversion(scalar));
 
     public string IsNaN() => FromFileOrDefault(static (strategy) => strategy.IsNaN());
     public string IsZero() => FromFileOrDefault(static (strategy) => strategy.IsZero());

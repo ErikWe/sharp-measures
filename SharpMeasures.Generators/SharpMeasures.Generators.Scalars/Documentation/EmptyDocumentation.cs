@@ -27,7 +27,9 @@ internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocu
     string IDocumentationStrategy.InConstantMultiples(IScalarConstant _) => string.Empty;
     string IDocumentationStrategy.InSpecifiedUnit(IUnitInstance _) => string.Empty;
     string IDocumentationStrategy.Conversion(NamedType _) => string.Empty;
+    string IDocumentationStrategy.AntidirectionalConversion(NamedType _) => string.Empty;
     string IDocumentationStrategy.CastConversion(NamedType _) => string.Empty;
+    string IDocumentationStrategy.AntidirectionalCastConversion(NamedType _) => string.Empty;
     string IDocumentationStrategy.IsNaN() => string.Empty;
     string IDocumentationStrategy.IsZero() => string.Empty;
     string IDocumentationStrategy.IsPositive() => string.Empty;

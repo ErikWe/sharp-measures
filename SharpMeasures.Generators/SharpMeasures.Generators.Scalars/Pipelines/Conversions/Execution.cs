@@ -67,36 +67,65 @@ internal static class Execution
         {
             SeparationHandler.MarkUnncecessary();
 
-            foreach (var definition in Data.Conversions)
+            foreach (var conversionDefinition in Data.Conversions)
             {
-                foreach (var scalar in definition.Quantities)
+                if (conversionDefinition.ConversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
                 {
-                    AppendInstanceConversion(indentation, scalar);
+                    foreach (var scalar in conversionDefinition.Quantities)
+                    {
+                        AppendNormalMethodConversion(indentation, scalar);
+                    }
+                }
+
+                if (conversionDefinition.ConversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
+                {
+                    foreach (var scalar in conversionDefinition.Quantities)
+                    {
+                        AppendAntidirectionalMethodConversion(indentation, scalar);
+                    }
                 }
             }
 
-            foreach (var definition in Data.Conversions)
+            foreach (var conversionDefinition in Data.Conversions)
             {
-                if (definition.CastOperatorBehaviour is ConversionOperatorBehaviour.None)
+                if (conversionDefinition.CastOperatorBehaviour is ConversionOperatorBehaviour.None)
                 {
                     continue;
                 }
 
-                Action<Indentation, NamedType> composer = definition.CastOperatorBehaviour switch
+                if (conversionDefinition.ConversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
                 {
-                    ConversionOperatorBehaviour.Explicit => AppendExplicitOperatorConversion,
-                    ConversionOperatorBehaviour.Implicit => AppendImplicitOperatorConversion,
-                    _ => throw new NotSupportedException("Invalid cast operation")
-                };
+                    Action<Indentation, NamedType> composer = conversionDefinition.CastOperatorBehaviour switch
+                    {
+                        ConversionOperatorBehaviour.Explicit => (indentation, scalar) => AppendNormalOperatorConversion(indentation, scalar, "explicit"),
+                        ConversionOperatorBehaviour.Implicit => (indentation, scalar) => AppendAntidirectionalOperatorConversion(indentation, scalar, "implicit"),
+                        _ => throw new NotSupportedException("Invalid cast operation")
+                    };
 
-                foreach (var scalar in definition.Quantities)
+                    foreach (var scalar in conversionDefinition.Quantities)
+                    {
+                         composer(indentation, scalar);
+                    }
+                }
+
+                if (conversionDefinition.ConversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
                 {
-                    composer(indentation, scalar);
+                    Action<Indentation, NamedType> composer = conversionDefinition.CastOperatorBehaviour switch
+                    {
+                        ConversionOperatorBehaviour.Explicit => (indentation, scalar) => AppendAntidirectionalOperatorConversion(indentation, scalar, "explicit"),
+                        ConversionOperatorBehaviour.Implicit => (indentation, scalar) => AppendAntidirectionalOperatorConversion(indentation, scalar, "implicit"),
+                        _ => throw new NotSupportedException("Invalid cast operation")
+                    };
+
+                    foreach (var scalar in conversionDefinition.Quantities)
+                    {
+                        composer(indentation, scalar);
+                    }
                 }
             }
         }
 
-        private void AppendInstanceConversion(Indentation indentation, NamedType scalar)
+        private void AppendNormalMethodConversion(Indentation indentation, NamedType scalar)
         {
             SeparationHandler.AddIfNecessary();
 
@@ -104,19 +133,33 @@ internal static class Execution
             Builder.AppendLine($"{indentation}public {scalar.FullyQualifiedName} As{scalar.Name} => new(Magnitude);");
         }
 
-        private void AppendExplicitOperatorConversion(Indentation indentation, NamedType scalar)
-            => AppendOperatorConversion(indentation, scalar, "explicit");
+        private void AppendAntidirectionalMethodConversion(Indentation indentation, NamedType scalar)
+        {
+            var parameterName = SourceBuildingUtility.ToParameterName(scalar.Name);
 
-        private void AppendImplicitOperatorConversion(Indentation indentation, NamedType scalar)
-            => AppendOperatorConversion(indentation, scalar, "implicit");
+            SeparationHandler.AddIfNecessary();
 
-        private void AppendOperatorConversion(Indentation indentation, NamedType scalar, string behaviour)
+            AppendDocumentation(indentation, Data.Documentation.AntidirectionalConversion(scalar));
+
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, $"public {Data.Scalar.Name} From", $"new({parameterName}.Magnitude)", (scalar, parameterName));
+        }
+
+        private void AppendNormalOperatorConversion(Indentation indentation, NamedType scalar, string behaviour)
         {
             SeparationHandler.AddIfNecessary();
 
             AppendDocumentation(indentation, Data.Documentation.CastConversion(scalar));
 
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, $"public static {behaviour} operator {scalar.Name}", "new(x.Magnitude)", (Data.Scalar.AsNamedType(), "x"));
+        }
+
+        private void AppendAntidirectionalOperatorConversion(Indentation indentation, NamedType scalar, string behaviour)
+        {
+            SeparationHandler.AddIfNecessary();
+
+            AppendDocumentation(indentation, Data.Documentation.AntidirectionalCastConversion(scalar));
+
+            StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, $"public static {behaviour} operator {Data.Scalar.Name}", "new(x.Magnitude)", (scalar, "x"));
         }
 
         private void AppendDocumentation(Indentation indentation, string text)

@@ -28,7 +28,9 @@ internal class EmptyDocumentation : IGroupDocumentationStrategy, IVectorDocument
     string IVectorDocumentationStrategy.InConstantMultiples(IVectorConstant _) => string.Empty;
     string IVectorDocumentationStrategy.InSpecifiedUnit(IUnitInstance _) => string.Empty;
     string IVectorDocumentationStrategy.Conversion(NamedType _) => string.Empty;
+    string IVectorDocumentationStrategy.AntidirectionalConversion(NamedType _) => string.Empty;
     string IVectorDocumentationStrategy.CastConversion(NamedType _) => string.Empty;
+    string IVectorDocumentationStrategy.AntidirectionalCastConversion(NamedType _) => string.Empty;
     string IVectorDocumentationStrategy.IsNaN() => string.Empty;
     string IVectorDocumentationStrategy.IsZero() => string.Empty;
     string IVectorDocumentationStrategy.IsFinite() => string.Empty;

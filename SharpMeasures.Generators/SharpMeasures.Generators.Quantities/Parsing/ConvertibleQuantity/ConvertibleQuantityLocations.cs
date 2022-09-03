@@ -11,12 +11,12 @@ public record class ConvertibleQuantityLocations : AItemListLocations<Convertibl
     public MinimalLocation? QuantitiesCollection => ItemsCollection;
     public IReadOnlyList<MinimalLocation> QuantitiesElements => ItemsElements;
 
-    public MinimalLocation? Bidirectional { get; init; }
+    public MinimalLocation? ConversionDirection { get; init; }
     public MinimalLocation? CastOperatorBehaviour { get; init; }
 
     public bool ExplicitlySetQuantities => QuantitiesCollection is not null;
 
-    public bool ExplicitlySetBidirectional => Bidirectional is not null;
+    public bool ExplicitlySetConversionDirection => ConversionDirection is not null;
     public bool ExplicitlySetCastOperatorBehaviour => CastOperatorBehaviour is not null;
 
     protected override ConvertibleQuantityLocations Locations => this;

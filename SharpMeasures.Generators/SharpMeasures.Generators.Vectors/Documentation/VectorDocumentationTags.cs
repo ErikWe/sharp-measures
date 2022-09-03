@@ -39,8 +39,10 @@ internal class VectorDocumentationTags : IVectorDocumentationStrategy, IEquatabl
     public string InConstantMultiples(IVectorConstant constant) => $"InMultiplesOf_{constant.Name}";
     public string InSpecifiedUnit(IUnitInstance unitInstance) => $"InUnit_{unitInstance.Name}";
 
-    public string Conversion(NamedType vectorGroupMember) => $"As_{vectorGroupMember.Name}";
-    public string CastConversion(NamedType vectorGroupMember) => $"Operator_Cast_{vectorGroupMember.Name}";
+    public string Conversion(NamedType vector) => $"As_{vector.Name}";
+    public string AntidirectionalConversion(NamedType vector) => $"From_{vector.Name}";
+    public string CastConversion(NamedType vector) => $"Operator_CastTo_{vector.Name}";
+    public string AntidirectionalCastConversion(NamedType vector) => $"Operator_CastFrom_{vector.Name}";
 
     public string IsNaN() => "IsNaN";
     public string IsZero() => "IsZero";

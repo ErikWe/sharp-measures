@@ -11,15 +11,15 @@ public record class ConvertibleScalarDefinition : AItemListDefinition<NamedType,
 {
     public IReadOnlyList<NamedType> Quantities => Items;
 
-    public bool Bidirectional { get; }
+    public QuantityConversionDirection ConversionDirection { get; }
     public ConversionOperatorBehaviour CastOperatorBehaviour { get; }
 
     IConvertibleQuantityLocations IConvertibleQuantity.Locations => Locations;
 
-    public ConvertibleScalarDefinition(IReadOnlyList<NamedType> quantities, bool bidirectional, ConversionOperatorBehaviour castOperatorBehaviour, ConvertibleQuantityLocations locations, IReadOnlyList<int> locationMap)
+    public ConvertibleScalarDefinition(IReadOnlyList<NamedType> quantities, QuantityConversionDirection conversionDirection, ConversionOperatorBehaviour castOperatorBehaviour, ConvertibleQuantityLocations locations, IReadOnlyList<int> locationMap)
         : base(quantities, locations, locationMap)
     {
-        Bidirectional = bidirectional;
+        ConversionDirection = conversionDirection;
         CastOperatorBehaviour = castOperatorBehaviour;
     }
 }

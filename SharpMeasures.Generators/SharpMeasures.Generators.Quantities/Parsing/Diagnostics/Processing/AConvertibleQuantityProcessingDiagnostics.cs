@@ -12,6 +12,11 @@ public abstract class AConvertibleQuantityProcessingDiagnostics : IConvertibleQu
         return DiagnosticConstruction.UnrecognizedEnumValue(definition.Locations.CastOperatorBehaviour?.AsRoslynLocation(), definition.CastOperatorBehaviour);
     }
 
+    public Diagnostic UnrecognizedConversionDirection(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
+    {
+        return DiagnosticConstruction.UnrecognizedEnumValue(definition.Locations.ConversionDirection?.AsRoslynLocation(), definition.ConversionDirection);
+    }
+
     public Diagnostic EmptyQuantityList(IConvertibleQuantityProcessingContext context, RawConvertibleQuantityDefinition definition)
     {
         if (definition.Locations.ExplicitlySetQuantities)

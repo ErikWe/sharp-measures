@@ -33,7 +33,9 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string InSpecifiedUnit(IUnitInstance unitInstance) => $"InUnit_{unitInstance.Name}";
 
     public string Conversion(NamedType scalar) => $"As_{scalar.Name}";
-    public string CastConversion(NamedType scalar) => $"Operator_Cast_{scalar.Name}";
+    public string AntidirectionalConversion(NamedType scalar) => $"From_{scalar.Name}";
+    public string CastConversion(NamedType scalar) => $"Operator_CastTo_{scalar.Name}";
+    public string AntidirectionalCastConversion(NamedType scalar) => $"Operator_CastFrom_{scalar.Name}";
 
     public string IsNaN() => "IsNaN";
     public string IsZero() => "IsZero";
