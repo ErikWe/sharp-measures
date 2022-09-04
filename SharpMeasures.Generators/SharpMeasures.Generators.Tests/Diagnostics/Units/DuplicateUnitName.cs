@@ -56,7 +56,6 @@ public class DuplicateUnitName
     private static string BiasedText => """
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [SharpMeasuresScalar(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
@@ -113,7 +112,6 @@ public class DuplicateUnitName
     private static string PrefixedText => """
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
@@ -175,7 +173,6 @@ public class DuplicateUnitName
     private static string BiasedIdenticalText => """
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [SharpMeasuresScalar(typeof(UnitOfTemperature))]
         public partial class TemperatureDifference { }
@@ -216,7 +213,6 @@ public class DuplicateUnitName
     private static string PrefixedIdenticalText => """
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }

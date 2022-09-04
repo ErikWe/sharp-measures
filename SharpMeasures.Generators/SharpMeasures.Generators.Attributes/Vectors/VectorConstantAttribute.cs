@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Vectors;
+﻿namespace SharpMeasures.Generators.Vectors;
 
 using System;
 
@@ -14,16 +14,17 @@ public sealed class VectorConstantAttribute : Attribute
     /// <remarks>The number of elements should match the dimension of the vector.</remarks>
     public double[] Value { get; }
 
-    /// <summary>Determines whether to generate a property for retrieving the magnitude of the scalar in terms of multiples of this constant. The
-    /// default behaviour is <see langword="true"/>.</summary>
-    /// <remarks>If set to <see langword="true"/>, <see cref="Multiples"/> is used to determine the name of the property.</remarks>
+    /// <summary>Determines whether to generate a property describing the components of the vector in terms of multiples of this constant. The default behaviour is <see langword="true"/>.</summary>
+    /// <remarks>If <see langword="true"/>, <see cref="Multiples"/> is used to determine the name of the property.</remarks>
     public bool GenerateMultiplesProperty { get; init; } = true;
 
-    /// <summary>If <see cref="GenerateMultiplesProperty"/> is set to <see langword="true"/>, this value is used as the name of the property.
-    /// <para>The default behaviour is prepending "InMultiplesOf" to the name of the constant.</para></summary>
-    /// <remarks>See <see cref="CommonConstantMultiplesPropertyNotations"/> or <see cref="CommonPluralNotations"/> for some short-hand notations for producing
-    /// this name based on the singular name of the constant.</remarks>
-    public string Multiples { get; init; } = CommonConstantMultiplesPropertyNotations.PrependInMultiplesOf;
+    /// <summary>The name describing multiples of this constant. This name must differ from the name of the constant itself. The default behaviour is prepending "MultiplesOf" to the name of the constant.
+    /// <para>If <see cref="MultiplesRegexSubstitution"/> is set, this value is used as a .NET regex pattern. Alternatively, see <see cref="CommonPluralNotations"/> for some short-hand notations.</para></summary>
+    public string Multiples { get; init; } = CommonPluralNotations.PrependMultiplesOf;
+
+    /// <summary>Used as the .NET Regex substitution string when producing the name describing multiples of this constant, with <see cref="Multiples"/> being used as the .NET regex pattern.</summary>
+    /// <remarks>If this property is ignored, <see cref="Multiples"/> will not be used as a .NET regex pattern.</remarks>
+    public string MultiplesRegexSubstitution { get; init; } = string.Empty;
 
     /// <inheritdoc cref="VectorConstantAttribute"/>
     /// <param name="name"><inheritdoc cref="Name" path="/summary"/><para><inheritdoc cref="Name" path="/remarks"/></para></param>

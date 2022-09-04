@@ -12,12 +12,12 @@ internal class ScalarConstantValidationDiagnostics : QuantityConstantValidationD
 
     private ScalarConstantValidationDiagnostics() { }
 
-    public Diagnostic ConstantNameReservedByUnitInstanceName(IScalarConstantValidationContext context, ScalarConstantDefinition definition)
+    public Diagnostic NameReservedByUnitInstanceName(IScalarConstantValidationContext context, ScalarConstantDefinition definition)
     {
         return DiagnosticConstruction.ConstantSharesNameWithUnitInstance(definition.Locations.Name?.AsRoslynLocation(), definition.Name, context.Type.Name);
     }
 
-    public Diagnostic ConstantMultiplesNameReservedByUnitInstanceName(IScalarConstantValidationContext context, ScalarConstantDefinition definition)
+    public Diagnostic MultiplesNameReservedByUnitInstanceName(IScalarConstantValidationContext context, ScalarConstantDefinition definition)
     {
         if (definition.Locations.ExplicitlySetMultiples)
         {

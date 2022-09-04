@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Conversions;
+﻿namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Conversions;
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;

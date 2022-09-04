@@ -8,7 +8,8 @@ public sealed class ScaledUnitInstanceAttribute : Attribute
 {
     /// <inheritdoc cref="FixedUnitInstanceAttribute.Name"/>
     public string Name { get; }
-    /// <inheritdoc cref="FixedUnitInstanceAttribute.PluralForm"/>
+    /// <summary><inheritdoc cref="FixedUnitInstanceAttribute.PluralForm" path="/summary"/></summary>
+    /// <remarks>If <see cref="PluralFormRegexSubstitution"/> is set, this value is used as a .NET regex pattern. Alternatively, see <see cref="CommonPluralNotations"/> for some common notations for producing the plural form based on the singular form.</remarks>
     public string PluralForm { get; }
     /// <summary>The name of the instance that is scaled.</summary>
     public string OriginalUnitInstance { get; }
@@ -16,6 +17,10 @@ public sealed class ScaledUnitInstanceAttribute : Attribute
     public double Scale { get; }
     /// <summary>An expression that computes the value by which the original instance is scaled.</summary>
     public string? Expression { get; }
+
+    /// <summary>Used as the .NET Regex substitution string when producing the plural form of the unit, with <see cref="PluralForm"/> being used as the .NET regex pattern.</summary>
+    /// <remarks>If this property is ignored, <see cref="PluralForm"/> will not be used as a .NET regex pattern.</remarks>
+    public string PluralFormRegexSubstitution { get; init; } = string.Empty;
 
     /// <inheritdoc cref="ScaledUnitInstanceAttribute"/>
     /// <param name="name"><inheritdoc cref="Name" path="/summary"/><para><inheritdoc cref="Name" path="/remarks"/></para></param>

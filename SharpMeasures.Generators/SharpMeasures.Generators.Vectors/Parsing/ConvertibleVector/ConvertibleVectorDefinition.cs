@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
+﻿namespace SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 using SharpMeasures.Generators.Quantities;

@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
+﻿namespace SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 
 using Microsoft.CodeAnalysis;
 

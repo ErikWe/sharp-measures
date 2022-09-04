@@ -11,6 +11,7 @@ internal static class ScaledUnitInstanceProperties
     {
         CommonProperties.Name<RawScaledUnitInstanceDefinition, ScaledUnitInstanceLocations>(nameof(ScaledUnitInstanceAttribute.Name)),
         CommonProperties.PluralForm<RawScaledUnitInstanceDefinition, ScaledUnitInstanceLocations>(nameof(ScaledUnitInstanceAttribute.PluralForm)),
+        CommonProperties.PluralFormRegexSubstitution<RawScaledUnitInstanceDefinition, ScaledUnitInstanceLocations>(nameof(ScaledUnitInstanceAttribute.PluralFormRegexSubstitution)),
         CommonProperties.OriginalUnitInstance<RawScaledUnitInstanceDefinition, ScaledUnitInstanceLocations>(nameof(ScaledUnitInstanceAttribute.OriginalUnitInstance)),
         Scale,
         Expression

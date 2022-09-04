@@ -19,12 +19,12 @@ using Xunit;
 [UsesVerify]
 internal class GeneratorVerifier
 {
-    public static GeneratorVerifier Construct<TGenerator>(string source, bool assertNoCompilationErrors = true) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator(), assertNoCompilationErrors);
-    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator, bool assertNoCompilationErrors = true)
+    public static GeneratorVerifier Construct<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator());
+    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator)
     {
         var driver = DriverConstruction.ConstructAndRun(source, generator, ProjectPath.Path + @"\Documentation", out var compilation);
         
-        return new(source, driver, compilation, assertNoCompilationErrors);
+        return new(source, driver, compilation);
     }
 
     private string Source { get; }
@@ -37,7 +37,7 @@ internal class GeneratorVerifier
 
     private ImmutableArray<Diagnostic> Diagnostics => RunResult.Diagnostics;
 
-    private GeneratorVerifier(string source, GeneratorDriver driver, Compilation compilation, bool assertNoCompilationErrors = true)
+    private GeneratorVerifier(string source, GeneratorDriver driver, Compilation compilation)
     {
         Source = source;
 
@@ -48,10 +48,18 @@ internal class GeneratorVerifier
 
         OutputCount = Output.Count();
 
-        if (assertNoCompilationErrors)
-        {
-            Assert.Empty(Compilation.GetDiagnostics().Where(static (diagnostics) => diagnostics.Location.SourceTree?.FilePath.Length > 0));
-        }
+        AssertNoDiagnosticsFromGeneratedCode();
+        AssertNoErrorsOrWarningsFromTestCode();
+    }
+
+    private void AssertNoDiagnosticsFromGeneratedCode()
+    {
+        Assert.Empty(Compilation.GetDiagnostics().Where(static (diagnostics) => diagnostics.Location.SourceTree?.FilePath.Length > 0));
+    }
+
+    private void AssertNoErrorsOrWarningsFromTestCode()
+    {
+        Assert.Empty(Compilation.GetDiagnostics().Where(static (diagnostics) => diagnostics.Severity is DiagnosticSeverity.Error or DiagnosticSeverity.Warning));
     }
 
     public GeneratorVerifier AssertNoSourceGenerated()

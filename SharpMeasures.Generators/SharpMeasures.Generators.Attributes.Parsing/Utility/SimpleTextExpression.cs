@@ -1,8 +1,10 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing.Utility;
 
+using System.Text.RegularExpressions;
+
 public static class SimpleTextExpression
 {
-    public static string? Interpret(string? original, string? expression)
+    public static string? Interpret(string original, string expression)
     {
         if (original is null || original.Length is 0 || expression is null || expression.Length is 0)
         {
@@ -42,5 +44,17 @@ public static class SimpleTextExpression
         string newText = splitByOpenBracket[0] + targetText + splitByCloseBracket[1];
 
         return original.Replace(targetText, newText);
+    }
+
+    public static string? Interpret(string original, string expression, string substitution)
+    {
+        var replaced = new Regex(expression).Replace(original, substitution);
+
+        if (replaced == original)
+        {
+            return null;
+        }
+
+        return replaced;
     }
 }

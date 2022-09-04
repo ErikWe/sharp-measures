@@ -72,10 +72,10 @@ public class UnionInclusionStackingModeRedundant
     private static IReadOnlyCollection<string> UnionInclusionStackingModeRedundantAndUnrecognizedUnitNameDiagnostics { get; } = new string[] { DiagnosticIDs.UnrecognizedUnitInstanceName, DiagnosticIDs.UnionInclusionStackingModeRedundant };
 
     private static string ScalarText(string attribute) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
 
         [{{attribute}}("Kilometre", StackingMode = InclusionStackingMode.Union)]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
@@ -94,13 +94,13 @@ public class UnionInclusionStackingModeRedundant
     }
 
     private static string SpecializedScalarText(string attribute, bool inherit) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
         
         [{{attribute}}("Kilometre", StackingMode = InclusionStackingMode.Union)]
-        [SpecializedSharpMeasuresScalar(typeof(Length), InheritUnits = {{inherit}}, InheritBases = {{inherit}})]
+        [SpecializedSharpMeasuresScalar(typeof(Length), InheritUnits = {{inherit.ToString().ToLowerInvariant()}}, InheritBases = {{inherit.ToString().ToLowerInvariant()}})]
         public partial class Distance { }
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
@@ -120,10 +120,10 @@ public class UnionInclusionStackingModeRedundant
     }
 
     private static string VectorText => """
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Kilometre", StackingMode = InclusionStackingMode.Union)]
@@ -147,14 +147,14 @@ public class UnionInclusionStackingModeRedundant
     }
 
     private static string SpecializedVectorText(bool inherit) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Kilometre", StackingMode = InclusionStackingMode.Union)]
-        [SpecializedSharpMeasuresVector(typeof(Position3), InheritUnits = {{inherit}})]
+        [SpecializedSharpMeasuresVector(typeof(Position3), InheritUnits = {{inherit.ToString().ToLowerInvariant()}})]
         public partial class Displacement3 { }
 
         [SharpMeasuresVector(typeof(UnitOfLength))]
@@ -177,10 +177,10 @@ public class UnionInclusionStackingModeRedundant
     }
 
     private static string VectorGroupText => """
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Kilometre", StackingMode = InclusionStackingMode.Union)]
@@ -204,14 +204,14 @@ public class UnionInclusionStackingModeRedundant
     }
 
     private static string SpecializedVectorGroupText(bool inherit) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Kilometre", StackingMode = InclusionStackingMode.Union)]
-        [SpecializedSharpMeasuresVectorGroup(typeof(Position), InheritUnits = {{inherit}})]
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position), InheritUnits = {{inherit.ToString().ToLowerInvariant()}})]
         public static partial class Displacement { }
 
         [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
@@ -234,14 +234,14 @@ public class UnionInclusionStackingModeRedundant
     }
 
     private static string VectorGroupMemberText(bool inheritFromMembers, bool inheritFromGroups) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Kilometre", StackingMode = InclusionStackingMode.Union)]
-        [SharpMeasuresVectorGroupMember(typeof(Displacement), InheritUnits = {{inheritFromGroups}}, InheritUnitsFromMembers = {{inheritFromMembers}})]
+        [SharpMeasuresVectorGroupMember(typeof(Displacement), InheritUnits = {{inheritFromGroups.ToString().ToLowerInvariant()}}, InheritUnitsFromMembers = {{inheritFromMembers.ToString().ToLowerInvariant()}})]
         public partial class Displacement3 { }
 
         [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
@@ -278,10 +278,10 @@ public class UnionInclusionStackingModeRedundant
     private static GeneratorVerifier VectorGroupMemberIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberIdenticalText);
 
     private static string ScalarIdenticalText => """
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
@@ -291,10 +291,10 @@ public class UnionInclusionStackingModeRedundant
         """;
 
     private static string SpecializedScalarIdenticalText => """
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
         
         [SpecializedSharpMeasuresScalar(typeof(Length))]
         public partial class Distance { }
@@ -308,10 +308,10 @@ public class UnionInclusionStackingModeRedundant
         """;
 
     private static string VectorIdenticalText => """
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [SharpMeasuresVector(typeof(UnitOfLength))]
@@ -326,10 +326,10 @@ public class UnionInclusionStackingModeRedundant
         """;
 
     private static string SpecializedVectorIdenticalText => """
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [SpecializedSharpMeasuresVector(typeof(Position3))]
@@ -347,10 +347,10 @@ public class UnionInclusionStackingModeRedundant
         """;
 
     private static string VectorGroupIdenticalText => """
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
@@ -365,10 +365,10 @@ public class UnionInclusionStackingModeRedundant
         """;
 
     private static string SpecializedVectorGroupIdenticalText => """
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
@@ -386,10 +386,10 @@ public class UnionInclusionStackingModeRedundant
         """;
 
     private static string VectorGroupMemberIdenticalText => """
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [SharpMeasuresVectorGroupMember(typeof(Displacement))]

@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Diagnostics;
+﻿namespace SharpMeasures.Generators.Diagnostics;
 
 using Microsoft.CodeAnalysis;
 
@@ -249,6 +249,17 @@ public static partial class DiagnosticRules
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor SetRegexSubstitutionButNotPattern = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.SetRegexSubstitutionButNotPattern,
+        title: "No regex pattern specified",
+        messageFormat: "A regex substitution string was specified, but not the regex pattern",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
     public static readonly DiagnosticDescriptor EmptyList = new DiagnosticDescriptor

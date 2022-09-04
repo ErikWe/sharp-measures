@@ -18,11 +18,12 @@ public class IncludeUnitAndBase
     private static GeneratorVerifier AssertNoDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoDiagnosticsReported();
 
     private static string ScalarText => """
+        using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [IncludeUnit("Metre")]
-        [IncludeUnitBase("Metre")]
+        [IncludeUnits("Metre")]
+        [IncludeUnitBases("Metre")]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
@@ -32,11 +33,12 @@ public class IncludeUnitAndBase
         """;
 
     private static string SpecializedScalarText => """
+        using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [IncludeUnit("Metre")]
-        [IncludeUnitBase("Metre")]
+        [IncludeUnits("Metre")]
+        [IncludeUnitBases("Metre")]
         [SpecializedSharpMeasuresScalar(typeof(Length))]
         public partial class Distance { }
 

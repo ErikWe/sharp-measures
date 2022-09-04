@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Vectors.Abstraction;
+﻿namespace SharpMeasures.Generators.Vectors.Abstraction;
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;

@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
+﻿namespace SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 
 using Microsoft.CodeAnalysis;
 

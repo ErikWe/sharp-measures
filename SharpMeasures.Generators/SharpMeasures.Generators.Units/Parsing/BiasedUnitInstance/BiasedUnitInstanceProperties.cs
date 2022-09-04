@@ -11,6 +11,7 @@ internal static class BiasedUnitInstanceProperties
     {
         CommonProperties.Name<RawBiasedUnitInstanceDefinition, BiasedUnitInstanceLocations>(nameof(BiasedUnitInstanceAttribute.Name)),
         CommonProperties.PluralForm<RawBiasedUnitInstanceDefinition, BiasedUnitInstanceLocations>(nameof(BiasedUnitInstanceAttribute.PluralForm)),
+        CommonProperties.PluralFormRegexSubstitution<RawBiasedUnitInstanceDefinition, BiasedUnitInstanceLocations>(nameof(BiasedUnitInstanceAttribute.PluralFormRegexSubstitution)),
         CommonProperties.OriginalUnitInstance<RawBiasedUnitInstanceDefinition, BiasedUnitInstanceLocations>(nameof(BiasedUnitInstanceAttribute.OriginalUnitInstance)),
         Bias,
         Expression

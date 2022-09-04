@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Units.Parsing.PrefixedUnitInstance;
+﻿namespace SharpMeasures.Generators.Units.Parsing.PrefixedUnitInstance;
 
 using Microsoft.CodeAnalysis;
 

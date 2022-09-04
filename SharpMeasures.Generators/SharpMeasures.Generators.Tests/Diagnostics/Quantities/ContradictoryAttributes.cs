@@ -12,7 +12,7 @@ using VerifyXunit;
 using Xunit;
 
 [UsesVerify]
-public class Contrad6ictoryAttributes
+public class ContradictoryAttributes
 {
     [Fact]
     public Task IncludeAndExcludeUnit_Scalar() => AssertIncludeAndExcludeUnit_Scalar().VerifyDiagnostics();
@@ -48,7 +48,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [IncludeUnits("Metre")]
         [ExcludeUnits("Kilometre")]
@@ -72,7 +71,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [IncludeUnits("Metre")]
         [ExcludeUnits("Kilometre")]
@@ -99,7 +97,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Metre")]
@@ -127,7 +124,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Metre")]
@@ -158,7 +154,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Metre")]
@@ -186,7 +181,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Metre")]
@@ -217,7 +211,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Metre")]
@@ -248,7 +241,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [IncludeUnitBases("Metre")]
         [ExcludeUnitBases("Kilometre")]
@@ -272,7 +264,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [IncludeUnitBases("Metre")]
         [ExcludeUnitBases("Kilometre")]
@@ -309,7 +300,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [IncludeUnits("Metre")]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
@@ -325,7 +315,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [IncludeUnits("Metre")]
         [SpecializedSharpMeasuresScalar(typeof(Length))]
@@ -344,7 +333,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Metre")]
@@ -365,7 +353,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Metre")]
@@ -388,7 +375,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Metre")]
@@ -408,7 +394,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Metre")]
@@ -431,7 +416,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [IncludeUnits("Metre")]
@@ -454,7 +438,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [IncludeUnitBases("Metre")]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
@@ -470,7 +453,6 @@ public class Contrad6ictoryAttributes
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [IncludeUnitBases("Metre")]
         [SpecializedSharpMeasuresScalar(typeof(Length))]

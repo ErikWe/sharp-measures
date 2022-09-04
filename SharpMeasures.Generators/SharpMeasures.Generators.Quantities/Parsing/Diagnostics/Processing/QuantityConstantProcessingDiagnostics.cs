@@ -91,4 +91,9 @@ public class QuantityConstantProcessingDiagnostics<TDefinition, TLocations> : IQ
     {
         return DiagnosticConstruction.ConstantMultiplesDisabledButNameSpecified(definition.Locations.Multiples?.AsRoslynLocation(), definition.Name!);
     }
+
+    public Diagnostic SetRegexSubstitutionButNotPattern(IQuantityConstantProcessingContext context, TDefinition definition)
+    {
+        return DiagnosticConstruction.SetRegexSubstitutionButNotPattern(definition.Locations.MultiplesRegexSubstitution?.AsRoslynLocation());
+    }
 }

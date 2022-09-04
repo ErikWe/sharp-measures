@@ -17,7 +17,6 @@ public class NormalCases
         var source = """
             using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Units.Utility;
             
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
@@ -37,7 +36,6 @@ public class NormalCases
         var source = """
             using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Units.Utility;
             
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }

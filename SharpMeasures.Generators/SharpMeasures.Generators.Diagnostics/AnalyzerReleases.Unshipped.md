@@ -20,6 +20,7 @@ Measures1021 | Usage | Error | Expected a biased scalar quantity
 Measures1022 | Usage | Error | Unit does not support biased quantities
 Measures1040 | Usage | Warning | Invalid derivation expression
 Measures1041 | Usage | Warning | Invalid derivation signature
+Measures1060 | Usage | Warning | No regex pattern specified
 Measures1080 | Usage | Info | Expected a non-empty list
 Measures1081 | Usage | Info | Item has already been listed
 Measures1100 | Naming | Warning | Invalid unit name

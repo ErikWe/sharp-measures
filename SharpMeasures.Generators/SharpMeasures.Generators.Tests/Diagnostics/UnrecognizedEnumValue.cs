@@ -52,7 +52,6 @@ public class UnrecognizedEnumValue
     private static string PrefixedUnitText(SourceSubtext prefix, string type) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
@@ -72,10 +71,10 @@ public class UnrecognizedEnumValue
     }
 
     private static string CastOperatorBehaviourText(SourceSubtext castOperatorBehaviour) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
 
         [ConvertibleQuantity(typeof(Length), CastOperatorBehaviour = (ConversionOperatorBehaviour){{castOperatorBehaviour}})]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
@@ -98,10 +97,10 @@ public class UnrecognizedEnumValue
     }
 
     private static string InclusionStackingModeText_Unit(SourceSubtext inclusionStackingMode) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
 
         [IncludeUnits("Metre", StackingMode = (InclusionStackingMode){{inclusionStackingMode}})]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
@@ -121,9 +120,9 @@ public class UnrecognizedEnumValue
     }
 
     private static string InclusionStackingModeText_Base(SourceSubtext inclusionStackingMode) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
 
         [IncludeUnitBases("Metre", StackingMode = (InclusionStackingMode){{inclusionStackingMode}})]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
@@ -150,7 +149,6 @@ public class UnrecognizedEnumValue
     private static string PrefixedUnitIdenticalText => """
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
@@ -161,10 +159,10 @@ public class UnrecognizedEnumValue
         """;
 
     private static string CastOperatorBehaviourIdenticalText => """
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Distance { }
@@ -178,10 +176,10 @@ public class UnrecognizedEnumValue
         """;
 
     private static string InclusionStackingModeIdenticalText_Unit => """
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
@@ -192,9 +190,9 @@ public class UnrecognizedEnumValue
         """;
 
     private static string InclusionStackingModeIdenticalText_Base => """
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Utility;
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }

@@ -7,6 +7,8 @@ internal interface IRawUnitInstance<out TLocations> : IAttributeDefinition<TLoca
 {
     public abstract string? Name { get; }
     public abstract string? PluralForm { get; }
+
+    public abstract string? PluralFormRegexSubstitution { get; }
 }
 
 internal interface IOpenRawUnitInstance<out TDefinition, TLocations> : IOpenAttributeDefinition<TDefinition, TLocations>, IRawUnitInstance<TLocations>
@@ -15,4 +17,6 @@ internal interface IOpenRawUnitInstance<out TDefinition, TLocations> : IOpenAttr
 {
     public abstract TDefinition WithName(string? name);
     public abstract TDefinition WithPluralForm(string? pluralForm);
+
+    public abstract TDefinition WithPluralFormRegexSubstitution(string? pluralFormRegexSubstitution);
 }

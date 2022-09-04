@@ -196,6 +196,11 @@ public static partial class DiagnosticConstruction
     public static Diagnostic EmptyUnitDerivationSignature(Location? location) => EmptyDerivationSignature(location, "unit");
     public static Diagnostic EmptyQuantityDerivationSignature(Location? location) => EmptyDerivationSignature(location, "quantity");
 
+    public static Diagnostic SetRegexSubstitutionButNotPattern(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.SetRegexSubstitutionButNotPattern, location);
+    }
+
     public static Diagnostic EmptyList(Location? location, string objectType)
     {
         return Diagnostic.Create(DiagnosticRules.EmptyList, location, objectType);

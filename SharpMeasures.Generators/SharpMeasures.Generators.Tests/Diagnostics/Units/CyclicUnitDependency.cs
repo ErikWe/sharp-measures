@@ -133,7 +133,6 @@ public class CyclicUnitDependency
     private static string PrefixedText_Self => """
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
@@ -153,7 +152,6 @@ public class CyclicUnitDependency
     private static string PrefixedText_Loop => """
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }

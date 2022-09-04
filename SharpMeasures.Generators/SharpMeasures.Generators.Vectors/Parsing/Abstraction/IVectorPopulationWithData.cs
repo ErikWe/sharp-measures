@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Vectors.Parsing.Abstraction;
+﻿namespace SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
 using System.Collections.Generic;
 

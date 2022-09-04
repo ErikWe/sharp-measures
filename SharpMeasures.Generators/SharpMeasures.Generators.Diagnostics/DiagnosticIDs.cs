@@ -41,6 +41,8 @@ public static partial class DiagnosticIDs
     public const string InvalidDerivationExpression = $"{Prefix}{Numbering.Hundreds.Misc}40";
     public const string InvalidDerivationSignature = $"{Prefix}{Numbering.Hundreds.Misc}41";
 
+    public const string SetRegexSubstitutionButNotPattern = $"{Prefix}{Numbering.Hundreds.Misc}60";
+
     public const string EmptyList = $"{Prefix}{Numbering.Hundreds.Misc}80";
     public const string DuplicateListing = $"{Prefix}{Numbering.Hundreds.Misc}81";
 

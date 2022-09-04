@@ -18,11 +18,12 @@ public class Bidirectional
     public Task BiasedScalar() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedScalarText).VerifyMatchingSourceNames("Temperature2_Conversions.g.cs", "Temperature_Conversions.g.cs");
 
     private static string UnbiasedScalarText => """
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [ConvertibleQuantity(typeof(Length), Bidirectional = true)]
+        [ConvertibleQuantity(typeof(Length), ConversionDirection = true)]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Distance { }
 

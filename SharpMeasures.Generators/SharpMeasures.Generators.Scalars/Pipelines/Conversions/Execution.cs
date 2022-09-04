@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Scalars.Pipelines.Conversions;
+﻿namespace SharpMeasures.Generators.Scalars.Pipelines.Conversions;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;

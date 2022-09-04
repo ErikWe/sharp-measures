@@ -11,6 +11,7 @@ internal static class UnitInstanceAliasProperties
     {
         CommonProperties.Name<RawUnitInstanceAliasDefinition, UnitInstanceAliasLocations>(nameof(UnitInstanceAliasAttribute.Name)),
         CommonProperties.PluralForm<RawUnitInstanceAliasDefinition, UnitInstanceAliasLocations>(nameof(UnitInstanceAliasAttribute.PluralForm)),
+        CommonProperties.PluralFormRegexSubstitution<RawUnitInstanceAliasDefinition, UnitInstanceAliasLocations>(nameof(UnitInstanceAliasAttribute.PluralFormRegexSubstitution)),
         CommonProperties.OriginalUnitInstance<RawUnitInstanceAliasDefinition, UnitInstanceAliasLocations>(nameof(UnitInstanceAliasAttribute.AliasOf)),
     };
 }

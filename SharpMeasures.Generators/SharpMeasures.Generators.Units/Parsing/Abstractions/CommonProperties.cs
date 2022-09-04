@@ -28,6 +28,18 @@ internal static class CommonProperties
         );
     }
 
+    public static IAttributeProperty<TDefinition> PluralFormRegexSubstitution<TDefinition, TLocations>(string name)
+        where TDefinition : IOpenRawUnitInstance<TDefinition, TLocations>
+        where TLocations : IOpenUnitInstanceLocations<TLocations>
+    {
+        return new AttributeProperty<TDefinition, TLocations, string>
+        (
+            name: name,
+            setter: static (definition, pluralFormRegexSubstitution) => definition.WithPluralFormRegexSubstitution(pluralFormRegexSubstitution),
+            locator: static (locations, pluralFormRegexSubtitiutionLocation) => locations.WithPluralFormRegexSubstitution(pluralFormRegexSubtitiutionLocation)
+        );
+    }
+
     public static IAttributeProperty<TDefinition> OriginalUnitInstance<TDefinition, TLocations>(string name)
         where TDefinition : IOpenRawModifiedUnitInstance<TDefinition, TLocations>
         where TLocations : IOpenModifiedUnitInstanceLocations<TLocations>

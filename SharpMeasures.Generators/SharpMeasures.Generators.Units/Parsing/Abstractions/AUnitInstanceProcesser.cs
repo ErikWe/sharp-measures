@@ -102,7 +102,15 @@ internal abstract class AUnitInstanceProcesser<TContext, TDefinition, TLocations
         return ValidityWithDiagnostics.Conditional(definition.PluralForm!.Length is not 0, () => Diagnostics.EmptyUnitInstancePluralForm(context, definition));
     }
 
-    private static string? InterpretUnitInstancePluralForm(TDefinition definition) => SimpleTextExpression.Interpret(definition.Name, definition.PluralForm);
+    private static string? InterpretUnitInstancePluralForm(TDefinition definition)
+    {
+        if (definition.PluralFormRegexSubstitution is null || definition.PluralFormRegexSubstitution.Length is 0)
+        {
+            return SimpleTextExpression.Interpret(definition.Name!, definition.PluralForm!);
+        }
+
+        return SimpleTextExpression.Interpret(definition.Name!, definition.PluralForm!, definition.PluralFormRegexSubstitution);
+    }
 
     private IOptionalWithDiagnostics<string> ProcessInterpretedUnitInstancePluralForm(TContext context, TDefinition definition, string? interpretedPluralForm)
     {

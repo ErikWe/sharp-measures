@@ -9,11 +9,17 @@ internal abstract record class ARawUnitInstance<TDefinition, TLocations> : ARawA
     public string? Name { get; private init; }
     public string? PluralForm { get; private init; }
 
+    public string? PluralFormRegexSubstitution { get; private init; }
+
     protected ARawUnitInstance(TLocations locations) : base(locations) { }
 
     protected TDefinition WithName(string? name) => Definition with { Name = name };
     protected TDefinition WithPluralForm(string? pluralForm) => Definition with { PluralForm = pluralForm };
 
+    protected TDefinition WithPluralFormRegexSubstitution(string? pluralFormRegexSubstitution) => Definition with { PluralFormRegexSubstitution = pluralFormRegexSubstitution };
+
     TDefinition IOpenRawUnitInstance<TDefinition, TLocations>.WithName(string? name) => WithName(name);
     TDefinition IOpenRawUnitInstance<TDefinition, TLocations>.WithPluralForm(string? pluralForm) => WithPluralForm(pluralForm);
+
+    TDefinition IOpenRawUnitInstance<TDefinition, TLocations>.WithPluralFormRegexSubstitution(string? pluralFormRegexSubstitution) => WithPluralFormRegexSubstitution(pluralFormRegexSubstitution);
 }

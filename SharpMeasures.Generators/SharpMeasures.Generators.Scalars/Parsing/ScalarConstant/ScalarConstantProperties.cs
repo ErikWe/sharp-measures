@@ -12,7 +12,8 @@ internal static class ScalarConstantProperties
         UnitInstanceName,
         Value,
         GenerateMultiplesProperty,
-        Multiples
+        Multiples,
+        MultiplesRegexSubstitution
     };
 
     private static ScalarConstantProperty<string> Name { get; } = new
@@ -48,5 +49,12 @@ internal static class ScalarConstantProperties
         name: nameof(ScalarConstantAttribute.Multiples),
         setter: static (definition, multiples) => definition with { Multiples = multiples },
         locator: static (locations, multiplesLocation) => locations with { Multiples = multiplesLocation }
+    );
+
+    private static ScalarConstantProperty<string?> MultiplesRegexSubstitution { get; } = new
+    (
+        name: nameof(ScalarConstantAttribute.MultiplesRegexSubstitution),
+        setter: static (definition, multiplesRegexSubstitution) => definition with { MultiplesRegexSubstitution = multiplesRegexSubstitution },
+        locator: static (locations, multiplesRegexSubstitutionLocation) => locations with { MultiplesRegexSubstitution = multiplesRegexSubstitutionLocation }
     );
 }

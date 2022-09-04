@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Units.Parsing.PrefixedUnitInstance;
+﻿namespace SharpMeasures.Generators.Units.Parsing.PrefixedUnitInstance;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
@@ -11,6 +11,7 @@ internal static class PrefixedUnitInstanceProperties
     {
         CommonProperties.Name<RawPrefixedUnitInstanceDefinition, PrefixedUnitInstanceLocations>(nameof(PrefixedUnitInstanceAttribute.Name)),
         CommonProperties.PluralForm<RawPrefixedUnitInstanceDefinition, PrefixedUnitInstanceLocations>(nameof(PrefixedUnitInstanceAttribute.PluralForm)),
+        CommonProperties.PluralFormRegexSubstitution<RawPrefixedUnitInstanceDefinition, PrefixedUnitInstanceLocations>(nameof(PrefixedUnitInstanceAttribute.PluralFormRegexSubstitution)),
         CommonProperties.OriginalUnitInstance<RawPrefixedUnitInstanceDefinition, PrefixedUnitInstanceLocations>(nameof(PrefixedUnitInstanceAttribute.OriginalUnitInstance)),
         MetricPrefix,
         BinaryPrefix

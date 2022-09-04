@@ -219,11 +219,10 @@ public class InclusionOrExclusionHadNoEffect
     }
 
     private static string SpecializedScalarText_Inherited(string attribute) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
-        using SharpMeasures.Generators.Utility;
 
         [{{attribute}}("Metre"{{(attribute.StartsWith("Include", StringComparison.InvariantCulture) ? ", StackingMode = InclusionStackingMode.Union" : string.Empty)}})] // <-
         [SpecializedSharpMeasuresScalar(typeof(Length))]
@@ -360,11 +359,10 @@ public class InclusionOrExclusionHadNoEffect
     }
 
     private static string SpecializedVectorText_Inherited(string attribute) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [{{attribute}}("Metre"{{(attribute.StartsWith("Include", StringComparison.InvariantCulture) ? ", StackingMode = InclusionStackingMode.Union" : string.Empty)}})] // <-
@@ -505,11 +503,10 @@ public class InclusionOrExclusionHadNoEffect
     }
 
     private static string SpecializedVectorGroupText_Inherited(string attribute) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [{{attribute}}("Metre"{{(attribute.StartsWith("Include", StringComparison.InvariantCulture) ? ", StackingMode = InclusionStackingMode.Union" : string.Empty)}})] // <-
@@ -597,11 +594,10 @@ public class InclusionOrExclusionHadNoEffect
     }
 
     private static string VectorGroupMemberText_InheritedFromGroup(string attribute) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [{{attribute}}("Metre"{{(attribute.StartsWith("Include", StringComparison.InvariantCulture) ? ", StackingMode = InclusionStackingMode.Union" : string.Empty)}})] // <-
@@ -630,11 +626,10 @@ public class InclusionOrExclusionHadNoEffect
     }
 
     private static string VectorGroupMemberText_InheritedFromMember(string attribute) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [{{attribute}}("Metre"{{(attribute.StartsWith("Include", StringComparison.InvariantCulture) ? ", StackingMode = InclusionStackingMode.Union" : string.Empty)}})] // <-
@@ -751,11 +746,10 @@ public class InclusionOrExclusionHadNoEffect
         """;
 
     private static string SpecializedScalarIdenticalText_Inherited(string attribute) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
-        using SharpMeasures.Generators.Utility;
 
         [SpecializedSharpMeasuresScalar(typeof(Length))]
         public partial class Distance { }
@@ -849,11 +843,10 @@ public class InclusionOrExclusionHadNoEffect
         """;
 
     private static string SpecializedVectorIdenticalText_Inherited(string attribute) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [SpecializedSharpMeasuresVector(typeof(Position3))]
@@ -951,11 +944,10 @@ public class InclusionOrExclusionHadNoEffect
         """;
 
     private static string SpecializedVectorGroupIdenticalText_Inherited(string attribute) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
@@ -1017,11 +1009,10 @@ public class InclusionOrExclusionHadNoEffect
         """;
 
     private static string VectorGroupMemberIdenticalText_InheritedFromGroup(string attribute) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [SharpMeasuresVectorGroupMember(typeof(Position))]
@@ -1041,11 +1032,10 @@ public class InclusionOrExclusionHadNoEffect
         """;
 
     private static string VectorGroupMemberIdenticalText_InheritedFromMember(string attribute) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
-        using SharpMeasures.Generators.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [SharpMeasuresVectorGroupMember(typeof(Displacement))]

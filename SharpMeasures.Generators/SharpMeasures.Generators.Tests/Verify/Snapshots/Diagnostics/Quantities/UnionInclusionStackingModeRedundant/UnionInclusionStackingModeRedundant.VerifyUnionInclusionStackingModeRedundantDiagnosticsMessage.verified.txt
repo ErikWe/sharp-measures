@@ -7,8 +7,8 @@
     Location: : (5,42)-(5,69),
     Description: ,
     HelpLink: ,
-    MessageFormat: As {0} includes all units, using SharpMeasures.Generators.Utility.InclusionStackingMode.Union is redundant,
-    Message: As Length includes all units, using SharpMeasures.Generators.Utility.InclusionStackingMode.Union is redundant,
+    MessageFormat: As {0} includes all units, using SharpMeasures.Generators.InclusionStackingMode.Union is redundant,
+    Message: As Length includes all units, using SharpMeasures.Generators.InclusionStackingMode.Union is redundant,
     Category: Usage,
     CustomTags: [
       Unnecessary

@@ -156,7 +156,6 @@ public class InvalidUnitPluralForm
     private static string PrefixedText(SourceSubtext plural) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }

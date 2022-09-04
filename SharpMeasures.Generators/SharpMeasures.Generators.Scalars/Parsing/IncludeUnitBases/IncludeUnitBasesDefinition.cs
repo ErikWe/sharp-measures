@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
+﻿namespace SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 using SharpMeasures.Generators.Quantities;

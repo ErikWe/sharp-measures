@@ -25,6 +25,7 @@ public interface IQuantityConstantProcessingDiagnostics<TDefinition, TLocations>
     public abstract Diagnostic? MultiplesReservedByName(IQuantityConstantProcessingContext context, TDefinition definition, string interpretedMultiples);
     public abstract Diagnostic? NameAndMultiplesIdentical(IQuantityConstantProcessingContext context, TDefinition definition);
     public abstract Diagnostic? MultiplesDisabledButNameSpecified(IQuantityConstantProcessingContext context, TDefinition definition);
+    public abstract Diagnostic? SetRegexSubstitutionButNotPattern(IQuantityConstantProcessingContext context, TDefinition definition);
 }
 
 public interface IQuantityConstantProcessingContext : IProcessingContext
@@ -67,7 +68,7 @@ public abstract class AQuantityConstantProcesser<TContext, TDefinition, TLocatio
     {
         var processedMultiplesName = ProcessMultiples(context, definition);
 
-        if (processedMultiplesName.LacksResult)
+        if (processedMultiplesName.LacksResult || definition.GenerateMultiplesProperty is false)
         {
             return ResultWithDiagnostics.Construct<(bool, string?)>((false, null), processedMultiplesName.Diagnostics);
         }
@@ -139,33 +140,54 @@ public abstract class AQuantityConstantProcesser<TContext, TDefinition, TLocatio
 
     private IValidityWithDiagnostics ValidateMultiples(TContext context, TDefinition definition)
     {
-        if (definition.Locations.ExplicitlySetGenerateMultiplesProperty && definition.GenerateMultiplesProperty is false)
-        {
-            if (definition.Locations.ExplicitlySetMultiples)
-            {
-                return ValidityWithDiagnostics.Invalid(Diagnostics.MultiplesDisabledButNameSpecified(context, definition));
-            }
-
-            return ValidityWithDiagnostics.InvalidWithoutDiagnostics;
-        }
-
-        return ValidateMultiplesNotNull(context, definition)
+        return ValidateMultiplesNotUnnecessesarilySet(context, definition)
+            .Validate(() => ValidateMultiplesRegexSubstitutionNotUnnecessarilySet(context, definition))
+            .Validate(() => ValidateMultiplesNotNull(context, definition))
             .Validate(() => ValidateMultiplesNotEmpty(context, definition));
+    }
+
+    private IValidityWithDiagnostics ValidateMultiplesNotUnnecessesarilySet(TContext context, TDefinition definition)
+    {
+        var multiplesUnnecessarilySet = definition.Locations.ExplicitlySetGenerateMultiplesProperty && definition.GenerateMultiplesProperty is false && definition.Locations.ExplicitlySetMultiples;
+
+        return ValidityWithDiagnostics.Conditional(multiplesUnnecessarilySet is false, () => Diagnostics.MultiplesDisabledButNameSpecified(context, definition));
+    }
+
+    private IValidityWithDiagnostics ValidateMultiplesRegexSubstitutionNotUnnecessarilySet(TContext context, TDefinition definition)
+    {
+        var multiplesRegexSubstitutionUnnecessarilySet = definition.Locations.ExplicitlySetMultiples is false && definition.Locations.ExplicitlySetMultiplesRegexSubstitution
+            && definition.MultiplesRegexSubstitution is not null && definition.MultiplesRegexSubstitution.Length > 0;
+
+        return ValidityWithDiagnostics.Conditional(multiplesRegexSubstitutionUnnecessarilySet is false, () => Diagnostics.SetRegexSubstitutionButNotPattern(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateMultiplesNotNull(TContext context, TDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.Multiples is not null, () => Diagnostics.NullMultiples(context, definition));
+        var multiplesNull = definition.Locations.ExplicitlySetMultiples && definition.Multiples is null;
+
+        return ValidityWithDiagnostics.Conditional(multiplesNull is false, () => Diagnostics.NullMultiples(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateMultiplesNotEmpty(TContext context, TDefinition definition)
     {
-        return ValidityWithDiagnostics.Conditional(definition.Multiples!.Length is not 0, () => Diagnostics.EmptyMultiples(context, definition));
+        var multiplesEmpty = definition.Locations.ExplicitlySetMultiples && definition.Multiples!.Length is 0;
+
+        return ValidityWithDiagnostics.Conditional(multiplesEmpty is false, () => Diagnostics.EmptyMultiples(context, definition));
     }
 
     private static string? InterpretMultiples(TDefinition definition)
     {
-        return SimpleTextExpression.Interpret(definition.Name, definition.Multiples);
+        if (definition.Multiples is null || definition.Multiples.Length is 0)
+        {
+            return definition.Name;
+        }
+
+        if (definition.MultiplesRegexSubstitution is null || definition.MultiplesRegexSubstitution.Length is 0)
+        {
+            return SimpleTextExpression.Interpret(definition.Name!, definition.Multiples);
+        }
+
+        return SimpleTextExpression.Interpret(definition.Name!, definition.Multiples, definition.MultiplesRegexSubstitution);
     }
 
     private IOptionalWithDiagnostics<string> ProcessInterpretedMultiples(TContext context, TDefinition definition, string? interpretedMultiples)

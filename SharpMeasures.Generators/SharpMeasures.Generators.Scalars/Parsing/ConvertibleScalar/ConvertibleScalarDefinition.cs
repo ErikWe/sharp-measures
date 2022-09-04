@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
+﻿namespace SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 using SharpMeasures.Generators.Quantities;

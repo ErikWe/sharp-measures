@@ -7,4 +7,6 @@ internal interface IOpenUnitInstanceLocations<out TLocations> : IOpenAttributeLo
 {
     public abstract TLocations WithName(MinimalLocation name);
     public abstract TLocations WithPluralForm(MinimalLocation pluralForm);
+
+    public abstract TLocations WithPluralFormRegexSubstitution(MinimalLocation pluralFormRegexSubstitution);
 }

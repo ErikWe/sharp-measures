@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
+﻿namespace SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;

@@ -123,12 +123,11 @@ public class ConstantSharesNameWithUnit
     private static string ScalarText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [ScalarConstant("{{config.ConstantSingular}}", "Metre", 1000{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
-            
+
         [FixedUnitInstance("Metre", "Metres")]
         [PrefixedUnitInstance("Kilometre", "{{config.UnitPlural}}", "Metre", MetricPrefixName.Kilo)]
         [SharpMeasuresUnit(typeof(Length))]
@@ -144,9 +143,9 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string ScalarText_ExplicitlyIncluded(TextConfig config) => $$"""
+        using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [ScalarConstant("{{config.ConstantSingular}}", "Metre", 1000{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
         [IncludeUnits("Metre", "Kilometre")]
@@ -165,13 +164,12 @@ public class ConstantSharesNameWithUnit
         var source = ScalarText_ExplicitlyIncluded(config);
         var expectedLocation = ParseExpectedLocation(source, config, "ScalarConstant");
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ScalarIdentical(config));
+        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ScalarIdentical(config, explicitlyIncluded: true));
     }
 
     private static string SpecializedScalarText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [ScalarConstant("{{config.ConstantSingular}}", "Metre", 1000{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
         [SpecializedSharpMeasuresScalar(typeof(Length))]
@@ -191,13 +189,13 @@ public class ConstantSharesNameWithUnit
         var source = SpecializedScalarText(config);
         var expectedLocation = ParseExpectedLocation(source, config, "ScalarConstant");
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical(config));
+        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical(config, explicitlyIncludedInBase: false));
     }
 
     private static string SpecializedScalarText_ExplicitlyIncluded(TextConfig config) => $$"""
+        using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [ScalarConstant("{{config.ConstantSingular}}", "Metre", 1000{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
         [IncludeUnits("Metre", "Kilometre")]
@@ -219,13 +217,13 @@ public class ConstantSharesNameWithUnit
         var source = SpecializedScalarText_ExplicitlyIncluded(config);
         var expectedLocation = ParseExpectedLocation(source, config, "ScalarConstant");
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical(config));
+        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical(config, explicitlyIncluded: true));
     }
 
     private static string SpecializedScalarText_ExplicitlyIncludedInBase(TextConfig config) => $$"""
+        using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
 
         [ScalarConstant("{{config.ConstantSingular}}", "Metre", 1000{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
         [SpecializedSharpMeasuresScalar(typeof(Length))]
@@ -247,13 +245,12 @@ public class ConstantSharesNameWithUnit
         var source = SpecializedScalarText_ExplicitlyIncludedInBase(config);
         var expectedLocation = ParseExpectedLocation(source, config, "ScalarConstant");
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical(config));
+        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical(config, explicitlyIncludedInBase: true));
     }
 
     private static string VectorText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ?  $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
@@ -278,9 +275,9 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string VectorText_ExplicitlyIncluded(TextConfig config) => $$"""
+        using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
@@ -302,13 +299,12 @@ public class ConstantSharesNameWithUnit
         var source = VectorText_ExplicitlyIncluded(config);
         var expectedLocation = ParseExpectedLocation(source, config, "VectorConstant");
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical(config));
+        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical(config, explicitlyIncluded: true));
     }
 
     private static string SpecializedVectorText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
@@ -336,9 +332,9 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string SpecializedVectorText_ExplicitlyIncluded(TextConfig config) => $$"""
+        using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
@@ -363,13 +359,13 @@ public class ConstantSharesNameWithUnit
         var source = SpecializedVectorText_ExplicitlyIncluded(config);
         var expectedLocation = ParseExpectedLocation(source, config, "VectorConstant");
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical(config));
+        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical(config, explicitlyIncluded: true));
     }
 
     private static string SpecializedVectorText_ExplicitlyIncludedInBase(TextConfig config) => $$"""
+        using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
@@ -394,13 +390,12 @@ public class ConstantSharesNameWithUnit
         var source = SpecializedVectorText_ExplicitlyIncludedInBase(config);
         var expectedLocation = ParseExpectedLocation(source, config, "VectorConstant");
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical(config));
+        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical(config, explicitlyIncludedInBase: true));
     }
 
     private static string VectorGroupMemberText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
@@ -428,9 +423,9 @@ public class ConstantSharesNameWithUnit
     }
 
     private static string VectorGroupMemberText_ExplicitlyIncluded(TextConfig config) => $$"""
+        using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
@@ -455,13 +450,13 @@ public class ConstantSharesNameWithUnit
         var source = VectorGroupMemberText_ExplicitlyIncluded(config);
         var expectedLocation = ParseExpectedLocation(source, config, "VectorConstant");
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical(config));
+        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical(config, explicitlyIncluded: true));
     }
 
     private static string VectorGroupMemberText_ExplicitlyIncludedInGroup(TextConfig config) => $$"""
+        using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
@@ -486,13 +481,13 @@ public class ConstantSharesNameWithUnit
         var source = VectorGroupMemberText_ExplicitlyIncludedInGroup(config);
         var expectedLocation = ParseExpectedLocation(source, config, "VectorConstant");
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical(config));
+        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical(config, explicitlyIncludedInGroup: true));
     }
 
     private static string VectorGroupMemberText_ExplicitlyIncludedInGroupBase(TextConfig config) => $$"""
+        using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
@@ -523,13 +518,13 @@ public class ConstantSharesNameWithUnit
         var source = VectorGroupMemberText_ExplicitlyIncludedInGroupBase(config);
         var expectedLocation = ParseExpectedLocation(source, config, "VectorConstant");
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberOfSpecializedGroupIdentical(config));
+        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberOfSpecializedGroupIdentical(config, explicitlyIncludedInGroupBase: true));
     }
 
     private static string VectorGroupMemberText_ExplicitlyIncludedInGroupBaseMember(TextConfig config) => $$"""
+        using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Units.Utility;
         using SharpMeasures.Generators.Vectors;
 
         [VectorConstant("{{config.ConstantSingular}}", "Metre", 1, 1, 1{{(config.ConstantMultiples.Length > 0 ? $", Multiples = \"{config.ConstantMultiples}\"" : string.Empty)}})]
@@ -560,30 +555,38 @@ public class ConstantSharesNameWithUnit
         var source = VectorGroupMemberText_ExplicitlyIncludedInGroupBaseMember(config);
         var expectedLocation = ParseExpectedLocation(source, config, "VectorConstant");
 
-        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberOfSpecializedGroupIdentical(config));
+        return AssertExactlyConstantSharesNameWithUnitDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberOfSpecializedGroupIdentical(config, explicitlyIncludedInMemberBase: true));
     }
 
-    private static GeneratorVerifier ScalarIdentical(TextConfig config) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ScalarIdenticalText(config));
-    private static GeneratorVerifier SpecializedScalarIdentical(TextConfig config) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedScalarIdenticalText(config));
-    private static GeneratorVerifier VectorIdentical(TextConfig config) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorIdenticalText(config));
-    private static GeneratorVerifier SpecializedVectorIdentical(TextConfig config) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorIdenticalText(config));
-    private static GeneratorVerifier VectorGroupMemberIdentical(TextConfig config) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberIdenticalText(config));
-    private static GeneratorVerifier VectorGroupMemberOfSpecializedGroupIdentical(TextConfig config) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberOfSpecializedGroupIdenticalText(config));
+    private static GeneratorVerifier ScalarIdentical(TextConfig config, bool explicitlyIncluded = false) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ScalarIdenticalText(config, explicitlyIncluded));
+    private static GeneratorVerifier SpecializedScalarIdentical(TextConfig config, bool explicitlyIncluded = false, bool explicitlyIncludedInBase = false) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedScalarIdenticalText(config, explicitlyIncluded, explicitlyIncludedInBase));
+    private static GeneratorVerifier VectorIdentical(TextConfig config, bool explicitlyIncluded = false) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorIdenticalText(config, explicitlyIncluded));
+    private static GeneratorVerifier SpecializedVectorIdentical(TextConfig config, bool explicitlyIncluded = false, bool explicitlyIncludedInBase = false) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorIdenticalText(config, explicitlyIncluded, explicitlyIncludedInBase));
+    private static GeneratorVerifier VectorGroupMemberIdentical(TextConfig config, bool explicitlyIncluded = false, bool explicitlyIncludedInGroup = false) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberIdenticalText(config, explicitlyIncluded, explicitlyIncludedInGroup));
+    private static GeneratorVerifier VectorGroupMemberOfSpecializedGroupIdentical(TextConfig config, bool explicitlyIncludedInGroupBase = false, bool explicitlyIncludedInMemberBase = false) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberOfSpecializedGroupIdenticalText(config, explicitlyIncludedInGroupBase, explicitlyIncludedInMemberBase));
 
-    private static string ScalarIdenticalText(TextConfig config)
+    private static string ScalarIdenticalText(TextConfig config, bool explicitlyIncluded)
     {
         StringBuilder source = new();
 
         source.AppendLine("""
+            using SharpMeasures.Generators.Quantities;
             using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Units.Utility;
             
             """);
 
         if (config.Target is not DiagnosticsTarget.Singular)
         {
             source.AppendLine(CultureInfo.InvariantCulture, $"""[ScalarConstant("{config.ConstantSingular}", "Metre", 1000, GenerateMultiplesProperty = false)]""");
+        }
+
+        if (explicitlyIncluded)
+        {
+            source.AppendLine("""
+                [IncludeUnits("Metre", "Kilometre")]
+                [IncludeUnitBases("Metre", "Kilometre")]
+                """);
         }
 
         source.AppendLine(CultureInfo.InvariantCulture, $$"""
@@ -599,14 +602,14 @@ public class ConstantSharesNameWithUnit
         return source.ToString();
     }
 
-    private static string SpecializedScalarIdenticalText(TextConfig config)
+    private static string SpecializedScalarIdenticalText(TextConfig config, bool explicitlyIncluded, bool explicitlyIncludedInBase)
     {
         StringBuilder source = new();
 
         source.AppendLine("""
+            using SharpMeasures.Generators.Quantities;
             using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Units.Utility;
 
         """);
 
@@ -615,10 +618,29 @@ public class ConstantSharesNameWithUnit
             source.AppendLine(CultureInfo.InvariantCulture, $"""[ScalarConstant("{config.ConstantSingular}", "Metre", 1000, GenerateMultiplesProperty = false)]""");
         }
 
-        source.AppendLine(CultureInfo.InvariantCulture, $$"""
+        if (explicitlyIncluded)
+        {
+            source.AppendLine("""
+                [IncludeUnits("Metre", "Kilometre")]
+                [IncludeUnitBases("Metre", "Kilometre")]
+                """);
+        }
+
+        source.AppendLine("""
             [SpecializedSharpMeasuresScalar(typeof(Length))]
             public partial class Distance { }
+            
+            """);
 
+        if (explicitlyIncludedInBase)
+        {
+            source.AppendLine("""
+                [IncludeUnits("Metre", "Kilometre")]
+                [IncludeUnitBases("Metre", "Kilometre")]
+                """);
+        }    
+
+        source.AppendLine(CultureInfo.InvariantCulture, $$"""
             [SharpMeasuresScalar(typeof(UnitOfLength))]
             public partial class Length { }
             
@@ -631,14 +653,14 @@ public class ConstantSharesNameWithUnit
         return source.ToString();
     }
 
-    private static string VectorIdenticalText(TextConfig config)
+    private static string VectorIdenticalText(TextConfig config, bool explicitlyIncluded)
     {
         StringBuilder source = new();
 
         source.AppendLine("""
+            using SharpMeasures.Generators.Quantities;
             using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Units.Utility;
             using SharpMeasures.Generators.Vectors;
 
             """);
@@ -646,6 +668,11 @@ public class ConstantSharesNameWithUnit
         if (config.Target is not DiagnosticsTarget.Singular)
         {
             source.AppendLine(CultureInfo.InvariantCulture, $"""[VectorConstant("{config.ConstantSingular}", "Metre", 1, 1, 1, GenerateMultiplesProperty = false)]""");
+        }
+
+        if (explicitlyIncluded)
+        {
+            source.AppendLine("""[IncludeUnits("Metre", "Kilometre")]""");
         }
 
         source.AppendLine(CultureInfo.InvariantCulture, $$"""
@@ -664,14 +691,14 @@ public class ConstantSharesNameWithUnit
         return source.ToString();
     }
 
-    private static string SpecializedVectorIdenticalText(TextConfig config)
+    private static string SpecializedVectorIdenticalText(TextConfig config, bool explicitlyIncluded, bool explicitlyIncludedInBase)
     {
         StringBuilder source = new();
 
         source.AppendLine("""
+            using SharpMeasures.Generators.Quantities;
             using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Units.Utility;
             using SharpMeasures.Generators.Vectors;
 
             """);
@@ -681,10 +708,24 @@ public class ConstantSharesNameWithUnit
             source.AppendLine(CultureInfo.InvariantCulture, $"""[VectorConstant("{config.ConstantSingular}", "Metre", 1, 1, 1, GenerateMultiplesProperty = false)]""");
         }
 
-        source.AppendLine(CultureInfo.InvariantCulture, $$"""
+        if (explicitlyIncluded)
+        {
+            source.AppendLine("""[IncludeUnits("Metre", "Kilometre")]""");
+        }
+
+        source.AppendLine("""
             [SpecializedSharpMeasuresVector(typeof(Position3))]
             public partial class Displacement3 { }
 
+
+            """);
+
+        if (explicitlyIncludedInBase)
+        {
+            source.AppendLine("""[IncludeUnits("Metre", "Kilometre")]""");
+        }
+
+        source.AppendLine(CultureInfo.InvariantCulture, $$"""
             [SharpMeasuresVector(typeof(UnitOfLength))]
             public partial class Position3 { }
 
@@ -700,14 +741,14 @@ public class ConstantSharesNameWithUnit
         return source.ToString();
     }
 
-    private static string VectorGroupMemberIdenticalText(TextConfig config)
+    private static string VectorGroupMemberIdenticalText(TextConfig config, bool explicitlyIncluded, bool explicitlyIncludedInGroup)
     {
         StringBuilder source = new();
 
         source.AppendLine("""
+            using SharpMeasures.Generators.Quantities;
             using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Units.Utility;
             using SharpMeasures.Generators.Vectors;
 
             """);
@@ -717,10 +758,23 @@ public class ConstantSharesNameWithUnit
             source.AppendLine(CultureInfo.InvariantCulture, $"""[VectorConstant("{config.ConstantSingular}", "Metre", 1, 1, 1, GenerateMultiplesProperty = false)]""");
         }
 
-        source.AppendLine(CultureInfo.InvariantCulture, $$"""
+        if (explicitlyIncluded)
+        {
+            source.AppendLine("""[IncludeUnits("Metre", "Kilometre")]""");
+        }
+
+        source.AppendLine("""
             [SharpMeasuresVectorGroupMember(typeof(Position))]
             public partial class Position3 { }
 
+            """);
+
+        if (explicitlyIncludedInGroup)
+        {
+            source.AppendLine("""[IncludeUnits("Metre", "Kilometre")]""");
+        }
+
+        source.AppendLine(CultureInfo.InvariantCulture, $$"""
             [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
             public static partial class Position { }
 
@@ -736,14 +790,14 @@ public class ConstantSharesNameWithUnit
         return source.ToString();
     }
 
-    private static string VectorGroupMemberOfSpecializedGroupIdenticalText(TextConfig config)
+    private static string VectorGroupMemberOfSpecializedGroupIdenticalText(TextConfig config, bool explicitlyIncludedInGroupBase, bool explictlyIncludedInMemberBase)
     {
         StringBuilder source = new();
 
         source.AppendLine("""
+            using SharpMeasures.Generators.Quantities;
             using SharpMeasures.Generators.Scalars;
             using SharpMeasures.Generators.Units;
-            using SharpMeasures.Generators.Units.Utility;
             using SharpMeasures.Generators.Vectors;
 
             """);
@@ -753,16 +807,32 @@ public class ConstantSharesNameWithUnit
             source.AppendLine(CultureInfo.InvariantCulture, $"""[VectorConstant("{config.ConstantSingular}", "Metre", 1, 1, 1, GenerateMultiplesProperty = false)]""");
         }
 
-        source.AppendLine(CultureInfo.InvariantCulture, $$"""
+        source.AppendLine("""
             [SharpMeasuresVectorGroupMember(typeof(Displacement))]
             public partial class Displacement3 { }
 
             [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
             public static partial class Displacement { }
 
+            """);
+
+        if (explictlyIncludedInMemberBase)
+        {
+            source.AppendLine("""[IncludeUnits("Metre", "Kilometre")]""");
+        }
+
+        source.AppendLine("""
             [SharpMeasuresVectorGroupMember(typeof(Position))]
             public partial class Position3 { }
 
+            """);
+
+        if (explicitlyIncludedInGroupBase)
+        {
+            source.AppendLine("""[IncludeUnits("Metre", "Kilometre")]""");
+        }
+
+        source.AppendLine(CultureInfo.InvariantCulture, $$"""
             [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
             public static partial class Position { }
 

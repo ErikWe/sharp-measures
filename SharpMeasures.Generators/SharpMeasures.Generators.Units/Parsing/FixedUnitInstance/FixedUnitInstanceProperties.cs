@@ -10,6 +10,7 @@ internal static class FixedUnitInstanceProperties
     public static IReadOnlyList<IAttributeProperty<RawFixedUnitInstanceDefinition>> AllProperties => new IAttributeProperty<RawFixedUnitInstanceDefinition>[]
     {
         CommonProperties.Name<RawFixedUnitInstanceDefinition, FixedUnitInstanceLocations>(nameof(FixedUnitInstanceAttribute.Name)),
-        CommonProperties.PluralForm<RawFixedUnitInstanceDefinition, FixedUnitInstanceLocations>(nameof(FixedUnitInstanceAttribute.PluralForm))
+        CommonProperties.PluralForm<RawFixedUnitInstanceDefinition, FixedUnitInstanceLocations>(nameof(FixedUnitInstanceAttribute.PluralForm)),
+        CommonProperties.PluralFormRegexSubstitution<RawFixedUnitInstanceDefinition, FixedUnitInstanceLocations>(nameof(FixedUnitInstanceAttribute.PluralFormRegexSubstitution))
     };
 }

@@ -448,7 +448,7 @@ public class DuplicateConstantName
 
         if (config.Target is not DiagnosticsTarget.Singular)
         {
-            source.AppendLine(CultureInfo.InvariantCulture, $$"""[[VectorConstant("{{config.SecondSingular}}", "Meter", 2, 2, 2, GenerateMultiplesProperty = false)]""");
+            source.AppendLine(CultureInfo.InvariantCulture, $$"""[VectorConstant("{{config.SecondSingular}}", "Meter", 2, 2, 2, GenerateMultiplesProperty = false)]""");
         }
 
         source.AppendLine($$"""
@@ -481,7 +481,7 @@ public class DuplicateConstantName
 
         if (config.Target is not DiagnosticsTarget.Singular)
         {
-            source.AppendLine(CultureInfo.InvariantCulture, $$"""[[VectorConstant("{{config.SecondSingular}}", "Meter", 2, 2, 2, GenerateMultiplesProperty = false)]""");
+            source.AppendLine(CultureInfo.InvariantCulture, $$"""[VectorConstant("{{config.SecondSingular}}", "Meter", 2, 2, 2, GenerateMultiplesProperty = false)]""");
         }
 
         source.AppendLine($$"""
@@ -553,7 +553,7 @@ public class DuplicateConstantName
 
         if (config.Target is not DiagnosticsTarget.Singular)
         {
-            source.AppendLine(CultureInfo.InvariantCulture, $$"""[[VectorConstant("{{config.SecondSingular}}", "Meter", 2, 2, 2, GenerateMultiplesProperty = false)]""");
+            source.AppendLine(CultureInfo.InvariantCulture, $$"""[VectorConstant("{{config.SecondSingular}}", "Meter", 2, 2, 2, GenerateMultiplesProperty = false)]""");
         }
 
         source.AppendLine($$"""

@@ -10,8 +10,8 @@ using System.Collections.Generic;
 
 internal interface IScalarConstantValidationDiagnostics : IQuantityConstantValidationDiagnostics<ScalarConstantDefinition, ScalarConstantLocations>
 {
-    public abstract Diagnostic? ConstantNameReservedByUnitInstanceName(IScalarConstantValidationContext context, ScalarConstantDefinition definition);
-    public abstract Diagnostic? ConstantMultiplesNameReservedByUnitInstanceName(IScalarConstantValidationContext context, ScalarConstantDefinition definition);
+    public abstract Diagnostic? NameReservedByUnitInstanceName(IScalarConstantValidationContext context, ScalarConstantDefinition definition);
+    public abstract Diagnostic? MultiplesNameReservedByUnitInstanceName(IScalarConstantValidationContext context, ScalarConstantDefinition definition);
 }
 
 internal interface IScalarConstantValidationContext : IQuantityConstantValidationContext
@@ -49,7 +49,7 @@ internal class ScalarConstantValidator : AQuantityConstantValidator<IScalarConst
     {
         var nameReservedByUnitInstanceName = definition.Name.StartsWith("One", StringComparison.InvariantCulture) && context.IncludedUnitInstanceNames.Contains(definition.Name.Substring(3));
 
-        return ValidityWithDiagnostics.Conditional(nameReservedByUnitInstanceName is false, () => Diagnostics.NameReservedByUnitInstancePluralForm(context, definition));
+        return ValidityWithDiagnostics.Conditional(nameReservedByUnitInstanceName is false, () => Diagnostics.NameReservedByUnitInstanceName(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateMultiplesNotReservedByUnit(IScalarConstantValidationContext context, ScalarConstantDefinition definition)
@@ -57,6 +57,6 @@ internal class ScalarConstantValidator : AQuantityConstantValidator<IScalarConst
         var multiplesReservedByUnitInstanceName = definition.GenerateMultiplesProperty && definition.Multiples!.StartsWith("One", StringComparison.InvariantCulture)
             && context.IncludedUnitInstanceNames.Contains(definition.Multiples.Substring(3));
 
-        return ValidityWithDiagnostics.Conditional(multiplesReservedByUnitInstanceName is false, () => Diagnostics.MultiplesReservedByUnitInstancePluralForm(context, definition));
+        return ValidityWithDiagnostics.Conditional(multiplesReservedByUnitInstanceName is false, () => Diagnostics.MultiplesNameReservedByUnitInstanceName(context, definition));
     }
 }

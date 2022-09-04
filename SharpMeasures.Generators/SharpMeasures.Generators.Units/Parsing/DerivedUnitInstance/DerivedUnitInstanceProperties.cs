@@ -11,6 +11,7 @@ internal static class DerivedUnitInstanceProperties
     {
         CommonProperties.Name<RawDerivedUnitInstanceDefinition, DerivedUnitInstanceLocations>(nameof(DerivedUnitInstanceAttribute.Name)),
         CommonProperties.PluralForm<RawDerivedUnitInstanceDefinition, DerivedUnitInstanceLocations>(nameof(DerivedUnitInstanceAttribute.PluralForm)),
+        CommonProperties.PluralFormRegexSubstitution<RawDerivedUnitInstanceDefinition, DerivedUnitInstanceLocations>(nameof(DerivedUnitInstanceAttribute.PluralFormRegexSubstitution)),
         DerivationID,
         Units
     };

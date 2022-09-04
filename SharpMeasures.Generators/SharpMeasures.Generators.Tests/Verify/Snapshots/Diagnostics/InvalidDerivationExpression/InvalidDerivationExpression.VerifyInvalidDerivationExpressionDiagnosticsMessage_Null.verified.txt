@@ -7,8 +7,8 @@
     Location: : (3,15)-(3,19),
     Description: ,
     HelpLink: ,
-    MessageFormat: The derivation expression must be defined. Common expressions can be found in SharpMeasures.Generators.Utility.CommonAlgebraicDerivations.,
-    Message: The derivation expression must be defined. Common expressions can be found in SharpMeasures.Generators.Utility.CommonAlgebraicDerivations.,
+    MessageFormat: The derivation expression must be defined. Common expressions can be found in SharpMeasures.Generators.CommonAlgebraicDerivations.,
+    Message: The derivation expression must be defined. Common expressions can be found in SharpMeasures.Generators.CommonAlgebraicDerivations.,
     Category: Usage,
     CustomTags: []
   }
