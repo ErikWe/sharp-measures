@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Utility;
+﻿namespace SharpMeasures.Generators;
 
 /// <summary>Defined possible behaviours for the conversion operator.</summary>
 public enum ConversionOperatorBehaviour

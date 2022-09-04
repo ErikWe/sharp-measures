@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Utility;
+﻿namespace SharpMeasures.Generators;
 
 /// <summary>Possible directions for conversions between quantities.</summary>
 public enum QuantityConversionDirection

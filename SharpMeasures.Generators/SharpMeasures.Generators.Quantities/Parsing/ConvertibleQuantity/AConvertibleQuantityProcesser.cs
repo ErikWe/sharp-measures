@@ -1,11 +1,9 @@
-﻿namespace SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
+namespace SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Utility;
 
 using System;
 using System.Collections.Generic;

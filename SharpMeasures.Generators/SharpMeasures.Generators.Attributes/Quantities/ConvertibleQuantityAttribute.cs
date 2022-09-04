@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Quantities;
 
-using SharpMeasures.Generators.Utility;
-
 using System;
 
 /// <summary>Indicates that a quantity supports conversion to and/or from the listed quantities.</summary>

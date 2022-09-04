@@ -1,8 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Units;
 
-using SharpMeasures.Generators;
-using SharpMeasures.Generators.Units.Utility;
-
 public interface IPrefixedUnitInstance : IModifiedUnitInstance
 {
     public abstract MetricPrefixName? MetricPrefix { get; }

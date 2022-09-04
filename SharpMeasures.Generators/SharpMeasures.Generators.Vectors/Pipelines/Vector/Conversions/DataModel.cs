@@ -1,8 +1,7 @@
-﻿namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Conversions;
+namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Conversions;
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Vectors;
 using SharpMeasures.Generators.Vectors.Documentation;
 
 using System.Collections.Generic;

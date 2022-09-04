@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Quantities;
 
-using SharpMeasures.Generators.Utility;
-
 using System.Collections.Generic;
 
 public interface IConvertibleQuantity : IAttributeDefinition

@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Units;
 
-using SharpMeasures.Generators;
-
 public interface IBiasedUnitInstance : IModifiedUnitInstance
 {
     public abstract double? Bias { get; }

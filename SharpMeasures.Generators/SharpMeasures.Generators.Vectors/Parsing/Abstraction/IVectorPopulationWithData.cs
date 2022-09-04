@@ -1,6 +1,5 @@
-﻿namespace SharpMeasures.Generators.Vectors.Parsing.Abstraction;
+namespace SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
-using SharpMeasures.Generators.Vectors;
 using System.Collections.Generic;
 
 internal interface IVectorPopulationWithData : IVectorPopulation

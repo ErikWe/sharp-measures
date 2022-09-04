@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Utility;
+﻿namespace SharpMeasures.Generators;
 
 /// <summary>Defines some common algebraic derivations.</summary>
 public static class CommonAlgebraicDerivations

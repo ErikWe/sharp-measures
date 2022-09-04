@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Quantities;
 
-using SharpMeasures.Generators.Utility;
-
 public interface IUnitInstanceInclusionList : IUnitInstanceList
 {
     public abstract InclusionStackingMode StackingMode { get; }

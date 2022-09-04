@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Utility;
+﻿namespace SharpMeasures.Generators;
 
 /// <summary>Determines how inclusion filters behave when stacked.</summary>
 public enum InclusionStackingMode

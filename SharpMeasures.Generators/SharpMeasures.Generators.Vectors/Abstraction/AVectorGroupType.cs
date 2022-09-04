@@ -1,11 +1,10 @@
-﻿namespace SharpMeasures.Generators.Vectors.Abstraction;
+namespace SharpMeasures.Generators.Vectors.Abstraction;
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
-using SharpMeasures.Generators.Vectors;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 
 using System.Collections.Generic;

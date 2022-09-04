@@ -1,10 +1,9 @@
-﻿namespace SharpMeasures.Generators.Diagnostics;
+namespace SharpMeasures.Generators.Diagnostics;
 
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Utility;
 using SharpMeasures.Generators.Vectors;
 
 using System.Diagnostics.CodeAnalysis;

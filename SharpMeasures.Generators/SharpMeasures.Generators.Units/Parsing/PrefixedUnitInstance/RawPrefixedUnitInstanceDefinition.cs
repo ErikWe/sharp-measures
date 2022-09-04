@@ -1,7 +1,6 @@
-﻿namespace SharpMeasures.Generators.Units.Parsing.PrefixedUnitInstance;
+namespace SharpMeasures.Generators.Units.Parsing.PrefixedUnitInstance;
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
-using SharpMeasures.Generators.Units.Utility;
 
 internal record class RawPrefixedUnitInstanceDefinition : ARawModifiedUnitDefinition<RawPrefixedUnitInstanceDefinition, PrefixedUnitInstanceLocations>
 {

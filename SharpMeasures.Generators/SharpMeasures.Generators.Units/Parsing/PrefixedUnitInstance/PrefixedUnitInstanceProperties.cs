@@ -1,8 +1,7 @@
-﻿namespace SharpMeasures.Generators.Units.Parsing.PrefixedUnitInstance;
+namespace SharpMeasures.Generators.Units.Parsing.PrefixedUnitInstance;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
-using SharpMeasures.Generators.Units.Utility;
 
 using System.Collections.Generic;
 

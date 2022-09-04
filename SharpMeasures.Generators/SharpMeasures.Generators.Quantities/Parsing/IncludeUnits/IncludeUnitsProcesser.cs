@@ -1,10 +1,9 @@
-﻿namespace SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+namespace SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Utility;
 
 using System;
 using System.Collections.Generic;

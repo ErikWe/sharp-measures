@@ -1,9 +1,8 @@
-﻿namespace SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
+namespace SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Scalars;
 
 using System.Collections.Generic;
 

@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Units;
 
-using SharpMeasures.Generators;
-
 public interface IUnitInstance : IAttributeDefinition
 {
     public abstract string Name { get; }

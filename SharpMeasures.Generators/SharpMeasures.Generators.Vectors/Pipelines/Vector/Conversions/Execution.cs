@@ -1,10 +1,9 @@
-﻿namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Conversions;
+namespace SharpMeasures.Generators.Vectors.Pipelines.Vector.Conversions;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 using SharpMeasures.Generators.SourceBuilding;
-using SharpMeasures.Generators.Utility;
 
 using System;
 using System.Text;

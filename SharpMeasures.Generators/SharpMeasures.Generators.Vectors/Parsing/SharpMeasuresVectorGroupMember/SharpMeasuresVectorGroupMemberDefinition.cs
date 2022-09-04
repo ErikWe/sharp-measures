@@ -1,8 +1,7 @@
-﻿namespace SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
+namespace SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Vectors;
 
 internal record class SharpMeasuresVectorGroupMemberDefinition : AAttributeDefinition<SharpMeasuresVectorGroupMemberLocations>, IVectorGroupMember
 {
