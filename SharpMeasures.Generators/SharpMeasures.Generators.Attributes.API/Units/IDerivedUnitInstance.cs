@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Units;
 
-using SharpMeasures.Generators;
-
 using System.Collections.Generic;
 
 public interface IDerivedUnitInstance : IUnitInstance

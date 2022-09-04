@@ -1,6 +1,4 @@
-﻿namespace SharpMeasures.Generators.Units;
-
-using SharpMeasures.Generators.Utility;
+namespace SharpMeasures.Generators.Units;
 
 using System;
 

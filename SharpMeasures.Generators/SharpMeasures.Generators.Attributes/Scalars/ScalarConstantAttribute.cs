@@ -1,7 +1,4 @@
-﻿namespace SharpMeasures.Generators.Scalars;
-
-using SharpMeasures.Generators.Quantities.Utility;
-using SharpMeasures.Generators.Utility;
+namespace SharpMeasures.Generators.Scalars;
 
 using System;
 

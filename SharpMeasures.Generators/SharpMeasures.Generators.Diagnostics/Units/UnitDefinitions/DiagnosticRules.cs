@@ -1,9 +1,8 @@
-﻿namespace SharpMeasures.Generators.Diagnostics;
+namespace SharpMeasures.Generators.Diagnostics;
 
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Utility;
 
 public static partial class DiagnosticRules
 {

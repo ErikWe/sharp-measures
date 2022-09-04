@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Quantities;
 
-using SharpMeasures.Generators.Utility;
-
 using System;
 
 /// <summary>Applied to quantities, dictating the set of units for which a property representing the magnitude is implemented.</summary>

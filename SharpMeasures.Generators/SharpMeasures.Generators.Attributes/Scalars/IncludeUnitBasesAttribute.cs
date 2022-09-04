@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Scalars;
 
-using SharpMeasures.Generators.Utility;
-
 using System;
 
 /// <summary>Dictates the set of units for which a static property representing the value { 1 } is generated.</summary>

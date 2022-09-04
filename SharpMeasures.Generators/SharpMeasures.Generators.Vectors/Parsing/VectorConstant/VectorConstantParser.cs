@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Quantities.Utility;
+
 using System.Collections.Immutable;
 
 internal static class VectorConstantParser
@@ -31,7 +31,7 @@ internal static class VectorConstantParser
             {
                 definition = definition with
                 {
-                    Multiples = CommonConstantMultiplesPropertyNotations.PrependMultiplesOf
+                    Multiples = CommonPluralNotations.PrependMultiplesOf
                 };
             }
 

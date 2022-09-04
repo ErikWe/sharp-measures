@@ -1,7 +1,6 @@
-﻿namespace SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+namespace SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
-using SharpMeasures.Generators.Utility;
 
 using System.Collections.Generic;
 

@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Units;
 
-using SharpMeasures.Generators.Utility;
-
 using System;
 
 /// <summary>Describes how an instance of a unit may be derived from instances of other units. The defined derivation may then be used through <see cref="DerivedUnitInstanceAttribute"/>.</summary>

@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Scalars.Parsing;
+namespace SharpMeasures.Generators.Scalars.Parsing;
 
 using Microsoft.CodeAnalysis;
 
@@ -10,7 +10,6 @@ using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Validation;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
-using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.Contexts.Validation;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;

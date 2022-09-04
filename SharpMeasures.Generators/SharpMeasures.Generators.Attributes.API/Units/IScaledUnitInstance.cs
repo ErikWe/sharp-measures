@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Units;
 
-using SharpMeasures.Generators;
-
 public interface IScaledUnitInstance : IModifiedUnitInstance
 {
     public abstract double? Scale { get; }

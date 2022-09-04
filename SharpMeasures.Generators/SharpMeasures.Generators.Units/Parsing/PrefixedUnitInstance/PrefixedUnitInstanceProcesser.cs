@@ -1,10 +1,9 @@
-﻿namespace SharpMeasures.Generators.Units.Parsing.PrefixedUnitInstance;
+namespace SharpMeasures.Generators.Units.Parsing.PrefixedUnitInstance;
 
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
-using SharpMeasures.Generators.Units.Utility;
 
 using System;
 

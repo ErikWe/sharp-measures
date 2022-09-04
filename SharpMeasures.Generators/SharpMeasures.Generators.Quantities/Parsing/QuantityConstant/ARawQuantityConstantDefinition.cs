@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
+namespace SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
@@ -9,7 +9,7 @@ public abstract record class ARawQuantityConstantDefinition<TDefinition, TLocati
     public string? Name { get; init; }
     public string? UnitInstanceName { get; init; }
 
-    public bool GenerateMultiplesProperty { get; init; }
+    public bool GenerateMultiplesProperty { get; init; } = true;
     public string? Multiples { get; init; }
 
     protected ARawQuantityConstantDefinition(TLocations locations) : base(locations) { }

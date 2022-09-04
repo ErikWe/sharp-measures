@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Quantities;
 
-using SharpMeasures.Generators.Utility;
-
 using System;
 
 /// <summary>Describes how a quantity may be derived from other quantities.</summary>
