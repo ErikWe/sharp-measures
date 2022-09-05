@@ -332,7 +332,7 @@ internal class GeneratorVerifier
     {
         IEnumerable<string> matchingSourceNames = Output.Select(static (result) => result.HintName).Where(matches);
 
-        Assert.Equal(patterns.Count(), matchingSourceNames.Count());
+        Assert.NotEmpty(matchingSourceNames);
 
         return VerifyListedSourceNames(matchingSourceNames);
 

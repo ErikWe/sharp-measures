@@ -23,7 +23,7 @@ public class Bidirectional
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [ConvertibleQuantity(typeof(Length), ConversionDirection = true)]
+        [ConvertibleQuantity(typeof(Length), ConversionDirection = QuantityConversionDirection.Bidirectional)]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Distance { }
 
@@ -35,11 +35,12 @@ public class Bidirectional
         """;
 
     private static string BiasedScalarText => """
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [ConvertibleQuantity(typeof(Temperature), Bidirectional = true)]
+        [ConvertibleQuantity(typeof(Temperature), ConversionDirection = QuantityConversionDirection.Bidirectional)]
         [SharpMeasuresScalar(typeof(UnitOfTemperature), UseUnitBias = true)]
         public partial class Temperature2 { }
 

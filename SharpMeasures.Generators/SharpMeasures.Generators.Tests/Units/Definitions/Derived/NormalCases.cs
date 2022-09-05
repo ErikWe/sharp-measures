@@ -29,7 +29,7 @@ public class NormalCases
 
             [FixedUnitInstance("Metre", "Metres")]
             [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength)]
+            public partial class UnitOfLength { }
 
             [FixedUnitInstance("Second", "Seconds")]
             [SharpMeasuresUnit(typeof(Time))]
