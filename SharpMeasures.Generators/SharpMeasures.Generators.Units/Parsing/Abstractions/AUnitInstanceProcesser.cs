@@ -104,7 +104,7 @@ internal abstract class AUnitInstanceProcesser<TContext, TDefinition, TLocations
 
     private static string? InterpretUnitInstancePluralForm(TDefinition definition)
     {
-        if (definition.PluralFormRegexSubstitution is null || definition.PluralFormRegexSubstitution.Length is 0)
+        if (definition.PluralFormRegexSubstitution is null)
         {
             return SimpleTextExpression.Interpret(definition.Name!, definition.PluralForm!);
         }

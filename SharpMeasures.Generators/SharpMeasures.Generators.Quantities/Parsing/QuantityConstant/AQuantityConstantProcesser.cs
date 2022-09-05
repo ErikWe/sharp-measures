@@ -155,8 +155,7 @@ public abstract class AQuantityConstantProcesser<TContext, TDefinition, TLocatio
 
     private IValidityWithDiagnostics ValidateMultiplesRegexSubstitutionNotUnnecessarilySet(TContext context, TDefinition definition)
     {
-        var multiplesRegexSubstitutionUnnecessarilySet = definition.Locations.ExplicitlySetMultiples is false && definition.Locations.ExplicitlySetMultiplesRegexSubstitution
-            && definition.MultiplesRegexSubstitution is not null && definition.MultiplesRegexSubstitution.Length > 0;
+        var multiplesRegexSubstitutionUnnecessarilySet = definition.Locations.ExplicitlySetMultiples is false && definition.Locations.ExplicitlySetMultiplesRegexSubstitution && definition.MultiplesRegexSubstitution is not null;
 
         return ValidityWithDiagnostics.Conditional(multiplesRegexSubstitutionUnnecessarilySet is false, () => Diagnostics.SetRegexSubstitutionButNotPattern(context, definition));
     }
@@ -182,7 +181,7 @@ public abstract class AQuantityConstantProcesser<TContext, TDefinition, TLocatio
             return definition.Name;
         }
 
-        if (definition.MultiplesRegexSubstitution is null || definition.MultiplesRegexSubstitution.Length is 0)
+        if (definition.MultiplesRegexSubstitution is null)
         {
             return SimpleTextExpression.Interpret(definition.Name!, definition.Multiples);
         }
