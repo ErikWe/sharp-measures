@@ -24,21 +24,36 @@ public class InvalidConstantMultiplesName
     [MemberData(nameof(InvalidConstantMultiplesNames))]
     public void Scalar(SourceSubtext constantMultiplesName) => AssertScalar(constantMultiplesName);
 
+    [Fact]
+    public void ScalarUnmatchedRegex() => AssertScalarUnmatchedRegex();
+
     [Theory]
     [MemberData(nameof(InvalidConstantMultiplesNames))]
     public void SpecializedScalar(SourceSubtext constantMultiplesName) => AssertSpecializedScalar(constantMultiplesName);
+
+    [Fact]
+    public void SpecializedScalarUnmatchedRegex() => AssertSpecializedScalarUnmatchedRegex();
 
     [Theory]
     [MemberData(nameof(InvalidConstantMultiplesNames))]
     public void Vector(SourceSubtext constantMultiplesName) => AssertVector(constantMultiplesName);
 
+    [Fact]
+    public void VectorUnmatchedRegex() => AssertVectorUnmatchedRegex();
+
     [Theory]
     [MemberData(nameof(InvalidConstantMultiplesNames))]
     public void SpecializedVector(SourceSubtext constantMultiplesName) => AssertSpecializedVector(constantMultiplesName);
 
+    [Fact]
+    public void SpecializedVectorUnmatchedRegex() => AssertSpecializedVectorUnmatchedRegex();
+
     [Theory]
     [MemberData(nameof(InvalidConstantMultiplesNames))]
     public void VectorGroupMember(SourceSubtext constantMultiplesName) => AssertVectorGroupMember(constantMultiplesName);
+
+    [Fact]
+    public void VectorGroupMemberUnmatchedRegex() => AssertVectorGroupMemberUnmatchedRegex();
 
     public static IEnumerable<object[]> InvalidConstantMultiplesNames() => new object[][]
     {
@@ -73,6 +88,26 @@ public class InvalidConstantMultiplesName
         return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ScalarIdentical);
     }
 
+    private static string ScalarUnmatchedRegexText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [ScalarConstant("Planck", "Metre", 1.616255E-35, Multiples = "Missing", MultiplesRegexSubstitution = "")]
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnitInstance("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertScalarUnmatchedRegex()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(ScalarUnmatchedRegexText, target: "\"Missing\"");
+
+        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(ScalarUnmatchedRegexText).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ScalarIdentical);
+    }
+
     private static string SpecializedScalarText(SourceSubtext constantMultiplesName) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -95,6 +130,29 @@ public class InvalidConstantMultiplesName
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantMultiplesName.Context.With(outerPrefix: "Multiples = "));
 
         return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical);
+    }
+
+    private static string SpecializedScalarUnmatchedRegexText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+
+        [ScalarConstant("Planck", "Metre", 1.616255E-35, Multiples = "Missing", MultiplesRegexSubstitution = "")]
+        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        public partial class Distance { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnitInstance("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertSpecializedScalarUnmatchedRegex()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedScalarUnmatchedRegexText, target: "\"Missing\"");
+
+        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(SpecializedScalarUnmatchedRegexText).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical);
     }
 
     private static string VectorText(SourceSubtext constantMultiplesName) => $$"""
@@ -122,6 +180,30 @@ public class InvalidConstantMultiplesName
         return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical);
     }
 
+    private static string VectorUnmatchedRegexText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, Multiples = "Missing", MultiplesRegexSubstitution = "")]
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnitInstance("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertVectorUnmatchedRegex()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(VectorUnmatchedRegexText, target: "\"Missing\"");
+
+        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(VectorUnmatchedRegexText).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical);
+    }
+
     private static string SpecializedVectorText(SourceSubtext constantMultiplesName) => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -145,6 +227,30 @@ public class InvalidConstantMultiplesName
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantMultiplesName.Context.With(outerPrefix: "Multiples = "));
 
         return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical);
+    }
+
+    private static string SpecializedVectorUnmatchedRegexText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, Multiples = "Missing", MultiplesRegexSubstitution = "")]
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Position3 { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnitInstance("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertSpecializedVectorUnmatchedRegex()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(SpecializedVectorUnmatchedRegexText, target: "\"Missing\"");
+
+        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(SpecializedVectorUnmatchedRegexText).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical);
     }
 
     private static string VectorGroupMemberText(SourceSubtext constantMultiplesName) => $$"""
@@ -173,6 +279,33 @@ public class InvalidConstantMultiplesName
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantMultiplesName.Context.With(outerPrefix: "Multiples = "));
 
         return AssertExactlyInvalidConstantMultiplesNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical);
+    }
+
+    private static string VectorGroupMemberUnmatchedRegexText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        using SharpMeasures.Generators.Vectors;
+
+        [VectorConstant("MetreOnes", "Metre", 1, 1, 1, Multiples = "Missing", MultiplesRegexSubstitution = "")]
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Position3 { }
+
+        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+        public static partial class Position { }
+
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnitInstance("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertVectorGroupMemberUnmatchedRegex()
+    {
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(VectorGroupMemberUnmatchedRegexText, target: "\"Missing\"");
+
+        return AssertExactlyInvalidConstantMultiplesNameDiagnostics(VectorGroupMemberUnmatchedRegexText).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical);
     }
 
     private static GeneratorVerifier ScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ScalarIdenticalText);
