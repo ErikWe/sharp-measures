@@ -12,21 +12,34 @@ using Xunit;
 public class NormalCases
 {
     [Fact]
-    public Task SimpleScaledUnit()
-    {
-        var source = """
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-            
-            [FixedUnitInstance("Metre", "Metres")]
-            [ScaledUnitInstance("Kilometer", "Kilometers", "Metre", 1000)]
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-            """;
+    public Task Value() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ValueText).VerifyMatchingSourceNames("UnitOfLength_Instances.g.cs");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfLength_Instances.g.cs");
-    }
+    [Fact]
+    public Task Expression() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ExpressionText).VerifyMatchingSourceNames("UnitOfLength_Instances.g.cs");
+
+    private static string ValueText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+            
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnitInstance("Metre", "Metres")]
+        [ScaledUnitInstance("Kilometer", "Kilometers", "Metre", 1000)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string ExpressionText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+            
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnitInstance("Metre", "Metres")]
+        [ScaledUnitInstance("Kilometer", "Kilometers", "Metre", "1000")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }
