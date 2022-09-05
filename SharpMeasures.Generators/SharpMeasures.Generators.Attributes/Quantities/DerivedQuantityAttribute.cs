@@ -13,16 +13,14 @@ public sealed class DerivedQuantityAttribute : Attribute
     /// <summary>The quantity may be derived from these quantities, according to <see cref="Expression"/>.</summary>
     public Type[] Signature { get; }
 
-    /// <summary>Dictates whether operators should be implemented on the deriving types. The default behaviour is <see langword="true"/>, but will silently
-    /// fail if not applicable.</summary>
+    /// <summary>Dictates whether operators should be implemented on the relevant types. The default behaviour is <see langword="true"/>.</summary>
     /// <remarks>For example; for a derived quantity { <i>Speed</i> = <i>Length</i> / <i>Time</i> }, <i>Length</i> would implement the operator { / }, with
-    /// arguments (<i>Length</i>, <i>Time</i>), resulting in a <i>Speed</i>.
+    /// arguments (<i>Length</i>, <i>Time</i>), resulting in <i>Speed</i>.
     /// <para>Operators will only be implemented for types that share assembly with this quantity - and also requires the expressions to include no more than two
-    /// quantities, separated by one of the operators { +, -, *, and / }.</para></remarks>
+    /// quantities, separated by one of the operators { +, -, *, or / }.</para></remarks>
     public bool ImplementOperators { get; init; }
 
-    /// <summary>Dictates whether the algebraically equivalent derivations are also implemented. The default behaviour is <see langword="true"/>, but will silently
-    /// fail if not applicable.</summary>
+    /// <summary>Dictates whether the algebraically equivalent derivations are also implemented. The default behaviour is <see langword="true"/>.</summary>
     /// <remarks>For example; a definition { <i>Speed</i> = <i>Length</i> / <i>Time</i> } would result in the following derivations:
     /// <list type="bullet">
     /// <item>
@@ -31,15 +29,14 @@ public sealed class DerivedQuantityAttribute : Attribute
     /// </item>
     /// <item>
     /// <term>Length</term>
-    /// <description>Derived according to { <i>Speed</i> * <i>Time</i> }.</description>
+    /// <description>Derived according to { <i>Speed</i> * <i>Time</i> } and { <i>Time</i> * <i>Speed</i> }.</description>
     /// </item>
     /// <item>
     /// <term>Time</term>
     /// <description>Derived according to { <i>Length</i> / <i>Speed</i> }.</description>
     /// </item>
     /// </list>
-    /// <para>If <see cref="ImplementOperators"/> is enabled, operators will be implemented also for the algebraically equivalent derivations.</para>
-    /// <para>Derivations will only be implemented for types that share assembly with this quantity.</para></remarks>
+    /// <para>If <see cref="ImplementOperators"/> is enabled, operators will be implemented also for the algebraically equivalent derivations.</para></remarks>
     public bool ImplementAlgebraicallyEquivalentDerivations { get; init; }
 
     /// <inheritdoc cref="DerivedQuantityAttribute"/>
