@@ -48,13 +48,15 @@ public static class SimpleTextExpression
 
     public static string? Interpret(string original, string expression, string substitution)
     {
-        var replaced = new Regex(expression).Replace(original, substitution);
+        Regex regex = new(expression);
 
-        if (replaced == original)
+        var match = regex.Match(original);
+
+        if (match.Success is false)
         {
             return null;
         }
 
-        return replaced;
+        return original.Replace(match.Value, substitution);
     }
 }
