@@ -3,6 +3,7 @@
 using Microsoft.CodeAnalysis;
 
 using System;
+using System.Globalization;
 
 public static partial class DiagnosticConstruction
 {
@@ -125,5 +126,20 @@ public static partial class DiagnosticConstruction
     public static Diagnostic UnionInclusionStackingModeRedundant(Location? location, string quantityTypeName)
     {
         return Diagnostic.Create(DiagnosticRules.UnionInclusionStackingModeRedundant, location, quantityTypeName);
+    }
+
+    public static Diagnostic DerivationOperatorsRequireExactlyTwoElements(Location? location, int actualElementCount)
+    {
+        return Diagnostic.Create(DiagnosticRules.DerivationOperatorsRequireExactlyTwoElements, location, actualElementCount.ToString(CultureInfo.InvariantCulture));
+    }
+
+    public static Diagnostic DerivationOperatorsIncompatibleExpression(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.DerivationOperatorsIncompatibleExpression, location);
+    }
+
+    public static Diagnostic UnmatchedDerivationExpressionQuantity(Location? location, int index)
+    {
+        return Diagnostic.Create(DiagnosticRules.UnmatchedDerivationExpressionQuantity, location, index.ToString(CultureInfo.InvariantCulture));
     }
 }

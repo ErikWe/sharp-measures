@@ -5,19 +5,32 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 
+using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 public interface IDerivedQuantityProcessingDiagnostics
 {
     public abstract Diagnostic? NullExpression(IProcessingContext context, RawDerivedQuantityDefinition definition);
     public abstract Diagnostic? EmptyExpression(IProcessingContext context, RawDerivedQuantityDefinition definition);
+    public abstract Diagnostic? UnmatchedExpressionQuantity(IProcessingContext context, RawDerivedQuantityDefinition definition, int requestedIndex);
+
     public abstract Diagnostic? NullSignature(IProcessingContext context, RawDerivedQuantityDefinition definition);
     public abstract Diagnostic? EmptySignature(IProcessingContext context, RawDerivedQuantityDefinition definition);
     public abstract Diagnostic? NullSignatureElement(IProcessingContext context, RawDerivedQuantityDefinition definition, int index);
+
+    public abstract Diagnostic? UnrecognizedOperatorImplementation(IProcessingContext context, RawDerivedQuantityDefinition definition);
+    public abstract Diagnostic? OperatorsRequireExactlyTwoElements(IProcessingContext context, RawDerivedQuantityDefinition definition);
+    public abstract Diagnostic? ExpressionNotCompatibleWithOperators(IProcessingContext context, RawDerivedQuantityDefinition definition);
 }
 
 public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerivedQuantityDefinition, DerivedQuantityDefinition>
 {
+    private Regex ExpressionQuantityPattern { get; } = new("""{(?'index'[0-9]*)}""", RegexOptions.ExplicitCapture);
+    private Regex ValidExpressionPattern { get; } = new("""^\s*\(*\s*{[01]}\s*\)*\s*[+-/*]\s*\(*\s*{[01]}\s*\)*\s*$""");
+
     private IDerivedQuantityProcessingDiagnostics Diagnostics { get; }
 
     public DerivedQuantityProcesser(IDerivedQuantityProcessingDiagnostics diagnostics)
@@ -27,17 +40,32 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
 
     public override IOptionalWithDiagnostics<DerivedQuantityDefinition> Process(IProcessingContext context, RawDerivedQuantityDefinition definition)
     {
-        return ValidateExpressionNotNull(context, definition)
+        var processedExpression = ValidateExpressionNotNull(context, definition)
             .Validate(() => ValidateExpressionNotEmpty(context, definition))
-            .Validate(() => ValidateSignatureNotNull(context, definition))
+            .Merge(() => ProcessExpression(context, definition));
+
+        if (processedExpression.LacksResult)
+        {
+            return processedExpression.AsEmptyOptional<DerivedQuantityDefinition>();
+        }
+
+        var processedSignature = ValidateSignatureNotNull(context, definition)
             .Validate(() => ValidateSignatureNotEmpty(context, definition))
-            .Merge(() => ProcessSignature(context, definition))
-            .Transform((signature) => ProduceResult(definition, signature));
+            .Merge(() => ProcessSignature(context, definition));
+
+        if (processedSignature.LacksResult)
+        {
+            return processedExpression.AsEmptyOptional<DerivedQuantityDefinition>().AddDiagnostics(processedSignature);
+        }
+
+        var processedImplementOperators = ProcessOperatorImplementation(context, definition, processedExpression.Result);
+
+        return OptionalWithDiagnostics.Result(ProduceResult(definition, processedExpression.Result, processedSignature.Result, processedImplementOperators.Result), processedExpression.Concat(processedSignature).Concat(processedImplementOperators));
     }
 
-    private static DerivedQuantityDefinition ProduceResult(RawDerivedQuantityDefinition definition, IReadOnlyList<NamedType> signature)
+    private static DerivedQuantityDefinition ProduceResult(RawDerivedQuantityDefinition definition, string expression, IReadOnlyList<NamedType> signature, DerivationOperatorImplementation operatorImplementation)
     {
-        return new(definition.Expression!, signature, definition.ImplementOperators, definition.ImplementAlgebraicallyEquivalentDerivations, definition.Locations);
+        return new(expression, signature, operatorImplementation, definition.Permutations, definition.Locations);
     }
 
     private IValidityWithDiagnostics ValidateExpressionNotNull(IProcessingContext context, RawDerivedQuantityDefinition definition)
@@ -48,6 +76,23 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
     private IValidityWithDiagnostics ValidateExpressionNotEmpty(IProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.Expression!.Length is not 0, () => Diagnostics.NullExpression(context, definition));
+    }
+
+    private IOptionalWithDiagnostics<string> ProcessExpression(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    {
+        var quantityMatches = ExpressionQuantityPattern.Matches(definition.Expression);
+
+        foreach (var quantityMatch in quantityMatches)
+        {
+            var requestedIndex = int.Parse(((Match)quantityMatch).Groups["index"].Value, CultureInfo.InvariantCulture);
+
+            if (requestedIndex > definition.Signature.Count - 1)
+            {
+                return OptionalWithDiagnostics.Empty<string>(Diagnostics.UnmatchedExpressionQuantity(context, definition, requestedIndex));
+            }
+        }
+
+        return OptionalWithDiagnostics.Result(definition.Expression!);
     }
 
     private IValidityWithDiagnostics ValidateSignatureNotNull(IProcessingContext context, RawDerivedQuantityDefinition definition)
@@ -82,5 +127,45 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
         signature[index] = signatureElement;
 
         return OptionalWithDiagnostics.Result(signature);
+    }
+
+    private IResultWithDiagnostics<DerivationOperatorImplementation> ProcessOperatorImplementation(IProcessingContext context, RawDerivedQuantityDefinition definition, string expression)
+    {
+        var validity = ValidateRecognizedOperatorImplementation(context, definition)
+            .Validate(() => ValidateExactlyTwoElementsIfImplementOperators(context, definition))
+            .Validate(() => ValidateExpressionIfImplementOperators(context, definition, expression));
+
+        if (validity.IsInvalid)
+        {
+            return ResultWithDiagnostics.Construct(DerivationOperatorImplementation.None, validity);
+        }
+
+        if (definition.Signature.Count != 2)
+        {
+            return ResultWithDiagnostics.Construct(DerivationOperatorImplementation.None, validity);
+        }
+
+        return ResultWithDiagnostics.Construct(definition.OperatorImplementation, validity);
+    }
+
+    private IValidityWithDiagnostics ValidateRecognizedOperatorImplementation(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    {
+        var operationImplementationRecognized = Enum.IsDefined(typeof(DerivationOperatorImplementation), definition.OperatorImplementation);
+
+        return ValidityWithDiagnostics.Conditional(operationImplementationRecognized, () => Diagnostics.UnrecognizedOperatorImplementation(context, definition));
+    }
+
+    private IValidityWithDiagnostics ValidateExactlyTwoElementsIfImplementOperators(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    {
+        var notTwoElementsAndImplementOperators = definition.Locations.ExplicitlySetOperatorImplementation && definition.OperatorImplementation is not DerivationOperatorImplementation.None && definition.Signature.Count != 2;
+
+        return ValidityWithDiagnostics.Conditional(notTwoElementsAndImplementOperators is false, () => Diagnostics.OperatorsRequireExactlyTwoElements(context, definition));
+    }
+
+    private IValidityWithDiagnostics ValidateExpressionIfImplementOperators(IProcessingContext context, RawDerivedQuantityDefinition definition, string expression)
+    {
+        var expressionIsValidAndImplementOperators = definition.Locations.ExplicitlySetOperatorImplementation is false || definition.OperatorImplementation is DerivationOperatorImplementation.None || ValidExpressionPattern.IsMatch(expression) && expression.Contains("{0}") && expression.Contains("{1}");
+
+        return ValidityWithDiagnostics.Conditional(expressionIsValidAndImplementOperators, () => Diagnostics.ExpressionNotCompatibleWithOperators(context, definition));
     }
 }

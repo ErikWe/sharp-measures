@@ -7,6 +7,8 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Vectors;
 
+using System;
+
 public interface IDerivedQuantityValidationDiagnostics
 {
     public abstract Diagnostic? TypeNotQuantity(IDerivedQuantityValidationContext context, DerivedQuantityDefinition definition, int index);
@@ -48,10 +50,12 @@ public class DerivedQuantityValidator : AValidator<IDerivedQuantityValidationCon
     {
         var signatureElementIsScalar = context.ScalarPopulation.Scalars.ContainsKey(definition.Signature[index]);
         var signatureElementIsVector = context.VectorPopulation.Vectors.ContainsKey(definition.Signature[index]);
-        var signatureElementIsVectorGroup = context.VectorPopulation.Groups.ContainsKey(definition.Signature[index]);
         var signatureElementIsVectorGroupMember = context.VectorPopulation.GroupMembers.ContainsKey(definition.Signature[index]);
 
-        var signatureElementIsQuantity = signatureElementIsScalar || signatureElementIsVector || signatureElementIsVectorGroup || signatureElementIsVectorGroupMember;
+        var signatureElementIsPureScalar = definition.Signature[index].FullyQualifiedName is "global::SharpMeasures.Scalar";
+        var signatureElementIsPureVector = definition.Signature[index].FullyQualifiedName.StartsWith("global::Sharpmeasures.Vector", StringComparison.InvariantCulture);
+
+        var signatureElementIsQuantity = signatureElementIsScalar || signatureElementIsVector || signatureElementIsVectorGroupMember || signatureElementIsPureScalar || signatureElementIsPureVector;
 
         return ValidityWithDiagnostics.Conditional(signatureElementIsQuantity, () => Diagnostics.TypeNotQuantity(context, definition, index));
     }

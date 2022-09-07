@@ -59,8 +59,8 @@ public readonly record struct Vector4 : IVector4Quantity<Vector4>
     /// <inheritdoc/>
     public Vector4 Normalize() => VectorMaths.Normalize(this);
 
-    /// <summary>Produces a description of <see langword="this"/> containing the type and the represented components.</summary>
-    public override string ToString() => $"{nameof(Vector3)}: ({X.Value}, {Y.Value}, {Z.Value}, {W.Value})";
+    /// <summary>Produces a description of <see langword="this"/> containing the represented components.</summary>
+    public override string ToString() => $"({X.Value}, {Y.Value}, {Z.Value}, {W.Value})";
 
     /// <summary>Deconstructs <see langword="this"/> into the components X, Y, Z, and W.</summary>
     /// <param name="x">The X-component of <see langword="this"/>.</param>
@@ -80,9 +80,11 @@ public readonly record struct Vector4 : IVector4Quantity<Vector4>
     /// <inheritdoc/>
     public Vector4 Negate() => -this;
 
-    /// <inheritdoc/>
+    /// <summary>Computes { <see langword="this"/> + <paramref name="addend"/> }.</summary>
+    /// <param name="addend">The second term of { <see langword="this"/> + <paramref name="addend"/> }.</param>
     public Vector4 Add(Vector4 addend) => this + addend;
-    /// <inheritdoc/>
+    /// <summary>Computes { <see langword="this"/> - <paramref name="subtrahend"/> }.</summary>
+    /// <param name="subtrahend">The second term of { <see langword="this"/> - <paramref name="subtrahend"/> }.</param>
     public Vector4 Subtract(Vector4 subtrahend) => this - subtrahend;
     /// <inheritdoc/>
     public Vector4 Multiply(Scalar factor) => this * factor;
@@ -90,16 +92,21 @@ public readonly record struct Vector4 : IVector4Quantity<Vector4>
     public Vector4 Divide(Scalar divisor) => this / divisor;
     /// <inheritdoc cref="Scalar.Remainder(Scalar)"/>
     public Vector4 Remainder(Scalar divisor) => this % divisor;
-    /// <inheritdoc/>
+    /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
+    /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
     public Scalar Dot(Vector4 factor) => ScalarMaths.Dot4(this, factor);
 
     /// <inheritdoc/>
     public static Vector4 operator +(Vector4 a) => a;
     /// <inheritdoc/>
     public static Vector4 operator -(Vector4 a) => (-a.X, -a.Y, -a.Z, -a.W);
-    /// <inheritdoc/>
+    /// <summary>Computes { <paramref name="a"/> + <paramref name="b"/> }.</summary>
+    /// <param name="a">The first term of { <paramref name="a"/> + <paramref name="b"/> }.</param>
+    /// <param name="b">The second term of { <paramref name="a"/> + <paramref name="b"/> }.</param>
     public static Vector4 operator +(Vector4 a, Vector4 b) => (a.X + b.X, a.Y + b.Y, a.Z + b.Z, a.W + b.W);
-    /// <inheritdoc/>
+    /// <summary>Computes { <paramref name="a"/> - <paramref name="b"/> }.</summary>
+    /// <param name="a">The first term of { <paramref name="a"/> - <paramref name="b"/> }.</param>
+    /// <param name="b">The second term of { <paramref name="a"/> - <paramref name="b"/> }.</param>
     public static Vector4 operator -(Vector4 a, Vector4 b) => (a.X - b.X, a.Y - b.Y, a.Z - b.Z, a.W - b.W);
 
     /// <inheritdoc/>
@@ -117,12 +124,12 @@ public readonly record struct Vector4 : IVector4Quantity<Vector4>
     [SuppressMessage("Usage", "CA2225", Justification = "Behaviour can be achieved through a constructor")]
     public static implicit operator Vector4((Scalar X, Scalar Y, Scalar Z, Scalar W) components) => new(components.X, components.Y, components.Z, components.W);
 
+    /// <summary>Constructs the tuple (<see cref="Scalar"/>, <see cref="Scalar"/>, <see cref="Scalar"/>, <see cref="Scalar"/>) with the elements of <paramref name="vector"/>.</summary>
+    [SuppressMessage("Usage", "CA2225", Justification = "Behaviour can be achieved through the deconstructor")]
+    public static implicit operator (Scalar X, Scalar Y, Scalar Z, Scalar W)(Vector4 vector) => new(vector.X, vector.Y, vector.Z, vector.W);
+
     /// <summary>Describes mathematical operations that result in a pure <see cref="Scalar"/>.</summary>
     private static IScalarResultingMaths<Scalar> ScalarMaths { get; } = MathFactory.ScalarResult();
-    /// <summary>Describes mathematical operations that result in a <see cref="Unhandled"/>.</summary>
-    private static IScalarResultingMaths<Unhandled> UnhandledMaths { get; } = MathFactory.ScalarResult<Unhandled>();
     /// <summary>Describes mathematical operations that result in a pure <see cref="Vector4"/>.</summary>
     private static IVector4ResultingMaths<Vector4> VectorMaths { get; } = MathFactory.Vector4Result();
-    /// <summary>Describes mathematical operations that result in a pure <see cref="Unhandled4"/>.</summary>
-    private static IVector4ResultingMaths<Unhandled4> Unhandled4Maths { get; } = MathFactory.Vector4Result<Unhandled4>();
 }

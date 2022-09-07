@@ -28,14 +28,16 @@ internal record class ResolvedScalarType : IResolvedScalarType
     public string? DefaultUnitInstanceName { get; }
     public string? DefaultUnitInstanceSymbol { get; }
 
-    public IReadOnlyList<IDerivedQuantity> Derivations => derivations;
+    public IReadOnlyList<IDerivedQuantity> DefinedDerivations => definedDerivations;
+    public IReadOnlyList<IDerivedQuantity> InheritedDerivations => inheritedDerivations;
     public IReadOnlyList<IScalarConstant> Constants => constants;
     public IReadOnlyList<IConvertibleQuantity> Conversions => conversions;
 
     public IReadOnlyList<string> IncludedUnitBaseInstancesNames => includedUnitBaseInstanceNames;
     public IReadOnlyList<string> IncludedUnitInstanceNames => includedUnitInstanceNames;
 
-    private ReadOnlyEquatableList<IDerivedQuantity> derivations { get; }
+    private ReadOnlyEquatableList<IDerivedQuantity> definedDerivations { get; }
+    private ReadOnlyEquatableList<IDerivedQuantity> inheritedDerivations { get; }
     private ReadOnlyEquatableList<IScalarConstant> constants { get; }
     private ReadOnlyEquatableList<IConvertibleQuantity> conversions { get; }
 
@@ -46,8 +48,8 @@ internal record class ResolvedScalarType : IResolvedScalarType
 
     IReadOnlyList<IConvertibleQuantity> IResolvedQuantityType.Conversions => Conversions;
 
-    public ResolvedScalarType(DefinedType type, MinimalLocation typeLocation, NamedType unit, bool useUnitBias, NamedType? vector, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot,
-        NamedType? cubeRoot, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IReadOnlyList<IDerivedQuantity> derivations,
+    public ResolvedScalarType(DefinedType type, MinimalLocation typeLocation, NamedType unit, bool useUnitBias, NamedType? vector, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot, bool implementSum,
+        bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IReadOnlyList<IDerivedQuantity> definedDerivations, IReadOnlyList<IDerivedQuantity> inheritedDerivations,
         IReadOnlyList<IScalarConstant> constants, IReadOnlyList<IConvertibleQuantity> conversions, IReadOnlyList<string> includedUnitBaseInstanceNames, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
     {
         Type = type;
@@ -71,7 +73,8 @@ internal record class ResolvedScalarType : IResolvedScalarType
         DefaultUnitInstanceName = defaultUnitInstanceName;
         DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol;
 
-        this.derivations = derivations.AsReadOnlyEquatable();
+        this.definedDerivations = definedDerivations.AsReadOnlyEquatable();
+        this.inheritedDerivations = inheritedDerivations.AsReadOnlyEquatable();
         this.constants = constants.AsReadOnlyEquatable();
         this.conversions = conversions.AsReadOnlyEquatable();
 

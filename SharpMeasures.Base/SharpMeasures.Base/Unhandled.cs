@@ -3,6 +3,7 @@
 using SharpMeasures.Maths;
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 /// <summary>A measure of a scalar quantity that is not covered by a designated type.</summary>
 public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparable<Unhandled>
@@ -49,77 +50,65 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     /// <inheritdoc cref="Scalar.Absolute"/>
     public Unhandled Absolute() => ScalarMaths.Absolute(this);
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Scalar.Reciprocal"/>
     public Unhandled Reciprocal() => ScalarMaths.Reciprocal(this);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Scalar.Square"/>
     public Unhandled Square() => ScalarMaths.Square(this);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Scalar.Cube"/>
     public Unhandled Cube() => ScalarMaths.Cube(this);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Scalar.SquareRoot"/>
     public Unhandled SquareRoot() => ScalarMaths.SquareRoot(this);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Scalar.CubeRoot"/>
     public Unhandled CubeRoot() => ScalarMaths.CubeRoot(this);
 
     /// <inheritdoc cref="Scalar.CompareTo(Scalar)"/>
     public int CompareTo(Unhandled other) => Magnitude.CompareTo(other.Magnitude);
     /// <inheritdoc cref="Scalar.ToString"/>
-    public override string ToString() => $"{nameof(Unhandled)}: {Magnitude.Value}";
+    public override string ToString() => Magnitude.ToString();
 
     /// <inheritdoc/>
     public Unhandled Plus() => this;
     /// <inheritdoc/>
     public Unhandled Negate() => -this;
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Scalar.Add(Scalar)"/>
     public Unhandled Add(Unhandled addend) => this + addend;
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Scalar.Subtract(Scalar)"/>
     public Unhandled Subtract(Unhandled subtrahend) => this - subtrahend;
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Scalar.Multiply(Scalar)"/>
     public Unhandled Multiply(Unhandled factor) => this * factor;
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Scalar.Divide(Scalar)"/>
     public Unhandled Divide(Unhandled divisor) => this / divisor;
 
     /// <inheritdoc/>
     public Unhandled Multiply(Scalar factor) => this * factor;
     /// <inheritdoc/>
     public Unhandled Divide(Scalar divisor) => this / divisor;
-    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
-    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
-    public Unhandled DivideInto(Scalar dividend) => dividend / this;
 
     /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
     /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
     public Unhandled2 Multiply(Vector2 factor) => this * factor;
-    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
-    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
-    public Unhandled2 DivideInto(Vector2 dividend) => dividend / this;
 
     /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
     /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
     public Unhandled3 Multiply(Vector3 factor) => this * factor;
-    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
-    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
-    public Unhandled3 DivideInto(Vector3 dividend) => dividend / this;
 
     /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
     /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
     public Unhandled4 Multiply(Vector4 factor) => this * factor;
-    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
-    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
-    public Unhandled4 DivideInto(Vector4 dividend) => dividend / this;
 
     /// <inheritdoc/>
     public static Unhandled operator +(Unhandled x) => x;
     /// <inheritdoc/>
     public static Unhandled operator -(Unhandled x) => new(-x.Magnitude);
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Scalar.operator +(Scalar, Scalar)"/>
     public static Unhandled operator +(Unhandled x, Unhandled y) => new(x.Magnitude + y.Magnitude);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Scalar.operator -(Scalar, Scalar)"/>
     public static Unhandled operator -(Unhandled x, Unhandled y) => new(x.Magnitude - y.Magnitude);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Scalar.operator *(Scalar, Scalar)"/>
     public static Unhandled operator *(Unhandled x, Unhandled y) => new(x.Magnitude * y.Magnitude);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Scalar.operator /(Scalar, Scalar)"/>
     public static Unhandled operator /(Unhandled x, Unhandled y) => new(x.Magnitude / y.Magnitude);
 
     /// <inheritdoc/>
@@ -172,7 +161,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
     /// <param name="b">The second factor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
     public static Unhandled4 operator /(Vector4 a, Unhandled b) => (a.X / b, a.Y / b, a.Z / b, a.W / b);
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="operator +(Unhandled, Unhandled)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator +(Unhandled x, IScalarQuantity y)
     {
@@ -181,7 +170,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
         return new(x.Magnitude + y.Magnitude);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="operator +(Unhandled, Unhandled)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator +(IScalarQuantity x, Unhandled y)
     {
@@ -190,7 +179,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
         return new(x.Magnitude + y.Magnitude);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="operator -(Unhandled, Unhandled)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator -(Unhandled x, IScalarQuantity y)
     {
@@ -199,7 +188,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
         return new(x.Magnitude - y.Magnitude);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="operator -(Unhandled, Unhandled)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator -(IScalarQuantity x, Unhandled y)
     {
@@ -208,7 +197,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
         return new(x.Magnitude - y.Magnitude);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="operator *(Unhandled, Unhandled)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator *(Unhandled x, IScalarQuantity y)
     {
@@ -226,7 +215,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
         return new(x.Magnitude * y.Magnitude);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="operator /(Unhandled, Unhandled)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator /(Unhandled x, IScalarQuantity y)
     {
@@ -235,7 +224,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
         return new(x.Magnitude / y.Magnitude);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="operator /(Unhandled, Unhandled)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled operator /(IScalarQuantity x, Unhandled y)
     {
@@ -244,10 +233,40 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
         return new(x.Magnitude / y.Magnitude);
     }
 
-    /// <inheritdoc/>
-    public static Unhandled3 operator *(Unhandled a, Unhandled3 b) => new(a * b.X, a * b.Y, a * b.Z);
+    /// <summary>Computes { <paramref name="a"/> * <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> * <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> * <paramref name="b"/> }.</param>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled2 operator *(Unhandled a, IVector2Quantity b)
+    {
+        ArgumentNullException.ThrowIfNull(b);
 
-    /// <inheritdoc/>
+        return new(a * b.X, a * b.Y);
+    }
+
+    /// <inheritdoc cref="operator *(Unhandled, IVector2Quantity)"/>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled2 operator *(IVector2Quantity a, Unhandled b)
+    {
+        ArgumentNullException.ThrowIfNull(a);
+
+        return new(a.X * b, a.Y * b);
+    }
+
+    /// <summary>Computes { <paramref name="a"/> / <paramref name="b"/> }.</summary>
+    /// <param name="a">The dividend of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    /// <param name="b">The divisor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    /// <exception cref="ArgumentNullException"/>
+    public static Unhandled2 operator /(IVector2Quantity a, Unhandled b)
+    {
+        ArgumentNullException.ThrowIfNull(a);
+
+        return new(a.X / b, a.Y / b);
+    }
+
+    /// <summary>Computes { <paramref name="a"/> * <paramref name="b"/> }.</summary>
+    /// <param name="a">The first factor of { <paramref name="a"/> * <paramref name="b"/> }.</param>
+    /// <param name="b">The second factor of { <paramref name="a"/> * <paramref name="b"/> }.</param>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled3 operator *(Unhandled a, IVector3Quantity b)
     {
@@ -256,7 +275,7 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
         return new(a * b.X, a * b.Y, a * b.Z);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="operator *(Unhandled, IVector3Quantity)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled3 operator *(IVector3Quantity a, Unhandled b)
     {
@@ -265,7 +284,9 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
         return new(a.X * b, a.Y * b, a.Z * b);
     }
 
-    /// <inheritdoc/>
+    /// <summary>Computes { <paramref name="a"/> / <paramref name="b"/> }.</summary>
+    /// <param name="a">The dividend of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    /// <param name="b">The divisor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled3 operator /(IVector3Quantity a, Unhandled b)
     {
@@ -273,6 +294,14 @@ public readonly record struct Unhandled : IScalarQuantity<Unhandled>, IComparabl
 
         return new(a.X / b, a.Y / b, a.Z / b);
     }
+
+    /// <summary>Produces the <see cref="Scalar"/> representing <paramref name="x"/>.</summary>
+    [SuppressMessage("Usage", "CA2225", Justification = "Available as constructor")]
+    public static explicit operator Unhandled(Scalar x) => new(x);
+
+    /// <summary>Produces the <see cref="double"/> equivalent to <paramref name="x"/>.</summary>
+    [SuppressMessage("Usage", "CA2225", Justification = "Available as 'Magnitude'")]
+    public static explicit operator Scalar(Unhandled x) => x.Magnitude;
 
     /// <inheritdoc cref="Scalar.operator &lt;(Scalar, Scalar)"/>
     public static bool operator <(Unhandled x, Unhandled y) => x.Magnitude.Value < y.Magnitude.Value;

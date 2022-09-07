@@ -38,6 +38,11 @@ internal class DerivableUnitProcessingDiagnostics : IDerivableUnitProcessingDiag
 
     public Diagnostic EmptyExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => NullExpression(context, definition);
 
+    public Diagnostic UnmatchedExpressionUnit(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int requestedIndex)
+    {
+        return DiagnosticConstruction.UnmatchedDerivationExpressionUnit(definition.Locations.Expression?.AsRoslynLocation(), requestedIndex);
+    }
+
     public Diagnostic NullSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
         return DiagnosticConstruction.NullDerivationSignature(definition.Locations.SignatureCollection?.AsRoslynLocation());

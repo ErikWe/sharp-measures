@@ -6,6 +6,8 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 internal interface IDerivableUnitProcessingDiagnostics
 {
@@ -13,8 +15,11 @@ internal interface IDerivableUnitProcessingDiagnostics
     public abstract Diagnostic? MultipleDerivationsButNotNamed(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? DuplicateDerivationID(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? DuplicateDerivationSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
+
     public abstract Diagnostic? NullExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? EmptyExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
+    public abstract Diagnostic? UnmatchedExpressionUnit(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int requestedIndex);
+
     public abstract Diagnostic? NullSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? EmptySignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? DerivationSignatureNotPermutable(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
@@ -32,6 +37,8 @@ internal interface IDerivableUnitProcessingContext : IProcessingContext
 
 internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProcessingContext, RawDerivableUnitDefinition, DerivableUnitDefinition>
 {
+    private Regex ExpressionQuantityPattern { get; } = new("""{(?'index'[0-9]*)}""", RegexOptions.ExplicitCapture);
+
     private IDerivableUnitProcessingDiagnostics Diagnostics { get; }
 
     public DerivableUnitProcesser(IDerivableUnitProcessingDiagnostics diagnostics)
@@ -59,6 +66,7 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
             .Validate(() => ValidateExpressionIsNotEmpty(context, definition))
             .Validate(() => ValidateSignatureNotNull(context, definition))
             .Validate(() => ValidateSignatureNotEmpty(context, definition))
+            .Validate(() => ValidateExpressionContainsValidUnits(context, definition))
             .Validate(() => ValidatePermutationsNotRedundant(context, definition))
             .Merge(() => ProcessSignature(context, definition))
             .Validate((signature) => ValidateDerivationSignatureNotDuplicate(context, definition, signature))
@@ -112,6 +120,23 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
     private IValidityWithDiagnostics ValidateSignatureNotEmpty(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.Signature!.Count is not 0, () => Diagnostics.EmptySignature(context, definition));
+    }
+
+    private IValidityWithDiagnostics ValidateExpressionContainsValidUnits(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
+    {
+        var quantityMatches = ExpressionQuantityPattern.Matches(definition.Expression);
+
+        foreach (var quantityMatch in quantityMatches)
+        {
+            var requestedIndex = int.Parse(((Match)quantityMatch).Groups["index"].Value, CultureInfo.InvariantCulture);
+
+            if (requestedIndex > definition.Signature!.Count - 1)
+            {
+                return ValidityWithDiagnostics.Invalid(Diagnostics.UnmatchedExpressionUnit(context, definition, requestedIndex));
+            }
+        }
+
+        return ValidityWithDiagnostics.Valid;
     }
 
     private IValidityWithDiagnostics ValidatePermutationsNotRedundant(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)

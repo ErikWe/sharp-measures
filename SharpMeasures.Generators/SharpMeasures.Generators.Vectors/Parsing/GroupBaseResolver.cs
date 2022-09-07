@@ -26,9 +26,9 @@ internal static class GroupBaseResolver
 
         var includedUnitInstances = ResolveUnitInclusions(unit, input.UnresolvedVector.UnitInclusions, () => input.UnresolvedVector.UnitExclusions);
 
-        return new(input.UnresolvedVector.Type, input.UnresolvedVector.TypeLocation, input.UnresolvedVector.Definition.Unit, input.UnresolvedVector.Definition.Scalar,
-            input.UnresolvedVector.Definition.ImplementSum, input.UnresolvedVector.Definition.ImplementDifference, input.UnresolvedVector.Definition.Difference, input.UnresolvedVector.Definition.DefaultUnitInstanceName,
-            input.UnresolvedVector.Definition.DefaultUnitInstanceSymbol, membersByDimension, input.UnresolvedVector.Derivations, input.UnresolvedVector.Conversions, includedUnitInstances, input.UnresolvedVector.Definition.GenerateDocumentation);
+        return new(input.UnresolvedVector.Type, input.UnresolvedVector.TypeLocation, input.UnresolvedVector.Definition.Unit, input.UnresolvedVector.Definition.Scalar, input.UnresolvedVector.Definition.ImplementSum,
+            input.UnresolvedVector.Definition.ImplementDifference, input.UnresolvedVector.Definition.Difference, input.UnresolvedVector.Definition.DefaultUnitInstanceName, input.UnresolvedVector.Definition.DefaultUnitInstanceSymbol,
+            membersByDimension, input.UnresolvedVector.Derivations, Array.Empty<IDerivedQuantity>(), input.UnresolvedVector.Conversions, includedUnitInstances, input.UnresolvedVector.Definition.GenerateDocumentation);
     }
 
     private static IReadOnlyList<string> ResolveUnitInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)

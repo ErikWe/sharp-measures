@@ -10,19 +10,21 @@ public record class DerivedQuantityDefinition : AAttributeDefinition<DerivedQuan
     public string Expression { get; }
     public IReadOnlyList<NamedType> Signature => signature;
 
-    public bool ImplementOperators { get; }
-    public bool ImplementAlgebraicallyEquivalentDerivations { get; }
+    public DerivationOperatorImplementation OperatorImplementation { get; }
+
+    public bool Permutations { get; }
 
     private ReadOnlyEquatableList<NamedType> signature { get; }
 
     IDerivedQuantityLocations IDerivedQuantity.Locations => Locations;
 
-    public DerivedQuantityDefinition(string expression, IReadOnlyList<NamedType> signature, bool implementOperators, bool implementAlgebraicallyEquivalentDerivations, DerivedQuantityLocations locations) : base(locations)
+    public DerivedQuantityDefinition(string expression, IReadOnlyList<NamedType> signature, DerivationOperatorImplementation operatorImplementation, bool permutations, DerivedQuantityLocations locations) : base(locations)
     {
         Expression = expression;
         this.signature = signature.AsReadOnlyEquatable();
 
-        ImplementOperators = implementOperators;
-        ImplementAlgebraicallyEquivalentDerivations = implementAlgebraicallyEquivalentDerivations;
+        OperatorImplementation = operatorImplementation;
+
+        Permutations = permutations;
     }
 }

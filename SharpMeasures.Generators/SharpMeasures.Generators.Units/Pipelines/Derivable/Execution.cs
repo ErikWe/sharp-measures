@@ -31,6 +31,8 @@ internal static class Execution
 
         private StringBuilder Builder { get; } = new();
 
+        private NewlineSeparationHandler SeparationHandler { get; }
+
         private DataModel Data { get; }
 
         private HashSet<DerivableUnitSignature> ImplementedSignatures { get; } = new();
@@ -38,6 +40,8 @@ internal static class Execution
         private Composer(DataModel data)
         {
             Data = data;
+
+            SeparationHandler = new(Builder);
         }
 
         private void Compose()
@@ -58,6 +62,8 @@ internal static class Execution
 
         private void ComposeTypeBlock(Indentation indentation)
         {
+            SeparationHandler.MarkUnncecessary();
+
             foreach (DerivableUnitDefinition definition in Data.Derivations)
             {
                 AppendDefinition(definition, indentation);
@@ -83,6 +89,8 @@ internal static class Execution
             {
                 return;
             }
+
+            SeparationHandler.AddIfNecessary();
 
             var parameters = GetSignatureComponents(signature, parameterNames);
 
@@ -133,11 +141,6 @@ internal static class Execution
             {
                 yield return (signatureUnitTypeEnumerator.Current, parameterEnumerator.Current);
             }
-        }
-
-        private void AppendDocumentation(Indentation indentation, string text)
-        {
-            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
         }
 
         private static string ProcessExpression(DerivableUnitDefinition definition, IEnumerable<string> parameterNames, IUnitPopulation unitPopulation)
@@ -220,6 +223,11 @@ internal static class Execution
             {
                 yield return unitPopulation.Units[signatureElement].Definition.Quantity;
             }
+        }
+
+        private void AppendDocumentation(Indentation indentation, string text)
+        {
+            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
         }
     }
 }

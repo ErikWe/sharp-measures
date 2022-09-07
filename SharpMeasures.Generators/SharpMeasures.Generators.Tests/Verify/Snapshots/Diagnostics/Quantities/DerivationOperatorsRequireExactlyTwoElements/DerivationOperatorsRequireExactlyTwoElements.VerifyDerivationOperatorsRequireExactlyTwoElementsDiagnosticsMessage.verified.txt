@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1260,
+    Title: Derivation operators require exactly two elements,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (13,65)-(13,103),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Quantity derivation through operators can only be implemented with exactly two quantities, but derivation consists of {0} quantity,
+    Message: Quantity derivation through operators can only be implemented with exactly two quantities, but derivation consists of 1 quantity,
+    Category: Usage,
+    CustomTags: []
+  }
+]

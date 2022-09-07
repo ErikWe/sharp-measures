@@ -1,5 +1,7 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
+using SharpMeasures.Generators.Quantities;
+using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Units;
 
 internal interface IDocumentationStrategy
@@ -17,6 +19,9 @@ internal interface IDocumentationStrategy
     public abstract string FromCube();
     public abstract string FromSquareRoot();
     public abstract string FromCubeRoot();
+
+    public abstract string Derivation(DerivedQuantitySignature signature);
+    public abstract string OperatorDerivationLHS(IOperatorDerivation derivation);
 
     public abstract string ScalarConstructor();
     public abstract string ScalarAndUnitConstructor();

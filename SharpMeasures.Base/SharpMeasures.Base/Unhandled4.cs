@@ -86,8 +86,8 @@ public readonly record struct Unhandled4 : IVector4Quantity<Unhandled4>
     /// <inheritdoc/>
     public Unhandled4 Normalize() => VectorMaths.Normalize(this);
 
-    /// <summary>Produces a description of <see langword="this"/> containing the type and the represented components.</summary>
-    public override string ToString() => $"{nameof(Unhandled3)}: ({X.Magnitude.Value}, {Y.Magnitude.Value}, {Z.Magnitude.Value}, {W.Magnitude.Value})";
+    /// <summary>Produces a description of <see langword="this"/> containing the represented components.</summary>
+    public override string ToString() => $"({X.Magnitude.Value}, {Y.Magnitude.Value}, {Z.Magnitude.Value}, {W.Magnitude.Value})";
 
     /// <summary>Deconstructs <see langword="this"/> into the components X, Y, Z, and W.</summary>
     /// <param name="x">The X-component of <see langword="this"/>.</param>
@@ -107,15 +107,15 @@ public readonly record struct Unhandled4 : IVector4Quantity<Unhandled4>
     /// <inheritdoc/>
     public Unhandled4 Negate() => -this;
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Unhandled.Add(Unhandled)"/>
     public Unhandled4 Add(Unhandled4 addend) => this + addend;
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Unhandled.Subtract(Unhandled)"/>
     public Unhandled4 Subtract(Unhandled4 subtrahend) => this - subtrahend;
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Unhandled.Multiply(Unhandled)"/>
     public Unhandled4 Multiply(Unhandled factor) => this * factor;
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Unhandled.Divide(Unhandled)"/>
     public Unhandled4 Divide(Unhandled divisor) => this / divisor;
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector4.Dot(Vector4)"/>
     public Unhandled Dot(Unhandled4 factor) => ScalarMaths.Dot4(this, factor);
 
     /// <inheritdoc/>
@@ -128,13 +128,15 @@ public readonly record struct Unhandled4 : IVector4Quantity<Unhandled4>
     /// <inheritdoc/>
     public static Unhandled4 operator -(Unhandled4 a) => (-a.X, -a.Y, -a.Z, -a.W);
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector4.operator +(Vector4, Vector4)"/>
     public static Unhandled4 operator +(Unhandled4 a, Unhandled4 b) => (a.X + b.X, a.Y + b.Y, a.Z + b.Z, a.W + b.W);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector4.operator -(Vector4, Vector4)"/>
     public static Unhandled4 operator -(Unhandled4 a, Unhandled4 b) => (a.X - b.X, a.Y - b.Y, a.Z - b.Z, a.W - b.W);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector4.operator *(Vector4, Scalar)"/>
     public static Unhandled4 operator *(Unhandled4 a, Unhandled b) => (a.X * b, a.Y * b, a.Z * b, a.W * b);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector4.operator *(Scalar, Vector4)"/>
+    public static Unhandled4 operator *(Unhandled a, Unhandled4 b) => (a * b.X, a * b.Y, a * b.Z, a * b.W);
+    /// <inheritdoc cref="Vector4.operator /(Vector4, Scalar)"/>
     public static Unhandled4 operator /(Unhandled4 a, Unhandled b) => (a.X / b, a.Y / b, a.Z / b, a.W / b);
 
     /// <inheritdoc/>

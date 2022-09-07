@@ -68,7 +68,7 @@ public readonly record struct MetricPrefix : IPrefix, IComparable<MetricPrefix>
 
     /// <inheritdoc cref="Scalar.CompareTo(Scalar)"/>
     public int CompareTo(MetricPrefix other) => Factor.CompareTo(other.Factor);
-    /// <summary>Produces a description of <see langword="this"/> containing the scale-factor, followed by 'x'.</summary>
+    /// <summary>Produces a description of <see langword="this"/> containing the scale-factor, followed by the character 'x'.</summary>
     public override string ToString() => $"{Factor.Value}x";
 
     /// <inheritdoc cref="Scalar.operator &lt;"/>

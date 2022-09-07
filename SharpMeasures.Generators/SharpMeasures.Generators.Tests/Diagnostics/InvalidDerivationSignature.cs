@@ -41,7 +41,7 @@ public class InvalidDerivationSignature
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [DerivableUnit("{0} / {1}", {{signature}})]
+        [DerivableUnit("42", {{signature}})]
         [SharpMeasuresUnit(typeof(Speed))]
         public partial class UnitOfSpeed { }
 
@@ -64,7 +64,7 @@ public class InvalidDerivationSignature
     private static GeneratorVerifier AssertDerivableUnit(SourceSubtext signature)
     {
         var source = DerivableUnitText(signature);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, signature.Context.With(outerPrefix: "DerivableUnit(\"{0} / {1}\", "));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, signature.Context.With(outerPrefix: "DerivableUnit(\"42\", "));
 
         return AssertExactlyInvalidDerivationSignatureDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(DerivableUnitIdentical);
     }
@@ -74,7 +74,7 @@ public class InvalidDerivationSignature
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [DerivedQuantity("{0} / {1}", {{signature}})]
+        [DerivedQuantity("42", {{signature}})]
         [SharpMeasuresScalar(typeof(UnitOfSpeed))]
         public partial class Speed { }
 
@@ -97,7 +97,7 @@ public class InvalidDerivationSignature
     private static GeneratorVerifier AssertDerivedQuantity(SourceSubtext signature)
     {
         var source = DerivedQuantityText(signature);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, signature.Context.With(outerPrefix: "DerivedQuantity(\"{0} / {1}\", "));
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, signature.Context.With(outerPrefix: "DerivedQuantity(\"42\", "));
 
         return AssertExactlyInvalidDerivationSignatureDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(DerivableQuantityIdentical);
     }

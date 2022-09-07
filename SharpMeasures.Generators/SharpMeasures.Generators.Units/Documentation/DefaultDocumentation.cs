@@ -4,6 +4,7 @@ using SharpMeasures.Generators.SourceBuilding;
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<DefaultDocumentation>
 {
@@ -32,17 +33,19 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
 
     public string Derivation(IReadOnlyList<NamedType> signature)
     {
-        var text = $"""/// <summary>Constructs a new {UnitReference}, derived from other units.</summary>""";
+        StringBuilder source = new();
+        source.Append($"""/// <summary>Constructs a new {UnitReference}, derived from other units.</summary>""");
 
         foreach (var unit in signature)
         {
-            text = $"""
-                {text}
+            source.AppendLine();
+
+            source.Append($"""
                 /// <param name="{SourceBuildingUtility.ToParameterName(unit.Name)}">This <see cref="{unit.FullyQualifiedName}"/> is used to derive a {UnitReference}.</param>
-                """;
+                """);
         }
 
-        return text;
+        return source.ToString();
     }
 
     public string FixedUnitInstance(IFixedUnitInstance unitInstance) => BiasTerm switch

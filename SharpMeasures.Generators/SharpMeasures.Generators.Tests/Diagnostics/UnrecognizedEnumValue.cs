@@ -37,6 +37,10 @@ public class UnrecognizedEnumValue
     [MemberData(nameof(UnrecognizedEnumValues))]
     public void InclusionStackingMode_Base(SourceSubtext inclusionStackingMode) => AssertInclusionStackingMode_Base(inclusionStackingMode);
 
+    [Theory]
+    [MemberData(nameof(UnrecognizedEnumValues))]
+    public void DerivedQuantity(SourceSubtext operatorImplementation) => AssertDerivedQuantity(operatorImplementation);
+
     public static IEnumerable<object[]> UnrecognizedEnumValues => new object[][]
     {
         new object[] { NegativeOne },
@@ -141,10 +145,33 @@ public class UnrecognizedEnumValue
         return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(InclusionStackingModeIdentical_Base);
     }
 
+    private static string DerivedQuantityText(SourceSubtext operatorImplementation) => $$"""
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        
+        [DerivedQuantity("{0}", typeof(Length), OperatorImplementation = (DerivationOperatorImplementation){{operatorImplementation}})]
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
+        [FixedUnitInstance("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static GeneratorVerifier AssertDerivedQuantity(SourceSubtext inclusionStackingMode)
+    {
+        var source = DerivedQuantityText(inclusionStackingMode);
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, inclusionStackingMode.Context.With(outerPrefix: "OperatorImplementation = (DerivationOperatorImplementation)"));
+
+        return AssertExactlyUnrecognizedEnumValueDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(DerivedQuantityIdentical);
+    }
+
     private static GeneratorVerifier PrefixUnitIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(PrefixedUnitIdenticalText);
     private static GeneratorVerifier CastOperatorBehaviourIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(CastOperatorBehaviourIdenticalText);
     private static GeneratorVerifier InclusionStackingModeIdentical_Unit => GeneratorVerifier.Construct<SharpMeasuresGenerator>(InclusionStackingModeIdenticalText_Unit);
     private static GeneratorVerifier InclusionStackingModeIdentical_Base => GeneratorVerifier.Construct<SharpMeasuresGenerator>(InclusionStackingModeIdenticalText_Base);
+    private static GeneratorVerifier DerivedQuantityIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(DerivedQuantityIdenticalText);
 
     private static string PrefixedUnitIdenticalText => """
         using SharpMeasures.Generators.Scalars;
@@ -197,6 +224,20 @@ public class UnrecognizedEnumValue
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
+        [FixedUnitInstance("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string DerivedQuantityIdenticalText => """
+        using SharpMeasures.Generators.Quantities;
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        
+        [DerivedQuantity("{0}", typeof(Length), OperatorImplementation = DerivationOperatorImplementation.None)]
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+        
         [FixedUnitInstance("Metre", "Metres")]
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }

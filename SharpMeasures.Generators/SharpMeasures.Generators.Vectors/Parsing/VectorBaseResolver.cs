@@ -26,7 +26,7 @@ internal static class VectorBaseResolver
         return new(input.UnresolvedVector.Type, input.UnresolvedVector.TypeLocation, input.UnresolvedVector.Definition.Dimension, input.UnresolvedVector.Definition.Unit,
             input.UnresolvedVector.Definition.Scalar, input.UnresolvedVector.Definition.ImplementSum, input.UnresolvedVector.Definition.ImplementDifference,
             input.UnresolvedVector.Definition.Difference, input.UnresolvedVector.Definition.DefaultUnitInstanceName, input.UnresolvedVector.Definition.DefaultUnitInstanceSymbol, input.UnresolvedVector.Derivations,
-            input.UnresolvedVector.Constants, input.UnresolvedVector.Conversions, includedUnits, input.UnresolvedVector.Definition.GenerateDocumentation);
+            Array.Empty<IDerivedQuantity>(), input.UnresolvedVector.Constants, input.UnresolvedVector.Conversions, includedUnits, input.UnresolvedVector.Definition.GenerateDocumentation);
     }
 
     private static IReadOnlyList<string> ResolveUnitInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)

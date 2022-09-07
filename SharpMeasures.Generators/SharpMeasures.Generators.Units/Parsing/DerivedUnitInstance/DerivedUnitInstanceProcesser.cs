@@ -36,7 +36,7 @@ internal class DerivedUnitInstanceProcesser : AUnitInstanceProcesser<IUnitInstan
 
         return ProcessUnits(context, definition)
             .Transform((units) => ProduceResult(definition, interpretedPluralForm.Result, units))
-            .ConcatDiagnostics(interpretedPluralForm);
+            .AddDiagnostics(interpretedPluralForm);
     }
 
     private static DerivedUnitInstanceDefinition ProduceResult(RawDerivedUnitInstanceDefinition definition, string interpretedPluralForm, IReadOnlyList<string> units)

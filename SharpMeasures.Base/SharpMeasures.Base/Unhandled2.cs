@@ -72,8 +72,8 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
     /// <inheritdoc/>
     public Unhandled2 Normalize() => VectorMaths.Normalize(this);
 
-    /// <summary>Produces a description of <see langword="this"/> containing the type and the represented components.</summary>
-    public override string ToString() => $"{nameof(Unhandled2)}: ({X.Magnitude.Value}, {Y.Magnitude.Value})";
+    /// <summary>Produces a description of <see langword="this"/> containing the represented components.</summary>
+    public override string ToString() => $"({X.Magnitude.Value}, {Y.Magnitude.Value})";
 
     /// <summary>Deconstructs <see langword="this"/> into the components X and Y.</summary>
     /// <param name="x">The X-component of <see langword="this"/>.</param>
@@ -89,15 +89,15 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
     /// <inheritdoc/>
     public Unhandled2 Negate() => -this;
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Unhandled.Add(Unhandled)"/>
     public Unhandled2 Add(Unhandled2 addend) => this + addend;
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Unhandled.Subtract(Unhandled)"/>
     public Unhandled2 Subtract(Unhandled2 subtrahend) => this - subtrahend;
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Unhandled.Multiply(Unhandled)"/>
     public Unhandled2 Multiply(Unhandled factor) => this * factor;
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Unhandled.Divide(Unhandled)"/>
     public Unhandled2 Divide(Unhandled divisor) => this / divisor;
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector2.Dot(Vector2)"/>
     public Unhandled Dot(Unhandled2 factor) => ScalarMaths.Dot2(this, factor);
 
     /// <inheritdoc/>
@@ -110,13 +110,15 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
     /// <inheritdoc/>
     public static Unhandled2 operator -(Unhandled2 a) => (-a.X, -a.Y);
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector2.operator +(Vector2, Vector2)"/>
     public static Unhandled2 operator +(Unhandled2 a, Unhandled2 b) => (a.X + b.X, a.Y + b.Y);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector2.operator -(Vector2, Vector2)"/>
     public static Unhandled2 operator -(Unhandled2 a, Unhandled2 b) => (a.X - b.X, a.Y - b.Y);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector2.operator *(Vector2, Scalar)"/>
     public static Unhandled2 operator *(Unhandled2 a, Unhandled b) => (a.X * b, a.Y * b);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector2.operator *(Scalar, Vector2)"/>
+    public static Unhandled2 operator *(Unhandled a, Unhandled2 b) => (a * b.X, a * b.Y);
+    /// <inheritdoc cref="Vector2.operator /(Vector2, Scalar)"/>
     public static Unhandled2 operator /(Unhandled2 a, Unhandled b) => (a.X / b, a.Y / b);
 
     /// <inheritdoc/>
@@ -126,7 +128,7 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
     /// <inheritdoc/>
     public static Unhandled2 operator /(Unhandled2 a, Scalar b) => (a.X / b, a.Y / b);
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector2.operator +(Vector2, Vector2)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled2 operator +(Unhandled2 a, IVector2Quantity b)
     {
@@ -135,7 +137,7 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
         return (a.X + b.X, a.Y + b.Y);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector2.operator +(Vector2, Vector2)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled2 operator +(IVector2Quantity a, Unhandled2 b)
     {
@@ -144,7 +146,7 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
         return (a.X + b.X, a.Y + b.Y);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector2.operator -(Vector2, Vector2)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled2 operator -(Unhandled2 a, IVector2Quantity b)
     {
@@ -153,7 +155,7 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
         return (a.X - b.X, a.Y - b.Y);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector2.operator -(Vector2, Vector2)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled2 operator -(IVector2Quantity a, Unhandled2 b)
     {
@@ -162,7 +164,7 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
         return (a.X - b.X, a.Y - b.Y);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector2.operator *(Vector2, Scalar)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled2 operator *(Unhandled2 a, IScalarQuantity b)
     {
@@ -171,7 +173,7 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
         return (a.X * b, a.Y * b);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector2.operator *(Scalar, Vector2)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled2 operator *(IScalarQuantity a, Unhandled2 b)
     {
@@ -180,7 +182,7 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
         return (a * b.X, a * b.Y);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector2.operator /(Vector2, Scalar)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled2 operator /(Unhandled2 a, IScalarQuantity b)
     {
@@ -192,6 +194,10 @@ public readonly record struct Unhandled2 : IVector2Quantity<Unhandled2>
     /// <summary>Constructs the <see cref="Unhandled2"/> with the elements of <paramref name="components"/> as components.</summary>
     [SuppressMessage("Usage", "CA2225", Justification = "Behaviour can be achieved through a constructor")]
     public static implicit operator Unhandled2((Unhandled X, Unhandled Y) components) => new(components.X, components.Y);
+
+    /// <summary>Constructs the tuple (<see cref="Unhandled"/>, <see cref="Unhandled"/>) with the elements of <paramref name="vector"/>.</summary>
+    [SuppressMessage("Usage", "CA2225", Justification = "Behaviour can be achieved through the deconstructor")]
+    public static implicit operator (Unhandled X, Unhandled Y)(Unhandled2 vector) => (vector.X, vector.Y);
 
     /// <summary>Describes mathematical operations that result in a pure <see cref="Scalar"/>.</summary>
     private static IScalarResultingMaths<Scalar> PureScalarMaths { get; } = MathFactory.ScalarResult();

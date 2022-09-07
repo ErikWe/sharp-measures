@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1262,
+    Title: Unmatched derivation expression quantity,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (7,17)-(7,28),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The signature does not contain a quantity with index {0},
+    Message: The signature does not contain a quantity with index 1,
+    Category: Usage,
+    CustomTags: []
+  }
+]

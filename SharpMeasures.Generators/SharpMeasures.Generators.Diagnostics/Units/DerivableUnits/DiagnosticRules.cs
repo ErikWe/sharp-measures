@@ -86,4 +86,14 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true,
         customTags: WellKnownDiagnosticTags.Unnecessary
     );
+
+    public static readonly DiagnosticDescriptor UnmatchedDerivationExpressionUnit = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.UnmatchedDerivationExpressionUnit,
+        title: "Unmatched derivation expression unit",
+        messageFormat: $"The signature does not contain a unit with index {{0}}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
 }

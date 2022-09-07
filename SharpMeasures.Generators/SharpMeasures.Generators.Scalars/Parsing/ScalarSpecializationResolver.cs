@@ -24,7 +24,9 @@ internal static class ScalarSpecializationResolver
         var scalarBase = input.ScalarPopulation.ScalarBases[input.UnresolvedScalar.Type.AsNamedType()];
         var unit = input.UnitPopulation.Units[scalarBase.Definition.Unit];
 
-        var derivations = CollectItems(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Derivations, static (scalar) => scalar.Definition.InheritDerivations);
+        var definedDerivations = input.UnresolvedScalar.Derivations;
+        var inheritedDerivations = CollectItems(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Derivations, static (scalar) => scalar.Definition.InheritDerivations, onlyInherited: true);
+
         var constants = CollectItems(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Constants, static (scalar) => scalar.Definition.InheritConstants);
         var conversions = CollectItems(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Conversions, static (scalar) => scalar.Definition.InheritConversions);
 
@@ -49,7 +51,7 @@ internal static class ScalarSpecializationResolver
         var generateDocumentation = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.GenerateDocumentation);
 
         return new(input.UnresolvedScalar.Type, input.UnresolvedScalar.TypeLocation, unit.Type.AsNamedType(), scalarBase.Definition.UseUnitBias, vector, reciprocal, square, cube, squareRoot, cubeRoot,
-            implementSum!.Value, implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, derivations, constants, conversions, includedUnitBaseInstances, includedUnitInstances, generateDocumentation);
+            implementSum!.Value, implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definedDerivations, inheritedDerivations, constants, conversions, includedUnitBaseInstances, includedUnitInstances, generateDocumentation);
     }
 
     private static NamedType? ResolveDifference(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation)
@@ -64,21 +66,24 @@ internal static class ScalarSpecializationResolver
         return difference;
     }
 
-    private static IReadOnlyList<T> CollectItems<T>(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation, Func<IScalarType, IEnumerable<T>> itemsDelegate, Func<IScalarSpecializationType, bool> shouldInherit)
+    private static IReadOnlyList<T> CollectItems<T>(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation, Func<IScalarType, IEnumerable<T>> itemsDelegate, Func<IScalarSpecializationType, bool> shouldInherit, bool onlyInherited = false)
     {
         List<T> items = new();
 
-        recursivelyAddItems(scalarType);
+        recursivelyAddItems(scalarType, onlyInherited);
 
         return items;
 
-        void recursivelyAddItems(IScalarType scalar)
+        void recursivelyAddItems(IScalarType scalar, bool onlyInherited)
         {
-            items.AddRange(itemsDelegate(scalar));
+            if (onlyInherited is false)
+            {
+                items.AddRange(itemsDelegate(scalar));
+            }
 
             if (scalar is IScalarSpecializationType scalarSpecialization && shouldInherit(scalarSpecialization))
             {
-                recursivelyAddItems(scalarPopulation.Scalars[scalarSpecialization.Definition.OriginalQuantity]);
+                recursivelyAddItems(scalarPopulation.Scalars[scalarSpecialization.Definition.OriginalQuantity], onlyInherited: false);
             }
         }
     }

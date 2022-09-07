@@ -40,19 +40,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.dll" />
-    </ItemGroup>
-
-    <ItemGroup>
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Equatables.dll" />
         <None Include="$(OutputPath)\SharpMeasures.Equatables.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.Attributes.Parsing.API.dll" />
-        <None Include="$(OutputPath)\SharpMeasures.Generators.Attributes.Parsing.API.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.Attributes.Parsing.dll" />
-        <None Include="$(OutputPath)\SharpMeasures.Generators.Attributes.Parsing.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.Attributes.dll" />
         <None Include="$(OutputPath)\SharpMeasures.Generators.Attributes.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(OutputPath)\SharpMeasures.Generators.Attributes.API.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(OutputPath)\SharpMeasures.Generators.Attributes.Parsing.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="$(OutputPath)\SharpMeasures.Generators.Configuration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="$(OutputPath)\SharpMeasures.Generators.Diagnostics.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="$(OutputPath)\SharpMeasures.Generators.Documentation.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
@@ -63,24 +55,6 @@
         <None Include="$(OutputPath)\SharpMeasures.Generators.Units.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="$(OutputPath)\SharpMeasures.Generators.Vectors.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="$(OutputPath)\SharpMeasures.Utility.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.Attributes.dll" />
-      <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.Configuration.dll" />
-      <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.Diagnostics.dll" />
-      <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.Documentation.dll" />
-      <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.Quantities.dll" />
-      <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.RoslynUtility.dll" />
-      <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.Scalars.dll" />
-      <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.SourceBuilding.dll" />
-      <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.Units.dll" />
-      <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.Vectors.dll" />
-      <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Utility.dll" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.Attributes.dll" />
     </ItemGroup>
 
     <ItemGroup>

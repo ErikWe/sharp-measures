@@ -58,8 +58,8 @@ public readonly record struct Vector3 : IVector3Quantity<Vector3>
     /// <inheritdoc/>
     public Vector3 Transform(Matrix4x4 transform) => VectorMaths.Transform(this, transform);
 
-    /// <summary>Produces a description of <see langword="this"/> containing the type and the represented components.</summary>
-    public override string ToString() => $"{nameof(Vector3)}: ({X.Value}, {Y.Value}, {Z.Value})";
+    /// <summary>Produces a description of <see langword="this"/> containing the represented components.</summary>
+    public override string ToString() => $"({X.Value}, {Y.Value}, {Z.Value})";
 
     /// <summary>Deconstructs <see langword="this"/> into the components X, Y, and Z.</summary>
     /// <param name="x">The X-component of <see langword="this"/>.</param>
@@ -77,9 +77,11 @@ public readonly record struct Vector3 : IVector3Quantity<Vector3>
     /// <inheritdoc/>
     public Vector3 Negate() => -this;
 
-    /// <inheritdoc/>
+    /// <summary>Computes { <see langword="this"/> + <paramref name="addend"/> }.</summary>
+    /// <param name="addend">The second term of { <see langword="this"/> + <paramref name="addend"/> }.</param>
     public Vector3 Add(Vector3 addend) => this + addend;
-    /// <inheritdoc/>
+    /// <summary>Computes { <see langword="this"/> - <paramref name="subtrahend"/> }.</summary>
+    /// <param name="subtrahend">The second term of { <see langword="this"/> - <paramref name="subtrahend"/> }.</param>
     public Vector3 Subtract(Vector3 subtrahend) => this - subtrahend;
     /// <inheritdoc/>
     public Vector3 Multiply(Scalar factor) => this * factor;
@@ -87,18 +89,24 @@ public readonly record struct Vector3 : IVector3Quantity<Vector3>
     public Vector3 Divide(Scalar divisor) => this / divisor;
     /// <inheritdoc cref="Scalar.Remainder(Scalar)"/>
     public Vector3 Remainder(Scalar divisor) => this % divisor;
-    /// <inheritdoc/>
+    /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
+    /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
     public Scalar Dot(Vector3 factor) => ScalarMaths.Dot3(this, factor);
-    /// <inheritdoc/>
+    /// <summary>Computes { <see langword="this"/> x <paramref name="factor"/> }.</summary>
+    /// <param name="factor">The second factor of { <see langword="this"/> x <paramref name="factor"/> }.</param>
     public Vector3 Cross(Vector3 factor) => VectorMaths.Cross(this, factor);
 
     /// <inheritdoc/>
     public static Vector3 operator +(Vector3 a) => a;
     /// <inheritdoc/>
     public static Vector3 operator -(Vector3 a) => (-a.X, -a.Y, -a.Z);
-    /// <inheritdoc/>
+    /// <summary>Computes { <paramref name="a"/> + <paramref name="b"/> }.</summary>
+    /// <param name="a">The first term of { <paramref name="a"/> + <paramref name="b"/> }.</param>
+    /// <param name="b">The second term of { <paramref name="a"/> + <paramref name="b"/> }.</param>
     public static Vector3 operator +(Vector3 a, Vector3 b) => (a.X + b.X, a.Y + b.Y, a.Z + b.Z);
-    /// <inheritdoc/>
+    /// <summary>Computes { <paramref name="a"/> - <paramref name="b"/> }.</summary>
+    /// <param name="a">The first term of { <paramref name="a"/> - <paramref name="b"/> }.</param>
+    /// <param name="b">The second term of { <paramref name="a"/> - <paramref name="b"/> }.</param>
     public static Vector3 operator -(Vector3 a, Vector3 b) => (a.X - b.X, a.Y - b.Y, a.Z - b.Z);
 
     /// <inheritdoc/>
@@ -116,12 +124,12 @@ public readonly record struct Vector3 : IVector3Quantity<Vector3>
     [SuppressMessage("Usage", "CA2225", Justification = "Behaviour can be achieved through a constructor")]
     public static implicit operator Vector3((Scalar X, Scalar Y, Scalar Z) components) => new(components.X, components.Y, components.Z);
 
+    /// <summary>Constructs the tuple (<see cref="Scalar"/>, <see cref="Scalar"/>, <see cref="Scalar"/>) with the elements of <paramref name="vector"/>.</summary>
+    [SuppressMessage("Usage", "CA2225", Justification = "Behaviour can be achieved through the deconstructor")]
+    public static implicit operator (Scalar X, Scalar Y, Scalar Z)(Vector3 vector) => new(vector.X, vector.Y, vector.Z);
+
     /// <summary>Describes mathematical operations that result in a pure <see cref="Scalar"/>.</summary>
     private static IScalarResultingMaths<Scalar> ScalarMaths { get; } = MathFactory.ScalarResult();
-    /// <summary>Describes mathematical operations that result in a <see cref="Unhandled"/>.</summary>
-    private static IScalarResultingMaths<Unhandled> UnhandledMaths { get; } = MathFactory.ScalarResult<Unhandled>();
     /// <summary>Describes mathematical operations that result in a pure <see cref="Vector3"/>.</summary>
     private static IVector3ResultingMaths<Vector3> VectorMaths { get; } = MathFactory.Vector3Result();
-    /// <summary>Describes mathematical operations that result in a pure <see cref="Unhandled3"/>.</summary>
-    private static IVector3ResultingMaths<Unhandled3> Unhandled3Maths { get; } = MathFactory.Vector3Result<Unhandled3>();
 }

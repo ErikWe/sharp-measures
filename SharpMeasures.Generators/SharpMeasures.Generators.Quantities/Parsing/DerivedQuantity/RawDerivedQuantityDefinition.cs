@@ -16,8 +16,9 @@ public record class RawDerivedQuantityDefinition : ARawAttributeDefinition<RawDe
         init => signature = value.AsReadOnlyEquatable();
     }
 
-    public bool ImplementOperators { get; init; }
-    public bool ImplementAlgebraicallyEquivalentDerivations { get; init; }
+    public DerivationOperatorImplementation OperatorImplementation { get; init; } = DerivationOperatorImplementation.AlgebraicallyEquivalent;
+
+    public bool Permutations { get; init; }
 
     private ReadOnlyEquatableList<NamedType?> signature { get; init; } = ReadOnlyEquatableList<NamedType?>.Empty;
 

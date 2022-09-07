@@ -1,6 +1,8 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
 using SharpMeasures.Generators.Documentation;
+using SharpMeasures.Generators.Quantities;
+using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Units;
 
 using System;
@@ -29,6 +31,9 @@ internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocume
     public string FromCube() => FromFileOrDefault(static (strategy) => strategy.FromCube());
     public string FromSquareRoot() => FromFileOrDefault(static (strategy) => strategy.FromSquareRoot());
     public string FromCubeRoot() => FromFileOrDefault(static (strategy) => strategy.FromCubeRoot());
+
+    public string Derivation(DerivedQuantitySignature signature) => FromFileOrDefault((strategy) => strategy.Derivation(signature));
+    public string OperatorDerivationLHS(IOperatorDerivation derivation) => FromFileOrDefault((strategy) => strategy.OperatorDerivationLHS(derivation));
 
     public string Magnitude() => FromFileOrDefault(static (strategy) => strategy.Magnitude());
 

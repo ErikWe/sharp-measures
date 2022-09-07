@@ -23,13 +23,15 @@ internal record class ResolvedVectorType : IResolvedVectorType
     public string? DefaultUnitInstanceName { get; }
     public string? DefaultUnitInstanceSymbol { get; }
 
-    public IReadOnlyList<IDerivedQuantity> Derivations => derivations;
+    public IReadOnlyList<IDerivedQuantity> DefinedDerivations => definedDerivations;
+    public IReadOnlyList<IDerivedQuantity> InheritedDerivations => inheritedDerivations;
     public IReadOnlyList<IVectorConstant> Constants => constants;
     public IReadOnlyList<IConvertibleQuantity> Conversions => conversions;
 
     public IReadOnlyList<string> IncludedUnitInstanceNames => includedUnits;
 
-    private ReadOnlyEquatableList<IDerivedQuantity> derivations { get; }
+    private ReadOnlyEquatableList<IDerivedQuantity> definedDerivations { get; }
+    private ReadOnlyEquatableList<IDerivedQuantity> inheritedDerivations { get; }
     private ReadOnlyEquatableList<IVectorConstant> constants { get; }
     private ReadOnlyEquatableList<IConvertibleQuantity> conversions { get; }
 
@@ -40,7 +42,7 @@ internal record class ResolvedVectorType : IResolvedVectorType
     IReadOnlyList<IConvertibleQuantity> IResolvedQuantityType.Conversions => Conversions;
 
     public ResolvedVectorType(DefinedType type, MinimalLocation typeLocation, int dimension, NamedType unit, NamedType? scalar, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol,
-        IReadOnlyList<IDerivedQuantity> derivations, IReadOnlyList<IVectorConstant> constants, IReadOnlyList<IConvertibleQuantity> conversions, IReadOnlyList<string> includedUnits, bool? generateDocumentation)
+        IReadOnlyList<IDerivedQuantity> definedDerivations, IReadOnlyList<IDerivedQuantity> inheritedDerivations, IReadOnlyList<IVectorConstant> constants, IReadOnlyList<IConvertibleQuantity> conversions, IReadOnlyList<string> includedUnits, bool? generateDocumentation)
     {
         Type = type;
         TypeLocation = typeLocation;
@@ -58,7 +60,8 @@ internal record class ResolvedVectorType : IResolvedVectorType
         DefaultUnitInstanceName = defaultUnitInstanceName;
         DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol;
 
-        this.derivations = derivations.AsReadOnlyEquatable();
+        this.definedDerivations = definedDerivations.AsReadOnlyEquatable();
+        this.inheritedDerivations = inheritedDerivations.AsReadOnlyEquatable();
         this.constants = constants.AsReadOnlyEquatable();
         this.conversions = conversions.AsReadOnlyEquatable();
 

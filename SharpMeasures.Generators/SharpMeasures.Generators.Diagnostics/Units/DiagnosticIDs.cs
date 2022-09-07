@@ -23,4 +23,5 @@ public static partial class DiagnosticIDs
     public const string UnitNotDerivable = $"{Prefix}{Numbering.Hundreds.Units}46";
     public const string UnitWithBiasTermCannotBeDerived = $"{Prefix}{Numbering.Hundreds.Units}47";
     public const string DerivationSignatureNotPermutable = $"{Prefix}{Numbering.Hundreds.Units}48";
+    public const string UnmatchedDerivationExpressionUnit = $"{Prefix}{Numbering.Hundreds.Units}49";
 }

@@ -8,7 +8,7 @@ using System.Linq;
 
 public interface IResultWithDiagnostics<T> : IOptionalWithDiagnostics<T>
 {
-    new public abstract IResultWithDiagnostics<T> ConcatDiagnostics(params IEnumerable<Diagnostic>[] diagnostics);
+    new public abstract IResultWithDiagnostics<T> AddDiagnostics(params IEnumerable<Diagnostic>[] diagnostics);
 
     new public delegate IResultWithDiagnostics<TNew> DTransform<TNew>(T result);
     public abstract IResultWithDiagnostics<TNew> Merge<TNew>(DTransform<TNew> transform);
@@ -48,7 +48,7 @@ public static class ResultWithDiagnostics
             Diagnostics = diagnostics;
         }
 
-        public IResultWithDiagnostics<T> ConcatDiagnostics(params IEnumerable<Diagnostic>[] diagnostics)
+        public IResultWithDiagnostics<T> AddDiagnostics(params IEnumerable<Diagnostic>[] diagnostics)
         {
             return new SimpleResultWithDiagnostics<T>(Result, Diagnostics.Concat(diagnostics.SelectMany(static (diagnostics) => diagnostics)));
         }
@@ -94,7 +94,7 @@ public static class ResultWithDiagnostics
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         IOptionalWithDiagnostics<TNew> IOptionalWithDiagnostics.AsEmptyOptional<TNew>() => OptionalWithDiagnostics.Empty<TNew>(Diagnostics);
-        IOptionalWithDiagnostics<T> IOptionalWithDiagnostics<T>.ConcatDiagnostics(params IEnumerable<Diagnostic>[] diagnostics) => ConcatDiagnostics(diagnostics);
+        IOptionalWithDiagnostics<T> IOptionalWithDiagnostics<T>.AddDiagnostics(params IEnumerable<Diagnostic>[] diagnostics) => AddDiagnostics(diagnostics);
 
         bool IOptionalWithDiagnostics.HasResult => true;
         bool IOptionalWithDiagnostics.LacksResult => false;

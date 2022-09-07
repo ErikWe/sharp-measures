@@ -2,6 +2,8 @@
 
 using Microsoft.CodeAnalysis;
 
+using System.Globalization;
+
 public static partial class DiagnosticConstruction
 {
     public static Diagnostic MultipleDerivationSignaturesButNotNamed(Location? location, string unitName)
@@ -42,5 +44,10 @@ public static partial class DiagnosticConstruction
     public static Diagnostic DerivationSignatureNotPermutable(Location? location)
     {
         return Diagnostic.Create(DiagnosticRules.DerivationSignatureNotPermutable, location);
+    }
+
+    public static Diagnostic UnmatchedDerivationExpressionUnit(Location? location, int requestedIndex)
+    {
+        return Diagnostic.Create(DiagnosticRules.UnmatchedDerivationExpressionUnit, location, requestedIndex.ToString(CultureInfo.InvariantCulture));
     }
 }

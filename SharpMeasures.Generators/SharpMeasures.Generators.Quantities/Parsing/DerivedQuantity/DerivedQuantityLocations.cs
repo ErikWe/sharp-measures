@@ -17,14 +17,16 @@ public record class DerivedQuantityLocations : AAttributeLocations<DerivedQuanti
         init => signatureElements = value.AsReadOnlyEquatable();
     }
 
-    public MinimalLocation? ImplementOperators { get; init; }
-    public MinimalLocation? ImplementAlgebraicallyEquivalentDerivations { get; init; }
+    public MinimalLocation? OperatorImplementation { get; init; }
+
+    public MinimalLocation? Permutations { get; init; }
 
     public bool ExplicitlySetExpression => Expression is not null;
     public bool ExplicitlySetSignature => SignatureCollection is not null;
 
-    public bool ExplicitlySetImplementOperators => ImplementOperators is not null;
-    public bool ExplicitlySetImplementAlgebraicallyEquivalentDerivations => ImplementAlgebraicallyEquivalentDerivations is not null;
+    public bool ExplicitlySetOperatorImplementation => OperatorImplementation is not null;
+
+    public bool ExplicitlySetPermutations => Permutations is not null;
 
     private ReadOnlyEquatableList<MinimalLocation> signatureElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
 

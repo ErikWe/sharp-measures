@@ -12,8 +12,8 @@ internal static class DerivedQuantityProperties
     {
         Expression,
         Signature,
-        ImplementOperators,
-        ImplementAlgebraicallyEquivalentDerivations
+        OperatorImplementation,
+        Permutations
     };
 
     private static DerivedQuantityProperty<string> Expression { get; } = new
@@ -34,23 +34,17 @@ internal static class DerivedQuantityProperties
         }
     );
 
-    private static DerivedQuantityProperty<bool> ImplementOperators { get; } = new
+    private static DerivedQuantityProperty<int> OperatorImplementation { get; } = new
     (
-        name: nameof(DerivedQuantityAttribute.ImplementOperators),
-        setter: static (definition, implementOperators) => definition with { ImplementOperators = implementOperators },
-        locator: static (locations, implementOperatorsLocation) => locations with { ImplementOperators = implementOperatorsLocation }
+        name: nameof(DerivedQuantityAttribute.OperatorImplementation),
+        setter: static (definition, operatorImplementation) => definition with { OperatorImplementation = (DerivationOperatorImplementation)operatorImplementation },
+        locator: static (locations, operatorImplementationLocation) => locations with { OperatorImplementation = operatorImplementationLocation }
     );
 
-    private static DerivedQuantityProperty<bool> ImplementAlgebraicallyEquivalentDerivations { get; } = new
+    private static DerivedQuantityProperty<bool> Permutations { get; } = new
     (
-        name: nameof(DerivedQuantityAttribute.ImplementAlgebraicallyEquivalentDerivations),
-        setter: static (definition, implementAlgebraicallyEquivalentDerivations) => definition with
-        {
-            ImplementAlgebraicallyEquivalentDerivations = implementAlgebraicallyEquivalentDerivations
-        },
-        locator: static (locations, implementAlgebraicallyEquivalentDerivationsLocation) => locations with
-        {
-            ImplementAlgebraicallyEquivalentDerivations = implementAlgebraicallyEquivalentDerivationsLocation
-        }
+        name: nameof(DerivedQuantityAttribute.Permutations),
+        setter: static (definition, permutations) => definition with { Permutations = permutations },
+        locator: static (locations, permutationsLocation) => locations with { Permutations = permutationsLocation }
     );
 }

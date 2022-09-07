@@ -60,7 +60,7 @@ public interface IOptionalWithDiagnostics<T> : IOptionalWithDiagnostics
 
     public abstract T Result { get; }
 
-    public abstract IOptionalWithDiagnostics<T> ConcatDiagnostics(params IEnumerable<Diagnostic>[] diagnostics);
+    public abstract IOptionalWithDiagnostics<T> AddDiagnostics(params IEnumerable<Diagnostic>[] diagnostics);
 
     public abstract IOptionalWithDiagnostics<T> Validate(DValidator validator);
     public abstract IValidityWithDiagnostics Reduce(DValidator validator);
@@ -197,7 +197,7 @@ public static class OptionalWithDiagnostics
 
         public IOptionalWithDiagnostics<TNew> AsEmptyOptional<TNew>() => new SimpleOptionalWithDiagnostics<TNew>(Diagnostics);
 
-        public IOptionalWithDiagnostics<T> ConcatDiagnostics(params IEnumerable<Diagnostic>[] diagnostics)
+        public IOptionalWithDiagnostics<T> AddDiagnostics(params IEnumerable<Diagnostic>[] diagnostics)
         {
             return new SimpleOptionalWithDiagnostics<T>(Optional, Diagnostics.Concat(diagnostics.SelectMany(static (diagnostics) => diagnostics)));
         }

@@ -82,8 +82,8 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
     /// <inheritdoc/>
     public Unhandled3 Transform(Matrix4x4 transform) => VectorMaths.Transform(this, transform);
 
-    /// <summary>Produces a description of <see langword="this"/> containing the type and the represented components.</summary>
-    public override string ToString() => $"{nameof(Unhandled3)}: ({X.Magnitude.Value}, {Y.Magnitude.Value}, {Z.Magnitude.Value})";
+    /// <summary>Produces a description of <see langword="this"/> containing the represented components.</summary>
+    public override string ToString() => $"({X.Magnitude.Value}, {Y.Magnitude.Value}, {Z.Magnitude.Value})";
 
     /// <summary>Deconstructs <see langword="this"/> into the components X, Y, and Z.</summary>
     /// <param name="x">The X-component of <see langword="this"/>.</param>
@@ -101,17 +101,17 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
     /// <inheritdoc/>
     public Unhandled3 Negate() => -this;
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Unhandled.Add(Unhandled)"/>
     public Unhandled3 Add(Unhandled3 addend) => this + addend;
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Unhandled.Subtract(Unhandled)"/>
     public Unhandled3 Subtract(Unhandled3 subtrahend) => this - subtrahend;
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Unhandled.Multiply(Unhandled)"/>
     public Unhandled3 Multiply(Unhandled factor) => this * factor;
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Unhandled.Divide(Unhandled)"/>
     public Unhandled3 Divide(Unhandled divisor) => this / divisor;
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector3.Dot(Vector3)"/>
     public Unhandled Dot(Unhandled3 factor) => ScalarMaths.Dot3(this, factor);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector3.Cross(Vector3)"/>
     public Unhandled3 Cross(Unhandled3 factor) => VectorMaths.Cross(this, factor);
 
     /// <inheritdoc/>
@@ -119,24 +119,23 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
     /// <inheritdoc/>
     public Unhandled3 Divide(Scalar divisor) => this / divisor;
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Cross(Unhandled3)"/>
     public Unhandled3 Cross(Vector3 factor) => VectorMaths.Cross(this, factor);
-
-    /// <inheritdoc/>
-    public Unhandled3 CrossInto(Vector3 factor) => VectorMaths.Cross(factor, this);
 
     /// <inheritdoc/>
     public static Unhandled3 operator +(Unhandled3 a) => a;
     /// <inheritdoc/>
     public static Unhandled3 operator -(Unhandled3 a) => (-a.X, -a.Y, -a.Z);
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector3.operator +(Vector3, Vector3)"/>
     public static Unhandled3 operator +(Unhandled3 a, Unhandled3 b) => (a.X + b.X, a.Y + b.Y, a.Z + b.Z);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector3.operator -(Vector3, Vector3)"/>
     public static Unhandled3 operator -(Unhandled3 a, Unhandled3 b) => (a.X - b.X, a.Y - b.Y, a.Z - b.Z);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector3.operator *(Vector3, Scalar)"/>
     public static Unhandled3 operator *(Unhandled3 a, Unhandled b) => (a.X * b, a.Y * b, a.Z * b);
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector3.operator *(Scalar, Vector3)"/>
+    public static Unhandled3 operator *(Unhandled a, Unhandled3 b) => (a * b.X, a * b.Y, a * b.Z);
+    /// <inheritdoc cref="Vector3.operator /(Vector3, Scalar)"/>
     public static Unhandled3 operator /(Unhandled3 a, Unhandled b) => (a.X / b, a.Y / b, a.Z / b);
 
     /// <inheritdoc/>
@@ -146,7 +145,7 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
     /// <inheritdoc/>
     public static Unhandled3 operator /(Unhandled3 a, Scalar b) => (a.X / b, a.Y / b, a.Z / b);
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector3.operator +(Vector3, Vector3)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled3 operator +(Unhandled3 a, IVector3Quantity b)
     {
@@ -155,7 +154,7 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
         return (a.X + b.X, a.Y + b.Y, a.Z + b.Z);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector3.operator +(Vector3, Vector3)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled3 operator +(IVector3Quantity a, Unhandled3 b)
     {
@@ -164,7 +163,7 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
         return (a.X + b.X, a.Y + b.Y, a.Z + b.Z);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector3.operator -(Vector3, Vector3)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled3 operator -(Unhandled3 a, IVector3Quantity b)
     {
@@ -173,7 +172,7 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
         return (a.X - b.X, a.Y - b.Y, a.Z - b.Z);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector3.operator -(Vector3, Vector3)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled3 operator -(IVector3Quantity a, Unhandled3 b)
     {
@@ -182,7 +181,7 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
         return (a.X - b.X, a.Y - b.Y, a.Z - b.Z);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector3.operator *(Vector3, Scalar)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled3 operator *(Unhandled3 a, IScalarQuantity b)
     {
@@ -191,7 +190,7 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
         return (a.X * b, a.Y * b, a.Z * b);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector3.operator *(Scalar, Vector3)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled3 operator *(IScalarQuantity a, Unhandled3 b)
     {
@@ -200,7 +199,7 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
         return (a * b.X, a * b.Y, a * b.Z);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Vector3.operator /(Vector3, Scalar)"/>
     /// <exception cref="ArgumentNullException"/>
     public static Unhandled3 operator /(Unhandled3 a, IScalarQuantity b)
     {
@@ -212,6 +211,10 @@ public readonly record struct Unhandled3 : IVector3Quantity<Unhandled3>
     /// <summary>Constructs the <see cref="Unhandled3"/> with the elements of <paramref name="components"/> as components.</summary>
     [SuppressMessage("Usage", "CA2225", Justification = "Behaviour can be achieved through a constructor")]
     public static implicit operator Unhandled3((Unhandled X, Unhandled Y, Unhandled Z) components) => new(components.X, components.Y, components.Z);
+
+    /// <summary>Constructs the tuple (<see cref="Unhandled"/>, <see cref="Unhandled"/>, <see cref="Unhandled"/>) with the elements of <paramref name="vector"/>.</summary>
+    [SuppressMessage("Usage", "CA2225", Justification = "Behaviour can be achieved through the deconstructor")]
+    public static implicit operator (Unhandled X, Unhandled Y, Unhandled Z)(Unhandled3 vector) => (vector.X, vector.Y, vector.Z);
 
     /// <summary>Describes mathematical operations that result in a pure <see cref="Scalar"/>.</summary>
     private static IScalarResultingMaths<Scalar> PureScalarMaths { get; } = MathFactory.ScalarResult();

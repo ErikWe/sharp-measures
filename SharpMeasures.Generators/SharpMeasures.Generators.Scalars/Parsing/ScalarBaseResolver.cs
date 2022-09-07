@@ -31,7 +31,7 @@ internal static class ScalarBaseResolver
             input.UnvalidatedScalar.Definition.Vector, input.UnvalidatedScalar.Definition.Reciprocal, input.UnvalidatedScalar.Definition.Square, input.UnvalidatedScalar.Definition.Cube,
             input.UnvalidatedScalar.Definition.SquareRoot, input.UnvalidatedScalar.Definition.CubeRoot, input.UnvalidatedScalar.Definition.ImplementSum, input.UnvalidatedScalar.Definition.ImplementDifference,
             input.UnvalidatedScalar.Definition.Difference, input.UnvalidatedScalar.Definition.DefaultUnitInstanceName, input.UnvalidatedScalar.Definition.DefaultUnitInstanceSymbol, input.UnvalidatedScalar.Derivations,
-            input.UnvalidatedScalar.Constants, input.UnvalidatedScalar.Conversions, includedUnitBaseInstances, includedUnitInstances, input.UnvalidatedScalar.Definition.GenerateDocumentation);
+            Array.Empty<IDerivedQuantity>(), input.UnvalidatedScalar.Constants, input.UnvalidatedScalar.Conversions, includedUnitBaseInstances, includedUnitInstances, input.UnvalidatedScalar.Definition.GenerateDocumentation);
     }
 
     private static IReadOnlyList<string> ResolveUnitInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)

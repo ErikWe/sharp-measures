@@ -23,14 +23,16 @@ internal record class ResolvedGroupType : IResolvedVectorGroupType
 
     public IReadOnlyDictionary<int, NamedType> MembersByDimension => membersByDimension;
 
-    public IReadOnlyList<IDerivedQuantity> Derivations => derivations;
+    public IReadOnlyList<IDerivedQuantity> DefinedDerivations => definedDerivations;
+    public IReadOnlyList<IDerivedQuantity> InheritedDerivations => inheritedDerivations;
     public IReadOnlyList<IConvertibleQuantity> Conversions => conversions;
 
     public IReadOnlyList<string> IncludedUnitInstanceNames => includedUnits;
 
     private ReadOnlyEquatableDictionary<int, NamedType> membersByDimension { get; }
 
-    private ReadOnlyEquatableList<IDerivedQuantity> derivations { get; }
+    private ReadOnlyEquatableList<IDerivedQuantity> definedDerivations { get; }
+    private ReadOnlyEquatableList<IDerivedQuantity> inheritedDerivations { get; }
     private ReadOnlyEquatableList<IConvertibleQuantity> conversions { get; }
 
     private ReadOnlyEquatableList<string> includedUnits { get; }
@@ -40,7 +42,7 @@ internal record class ResolvedGroupType : IResolvedVectorGroupType
     IReadOnlyList<IConvertibleQuantity> IResolvedQuantityType.Conversions => Conversions;
 
     public ResolvedGroupType(DefinedType type, MinimalLocation typeLocation, NamedType unit, NamedType? scalar, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol,
-        IReadOnlyDictionary<int, NamedType> membersByDimension, IReadOnlyList<IDerivedQuantity> derivations, IReadOnlyList<IConvertibleQuantity> conversions, IReadOnlyList<string> includedUnits, bool? generateDocumentation)
+        IReadOnlyDictionary<int, NamedType> membersByDimension, IReadOnlyList<IDerivedQuantity> definedDerivations, IReadOnlyList<IDerivedQuantity> inheritedDerivations, IReadOnlyList<IConvertibleQuantity> conversions, IReadOnlyList<string> includedUnits, bool? generateDocumentation)
     {
         Type = type;
         TypeLocation = typeLocation;
@@ -58,7 +60,8 @@ internal record class ResolvedGroupType : IResolvedVectorGroupType
 
         this.membersByDimension = membersByDimension.AsReadOnlyEquatable();
 
-        this.derivations = derivations.AsReadOnlyEquatable();
+        this.definedDerivations = definedDerivations.AsReadOnlyEquatable();
+        this.inheritedDerivations = inheritedDerivations.AsReadOnlyEquatable();
         this.conversions = conversions.AsReadOnlyEquatable();
 
         this.includedUnits = includedUnits.AsReadOnlyEquatable();

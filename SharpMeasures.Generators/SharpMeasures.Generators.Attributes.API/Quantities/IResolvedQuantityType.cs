@@ -16,7 +16,8 @@ public interface IResolvedQuantityType
     public abstract string? DefaultUnitInstanceName { get; }
     public abstract string? DefaultUnitInstanceSymbol { get; }
 
-    public abstract IReadOnlyList<IDerivedQuantity> Derivations { get; }
+    public abstract IReadOnlyList<IDerivedQuantity> DefinedDerivations { get; }
+    public abstract IReadOnlyList<IDerivedQuantity> InheritedDerivations { get; }
     public abstract IReadOnlyList<IConvertibleQuantity> Conversions { get; }
 
     public abstract IReadOnlyList<string> IncludedUnitInstanceNames { get; }

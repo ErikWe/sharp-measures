@@ -23,7 +23,9 @@ internal static class VectorSpecializationResolver
         var vectorBase = input.VectorPopulation.VectorBases[input.UnresolvedVector.Type.AsNamedType()];
         var unit = input.UnitPopulation.Units[vectorBase.Definition.Unit];
 
-        var derivations = CollectItems(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Definition.InheritDerivations);
+        var definedDerivations = input.UnresolvedVector.Derivations;
+        var inheritedDerivations = CollectItems(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Definition.InheritDerivations, onlyInherited: true);
+
         var constants = CollectItems(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Constants, static (vector) => vector.Definition.InheritConstants);
         var conversions = CollectItems(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Conversions, static (vector) => vector.Definition.InheritConversions);
 
@@ -41,7 +43,7 @@ internal static class VectorSpecializationResolver
         var generateDocumentation = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.GenerateDocumentation);
 
         return new(input.UnresolvedVector.Type, input.UnresolvedVector.TypeLocation, vectorBase.Definition.Dimension, unit.Type.AsNamedType(), scalar, implementSum!.Value, implementDifference!.Value, difference,
-            defaultUnitInstanceName, defaultUnitInstanceSymbol, derivations, constants, conversions, includedUnitInstances, generateDocumentation);
+            defaultUnitInstanceName, defaultUnitInstanceSymbol, definedDerivations, inheritedDerivations, constants, conversions, includedUnitInstances, generateDocumentation);
     }
 
     private static NamedType? ResolveDifference(VectorSpecializationType vectorType, IVectorPopulation vectorPopulation)
@@ -56,21 +58,24 @@ internal static class VectorSpecializationResolver
         return difference;
     }
 
-    private static IReadOnlyList<T> CollectItems<T>(VectorSpecializationType vectorType, IVectorPopulation vectorPopulation, Func<IVectorType, IEnumerable<T>> itemsDelegate, Func<IVectorSpecializationType, bool> shouldInherit)
+    private static IReadOnlyList<T> CollectItems<T>(VectorSpecializationType vectorType, IVectorPopulation vectorPopulation, Func<IVectorType, IEnumerable<T>> itemsDelegate, Func<IVectorSpecializationType, bool> shouldInherit, bool onlyInherited = false)
     {
         List<T> items = new();
 
-        recursivelyAddItems(vectorType);
+        recursivelyAddItems(vectorType, onlyInherited);
 
         return items;
 
-        void recursivelyAddItems(IVectorType vector)
+        void recursivelyAddItems(IVectorType vector, bool onlyInherited)
         {
-            items.AddRange(itemsDelegate(vector));
+            if (onlyInherited is false)
+            {
+                items.AddRange(itemsDelegate(vector));
+            }
 
             if (vector is IVectorSpecializationType vectorSpecialization && shouldInherit(vectorSpecialization))
             {
-                recursivelyAddItems(vectorPopulation.Vectors[vectorSpecialization.Definition.OriginalQuantity]);
+                recursivelyAddItems(vectorPopulation.Vectors[vectorSpecialization.Definition.OriginalQuantity], onlyInherited: false);
             }
         }
     }

@@ -4,6 +4,7 @@ using SharpMeasures.Maths;
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 /// <summary>A pure scalar.</summary>
 public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scalar>
@@ -63,15 +64,15 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     /// <summary>Computes { <see langword="this"/> ^ <paramref name="exponent"/> }.</summary>
     /// <param name="exponent">The exponent of { <see langword="this"/> ^ <paramref name="exponent"/> }.</param>
     public Scalar Power(Scalar exponent) => Math.Pow(Value, exponent.Value);
-    /// <inheritdoc/>
+    /// <summary>Computes { 1 / <see langword="this"/> }.</summary>
     public Scalar Reciprocal() => ScalarMaths.Reciprocal(this);
-    /// <inheritdoc/>
+    /// <summary>Computes { <see langword="this"/> ² }.</summary>
     public Scalar Square() => ScalarMaths.Square(this);
-    /// <inheritdoc/>
+    /// <summary>Computes { <see langword="this"/> ³ }.</summary>
     public Scalar Cube() => ScalarMaths.Cube(this);
-    /// <inheritdoc/>
+    /// <summary>Computes { √ <see langword="this"/> }.</summary>
     public Scalar SquareRoot() => ScalarMaths.SquareRoot(this);
-    /// <inheritdoc/>
+    /// <summary>Computes { ³√ <see langword="this"/> }.</summary>
     public Scalar CubeRoot() => ScalarMaths.CubeRoot(this);
 
     /// <summary>Compares <see langword="this"/> to <paramref name="other"/>. { 1 } is returned if <see langword="this"/> is greater than <paramref name="other"/>,
@@ -82,17 +83,19 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     /// <param name="other"><see langword="this"/> is compared to this value.</param>
     /// <remarks>The behaviour is consistent with <see cref="double.CompareTo(double)"/>.</remarks>
     public int CompareTo(Scalar other) => Value.CompareTo(other.Value);
-    /// <summary>Produces a description of <see langword="this"/> containing the type and the represented value.</summary>
-    public override string ToString() => $"{nameof(Scalar)}: {Value}";
+    /// <summary>Produces a description of <see langword="this"/> containing the represented value.</summary>
+    public override string ToString() => Value.ToString(CultureInfo.InvariantCulture);
 
     /// <inheritdoc/>
     public Scalar Plus() => this;
     /// <inheritdoc/>s
     public Scalar Negate() => -this;
 
-    /// <inheritdoc/>
+    /// <summary>Computes { <see langword="this"/> + <paramref name="addend"/> }.</summary>
+    /// <param name="addend">The second term of { <see langword="this"/> + <paramref name="addend"/> }.</param>
     public Scalar Add(Scalar addend) => this + addend;
-    /// <inheritdoc/>
+    /// <summary>Computes { <see langword="this"/> - <paramref name="subtrahend"/> }.</summary>
+    /// <param name="subtrahend">The second term of { <see langword="this"/> - <paramref name="subtrahend"/> }.</param>
     public Scalar Subtract(Scalar subtrahend) => this - subtrahend;
 
     /// <summary>Computes { <see langword="this"/> % <paramref name="divisor"/> }.</summary>
@@ -106,9 +109,6 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
     /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
     public Vector2 Multiply(Vector2 factor) => this * factor;
-    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
-    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
-    public Vector2 DivideInto(Vector2 dividend) => dividend / this;
     /// <summary>Computes { <paramref name="dividend"/> % <see langword="this"/> }.</summary>
     /// <param name="dividend">The dividend of { <paramref name="dividend"/> % <see langword="this"/> }.</param>
     public Vector2 Remainder(Vector2 dividend) => dividend % this;
@@ -116,9 +116,6 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
     /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
     public Vector3 Multiply(Vector3 factor) => this * factor;
-    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
-    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
-    public Vector3 DivideInto(Vector3 dividend) => dividend / this;
     /// <summary>Computes { <paramref name="dividend"/> % <see langword="this"/> }.</summary>
     /// <param name="dividend">The dividend of { <paramref name="dividend"/> % <see langword="this"/> }.</param>
     public Vector3 Remainder(Vector3 dividend) => dividend % this;
@@ -126,9 +123,6 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     /// <summary>Computes { <see langword="this"/> ∙ <paramref name="factor"/> }.</summary>
     /// <param name="factor">The second factor of { <see langword="this"/> ∙ <paramref name="factor"/> }.</param>
     public Vector4 Multiply(Vector4 factor) => this * factor;
-    /// <summary>Computes { <paramref name="dividend"/> / <see langword="this"/> }.</summary>
-    /// <param name="dividend">The dividend of { <paramref name="dividend"/> / <see langword="this"/> }.</param>
-    public Vector4 DivideInto(Vector4 dividend) => dividend / this;
     /// <summary>Computes { <paramref name="dividend"/> % <see langword="this"/> }.</summary>
     /// <param name="dividend">The dividend of { <paramref name="dividend"/> % <see langword="this"/> }.</param>
     public Vector4 Remainder(Vector4 dividend) => dividend % this;
@@ -138,9 +132,13 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     /// <inheritdoc/>
     public static Scalar operator -(Scalar x) => -x.Value;
 
-    /// <inheritdoc/>
+    /// <summary>Computes { <paramref name="x"/> + <paramref name="y"/> }.</summary>
+    /// <param name="x">The first term of { <paramref name="x"/> + <paramref name="y"/> }.</param>
+    /// <param name="y">The second term of { <paramref name="x"/> + <paramref name="y"/> }.</param>
     public static Scalar operator +(Scalar x, Scalar y) => x.Value + y.Value;
-    /// <inheritdoc/>
+    /// <summary>Computes { <paramref name="x"/> - <paramref name="y"/> }.</summary>
+    /// <param name="x">The first term of { <paramref name="x"/> - <paramref name="y"/> }.</param>
+    /// <param name="y">The second term of { <paramref name="x"/> - <paramref name="y"/> }.</param>
     public static Scalar operator -(Scalar x, Scalar y) => x.Value - y.Value;
 
     /// <summary>Computes { <paramref name="x"/> % <paramref name="y"/> }.</summary>
@@ -151,6 +149,14 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     public static Scalar operator *(Scalar x, Scalar y) => x.Value * y.Value;
     /// <inheritdoc/>
     public static Scalar operator /(Scalar x, Scalar y) => x.Value / y.Value;
+
+    /// <inheritdoc cref="operator /(Scalar, Scalar)"/>
+    public static Unhandled operator /(Scalar x, IScalarQuantity y)
+    {
+        ArgumentNullException.ThrowIfNull(y);
+
+        return new(x.Value / y.Magnitude.Value);
+    }
 
     /// <summary>Computes { <paramref name="a"/> ∙ <paramref name="b"/> }.</summary>
     /// <param name="a">The first factor of { <paramref name="a"/> ∙ <paramref name="b"/> }.</param>
@@ -220,15 +226,13 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     /// <param name="y">Assumed lesser than or equal to <paramref name="x"/>.</param>
     public static bool operator >=(Scalar x, Scalar y) => x.Value >= y.Value;
 
-    /// <summary>Produces the <see cref="double"/> equivalent to <paramref name="x"/>.</summary>
-    /// <param name="x">The <see cref="double"/> equivalent to this value is produced.</param>
-    [SuppressMessage("Usage", "CA2225", Justification = "Available as 'Value'")]
-    public static implicit operator double(Scalar x) => x.Value;
-
     /// <summary>Produces the <see cref="Scalar"/> representing <paramref name="x"/>.</summary>
-    /// <param name="x">The <see cref="Scalar"/> equivalent to this value is produced.</param>
     [SuppressMessage("Usage", "CA2225", Justification = "Available as constructor")]
     public static implicit operator Scalar(double x) => new(x);
+
+    /// <summary>Produces the <see cref="double"/> equivalent to <paramref name="x"/>.</summary>
+    [SuppressMessage("Usage", "CA2225", Justification = "Available as 'Value'")]
+    public static implicit operator double(Scalar x) => x.Value;
 
     /// <summary>Describes mathematical operations that result in a pure <see cref="Scalar"/>.</summary>
     private static IScalarResultingMaths<Scalar> ScalarMaths { get; } = MathFactory.ScalarResult();

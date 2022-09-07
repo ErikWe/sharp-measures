@@ -24,8 +24,10 @@ internal static class GroupMemberResolver
         var vectorGroupBase = input.VectorPopulation.GroupBases[input.UnresolvedVector.Definition.VectorGroup];
         var unit = input.UnitPopulation.Units[vectorGroupBase.Definition.Unit];
 
-        var derivations = CollectItems(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Derivations,
-            static (vector) => vector.Definition.InheritDerivationsFromMembers, static (vector) => vector.Definition.InheritDerivations, static (vector) => vector.Definition.InheritDerivations);
+        var definedDerivations = input.UnresolvedVector.Derivations;
+        var inheritedDerivations = CollectItems(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Derivations,
+            static (vector) => vector.Definition.InheritDerivationsFromMembers, static (vector) => vector.Definition.InheritDerivations, static (vector) => vector.Definition.InheritDerivations, onlyInherited: true);
+
         var constants = CollectItems(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Constants, static (vector) => Array.Empty<IVectorConstant>(),
             static (vector) => vector.Definition.InheritConstantsFromMembers, static (vector) => false, static (vector) => false);
         var conversions = CollectItems(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Conversions, static (vector) => vector.Conversions,
@@ -45,7 +47,7 @@ internal static class GroupMemberResolver
         var generateDocumentation = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.GenerateDocumentation, static (vector) => vector.Definition.GenerateDocumentation);
 
         return new(input.UnresolvedVector.Type, input.UnresolvedVector.TypeLocation, input.UnresolvedVector.Definition.Dimension, unit.Type.AsNamedType(), scalar, implementSum!.Value, implementDifference!.Value,
-            difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, derivations, constants, conversions, includedUnitInstances, generateDocumentation);
+            difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definedDerivations, inheritedDerivations, constants, conversions, includedUnitInstances, generateDocumentation);
     }
 
     private static NamedType? ResolveDifference(GroupMemberType vectorType, IVectorPopulation vectorPopulation)
@@ -66,22 +68,22 @@ internal static class GroupMemberResolver
     }
 
     private static IReadOnlyList<T> CollectItems<T>(GroupMemberType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupMemberType, IEnumerable<T>> memberItemsDelegate, Func<IVectorGroupType, IEnumerable<T>> groupItemsDelegate,
-        Func<IVectorGroupMemberType, bool> shouldMemberInheritFromMembers, Func<IVectorGroupMemberType, bool> shouldMemberInheritFromGroup, Func<IVectorGroupSpecializationType, bool> shouldGroupInherit)
+        Func<IVectorGroupMemberType, bool> shouldMemberInheritFromMembers, Func<IVectorGroupMemberType, bool> shouldMemberInheritFromGroup, Func<IVectorGroupSpecializationType, bool> shouldGroupInherit, bool onlyInherited = false)
     {
         List<T> items = new();
 
-        recursivelyAddItems(vectorPopulation.Groups[vectorType.Definition.VectorGroup], vectorType, shouldMemberInheritFromMembers(vectorType), shouldMemberInheritFromGroup(vectorType));
+        recursivelyAddItems(vectorPopulation.Groups[vectorType.Definition.VectorGroup], vectorType, shouldMemberInheritFromMembers(vectorType), shouldMemberInheritFromGroup(vectorType), onlyInherited);
 
         return items;
 
-        void recursivelyAddItems(IVectorGroupType vectorGroup, IVectorGroupMemberType? correspondingMember, bool shouldInheritFromMember, bool shouldInheritFromGroup)
+        void recursivelyAddItems(IVectorGroupType vectorGroup, IVectorGroupMemberType? correspondingMember, bool shouldInheritFromMember, bool shouldInheritFromGroup, bool onlyInherited)
         {
             if (shouldInheritFromGroup)
             {
                 items.AddRange(groupItemsDelegate(vectorGroup));
             }
 
-            if (shouldInheritFromMember && correspondingMember is not null)
+            if (shouldInheritFromMember && correspondingMember is not null && onlyInherited is false)
             {
                 items.AddRange(memberItemsDelegate(correspondingMember));
             }
@@ -100,7 +102,7 @@ internal static class GroupMemberResolver
                 bool shouldInheritFromMember = inheritedFromMember && (originalCorrespondingMember is null || shouldMemberInheritFromMembers(originalCorrespondingMember));
                 bool shouldInheritFromGroup = originalCorrespondingMember is not null && shouldMemberInheritFromGroup(originalCorrespondingMember) || shouldGroupInherit(vectorGroupSpecialization);
 
-                recursivelyAddItems(originalVectorGroup, originalCorrespondingMember, shouldInheritFromMember, shouldInheritFromGroup);
+                recursivelyAddItems(originalVectorGroup, originalCorrespondingMember, shouldInheritFromMember, shouldInheritFromGroup, onlyInherited: false);
             }
         }
     }

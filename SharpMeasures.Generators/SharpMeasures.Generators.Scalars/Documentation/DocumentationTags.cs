@@ -1,8 +1,14 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
+using SharpMeasures.Generators.Quantities;
+using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 internal class DocumentationTags : IDocumentationStrategy, IEquatable<DocumentationTags>
 {
@@ -23,6 +29,9 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string FromCube() => "FromCube";
     public string FromSquareRoot() => "FromSquareRoot";
     public string FromCubeRoot() => "FromCubeRoot";
+
+    public string Derivation(DerivedQuantitySignature signature) => $"Derivation_{ParseDerivableSignature(signature)}";
+    public string OperatorDerivationLHS(IOperatorDerivation derivation) => $"OperatorDerivationLHS_{derivation.Result.Name}_{derivation.RightHandSide.Name}";
 
     public string ScalarConstructor() => "Constructor_Scalar";
     public string ScalarAndUnitConstructor() => "Constructor_Scalar_Unit";
@@ -109,6 +118,15 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string GreaterThanSameType() => "Operator_GreaterThan_SameType";
     public string LessThanOrEqualSameType() => "Operator_LessThanOrEqual_SameType";
     public string GreaterThanOrEqualSameType() => "Operator_GreaterThanOrEqual_SameType";
+
+    private static string ParseDerivableSignature(IReadOnlyList<NamedType> signature)
+    {
+        StringBuilder tag = new();
+
+        IterativeBuilding.AppendEnumerable(tag, signature.Select(static (signatureElement) => signatureElement.Name), "_");
+
+        return tag.ToString();
+    }
 
     public virtual bool Equals(DocumentationTags? other)
     {

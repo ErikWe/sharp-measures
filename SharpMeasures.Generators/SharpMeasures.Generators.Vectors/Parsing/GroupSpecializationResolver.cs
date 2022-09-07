@@ -25,7 +25,9 @@ internal static class GroupSpecializationResolver
 
         var membersByDimension = ResolveMembers(input.UnresolvedVector, input.VectorPopulation);
 
-        var derivations = CollectItems(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Definition.InheritDerivations);
+        var definedDerivations = input.UnresolvedVector.Derivations;
+        var inheritedDerivations = CollectItems(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Definition.InheritDerivations, onlyInherited: true);
+
         var conversions = CollectItems(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Conversions, static (vector) => vector.Definition.InheritConversions);
 
         var includedUnitInstances = ResolveUnitInstanceInclusions(input.UnresolvedVector, input.VectorPopulation, unit);
@@ -42,7 +44,7 @@ internal static class GroupSpecializationResolver
         var generateDocumentation = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.GenerateDocumentation);
 
         return new(input.UnresolvedVector.Type, input.UnresolvedVector.TypeLocation, unit.Type.AsNamedType(), scalar, implementSum!.Value, implementDifference!.Value, difference,
-            defaultUnitInstanceName, defaultUnitInstanceSymbol, membersByDimension, derivations, conversions, includedUnitInstances, generateDocumentation);
+            defaultUnitInstanceName, defaultUnitInstanceSymbol, membersByDimension, definedDerivations, inheritedDerivations, conversions, includedUnitInstances, generateDocumentation);
     }
 
     private static IReadOnlyDictionary<int, NamedType> ResolveMembers(GroupSpecializationType vectorType, IVectorPopulation vectorPopulation)
@@ -62,21 +64,24 @@ internal static class GroupSpecializationResolver
         return difference;
     }
 
-    private static IReadOnlyList<T> CollectItems<T>(GroupSpecializationType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, IEnumerable<T>> itemsDelegate, Func<IVectorGroupSpecializationType, bool> shouldInherit)
+    private static IReadOnlyList<T> CollectItems<T>(GroupSpecializationType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, IEnumerable<T>> itemsDelegate, Func<IVectorGroupSpecializationType, bool> shouldInherit, bool onlyInherited = false)
     {
         List<T> items = new();
 
-        recursivelyAddItems(vectorType);
+        recursivelyAddItems(vectorType, onlyInherited);
 
         return items;
 
-        void recursivelyAddItems(IVectorGroupType vector)
+        void recursivelyAddItems(IVectorGroupType vector, bool onlyInherited)
         {
-            items.AddRange(itemsDelegate(vector));
+            if (onlyInherited is false)
+            {
+                items.AddRange(itemsDelegate(vector));
+            }
 
             if (vector is IVectorGroupSpecializationType vectorSpecialization && shouldInherit(vectorSpecialization))
             {
-                recursivelyAddItems(vectorPopulation.Groups[vectorSpecialization.Definition.OriginalQuantity]);
+                recursivelyAddItems(vectorPopulation.Groups[vectorSpecialization.Definition.OriginalQuantity], onlyInherited: false);
             }
         }
     }

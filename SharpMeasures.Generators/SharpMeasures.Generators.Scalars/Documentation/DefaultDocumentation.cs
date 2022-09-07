@@ -1,10 +1,13 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
+using SharpMeasures.Generators.Quantities;
+using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units;
 
 using System;
 using System.Globalization;
+using System.Text;
 
 internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<DefaultDocumentation>
 {
@@ -57,6 +60,35 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     public string FromCube() => InheritDoc;
     public string FromSquareRoot() => InheritDoc;
     public string FromCubeRoot() => InheritDoc;
+
+    public string Derivation(DerivedQuantitySignature signature)
+    {
+        StringBuilder source = new();
+        source.Append($"""/// <summary>Constructs a new {ScalarReference}, derived from other quantities.</summary>""");
+
+        foreach (var quantity in signature)
+        {
+            source.AppendLine();
+
+            source.Append($"""
+                /// <param name="{SourceBuildingUtility.ToParameterName(quantity.Name)}">This <see cref="{quantity.FullyQualifiedName}"/> is used to derive a {ScalarReference}.</param>
+                """);
+        }
+
+        return source.ToString();
+    }
+
+    public string OperatorDerivationLHS(IOperatorDerivation derivation)
+    {
+        var operatorSymbol = GetOperatorSymbol(derivation.OperatorType);
+        (var firstComponentName, var secondComponentName) = GetOperatorComponentNames(derivation.OperatorType);
+
+        return $$"""
+            /// <summary>Computes { <paramref name="a"/> {{operatorSymbol}} <paramref name="b"/> }, resulting in a <see cref="{{derivation.Result.FullyQualifiedName}}"/>.</summary>
+            /// <param name="a">The {{(firstComponentName == secondComponentName ? string.Empty : "first ")}}{{firstComponentName}} of { <paramref name="a"/> {{operatorSymbol}} <paramref name="b"/> }.</param>
+            /// <param name="b">The {{(firstComponentName == secondComponentName ? string.Empty : "second ")}}{{secondComponentName}} of { <paramref name="a"/> {{operatorSymbol}} <paramref name="b"/> }.</param>
+            """;
+    }
 
     public string Magnitude()
     {
@@ -240,6 +272,30 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     private string UnitReference => $"""<see cref="{Unit.Type.FullyQualifiedName}"/>""";
 
     private static string InheritDoc => "/// <inheritdoc/>";
+
+    private static string GetOperatorSymbol(OperatorType operatorType)
+    {
+        return operatorType switch
+        {
+            OperatorType.Addition => "+",
+            OperatorType.Subtraction => "-",
+            OperatorType.Multiplication => "*",
+            OperatorType.Division => "/",
+            _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
+        };
+    }
+
+    private static (string First, string Second) GetOperatorComponentNames(OperatorType operatorType)
+    {
+        return operatorType switch
+        {
+            OperatorType.Addition => ("term", "term"),
+            OperatorType.Subtraction => ("term", "term"),
+            OperatorType.Multiplication => ("factor", "factor"),
+            OperatorType.Division => ("dividend", "divisor"),
+            _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
+        };
+    }
 
     public virtual bool Equals(DefaultDocumentation? other) => other is not null && Type == other.Type && Unit == other.Unit && DefaultUnitInstance == other.DefaultUnitInstance
         && DefaultUnitInstanceSymbol == other.DefaultUnitInstanceSymbol && UnitParameterName == other.UnitParameterName && ExampleUnitBaseInstance == other.ExampleUnitBaseInstance && ExampleUnitInstance == other.ExampleUnitInstance;
