@@ -22,12 +22,12 @@ using System;
 /// <description>Defines an instance of the unit according to a bias relative to another instance.</description>
 /// </item>
 /// <item>
-/// <term><see cref="DerivedUnitInstanceAttribute"/></term>
-/// <description>Defines an instance of the unit using instances of another unit.</description>
-/// </item>
-/// <item>
 /// <term><see cref="UnitInstanceAliasAttribute"/></term>
 /// <description>Defines an instance of the unit as an alias of another instance.</description>
+/// </item>
+/// <item>
+/// <term><see cref="DerivedUnitInstanceAttribute"/></term>
+/// <description>Defines an instance of the unit using instances of another unit.</description>
 /// </item>
 /// <item>
 /// <term><see cref="DerivableUnitAttribute"/></term>
