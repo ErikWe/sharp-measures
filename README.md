@@ -1,4 +1,4 @@
-# SharpMeasures
+# SharpMeasures [![NuGet version (SharpMeasures)](https://img.shields.io/nuget/v/SharpMeasures.svg?style=plastic)](https://www.nuget.org/packages/SharpMeasures/)
 
 SharpMeasures is a .NET tools that aims to simplify proper usage of physical quantities and units of measurement during development. This is done by providing concrete types, such as `Time`, `UnitOfLength`, and `Acceleration3`. Common appropriate matematical operations are also implemented, allowing quantities to easily be derived from other quantities.
 
@@ -12,7 +12,7 @@ Console.WriteLine(velocity); // "(0, 3, -8) [m/s]"
 Console.WriteLine(velocity.InUnit(UnitOfSpeed.KilometresPerHour)); // "(0, 10.8, 28.8)"
 ```
 
-## Source Generator
+## Source Generator [![NuGet version (SharpMeasures.Generators)](https://img.shields.io/nuget/v/SharpMeasures.Generators.svg?style=plastic)](https://www.nuget.org/packages/SharpMeasures.Generators/)
 
 SharpMeasures is implemented as a source generator, which means that it's trivial to make your own set of quantities and units from scratch.
 
