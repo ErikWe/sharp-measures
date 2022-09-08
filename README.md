@@ -23,8 +23,8 @@ using SharpMeasures.Generators.Units;
 [SharpMeasuresScalar(typeof(UnitOfLength))]
 public partial class Length { }
 
-[PrefixedUnitInstance("Kilometre", CommonPluralNotation.AppendS, "Metre", MetricPrefixName.Kilo)]
-[FixedUnitInstance("Metre", CommonPluralNotation.AppendS)]
+[PrefixedUnitInstance("Kilometre", "[*]s", "Metre", MetricPrefixName.Kilo)]
+[FixedUnitInstance("Metre", "[*]s")]
 [SharpMeasuresUnit(typeof(Length))]
 public partial class UnitOfLength { }
 ```
