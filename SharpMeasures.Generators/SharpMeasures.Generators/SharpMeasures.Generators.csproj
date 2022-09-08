@@ -24,37 +24,23 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.csproj" PrivateAssets="all" OutputItemType="analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.Attributes.API\SharpMeasures.Generators.Attributes.API.csproj" PrivateAssets="all" />
-        <ProjectReference Include="..\SharpMeasures.Generators.Attributes.Parsing\SharpMeasures.Generators.Attributes.Parsing.csproj" PrivateAssets="all" OutputItemType="analyzer" />
-        <ProjectReference Include="..\SharpMeasures.Generators.Configuration\SharpMeasures.Generators.Configuration.csproj" PrivateAssets="all" OutputItemType="analyzer" />
-        <ProjectReference Include="..\SharpMeasures.Generators.Diagnostics\SharpMeasures.Generators.Diagnostics.csproj" PrivateAssets="all" OutputItemType="analyzer" />
-        <ProjectReference Include="..\SharpMeasures.Generators.Documentation\SharpMeasures.Generators.Documentation.csproj" PrivateAssets="all" OutputItemType="analyzer" />
-        <ProjectReference Include="..\SharpMeasures.Generators.Quantities\SharpMeasures.Generators.Quantities.csproj" PrivateAssets="all" OutputItemType="analyzer" />
-        <ProjectReference Include="..\SharpMeasures.Generators.RoslynUtility\SharpMeasures.Generators.RoslynUtility.csproj" PrivateAssets="all" OutputItemType="analyzer" />
-        <ProjectReference Include="..\SharpMeasures.Generators.Scalars\SharpMeasures.Generators.Scalars.csproj" PrivateAssets="all" OutputItemType="analyzer" />
-        <ProjectReference Include="..\SharpMeasures.Generators.SourceBuilding\SharpMeasures.Generators.SourceBuilding.csproj" PrivateAssets="all" OutputItemType="analyzer" />
-        <ProjectReference Include="..\SharpMeasures.Generators.Units\SharpMeasures.Generators.Units.csproj" PrivateAssets="all" OutputItemType="analyzer" />
-        <ProjectReference Include="..\SharpMeasures.Generators.Vectors\SharpMeasures.Generators.Vectors.csproj" PrivateAssets="all" OutputItemType="analyzer" />
-        <ProjectReference Include="..\SharpMeasures.Utility\SharpMeasures.Utility.csproj" PrivateAssets="all" OutputItemType="analyzer" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Attributes.Parsing\SharpMeasures.Generators.Attributes.Parsing.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Configuration\SharpMeasures.Generators.Configuration.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Diagnostics\SharpMeasures.Generators.Diagnostics.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Documentation\SharpMeasures.Generators.Documentation.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Quantities\SharpMeasures.Generators.Quantities.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SharpMeasures.Generators.RoslynUtility\SharpMeasures.Generators.RoslynUtility.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Scalars\SharpMeasures.Generators.Scalars.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SharpMeasures.Generators.SourceBuilding\SharpMeasures.Generators.SourceBuilding.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Units\SharpMeasures.Generators.Units.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SharpMeasures.Generators.Vectors\SharpMeasures.Generators.Vectors.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SharpMeasures.Utility\SharpMeasures.Utility.csproj" PrivateAssets="all" />
     </ItemGroup>
-
+    
     <ItemGroup>
-        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\SharpMeasures.Equatables.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\SharpMeasures.Generators.Attributes.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\SharpMeasures.Generators.Attributes.API.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\SharpMeasures.Generators.Attributes.Parsing.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\SharpMeasures.Generators.Configuration.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\SharpMeasures.Generators.Diagnostics.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\SharpMeasures.Generators.Documentation.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\SharpMeasures.Generators.Quantities.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\SharpMeasures.Generators.RoslynUtility.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\SharpMeasures.Generators.Scalars.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\SharpMeasures.Generators.SourceBuilding.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\SharpMeasures.Generators.Units.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\SharpMeasures.Generators.Vectors.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\SharpMeasures.Utility.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(OutputPath)\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
 
     <ItemGroup>
