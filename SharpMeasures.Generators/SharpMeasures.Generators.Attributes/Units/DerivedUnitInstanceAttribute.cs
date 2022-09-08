@@ -9,7 +9,7 @@ public sealed class DerivedUnitInstanceAttribute : Attribute
     /// <inheritdoc cref="FixedUnitInstanceAttribute.Name"/>
     public string Name { get; }
     /// <summary><inheritdoc cref="FixedUnitInstanceAttribute.PluralForm" path="/summary"/></summary>
-    /// <remarks>If <see cref="PluralFormRegexSubstitution"/> is set, this value is used as a .NET regex pattern. Alternatively, see <see cref="CommonPluralNotations"/> for some common notations for producing the plural form based on the singular form.</remarks>
+    /// <remarks>If <see cref="PluralFormRegexSubstitution"/> is set, this value is used as a .NET regex pattern. Alternatively, see <see cref="CommonPluralNotation"/> for some common notations for producing the plural form based on the singular form.</remarks>
     public string PluralForm { get; }
     /// <summary>The ID of the intended derivation signature.</summary>
     /// <remarks>This is only required to be explicitly specified if more than one derivation is defined for the unit.</remarks>

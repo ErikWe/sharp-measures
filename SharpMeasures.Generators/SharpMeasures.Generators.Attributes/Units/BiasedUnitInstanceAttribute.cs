@@ -9,7 +9,7 @@ public sealed class BiasedUnitInstanceAttribute : Attribute
     /// <inheritdoc cref="FixedUnitInstanceAttribute.Name"/>
     public string Name { get; }
     /// <summary><inheritdoc cref="FixedUnitInstanceAttribute.PluralForm" path="/summary"/></summary>
-    /// <remarks>If <see cref="PluralFormRegexSubstitution"/> is set, this value is used as a .NET regex pattern. Alternatively, see <see cref="CommonPluralNotations"/> for some common notations for producing the plural form based on the singular form.</remarks>
+    /// <remarks>If <see cref="PluralFormRegexSubstitution"/> is set, this value is used as a .NET regex pattern. Alternatively, see <see cref="CommonPluralNotation"/> for some common notations for producing the plural form based on the singular form.</remarks>
     public string PluralForm { get; }
     /// <summary>The name of the original instance, relative to which this instance is biased.</summary>
     public string OriginalUnitInstance { get; }

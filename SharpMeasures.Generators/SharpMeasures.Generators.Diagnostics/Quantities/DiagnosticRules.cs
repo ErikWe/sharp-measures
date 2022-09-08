@@ -69,7 +69,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InvalidConstantMultiplesName,
         title: "Invalid name for multiples of constant",
-        messageFormat: $"\"{{0}}\" can not be used to construct the name for multiples of \"{{1}}\". Use the default value, write the name in full, or use a suitable notation from {typeof(CommonPluralNotations).FullName}.",
+        messageFormat: $"\"{{0}}\" can not be used to construct the name for multiples of \"{{1}}\". Use the default value, write the name in full, or use a suitable notation from {typeof(CommonPluralNotation).FullName}.",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -79,7 +79,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InvalidConstantMultiplesName,
         title: "Invalid name for multiples of constant",
-        messageFormat: $"The name for multiples of \"{{0}}\" must be defined. Use the default value, write the name in full, or use a suitable notation from {typeof(CommonPluralNotations).FullName}.",
+        messageFormat: $"The name for multiples of \"{{0}}\" must be defined. Use the default value, write the name in full, or use a suitable notation from {typeof(CommonPluralNotation).FullName}.",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

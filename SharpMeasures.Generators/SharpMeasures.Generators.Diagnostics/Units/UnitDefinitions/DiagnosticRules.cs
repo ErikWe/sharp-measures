@@ -30,7 +30,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InvalidUnitInstancePluralForm,
         title: "Invalid plural form of unit name",
-        messageFormat: $"\"{{0}}\" could not be used to construct the plural form of \"{{1}}\". Write the plural form explicitly, or use a suitable notation from {typeof(CommonPluralNotations).FullName}.",
+        messageFormat: $"\"{{0}}\" could not be used to construct the plural form of \"{{1}}\". Write the plural form explicitly, or use a suitable notation from {typeof(CommonPluralNotation).FullName}.",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -40,7 +40,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.InvalidUnitInstancePluralForm,
         title: "Invalid plural form of unit name",
-        messageFormat: $"The plural form of the unit must be defined. Write the plural form explicitly, or use a suitable notation from {typeof(CommonPluralNotations).FullName}.",
+        messageFormat: $"The plural form of the unit must be defined. Write the plural form explicitly, or use a suitable notation from {typeof(CommonPluralNotation).FullName}.",
         category: "Naming",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

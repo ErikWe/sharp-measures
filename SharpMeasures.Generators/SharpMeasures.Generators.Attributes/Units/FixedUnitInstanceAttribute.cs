@@ -9,7 +9,7 @@ public sealed class FixedUnitInstanceAttribute : Attribute
     /// <summary>The name of the instance of the unit, in singular form.</summary>
     public string Name { get; }
     /// <summary>The name of the instance of the unit, in plural form.</summary>
-    /// <remarks>If <see cref="PluralFormRegexSubstitution"/> is set, this value is used as a .NET regex pattern. Alternatively, see <see cref="CommonPluralNotations"/> for some common notations for producing the plural form based on the singular form.</remarks>
+    /// <remarks>If <see cref="PluralFormRegexSubstitution"/> is set, this value is used as a .NET regex pattern. Alternatively, see <see cref="CommonPluralNotation"/> for some common notations for producing the plural form based on the singular form.</remarks>
     public string PluralForm { get; }
 
     /// <summary>Used as the .NET Regex substitution string when producing the plural form of the unit, with <see cref="PluralForm"/> being used as the .NET regex pattern.</summary>

@@ -1,7 +1,7 @@
 ﻿namespace SharpMeasures.Generators;
 
 /// <summary>Defines some common notations for producing the plural form of a name, based on the singular form.</summary>
-public static class CommonPluralNotations
+public static class CommonPluralNotation
 {
     /// <summary>Uses the unmodified singular form.</summary>
     public const string Unmodified = "[*]";

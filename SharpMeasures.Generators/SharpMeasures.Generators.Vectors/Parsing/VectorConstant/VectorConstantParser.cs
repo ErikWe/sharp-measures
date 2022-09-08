@@ -31,7 +31,7 @@ internal static class VectorConstantParser
             {
                 definition = definition with
                 {
-                    Multiples = CommonPluralNotations.PrependMultiplesOf
+                    Multiples = CommonPluralNotation.PrependMultiplesOf
                 };
             }
 
