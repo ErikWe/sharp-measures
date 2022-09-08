@@ -92,8 +92,7 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
     };
 
     private string ComponentedHeader() => $"""
-        /// <summary>A measure of the {Dimension}-dimensional vector quantity {Type.Name}, composed of {ScalarReference},
-        /// and expressed in {UnitReference}.</summary>
+        /// <summary>A measure of the {Dimension}-dimensional vector quantity {Type.Name}, composed of {ScalarReference}, and expressed in {UnitReference}.</summary>
         """;
 
     private string UncomponentedHeader() => $"""
@@ -106,7 +105,7 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
         StringBuilder componentText = new();
         IterativeBuilding.AppendEnumerable(componentText, components(), ", ");
 
-        return $$"""/// <summary>The {{ScalarReference}} representing the constant {{constant.Name}}, with value { ({{componentText}}) <see cref="{{Unit.Type.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/> }.</summary>""";
+        return $$"""/// <summary>The {{ScalarReference}} representing the constant {{constant.Name}}, equivalent to { ({{componentText}}) [<see cref="{{Unit.Type.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/>] }.</summary>""";
 
         IEnumerable<string> components()
         {
@@ -133,20 +132,20 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
         /// <summary>Constructs a new {{VectorReference}} representing { {{Texts.ParameterTuple()}} }, expressed in an arbitrary unit.</summary>
         {{Texts.ScalarsConstructor()}}
         /// <remarks>Consider preferring construction through <see cref="{{Type.FullyQualifiedName}}({{ConstantVectorTexts.UnnamedScalars(Dimension)}}, {{Unit.Type.FullyQualifiedName}})"/>,
-        /// where the components are expressed in a certain {{UnitReference}}.</remarks>
+        /// where the components are expressed in a specified {{UnitReference}}.</remarks>
         """;
 
-    public string VectorConstructor() => $"""
-        /// <summary>Constructs a new {VectorReference} components of magnitudes <paramref name="components"/>, expressed in an arbitrary unit.</summary>
-        /// <param name="components">The magnitudes of the components of the constructed {VectorReference}, expressed in an arbitrary unit.</param>
-        /// <remarks>Consider preferring construction through <see cref="{Type.FullyQualifiedName}(global::SharpMeasures.Vector{Dimension}, {Unit.Type.FullyQualifiedName})"/>,
-        /// where the components are expressed in a certain {UnitReference}.</remarks>
+    public string VectorConstructor() => $$"""
+        /// <summary>Constructs a new {{VectorReference}} representing { <paramref name="components"/> }, expressed in an arbitrary unit.</summary>
+        /// <param name="components">The magnitudes of the components of the constructed {{VectorReference}}, expressed in an arbitrary unit.</param>
+        /// <remarks>Consider preferring construction through <see cref="{{Type.FullyQualifiedName}}(global::SharpMeasures.Vector{{Dimension}}, {{Unit.Type.FullyQualifiedName}})"/>,
+        /// where the components are expressed in a specified {{UnitReference}}.</remarks>
         """;
 
     public string ScalarsAndUnitConstructor()
     {
         var commonText = $$"""
-            /// <summary>Constructs a new {{VectorReference}} representing { {{Texts.ParameterTuple()}} }, expressed in <paramref name="{{UnitParameterName}}"/>.</summary>
+            /// <summary>Constructs a new {{VectorReference}} representing { {{Texts.ParameterTuple()}} <paramref name="{{UnitParameterName}}"/> }.</summary>
             {{Texts.ScalarsAndUnitConstructor()}}
             /// <param name="{{UnitParameterName}}">The {{UnitReference}} in which the magnitudes of the components are expressed.</param>
             """;
@@ -165,9 +164,10 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
     }
     public string VectorAndUnitConstructor()
     {
-        var commonText = $"""
-            /// <summary>Constructs a new {VectorReference} components of magnitudes <paramref name="components"/>, expressed in <paramref name="{UnitParameterName}"/>.</summary>
-            /// <param name="components">The magnitudes of the components of the constructed {VectorReference}, expressed in <paramref name="{UnitParameterName}"/>.</param>
+        var commonText = $$"""
+            /// <summary>Constructs a new {{VectorReference}} representing { <paramref name="components"/> [<paramref name="{{UnitParameterName}}"/>] }.</summary>
+            /// <param name="components">The magnitudes of the components of the constructed {{VectorReference}}, expressed in <paramref name="{{UnitParameterName}}"/>.</param>
+            /// <param name="{{UnitParameterName}}">The {{UnitReference}} in which <paramref name="components"/> is expressed.</param>
             """;
 
         if (Scalar is not null && ExampleScalarUnitBaseInstance is not null)
@@ -199,27 +199,27 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
     {
         var commonText = $"""
             /// <summary>The magnitudes of the components of <see langword="this"/>, expressed in an arbitrary unit.</summary>
-            /// <remarks>In most cases, expressing the magnitudes in a certain {UnitReference} should be preferred. This is achieved through
+            /// <remarks>In most cases, expressing the magnitudes in a specified {UnitReference} should be preferred. This is achieved through
             /// <see cref="InUnit({Unit.Type.FullyQualifiedName})"/>
             """;
 
         if (ExampleUnitInstance is not null)
         {
-            return $"""{commonText} or an associated property - such as <see cref="In{ExampleUnitInstance.PluralForm}"/>""";
+            return $"""{commonText} or an associated property - such as <see cref="{ExampleUnitInstance.PluralForm}"/>.</remarks>""";
         }
 
         return $"{commonText}.</remarks>";
     }
     
     public string InUnit() => $"""
-        /// <summary>The components of <see langword="this"/>, expressed in <paramref name="{UnitParameterName}"/>.</summary>
+        /// <summary>The magnitudes of the components of <see langword="this"/>, expressed in <paramref name="{UnitParameterName}"/>.</summary>
         /// <param name="{UnitParameterName}">The {UnitReference} in which the components of <see langword="this"/> are expressed.</param>
         """;
     public string InConstantMultiples(IVectorConstant constant) => $"""
         /// <summary>The components of <see langword="this", expressed in multiples of <see cref="{VectorReference}.{constant.Name}"/>.</summary>
         """;
     public string InSpecifiedUnit(IUnitInstance unitInstance) => $"""
-        /// <summary>The components of <see langword="this"/>, expressed in <see cref="{UnitReference}.{unitInstance.Name}"/>.</summary>
+        /// <summary>The components of <see langword="this"/>, expressed in <see cref="{Unit.Type.FullyQualifiedName}.{unitInstance.Name}"/>.</summary>
         """;
 
     public string Conversion(NamedType vector) => $"""

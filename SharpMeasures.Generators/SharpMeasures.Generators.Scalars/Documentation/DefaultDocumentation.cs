@@ -47,11 +47,11 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
             _ => constant.Value.ToString("0.####", CultureInfo.InvariantCulture)
         };
 
-        return $$"""/// <summary>The {{ScalarReference}} representing the constant {{constant.Name}}, with value { {{value}} <see cref="{{Unit.Type.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/> }.</summary>""";
+        return $$"""/// <summary>The {{ScalarReference}} representing the constant {{constant.Name}}, equivalent to { {{value}} [<see cref="{{Unit.Type.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/>] }.</summary>""";
     }
 
     public string UnitBase(IUnitInstance unitInstance)
-        => $$"""/// <summary>The {{ScalarReference}} representing { 1 <see cref="{{Unit.Type.FullyQualifiedName}}.{{unitInstance.Name}}"/> }.</summary>""";
+        => $$"""/// <summary>The {{ScalarReference}} representing { 1 [<see cref="{{Unit.Type.FullyQualifiedName}}.{{unitInstance.Name}}"/>] }.</summary>""";
 
     public string WithMagnitude() => InheritDoc;
 
@@ -138,7 +138,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     {
         var commonText = $"""
             /// <summary>The magnitude of <see langword="this"/>, expressed in an arbitrary unit.</summary>
-            /// <remarks>In most cases, expressing the magnitude in a certain {UnitReference} should be preferred. This is achieved through <see cref="InUnit({Unit.Type.FullyQualifiedName})"/>
+            /// <remarks>In most cases, expressing the magnitude in a specified {UnitReference} should be preferred. This is achieved through <see cref="InUnit({Unit.Type.FullyQualifiedName})"/>
             """;
 
         if (ExampleUnitInstance is not null)
@@ -153,15 +153,15 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         /// <summary>Constructs a new {{ScalarReference}} representing { <paramref name="magnitude"/> }, expressed in an arbitrary unit.</summary>
         /// <param name="magnitude">The magnitude represented by the constructed {{ScalarReference}}, expressed in an arbitrary unit.</param>
         /// <remarks>Consider preferring construction through <see cref="{{Type.FullyQualifiedName}}(global::SharpMeasures.Scalar, {{Unit.Type.FullyQualifiedName}})"/>, where the magnitude is expressed in
-        /// a certain {{UnitReference}}.</remarks>
+        /// a specified {{UnitReference}}.</remarks>
         """;
 
     public string ScalarAndUnitConstructor()
     {
         var commonText = $$"""
-            /// <summary>Constructs a new {{ScalarReference}} representing { <paramref name="magnitude"/> }, expressed in <paramref name="{{UnitParameterName}}"/>.</summary>
-            /// <param name="magnitude">The magnitude represented by the constructed {{ScalarReference}}, expressed in <paramref name="{{UnitParameterName}}"/>.</param>
-            /// <param name="{{UnitParameterName}}">The {{UnitReference}} in which the magnitude, <paramref name="magnitude"/>, is expressed.</param>
+            /// <summary>Constructs a new {{ScalarReference}} representing { <paramref name="magnitude"/> [<paramref name="{{UnitParameterName}}"/>] }.</summary>
+            /// <param name="magnitude">The magnitude represented by the constructed {{ScalarReference}}, when expressed in <paramref name="{{UnitParameterName}}"/>.</param>
+            /// <param name="{{UnitParameterName}}">The {{UnitReference}} in which <paramref name="magnitude"/> is expressed.</param>
             """;
 
         if (ExampleUnitBaseInstance is not null)
