@@ -1,8 +1,9 @@
-namespace SharpMeasures.Generators.Providers;
+﻿namespace SharpMeasures.Generators.Providers;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
+using System;
 using System.Threading;
 
 public readonly record struct DeclarationSymbolProviderData(BaseTypeDeclarationSyntax TypeDeclaration, Compilation Compilation);
@@ -142,7 +143,18 @@ public static class DeclarationSymbolProvider
 
             DeclarationSymbolProviderData data = InputTransform(input);
 
-            if (data.Compilation.GetSemanticModel(data.TypeDeclaration.SyntaxTree).GetDeclaredSymbol(data.TypeDeclaration, token) is INamedTypeSymbol symbol)
+            SemanticModel semanticModel;
+
+            try
+            {
+                semanticModel = data.Compilation.GetSemanticModel(data.TypeDeclaration.SyntaxTree);
+            }
+            catch (ArgumentException)
+            {
+                return default;
+            }
+
+            if (semanticModel.GetDeclaredSymbol(data.TypeDeclaration, token) is INamedTypeSymbol symbol)
             {
                 return OutputTransform(input, symbol);
             }
