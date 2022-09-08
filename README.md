@@ -3,8 +3,8 @@
 SharpMeasures is a C# tool that aims to simplify proper usage of physical quantities and units of measurement during development. This is done by providing concrete types, such as `Time`, `UnitOfLength`, and `Acceleration3`. Common appropriate matematical operations are also implemented, allowing quantities to easily be derived from other quantities.
 
 ```csharp
-Displacement3 displacement = new Displacement3(0, 1.5, -4, UnitOfLength.Metre);
-Time time = 0.5 * UnitOfTime.Second.Time;
+Displacement3 displacement = (0, 1.5, -4) * Length.OneMetre;
+Time time = 0.5 * Time.OneSecond;
 
 Velocity3 velocity = displacement / time;
 
