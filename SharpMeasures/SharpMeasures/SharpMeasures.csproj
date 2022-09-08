@@ -20,7 +20,7 @@
 
     <ItemGroup>
       <PackageReference Include="SharpMeasures.Base" />
-      <PackageReference Include="SharpMeasures.Generators" />
+      <PackageReference Include="SharpMeasures.Generators" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
