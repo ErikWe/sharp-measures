@@ -4,7 +4,7 @@ using SharpMeasures.Generators.DriverUtility;
 
 using Xunit;
 
-public class AddingUnits
+public class AddingUnitInstance
 {
     [Fact]
     public async void Assert()
