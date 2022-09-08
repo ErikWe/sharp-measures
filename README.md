@@ -1,6 +1,6 @@
 # SharpMeasures [![NuGet version (SharpMeasures)](https://img.shields.io/nuget/v/SharpMeasures.svg?style=plastic)](https://www.nuget.org/packages/SharpMeasures/)
 
-SharpMeasures is a .NET tools that aims to simplify proper usage of physical quantities and units of measurement during development. This is done by providing concrete types, such as `Time`, `UnitOfLength`, and `Acceleration3`. Common appropriate matematical operations are also implemented, allowing quantities to easily be derived from other quantities.
+SharpMeasures is a C# tool that aims to simplify proper usage of physical quantities and units of measurement during development. This is done by providing concrete types, such as `Time`, `UnitOfLength`, and `Acceleration3`. Common appropriate matematical operations are also implemented, allowing quantities to easily be derived from other quantities.
 
 ```csharp
 Displacement3 displacement = new Displacement3(0, 1.5, -4, UnitOfLength.Metre);
