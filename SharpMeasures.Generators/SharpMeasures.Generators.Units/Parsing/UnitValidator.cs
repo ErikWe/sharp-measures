@@ -107,13 +107,20 @@ internal class UnitValidator : IUnitValidator
         {
             int initialLength = unresolvedUnitInstances.Count;
 
+            List<IModifiedUnitInstance> toRemove = new();
+
             foreach (var unresolvedUnitInstance in unresolvedUnitInstances)
             {
                 if (resolvedUnitInstances.Contains(unresolvedUnitInstance.OriginalUnitInstance))
                 {
-                    resolvedUnitInstances.Add(unresolvedUnitInstance.Name);
-                    unresolvedUnitInstances.Remove(unresolvedUnitInstance);
+                    toRemove.Add(unresolvedUnitInstance);
                 }
+            }
+
+            foreach (var unitInstance in toRemove)
+            {
+                resolvedUnitInstances.Add(unitInstance.Name);
+                unresolvedUnitInstances.Remove(unitInstance);
             }
 
             if (unresolvedUnitInstances.Count == initialLength)
