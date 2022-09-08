@@ -28,8 +28,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Do
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.DriverUtility", "SharpMeasures.Generators.DriverUtility\SharpMeasures.Generators.DriverUtility.csproj", "{4461814A-0A60-4D78-B8D6-75F559EFEB8B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Profiling", "SharpMeasures.Generators.Profiling\SharpMeasures.Generators.Profiling.csproj", "{8261E64C-67BD-46EC-AB32-4875DEAD63FB}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.Quantities", "SharpMeasures.Generators.Quantities\SharpMeasures.Generators.Quantities.csproj", "{07B8CBBF-C79F-4EBE-9182-C7126418D0BC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Generators.RoslynUtility", "SharpMeasures.Generators.RoslynUtility\SharpMeasures.Generators.RoslynUtility.csproj", "{E1CDDD81-0C72-4F1E-9479-E060CCA3E4F4}"
@@ -86,10 +84,6 @@ Global
 		{4461814A-0A60-4D78-B8D6-75F559EFEB8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4461814A-0A60-4D78-B8D6-75F559EFEB8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4461814A-0A60-4D78-B8D6-75F559EFEB8B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8261E64C-67BD-46EC-AB32-4875DEAD63FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8261E64C-67BD-46EC-AB32-4875DEAD63FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8261E64C-67BD-46EC-AB32-4875DEAD63FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8261E64C-67BD-46EC-AB32-4875DEAD63FB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{07B8CBBF-C79F-4EBE-9182-C7126418D0BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{07B8CBBF-C79F-4EBE-9182-C7126418D0BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07B8CBBF-C79F-4EBE-9182-C7126418D0BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
