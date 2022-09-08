@@ -382,37 +382,25 @@ internal static class Execution
             SeparationHandler.AddIfNecessary();
 
             AppendDocumentation(indentation, Data.Documentation.ToStringDocumentation());
-            
-            if (Data.DefaultUnitInstanceName is null)
-            {
-                Builder.Append($$"""{{indentation}}public override string ToString() => $"({{ConstantVectorTexts.Upper.ComponentsPropertyAccess(Data.Dimension)}})""");
-            }
-            else
-            {
-                Builder.Append($$"""
-                    {{indentation}}public override string ToString()
-                    {{indentation}}{
-                    {{indentation.Increased}}var components = InUnit({{Data.Unit.FullyQualifiedName}}.{{Data.DefaultUnitInstanceName}});
-
-                    {{indentation.Increased}}return $"({{ConstantVectorTexts.Upper.ComponentsPropertyAccess(Data.Dimension)}})
-                    """);
-
-                SeparationHandler.Add();
-            }
+            Builder.Append($$"""{{indentation}}public override string ToString() => """);
 
             if (Data.DefaultUnitInstanceSymbol is not null)
             {
-                Builder.Append($""" [{Data.DefaultUnitInstanceSymbol}]""");
-            }
+                Builder.AppendLine($$"""
+                    "{InUnit({{Data.Unit.FullyQualifiedName}}.{{Data.DefaultUnitInstanceName}})} [{{Data.DefaultUnitInstanceSymbol}}]";
+                    """);
 
-            Builder.AppendLine("""
-                ";
-                """);
+                return;
+            }
 
             if (Data.DefaultUnitInstanceName is not null)
             {
-                BlockBuilding.AppendClosingBracket(Builder, indentation, finalNewLine: true);
+                Builder.AppendLine($"InUnit({Data.Unit.FullyQualifiedName}.{Data.DefaultUnitInstanceName}).ToString();");
+
+                return;
             }
+
+            Builder.AppendLine($"Components.ToString();");
         }
 
         private void AppendDeconstruct(Indentation indentation)

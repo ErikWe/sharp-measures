@@ -193,25 +193,25 @@ internal static class Execution
             SeparationHandler.AddIfNecessary();
 
             AppendDocumentation(indentation, Data.Documentation.ToStringDocumentation());
-            Builder.Append($$"""{{indentation}}public override string ToString() => $"{""");
-
-            if (Data.DefaultUnitInstanceName is not null)
-            {
-                Builder.Append($"InUnit({Data.Unit.FullyQualifiedName}.{Data.DefaultUnitInstanceName}).Value");
-            }
-            else
-            {
-                Builder.Append("Magnitude.Value");
-            }
-
-            Builder.Append('}');
+            Builder.Append($$"""{{indentation}}public override string ToString() => """);
 
             if (Data.DefaultUnitInstanceSymbol is not null)
             {
-                Builder.Append($" [{Data.DefaultUnitInstanceSymbol}]");
+                Builder.AppendLine($$"""
+                    "{InUnit({{Data.Unit.FullyQualifiedName}}.{{Data.DefaultUnitInstanceName}})} [{{Data.DefaultUnitInstanceSymbol}}]";
+                    """);
+
+                return;
             }
 
-            Builder.AppendLine($"\";");
+            if (Data.DefaultUnitInstanceName is not null)
+            {
+                Builder.AppendLine($"InUnit({Data.Unit.FullyQualifiedName}.{Data.DefaultUnitInstanceName}).ToString();");
+
+                return;
+            }
+
+            Builder.AppendLine("Magnitude.ToString();");
         }
 
         private void AppendEquality(Indentation indentation)
