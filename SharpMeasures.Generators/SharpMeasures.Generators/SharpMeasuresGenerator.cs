@@ -9,11 +9,15 @@ using SharpMeasures.Generators.Scalars.Parsing;
 using SharpMeasures.Generators.Units.Parsing;
 using SharpMeasures.Generators.Vectors.Parsing;
 
+using System.Diagnostics;
+
 [Generator]
 public class SharpMeasuresGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        LanchDebugger(false);
+
         var globalAnalyzerConfig = GlobalAnalyzerConfigProvider.Attach(context.AnalyzerConfigOptionsProvider);
         var documentationDictionary = DocumentationDictionaryProvider.AttachAndReport(context, context.AdditionalTextsProvider, globalAnalyzerConfig, DocumentationDiagnostics.Instance);
 
@@ -31,5 +35,20 @@ public class SharpMeasuresGenerator : IIncrementalGenerator
         unitGenerator.Generate(context, resolvedScalarPopulation, globalAnalyzerConfig, documentationDictionary);
         scalarGenerator.Generate(context, validUnitPopulation, resolvedVectorPopulation, globalAnalyzerConfig, documentationDictionary);
         vectorGenerator.Generate(context, validUnitPopulation, resolvedScalarPopulation, globalAnalyzerConfig, documentationDictionary);
+    }
+
+    private static void LanchDebugger(bool shouldLaunch)
+    {
+        if (shouldLaunch is false)
+        {
+            return;
+        }
+
+#if DEBUG
+        if (!Debugger.IsAttached)
+        {
+            Debugger.Launch();
+        }
+#endif 
     }
 }

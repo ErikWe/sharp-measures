@@ -10,6 +10,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.Build.Locator" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit" PrivateAssets="all" />
@@ -17,6 +18,7 @@
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeRefactoring.Testing.XUnit" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.XUnit" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" PrivateAssets="all" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" PrivateAssets="all" />
     </ItemGroup>
 
@@ -40,9 +42,5 @@
         <ProjectReference Include="..\SharpMeasures.Generators.DriverUtility\SharpMeasures.Generators.DriverUtility.csproj" />
         <ProjectReference Include="..\SharpMeasures.Generators.Units\SharpMeasures.Generators.Units.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Verify\Snapshots\Units\VerifyGeneratedCode\" />
-    </ItemGroup>
-
+    
 </Project>
