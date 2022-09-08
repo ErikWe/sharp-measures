@@ -145,11 +145,11 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
     };
 
     private string BiasedToStringDocumentation() => $"""
-        ///<summary>Produces a description of <see langword="this"/> containing the type, the described {QuantityReference}, and the associated bias.</summary>
+        ///<summary>Produces a description of <see langword="this"/> containing the described {QuantityReference} and the associated bias.</summary>
         """;
 
     private string UnbiasedToStringDocumentation() => $"""
-        ///<summary>Produces a description of <see langword="this"/> containing the type and the described {QuantityReference}.</summary>
+        ///<summary>Produces a description of <see langword="this"/> containing the described {QuantityReference}.</summary>
         """;
 
     public string EqualsSameTypeMethod() => InheritDoc;

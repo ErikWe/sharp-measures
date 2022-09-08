@@ -14,11 +14,11 @@ internal interface IDocumentationStrategy
 
     public abstract string WithMagnitude();
 
-    public abstract string FromReciprocal();
-    public abstract string FromSquare();
-    public abstract string FromCube();
-    public abstract string FromSquareRoot();
-    public abstract string FromCubeRoot();
+    public abstract string FromReciprocal(NamedType reciprocal);
+    public abstract string FromSquare(NamedType square);
+    public abstract string FromCube(NamedType cube);
+    public abstract string FromSquareRoot(NamedType squareRoot);
+    public abstract string FromCubeRoot(NamedType cubeRoot);
 
     public abstract string Derivation(DerivedQuantitySignature signature);
     public abstract string OperatorDerivationLHS(IOperatorDerivation derivation);

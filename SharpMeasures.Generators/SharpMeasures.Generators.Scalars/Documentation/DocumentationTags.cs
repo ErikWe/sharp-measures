@@ -24,11 +24,11 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
 
     public string WithMagnitude() => "WithMagnitude";
 
-    public string FromReciprocal() => "FromReciprocal";
-    public string FromSquare() => "FromSquare";
-    public string FromCube() => "FromCube";
-    public string FromSquareRoot() => "FromSquareRoot";
-    public string FromCubeRoot() => "FromCubeRoot";
+    public string FromReciprocal(NamedType _) => "FromReciprocal";
+    public string FromSquare(NamedType _) => "FromSquare";
+    public string FromCube(NamedType _) => "FromCube";
+    public string FromSquareRoot(NamedType _) => "FromSquareRoot";
+    public string FromCubeRoot(NamedType _) => "FromCubeRoot";
 
     public string Derivation(DerivedQuantitySignature signature) => $"Derivation_{ParseDerivableSignature(signature)}";
     public string OperatorDerivationLHS(IOperatorDerivation derivation) => $"OperatorDerivationLHS_{derivation.Result.Name}_{derivation.RightHandSide.Name}";

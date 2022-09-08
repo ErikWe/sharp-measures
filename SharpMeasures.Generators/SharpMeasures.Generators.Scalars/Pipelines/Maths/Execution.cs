@@ -191,7 +191,7 @@ internal static class Execution
                 var expression = $"new(1 / {parameterName}.Magnitude.Value)";
                 var parameters = new[] { (Data.Reciprocal.Value, parameterName) };
 
-                AppendDocumentation(indentation, Data.Documentation.FromReciprocal());
+                AppendDocumentation(indentation, Data.Documentation.FromReciprocal(Data.Reciprocal.Value));
                 StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
 
                 previousWasExpressionBody = Data.Reciprocal.Value.IsValueType;
@@ -209,7 +209,7 @@ internal static class Execution
                 string expression = $"new(global::System.Math.Sqrt({parameterName}.Magnitude.Value))";
                 var parameters = new[] { (Data.Square.Value, parameterName) };
 
-                AppendDocumentation(indentation, Data.Documentation.FromSquare());
+                AppendDocumentation(indentation, Data.Documentation.FromSquare(Data.Square.Value));
                 StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
 
                 previousWasExpressionBody = Data.Square.Value.IsValueType;
@@ -227,7 +227,7 @@ internal static class Execution
                 var expression = $"new(global::System.Math.Cbrt({parameterName}.Magnitude.Value))";
                 var parameters = new[] { (Data.Cube.Value, parameterName) };
 
-                AppendDocumentation(indentation, Data.Documentation.FromCube());
+                AppendDocumentation(indentation, Data.Documentation.FromCube(Data.Cube.Value));
                 StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
 
                 previousWasExpressionBody = Data.Cube.Value.IsValueType;
@@ -245,7 +245,7 @@ internal static class Execution
                 var expression = $"new(global::System.Math.Pow({parameterName}.Magnitude.Value, 2))";
                 var parameters = new[] { (Data.SquareRoot.Value, parameterName) };
 
-                AppendDocumentation(indentation, Data.Documentation.FromSquareRoot());
+                AppendDocumentation(indentation, Data.Documentation.FromSquareRoot(Data.SquareRoot.Value));
                 StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
 
                 previousWasExpressionBody = Data.SquareRoot.Value.IsValueType;
@@ -263,7 +263,7 @@ internal static class Execution
                 var expression = $"new(global::System.Math.Pow({parameterName}.Magnitude.Value, 3))";
                 var parameters = new[] { (Data.CubeRoot.Value, parameterName) };
 
-                AppendDocumentation(indentation, Data.Documentation.FromCubeRoot());
+                AppendDocumentation(indentation, Data.Documentation.FromCubeRoot(Data.CubeRoot.Value));
                 StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
             }
         }

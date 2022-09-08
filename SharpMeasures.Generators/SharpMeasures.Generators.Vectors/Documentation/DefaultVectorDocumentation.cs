@@ -245,8 +245,8 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
     public string IsFinite() => $"""/// <inheritdoc cref="global::SharpMeasures.Vector{Dimension}.IsFinite"/>""";
     public string IsInfinite() => $"""/// <inheritdoc cref="global::SharpMeasures.Vector{Dimension}.IsInfinite"/>""";
 
-    public string Magnitude() => InheritDoc;
-    public string SquaredMagnitude() => InheritDoc;
+    public string Magnitude() => $$"""/// <inheritdoc cref="global::SharpMeasures.IVector{{Dimension}}.Magnitude()"/>""";
+    public string SquaredMagnitude() => $$"""/// <inheritdoc cref="global::SharpMeasures.IVector{{Dimension}}.SquaredMagnitude()"/>""";
 
     public string ScalarMagnitude() => InheritDoc;
     public string ScalarSquaredMagnitude() => InheritDoc;
@@ -256,24 +256,24 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
 
     public string ToStringDocumentation()
     {
-        var commonText = $"""/// <summary>Produces a description of <see langword="this"/> containing the type""";
+        var commonText = $"""/// <summary>Produces a description of <see langword="this"/> containing the""";
 
         if (DefaultUnitInstance is not null && DefaultUnitInstanceSymbol is not null)
         {
-            return $"""{commonText}, the components expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance}"/>, and the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
+            return $"""{commonText} components expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance}"/>, followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
         }
 
         if (DefaultUnitInstance is not null)
         {
-            return $"""{commonText} and the components expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance}"/>.</summary>""";
+            return $"""{commonText} components expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance}"/>.</summary>""";
         }
 
         if (DefaultUnitInstanceSymbol is not null)
         {
-            return $"""{commonText}, the components expressed in an arbitrary unit, follow by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
+            return $"""{commonText} components expressed in an arbitrary unit, follow by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
         }
 
-        return $"""{commonText} and the components expressed in an arbitrary unit.</summary>""";
+        return $"""{commonText} components expressed in an arbitrary unit.</summary>""";
     }
 
     public string EqualsSameTypeMethod() => InheritDoc;
@@ -301,11 +301,11 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
     public string UnaryPlusMethod() => InheritDoc;
     public string NegateMethod() => InheritDoc;
 
-    public string AddSameTypeMethod() => InheritDoc;
-    public string SubtractSameTypeMethod() => InheritDoc;
+    public string AddSameTypeMethod() => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{Dimension}}.Add(global::SharpMeasures.Vector{{Dimension}})"/>""";
+    public string SubtractSameTypeMethod() => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{Dimension}}.Subtract(global::SharpMeasures.Vector{{Dimension}})"/>""";
 
-    public string AddDifferenceMethod() => InheritDoc;
-    public string SubtractDifferenceMethod() => InheritDoc;
+    public string AddDifferenceMethod() => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{Dimension}}.Add(global::SharpMeasures.Vector{{Dimension}})"/>""";
+    public string SubtractDifferenceMethod() => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{Dimension}}.Subtract(global::SharpMeasures.Vector{{Dimension}})"/>""";
 
     public string MultiplyScalarMethod() => InheritDoc;
     public string DivideScalarMethod() => InheritDoc;
@@ -313,12 +313,12 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
     public string UnaryPlusOperator() => InheritDoc;
     public string NegateOperator() => InheritDoc;
 
-    public string AddSameTypeOperator() => InheritDoc;
-    public string SubtractSameTypeOperator() => InheritDoc;
+    public string AddSameTypeOperator() => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{Dimension}}.operator +(global::SharpMeasures.Vector{{Dimension}}, global::SharpMeasures.Vector{{Dimension}})"/>""";
+    public string SubtractSameTypeOperator() => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{Dimension}}.operator -(global::SharpMeasures.Vector{{Dimension}}, global::SharpMeasures.Vector{{Dimension}})"/>""";
 
-    public string AddDifferenceOperatorLHS() => InheritDoc;
-    public string AddDifferenceOperatorRHS() => InheritDoc;
-    public string SubtractDifferenceOperatorLHS() => InheritDoc;
+    public string AddDifferenceOperatorLHS() => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{Dimension}}.operator +(global::SharpMeasures.Vector{{Dimension}}, global::SharpMeasures.Vector{{Dimension}})"/>""";
+    public string AddDifferenceOperatorRHS() => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{Dimension}}.operator +(global::SharpMeasures.Vector{{Dimension}}, global::SharpMeasures.Vector{{Dimension}})"/>""";
+    public string SubtractDifferenceOperatorLHS() => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{Dimension}}.operator -(global::SharpMeasures.Vector{{Dimension}}, global::SharpMeasures.Vector{{Dimension}})"/>""";
 
     public string MultiplyScalarOperatorLHS() => InheritDoc;
     public string MultiplyScalarOperatorRHS() => InheritDoc;

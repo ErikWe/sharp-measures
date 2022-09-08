@@ -26,11 +26,11 @@ internal class FileDocumentation : IDocumentationStrategy, IEquatable<FileDocume
 
     public string WithMagnitude() => FromFileOrDefault(static (strategy) => strategy.WithMagnitude());
 
-    public string FromReciprocal() => FromFileOrDefault(static (strategy) => strategy.FromReciprocal());
-    public string FromSquare() => FromFileOrDefault(static (strategy) => strategy.FromSquare());
-    public string FromCube() => FromFileOrDefault(static (strategy) => strategy.FromCube());
-    public string FromSquareRoot() => FromFileOrDefault(static (strategy) => strategy.FromSquareRoot());
-    public string FromCubeRoot() => FromFileOrDefault(static (strategy) => strategy.FromCubeRoot());
+    public string FromReciprocal(NamedType reciprocal) => FromFileOrDefault((strategy) => strategy.FromReciprocal(reciprocal));
+    public string FromSquare(NamedType square) => FromFileOrDefault((strategy) => strategy.FromSquare(square));
+    public string FromCube(NamedType cube) => FromFileOrDefault((strategy) => strategy.FromCube(cube));
+    public string FromSquareRoot(NamedType squareRoot) => FromFileOrDefault((strategy) => strategy.FromSquareRoot(squareRoot));
+    public string FromCubeRoot(NamedType cubeRoot) => FromFileOrDefault((strategy) => strategy.FromCubeRoot(cubeRoot));
 
     public string Derivation(DerivedQuantitySignature signature) => FromFileOrDefault((strategy) => strategy.Derivation(signature));
     public string OperatorDerivationLHS(IOperatorDerivation derivation) => FromFileOrDefault((strategy) => strategy.OperatorDerivationLHS(derivation));

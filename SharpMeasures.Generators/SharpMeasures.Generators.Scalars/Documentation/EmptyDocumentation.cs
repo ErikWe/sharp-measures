@@ -17,11 +17,11 @@ internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocu
     string IDocumentationStrategy.Constant(IScalarConstant _) => string.Empty;
     string IDocumentationStrategy.UnitBase(IUnitInstance _) => string.Empty;
     string IDocumentationStrategy.WithMagnitude() => string.Empty;
-    string IDocumentationStrategy.FromReciprocal() => string.Empty;
-    string IDocumentationStrategy.FromSquare() => string.Empty;
-    string IDocumentationStrategy.FromCube() => string.Empty;
-    string IDocumentationStrategy.FromSquareRoot() => string.Empty;
-    string IDocumentationStrategy.FromCubeRoot() => string.Empty;
+    string IDocumentationStrategy.FromReciprocal(NamedType _) => string.Empty;
+    string IDocumentationStrategy.FromSquare(NamedType _) => string.Empty;
+    string IDocumentationStrategy.FromCube(NamedType _) => string.Empty;
+    string IDocumentationStrategy.FromSquareRoot(NamedType _) => string.Empty;
+    string IDocumentationStrategy.FromCubeRoot(NamedType _) => string.Empty;
     string IDocumentationStrategy.Derivation(DerivedQuantitySignature _) => string.Empty;
     string IDocumentationStrategy.OperatorDerivationLHS(IOperatorDerivation _) => string.Empty;
     string IDocumentationStrategy.Magnitude() => string.Empty;
