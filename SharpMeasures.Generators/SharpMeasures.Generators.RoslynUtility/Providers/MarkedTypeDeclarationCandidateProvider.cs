@@ -147,8 +147,8 @@ public static class MarkedTypeDeclarationCandidateProvider
                 transform: candidateTypeDeclarationElseNull
             ).WhereNotNull().Select(ApplyOutputTransform);
 
-            OutputData? candidateTypeDeclarationElseNull(GeneratorSyntaxContext context, CancellationToken _)
-                => CandidateTypeDeclarationElseNull(attributeStrategy, context);
+            OutputData? candidateTypeDeclarationElseNull(GeneratorSyntaxContext context, CancellationToken token)
+                => CandidateTypeDeclarationElseNull(attributeStrategy, context, token);
         }
 
         private TOut ApplyOutputTransform(OutputData result, CancellationToken _)
@@ -161,8 +161,13 @@ public static class MarkedTypeDeclarationCandidateProvider
             return node is TypeDeclarationSyntax declaration && declaration.Identifier.IsMissing is false && declaration.AttributeLists.Count > 0;
         }
 
-        private static OutputData? CandidateTypeDeclarationElseNull(IAttributeSyntaxStrategy attributeStrategy, GeneratorSyntaxContext context)
+        private static OutputData? CandidateTypeDeclarationElseNull(IAttributeSyntaxStrategy attributeStrategy, GeneratorSyntaxContext context, CancellationToken token)
         {
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
+
             TypeDeclarationSyntax declaration = (TypeDeclarationSyntax)context.Node;
 
             return attributeStrategy.GetAttributeSyntax(context, declaration) is AttributeSyntax attributeSyntax ? new OutputData(declaration, attributeSyntax) : null;

@@ -28,9 +28,14 @@ using System.Threading;
 internal abstract class AScalarProcesser<TDefinition, TProduct>
     where TDefinition : IScalar
 {
-    public IOptionalWithDiagnostics<TProduct> ParseAndProcess((TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol) input, CancellationToken _) => ParseAndProcess(input.Declaration, input.TypeSymbol);
-    public IOptionalWithDiagnostics<TProduct> ParseAndProcess(TypeDeclarationSyntax declaration, INamedTypeSymbol typeSymbol)
+    public IOptionalWithDiagnostics<TProduct> ParseAndProcess((TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol) input, CancellationToken token) => ParseAndProcess(input.Declaration, input.TypeSymbol, token);
+    public IOptionalWithDiagnostics<TProduct> ParseAndProcess(TypeDeclarationSyntax declaration, INamedTypeSymbol typeSymbol, CancellationToken token)
     {
+        if (token.IsCancellationRequested)
+        {
+            return OptionalWithDiagnostics.Empty<TProduct>();
+        }
+
         var scalar = ParseAndProcessScalar(typeSymbol);
 
         if (scalar.LacksResult)

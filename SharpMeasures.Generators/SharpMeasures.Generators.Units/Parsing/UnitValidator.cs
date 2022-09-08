@@ -50,33 +50,41 @@ internal class UnitValidator : IUnitValidator
         return (reducedPopulation, new UnitGenerator(population, validatedUnits));
     }
 
-    private static IOptionalWithDiagnostics<UnitType> Validate((UnitType UnvalidatedUnit, IUnitPopulationWithData UnitPopulation, IScalarPopulation ScalarPopulation) input, CancellationToken _)
+    private static IOptionalWithDiagnostics<UnitType> Validate((UnitType UnvalidatedUnit, IUnitPopulationWithData UnitPopulation, IScalarPopulation ScalarPopulation) input, CancellationToken token)
+        => Validate(input.UnvalidatedUnit, input.UnitPopulation, input.ScalarPopulation, token);
+
+    private static IOptionalWithDiagnostics<UnitType> Validate(UnitType unitType, IUnitPopulationWithData unitPopulation, IScalarPopulation scalarPopulation, CancellationToken token)
     {
-        var unit = ValidateUnit(input.UnvalidatedUnit, input.UnitPopulation, input.ScalarPopulation);
+        if (token.IsCancellationRequested)
+        {
+            return OptionalWithDiagnostics.Empty<UnitType>();
+        }
+
+        var unit = ValidateUnit(unitType, unitPopulation, scalarPopulation);
 
         if (unit.IsInvalid)
         {
             return unit.AsEmptyOptional<UnitType>();
         }
 
-        var derivations = ValidateDerivations(input.UnvalidatedUnit, input.UnitPopulation);
+        var derivations = ValidateDerivations(unitType, unitPopulation);
 
-        var cyclicallyModifiedUnitInstances = GetCyclicallyModifiedUnitInstances(input.UnvalidatedUnit);
+        var cyclicallyModifiedUnitInstances = GetCyclicallyModifiedUnitInstances(unitType);
 
-        var unitInstanceValidationContext = new ModifiedUnitValidationContext(input.UnvalidatedUnit.Type, input.UnvalidatedUnit.UnitInstancesByName, cyclicallyModifiedUnitInstances);
+        var unitInstanceValidationContext = new ModifiedUnitValidationContext(unitType.Type, unitType.UnitInstancesByName, cyclicallyModifiedUnitInstances);
 
-        var unitInstanceAliases = ValidateUnitInstanceAliases(input.UnvalidatedUnit, unitInstanceValidationContext);
-        var derivedUnitInstances = ValidateDerivedUnitInstances(input.UnvalidatedUnit, input.UnitPopulation);
-        var biasedUnitInstances = ValidateBiasedUnitInstances(input.UnvalidatedUnit, cyclicallyModifiedUnitInstances);
-        var prefixedUnitInstances = ValidatePrefixedUnitInstances(input.UnvalidatedUnit, unitInstanceValidationContext);
-        var scaledUnitInstances = ValidateScaledUnitInstances(input.UnvalidatedUnit, unitInstanceValidationContext);
+        var unitInstanceAliases = ValidateUnitInstanceAliases(unitType, unitInstanceValidationContext);
+        var derivedUnitInstances = ValidateDerivedUnitInstances(unitType, unitPopulation);
+        var biasedUnitInstances = ValidateBiasedUnitInstances(unitType, cyclicallyModifiedUnitInstances);
+        var prefixedUnitInstances = ValidatePrefixedUnitInstances(unitType, unitInstanceValidationContext);
+        var scaledUnitInstances = ValidateScaledUnitInstances(unitType, unitInstanceValidationContext);
 
-        UnitType unitType = new(input.UnvalidatedUnit.Type, input.UnvalidatedUnit.TypeLocation, input.UnvalidatedUnit.Definition, derivations.Result, input.UnvalidatedUnit.FixedUnitInstance, unitInstanceAliases.Result,
+        UnitType product = new(unitType.Type, unitType.TypeLocation, unitType.Definition, derivations.Result, unitType.FixedUnitInstance, unitInstanceAliases.Result,
             derivedUnitInstances.Result, biasedUnitInstances.Result, prefixedUnitInstances.Result, scaledUnitInstances.Result);
 
         var allDiagnostics = unit.Concat(derivations).Concat(unitInstanceAliases).Concat(derivedUnitInstances).Concat(biasedUnitInstances).Concat(prefixedUnitInstances).Concat(scaledUnitInstances);
 
-        return OptionalWithDiagnostics.Result(unitType, allDiagnostics);
+        return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
     private static IValidityWithDiagnostics ValidateUnit(UnitType unitType, IUnitPopulationWithData unitPopulation, IScalarPopulation scalarPopulation)

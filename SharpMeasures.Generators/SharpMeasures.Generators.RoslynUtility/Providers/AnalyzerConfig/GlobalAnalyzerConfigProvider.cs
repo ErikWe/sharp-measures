@@ -16,16 +16,21 @@ public static class GlobalAnalyzerConfigProvider
 
     private static class GlobalAnalyzerParser
     {
-        public static GlobalAnalyzerConfig Parse(AnalyzerConfigOptionsProvider provider, CancellationToken _)
+        public static GlobalAnalyzerConfig Parse(AnalyzerConfigOptionsProvider provider, CancellationToken token)
         {
-            bool generateDocumentationByDefault = ParseGenerateDocumentationByDefault(provider);
-            bool limitOneErrorPerDocumentationFile = ParseLimitOneErrorPerDocumentationFile(provider);
+            bool generateDocumentationByDefault = ParseGenerateDocumentationByDefault(provider, token);
+            bool limitOneErrorPerDocumentationFile = ParseLimitOneErrorPerDocumentationFile(provider, token);
 
             return new(generateDocumentationByDefault, limitOneErrorPerDocumentationFile);
         }
 
-        private static bool ParseGenerateDocumentationByDefault(AnalyzerConfigOptionsProvider provider)
+        private static bool ParseGenerateDocumentationByDefault(AnalyzerConfigOptionsProvider provider, CancellationToken token)
         {
+            if (token.IsCancellationRequested)
+            {
+                return true;
+            }
+
             if (provider.GlobalOptions.TryGetValue(ConfigKeys.GenerateDocumentationByDefault, out string? value))
             {
                 return BooleanTransforms.TrueByDefault(value);
@@ -34,8 +39,13 @@ public static class GlobalAnalyzerConfigProvider
             return true;
         }
 
-        private static bool ParseLimitOneErrorPerDocumentationFile(AnalyzerConfigOptionsProvider provider)
+        private static bool ParseLimitOneErrorPerDocumentationFile(AnalyzerConfigOptionsProvider provider, CancellationToken token)
         {
+            if (token.IsCancellationRequested)
+            {
+                return true;
+            }
+
             if (provider.GlobalOptions.TryGetValue(ConfigKeys.LimitOneErrorPerDocumentationFile, out string? value))
             {
                 return BooleanTransforms.TrueByDefault(value);

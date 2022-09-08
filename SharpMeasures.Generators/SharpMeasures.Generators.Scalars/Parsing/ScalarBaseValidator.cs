@@ -35,27 +35,35 @@ internal static class ScalarBaseValidator
         return scalarProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
 
-    private static IOptionalWithDiagnostics<ScalarBaseType> Validate((ScalarBaseType UnvalidatedScalar, IUnitPopulation UnitPopulation, IScalarPopulationWithData ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken _)
+    private static IOptionalWithDiagnostics<ScalarBaseType> Validate((ScalarBaseType UnvalidatedScalar, IUnitPopulation UnitPopulation, IScalarPopulationWithData ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
+        => Validate(input.UnvalidatedScalar, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation, token);
+
+    private static IOptionalWithDiagnostics<ScalarBaseType> Validate(ScalarBaseType scalarType, IUnitPopulation unitPopulation, IScalarPopulationWithData scalarPopulation, IVectorPopulation vectorPopulation, CancellationToken token)
     {
-        var scalar = ValidateScalar(input.UnvalidatedScalar, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        if (token.IsCancellationRequested)
+        {
+            return OptionalWithDiagnostics.Empty<ScalarBaseType>();
+        }
+
+        var scalar = ValidateScalar(scalarType, unitPopulation, scalarPopulation, vectorPopulation);
 
         if (scalar.LacksResult)
         {
             return scalar.AsEmptyOptional<ScalarBaseType>();
         }
 
-        var derivations = ValidateDerivations(input.UnvalidatedScalar, input.ScalarPopulation, input.VectorPopulation);
-        var constants = ValidateConstants(input.UnvalidatedScalar, input.UnitPopulation);
-        var conversions = ValidateConversions(input.UnvalidatedScalar, input.ScalarPopulation);
+        var derivations = ValidateDerivations(scalarType, scalarPopulation, vectorPopulation);
+        var constants = ValidateConstants(scalarType, unitPopulation);
+        var conversions = ValidateConversions(scalarType, scalarPopulation);
 
-        var includedUnitsInstanceNames = new HashSet<string>(input.UnitPopulation.Units[input.UnvalidatedScalar.Definition.Unit].UnitInstancesByName.Keys);
+        var includedUnitsInstanceNames = new HashSet<string>(unitPopulation.Units[scalarType.Definition.Unit].UnitInstancesByName.Keys);
 
-        var unitBaseInclusions = ValidateIncludeUnitBaseInstances(input.UnvalidatedScalar, input.UnitPopulation, includedUnitsInstanceNames);
-        var unitBaseExclusions = ValidateExcludeUnitBaseInstances(input.UnvalidatedScalar, input.UnitPopulation, includedUnitsInstanceNames);
-        var unitInclusions = ValidateIncludeUnitInstances(input.UnvalidatedScalar, input.UnitPopulation, includedUnitsInstanceNames);
-        var unitExclusions = ValidateExcludeUnitInstances(input.UnvalidatedScalar, input.UnitPopulation, includedUnitsInstanceNames);
+        var unitBaseInclusions = ValidateIncludeUnitBaseInstances(scalarType, unitPopulation, includedUnitsInstanceNames);
+        var unitBaseExclusions = ValidateExcludeUnitBaseInstances(scalarType, unitPopulation, includedUnitsInstanceNames);
+        var unitInclusions = ValidateIncludeUnitInstances(scalarType, unitPopulation, includedUnitsInstanceNames);
+        var unitExclusions = ValidateExcludeUnitInstances(scalarType, unitPopulation, includedUnitsInstanceNames);
 
-        ScalarBaseType product = new(input.UnvalidatedScalar.Type, input.UnvalidatedScalar.TypeLocation, scalar.Result, derivations.Result, constants.Result, conversions.Result, unitBaseInclusions.Result,
+        ScalarBaseType product = new(scalarType.Type, scalarType.TypeLocation, scalar.Result, derivations.Result, constants.Result, conversions.Result, unitBaseInclusions.Result,
             unitBaseExclusions.Result, unitInclusions.Result, unitExclusions.Result);
 
         var allDiagnostics = scalar.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitBaseInclusions).Concat(unitBaseExclusions).Concat(unitInclusions).Concat(unitExclusions);

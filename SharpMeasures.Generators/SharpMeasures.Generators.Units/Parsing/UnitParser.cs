@@ -42,8 +42,13 @@ public static class UnitParser
         return (reducedPopulation, new UnitValidator(population, units));
     }
 
-    private static IOptionalWithDiagnostics<UnitType> ParseAndProcess(IntermediateResult input, CancellationToken _)
+    private static IOptionalWithDiagnostics<UnitType> ParseAndProcess(IntermediateResult input, CancellationToken token)
     {
+        if (token.IsCancellationRequested)
+        {
+            return OptionalWithDiagnostics.Empty<UnitType>();
+        }
+
         var unit = ParseAndProcessUnit(input.TypeSymbol);
 
         if (unit.LacksResult)

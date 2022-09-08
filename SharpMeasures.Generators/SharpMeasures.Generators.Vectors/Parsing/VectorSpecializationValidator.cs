@@ -33,8 +33,13 @@ internal static class VectorSpecializationValidator
         return vectorProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
 
-    private static IOptionalWithDiagnostics<VectorSpecializationType> Validate((VectorSpecializationType UnvalidatedVector, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken _)
+    private static IOptionalWithDiagnostics<VectorSpecializationType> Validate((VectorSpecializationType UnvalidatedVector, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken token)
     {
+        if (token.IsCancellationRequested)
+        {
+            return OptionalWithDiagnostics.Empty<VectorSpecializationType>();
+        }
+
         var vector = ValidateVector(input.UnvalidatedVector, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
 
         if (vector.LacksResult)

@@ -35,40 +35,48 @@ internal static class ScalarSpecializationValidator
         return scalarProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
 
-    private static IOptionalWithDiagnostics<ScalarSpecializationType> Validate((ScalarSpecializationType UnvalidatedScalar, IUnitPopulation UnitPopulation, IScalarPopulationWithData ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken _)
+    private static IOptionalWithDiagnostics<ScalarSpecializationType> Validate((ScalarSpecializationType UnvalidatedScalar, IUnitPopulation UnitPopulation, IScalarPopulationWithData ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
+        => Validate(input.UnvalidatedScalar, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation, token);
+
+    private static IOptionalWithDiagnostics<ScalarSpecializationType> Validate(ScalarSpecializationType scalarType, IUnitPopulation unitPopulation, IScalarPopulationWithData scalarPopulation, IVectorPopulation vectorPopulation, CancellationToken token)
     {
-        var scalar = ValidateScalar(input.UnvalidatedScalar, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        if (token.IsCancellationRequested)
+        {
+            return OptionalWithDiagnostics.Empty<ScalarSpecializationType>();
+        }
+
+        var scalar = ValidateScalar(scalarType, unitPopulation, scalarPopulation, vectorPopulation);
 
         if (scalar.LacksResult)
         {
             return scalar.AsEmptyOptional<ScalarSpecializationType>();
         }
 
-        var scalarBase = input.ScalarPopulation.ScalarBases[input.UnvalidatedScalar.Type.AsNamedType()];
-        var unit = input.UnitPopulation.Units[scalarBase.Definition.Unit];
+        var scalarBase = scalarPopulation.ScalarBases[scalarType.Type.AsNamedType()];
+        var unit = unitPopulation.Units[scalarBase.Definition.Unit];
 
-        var inheritedUnitBaseInstances = GetUnitInclusions(input.UnvalidatedScalar, input.ScalarPopulation, unit.UnitInstancesByName.Values, unit, static (scalar) => scalar.UnitBaseInstanceInclusions, static (scalar) => scalar.UnitBaseInstanceExclusions, static (scalar) => scalar.Definition.InheritBases, onlyInherited: true);
-        var inheritedUnitInstances = GetUnitInclusions(input.UnvalidatedScalar, input.ScalarPopulation, unit.UnitInstancesByName.Values, unit, static (scalar) => scalar.UnitInstanceInclusions, static (scalar) => scalar.UnitInstanceExclusions, static (scalar) => scalar.Definition.InheritUnits, onlyInherited: true);
+        var inheritedUnitBaseInstances = GetUnitInclusions(scalarType, scalarPopulation, unit.UnitInstancesByName.Values, unit, static (scalar) => scalar.UnitBaseInstanceInclusions, static (scalar) => scalar.UnitBaseInstanceExclusions, static (scalar) => scalar.Definition.InheritBases, onlyInherited: true);
+        var inheritedUnitInstances = GetUnitInclusions(scalarType, scalarPopulation, unit.UnitInstancesByName.Values, unit, static (scalar) => scalar.UnitInstanceInclusions, static (scalar) => scalar.UnitInstanceExclusions, static (scalar) => scalar.Definition.InheritUnits, onlyInherited: true);
 
         var inheritedUnitBaseInstanceNames = new HashSet<string>(inheritedUnitBaseInstances.Select(static (unit) => unit.Name));
         var inheritedUnitInstanceNames = new HashSet<string>(inheritedUnitInstances.Select(static (unit) => unit.Name));
 
-        var unitBaseInstanceInclusions = ValidateIncludeUnitBaseInstances(input.UnvalidatedScalar, unit, inheritedUnitBaseInstanceNames);
-        var unitBaseInstanceExclusions = ValidateExcludeUnitBaseInstances(input.UnvalidatedScalar, unit, inheritedUnitBaseInstanceNames);
-        var unitInstanceInclusions = ValidateIncludeUnitInstances(input.UnvalidatedScalar, unit, inheritedUnitInstanceNames);
-        var unitInstanceExclusions = ValidateExcludeUnitInstances(input.UnvalidatedScalar, unit, inheritedUnitInstanceNames);
+        var unitBaseInstanceInclusions = ValidateIncludeUnitBaseInstances(scalarType, unit, inheritedUnitBaseInstanceNames);
+        var unitBaseInstanceExclusions = ValidateExcludeUnitBaseInstances(scalarType, unit, inheritedUnitBaseInstanceNames);
+        var unitInstanceInclusions = ValidateIncludeUnitInstances(scalarType, unit, inheritedUnitInstanceNames);
+        var unitInstanceExclusions = ValidateExcludeUnitInstances(scalarType, unit, inheritedUnitInstanceNames);
 
-        var definedUnitBaseInstances = GetUnitInclusions(input.UnvalidatedScalar, input.ScalarPopulation, inheritedUnitBaseInstances, unit, (_) => unitBaseInstanceInclusions.Result, (_) => unitBaseInstanceExclusions.Result, static (scalar) => false);
-        var definedUnitInstances = GetUnitInclusions(input.UnvalidatedScalar, input.ScalarPopulation, inheritedUnitInstances, unit, (_) => unitInstanceInclusions.Result, (_) => unitInstanceExclusions.Result, static (scalar) => false);
+        var definedUnitBaseInstances = GetUnitInclusions(scalarType, scalarPopulation, inheritedUnitBaseInstances, unit, (_) => unitBaseInstanceInclusions.Result, (_) => unitBaseInstanceExclusions.Result, static (scalar) => false);
+        var definedUnitInstances = GetUnitInclusions(scalarType, scalarPopulation, inheritedUnitInstances, unit, (_) => unitInstanceInclusions.Result, (_) => unitInstanceExclusions.Result, static (scalar) => false);
 
         var allUnitBaseInstances = inheritedUnitBaseInstances.Concat(definedUnitBaseInstances).ToList();
         var allUnitInstances = inheritedUnitInstances.Concat(definedUnitInstances).ToList();
 
-        var derivations = ValidateDerivations(input.UnvalidatedScalar, input.ScalarPopulation, input.VectorPopulation);
-        var constants = ValidateConstants(input.UnvalidatedScalar, unit, allUnitBaseInstances, allUnitInstances, input.ScalarPopulation);
-        var conversions = ValidateConversions(input.UnvalidatedScalar, input.ScalarPopulation);
+        var derivations = ValidateDerivations(scalarType, scalarPopulation, vectorPopulation);
+        var constants = ValidateConstants(scalarType, unit, allUnitBaseInstances, allUnitInstances, scalarPopulation);
+        var conversions = ValidateConversions(scalarType, scalarPopulation);
 
-        ScalarSpecializationType product = new(input.UnvalidatedScalar.Type, input.UnvalidatedScalar.TypeLocation, scalar.Result, derivations.Result, constants.Result,
+        ScalarSpecializationType product = new(scalarType.Type, scalarType.TypeLocation, scalar.Result, derivations.Result, constants.Result,
             conversions.Result, unitBaseInstanceInclusions.Result, unitBaseInstanceExclusions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
 
         var allDiagnostics = scalar.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitBaseInstanceInclusions).Concat(unitBaseInstanceExclusions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);

@@ -12,6 +12,11 @@ internal static class Execution
 {
     public static void Execute(SourceProductionContext context, DataModel data)
     {
+        if (context.CancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
         string source = Composer.Compose(data);
 
         context.AddSource($"{data.Scalar.Name}_Common.g.cs", SourceText.From(source, Encoding.UTF8));

@@ -22,9 +22,14 @@ using System.Threading;
 
 internal static class GroupMemberProcesser
 {
-    public static IOptionalWithDiagnostics<GroupMemberType> ParseAndProcess((TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol) input, CancellationToken _) => ParseAndProcess(input.Declaration, input.TypeSymbol);
-    private static IOptionalWithDiagnostics<GroupMemberType> ParseAndProcess(TypeDeclarationSyntax declaration, INamedTypeSymbol typeSymbol)
+    public static IOptionalWithDiagnostics<GroupMemberType> ParseAndProcess((TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol) input, CancellationToken token) => ParseAndProcess(input.Declaration, input.TypeSymbol, token);
+    private static IOptionalWithDiagnostics<GroupMemberType> ParseAndProcess(TypeDeclarationSyntax declaration, INamedTypeSymbol typeSymbol, CancellationToken token)
     {
+        if (token.IsCancellationRequested)
+        {
+            return OptionalWithDiagnostics.Empty<GroupMemberType>();
+        }
+
         var vector = ParseAndProcessVector(typeSymbol);
 
         if (vector.LacksResult)

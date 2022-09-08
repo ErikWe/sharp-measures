@@ -16,42 +16,50 @@ internal static class ScalarSpecializationResolver
     public static IncrementalValuesProvider<ResolvedScalarType> Resolve(IncrementalValuesProvider<ScalarSpecializationType> scalarProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
         IncrementalValueProvider<IScalarPopulationWithData> scalarPopulationProvider)
     {
-        return scalarProvider.Combine(unitPopulationProvider, scalarPopulationProvider).Select(Resolve);
+        return scalarProvider.Combine(unitPopulationProvider, scalarPopulationProvider).Select(Resolve).WhereResult();
     }
 
-    private static ResolvedScalarType Resolve((ScalarSpecializationType UnresolvedScalar, IUnitPopulation UnitPopulation, IScalarPopulationWithData ScalarPopulation) input, CancellationToken _)
+    private static Optional<ResolvedScalarType> Resolve((ScalarSpecializationType UnresolvedScalar, IUnitPopulation UnitPopulation, IScalarPopulationWithData ScalarPopulation) input, CancellationToken token)
+        => Resolve(input.UnresolvedScalar, input.UnitPopulation, input.ScalarPopulation, token);
+
+    private static Optional<ResolvedScalarType> Resolve(ScalarSpecializationType scalarType, IUnitPopulation unitPopulation, IScalarPopulationWithData scalarPopulation, CancellationToken token)
     {
-        var scalarBase = input.ScalarPopulation.ScalarBases[input.UnresolvedScalar.Type.AsNamedType()];
-        var unit = input.UnitPopulation.Units[scalarBase.Definition.Unit];
+        if (token.IsCancellationRequested)
+        {
+            return new Optional<ResolvedScalarType>();
+        }
 
-        var definedDerivations = input.UnresolvedScalar.Derivations;
-        var inheritedDerivations = CollectItems(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Derivations, static (scalar) => scalar.Definition.InheritDerivations, onlyInherited: true);
+        var scalarBase = scalarPopulation.ScalarBases[scalarType.Type.AsNamedType()];
+        var unit = unitPopulation.Units[scalarBase.Definition.Unit];
 
-        var constants = CollectItems(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Constants, static (scalar) => scalar.Definition.InheritConstants);
-        var conversions = CollectItems(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Conversions, static (scalar) => scalar.Definition.InheritConversions);
+        var definedDerivations = scalarType.Derivations;
+        var inheritedDerivations = CollectItems(scalarType, scalarPopulation, static (scalar) => scalar.Derivations, static (scalar) => scalar.Definition.InheritDerivations, onlyInherited: true);
 
-        var includedUnitBaseInstances = ResolveUnitInclusions(input.UnresolvedScalar, input.ScalarPopulation, unit, static (scalar) => scalar.UnitBaseInstanceInclusions, static (scalar) => scalar.UnitBaseInstanceExclusions, static (scalar) => scalar.Definition.InheritBases);
-        var includedUnitInstances = ResolveUnitInclusions(input.UnresolvedScalar, input.ScalarPopulation, unit, static (scalar) => scalar.UnitInstanceInclusions, static (scalar) => scalar.UnitInstanceExclusions, static (scalar) => scalar.Definition.InheritUnits);
+        var constants = CollectItems(scalarType, scalarPopulation, static (scalar) => scalar.Constants, static (scalar) => scalar.Definition.InheritConstants);
+        var conversions = CollectItems(scalarType, scalarPopulation, static (scalar) => scalar.Conversions, static (scalar) => scalar.Definition.InheritConversions);
 
-        var vector = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.Vector);
+        var includedUnitBaseInstances = ResolveUnitInclusions(scalarType, scalarPopulation, unit, static (scalar) => scalar.UnitBaseInstanceInclusions, static (scalar) => scalar.UnitBaseInstanceExclusions, static (scalar) => scalar.Definition.InheritBases);
+        var includedUnitInstances = ResolveUnitInclusions(scalarType, scalarPopulation, unit, static (scalar) => scalar.UnitInstanceInclusions, static (scalar) => scalar.UnitInstanceExclusions, static (scalar) => scalar.Definition.InheritUnits);
 
-        var reciprocal = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.Reciprocal);
-        var square = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.Square);
-        var cube = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.Cube);
-        var squareRoot = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.SquareRoot);
-        var cubeRoot = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.CubeRoot);
+        var vector = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.Vector);
 
-        var implementSum = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.ImplementSum);
-        var implementDifference = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.ImplementDifference);
-        var difference = ResolveDifference(input.UnresolvedScalar, input.ScalarPopulation);
+        var reciprocal = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.Reciprocal);
+        var square = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.Square);
+        var cube = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.Cube);
+        var squareRoot = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.SquareRoot);
+        var cubeRoot = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.CubeRoot);
 
-        var defaultUnitInstanceName = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.DefaultUnitInstanceName);
-        var defaultUnitInstanceSymbol = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.DefaultUnitInstanceSymbol);
+        var implementSum = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.ImplementSum);
+        var implementDifference = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.ImplementDifference);
+        var difference = ResolveDifference(scalarType, scalarPopulation);
 
-        var generateDocumentation = RecursivelySearchForDefined(input.UnresolvedScalar, input.ScalarPopulation, static (scalar) => scalar.Definition.GenerateDocumentation);
+        var defaultUnitInstanceName = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.DefaultUnitInstanceName);
+        var defaultUnitInstanceSymbol = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.DefaultUnitInstanceSymbol);
 
-        return new(input.UnresolvedScalar.Type, input.UnresolvedScalar.TypeLocation, unit.Type.AsNamedType(), scalarBase.Definition.UseUnitBias, vector, reciprocal, square, cube, squareRoot, cubeRoot,
-            implementSum!.Value, implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definedDerivations, inheritedDerivations, constants, conversions, includedUnitBaseInstances, includedUnitInstances, generateDocumentation);
+        var generateDocumentation = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.GenerateDocumentation);
+
+        return new ResolvedScalarType(scalarType.Type, scalarType.TypeLocation, unit.Type.AsNamedType(), scalarBase.Definition.UseUnitBias, vector, reciprocal, square, cube, squareRoot, cubeRoot, implementSum!.Value,
+            implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definedDerivations, inheritedDerivations, constants, conversions, includedUnitBaseInstances, includedUnitInstances, generateDocumentation);
     }
 
     private static NamedType? ResolveDifference(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation)

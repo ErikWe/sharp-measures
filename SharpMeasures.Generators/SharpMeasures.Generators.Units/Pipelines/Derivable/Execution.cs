@@ -15,6 +15,11 @@ internal static class Execution
 {
     public static void Execute(SourceProductionContext context, DataModel data)
     {
+        if (context.CancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
         string source = Composer.ComposeAndReportDiagnostics(data);
 
         context.AddSource($"{data.Unit.Name}_Derivable.g.cs", SourceText.From(source, Encoding.UTF8));

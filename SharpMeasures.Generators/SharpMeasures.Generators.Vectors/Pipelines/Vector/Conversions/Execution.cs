@@ -12,6 +12,11 @@ internal static class Execution
 {
     public static void Execute(SourceProductionContext context, DataModel data)
     {
+        if (context.CancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
         string source = Composer.Compose(data);
 
         if (source.Length is 0)

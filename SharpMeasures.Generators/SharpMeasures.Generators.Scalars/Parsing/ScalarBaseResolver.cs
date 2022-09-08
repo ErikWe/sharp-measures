@@ -17,21 +17,27 @@ internal static class ScalarBaseResolver
         return scalarProvider.Combine(unitPopulationProvider).Select(Resolve).WhereResult();
     }
 
-    private static Optional<ResolvedScalarType> Resolve((ScalarBaseType UnvalidatedScalar, IUnitPopulation UnitPopulation) input, CancellationToken _)
+    private static Optional<ResolvedScalarType> Resolve((ScalarBaseType UnvalidatedScalar, IUnitPopulation UnitPopulation) input, CancellationToken token) => Resolve(input.UnvalidatedScalar, input.UnitPopulation, token);
+
+    private static Optional<ResolvedScalarType> Resolve(ScalarBaseType scalarType, IUnitPopulation unitPopulation, CancellationToken token)
     {
-        if (input.UnitPopulation.Units.TryGetValue(input.UnvalidatedScalar.Definition.Unit, out var unit) is false)
+        if (token.IsCancellationRequested)
         {
             return new Optional<ResolvedScalarType>();
         }
 
-        var includedUnitBaseInstances = ResolveUnitInclusions(unit, input.UnvalidatedScalar.UnitBaseInstanceInclusions, () => input.UnvalidatedScalar.UnitBaseInstanceExclusions);
-        var includedUnitInstances = ResolveUnitInclusions(unit, input.UnvalidatedScalar.UnitInstanceInclusions, () => input.UnvalidatedScalar.UnitInstanceExclusions);
+        if (unitPopulation.Units.TryGetValue(scalarType.Definition.Unit, out var unit) is false)
+        {
+            return new Optional<ResolvedScalarType>();
+        }
 
-        return new ResolvedScalarType(input.UnvalidatedScalar.Type, input.UnvalidatedScalar.TypeLocation, input.UnvalidatedScalar.Definition.Unit, input.UnvalidatedScalar.Definition.UseUnitBias,
-            input.UnvalidatedScalar.Definition.Vector, input.UnvalidatedScalar.Definition.Reciprocal, input.UnvalidatedScalar.Definition.Square, input.UnvalidatedScalar.Definition.Cube,
-            input.UnvalidatedScalar.Definition.SquareRoot, input.UnvalidatedScalar.Definition.CubeRoot, input.UnvalidatedScalar.Definition.ImplementSum, input.UnvalidatedScalar.Definition.ImplementDifference,
-            input.UnvalidatedScalar.Definition.Difference, input.UnvalidatedScalar.Definition.DefaultUnitInstanceName, input.UnvalidatedScalar.Definition.DefaultUnitInstanceSymbol, input.UnvalidatedScalar.Derivations,
-            Array.Empty<IDerivedQuantity>(), input.UnvalidatedScalar.Constants, input.UnvalidatedScalar.Conversions, includedUnitBaseInstances, includedUnitInstances, input.UnvalidatedScalar.Definition.GenerateDocumentation);
+        var includedUnitBaseInstances = ResolveUnitInclusions(unit, scalarType.UnitBaseInstanceInclusions, () => scalarType.UnitBaseInstanceExclusions);
+        var includedUnitInstances = ResolveUnitInclusions(unit, scalarType.UnitInstanceInclusions, () => scalarType.UnitInstanceExclusions);
+
+        return new ResolvedScalarType(scalarType.Type, scalarType.TypeLocation, scalarType.Definition.Unit, scalarType.Definition.UseUnitBias, scalarType.Definition.Vector, scalarType.Definition.Reciprocal,
+            scalarType.Definition.Square, scalarType.Definition.Cube, scalarType.Definition.SquareRoot, scalarType.Definition.CubeRoot, scalarType.Definition.ImplementSum, scalarType.Definition.ImplementDifference,
+            scalarType.Definition.Difference, scalarType.Definition.DefaultUnitInstanceName, scalarType.Definition.DefaultUnitInstanceSymbol, scalarType.Derivations, Array.Empty<IDerivedQuantity>(),
+            scalarType.Constants, scalarType.Conversions, includedUnitBaseInstances, includedUnitInstances, scalarType.Definition.GenerateDocumentation);
     }
 
     private static IReadOnlyList<string> ResolveUnitInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)

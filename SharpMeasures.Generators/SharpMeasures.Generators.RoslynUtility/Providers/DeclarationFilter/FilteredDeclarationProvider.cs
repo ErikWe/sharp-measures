@@ -78,8 +78,13 @@ public static class FilteredDeclarationProvider
             return inputProvider.Select(Process).ReportDiagnostics(context);
         }
 
-        protected IOptionalWithDiagnostics<TData> Process(TData input, CancellationToken _)
+        protected IOptionalWithDiagnostics<TData> Process(TData input, CancellationToken token)
         {
+            if (token.IsCancellationRequested)
+            {
+                return OptionalWithDiagnostics.Empty<TData>();
+            }
+
             var declaration = InputTransform(input);
 
             foreach (var filter in Filters)

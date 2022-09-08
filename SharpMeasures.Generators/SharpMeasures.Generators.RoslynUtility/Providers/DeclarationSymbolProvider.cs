@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Providers;
+namespace SharpMeasures.Generators.Providers;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -135,6 +135,11 @@ public static class DeclarationSymbolProvider
 
         private TNullableOut? ExtractSymbol(TIn input, CancellationToken token)
         {
+            if (token.IsCancellationRequested)
+            {
+                return default;
+            }
+
             DeclarationSymbolProviderData data = InputTransform(input);
 
             if (data.Compilation.GetSemanticModel(data.TypeDeclaration.SyntaxTree).GetDeclaredSymbol(data.TypeDeclaration, token) is INamedTypeSymbol symbol)
