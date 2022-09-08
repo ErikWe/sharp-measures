@@ -14,7 +14,7 @@ Console.WriteLine(velocity.InUnit(UnitOfSpeed.KilometresPerHour)); // "(0, 10.8,
 
 ## Source Generator [![NuGet version (SharpMeasures.Generators)](https://img.shields.io/nuget/v/SharpMeasures.Generators.svg?style=plastic)](https://www.nuget.org/packages/SharpMeasures.Generators/)
 
-SharpMeasures is implemented as a source generator, which means that it's trivial to make your own set of quantities and units from scratch. Make sure to also add [SharpMeasures.Base](https://www.nuget.org/packages/SharpMeasures.Base/) to the project.
+SharpMeasures is implemented as a source generator, which means that it's trivial to extend the existing set of types, or to make your own set from scratch. Make sure to also add [SharpMeasures.Base](https://www.nuget.org/packages/SharpMeasures.Base/) to the project.
 
 ```csharp
 using SharpMeasures.Generators.Scalars;
