@@ -9,7 +9,7 @@ Time time = 0.5 * UnitOfTime.Second.Time;
 Velocity3 velocity = displacement / time;
 
 Console.WriteLine(velocity); // "(0, 3, -8) [m/s]"
-Console.WriteLine(velocity.InUnit(UnitOfSpeed.KilometresPerHour)); // "(0, 10.8, 28.8)"
+Console.WriteLine(velocity.InUnit(UnitOfSpeed.KilometresPerHour)); // "(0, 10.8, -28.8)"
 ```
 
 ## Source Generator [![NuGet version (SharpMeasures.Generators)](https://img.shields.io/nuget/v/SharpMeasures.Generators.svg?style=plastic)](https://www.nuget.org/packages/SharpMeasures.Generators/)
