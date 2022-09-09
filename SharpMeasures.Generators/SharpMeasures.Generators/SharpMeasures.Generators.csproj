@@ -10,6 +10,7 @@
         <Description>
             Provides source generators related to the creation of units and quantities within SharpMeasures.
         </Description>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -45,8 +46,12 @@
 
     <ItemGroup>
         <None Include="$(OutputPath)\SharpMeasures.Generators.Attributes.dll" Pack="true" PackagePath="lib/netstandard2.0" Visible="true" />
-        <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.Attributes.xml" />
         <None Include="$(OutputPath)\SharpMeasures.Generators.Attributes.xml" Pack="true" PackagePath="lib/netstandard2.0" Visible="true" />
+        <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.Attributes.xml" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
 </Project>
