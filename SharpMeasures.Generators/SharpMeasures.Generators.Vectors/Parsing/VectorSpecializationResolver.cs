@@ -12,37 +12,47 @@ using System.Threading;
 
 internal static class VectorSpecializationResolver
 {
-    public static IncrementalValuesProvider<ResolvedVectorType> Resolve(IncrementalValuesProvider<VectorSpecializationType> vectorProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
+    public static IncrementalValuesProvider<Optional<ResolvedVectorType>> Resolve(IncrementalValuesProvider<Optional<VectorSpecializationType>> vectorProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
         IncrementalValueProvider<IVectorPopulationWithData> vectorPopulationProvider)
     {
         return vectorProvider.Combine(unitPopulationProvider, vectorPopulationProvider).Select(Resolve);
     }
 
-    private static ResolvedVectorType Resolve((VectorSpecializationType UnresolvedVector, IUnitPopulation UnitPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken _)
+    private static Optional<ResolvedVectorType> Resolve((Optional<VectorSpecializationType> UnresolvedVector, IUnitPopulation UnitPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken token)
     {
-        var vectorBase = input.VectorPopulation.VectorBases[input.UnresolvedVector.Type.AsNamedType()];
-        var unit = input.UnitPopulation.Units[vectorBase.Definition.Unit];
+        if (token.IsCancellationRequested || input.UnresolvedVector.HasValue is false)
+        {
+            return new Optional<ResolvedVectorType>();
+        }
 
-        var definedDerivations = input.UnresolvedVector.Derivations;
-        var inheritedDerivations = CollectItems(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Definition.InheritDerivations, onlyInherited: true);
+        return Resolve(input.UnresolvedVector.Value, input.UnitPopulation, input.VectorPopulation);
+    }
 
-        var constants = CollectItems(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Constants, static (vector) => vector.Definition.InheritConstants);
-        var conversions = CollectItems(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Conversions, static (vector) => vector.Definition.InheritConversions);
+    private static ResolvedVectorType Resolve(VectorSpecializationType vectorType, IUnitPopulation unitPopulation, IVectorPopulationWithData vectorPopulation)
+    {
+        var vectorBase = vectorPopulation.VectorBases[vectorType.Type.AsNamedType()];
+        var unit = unitPopulation.Units[vectorBase.Definition.Unit];
 
-        var includedUnitInstances = ResolveUnitInstanceInclusions(input.UnresolvedVector, input.VectorPopulation, unit);
+        var definedDerivations = vectorType.Derivations;
+        var inheritedDerivations = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Definition.InheritDerivations, onlyInherited: true);
 
-        var scalar = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.Scalar);
+        var constants = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Constants, static (vector) => vector.Definition.InheritConstants);
+        var conversions = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Conversions, static (vector) => vector.Definition.InheritConversions);
 
-        var implementSum = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.ImplementSum);
-        var implementDifference = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.ImplementDifference);
-        var difference = ResolveDifference(input.UnresolvedVector, input.VectorPopulation);
+        var includedUnitInstances = ResolveUnitInstanceInclusions(vectorType, vectorPopulation, unit);
 
-        var defaultUnitInstanceName = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.DefaultUnitInstanceName);
-        var defaultUnitInstanceSymbol = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.DefaultUnitInstanceSymbol);
+        var scalar = RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => vector.Definition.Scalar);
 
-        var generateDocumentation = RecursivelySearchForDefined(input.UnresolvedVector, input.VectorPopulation, static (vector) => vector.Definition.GenerateDocumentation);
+        var implementSum = RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => vector.Definition.ImplementSum);
+        var implementDifference = RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => vector.Definition.ImplementDifference);
+        var difference = ResolveDifference(vectorType, vectorPopulation);
 
-        return new(input.UnresolvedVector.Type, input.UnresolvedVector.TypeLocation, vectorBase.Definition.Dimension, unit.Type.AsNamedType(), scalar, implementSum!.Value, implementDifference!.Value, difference,
+        var defaultUnitInstanceName = RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => vector.Definition.DefaultUnitInstanceName);
+        var defaultUnitInstanceSymbol = RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => vector.Definition.DefaultUnitInstanceSymbol);
+
+        var generateDocumentation = RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => vector.Definition.GenerateDocumentation);
+
+        return new(vectorType.Type, vectorType.TypeLocation, vectorBase.Definition.Dimension, unit.Type.AsNamedType(), scalar, implementSum!.Value, implementDifference!.Value, difference,
             defaultUnitInstanceName, defaultUnitInstanceSymbol, definedDerivations, inheritedDerivations, constants, conversions, includedUnitInstances, generateDocumentation);
     }
 

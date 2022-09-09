@@ -25,16 +25,16 @@ internal class VectorGenerator : IVectorGenerator
 {
     public IncrementalValueProvider<IResolvedVectorPopulation> VectorPopulationProvider { get; }
 
-    private IncrementalValuesProvider<ResolvedGroupType> GroupBaseProvider { get; }
-    private IncrementalValuesProvider<ResolvedGroupType> GroupSpecializationProvider { get; }
-    private IncrementalValuesProvider<ResolvedVectorType> GroupMemberProvider { get; }
+    private IncrementalValuesProvider<Optional<ResolvedGroupType>> GroupBaseProvider { get; }
+    private IncrementalValuesProvider<Optional<ResolvedGroupType>> GroupSpecializationProvider { get; }
+    private IncrementalValuesProvider<Optional<ResolvedVectorType>> GroupMemberProvider { get; }
 
-    private IncrementalValuesProvider<ResolvedVectorType> VectorBaseProvider { get; }
-    private IncrementalValuesProvider<ResolvedVectorType> VectorSpecializationProvider { get; }
+    private IncrementalValuesProvider<Optional<ResolvedVectorType>> VectorBaseProvider { get; }
+    private IncrementalValuesProvider<Optional<ResolvedVectorType>> VectorSpecializationProvider { get; }
     
-    internal VectorGenerator(IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider, IncrementalValuesProvider<ResolvedGroupType> groupBaseProvider,
-        IncrementalValuesProvider<ResolvedGroupType> groupSpecializationProvider, IncrementalValuesProvider<ResolvedVectorType> groupMemberProvider,
-        IncrementalValuesProvider<ResolvedVectorType> vectorBaseProvider, IncrementalValuesProvider<ResolvedVectorType> vectorSpecializationProvider)
+    internal VectorGenerator(IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider, IncrementalValuesProvider<Optional<ResolvedGroupType>> groupBaseProvider,
+        IncrementalValuesProvider<Optional<ResolvedGroupType>> groupSpecializationProvider, IncrementalValuesProvider<Optional<ResolvedVectorType>> groupMemberProvider,
+        IncrementalValuesProvider<Optional<ResolvedVectorType>> vectorBaseProvider, IncrementalValuesProvider<Optional<ResolvedVectorType>> vectorSpecializationProvider)
     {
         VectorPopulationProvider = vectorPopulationProvider;
 
@@ -65,7 +65,7 @@ internal class VectorGenerator : IVectorGenerator
             documentationDictionaryProvider);
     }
 
-    private static void Generate(IncrementalValuesProvider<ResolvedGroupType> vectors,
+    private static void Generate(IncrementalValuesProvider<Optional<ResolvedGroupType>> vectors,
         IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
         IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider,
         IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
@@ -76,7 +76,7 @@ internal class VectorGenerator : IVectorGenerator
             .Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionaryProvider).Flatten().Select(AppendDocumentation);
     }
 
-    private static void Generate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<ResolvedVectorType> vectors,
+    private static void Generate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<ResolvedVectorType>> vectors,
         IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
         IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider,
         IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
@@ -92,70 +92,87 @@ internal class VectorGenerator : IVectorGenerator
         VectorUnitsGenerator.Initialize(context, reduced);
     }
 
-    private static GroupDataModel ReduceToDataModel
-        ((ResolvedGroupType Group, IUnitPopulation UnitPopulation, IResolvedScalarPopulation ScalarPopulation, IResolvedVectorPopulation VectorPopulation) input, CancellationToken _)
+    private static Optional<GroupDataModel> ReduceToDataModel((Optional<ResolvedGroupType> Group, IUnitPopulation UnitPopulation, IResolvedScalarPopulation ScalarPopulation, IResolvedVectorPopulation VectorPopulation) input, CancellationToken _)
     {
-        return new(input.Group, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        if (input.Group.HasValue is false)
+        {
+            return new Optional<GroupDataModel>();
+        }
+
+        return new GroupDataModel(input.Group.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
     }
 
-    private static VectorDataModel ReduceToDataModel
-        ((ResolvedVectorType Vector, IUnitPopulation UnitPopulation, IResolvedScalarPopulation ScalarPopulation, IResolvedVectorPopulation VectorPopulation) input, CancellationToken _)
+    private static Optional<VectorDataModel> ReduceToDataModel((Optional<ResolvedVectorType> Vector, IUnitPopulation UnitPopulation, IResolvedScalarPopulation ScalarPopulation, IResolvedVectorPopulation VectorPopulation) input, CancellationToken _)
     {
-        return new(input.Vector, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        if (input.Vector.HasValue is false)
+        {
+            return new Optional<VectorDataModel>();
+        }
+
+        return new VectorDataModel(input.Vector.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
     }
 
-    private static (GroupDataModel Model, bool GenerateDocumentation) InterpretGenerateDocumentation((GroupDataModel Model, bool Default) data, CancellationToken _)
+    private static (Optional<GroupDataModel> Model, bool GenerateDocumentation) InterpretGenerateDocumentation((Optional<GroupDataModel> Model, bool Default) data, CancellationToken _)
     {
-        return (data.Model, data.Model.VectorGroup.GenerateDocumentation ?? data.Default);
+        if (data.Model.HasValue is false)
+        {
+            return (data.Model, false);
+        }
+
+        return (data.Model, data.Model.Value.VectorGroup.GenerateDocumentation ?? data.Default);
     }
 
-    private static (VectorDataModel Model, bool GenerateDocumentation) InterpretGenerateDocumentation((VectorDataModel Model, bool Default) data, CancellationToken _)
+    private static (Optional<VectorDataModel> Model, bool GenerateDocumentation) InterpretGenerateDocumentation((Optional<VectorDataModel> Model, bool Default) data, CancellationToken _)
     {
-        return (data.Model, data.Model.Vector.GenerateDocumentation ?? data.Default);
+        if (data.Model.HasValue is false)
+        {
+            return (data.Model, false);
+        }
+
+        return (data.Model, data.Model.Value.Vector.GenerateDocumentation ?? data.Default);
     }
 
-    private static GroupDataModel AppendDocumentation((GroupDataModel Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
+    private static Optional<GroupDataModel> AppendDocumentation((Optional<GroupDataModel> Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
     {
-        if (input.GenerateDocumentation is false)
+        if (input.GenerateDocumentation is false || input.Model.HasValue is false)
         {
             return input.Model;
         }
 
         DefaultGroupDocumentation defaultDocumentation = new();
 
-        if (input.DocumentationDictionary.TryGetValue(input.Model.VectorGroup.Type.Name, out DocumentationFile documentationFile))
+        if (input.DocumentationDictionary.TryGetValue(input.Model.Value.VectorGroup.Type.Name, out DocumentationFile documentationFile))
         {
-            return input.Model with
+            return input.Model.Value with
             {
                 Documentation = new GroupFileDocumentation(documentationFile, defaultDocumentation)
             };
         }
 
-        return input.Model with
+        return input.Model.Value with
         {
             Documentation = defaultDocumentation
         };
     }
 
-    private static VectorDataModel AppendDocumentation
-        ((VectorDataModel Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
+    private static Optional<VectorDataModel> AppendDocumentation((Optional<VectorDataModel> Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
     {
         if (input.GenerateDocumentation is false)
         {
             return input.Model;
         }
 
-        DefaultVectorDocumentation defaultDocumentation = new(input.Model);
+        DefaultVectorDocumentation defaultDocumentation = new(input.Model.Value);
 
-        if (input.DocumentationDictionary.TryGetValue(input.Model.Vector.Type.Name, out DocumentationFile documentationFile))
+        if (input.DocumentationDictionary.TryGetValue(input.Model.Value.Vector.Type.Name, out DocumentationFile documentationFile))
         {
-            return input.Model with
+            return input.Model.Value with
             {
-                Documentation = new VectorFileDocumentation(input.Model, documentationFile, defaultDocumentation)
+                Documentation = new VectorFileDocumentation(input.Model.Value, documentationFile, defaultDocumentation)
             };
         }
 
-        return input.Model with
+        return input.Model.Value with
         {
             Documentation = defaultDocumentation
         };

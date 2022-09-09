@@ -25,41 +25,46 @@ using System.Threading;
 
 internal static class GroupSpecializationValidator
 {
-    public static IncrementalValuesProvider<GroupSpecializationType> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<GroupSpecializationType> vectorProvider,
+    public static IncrementalValuesProvider<Optional<GroupSpecializationType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<GroupSpecializationType>> vectorProvider,
        IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
        IncrementalValueProvider<IVectorPopulationWithData> vectorPopulationProvider)
     {
         return vectorProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
 
-    private static IOptionalWithDiagnostics<GroupSpecializationType> Validate((GroupSpecializationType UnvalidatedVector, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken token)
+    private static IOptionalWithDiagnostics<GroupSpecializationType> Validate((Optional<GroupSpecializationType> UnvalidatedVector, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken token)
     {
-        if (token.IsCancellationRequested)
+        if (token.IsCancellationRequested || input.UnvalidatedVector.HasValue is false)
         {
             return OptionalWithDiagnostics.Empty<GroupSpecializationType>();
         }
 
-        var vector = ValidateVector(input.UnvalidatedVector, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        return Validate(input.UnvalidatedVector.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+    }
+
+    private static IOptionalWithDiagnostics<GroupSpecializationType> Validate(GroupSpecializationType vectorType, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulationWithData vectorPopulation)
+    {
+        var vector = ValidateVector(vectorType, unitPopulation, scalarPopulation, vectorPopulation);
 
         if (vector.LacksResult)
         {
             return vector.AsEmptyOptional<GroupSpecializationType>();
         }
 
-        var groupBase = input.VectorPopulation.GroupBases[input.UnvalidatedVector.Type.AsNamedType()];
+        var groupBase = vectorPopulation.GroupBases[vectorType.Type.AsNamedType()];
 
-        var unit = input.UnitPopulation.Units[groupBase.Definition.Unit];
+        var unit = unitPopulation.Units[groupBase.Definition.Unit];
 
-        var inheritedUnitInstances = GetUnitInstanceInclusions(input.UnvalidatedVector, input.VectorPopulation, unit.UnitInstancesByName.Values, unit, static (vector) => vector.Definition.InheritUnits, onlyInherited: true);
+        var inheritedUnitInstances = GetUnitInstanceInclusions(vectorType, vectorPopulation, unit.UnitInstancesByName.Values, unit, static (vector) => vector.Definition.InheritUnits, onlyInherited: true);
         var inheritedUnitInstanceNames = new HashSet<string>(inheritedUnitInstances.Select(static (unit) => unit.Name));
 
-        var unitInstanceInclusions = ValidateIncludeUnitInstances(input.UnvalidatedVector, unit, inheritedUnitInstanceNames);
-        var unitInstanceExclusions = ValidateExcludeUnitInstances(input.UnvalidatedVector, unit, inheritedUnitInstanceNames);
+        var unitInstanceInclusions = ValidateIncludeUnitInstances(vectorType, unit, inheritedUnitInstanceNames);
+        var unitInstanceExclusions = ValidateExcludeUnitInstances(vectorType, unit, inheritedUnitInstanceNames);
 
-        var derivations = ValidateDerivations(input.UnvalidatedVector, input.ScalarPopulation, input.VectorPopulation);
-        var conversions = ValidateConversions(input.UnvalidatedVector, input.VectorPopulation);
+        var derivations = ValidateDerivations(vectorType, scalarPopulation, vectorPopulation);
+        var conversions = ValidateConversions(vectorType, vectorPopulation);
 
-        GroupSpecializationType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, derivations.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
+        GroupSpecializationType product = new(vectorType.Type, vectorType.TypeLocation, vector.Result, derivations.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
 
         var allDiagnostics = vector.Concat(derivations).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 

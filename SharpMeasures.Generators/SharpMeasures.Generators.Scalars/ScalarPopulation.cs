@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Scalars;
+﻿namespace SharpMeasures.Generators.Scalars;
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;

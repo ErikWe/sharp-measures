@@ -12,21 +12,31 @@ using System.Threading;
 
 internal static class VectorBaseResolver
 {
-    public static IncrementalValuesProvider<ResolvedVectorType> Resolve(IncrementalValuesProvider<VectorBaseType> vectorProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider)
+    public static IncrementalValuesProvider<Optional<ResolvedVectorType>> Resolve(IncrementalValuesProvider<Optional<VectorBaseType>> vectorProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider)
     {
         return vectorProvider.Combine(unitPopulationProvider).Select(Resolve);
     }
 
-    private static ResolvedVectorType Resolve((VectorBaseType UnresolvedVector, IUnitPopulation UnitPopulation) input, CancellationToken _)
+    private static Optional<ResolvedVectorType> Resolve((Optional<VectorBaseType> UnresolvedVector, IUnitPopulation UnitPopulation) input, CancellationToken token)
     {
-        var unit = input.UnitPopulation.Units[input.UnresolvedVector.Definition.Unit];
+        if (token.IsCancellationRequested || input.UnresolvedVector.HasValue is false)
+        {
+            return new Optional<ResolvedVectorType>();
+        }
 
-        var includedUnits = ResolveUnitInclusions(unit, input.UnresolvedVector.UnitInstanceInclusions, () => input.UnresolvedVector.UnitInstanceExclusions);
+        return Resolve(input.UnresolvedVector.Value, input.UnitPopulation);
+    }
 
-        return new(input.UnresolvedVector.Type, input.UnresolvedVector.TypeLocation, input.UnresolvedVector.Definition.Dimension, input.UnresolvedVector.Definition.Unit,
-            input.UnresolvedVector.Definition.Scalar, input.UnresolvedVector.Definition.ImplementSum, input.UnresolvedVector.Definition.ImplementDifference,
-            input.UnresolvedVector.Definition.Difference, input.UnresolvedVector.Definition.DefaultUnitInstanceName, input.UnresolvedVector.Definition.DefaultUnitInstanceSymbol, input.UnresolvedVector.Derivations,
-            Array.Empty<IDerivedQuantity>(), input.UnresolvedVector.Constants, input.UnresolvedVector.Conversions, includedUnits, input.UnresolvedVector.Definition.GenerateDocumentation);
+    private static ResolvedVectorType Resolve(VectorBaseType vectorType, IUnitPopulation unitPopulation)
+    {
+        var unit = unitPopulation.Units[vectorType.Definition.Unit];
+
+        var includedUnits = ResolveUnitInclusions(unit, vectorType.UnitInstanceInclusions, () => vectorType.UnitInstanceExclusions);
+
+        return new(vectorType.Type, vectorType.TypeLocation, vectorType.Definition.Dimension, vectorType.Definition.Unit,
+            vectorType.Definition.Scalar, vectorType.Definition.ImplementSum, vectorType.Definition.ImplementDifference,
+            vectorType.Definition.Difference, vectorType.Definition.DefaultUnitInstanceName, vectorType.Definition.DefaultUnitInstanceSymbol, vectorType.Derivations,
+            Array.Empty<IDerivedQuantity>(), vectorType.Constants, vectorType.Conversions, includedUnits, vectorType.Definition.GenerateDocumentation);
     }
 
     private static IReadOnlyList<string> ResolveUnitInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)

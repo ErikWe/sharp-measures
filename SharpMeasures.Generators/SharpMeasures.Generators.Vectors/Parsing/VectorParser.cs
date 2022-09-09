@@ -37,19 +37,19 @@ public static class VectorParser
         var vectorBases = vectorBaseSymbols.Select(vectorBaseProcesser.ParseAndProcess).ReportDiagnostics(context);
         var vectorSpecializations = vectorSpecializationSymbols.Select(vectorSpecializationProcesser.ParseAndProcess).ReportDiagnostics(context);
 
-        var groupBaseInterfaces = groupBases.Select(ExtractInterface).Collect();
-        var groupSpecializationInterfaces = groupSpecializations.Select(ExtractInterface).Collect();
-        var groupMemberInterfaces = groupMembers.Select(ExtractInterface).Collect();
+        var groupBaseInterfaces = groupBases.Select(ExtractInterface).CollectResults();
+        var groupSpecializationInterfaces = groupSpecializations.Select(ExtractInterface).CollectResults();
+        var groupMemberInterfaces = groupMembers.Select(ExtractInterface).CollectResults();
 
-        var vectorBaseInterfaces = vectorBases.Select(ExtractInterface).Collect();
-        var vectorSpecializationInterfaces = vectorSpecializations.Select(ExtractInterface).Collect();
+        var vectorBaseInterfaces = vectorBases.Select(ExtractInterface).CollectResults();
+        var vectorSpecializationInterfaces = vectorSpecializations.Select(ExtractInterface).CollectResults();
 
         var populationWithData = groupBaseInterfaces.Combine(groupSpecializationInterfaces, groupMemberInterfaces, vectorBaseInterfaces, vectorSpecializationInterfaces).Select(CreatePopulation);
 
         return (populationWithData.Select(ReducePopulation), new VectorValidator(populationWithData, groupBases, groupSpecializations, groupMembers, vectorBases, vectorSpecializations));
     }
 
-    private static IncrementalValuesProvider<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)> AttachSymbolProvider<TAttribute>(IncrementalGeneratorInitializationContext context,
+    private static IncrementalValuesProvider<Optional<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)>> AttachSymbolProvider<TAttribute>(IncrementalGeneratorInitializationContext context,
         IEnumerable<IDeclarationFilter> declarationFilters)
     {
         var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<TAttribute>(context.SyntaxProvider);
@@ -57,12 +57,12 @@ public static class VectorParser
         return DeclarationSymbolProvider.Construct<TypeDeclarationSyntax>().Attach(filteredDeclarations, context.CompilationProvider);
     }
 
-    private static IVectorGroupBaseType ExtractInterface(IVectorGroupBaseType groupType, CancellationToken _) => groupType;
-    private static IVectorGroupSpecializationType ExtractInterface(IVectorGroupSpecializationType groupType, CancellationToken _) => groupType;
-    private static IVectorGroupMemberType ExtractInterface(IVectorGroupMemberType groupMemberType, CancellationToken _) => groupMemberType;
+    private static Optional<IVectorGroupBaseType> ExtractInterface(Optional<GroupBaseType> groupType, CancellationToken _) => groupType.HasValue ? groupType.Value : new Optional<IVectorGroupBaseType>();
+    private static Optional<IVectorGroupSpecializationType> ExtractInterface(Optional<GroupSpecializationType> groupType, CancellationToken _) => groupType.HasValue ? groupType.Value : new Optional<IVectorGroupSpecializationType>();
+    private static Optional<IVectorGroupMemberType> ExtractInterface(Optional<GroupMemberType> groupMemberType, CancellationToken _) => groupMemberType.HasValue ? groupMemberType.Value : new Optional<IVectorGroupMemberType>();
 
-    private static IVectorBaseType ExtractInterface(IVectorBaseType vectorType, CancellationToken _) => vectorType;
-    private static IVectorSpecializationType ExtractInterface(IVectorSpecializationType vectorType, CancellationToken _) => vectorType;
+    private static Optional<IVectorBaseType> ExtractInterface(Optional<VectorBaseType> vectorType, CancellationToken _) => vectorType.HasValue ? vectorType.Value : new Optional<IVectorBaseType>();
+    private static Optional<IVectorSpecializationType> ExtractInterface(Optional<VectorSpecializationType> vectorType, CancellationToken _) => vectorType.HasValue ? vectorType.Value : new Optional<IVectorSpecializationType>();
 
     private static IVectorPopulation ReducePopulation(IVectorPopulationWithData vectorPopulation, CancellationToken _) => vectorPopulation;
 

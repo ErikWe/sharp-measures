@@ -7,20 +7,20 @@ using System.Threading;
 
 internal static class VectorConversionsGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<VectorDataModel> modelProvider)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<VectorDataModel>> modelProvider)
     {
-        var filteredAndReduced = modelProvider.Select(Reduce).WhereNotNull();
+        var reduced = modelProvider.Select(Reduce);
 
-        context.RegisterSourceOutput(filteredAndReduced, Execution.Execute);
+        context.RegisterSourceOutput(reduced, Execution.Execute);
     }
 
-    private static DataModel? Reduce(VectorDataModel model, CancellationToken _)
+    private static Optional<DataModel> Reduce(Optional<VectorDataModel> model, CancellationToken _)
     {
-        if (model.Vector.Conversions.Count is 0)
+        if (model.HasValue is false || model.Value.Vector.Conversions.Count is 0)
         {
-            return null;
+            return new Optional<DataModel>();
         }
 
-        return new(model.Vector.Type, model.Vector.Dimension, model.Vector.Conversions, model.VectorPopulation, model.Documentation);
+        return new DataModel(model.Value.Vector.Type, model.Value.Vector.Dimension, model.Value.Vector.Conversions, model.Value.VectorPopulation, model.Value.Documentation);
     }
 }

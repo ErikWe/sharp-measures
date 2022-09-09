@@ -26,47 +26,52 @@ using System.Threading;
 
 internal static class GroupMemberValidator
 {
-    public static IncrementalValuesProvider<GroupMemberType> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<GroupMemberType> vectorProvider,
+    public static IncrementalValuesProvider<Optional<GroupMemberType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<GroupMemberType>> vectorProvider,
        IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
        IncrementalValueProvider<IVectorPopulationWithData> vectorPopulationProvider)
     {
         return vectorProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
 
-    private static IOptionalWithDiagnostics<GroupMemberType> Validate((GroupMemberType UnvalidatedVector, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken token)
+    private static IOptionalWithDiagnostics<GroupMemberType> Validate((Optional<GroupMemberType> UnvalidatedVector, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken token)
     {
-        if (token.IsCancellationRequested)
+        if (token.IsCancellationRequested || input.UnvalidatedVector.HasValue is false)
         {
             return OptionalWithDiagnostics.Empty<GroupMemberType>();
         }
 
-        var vector = ValidateVector(input.UnvalidatedVector, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        return Validate(input.UnvalidatedVector.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+    }
+
+    private static IOptionalWithDiagnostics<GroupMemberType> Validate(GroupMemberType vectorType, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulationWithData vectorPopulation)
+    {
+        var vector = ValidateVector(vectorType, unitPopulation, scalarPopulation, vectorPopulation);
 
         if (vector.LacksResult)
         {
             return vector.AsEmptyOptional<GroupMemberType>();
         }
 
-        var unit = input.UnitPopulation.Units[input.VectorPopulation.GroupBases[input.UnvalidatedVector.Definition.VectorGroup].Definition.Unit];
+        var unit = unitPopulation.Units[vectorPopulation.GroupBases[vectorType.Definition.VectorGroup].Definition.Unit];
 
-        var inheritedUnitInstances = GetUnitInstanceInclusions(input.UnvalidatedVector, input.VectorPopulation, unit.UnitInstancesByName.Values, unit, static (vector) => vector.Definition.InheritUnitsFromMembers,
+        var inheritedUnitInstances = GetUnitInstanceInclusions(vectorType, vectorPopulation, unit.UnitInstancesByName.Values, unit, static (vector) => vector.Definition.InheritUnitsFromMembers,
             static (vector) => vector.Definition.InheritUnits, static (vector) => vector.Definition.InheritUnits, onlyInherited: true);
 
         var inheritedUnitInstanceNames = new HashSet<string>(inheritedUnitInstances.Select(static (unit) => unit.Name));
 
-        var unitInstanceInclusions = ValidateIncludeUnitInstances(input.UnvalidatedVector, unit, inheritedUnitInstanceNames);
-        var unitInstanceExclusions = ValidateExcludeUnitInstances(input.UnvalidatedVector, unit, inheritedUnitInstanceNames);
+        var unitInstanceInclusions = ValidateIncludeUnitInstances(vectorType, unit, inheritedUnitInstanceNames);
+        var unitInstanceExclusions = ValidateExcludeUnitInstances(vectorType, unit, inheritedUnitInstanceNames);
 
-        var definedUnitInstances = GetUnitInstanceInclusions(input.UnvalidatedVector, input.VectorPopulation, unit.UnitInstancesByName.Values, unit, static (vector) => false,
+        var definedUnitInstances = GetUnitInstanceInclusions(vectorType, vectorPopulation, unit.UnitInstancesByName.Values, unit, static (vector) => false,
             static (vector) => false, static (vector) => false);
 
         var allUnits = inheritedUnitInstances.Concat(definedUnitInstances).ToList();
 
-        var derivations = ValidateDerivations(input.UnvalidatedVector, input.ScalarPopulation, input.VectorPopulation);
-        var constants = ValidateConstants(input.UnvalidatedVector, input.VectorPopulation, unit, allUnits);
-        var conversions = ValidateConversions(input.UnvalidatedVector, input.VectorPopulation);
+        var derivations = ValidateDerivations(vectorType, scalarPopulation, vectorPopulation);
+        var constants = ValidateConstants(vectorType, vectorPopulation, unit, allUnits);
+        var conversions = ValidateConversions(vectorType, vectorPopulation);
 
-        GroupMemberType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
+        GroupMemberType product = new(vectorType.Type, vectorType.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
 
         var allDiagnostics = vector.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 

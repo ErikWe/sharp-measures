@@ -12,20 +12,23 @@ using System.Threading;
 
 internal static class ScalarBaseResolver
 {
-    public static IncrementalValuesProvider<ResolvedScalarType> Resolve(IncrementalValuesProvider<ScalarBaseType> scalarProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider)
+    public static IncrementalValuesProvider<Optional<ResolvedScalarType>> Resolve(IncrementalValuesProvider<Optional<ScalarBaseType>> scalarProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider)
     {
-        return scalarProvider.Combine(unitPopulationProvider).Select(Resolve).WhereResult();
+        return scalarProvider.Combine(unitPopulationProvider).Select(Resolve);
     }
 
-    private static Optional<ResolvedScalarType> Resolve((ScalarBaseType UnvalidatedScalar, IUnitPopulation UnitPopulation) input, CancellationToken token) => Resolve(input.UnvalidatedScalar, input.UnitPopulation, token);
-
-    private static Optional<ResolvedScalarType> Resolve(ScalarBaseType scalarType, IUnitPopulation unitPopulation, CancellationToken token)
+    private static Optional<ResolvedScalarType> Resolve((Optional<ScalarBaseType> UnvalidatedScalar, IUnitPopulation UnitPopulation) input, CancellationToken token)
     {
-        if (token.IsCancellationRequested)
+        if (token.IsCancellationRequested || input.UnvalidatedScalar.HasValue is false)
         {
             return new Optional<ResolvedScalarType>();
         }
 
+        return Resolve(input.UnvalidatedScalar.Value, input.UnitPopulation);
+    }
+
+    private static Optional<ResolvedScalarType> Resolve(ScalarBaseType scalarType, IUnitPopulation unitPopulation)
+    {
         if (unitPopulation.Units.TryGetValue(scalarType.Definition.Unit, out var unit) is false)
         {
             return new Optional<ResolvedScalarType>();

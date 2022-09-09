@@ -27,11 +27,11 @@ internal class ScalarGenerator : IScalarGenerator
 {
     private IncrementalValueProvider<IResolvedScalarPopulation> ScalarPopulationProvider { get; }
 
-    private IncrementalValuesProvider<ResolvedScalarType> ScalarBaseProvider { get; }
-    private IncrementalValuesProvider<ResolvedScalarType> ScalarSpecializationProvider { get; }
+    private IncrementalValuesProvider<Optional<ResolvedScalarType>> ScalarBaseProvider { get; }
+    private IncrementalValuesProvider<Optional<ResolvedScalarType>> ScalarSpecializationProvider { get; }
 
-    internal ScalarGenerator(IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider, IncrementalValuesProvider<ResolvedScalarType> scalarBaseProvider,
-        IncrementalValuesProvider<ResolvedScalarType> scalarSpecializationProvider)
+    internal ScalarGenerator(IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider, IncrementalValuesProvider<Optional<ResolvedScalarType>> scalarBaseProvider,
+        IncrementalValuesProvider<Optional<ResolvedScalarType>> scalarSpecializationProvider)
     {
         ScalarPopulationProvider = scalarPopulationProvider;
 
@@ -46,7 +46,7 @@ internal class ScalarGenerator : IScalarGenerator
         Generate(context, ScalarSpecializationProvider, unitPopulationProvider, ScalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
     }
 
-    private static void Generate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<ResolvedScalarType> scalars,
+    private static void Generate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<ResolvedScalarType>> scalars,
         IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
         IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider,
         IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
@@ -64,34 +64,44 @@ internal class ScalarGenerator : IScalarGenerator
         VectorsGenerator.Initialize(context, reducedScalars);
     }
 
-    private static DataModel ReduceToDataModel((ResolvedScalarType Scalar, IUnitPopulation UnitPopulation, IResolvedScalarPopulation ScalarPopulation, IResolvedVectorPopulation VectorPopulation) input, CancellationToken _)
+    private static Optional<DataModel> ReduceToDataModel((Optional<ResolvedScalarType> Scalar, IUnitPopulation UnitPopulation, IResolvedScalarPopulation ScalarPopulation, IResolvedVectorPopulation VectorPopulation) input, CancellationToken _)
     {
-        return new(input.Scalar, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        if (input.Scalar.HasValue is false)
+        {
+            return new Optional<DataModel>();
+        }
+
+        return new DataModel(input.Scalar.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
     }
 
-    private static (DataModel Model, bool GenerateDocumentation) InterpretGenerateDocumentation((DataModel Model, bool Default) data, CancellationToken _)
+    private static (Optional<DataModel> Model, bool GenerateDocumentation) InterpretGenerateDocumentation((Optional<DataModel> Model, bool Default) data, CancellationToken _)
     {
-        return (data.Model, data.Model.Scalar.GenerateDocumentation ?? data.Default);
+        if (data.Model.HasValue is false)
+        {
+            return (data.Model, false);
+        }
+
+        return (data.Model, data.Model.Value.Scalar.GenerateDocumentation ?? data.Default);
     }
 
-    private static DataModel AppendDocumentation((DataModel Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
+    private static Optional<DataModel> AppendDocumentation((Optional<DataModel> Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
     {
-        if (input.GenerateDocumentation is false)
+        if (input.GenerateDocumentation is false || input.Model.HasValue is false)
         {
             return input.Model;
         }
 
-        DefaultDocumentation defaultDocumentation = new(input.Model);
+        DefaultDocumentation defaultDocumentation = new(input.Model.Value);
 
-        if (input.DocumentationDictionary.TryGetValue(input.Model.Scalar.Type.Name, out DocumentationFile documentationFile))
+        if (input.DocumentationDictionary.TryGetValue(input.Model.Value.Scalar.Type.Name, out DocumentationFile documentationFile))
         {
-            return input.Model with
+            return input.Model.Value with
             {
                 Documentation = new FileDocumentation(documentationFile, defaultDocumentation)
             };
         }
 
-        return input.Model with
+        return input.Model.Value with
         {
             Documentation = defaultDocumentation
         };

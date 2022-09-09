@@ -13,16 +13,16 @@ using System.Text;
 
 internal static class Execution
 {
-    public static void Execute(SourceProductionContext context, DataModel data)
+    public static void Execute(SourceProductionContext context, Optional<DataModel> data)
     {
-        if (context.CancellationToken.IsCancellationRequested)
+        if (context.CancellationToken.IsCancellationRequested || data.HasValue is false)
         {
             return;
         }
 
-        string source = Composer.ComposeAndReportDiagnostics(data);
+        string source = Composer.ComposeAndReportDiagnostics(data.Value);
 
-        context.AddSource($"{data.Unit.Name}_Derivable.g.cs", SourceText.From(source, Encoding.UTF8));
+        context.AddSource($"{data.Value.Unit.Name}_Derivable.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer

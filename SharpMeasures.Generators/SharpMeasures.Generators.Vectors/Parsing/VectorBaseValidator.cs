@@ -26,37 +26,42 @@ using System.Threading;
 
 internal static class VectorBaseValidator
 {
-    public static IncrementalValuesProvider<VectorBaseType> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<VectorBaseType> vectorProvider,
+    public static IncrementalValuesProvider<Optional<VectorBaseType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<VectorBaseType>> vectorProvider,
        IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
        IncrementalValueProvider<IVectorPopulationWithData> vectorPopulationProvider)
     {
         return vectorProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
 
-    private static IOptionalWithDiagnostics<VectorBaseType> Validate((VectorBaseType UnvalidatedVector, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken token)
+    private static IOptionalWithDiagnostics<VectorBaseType> Validate((Optional<VectorBaseType> UnvalidatedVector, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken token)
     {
-        if (token.IsCancellationRequested)
+        if (token.IsCancellationRequested || input.UnvalidatedVector.HasValue is false)
         {
             return OptionalWithDiagnostics.Empty<VectorBaseType>();
         }
 
-        var vector = ValidateVector(input.UnvalidatedVector, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        return Validate(input.UnvalidatedVector.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+    }
+
+    private static IOptionalWithDiagnostics<VectorBaseType> Validate(VectorBaseType vectorType, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulationWithData vectorPopulation)
+    {
+        var vector = ValidateVector(vectorType, unitPopulation, scalarPopulation, vectorPopulation);
 
         if (vector.LacksResult)
         {
             return vector.AsEmptyOptional<VectorBaseType>();
         }
 
-        var derivations = ValidateDerivations(input.UnvalidatedVector, input.ScalarPopulation, input.VectorPopulation);
-        var constants = ValidateConstants(input.UnvalidatedVector, input.UnitPopulation);
-        var conversions = ValidateConversions(input.UnvalidatedVector, input.VectorPopulation);
+        var derivations = ValidateDerivations(vectorType, scalarPopulation, vectorPopulation);
+        var constants = ValidateConstants(vectorType, unitPopulation);
+        var conversions = ValidateConversions(vectorType, vectorPopulation);
 
-        var availableUnitInstanceNames = new HashSet<string>(input.UnitPopulation.Units[input.UnvalidatedVector.Definition.Unit].UnitInstancesByName.Keys);
+        var availableUnitInstanceNames = new HashSet<string>(unitPopulation.Units[vectorType.Definition.Unit].UnitInstancesByName.Keys);
 
-        var unitInstanceInclusions = ValidateIncludeUnits(input.UnvalidatedVector, input.UnitPopulation, availableUnitInstanceNames);
-        var unitInstanceExclusions = ValidateExcludeUnits(input.UnvalidatedVector, input.UnitPopulation, availableUnitInstanceNames);
+        var unitInstanceInclusions = ValidateIncludeUnits(vectorType, unitPopulation, availableUnitInstanceNames);
+        var unitInstanceExclusions = ValidateExcludeUnits(vectorType, unitPopulation, availableUnitInstanceNames);
 
-        VectorBaseType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
+        VectorBaseType product = new(vectorType.Type, vectorType.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
 
         var allDiagnostics = vector.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 

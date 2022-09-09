@@ -8,21 +8,26 @@ using System.Threading;
 
 internal static class VectorCommonGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<VectorDataModel> modelProvider)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<VectorDataModel>> modelProvider)
     {
         var reduced = modelProvider.Select(Reduce);
 
         context.RegisterSourceOutput(reduced, Execution.Execute);
     }
 
-    private static DataModel Reduce(VectorDataModel model, CancellationToken _)
+    private static Optional<DataModel> Reduce(Optional<VectorDataModel> model, CancellationToken _)
     {
-        var unit = model.UnitPopulation.Units[model.Vector.Unit];
+        if (model.HasValue is false)
+        {
+            return new Optional<DataModel>();
+        }
 
-        string unitParameterName = SourceBuildingUtility.ToParameterName(model.Vector.Unit.Name);
+        var unit = model.Value.UnitPopulation.Units[model.Value.Vector.Unit];
 
-        return new(model.Vector.Type, model.Vector.Dimension, model.Vector.Scalar, GetSquaredScalar(model), model.Vector.Unit, unit.Definition.Quantity, unitParameterName, model.Vector.DefaultUnitInstanceName,
-            model.Vector.DefaultUnitInstanceSymbol, model.Documentation);
+        string unitParameterName = SourceBuildingUtility.ToParameterName(model.Value.Vector.Unit.Name);
+
+        return new DataModel(model.Value.Vector.Type, model.Value.Vector.Dimension, model.Value.Vector.Scalar, GetSquaredScalar(model.Value), model.Value.Vector.Unit, unit.Definition.Quantity, unitParameterName,
+            model.Value.Vector.DefaultUnitInstanceName, model.Value.Vector.DefaultUnitInstanceSymbol, model.Value.Documentation);
     }
 
     private static NamedType? GetSquaredScalar(VectorDataModel model)

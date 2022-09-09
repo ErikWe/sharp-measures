@@ -23,9 +23,9 @@ internal class UnitGenerator : IUnitGenerator
 {
     private IncrementalValueProvider<IUnitPopulationWithData> UnitPopulationProvider { get; }
 
-    private IncrementalValuesProvider<UnitType> UnitProvider { get; }
+    private IncrementalValuesProvider<Optional<UnitType>> UnitProvider { get; }
 
-    internal UnitGenerator(IncrementalValueProvider<IUnitPopulationWithData> unitPopulationProvider, IncrementalValuesProvider<UnitType> unitProvider)
+    internal UnitGenerator(IncrementalValueProvider<IUnitPopulationWithData> unitPopulationProvider, IncrementalValuesProvider<Optional<UnitType>> unitProvider)
     {
         UnitPopulationProvider = unitPopulationProvider;
 
@@ -46,34 +46,44 @@ internal class UnitGenerator : IUnitGenerator
         UnitInstancesGenerator.Initialize(context, minimized);
     }
 
-    private static DataModel ReduceToDataModel((UnitType Unit, IUnitPopulationWithData UnitPopulation, IResolvedScalarPopulation ScalarPopulation) input, CancellationToken _)
+    private static Optional<DataModel> ReduceToDataModel((Optional<UnitType> Unit, IUnitPopulationWithData UnitPopulation, IResolvedScalarPopulation ScalarPopulation) input, CancellationToken _)
     {
-        return new(input.Unit, input.UnitPopulation);
+        if (input.Unit.HasValue is false)
+        {
+            return new Optional<DataModel>();
+        }
+
+        return new DataModel(input.Unit.Value, input.UnitPopulation);
     }
 
-    private static (DataModel Model, bool GenerateDocumentation) InterpretGenerateDocumentation((DataModel Model, bool Default) data, CancellationToken _)
+    private static (Optional<DataModel> Model, bool GenerateDocumentation) InterpretGenerateDocumentation((Optional<DataModel> Model, bool Default) data, CancellationToken _)
     {
-        return (data.Model, data.Model.Unit.Definition.GenerateDocumentation ?? data.Default);
+        if (data.Model.HasValue is false)
+        {
+            return (new Optional<DataModel>(), false);
+        }
+
+        return (data.Model, data.Model.Value.Unit.Definition.GenerateDocumentation ?? data.Default);
     }
 
-    private static DataModel AppendDocumentationFile((DataModel Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
+    private static Optional<DataModel> AppendDocumentationFile((Optional<DataModel> Model, bool GenerateDocumentation, DocumentationDictionary DocumentationDictionary) input, CancellationToken _)
     {
-        if (input.GenerateDocumentation is false)
+        if (input.GenerateDocumentation is false || input.Model.HasValue is false)
         {
             return input.Model;
         }
 
-        DefaultDocumentation defaultDocumentation = new(input.Model);
+        DefaultDocumentation defaultDocumentation = new(input.Model.Value);
 
-        if (input.DocumentationDictionary.TryGetValue(input.Model.Unit.Type.Name, out DocumentationFile documentationFile))
+        if (input.DocumentationDictionary.TryGetValue(input.Model.Value.Unit.Type.Name, out DocumentationFile documentationFile))
         {
-            return input.Model with
+            return input.Model.Value with
             {
                 Documentation = new FileDocumentation(documentationFile, defaultDocumentation)
             };
         }
 
-        return input.Model with
+        return input.Model.Value with
         {
             Documentation = defaultDocumentation
         };

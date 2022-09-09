@@ -7,32 +7,32 @@ using System.Threading;
 
 internal static class VectorsGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Scalars.DataModel> modelProvider)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<Scalars.DataModel>> modelProvider)
     {
-        var filteredAndReduced = modelProvider.Select(Reduce).WhereNotNull();
+        var reduced = modelProvider.Select(Reduce);
 
-        context.RegisterSourceOutput(filteredAndReduced, Execution.Execute);
+        context.RegisterSourceOutput(reduced, Execution.Execute);
     }
 
-    private static DataModel? Reduce(Scalars.DataModel model, CancellationToken _)
+    private static Optional<DataModel> Reduce(Optional<Scalars.DataModel> model, CancellationToken _)
     {
-        if (model.Scalar.Vector is null)
+        if (model.HasValue is false || model.Value.Scalar.Vector is null)
         {
-            return null;
+            return new Optional<DataModel>();
         }
 
-        if (model.VectorPopulation.Vectors.TryGetValue(model.Scalar.Vector.Value, out var vector))
+        if (model.Value.VectorPopulation.Vectors.TryGetValue(model.Value.Scalar.Vector.Value, out var vector))
         {
-            return new(model.Scalar.Type, model.Scalar.Vector.Value, vector.Dimension, model.Documentation);
+            return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Vector.Value, vector.Dimension, model.Value.Documentation);
         }
 
-        if (model.VectorPopulation.Groups.TryGetValue(model.Scalar.Vector.Value, out var group))
+        if (model.Value.VectorPopulation.Groups.TryGetValue(model.Value.Scalar.Vector.Value, out var group))
         {
             var dimensions = group.MembersByDimension.Keys;
 
-            return new(model.Scalar.Type, model.Scalar.Vector.Value, dimensions.ToList(), model.Documentation);
+            return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Vector.Value, dimensions.ToList(), model.Value.Documentation);
         }
 
-        return null;
+        return new Optional<DataModel>();
     }
 }

@@ -7,20 +7,20 @@ using System.Threading;
 
 internal static class DerivableUnitGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Units.DataModel> modelProvider)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<Units.DataModel>> modelProvider)
     {
-        var filteredAndReduced = modelProvider.Select(ReduceToDataModel).WhereNotNull();
+        var filteredAndReduced = modelProvider.Select(ReduceToDataModel);
 
         context.RegisterSourceOutput(filteredAndReduced, Execution.Execute);
     }
 
-    private static DataModel? ReduceToDataModel(Units.DataModel model, CancellationToken _)
+    private static Optional<DataModel> ReduceToDataModel(Optional<Units.DataModel> model, CancellationToken _)
     {
-        if (model.Unit.UnitDerivations.Any() is false)
+        if (model.HasValue is false || model.Value.Unit.UnitDerivations.Any() is false)
         {
-            return null;
+            return new Optional<DataModel>();
         }
 
-        return new(model.Unit.Type, model.Unit.Definition.Quantity, model.UnitPopulation, model.Unit.UnitDerivations, model.Documentation);
+        return new DataModel(model.Value.Unit.Type, model.Value.Unit.Definition.Quantity, model.Value.UnitPopulation, model.Value.Unit.UnitDerivations, model.Value.Documentation);
     }
 }

@@ -19,11 +19,11 @@ internal class ScalarResolver : IScalarResolver
 {
     private IncrementalValueProvider<IScalarPopulationWithData> ScalarPopulationProvider { get; }
 
-    private IncrementalValuesProvider<ScalarBaseType> ScalarBaseProvider { get; }
-    private IncrementalValuesProvider<ScalarSpecializationType> ScalarSpecializationProvider { get; }
+    private IncrementalValuesProvider<Optional<ScalarBaseType>> ScalarBaseProvider { get; }
+    private IncrementalValuesProvider<Optional<ScalarSpecializationType>> ScalarSpecializationProvider { get; }
 
-    internal ScalarResolver(IncrementalValueProvider<IScalarPopulationWithData> scalarPopulationProvider, IncrementalValuesProvider<ScalarBaseType> scalarBaseProvider,
-        IncrementalValuesProvider<ScalarSpecializationType> scalarSpecializationProvider)
+    internal ScalarResolver(IncrementalValueProvider<IScalarPopulationWithData> scalarPopulationProvider, IncrementalValuesProvider<Optional<ScalarBaseType>> scalarBaseProvider,
+        IncrementalValuesProvider<Optional<ScalarSpecializationType>> scalarSpecializationProvider)
     {
         ScalarPopulationProvider = scalarPopulationProvider;
 
@@ -37,15 +37,15 @@ internal class ScalarResolver : IScalarResolver
         var resolvedScalarBases = ScalarBaseResolver.Resolve(ScalarBaseProvider, unitPopulationProvider);
         var resolvedScalarSpecializations = ScalarSpecializationResolver.Resolve(ScalarSpecializationProvider, unitPopulationProvider, ScalarPopulationProvider);
 
-        var scalarBaseInterfaces = resolvedScalarBases.Select(ExtractInterface).Collect();
-        var scalarSpecializationInterfaces = resolvedScalarSpecializations.Select(ExtractInterface).Collect();
+        var scalarBaseInterfaces = resolvedScalarBases.Select(ExtractInterface).CollectResults();
+        var scalarSpecializationInterfaces = resolvedScalarSpecializations.Select(ExtractInterface).CollectResults();
 
         var population = scalarBaseInterfaces.Combine(scalarSpecializationInterfaces).Select(CreatePopulation);
 
         return (population, new ScalarGenerator(population, resolvedScalarBases, resolvedScalarSpecializations));
     }
 
-    private static IResolvedScalarType ExtractInterface(ResolvedScalarType scalarType, CancellationToken _) => scalarType;
+    private static Optional<IResolvedScalarType> ExtractInterface(Optional<ResolvedScalarType> scalarType, CancellationToken _) => scalarType.HasValue ? scalarType.Value : new Optional<IResolvedScalarType>();
 
     private static IResolvedScalarPopulation CreatePopulation((ImmutableArray<IResolvedScalarType> Bases, ImmutableArray<IResolvedScalarType> Specializations) scalars, CancellationToken _)
     {

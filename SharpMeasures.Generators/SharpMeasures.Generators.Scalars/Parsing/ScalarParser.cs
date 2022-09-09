@@ -26,15 +26,15 @@ public static partial class ScalarParser
         var scalarBases = scalarBaseSymbols.Select(scalarBaseProcesser.ParseAndProcess).ReportDiagnostics(context);
         var scalarSpecializations = scalarSpecializationSymbols.Select(scalarSpecializationProcesser.ParseAndProcess).ReportDiagnostics(context);
 
-        var scalarBaseInterfaces = scalarBases.Select(ExtractInterface).Collect();
-        var scalarSpecializationInterfaces = scalarSpecializations.Select(ExtractInterface).Collect();
+        var scalarBaseInterfaces = scalarBases.Select(ExtractInterface).CollectResults();
+        var scalarSpecializationInterfaces = scalarSpecializations.Select(ExtractInterface).CollectResults();
 
         var populationWithData = scalarBaseInterfaces.Combine(scalarSpecializationInterfaces).Select(CreatePopulation);
 
         return (populationWithData.Select(ReducePopulation), new ScalarValidator(populationWithData, scalarBases, scalarSpecializations));
     }
 
-    private static IncrementalValuesProvider<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)> AttachSymbolProvider<TAttribute>(IncrementalGeneratorInitializationContext context)
+    private static IncrementalValuesProvider<Optional<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)>> AttachSymbolProvider<TAttribute>(IncrementalGeneratorInitializationContext context)
     {
         var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<TAttribute>(context.SyntaxProvider);
         var filteredDeclarations = FilteredDeclarationProvider.Construct<TypeDeclarationSyntax>(DeclarationFilters<TAttribute>()).AttachAndReport(context, declarations);
@@ -42,8 +42,8 @@ public static partial class ScalarParser
         return DeclarationSymbolProvider.Construct<TypeDeclarationSyntax>().Attach(filteredDeclarations, context.CompilationProvider);
     }
 
-    private static IScalarBaseType ExtractInterface(IScalarBaseType scalarType, CancellationToken _) => scalarType;
-    private static IScalarSpecializationType ExtractInterface(IScalarSpecializationType scalarType, CancellationToken _) => scalarType;
+    private static Optional<IScalarBaseType> ExtractInterface(Optional<ScalarBaseType> scalarType, CancellationToken _) => scalarType.HasValue ? scalarType.Value : new Optional<IScalarBaseType>();
+    private static Optional<IScalarSpecializationType> ExtractInterface(Optional<ScalarSpecializationType> scalarType, CancellationToken _) => scalarType.HasValue ? scalarType.Value : new Optional<IScalarSpecializationType>();
 
     private static IScalarPopulation ReducePopulation(IScalarPopulationWithData scalarPopulation, CancellationToken _) => scalarPopulation;
 

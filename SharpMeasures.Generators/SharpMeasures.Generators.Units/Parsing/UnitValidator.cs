@@ -30,9 +30,9 @@ internal class UnitValidator : IUnitValidator
 {
     private IncrementalValueProvider<IUnitPopulationWithData> UnitPopulationProvider { get; }
 
-    private IncrementalValuesProvider<UnitType> UnitProvider { get; }
+    private IncrementalValuesProvider<Optional<UnitType>> UnitProvider { get; }
 
-    public UnitValidator(IncrementalValueProvider<IUnitPopulationWithData> unitPopulationProvider, IncrementalValuesProvider<UnitType> unitProvider)
+    public UnitValidator(IncrementalValueProvider<IUnitPopulationWithData> unitPopulationProvider, IncrementalValuesProvider<Optional<UnitType>> unitProvider)
     {
         UnitPopulationProvider = unitPopulationProvider;
 
@@ -43,23 +43,25 @@ internal class UnitValidator : IUnitValidator
     {
         var validatedUnits = UnitProvider.Combine(UnitPopulationProvider, scalarPopulationProvider).Select(Validate).ReportDiagnostics(context);
 
-        var population = validatedUnits.Select(ExtractInterface).Collect().Select(CreatePopulation);
+        var population = validatedUnits.Select(ExtractInterface).CollectResults().Select(CreatePopulation);
 
         var reducedPopulation = population.Select(ExtractInterface);
 
         return (reducedPopulation, new UnitGenerator(population, validatedUnits));
     }
 
-    private static IOptionalWithDiagnostics<UnitType> Validate((UnitType UnvalidatedUnit, IUnitPopulationWithData UnitPopulation, IScalarPopulation ScalarPopulation) input, CancellationToken token)
-        => Validate(input.UnvalidatedUnit, input.UnitPopulation, input.ScalarPopulation, token);
-
-    private static IOptionalWithDiagnostics<UnitType> Validate(UnitType unitType, IUnitPopulationWithData unitPopulation, IScalarPopulation scalarPopulation, CancellationToken token)
+    private static IOptionalWithDiagnostics<UnitType> Validate((Optional<UnitType> UnvalidatedUnit, IUnitPopulationWithData UnitPopulation, IScalarPopulation ScalarPopulation) input, CancellationToken token)
     {
-        if (token.IsCancellationRequested)
+        if (token.IsCancellationRequested || input.UnvalidatedUnit.HasValue is false)
         {
             return OptionalWithDiagnostics.Empty<UnitType>();
         }
 
+        return Validate(input.UnvalidatedUnit.Value, input.UnitPopulation, input.ScalarPopulation);
+    }
+
+    private static IOptionalWithDiagnostics<UnitType> Validate(UnitType unitType, IUnitPopulationWithData unitPopulation, IScalarPopulation scalarPopulation)
+    {
         var unit = ValidateUnit(unitType, unitPopulation, scalarPopulation);
 
         if (unit.IsInvalid)
@@ -171,7 +173,7 @@ internal class UnitValidator : IUnitValidator
         return ValidityFilter.Create(ScaledUnitInstanceValidator).Filter(validationContext, unitType.ScaledUnitInstances);
     }
 
-    private static IUnitType ExtractInterface(UnitType unitType, CancellationToken _) => unitType;
+    private static Optional<IUnitType> ExtractInterface(Optional<UnitType> unitType, CancellationToken _) => unitType.HasValue ? unitType.Value : new Optional<IUnitType>();
     private static IUnitPopulation ExtractInterface(IUnitPopulation population, CancellationToken _) => population;
 
     private static IUnitPopulationWithData CreatePopulation(ImmutableArray<IUnitType> units, CancellationToken _)
