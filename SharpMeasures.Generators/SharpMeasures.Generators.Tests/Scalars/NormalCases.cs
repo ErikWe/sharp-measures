@@ -12,10 +12,10 @@ using Xunit;
 public class NormalCases
 {
     [Fact]
-    public Task UnbiasedScalar() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(UnbiasedScalarText).VerifyMatchingSourceNames(@"^Length_\S+\.g\.cs");
+    public Task UnbiasedScalar() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(UnbiasedScalarText).VerifyMatchingSourceNames(@"^Length.\S+\.g\.cs");
 
     [Fact]
-    public Task BiasedScalar() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedScalarText).VerifyMatchingSourceNames(@"^Temperature_\S+\.g\.cs");
+    public Task BiasedScalar() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedScalarText).VerifyMatchingSourceNames(@"^Temperature.\S+\.g\.cs");
 
     private static string UnbiasedScalarText => """
         using SharpMeasures.Generators.Scalars;

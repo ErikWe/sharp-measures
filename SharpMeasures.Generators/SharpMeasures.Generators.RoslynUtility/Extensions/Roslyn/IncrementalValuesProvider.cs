@@ -5,22 +5,11 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 
 using System;
+using System.Collections.Immutable;
 using System.Threading;
 
 public static partial class RoslynUtilityExtensions
 {
-    public static IncrementalValuesProvider<T> WhereNotNull<T>(this IncrementalValuesProvider<T?> provider) where T : struct
-        => provider.Where(static (x) => x is not null).Select(static (x, _) => x!.Value);
-
-    public static IncrementalValuesProvider<T> WhereNotNull<T>(this IncrementalValuesProvider<T?> provider) where T : class
-        => provider.Where(static (x) => x is not null)!;
-
-    public static IncrementalValuesProvider<IResultWithDiagnostics<T>> WhereResult<T>(this IncrementalValuesProvider<IOptionalWithDiagnostics<T>> provider)
-        => provider.Where(static (result) => result.HasResult).Select(static (result, _) => ResultWithDiagnostics.Construct(result.Result, result.Diagnostics));
-
-    public static IncrementalValuesProvider<T> WhereResult<T>(this IncrementalValuesProvider<Optional<T>> provider)
-        => provider.Where(static (result) => result.HasValue).Select(static (result, _) => result.Value);
-
     public static IncrementalValuesProvider<(T1, T2, T3)> Combine<T1, T2, T3>(this IncrementalValuesProvider<T1> provider1, IncrementalValueProvider<T2> provider2,
         IncrementalValueProvider<T3> provider3)
     {
@@ -70,8 +59,7 @@ public static partial class RoslynUtilityExtensions
         }
     }
 
-    public static IncrementalValuesProvider<T> FilterAndReport<T>(this IncrementalValuesProvider<T> provider, IncrementalGeneratorInitializationContext context,
-        Func<T, CancellationToken, IValidityWithDiagnostics> validityDelegate)
+    public static IncrementalValuesProvider<Optional<T>> FilterAndReport<T>(this IncrementalValuesProvider<T> provider, IncrementalGeneratorInitializationContext context, Func<T, CancellationToken, IValidityWithDiagnostics> validityDelegate)
     {
         return provider.Select(filter).ReportDiagnostics(context);
 
@@ -93,18 +81,25 @@ public static partial class RoslynUtilityExtensions
         }
     }
 
-    public static IncrementalValuesProvider<T> ExtractResults<T>(this IncrementalValuesProvider<IOptionalWithDiagnostics<T>> provider)
-        => provider.WhereResult().Select(static (result, _) => result.Result);
-
     public static IncrementalValuesProvider<T> ExtractResults<T>(this IncrementalValuesProvider<IResultWithDiagnostics<T>> provider)
         => provider.Select(static (result, _) => result.Result);
 
-    public static IncrementalValuesProvider<T> ReportDiagnostics<T>(this IncrementalValuesProvider<IOptionalWithDiagnostics<T>> provider,
+    public static IncrementalValuesProvider<Optional<T>> ReportDiagnostics<T>(this IncrementalValuesProvider<IOptionalWithDiagnostics<T>> provider,
         IncrementalGeneratorInitializationContext context)
     {
         context.ReportDiagnostics(provider);
 
-        return provider.ExtractResults();
+        return provider.Select(transform);
+
+        static Optional<T> transform(IOptionalWithDiagnostics<T> input, CancellationToken _)
+        {
+            if (input.LacksResult)
+            {
+                return new Optional<T>();
+            }
+
+            return input.Result;
+        }
     }
 
     public static IncrementalValuesProvider<T> ReportDiagnostics<T>(this IncrementalValuesProvider<IResultWithDiagnostics<T>> provider,
@@ -113,5 +108,25 @@ public static partial class RoslynUtilityExtensions
         context.ReportDiagnostics(provider);
 
         return provider.ExtractResults();
+    }
+
+    public static IncrementalValueProvider<ImmutableArray<T>> CollectResults<T>(this IncrementalValuesProvider<Optional<T>> provider)
+    {
+        return provider.Collect().Select(filter);
+
+        static ImmutableArray<T> filter(ImmutableArray<Optional<T>> input, CancellationToken _)
+        {
+            var builder = ImmutableArray.CreateBuilder<T>(input.Length);
+
+            foreach (var inputElement in input)
+            {
+                if (inputElement.HasValue)
+                {
+                    builder.Add(inputElement.Value);
+                }
+            }
+
+            return builder.ToImmutable();
+        }
     }
 }

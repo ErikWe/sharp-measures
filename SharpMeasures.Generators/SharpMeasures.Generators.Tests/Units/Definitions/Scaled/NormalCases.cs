@@ -12,10 +12,10 @@ using Xunit;
 public class NormalCases
 {
     [Fact]
-    public Task Value() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ValueText).VerifyMatchingSourceNames("UnitOfLength_Instances.g.cs");
+    public Task Value() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ValueText).VerifyMatchingSourceNames("UnitOfLength.Instances.g.cs");
 
     [Fact]
-    public Task Expression() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ExpressionText).VerifyMatchingSourceNames("UnitOfLength_Instances.g.cs");
+    public Task Expression() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ExpressionText).VerifyMatchingSourceNames("UnitOfLength.Instances.g.cs");
 
     private static string ValueText => """
         using SharpMeasures.Generators.Scalars;

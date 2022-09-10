@@ -31,24 +31,29 @@ public static class UnitParser
     {
         var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<SharpMeasuresUnitAttribute>(context.SyntaxProvider);
         var filteredDeclarations = FilteredDeclarationProvider.Construct<TypeDeclarationSyntax>(DeclarationFilters).AttachAndReport(context, declarations);
-        var symbols = DeclarationSymbolProvider.ConstructForValueType(IntermediateResult.Construct).Attach(filteredDeclarations, context.CompilationProvider);
+        var symbols = DeclarationSymbolProvider.Construct(IntermediateResult.Construct).Attach(filteredDeclarations, context.CompilationProvider);
 
         var units = symbols.Select(ParseAndProcess).ReportDiagnostics(context);
 
-        var population = units.Select(ExtractInterface).Collect().Select(CreatePopulation);
+        var population = units.Select(ExtractInterface).CollectResults().Select(CreatePopulation);
 
         var reducedPopulation = population.Select(ExtractInterface);
 
         return (reducedPopulation, new UnitValidator(population, units));
     }
 
-    private static IOptionalWithDiagnostics<UnitType> ParseAndProcess(IntermediateResult input, CancellationToken token)
+    private static IOptionalWithDiagnostics<UnitType> ParseAndProcess(Optional<IntermediateResult> input, CancellationToken token)
     {
-        if (token.IsCancellationRequested)
+        if (token.IsCancellationRequested || input.HasValue is false)
         {
             return OptionalWithDiagnostics.Empty<UnitType>();
         }
 
+        return ParseAndProcess(input.Value);
+    }
+
+    private static IOptionalWithDiagnostics<UnitType> ParseAndProcess(IntermediateResult input)
+    {
         var unit = ParseAndProcessUnit(input.TypeSymbol);
 
         if (unit.LacksResult)
@@ -147,7 +152,7 @@ public static class UnitParser
         return ProcessingFilter.Create(Processers.ScaledUnitInstanceProcesser).Filter(processingContext, rawScaledUnitInstances);
     }
 
-    private static IUnitType ExtractInterface(UnitType unitType, CancellationToken _) => unitType;
+    private static Optional<IUnitType> ExtractInterface(Optional<UnitType> unitType, CancellationToken _) => unitType.HasValue ? unitType.Value : new Optional<IUnitType>();
     private static IUnitPopulation ExtractInterface(IUnitPopulation population, CancellationToken _) => population;
 
     private static IUnitPopulationWithData CreatePopulation(ImmutableArray<IUnitType> units, CancellationToken _)
@@ -177,6 +182,14 @@ public static class UnitParser
 
     private readonly record struct IntermediateResult(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)
     {
-        public static DeclarationSymbolProvider.DOutputTransform<TypeDeclarationSyntax, IntermediateResult> Construct => (declaration, symbol) => new(declaration, symbol);
+        public static DeclarationSymbolProvider.DOutputTransform<TypeDeclarationSyntax, IntermediateResult> Construct => (declaration, symbol) =>
+        {
+            if (declaration.HasValue is false)
+            {
+                return new Optional<IntermediateResult>();
+            }
+
+            return new IntermediateResult(declaration.Value, symbol);
+        };
     }
 }

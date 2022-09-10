@@ -9,18 +9,18 @@ using System.Threading;
 
 public interface IMarkedTypeDeclarationCandidateProvider<TOut>
 {
-    public abstract IncrementalValuesProvider<TOut> Attach<TAttribute>(SyntaxValueProvider syntaxProvider);
-    public abstract IncrementalValuesProvider<TOut> Attach(SyntaxValueProvider syntaxProvider, Type attributeType);
-    public abstract IncrementalValuesProvider<TOut> Attach(SyntaxValueProvider syntaxProvider, string attributeName);
+    public abstract IncrementalValuesProvider<Optional<TOut>> Attach<TAttribute>(SyntaxValueProvider syntaxProvider);
+    public abstract IncrementalValuesProvider<Optional<TOut>> Attach(SyntaxValueProvider syntaxProvider, Type attributeType);
+    public abstract IncrementalValuesProvider<Optional<TOut>> Attach(SyntaxValueProvider syntaxProvider, string attributeName);
 
-    public abstract IncrementalValuesProvider<TOut> AttachAnyOf<TAttribute1, TAttribute2>(SyntaxValueProvider syntaxProvider);
-    public abstract IncrementalValuesProvider<TOut> AttachAnyOf<TAttribute1, TAttribute2, TAttribute3>(SyntaxValueProvider syntaxProvider);
+    public abstract IncrementalValuesProvider<Optional<TOut>> AttachAnyOf<TAttribute1, TAttribute2>(SyntaxValueProvider syntaxProvider);
+    public abstract IncrementalValuesProvider<Optional<TOut>> AttachAnyOf<TAttribute1, TAttribute2, TAttribute3>(SyntaxValueProvider syntaxProvider);
 
-    public abstract IncrementalValuesProvider<TOut> AttachAnyOf(SyntaxValueProvider syntaxProvider, IEnumerable<Type> candidateTypes);
-    public abstract IncrementalValuesProvider<TOut> AttachAnyOf(SyntaxValueProvider syntaxProvider, params Type[] candidateTypes);
+    public abstract IncrementalValuesProvider<Optional<TOut>> AttachAnyOf(SyntaxValueProvider syntaxProvider, IEnumerable<Type> candidateTypes);
+    public abstract IncrementalValuesProvider<Optional<TOut>> AttachAnyOf(SyntaxValueProvider syntaxProvider, params Type[] candidateTypes);
 
-    public abstract IncrementalValuesProvider<TOut> AttachAnyOf(SyntaxValueProvider syntaxProvider, IEnumerable<string> candidateNames);
-    public abstract IncrementalValuesProvider<TOut> AttachAnyOf(SyntaxValueProvider syntaxProvider, params string[] candidateNames);
+    public abstract IncrementalValuesProvider<Optional<TOut>> AttachAnyOf(SyntaxValueProvider syntaxProvider, IEnumerable<string> candidateNames);
+    public abstract IncrementalValuesProvider<Optional<TOut>> AttachAnyOf(SyntaxValueProvider syntaxProvider, params string[] candidateNames);
 }
 
 public static class MarkedTypeDeclarationCandidateProvider
@@ -48,34 +48,34 @@ public static class MarkedTypeDeclarationCandidateProvider
             OutputTransform = outputTransform;
         }
 
-        public IncrementalValuesProvider<TOut> Attach<TAttribute>(SyntaxValueProvider syntaxProvider)
+        public IncrementalValuesProvider<Optional<TOut>> Attach<TAttribute>(SyntaxValueProvider syntaxProvider)
         {
             return Attach(syntaxProvider, typeof(TAttribute));
         }
 
-        public IncrementalValuesProvider<TOut> Attach(SyntaxValueProvider syntaxProvider, Type attributeType)
+        public IncrementalValuesProvider<Optional<TOut>> Attach(SyntaxValueProvider syntaxProvider, Type attributeType)
         {
             return Attach(syntaxProvider, attributeType.FullName);
         }
 
-        public IncrementalValuesProvider<TOut> Attach(SyntaxValueProvider syntaxProvider, string attributeName)
+        public IncrementalValuesProvider<Optional<TOut>> Attach(SyntaxValueProvider syntaxProvider, string attributeName)
         {
             IAttributeSyntaxStrategy attributeStrategy = new AttributeSyntaxFromName(attributeName);
 
             return Attach(attributeStrategy, syntaxProvider);
         }
 
-        public IncrementalValuesProvider<TOut> AttachAnyOf<TAttribute1, TAttribute2>(SyntaxValueProvider syntaxProvider)
+        public IncrementalValuesProvider<Optional<TOut>> AttachAnyOf<TAttribute1, TAttribute2>(SyntaxValueProvider syntaxProvider)
         {
             return AttachAnyOf(syntaxProvider, typeof(TAttribute1), typeof(TAttribute2));
         }
 
-        public IncrementalValuesProvider<TOut> AttachAnyOf<TAttribute1, TAttribute2, TAttribute3>(SyntaxValueProvider syntaxProvider)
+        public IncrementalValuesProvider<Optional<TOut>> AttachAnyOf<TAttribute1, TAttribute2, TAttribute3>(SyntaxValueProvider syntaxProvider)
         {
             return AttachAnyOf(syntaxProvider, typeof(TAttribute1), typeof(TAttribute2), typeof(TAttribute3));
         }
 
-        public IncrementalValuesProvider<TOut> AttachAnyOf(SyntaxValueProvider syntaxProvider, IEnumerable<Type> candidateTypes)
+        public IncrementalValuesProvider<Optional<TOut>> AttachAnyOf(SyntaxValueProvider syntaxProvider, IEnumerable<Type> candidateTypes)
         {
             return AttachAnyOf(syntaxProvider, candidateNames());
 
@@ -88,19 +88,19 @@ public static class MarkedTypeDeclarationCandidateProvider
             }
         }
 
-        public IncrementalValuesProvider<TOut> AttachAnyOf(SyntaxValueProvider syntaxProvider, params Type[] candidateTypes)
+        public IncrementalValuesProvider<Optional<TOut>> AttachAnyOf(SyntaxValueProvider syntaxProvider, params Type[] candidateTypes)
         {
             return AttachAnyOf(syntaxProvider, candidateTypes as IEnumerable<Type>);
         }
 
-        public IncrementalValuesProvider<TOut> AttachAnyOf(SyntaxValueProvider syntaxProvider, IEnumerable<string> candidateNames)
+        public IncrementalValuesProvider<Optional<TOut>> AttachAnyOf(SyntaxValueProvider syntaxProvider, IEnumerable<string> candidateNames)
         {
             IAttributeSyntaxStrategy attributeStrategy = new AttributeSyntaxFromFirstName(candidateNames);
 
             return Attach(attributeStrategy, syntaxProvider);
         }
 
-        public IncrementalValuesProvider<TOut> AttachAnyOf(SyntaxValueProvider syntaxProvider, params string[] candidateNames)
+        public IncrementalValuesProvider<Optional<TOut>> AttachAnyOf(SyntaxValueProvider syntaxProvider, params string[] candidateNames)
         {
             return AttachAnyOf(syntaxProvider, candidateNames as IEnumerable<string>);
         }
@@ -140,20 +140,25 @@ public static class MarkedTypeDeclarationCandidateProvider
             }
         }
 
-        private IncrementalValuesProvider<TOut> Attach(IAttributeSyntaxStrategy attributeStrategy, SyntaxValueProvider syntaxProvider)
+        private IncrementalValuesProvider<Optional<TOut>> Attach(IAttributeSyntaxStrategy attributeStrategy, SyntaxValueProvider syntaxProvider)
         {
             return syntaxProvider.CreateSyntaxProvider(
                 predicate: SyntaxNodeIsTypeDeclarationWithAttributes,
                 transform: candidateTypeDeclarationElseNull
-            ).WhereNotNull().Select(ApplyOutputTransform);
+            ).Select(ApplyOutputTransform);
 
             OutputData? candidateTypeDeclarationElseNull(GeneratorSyntaxContext context, CancellationToken token)
                 => CandidateTypeDeclarationElseNull(attributeStrategy, context, token);
         }
 
-        private TOut ApplyOutputTransform(OutputData result, CancellationToken _)
+        private Optional<TOut> ApplyOutputTransform(OutputData? result, CancellationToken _)
         {
-            return OutputTransform(result.Declaration, result.AttributeSyntax);
+            if (result is null)
+            {
+                return new Optional<TOut>();
+            }
+
+            return OutputTransform(result.Value.Declaration, result.Value.AttributeSyntax);
         }
 
         private static bool SyntaxNodeIsTypeDeclarationWithAttributes(SyntaxNode node, CancellationToken _)

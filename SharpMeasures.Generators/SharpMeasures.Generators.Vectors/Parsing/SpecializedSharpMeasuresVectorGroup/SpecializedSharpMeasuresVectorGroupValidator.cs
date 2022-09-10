@@ -16,7 +16,7 @@ internal interface ISpecializedSharpMeasuresVectorGroupValidationDiagnostics : I
     public abstract Diagnostic? TypeAlreadyUnit(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition);
     public abstract Diagnostic? TypeAlreadyScalar(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition);
     public abstract Diagnostic? TypeAlreadyVector(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition);
-    public abstract Diagnostic? TypeAlreadyVectorGroup(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition);
+    public abstract Diagnostic? TypeAlreadyVectorGroupBase(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition);
     public abstract Diagnostic? OriginalNotVectorGroup(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition);
     public abstract Diagnostic? RootVectorGroupNotResolved(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition);
     public abstract Diagnostic? TypeNotScalar(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition);
@@ -44,7 +44,8 @@ internal class SpecializedSharpMeasuresVectorGroupValidator : IProcesser<ISpecia
         var validity = ValidateTypeNotAlreadyUnit(context, definition)
             .Validate(() => ValidateTypeNotAlreadyScalar(context, definition))
             .Validate(() => ValidateTypeNotAlreadyVector(context, definition))
-            .Validate(() => ValidateTypeNotAlreadyVectorGroup(context, definition))
+            .Validate(() => ValidateTypeNotAlreadyVectorGroupBase(context, definition))
+            .Validate(() => ValidateTypeNotDuplicatelyDefined(context))
             .Validate(() => ValidateOriginalVectorGroupIsVectorGroup(context, definition))
             .Validate(() => ValidateVectorGroupRootResolved(context, definition))
             .Validate(() => ValidateUnitIsUnit(context));
@@ -97,11 +98,18 @@ internal class SpecializedSharpMeasuresVectorGroupValidator : IProcesser<ISpecia
         return ValidityWithDiagnostics.Conditional(typeAlreadyVector is false, () => Diagnostics.TypeAlreadyVector(context, definition));
     }
 
-    private IValidityWithDiagnostics ValidateTypeNotAlreadyVectorGroup(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition)
+    private IValidityWithDiagnostics ValidateTypeNotAlreadyVectorGroupBase(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition)
     {
-        var typeAlreadyVectorGroup = context.VectorPopulation.DuplicatelyDefinedGroups.ContainsKey(context.Type.AsNamedType());
+        var typeAlreadyVectorGroupBase = context.VectorPopulation.GroupSpecializationsAlreadyDefinedAsGroupBases.ContainsKey(context.Type.AsNamedType());
 
-        return ValidityWithDiagnostics.Conditional(typeAlreadyVectorGroup is false, () => Diagnostics.TypeAlreadyVectorGroup(context, definition));
+        return ValidityWithDiagnostics.Conditional(typeAlreadyVectorGroupBase is false, () => Diagnostics.TypeAlreadyVectorGroupBase(context, definition));
+    }
+
+    private static IValidityWithDiagnostics ValidateTypeNotDuplicatelyDefined(ISpecializedSharpMeasuresVectorGroupValidationContext context)
+    {
+        var typeDuplicatelyDefined = context.VectorPopulation.DuplicatelyDefinedGroupSpecializations.ContainsKey(context.Type.AsNamedType());
+
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(typeDuplicatelyDefined is false);
     }
 
     private IValidityWithDiagnostics ValidateOriginalVectorGroupIsVectorGroup(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition)

@@ -41,6 +41,6 @@ public class NormalCases
             public partial class UnitOfSpeed { }
             """;
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfSpeed_Instances.g.cs");
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfSpeed.Instances.g.cs");
     }
 }

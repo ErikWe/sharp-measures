@@ -50,13 +50,13 @@ public static class SimpleTextExpression
     {
         Regex regex = new(expression);
 
-        var match = regex.Match(original);
+        var interpreted = regex.Replace(original, substitution);
 
-        if (match.Success is false)
+        if (interpreted != original)
         {
-            return null;
+            return interpreted;
         }
 
-        return original.Replace(match.Value, substitution);
+        return regex.Match(original).Success ? original : null;
     }
 }

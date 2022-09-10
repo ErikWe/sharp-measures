@@ -13,22 +13,24 @@ using System.Threading;
 
 internal static class ScalarSpecializationResolver
 {
-    public static IncrementalValuesProvider<ResolvedScalarType> Resolve(IncrementalValuesProvider<ScalarSpecializationType> scalarProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
+    public static IncrementalValuesProvider<Optional<ResolvedScalarType>> Resolve(IncrementalValuesProvider<Optional<ScalarSpecializationType>> scalarProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
         IncrementalValueProvider<IScalarPopulationWithData> scalarPopulationProvider)
     {
-        return scalarProvider.Combine(unitPopulationProvider, scalarPopulationProvider).Select(Resolve).WhereResult();
+        return scalarProvider.Combine(unitPopulationProvider, scalarPopulationProvider).Select(Resolve);
     }
 
-    private static Optional<ResolvedScalarType> Resolve((ScalarSpecializationType UnresolvedScalar, IUnitPopulation UnitPopulation, IScalarPopulationWithData ScalarPopulation) input, CancellationToken token)
-        => Resolve(input.UnresolvedScalar, input.UnitPopulation, input.ScalarPopulation, token);
-
-    private static Optional<ResolvedScalarType> Resolve(ScalarSpecializationType scalarType, IUnitPopulation unitPopulation, IScalarPopulationWithData scalarPopulation, CancellationToken token)
+    private static Optional<ResolvedScalarType> Resolve((Optional<ScalarSpecializationType> UnresolvedScalar, IUnitPopulation UnitPopulation, IScalarPopulationWithData ScalarPopulation) input, CancellationToken token)
     {
-        if (token.IsCancellationRequested)
+        if (token.IsCancellationRequested || input.UnresolvedScalar.HasValue is false)
         {
             return new Optional<ResolvedScalarType>();
         }
 
+        return Resolve(input.UnresolvedScalar.Value, input.UnitPopulation, input.ScalarPopulation);
+    }
+
+    private static Optional<ResolvedScalarType> Resolve(ScalarSpecializationType scalarType, IUnitPopulation unitPopulation, IScalarPopulationWithData scalarPopulation)
+    {
         var scalarBase = scalarPopulation.ScalarBases[scalarType.Type.AsNamedType()];
         var unit = unitPopulation.Units[scalarBase.Definition.Unit];
 

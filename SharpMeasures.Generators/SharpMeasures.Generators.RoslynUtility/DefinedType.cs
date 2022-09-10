@@ -18,7 +18,8 @@ public readonly record struct DefinedType(string Name, string Namespace, Accessi
 
     public bool IsReferenceType => IsValueType is false;
 
-    public string FullyQualifiedName => $"global::{(string.IsNullOrEmpty(Namespace) ? string.Empty : $"{Namespace}.")}{Name}";
+    public string QualifiedName => $"{(string.IsNullOrEmpty(Namespace) ? string.Empty : $"{Namespace}.")}{Name}";
+    public string FullyQualifiedName => $"global::{QualifiedName}";
 
     public NamedType AsNamedType() => new(Name, Namespace, IsValueType);
 

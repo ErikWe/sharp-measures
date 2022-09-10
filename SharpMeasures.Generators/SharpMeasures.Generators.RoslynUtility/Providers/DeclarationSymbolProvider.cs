@@ -10,138 +10,80 @@ public readonly record struct DeclarationSymbolProviderData(BaseTypeDeclarationS
 
 public interface IDeclarationSymbolProvider<TIn, TOut>
 {
-    public abstract IncrementalValuesProvider<TOut> Attach(IncrementalValuesProvider<TIn> inputProvider);
+    public abstract IncrementalValuesProvider<Optional<TOut>> Attach(IncrementalValuesProvider<Optional<TIn>> inputProvider);
 }
 
 public interface IPartialDeclarationSymbolProvider<TIn, TOut>
 {
-    public abstract IncrementalValuesProvider<TOut> Attach(IncrementalValuesProvider<TIn> inputProvider, IncrementalValueProvider<Compilation> compilationProvider);
+    public abstract IncrementalValuesProvider<Optional<TOut>> Attach(IncrementalValuesProvider<Optional<TIn>> inputProvider, IncrementalValueProvider<Compilation> compilationProvider);
 }
 
 public static class DeclarationSymbolProvider
 {
-    public delegate DeclarationSymbolProviderData DInputTransform<in TIn>(TIn input);
-    public delegate BaseTypeDeclarationSyntax DPartialInputTransform<in TIn>(TIn input);
-    public delegate TOut DOutputTransform<in TIn, out TOut>(TIn input, INamedTypeSymbol symbol);
+    public delegate DeclarationSymbolProviderData DInputTransform<TIn>(TIn input);
+    public delegate BaseTypeDeclarationSyntax DPartialInputTransform<TIn>(TIn input);
+    public delegate Optional<TOut> DOutputTransform<TIn, TOut>(Optional<TIn> input, INamedTypeSymbol symbol);
 
     private delegate TOut DNullableEraser<TOut, TNullableOut>(TNullableOut? output);
 
-    public static IDeclarationSymbolProvider<TIn, TOut> ConstructForValueType<TIn, TOut>(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
-        where TOut : struct
+    public static IDeclarationSymbolProvider<TIn, TOut> Construct<TIn, TOut>(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
     {
-        return ConstructForValueType(inputTransform, NullifyOutputTransform(outputTransform));
-    }
-
-    public static IDeclarationSymbolProvider<TIn, TOut> ConstructForValueType<TIn, TOut>(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut?> outputTransform)
-        where TOut : struct
-    {
-        return new Provider<TIn, TOut, TOut?>(inputTransform, outputTransform, NullableEraser);
-    }
-
-    public static IDeclarationSymbolProvider<TIn, TOut> ConstructForReferenceType<TIn, TOut>(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
-        where TOut : class
-    {
-        return new Provider<TIn, TOut, TOut>(inputTransform, outputTransform, NullableEraser);
+        return new Provider<TIn, TOut>(inputTransform, outputTransform);
     }
 
     public static IPartialDeclarationSymbolProvider<TDeclaration, (TDeclaration Declaration, INamedTypeSymbol TypeSymbol)> Construct<TDeclaration>()
         where TDeclaration : BaseTypeDeclarationSyntax
     {
-        return ConstructForValueType<TDeclaration, (TDeclaration, INamedTypeSymbol)>(static (declaration, typeSymbol) => (declaration, typeSymbol));
+        return Construct<TDeclaration, (TDeclaration, INamedTypeSymbol)>(outputTransform);
+
+        static Optional<(TDeclaration, INamedTypeSymbol)> outputTransform(Optional<TDeclaration> input, INamedTypeSymbol symbol)
+        {
+            if (input.HasValue is false)
+            {
+                return new Optional<(TDeclaration, INamedTypeSymbol)>();
+            }
+
+            return (input.Value, symbol);
+        }
     }
 
-    public static IPartialDeclarationSymbolProvider<TIn, TOut> ConstructForValueType<TIn, TOut>(DPartialInputTransform<TIn> inputTransform,
-        DOutputTransform<TIn, TOut> outputTransform)
-        where TOut : struct
+    public static IPartialDeclarationSymbolProvider<TIn, TOut> Construct<TIn, TOut>(DPartialInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
     {
-        return ConstructForValueType(inputTransform, NullifyOutputTransform(outputTransform));
+        return new PartialProvider<TIn, TOut>(inputTransform, outputTransform);
     }
 
-    public static IPartialDeclarationSymbolProvider<TIn, TOut> ConstructForValueType<TIn, TOut>(DPartialInputTransform<TIn> inputTransform,
-        DOutputTransform<TIn, TOut?> outputTransform)
-        where TOut : struct
-    {
-        return new PartialProvider<TIn, TOut, TOut?>(inputTransform, outputTransform, NullableEraser);
-    }
-
-    public static IPartialDeclarationSymbolProvider<TIn, TOut> ConstructForReferenceType<TIn, TOut>(DPartialInputTransform<TIn> inputTransform,
-        DOutputTransform<TIn, TOut> outputTransform)
-        where TOut : class
-    {
-        return new PartialProvider<TIn, TOut, TOut>(inputTransform, outputTransform, NullableEraser);
-    }
-
-    public static IPartialDeclarationSymbolProvider<TDeclaration, TOut> ConstructForValueType<TDeclaration, TOut>(DOutputTransform<TDeclaration, TOut> outputTransform)
+    public static IPartialDeclarationSymbolProvider<TDeclaration, TOut> Construct<TDeclaration, TOut>(DOutputTransform<TDeclaration, TOut> outputTransform)
         where TDeclaration : BaseTypeDeclarationSyntax
-        where TOut : struct
     {
-        return ConstructForValueType(NullifyOutputTransform(outputTransform));
-    }
-
-    public static IPartialDeclarationSymbolProvider<TDeclaration, TOut> ConstructForValueType<TDeclaration, TOut>(DOutputTransform<TDeclaration, TOut?> outputTransform)
-        where TDeclaration : BaseTypeDeclarationSyntax
-        where TOut : struct
-    {
-        return new PartialProvider<TDeclaration, TOut, TOut?>(inputTransform, outputTransform, NullableEraser);
+        return new PartialProvider<TDeclaration, TOut>(inputTransform, outputTransform);
 
         static BaseTypeDeclarationSyntax inputTransform(TDeclaration declaration) => declaration;
     }
 
-    public static IPartialDeclarationSymbolProvider<TDeclaration, TOut> ConstructForReferenceType<TDeclaration, TOut>(DOutputTransform<TDeclaration, TOut> outputTransform)
-        where TDeclaration : BaseTypeDeclarationSyntax
-        where TOut : class
-    {
-        return new PartialProvider<TDeclaration, TOut, TOut>(inputTransform, outputTransform, NullableEraser);
-
-        static BaseTypeDeclarationSyntax inputTransform(TDeclaration declaration) => declaration;
-    }
-
-    private static TOut NullableEraser<TOut>(TOut? result) where TOut : struct
-    {
-        return result!.Value;
-    }
-
-    private static TOut NullableEraser<TOut>(TOut? result) where TOut : class
-    {
-        return result!;
-    }
-
-    private static DOutputTransform<TIn, TOut?> NullifyOutputTransform<TIn, TOut>(DOutputTransform<TIn, TOut> outputTransform)
-        where TOut : struct
-    {
-        return toNullable;
-
-        TOut? toNullable(TIn input, INamedTypeSymbol symbol) => outputTransform(input, symbol);
-    }
-
-    private class Provider<TIn, TOut, TNullableOut> : IDeclarationSymbolProvider<TIn, TOut>
+    private class Provider<TIn, TOut> : IDeclarationSymbolProvider<TIn, TOut>
     {
         private DInputTransform<TIn> InputTransform { get; }
-        private DOutputTransform<TIn, TNullableOut> OutputTransform { get; }
+        private DOutputTransform<TIn, TOut> OutputTransform { get; }
 
-        private DNullableEraser<TOut, TNullableOut> NullableEraser { get; }
-
-        public Provider(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TNullableOut> outputTransform, DNullableEraser<TOut, TNullableOut> nullableEraser)
+        public Provider(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
         {
             InputTransform = inputTransform;
             OutputTransform = outputTransform;
-
-            NullableEraser = nullableEraser;
         }
 
-        public IncrementalValuesProvider<TOut> Attach(IncrementalValuesProvider<TIn> inputProvider)
+        public IncrementalValuesProvider<Optional<TOut>> Attach(IncrementalValuesProvider<Optional<TIn>> inputProvider)
         {
-            return inputProvider.Select(ExtractSymbol).Where(IsCorrectlyExtracted).Select(EraseNullable);
+            return inputProvider.Select(ExtractSymbol);
         }
 
-        private TNullableOut? ExtractSymbol(TIn input, CancellationToken token)
+        private Optional<TOut> ExtractSymbol(Optional<TIn> input, CancellationToken token)
         {
-            if (token.IsCancellationRequested)
+            if (token.IsCancellationRequested || input.HasValue is false)
             {
-                return default;
+                return new Optional<TOut>();
             }
 
-            DeclarationSymbolProviderData data = InputTransform(input);
+            DeclarationSymbolProviderData data = InputTransform(input.Value);
 
             SemanticModel semanticModel;
 
@@ -156,43 +98,54 @@ public static class DeclarationSymbolProvider
 
             if (semanticModel.GetDeclaredSymbol(data.TypeDeclaration, token) is INamedTypeSymbol symbol)
             {
-                return OutputTransform(input, symbol);
+                return OutputTransform(input.Value, symbol);
             }
             else
             {
                 return default;
             }
         }
-
-        private bool IsCorrectlyExtracted(TNullableOut? result)
-        {
-            return result is not null;
-        }
-
-        private TOut EraseNullable(TNullableOut? result, CancellationToken _) => NullableEraser(result);
     }
 
-    private sealed class PartialProvider<TIn, TOut, TNullableOut> : IPartialDeclarationSymbolProvider<TIn, TOut>
+    private sealed class PartialProvider<TIn, TOut> : IPartialDeclarationSymbolProvider<TIn, TOut>
     {
-        private Provider<(TIn, Compilation), TOut, TNullableOut> ActualBuilder { get; }
+        private Provider<(TIn, Compilation), TOut> ActualBuilder { get; }
 
         private DPartialInputTransform<TIn> InputTransform { get; }
-        private DOutputTransform<TIn, TNullableOut> OutputTransform { get; }
+        private DOutputTransform<TIn, TOut> OutputTransform { get; }
 
-        public PartialProvider(DPartialInputTransform<TIn> inputTransform, DOutputTransform<TIn, TNullableOut> outputTransform, DNullableEraser<TOut, TNullableOut> nullableEraser)
+        public PartialProvider(DPartialInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
         {
             InputTransform = inputTransform;
             OutputTransform = outputTransform;
 
-            ActualBuilder = new(ConstructInputData, ConstructOutput, nullableEraser);
+            ActualBuilder = new(ConstructInputData, ConstructOutput);
         }
 
-        public IncrementalValuesProvider<TOut> Attach(IncrementalValuesProvider<TIn> inputProvider, IncrementalValueProvider<Compilation> compilationProvider)
+        public IncrementalValuesProvider<Optional<TOut>> Attach(IncrementalValuesProvider<Optional<TIn>> inputProvider, IncrementalValueProvider<Compilation> compilationProvider)
         {
-            return ActualBuilder.Attach(inputProvider.Combine(compilationProvider));
+            return ActualBuilder.Attach(inputProvider.Combine(compilationProvider).Select(transform));
+
+            static Optional<(TIn, Compilation)> transform((Optional<TIn> Input, Compilation Compilation) data, CancellationToken _)
+            {
+                if (data.Input.HasValue is false)
+                {
+                    return new Optional<(TIn, Compilation)>();
+                }
+
+                return (data.Input.Value, data.Compilation);
+            }
         }
 
         private DeclarationSymbolProviderData ConstructInputData((TIn Input, Compilation Compilation) data) => new(InputTransform(data.Input), data.Compilation);
-        private TNullableOut ConstructOutput((TIn Input, Compilation Compilation) data, INamedTypeSymbol symbol) => OutputTransform(data.Input, symbol);
+        private Optional<TOut> ConstructOutput(Optional<(TIn Input, Compilation Compilation)> data, INamedTypeSymbol symbol)
+        {
+            if (data.HasValue is false)
+            {
+                return new Optional<TOut>();
+            }
+
+            return OutputTransform(data.Value.Input, symbol);
+        }
     }
 }

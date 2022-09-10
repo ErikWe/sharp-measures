@@ -10,21 +10,21 @@ using System.Text;
 
 internal static class Execution
 {
-    public static void Execute(SourceProductionContext context, DataModel data)
+    public static void Execute(SourceProductionContext context, Optional<DataModel> data)
     {
-        if (context.CancellationToken.IsCancellationRequested)
+        if (context.CancellationToken.IsCancellationRequested || data.HasValue is false)
         {
             return;
         }
 
-        string source = Composer.Compose(data);
+        string source = Composer.Compose(data.Value);
 
         if (source.Length is 0)
         {
             return;
         }
 
-        context.AddSource($"{data.Vector.Name}_Conversions.g.cs", SourceText.From(source, Encoding.UTF8));
+        context.AddSource($"{data.Value.Vector.QualifiedName}.Conversions.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer

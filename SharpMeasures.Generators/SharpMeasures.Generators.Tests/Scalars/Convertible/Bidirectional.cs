@@ -12,10 +12,10 @@ using Xunit;
 public class Bidirectional
 {
     [Fact]
-    public Task UnbiasedScalar() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(UnbiasedScalarText).VerifyMatchingSourceNames("Distance_Conversions.g.cs", "Length_Conversions.g.cs");
+    public Task UnbiasedScalar() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(UnbiasedScalarText).VerifyMatchingSourceNames("Distance.Conversions.g.cs");
 
     [Fact]
-    public Task BiasedScalar() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedScalarText).VerifyMatchingSourceNames("Temperature2_Conversions.g.cs", "Temperature_Conversions.g.cs");
+    public Task BiasedScalar() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedScalarText).VerifyMatchingSourceNames("Temperature2.Conversions.g.cs");
 
     private static string UnbiasedScalarText => """
         using SharpMeasures.Generators;

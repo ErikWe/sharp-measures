@@ -27,7 +27,7 @@ public class NormalCases
             public partial class UnitOfLength { }
             """;
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfLength_Instances.g.cs");
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfLength.Instances.g.cs");
     }
 
     [Fact]
@@ -46,6 +46,6 @@ public class NormalCases
             public partial class UnitOfLength { }
             """;
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfLength_Instances.g.cs");
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfLength.Instances.g.cs");
     }
 }

@@ -20,16 +20,16 @@ internal class VectorValidator : IVectorValidator
 {
     private IncrementalValueProvider<IVectorPopulationWithData> VectorPopulationProvider { get; }
 
-    private IncrementalValuesProvider<GroupBaseType> GroupBaseProvider { get; }
-    private IncrementalValuesProvider<GroupSpecializationType> GroupSpecializationProvider { get; }
-    private IncrementalValuesProvider<GroupMemberType> GroupMemberProvider { get; }
+    private IncrementalValuesProvider<Optional<GroupBaseType>> GroupBaseProvider { get; }
+    private IncrementalValuesProvider<Optional<GroupSpecializationType>> GroupSpecializationProvider { get; }
+    private IncrementalValuesProvider<Optional<GroupMemberType>> GroupMemberProvider { get; }
 
-    private IncrementalValuesProvider<VectorBaseType> VectorBaseProvider { get; }
-    private IncrementalValuesProvider<VectorSpecializationType> VectorSpecializationProvider { get; }
+    private IncrementalValuesProvider<Optional<VectorBaseType>> VectorBaseProvider { get; }
+    private IncrementalValuesProvider<Optional<VectorSpecializationType>> VectorSpecializationProvider { get; }
 
-    internal VectorValidator(IncrementalValueProvider<IVectorPopulationWithData> vectorPopulationProvider, IncrementalValuesProvider<GroupBaseType> groupBaseProvider,
-        IncrementalValuesProvider<GroupSpecializationType> groupSpecializationProvider, IncrementalValuesProvider<GroupMemberType> groupMemberProvider,
-        IncrementalValuesProvider<VectorBaseType> vectorBaseProvider, IncrementalValuesProvider<VectorSpecializationType> vectorSpecializationProvider)
+    internal VectorValidator(IncrementalValueProvider<IVectorPopulationWithData> vectorPopulationProvider, IncrementalValuesProvider<Optional<GroupBaseType>> groupBaseProvider,
+        IncrementalValuesProvider<Optional<GroupSpecializationType>> groupSpecializationProvider, IncrementalValuesProvider<Optional<GroupMemberType>> groupMemberProvider,
+        IncrementalValuesProvider<Optional<VectorBaseType>> vectorBaseProvider, IncrementalValuesProvider<Optional<VectorSpecializationType>> vectorSpecializationProvider)
     {
         VectorPopulationProvider = vectorPopulationProvider;
 
@@ -51,12 +51,12 @@ internal class VectorValidator : IVectorValidator
         var validatedVectorBases = VectorBaseValidator.Validate(context, VectorBaseProvider, unitPopulationProvider, scalarPopulationProvider, VectorPopulationProvider);
         var validatedVectorSpecializations = VectorSpecializationValidator.Validate(context, VectorSpecializationProvider, unitPopulationProvider, scalarPopulationProvider, VectorPopulationProvider);
 
-        var groupBaseInterfaces = validatedGroupBases.Select(ExtractInterface).Collect();
-        var groupSpecializationInterfaces = validatedGroupSpecializations.Select(ExtractInterface).Collect();
-        var groupMemberInterfaces = validatedGroupMembers.Select(ExtractInterface).Collect();
+        var groupBaseInterfaces = validatedGroupBases.Select(ExtractInterface).CollectResults();
+        var groupSpecializationInterfaces = validatedGroupSpecializations.Select(ExtractInterface).CollectResults();
+        var groupMemberInterfaces = validatedGroupMembers.Select(ExtractInterface).CollectResults();
 
-        var vectorBaseInterfaces = validatedVectorBases.Select(ExtractInterface).Collect();
-        var vectorSpecializationInterfaces = validatedVectorSpecializations.Select(ExtractInterface).Collect();
+        var vectorBaseInterfaces = validatedVectorBases.Select(ExtractInterface).CollectResults();
+        var vectorSpecializationInterfaces = validatedVectorSpecializations.Select(ExtractInterface).CollectResults();
 
         var populationWithData = groupBaseInterfaces.Combine(groupSpecializationInterfaces, groupMemberInterfaces, vectorBaseInterfaces, vectorSpecializationInterfaces).Select(CreatePopulation);
 
@@ -64,12 +64,12 @@ internal class VectorValidator : IVectorValidator
             validatedVectorBases, validatedVectorSpecializations));
     }
 
-    private static IVectorGroupBaseType ExtractInterface(IVectorGroupBaseType groupType, CancellationToken _) => groupType;
-    private static IVectorGroupSpecializationType ExtractInterface(IVectorGroupSpecializationType groupType, CancellationToken _) => groupType;
-    private static IVectorGroupMemberType ExtractInterface(IVectorGroupMemberType groupMemberType, CancellationToken _) => groupMemberType;
+    private static Optional<IVectorGroupBaseType> ExtractInterface(Optional<GroupBaseType> groupType, CancellationToken _) => groupType.HasValue ? groupType.Value : new Optional<IVectorGroupBaseType>();
+    private static Optional<IVectorGroupSpecializationType> ExtractInterface(Optional<GroupSpecializationType> groupType, CancellationToken _) => groupType.HasValue ? groupType.Value : new Optional<IVectorGroupSpecializationType>();
+    private static Optional<IVectorGroupMemberType> ExtractInterface(Optional<GroupMemberType> groupMemberType, CancellationToken _) => groupMemberType.HasValue ? groupMemberType.Value : new Optional<IVectorGroupMemberType>();
 
-    private static IVectorBaseType ExtractInterface(IVectorBaseType vectorType, CancellationToken _) => vectorType;
-    private static IVectorSpecializationType ExtractInterface(IVectorSpecializationType vectorType, CancellationToken _) => vectorType;
+    private static Optional<IVectorBaseType> ExtractInterface(Optional<VectorBaseType> vectorType, CancellationToken _) => vectorType.HasValue ? vectorType.Value : new Optional<IVectorBaseType>();
+    private static Optional<IVectorSpecializationType> ExtractInterface(Optional<VectorSpecializationType> vectorType, CancellationToken _) => vectorType.HasValue ? vectorType.Value : new Optional<IVectorSpecializationType>();
 
     private static IVectorPopulation ReducePopulation(IVectorPopulationWithData vectorPopulation, CancellationToken _) => vectorPopulation;
 

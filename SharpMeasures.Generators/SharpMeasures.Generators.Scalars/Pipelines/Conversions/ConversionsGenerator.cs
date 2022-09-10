@@ -7,20 +7,20 @@ using System.Threading;
 
 internal static class ConversionsGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Scalars.DataModel> modelProvider)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<Scalars.DataModel>> modelProvider)
     {
-        var filteredAndReduced = modelProvider.Select(Reduce).WhereNotNull();
+        var reduced = modelProvider.Select(Reduce);
 
-        context.RegisterSourceOutput(filteredAndReduced, Execution.Execute);
+        context.RegisterSourceOutput(reduced, Execution.Execute);
     }
 
-    private static DataModel? Reduce(Scalars.DataModel model, CancellationToken _)
+    private static Optional<DataModel> Reduce(Optional<Scalars.DataModel> model, CancellationToken _)
     {
-        if (model.Scalar.Conversions.Count is 0)
+        if (model.HasValue is false || model.Value.Scalar.Conversions.Count is 0)
         {
-            return null;
+            return new Optional<DataModel>();
         }
 
-        return new(model.Scalar.Type, model.Scalar.Conversions, model.Documentation);
+        return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Conversions, model.Value.Documentation);
     }
 }

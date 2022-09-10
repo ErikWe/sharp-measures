@@ -7,20 +7,20 @@ using System.Threading;
 
 internal static class DerivationsGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Scalars.DataModel> modelProvider)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<Scalars.DataModel>> modelProvider)
     {
-        var filteredAndReduced = modelProvider.Select(Reduce).WhereNotNull();
+        var reduced = modelProvider.Select(Reduce);
 
-        context.RegisterSourceOutput(filteredAndReduced, Execution.Execute);
+        context.RegisterSourceOutput(reduced, Execution.Execute);
     }
 
-    private static DataModel? Reduce(Scalars.DataModel model, CancellationToken _)
+    private static Optional<DataModel> Reduce(Optional<Scalars.DataModel> model, CancellationToken _)
     {
-        if (model.Scalar.DefinedDerivations.Count is 0 && model.Scalar.InheritedDerivations.Count is 0)
+        if (model.HasValue is false || model.Value.Scalar.DefinedDerivations.Count is 0 && model.Value.Scalar.InheritedDerivations.Count is 0)
         {
-            return null;
+            return new Optional<DataModel>();
         }
 
-        return new(model.Scalar.Type, model.Scalar.DefinedDerivations.Concat(model.Scalar.InheritedDerivations).ToList(), model.ScalarPopulation.OperatorImplementationsByQuantity[model.Scalar.Type.AsNamedType()].ToList(), model.ScalarPopulation, model.Documentation);
+        return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.DefinedDerivations.Concat(model.Value.Scalar.InheritedDerivations).ToList(), model.Value.ScalarPopulation.OperatorImplementationsByQuantity[model.Value.Scalar.Type.AsNamedType()].ToList(), model.Value.ScalarPopulation, model.Value.Documentation);
     }
 }

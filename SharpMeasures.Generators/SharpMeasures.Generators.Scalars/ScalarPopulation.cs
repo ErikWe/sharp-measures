@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Scalars;
+﻿namespace SharpMeasures.Generators.Scalars;
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
@@ -12,51 +12,84 @@ internal class ScalarPopulation : IScalarPopulationWithData
     public IReadOnlyDictionary<NamedType, IScalarBaseType> ScalarBases => scalarBases;
     public IReadOnlyDictionary<NamedType, IScalarType> Scalars => scalars;
 
-    public IReadOnlyDictionary<NamedType, IScalarType> DuplicatelyDefinedScalars => duplicatelyDefinedScalars;
+    public IReadOnlyDictionary<NamedType, IScalarBaseType> DuplicatelyDefinedScalarBases => duplicatelyDefinedScalarBases;
+    public IReadOnlyDictionary<NamedType, IScalarSpecializationType> DuplicatelyDefinedScalarSpecializations => duplicatelyDefinedScalarSpecializations;
+    public IReadOnlyDictionary<NamedType, IScalarSpecializationType> ScalarSpecializationsAlreadyDefinedAsScalarBases => scalarSpecializationsAlreadyDefinedAsScalarBases;
 
     private ReadOnlyEquatableDictionary<NamedType, IScalarBaseType> scalarBases { get; }
     private ReadOnlyEquatableDictionary<NamedType, IScalarType> scalars { get; }
 
-    private ReadOnlyEquatableDictionary<NamedType, IScalarType> duplicatelyDefinedScalars { get; }
+    private ReadOnlyEquatableDictionary<NamedType, IScalarBaseType> duplicatelyDefinedScalarBases { get; }
+    private ReadOnlyEquatableDictionary<NamedType, IScalarSpecializationType> duplicatelyDefinedScalarSpecializations { get; }
+    private ReadOnlyEquatableDictionary<NamedType, IScalarSpecializationType> scalarSpecializationsAlreadyDefinedAsScalarBases { get; }
 
     IReadOnlyDictionary<NamedType, IQuantityBaseType> IQuantityPopulation.QuantityBases => ScalarBases.Transform(static (scalarBase) => scalarBase as IQuantityBaseType);
     IReadOnlyDictionary<NamedType, IQuantityType> IQuantityPopulation.Quantities => Scalars.Transform(static (scalar) => scalar as IQuantityType);
 
-    private ScalarPopulation(IReadOnlyDictionary<NamedType, IScalarBaseType> scalarBases, IReadOnlyDictionary<NamedType, IScalarType> scalars, IReadOnlyDictionary<NamedType, IScalarType> duplicatelyDefinedScalars)
+    private ScalarPopulation(IReadOnlyDictionary<NamedType, IScalarBaseType> scalarBases, IReadOnlyDictionary<NamedType, IScalarType> scalars, IReadOnlyDictionary<NamedType, IScalarBaseType> duplicatelyDefinedScalarBases,
+        IReadOnlyDictionary<NamedType, IScalarSpecializationType> duplicatelyDefinedScalarSpecializations, IReadOnlyDictionary<NamedType, IScalarSpecializationType> scalarSpecializationsAlreadyDefinedAsScalarBases)
     {
         this.scalarBases = scalarBases.AsReadOnlyEquatable();
         this.scalars = scalars.AsReadOnlyEquatable();
 
-        this.duplicatelyDefinedScalars = duplicatelyDefinedScalars.AsReadOnlyEquatable();
+        this.duplicatelyDefinedScalarBases = duplicatelyDefinedScalarBases.AsReadOnlyEquatable();
+        this.duplicatelyDefinedScalarSpecializations = duplicatelyDefinedScalarSpecializations.AsReadOnlyEquatable();
+        this.scalarSpecializationsAlreadyDefinedAsScalarBases = scalarSpecializationsAlreadyDefinedAsScalarBases.AsReadOnlyEquatable();
     }
 
     public static ScalarPopulation Build(IReadOnlyList<IScalarBaseType> scalarBases, IReadOnlyList<IScalarSpecializationType> scalarSpecializations)
     {
         Dictionary<NamedType, IScalarBaseType> scalarBasePopulation = new(scalarBases.Count);
-        Dictionary<NamedType, IScalarType> scalarPopulation = new(scalarBases.Count + scalarSpecializations.Count);
+        Dictionary<NamedType, IScalarSpecializationType> scalarSpecializationPopulation = new(scalarSpecializations.Count);
 
-        Dictionary<NamedType, IScalarType> duplicatePopulation = new();
+        Dictionary<NamedType, IScalarBaseType> duplicateScalarBases = new();
+        Dictionary<NamedType, IScalarSpecializationType> duplicateScalarSpecializations = new();
+        Dictionary<NamedType, IScalarSpecializationType> scalarSpecializationsAlreadyDefinedAsBases = new();
 
-        foreach (var scalar in (scalarBases as IEnumerable<IScalarType>).Concat(scalarSpecializations))
+        foreach (var scalarBase in scalarBases)
         {
-            if (scalarPopulation.TryAdd(scalar.Type.AsNamedType(), scalar))
+            if (scalarBasePopulation.TryAdd(scalarBase.Type.AsNamedType(), scalarBase))
             {
                 continue;
             }
 
-            duplicatePopulation.TryAdd(scalar.Type.AsNamedType(), scalar);
+            duplicateScalarBases.TryAdd(scalarBase.Type.AsNamedType(), scalarBase);
         }
 
-        foreach (var scalarBase in scalarBases)
+        foreach (var scalarSpecialization in scalarSpecializations)
         {
-            scalarBasePopulation.TryAdd(scalarBase.Type.AsNamedType(), scalarBase);
+            if (scalarBasePopulation.ContainsKey(scalarSpecialization.Type.AsNamedType()))
+            {
+                scalarSpecializationsAlreadyDefinedAsBases.TryAdd(scalarSpecialization.Type.AsNamedType(), scalarSpecialization);
+
+                continue;
+            }
+
+            if (scalarSpecializationPopulation.TryAdd(scalarSpecialization.Type.AsNamedType(), scalarSpecialization))
+            {
+                continue;
+            }
+
+            duplicateScalarSpecializations.TryAdd(scalarSpecialization.Type.AsNamedType(), scalarSpecialization);
         }
 
-        var unassignedSpecializations = scalarSpecializations.ToList();
+        Dictionary<NamedType, IScalarType> scalarPopulation = new(scalarBasePopulation.Count + scalarSpecializationPopulation.Count);
+
+        foreach (var keyValue in scalarBasePopulation)
+        {
+            scalarPopulation.Add(keyValue.Key, keyValue.Value);
+        }
+
+        foreach (var keyValue in scalarSpecializationPopulation)
+        {
+            scalarPopulation.Add(keyValue.Key, keyValue.Value);
+        }
+
+        var unassignedSpecializations = scalarSpecializationPopulation.Values.ToList();
 
         iterativelySetBaseScalarForSpecializations();
 
-        return new(scalarBasePopulation, scalarPopulation, duplicatePopulation);
+        return new(scalarBasePopulation, scalarPopulation, duplicateScalarBases, duplicateScalarSpecializations, scalarSpecializationsAlreadyDefinedAsBases);
 
         void iterativelySetBaseScalarForSpecializations()
         {

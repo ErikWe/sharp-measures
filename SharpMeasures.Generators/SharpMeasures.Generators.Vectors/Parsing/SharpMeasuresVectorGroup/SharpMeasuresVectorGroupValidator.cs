@@ -42,6 +42,7 @@ internal class SharpMeasuresVectorGroupValidator : IProcesser<ISharpMeasuresVect
         var validity = ValidateTypeNotAlreadyUnit(context, definition)
             .Validate(() => ValidateTypeNotAlreadyScalar(context, definition))
             .Validate(() => ValidateTypeNotAlreadyVector(context, definition))
+            .Validate(() => ValidateTypeNotDuplicatelyDefined(context))
             .Merge(() => ResolveUnit(context, definition))
             .Reduce();
 
@@ -90,6 +91,13 @@ internal class SharpMeasuresVectorGroupValidator : IProcesser<ISharpMeasuresVect
         var typeAlreadyVector = context.VectorPopulation.Vectors.ContainsKey(context.Type.AsNamedType());
 
         return ValidityWithDiagnostics.Conditional(typeAlreadyVector is false, () => Diagnostics.TypeAlreadyVector(context, definition));
+    }
+
+    private static IValidityWithDiagnostics ValidateTypeNotDuplicatelyDefined(ISharpMeasuresVectorGroupValidationContext context)
+    {
+        var typeDuplicatelyDefined = context.VectorPopulation.DuplicatelyDefinedGroupBases.ContainsKey(context.Type.AsNamedType());
+
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(typeDuplicatelyDefined is false);
     }
 
     private IOptionalWithDiagnostics<IUnitType> ResolveUnit(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition)

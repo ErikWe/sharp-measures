@@ -18,8 +18,8 @@ public interface IDeclarationFilter
 
 public interface IFilteredDeclarationProvider<TData>
 {
-    public abstract IncrementalValuesProvider<TData> AttachWithoutDiagnostics(IncrementalValuesProvider<TData> inputProvider);
-    public abstract IncrementalValuesProvider<TData> AttachAndReport(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<TData> inputProvider);
+    public abstract IncrementalValuesProvider<Optional<TData>> AttachWithoutDiagnostics(IncrementalValuesProvider<Optional<TData>> inputProvider);
+    public abstract IncrementalValuesProvider<Optional<TData>> AttachAndReport(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<TData>> inputProvider);
 }
 
 public static class FilteredDeclarationProvider
@@ -53,39 +53,44 @@ public static class FilteredDeclarationProvider
             Filters = filters;
         }
 
-        public IncrementalValuesProvider<TData> AttachWithoutDiagnostics(IncrementalValuesProvider<TData> inputProvider)
+        public IncrementalValuesProvider<Optional<TData>> AttachWithoutDiagnostics(IncrementalValuesProvider<Optional<TData>> inputProvider)
         {
-            return inputProvider.Where(declarationIsValid);
+            return inputProvider.Select(declarationIsValid);
 
-            bool declarationIsValid(TData input)
+            Optional<TData> declarationIsValid(Optional<TData> input, CancellationToken _)
             {
-                var declaration = InputTransform(input);
+                if (input.HasValue is false)
+                {
+                    return input;
+                }
+
+                var declaration = InputTransform(input.Value);
 
                 foreach (var filter in Filters)
                 {
                     if (filter.CheckValidity(declaration) is false)
                     {
-                        return false;
+                        return new Optional<TData>();
                     }
                 }
 
-                return true;
+                return input;
             }
         }
 
-        public IncrementalValuesProvider<TData> AttachAndReport(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<TData> inputProvider)
+        public IncrementalValuesProvider<Optional<TData>> AttachAndReport(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<TData>> inputProvider)
         {
             return inputProvider.Select(Process).ReportDiagnostics(context);
         }
 
-        protected IOptionalWithDiagnostics<TData> Process(TData input, CancellationToken token)
+        protected IOptionalWithDiagnostics<TData> Process(Optional<TData> input, CancellationToken token)
         {
-            if (token.IsCancellationRequested)
+            if (token.IsCancellationRequested || input.HasValue is false)
             {
                 return OptionalWithDiagnostics.Empty<TData>();
             }
 
-            var declaration = InputTransform(input);
+            var declaration = InputTransform(input.Value);
 
             foreach (var filter in Filters)
             {
@@ -95,7 +100,7 @@ public static class FilteredDeclarationProvider
                 }
             }
 
-            return OptionalWithDiagnostics.Result(input);
+            return OptionalWithDiagnostics.Result(input.Value);
         }
     }
 }

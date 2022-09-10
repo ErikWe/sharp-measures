@@ -19,14 +19,18 @@ using System.Threading;
 internal abstract class AVectorGroupProcesser<TDefinition, TProduct>
     where TDefinition : IVectorGroup
 {
-    public IOptionalWithDiagnostics<TProduct> ParseAndProcess((TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol) input, CancellationToken token) => ParseAndProcess(input.Declaration, input.TypeSymbol, token);
-    private IOptionalWithDiagnostics<TProduct> ParseAndProcess(TypeDeclarationSyntax declaration, INamedTypeSymbol typeSymbol, CancellationToken token)
+    public IOptionalWithDiagnostics<TProduct> ParseAndProcess(Optional<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)> input, CancellationToken token)
     {
-        if (token.IsCancellationRequested)
+        if (token.IsCancellationRequested || input.HasValue is false)
         {
             return OptionalWithDiagnostics.Empty<TProduct>();
         }
 
+        return ParseAndProcess(input.Value.Declaration, input.Value.TypeSymbol);
+    }
+
+    private IOptionalWithDiagnostics<TProduct> ParseAndProcess(TypeDeclarationSyntax declaration, INamedTypeSymbol typeSymbol)
+    {
         var vector = ParseAndProcessVector(typeSymbol);
 
         if (vector.LacksResult)

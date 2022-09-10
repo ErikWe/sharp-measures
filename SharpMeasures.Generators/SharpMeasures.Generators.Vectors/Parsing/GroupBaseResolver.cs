@@ -13,22 +13,32 @@ using System.Threading;
 
 internal static class GroupBaseResolver
 {
-    public static IncrementalValuesProvider<ResolvedGroupType> Resolve(IncrementalValuesProvider<GroupBaseType> vectorProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IVectorPopulationWithData> vectorPopulationProvider)
+    public static IncrementalValuesProvider<Optional<ResolvedGroupType>> Resolve(IncrementalValuesProvider<Optional<GroupBaseType>> vectorProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IVectorPopulationWithData> vectorPopulationProvider)
     {
         return vectorProvider.Combine(unitPopulationProvider, vectorPopulationProvider).Select(Resolve);
     }
 
-    private static ResolvedGroupType Resolve((GroupBaseType UnresolvedVector, IUnitPopulation UnitPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken _)
+    private static Optional<ResolvedGroupType> Resolve((Optional<GroupBaseType> UnresolvedVector, IUnitPopulation UnitPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken token)
     {
-        var unit = input.UnitPopulation.Units[input.UnresolvedVector.Definition.Unit];
+        if (token.IsCancellationRequested || input.UnresolvedVector.HasValue is false)
+        {
+            return new Optional<ResolvedGroupType>();
+        }
 
-        var membersByDimension = ResolveMembers(input.UnresolvedVector, input.VectorPopulation);
+        return Resolve(input.UnresolvedVector.Value, input.UnitPopulation, input.VectorPopulation);
+    }
 
-        var includedUnitInstances = ResolveUnitInclusions(unit, input.UnresolvedVector.UnitInclusions, () => input.UnresolvedVector.UnitExclusions);
+    private static ResolvedGroupType Resolve(GroupBaseType vectorType, IUnitPopulation unitPopulation, IVectorPopulationWithData vectorPopulation)
+    {
+        var unit = unitPopulation.Units[vectorType.Definition.Unit];
 
-        return new(input.UnresolvedVector.Type, input.UnresolvedVector.TypeLocation, input.UnresolvedVector.Definition.Unit, input.UnresolvedVector.Definition.Scalar, input.UnresolvedVector.Definition.ImplementSum,
-            input.UnresolvedVector.Definition.ImplementDifference, input.UnresolvedVector.Definition.Difference, input.UnresolvedVector.Definition.DefaultUnitInstanceName, input.UnresolvedVector.Definition.DefaultUnitInstanceSymbol,
-            membersByDimension, input.UnresolvedVector.Derivations, Array.Empty<IDerivedQuantity>(), input.UnresolvedVector.Conversions, includedUnitInstances, input.UnresolvedVector.Definition.GenerateDocumentation);
+        var membersByDimension = ResolveMembers(vectorType, vectorPopulation);
+
+        var includedUnitInstances = ResolveUnitInclusions(unit, vectorType.UnitInclusions, () => vectorType.UnitExclusions);
+
+        return new(vectorType.Type, vectorType.TypeLocation, vectorType.Definition.Unit, vectorType.Definition.Scalar, vectorType.Definition.ImplementSum,
+            vectorType.Definition.ImplementDifference, vectorType.Definition.Difference, vectorType.Definition.DefaultUnitInstanceName, vectorType.Definition.DefaultUnitInstanceSymbol,
+            membersByDimension, vectorType.Derivations, Array.Empty<IDerivedQuantity>(), vectorType.Conversions, includedUnitInstances, vectorType.Definition.GenerateDocumentation);
     }
 
     private static IReadOnlyList<string> ResolveUnitInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)

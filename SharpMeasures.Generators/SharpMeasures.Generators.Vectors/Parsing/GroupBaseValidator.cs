@@ -23,36 +23,41 @@ using System.Threading;
 
 internal static class GroupBaseValidator
 {
-    public static IncrementalValuesProvider<GroupBaseType> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<GroupBaseType> vectorProvider,
+    public static IncrementalValuesProvider<Optional<GroupBaseType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<GroupBaseType>> vectorProvider,
        IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
        IncrementalValueProvider<IVectorPopulationWithData> vectorPopulationProvider)
     {
         return vectorProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
 
-    private static IOptionalWithDiagnostics<GroupBaseType> Validate((GroupBaseType UnvalidatedVector, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken token)
+    private static IOptionalWithDiagnostics<GroupBaseType> Validate((Optional<GroupBaseType> UnvalidatedVector, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken token)
     {
-        if (token.IsCancellationRequested)
+        if (token.IsCancellationRequested || input.UnvalidatedVector.HasValue is false)
         {
             return OptionalWithDiagnostics.Empty<GroupBaseType>();
         }
 
-        var vector = ValidateVector(input.UnvalidatedVector, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        return Validate(input.UnvalidatedVector.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+    }
+
+    private static IOptionalWithDiagnostics<GroupBaseType> Validate(GroupBaseType vectorType, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulationWithData vectorPopulation)
+    {
+        var vector = ValidateVector(vectorType, unitPopulation, scalarPopulation, vectorPopulation);
 
         if (vector.LacksResult)
         {
             return vector.AsEmptyOptional<GroupBaseType>();
         }
 
-        var derivations = ValidateDerivations(input.UnvalidatedVector, input.ScalarPopulation, input.VectorPopulation);
-        var conversions = ValidateConversions(input.UnvalidatedVector, input.VectorPopulation);
+        var derivations = ValidateDerivations(vectorType, scalarPopulation, vectorPopulation);
+        var conversions = ValidateConversions(vectorType, vectorPopulation);
 
-        var includedUnitInstanceNames = new HashSet<string>(input.UnitPopulation.Units[input.UnvalidatedVector.Definition.Unit].UnitInstancesByName.Keys);
+        var includedUnitInstanceNames = new HashSet<string>(unitPopulation.Units[vectorType.Definition.Unit].UnitInstancesByName.Keys);
 
-        var unitInstanceInclusions = ValidateIncludeUnitInstances(input.UnvalidatedVector, input.UnitPopulation, includedUnitInstanceNames);
-        var unitInstanceExclusions = ValidateExcludeUnitInstances(input.UnvalidatedVector, input.UnitPopulation, includedUnitInstanceNames);
+        var unitInstanceInclusions = ValidateIncludeUnitInstances(vectorType, unitPopulation, includedUnitInstanceNames);
+        var unitInstanceExclusions = ValidateExcludeUnitInstances(vectorType, unitPopulation, includedUnitInstanceNames);
 
-        GroupBaseType product = new(input.UnvalidatedVector.Type, input.UnvalidatedVector.TypeLocation, vector.Result, derivations.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
+        GroupBaseType product = new(vectorType.Type, vectorType.TypeLocation, vector.Result, derivations.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
 
         var allDiagnostics = vector.Concat(derivations).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 

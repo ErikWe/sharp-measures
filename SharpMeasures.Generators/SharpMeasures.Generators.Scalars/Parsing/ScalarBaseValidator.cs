@@ -28,23 +28,25 @@ using System.Threading;
 
 internal static class ScalarBaseValidator
 {
-    public static IncrementalValuesProvider<ScalarBaseType> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<ScalarBaseType> scalarProvider,
+    public static IncrementalValuesProvider<Optional<ScalarBaseType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<ScalarBaseType>> scalarProvider,
         IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulationWithData> scalarPopulationProvider,
         IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
         return scalarProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
 
-    private static IOptionalWithDiagnostics<ScalarBaseType> Validate((ScalarBaseType UnvalidatedScalar, IUnitPopulation UnitPopulation, IScalarPopulationWithData ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
-        => Validate(input.UnvalidatedScalar, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation, token);
-
-    private static IOptionalWithDiagnostics<ScalarBaseType> Validate(ScalarBaseType scalarType, IUnitPopulation unitPopulation, IScalarPopulationWithData scalarPopulation, IVectorPopulation vectorPopulation, CancellationToken token)
+    private static IOptionalWithDiagnostics<ScalarBaseType> Validate((Optional<ScalarBaseType> UnvalidatedScalar, IUnitPopulation UnitPopulation, IScalarPopulationWithData ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
     {
-        if (token.IsCancellationRequested)
+        if (token.IsCancellationRequested || input.UnvalidatedScalar.HasValue is false)
         {
             return OptionalWithDiagnostics.Empty<ScalarBaseType>();
         }
 
+        return Validate(input.UnvalidatedScalar.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+    }
+
+    private static IOptionalWithDiagnostics<ScalarBaseType> Validate(ScalarBaseType scalarType, IUnitPopulation unitPopulation, IScalarPopulationWithData scalarPopulation, IVectorPopulation vectorPopulation)
+    {
         var scalar = ValidateScalar(scalarType, unitPopulation, scalarPopulation, vectorPopulation);
 
         if (scalar.LacksResult)

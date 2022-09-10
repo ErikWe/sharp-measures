@@ -20,16 +20,16 @@ internal class VectorResolver : IVectorResolver
 {
     private IncrementalValueProvider<IVectorPopulationWithData> VectorPopulationProvider { get; }
 
-    private IncrementalValuesProvider<GroupBaseType> GroupBaseProvider { get; }
-    private IncrementalValuesProvider<GroupSpecializationType> GroupSpecializationProvider { get; }
-    private IncrementalValuesProvider<GroupMemberType> GroupMemberProvider { get; }
+    private IncrementalValuesProvider<Optional<GroupBaseType>> GroupBaseProvider { get; }
+    private IncrementalValuesProvider<Optional<GroupSpecializationType>> GroupSpecializationProvider { get; }
+    private IncrementalValuesProvider<Optional<GroupMemberType>> GroupMemberProvider { get; }
 
-    private IncrementalValuesProvider<VectorBaseType> VectorBaseProvider { get; }
-    private IncrementalValuesProvider<VectorSpecializationType> VectorSpecializationProvider { get; }
+    private IncrementalValuesProvider<Optional<VectorBaseType>> VectorBaseProvider { get; }
+    private IncrementalValuesProvider<Optional<VectorSpecializationType>> VectorSpecializationProvider { get; }
 
-    internal VectorResolver(IncrementalValueProvider<IVectorPopulationWithData> vectorPopulationProvider, IncrementalValuesProvider<GroupBaseType> groupBaseProvider,
-        IncrementalValuesProvider<GroupSpecializationType> groupSpecializationProvider, IncrementalValuesProvider<GroupMemberType> groupMemberProvider,
-        IncrementalValuesProvider<VectorBaseType> vectorBaseProvider, IncrementalValuesProvider<VectorSpecializationType> vectorSpecializationProvider)
+    internal VectorResolver(IncrementalValueProvider<IVectorPopulationWithData> vectorPopulationProvider, IncrementalValuesProvider<Optional<GroupBaseType>> groupBaseProvider,
+        IncrementalValuesProvider<Optional<GroupSpecializationType>> groupSpecializationProvider, IncrementalValuesProvider<Optional<GroupMemberType>> groupMemberProvider,
+        IncrementalValuesProvider<Optional<VectorBaseType>> vectorBaseProvider, IncrementalValuesProvider<Optional<VectorSpecializationType>> vectorSpecializationProvider)
     {
         VectorPopulationProvider = vectorPopulationProvider;
 
@@ -51,12 +51,12 @@ internal class VectorResolver : IVectorResolver
         var resolvedVectorBases = VectorBaseResolver.Resolve(VectorBaseProvider, unitPopulationProvider);
         var resolvedVectorSpecializations = VectorSpecializationResolver.Resolve(VectorSpecializationProvider, unitPopulationProvider, VectorPopulationProvider);
 
-        var groupBaseInterfaces = resolvedGroupBases.Select(ExtractInterface).Collect();
-        var groupSpecializationInterfaces = resolvedGroupSpecializations.Select(ExtractInterface).Collect();
-        var groupMemberInterfaces = resolvedGroupMembers.Select(ExtractInterface).Collect();
+        var groupBaseInterfaces = resolvedGroupBases.Select(ExtractInterface).CollectResults();
+        var groupSpecializationInterfaces = resolvedGroupSpecializations.Select(ExtractInterface).CollectResults();
+        var groupMemberInterfaces = resolvedGroupMembers.Select(ExtractInterface).CollectResults();
 
-        var vectorBaseInterfaces = resolvedVectorBases.Select(ExtractInterface).Collect();
-        var vectorSpecializationInterfaces = resolvedVectorSpecializations.Select(ExtractInterface).Collect();
+        var vectorBaseInterfaces = resolvedVectorBases.Select(ExtractInterface).CollectResults();
+        var vectorSpecializationInterfaces = resolvedVectorSpecializations.Select(ExtractInterface).CollectResults();
 
         var populationWithData = groupBaseInterfaces.Combine(groupSpecializationInterfaces, groupMemberInterfaces, vectorBaseInterfaces, vectorSpecializationInterfaces).Select(CreatePopulation);
 
@@ -64,8 +64,8 @@ internal class VectorResolver : IVectorResolver
             resolvedVectorBases, resolvedVectorSpecializations));
     }
 
-    private static IResolvedVectorGroupType ExtractInterface(ResolvedGroupType groupType, CancellationToken _) => groupType;
-    private static IResolvedVectorType ExtractInterface(ResolvedVectorType vectorType, CancellationToken _) => vectorType;
+    private static Optional<IResolvedVectorGroupType> ExtractInterface(Optional<ResolvedGroupType> groupType, CancellationToken _) => groupType.HasValue ? groupType.Value : new Optional<IResolvedVectorGroupType>();
+    private static Optional<IResolvedVectorType> ExtractInterface(Optional<ResolvedVectorType> vectorType, CancellationToken _) => vectorType.HasValue ? vectorType.Value : new Optional<IResolvedVectorType>();
 
     private static IResolvedVectorPopulation CreatePopulation((ImmutableArray<IResolvedVectorGroupType> GroupBases, ImmutableArray<IResolvedVectorGroupType> GroupSpecializations,
         ImmutableArray<IResolvedVectorType> GroupMembers, ImmutableArray<IResolvedVectorType> VectorBases, ImmutableArray<IResolvedVectorType> VectorSpecializations) vectors, CancellationToken _)

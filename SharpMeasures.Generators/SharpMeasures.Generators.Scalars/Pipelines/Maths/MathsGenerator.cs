@@ -6,16 +6,21 @@ using System.Threading;
 
 internal static class MathsGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Scalars.DataModel> modelProvider)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<Scalars.DataModel>> modelProvider)
     {
         var reduced = modelProvider.Select(Reduce);
 
         context.RegisterSourceOutput(reduced, Execution.Execute);
     }
 
-    private static DataModel Reduce(Scalars.DataModel model, CancellationToken _)
+    private static Optional<DataModel> Reduce(Optional<Scalars.DataModel> model, CancellationToken _)
     {
-        return new(model.Scalar.Type, model.Scalar.Unit, model.Scalar.ImplementSum, model.Scalar.ImplementDifference, model.Scalar.Difference, model.Scalar.Reciprocal, model.Scalar.Square, model.Scalar.Cube,
-            model.Scalar.SquareRoot, model.Scalar.CubeRoot, model.Documentation);
+        if (model.HasValue is false)
+        {
+            return new Optional<DataModel>();
+        }
+
+        return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Unit, model.Value.Scalar.ImplementSum, model.Value.Scalar.ImplementDifference, model.Value.Scalar.Difference, model.Value.Scalar.Reciprocal, model.Value.Scalar.Square, model.Value.Scalar.Cube,
+            model.Value.Scalar.SquareRoot, model.Value.Scalar.CubeRoot, model.Value.Documentation);
     }
 }

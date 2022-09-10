@@ -8,19 +8,24 @@ using System.Threading;
 
 internal static class CommonGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Scalars.DataModel> modelProvider)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<Scalars.DataModel>> modelProvider)
     {
         var reduced = modelProvider.Select(Reduce);
 
         context.RegisterSourceOutput(reduced, Execution.Execute);
     }
 
-    private static DataModel Reduce(Scalars.DataModel model, CancellationToken _)
+    private static Optional<DataModel> Reduce(Optional<Scalars.DataModel> model, CancellationToken _)
     {
-        var unit = model.UnitPopulation.Units[model.Scalar.Unit];
+        if (model.HasValue is false)
+        {
+            return new Optional<DataModel>();
+        }
 
-        string unitParameterName = SourceBuildingUtility.ToParameterName(model.Scalar.Unit.Name);
+        var unit = model.Value.UnitPopulation.Units[model.Value.Scalar.Unit];
 
-        return new(model.Scalar.Type, model.Scalar.Unit, unit.Definition.Quantity, unitParameterName, model.Scalar.UseUnitBias, model.Scalar.DefaultUnitInstanceName, model.Scalar.DefaultUnitInstanceSymbol, model.Documentation);
+        string unitParameterName = SourceBuildingUtility.ToParameterName(model.Value.Scalar.Unit.Name);
+
+        return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Unit, unit.Definition.Quantity, unitParameterName, model.Value.Scalar.UseUnitBias, model.Value.Scalar.DefaultUnitInstanceName, model.Value.Scalar.DefaultUnitInstanceSymbol, model.Value.Documentation);
     }
 }

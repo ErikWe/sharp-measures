@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 
 internal class DocumentationFileBuilder
 {
-    public static IResultWithDiagnostics<DocumentationDictionary> Build(IEnumerable<AdditionalText> relevantFiles, IDiagnosticsStrategy diagnosticsStrategy,
+    public static IResultWithDiagnostics<DocumentationDictionary> Build(IEnumerable<Optional<AdditionalText>> relevantFiles, IDiagnosticsStrategy diagnosticsStrategy,
         GlobalAnalyzerConfig configuration)
     {
         Dictionary<string, DocumentationFileBuilder> builders = createBuilders().ToDictionary(static (builder) => builder.Name);
@@ -57,11 +57,11 @@ internal class DocumentationFileBuilder
 
         IEnumerable<DocumentationFileBuilder> createBuilders()
         {
-            foreach (AdditionalText additionalText in relevantFiles)
+            foreach (var additionalText in relevantFiles)
             {
-                if (additionalText.GetText() is SourceText fileText)
+                if (additionalText.HasValue && additionalText.Value.GetText() is SourceText fileText)
                 {
-                    yield return new DocumentationFileBuilder(additionalText, fileText, diagnosticsStrategy, configuration);
+                    yield return new DocumentationFileBuilder(additionalText.Value, fileText, diagnosticsStrategy, configuration);
                 }
             }
         }

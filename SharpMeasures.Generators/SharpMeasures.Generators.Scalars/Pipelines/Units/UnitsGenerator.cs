@@ -7,25 +7,25 @@ using System.Threading;
 
 internal static class UnitsGenerator
 {
-    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Scalars.DataModel> modelProvider)
+    public static void Initialize(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<Scalars.DataModel>> modelProvider)
     {
-        var filteredAndReduced = modelProvider.Select(Reduce).WhereNotNull();
+        var reduced = modelProvider.Select(Reduce);
 
-        context.RegisterSourceOutput(filteredAndReduced, Execution.Execute);
+        context.RegisterSourceOutput(reduced, Execution.Execute);
     }
 
-    private static DataModel? Reduce(Scalars.DataModel model, CancellationToken _)
+    private static Optional<DataModel> Reduce(Optional<Scalars.DataModel> model, CancellationToken _)
     {
-        if (model.Scalar.IncludedUnitBaseInstancesNames.Count is 0 && model.Scalar.IncludedUnitInstanceNames.Count is 0 && model.Scalar.Constants.Count is 0)
+        if (model.HasValue is false || model.Value.Scalar.IncludedUnitBaseInstancesNames.Count is 0 && model.Value.Scalar.IncludedUnitInstanceNames.Count is 0 && model.Value.Scalar.Constants.Count is 0)
         {
-            return null;
+            return new Optional<DataModel>();
         }
 
-        var unit = model.UnitPopulation.Units[model.Scalar.Unit];
+        var unit = model.Value.UnitPopulation.Units[model.Value.Scalar.Unit];
 
-        var includedUnitBaseInstances = model.Scalar.IncludedUnitBaseInstancesNames.Select((unitName) => unit.UnitInstancesByName[unitName]).ToList();
-        var includedUnitInstances = model.Scalar.IncludedUnitInstanceNames.Select((unitName) => unit.UnitInstancesByName[unitName]).ToList();
+        var includedUnitBaseInstances = model.Value.Scalar.IncludedUnitBaseInstancesNames.Select((unitName) => unit.UnitInstancesByName[unitName]).ToList();
+        var includedUnitInstances = model.Value.Scalar.IncludedUnitInstanceNames.Select((unitName) => unit.UnitInstancesByName[unitName]).ToList();
 
-        return new(model.Scalar.Type, model.Scalar.Unit, unit.Definition.Quantity, includedUnitBaseInstances, includedUnitInstances, model.Scalar.Constants, model.Documentation);
+        return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Unit, unit.Definition.Quantity, includedUnitBaseInstances, includedUnitInstances, model.Value.Scalar.Constants, model.Value.Documentation);
     }
 }

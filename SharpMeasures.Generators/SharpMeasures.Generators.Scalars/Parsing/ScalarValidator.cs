@@ -19,11 +19,11 @@ internal class ScalarValidator : IScalarValidator
 {
     private IncrementalValueProvider<IScalarPopulationWithData> ScalarPopulationProvider { get; }
 
-    private IncrementalValuesProvider<ScalarBaseType> ScalarBaseProvider { get; }
-    private IncrementalValuesProvider<ScalarSpecializationType> ScalarSpecializationProvider { get; }
+    private IncrementalValuesProvider<Optional<ScalarBaseType>> ScalarBaseProvider { get; }
+    private IncrementalValuesProvider<Optional<ScalarSpecializationType>> ScalarSpecializationProvider { get; }
 
-    internal ScalarValidator(IncrementalValueProvider<IScalarPopulationWithData> scalarPopulationProvider, IncrementalValuesProvider<ScalarBaseType> scalarBaseProvider,
-        IncrementalValuesProvider<ScalarSpecializationType> scalarSpecializationProvider)
+    internal ScalarValidator(IncrementalValueProvider<IScalarPopulationWithData> scalarPopulationProvider, IncrementalValuesProvider<Optional<ScalarBaseType>> scalarBaseProvider,
+        IncrementalValuesProvider<Optional<ScalarSpecializationType>> scalarSpecializationProvider)
     {
         ScalarPopulationProvider = scalarPopulationProvider;
 
@@ -37,16 +37,16 @@ internal class ScalarValidator : IScalarValidator
         var validatedScalarBases = ScalarBaseValidator.Validate(context, ScalarBaseProvider, unitPopulationProvider, ScalarPopulationProvider, vectorPopulationProvider);
         var validatedScalarSpecializations = ScalarSpecializationValidator.Validate(context, ScalarSpecializationProvider, unitPopulationProvider, ScalarPopulationProvider, vectorPopulationProvider);
 
-        var scalarBaseInterfaces = validatedScalarBases.Select(ExtractInterface).Collect();
-        var scalarSpecializationInterfaces = validatedScalarSpecializations.Select(ExtractInterface).Collect();
+        var scalarBaseInterfaces = validatedScalarBases.Select(ExtractInterface).CollectResults();
+        var scalarSpecializationInterfaces = validatedScalarSpecializations.Select(ExtractInterface).CollectResults();
 
         var populationWithData = scalarBaseInterfaces.Combine(scalarSpecializationInterfaces).Select(CreatePopulation);
 
         return (populationWithData.Select(ReducePopulation), new ScalarResolver(populationWithData, validatedScalarBases, validatedScalarSpecializations));
     }
 
-    private static IScalarBaseType ExtractInterface(IScalarBaseType scalarType, CancellationToken _) => scalarType;
-    private static IScalarSpecializationType ExtractInterface(IScalarSpecializationType scalarType, CancellationToken _) => scalarType;
+    private static Optional<IScalarBaseType> ExtractInterface(Optional<ScalarBaseType> scalarType, CancellationToken _) => scalarType.HasValue ? scalarType.Value : new Optional<IScalarBaseType>();
+    private static Optional<IScalarSpecializationType> ExtractInterface(Optional<ScalarSpecializationType> scalarType, CancellationToken _) => scalarType.HasValue ? scalarType.Value : new Optional<IScalarSpecializationType>();
 
     private static IScalarPopulation ReducePopulation(IScalarPopulationWithData scalarPopulation, CancellationToken _) => scalarPopulation;
 
