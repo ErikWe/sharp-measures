@@ -115,6 +115,13 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
                 continue;
             }
 
+            if (i == parameterSymbols.Length - 1 && parameterSymbols.Length < attributeData.ConstructorArguments.Length)
+            {
+                definition = SetLastConstructorArgument(definition, property, attributeData.ConstructorArguments, i);
+
+                break;
+            }
+
             bool definitelyParams = parameterSymbols[i].IsParams && attributeSyntax.ArgumentList!.Arguments.Count > i + 1 && attributeSyntax.ArgumentList!.Arguments[i + 1].NameColon is null;
 
             definition = SetConstructorArgument(definition, property, attributeData.ConstructorArguments, i);
@@ -133,7 +140,7 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
 
         int argumentIndexOffset = attributeData.ConstructorArguments.Length;
 
-        if (parameterSymbols[attributeData.ConstructorArguments.Length - 1].IsParams && attributeData.ConstructorArguments[attributeData.ConstructorArguments.Length - 1].Kind is TypedConstantKind.Array)
+        if (parameterSymbols[parameterSymbols.Length - 1].IsParams && attributeData.ConstructorArguments[attributeData.ConstructorArguments.Length - 1].Kind is TypedConstantKind.Array)
         {
             argumentIndexOffset += attributeData.ConstructorArguments[attributeData.ConstructorArguments.Length - 1].Values.Length - 1;
         }
@@ -161,6 +168,18 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
         }
 
         return property.Setter(definition, arguments[argumentIndex].Value);
+    }
+
+    private static TDefinition SetLastConstructorArgument(TDefinition definition, IAttributeProperty<TDefinition> property, IReadOnlyList<TypedConstant> arguments, int firstIndex)
+    {
+        object?[] array = new object?[arguments.Count - firstIndex];
+
+        for (int i = 0; i < array.Length; i++)
+        {
+            array[i] = arguments[firstIndex + i].Value;
+        }
+
+        return property.Setter(definition, array);
     }
 
     private static TDefinition SetNamedArgument(TDefinition definition, IAttributeProperty<TDefinition> property, TypedConstant value)

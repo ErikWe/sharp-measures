@@ -2,24 +2,45 @@
 
 using SharpMeasures.Generators.Tests.Verify;
 
-using System.Threading.Tasks;
-
 using VerifyXunit;
 
 using Xunit;
 
 [UsesVerify]
-public class NormalCases
+public class ÏnvalidPermutationsValue
 {
     [Fact]
-    public Task SimpleDerivation() => Verify(SimpleDerivationText);
+    public void Truee() => AssertIdentical(TrueeText);
 
-    [Fact]
-    public Task PermutedDerivation() => Verify(PermutedDerivationText);
+    private static GeneratorVerifier AssertIdentical(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, new GeneratorVerifierSettings(true, false)).AssertIdenticalSources(Identical);
 
-    private static Task Verify(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfSpeed.Derivable.g.cs");
+    private static string TrueeText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+            
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [SharpMeasuresScalar(typeof(UnitOfTime))]
+        public partial class Time { }
+            
+        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        public partial class Speed { }
+            
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+            
+        [SharpMeasuresUnit(typeof(Time))]
+        public partial class UnitOfTime { }
+            
+        [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime), Permutations = truee)]
+        [SharpMeasuresUnit(typeof(Speed))]
+        public partial class UnitOfSpeed { }
+        """;
 
-    private static string SimpleDerivationText => """
+    private static GeneratorVerifier Identical { get; } = GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText);
+
+    private static string IdenticalText => """
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
             
@@ -39,30 +60,6 @@ public class NormalCases
         public partial class UnitOfTime { }
             
         [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-        [SharpMeasuresUnit(typeof(Speed))]
-        public partial class UnitOfSpeed { }
-        """;
-
-    private static string PermutedDerivationText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-            
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-            
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
-        public partial class Time { }
-            
-        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
-        public partial class Speed { }
-            
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-            
-        [SharpMeasuresUnit(typeof(Time))]
-        public partial class UnitOfTime { }
-            
-        [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime), Permutations = true)]
         [SharpMeasuresUnit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;
