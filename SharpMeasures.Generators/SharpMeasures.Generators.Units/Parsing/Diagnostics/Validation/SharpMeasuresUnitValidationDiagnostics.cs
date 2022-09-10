@@ -11,11 +11,6 @@ internal class SharpMeasuresUnitValidationDiagnostics : ISharpMeasuresUnitValida
 
     private SharpMeasuresUnitValidationDiagnostics() { }
 
-    public Diagnostic TypeAlreadyUnit(ISharpMeasuresUnitValidationContext context, SharpMeasuresUnitDefinition definition)
-    {
-        return DiagnosticConstruction.UnitTypeAlreadyDefinedAsUnit(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
-    }
-
     public Diagnostic QuantityNotScalar(ISharpMeasuresUnitValidationContext context, SharpMeasuresUnitDefinition definition)
     {
         return DiagnosticConstruction.TypeNotScalar(definition.Locations.Quantity?.AsRoslynLocation(), definition.Quantity.Name);

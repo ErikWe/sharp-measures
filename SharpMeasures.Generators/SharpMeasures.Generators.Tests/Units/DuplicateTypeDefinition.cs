@@ -2,27 +2,26 @@
 
 using SharpMeasures.Generators.Tests.Verify;
 
-using System.Threading.Tasks;
-
 using VerifyXunit;
 
 using Xunit;
 
 [UsesVerify]
-public class WithinNamespace
+public class DuplicateTypeDefinition
 {
     [Fact]
-    public Task Verify() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text).VerifyMatchingSourceNames("Test.Testing.Tests.UnitTests.UnitOfLength.Common.g.cs");
+    public void AssertNoException() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text, new GeneratorVerifierSettings(true, false)).AssertNoDiagnosticsReported();
 
-    private static string Text => """
-        namespace Test.Testing.Tests.UnitTests;
-
+    private static string Text => $$"""
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
         
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;

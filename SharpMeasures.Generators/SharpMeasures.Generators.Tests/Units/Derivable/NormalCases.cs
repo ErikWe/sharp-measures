@@ -38,7 +38,7 @@ public class NormalCases
             public partial class UnitOfSpeed { }
             """;
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfSpeed_Derivable.g.cs");
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfSpeed.Derivable.g.cs");
     }
 
     [Fact]
@@ -68,6 +68,6 @@ public class NormalCases
             public partial class UnitOfSpeed { }
             """;
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfSpeed_Derivable.g.cs");
+        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfSpeed.Derivable.g.cs");
     }
 }

@@ -69,8 +69,7 @@ public class TypeAlreadyDefined
     private static string SpecializedVectorDefinition { get; } = "SpecializedSharpMeasuresVector(typeof(Displacement2))";
     private static string VectorGroupDefinition { get; } = "SharpMeasuresVectorGroup(typeof(UnitOfLength))";
 
-    private static GeneratorVerifier AssertExactDiagnostics(string source, IEnumerable<string> expectedDiagnostics) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(expectedDiagnostics);
-    private static GeneratorVerifier AssertExactlyTypeAlreadyDefinedDiagnostics(string source) => AssertExactDiagnostics(source, TypeAlreadyDefinedDiagnostics);
+    private static GeneratorVerifier AssertExactlyTypeAlreadyDefinedDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeAlreadyDefinedDiagnostics);
     private static IReadOnlyCollection<string> TypeAlreadyDefinedDiagnostics { get; } = new string[] { DiagnosticIDs.TypeAlreadyDefined };
 
     private static string ScalarText(string otherDefinition) => $$"""

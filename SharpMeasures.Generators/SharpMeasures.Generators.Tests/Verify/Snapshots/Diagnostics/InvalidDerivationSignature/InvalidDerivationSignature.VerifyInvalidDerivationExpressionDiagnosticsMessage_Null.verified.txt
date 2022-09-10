@@ -4,7 +4,7 @@
     Title: Invalid derivation signature,
     Severity: Warning,
     WarningLevel: 1,
-    Location: : (3,43)-(3,47),
+    Location: : (3,36)-(3,40),
     Description: ,
     HelpLink: ,
     MessageFormat: The derivation signature must be defined,

@@ -16,15 +16,23 @@ using VerifyXunit;
 
 using Xunit;
 
+internal readonly record struct GeneratorVerifierSettings(bool AssertNoDiagnosticsFromGeneratedCode, bool AssertNoErrorsOrWarningsFromTestCode)
+{
+    public static GeneratorVerifierSettings Default { get; } = new(true, true);
+}
+
 [UsesVerify]
 internal class GeneratorVerifier
 {
     public static GeneratorVerifier Construct<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator());
-    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator)
+    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator) => Construct(source, generator, GeneratorVerifierSettings.Default);
+
+    public static GeneratorVerifier Construct<TGenerator>(string source, GeneratorVerifierSettings settings) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator(), settings);
+    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator, GeneratorVerifierSettings settings)
     {
         var driver = DriverConstruction.ConstructAndRun(source, generator, ProjectPath.Path + @"\Documentation", out var compilation);
-        
-        return new(source, driver, compilation);
+
+        return new(source, driver, compilation, settings);
     }
 
     private string Source { get; }
@@ -37,7 +45,7 @@ internal class GeneratorVerifier
 
     private ImmutableArray<Diagnostic> Diagnostics => RunResult.Diagnostics;
 
-    private GeneratorVerifier(string source, GeneratorDriver driver, Compilation compilation)
+    private GeneratorVerifier(string source, GeneratorDriver driver, Compilation compilation, GeneratorVerifierSettings settings)
     {
         Source = source;
 
@@ -48,8 +56,22 @@ internal class GeneratorVerifier
 
         OutputCount = Output.Count();
 
-        AssertNoDiagnosticsFromGeneratedCode();
-        AssertNoErrorsOrWarningsFromTestCode();
+        AssertNoGeneratorExceptions();
+
+        if (settings.AssertNoDiagnosticsFromGeneratedCode)
+        {
+            AssertNoDiagnosticsFromGeneratedCode();
+        }
+
+        if (settings.AssertNoErrorsOrWarningsFromTestCode)
+        {
+            AssertNoErrorsOrWarningsFromTestCode();
+        }
+    }
+
+    private void AssertNoGeneratorExceptions()
+    {
+        Assert.Empty(RunResult.Results.Select(static (result) => result.Exception).Where(static (exception) => exception is not null));
     }
 
     private void AssertNoDiagnosticsFromGeneratedCode()
@@ -113,7 +135,7 @@ internal class GeneratorVerifier
         return this;
     }
 
-    public GeneratorVerifier AssertAllListedSourcesNamesGenerated(IEnumerable<string> expectedSourceNames)
+    public GeneratorVerifier AssertAllListedSourceNamesGenerated(IEnumerable<string> expectedSourceNames)
     {
         foreach (string file in expectedSourceNames)
         {
@@ -121,6 +143,11 @@ internal class GeneratorVerifier
         }
 
         return this;
+    }
+
+    public GeneratorVerifier AssertAllListedSourceNamesGenerated(params string[] expectedSourceNames)
+    {
+        return AssertAllListedSourceNamesGenerated(expectedSourceNames as IEnumerable<string>);
     }
 
     public GeneratorVerifier AssertAllListedDiagnosticsIDsReported(IEnumerable<string> expectedDiagnosticIDs)
@@ -131,6 +158,11 @@ internal class GeneratorVerifier
         }
 
         return this;
+    }
+
+    public GeneratorVerifier AssertAllListedDiagnosticsIDsReported(params string[] expectedDiagnosticIDs)
+    {
+        return AssertAllListedDiagnosticsIDsReported(expectedDiagnosticIDs as IEnumerable<string>);
     }
 
     public GeneratorVerifier AssertNoListedSourceNameGenerated(IEnumerable<string> forbiddenSourceNames)
@@ -172,7 +204,7 @@ internal class GeneratorVerifier
 
     public GeneratorVerifier AssertExactlyListedSourceNamesGenerated(IEnumerable<string> expectedSourceNames)
     {
-        AssertAllListedSourcesNamesGenerated(expectedSourceNames);
+        AssertAllListedSourceNamesGenerated(expectedSourceNames);
         Assert.Equal(expectedSourceNames.Count(), OutputCount);
 
         return this;
@@ -232,6 +264,11 @@ internal class GeneratorVerifier
         }
 
         return this;
+    }
+
+    public GeneratorVerifier AssertDiagnosticsLocation(params TextSpan[] expectedLocations)
+    {
+        return AssertDiagnosticsLocation(expectedLocations as IEnumerable<TextSpan>);
     }
 
     public GeneratorVerifier AssertIdenticalSources(GeneratorVerifier expectedSources)
