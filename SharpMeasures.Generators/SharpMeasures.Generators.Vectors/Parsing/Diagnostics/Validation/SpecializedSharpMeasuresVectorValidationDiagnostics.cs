@@ -25,7 +25,7 @@ internal class SpecializedSharpMeasuresVectorValidationDiagnostics : ISpecialize
         return DiagnosticConstruction.VectorTypeAlreadyDefinedAsScalar(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
-    public Diagnostic TypeAlreadyVector(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition)
+    public Diagnostic TypeAlreadyVectorBase(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition)
     {
         return DiagnosticConstruction.VectorTypeAlreadyDefinedAsVector(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }

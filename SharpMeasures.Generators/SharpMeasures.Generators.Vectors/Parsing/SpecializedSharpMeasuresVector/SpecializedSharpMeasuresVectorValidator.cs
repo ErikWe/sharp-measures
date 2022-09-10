@@ -15,7 +15,7 @@ internal interface ISpecializedSharpMeasuresVectorValidationDiagnostics : IDefau
 {
     public abstract Diagnostic? TypeAlreadyUnit(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? TypeAlreadyScalar(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition);
-    public abstract Diagnostic? TypeAlreadyVector(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition);
+    public abstract Diagnostic? TypeAlreadyVectorBase(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? OriginalNotVector(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? RootVectorNotResolved(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition);
     public abstract Diagnostic? VectorNameAndDimensionConflict(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition, int interpretedDimension, int inheritedDimension);
@@ -45,7 +45,8 @@ internal class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpecialized
     {
         var validity = ValidateTypeNotAlreadyUnit(context, definition)
             .Validate(() => ValidateTypeNotAlreadyScalar(context, definition))
-            .Validate(() => ValidateTypeNotAlreadyVector(context, definition))
+            .Validate(() => ValidateTypeNotAlreadyVectorBase(context, definition))
+            .Validate(() => ValidateTypeNotDuplicatelyDefined(context))
             .Validate(() => ValidateOriginalVectorIsVector(context, definition))
             .Validate(() => ValidateVectorRootResolved(context, definition))
             .Validate(() => ValidateNameAndDimensionNotConflicts(context, definition))
@@ -92,11 +93,18 @@ internal class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpecialized
         return ValidityWithDiagnostics.Conditional(typeAlreadyScalar is false, () => Diagnostics.TypeAlreadyScalar(context, definition));
     }
 
-    private IValidityWithDiagnostics ValidateTypeNotAlreadyVector(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition)
+    private IValidityWithDiagnostics ValidateTypeNotAlreadyVectorBase(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition)
     {
-        var typeAlreadyVector = context.VectorPopulation.DuplicatelyDefinedVectors.ContainsKey(context.Type.AsNamedType());
+        var typeAlreadyVectorBase = context.VectorPopulation.VectorSpecializationsAlreadyDefinedAsVectorBases.ContainsKey(context.Type.AsNamedType());
 
-        return ValidityWithDiagnostics.Conditional(typeAlreadyVector is false, () => Diagnostics.TypeAlreadyVector(context, definition));
+        return ValidityWithDiagnostics.Conditional(typeAlreadyVectorBase is false, () => Diagnostics.TypeAlreadyVectorBase(context, definition));
+    }
+
+    private static IValidityWithDiagnostics ValidateTypeNotDuplicatelyDefined(ISpecializedSharpMeasuresVectorValidationContext context)
+    {
+        var typeDuplicatelyDefined = context.VectorPopulation.DuplicatelyDefinedVectorSpecializations.ContainsKey(context.Type.AsNamedType());
+
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(typeDuplicatelyDefined is false);
     }
 
     private IValidityWithDiagnostics ValidateOriginalVectorIsVector(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition)

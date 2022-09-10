@@ -42,6 +42,7 @@ internal class SharpMeasuresVectorValidator : IProcesser<ISharpMeasuresVectorVal
     {
         var validity = ValidateTypeNotAlreadyUnit(context, definition)
             .Validate(() => ValidateTypeNotAlreadyScalar(context, definition))
+            .Validate(() => ValidateTypeNotDuplicatelyDefined(context))
             .Merge(() => ResolveUnit(context, definition))
             .Reduce();
 
@@ -82,6 +83,13 @@ internal class SharpMeasuresVectorValidator : IProcesser<ISharpMeasuresVectorVal
         var typeAlreadyScalar = context.ScalarPopulation.Scalars.ContainsKey(context.Type.AsNamedType());
 
         return ValidityWithDiagnostics.Conditional(typeAlreadyScalar is false, () => Diagnostics.TypeAlreadyScalar(context, definition));
+    }
+
+    private static IValidityWithDiagnostics ValidateTypeNotDuplicatelyDefined(ISharpMeasuresVectorValidationContext context)
+    {
+        var typeDuplicatelyDefined = context.VectorPopulation.DuplicatelyDefinedVectorBases.ContainsKey(context.Type.AsNamedType());
+
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(typeDuplicatelyDefined is false);
     }
 
     private IOptionalWithDiagnostics<IUnitType> ResolveUnit(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition)

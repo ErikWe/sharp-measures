@@ -40,6 +40,7 @@ internal class SharpMeasuresVectorGroupMemberValidator : IValidator<ISharpMeasur
             .Validate(() => ValidateTypeNotAlreadyScalar(context, definition))
             .Validate(() => ValidateTypeNotAlreadyVector(context, definition))
             .Validate(() => ValidateTypeNotAlreadyVectorGroup(context, definition))
+            .Validate(() => ValidateTypeNotDuplicatelyDefined(context))
             .Validate(() => ValidateVectorGroupIsVectorGroup(context, definition))
             .Validate(() => ValidateVectorGroupNotAlreadyHasDimension(context, definition));
     }
@@ -70,6 +71,13 @@ internal class SharpMeasuresVectorGroupMemberValidator : IValidator<ISharpMeasur
         var typeAlreadyVectorGroup = context.VectorPopulation.Groups.ContainsKey(context.Type.AsNamedType());
 
         return ValidityWithDiagnostics.Conditional(typeAlreadyVectorGroup is false, () => Diagnostics.TypeAlreadyVectorGroup(context, definition));
+    }
+
+    private static IValidityWithDiagnostics ValidateTypeNotDuplicatelyDefined(ISharpMeasuresVectorGroupMemberValidationContext context)
+    {
+        var typeDuplicatelyDefined = context.VectorPopulation.DuplicatelyDefinedGroupMembers.ContainsKey(context.Type.AsNamedType());
+
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(typeDuplicatelyDefined is false);
     }
 
     private IValidityWithDiagnostics ValidateVectorGroupIsVectorGroup(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition)

@@ -45,6 +45,7 @@ internal class SharpMeasuresScalarValidator : IProcesser<ISharpMeasuresScalarVal
     public IOptionalWithDiagnostics<SharpMeasuresScalarDefinition> Process(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition)
     {
         var validity = ValidateTypeNotAlreadyUnit(context, definition)
+            .Validate(() => ValidateTypeNotDuplicatelyDefined(context))
             .Merge(() => ResolveUnit(context, definition))
             .Validate((unit) => ValidateUnitNotIncorrectlyUnbiased(context, definition, unit))
             .Reduce();
@@ -88,6 +89,13 @@ internal class SharpMeasuresScalarValidator : IProcesser<ISharpMeasuresScalarVal
         var typeAlreadyUnit = context.UnitPopulation.Units.ContainsKey(context.Type.AsNamedType());
 
         return ValidityWithDiagnostics.Conditional(typeAlreadyUnit is false, () => Diagnostics.TypeAlreadyUnit(context, definition));
+    }
+
+    private static IValidityWithDiagnostics ValidateTypeNotDuplicatelyDefined(ISharpMeasuresScalarValidationContext context)
+    {
+        var typeDuplicatelyDefined = context.ScalarPopulation.DuplicatelyDefinedScalarBases.ContainsKey(context.Type.AsNamedType());
+
+        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(typeDuplicatelyDefined is false);
     }
 
     private IOptionalWithDiagnostics<IUnitType> ResolveUnit(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition)

@@ -30,7 +30,7 @@ internal class SpecializedSharpMeasuresVectorGroupValidationDiagnostics : ISpeci
         return DiagnosticConstruction.VectorGroupTypeAlreadyDefinedAsVector(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
 
-    public Diagnostic TypeAlreadyVectorGroup(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition)
+    public Diagnostic TypeAlreadyVectorGroupBase(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition)
     {
         return DiagnosticConstruction.VectorGroupTypeAlreadyDefinedAsVectorGroup(definition.Locations.AttributeName.AsRoslynLocation(), context.Type.Name);
     }
