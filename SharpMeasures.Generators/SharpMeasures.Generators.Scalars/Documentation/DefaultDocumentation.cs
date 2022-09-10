@@ -233,12 +233,12 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
 
         if (DefaultUnitInstance is not null && DefaultUnitInstanceSymbol is not null)
         {
-            return $"""{commonText} magnitude expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance}"/>, followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
+            return $"""{commonText} magnitude expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance.Name}"/>, followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
         }
 
         if (DefaultUnitInstance is not null)
         {
-            return $"""{commonText} magnitude expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance}"/>.</summary>""";
+            return $"""{commonText} magnitude expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance.Name}"/>.</summary>""";
         }
 
         if (DefaultUnitInstanceSymbol is not null)

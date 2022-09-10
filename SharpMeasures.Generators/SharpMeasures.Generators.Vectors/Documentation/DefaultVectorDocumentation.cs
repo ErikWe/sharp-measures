@@ -260,12 +260,12 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
 
         if (DefaultUnitInstance is not null && DefaultUnitInstanceSymbol is not null)
         {
-            return $"""{commonText} components expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance}"/>, followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
+            return $"""{commonText} components expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance.Name}"/>, followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
         }
 
         if (DefaultUnitInstance is not null)
         {
-            return $"""{commonText} components expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance}"/>.</summary>""";
+            return $"""{commonText} components expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance.Name}"/>.</summary>""";
         }
 
         if (DefaultUnitInstanceSymbol is not null)
