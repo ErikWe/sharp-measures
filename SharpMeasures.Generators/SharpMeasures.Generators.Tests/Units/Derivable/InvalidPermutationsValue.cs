@@ -7,7 +7,7 @@ using VerifyXunit;
 using Xunit;
 
 [UsesVerify]
-public class ÏnvalidPermutationsValue
+public class InvalidPermutationsValue
 {
     [Fact]
     public void Truee() => AssertIdentical(TrueeText);
