@@ -46,8 +46,8 @@
 
     <ItemGroup>
         <None Include="$(OutputPath)\SharpMeasures.Generators.Attributes.dll" Pack="true" PackagePath="lib/netstandard2.0" Visible="true" />
-        <None Include="$(OutputPath)\SharpMeasures.Generators.Attributes.xml" Pack="true" PackagePath="lib/netstandard2.0" Visible="true" />
         <None Remove="bin\Debug\netstandard2.0\\SharpMeasures.Generators.Attributes.xml" />
+        <None Include="$(OutputPath)\SharpMeasures.Generators.Attributes.xml" Pack="true" PackagePath="lib/netstandard2.0" Visible="true" />
     </ItemGroup>
 
     <ItemGroup>
