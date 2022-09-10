@@ -18,7 +18,7 @@ internal static class Execution
 
         string source = Composer.Compose(data.Value);
 
-        context.AddSource($"{data.Value.Scalar.Name}_Vectors.g.cs", SourceText.From(source, Encoding.UTF8));
+        context.AddSource($"{data.Value.Scalar.QualifiedName}.Vectors.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer

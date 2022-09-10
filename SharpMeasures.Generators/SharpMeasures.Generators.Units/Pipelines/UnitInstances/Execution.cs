@@ -21,7 +21,7 @@ internal static class Execution
 
         var source = Composer.Compose(data.Value);
 
-        context.AddSource($"{data.Value.Unit.Name}_Instances.g.cs", SourceText.From(source, Encoding.UTF8));
+        context.AddSource($"{data.Value.Unit.QualifiedName}.Instances.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer

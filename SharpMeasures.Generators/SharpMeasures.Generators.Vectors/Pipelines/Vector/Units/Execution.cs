@@ -20,7 +20,7 @@ internal static class Execution
 
         string source = Composer.Compose(data.Value);
 
-        context.AddSource($"{data.Value.Vector.Name}_Units.g.cs", SourceText.From(source, Encoding.UTF8));
+        context.AddSource($"{data.Value.Vector.QualifiedName}.Units.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer

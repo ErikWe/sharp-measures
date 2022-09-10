@@ -24,7 +24,7 @@ internal static class Execution
 
         string source = Composer.Compose(data.Value);
 
-        context.AddSource($"{data.Value.Scalar.Name}_Derivations.g.cs", SourceText.From(source, Encoding.UTF8));
+        context.AddSource($"{data.Value.Scalar.QualifiedName}.Derivations.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer

@@ -22,7 +22,7 @@ internal static class Execution
 
         string source = Composer.ComposeAndReportDiagnostics(data.Value);
 
-        context.AddSource($"{data.Value.Unit.Name}_Derivable.g.cs", SourceText.From(source, Encoding.UTF8));
+        context.AddSource($"{data.Value.Unit.QualifiedName}.Derivable.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer

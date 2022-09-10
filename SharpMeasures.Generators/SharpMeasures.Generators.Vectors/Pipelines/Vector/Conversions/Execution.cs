@@ -24,7 +24,7 @@ internal static class Execution
             return;
         }
 
-        context.AddSource($"{data.Value.Vector.Name}_Conversions.g.cs", SourceText.From(source, Encoding.UTF8));
+        context.AddSource($"{data.Value.Vector.QualifiedName}.Conversions.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
     private class Composer
