@@ -118,6 +118,7 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
             if (i == parameterSymbols.Length - 1 && parameterSymbols.Length < attributeData.ConstructorArguments.Length)
             {
                 definition = SetLastConstructorArgument(definition, property, attributeData.ConstructorArguments, i);
+                definition = property.Locator(definition, attributeSyntax.ArgumentList!, i, true);
 
                 break;
             }
