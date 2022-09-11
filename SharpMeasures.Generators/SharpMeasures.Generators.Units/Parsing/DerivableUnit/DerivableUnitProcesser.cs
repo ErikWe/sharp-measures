@@ -1,4 +1,4 @@
-namespace SharpMeasures.Generators.Units.Parsing.DerivableUnit;
+﻿namespace SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 
 using Microsoft.CodeAnalysis;
 
@@ -39,7 +39,7 @@ internal interface IDerivableUnitProcessingContext : IProcessingContext
 
 internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProcessingContext, RawDerivableUnitDefinition, DerivableUnitDefinition>
 {
-    private Regex ExpressionQuantityPattern { get; } = new("""{(?'index'[0-9]*)}""", RegexOptions.ExplicitCapture);
+    private Regex ExpressionQuantityPattern { get; } = new("""{(?'index'[0-9]+)}""", RegexOptions.ExplicitCapture);
 
     private IDerivableUnitProcessingDiagnostics Diagnostics { get; }
 

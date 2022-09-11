@@ -29,7 +29,7 @@ public interface IDerivedQuantityProcessingDiagnostics
 
 public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerivedQuantityDefinition, DerivedQuantityDefinition>
 {
-    private Regex ExpressionQuantityPattern { get; } = new("""{(?'index'[0-9]*)}""", RegexOptions.ExplicitCapture);
+    private Regex ExpressionQuantityPattern { get; } = new("""{(?'index'[0-9]+)}""", RegexOptions.ExplicitCapture);
     private Regex ValidExpressionPattern { get; } = new("""^\s*\(*\s*{[01]}\s*\)*\s*[+-/*]\s*\(*\s*{[01]}\s*\)*\s*$""");
 
     private IDerivedQuantityProcessingDiagnostics Diagnostics { get; }
