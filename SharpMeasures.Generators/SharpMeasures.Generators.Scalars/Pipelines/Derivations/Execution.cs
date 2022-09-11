@@ -24,6 +24,11 @@ internal static class Execution
 
         string source = Composer.Compose(data.Value);
 
+        if (source.Length is 0)
+        {
+            return;
+        }
+
         context.AddSource($"{data.Value.Scalar.QualifiedName}.Derivations.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
@@ -44,6 +49,8 @@ internal static class Execution
         private InterfaceCollector InterfaceCollector { get; }
 
         private HashSet<DerivedQuantitySignature> ImplementedSignatures { get; } = new();
+
+        private bool AnyImplementations { get; set; }
 
         private Composer(DataModel data)
         {
@@ -71,6 +78,11 @@ internal static class Execution
 
         private string Retrieve()
         {
+            if (AnyImplementations is false)
+            {
+                return string.Empty;
+            }
+
             return Builder.ToString();
         }
 
@@ -96,8 +108,17 @@ internal static class Execution
         {
             var parameterNames = GetSignatureParameterNames(derivation.Signature);
 
+            var processedExpression = ProcessExpression(derivation, parameterNames);
+
+            if (processedExpression is null)
+            {
+                return;
+            }
+
+            AnyImplementations = true;
+
             var methodNameAndModifiers = $"public static {Data.Scalar.FullyQualifiedName} From";
-            var expression = $"new({ProcessExpression(derivation, parameterNames)})";
+            var expression = $"new({processedExpression})";
 
             foreach ((var permutedSignature, var permutedParameterNames) in GetPermutedSignatures(derivation, parameterNames))
             {
@@ -109,6 +130,8 @@ internal static class Execution
 
         private void AppendOperatorDerivation(Indentation indentation, IOperatorDerivation operatorDerivation)
         {
+            AnyImplementations = true;
+
             SeparationHandler.AddIfNecessary();
 
             var operatorSymbol = GetOperatorSymbol(operatorDerivation.OperatorType);
@@ -225,7 +248,7 @@ internal static class Execution
             }
         }
 
-        private string ProcessExpression(IDerivedQuantity derivation, IEnumerable<string> parameterNames)
+        private string? ProcessExpression(IDerivedQuantity derivation, IEnumerable<string> parameterNames)
         {
             var parameterNameAndQuantity = new string[derivation.Signature.Count];
 
@@ -250,7 +273,14 @@ internal static class Execution
                 index += 1;
             }
 
-            return string.Format(CultureInfo.InvariantCulture, derivation.Expression, parameterNameAndQuantity);
+            try
+            {
+                return string.Format(CultureInfo.InvariantCulture, derivation.Expression, parameterNameAndQuantity);
+            }
+            catch (FormatException)
+            {
+                return null;
+            }
         }
 
         private static IReadOnlyList<string> GetSignatureParameterNames(IReadOnlyList<NamedType> signature)

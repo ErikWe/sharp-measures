@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.Text;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -21,6 +22,11 @@ internal static class Execution
         }
 
         string source = Composer.ComposeAndReportDiagnostics(data.Value);
+
+        if (source.Length is 0)
+        {
+            return;
+        }
 
         context.AddSource($"{data.Value.Unit.QualifiedName}.Derivable.g.cs", SourceText.From(source, Encoding.UTF8));
     }
@@ -42,6 +48,8 @@ internal static class Execution
 
         private HashSet<DerivableUnitSignature> ImplementedSignatures { get; } = new();
 
+        private bool AnyImplementations { get; set; }
+
         private Composer(DataModel data)
         {
             Data = data;
@@ -62,6 +70,11 @@ internal static class Execution
 
         private string Retrieve()
         {
+            if (AnyImplementations is false)
+            {
+                return string.Empty;
+            }
+
             return Builder.ToString();
         }
 
@@ -79,8 +92,15 @@ internal static class Execution
         {
             var parameterNames = GetSignatureParameterNames(definition.Signature);
 
+            var processedExpression = ProcessExpression(definition, parameterNames, Data.UnitPopulation);
+
+            if (processedExpression is null)
+            {
+                return;
+            }
+
             var methodNameAndModifiers = $"public static {Data.Unit.FullyQualifiedName} From";
-            var expression = $"new(new {Data.Quantity.FullyQualifiedName}({ProcessExpression(definition, parameterNames, Data.UnitPopulation)}))";
+            var expression = $"new(new {Data.Quantity.FullyQualifiedName}({processedExpression}))";
 
             foreach ((var permutedSignature, var permutedParameterNames) in GetPermutedSignatures(definition, parameterNames))
             {
@@ -94,6 +114,8 @@ internal static class Execution
             {
                 return;
             }
+
+            AnyImplementations = true;
 
             SeparationHandler.AddIfNecessary();
 
@@ -148,7 +170,7 @@ internal static class Execution
             }
         }
 
-        private static string ProcessExpression(DerivableUnitDefinition definition, IEnumerable<string> parameterNames, IUnitPopulation unitPopulation)
+        private static string? ProcessExpression(DerivableUnitDefinition definition, IEnumerable<string> parameterNames, IUnitPopulation unitPopulation)
         {
             var parameterNameAndQuantity = new string[definition.Signature.Count];
 
@@ -163,7 +185,14 @@ internal static class Execution
                 index += 1;
             }
 
-            return string.Format(CultureInfo.InvariantCulture, definition.Expression, parameterNameAndQuantity);
+            try
+            {
+                return string.Format(CultureInfo.InvariantCulture, definition.Expression, parameterNameAndQuantity);
+            }
+            catch (FormatException)
+            {
+                return null;
+            }
         }
 
         private static IReadOnlyList<string> GetSignatureParameterNames(IReadOnlyList<NamedType> signature)

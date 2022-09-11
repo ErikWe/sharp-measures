@@ -268,11 +268,6 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
             return $"""{commonText} components expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance.Name}"/>.</summary>""";
         }
 
-        if (DefaultUnitInstanceSymbol is not null)
-        {
-            return $"""{commonText} components expressed in an arbitrary unit, follow by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
-        }
-
         return $"""{commonText} components expressed in an arbitrary unit.</summary>""";
     }
 
