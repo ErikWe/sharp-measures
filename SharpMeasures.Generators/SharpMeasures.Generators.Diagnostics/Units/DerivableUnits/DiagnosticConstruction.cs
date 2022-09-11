@@ -50,4 +50,9 @@ public static partial class DiagnosticConstruction
     {
         return Diagnostic.Create(DiagnosticRules.UnmatchedDerivationExpressionUnit, location, requestedIndex.ToString(CultureInfo.InvariantCulture));
     }
+
+    public static Diagnostic ExpressionDoesNotIncludeUnit(Location? location, int index)
+    {
+        return Diagnostic.Create(DiagnosticRules.ExpressionDoesNotIncludeUnit, location, index.ToString(CultureInfo.InvariantCulture));
+    }
 }

@@ -262,4 +262,14 @@ public static partial class DiagnosticRules
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
+
+    public static readonly DiagnosticDescriptor ExpressionDoesNotIncludeQuantity = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.ExpressionDoesNotIncludeQuantity,
+        title: "Quantity is not included in expression",
+        messageFormat: $"The expression does not include the quantity with index {{0}}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
 }

@@ -96,4 +96,14 @@ public static partial class DiagnosticRules
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
+
+    public static readonly DiagnosticDescriptor ExpressionDoesNotIncludeUnit = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.ExpressionDoesNotIncludeUnit,
+        title: "Unit is not included in expression",
+        messageFormat: $"The expression does not include the unit with index {{0}}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
 }

@@ -142,4 +142,9 @@ public static partial class DiagnosticConstruction
     {
         return Diagnostic.Create(DiagnosticRules.UnmatchedDerivationExpressionQuantity, location, index.ToString(CultureInfo.InvariantCulture));
     }
+
+    public static Diagnostic ExpressionDoesNotIncludeQuantity(Location? location, int index)
+    {
+        return Diagnostic.Create(DiagnosticRules.ExpressionDoesNotIncludeQuantity, location, index.ToString(CultureInfo.InvariantCulture));
+    }
 }

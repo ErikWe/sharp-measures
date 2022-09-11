@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures.Generators.Units.Parsing.DerivableUnit;
+namespace SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 
 using Microsoft.CodeAnalysis;
 
@@ -7,6 +7,7 @@ using SharpMeasures.Generators.Diagnostics;
 
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 internal interface IDerivableUnitProcessingDiagnostics
@@ -19,6 +20,7 @@ internal interface IDerivableUnitProcessingDiagnostics
     public abstract Diagnostic? NullExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? EmptyExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? UnmatchedExpressionUnit(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int requestedIndex);
+    public abstract Diagnostic? ExpressionDoesNotIncludeUnit(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int index);
 
     public abstract Diagnostic? NullSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
     public abstract Diagnostic? EmptySignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition);
@@ -126,6 +128,13 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
     {
         var quantityMatches = ExpressionQuantityPattern.Matches(definition.Expression);
 
+        HashSet<int> unincludedUnits = new HashSet<int>();
+
+        for (int i = 0; i < definition.Signature!.Count; i++)
+        {
+            unincludedUnits.Add(i);
+        }
+
         foreach (var quantityMatch in quantityMatches)
         {
             var requestedIndex = int.Parse(((Match)quantityMatch).Groups["index"].Value, CultureInfo.InvariantCulture);
@@ -134,6 +143,15 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
             {
                 return ValidityWithDiagnostics.Invalid(Diagnostics.UnmatchedExpressionUnit(context, definition, requestedIndex));
             }
+
+            unincludedUnits.Remove(requestedIndex);
+        }
+
+        if (unincludedUnits.Count > 0)
+        {
+            List<Diagnostic?> diagnostics = new(unincludedUnits.Select((index) => Diagnostics.ExpressionDoesNotIncludeUnit(context, definition, index)));
+
+            return ValidityWithDiagnostics.Invalid(diagnostics.Where(static (diagnostic) => diagnostic is not null).Select(static (diagnostic) => diagnostic!));
         }
 
         return ValidityWithDiagnostics.Valid;

@@ -43,6 +43,11 @@ internal class DerivableUnitProcessingDiagnostics : IDerivableUnitProcessingDiag
         return DiagnosticConstruction.UnmatchedDerivationExpressionUnit(definition.Locations.Expression?.AsRoslynLocation(), requestedIndex);
     }
 
+    public Diagnostic ExpressionDoesNotIncludeUnit(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int index)
+    {
+        return DiagnosticConstruction.ExpressionDoesNotIncludeUnit(definition.Locations.Expression?.AsRoslynLocation(), index);
+    }
+
     public Diagnostic NullSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition)
     {
         return DiagnosticConstruction.NullDerivationSignature(definition.Locations.SignatureCollection?.AsRoslynLocation());

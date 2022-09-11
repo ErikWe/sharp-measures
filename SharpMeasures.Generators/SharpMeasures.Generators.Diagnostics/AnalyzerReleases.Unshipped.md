@@ -43,6 +43,7 @@ Measures1146 | Usage | Warning | Unit not derivable
 Measures1147 | Usage | Warning | Unit with bias term cannot be derived
 Measures1148 | Usage | Info | Derivation signature is not permutable
 Measures1149 | Usage | Warning | Unmatched derivation expression unit
+Measures1150 | Usage | Warning | Unit is not included in expression
 Measures1200 | Usage | Info | Expected both unit name and symbol
 Measures1201 | Usage | Warning | Quantity group missing root quantity
 Measures1202 | Usage | Info | Difference is disabled but a quantity was specified
@@ -58,6 +59,7 @@ Measures1242 | Usage | Info | Union inclusion stacking mode is redundant
 Measures1260 | Usage | Warning | Derivation operators require exactly two elements
 Measures1261 | Usage | Warning | Expression cannot be implemented with operators
 Measures1262 | Usage | Warning | Unmatched derivation expression quantity
+Measures1263 | Usage | Warning | Quantity is not included in expression
 Measures1420 | Usage | Warning | Invalid vector dimension
 Measures1421 | Usage | Warning | Missing vector dimension
 Measures1422 | Usage | Warning | Vector of unexpected dimension

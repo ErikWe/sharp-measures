@@ -16,6 +16,7 @@ public interface IDerivedQuantityProcessingDiagnostics
     public abstract Diagnostic? NullExpression(IProcessingContext context, RawDerivedQuantityDefinition definition);
     public abstract Diagnostic? EmptyExpression(IProcessingContext context, RawDerivedQuantityDefinition definition);
     public abstract Diagnostic? UnmatchedExpressionQuantity(IProcessingContext context, RawDerivedQuantityDefinition definition, int requestedIndex);
+    public abstract Diagnostic? ExpressionDoesNotIncludeQuantity(IProcessingContext context, RawDerivedQuantityDefinition definition, int index);
 
     public abstract Diagnostic? NullSignature(IProcessingContext context, RawDerivedQuantityDefinition definition);
     public abstract Diagnostic? EmptySignature(IProcessingContext context, RawDerivedQuantityDefinition definition);
@@ -42,9 +43,9 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
     {
         var processedExpression = ValidateExpressionNotNull(context, definition)
             .Validate(() => ValidateExpressionNotEmpty(context, definition))
-            .Merge(() => ProcessExpression(context, definition));
+            .Validate(() => ProcessExpression(context, definition));
 
-        if (processedExpression.LacksResult)
+        if (processedExpression.IsInvalid)
         {
             return processedExpression.AsEmptyOptional<DerivedQuantityDefinition>();
         }
@@ -58,14 +59,14 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
             return processedExpression.AsEmptyOptional<DerivedQuantityDefinition>().AddDiagnostics(processedSignature);
         }
 
-        var processedImplementOperators = ProcessOperatorImplementation(context, definition, processedExpression.Result);
+        var processedImplementOperators = ProcessOperatorImplementation(context, definition);
 
-        return OptionalWithDiagnostics.Result(ProduceResult(definition, processedExpression.Result, processedSignature.Result, processedImplementOperators.Result), processedExpression.Concat(processedSignature).Concat(processedImplementOperators));
+        return OptionalWithDiagnostics.Result(ProduceResult(definition, processedSignature.Result, processedImplementOperators.Result), processedExpression.Concat(processedSignature).Concat(processedImplementOperators));
     }
 
-    private static DerivedQuantityDefinition ProduceResult(RawDerivedQuantityDefinition definition, string expression, IReadOnlyList<NamedType> signature, DerivationOperatorImplementation operatorImplementation)
+    private static DerivedQuantityDefinition ProduceResult(RawDerivedQuantityDefinition definition, IReadOnlyList<NamedType> signature, DerivationOperatorImplementation operatorImplementation)
     {
-        return new(expression, signature, operatorImplementation, definition.Permutations, definition.Locations);
+        return new(definition.Expression!, signature, operatorImplementation, definition.Permutations, definition.Locations);
     }
 
     private IValidityWithDiagnostics ValidateExpressionNotNull(IProcessingContext context, RawDerivedQuantityDefinition definition)
@@ -78,9 +79,16 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
         return ValidityWithDiagnostics.Conditional(definition.Expression!.Length is not 0, () => Diagnostics.NullExpression(context, definition));
     }
 
-    private IOptionalWithDiagnostics<string> ProcessExpression(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    private IValidityWithDiagnostics ProcessExpression(IProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         var quantityMatches = ExpressionQuantityPattern.Matches(definition.Expression);
+
+        HashSet<int> unincludedUnits = new HashSet<int>();
+
+        for (int i = 0; i < definition.Signature!.Count; i++)
+        {
+            unincludedUnits.Add(i);
+        }
 
         foreach (var quantityMatch in quantityMatches)
         {
@@ -88,11 +96,20 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
 
             if (requestedIndex > definition.Signature.Count - 1)
             {
-                return OptionalWithDiagnostics.Empty<string>(Diagnostics.UnmatchedExpressionQuantity(context, definition, requestedIndex));
+                return ValidityWithDiagnostics.Invalid(Diagnostics.UnmatchedExpressionQuantity(context, definition, requestedIndex));
             }
+
+            unincludedUnits.Remove(requestedIndex);
         }
 
-        return OptionalWithDiagnostics.Result(definition.Expression!);
+        if (unincludedUnits.Count > 0)
+        {
+            List<Diagnostic?> diagnostics = new(unincludedUnits.Select((index) => Diagnostics.ExpressionDoesNotIncludeQuantity(context, definition, index)));
+
+            return ValidityWithDiagnostics.Invalid(diagnostics.Where(static (diagnostic) => diagnostic is not null).Select(static (diagnostic) => diagnostic!));
+        }
+
+        return ValidityWithDiagnostics.Valid;
     }
 
     private IValidityWithDiagnostics ValidateSignatureNotNull(IProcessingContext context, RawDerivedQuantityDefinition definition)
@@ -129,11 +146,11 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
         return OptionalWithDiagnostics.Result(signature);
     }
 
-    private IResultWithDiagnostics<DerivationOperatorImplementation> ProcessOperatorImplementation(IProcessingContext context, RawDerivedQuantityDefinition definition, string expression)
+    private IResultWithDiagnostics<DerivationOperatorImplementation> ProcessOperatorImplementation(IProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         var validity = ValidateRecognizedOperatorImplementation(context, definition)
             .Validate(() => ValidateExactlyTwoElementsIfImplementOperators(context, definition))
-            .Validate(() => ValidateExpressionIfImplementOperators(context, definition, expression));
+            .Validate(() => ValidateExpressionIfImplementOperators(context, definition, definition.Expression!));
 
         if (validity.IsInvalid)
         {
