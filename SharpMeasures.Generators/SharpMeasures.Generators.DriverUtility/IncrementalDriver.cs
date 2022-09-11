@@ -26,6 +26,7 @@ public class IncrementalDriver
                 .Select(static (assembly) => MetadataReference.CreateFromFile(assembly.Location))
                 .Cast<MetadataReference>()
         );
+
         var documentID = DocumentId.CreateNewId(projectInfo.Id);
 
         Solution solution = workspace.AddSolution(solutionInfo);
@@ -46,7 +47,7 @@ public class IncrementalDriver
     private Solution Solution { get; set; }
     private DocumentId DocumentID { get; }
 
-    private GeneratorDriver Driver { get; set; }
+    public GeneratorDriver Driver { get; private set; }
 
     private IncrementalDriver(Workspace workspace, Solution solution, DocumentId documentID, GeneratorDriver driver)
     {
@@ -57,7 +58,9 @@ public class IncrementalDriver
         Driver = driver;
     }
 
-    public async void ApplyChange(string updatedText)
+    public async void ApplyChange(string updatedText) => await ApplyChangeAndRetrieveCompilation(updatedText).ConfigureAwait(false);
+
+    public async Task<Compilation?> ApplyChangeAndRetrieveCompilation(string updatedText)
     {
         Solution = Solution.WithDocumentText(DocumentID, SourceText.From(updatedText));
 
@@ -67,9 +70,11 @@ public class IncrementalDriver
 
         if (updatedCompilation is null)
         {
-            return;
+            return null;
         }
 
-        Driver = Driver.RunGenerators(updatedCompilation);
+        Driver = Driver.RunGeneratorsAndUpdateCompilation(updatedCompilation, out updatedCompilation, out _);
+
+        return updatedCompilation;
     }
 }

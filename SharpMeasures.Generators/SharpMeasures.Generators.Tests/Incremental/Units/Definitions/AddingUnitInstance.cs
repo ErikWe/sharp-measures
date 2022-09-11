@@ -1,19 +1,25 @@
-﻿namespace SharpMeasures.Generators.Tests.Incremental.Units;
+﻿namespace SharpMeasures.Generators.Tests.Incremental.Units.Definitions;
 
 using SharpMeasures.Generators.DriverUtility;
+using SharpMeasures.Generators.Tests.Verify;
 
 using Xunit;
 
 public class AddingUnitInstance
 {
     [Fact]
-    public async void Assert()
+    public async void RunTest()
     {
         var driver = await IncrementalDriver.Build(InitialText, ProjectPath.Path + @"\Documentation").ConfigureAwait(false);
 
         driver.ApplyChange(SecondText);
         driver.ApplyChange(ThirdText);
-        driver.ApplyChange(FinalText);
+
+        var compilation = await driver.ApplyChangeAndRetrieveCompilation(FinalText).ConfigureAwait(false);
+
+        Assert.NotNull(compilation);
+
+        GeneratorVerifier.Construct(FinalText, driver.Driver, compilation!);
     }
 
     private static string InitialText { get; } = """

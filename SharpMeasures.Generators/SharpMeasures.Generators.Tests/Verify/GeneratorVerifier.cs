@@ -35,6 +35,9 @@ internal class GeneratorVerifier
         return new(source, driver, compilation, settings);
     }
 
+    public static GeneratorVerifier Construct(string source, GeneratorDriver driver, Compilation compilation) => Construct(source, driver, compilation, GeneratorVerifierSettings.Default);
+    public static GeneratorVerifier Construct(string source, GeneratorDriver driver, Compilation compilation, GeneratorVerifierSettings settings) => new(source, driver, compilation, settings);
+
     private string Source { get; }
 
     private GeneratorDriverRunResult RunResult { get; }

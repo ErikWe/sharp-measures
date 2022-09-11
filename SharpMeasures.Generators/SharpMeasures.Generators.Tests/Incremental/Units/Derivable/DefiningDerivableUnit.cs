@@ -1,11 +1,11 @@
-﻿namespace SharpMeasures.Generators.Tests.Incremental.Units;
+﻿namespace SharpMeasures.Generators.Tests.Incremental.Units.Derivable;
 
 using SharpMeasures.Generators.DriverUtility;
 using SharpMeasures.Generators.Tests.Verify;
 
 using Xunit;
 
-public class DefiningUnit
+public class DefiningDerivableUnit
 {
     [Fact]
     public async void RunTest()
@@ -15,7 +15,6 @@ public class DefiningUnit
         driver.ApplyChange(SecondText);
         driver.ApplyChange(ThirdText);
         driver.ApplyChange(FourthText);
-        driver.ApplyChange(FifthText);
 
         var compilation = await driver.ApplyChangeAndRetrieveCompilation(FinalText).ConfigureAwait(false);
 
@@ -33,12 +32,18 @@ public class DefiningUnit
 
         [SharpMeasuresScalar(typeof(UnitOfTime))]
         public partial class Time { }
-        
+
+        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        public partial class Speed { }
+
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
 
         [SharpMeasuresUnit(typeof(Time))]
-        public partial record 
+        public partial class UnitOfTime { }
+
+        [SharpMeasuresUnit(typeof(Speed))]
+        public partial class UnitOfSpeed { }
         """;
 
     private static string SecondText { get; } = """
@@ -51,11 +56,18 @@ public class DefiningUnit
         [SharpMeasuresScalar(typeof(UnitOfTime))]
         public partial class Time { }
         
+        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        public partial class Speed { }
+        
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         
         [SharpMeasuresUnit(typeof(Time))]
-        public partial record struc
+        public partial class UnitOfTime { }
+        
+        [DerivableUnit("{0} / {1}", typeof(UnitOfLength)]
+        [SharpMeasuresUnit(typeof(Speed))]
+        public partial class UnitOfSpeed { }
         """;
 
     private static string ThirdText { get; } = """
@@ -68,11 +80,18 @@ public class DefiningUnit
         [SharpMeasuresScalar(typeof(UnitOfTime))]
         public partial class Time { }
         
+        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        public partial class Speed { }
+        
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         
         [SharpMeasuresUnit(typeof(Time))]
-        public partial record struct
+        public partial class UnitOfTime { }
+        
+        [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTim), Permutations = true]
+        [SharpMeasuresUnit(typeof(Speed))]
+        public partial class UnitOfSpeed { }
         """;
 
     private static string FourthText { get; } = """
@@ -85,28 +104,18 @@ public class DefiningUnit
         [SharpMeasuresScalar(typeof(UnitOfTime))]
         public partial class Time { }
         
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-        
-        [SharpMeasuresUnit(typeof(Time))]
-        public partial record struct 
-        """;
-
-    private static string FifthText { get; } = """
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Scalars;
-        
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-        
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
-        public partial class Time { }
+        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        public partial class Speed { }
         
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         
         [SharpMeasuresUnit(typeof(Time))]
-        public partial record struct U
+        public partial class UnitOfTime { }
+        
+        [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTim)]
+        [SharpMeasuresUnit(typeof(Speed))]
+        public partial class UnitOfSpeed { }
         """;
 
     private static string FinalText { get; } = """
@@ -119,10 +128,17 @@ public class DefiningUnit
         [SharpMeasuresScalar(typeof(UnitOfTime))]
         public partial class Time { }
         
+        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
+        public partial class Speed { }
+        
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         
         [SharpMeasuresUnit(typeof(Time))]
-        public partial record struct UnitOfTime { }
+        public partial class UnitOfTime { }
+        
+        [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
+        [SharpMeasuresUnit(typeof(Speed))]
+        public partial class UnitOfSpeed { }
         """;
 }
