@@ -31,4 +31,5 @@ public partial class UnitOfLength { }
 
 ## Similar Projects
 
+   - [QuantityTypes](https://github.com/QuantityTypes/QuantityTypes)
    - [UnitsNet](https://github.com/angularsen/UnitsNet)
