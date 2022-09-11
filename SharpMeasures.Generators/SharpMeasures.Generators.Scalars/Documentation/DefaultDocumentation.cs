@@ -27,13 +27,23 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         Type = model.Scalar.Type;
         Unit = model.UnitPopulation.Units[model.Scalar.Unit];
 
-        DefaultUnitInstance = model.Scalar.DefaultUnitInstanceName is not null ? Unit.UnitInstancesByName[model.Scalar.DefaultUnitInstanceName] : null;
+        DefaultUnitInstance = GetDefaultUnitInstance(model);
         DefaultUnitInstanceSymbol = model.Scalar.DefaultUnitInstanceSymbol;
 
         UnitParameterName = SourceBuildingUtility.ToParameterName(Unit.Type.Name);
 
         ExampleUnitBaseInstance = model.Scalar.IncludedUnitBaseInstancesNames.Count > 0 ? Unit.UnitInstancesByName[model.Scalar.IncludedUnitBaseInstancesNames[0]] : null;
         ExampleUnitInstance = model.Scalar.IncludedUnitInstanceNames.Count > 0 ? Unit.UnitInstancesByName[model.Scalar.IncludedUnitInstanceNames[0]] : null;
+    }
+
+    private IUnitInstance? GetDefaultUnitInstance(DataModel model)
+    {
+        if (model.Scalar.DefaultUnitInstanceName is not null && Unit.UnitInstancesByName.TryGetValue(model.Scalar.DefaultUnitInstanceName, out var defaultUnitInstance))
+        {
+            return defaultUnitInstance;
+        }
+
+        return null;
     }
 
     public string Header() => $"""/// <summary>A measure of the scalar quantity {Type.Name}, expressed in {UnitReference}.</summary>""";
@@ -239,11 +249,6 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         if (DefaultUnitInstance is not null)
         {
             return $"""{commonText} magnitude expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance.Name}"/>.</summary>""";
-        }
-
-        if (DefaultUnitInstanceSymbol is not null)
-        {
-            return $"""{commonText} the magnitude expressed in an arbitrary unit, followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
         }
 
         return $"""{commonText} magnitude expressed in an arbitrary unit.</summary>""";
