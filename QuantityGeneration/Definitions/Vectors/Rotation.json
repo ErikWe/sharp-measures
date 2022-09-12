@@ -1,7 +1,0 @@
-{
-    "type": "Vector",
-    "name": "Rotation",
-    "component": "Angle",
-    "dimensionalities": [3],
-    "unit": "[component]"
-}

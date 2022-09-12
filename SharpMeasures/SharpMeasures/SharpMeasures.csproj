@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace>SharpMeasures</RootNamespace>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Title>SharpMeasures</Title>
+        <Description>
+            Introduces physical quantites as explicit types, with support for appropriate mathematical operations.
+        </Description>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <IsPackable>true</IsPackable>
+        <IsPublishable>true</IsPublishable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="SharpMeasures.Base" />
+        <PackageReference Include="SharpMeasures.Generators" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="Documentation/**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <GlobalAnalyzerConfigFiles Include="SharpMeasures.globalconfig" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+</Project>

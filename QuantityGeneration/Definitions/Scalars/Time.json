@@ -1,7 +1,0 @@
-﻿{
-    "type": "Scalar",
-    "name": "Time",
-    "inverse": ["Frequency"],
-    "square": ["TimeSquared"],
-    "unit": "[name]"
-}

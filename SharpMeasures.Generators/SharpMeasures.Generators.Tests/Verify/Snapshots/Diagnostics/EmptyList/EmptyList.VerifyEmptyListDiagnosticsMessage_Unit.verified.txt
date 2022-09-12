@@ -1,0 +1,17 @@
+﻿[
+  {
+    Id: Measures1080,
+    Title: Expected a non-empty list,
+    Severity: Info,
+    WarningLevel: 1,
+    Location: : (4,1)-(4,19),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Expected at least one {0},
+    Message: Expected at least one unit,
+    Category: Usage,
+    CustomTags: [
+      Unnecessary
+    ]
+  }
+]

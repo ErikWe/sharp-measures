@@ -1,0 +1,10 @@
+<Project>
+    
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
+    
+    <ItemGroup>
+        <PackageReference Update="SharpMeasures.Base" Version="0.2.2.34" />
+        <PackageReference Update="SharpMeasures.Generators" Version="0.2.2.65" />
+    </ItemGroup>
+
+</Project>

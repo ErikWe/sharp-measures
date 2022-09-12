@@ -1,9 +1,0 @@
-﻿{
-    "type": "Scalar",
-    "name": "Force",
-    "vector": "[name]",
-    "unit": "[name]",
-    "convertible": [
-        "Weight"
-    ]
-}

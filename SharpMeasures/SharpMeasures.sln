@@ -1,15 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.0.31912.275
+VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures", "SharpMeasures.csproj", "{70351B7B-5E24-472D-9EBB-C71DB755B8C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures", "SharpMeasures\SharpMeasures.csproj", "{A0248445-A835-4D50-BA77-C5CA7ECE89F1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Tests", "..\SharpMeasures.Tests\SharpMeasures.Tests.csproj", "{BCF03527-5C2A-4936-919A-3C01D9F0B281}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMeasures.Benchmarks", "..\SharpMeasures.Benchmark\SharpMeasures.Benchmarks.csproj", "{C7A0D3F2-34FB-434D-963E-92D17D0090DE}"
-EndProject
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "QuantityGeneration", "..\QuantityGeneration\QuantityGeneration.njsproj", "{1530C596-09E1-4F57-A4DA-E13243385FF1}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4C3E395A-B80A-4BE5-B3D3-6D66A5E44567}"
+	ProjectSection(SolutionItems) = preProject
+		..\.editorconfig = ..\.editorconfig
+		Directory.Build.props = Directory.Build.props
+		..\Directory.Build.props = ..\Directory.Build.props
+		..\Directory.Build.targets = ..\Directory.Build.targets
+		Directory.Build.targets = Directory.Build.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,27 +20,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{70351B7B-5E24-472D-9EBB-C71DB755B8C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{70351B7B-5E24-472D-9EBB-C71DB755B8C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{70351B7B-5E24-472D-9EBB-C71DB755B8C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{70351B7B-5E24-472D-9EBB-C71DB755B8C8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BCF03527-5C2A-4936-919A-3C01D9F0B281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BCF03527-5C2A-4936-919A-3C01D9F0B281}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BCF03527-5C2A-4936-919A-3C01D9F0B281}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BCF03527-5C2A-4936-919A-3C01D9F0B281}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C7A0D3F2-34FB-434D-963E-92D17D0090DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C7A0D3F2-34FB-434D-963E-92D17D0090DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C7A0D3F2-34FB-434D-963E-92D17D0090DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C7A0D3F2-34FB-434D-963E-92D17D0090DE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1530C596-09E1-4F57-A4DA-E13243385FF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1530C596-09E1-4F57-A4DA-E13243385FF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1530C596-09E1-4F57-A4DA-E13243385FF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1530C596-09E1-4F57-A4DA-E13243385FF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0248445-A835-4D50-BA77-C5CA7ECE89F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0248445-A835-4D50-BA77-C5CA7ECE89F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0248445-A835-4D50-BA77-C5CA7ECE89F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0248445-A835-4D50-BA77-C5CA7ECE89F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {EA3C98CA-2FC6-4B78-9C3A-6C07616112B6}
+		SolutionGuid = {499624DB-206F-44DE-8ADC-D91BD7B5D4B8}
 	EndGlobalSection
 EndGlobal

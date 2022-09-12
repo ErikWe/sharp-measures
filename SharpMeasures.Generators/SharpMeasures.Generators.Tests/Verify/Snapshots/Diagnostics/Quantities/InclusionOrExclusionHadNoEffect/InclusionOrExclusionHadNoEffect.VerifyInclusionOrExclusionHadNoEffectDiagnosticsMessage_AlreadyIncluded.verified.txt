@@ -1,0 +1,17 @@
+﻿[
+  {
+    Id: Measures1241,
+    Title: Inclusion or exclusion had no effect,
+    Severity: Info,
+    WarningLevel: 1,
+    Location: : (4,27)-(4,34),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Including "{0}" had no effect, as the unit was already included,
+    Message: Including "Metre" had no effect, as the unit was already included,
+    Category: Usage,
+    CustomTags: [
+      Unnecessary
+    ]
+  }
+]

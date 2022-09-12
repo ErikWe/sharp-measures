@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1222,
+    Title: Duplicate name for multiples of constant,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (4,57)-(4,68),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} already defines a constant "{1}",
+    Message: Length already defines a constant "Kilometre",
+    Category: Naming,
+    CustomTags: []
+  }
+]

@@ -1,6 +1,0 @@
-﻿{
-    "type": "Scalar",
-    "name": "SolidAngle",
-    "squareRoot": ["Angle"],
-    "unit": "[name]"
-}

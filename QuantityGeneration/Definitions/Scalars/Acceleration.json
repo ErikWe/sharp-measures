@@ -1,6 +1,0 @@
-﻿{
-    "type": "Scalar",
-    "name": "Acceleration",
-    "vector": "[name]",
-    "unit": "[name]"
-}

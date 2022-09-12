@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1141,
+    Title: Ambiguous unit derivation signature,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (22,1)-(22,20),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} contains multiple derivation definitions, but the ID of the intended derivation was not specified,
+    Message: UnitOfSpeed contains multiple derivation definitions, but the ID of the intended derivation was not specified,
+    Category: Usage,
+    CustomTags: []
+  }
+]

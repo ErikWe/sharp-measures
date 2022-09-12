@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1007,
+    Title: Expected a SharpMeasures quantity,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: : (4,37)-(4,41),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Expected a type decorated with an attribute describing a SharpMeasures quantity, such as SharpMeasures.Generators.Scalars.SharpMeasuresScalar,
+    Message: Expected a type decorated with an attribute describing a SharpMeasures quantity, such as SharpMeasures.Generators.Scalars.SharpMeasuresScalar,
+    Category: Usage,
+    CustomTags: []
+  }
+]

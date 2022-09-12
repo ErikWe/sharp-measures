@@ -1,9 +1,0 @@
-﻿{
-    "type": "Scalar",
-    "name": "SpatialFrequency",
-    "inverse": [
-        "Distance",
-        "Length"
-    ],
-    "unit": "[name]"
-}

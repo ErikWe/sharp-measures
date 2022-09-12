@@ -1,0 +1,17 @@
+﻿[
+  {
+    Id: Measures1081,
+    Title: Item has already been listed,
+    Severity: Info,
+    WarningLevel: 1,
+    Location: : (4,44)-(4,50),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The {0} {1} has already been listed,
+    Message: The quantity Length has already been listed,
+    Category: Usage,
+    CustomTags: [
+      Unnecessary
+    ]
+  }
+]

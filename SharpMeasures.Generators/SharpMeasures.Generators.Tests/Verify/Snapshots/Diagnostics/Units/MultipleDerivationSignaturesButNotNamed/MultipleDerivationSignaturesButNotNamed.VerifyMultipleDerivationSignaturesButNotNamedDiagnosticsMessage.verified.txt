@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1140,
+    Title: Unnamed derivation signature,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (18,1)-(18,14),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The derivation ID must be specified, as {0} defines multiple derivations,
+    Message: The derivation ID must be specified, as UnitOfSpeed defines multiple derivations,
+    Category: Usage,
+    CustomTags: []
+  }
+]

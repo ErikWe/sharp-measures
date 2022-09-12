@@ -1,0 +1,77 @@
+﻿namespace SharpMeasures.Generators.Vectors.Abstraction;
+
+using SharpMeasures.Equatables;
+using SharpMeasures.Generators.Quantities;
+using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
+using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
+
+using System.Collections.Generic;
+using System.Linq;
+
+internal record class AVectorType<TDefinition> : IVectorType
+    where TDefinition : IVector
+{
+    public DefinedType Type { get; }
+    public MinimalLocation TypeLocation { get; }
+
+    public TDefinition Definition { get; }
+
+    public IReadOnlyList<DerivedQuantityDefinition> Derivations => derivations;
+    public IReadOnlyList<VectorConstantDefinition> Constants => constants;
+    public IReadOnlyList<ConvertibleVectorDefinition> Conversions => conversions;
+
+    public IReadOnlyList<IncludeUnitsDefinition> UnitInstanceInclusions => unitInstanceInclusions;
+    public IReadOnlyList<ExcludeUnitsDefinition> UnitInstanceExclusions => unitInstanceExclusions;
+
+    public IReadOnlyDictionary<string, IVectorConstant> ConstantsByName => constantsByName;
+    public IReadOnlyDictionary<string, IVectorConstant> ConstantsByMultiplesName => constantsByMultiplesName;
+
+    private ReadOnlyEquatableList<DerivedQuantityDefinition> derivations { get; }
+    private ReadOnlyEquatableList<VectorConstantDefinition> constants { get; }
+    private ReadOnlyEquatableList<ConvertibleVectorDefinition> conversions { get; }
+
+    private ReadOnlyEquatableList<IncludeUnitsDefinition> unitInstanceInclusions { get; }
+    private ReadOnlyEquatableList<ExcludeUnitsDefinition> unitInstanceExclusions { get; }
+
+    private ReadOnlyEquatableDictionary<string, IVectorConstant> constantsByName { get; }
+    private ReadOnlyEquatableDictionary<string, IVectorConstant> constantsByMultiplesName { get; }
+
+    ISharpMeasuresObject ISharpMeasuresObjectType.Definition => Definition;
+    IQuantity IQuantityType.Definition => Definition;
+    IVector IVectorType.Definition => Definition;
+
+    IReadOnlyList<IDerivedQuantity> IQuantityType.Derivations => Derivations;
+    IReadOnlyList<IVectorConstant> IVectorType.Constants => Constants;
+    IReadOnlyList<IConvertibleQuantity> IQuantityType.Conversions => Conversions;
+
+    IReadOnlyList<IUnitInstanceInclusionList> IQuantityType.UnitInstanceInclusions => UnitInstanceInclusions;
+    IReadOnlyList<IUnitInstanceList> IQuantityType.UnitInstanceExclusions => UnitInstanceExclusions;
+
+    protected AVectorType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<VectorConstantDefinition> constants,
+        IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
+    {
+        Type = type;
+        TypeLocation = typeLocation;
+
+        Definition = definition;
+
+        this.derivations = derivations.AsReadOnlyEquatable();
+        this.constants = constants.AsReadOnlyEquatable();
+        this.conversions = conversions.AsReadOnlyEquatable();
+
+        this.unitInstanceInclusions = unitInstanceInclusions.AsReadOnlyEquatable();
+        this.unitInstanceExclusions = unitInstanceExclusions.AsReadOnlyEquatable();
+
+        constantsByName = ConstructConstantsByNameDictionary();
+        constantsByMultiplesName = ConstructConstantsByMultiplesNameDictionary();
+    }
+
+    private ReadOnlyEquatableDictionary<string, IVectorConstant> ConstructConstantsByNameDictionary()
+        => Constants.ToDictionary(static (constant) => constant.Name, static (constant) => constant as IVectorConstant).AsReadOnlyEquatable();
+
+    private ReadOnlyEquatableDictionary<string, IVectorConstant> ConstructConstantsByMultiplesNameDictionary()
+        => Constants.Where(static (constant) => constant.Multiples is not null).ToDictionary(static (constant) => constant.Multiples!, static (constant) => constant as IVectorConstant).AsReadOnlyEquatable();
+}

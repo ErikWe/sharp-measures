@@ -1,9 +1,0 @@
-﻿{
-    "type": "Scalar",
-    "name": "Area",
-    "squareRoot": [
-        "Length",
-        "Distance"
-    ],
-    "unit": "[name]"
-}

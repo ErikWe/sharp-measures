@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1422,
+    Title: Vector of unexpected dimension,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (4,63)-(4,72),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Expected a vector of dimension {0}, but {1} is of dimension {2},
+    Message: Expected a vector of dimension 3, but Position2 is of dimension 2,
+    Category: Usage,
+    CustomTags: []
+  }
+]

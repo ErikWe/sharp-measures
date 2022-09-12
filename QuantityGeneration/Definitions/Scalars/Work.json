@@ -1,9 +1,0 @@
-﻿{
-    "type": "Scalar",
-    "name": "Work",
-    "unit": "[Energy]",
-    "convertible": [
-        "Energy",
-        "Torque"
-    ]
-}

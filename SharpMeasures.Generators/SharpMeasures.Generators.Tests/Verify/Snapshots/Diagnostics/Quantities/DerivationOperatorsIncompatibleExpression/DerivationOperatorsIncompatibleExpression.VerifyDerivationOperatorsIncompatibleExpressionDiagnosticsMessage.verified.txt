@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1261,
+    Title: Expression cannot be implemented with operators,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (10,95)-(10,133),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Quantity derivation through operators require the expression to involve two quantities, and one of the trivial operators { +, -, *, / },
+    Message: Quantity derivation through operators require the expression to involve two quantities, and one of the trivial operators { +, -, *, / },
+    Category: Usage,
+    CustomTags: []
+  }
+]

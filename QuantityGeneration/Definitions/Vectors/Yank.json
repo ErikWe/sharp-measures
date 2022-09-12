@@ -1,7 +1,0 @@
-{
-    "type": "Vector",
-    "name": "Yank",
-    "component": "[name]",
-    "dimensionalities": [3],
-    "unit": "[component]"
-}

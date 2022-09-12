@@ -1,7 +1,0 @@
-﻿{
-    "type": "Scalar",
-    "name": "Frequency",
-    "inverse": ["Time"],
-    "square": ["FrequencyDrift"],
-    "unit": "[name]"
-}

@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1103,
+    Title: Duplicate unit plural form,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (8,29)-(8,37),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} already defines a unit with plural form "{1}",
+    Message: UnitOfLength already defines a unit with plural form "Meters",
+    Category: Naming,
+    CustomTags: []
+  }
+]

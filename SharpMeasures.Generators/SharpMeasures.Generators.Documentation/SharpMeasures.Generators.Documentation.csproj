@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>SharpMeasures.Generators.Documentation</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SharpMeasures.Generators.Configuration\SharpMeasures.Generators.Configuration.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SharpMeasures.Equatables\SharpMeasures.Equatables.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SharpMeasures.Generators.RoslynUtility\SharpMeasures.Generators.RoslynUtility.csproj" PrivateAssets="all" />
+    </ItemGroup>
+
+</Project>

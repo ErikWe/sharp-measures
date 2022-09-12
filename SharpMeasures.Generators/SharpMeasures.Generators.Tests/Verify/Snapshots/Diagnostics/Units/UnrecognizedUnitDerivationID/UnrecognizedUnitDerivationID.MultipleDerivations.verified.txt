@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1144,
+    Title: Derivation ID not recognized,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (22,58)-(22,61),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} does not define a derivation with ID "{1}",
+    Message: UnitOfSpeed does not define a derivation with ID "3",
+    Category: Usage,
+    CustomTags: []
+  }
+]

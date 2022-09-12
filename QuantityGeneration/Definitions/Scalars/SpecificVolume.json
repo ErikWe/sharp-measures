@@ -1,6 +1,0 @@
-﻿{
-    "type": "Scalar",
-    "name": "SpecificVolume",
-    "inverse": ["Density"],
-    "unit": "[name]"
-}

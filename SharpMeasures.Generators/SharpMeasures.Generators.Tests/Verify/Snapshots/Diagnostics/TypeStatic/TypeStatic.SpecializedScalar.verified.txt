@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1001,
+    Title: Expected a non-static type,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: : (4,28)-(4,35),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The SharpMeasures source generator associated with the attribute {0} requires {1} to be a non-static type,
+    Message: The SharpMeasures source generator associated with the attribute SpecializedSharpMeasuresScalar requires Length2 to be a non-static type,
+    Category: Usage,
+    CustomTags: []
+  }
+]

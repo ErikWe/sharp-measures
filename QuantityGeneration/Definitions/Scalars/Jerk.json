@@ -1,6 +1,0 @@
-﻿{
-    "type": "Scalar",
-    "name": "Jerk",
-    "vector": "[name]",
-    "unit": "[name]"
-}

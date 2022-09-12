@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1440,
+    Title: Invalid dimension of vector constant,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (4,1)-(4,15),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Expected {0} elements, as the dimension of {2} is {0} - but received {1} element(s),
+    Message: Expected 3 elements, as the dimension of Position3 is 3 - but received 0 element(s),
+    Category: Usage,
+    CustomTags: []
+  }
+]

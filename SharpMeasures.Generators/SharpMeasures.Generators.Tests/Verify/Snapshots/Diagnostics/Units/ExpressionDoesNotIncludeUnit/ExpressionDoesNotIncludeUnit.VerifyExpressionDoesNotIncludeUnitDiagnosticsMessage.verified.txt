@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1150,
+    Title: Unit is not included in expression,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (18,15)-(18,18),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The expression does not include the unit with index {0},
+    Message: The expression does not include the unit with index 0,
+    Category: Usage,
+    CustomTags: []
+  }
+]

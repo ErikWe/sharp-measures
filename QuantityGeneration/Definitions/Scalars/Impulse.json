@@ -1,9 +1,0 @@
-﻿{
-    "type": "Scalar",
-    "name": "Impulse",
-    "vector": "[name]",
-    "unit": "[name]",
-    "convertible": [
-        "Momentum"
-    ]
-}

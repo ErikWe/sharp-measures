@@ -1,6 +1,0 @@
-﻿{
-    "type": "Scalar",
-    "name": "SpeedSquared",
-    "squareRoot": ["Speed"],
-    "unit": "VelocitySquared"
-}
