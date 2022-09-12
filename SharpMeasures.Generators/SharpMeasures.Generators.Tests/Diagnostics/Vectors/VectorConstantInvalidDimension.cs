@@ -7,7 +7,6 @@ using SharpMeasures.Generators.Tests.Utility;
 using SharpMeasures.Generators.Tests.Verify;
 
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 using VerifyXunit;
@@ -43,7 +42,6 @@ public class VectorConstantInvalidDimension
     private static TextConfig TwoValues { get; } = new(SourceSubtext.Covered("1, 1", prefix: ", "), false);
     private static TextConfig FourValues { get; } = new(SourceSubtext.Covered("1, 1, 1, 1", prefix: ", "), false);
 
-    [SuppressMessage("Design", "CA1034", Justification = "Test-method argument")]
     public readonly record struct TextConfig(SourceSubtext Text, bool TargetAttribute);
 
     private static GeneratorVerifier AssertExactlyVectorConstantInvalidDimensionDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(VectorConstantInvalidDimensionDiagnostics);

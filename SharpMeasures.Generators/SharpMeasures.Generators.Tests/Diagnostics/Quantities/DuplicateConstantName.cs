@@ -8,7 +8,6 @@ using SharpMeasures.Generators.Tests.Verify;
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
@@ -89,7 +88,6 @@ public class DuplicateConstantName
     private static TextConfig ImplicitMultiplesWithExplicitMultiples { get; } = new("Kilometre2", "MultiplesOfKilometre", "Kilometre", string.Empty, DiagnosticsTarget.Attribute);
     private static TextConfig SingleConstantSameNameAndMultiples { get; } = new("Kilometre2", string.Empty, "Kilometre", "Kilometre", DiagnosticsTarget.Attribute);
 
-    [SuppressMessage("Design", "CA1034", Justification = "Test-method argument")]
     public readonly record struct TextConfig(string FirstSingular, string FirstMultiples, string SecondSingular, string SecondMultiples, DiagnosticsTarget Target);
     public enum DiagnosticsTarget { Singular, Multiples, Attribute }
 

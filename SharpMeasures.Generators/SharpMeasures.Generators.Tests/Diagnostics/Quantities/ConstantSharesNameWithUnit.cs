@@ -8,7 +8,6 @@ using SharpMeasures.Generators.Tests.Verify;
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
@@ -105,7 +104,6 @@ public class ConstantSharesNameWithUnit
     private static TextConfig ExplicitMultiplesWithUnitPlural { get; } = new("Kilometre2", "Kilometres", "Kilometres", DiagnosticsTarget.Multiples);
     private static TextConfig ImplicitMultiplesWithUnitPlural { get; } = new("Kilometre", string.Empty, "MultiplesOfKilometre", DiagnosticsTarget.Attribute);
 
-    [SuppressMessage("Design", "CA1034", Justification = "Test-method argument")]
     public readonly record struct TextConfig(string ConstantSingular, string ConstantMultiples, string UnitPlural, DiagnosticsTarget Target);
     public enum DiagnosticsTarget { Singular, Multiples, Attribute }
 

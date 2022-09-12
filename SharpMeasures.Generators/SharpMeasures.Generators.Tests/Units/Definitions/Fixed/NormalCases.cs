@@ -12,20 +12,17 @@ using Xunit;
 public class NormalCases
 {
     [Fact]
-    public Task SimpleFixedUnitInstance()
-    {
-        var source = """
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-            
-            [FixedUnitInstance("Metre", "Metres")]
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-            """;
+    public Task SimpleFixedUnitInstance() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SimpleFixedUnitInstanceText).VerifyMatchingSourceNames("UnitOfLength.Instances.g.cs");
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfLength.Instances.g.cs");
-    }
+    private static string SimpleFixedUnitInstanceText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+            
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnitInstance("Metre", "Metres")]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }

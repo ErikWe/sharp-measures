@@ -19,42 +19,49 @@ public class DerivationOperatorsIncompatibleExpression
 
     [Theory]
     [MemberData(nameof(InvalidExpressions))]
-    public void Scalar(string signature) => AssertScalar(signature);
+    public void Scalar(TextConfig config) => AssertScalar(config);
 
     [Theory]
     [MemberData(nameof(InvalidExpressions))]
-    public void SpecializedScalar(string signature) => AssertSpecializedScalar(signature);
+    public void SpecializedScalar(TextConfig config) => AssertSpecializedScalar(config);
 
     [Theory]
     [MemberData(nameof(InvalidExpressions))]
-    public void Vector(string signature) => AssertVector(signature);
+    public void Vector(TextConfig config) => AssertVector(config);
 
     [Theory]
     [MemberData(nameof(InvalidExpressions))]
-    public void SpecializedVector(string signature) => AssertSpecializedVector(signature);
+    public void SpecializedVector(TextConfig config) => AssertSpecializedVector(config);
 
     [Theory]
     [MemberData(nameof(InvalidExpressions))]
-    public void VectorGroup(string signature) => AssertVectorGroup(signature);
+    public void VectorGroup(TextConfig config) => AssertVectorGroup(config);
 
     [Theory]
     [MemberData(nameof(InvalidExpressions))]
-    public void SpecializedVectorGroup(string signature) => AssertSpecializedVectorGroup(signature);
+    public void SpecializedVectorGroup(TextConfig config) => AssertSpecializedVectorGroup(config);
 
     [Theory]
     [MemberData(nameof(InvalidExpressions))]
-    public void VectorGroupMember(string signature) => AssertVectorGroupMember(signature);
+    public void VectorGroupMember(TextConfig config) => AssertVectorGroupMember(config);
 
     public static IEnumerable<object[]> InvalidExpressions() => new object[][]
     {
-        new[] { OneElementTwiceAndOtherOnce }
+        new object[] { OneElementOnce },
+        new object[] { OneElementTwice },
+        new object[] { OneElementTwiceAndOtherOnce }
     };
-    private static string OneElementTwiceAndOtherOnce => "\"{0} * {0} / {1}\"";
+
+    private static TextConfig OneElementOnce => new("\"{0}\"", "typeof(Height)");
+    private static TextConfig OneElementTwice => new("\"{0} * {0}\"", "typeof(Height)");
+    private static TextConfig OneElementTwiceAndOtherOnce => new("\"{0} * {0} / {1}\"", "typeof(Height), typeof(Distance)");
+
+    public readonly record struct TextConfig(string Expression, string Signature);
 
     private static GeneratorVerifier AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DerivationOperatorsIncompatibleExpressionDiagnostics);
     private static IReadOnlyCollection<string> DerivationOperatorsIncompatibleExpressionDiagnostics { get; } = new string[] { DiagnosticIDs.DerivationOperatorsIncompatibleExpression };
 
-    private static string ScalarText(string expression) => $$"""
+    private static string ScalarText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -65,7 +72,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{expression}}, typeof(Height), typeof(Distance), OperatorImplementation = DerivationOperatorImplementation.Exact)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.Exact)]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
@@ -73,15 +80,15 @@ public class DerivationOperatorsIncompatibleExpression
         public partial class UnitOfLength { }
         """;
 
-    private static GeneratorVerifier AssertScalar(string expression)
+    private static GeneratorVerifier AssertScalar(TextConfig config)
     {
-        var source = ScalarText(expression);
+        var source = ScalarText(config);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.Exact", prefix: "OperatorImplementation = ");
 
-        return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ScalarIdentical(expression));
+        return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ScalarIdentical(config));
     }
 
-    private static string SpecializedScalarText(string expression) => $$"""
+    private static string SpecializedScalarText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -92,7 +99,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{expression}}, typeof(Height), typeof(Distance), OperatorImplementation = DerivationOperatorImplementation.Exact)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.Exact)]
         [SpecializedSharpMeasuresScalar(typeof(Length2))]
         public partial class Length { }
 
@@ -103,15 +110,15 @@ public class DerivationOperatorsIncompatibleExpression
         public partial class UnitOfLength { }
         """;
 
-    private static GeneratorVerifier AssertSpecializedScalar(string expression)
+    private static GeneratorVerifier AssertSpecializedScalar(TextConfig config)
     {
-        var source = SpecializedScalarText(expression);
+        var source = SpecializedScalarText(config);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.Exact", prefix: "OperatorImplementation = ");
 
-        return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical(expression));
+        return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical(config));
     }
 
-    private static string VectorText(string expression) => $$"""
+    private static string VectorText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -123,7 +130,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{expression}}, typeof(Height), typeof(Distance), OperatorImplementation = DerivationOperatorImplementation.Exact)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.Exact)]
         [SharpMeasuresVector(typeof(UnitOfLength))]
         public partial class Position3 { }
 
@@ -134,15 +141,15 @@ public class DerivationOperatorsIncompatibleExpression
         public partial class UnitOfLength { }
         """;
 
-    private static GeneratorVerifier AssertVector(string expression)
+    private static GeneratorVerifier AssertVector(TextConfig config)
     {
-        var source = VectorText(expression);
+        var source = VectorText(config);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.Exact", prefix: "OperatorImplementation = ");
 
-        return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical(expression));
+        return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical(config));
     }
 
-    private static string SpecializedVectorText(string expression) => $$"""
+    private static string SpecializedVectorText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -154,7 +161,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{expression}}, typeof(Height), typeof(Distance), OperatorImplementation = DerivationOperatorImplementation.Exact)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.Exact)]
         [SpecializedSharpMeasuresVector(typeof(Position3))]
         public partial class Displacement3 { }
 
@@ -168,15 +175,15 @@ public class DerivationOperatorsIncompatibleExpression
         public partial class UnitOfLength { }
         """;
 
-    private static GeneratorVerifier AssertSpecializedVector(string expression)
+    private static GeneratorVerifier AssertSpecializedVector(TextConfig config)
     {
-        var source = SpecializedVectorText(expression);
+        var source = SpecializedVectorText(config);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.Exact", prefix: "OperatorImplementation = ");
 
-        return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical(expression));
+        return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical(config));
     }
 
-    private static string VectorGroupText(string expression) => $$"""
+    private static string VectorGroupText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -188,7 +195,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{expression}}, typeof(Height), typeof(Distance), OperatorImplementation = DerivationOperatorImplementation.Exact)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.Exact)]
         [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
@@ -199,15 +206,15 @@ public class DerivationOperatorsIncompatibleExpression
         public partial class UnitOfLength { }
         """;
 
-    private static GeneratorVerifier AssertVectorGroup(string expression)
+    private static GeneratorVerifier AssertVectorGroup(TextConfig config)
     {
-        var source = VectorGroupText(expression);
+        var source = VectorGroupText(config);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.Exact", prefix: "OperatorImplementation = ");
 
-        return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupIdentical(expression));
+        return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupIdentical(config));
     }
 
-    private static string SpecializedVectorGroupText(string expression) => $$"""
+    private static string SpecializedVectorGroupText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -219,7 +226,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{expression}}, typeof(Height), typeof(Distance), OperatorImplementation = DerivationOperatorImplementation.Exact)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.Exact)]
         [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
         public static partial class Displacement { }
 
@@ -233,15 +240,15 @@ public class DerivationOperatorsIncompatibleExpression
         public partial class UnitOfLength { }
         """;
 
-    private static GeneratorVerifier AssertSpecializedVectorGroup(string expression)
+    private static GeneratorVerifier AssertSpecializedVectorGroup(TextConfig config)
     {
-        var source = SpecializedVectorGroupText(expression);
+        var source = SpecializedVectorGroupText(config);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.Exact", prefix: "OperatorImplementation = ");
 
-        return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorGroupIdentical(expression));
+        return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorGroupIdentical(config));
     }
 
-    private static string VectorGroupMemberText(string expression) => $$"""
+    private static string VectorGroupMemberText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -253,7 +260,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{expression}}, typeof(Height), typeof(Distance), OperatorImplementation = DerivationOperatorImplementation.Exact)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.Exact)]
         [SharpMeasuresVectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 
@@ -267,23 +274,23 @@ public class DerivationOperatorsIncompatibleExpression
         public partial class UnitOfLength { }
         """;
 
-    private static GeneratorVerifier AssertVectorGroupMember(string expression)
+    private static GeneratorVerifier AssertVectorGroupMember(TextConfig config)
     {
-        var source = VectorGroupMemberText(expression);
+        var source = VectorGroupMemberText(config);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.Exact", prefix: "OperatorImplementation = ");
 
-        return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical(expression));
+        return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical(config));
     }
 
-    private static GeneratorVerifier ScalarIdentical(string expression) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ScalarIdenticalText(expression));
-    private static GeneratorVerifier SpecializedScalarIdentical(string expression) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedScalarIdenticalText(expression));
-    private static GeneratorVerifier VectorIdentical(string expression) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorIdenticalText(expression));
-    private static GeneratorVerifier SpecializedVectorIdentical(string expression) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorIdenticalText(expression));
-    private static GeneratorVerifier VectorGroupIdentical(string expression) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupIdenticalText(expression));
-    private static GeneratorVerifier SpecializedVectorGroupIdentical(string expression) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorGroupIdenticalText(expression));
-    private static GeneratorVerifier VectorGroupMemberIdentical(string expression) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberIdenticalText(expression));
+    private static GeneratorVerifier ScalarIdentical(TextConfig config) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ScalarIdenticalText(config));
+    private static GeneratorVerifier SpecializedScalarIdentical(TextConfig config) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedScalarIdenticalText(config));
+    private static GeneratorVerifier VectorIdentical(TextConfig config) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorIdenticalText(config));
+    private static GeneratorVerifier SpecializedVectorIdentical(TextConfig config) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorIdenticalText(config));
+    private static GeneratorVerifier VectorGroupIdentical(TextConfig config) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupIdenticalText(config));
+    private static GeneratorVerifier SpecializedVectorGroupIdentical(TextConfig config) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorGroupIdenticalText(config));
+    private static GeneratorVerifier VectorGroupMemberIdentical(TextConfig config) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberIdenticalText(config));
 
-    private static string ScalarIdenticalText(string expression) => $$"""
+    private static string ScalarIdenticalText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -294,7 +301,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
         
-        [DerivedQuantity({{expression}}, typeof(Height), typeof(Distance), OperatorImplementation = DerivationOperatorImplementation.None)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.None)]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
         
@@ -302,7 +309,7 @@ public class DerivationOperatorsIncompatibleExpression
         public partial class UnitOfLength { }
         """;
 
-    private static string SpecializedScalarIdenticalText(string expression) => $$"""
+    private static string SpecializedScalarIdenticalText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -313,7 +320,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
         
-        [DerivedQuantity({{expression}}, typeof(Height), typeof(Distance), OperatorImplementation = DerivationOperatorImplementation.None)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.None)]
         [SpecializedSharpMeasuresScalar(typeof(Length2))]
         public partial class Length { }
         
@@ -324,7 +331,7 @@ public class DerivationOperatorsIncompatibleExpression
         public partial class UnitOfLength { }
         """;
 
-    private static string VectorIdenticalText(string expression) => $$"""
+    private static string VectorIdenticalText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -336,7 +343,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{expression}}, typeof(Height), typeof(Distance), OperatorImplementation = DerivationOperatorImplementation.None)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.None)]
         [SharpMeasuresVector(typeof(UnitOfLength))]
         public partial class Position3 { }
 
@@ -347,7 +354,7 @@ public class DerivationOperatorsIncompatibleExpression
         public partial class UnitOfLength { }
         """;
 
-    private static string SpecializedVectorIdenticalText(string expression) => $$"""
+    private static string SpecializedVectorIdenticalText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -359,7 +366,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{expression}}, typeof(Height), typeof(Distance), OperatorImplementation = DerivationOperatorImplementation.None)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.None)]
         [SpecializedSharpMeasuresVector(typeof(Position3))]
         public partial class Displacement3 { }
 
@@ -373,7 +380,7 @@ public class DerivationOperatorsIncompatibleExpression
         public partial class UnitOfLength { }
         """;
 
-    private static string VectorGroupIdenticalText(string expression) => $$"""
+    private static string VectorGroupIdenticalText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -385,7 +392,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{expression}}, typeof(Height), typeof(Distance), OperatorImplementation = DerivationOperatorImplementation.None)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.None)]
         [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
@@ -396,7 +403,7 @@ public class DerivationOperatorsIncompatibleExpression
         public partial class UnitOfLength { }
         """;
 
-    private static string SpecializedVectorGroupIdenticalText(string expression) => $$"""
+    private static string SpecializedVectorGroupIdenticalText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -408,7 +415,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{expression}}, typeof(Height), typeof(Distance), OperatorImplementation = DerivationOperatorImplementation.None)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.None)]
         [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
         public static partial class Displacement { }
 
@@ -422,7 +429,7 @@ public class DerivationOperatorsIncompatibleExpression
         public partial class UnitOfLength { }
         """;
 
-    private static string VectorGroupMemberIdenticalText(string expression) => $$"""
+    private static string VectorGroupMemberIdenticalText(TextConfig config) => $$"""
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
@@ -434,7 +441,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{expression}}, typeof(Height), typeof(Distance), OperatorImplementation = DerivationOperatorImplementation.None)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.None)]
         [SharpMeasuresVectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 

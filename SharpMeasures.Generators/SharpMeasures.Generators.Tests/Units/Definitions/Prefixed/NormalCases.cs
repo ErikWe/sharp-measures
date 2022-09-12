@@ -12,40 +12,36 @@ using Xunit;
 public class NormalCases
 {
     [Fact]
-    public Task MetricPrefix()
-    {
-        var source = """
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-            
-            [FixedUnitInstance("Metre", "Metres")]
-            [PrefixedUnitInstance("Kilometer", "Kilometers", "Metre", MetricPrefixName.Kilo)]
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-            """;
-
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfLength.Instances.g.cs");
-    }
+    public Task MetricPrefix() => Verify(MetricPrefixText);
 
     [Fact]
-    public Task BinaryPrefix()
-    {
-        var source = """
-            using SharpMeasures.Generators.Scalars;
-            using SharpMeasures.Generators.Units;
-            
-            [SharpMeasuresScalar(typeof(UnitOfLength))]
-            public partial class Length { }
-            
-            [FixedUnitInstance("Metre", "Metres")]
-            [PrefixedUnitInstance("Kibimeter", "Kibimeters", "Metre", BinaryPrefixName.Kibi)]
-            [SharpMeasuresUnit(typeof(Length))]
-            public partial class UnitOfLength { }
-            """;
+    public Task BinaryPrefix() => Verify(BinaryPrefixText);
 
-        return GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfLength.Instances.g.cs");
-    }
+    private static Task Verify(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfLength.Instances.g.cs");
+
+    private static string MetricPrefixText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+            
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kilometer", "Kilometers", "Metre", MetricPrefixName.Kilo)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
+
+    private static string BinaryPrefixText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+            
+        [SharpMeasuresScalar(typeof(UnitOfLength))]
+        public partial class Length { }
+            
+        [FixedUnitInstance("Metre", "Metres")]
+        [PrefixedUnitInstance("Kibimeter", "Kibimeters", "Metre", BinaryPrefixName.Kibi)]
+        [SharpMeasuresUnit(typeof(Length))]
+        public partial class UnitOfLength { }
+        """;
 }
