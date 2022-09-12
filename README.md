@@ -37,7 +37,7 @@ public partial class Altitude { }
 
 This means that `Altitude` inherits all properties from `Length`, such as units, derivations, and constants. (Note: `Altitude` does not inherit from `Length` in the regular ´polymorphic´ sense, so this also works for structs.)
 
-### Non-specialized Types
+### New Types
 
 The source generator can also be used to generate quantities and units ´from scratch´:
 
