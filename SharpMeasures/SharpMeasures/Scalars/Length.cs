@@ -2,5 +2,5 @@
 
 using SharpMeasures.Generators.Scalars;
 
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public partial class Length { }
+[SharpMeasuresScalar(typeof(UnitOfLength), DefaultUnitInstanceName = "Metre", DefaultUnitInstanceSymbol = "m")]
+public readonly partial record struct Length { }

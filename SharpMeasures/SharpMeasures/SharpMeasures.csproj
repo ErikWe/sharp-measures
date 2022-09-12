@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
@@ -20,8 +20,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="SharpMeasures.Base" />
-      <PackageReference Include="SharpMeasures.Generators" PrivateAssets="all" />
+        <PackageReference Include="SharpMeasures.Base" />
+        <PackageReference Include="SharpMeasures.Generators" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>

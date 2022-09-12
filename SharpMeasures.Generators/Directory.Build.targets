@@ -30,7 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Update="SharpMeasures.Base" Version="0.2.2.27" />
+        <PackageReference Update="SharpMeasures.Base" Version="0.2.2.34" />
     </ItemGroup>
     
 </Project>
