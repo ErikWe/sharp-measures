@@ -233,21 +233,11 @@ public static partial class DiagnosticRules
         customTags: WellKnownDiagnosticTags.Unnecessary
     );
 
-    public static readonly DiagnosticDescriptor DerivationOperatorsRequireExactlyTwoElements = new DiagnosticDescriptor
-    (
-        id: DiagnosticIDs.DerivationOperatorsRequireExactlyTwoElements,
-        title: "Derivation operators require exactly two elements",
-        messageFormat: "Quantity derivation through operators can only be implemented with exactly two quantities, but derivation consists of {0} quantity",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
-        isEnabledByDefault: true
-    );
-
     public static readonly DiagnosticDescriptor DerivationOperatorsIncompatibleExpression = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.DerivationOperatorsIncompatibleExpression,
         title: "Expression cannot be implemented with operators",
-        messageFormat: "Quantity derivation through operators require the expression to involve two quantities, and one of the trivial operators { +, -, *, / }",
+        messageFormat: "Quantity derivation through operators require the expression to involve at most two quantities, and one of the trivial operators { +, -, *, / }",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

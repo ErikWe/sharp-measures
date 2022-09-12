@@ -49,11 +49,6 @@ public class DerivedQuantityProcessingDiagnostics : IDerivedQuantityProcessingDi
         return DiagnosticConstruction.UnrecognizedEnumValue(definition.Locations.OperatorImplementation?.AsRoslynLocation(), definition.OperatorImplementation);
     }
 
-    public Diagnostic OperatorsRequireExactlyTwoElements(IProcessingContext context, RawDerivedQuantityDefinition definition)
-    {
-        return DiagnosticConstruction.DerivationOperatorsRequireExactlyTwoElements(definition.Locations.OperatorImplementation?.AsRoslynLocation(), definition.Signature.Count);
-    }
-
     public Diagnostic ExpressionNotCompatibleWithOperators(IProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         return DiagnosticConstruction.DerivationOperatorsIncompatibleExpression(definition.Locations.OperatorImplementation?.AsRoslynLocation());

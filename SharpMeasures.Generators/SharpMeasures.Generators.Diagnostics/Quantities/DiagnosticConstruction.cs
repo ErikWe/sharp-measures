@@ -128,11 +128,6 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.UnionInclusionStackingModeRedundant, location, quantityTypeName);
     }
 
-    public static Diagnostic DerivationOperatorsRequireExactlyTwoElements(Location? location, int actualElementCount)
-    {
-        return Diagnostic.Create(DiagnosticRules.DerivationOperatorsRequireExactlyTwoElements, location, actualElementCount.ToString(CultureInfo.InvariantCulture));
-    }
-
     public static Diagnostic DerivationOperatorsIncompatibleExpression(Location? location)
     {
         return Diagnostic.Create(DiagnosticRules.DerivationOperatorsIncompatibleExpression, location);

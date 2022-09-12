@@ -39,13 +39,43 @@ public class OperatorDerivationSearcher
         OppositeOperatorType = GetOppositeOperatorType(OriginalOperatorType);
     }
 
-    public IReadOnlyList<IOperatorDerivation> GetDerivations()
+    private IReadOnlyList<IOperatorDerivation> GetDerivations()
     {
         if (Derivation.OperatorImplementation is DerivationOperatorImplementation.None)
         {
             return Array.Empty<IOperatorDerivation>();
         }
 
+        if (Derivation.Signature.Count is 1)
+        {
+            return GetSingleQuantityDerivations();
+        }
+
+        return GetDoubleQuantityDerivations();
+    }
+
+    private IReadOnlyList<IOperatorDerivation> GetSingleQuantityDerivations()
+    {
+        List<IOperatorDerivation> derivations = new(Derivation.OperatorImplementation is DerivationOperatorImplementation.Exact ? 1 : 4);
+
+        NamedType pureScalar = new("Scalar", "SharpMeasures", true);
+
+        derivations.Add(new OperatorDerivation(Quantity, OperatorType.Division, pureScalar, Derivation.Signature[0]));
+
+        if (Derivation.OperatorImplementation is DerivationOperatorImplementation.Exact)
+        {
+            return derivations;
+        }
+
+        derivations.Add(new OperatorDerivation(pureScalar, OppositeOperatorType, Quantity, Derivation.Signature[0]));
+        derivations.Add(new OperatorDerivation(pureScalar, OppositeOperatorType, Derivation.Signature[0], Quantity));
+        derivations.Add(new OperatorDerivation(Derivation.Signature[0], OriginalOperatorType, pureScalar, Quantity));
+
+        return derivations;
+    }
+
+    private IReadOnlyList<IOperatorDerivation> GetDoubleQuantityDerivations()
+    {
         bool orderedExpression = Derivation.Expression.IndexOf("0", StringComparison.InvariantCulture) < Derivation.Expression.IndexOf("1", StringComparison.InvariantCulture);
 
         List<IOperatorDerivation> derivations = new(Derivation.OperatorImplementation is DerivationOperatorImplementation.Exact ? 1 : 4);

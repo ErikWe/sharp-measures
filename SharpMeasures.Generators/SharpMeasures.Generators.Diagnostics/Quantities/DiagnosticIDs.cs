@@ -17,8 +17,7 @@ public static partial class DiagnosticIDs
     public const string InclusionOrExclusionHadNoEffect = $"{Prefix}{Numbering.Hundreds.Quantities}41";
     public const string UnionInclusionStackingModeRedundant = $"{Prefix}{Numbering.Hundreds.Quantities}42";
 
-    public const string DerivationOperatorsRequireExactlyTwoElements = $"{Prefix}{Numbering.Hundreds.Quantities}60";
-    public const string DerivationOperatorsIncompatibleExpression = $"{Prefix}{Numbering.Hundreds.Quantities}61";
-    public const string UnmatchedDerivationExpressionQuantity = $"{Prefix}{Numbering.Hundreds.Quantities}62";
-    public const string ExpressionDoesNotIncludeQuantity = $"{Prefix}{Numbering.Hundreds.Quantities}63";
+    public const string DerivationOperatorsIncompatibleExpression = $"{Prefix}{Numbering.Hundreds.Quantities}60";
+    public const string UnmatchedDerivationExpressionQuantity = $"{Prefix}{Numbering.Hundreds.Quantities}61";
+    public const string ExpressionDoesNotIncludeQuantity = $"{Prefix}{Numbering.Hundreds.Quantities}62";
 }

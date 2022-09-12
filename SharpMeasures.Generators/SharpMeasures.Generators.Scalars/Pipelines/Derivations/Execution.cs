@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 internal static class Execution
 {
@@ -50,6 +51,7 @@ internal static class Execution
 
         private HashSet<DerivedQuantitySignature> ImplementedSignatures { get; } = new();
 
+        private Regex ConstantInExpressionPattern { get; } = new("""(?:^|[^{])(?'constant'[0-9]+)(?:[^}]|$)""", RegexOptions.ExplicitCapture);
         private bool AnyImplementations { get; set; }
 
         private Composer(DataModel data)
@@ -106,9 +108,75 @@ internal static class Execution
 
         private void AppendMethodDerivation(Indentation indentation, IDerivedQuantity derivation)
         {
-            var parameterNames = GetSignatureParameterNames(derivation.Signature);
+            var constant = ConstantInExpressionPattern.Matches(derivation.Expression);
 
-            var processedExpression = ProcessExpression(derivation, parameterNames);
+            if (constant.Count is 0)
+            {
+                AppendMethodDerivation(indentation, derivation.Expression, derivation.Signature, derivation.Permutations);
+
+                return;
+            }
+
+            NamedType pureScalar = new("Scalar", "SharpMeasures", true);
+
+            var expression = derivation.Expression;
+            List<NamedType> signature = new(derivation.Signature);
+
+            iterativelyReplaceConstant();
+
+            AppendMethodDerivation(indentation, expression, signature, derivation.Permutations);
+
+            void iterativelyReplaceConstant()
+            {
+                var updatedExpression = ConstantInExpressionPattern.Replace(expression, $$"""{{{signature.Count}}} """, 1);
+
+                if (expression == updatedExpression)
+                {
+                    return;
+                }
+
+                modifyExpressionAndSignature(updatedExpression);
+
+                iterativelyReplaceConstant();
+            }
+
+            void modifyExpressionAndSignature(string updatedExpression)
+            {
+                int insertedAtIndex = updatedExpression.IndexOf($$"""{{{signature.Count}}}""", StringComparison.InvariantCulture);
+
+                for (int i = 0; i < signature.Count; i++)
+                {
+                    if (updatedExpression.IndexOf($$"""{{{i}}}""", StringComparison.InvariantCulture) > insertedAtIndex)
+                    {
+                        updatedExpression = decreaseExpressionElementIndex(updatedExpression, signature.Count, i);
+
+                        expression = updatedExpression;
+                        signature.Insert(i, pureScalar);
+
+                        return;
+                    }
+                }
+
+                expression = updatedExpression;
+                signature.Add(pureScalar);
+            }
+
+            string decreaseExpressionElementIndex(string expression, int initial, int final)
+            {
+                for (int i = initial; i >= final; i--)
+                {
+                    expression = expression.Replace($$"""{{{i}}}""", $$"""{{{i + 1}}}""");
+                }
+
+                return expression.Replace($$"""{{{initial + 1}}}""", $$"""{{{final}}}""");
+            }
+        }
+
+        private void AppendMethodDerivation(Indentation indentation, string expression, IReadOnlyList<NamedType> signature, bool permutations)
+        {
+            var parameterNames = GetSignatureParameterNames(signature);
+
+            var processedExpression = ProcessExpression(expression, signature, parameterNames);
 
             if (processedExpression is null)
             {
@@ -118,9 +186,9 @@ internal static class Execution
             AnyImplementations = true;
 
             var methodNameAndModifiers = $"public static {Data.Scalar.FullyQualifiedName} From";
-            var expression = $"new({processedExpression})";
+            expression = $"new({processedExpression})";
 
-            foreach ((var permutedSignature, var permutedParameterNames) in GetPermutedSignatures(derivation, parameterNames))
+            foreach ((var permutedSignature, var permutedParameterNames) in GetPermutedSignatures(signature, permutations, parameterNames))
             {
                 AppendMethodDefinition(indentation, methodNameAndModifiers, expression, permutedSignature, permutedParameterNames);
 
@@ -193,7 +261,7 @@ internal static class Execution
                 {
                     expression = expression.Replace(parameterNames[i], "1");
 
-                    signature = new DerivedQuantitySignature(signature.Take(i).Concat(signature.Skip(1)).ToList());
+                    signature = new DerivedQuantitySignature(signature.Take(i).Concat(signature.Skip(i + 1)).ToList());
                     parameterNames = new List<string>(parameterNames.Take(i).Concat(parameterNames.Skip(1)).ToList());
 
                     i -= 1;
@@ -203,14 +271,14 @@ internal static class Execution
             AppendMethodDefinition(indentation, methodNameAndModifiers, expression, signature, parameterNames);
         }
 
-        private static IEnumerable<(DerivedQuantitySignature Signature, IReadOnlyList<string> ParameterNames)> GetPermutedSignatures(IDerivedQuantity derivation, IReadOnlyList<string> parameterNames)
+        private static IEnumerable<(DerivedQuantitySignature Signature, IReadOnlyList<string> ParameterNames)> GetPermutedSignatures(IReadOnlyList<NamedType> signature, bool permutations, IReadOnlyList<string> parameterNames)
         {
-            if (derivation.Permutations is false)
+            if (permutations is false)
             {
-                return new[] { (new DerivedQuantitySignature(derivation.Signature), parameterNames) };
+                return new[] { (new DerivedQuantitySignature(signature), parameterNames) };
             }
 
-            return recurse(derivation.Signature.ToArray(), parameterNames.ToArray(), 0);
+            return recurse(signature.ToArray(), parameterNames.ToArray(), 0);
 
             static IEnumerable<(DerivedQuantitySignature Signature, IReadOnlyList<string> ParameterNames)> recurse(NamedType[] signatureElements, string[] parameterNames, int fromIndex)
             {
@@ -248,20 +316,20 @@ internal static class Execution
             }
         }
 
-        private string? ProcessExpression(IDerivedQuantity derivation, IEnumerable<string> parameterNames)
+        private string? ProcessExpression(string expression, IReadOnlyList<NamedType> signature, IEnumerable<string> parameterNames)
         {
-            var parameterNameAndQuantity = new string[derivation.Signature.Count];
+            var parameterNameAndQuantity = new string[signature.Count];
 
             var parameterNameEnumerator = parameterNames.GetEnumerator();
 
             int index = 0;
             while (parameterNameEnumerator.MoveNext())
             {
-                if (derivation.Signature[index].FullyQualifiedName is "global::SharpMeasures.Scalar")
+                if (signature[index].FullyQualifiedName is "global::SharpMeasures.Scalar")
                 {
                     parameterNameAndQuantity[index] = $"{parameterNameEnumerator.Current}";
                 }
-                else if (Data.ScalarPopulation.Scalars.ContainsKey(derivation.Signature[index]))
+                else if (Data.ScalarPopulation.Scalars.ContainsKey(signature[index]))
                 {
                     parameterNameAndQuantity[index] = $"{parameterNameEnumerator.Current}.Magnitude";
                 }
@@ -275,7 +343,7 @@ internal static class Execution
 
             try
             {
-                return string.Format(CultureInfo.InvariantCulture, derivation.Expression, parameterNameAndQuantity);
+                return string.Format(CultureInfo.InvariantCulture, expression, parameterNameAndQuantity);
             }
             catch (FormatException)
             {
