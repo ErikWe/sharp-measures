@@ -2,13 +2,13 @@
 
 using Microsoft.CodeAnalysis;
 
-public readonly record struct NamedType(string Name, string Namespace, bool IsValueType)
+public readonly record struct NamedType(string Name, string Namespace, string Assembly, bool IsValueType)
 {
-    public static NamedType Empty { get; } = new NamedType(string.Empty, string.Empty, false);
+    public static NamedType Empty { get; } = new NamedType(string.Empty, string.Empty, string.Empty, false);
 
     internal static NamedType FromSymbol(INamedTypeSymbol symbol)
     {
-        return new(symbol.Name, GetNamespace(symbol), symbol.IsValueType);
+        return new(symbol.Name, GetNamespace(symbol), symbol.ContainingAssembly.Name, symbol.IsValueType);
     }
 
     public bool IsReferenceType => IsValueType is false;

@@ -360,7 +360,7 @@ internal static class Execution
                 """);
 
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, "private static global::SharpMeasures.Scalar ComputeRepresentedMagnitude",
-                ConstructorComputation(Data), (new NamedType("Scalar", "SharpMeasures", true), "magnitude"), (Data.Unit, Data.UnitParameterName));
+                ConstructorComputation(Data), (new NamedType("Scalar", "SharpMeasures", "SharpMeasures.Base", true), "magnitude"), (Data.Unit, Data.UnitParameterName));
         }
 
         private static string ConstructorComputation(DataModel data)

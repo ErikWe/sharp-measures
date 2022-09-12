@@ -273,7 +273,7 @@ internal static class Execution
 
             var methodNameAndModifiers = $"public static {Data.Vector.FullyQualifiedName} operator *";
             var expression = $"new({ConstantVectorTexts.Upper.MultiplyAScalar(Data.Dimension)})";
-            var parameters = new[] { (Data.Vector.AsNamedType(), "a"), (new NamedType("Scalar", "SharpMeasures", true), "b") };
+            var parameters = new[] { (Data.Vector.AsNamedType(), "a"), (new NamedType("Scalar", "SharpMeasures", "SharpMeasures.Base", true), "b") };
 
             AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorLHS());
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
@@ -285,7 +285,7 @@ internal static class Execution
 
             var methodNameAndModifiers = $"public static {Data.Vector.FullyQualifiedName} operator *";
             var expression = $"new({ConstantVectorTexts.Upper.MultiplyBScalar(Data.Dimension)})";
-            var parameters = new[] { (new NamedType("Scalar", "SharpMeasures", true), "a"), (Data.Vector.AsNamedType(), "b") };
+            var parameters = new[] { (new NamedType("Scalar", "SharpMeasures", "SharpMeasures.Base", true), "a"), (Data.Vector.AsNamedType(), "b") };
 
             AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorRHS());
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
@@ -297,7 +297,7 @@ internal static class Execution
 
             var methodNameAndModifiers = $"public static {Data.Vector.FullyQualifiedName} operator /";
             var expression = $"new({ConstantVectorTexts.Upper.DivideAScalar(Data.Dimension)})";
-            var parameters = new[] { (Data.Vector.AsNamedType(), "a"), (new NamedType("Scalar", "SharpMeasures", true), "b") };
+            var parameters = new[] { (Data.Vector.AsNamedType(), "a"), (new NamedType("Scalar", "SharpMeasures", "SharpMeasures.Base", true), "b") };
 
             AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorRHS());
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);

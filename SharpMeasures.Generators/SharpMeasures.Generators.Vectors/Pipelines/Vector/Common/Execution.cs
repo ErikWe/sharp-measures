@@ -587,7 +587,7 @@ internal static class Execution
             var expression = $"({Texts.Lower.ScalarMultiplyUnit})";
             List<(NamedType, string)> parameters = new();
 
-            NamedType scalarType = new("Scalar", "SharpMeasures", true);
+            NamedType scalarType = new("Scalar", "SharpMeasures", "SharpMeasures.Base", true);
 
             for (int i = 0; i < Data.Dimension; i++)
             {

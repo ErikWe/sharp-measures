@@ -58,7 +58,7 @@ public class OperatorDerivationSearcher
     {
         List<IOperatorDerivation> derivations = new(Derivation.OperatorImplementation is DerivationOperatorImplementation.Exact ? 1 : 4);
 
-        NamedType pureScalar = new("Scalar", "SharpMeasures", true);
+        NamedType pureScalar = new("Scalar", "SharpMeasures", "SharpMeasures.Base", true);
 
         derivations.Add(new OperatorDerivation(Quantity, OperatorType.Division, pureScalar, Derivation.Signature[0]));
 

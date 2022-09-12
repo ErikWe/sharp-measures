@@ -3,17 +3,16 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-public readonly record struct DefinedType(string Name, string Namespace, Accessibility Accessibility, bool IsSealed, bool IsReadOnly, bool IsRecord,
+public readonly record struct DefinedType(string Name, string Namespace, string Assembly, Accessibility Accessibility, bool IsSealed, bool IsReadOnly, bool IsRecord,
     bool IsValueType)
 {
-    public static DefinedType Empty { get; } = new(string.Empty, string.Empty, Accessibility.NotApplicable, false, false, false, false);
+    public static DefinedType Empty { get; } = new(string.Empty, string.Empty, string.Empty, Accessibility.NotApplicable, false, false, false, false);
 
     internal static DefinedType FromSymbol(INamedTypeSymbol symbol)
     {
         NamedType namedType = NamedType.FromSymbol(symbol);
 
-        return new(namedType.Name, namedType.Namespace, symbol.DeclaredAccessibility, symbol.IsReferenceType && symbol.IsSealed, symbol.IsReadOnly,
-            symbol.IsRecord, symbol.IsValueType);
+        return new(namedType.Name, namedType.Namespace, symbol.ContainingAssembly.Name, symbol.DeclaredAccessibility, symbol.IsReferenceType && symbol.IsSealed, symbol.IsReadOnly, symbol.IsRecord, symbol.IsValueType);
     }
 
     public bool IsReferenceType => IsValueType is false;
@@ -21,7 +20,7 @@ public readonly record struct DefinedType(string Name, string Namespace, Accessi
     public string QualifiedName => $"{(string.IsNullOrEmpty(Namespace) ? string.Empty : $"{Namespace}.")}{Name}";
     public string FullyQualifiedName => $"global::{QualifiedName}";
 
-    public NamedType AsNamedType() => new(Name, Namespace, IsValueType);
+    public NamedType AsNamedType() => new(Name, Namespace, Assembly, IsValueType);
 
     public string ComposeDeclaration()
     {

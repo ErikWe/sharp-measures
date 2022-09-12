@@ -500,8 +500,8 @@ internal static class Execution
             var multiplyRHSExpression = "new(x.Value * y.Magnitude.Value)";
             var divideExpression = "new(x.Magnitude.Value / y.Value)";
 
-            var LHSParameters = new[] { (Data.Scalar.AsNamedType(), "x"), (new NamedType("Scalar", "SharpMeasures", true), "y") };
-            var RHSParameters = new[] { (new NamedType("Scalar", "SharpMeasures", true), "x"), (Data.Scalar.AsNamedType(), "y") };
+            var LHSParameters = new[] { (Data.Scalar.AsNamedType(), "x"), (new NamedType("Scalar", "SharpMeasures", "SharpMeasures.Base", true), "y") };
+            var RHSParameters = new[] { (new NamedType("Scalar", "SharpMeasures", "SharpMeasures.Base", true), "x"), (Data.Scalar.AsNamedType(), "y") };
 
             AppendDocumentation(indentation, Data.Documentation.MultiplyScalarOperatorLHS());
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, multiplyMethodNameAndModifiers, multiplyLHSExpression, LHSParameters);

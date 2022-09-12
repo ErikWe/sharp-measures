@@ -99,7 +99,7 @@ internal static class Execution
 
             foreach (var operatorDerivation in Data.OperatorDerivations)
             {
-                if (operatorDerivation.LeftHandSide == Data.Scalar.AsNamedType())
+                if (operatorDerivation.LeftHandSide == Data.Scalar.AsNamedType() || operatorDerivation.LeftHandSide.Assembly != Data.Scalar.Assembly)
                 {
                     AppendOperatorDerivation(indentation, operatorDerivation);
                 }
@@ -117,7 +117,7 @@ internal static class Execution
                 return;
             }
 
-            NamedType pureScalar = new("Scalar", "SharpMeasures", true);
+            NamedType pureScalar = new("Scalar", "SharpMeasures", "SharpMeasures.Base", true);
 
             var expression = derivation.Expression;
             List<NamedType> signature = new(derivation.Signature);
@@ -212,6 +212,11 @@ internal static class Execution
 
             string getExpression()
             {
+                if (operatorDerivation.LeftHandSide.FullyQualifiedName is "global::SharpMeasures.Scalar")
+                {
+                    return $"new({parameters[0].Name} {operatorSymbol} {parameters[1].Name}.Magnitude)";
+                }
+
                 if (operatorDerivation.RightHandSide.FullyQualifiedName is "global::SharpMeasures.Scalar")
                 {
                     return $"new({parameters[0].Name}.Magnitude {operatorSymbol} {parameters[1].Name})";

@@ -43,4 +43,15 @@ public partial class Time
 
         return new(a.Magnitude * b.Magnitude);
     }
+
+    /// <summary>Computes { <paramref name="a"/> / <paramref name="b"/> }, resulting in a <see cref="global::Frequency"/>.</summary>
+    /// <param name="a">The first dividend of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    /// <param name="b">The second divisor of { <paramref name="a"/> / <paramref name="b"/> }.</param>
+    /// <exception cref="global::System.ArgumentNullException"/>
+    public static global::Frequency operator /(global::SharpMeasures.Scalar a, global::Time b)
+    {
+        global::System.ArgumentNullException.ThrowIfNull(b);
+
+        return new(a / b.Magnitude);
+    }
 }

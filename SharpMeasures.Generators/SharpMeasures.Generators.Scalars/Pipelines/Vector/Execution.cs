@@ -84,7 +84,7 @@ internal static class Execution
         {
             SeparationHandler.AddIfNecessary();
 
-            NamedType vectorType = new($"Vector{dimension}", "SharpMeasures", true);
+            NamedType vectorType = new($"Vector{dimension}", "SharpMeasures", "SharpMeasures.Base", true);
 
             var methodNameAndModifiers = $"public static {vector.Name} operator *";
             var expression = "new(x.Magnitude.Value * y)";
