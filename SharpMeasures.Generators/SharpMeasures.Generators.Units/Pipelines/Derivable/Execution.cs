@@ -180,7 +180,12 @@ internal static class Execution
             int index = 0;
             while (parameterNameEnumerator.MoveNext() && quantityEnumerator.MoveNext())
             {
-                parameterNameAndQuantity[index] = $"{parameterNameEnumerator.Current}.{quantityEnumerator.Current.Name}.Magnitude";
+                if (quantityEnumerator.Current is null)
+                {
+                    return null;
+                }
+
+                parameterNameAndQuantity[index] = $"{parameterNameEnumerator.Current}.{quantityEnumerator.Current.Value.Name}.Magnitude";
 
                 index += 1;
             }
@@ -251,11 +256,18 @@ internal static class Execution
             }
         }
 
-        private static IEnumerable<NamedType> GetQuantitiesOfSignatureUnits(IReadOnlyList<NamedType> signature, IUnitPopulation unitPopulation)
+        private static IEnumerable<NamedType?> GetQuantitiesOfSignatureUnits(IReadOnlyList<NamedType> signature, IUnitPopulation unitPopulation)
         {
             foreach (var signatureElement in signature)
             {
-                yield return unitPopulation.Units[signatureElement].Definition.Quantity;
+                if (unitPopulation.Units.TryGetValue(signatureElement, out var unit) is false)
+                {
+                    yield return null;
+
+                    continue;
+                }
+
+                yield return unit.Definition.Quantity;
             }
         }
 
