@@ -17,16 +17,26 @@ Console.WriteLine(velocity.InUnit(UnitOfSpeed.KilometresPerHour)); // "(0, 10.8,
 SharpMeasures is implemented as a source generator, which means that it's trivial to extend the existing set of types, or to make your own set from scratch.
 
 ```csharp
+using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[SharpMeasuresScalar(typeof(UnitOfLength))]
-public partial class Length { }
+[SharpMeasuresScalar(typeof(UnitOfTime))]
+public partial class Time { }
 
-[PrefixedUnitInstance("Kilometre", "[*]s", "Metre", MetricPrefixName.Kilo)]
-[FixedUnitInstance("Metre", "[*]s")]
-[SharpMeasuresUnit(typeof(Length))]
-public partial class UnitOfLength { }
+[DerivedQuantity("1 / {0}", typeof(Time))]
+[SharpMeasuresScalar(typeof(UnitOfFrequency))]
+public partial class Frequency { }
+
+[FixedUnitInstance("Second", "[*]s")]
+[ScaledUnitInstance("Minute", "[*]s", "Second", 60)]
+[SharpMeasuresUnit(typeof(Time))]
+public partial class UnitOfTime { }
+
+[DerivedUnitInstance("Hertz", "[*]", new[] { "Second" })]
+[DerivableUnit("1 / {0}", typeof(UnitOfTime))]
+[SharpMeasuresUnit(typeof(Frequency))]
+public partial class UnitOfFrequency { }
 ```
 
 ## Similar Projects
