@@ -14,7 +14,7 @@ Console.WriteLine(velocity.InUnit(UnitOfSpeed.KilometresPerHour)); // "(0, 10.8,
 
 ## Source Generator [![NuGet version (SharpMeasures.Generators)](https://img.shields.io/nuget/v/SharpMeasures.Generators.svg?style=plastic)](https://www.nuget.org/packages/SharpMeasures.Generators/)
 
-SharpMeasures is implemented as a source generator, which means that it's trivial to extend the existing set of types, or to make your own set from scratch.
+SharpMeasures is implemented entirely using a source generator, which means that it's trivial to extend the existing set of types, or to make your own set from scratch.
 
 ```csharp
 using SharpMeasures.Generators.Quantities;
@@ -37,6 +37,15 @@ public partial class UnitOfTime { }
 [DerivableUnit("1 / {0}", typeof(UnitOfTime))]
 [SharpMeasuresUnit(typeof(Frequency))]
 public partial class UnitOfFrequency { }
+```
+
+The declarations shown above would make this valid code:
+
+```csharp
+Time time = 78 * Time.OneMinute;
+Frequency frequency = 1 / time;
+
+Console.WriteLine(frequency); // "0.769230769230769"
 ```
 
 ## Similar Projects
