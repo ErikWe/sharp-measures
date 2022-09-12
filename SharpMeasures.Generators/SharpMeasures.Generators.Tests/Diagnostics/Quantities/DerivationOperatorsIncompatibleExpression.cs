@@ -15,7 +15,7 @@ using Xunit;
 public class DerivationOperatorsIncompatibleExpression
 {
     [Fact]
-    public Task VerifyDerivationOperatorsIncompatibleExpressionDiagnosticsMessage() => AssertScalar(OneElementOnce).VerifyDiagnostics();
+    public Task VerifyDerivationOperatorsIncompatibleExpressionDiagnosticsMessage() => AssertScalar(OneElementTwiceAndOtherOnce).VerifyDiagnostics();
 
     [Theory]
     [MemberData(nameof(InvalidExpressions))]
@@ -47,13 +47,8 @@ public class DerivationOperatorsIncompatibleExpression
 
     public static IEnumerable<object[]> InvalidExpressions() => new object[][]
     {
-        new[] { OneElementOnce },
-        new[] { SameElementTwice },
         new[] { OneElementTwiceAndOtherOnce }
     };
-
-    private static string OneElementOnce => "\"{0}\"";
-    private static string SameElementTwice => "\"{0} * {0}\"";
     private static string OneElementTwiceAndOtherOnce => "\"{0} * {0} / {1}\"";
 
     private static GeneratorVerifier AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DerivationOperatorsIncompatibleExpressionDiagnostics);

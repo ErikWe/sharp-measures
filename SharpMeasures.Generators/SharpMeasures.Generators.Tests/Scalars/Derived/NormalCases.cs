@@ -12,7 +12,7 @@ using Xunit;
 public class NormalCases
 {
     [Fact]
-    public Task Defaults() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(DefaultsText).VerifyMatchingSourceNames("Time.Derivations.g.cs");
+    public Task Defaults() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(DefaultsText).VerifyMatchingSourceNames("Time.Derivations.g.cs", "Frequency.Derivations.g.cs");
 
     private static string DefaultsText => """
         using SharpMeasures;

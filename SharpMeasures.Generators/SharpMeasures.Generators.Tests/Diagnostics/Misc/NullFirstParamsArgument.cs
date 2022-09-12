@@ -33,7 +33,7 @@ public class NullFirstParamsArgument
         [SharpMeasuresUnit(typeof(Time))]
         public partial class UnitOfTime { }
 
-        [DerivableUnit("1", "{0} / {1}", null, typeof(UnitOfTime), typeof(UnitOfLength))]
+        [DerivableUnit("1", "{0} + {1} + {2}", null, typeof(UnitOfTime), typeof(UnitOfLength))]
         [SharpMeasuresUnit(typeof(Speed))]
         public partial class UnitOfSpeed { }
         """;

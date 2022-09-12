@@ -370,18 +370,32 @@ internal class GeneratorVerifier
 
     public Task VerifyMatchingSourceNames(IEnumerable<Regex> patterns)
     {
-        IEnumerable<string> matchingSourceNames = Output.Select(static (result) => result.HintName).Where(matches);
+        var patternsList = patterns.ToList();
 
+        HashSet<int> unmatchedPatternIndices = new(patternsList.Count);
+
+        for (int i = 0; i < patternsList.Count; i++)
+        {
+            unmatchedPatternIndices.Add(i);
+        }
+
+        var matchingSourceNames = Output.Select(static (result) => result.HintName).Where(matches).ToList();
+
+        var unmatchedPatterns = unmatchedPatternIndices.Select((index) => patternsList[index]).ToList();
+
+        Assert.Empty(unmatchedPatterns);
         Assert.NotEmpty(matchingSourceNames);
 
         return VerifyListedSourceNames(matchingSourceNames);
 
         bool matches(string sourceName)
         {
-            foreach (var pattern in patterns)
+            for (int i = 0; i < patternsList.Count; i++)
             {
-                if (pattern.IsMatch(sourceName))
+                if (patternsList[i].IsMatch(sourceName))
                 {
+                    unmatchedPatternIndices.Remove(i);
+
                     return true;
                 }
             }

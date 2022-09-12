@@ -42,5 +42,9 @@
         <ProjectReference Include="..\SharpMeasures.Generators.DriverUtility\SharpMeasures.Generators.DriverUtility.csproj" />
         <ProjectReference Include="..\SharpMeasures.Generators.Units\SharpMeasures.Generators.Units.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Verify\Snapshots\Scalars\Derived\" />
+    </ItemGroup>
     
 </Project>
