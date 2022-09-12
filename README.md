@@ -35,7 +35,7 @@ using SharpMeasures.Generators.Scalars;
 public partial class Altitude { }
 ```
 
-This means that `Altitude` inherits all properties from `Length`, such as units, derivations, and constants. (Note: `Altitude` does not inherit from `Length` in the regular ´polymorphic´ sense, so this also works for structs.)
+`Altitude` inherits the definition from `Length`, including units, derivations, and constants. (Note: `Altitude` does not inherit from `Length` in the regular ´polymorphic´ sense, so this also works for structs.)
 
 ### New Types
 
