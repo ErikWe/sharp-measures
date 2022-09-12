@@ -112,10 +112,10 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         /// <param name="scale">The described {QuantityReference} is scaled by this value.</param>
         """;
 
-    public string WithBias() => $"""
-        /// <summary>Derives a new {UnitReference} that has bias <paramref name="bias"/> relative to <see langword="this"/>.</summary>
-        /// <param name="bias">The bias of the derived {UnitReference} relative to <see langword="this"/>.</param>
-        /// <remarks>When used together with <see cref="ScaledBy(global::SharpMeasures.Scalar)"/> or <see cref="WithPrefix(global::SharpMeasures.IPrefix)"/>, the order matters.</remarks>
+    public string WithBias() => $$"""
+        /// <summary>Derives a new {{UnitReference}} that has bias <paramref name="bias"/> relative to <see langword="this"/>.</summary>
+        /// <param name="bias">The bias of the derived {{UnitReference}} relative to <see langword="this"/>.</param>
+        /// <remarks>When used together with <see cref="ScaledBy(global::SharpMeasures.Scalar)"/> or <see cref="WithPrefix{TPrefix}(TPrefix)"/>, the order matters.</remarks>
         """;
 
     public string WithPrefix() => BiasTerm switch
