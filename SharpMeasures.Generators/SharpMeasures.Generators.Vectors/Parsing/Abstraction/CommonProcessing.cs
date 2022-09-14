@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
-using Microsoft.CodeAnalysis;
-
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.Contexts.Processing;
@@ -18,53 +16,43 @@ using System.Collections.Generic;
 
 internal static class CommonProcessing
 {
-    public static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ParseAndProcessDerivations(INamedTypeSymbol typeSymbol)
+    public static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ProcessDerivations(DefinedType type, IEnumerable<RawDerivedQuantityDefinition> rawDefinitions)
     {
-        var rawDerivations = DerivedQuantityParser.Parser.ParseAllOccurrences(typeSymbol);
+        var processingContext = new SimpleProcessingContext(type);
 
-        var processingContext = new SimpleProcessingContext(typeSymbol.AsDefinedType());
-
-        return ProcessingFilter.Create(DerivedQuantityProcesser).Filter(processingContext, rawDerivations);
+        return ProcessingFilter.Create(DerivedQuantityProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    public static IResultWithDiagnostics<IReadOnlyList<VectorConstantDefinition>> ParseAndProcessConstants(INamedTypeSymbol typeSymbol, NamedType? unit)
+    public static IResultWithDiagnostics<IReadOnlyList<VectorConstantDefinition>> ProcessConstants(DefinedType type, IEnumerable<RawVectorConstantDefinition> rawDefinitions, NamedType? unit)
     {
-        var rawConstants = VectorConstantParser.Parser.ParseAllOccurrences(typeSymbol);
-
         var scalarConstantProcesser = unit is null
             ? VectorConstantProcesserForUnknownUnit
             : VectorConstantProcesser(unit.Value);
 
-        QuantityConstantProcessingContext processingContext = new(typeSymbol.AsDefinedType());
+        QuantityConstantProcessingContext processingContext = new(type);
 
-        return ProcessingFilter.Create(scalarConstantProcesser).Filter(processingContext, rawConstants);
+        return ProcessingFilter.Create(scalarConstantProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    public static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ParseAndProcessConversions(INamedTypeSymbol typeSymbol)
+    public static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ProcessConversions(DefinedType type, IEnumerable<RawConvertibleQuantityDefinition> rawDefinitions)
     {
-        var rawConvertibles = ConvertibleQuantityParser.Parser.ParseAllOccurrences(typeSymbol);
+        ConvertibleQuantityProcessingContext processingContext = new(type);
 
-        ConvertibleQuantityProcessingContext processingContext = new(typeSymbol.AsDefinedType());
-
-        return ProcessingFilter.Create(ConvertibleVectorProcesser).Filter(processingContext, rawConvertibles);
+        return ProcessingFilter.Create(ConvertibleVectorProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    public static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ParseAndProcessIncludeUnitInstances(INamedTypeSymbol typeSymbol)
+    public static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ProcessIncludeUnitInstances(DefinedType type, IEnumerable<RawIncludeUnitsDefinition> rawDefinitions)
     {
-        var rawIncludeUnits = IncludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
+        IncludeUnitsProcessingContext processingContext = new(type);
 
-        IncludeUnitsProcessingContext processingContext = new(typeSymbol.AsDefinedType());
-
-        return ProcessingFilter.Create(IncludeUnitsProcesser).Filter(processingContext, rawIncludeUnits);
+        return ProcessingFilter.Create(IncludeUnitsProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    public static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ParseAndProcessExcludeUnitInstances(INamedTypeSymbol typeSymbol)
+    public static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ProcessExcludeUnitInstances(DefinedType type, IEnumerable<RawExcludeUnitsDefinition> rawDefinitions)
     {
-        var rawExcludeUnits = ExcludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
+        ExcludeUnitsProcessingContext processingContext = new(type);
 
-        ExcludeUnitsProcessingContext processingContext = new(typeSymbol.AsDefinedType());
-
-        return ProcessingFilter.Create(ExcludeUnitsProcesser).Filter(processingContext, rawExcludeUnits);
+        return ProcessingFilter.Create(ExcludeUnitsProcesser).Filter(processingContext, rawDefinitions);
     }
 
     private static DerivedQuantityProcesser DerivedQuantityProcesser { get; } = new(DerivedQuantityProcessingDiagnostics.Instance);

@@ -5,7 +5,19 @@ using SharpMeasures.Generators.Quantities;
 
 internal record class RawSharpMeasuresVectorGroupMemberDefinition : ARawAttributeDefinition<RawSharpMeasuresVectorGroupMemberDefinition, SharpMeasuresVectorGroupMemberLocations>, IDefaultUnitInstanceDefinition
 {
-    public static RawSharpMeasuresVectorGroupMemberDefinition Empty { get; } = new(SharpMeasuresVectorGroupMemberLocations.Empty);
+    public static RawSharpMeasuresVectorGroupMemberDefinition FromSymbolic(SymbolicSharpMeasuresVectorGroupMemberDefinition symbolicDefinition) => new RawSharpMeasuresVectorGroupMemberDefinition(symbolicDefinition.Locations) with
+    {
+        VectorGroup = symbolicDefinition.VectorGroup?.AsNamedType(),
+        InheritDerivations = symbolicDefinition.InheritDerivations,
+        InheritConversions = symbolicDefinition.InheritConversions,
+        InheritUnits = symbolicDefinition.InheritUnits,
+        InheritDerivationsFromMembers = symbolicDefinition.InheritDerivationsFromMembers,
+        InheritConstantsFromMembers = symbolicDefinition.InheritConstantsFromMembers,
+        InheritConversionsFromMembers = symbolicDefinition.InheritConversionsFromMembers,
+        InheritUnitsFromMembers = symbolicDefinition.InheritUnitsFromMembers,
+        Dimension = symbolicDefinition.Dimension,
+        GenerateDocumentation = symbolicDefinition.GenerateDocumentation
+    };
 
     public NamedType? VectorGroup { get; init; }
 

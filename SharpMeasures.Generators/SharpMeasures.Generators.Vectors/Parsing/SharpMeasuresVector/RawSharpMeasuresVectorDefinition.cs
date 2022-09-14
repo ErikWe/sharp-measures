@@ -5,7 +5,18 @@ using SharpMeasures.Generators.Quantities;
 
 internal record class RawSharpMeasuresVectorDefinition : ARawAttributeDefinition<RawSharpMeasuresVectorDefinition, SharpMeasuresVectorLocations>, IDefaultUnitInstanceDefinition
 {
-    public static RawSharpMeasuresVectorDefinition Empty => new();
+    public static RawSharpMeasuresVectorDefinition FromSymbolic(SymbolicSharpMeasuresVectorDefinition symbolicDefinition) => new RawSharpMeasuresVectorDefinition(symbolicDefinition.Locations) with
+    {
+        Unit = symbolicDefinition.Unit?.AsNamedType(),
+        Scalar = symbolicDefinition.Scalar?.AsNamedType(),
+        Dimension = symbolicDefinition.Dimension,
+        ImplementSum = symbolicDefinition.ImplementSum,
+        ImplementDifference = symbolicDefinition.ImplementDifference,
+        Difference = symbolicDefinition.Difference?.AsNamedType(),
+        DefaultUnitInstanceName = symbolicDefinition.DefaultUnitInstanceName,
+        DefaultUnitInstanceSymbol = symbolicDefinition.DefaultUnitInstanceSymbol,
+        GenerateDocumentation = symbolicDefinition.GenerateDocumentation
+    };
 
     public NamedType? Unit { get; init; }
     public NamedType? Scalar { get; init; }
@@ -25,5 +36,5 @@ internal record class RawSharpMeasuresVectorDefinition : ARawAttributeDefinition
 
     IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
-    private RawSharpMeasuresVectorDefinition() : base(SharpMeasuresVectorLocations.Empty) { }
+    private RawSharpMeasuresVectorDefinition(SharpMeasuresVectorLocations locations) : base(locations) { }
 }

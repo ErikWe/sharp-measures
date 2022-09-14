@@ -34,8 +34,8 @@ internal static class ScalarBaseResolver
             return new Optional<ResolvedScalarType>();
         }
 
-        var includedUnitBaseInstances = ResolveUnitInclusions(unit, scalarType.UnitBaseInstanceInclusions, () => scalarType.UnitBaseInstanceExclusions);
-        var includedUnitInstances = ResolveUnitInclusions(unit, scalarType.UnitInstanceInclusions, () => scalarType.UnitInstanceExclusions);
+        var includedUnitBaseInstances = ResolveUnitInstanceInclusions(unit, scalarType.UnitBaseInstanceInclusions, () => scalarType.UnitBaseInstanceExclusions);
+        var includedUnitInstances = ResolveUnitInstanceInclusions(unit, scalarType.UnitInstanceInclusions, () => scalarType.UnitInstanceExclusions);
 
         return new ResolvedScalarType(scalarType.Type, scalarType.TypeLocation, scalarType.Definition.Unit, scalarType.Definition.UseUnitBias, scalarType.Definition.Vector, scalarType.Definition.Reciprocal,
             scalarType.Definition.Square, scalarType.Definition.Cube, scalarType.Definition.SquareRoot, scalarType.Definition.CubeRoot, scalarType.Definition.ImplementSum, scalarType.Definition.ImplementDifference,
@@ -43,7 +43,7 @@ internal static class ScalarBaseResolver
             scalarType.Constants, scalarType.Conversions, includedUnitBaseInstances, includedUnitInstances, scalarType.Definition.GenerateDocumentation);
     }
 
-    private static IReadOnlyList<string> ResolveUnitInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
+    private static IReadOnlyList<string> ResolveUnitInstanceInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
     {
         HashSet<string> includedUnitInstances = new(unit.UnitInstancesByName.Keys);
 

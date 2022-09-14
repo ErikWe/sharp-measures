@@ -1,7 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing;
 
-using Microsoft.CodeAnalysis;
-
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
@@ -15,27 +13,22 @@ using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System.Collections.Generic;
 
-internal class VectorSpecializationProcesser : AVectorProcesser<SpecializedSharpMeasuresVectorDefinition, VectorSpecializationType>
+internal class VectorSpecializationProcesser : AVectorProcesser<RawVectorSpecializationType, RawSpecializedSharpMeasuresVectorDefinition, VectorSpecializationType, SpecializedSharpMeasuresVectorDefinition>
 {
-    protected override VectorSpecializationType FinalizeProcess(DefinedType type, MinimalLocation typeLocation, SpecializedSharpMeasuresVectorDefinition definition,
+    protected override VectorSpecializationType ProduceResult(DefinedType type, MinimalLocation typeLocation, SpecializedSharpMeasuresVectorDefinition definition,
         IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions,
-        IReadOnlyList<IncludeUnitsDefinition> unitInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitExclusions)
+        IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
     {
-        return new(type, typeLocation, definition, derivations, constants, conversions, unitInclusions, unitExclusions);
+        return new(type, typeLocation, definition, derivations, constants, conversions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
     protected override NamedType? GetUnit(SpecializedSharpMeasuresVectorDefinition scalar) => null;
 
-    protected override IOptionalWithDiagnostics<SpecializedSharpMeasuresVectorDefinition> ParseAndProcessVector(INamedTypeSymbol typeSymbol)
+    protected override IOptionalWithDiagnostics<SpecializedSharpMeasuresVectorDefinition> ProcessVector(DefinedType type, RawSpecializedSharpMeasuresVectorDefinition rawDefinition)
     {
-        if (SpecializedSharpMeasuresVectorParser.Parser.ParseFirstOccurrence(typeSymbol) is not RawSpecializedSharpMeasuresVectorDefinition rawScalar)
-        {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<SpecializedSharpMeasuresVectorDefinition>();
-        }
+        var processingContext = new SimpleProcessingContext(type);
 
-        var processingContext = new SimpleProcessingContext(typeSymbol.AsDefinedType());
-
-        return ProcessingFilter.Create(SpecializedSharpMeasuresVectorProcesser).Filter(processingContext, rawScalar);
+        return ProcessingFilter.Create(SpecializedSharpMeasuresVectorProcesser).Filter(processingContext, rawDefinition);
     }
 
     private static SpecializedSharpMeasuresVectorProcesser SpecializedSharpMeasuresVectorProcesser { get; } = new(SpecializedSharpMeasuresVectorProcessingDiagnostics.Instance);

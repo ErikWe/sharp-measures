@@ -1,0 +1,41 @@
+﻿namespace SharpMeasures.Generators.Units.Parsing.DerivableUnit;
+
+using Microsoft.CodeAnalysis;
+
+using SharpMeasures.Equatables;
+using SharpMeasures.Generators.Attributes.Parsing;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+internal record class SymbolicDerivableUnitDefinition : ARawAttributeDefinition<SymbolicDerivableUnitDefinition, DerivableUnitLocations>
+{
+    public static SymbolicDerivableUnitDefinition Empty { get; } = new(DerivableUnitLocations.Empty);
+
+    public string? DerivationID { get; init; }
+    public string? Expression { get; init; }
+    public IReadOnlyList<INamedTypeSymbol?>? Signature
+    {
+        get => signature;
+        init => signature = value?.AsReadOnlyEquatable();
+    }
+
+    public bool Permutations { get; init; }
+
+    private ReadOnlyEquatableList<INamedTypeSymbol?>? signature { get; init; }
+
+    protected override SymbolicDerivableUnitDefinition Definition => this;
+
+    private SymbolicDerivableUnitDefinition(DerivableUnitLocations locations) : base(locations) { }
+
+    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName)
+    {
+        if (Signature is null)
+        {
+            return Array.Empty<INamedTypeSymbol>();
+        }
+
+        return Signature.Where((symbol) => symbol is not null && symbol.ContainingAssembly.Name != localAssemblyName).Select(static (symbol) => symbol!);
+    }
+}

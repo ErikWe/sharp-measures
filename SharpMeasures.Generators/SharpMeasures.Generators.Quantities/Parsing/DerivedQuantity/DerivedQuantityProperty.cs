@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class DerivedQuantityProperty<TPropertyType> : AttributeProperty<RawDerivedQuantityDefinition, DerivedQuantityLocations, TPropertyType>
+internal record class DerivedQuantityProperty<TPropertyType> : AttributeProperty<SymbolicDerivedQuantityDefinition, DerivedQuantityLocations, TPropertyType>
 {
     public DerivedQuantityProperty(string name, string parameterName, DTypeSetter setter, DSingleLocationSetter locator) : base(name, parameterName, setter, locator) { }
     public DerivedQuantityProperty(string name, DTypeSetter setter, DSingleLocationSetter locator) : base(name, setter, locator) { }

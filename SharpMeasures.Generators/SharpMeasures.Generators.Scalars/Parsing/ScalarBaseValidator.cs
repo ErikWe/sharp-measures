@@ -14,7 +14,7 @@ using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.Contexts.Validation;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 using SharpMeasures.Generators.Scalars.Parsing.Diagnostics.Validation;
-using SharpMeasures.Generators.Scalars.Parsing.ExcludeBases;
+using SharpMeasures.Generators.Scalars.Parsing.ExcludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
@@ -62,13 +62,13 @@ internal static class ScalarBaseValidator
 
         var unitBaseInclusions = ValidateIncludeUnitBaseInstances(scalarType, unitPopulation, includedUnitsInstanceNames);
         var unitBaseExclusions = ValidateExcludeUnitBaseInstances(scalarType, unitPopulation, includedUnitsInstanceNames);
-        var unitInclusions = ValidateIncludeUnitInstances(scalarType, unitPopulation, includedUnitsInstanceNames);
-        var unitExclusions = ValidateExcludeUnitInstances(scalarType, unitPopulation, includedUnitsInstanceNames);
+        var unitInstnaceInclusions = ValidateIncludeUnitInstances(scalarType, unitPopulation, includedUnitsInstanceNames);
+        var unitInstanceExclusions = ValidateExcludeUnitInstances(scalarType, unitPopulation, includedUnitsInstanceNames);
 
         ScalarBaseType product = new(scalarType.Type, scalarType.TypeLocation, scalar.Result, derivations.Result, constants.Result, conversions.Result, unitBaseInclusions.Result,
-            unitBaseExclusions.Result, unitInclusions.Result, unitExclusions.Result);
+            unitBaseExclusions.Result, unitInstnaceInclusions.Result, unitInstanceExclusions.Result);
 
-        var allDiagnostics = scalar.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitBaseInclusions).Concat(unitBaseExclusions).Concat(unitInclusions).Concat(unitExclusions);
+        var allDiagnostics = scalar.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitBaseInclusions).Concat(unitBaseExclusions).Concat(unitInstnaceInclusions).Concat(unitInstanceExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
@@ -91,11 +91,11 @@ internal static class ScalarBaseValidator
     {
         var unit = unitPopulation.Units[scalarType.Definition.Unit];
 
-        var includedUnitBases = GetUnitInclusions(unit, scalarType.UnitBaseInstanceInclusions, () => scalarType.UnitBaseInstanceExclusions);
-        var includedUnits = GetUnitInclusions(unit, scalarType.UnitInstanceInclusions, () => scalarType.UnitInstanceExclusions);
+        var includedUnitInstanceBases = GetUnitInstanceInclusions(unit, scalarType.UnitBaseInstanceInclusions, () => scalarType.UnitBaseInstanceExclusions);
+        var includedInstanceUnits = GetUnitInstanceInclusions(unit, scalarType.UnitInstanceInclusions, () => scalarType.UnitInstanceExclusions);
 
-        HashSet<string> includedUnitInstanceNames = new(includedUnitBases);
-        HashSet<string> incluedUnitInstancePluralForms = new(includedUnits.Select((unitInstance) => unit.UnitInstancesByName[unitInstance].PluralForm));
+        HashSet<string> includedUnitInstanceNames = new(includedUnitInstanceBases);
+        HashSet<string> incluedUnitInstancePluralForms = new(includedInstanceUnits.Select((unitInstance) => unit.UnitInstancesByName[unitInstance].PluralForm));
 
         var validationContext = new ScalarConstantValidationContext(scalarType.Type, unit, new HashSet<string>(), new HashSet<string>(), includedUnitInstanceNames, incluedUnitInstancePluralForms);
 
@@ -137,7 +137,7 @@ internal static class ScalarBaseValidator
         return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, scalarType.UnitInstanceExclusions);
     }
 
-    private static IReadOnlyList<string> GetUnitInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
+    private static IReadOnlyList<string> GetUnitInstanceInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
     {
         HashSet<string> includedUnitInstances = new(unit.UnitInstancesByName.Keys);
 

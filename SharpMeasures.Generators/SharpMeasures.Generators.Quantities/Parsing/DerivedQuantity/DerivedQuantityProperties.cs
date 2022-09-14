@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 internal static class DerivedQuantityProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawDerivedQuantityDefinition>> AllProperties => new IAttributeProperty<RawDerivedQuantityDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<SymbolicDerivedQuantityDefinition>> AllProperties => new IAttributeProperty<SymbolicDerivedQuantityDefinition>[]
     {
         Expression,
         Signature,
@@ -26,7 +26,7 @@ internal static class DerivedQuantityProperties
     private static DerivedQuantityProperty<INamedTypeSymbol[]> Signature { get; } = new
     (
         name: nameof(DerivedQuantityAttribute.Signature),
-        setter: static (definition, signature) => definition with { Signature = signature.AsNamedTypes() },
+        setter: static (definition, signature) => definition with { Signature = signature },
         locator: static (locations, collectionLocation, elementLocations) => locations with
         {
             SignatureCollection = collectionLocation,

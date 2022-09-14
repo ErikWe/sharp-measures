@@ -10,8 +10,8 @@ public interface IScalarType : IQuantityType
 
     public abstract IReadOnlyList<IScalarConstant> Constants { get; }
 
-    public abstract IReadOnlyList<IUnitInstanceInclusionList> UnitBaseInstanceInclusions { get; }
-    public abstract IReadOnlyList<IUnitInstanceList> UnitBaseInstanceExclusions { get; }
+    public abstract IReadOnlyList<IUnitInstanceInclusionList> UnitInstanceBaseInclusions { get; }
+    public abstract IReadOnlyList<IUnitInstanceList> UnitInstanceBaseExclusions { get; }
 
     public IReadOnlyDictionary<string, IScalarConstant> ConstantsByName { get; }
     public IReadOnlyDictionary<string, IScalarConstant> ConstantsByMultiplesName { get; }

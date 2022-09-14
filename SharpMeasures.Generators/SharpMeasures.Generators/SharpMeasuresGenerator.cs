@@ -17,9 +17,13 @@ public class SharpMeasuresGenerator : IIncrementalGenerator
         var globalAnalyzerConfig = GlobalAnalyzerConfigProvider.Attach(context.AnalyzerConfigOptionsProvider);
         var documentationDictionary = DocumentationDictionaryProvider.AttachAndReport(context, context.AdditionalTextsProvider, globalAnalyzerConfig, DocumentationDiagnostics.Instance);
 
-        (var unvalidatedUnitPopulation, var unitValidator) = UnitParser.Attach(context);
-        (var unvalidatedScalarPopulation, var scalarValidator) = ScalarParser.Attach(context);
-        (var unvalidatedVectorPopulation, var vectorValidator) = VectorParser.Attach(context);
+        (var unitProcesser, var unitForeignSymbols) = UnitParser.Attach(context);
+        (var scalarProcesser, var scalarForeignSymbols) = ScalarParser.Attach(context);
+        (var vectorProcceser, var vectorForeignSymbols) = VectorParser.Attach(context);
+
+        (var unvalidatedUnitPopulation, var unitValidator) = unitProcesser.Process(context);
+        (var unvalidatedScalarPopulation, var scalarValidator) = scalarProcesser.Process(context);
+        (var unvalidatedVectorPopulation, var vectorValidator) = vectorProcceser.Process(context);
 
         (var validUnitPopulation, var unitGenerator) = unitValidator.Validate(context, unvalidatedScalarPopulation);
         (var unresolvedScalarPopulation, var scalarResolver) = scalarValidator.Validate(context, unvalidatedUnitPopulation, unvalidatedVectorPopulation);

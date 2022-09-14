@@ -9,8 +9,7 @@ using System.Collections.Generic;
 
 internal static class SpecializedSharpMeasuresVectorProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawSpecializedSharpMeasuresVectorDefinition>> AllProperties
-        => new IAttributeProperty<RawSpecializedSharpMeasuresVectorDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<SymbolicSpecializedSharpMeasuresVectorDefinition>> AllProperties => new IAttributeProperty<SymbolicSpecializedSharpMeasuresVectorDefinition>[]
     {
         OriginalVector,
         InheritDerivations,
@@ -29,7 +28,7 @@ internal static class SpecializedSharpMeasuresVectorProperties
     private static SpecializedSharpMeasuresVectorProperty<INamedTypeSymbol> OriginalVector { get; } = new
     (
         name: nameof(SpecializedSharpMeasuresVectorAttribute.OriginalVector),
-        setter: static (definition, originalQuantity) => definition with { OriginalQuantity = originalQuantity.AsNamedType() },
+        setter: static (definition, originalQuantity) => definition with { OriginalQuantity = originalQuantity },
         locator: static (locations, originalQuantityLocation) => locations with { OriginalQuantity = originalQuantityLocation }
     );
 
@@ -64,7 +63,7 @@ internal static class SpecializedSharpMeasuresVectorProperties
     private static SpecializedSharpMeasuresVectorProperty<INamedTypeSymbol> Scalar { get; } = new
     (
         name: nameof(SpecializedSharpMeasuresVectorAttribute.Scalar),
-        setter: static (definition, scalar) => definition with { Scalar = scalar.AsNamedType() },
+        setter: static (definition, scalar) => definition with { Scalar = scalar },
         locator: static (locations, scalarLocation) => locations with { Scalar = scalarLocation }
     );
 
@@ -85,7 +84,7 @@ internal static class SpecializedSharpMeasuresVectorProperties
     private static SpecializedSharpMeasuresVectorProperty<INamedTypeSymbol> Difference { get; } = new
     (
         name: nameof(SpecializedSharpMeasuresScalarAttribute.Difference),
-        setter: static (definition, difference) => definition with { Difference = difference.AsNamedType() },
+        setter: static (definition, difference) => definition with { Difference = difference },
         locator: static (locations, differenceLocation) => locations with { Difference = differenceLocation }
     );
 

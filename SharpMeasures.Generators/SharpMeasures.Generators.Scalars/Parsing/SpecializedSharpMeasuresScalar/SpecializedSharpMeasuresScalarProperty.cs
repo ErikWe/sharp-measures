@@ -2,8 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class SpecializedSharpMeasuresScalarProperty<TPropertyType>
-    : AttributeProperty<RawSpecializedSharpMeasuresScalarDefinition, SpecializedSharpMeasuresScalarLocations, TPropertyType>
+internal record class SpecializedSharpMeasuresScalarProperty<TPropertyType> : AttributeProperty<SymbolicSpecializedSharpMeasuresScalarDefinition, SpecializedSharpMeasuresScalarLocations, TPropertyType>
 {
     public SpecializedSharpMeasuresScalarProperty(string name, string parameterName, DTypeSetter setter, DSingleLocationSetter locator)
         : base(name, parameterName, setter, locator) { }

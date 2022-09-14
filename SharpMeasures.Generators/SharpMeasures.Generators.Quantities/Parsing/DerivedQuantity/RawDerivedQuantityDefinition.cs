@@ -7,7 +7,13 @@ using System.Collections.Generic;
 
 public record class RawDerivedQuantityDefinition : ARawAttributeDefinition<RawDerivedQuantityDefinition, DerivedQuantityLocations>
 {
-    public static RawDerivedQuantityDefinition Empty { get; } = new(DerivedQuantityLocations.Empty);
+    public static RawDerivedQuantityDefinition FromSymbolic(SymbolicDerivedQuantityDefinition symbolicDefinition) => new RawDerivedQuantityDefinition(symbolicDefinition.Locations) with
+    {
+        Expression = symbolicDefinition.Expression,
+        Signature = symbolicDefinition.Signature.AsNamedTypes(),
+        OperatorImplementation = symbolicDefinition.OperatorImplementation,
+        Permutations = symbolicDefinition.Permutations
+    };
 
     public string? Expression { get; init; }
     public IReadOnlyList<NamedType?> Signature

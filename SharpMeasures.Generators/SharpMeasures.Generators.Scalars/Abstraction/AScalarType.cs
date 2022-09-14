@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
-using SharpMeasures.Generators.Scalars.Parsing.ExcludeBases;
+using SharpMeasures.Generators.Scalars.Parsing.ExcludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 
@@ -55,8 +55,8 @@ internal record class AScalarType<TDefinition> : IScalarType
     IReadOnlyList<IScalarConstant> IScalarType.Constants => Constants; 
     IReadOnlyList<IConvertibleQuantity> IQuantityType.Conversions => Conversions;
 
-    IReadOnlyList<IUnitInstanceInclusionList> IScalarType.UnitBaseInstanceInclusions => UnitBaseInstanceInclusions;
-    IReadOnlyList<IUnitInstanceList> IScalarType.UnitBaseInstanceExclusions => UnitBaseInstanceExclusions;
+    IReadOnlyList<IUnitInstanceInclusionList> IScalarType.UnitInstanceBaseInclusions => UnitBaseInstanceInclusions;
+    IReadOnlyList<IUnitInstanceList> IScalarType.UnitInstanceBaseExclusions => UnitBaseInstanceExclusions;
 
     IReadOnlyList<IUnitInstanceInclusionList> IQuantityType.UnitInstanceInclusions => UnitInstanceInclusions;
     IReadOnlyList<IUnitInstanceList> IQuantityType.UnitInstanceExclusions => UnitInstanceExclusions;

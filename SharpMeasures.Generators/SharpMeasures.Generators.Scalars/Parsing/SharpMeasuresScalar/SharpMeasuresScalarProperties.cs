@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 internal static class SharpMeasuresScalarProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawSharpMeasuresScalarDefinition>> AllProperties => new IAttributeProperty<RawSharpMeasuresScalarDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<SymbolicSharpMeasuresScalarDefinition>> AllProperties => new IAttributeProperty<SymbolicSharpMeasuresScalarDefinition>[]
     {
         Unit,
         Vector,
@@ -29,14 +29,14 @@ internal static class SharpMeasuresScalarProperties
     private static SharpMeasuresScalarProperty<INamedTypeSymbol> Unit { get; } = new
     (
         name: nameof(SharpMeasuresScalarAttribute.Unit),
-        setter: static (definition, unit) => definition with { Unit = unit.AsNamedType() },
+        setter: static (definition, unit) => definition with { Unit = unit },
         locator: static (locations, unitLocation) => locations with { Unit = unitLocation }
     );
 
     private static SharpMeasuresScalarProperty<INamedTypeSymbol> Vector { get; } = new
     (
         name: nameof(SharpMeasuresScalarAttribute.Vector),
-        setter: static (definition, vector) => definition with { Vector = vector.AsNamedType() },
+        setter: static (definition, vector) => definition with { Vector = vector },
         locator: static (locations, vectorLocation) => locations with { Vector = vectorLocation }
     );
 
@@ -64,7 +64,7 @@ internal static class SharpMeasuresScalarProperties
     private static SharpMeasuresScalarProperty<INamedTypeSymbol> Difference { get; } = new
     (
         name: nameof(SharpMeasuresScalarAttribute.Difference),
-        setter: static (definition, difference) => definition with { Difference = difference.AsNamedType() },
+        setter: static (definition, difference) => definition with { Difference = difference },
         locator: static (locations, differenceLocation) => locations with { Difference = differenceLocation }
     );
 
@@ -85,35 +85,35 @@ internal static class SharpMeasuresScalarProperties
     private static SharpMeasuresScalarProperty<INamedTypeSymbol> Reciprocal { get; } = new
     (
         name: nameof(SharpMeasuresScalarAttribute.Reciprocal),
-        setter: static (definition, reciprocal) => definition with { Reciprocal = reciprocal.AsNamedType() },
+        setter: static (definition, reciprocal) => definition with { Reciprocal = reciprocal },
         locator: static (locations, reciprocalLocation) => locations with { Reciprocal = reciprocalLocation }
     );
 
     private static SharpMeasuresScalarProperty<INamedTypeSymbol> Square { get; } = new
     (
         name: nameof(SharpMeasuresScalarAttribute.Square),
-        setter: static (definition, square) => definition with { Square = square.AsNamedType() },
+        setter: static (definition, square) => definition with { Square = square },
         locator: static (locations, squareLocation) => locations with { Square = squareLocation }
     );
 
     private static SharpMeasuresScalarProperty<INamedTypeSymbol> Cube { get; } = new
     (
         name: nameof(SharpMeasuresScalarAttribute.Cube),
-        setter: static (definition, cube) => definition with { Cube = cube.AsNamedType() },
+        setter: static (definition, cube) => definition with { Cube = cube },
         locator: static (locations, cubeLocation) => locations with { Cube = cubeLocation }
     );
 
     private static SharpMeasuresScalarProperty<INamedTypeSymbol> SquareRoot { get; } = new
     (
         name: nameof(SharpMeasuresScalarAttribute.SquareRoot),
-        setter: static (definition, squareRoot) => definition with { SquareRoot = squareRoot.AsNamedType() },
+        setter: static (definition, squareRoot) => definition with { SquareRoot = squareRoot },
         locator: static (locations, squareRootLocation) => locations with { SquareRoot = squareRootLocation }
     );
 
     private static SharpMeasuresScalarProperty<INamedTypeSymbol> CubeRoot { get; } = new
     (
         name: nameof(SharpMeasuresScalarAttribute.CubeRoot),
-        setter: static (definition, cubeRoot) => definition with { CubeRoot = cubeRoot.AsNamedType() },
+        setter: static (definition, cubeRoot) => definition with { CubeRoot = cubeRoot },
         locator: static (locations, cubeRootLocation) => locations with { CubeRoot = cubeRootLocation }
     );
 

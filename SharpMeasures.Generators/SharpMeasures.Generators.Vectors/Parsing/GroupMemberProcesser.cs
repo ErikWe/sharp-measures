@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
@@ -22,64 +21,57 @@ using System.Threading;
 
 internal static class GroupMemberProcesser
 {
-    public static IOptionalWithDiagnostics<GroupMemberType> ParseAndProcess(Optional<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)> input, CancellationToken token)
+    public static IOptionalWithDiagnostics<GroupMemberType> Process(Optional<RawGroupMemberType> rawMember, CancellationToken token)
     {
-        if (token.IsCancellationRequested || input.HasValue is false)
+        if (token.IsCancellationRequested || rawMember.HasValue is false)
         {
             return OptionalWithDiagnostics.Empty<GroupMemberType>();
         }
 
-        return ParseAndProcess(input.Value.Declaration, input.Value.TypeSymbol);
+        return Process(rawMember.Value);
     }
 
-    private static IOptionalWithDiagnostics<GroupMemberType> ParseAndProcess(TypeDeclarationSyntax declaration, INamedTypeSymbol typeSymbol)
+    private static IOptionalWithDiagnostics<GroupMemberType> Process(RawGroupMemberType rawMember)
     {
-        var vector = ParseAndProcessVector(typeSymbol);
+        var member = ProcessMember(rawMember.Type, rawMember.Definition);
 
-        if (vector.LacksResult)
+        if (member.LacksResult)
         {
-            return vector.AsEmptyOptional<GroupMemberType>();
+            return member.AsEmptyOptional<GroupMemberType>();
         }
 
-        var derivations = CommonProcessing.ParseAndProcessDerivations(typeSymbol);
-        var constants = CommonProcessing.ParseAndProcessConstants(typeSymbol, null);
-        var conversions = ParseAndProcessConversions(typeSymbol, vector.Result.VectorGroup);
+        var derivations = CommonProcessing.ProcessDerivations(rawMember.Type, rawMember.Derivations);
+        var constants = CommonProcessing.ProcessConstants(rawMember.Type, rawMember.Constants, null);
+        var conversions = ProcessConversions(rawMember.Type, rawMember.Conversions, member.Result.VectorGroup);
 
-        var includeUnitInstances = CommonProcessing.ParseAndProcessIncludeUnitInstances(typeSymbol);
-        var excludeUnitInstances = CommonProcessing.ParseAndProcessExcludeUnitInstances(typeSymbol);
+        var includeUnitInstances = CommonProcessing.ProcessIncludeUnitInstances(rawMember.Type, rawMember.UnitInstanceInclusions);
+        var excludeUnitInstances = CommonProcessing.ProcessExcludeUnitInstances(rawMember.Type, rawMember.UnitInstanceExclusions);
 
-        var allDiagnostics = vector.Diagnostics.Concat(derivations).Concat(constants).Concat(conversions).Concat(includeUnitInstances).Concat(excludeUnitInstances);
+        var allDiagnostics = member.Diagnostics.Concat(derivations).Concat(constants).Concat(conversions).Concat(includeUnitInstances).Concat(excludeUnitInstances);
 
         if (includeUnitInstances.HasResult && includeUnitInstances.Result.Count > 0 && excludeUnitInstances.HasResult && excludeUnitInstances.Result.Count > 0)
         {
-            allDiagnostics = allDiagnostics.Concat(new[] { VectorTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(declaration.Identifier.GetLocation().Minimize()) });
+            allDiagnostics = allDiagnostics.Concat(new[] { VectorTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(rawMember.TypeLocation) });
             excludeUnitInstances = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
         }
 
-        GroupMemberType product = new(typeSymbol.AsDefinedType(), declaration.GetLocation().Minimize(), vector.Result, derivations.Result, constants.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
+        GroupMemberType product = new(rawMember.Type, rawMember.TypeLocation, member.Result, derivations.Result, constants.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static IOptionalWithDiagnostics<SharpMeasuresVectorGroupMemberDefinition> ParseAndProcessVector(INamedTypeSymbol typeSymbol)
+    private static IOptionalWithDiagnostics<SharpMeasuresVectorGroupMemberDefinition> ProcessMember(DefinedType type, RawSharpMeasuresVectorGroupMemberDefinition rawDefinition)
     {
-        if (SharpMeasuresVectorGroupMemberParser.Parser.ParseFirstOccurrence(typeSymbol) is not RawSharpMeasuresVectorGroupMemberDefinition rawVector)
-        {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<SharpMeasuresVectorGroupMemberDefinition>();
-        }
+        var processingContext = new SimpleProcessingContext(type);
 
-        var processingContext = new SimpleProcessingContext(typeSymbol.AsDefinedType());
-
-        return ProcessingFilter.Create(SharpMeasuresVectorGroupMemberProcesser).Filter(processingContext, rawVector);
+        return ProcessingFilter.Create(SharpMeasuresVectorGroupMemberProcesser).Filter(processingContext, rawDefinition);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ParseAndProcessConversions(INamedTypeSymbol typeSymbol, NamedType group)
+    private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ProcessConversions(DefinedType type, IEnumerable<RawConvertibleQuantityDefinition> rawDefinitions, NamedType group)
     {
-        var rawConvertibles = ConvertibleQuantityParser.Parser.ParseAllOccurrences(typeSymbol);
+        ConvertibleVectorGroupMemberProcessingContext processingContext = new(type, group);
 
-        ConvertibleVectorGroupMemberProcessingContext processingContext = new(typeSymbol.AsDefinedType(), group);
-
-        return ProcessingFilter.Create(ConvertibleVectorProcesser).Filter(processingContext, rawConvertibles);
+        return ProcessingFilter.Create(ConvertibleVectorProcesser).Filter(processingContext, rawDefinitions);
     }
 
     private static SharpMeasuresVectorGroupMemberProcesser SharpMeasuresVectorGroupMemberProcesser { get; } = new(SharpMeasuresVectorGroupMemberProcessingDiagnostics.Instance);

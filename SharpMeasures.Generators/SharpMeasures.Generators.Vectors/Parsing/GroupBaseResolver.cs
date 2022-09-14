@@ -34,14 +34,14 @@ internal static class GroupBaseResolver
 
         var membersByDimension = ResolveMembers(vectorType, vectorPopulation);
 
-        var includedUnitInstances = ResolveUnitInclusions(unit, vectorType.UnitInclusions, () => vectorType.UnitExclusions);
+        var includedUnitInstances = ResolveUnitInstanceInclusions(unit, vectorType.UnitInstanceInclusions, () => vectorType.UnitInstanceExclusions);
 
         return new(vectorType.Type, vectorType.TypeLocation, vectorType.Definition.Unit, vectorType.Definition.Scalar, vectorType.Definition.ImplementSum,
             vectorType.Definition.ImplementDifference, vectorType.Definition.Difference, vectorType.Definition.DefaultUnitInstanceName, vectorType.Definition.DefaultUnitInstanceSymbol,
             membersByDimension, vectorType.Derivations, Array.Empty<IDerivedQuantity>(), vectorType.Conversions, includedUnitInstances, vectorType.Definition.GenerateDocumentation);
     }
 
-    private static IReadOnlyList<string> ResolveUnitInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
+    private static IReadOnlyList<string> ResolveUnitInstanceInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
     {
         if (inclusions.Any())
         {

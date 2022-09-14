@@ -10,12 +10,12 @@ using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroup;
 
 using System.Collections.Generic;
 
-internal record class GroupBaseType : AVectorGroupType<SharpMeasuresVectorGroupDefinition>, IVectorGroupBaseType
+internal record class GroupBaseType : AGroupType<SharpMeasuresVectorGroupDefinition>, IVectorGroupBaseType
 {
     IQuantityBase IQuantityBaseType.Definition => Definition;
     IVectorGroupBase IVectorGroupBaseType.Definition => Definition;
 
     public GroupBaseType(DefinedType type, MinimalLocation typeLocation, SharpMeasuresVectorGroupDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
-        IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitExclusions)
-        : base(type, typeLocation, definition, derivations, conversions, unitInclusions, unitExclusions) { }
+        IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
+        : base(type, typeLocation, definition, derivations, conversions, unitInstanceInclusions, unitInstanceExclusions) { }
 }

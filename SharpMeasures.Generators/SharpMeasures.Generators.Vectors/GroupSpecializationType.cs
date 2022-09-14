@@ -10,12 +10,12 @@ using SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVectorGro
 
 using System.Collections.Generic;
 
-internal record class GroupSpecializationType : AVectorGroupType<SpecializedSharpMeasuresVectorGroupDefinition>, IVectorGroupSpecializationType
+internal record class GroupSpecializationType : AGroupType<SpecializedSharpMeasuresVectorGroupDefinition>, IVectorGroupSpecializationType
 {
     IQuantitySpecialization IQuantitySpecializationType.Definition => Definition;
     IVectorGroupSpecialization IVectorGroupSpecializationType.Definition => Definition;
 
     public GroupSpecializationType(DefinedType type, MinimalLocation typeLocation, SpecializedSharpMeasuresVectorGroupDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
-        IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitExclusions)
-        : base(type, typeLocation, definition, derivations, conversions, unitInclusions, unitExclusions) { }
+        IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
+        : base(type, typeLocation, definition, derivations, conversions, unitInstanceInclusions, unitInstanceExclusions) { }
 }

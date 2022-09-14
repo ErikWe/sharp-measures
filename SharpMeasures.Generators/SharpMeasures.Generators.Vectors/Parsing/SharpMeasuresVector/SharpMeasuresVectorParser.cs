@@ -4,11 +4,11 @@ using SharpMeasures.Generators.Attributes.Parsing;
 
 internal static class SharpMeasuresVectorParser
 {
-    public static IAttributeParser<RawSharpMeasuresVectorDefinition> Parser { get; } = new AttributeParser();
+    public static IAttributeParser<SymbolicSharpMeasuresVectorDefinition> Parser { get; } = new AttributeParser();
 
-    private static RawSharpMeasuresVectorDefinition DefaultDefiniton() => RawSharpMeasuresVectorDefinition.Empty;
+    private static SymbolicSharpMeasuresVectorDefinition DefaultDefiniton() => SymbolicSharpMeasuresVectorDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawSharpMeasuresVectorDefinition, SharpMeasuresVectorLocations, SharpMeasuresVectorAttribute>
+    private class AttributeParser : AAttributeParser<SymbolicSharpMeasuresVectorDefinition, SharpMeasuresVectorLocations, SharpMeasuresVectorAttribute>
     {
         public AttributeParser() : base(DefaultDefiniton, SharpMeasuresVectorProperties.AllProperties) { }
     }

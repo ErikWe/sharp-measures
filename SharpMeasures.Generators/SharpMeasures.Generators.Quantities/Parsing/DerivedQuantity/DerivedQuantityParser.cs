@@ -4,11 +4,11 @@ using SharpMeasures.Generators.Attributes.Parsing;
 
 public static class DerivedQuantityParser
 {
-    public static IAttributeParser<RawDerivedQuantityDefinition> Parser { get; } = new AttributeParser();
+    public static IAttributeParser<SymbolicDerivedQuantityDefinition> Parser { get; } = new AttributeParser();
 
-    private static RawDerivedQuantityDefinition DefaultDefinition() => RawDerivedQuantityDefinition.Empty;
+    private static SymbolicDerivedQuantityDefinition DefaultDefinition() => SymbolicDerivedQuantityDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawDerivedQuantityDefinition, DerivedQuantityLocations, DerivedQuantityAttribute>
+    private class AttributeParser : AAttributeParser<SymbolicDerivedQuantityDefinition, DerivedQuantityLocations, DerivedQuantityAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, DerivedQuantityProperties.AllProperties) { }
     }

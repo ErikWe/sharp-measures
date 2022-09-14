@@ -6,7 +6,11 @@ using System.Collections.Generic;
 
 public record class RawConvertibleQuantityDefinition : ARawItemListDefinition<NamedType?, RawConvertibleQuantityDefinition, ConvertibleQuantityLocations>
 {
-    internal static RawConvertibleQuantityDefinition Empty => new();
+    public static RawConvertibleQuantityDefinition FromSymbolic(SymbolicConvertibleQuantityDefinition symbolicDefinition) => new RawConvertibleQuantityDefinition(symbolicDefinition.Locations).WithItems(symbolicDefinition.Quantities.AsNamedTypes()) with
+    {
+        ConversionDirection = symbolicDefinition.ConversionDirection,
+        CastOperatorBehaviour = symbolicDefinition.CastOperatorBehaviour
+    };
 
     public IReadOnlyList<NamedType?> Quantities => Items;
 
@@ -15,5 +19,5 @@ public record class RawConvertibleQuantityDefinition : ARawItemListDefinition<Na
 
     protected override RawConvertibleQuantityDefinition Definition => this;
 
-    protected RawConvertibleQuantityDefinition() : base(ConvertibleQuantityLocations.Empty) { }
+    protected RawConvertibleQuantityDefinition(ConvertibleQuantityLocations locations) : base(locations) { }
 }

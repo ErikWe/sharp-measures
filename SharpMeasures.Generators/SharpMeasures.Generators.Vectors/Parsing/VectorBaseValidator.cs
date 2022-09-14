@@ -86,9 +86,9 @@ internal static class VectorBaseValidator
     {
         var unit = unitPopulation.Units[vectorType.Definition.Unit];
 
-        var includedUnits = GetUnitInclusions(unit, vectorType.UnitInstanceInclusions, () => vectorType.UnitInstanceExclusions);
+        var includedUnitInstances = GetUnitInstanceInclusions(unit, vectorType.UnitInstanceInclusions, () => vectorType.UnitInstanceExclusions);
 
-        HashSet<string> incluedUnitPlurals = new(includedUnits.Select((unitInstance) => unit.UnitInstancesByName[unitInstance].PluralForm));
+        HashSet<string> incluedUnitPlurals = new(includedUnitInstances.Select((unitInstance) => unit.UnitInstancesByName[unitInstance].PluralForm));
 
         var validationContext = new VectorConstantValidationContext(vectorType.Type, vectorType.Definition.Dimension, unit, new HashSet<string>(), new HashSet<string>(), incluedUnitPlurals);
 
@@ -116,7 +116,7 @@ internal static class VectorBaseValidator
         return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInstanceExclusions);
     }
 
-    private static IReadOnlyList<string> GetUnitInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
+    private static IReadOnlyList<string> GetUnitInstanceInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
     {
         HashSet<string> includedUnits = new(unit.UnitInstancesByName.Keys);
 

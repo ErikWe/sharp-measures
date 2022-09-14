@@ -5,7 +5,23 @@ using SharpMeasures.Generators.Quantities;
 
 internal record class RawSharpMeasuresScalarDefinition : ARawAttributeDefinition<RawSharpMeasuresScalarDefinition, SharpMeasuresScalarLocations>, IDefaultUnitInstanceDefinition
 {
-    public static RawSharpMeasuresScalarDefinition Empty => new();
+    public static RawSharpMeasuresScalarDefinition FromSymbolic(SymbolicSharpMeasuresScalarDefinition symbolicDefinition) => new RawSharpMeasuresScalarDefinition(symbolicDefinition.Locations) with
+    {
+        Unit = symbolicDefinition.Unit?.AsNamedType(),
+        Vector = symbolicDefinition.Vector?.AsNamedType(),
+        UseUnitBias = symbolicDefinition.UseUnitBias,
+        ImplementSum = symbolicDefinition.ImplementSum,
+        ImplementDifference = symbolicDefinition.ImplementDifference,
+        Difference = symbolicDefinition.Difference?.AsNamedType(),
+        DefaultUnitInstanceName = symbolicDefinition.DefaultUnitInstanceName,
+        DefaultUnitInstanceSymbol = symbolicDefinition.DefaultUnitInstanceSymbol,
+        Reciprocal = symbolicDefinition.Reciprocal?.AsNamedType(),
+        Square = symbolicDefinition.Square?.AsNamedType(),
+        Cube = symbolicDefinition.Cube?.AsNamedType(),
+        SquareRoot = symbolicDefinition.SquareRoot?.AsNamedType(),
+        CubeRoot = symbolicDefinition.CubeRoot?.AsNamedType(),
+        GenerateDocumentation = symbolicDefinition.GenerateDocumentation
+    };
 
     public NamedType? Unit { get; init; }
     public NamedType? Vector { get; init; }
@@ -31,5 +47,5 @@ internal record class RawSharpMeasuresScalarDefinition : ARawAttributeDefinition
 
     IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
-    private RawSharpMeasuresScalarDefinition() : base(SharpMeasuresScalarLocations.Empty) { }
+    private RawSharpMeasuresScalarDefinition(SharpMeasuresScalarLocations locations) : base(locations) { }
 }

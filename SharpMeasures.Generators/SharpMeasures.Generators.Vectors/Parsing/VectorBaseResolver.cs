@@ -31,19 +31,19 @@ internal static class VectorBaseResolver
     {
         var unit = unitPopulation.Units[vectorType.Definition.Unit];
 
-        var includedUnits = ResolveUnitInclusions(unit, vectorType.UnitInstanceInclusions, () => vectorType.UnitInstanceExclusions);
+        var includedUnitInstances = ResolveUnitInstanceInclusions(unit, vectorType.UnitInstanceInclusions, () => vectorType.UnitInstanceExclusions);
 
         return new(vectorType.Type, vectorType.TypeLocation, vectorType.Definition.Dimension, vectorType.Definition.Unit,
             vectorType.Definition.Scalar, vectorType.Definition.ImplementSum, vectorType.Definition.ImplementDifference,
             vectorType.Definition.Difference, vectorType.Definition.DefaultUnitInstanceName, vectorType.Definition.DefaultUnitInstanceSymbol, vectorType.Derivations,
-            Array.Empty<IDerivedQuantity>(), vectorType.Constants, vectorType.Conversions, includedUnits, vectorType.Definition.GenerateDocumentation);
+            Array.Empty<IDerivedQuantity>(), vectorType.Constants, vectorType.Conversions, includedUnitInstances, vectorType.Definition.GenerateDocumentation);
     }
 
-    private static IReadOnlyList<string> ResolveUnitInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
+    private static IReadOnlyList<string> ResolveUnitInstanceInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> unitInstanceInclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
     {
-        if (inclusions.Any())
+        if (unitInstanceInclusions.Any())
         {
-            return inclusions.SelectMany(static (unitList) => unitList.UnitInstances).ToList();
+            return unitInstanceInclusions.SelectMany(static (unitList) => unitList.UnitInstances).ToList();
         }
 
         HashSet<string> includedUnits = new(unit.UnitInstancesByName.Keys);

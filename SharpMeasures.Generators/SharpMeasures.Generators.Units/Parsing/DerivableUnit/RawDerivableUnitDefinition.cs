@@ -7,10 +7,16 @@ using System.Collections.Generic;
 
 internal record class RawDerivableUnitDefinition : ARawAttributeDefinition<RawDerivableUnitDefinition, DerivableUnitLocations>
 {
-    public static RawDerivableUnitDefinition Empty { get; } = new();
+    public static RawDerivableUnitDefinition FromSymbolic(SymbolicDerivableUnitDefinition symolicDefinition) => new RawDerivableUnitDefinition(symolicDefinition.Locations) with
+    {
+        DerivationID = symolicDefinition.DerivationID,
+        Expression = symolicDefinition.Expression,
+        Signature = symolicDefinition.Signature?.AsNamedTypes(),
+        Permutations = symolicDefinition.Permutations
+    };
 
-    public string? Expression { get; init; }
     public string? DerivationID { get; init; }
+    public string? Expression { get; init; }
     public IReadOnlyList<NamedType?>? Signature
     {
         get => signature;
@@ -23,5 +29,5 @@ internal record class RawDerivableUnitDefinition : ARawAttributeDefinition<RawDe
 
     protected override RawDerivableUnitDefinition Definition => this;
 
-    private RawDerivableUnitDefinition() : base(DerivableUnitLocations.Empty) { }
+    private RawDerivableUnitDefinition(DerivableUnitLocations locations) : base(locations) { }
 }

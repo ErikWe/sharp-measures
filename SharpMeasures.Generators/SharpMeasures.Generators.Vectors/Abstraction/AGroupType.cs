@@ -9,7 +9,7 @@ using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 
 using System.Collections.Generic;
 
-internal record class AVectorGroupType<TDefinition> : IVectorGroupType
+internal record class AGroupType<TDefinition> : IVectorGroupType
     where TDefinition : IVectorGroup
 {
     public DefinedType Type { get; }
@@ -20,14 +20,14 @@ internal record class AVectorGroupType<TDefinition> : IVectorGroupType
     public IReadOnlyList<DerivedQuantityDefinition> Derivations => derivations;
     public IReadOnlyList<ConvertibleVectorDefinition> Conversions => conversions;
 
-    public IReadOnlyList<IncludeUnitsDefinition> UnitInclusions => unitInclusions;
-    public IReadOnlyList<ExcludeUnitsDefinition> UnitExclusions => unitExclusions;
+    public IReadOnlyList<IncludeUnitsDefinition> UnitInstanceInclusions => unitInstanceInclusions;
+    public IReadOnlyList<ExcludeUnitsDefinition> UnitInstanceExclusions => unitInstanceExclusions;
 
     private ReadOnlyEquatableList<DerivedQuantityDefinition> derivations { get; }
     private ReadOnlyEquatableList<ConvertibleVectorDefinition> conversions { get; }
 
-    private ReadOnlyEquatableList<IncludeUnitsDefinition> unitInclusions { get; }
-    private ReadOnlyEquatableList<ExcludeUnitsDefinition> unitExclusions { get; }
+    private ReadOnlyEquatableList<IncludeUnitsDefinition> unitInstanceInclusions { get; }
+    private ReadOnlyEquatableList<ExcludeUnitsDefinition> unitInstanceExclusions { get; }
 
     ISharpMeasuresObject ISharpMeasuresObjectType.Definition => Definition;
     IQuantity IQuantityType.Definition => Definition;
@@ -36,11 +36,11 @@ internal record class AVectorGroupType<TDefinition> : IVectorGroupType
     IReadOnlyList<IDerivedQuantity> IQuantityType.Derivations => Derivations;
     IReadOnlyList<IConvertibleQuantity> IQuantityType.Conversions => Conversions;
 
-    IReadOnlyList<IUnitInstanceInclusionList> IQuantityType.UnitInstanceInclusions => UnitInclusions;
-    IReadOnlyList<IUnitInstanceList> IQuantityType.UnitInstanceExclusions => UnitExclusions;
+    IReadOnlyList<IUnitInstanceInclusionList> IQuantityType.UnitInstanceInclusions => UnitInstanceInclusions;
+    IReadOnlyList<IUnitInstanceList> IQuantityType.UnitInstanceExclusions => UnitInstanceExclusions;
 
-    protected AVectorGroupType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
-        IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitExclusions)
+    protected AGroupType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
+        IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
     {
         Type = type;
         TypeLocation = typeLocation;
@@ -50,7 +50,7 @@ internal record class AVectorGroupType<TDefinition> : IVectorGroupType
         this.derivations = derivations.AsReadOnlyEquatable();
         this.conversions = conversions.AsReadOnlyEquatable();
 
-        this.unitInclusions = unitInclusions.AsReadOnlyEquatable();
-        this.unitExclusions = unitExclusions.AsReadOnlyEquatable();
+        this.unitInstanceInclusions = unitInstanceInclusions.AsReadOnlyEquatable();
+        this.unitInstanceExclusions = unitInstanceExclusions.AsReadOnlyEquatable();
     }
 }

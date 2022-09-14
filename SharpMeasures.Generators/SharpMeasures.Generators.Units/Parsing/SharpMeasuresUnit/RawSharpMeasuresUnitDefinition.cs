@@ -4,13 +4,18 @@ using SharpMeasures.Generators.Attributes.Parsing;
 
 internal record class RawSharpMeasuresUnitDefinition : ARawSharpMeasuresObjectDefinition<RawSharpMeasuresUnitDefinition, SharpMeasuresUnitLocations>
 {
-    public static RawSharpMeasuresUnitDefinition Empty { get; } = new(SharpMeasuresUnitLocations.Empty);
+    public static RawSharpMeasuresUnitDefinition FromSymbolic(SymbolicSharpMeasuresUnitDefinition symbolicDefinition) => new RawSharpMeasuresUnitDefinition(symbolicDefinition.Locations) with
+    {
+        Quantity = symbolicDefinition.Quantity?.AsNamedType(),
+        BiasTerm = symbolicDefinition.BiasTerm,
+        GenerateDocumentation = symbolicDefinition.GenerateDocumentation
+    };
 
     protected override RawSharpMeasuresUnitDefinition Definition => this;
 
-    public NamedType? Quantity { get; init; }
+    public NamedType? Quantity { get; private init; }
 
-    public bool BiasTerm { get; init; }
+    public bool BiasTerm { get; private init; }
 
     private RawSharpMeasuresUnitDefinition(SharpMeasuresUnitLocations locations) : base(locations) { }
 }

@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities;
@@ -17,56 +16,57 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-internal abstract class AVectorProcesser<TDefinition, TProduct>
-    where TDefinition : IVector
+internal abstract class AVectorProcesser<TRawType, TRawDefinition, TProductType, TProductDefinition>
+    where TRawType : ARawVectorType<TRawDefinition>
+    where TProductDefinition : IVector
 {
-    public IOptionalWithDiagnostics<TProduct> ParseAndProcess(Optional<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)> input, CancellationToken token)
+    public IOptionalWithDiagnostics<TProductType> Process(Optional<TRawType> rawVector, CancellationToken token)
     {
-        if (token.IsCancellationRequested || input.HasValue is false)
+        if (token.IsCancellationRequested || rawVector.HasValue is false)
         {
-            return OptionalWithDiagnostics.Empty<TProduct>();
+            return OptionalWithDiagnostics.Empty<TProductType>();
         }
 
-        return ParseAndProcess(input.Value.Declaration, input.Value.TypeSymbol);
+        return Process(rawVector.Value);
     }
 
-    private IOptionalWithDiagnostics<TProduct> ParseAndProcess(TypeDeclarationSyntax declaration, INamedTypeSymbol typeSymbol)
+    private IOptionalWithDiagnostics<TProductType> Process(TRawType rawVector)
     {
-        var vector = ParseAndProcessVector(typeSymbol);
+        var vector = ProcessVector(rawVector.Type, rawVector.Definition);
 
         if (vector.LacksResult)
         {
-            return vector.AsEmptyOptional<TProduct>();
+            return vector.AsEmptyOptional<TProductType>();
         }
 
         var unit = GetUnit(vector.Result);
 
-        var derivations = CommonProcessing.ParseAndProcessDerivations(typeSymbol);
-        var constants = CommonProcessing.ParseAndProcessConstants(typeSymbol, unit);
-        var conversions = CommonProcessing.ParseAndProcessConversions(typeSymbol);
+        var derivations = CommonProcessing.ProcessDerivations(rawVector.Type, rawVector.Derivations);
+        var constants = CommonProcessing.ProcessConstants(rawVector.Type, rawVector.Constants, unit);
+        var conversions = CommonProcessing.ProcessConversions(rawVector.Type, rawVector.Conversions);
 
-        var includeUnitInstances = CommonProcessing.ParseAndProcessIncludeUnitInstances(typeSymbol);
-        var excludeUnitInstances = CommonProcessing.ParseAndProcessExcludeUnitInstances(typeSymbol);
+        var includeUnitInstances = CommonProcessing.ProcessIncludeUnitInstances(rawVector.Type, rawVector.UnitInstanceInclusions);
+        var excludeUnitInstances = CommonProcessing.ProcessExcludeUnitInstances(rawVector.Type, rawVector.UnitInstanceExclusions);
 
         var allDiagnostics = vector.Diagnostics.Concat(derivations).Concat(constants).Concat(conversions).Concat(includeUnitInstances).Concat(excludeUnitInstances);
 
         if (includeUnitInstances.HasResult && includeUnitInstances.Result.Count > 0 && excludeUnitInstances.HasResult && excludeUnitInstances.Result.Count > 0)
         {
-            allDiagnostics = allDiagnostics.Concat(new[] { VectorTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(declaration.Identifier.GetLocation().Minimize()) });
+            allDiagnostics = allDiagnostics.Concat(new[] { VectorTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(rawVector.TypeLocation) });
             excludeUnitInstances = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
         }
 
-        TProduct product = FinalizeProcess(typeSymbol.AsDefinedType(), declaration.GetLocation().Minimize(), vector.Result, derivations.Result, constants.Result,
+        TProductType product = ProduceResult(rawVector.Type, rawVector.TypeLocation, vector.Result, derivations.Result, constants.Result,
             conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    protected abstract TProduct FinalizeProcess(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
-        IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInclusions,
-        IReadOnlyList<ExcludeUnitsDefinition> unitExclusions);
+    protected abstract TProductType ProduceResult(DefinedType type, MinimalLocation typeLocation, TProductDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
+        IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions,
+        IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
 
-    protected abstract IOptionalWithDiagnostics<TDefinition> ParseAndProcessVector(INamedTypeSymbol typeSymbol);
+    protected abstract IOptionalWithDiagnostics<TProductDefinition> ProcessVector(DefinedType type, TRawDefinition rawDefinition);
 
-    protected abstract NamedType? GetUnit(TDefinition scalar);
+    protected abstract NamedType? GetUnit(TProductDefinition vector);
 }
