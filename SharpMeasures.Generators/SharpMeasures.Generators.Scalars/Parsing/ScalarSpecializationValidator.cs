@@ -14,7 +14,7 @@ using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.Contexts.Validation;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 using SharpMeasures.Generators.Scalars.Parsing.Diagnostics.Validation;
-using SharpMeasures.Generators.Scalars.Parsing.ExcludeBases;
+using SharpMeasures.Generators.Scalars.Parsing.ExcludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 using SharpMeasures.Generators.Scalars.Parsing.SpecializedSharpMeasuresScalar;
@@ -29,25 +29,25 @@ using System.Threading;
 internal static class ScalarSpecializationValidator
 {
     public static IncrementalValuesProvider<Optional<ScalarSpecializationType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<ScalarSpecializationType>> scalarProvider,
-        IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulationWithData> scalarPopulationProvider,
+        IncrementalValueProvider<ScalarProcessingData> processingDataProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
         IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
-        return scalarProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
+        return scalarProvider.Combine(processingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
 
-    private static IOptionalWithDiagnostics<ScalarSpecializationType> Validate((Optional<ScalarSpecializationType> UnvalidatedScalar, IUnitPopulation UnitPopulation, IScalarPopulationWithData ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
+    private static IOptionalWithDiagnostics<ScalarSpecializationType> Validate((Optional<ScalarSpecializationType> UnvalidatedScalar, ScalarProcessingData ProcessingData, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
     {
         if (token.IsCancellationRequested || input.UnvalidatedScalar.HasValue is false)
         {
             return OptionalWithDiagnostics.Empty<ScalarSpecializationType>();
         }
 
-        return Validate(input.UnvalidatedScalar.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        return Validate(input.UnvalidatedScalar.Value, input.ProcessingData, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
     }
 
-    private static IOptionalWithDiagnostics<ScalarSpecializationType> Validate(ScalarSpecializationType scalarType, IUnitPopulation unitPopulation, IScalarPopulationWithData scalarPopulation, IVectorPopulation vectorPopulation)
+    private static IOptionalWithDiagnostics<ScalarSpecializationType> Validate(ScalarSpecializationType scalarType, ScalarProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        var scalar = ValidateScalar(scalarType, unitPopulation, scalarPopulation, vectorPopulation);
+        var scalar = ValidateScalar(scalarType, processingData, unitPopulation, scalarPopulation, vectorPopulation);
 
         if (scalar.LacksResult)
         {
@@ -57,10 +57,10 @@ internal static class ScalarSpecializationValidator
         var scalarBase = scalarPopulation.ScalarBases[scalarType.Type.AsNamedType()];
         var unit = unitPopulation.Units[scalarBase.Definition.Unit];
 
-        var inheritedUnitBaseInstances = GetUnitInclusions(scalarType, scalarPopulation, unit.UnitInstancesByName.Values, unit, static (scalar) => scalar.UnitBaseInstanceInclusions, static (scalar) => scalar.UnitBaseInstanceExclusions, static (scalar) => scalar.Definition.InheritBases, onlyInherited: true);
-        var inheritedUnitInstances = GetUnitInclusions(scalarType, scalarPopulation, unit.UnitInstancesByName.Values, unit, static (scalar) => scalar.UnitInstanceInclusions, static (scalar) => scalar.UnitInstanceExclusions, static (scalar) => scalar.Definition.InheritUnits, onlyInherited: true);
+        var inheritedUnitInstanceBases = GetUnitInstanceInclusions(scalarType, scalarPopulation, unit.UnitInstancesByName.Values, unit, static (scalar) => scalar.UnitBaseInstanceInclusions, static (scalar) => scalar.UnitBaseInstanceExclusions, static (scalar) => scalar.Definition.InheritBases, onlyInherited: true);
+        var inheritedUnitInstances = GetUnitInstanceInclusions(scalarType, scalarPopulation, unit.UnitInstancesByName.Values, unit, static (scalar) => scalar.UnitInstanceInclusions, static (scalar) => scalar.UnitInstanceExclusions, static (scalar) => scalar.Definition.InheritUnits, onlyInherited: true);
 
-        var inheritedUnitBaseInstanceNames = new HashSet<string>(inheritedUnitBaseInstances.Select(static (unit) => unit.Name));
+        var inheritedUnitBaseInstanceNames = new HashSet<string>(inheritedUnitInstanceBases.Select(static (unit) => unit.Name));
         var inheritedUnitInstanceNames = new HashSet<string>(inheritedUnitInstances.Select(static (unit) => unit.Name));
 
         var unitBaseInstanceInclusions = ValidateIncludeUnitBaseInstances(scalarType, unit, inheritedUnitBaseInstanceNames);
@@ -68,10 +68,10 @@ internal static class ScalarSpecializationValidator
         var unitInstanceInclusions = ValidateIncludeUnitInstances(scalarType, unit, inheritedUnitInstanceNames);
         var unitInstanceExclusions = ValidateExcludeUnitInstances(scalarType, unit, inheritedUnitInstanceNames);
 
-        var definedUnitBaseInstances = GetUnitInclusions(scalarType, scalarPopulation, inheritedUnitBaseInstances, unit, (_) => unitBaseInstanceInclusions.Result, (_) => unitBaseInstanceExclusions.Result, static (scalar) => false);
-        var definedUnitInstances = GetUnitInclusions(scalarType, scalarPopulation, inheritedUnitInstances, unit, (_) => unitInstanceInclusions.Result, (_) => unitInstanceExclusions.Result, static (scalar) => false);
+        var definedUnitInstancesBases = GetUnitInstanceInclusions(scalarType, scalarPopulation, inheritedUnitInstanceBases, unit, (_) => unitBaseInstanceInclusions.Result, (_) => unitBaseInstanceExclusions.Result, static (scalar) => false);
+        var definedUnitInstances = GetUnitInstanceInclusions(scalarType, scalarPopulation, inheritedUnitInstances, unit, (_) => unitInstanceInclusions.Result, (_) => unitInstanceExclusions.Result, static (scalar) => false);
 
-        var allUnitBaseInstances = inheritedUnitBaseInstances.Concat(definedUnitBaseInstances).ToList();
+        var allUnitBaseInstances = inheritedUnitInstanceBases.Concat(definedUnitInstancesBases).ToList();
         var allUnitInstances = inheritedUnitInstances.Concat(definedUnitInstances).ToList();
 
         var derivations = ValidateDerivations(scalarType, scalarPopulation, vectorPopulation);
@@ -86,9 +86,9 @@ internal static class ScalarSpecializationValidator
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static IOptionalWithDiagnostics<SpecializedSharpMeasuresScalarDefinition> ValidateScalar(ScalarSpecializationType scalarType, IUnitPopulation unitPopulation, IScalarPopulationWithData scalarPopulation, IVectorPopulation vectorPopulation)
+    private static IOptionalWithDiagnostics<SpecializedSharpMeasuresScalarDefinition> ValidateScalar(ScalarSpecializationType scalarType, ScalarProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        var validationContext = new SpecializedSharpMeasuresScalarValidationContext(scalarType.Type, unitPopulation, scalarPopulation, vectorPopulation);
+        var validationContext = new SpecializedSharpMeasuresScalarValidationContext(scalarType.Type, processingData, unitPopulation, scalarPopulation, vectorPopulation);
 
         return ProcessingFilter.Create(SpecializedSharpMeasuresScalarValidator).Filter(validationContext, scalarType.Definition);
     }
@@ -174,7 +174,7 @@ internal static class ScalarSpecializationValidator
         }
     }
 
-    private static IEnumerable<IUnitInstance> GetUnitInclusions(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation, IEnumerable<IUnitInstance> initialUnits, IUnitType unit, Func<IScalarType, IEnumerable<IUnitInstanceList>> inclusionsDelegate,
+    private static IEnumerable<IUnitInstance> GetUnitInstanceInclusions(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation, IEnumerable<IUnitInstance> initialUnits, IUnitType unit, Func<IScalarType, IEnumerable<IUnitInstanceList>> inclusionsDelegate,
         Func<IScalarType, IEnumerable<IUnitInstanceList>> exclusionsDelegate, Func<IScalarSpecializationType, bool> shouldInherit, bool onlyInherited = false)
     {
         HashSet<IUnitInstance> includedUnits = new(initialUnits);

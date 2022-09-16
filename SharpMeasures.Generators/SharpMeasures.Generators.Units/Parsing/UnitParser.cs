@@ -3,23 +3,19 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Providers;
 using SharpMeasures.Generators.Providers.DeclarationFilter;
-using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.Parsing.BiasedUnitInstance;
-using SharpMeasures.Generators.Units.Parsing.Contexts.Processing;
 using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 using SharpMeasures.Generators.Units.Parsing.DerivedUnitInstance;
 using SharpMeasures.Generators.Units.Parsing.Diagnostics;
-using SharpMeasures.Generators.Units.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Units.Parsing.FixedUnitInstance;
 using SharpMeasures.Generators.Units.Parsing.PrefixedUnitInstance;
 using SharpMeasures.Generators.Units.Parsing.ScaledUnitInstance;
 using SharpMeasures.Generators.Units.Parsing.SharpMeasuresUnit;
 using SharpMeasures.Generators.Units.Parsing.UnitInstanceAlias;
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -27,137 +23,112 @@ using System.Threading;
 
 public static class UnitParser
 {
-    public static (IncrementalValueProvider<IUnitPopulation>, IUnitValidator) Attach(IncrementalGeneratorInitializationContext context)
+    public static (IUnitProcesser Processer, IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context)
     {
         var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<SharpMeasuresUnitAttribute>(context.SyntaxProvider);
         var filteredDeclarations = FilteredDeclarationProvider.Construct<TypeDeclarationSyntax>(DeclarationFilters).AttachAndReport(context, declarations);
         var symbols = DeclarationSymbolProvider.Construct(IntermediateResult.Construct).Attach(filteredDeclarations, context.CompilationProvider);
 
-        var units = symbols.Select(ParseAndProcess).ReportDiagnostics(context);
+        var unitsAndForeignSymbols = symbols.Select(Parse);
 
-        var population = units.Select(ExtractInterface).CollectResults().Select(CreatePopulation);
+        var units = unitsAndForeignSymbols.Select(ExtractUnit);
+        var foreignSymbols = unitsAndForeignSymbols.Select(ExtractForeignSymbols).Collect().Expand();
 
-        var reducedPopulation = population.Select(ExtractInterface);
+        UnitProcesser processer = new(units);
 
-        return (reducedPopulation, new UnitValidator(population, units));
+        return (processer, foreignSymbols);
     }
 
-    private static IOptionalWithDiagnostics<UnitType> ParseAndProcess(Optional<IntermediateResult> input, CancellationToken token)
+    private static (Optional<RawUnitType>, IEnumerable<INamedTypeSymbol>) Parse(Optional<IntermediateResult> input, CancellationToken token)
     {
         if (token.IsCancellationRequested || input.HasValue is false)
         {
-            return OptionalWithDiagnostics.Empty<UnitType>();
+            return (new Optional<RawUnitType>(), Array.Empty<INamedTypeSymbol>());
         }
 
-        return ParseAndProcess(input.Value);
+        return Parse(input.Value);
     }
 
-    private static IOptionalWithDiagnostics<UnitType> ParseAndProcess(IntermediateResult input)
+    private static (Optional<RawUnitType>, IEnumerable<INamedTypeSymbol>) Parse(IntermediateResult input)
     {
-        var unit = ParseAndProcessUnit(input.TypeSymbol);
+        (var unit, var unitForeignSymbols) = ParseUnit(input.TypeSymbol);
 
-        if (unit.LacksResult)
+        if (unit.HasValue is false)
         {
-            return unit.AsEmptyOptional<UnitType>();
+            return (new Optional<RawUnitType>(), Array.Empty<INamedTypeSymbol>());
         }
 
-        var derivations = ParseAndProcessDerivations(input.TypeSymbol, unit.Result.BiasTerm);
+        (var derivations, var derivationsForeignSymbols) = ParseDerivations(input.TypeSymbol);
 
-        HashSet<string> reservedUnitInstanceNames = new();
-        HashSet<string> reservedUnitInstancePluralForms = new();
+        var fixedUnitInstance = ParseFixedUnitInstance(input.TypeSymbol);
+        var unitInstanceAliases = ParseUnitInstanceAliases(input.TypeSymbol);
+        var derivedUnitInstances = ParseDerivedUnitInstances(input.TypeSymbol);
+        var biasedUnitInstances = ParseBiasedUnitInstances(input.TypeSymbol);
+        var prefixedUnitInstances = ParsePrefixedUnitInstances(input.TypeSymbol);
+        var scaledUnitInstances = ParseScaledUnitInstances(input.TypeSymbol);
 
-        var fixedUnitInstance = ParseAndProcessFixedUnitInstance(input.TypeSymbol, derivations.Result.Count > 0, reservedUnitInstanceNames, reservedUnitInstancePluralForms);
+        RawUnitType unitType = new(input.TypeSymbol.AsDefinedType(), input.Declaration.Identifier.GetLocation().Minimize(), unit.Value, derivations, fixedUnitInstance.HasValue ? fixedUnitInstance.Value : null, unitInstanceAliases, derivedUnitInstances, biasedUnitInstances, prefixedUnitInstances, scaledUnitInstances);
+        var foreignSymbols = unitForeignSymbols.Concat(derivationsForeignSymbols);
 
-        UnitInstanceProcessingContext unitInstanceProcessingContext = new(input.TypeSymbol.AsDefinedType(), reservedUnitInstanceNames, reservedUnitInstancePluralForms);
-
-        var unitInstanceAliases = ParseAndProcessUnitInstanceAliases(input.TypeSymbol, unitInstanceProcessingContext);
-        var derivedUnitInstances = ParseAndProcessDerivedUnitInstances(input.TypeSymbol, unitInstanceProcessingContext);
-        var biasedUnitInstances = ParseAndProcessBiasedUnitInstances(input.TypeSymbol, unitInstanceProcessingContext);
-        var prefixedUnitInstances = ParseAndProcessPrefixedUnitInstances(input.TypeSymbol, unitInstanceProcessingContext);
-        var scaledUnitInstances = ParseAndProcessScaledUnitInstances(input.TypeSymbol, unitInstanceProcessingContext);
-
-        UnitType unitType = new(input.TypeSymbol.AsDefinedType(), input.Declaration.GetLocation().Minimize(), unit.Result, derivations.Result, fixedUnitInstance.NullableReferenceResult(), unitInstanceAliases.Result, derivedUnitInstances.Result,
-            biasedUnitInstances.Result, prefixedUnitInstances.Result, scaledUnitInstances.Result);
-
-        var allDiagnostics = unit.Concat(derivations).Concat(fixedUnitInstance).Concat(unitInstanceAliases).Concat(derivedUnitInstances).Concat(biasedUnitInstances).Concat(prefixedUnitInstances).Concat(scaledUnitInstances);
-
-        return OptionalWithDiagnostics.Result(unitType, allDiagnostics);
+        return (unitType, foreignSymbols);
     }
 
-    private static IOptionalWithDiagnostics<SharpMeasuresUnitDefinition> ParseAndProcessUnit(INamedTypeSymbol typeSymbol)
+    private static (Optional<RawSharpMeasuresUnitDefinition>, IEnumerable<INamedTypeSymbol>) ParseUnit(INamedTypeSymbol typeSymbol)
     {
-        if (SharpMeasuresUnitParser.Parser.ParseFirstOccurrence(typeSymbol) is not RawSharpMeasuresUnitDefinition rawUnit)
+        if (SharpMeasuresUnitParser.Parser.ParseFirstOccurrence(typeSymbol) is not SymbolicSharpMeasuresUnitDefinition symbolicUnit)
         {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<SharpMeasuresUnitDefinition>();
+            return (new Optional<RawSharpMeasuresUnitDefinition>(), Array.Empty<INamedTypeSymbol>());
         }
 
-        var processingContext = new SimpleProcessingContext(typeSymbol.AsDefinedType());
+        var rawUnit = RawSharpMeasuresUnitDefinition.FromSymbolic(symbolicUnit);
+        var foreignSymbols = symbolicUnit.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false);
 
-        return ProcessingFilter.Create(Processers.SharpMeasuresUnitProcesser).Filter(processingContext, rawUnit);
+        return (rawUnit, foreignSymbols);
     }
 
-    private static IOptionalWithDiagnostics<IReadOnlyList<DerivableUnitDefinition>> ParseAndProcessDerivations(INamedTypeSymbol typeSymbol, bool unitIncludesBiasTerm)
+    private static (IEnumerable<RawDerivableUnitDefinition>, IEnumerable<INamedTypeSymbol>) ParseDerivations(INamedTypeSymbol typeSymbol)
     {
-        var rawDerivations = DerivableUnitParser.Parser.ParseAllOccurrences(typeSymbol);
+        var symbolicDerivations = DerivableUnitParser.Parser.ParseAllOccurrences(typeSymbol);
 
-        var processingContext = new DerivableUnitProcessingContext(typeSymbol.AsDefinedType(), unitIncludesBiasTerm, rawDerivations.Skip(1).Any());
+        var rawDerivations = symbolicDerivations.Select(static (symbolicDerivation) => RawDerivableUnitDefinition.FromSymbolic(symbolicDerivation));
+        var foreignSymbols = symbolicDerivations.SelectMany((symbolicDerivation) => symbolicDerivation.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false));
 
-        return ProcessingFilter.Create(Processers.DerivableUnitProcesser).Filter(processingContext, rawDerivations);
+        return (rawDerivations, foreignSymbols);
     }
 
-    private static IOptionalWithDiagnostics<FixedUnitInstanceDefinition> ParseAndProcessFixedUnitInstance(INamedTypeSymbol typeSymbol, bool unitIsDerivable, HashSet<string> reservedUnitInstanceNames, HashSet<string> reservedUnitInstancePluralForms)
+    private static Optional<RawFixedUnitInstanceDefinition> ParseFixedUnitInstance(INamedTypeSymbol typeSymbol)
     {
         if (FixedUnitInstanceParser.Parser.ParseFirstOccurrence(typeSymbol) is not RawFixedUnitInstanceDefinition rawFixedUnitInstance)
         {
-            return OptionalWithDiagnostics.EmptyWithoutDiagnostics<FixedUnitInstanceDefinition>();
+            return new Optional<RawFixedUnitInstanceDefinition>();
         }
 
-        var processingContext = new FixedUnitInstanceProcessingContext(typeSymbol.AsDefinedType(), reservedUnitInstanceNames, reservedUnitInstancePluralForms, unitIsDerivable);
-
-        return ProcessingFilter.Create(Processers.FixedUnitInstanceProcesser).Filter(processingContext, rawFixedUnitInstance);
+        return rawFixedUnitInstance;
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<UnitInstanceAliasDefinition>> ParseAndProcessUnitInstanceAliases(INamedTypeSymbol typeSymbol, IUnitInstanceProcessingContext processingContext)
+    private static IEnumerable<RawUnitInstanceAliasDefinition> ParseUnitInstanceAliases(INamedTypeSymbol typeSymbol)
     {
-        var rawUnitInstanceAliases = UnitInstanceAliasParser.Parser.ParseAllOccurrences(typeSymbol);
-
-        return ProcessingFilter.Create(Processers.UnitInstanceAliasProcesser).Filter(processingContext, rawUnitInstanceAliases);
+        return UnitInstanceAliasParser.Parser.ParseAllOccurrences(typeSymbol);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<DerivedUnitInstanceDefinition>> ParseAndProcessDerivedUnitInstances(INamedTypeSymbol typeSymbol, IUnitInstanceProcessingContext processingContext)
+    private static IEnumerable<RawDerivedUnitInstanceDefinition> ParseDerivedUnitInstances(INamedTypeSymbol typeSymbol)
     {
-        var rawDerivedUnitInstances = DerivedUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
-
-        return ProcessingFilter.Create(Processers.DerivedUnitInstanceProcesser).Filter(processingContext, rawDerivedUnitInstances);
+        return DerivedUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<BiasedUnitInstanceDefinition>> ParseAndProcessBiasedUnitInstances(INamedTypeSymbol typeSymbol, IUnitInstanceProcessingContext processingContext)
+    private static IEnumerable<RawBiasedUnitInstanceDefinition> ParseBiasedUnitInstances(INamedTypeSymbol typeSymbol)
     {
-        var rawBiasedUnitInstances = BiasedUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
-
-        return ProcessingFilter.Create(Processers.BiasedUnitInstanceProcesser).Filter(processingContext, rawBiasedUnitInstances);
+        return BiasedUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<PrefixedUnitInstanceDefinition>> ParseAndProcessPrefixedUnitInstances(INamedTypeSymbol typeSymbol, IUnitInstanceProcessingContext processingContext)
+    private static IEnumerable<RawPrefixedUnitInstanceDefinition> ParsePrefixedUnitInstances(INamedTypeSymbol typeSymbol)
     {
-        var rawPrefixedUnitInstances = PrefixedUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
-
-        return ProcessingFilter.Create(Processers.PrefixedUnitInstanceProcesser).Filter(processingContext, rawPrefixedUnitInstances);
+        return PrefixedUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ScaledUnitInstanceDefinition>> ParseAndProcessScaledUnitInstances(INamedTypeSymbol typeSymbol, IUnitInstanceProcessingContext processingContext)
+    private static IEnumerable<RawScaledUnitInstanceDefinition> ParseScaledUnitInstances(INamedTypeSymbol typeSymbol)
     {
-        var rawScaledUnitInstances = ScaledUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
-
-        return ProcessingFilter.Create(Processers.ScaledUnitInstanceProcesser).Filter(processingContext, rawScaledUnitInstances);
-    }
-
-    private static Optional<IUnitType> ExtractInterface(Optional<UnitType> unitType, CancellationToken _) => unitType.HasValue ? unitType.Value : new Optional<IUnitType>();
-    private static IUnitPopulation ExtractInterface(IUnitPopulation population, CancellationToken _) => population;
-
-    private static IUnitPopulationWithData CreatePopulation(ImmutableArray<IUnitType> units, CancellationToken _)
-    {
-        return UnitPopulation.Build(units);
+        return ScaledUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
     }
 
     private static IEnumerable<IDeclarationFilter> DeclarationFilters { get; } = new IDeclarationFilter[]
@@ -166,19 +137,8 @@ public static class UnitParser
         new NonStaticDeclarationFilter(UnitTypeDiagnostics.TypeStatic)
     };
 
-    private static class Processers
-    {
-        public static SharpMeasuresUnitProcesser SharpMeasuresUnitProcesser { get; } = new(SharpMeasuresUnitProcessingDiagnostics.Instance);
-
-        public static FixedUnitInstanceProcesser FixedUnitInstanceProcesser { get; } = new(FixedUnitInstanceProcessingDiagnostics.Instance);
-        public static DerivableUnitProcesser DerivableUnitProcesser { get; } = new(DerivableUnitProcessingDiagnostics.Instance);
-
-        public static UnitInstanceAliasProcesser UnitInstanceAliasProcesser { get; } = new(UnitInstanceAliasProcessingDiagnostics.Instance);
-        public static DerivedUnitInstanceProcesser DerivedUnitInstanceProcesser { get; } = new(DerivedUnitInstanceProcessingDiagnostics.Instance);
-        public static BiasedUnitInstanceProcesser BiasedUnitInstanceProcesser { get; } = new(BiasedUnitInstanceProcessingDiagnostics.Instance);
-        public static PrefixedUnitInstanceProcesser PrefixedUnitInstanceProcesser { get; } = new(PrefixedUnitInstanceProcessingDiagnostics.Instance);
-        public static ScaledUnitInstanceProcesser ScaledUnitInstanceProcesser { get; } = new(ScaledUnitInstanceProcessingDiagnostics.Instance);
-    }
+    private static Optional<RawUnitType> ExtractUnit((Optional<RawUnitType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawUnitType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
 
     private readonly record struct IntermediateResult(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)
     {

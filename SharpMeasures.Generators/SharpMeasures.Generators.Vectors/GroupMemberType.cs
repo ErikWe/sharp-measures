@@ -23,8 +23,8 @@ internal record class GroupMemberType : IVectorGroupMemberType
     public IReadOnlyList<VectorConstantDefinition> Constants => constants;
     public IReadOnlyList<ConvertibleVectorDefinition> Conversions => conversions;
 
-    public IReadOnlyList<IncludeUnitsDefinition> UnitInclusions => unitInclusions;
-    public IReadOnlyList<ExcludeUnitsDefinition> UnitExclusions => unitExclusions;
+    public IReadOnlyList<IncludeUnitsDefinition> UnitInstanceInclusions => unitInstanceInclusions;
+    public IReadOnlyList<ExcludeUnitsDefinition> UnitInstanceExclusions => unitInstanceExclusions;
 
     public IReadOnlyDictionary<string, IVectorConstant> ConstantsByName => constantsByName;
     public IReadOnlyDictionary<string, IVectorConstant> ConstantsByMultiplesName => constantsByMultiplesName;
@@ -33,8 +33,8 @@ internal record class GroupMemberType : IVectorGroupMemberType
     private ReadOnlyEquatableList<VectorConstantDefinition> constants { get; }
     private ReadOnlyEquatableList<ConvertibleVectorDefinition> conversions { get; }
 
-    private ReadOnlyEquatableList<IncludeUnitsDefinition> unitInclusions { get; }
-    private ReadOnlyEquatableList<ExcludeUnitsDefinition> unitExclusions { get; }
+    private ReadOnlyEquatableList<IncludeUnitsDefinition> unitInstanceInclusions { get; }
+    private ReadOnlyEquatableList<ExcludeUnitsDefinition> unitInstanceExclusions { get; }
 
     private ReadOnlyEquatableDictionary<string, IVectorConstant> constantsByName { get; }
     private ReadOnlyEquatableDictionary<string, IVectorConstant> constantsByMultiplesName { get; }
@@ -47,12 +47,11 @@ internal record class GroupMemberType : IVectorGroupMemberType
     IReadOnlyList<IVectorConstant> IVectorGroupMemberType.Constants => Constants;
     IReadOnlyList<IConvertibleQuantity> IQuantityType.Conversions => Conversions;
 
-    IReadOnlyList<IUnitInstanceInclusionList> IQuantityType.UnitInstanceInclusions => UnitInclusions;
-    IReadOnlyList<IUnitInstanceList> IQuantityType.UnitInstanceExclusions => UnitExclusions;
+    IReadOnlyList<IUnitInstanceInclusionList> IQuantityType.UnitInstanceInclusions => UnitInstanceInclusions;
+    IReadOnlyList<IUnitInstanceList> IQuantityType.UnitInstanceExclusions => UnitInstanceExclusions;
 
     public GroupMemberType(DefinedType type, MinimalLocation typeLocation, SharpMeasuresVectorGroupMemberDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
-        IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInclusions,
-        IReadOnlyList<ExcludeUnitsDefinition> unitExclusions)
+        IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
     {
         Type = type;
         TypeLocation = typeLocation;
@@ -63,8 +62,8 @@ internal record class GroupMemberType : IVectorGroupMemberType
         this.constants = constants.AsReadOnlyEquatable();
         this.conversions = conversions.AsReadOnlyEquatable();
 
-        this.unitInclusions = unitInclusions.AsReadOnlyEquatable();
-        this.unitExclusions = unitExclusions.AsReadOnlyEquatable();
+        this.unitInstanceInclusions = unitInstanceInclusions.AsReadOnlyEquatable();
+        this.unitInstanceExclusions = unitInstanceExclusions.AsReadOnlyEquatable();
 
         constantsByName = ConstructConstantsByNameDictionary();
         constantsByMultiplesName = ConstructConstantsByMultiplesNameDictionary();

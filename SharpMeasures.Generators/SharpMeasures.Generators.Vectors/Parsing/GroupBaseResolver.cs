@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
 using System;
 using System.Collections.Generic;
@@ -13,35 +12,38 @@ using System.Threading;
 
 internal static class GroupBaseResolver
 {
-    public static IncrementalValuesProvider<Optional<ResolvedGroupType>> Resolve(IncrementalValuesProvider<Optional<GroupBaseType>> vectorProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IVectorPopulationWithData> vectorPopulationProvider)
+    public static IncrementalValuesProvider<Optional<ResolvedGroupType>> Resolve(IncrementalValuesProvider<Optional<GroupBaseType>> groupProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
-        return vectorProvider.Combine(unitPopulationProvider, vectorPopulationProvider).Select(Resolve);
+        return groupProvider.Combine(unitPopulationProvider, vectorPopulationProvider).Select(Resolve);
     }
 
-    private static Optional<ResolvedGroupType> Resolve((Optional<GroupBaseType> UnresolvedVector, IUnitPopulation UnitPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken token)
+    private static Optional<ResolvedGroupType> Resolve((Optional<GroupBaseType> UnresolvedGroup, IUnitPopulation UnitPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
     {
-        if (token.IsCancellationRequested || input.UnresolvedVector.HasValue is false)
+        if (token.IsCancellationRequested || input.UnresolvedGroup.HasValue is false)
         {
             return new Optional<ResolvedGroupType>();
         }
 
-        return Resolve(input.UnresolvedVector.Value, input.UnitPopulation, input.VectorPopulation);
+        return Resolve(input.UnresolvedGroup.Value, input.UnitPopulation, input.VectorPopulation);
     }
 
-    private static ResolvedGroupType Resolve(GroupBaseType vectorType, IUnitPopulation unitPopulation, IVectorPopulationWithData vectorPopulation)
+    private static Optional<ResolvedGroupType> Resolve(GroupBaseType groupType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
     {
-        var unit = unitPopulation.Units[vectorType.Definition.Unit];
+        if (unitPopulation.Units.TryGetValue(groupType.Definition.Unit, out var unit) is false)
+        {
+            return new Optional<ResolvedGroupType>();
+        }
 
-        var membersByDimension = ResolveMembers(vectorType, vectorPopulation);
+        var membersByDimension = ResolveMembers(groupType, vectorPopulation);
 
-        var includedUnitInstances = ResolveUnitInclusions(unit, vectorType.UnitInclusions, () => vectorType.UnitExclusions);
+        var includedUnitInstances = ResolveUnitInstanceInclusions(unit, groupType.UnitInstanceInclusions, () => groupType.UnitInstanceExclusions);
 
-        return new(vectorType.Type, vectorType.TypeLocation, vectorType.Definition.Unit, vectorType.Definition.Scalar, vectorType.Definition.ImplementSum,
-            vectorType.Definition.ImplementDifference, vectorType.Definition.Difference, vectorType.Definition.DefaultUnitInstanceName, vectorType.Definition.DefaultUnitInstanceSymbol,
-            membersByDimension, vectorType.Derivations, Array.Empty<IDerivedQuantity>(), vectorType.Conversions, includedUnitInstances, vectorType.Definition.GenerateDocumentation);
+        return new ResolvedGroupType(groupType.Type, groupType.TypeLocation, groupType.Definition.Unit, groupType.Definition.Scalar, groupType.Definition.ImplementSum,
+            groupType.Definition.ImplementDifference, groupType.Definition.Difference, groupType.Definition.DefaultUnitInstanceName, groupType.Definition.DefaultUnitInstanceSymbol,
+            membersByDimension, groupType.Derivations, Array.Empty<IDerivedQuantity>(), groupType.Conversions, includedUnitInstances, groupType.Definition.GenerateDocumentation);
     }
 
-    private static IReadOnlyList<string> ResolveUnitInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
+    private static IReadOnlyList<string> ResolveUnitInstanceInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
     {
         if (inclusions.Any())
         {
@@ -55,8 +57,8 @@ internal static class GroupBaseResolver
         return includedUnits.ToList();
     }
 
-    private static IReadOnlyDictionary<int, NamedType> ResolveMembers(GroupBaseType vectorType, IVectorPopulation vectorPopulation)
+    private static IReadOnlyDictionary<int, NamedType> ResolveMembers(GroupBaseType groupType, IVectorPopulation vectorPopulation)
     {
-        return vectorPopulation.GroupMembersByGroup[vectorType.Type.AsNamedType()].GroupMembersByDimension.Transform(static (vector) => vector.Type.AsNamedType());
+        return vectorPopulation.GroupMembersByGroup[groupType.Type.AsNamedType()].GroupMembersByDimension.Transform(static (vector) => vector.Type.AsNamedType());
     }
 }

@@ -7,7 +7,6 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
 using System.Linq;
 
@@ -25,9 +24,11 @@ internal interface ISpecializedSharpMeasuresVectorGroupValidationDiagnostics : I
 
 internal interface ISpecializedSharpMeasuresVectorGroupValidationContext : IProcessingContext
 {
+    public abstract VectorProcessingData ProcessingData { get; }
+
     public abstract IUnitPopulation UnitPopulation { get; }
     public abstract IScalarPopulation ScalarPopulation { get; }
-    public abstract IVectorPopulationWithData VectorPopulation { get; }
+    public abstract IVectorPopulation VectorPopulation { get; }
 }
 
 internal class SpecializedSharpMeasuresVectorGroupValidator : IProcesser<ISpecializedSharpMeasuresVectorGroupValidationContext, SpecializedSharpMeasuresVectorGroupDefinition, SpecializedSharpMeasuresVectorGroupDefinition>
@@ -100,14 +101,14 @@ internal class SpecializedSharpMeasuresVectorGroupValidator : IProcesser<ISpecia
 
     private IValidityWithDiagnostics ValidateTypeNotAlreadyVectorGroupBase(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition)
     {
-        var typeAlreadyVectorGroupBase = context.VectorPopulation.GroupSpecializationsAlreadyDefinedAsGroupBases.ContainsKey(context.Type.AsNamedType());
+        var typeAlreadyVectorGroupBase = context.ProcessingData.GroupSpecializationsAlreadyDefinedAsGroupBases.ContainsKey(context.Type.AsNamedType());
 
         return ValidityWithDiagnostics.Conditional(typeAlreadyVectorGroupBase is false, () => Diagnostics.TypeAlreadyVectorGroupBase(context, definition));
     }
 
     private static IValidityWithDiagnostics ValidateTypeNotDuplicatelyDefined(ISpecializedSharpMeasuresVectorGroupValidationContext context)
     {
-        var typeDuplicatelyDefined = context.VectorPopulation.DuplicatelyDefinedGroupSpecializations.ContainsKey(context.Type.AsNamedType());
+        var typeDuplicatelyDefined = context.ProcessingData.DuplicatelyDefinedGroupSpecializations.ContainsKey(context.Type.AsNamedType());
 
         return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(typeDuplicatelyDefined is false);
     }

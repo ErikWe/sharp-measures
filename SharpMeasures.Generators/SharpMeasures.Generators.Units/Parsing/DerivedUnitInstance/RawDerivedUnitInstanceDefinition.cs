@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 internal record class RawDerivedUnitInstanceDefinition : ARawUnitInstance<RawDerivedUnitInstanceDefinition, DerivedUnitInstanceLocations>
 {
-    public static RawDerivedUnitInstanceDefinition Empty { get; } = new();
+    public static RawDerivedUnitInstanceDefinition Empty { get; } = new(DerivedUnitInstanceLocations.Empty);
 
     public string? DerivationID { get; init; }
     public IReadOnlyList<string?> Units
@@ -20,5 +20,5 @@ internal record class RawDerivedUnitInstanceDefinition : ARawUnitInstance<RawDer
 
     protected override RawDerivedUnitInstanceDefinition Definition => this;
 
-    private RawDerivedUnitInstanceDefinition() : base(DerivedUnitInstanceLocations.Empty) { }
+    private RawDerivedUnitInstanceDefinition(DerivedUnitInstanceLocations locations) : base(locations) { }
 }

@@ -7,7 +7,6 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
 using System.Linq;
 
@@ -24,9 +23,11 @@ internal interface ISharpMeasuresVectorValidationDiagnostics : IDefaultUnitInsta
 
 internal interface ISharpMeasuresVectorValidationContext : IProcessingContext
 {
+    public abstract VectorProcessingData ProcessingData { get; }
+
     public abstract IUnitPopulation UnitPopulation { get; }
     public abstract IScalarPopulation ScalarPopulation { get; }
-    public abstract IVectorPopulationWithData VectorPopulation { get; }
+    public abstract IVectorPopulation VectorPopulation { get; }
 }
 
 internal class SharpMeasuresVectorValidator : IProcesser<ISharpMeasuresVectorValidationContext, SharpMeasuresVectorDefinition, SharpMeasuresVectorDefinition>
@@ -87,7 +88,7 @@ internal class SharpMeasuresVectorValidator : IProcesser<ISharpMeasuresVectorVal
 
     private static IValidityWithDiagnostics ValidateTypeNotDuplicatelyDefined(ISharpMeasuresVectorValidationContext context)
     {
-        var typeDuplicatelyDefined = context.VectorPopulation.DuplicatelyDefinedVectorBases.ContainsKey(context.Type.AsNamedType());
+        var typeDuplicatelyDefined = context.ProcessingData.DuplicatelyDefinedVectorBases.ContainsKey(context.Type.AsNamedType());
 
         return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(typeDuplicatelyDefined is false);
     }

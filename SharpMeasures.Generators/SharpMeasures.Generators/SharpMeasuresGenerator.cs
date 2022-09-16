@@ -17,19 +17,35 @@ public class SharpMeasuresGenerator : IIncrementalGenerator
         var globalAnalyzerConfig = GlobalAnalyzerConfigProvider.Attach(context.AnalyzerConfigOptionsProvider);
         var documentationDictionary = DocumentationDictionaryProvider.AttachAndReport(context, context.AdditionalTextsProvider, globalAnalyzerConfig, DocumentationDiagnostics.Instance);
 
-        (var unvalidatedUnitPopulation, var unitValidator) = UnitParser.Attach(context);
-        (var unvalidatedScalarPopulation, var scalarValidator) = ScalarParser.Attach(context);
-        (var unvalidatedVectorPopulation, var vectorValidator) = VectorParser.Attach(context);
+        (var unitProcesser, var unitForeignSymbols) = UnitParser.Attach(context);
+        (var scalarProcesser, var scalarForeignSymbols) = ScalarParser.Attach(context);
+        (var vectorProcceser, var vectorForeignSymbols) = VectorParser.Attach(context);
 
-        (var validUnitPopulation, var unitGenerator) = unitValidator.Validate(context, unvalidatedScalarPopulation);
-        (var unresolvedScalarPopulation, var scalarResolver) = scalarValidator.Validate(context, unvalidatedUnitPopulation, unvalidatedVectorPopulation);
-        (var unresolvedVectorPopulation, var vectorResolver) = vectorValidator.Validate(context, unvalidatedUnitPopulation, unvalidatedScalarPopulation);
+        (var unvalidatedUnitPopulation, var unitValidator) = unitProcesser.Process(context);
+        (var unvalidatedScalarPopulation, var scalarValidator) = scalarProcesser.Process(context);
+        (var unvalidatedVectorPopulation, var vectorValidator) = vectorProcceser.Process(context);
 
-        (var resolvedScalarPopulation, var scalarGenerator) = scalarResolver.Resolve(context, validUnitPopulation, unresolvedVectorPopulation);
-        (var resolvedVectorPopulation, var vectorGenerator) = vectorResolver.Resolve(context, validUnitPopulation, unresolvedScalarPopulation);
+        var foreignSymbols = unitForeignSymbols.Concat(scalarForeignSymbols).Concat(vectorForeignSymbols);
 
-        unitGenerator.Generate(context, resolvedScalarPopulation, globalAnalyzerConfig, documentationDictionary);
-        scalarGenerator.Generate(context, validUnitPopulation, resolvedVectorPopulation, globalAnalyzerConfig, documentationDictionary);
-        vectorGenerator.Generate(context, validUnitPopulation, resolvedScalarPopulation, globalAnalyzerConfig, documentationDictionary);
+        var foreignTypes = ForeignTypeParserAndProcesser.Parse(foreignSymbols, unvalidatedUnitPopulation, unvalidatedScalarPopulation, unvalidatedVectorPopulation);
+
+        (var extendedUnitPopulation, var extendedScalarPopulation, var extendedVectorPopulation) = ForeignTypeExtender.Extend(foreignTypes, unvalidatedUnitPopulation, unvalidatedScalarPopulation, unvalidatedVectorPopulation);
+
+        (var validatedUnitPopulation, var unitGenerator) = unitValidator.Validate(context, extendedUnitPopulation, extendedScalarPopulation);
+        (var unresolvedScalarPopulation, var scalarResolver) = scalarValidator.Validate(context, extendedUnitPopulation, extendedScalarPopulation, extendedVectorPopulation);
+        (var unresolvedVectorPopulation, var vectorResolver) = vectorValidator.Validate(context, extendedUnitPopulation, extendedScalarPopulation, extendedVectorPopulation);
+
+        (var extendedValidatedUnitPopulation, var extendedUnresolvedScalarPopulation, var extendedUnresolvedVectorPopulation) = ForeignTypeExtender.Extend(foreignTypes, validatedUnitPopulation, unresolvedScalarPopulation, unresolvedVectorPopulation);
+
+        (var resolvedScalarPopulation, var scalarGenerator) = scalarResolver.Resolve(context, extendedValidatedUnitPopulation, extendedUnresolvedScalarPopulation, extendedUnresolvedVectorPopulation);
+        (var resolvedVectorPopulation, var vectorGenerator) = vectorResolver.Resolve(context, extendedValidatedUnitPopulation, extendedUnresolvedScalarPopulation, extendedUnresolvedVectorPopulation);
+
+        var resolvedForeignTypes = ForeignTypeResolver.Resolve(foreignTypes, extendedValidatedUnitPopulation, extendedUnresolvedScalarPopulation, extendedUnresolvedVectorPopulation);
+
+        (extendedValidatedUnitPopulation, var extendedResolvedScalarPopulation, var extendedResolvedVectorPopulation) = ForeignTypeExtender.Extend(resolvedForeignTypes, validatedUnitPopulation, resolvedScalarPopulation, resolvedVectorPopulation);
+
+        unitGenerator.Generate(context, extendedValidatedUnitPopulation, resolvedScalarPopulation, globalAnalyzerConfig, documentationDictionary);
+        scalarGenerator.Generate(context, extendedValidatedUnitPopulation, extendedResolvedScalarPopulation, extendedResolvedVectorPopulation, globalAnalyzerConfig, documentationDictionary);
+        vectorGenerator.Generate(context, extendedValidatedUnitPopulation, extendedResolvedScalarPopulation, extendedResolvedVectorPopulation, globalAnalyzerConfig, documentationDictionary);
     }
 }

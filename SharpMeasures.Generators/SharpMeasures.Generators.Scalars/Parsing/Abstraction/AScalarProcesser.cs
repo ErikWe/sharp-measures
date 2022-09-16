@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
@@ -16,7 +15,7 @@ using SharpMeasures.Generators.Scalars.Parsing.Contexts.Processing;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 using SharpMeasures.Generators.Scalars.Parsing.Diagnostics;
 using SharpMeasures.Generators.Scalars.Parsing.Diagnostics.Processing;
-using SharpMeasures.Generators.Scalars.Parsing.ExcludeBases;
+using SharpMeasures.Generators.Scalars.Parsing.ExcludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 
@@ -25,133 +24,119 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-internal abstract class AScalarProcesser<TDefinition, TProduct>
-    where TDefinition : IScalar
+internal abstract class AScalarProcesser<TRawType, TRawDefinition, TProductType, TProductDefinition>
+    where TRawType : ARawScalarType<TRawDefinition>
+    where TProductDefinition : IScalar
 {
-    public IOptionalWithDiagnostics<TProduct> ParseAndProcess(Optional<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)> input, CancellationToken token)
+    public IOptionalWithDiagnostics<TProductType> Process(Optional<TRawType> rawScalar, CancellationToken token)
     {
-        if (token.IsCancellationRequested || input.HasValue is false)
+        if (token.IsCancellationRequested || rawScalar.HasValue is false)
         {
-            return OptionalWithDiagnostics.Empty<TProduct>();
+            return OptionalWithDiagnostics.Empty<TProductType>();
         }
 
-        return ParseAndProcess(input.Value.Declaration, input.Value.TypeSymbol);
+        return Process(rawScalar.Value);
     }
 
-    public IOptionalWithDiagnostics<TProduct> ParseAndProcess(TypeDeclarationSyntax declaration, INamedTypeSymbol typeSymbol)
+    public IOptionalWithDiagnostics<TProductType> Process(TRawType rawScalar)
     {
-        var scalar = ParseAndProcessScalar(typeSymbol);
+        var scalar = ProcessScalar(rawScalar.Type, rawScalar.Definition);
 
         if (scalar.LacksResult)
         {
-            return scalar.AsEmptyOptional<TProduct>();
+            return scalar.AsEmptyOptional<TProductType>();
         }
 
         var unit = GetUnit(scalar.Result);
 
-        var derivations = ParseAndProcessDerivations(typeSymbol);
-        var constants = ParseAndProcessConstants(typeSymbol, unit);
-        var conversions = ParseAndProcessConversions(typeSymbol);
+        var derivations = ProcessDerivations(rawScalar.Type, rawScalar.Derivations);
+        var constants = ProcessConstants(rawScalar.Type, rawScalar.Constants, unit);
+        var conversions = ProcessConversions(rawScalar.Type, rawScalar.Conversions);
 
-        var includeUnitInstanceBases = ParseAndProcessIncludeUnitBases(typeSymbol);
-        var excludeUnitInstanceBases = ParseAndProcessExcludeUnitBases(typeSymbol);
+        var includeUnitInstanceBases = ProcessIncludeUnitBases(rawScalar.Type, rawScalar.UnitBaseInstanceInclusions);
+        var excludeUnitInstanceBases = ProcessExcludeUnitBases(rawScalar.Type, rawScalar.UnitBaseInstanceExclusions);
 
-        var includeUnitInstances = ParseAndProcessIncludeUnits(typeSymbol);
-        var excludeUnitInstances = ParseAndProcessExcludeUnits(typeSymbol);
+        var includeUnitInstances = ProcessIncludeUnits(rawScalar.Type, rawScalar.UnitInstanceInclusions);
+        var excludeUnitInstances = ProcessExcludeUnits(rawScalar.Type, rawScalar.UnitInstanceExclusions);
 
         var allDiagnostics = scalar.Diagnostics.Concat(derivations).Concat(constants).Concat(conversions).Concat(includeUnitInstanceBases).Concat(excludeUnitInstanceBases).Concat(includeUnitInstances).Concat(excludeUnitInstances);
 
         if (includeUnitInstanceBases.HasResult && includeUnitInstanceBases.Result.Count > 0 && excludeUnitInstanceBases.HasResult && excludeUnitInstanceBases.Result.Count > 0)
         {
-            allDiagnostics = allDiagnostics.Concat(new[] { ScalarTypeDiagnostics.ContradictoryAttributes<IncludeUnitBasesAttribute, ExcludeUnitBasesAttribute>(declaration.Identifier.GetLocation().Minimize()) });
+            allDiagnostics = allDiagnostics.Concat(new[] { ScalarTypeDiagnostics.ContradictoryAttributes<IncludeUnitBasesAttribute, ExcludeUnitBasesAttribute>(rawScalar.TypeLocation) });
             excludeUnitInstanceBases = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitBasesDefinition>() as IReadOnlyList<ExcludeUnitBasesDefinition>);
         }
 
         if (includeUnitInstances.HasResult && includeUnitInstances.Result.Count > 0 && excludeUnitInstances.HasResult && excludeUnitInstances.Result.Count > 0)
         {
-            allDiagnostics = allDiagnostics.Concat(new[] { ScalarTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(declaration.Identifier.GetLocation().Minimize()) });
+            allDiagnostics = allDiagnostics.Concat(new[] { ScalarTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(rawScalar.TypeLocation) });
             excludeUnitInstances = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
         }
 
-        TProduct product = FinalizeProcess(typeSymbol.AsDefinedType(), declaration.GetLocation().Minimize(), scalar.Result, derivations.Result, constants.Result,
-            conversions.Result, includeUnitInstanceBases.Result, excludeUnitInstanceBases.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
+        TProductType product = ProduceResult(rawScalar.Type, rawScalar.TypeLocation, scalar.Result, derivations.Result, constants.Result, conversions.Result, includeUnitInstanceBases.Result, excludeUnitInstanceBases.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    protected abstract TProduct FinalizeProcess(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
+    protected abstract TProductType ProduceResult(DefinedType type, MinimalLocation typeLocation, TProductDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
         IReadOnlyList<ScalarConstantDefinition> constants, IReadOnlyList<ConvertibleScalarDefinition> conversions, IReadOnlyList<IncludeUnitBasesDefinition> baseInclusions,
-        IReadOnlyList<ExcludeUnitBasesDefinition> baseExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitExclusions);
+        IReadOnlyList<ExcludeUnitBasesDefinition> baseExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
 
-    protected abstract IOptionalWithDiagnostics<TDefinition> ParseAndProcessScalar(INamedTypeSymbol typeSymbol);
+    protected abstract IOptionalWithDiagnostics<TProductDefinition> ProcessScalar(DefinedType type, TRawDefinition rawDefinition);
 
-    protected abstract NamedType? GetUnit(TDefinition scalar);
+    protected abstract NamedType? GetUnit(TProductDefinition scalar);
 
-    private static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ParseAndProcessDerivations(INamedTypeSymbol typeSymbol)
+    private static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ProcessDerivations(DefinedType type, IEnumerable<RawDerivedQuantityDefinition> rawDefinitions)
     {
-        var rawDerivations = DerivedQuantityParser.Parser.ParseAllOccurrences(typeSymbol);
+        var processingContext = new SimpleProcessingContext(type);
 
-        var processingContext = new SimpleProcessingContext(typeSymbol.AsDefinedType());
-
-        return ProcessingFilter.Create(DerivedQuantityProcesser).Filter(processingContext, rawDerivations);
+        return ProcessingFilter.Create(DerivedQuantityProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ScalarConstantDefinition>> ParseAndProcessConstants(INamedTypeSymbol typeSymbol, NamedType? unit)
+    private static IResultWithDiagnostics<IReadOnlyList<ScalarConstantDefinition>> ProcessConstants(DefinedType type, IEnumerable<RawScalarConstantDefinition> rawDefinitions, NamedType? unit)
     {
-        var rawConstants = ScalarConstantParser.Parser.ParseAllOccurrences(typeSymbol);
-
         var scalarConstantProcesser = unit is null
             ? ScalarConstantProcesserForUnknownUnit
             : ScalarConstantProcesser(unit.Value);
 
-        QuantityConstantProcessingContext processingContext = new(typeSymbol.AsDefinedType());
+        QuantityConstantProcessingContext processingContext = new(type);
 
-        return ProcessingFilter.Create(scalarConstantProcesser).Filter(processingContext, rawConstants);
+        return ProcessingFilter.Create(scalarConstantProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ConvertibleScalarDefinition>> ParseAndProcessConversions(INamedTypeSymbol typeSymbol)
+    private static IResultWithDiagnostics<IReadOnlyList<ConvertibleScalarDefinition>> ProcessConversions(DefinedType type, IEnumerable<RawConvertibleQuantityDefinition> rawDefinitions)
     {
-        var rawConvertibles = ConvertibleQuantityParser.Parser.ParseAllOccurrences(typeSymbol);
+        ConvertibleQuantityProcessingContext processingContext = new(type);
 
-        ConvertibleQuantityProcessingContext processingContext = new(typeSymbol.AsDefinedType());
-
-        return ProcessingFilter.Create(ConvertibleScalarProcesser).Filter(processingContext, rawConvertibles);
+        return ProcessingFilter.Create(ConvertibleScalarProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitBasesDefinition>> ParseAndProcessIncludeUnitBases(INamedTypeSymbol typeSymbol)
+    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitBasesDefinition>> ProcessIncludeUnitBases(DefinedType type, IEnumerable<RawIncludeUnitBasesDefinition> rawDefinitions)
     {
-        var rawIncludeUnitBases = IncludeUnitBasesParser.Parser.ParseAllOccurrences(typeSymbol);
+        IncludeUnitBasesProcessingContext processingContext = new(type);
 
-        IncludeUnitBasesProcessingContext processingContext = new(typeSymbol.AsDefinedType());
-
-        return ProcessingFilter.Create(IncludeUnitBasesProcesser).Filter(processingContext, rawIncludeUnitBases);
+        return ProcessingFilter.Create(IncludeUnitBasesProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitBasesDefinition>> ParseAndProcessExcludeUnitBases(INamedTypeSymbol typeSymbol)
+    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitBasesDefinition>> ProcessExcludeUnitBases(DefinedType type, IEnumerable<RawExcludeUnitBasesDefinition> rawDefinitions)
     {
-        var rawExcludeUnitBases = ExcludeUnitBasesParser.Parser.ParseAllOccurrences(typeSymbol);
+        ExcludUniteBasesProcessingContext processingContext = new(type);
 
-        ExcludUniteBasesProcessingContext processingContext = new(typeSymbol.AsDefinedType());
-
-        return ProcessingFilter.Create(ExcludeUnitBasesProcesser).Filter(processingContext, rawExcludeUnitBases);
+        return ProcessingFilter.Create(ExcludeUnitBasesProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ParseAndProcessIncludeUnits(INamedTypeSymbol typeSymbol)
+    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ProcessIncludeUnits(DefinedType type, IEnumerable<RawIncludeUnitsDefinition> rawDefinitions)
     {
-        var rawIncludeUnits = IncludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
+        IncludeUnitsProcessingContext processingContext = new(type);
 
-        IncludeUnitsProcessingContext processingContext = new(typeSymbol.AsDefinedType());
-
-        return ProcessingFilter.Create(IncludeUnitsProcesser).Filter(processingContext, rawIncludeUnits);
+        return ProcessingFilter.Create(IncludeUnitsProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ParseAndProcessExcludeUnits(INamedTypeSymbol typeSymbol)
+    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ProcessExcludeUnits(DefinedType type, IEnumerable<RawExcludeUnitsDefinition> rawDefinitions)
     {
-        var rawExcludeUnits = ExcludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
+        ExcludeUnitsProcessingContext processingContext = new(type);
 
-        ExcludeUnitsProcessingContext processingContext = new(typeSymbol.AsDefinedType());
-
-        return ProcessingFilter.Create(ExcludeUnitsProcesser).Filter(processingContext, rawExcludeUnits);
+        return ProcessingFilter.Create(ExcludeUnitsProcesser).Filter(processingContext, rawDefinitions);
     }
 
     private static DerivedQuantityProcesser DerivedQuantityProcesser { get; } = new(DerivedQuantityProcessingDiagnostics.Instance);

@@ -3,7 +3,6 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
 using System;
 using System.Collections.Generic;
@@ -12,13 +11,12 @@ using System.Threading;
 
 internal static class VectorSpecializationResolver
 {
-    public static IncrementalValuesProvider<Optional<ResolvedVectorType>> Resolve(IncrementalValuesProvider<Optional<VectorSpecializationType>> vectorProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
-        IncrementalValueProvider<IVectorPopulationWithData> vectorPopulationProvider)
+    public static IncrementalValuesProvider<Optional<ResolvedVectorType>> Resolve(IncrementalValuesProvider<Optional<VectorSpecializationType>> vectorProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
         return vectorProvider.Combine(unitPopulationProvider, vectorPopulationProvider).Select(Resolve);
     }
 
-    private static Optional<ResolvedVectorType> Resolve((Optional<VectorSpecializationType> UnresolvedVector, IUnitPopulation UnitPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken token)
+    private static Optional<ResolvedVectorType> Resolve((Optional<VectorSpecializationType> UnresolvedVector, IUnitPopulation UnitPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
     {
         if (token.IsCancellationRequested || input.UnresolvedVector.HasValue is false)
         {
@@ -28,10 +26,12 @@ internal static class VectorSpecializationResolver
         return Resolve(input.UnresolvedVector.Value, input.UnitPopulation, input.VectorPopulation);
     }
 
-    private static ResolvedVectorType Resolve(VectorSpecializationType vectorType, IUnitPopulation unitPopulation, IVectorPopulationWithData vectorPopulation)
+    private static Optional<ResolvedVectorType> Resolve(VectorSpecializationType vectorType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
     {
-        var vectorBase = vectorPopulation.VectorBases[vectorType.Type.AsNamedType()];
-        var unit = unitPopulation.Units[vectorBase.Definition.Unit];
+        if (vectorPopulation.VectorBases.TryGetValue(vectorType.Type.AsNamedType(), out var vectorBase) is false || unitPopulation.Units.TryGetValue(vectorBase.Definition.Unit, out var unit) is false)
+        {
+            return new Optional<ResolvedVectorType>();
+        }
 
         var definedDerivations = vectorType.Derivations;
         var inheritedDerivations = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Definition.InheritDerivations, onlyInherited: true);
@@ -52,7 +52,7 @@ internal static class VectorSpecializationResolver
 
         var generateDocumentation = RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => vector.Definition.GenerateDocumentation);
 
-        return new(vectorType.Type, vectorType.TypeLocation, vectorBase.Definition.Dimension, unit.Type.AsNamedType(), scalar, implementSum!.Value, implementDifference!.Value, difference,
+        return new ResolvedVectorType(vectorType.Type, vectorType.TypeLocation, vectorBase.Definition.Dimension, unit.Type.AsNamedType(), scalar, implementSum!.Value, implementDifference!.Value, difference,
             defaultUnitInstanceName, defaultUnitInstanceSymbol, definedDerivations, inheritedDerivations, constants, conversions, includedUnitInstances, generateDocumentation);
     }
 

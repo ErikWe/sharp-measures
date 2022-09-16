@@ -106,7 +106,7 @@ public static partial class DiagnosticRules
         isEnabledByDefault: true
     );
 
-    public static readonly DiagnosticDescriptor NullUnrecognizedUnitInstnaceNameUnknownType = new DiagnosticDescriptor
+    public static readonly DiagnosticDescriptor NullUnrecognizedUnitInstanceNameUnknownType = new DiagnosticDescriptor
     (
         id: DiagnosticIDs.UnrecognizedUnitInstanceName,
         title: "Expected the name of a unit",

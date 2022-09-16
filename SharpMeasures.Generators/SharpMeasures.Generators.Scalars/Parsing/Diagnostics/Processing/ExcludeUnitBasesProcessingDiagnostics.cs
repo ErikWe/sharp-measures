@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Scalars.Parsing.ExcludeBases;
+using SharpMeasures.Generators.Scalars.Parsing.ExcludeUnitBases;
 
 internal class ExcludeUnitBasesProcessingDiagnostics : IExcludeUnitBasesProcessingDiagnostics
 {

@@ -5,7 +5,27 @@ using SharpMeasures.Generators.Quantities;
 
 internal record class RawSpecializedSharpMeasuresScalarDefinition : ARawAttributeDefinition<RawSpecializedSharpMeasuresScalarDefinition, SpecializedSharpMeasuresScalarLocations>, IDefaultUnitInstanceDefinition
 {
-    public static RawSpecializedSharpMeasuresScalarDefinition Empty => new();
+    public static RawSpecializedSharpMeasuresScalarDefinition FromSymbolic(SymbolicSpecializedSharpMeasuresScalarDefinition symbolicDefinition) => new RawSpecializedSharpMeasuresScalarDefinition(symbolicDefinition.Locations) with
+    {
+        OriginalQuantity = symbolicDefinition.OriginalQuantity?.AsNamedType(),
+        InheritDerivations = symbolicDefinition.InheritDerivations,
+        InheritConstants = symbolicDefinition.InheritConstants,
+        InheritConversions = symbolicDefinition.InheritConversions,
+        InheritBases = symbolicDefinition.InheritBases,
+        InheritUnits = symbolicDefinition.InheritUnits,
+        Vector = symbolicDefinition.Vector?.AsNamedType(),
+        ImplementSum = symbolicDefinition.ImplementSum,
+        ImplementDifference = symbolicDefinition.ImplementDifference,
+        Difference = symbolicDefinition.Difference?.AsNamedType(),
+        DefaultUnitInstanceName = symbolicDefinition.DefaultUnitInstanceName,
+        DefaultUnitInstanceSymbol = symbolicDefinition.DefaultUnitInstanceSymbol,
+        Reciprocal = symbolicDefinition.Reciprocal?.AsNamedType(),
+        Square = symbolicDefinition.Square?.AsNamedType(),
+        Cube = symbolicDefinition.Cube?.AsNamedType(),
+        SquareRoot = symbolicDefinition.SquareRoot?.AsNamedType(),
+        CubeRoot = symbolicDefinition.CubeRoot?.AsNamedType(),
+        GenerateDocumentation = symbolicDefinition.GenerateDocumentation
+    };
 
     public NamedType? OriginalQuantity { get; init; }
 
@@ -36,5 +56,5 @@ internal record class RawSpecializedSharpMeasuresScalarDefinition : ARawAttribut
 
     IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
-    private RawSpecializedSharpMeasuresScalarDefinition() : base(SpecializedSharpMeasuresScalarLocations.Empty) { }
+    private RawSpecializedSharpMeasuresScalarDefinition(SpecializedSharpMeasuresScalarLocations locations) : base(locations) { }
 }

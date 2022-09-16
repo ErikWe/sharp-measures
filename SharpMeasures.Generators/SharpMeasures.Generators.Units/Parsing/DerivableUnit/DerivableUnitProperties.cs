@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 internal static class DerivableUnitProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawDerivableUnitDefinition>> AllProperties => new IAttributeProperty<RawDerivableUnitDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<SymbolicDerivableUnitDefinition>> AllProperties => new IAttributeProperty<SymbolicDerivableUnitDefinition>[]
     {
         DerivationID,
         Expression,
@@ -33,7 +33,7 @@ internal static class DerivableUnitProperties
     private static DerivableUnitProperty<INamedTypeSymbol[]> Signature { get; } = new
     (
         name: nameof(DerivableUnitAttribute.Signature),
-        setter: static (definition, signature) => definition with { Signature = signature.AsNamedTypes() },
+        setter: static (definition, signature) => definition with { Signature = signature },
         locator: static (locations, collectionLocation, elementLocations) => locations with
         {
             SignatureCollection = collectionLocation,

@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars;
-using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
 internal interface ISharpMeasuresUnitValidationDiagnostics
 {
@@ -15,7 +14,7 @@ internal interface ISharpMeasuresUnitValidationDiagnostics
 
 internal interface ISharpMeasuresUnitValidationContext : IValidationContext
 {
-    public abstract IUnitPopulationWithData UnitPopulation { get; }
+    public abstract UnitProcessingData ProcessingData { get; }
     public abstract IScalarPopulation ScalarPopulation { get; }
 }
 
@@ -30,15 +29,15 @@ internal class SharpMeasuresUnitValidator : AValidator<ISharpMeasuresUnitValidat
 
     public override IValidityWithDiagnostics Validate(ISharpMeasuresUnitValidationContext context, SharpMeasuresUnitDefinition definition)
     {
-        return ValidateTypeNotDuplicatelyDefined(context, definition)
+        return ValidateTypeNotDuplicatelyDefined(context)
             .Merge(() => ResolveQuantity(context, definition))
             .Validate((scalarBase) => ValidateQuantityNotBiased(context, definition, scalarBase))
             .Reduce();
     }
 
-    private static IValidityWithDiagnostics ValidateTypeNotDuplicatelyDefined(ISharpMeasuresUnitValidationContext context, SharpMeasuresUnitDefinition definition)
+    private static IValidityWithDiagnostics ValidateTypeNotDuplicatelyDefined(ISharpMeasuresUnitValidationContext context)
     {
-        var typeDuplicatelyDefined = context.UnitPopulation.DuplicatelyDefinedUnits.ContainsKey(context.Type.AsNamedType());
+        var typeDuplicatelyDefined = context.ProcessingData.DuplicatelyDefinedUnits.ContainsKey(context.Type.AsNamedType());
 
         return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(typeDuplicatelyDefined is false);
     }

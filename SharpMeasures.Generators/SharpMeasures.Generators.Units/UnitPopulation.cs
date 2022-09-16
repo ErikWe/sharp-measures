@@ -1,16 +1,15 @@
 ﻿namespace SharpMeasures.Generators.Units;
 
 using SharpMeasures.Equatables;
-using SharpMeasures.Generators.Units.Parsing.Abstractions;
+using SharpMeasures.Generators.Units.Parsing;
 
 using System.Collections.Generic;
-using System.Collections.Immutable;
 
-internal class UnitPopulation : IUnitPopulationWithData
+internal class UnitPopulation : IUnitPopulation
 {
-    public static UnitPopulation Build(ImmutableArray<IUnitType> units)
+    public static (UnitPopulation Population, UnitProcessingData ProcessingData) Build(IReadOnlyList<IUnitType> units)
     {
-        Dictionary<NamedType, IUnitType> unitPopulation = new(units.Length);
+        Dictionary<NamedType, IUnitType> unitPopulation = new(units.Count);
 
         Dictionary<NamedType, IUnitType> duplicatePopulation = new();
 
@@ -24,18 +23,27 @@ internal class UnitPopulation : IUnitPopulationWithData
             duplicatePopulation.TryAdd(unit.Type.AsNamedType(), unit);
         }
 
-        return new(unitPopulation, duplicatePopulation);
+        return (new UnitPopulation(unitPopulation), new UnitProcessingData(duplicatePopulation));
+    }
+
+    public static UnitPopulation BuildWithoutProcessingData(IReadOnlyList<IUnitType> units)
+    {
+        Dictionary<NamedType, IUnitType> unitPopulation = new(units.Count);
+
+        foreach (var unit in units)
+        {
+            unitPopulation.TryAdd(unit.Type.AsNamedType(), unit);
+        }
+
+        return new(unitPopulation);
     }
 
     public IReadOnlyDictionary<NamedType, IUnitType> Units => units;
-    public IReadOnlyDictionary<NamedType, IUnitType> DuplicatelyDefinedUnits => duplicatelyDefinedUnits;
 
     private ReadOnlyEquatableDictionary<NamedType, IUnitType> units { get; }
-    private ReadOnlyEquatableDictionary<NamedType, IUnitType> duplicatelyDefinedUnits { get; }
 
-    public UnitPopulation(IReadOnlyDictionary<NamedType, IUnitType> units, IReadOnlyDictionary<NamedType, IUnitType> duplicatelyDefinedUnits)
+    public UnitPopulation(IReadOnlyDictionary<NamedType, IUnitType> units)
     {
         this.units = units.AsReadOnlyEquatable();
-        this.duplicatelyDefinedUnits = duplicatelyDefinedUnits.AsReadOnlyEquatable();
     }
 }

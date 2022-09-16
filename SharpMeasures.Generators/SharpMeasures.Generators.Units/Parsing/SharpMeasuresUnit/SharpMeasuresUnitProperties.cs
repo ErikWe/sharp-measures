@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 internal static class SharpMeasuresUnitProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawSharpMeasuresUnitDefinition>> AllProperties => new IAttributeProperty<RawSharpMeasuresUnitDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<SymbolicSharpMeasuresUnitDefinition>> AllProperties => new IAttributeProperty<SymbolicSharpMeasuresUnitDefinition>[]
     {
         Quantity,
         BiasTerm,
@@ -18,7 +18,7 @@ internal static class SharpMeasuresUnitProperties
     private static SharpMeasuresUnitProperty<INamedTypeSymbol> Quantity { get; } = new
     (
         name: nameof(SharpMeasuresUnitAttribute.Quantity),
-        setter: static (definition, quantitySymbol) => definition with { Quantity = quantitySymbol.AsNamedType() },
+        setter: static (definition, quantity) => definition with { Quantity = quantity },
         locator: static (locations, quantityLocation) => locations with { Quantity = quantityLocation }
     );
 

@@ -8,8 +8,7 @@ using System.Collections.Generic;
 
 internal static class SharpMeasuresVectorGroupMemberProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawSharpMeasuresVectorGroupMemberDefinition>> AllProperties
-        => new IAttributeProperty<RawSharpMeasuresVectorGroupMemberDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<SymbolicSharpMeasuresVectorGroupMemberDefinition>> AllProperties => new IAttributeProperty<SymbolicSharpMeasuresVectorGroupMemberDefinition>[]
     {
         VectorGroup,
         InheritDerivations,
@@ -26,7 +25,7 @@ internal static class SharpMeasuresVectorGroupMemberProperties
     private static SharpMeasuresVectorGroupMemberProperty<INamedTypeSymbol> VectorGroup { get; } = new
     (
         name: nameof(SharpMeasuresVectorGroupMemberAttribute.VectorGroup),
-        setter: static (definition, vectorGroup) => definition with { VectorGroup = vectorGroup.AsNamedType() },
+        setter: static (definition, vectorGroup) => definition with { VectorGroup = vectorGroup },
         locator: static (locations, vectorGroupLocation) => locations with { VectorGroup = vectorGroupLocation }
     );
 

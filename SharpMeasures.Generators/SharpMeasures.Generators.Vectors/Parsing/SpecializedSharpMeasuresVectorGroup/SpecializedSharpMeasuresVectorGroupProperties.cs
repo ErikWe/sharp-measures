@@ -8,8 +8,7 @@ using System.Collections.Generic;
 
 internal static class SpecializedSharpMeasuresVectorGroupProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawSpecializedSharpMeasuresVectorGroupDefinition>> AllProperties
-        => new IAttributeProperty<RawSpecializedSharpMeasuresVectorGroupDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<SymbolicSpecializedSharpMeasuresVectorGroupDefinition>> AllProperties => new IAttributeProperty<SymbolicSpecializedSharpMeasuresVectorGroupDefinition>[]
     {
         OriginalVectorGroup,
         InheritDerivations,
@@ -28,7 +27,7 @@ internal static class SpecializedSharpMeasuresVectorGroupProperties
     private static SpecializedSharpMeasuresVectorGroupProperty<INamedTypeSymbol> OriginalVectorGroup { get; } = new
     (
         name: nameof(SpecializedSharpMeasuresVectorGroupAttribute.OriginalVectorGroup),
-        setter: static (definition, originalQuantity) => definition with { OriginalQuantity = originalQuantity.AsNamedType() },
+        setter: static (definition, originalQuantity) => definition with { OriginalQuantity = originalQuantity },
         locator: static (locations, originalQuantityLocation) => locations with { OriginalQuantity = originalQuantityLocation }
     );
 
@@ -63,7 +62,7 @@ internal static class SpecializedSharpMeasuresVectorGroupProperties
     private static SpecializedSharpMeasuresVectorGroupProperty<INamedTypeSymbol> Scalar { get; } = new
     (
         name: nameof(SpecializedSharpMeasuresVectorGroupAttribute.Scalar),
-        setter: static (definition, scalar) => definition with { Scalar = scalar.AsNamedType() },
+        setter: static (definition, scalar) => definition with { Scalar = scalar },
         locator: static (locations, scalarLocation) => locations with { Scalar = scalarLocation }
     );
 
@@ -84,7 +83,7 @@ internal static class SpecializedSharpMeasuresVectorGroupProperties
     private static SpecializedSharpMeasuresVectorGroupProperty<INamedTypeSymbol> Difference { get; } = new
     (
         name: nameof(SpecializedSharpMeasuresVectorGroupAttribute.Difference),
-        setter: static (definition, difference) => definition with { Difference = difference.AsNamedType() },
+        setter: static (definition, difference) => definition with { Difference = difference },
         locator: static (locations, differenceLocation) => locations with { Difference = differenceLocation }
     );
 

@@ -23,46 +23,44 @@ using System.Threading;
 
 public interface IUnitValidator
 {
-    public abstract (IncrementalValueProvider<IUnitPopulation>, IUnitGenerator) Validate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider);
+    public abstract (IncrementalValueProvider<IUnitPopulation>, IUnitGenerator) Validate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider);
 }
 
 internal class UnitValidator : IUnitValidator
 {
-    private IncrementalValueProvider<IUnitPopulationWithData> UnitPopulationProvider { get; }
+    private IncrementalValueProvider<UnitProcessingData> ProcessingDataProvider { get; }
 
     private IncrementalValuesProvider<Optional<UnitType>> UnitProvider { get; }
 
-    public UnitValidator(IncrementalValueProvider<IUnitPopulationWithData> unitPopulationProvider, IncrementalValuesProvider<Optional<UnitType>> unitProvider)
+    public UnitValidator(IncrementalValueProvider<UnitProcessingData> processingDataProvider, IncrementalValuesProvider<Optional<UnitType>> unitProvider)
     {
-        UnitPopulationProvider = unitPopulationProvider;
+        ProcessingDataProvider = processingDataProvider;
 
         UnitProvider = unitProvider;
     }
 
-    public (IncrementalValueProvider<IUnitPopulation>, IUnitGenerator) Validate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider)
+    public (IncrementalValueProvider<IUnitPopulation>, IUnitGenerator) Validate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider)
     {
-        var validatedUnits = UnitProvider.Combine(UnitPopulationProvider, scalarPopulationProvider).Select(Validate).ReportDiagnostics(context);
+        var validatedUnits = UnitProvider.Combine(ProcessingDataProvider, unitPopulationProvider, scalarPopulationProvider).Select(Validate).ReportDiagnostics(context);
 
         var population = validatedUnits.Select(ExtractInterface).CollectResults().Select(CreatePopulation);
 
-        var reducedPopulation = population.Select(ExtractInterface);
-
-        return (reducedPopulation, new UnitGenerator(population, validatedUnits));
+        return (population, new UnitGenerator(validatedUnits));
     }
 
-    private static IOptionalWithDiagnostics<UnitType> Validate((Optional<UnitType> UnvalidatedUnit, IUnitPopulationWithData UnitPopulation, IScalarPopulation ScalarPopulation) input, CancellationToken token)
+    private static IOptionalWithDiagnostics<UnitType> Validate((Optional<UnitType> UnvalidatedUnit, UnitProcessingData ProcessingData, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation) input, CancellationToken token)
     {
         if (token.IsCancellationRequested || input.UnvalidatedUnit.HasValue is false)
         {
             return OptionalWithDiagnostics.Empty<UnitType>();
         }
 
-        return Validate(input.UnvalidatedUnit.Value, input.UnitPopulation, input.ScalarPopulation);
+        return Validate(input.UnvalidatedUnit.Value, input.ProcessingData, input.UnitPopulation, input.ScalarPopulation);
     }
 
-    private static IOptionalWithDiagnostics<UnitType> Validate(UnitType unitType, IUnitPopulationWithData unitPopulation, IScalarPopulation scalarPopulation)
+    private static IOptionalWithDiagnostics<UnitType> Validate(UnitType unitType, UnitProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation)
     {
-        var unit = ValidateUnit(unitType, unitPopulation, scalarPopulation);
+        var unit = ValidateUnit(unitType, processingData, scalarPopulation);
 
         if (unit.IsInvalid)
         {
@@ -89,14 +87,14 @@ internal class UnitValidator : IUnitValidator
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static IValidityWithDiagnostics ValidateUnit(UnitType unitType, IUnitPopulationWithData unitPopulation, IScalarPopulation scalarPopulation)
+    private static IValidityWithDiagnostics ValidateUnit(UnitType unitType, UnitProcessingData processingData, IScalarPopulation scalarPopulation)
     {
-        var validationContext = new SharpMeasuresUnitValidationContext(unitType.Type, unitPopulation, scalarPopulation);
+        var validationContext = new SharpMeasuresUnitValidationContext(unitType.Type, processingData, scalarPopulation);
 
         return ValidityFilter.Create(SharpMeasuresUnitValidator).Validate(validationContext, unitType.Definition);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<DerivableUnitDefinition>> ValidateDerivations(UnitType unitType, IUnitPopulationWithData unitPopulation)
+    private static IResultWithDiagnostics<IReadOnlyList<DerivableUnitDefinition>> ValidateDerivations(UnitType unitType, IUnitPopulation unitPopulation)
     {
         var validationContext = new DerivableUnitValidationContext(unitType.Type, unitPopulation);
 
@@ -147,7 +145,7 @@ internal class UnitValidator : IUnitValidator
         return ValidityFilter.Create(UnitInstanceAliasValidator).Filter(validationContext, unitType.UnitInstanceAliases);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<DerivedUnitInstanceDefinition>> ValidateDerivedUnitInstances(UnitType unitType, IUnitPopulationWithData unitPopulation)
+    private static IResultWithDiagnostics<IReadOnlyList<DerivedUnitInstanceDefinition>> ValidateDerivedUnitInstances(UnitType unitType, IUnitPopulation unitPopulation)
     {
         var unnamedUnitDerivation = unitType.UnitDerivations.Count == 1 && unitType.UnitDerivations[0].DerivationID is null ? unitType.UnitDerivations[0] : null;
 
@@ -174,11 +172,10 @@ internal class UnitValidator : IUnitValidator
     }
 
     private static Optional<IUnitType> ExtractInterface(Optional<UnitType> unitType, CancellationToken _) => unitType.HasValue ? unitType.Value : new Optional<IUnitType>();
-    private static IUnitPopulation ExtractInterface(IUnitPopulation population, CancellationToken _) => population;
 
-    private static IUnitPopulationWithData CreatePopulation(ImmutableArray<IUnitType> units, CancellationToken _)
+    private static IUnitPopulation CreatePopulation(ImmutableArray<IUnitType> units, CancellationToken _)
     {
-        return UnitPopulation.Build(units);
+        return UnitPopulation.BuildWithoutProcessingData(units);
     }
 
     private static SharpMeasuresUnitValidator SharpMeasuresUnitValidator { get; } = new(SharpMeasuresUnitValidationDiagnostics.Instance);

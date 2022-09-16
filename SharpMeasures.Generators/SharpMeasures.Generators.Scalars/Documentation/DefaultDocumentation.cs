@@ -1,6 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
-using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units;
@@ -132,7 +131,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         return source.ToString();
     }
 
-    public string OperatorDerivationLHS(IOperatorDerivation derivation)
+    public string OperatorDerivationLHS(OperatorDerivation derivation)
     {
         var operatorSymbol = GetOperatorSymbol(derivation.OperatorType);
         (var firstComponentName, var secondComponentName) = GetOperatorComponentNames(derivation.OperatorType);

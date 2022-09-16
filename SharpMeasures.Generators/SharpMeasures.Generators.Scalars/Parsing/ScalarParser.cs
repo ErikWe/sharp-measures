@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Providers;
 using SharpMeasures.Generators.Providers.DeclarationFilter;
-using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.Diagnostics;
 
 using System.Collections.Generic;
@@ -15,23 +14,28 @@ using System.Threading;
 
 public static partial class ScalarParser
 {
-    public static (IncrementalValueProvider<IScalarPopulation>, IScalarValidator) Attach(IncrementalGeneratorInitializationContext context)
+    public static (IScalarProcesser Processer, IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context)
     {
         var scalarBaseSymbols = AttachSymbolProvider<SharpMeasuresScalarAttribute>(context);
         var scalarSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresScalarAttribute>(context);
 
-        ScalarBaseProcesser scalarBaseProcesser = new();
-        ScalarSpecializationProcesser scalarSpecializationProcesser = new();
+        ScalarBaseParser scalarBaseParser = new();
+        ScalarSpecializationParser scalarSpecializationParser = new();
 
-        var scalarBases = scalarBaseSymbols.Select(scalarBaseProcesser.ParseAndProcess).ReportDiagnostics(context);
-        var scalarSpecializations = scalarSpecializationSymbols.Select(scalarSpecializationProcesser.ParseAndProcess).ReportDiagnostics(context);
+        var scalarBasesAndForeignSymbols = scalarBaseSymbols.Select(scalarBaseParser.Parse);
+        var scalarSpecializationsAndForeignSymbols = scalarSpecializationSymbols.Select(scalarSpecializationParser.Parse);
 
-        var scalarBaseInterfaces = scalarBases.Select(ExtractInterface).CollectResults();
-        var scalarSpecializationInterfaces = scalarSpecializations.Select(ExtractInterface).CollectResults();
+        var scalarBases = scalarBasesAndForeignSymbols.Select(ExtractScalar);
+        var scalarSpecializations = scalarSpecializationsAndForeignSymbols.Select(ExtractScalar);
 
-        var populationWithData = scalarBaseInterfaces.Combine(scalarSpecializationInterfaces).Select(CreatePopulation);
+        var scalarBaseForeignSymbols = scalarBasesAndForeignSymbols.Select(ExtractForeignSymbols).Collect();
+        var scalarSpecializationForeignSymbols = scalarSpecializationsAndForeignSymbols.Select(ExtractForeignSymbols).Collect();
 
-        return (populationWithData.Select(ReducePopulation), new ScalarValidator(populationWithData, scalarBases, scalarSpecializations));
+        var foreignSymbols = scalarBaseForeignSymbols.Concat(scalarSpecializationForeignSymbols).Expand();
+
+        ScalarProcesser processer = new(scalarBases, scalarSpecializations);
+
+        return (processer, foreignSymbols);
     }
 
     private static IncrementalValuesProvider<Optional<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)>> AttachSymbolProvider<TAttribute>(IncrementalGeneratorInitializationContext context)
@@ -42,15 +46,10 @@ public static partial class ScalarParser
         return DeclarationSymbolProvider.Construct<TypeDeclarationSyntax>().Attach(filteredDeclarations, context.CompilationProvider);
     }
 
-    private static Optional<IScalarBaseType> ExtractInterface(Optional<ScalarBaseType> scalarType, CancellationToken _) => scalarType.HasValue ? scalarType.Value : new Optional<IScalarBaseType>();
-    private static Optional<IScalarSpecializationType> ExtractInterface(Optional<ScalarSpecializationType> scalarType, CancellationToken _) => scalarType.HasValue ? scalarType.Value : new Optional<IScalarSpecializationType>();
-
-    private static IScalarPopulation ReducePopulation(IScalarPopulationWithData scalarPopulation, CancellationToken _) => scalarPopulation;
-
-    private static IScalarPopulationWithData CreatePopulation((ImmutableArray<IScalarBaseType> Bases, ImmutableArray<IScalarSpecializationType> Specializations) scalars, CancellationToken _)
-    {
-        return ScalarPopulation.Build(scalars.Bases, scalars.Specializations);
-    }
+    private static Optional<RawScalarBaseType> ExtractScalar((Optional<RawScalarBaseType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
+    private static Optional<RawScalarSpecializationType> ExtractScalar((Optional<RawScalarSpecializationType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawScalarBaseType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawScalarSpecializationType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
 
     private static IEnumerable<IDeclarationFilter> DeclarationFilters<TAttribute>() => new IDeclarationFilter[]
     {

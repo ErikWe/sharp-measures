@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 internal static class SharpMeasuresVectorProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawSharpMeasuresVectorDefinition>> AllProperties => new IAttributeProperty<RawSharpMeasuresVectorDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<SymbolicSharpMeasuresVectorDefinition>> AllProperties => new IAttributeProperty<SymbolicSharpMeasuresVectorDefinition>[]
     {
         Unit,
         Scalar,
@@ -24,14 +24,14 @@ internal static class SharpMeasuresVectorProperties
     private static SharpMeasuresVectorProperty<INamedTypeSymbol> Unit { get; } = new
     (
         name: nameof(SharpMeasuresVectorAttribute.Unit),
-        setter: static (definition, unit) => definition with { Unit = unit.AsNamedType() },
+        setter: static (definition, unit) => definition with { Unit = unit },
         locator: static (locations, unitLocation) => locations with { Unit = unitLocation }
     );
 
     private static SharpMeasuresVectorProperty<INamedTypeSymbol> Scalar { get; } = new
     (
         name: nameof(SharpMeasuresVectorAttribute.Scalar),
-        setter: static (definition, scalar) => definition with { Scalar = scalar.AsNamedType() },
+        setter: static (definition, scalar) => definition with { Scalar = scalar },
         locator: static (locations, scalarLocation) => locations with { Scalar = scalarLocation }
     );
 
@@ -59,7 +59,7 @@ internal static class SharpMeasuresVectorProperties
     private static SharpMeasuresVectorProperty<INamedTypeSymbol> Difference { get; } = new
     (
         name: nameof(SharpMeasuresVectorAttribute.Difference),
-        setter: static (definition, difference) => definition with { Difference = difference.AsNamedType() },
+        setter: static (definition, difference) => definition with { Difference = difference },
         locator: static (locations, differenceLocation) => locations with { Difference = differenceLocation }
     );
 

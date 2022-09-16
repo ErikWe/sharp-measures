@@ -12,7 +12,6 @@ using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Validation;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Validation;
@@ -27,25 +26,25 @@ using System.Threading;
 internal static class VectorBaseValidator
 {
     public static IncrementalValuesProvider<Optional<VectorBaseType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<VectorBaseType>> vectorProvider,
-       IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
-       IncrementalValueProvider<IVectorPopulationWithData> vectorPopulationProvider)
+       IncrementalValueProvider<VectorProcessingData> processingDataProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
+       IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
-        return vectorProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
+        return vectorProvider.Combine(processingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
 
-    private static IOptionalWithDiagnostics<VectorBaseType> Validate((Optional<VectorBaseType> UnvalidatedVector, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken token)
+    private static IOptionalWithDiagnostics<VectorBaseType> Validate((Optional<VectorBaseType> UnvalidatedVector, VectorProcessingData ProcessingData, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
     {
         if (token.IsCancellationRequested || input.UnvalidatedVector.HasValue is false)
         {
             return OptionalWithDiagnostics.Empty<VectorBaseType>();
         }
 
-        return Validate(input.UnvalidatedVector.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        return Validate(input.UnvalidatedVector.Value, input.ProcessingData, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
     }
 
-    private static IOptionalWithDiagnostics<VectorBaseType> Validate(VectorBaseType vectorType, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulationWithData vectorPopulation)
+    private static IOptionalWithDiagnostics<VectorBaseType> Validate(VectorBaseType vectorType, VectorProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        var vector = ValidateVector(vectorType, unitPopulation, scalarPopulation, vectorPopulation);
+        var vector = ValidateVector(vectorType, processingData, unitPopulation, scalarPopulation, vectorPopulation);
 
         if (vector.LacksResult)
         {
@@ -68,9 +67,9 @@ internal static class VectorBaseValidator
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static IOptionalWithDiagnostics<SharpMeasuresVectorDefinition> ValidateVector(VectorBaseType vectorType, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulationWithData vectorPopulation)
+    private static IOptionalWithDiagnostics<SharpMeasuresVectorDefinition> ValidateVector(VectorBaseType vectorType, VectorProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        var validationContext = new SharpMeasuresVectorValidationContext(vectorType.Type, unitPopulation, scalarPopulation, vectorPopulation);
+        var validationContext = new SharpMeasuresVectorValidationContext(vectorType.Type, processingData, unitPopulation, scalarPopulation, vectorPopulation);
 
         return ProcessingFilter.Create(SharpMeasuresVectorValidator).Filter(validationContext, vectorType.Definition);
     }
@@ -86,9 +85,9 @@ internal static class VectorBaseValidator
     {
         var unit = unitPopulation.Units[vectorType.Definition.Unit];
 
-        var includedUnits = GetUnitInclusions(unit, vectorType.UnitInstanceInclusions, () => vectorType.UnitInstanceExclusions);
+        var includedUnitInstances = GetUnitInstanceInclusions(unit, vectorType.UnitInstanceInclusions, () => vectorType.UnitInstanceExclusions);
 
-        HashSet<string> incluedUnitPlurals = new(includedUnits.Select((unitInstance) => unit.UnitInstancesByName[unitInstance].PluralForm));
+        HashSet<string> incluedUnitPlurals = new(includedUnitInstances.Select((unitInstance) => unit.UnitInstancesByName[unitInstance].PluralForm));
 
         var validationContext = new VectorConstantValidationContext(vectorType.Type, vectorType.Definition.Dimension, unit, new HashSet<string>(), new HashSet<string>(), incluedUnitPlurals);
 
@@ -116,7 +115,7 @@ internal static class VectorBaseValidator
         return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInstanceExclusions);
     }
 
-    private static IReadOnlyList<string> GetUnitInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
+    private static IReadOnlyList<string> GetUnitInstanceInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
     {
         HashSet<string> includedUnits = new(unit.UnitInstancesByName.Keys);
 

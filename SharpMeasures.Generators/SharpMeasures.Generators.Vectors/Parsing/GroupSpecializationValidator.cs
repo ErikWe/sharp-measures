@@ -12,7 +12,6 @@ using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Validation;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Validation;
@@ -26,25 +25,25 @@ using System.Threading;
 internal static class GroupSpecializationValidator
 {
     public static IncrementalValuesProvider<Optional<GroupSpecializationType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<GroupSpecializationType>> vectorProvider,
-       IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
-       IncrementalValueProvider<IVectorPopulationWithData> vectorPopulationProvider)
+       IncrementalValueProvider<VectorProcessingData> processingDataProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
+       IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
-        return vectorProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
+        return vectorProvider.Combine(processingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
 
-    private static IOptionalWithDiagnostics<GroupSpecializationType> Validate((Optional<GroupSpecializationType> UnvalidatedVector, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken token)
+    private static IOptionalWithDiagnostics<GroupSpecializationType> Validate((Optional<GroupSpecializationType> UnvalidatedVector, VectorProcessingData ProcessingData, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
     {
         if (token.IsCancellationRequested || input.UnvalidatedVector.HasValue is false)
         {
             return OptionalWithDiagnostics.Empty<GroupSpecializationType>();
         }
 
-        return Validate(input.UnvalidatedVector.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        return Validate(input.UnvalidatedVector.Value, input.ProcessingData, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
     }
 
-    private static IOptionalWithDiagnostics<GroupSpecializationType> Validate(GroupSpecializationType vectorType, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulationWithData vectorPopulation)
+    private static IOptionalWithDiagnostics<GroupSpecializationType> Validate(GroupSpecializationType vectorType, VectorProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        var vector = ValidateVector(vectorType, unitPopulation, scalarPopulation, vectorPopulation);
+        var vector = ValidateVector(vectorType, processingData, unitPopulation, scalarPopulation, vectorPopulation);
 
         if (vector.LacksResult)
         {
@@ -71,9 +70,9 @@ internal static class GroupSpecializationValidator
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static IOptionalWithDiagnostics<SpecializedSharpMeasuresVectorGroupDefinition> ValidateVector(GroupSpecializationType vectorType, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulationWithData vectorPopulation)
+    private static IOptionalWithDiagnostics<SpecializedSharpMeasuresVectorGroupDefinition> ValidateVector(GroupSpecializationType vectorType, VectorProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        var validationContext = new SpecializedSharpMeasuresVectorGroupValidationContext(vectorType.Type, unitPopulation, scalarPopulation, vectorPopulation);
+        var validationContext = new SpecializedSharpMeasuresVectorGroupValidationContext(vectorType.Type, processingData, unitPopulation, scalarPopulation, vectorPopulation);
 
         return ProcessingFilter.Create(SpecializedSharpMeasuresVectorGroupValidator).Filter(validationContext, vectorType.Definition);
     }
@@ -98,14 +97,14 @@ internal static class GroupSpecializationValidator
     {
         var filteringContext = new IncludeUnitsFilteringContext(vectorType.Type, unit, inheritedUnits);
 
-        return ProcessingFilter.Create(IncludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInclusions);
+        return ProcessingFilter.Create(IncludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInstanceInclusions);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ValidateExcludeUnitInstances(GroupSpecializationType vectorType, IUnitType unit, HashSet<string> inheritedUnits)
     {
         var filteringContext = new ExcludeUnitsFilteringContext(vectorType.Type, unit, inheritedUnits);
 
-        return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, vectorType.UnitExclusions);
+        return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInstanceExclusions);
     }
 
     private static IEnumerable<T> CollectInheritedItems<T>(GroupSpecializationType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, IEnumerable<T>> itemsDelegate, Func<IVectorGroupSpecializationType, bool> shouldInherit)

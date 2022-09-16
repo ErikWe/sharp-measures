@@ -10,9 +10,9 @@ internal record class ScalarConstantValidationContext : QuantityConstantValidati
 {
     public HashSet<string> IncludedUnitInstanceNames { get; }
 
-    public ScalarConstantValidationContext(DefinedType type, IUnitType unitType, HashSet<string> inheritedConstantNames, HashSet<string> inheritedConstantMuliplesNames, HashSet<string> includedUnitNames, HashSet<string> includedUnitPlurals)
-        : base(type, unitType, inheritedConstantNames, inheritedConstantMuliplesNames, includedUnitPlurals)
+    public ScalarConstantValidationContext(DefinedType type, IUnitType unitType, HashSet<string> inheritedConstantNames, HashSet<string> inheritedConstantMuliplesNames, HashSet<string> includedUnitInstanceNames, HashSet<string> includedUnitInstancePlurals)
+        : base(type, unitType, inheritedConstantNames, inheritedConstantMuliplesNames, includedUnitInstancePlurals)
     {
-        IncludedUnitInstanceNames = includedUnitNames;
+        IncludedUnitInstanceNames = includedUnitInstanceNames;
     }
 }

@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Providers;
 using SharpMeasures.Generators.Providers.DeclarationFilter;
-using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics;
 
 using System.Collections.Generic;
@@ -15,7 +14,7 @@ using System.Threading;
 
 public static class VectorParser
 {
-    public static (IncrementalValueProvider<IVectorPopulation>, IVectorValidator) Attach(IncrementalGeneratorInitializationContext context)
+    public static (IVectorProcesser Processer, IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context)
     {
         var groupBaseSymbols = AttachSymbolProvider<SharpMeasuresVectorGroupAttribute>(context, VectorGroupDeclarationFilters<SharpMeasuresVectorGroupAttribute>());
         var groupSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresVectorGroupAttribute>(context, VectorGroupDeclarationFilters<SpecializedSharpMeasuresVectorGroupAttribute>());
@@ -24,29 +23,39 @@ public static class VectorParser
         var vectorBaseSymbols = AttachSymbolProvider<SharpMeasuresVectorAttribute>(context, VectorDeclarationFilters<SharpMeasuresVectorAttribute>());
         var vectorSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresVectorAttribute>(context, VectorDeclarationFilters<SpecializedSharpMeasuresVectorAttribute>());
 
-        GroupBaseProcesser groupBaseProcesser = new();
-        GroupSpecializationProcesser groupSpecializationProcesser = new();
+        GroupBaseParser groupBaseParser = new();
+        GroupSpecializationParser groupSpecializationParser = new();
+        GroupMemberParser groupMemberParser = new();
 
-        VectorBaseProcesser vectorBaseProcesser = new();
-        VectorSpecializationProcesser vectorSpecializationProcesser = new();
+        VectorBaseParser vectorBaseParser = new();
+        VectorSpecializationParser vectorSpecializationParser = new();
 
-        var groupBases = groupBaseSymbols.Select(groupBaseProcesser.ParseAndProcess).ReportDiagnostics(context);
-        var groupSpecializations = groupSpecializationSymbols.Select(groupSpecializationProcesser.ParseAndProcess).ReportDiagnostics(context);
-        var groupMembers = groupMemberSymbols.Select(GroupMemberProcesser.ParseAndProcess).ReportDiagnostics(context);
+        var groupBasesAndForeignSymbols = groupBaseSymbols.Select(groupBaseParser.Parse);
+        var groupSpecializationsAndForeignSymbols = groupSpecializationSymbols.Select(groupSpecializationParser.Parse);
+        var groupMembersAndForeignSymbols = groupMemberSymbols.Select(groupMemberParser.Parse);
 
-        var vectorBases = vectorBaseSymbols.Select(vectorBaseProcesser.ParseAndProcess).ReportDiagnostics(context);
-        var vectorSpecializations = vectorSpecializationSymbols.Select(vectorSpecializationProcesser.ParseAndProcess).ReportDiagnostics(context);
+        var vectorBasesAndForeignSymbols = vectorBaseSymbols.Select(vectorBaseParser.Parse);
+        var vectorSpecializationsAndForeignSymbols = vectorSpecializationSymbols.Select(vectorSpecializationParser.Parse);
 
-        var groupBaseInterfaces = groupBases.Select(ExtractInterface).CollectResults();
-        var groupSpecializationInterfaces = groupSpecializations.Select(ExtractInterface).CollectResults();
-        var groupMemberInterfaces = groupMembers.Select(ExtractInterface).CollectResults();
+        var groupBases = groupBasesAndForeignSymbols.Select(ExtractGroup);
+        var groupSpecializations = groupSpecializationsAndForeignSymbols.Select(ExtractGroup);
+        var groupMembers = groupMembersAndForeignSymbols.Select(ExtractVector);
 
-        var vectorBaseInterfaces = vectorBases.Select(ExtractInterface).CollectResults();
-        var vectorSpecializationInterfaces = vectorSpecializations.Select(ExtractInterface).CollectResults();
+        var vectorBases = vectorBasesAndForeignSymbols.Select(ExtractVector);
+        var vectorSpecializations = vectorSpecializationsAndForeignSymbols.Select(ExtractVector);
 
-        var populationWithData = groupBaseInterfaces.Combine(groupSpecializationInterfaces, groupMemberInterfaces, vectorBaseInterfaces, vectorSpecializationInterfaces).Select(CreatePopulation);
+        var groupBaseForeignSymbols = groupBasesAndForeignSymbols.Select(ExtractForeignSymbols).Collect();
+        var groupSpecializationForeignSymbols = groupSpecializationsAndForeignSymbols.Select(ExtractForeignSymbols).Collect();
+        var groupMemberForeignSymbols = groupMembersAndForeignSymbols.Select(ExtractForeignSymbols).Collect();
 
-        return (populationWithData.Select(ReducePopulation), new VectorValidator(populationWithData, groupBases, groupSpecializations, groupMembers, vectorBases, vectorSpecializations));
+        var vectorBaseForeignSymbols = vectorBasesAndForeignSymbols.Select(ExtractForeignSymbols).Collect();
+        var vectorSpecializationForeignSymbols = vectorSpecializationsAndForeignSymbols.Select(ExtractForeignSymbols).Collect();
+
+        VectorProcesser processer = new(groupBases, groupSpecializations, groupMembers, vectorBases, vectorSpecializations);
+
+        var foreignSymbols = groupBaseForeignSymbols.Concat(groupSpecializationForeignSymbols).Concat(groupMemberForeignSymbols).Concat(vectorBaseForeignSymbols).Concat(vectorSpecializationForeignSymbols).Expand();
+
+        return (processer, foreignSymbols);
     }
 
     private static IncrementalValuesProvider<Optional<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)>> AttachSymbolProvider<TAttribute>(IncrementalGeneratorInitializationContext context,
@@ -57,20 +66,17 @@ public static class VectorParser
         return DeclarationSymbolProvider.Construct<TypeDeclarationSyntax>().Attach(filteredDeclarations, context.CompilationProvider);
     }
 
-    private static Optional<IVectorGroupBaseType> ExtractInterface(Optional<GroupBaseType> groupType, CancellationToken _) => groupType.HasValue ? groupType.Value : new Optional<IVectorGroupBaseType>();
-    private static Optional<IVectorGroupSpecializationType> ExtractInterface(Optional<GroupSpecializationType> groupType, CancellationToken _) => groupType.HasValue ? groupType.Value : new Optional<IVectorGroupSpecializationType>();
-    private static Optional<IVectorGroupMemberType> ExtractInterface(Optional<GroupMemberType> groupMemberType, CancellationToken _) => groupMemberType.HasValue ? groupMemberType.Value : new Optional<IVectorGroupMemberType>();
+    private static Optional<RawGroupBaseType> ExtractGroup((Optional<RawGroupBaseType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
+    private static Optional<RawGroupSpecializationType> ExtractGroup((Optional<RawGroupSpecializationType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
+    private static Optional<RawGroupMemberType> ExtractVector((Optional<RawGroupMemberType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
+    private static Optional<RawVectorBaseType> ExtractVector((Optional<RawVectorBaseType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
+    private static Optional<RawVectorSpecializationType> ExtractVector((Optional<RawVectorSpecializationType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
 
-    private static Optional<IVectorBaseType> ExtractInterface(Optional<VectorBaseType> vectorType, CancellationToken _) => vectorType.HasValue ? vectorType.Value : new Optional<IVectorBaseType>();
-    private static Optional<IVectorSpecializationType> ExtractInterface(Optional<VectorSpecializationType> vectorType, CancellationToken _) => vectorType.HasValue ? vectorType.Value : new Optional<IVectorSpecializationType>();
-
-    private static IVectorPopulation ReducePopulation(IVectorPopulationWithData vectorPopulation, CancellationToken _) => vectorPopulation;
-
-    private static IVectorPopulationWithData CreatePopulation((ImmutableArray<IVectorGroupBaseType> GroupBases, ImmutableArray<IVectorGroupSpecializationType> GroupSpecializations,
-        ImmutableArray<IVectorGroupMemberType> GroupMembers, ImmutableArray<IVectorBaseType> VectorBases, ImmutableArray<IVectorSpecializationType> VectorSpecializations) vectors, CancellationToken _)
-    {
-        return VectorPopulation.Build(vectors.VectorBases, vectors.VectorSpecializations, vectors.GroupBases, vectors.GroupSpecializations, vectors.GroupMembers);
-    }
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawGroupBaseType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawGroupSpecializationType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawGroupMemberType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawVectorBaseType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawVectorSpecializationType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
 
     private static IEnumerable<IDeclarationFilter> VectorGroupDeclarationFilters<TAttribute>() => new IDeclarationFilter[]
     {

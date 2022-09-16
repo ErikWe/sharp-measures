@@ -363,12 +363,12 @@ internal class GeneratorVerifier
         await Verifier.Verify(Output.Where((result) => includedNames.Contains(result.HintName)));
     }
 
-    public Task VerifyMatchingSourceNames(params string[] regexPatterns)
+    public async Task VerifyMatchingSourceNames(params string[] regexPatterns)
     {
-        return VerifyMatchingSourceNames(regexPatterns.Select(static (pattern) => new Regex(pattern)));
+        await VerifyMatchingSourceNames(regexPatterns.Select(static (pattern) => new Regex(pattern))).ConfigureAwait(false);
     }
 
-    public Task VerifyMatchingSourceNames(IEnumerable<Regex> patterns)
+    public async Task VerifyMatchingSourceNames(IEnumerable<Regex> patterns)
     {
         var patternsList = patterns.ToList();
 
@@ -386,7 +386,7 @@ internal class GeneratorVerifier
         Assert.Empty(unmatchedPatterns);
         Assert.NotEmpty(matchingSourceNames);
 
-        return VerifyListedSourceNames(matchingSourceNames);
+        await VerifyListedSourceNames(matchingSourceNames).ConfigureAwait(false);
 
         bool matches(string sourceName)
         {
@@ -404,18 +404,18 @@ internal class GeneratorVerifier
         }
     }
 
-    public Task VerifyMatchingSourceNames(params Regex[] patterns)
+    public async Task VerifyMatchingSourceNames(params Regex[] patterns)
     {
-        return VerifyMatchingSourceNames(patterns as IEnumerable<Regex>);
+        await VerifyMatchingSourceNames(patterns as IEnumerable<Regex>).ConfigureAwait(false);
     }
 
-    public Task VerifyMatchingSourceNames(Regex pattern)
+    public async Task VerifyMatchingSourceNames(Regex pattern)
     {
         IEnumerable<string> matchingSourceNames = Output.Select(static (result) => result.HintName).Where((sourceName) => pattern.IsMatch(sourceName));
 
         Assert.NotEmpty(matchingSourceNames);
 
-        return VerifyListedSourceNames(matchingSourceNames);
+        await VerifyListedSourceNames(matchingSourceNames).ConfigureAwait(false);
     }
 
     public async Task VerifyDiagnostics()

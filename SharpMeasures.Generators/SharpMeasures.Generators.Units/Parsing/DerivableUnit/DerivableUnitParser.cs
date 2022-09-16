@@ -4,11 +4,11 @@ using SharpMeasures.Generators.Attributes.Parsing;
 
 internal static class DerivableUnitParser
 {
-    public static IAttributeParser<RawDerivableUnitDefinition> Parser { get; } = new AttributeParser();
+    public static IAttributeParser<SymbolicDerivableUnitDefinition> Parser { get; } = new AttributeParser();
 
-    private static RawDerivableUnitDefinition DefaultDefinition() => RawDerivableUnitDefinition.Empty;
+    private static SymbolicDerivableUnitDefinition DefaultDefinition() => SymbolicDerivableUnitDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawDerivableUnitDefinition, DerivableUnitLocations, DerivableUnitAttribute>
+    private class AttributeParser : AAttributeParser<SymbolicDerivableUnitDefinition, DerivableUnitLocations, DerivableUnitAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, DerivableUnitProperties.AllProperties) { }
     }

@@ -8,12 +8,16 @@ using SharpMeasures.Generators.Vectors;
 
 internal record class SpecializedSharpMeasuresScalarValidationContext : SimpleProcessingContext, ISpecializedSharpMeasuresScalarValidationContext
 {
+    public ScalarProcessingData ProcessingData { get; }
+
     public IUnitPopulation UnitPopulation { get; }
-    public IScalarPopulationWithData ScalarPopulation { get; }
+    public IScalarPopulation ScalarPopulation { get; }
     public IVectorPopulation VectorPopulation { get; }
 
-    public SpecializedSharpMeasuresScalarValidationContext(DefinedType type, IUnitPopulation unitPopulation, IScalarPopulationWithData scalarPopulation, IVectorPopulation vectorPopulation) : base(type)
+    public SpecializedSharpMeasuresScalarValidationContext(DefinedType type, ScalarProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation) : base(type)
     {
+        ProcessingData = processingData;
+
         UnitPopulation = unitPopulation;
         ScalarPopulation = scalarPopulation;
         VectorPopulation = vectorPopulation;

@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class SharpMeasuresVectorProperty<TPropertyType> : AttributeProperty<RawSharpMeasuresVectorDefinition, SharpMeasuresVectorLocations, TPropertyType>
+internal record class SharpMeasuresVectorProperty<TPropertyType> : AttributeProperty<SymbolicSharpMeasuresVectorDefinition, SharpMeasuresVectorLocations, TPropertyType>
 {
     public SharpMeasuresVectorProperty(string name, string parameterName, DTypeSetter setter, DSingleLocationSetter locator) : base(name, parameterName, setter, locator) { }
     public SharpMeasuresVectorProperty(string name, DTypeSetter setter, DSingleLocationSetter locator) : base(name, setter, locator) { }

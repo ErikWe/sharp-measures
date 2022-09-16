@@ -17,7 +17,6 @@ internal record class VectorSpecializationType : AVectorType<SpecializedSharpMea
     IVectorSpecialization IVectorSpecializationType.Definition => Definition;
 
     public VectorSpecializationType(DefinedType type, MinimalLocation typeLocation, SpecializedSharpMeasuresVectorDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
-        IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInclusions,
-        IReadOnlyList<ExcludeUnitsDefinition> unitExclusions)
-        : base(type, typeLocation, definition, derivations, constants, conversions, unitInclusions, unitExclusions) { }
+        IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
+        : base(type, typeLocation, definition, derivations, constants, conversions, unitInstanceInclusions, unitInstanceExclusions) { }
 }

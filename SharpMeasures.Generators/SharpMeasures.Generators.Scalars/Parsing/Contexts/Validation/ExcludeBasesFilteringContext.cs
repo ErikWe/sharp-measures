@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.Contexts.Validation;
 
-using SharpMeasures.Generators.Scalars.Parsing.ExcludeBases;
+using SharpMeasures.Generators.Scalars.Parsing.ExcludeUnitBases;
 using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 internal static class SharpMeasuresVectorGroupProperties
 {
-    public static IReadOnlyList<IAttributeProperty<RawSharpMeasuresVectorGroupDefinition>> AllProperties => new IAttributeProperty<RawSharpMeasuresVectorGroupDefinition>[]
+    public static IReadOnlyList<IAttributeProperty<SymbolicSharpMeasuresVectorGroupDefinition>> AllProperties => new IAttributeProperty<SymbolicSharpMeasuresVectorGroupDefinition>[]
     {
         Unit,
         Scalar,
@@ -23,14 +23,14 @@ internal static class SharpMeasuresVectorGroupProperties
     private static SharpMeasuresVectorGroupProperty<INamedTypeSymbol> Unit { get; } = new
     (
         name: nameof(SharpMeasuresVectorGroupAttribute.Unit),
-        setter: static (definition, unit) => definition with { Unit = unit.AsNamedType() },
+        setter: static (definition, unit) => definition with { Unit = unit },
         locator: static (locations, unitLocation) => locations with { Unit = unitLocation }
     );
 
     private static SharpMeasuresVectorGroupProperty<INamedTypeSymbol> Scalar { get; } = new
     (
         name: nameof(SharpMeasuresVectorGroupAttribute.Scalar),
-        setter: static (definition, scalar) => definition with { Scalar = scalar.AsNamedType() },
+        setter: static (definition, scalar) => definition with { Scalar = scalar },
         locator: static (locations, scalarLocation) => locations with { Scalar = scalarLocation }
     );
 
@@ -51,7 +51,7 @@ internal static class SharpMeasuresVectorGroupProperties
     private static SharpMeasuresVectorGroupProperty<INamedTypeSymbol> Difference { get; } = new
     (
         name: nameof(SharpMeasuresVectorGroupAttribute.Difference),
-        setter: static (definition, difference) => definition with { Difference = difference.AsNamedType() },
+        setter: static (definition, difference) => definition with { Difference = difference },
         locator: static (locations, differenceLocation) => locations with { Difference = differenceLocation }
     );
 

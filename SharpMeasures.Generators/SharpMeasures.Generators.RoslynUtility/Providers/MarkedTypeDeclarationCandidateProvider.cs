@@ -147,8 +147,7 @@ public static class MarkedTypeDeclarationCandidateProvider
                 transform: candidateTypeDeclarationElseNull
             ).Select(ApplyOutputTransform);
 
-            OutputData? candidateTypeDeclarationElseNull(GeneratorSyntaxContext context, CancellationToken token)
-                => CandidateTypeDeclarationElseNull(attributeStrategy, context, token);
+            OutputData? candidateTypeDeclarationElseNull(GeneratorSyntaxContext context, CancellationToken token) => CandidateTypeDeclarationElseNull(attributeStrategy, context, token);
         }
 
         private Optional<TOut> ApplyOutputTransform(OutputData? result, CancellationToken _)

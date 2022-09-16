@@ -12,7 +12,6 @@ using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Contexts.Validation;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Validation;
@@ -27,25 +26,25 @@ using System.Threading;
 internal static class GroupMemberValidator
 {
     public static IncrementalValuesProvider<Optional<GroupMemberType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<GroupMemberType>> vectorProvider,
-       IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
-       IncrementalValueProvider<IVectorPopulationWithData> vectorPopulationProvider)
+       IncrementalValueProvider<VectorProcessingData> processingDataProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
+       IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
-        return vectorProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
+        return vectorProvider.Combine(processingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
 
-    private static IOptionalWithDiagnostics<GroupMemberType> Validate((Optional<GroupMemberType> UnvalidatedVector, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken token)
+    private static IOptionalWithDiagnostics<GroupMemberType> Validate((Optional<GroupMemberType> UnvalidatedVector, VectorProcessingData ProcessingData, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
     {
         if (token.IsCancellationRequested || input.UnvalidatedVector.HasValue is false)
         {
             return OptionalWithDiagnostics.Empty<GroupMemberType>();
         }
 
-        return Validate(input.UnvalidatedVector.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        return Validate(input.UnvalidatedVector.Value, input.ProcessingData, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
     }
 
-    private static IOptionalWithDiagnostics<GroupMemberType> Validate(GroupMemberType vectorType, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulationWithData vectorPopulation)
+    private static IOptionalWithDiagnostics<GroupMemberType> Validate(GroupMemberType vectorType, VectorProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        var vector = ValidateVector(vectorType, unitPopulation, scalarPopulation, vectorPopulation);
+        var vector = ValidateVector(vectorType, processingData, unitPopulation, scalarPopulation, vectorPopulation);
 
         if (vector.LacksResult)
         {
@@ -78,9 +77,9 @@ internal static class GroupMemberValidator
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static IOptionalWithDiagnostics<SharpMeasuresVectorGroupMemberDefinition> ValidateVector(GroupMemberType vectorType, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulationWithData vectorPopulation)
+    private static IOptionalWithDiagnostics<SharpMeasuresVectorGroupMemberDefinition> ValidateVector(GroupMemberType vectorType, VectorProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        var validationContext = new SharpMeasuresVectorGroupMemberValidationContext(vectorType.Type, unitPopulation, scalarPopulation, vectorPopulation);
+        var validationContext = new SharpMeasuresVectorGroupMemberValidationContext(vectorType.Type, processingData, unitPopulation, scalarPopulation, vectorPopulation);
 
         return ValidityFilter.Create(SharpMeasuresVectorGroupMemberValidator).Validate(validationContext, vectorType.Definition).Transform(vectorType.Definition);
     }
@@ -122,14 +121,14 @@ internal static class GroupMemberValidator
     {
         var filteringContext = new IncludeUnitsFilteringContext(vectorType.Type, unit, inheritedUnits);
 
-        return ProcessingFilter.Create(IncludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInclusions);
+        return ProcessingFilter.Create(IncludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInstanceInclusions);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ValidateExcludeUnitInstances(GroupMemberType vectorType, IUnitType unit, HashSet<string> inheritedUnits)
     {
         var filteringContext = new ExcludeUnitsFilteringContext(vectorType.Type, unit, inheritedUnits);
 
-        return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, vectorType.UnitExclusions);
+        return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInstanceExclusions);
     }
 
     private static IEnumerable<T> CollectInheritedItems<T>(GroupMemberType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupMemberType, IEnumerable<T>> memberItemsDelegate, Func<IVectorGroupType, IEnumerable<T>> groupItemsDelegate,
