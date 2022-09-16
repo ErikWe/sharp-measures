@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
 using System;
 using System.Collections.Generic;
@@ -13,13 +12,12 @@ using System.Threading;
 
 internal static class GroupMemberResolver
 {
-    public static IncrementalValuesProvider<Optional<ResolvedVectorType>> Resolve(IncrementalValuesProvider<Optional<GroupMemberType>> vectorProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
-        IncrementalValueProvider<IVectorPopulationWithData> vectorPopulationProvider)
+    public static IncrementalValuesProvider<Optional<ResolvedVectorType>> Resolve(IncrementalValuesProvider<Optional<GroupMemberType>> vectorProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
         return vectorProvider.Combine(unitPopulationProvider, vectorPopulationProvider).Select(Resolve);
     }
 
-    private static Optional<ResolvedVectorType> Resolve((Optional<GroupMemberType> UnresolvedVector, IUnitPopulation UnitPopulation, IVectorPopulationWithData VectorPopulation) input, CancellationToken token)
+    private static Optional<ResolvedVectorType> Resolve((Optional<GroupMemberType> UnresolvedVector, IUnitPopulation UnitPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
     {
         if (token.IsCancellationRequested || input.UnresolvedVector.HasValue is false)
         {
@@ -29,10 +27,12 @@ internal static class GroupMemberResolver
         return Resolve(input.UnresolvedVector.Value, input.UnitPopulation, input.VectorPopulation);
     }
 
-    private static ResolvedVectorType Resolve(GroupMemberType vectorType, IUnitPopulation unitPopulation, IVectorPopulationWithData vectorPopulation)
+    private static Optional<ResolvedVectorType> Resolve(GroupMemberType vectorType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
     {
-        var vectorGroupBase = vectorPopulation.GroupBases[vectorType.Definition.VectorGroup];
-        var unit = unitPopulation.Units[vectorGroupBase.Definition.Unit];
+        if (vectorPopulation.GroupBases.TryGetValue(vectorType.Definition.VectorGroup, out var groupBase) is false || unitPopulation.Units.TryGetValue(groupBase.Definition.Unit, out var unit) is false)
+        {
+            return new Optional<ResolvedVectorType>();
+        }
 
         var definedDerivations = vectorType.Derivations;
         var inheritedDerivations = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Derivations,
@@ -56,7 +56,7 @@ internal static class GroupMemberResolver
 
         var generateDocumentation = RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => vector.Definition.GenerateDocumentation, static (vector) => vector.Definition.GenerateDocumentation);
 
-        return new(vectorType.Type, vectorType.TypeLocation, vectorType.Definition.Dimension, unit.Type.AsNamedType(), scalar, implementSum!.Value, implementDifference!.Value,
+        return new ResolvedVectorType(vectorType.Type, vectorType.TypeLocation, vectorType.Definition.Dimension, unit.Type.AsNamedType(), scalar, implementSum!.Value, implementDifference!.Value,
             difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definedDerivations, inheritedDerivations, constants, conversions, includedUnitInstances, generateDocumentation);
     }
 

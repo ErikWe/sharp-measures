@@ -30,5 +30,5 @@ internal record class SymbolicSharpMeasuresVectorGroupMemberDefinition : ARawAtt
 
     private SymbolicSharpMeasuresVectorGroupMemberDefinition(SharpMeasuresVectorGroupMemberLocations locations) : base(locations) { }
 
-    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName) => new[] { VectorGroup }.Where((symbol) => symbol is not null && symbol.ContainingAssembly.Name != localAssemblyName).Select(static (symbol) => symbol!);
+    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName, bool alreadyInForeignAssembly) => new[] { VectorGroup }.Where((symbol) => symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName)).Select(static (symbol) => symbol!);
 }

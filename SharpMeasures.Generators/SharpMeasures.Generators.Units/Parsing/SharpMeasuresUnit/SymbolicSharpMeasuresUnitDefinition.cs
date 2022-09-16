@@ -19,5 +19,5 @@ internal record class SymbolicSharpMeasuresUnitDefinition : ARawSharpMeasuresObj
 
     private SymbolicSharpMeasuresUnitDefinition(SharpMeasuresUnitLocations locations) : base(locations) { }
 
-    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName) => new[] { Quantity }.Where((symbol) => symbol is not null && symbol.ContainingAssembly.Name != localAssemblyName).Select(static (symbol) => symbol!);
+    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName, bool alreadyInForeignAssembly) => new[] { Quantity }.Where((symbol) => symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName)).Select(static (symbol) => symbol!);
 }

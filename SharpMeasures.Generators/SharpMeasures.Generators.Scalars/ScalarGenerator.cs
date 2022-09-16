@@ -19,31 +19,27 @@ using System.Threading;
 public interface IScalarGenerator
 {
     public abstract void Generate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
-        IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider,
-        IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider);
+        IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider,
+        IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider);
 }
 
 internal class ScalarGenerator : IScalarGenerator
 {
-    private IncrementalValueProvider<IResolvedScalarPopulation> ScalarPopulationProvider { get; }
-
     private IncrementalValuesProvider<Optional<ResolvedScalarType>> ScalarBaseProvider { get; }
     private IncrementalValuesProvider<Optional<ResolvedScalarType>> ScalarSpecializationProvider { get; }
 
-    internal ScalarGenerator(IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider, IncrementalValuesProvider<Optional<ResolvedScalarType>> scalarBaseProvider,
-        IncrementalValuesProvider<Optional<ResolvedScalarType>> scalarSpecializationProvider)
+    internal ScalarGenerator(IncrementalValuesProvider<Optional<ResolvedScalarType>> scalarBaseProvider, IncrementalValuesProvider<Optional<ResolvedScalarType>> scalarSpecializationProvider)
     {
-        ScalarPopulationProvider = scalarPopulationProvider;
-
         ScalarBaseProvider = scalarBaseProvider;
         ScalarSpecializationProvider = scalarSpecializationProvider;
     }
 
-    public void Generate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider,
+    public void Generate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
+        IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider,
         IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
     {
-        Generate(context, ScalarBaseProvider, unitPopulationProvider, ScalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
-        Generate(context, ScalarSpecializationProvider, unitPopulationProvider, ScalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
+        Generate(context, ScalarBaseProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
+        Generate(context, ScalarSpecializationProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
     }
 
     private static void Generate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<ResolvedScalarType>> scalars,

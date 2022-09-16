@@ -29,13 +29,13 @@ internal record class SymbolicDerivableUnitDefinition : ARawAttributeDefinition<
 
     private SymbolicDerivableUnitDefinition(DerivableUnitLocations locations) : base(locations) { }
 
-    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName)
+    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName, bool alreadyInForeignAssembly)
     {
         if (Signature is null)
         {
             return Array.Empty<INamedTypeSymbol>();
         }
 
-        return Signature.Where((symbol) => symbol is not null && symbol.ContainingAssembly.Name != localAssemblyName).Select(static (symbol) => symbol!);
+        return Signature.Where((symbol) => symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName)).Select(static (symbol) => symbol!);
     }
 }

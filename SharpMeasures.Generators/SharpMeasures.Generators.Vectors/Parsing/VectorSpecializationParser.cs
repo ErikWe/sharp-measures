@@ -29,7 +29,7 @@ internal class VectorSpecializationParser : AVectorParser<RawSpecializedSharpMea
         }
 
         var rawVector = RawSpecializedSharpMeasuresVectorDefinition.FromSymbolic(symbolicVector);
-        var foreignSymbols = symbolicVector.ForeignSymbols(typeSymbol.ContainingAssembly.Name);
+        var foreignSymbols = symbolicVector.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false);
 
         return (rawVector, foreignSymbols);
     }

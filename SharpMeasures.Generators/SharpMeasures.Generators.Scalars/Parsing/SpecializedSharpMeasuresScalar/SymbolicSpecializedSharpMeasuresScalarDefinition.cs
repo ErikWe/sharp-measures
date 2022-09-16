@@ -40,5 +40,5 @@ internal record class SymbolicSpecializedSharpMeasuresScalarDefinition : ARawAtt
 
     private SymbolicSpecializedSharpMeasuresScalarDefinition(SpecializedSharpMeasuresScalarLocations locations) : base(locations) { }
 
-    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName) => new[] { OriginalQuantity, Vector, Difference, Reciprocal, Square, Cube, SquareRoot, CubeRoot }.Where((symbol) => symbol is not null && symbol.ContainingAssembly.Name != localAssemblyName).Select(static (symbol) => symbol!);
+    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName, bool alreadyInForeignAssembly) => new[] { OriginalQuantity, Vector, Difference, Reciprocal, Square, Cube, SquareRoot, CubeRoot }.Where((symbol) => symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName)).Select(static (symbol) => symbol!);
 }

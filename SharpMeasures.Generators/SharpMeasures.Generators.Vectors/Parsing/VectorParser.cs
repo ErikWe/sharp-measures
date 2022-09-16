@@ -3,7 +3,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Providers;
 using SharpMeasures.Generators.Providers.DeclarationFilter;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics;
@@ -15,7 +14,7 @@ using System.Threading;
 
 public static class VectorParser
 {
-    public static (IVectorProcesser Processer, IncrementalValueProvider<ImmutableArray<ForeignSymbolCollection>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context)
+    public static (IVectorProcesser Processer, IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context)
     {
         var groupBaseSymbols = AttachSymbolProvider<SharpMeasuresVectorGroupAttribute>(context, VectorGroupDeclarationFilters<SharpMeasuresVectorGroupAttribute>());
         var groupSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresVectorGroupAttribute>(context, VectorGroupDeclarationFilters<SpecializedSharpMeasuresVectorGroupAttribute>());
@@ -54,7 +53,7 @@ public static class VectorParser
 
         VectorProcesser processer = new(groupBases, groupSpecializations, groupMembers, vectorBases, vectorSpecializations);
 
-        var foreignSymbols = groupBaseForeignSymbols.Concat(groupSpecializationForeignSymbols).Concat(groupMemberForeignSymbols).Concat(vectorBaseForeignSymbols).Concat(vectorSpecializationForeignSymbols);
+        var foreignSymbols = groupBaseForeignSymbols.Concat(groupSpecializationForeignSymbols).Concat(groupMemberForeignSymbols).Concat(vectorBaseForeignSymbols).Concat(vectorSpecializationForeignSymbols).Expand();
 
         return (processer, foreignSymbols);
     }
@@ -67,17 +66,17 @@ public static class VectorParser
         return DeclarationSymbolProvider.Construct<TypeDeclarationSyntax>().Attach(filteredDeclarations, context.CompilationProvider);
     }
 
-    private static Optional<RawGroupBaseType> ExtractGroup((Optional<RawGroupBaseType> Definition, ForeignSymbolCollection ForeignSymbols) input, CancellationToken _) => input.Definition;
-    private static Optional<RawGroupSpecializationType> ExtractGroup((Optional<RawGroupSpecializationType> Definition, ForeignSymbolCollection ForeignSymbols) input, CancellationToken _) => input.Definition;
-    private static Optional<RawGroupMemberType> ExtractVector((Optional<RawGroupMemberType> Definition, ForeignSymbolCollection ForeignSymbols) input, CancellationToken _) => input.Definition;
-    private static Optional<RawVectorBaseType> ExtractVector((Optional<RawVectorBaseType> Definition, ForeignSymbolCollection ForeignSymbols) input, CancellationToken _) => input.Definition;
-    private static Optional<RawVectorSpecializationType> ExtractVector((Optional<RawVectorSpecializationType> Definition, ForeignSymbolCollection ForeignSymbols) input, CancellationToken _) => input.Definition;
+    private static Optional<RawGroupBaseType> ExtractGroup((Optional<RawGroupBaseType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
+    private static Optional<RawGroupSpecializationType> ExtractGroup((Optional<RawGroupSpecializationType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
+    private static Optional<RawGroupMemberType> ExtractVector((Optional<RawGroupMemberType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
+    private static Optional<RawVectorBaseType> ExtractVector((Optional<RawVectorBaseType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
+    private static Optional<RawVectorSpecializationType> ExtractVector((Optional<RawVectorSpecializationType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
 
-    private static ForeignSymbolCollection ExtractForeignSymbols((Optional<RawGroupBaseType> Definition, ForeignSymbolCollection ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
-    private static ForeignSymbolCollection ExtractForeignSymbols((Optional<RawGroupSpecializationType> Definition, ForeignSymbolCollection ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
-    private static ForeignSymbolCollection ExtractForeignSymbols((Optional<RawGroupMemberType> Definition, ForeignSymbolCollection ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
-    private static ForeignSymbolCollection ExtractForeignSymbols((Optional<RawVectorBaseType> Definition, ForeignSymbolCollection ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
-    private static ForeignSymbolCollection ExtractForeignSymbols((Optional<RawVectorSpecializationType> Definition, ForeignSymbolCollection ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawGroupBaseType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawGroupSpecializationType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawGroupMemberType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawVectorBaseType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawVectorSpecializationType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
 
     private static IEnumerable<IDeclarationFilter> VectorGroupDeclarationFilters<TAttribute>() => new IDeclarationFilter[]
     {

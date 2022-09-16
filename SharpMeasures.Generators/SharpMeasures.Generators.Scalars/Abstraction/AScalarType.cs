@@ -55,8 +55,8 @@ internal record class AScalarType<TDefinition> : IScalarType
     IReadOnlyList<IScalarConstant> IScalarType.Constants => Constants; 
     IReadOnlyList<IConvertibleQuantity> IQuantityType.Conversions => Conversions;
 
-    IReadOnlyList<IUnitInstanceInclusionList> IScalarType.UnitInstanceBaseInclusions => UnitBaseInstanceInclusions;
-    IReadOnlyList<IUnitInstanceList> IScalarType.UnitInstanceBaseExclusions => UnitBaseInstanceExclusions;
+    IReadOnlyList<IUnitInstanceInclusionList> IScalarType.UnitBaseInstanceInclusions => UnitBaseInstanceInclusions;
+    IReadOnlyList<IUnitInstanceList> IScalarType.UnitBaseInstanceExclusions => UnitBaseInstanceExclusions;
 
     IReadOnlyList<IUnitInstanceInclusionList> IQuantityType.UnitInstanceInclusions => UnitInstanceInclusions;
     IReadOnlyList<IUnitInstanceList> IQuantityType.UnitInstanceExclusions => UnitInstanceExclusions;

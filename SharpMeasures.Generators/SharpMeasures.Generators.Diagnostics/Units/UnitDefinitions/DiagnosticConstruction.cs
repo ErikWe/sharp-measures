@@ -56,7 +56,7 @@ public static partial class DiagnosticConstruction
 
     public static Diagnostic NullUnrecognizedUnitInstanceNameUnknownType(Location? location)
     {
-        return Diagnostic.Create(DiagnosticRules.NullUnrecognizedUnitInstnaceNameUnknownType, location);
+        return Diagnostic.Create(DiagnosticRules.NullUnrecognizedUnitInstanceNameUnknownType, location);
     }
 
     public static Diagnostic CyclicallyModifiedUnitInstances(Location? location, string unitName, string unitTypeName)

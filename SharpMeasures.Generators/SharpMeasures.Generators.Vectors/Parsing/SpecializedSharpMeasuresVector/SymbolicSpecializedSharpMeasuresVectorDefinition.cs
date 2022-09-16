@@ -33,5 +33,5 @@ internal record class SymbolicSpecializedSharpMeasuresVectorDefinition : ARawAtt
 
     private SymbolicSpecializedSharpMeasuresVectorDefinition(SpecializedSharpMeasuresVectorLocations locations) : base(locations) { }
 
-    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName) => new[] { OriginalQuantity, Scalar, Difference }.Where((symbol) => symbol is not null && symbol.ContainingAssembly.Name != localAssemblyName).Select(static (symbol) => symbol!);
+    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName, bool alreadyInForeignAssembly) => new[] { OriginalQuantity, Scalar, Difference }.Where((symbol) => symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName)).Select(static (symbol) => symbol!);
 }

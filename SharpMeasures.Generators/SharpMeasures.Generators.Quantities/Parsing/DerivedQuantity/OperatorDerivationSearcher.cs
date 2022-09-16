@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class OperatorDerivationSearcher
 {
-    public static IReadOnlyList<IOperatorDerivation> GetDerivations(NamedType quantity, IDerivedQuantity derivation)
+    public static IReadOnlyList<OperatorDerivation> GetDerivations(NamedType quantity, IDerivedQuantity derivation)
     {
         var searcher = new OperatorDerivationSearcher(quantity, derivation);
 
@@ -30,20 +30,14 @@ public class OperatorDerivationSearcher
         }
 
         OriginalOperatorType = GetOperatorType(derivation.Expression);
-
-        if (Derivation.OperatorImplementation is DerivationOperatorImplementation.Exact)
-        {
-            return;
-        }
-
         OppositeOperatorType = GetOppositeOperatorType(OriginalOperatorType);
     }
 
-    private IReadOnlyList<IOperatorDerivation> GetDerivations()
+    private IReadOnlyList<OperatorDerivation> GetDerivations()
     {
         if (Derivation.OperatorImplementation is DerivationOperatorImplementation.None)
         {
-            return Array.Empty<IOperatorDerivation>();
+            return Array.Empty<OperatorDerivation>();
         }
 
         if (Derivation.Signature.Count is 1)
@@ -54,59 +48,45 @@ public class OperatorDerivationSearcher
         return GetDoubleQuantityDerivations();
     }
 
-    private IReadOnlyList<IOperatorDerivation> GetSingleQuantityDerivations()
+    private IReadOnlyList<OperatorDerivation> GetSingleQuantityDerivations()
     {
-        List<IOperatorDerivation> derivations = new(Derivation.OperatorImplementation is DerivationOperatorImplementation.Exact ? 1 : 4);
+        List<OperatorDerivation> derivations = new(3);
 
         NamedType pureScalar = new("Scalar", "SharpMeasures", "SharpMeasures.Base", true);
 
-        derivations.Add(new OperatorDerivation(Quantity, OperatorType.Division, pureScalar, Derivation.Signature[0]));
-
-        if (Derivation.OperatorImplementation is DerivationOperatorImplementation.Exact)
+        if (Derivation.OperatorImplementation is DerivationOperatorImplementation.All or DerivationOperatorImplementation.LeftHandSide or DerivationOperatorImplementation.Suitable)
         {
-            return derivations;
+            derivations.Add(new OperatorDerivation(pureScalar, OperatorType.Multiplication, Quantity, Derivation.Signature[0]));
         }
 
-        derivations.Add(new OperatorDerivation(pureScalar, OppositeOperatorType, Quantity, Derivation.Signature[0]));
-        derivations.Add(new OperatorDerivation(pureScalar, OppositeOperatorType, Derivation.Signature[0], Quantity));
-        derivations.Add(new OperatorDerivation(Derivation.Signature[0], OriginalOperatorType, pureScalar, Quantity));
+        if (Derivation.OperatorImplementation is DerivationOperatorImplementation.All or DerivationOperatorImplementation.RightHandSide
+            || Derivation.OperatorImplementation is DerivationOperatorImplementation.Suitable && Derivation.Signature[0].Assembly != Quantity.Assembly)
+        {
+            derivations.Add(new OperatorDerivation(pureScalar, OperatorType.Multiplication, Derivation.Signature[0], Quantity));
+        }
+
+        derivations.Add(new OperatorDerivation(Derivation.Signature[0], OperatorType.Division, pureScalar, Quantity));
 
         return derivations;
     }
 
-    private IReadOnlyList<IOperatorDerivation> GetDoubleQuantityDerivations()
+    private IReadOnlyList<OperatorDerivation> GetDoubleQuantityDerivations()
     {
         bool orderedExpression = Derivation.Expression.IndexOf("0", StringComparison.InvariantCulture) < Derivation.Expression.IndexOf("1", StringComparison.InvariantCulture);
 
-        List<IOperatorDerivation> derivations = new(Derivation.OperatorImplementation is DerivationOperatorImplementation.Exact ? 1 : 4);
-
-        if (orderedExpression)
-        {
-            derivations.Add(new OperatorDerivation(Quantity, OriginalOperatorType, Derivation.Signature[0], Derivation.Signature[1]));
-        }
-        else
-        {
-            derivations.Add(new OperatorDerivation(Quantity, OriginalOperatorType, Derivation.Signature[1], Derivation.Signature[0]));
-        }
-
-        if (Derivation.OperatorImplementation is DerivationOperatorImplementation.Exact)
-        {
-            return derivations;
-        }
+        List<OperatorDerivation> derivations = new(3);
 
         if (OriginalOperatorType is OperatorType.Addition or OperatorType.Multiplication)
         {
-            if (orderedExpression)
+            if (Derivation.OperatorImplementation is DerivationOperatorImplementation.All or DerivationOperatorImplementation.LeftHandSide or DerivationOperatorImplementation.Suitable)
             {
-                derivations.Add(new OperatorDerivation(Quantity, OriginalOperatorType, Derivation.Signature[1], Derivation.Signature[0]));
                 derivations.Add(new OperatorDerivation(Derivation.Signature[0], OppositeOperatorType, Quantity, Derivation.Signature[1]));
-                derivations.Add(new OperatorDerivation(Derivation.Signature[1], OppositeOperatorType, Quantity, Derivation.Signature[0]));
             }
-            else
+
+            if (Derivation.OperatorImplementation is DerivationOperatorImplementation.All or DerivationOperatorImplementation.RightHandSide
+                || Derivation.OperatorImplementation is DerivationOperatorImplementation.Suitable && Derivation.Signature[0].Assembly != Quantity.Assembly)
             {
-                derivations.Add(new OperatorDerivation(Quantity, OriginalOperatorType, Derivation.Signature[0], Derivation.Signature[1]));
                 derivations.Add(new OperatorDerivation(Derivation.Signature[1], OppositeOperatorType, Quantity, Derivation.Signature[0]));
-                derivations.Add(new OperatorDerivation(Derivation.Signature[0], OppositeOperatorType, Quantity, Derivation.Signature[1]));
             }
         }
 
@@ -114,15 +94,41 @@ public class OperatorDerivationSearcher
         {
             if (orderedExpression)
             {
-                derivations.Add(new OperatorDerivation(Derivation.Signature[0], OppositeOperatorType, Quantity, Derivation.Signature[1]));
-                derivations.Add(new OperatorDerivation(Derivation.Signature[0], OppositeOperatorType, Derivation.Signature[1], Quantity));
-                derivations.Add(new OperatorDerivation(Derivation.Signature[1], OriginalOperatorType, Derivation.Signature[0], Quantity));
+                if (Derivation.OperatorImplementation is DerivationOperatorImplementation.All or DerivationOperatorImplementation.LeftHandSide or DerivationOperatorImplementation.Suitable)
+                {
+                    derivations.Add(new OperatorDerivation(Derivation.Signature[0], OppositeOperatorType, Quantity, Derivation.Signature[1]));
+                }
+
+                if (Derivation.OperatorImplementation is DerivationOperatorImplementation.All or DerivationOperatorImplementation.RightHandSide
+                    || Derivation.OperatorImplementation is DerivationOperatorImplementation.Suitable && Derivation.Signature[1].Assembly != Quantity.Assembly)
+                {
+                    derivations.Add(new OperatorDerivation(Derivation.Signature[0], OppositeOperatorType, Derivation.Signature[1], Quantity));
+                }
+
+                if (Derivation.OperatorImplementation is DerivationOperatorImplementation.All or DerivationOperatorImplementation.RightHandSide
+                    || Derivation.OperatorImplementation is DerivationOperatorImplementation.Suitable && Derivation.Signature[0].Assembly != Quantity.Assembly)
+                {
+                    derivations.Add(new OperatorDerivation(Derivation.Signature[1], OriginalOperatorType, Derivation.Signature[0], Quantity));
+                }
             }
             else
             {
-                derivations.Add(new OperatorDerivation(Derivation.Signature[1], OppositeOperatorType, Quantity, Derivation.Signature[0]));
-                derivations.Add(new OperatorDerivation(Derivation.Signature[1], OppositeOperatorType, Derivation.Signature[0], Quantity));
-                derivations.Add(new OperatorDerivation(Derivation.Signature[0], OriginalOperatorType, Derivation.Signature[1], Quantity));
+                if (Derivation.OperatorImplementation is DerivationOperatorImplementation.All or DerivationOperatorImplementation.LeftHandSide or DerivationOperatorImplementation.Suitable)
+                {
+                    derivations.Add(new OperatorDerivation(Derivation.Signature[1], OppositeOperatorType, Quantity, Derivation.Signature[0]));
+                }
+
+                if (Derivation.OperatorImplementation is DerivationOperatorImplementation.All or DerivationOperatorImplementation.RightHandSide
+                    || Derivation.OperatorImplementation is DerivationOperatorImplementation.Suitable && Derivation.Signature[0].Assembly != Quantity.Assembly)
+                {
+                    derivations.Add(new OperatorDerivation(Derivation.Signature[1], OppositeOperatorType, Derivation.Signature[0], Quantity));
+                }
+
+                if (Derivation.OperatorImplementation is DerivationOperatorImplementation.All or DerivationOperatorImplementation.RightHandSide
+                    || Derivation.OperatorImplementation is DerivationOperatorImplementation.Suitable && Derivation.Signature[1].Assembly != Quantity.Assembly)
+                {
+                    derivations.Add(new OperatorDerivation(Derivation.Signature[0], OriginalOperatorType, Derivation.Signature[1], Quantity));
+                }
             }
         }
 

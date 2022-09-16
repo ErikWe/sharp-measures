@@ -29,8 +29,10 @@ internal interface ISpecializedSharpMeasuresScalarValidationDiagnostics : IDefau
 
 internal interface ISpecializedSharpMeasuresScalarValidationContext : IProcessingContext
 {
+    public abstract ScalarProcessingData ProcessingData { get; }
+
     public abstract IUnitPopulation UnitPopulation { get; }
-    public abstract IScalarPopulationWithData ScalarPopulation { get; }
+    public abstract IScalarPopulation ScalarPopulation { get; }
     public abstract IVectorPopulation VectorPopulation { get; }
 }
 
@@ -97,14 +99,14 @@ internal class SpecializedSharpMeasuresScalarValidator : IProcesser<ISpecialized
 
     private IValidityWithDiagnostics ValidateTypeNotAlreadyScalarBase(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition)
     {
-        var typeAlreadyScalarBase = context.ScalarPopulation.ScalarSpecializationsAlreadyDefinedAsScalarBases.ContainsKey(context.Type.AsNamedType());
+        var typeAlreadyScalarBase = context.ProcessingData.ScalarSpecializationsAlreadyDefinedAsScalarBases.ContainsKey(context.Type.AsNamedType());
 
         return ValidityWithDiagnostics.Conditional(typeAlreadyScalarBase is false, () => Diagnostics.TypeAlreadyScalarBase(context, definition));
     }
 
     private static IValidityWithDiagnostics ValidateTypeNotDuplicatelyDefined(ISpecializedSharpMeasuresScalarValidationContext context)
     {
-        var typeDuplicatelyDefined = context.ScalarPopulation.DuplicatelyDefinedScalarSpecializations.ContainsKey(context.Type.AsNamedType());
+        var typeDuplicatelyDefined = context.ProcessingData.DuplicatelyDefinedScalarSpecializations.ContainsKey(context.Type.AsNamedType());
 
         return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(typeDuplicatelyDefined is false);
     }

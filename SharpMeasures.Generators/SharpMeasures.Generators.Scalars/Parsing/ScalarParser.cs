@@ -3,7 +3,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Providers;
 using SharpMeasures.Generators.Providers.DeclarationFilter;
 using SharpMeasures.Generators.Scalars.Parsing.Diagnostics;
@@ -15,7 +14,7 @@ using System.Threading;
 
 public static partial class ScalarParser
 {
-    public static (IScalarProcesser Processer, IncrementalValueProvider<ImmutableArray<ForeignSymbolCollection>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context)
+    public static (IScalarProcesser Processer, IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context)
     {
         var scalarBaseSymbols = AttachSymbolProvider<SharpMeasuresScalarAttribute>(context);
         var scalarSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresScalarAttribute>(context);
@@ -32,7 +31,7 @@ public static partial class ScalarParser
         var scalarBaseForeignSymbols = scalarBasesAndForeignSymbols.Select(ExtractForeignSymbols).Collect();
         var scalarSpecializationForeignSymbols = scalarSpecializationsAndForeignSymbols.Select(ExtractForeignSymbols).Collect();
 
-        var foreignSymbols = scalarBaseForeignSymbols.Concat(scalarSpecializationForeignSymbols);
+        var foreignSymbols = scalarBaseForeignSymbols.Concat(scalarSpecializationForeignSymbols).Expand();
 
         ScalarProcesser processer = new(scalarBases, scalarSpecializations);
 
@@ -47,10 +46,10 @@ public static partial class ScalarParser
         return DeclarationSymbolProvider.Construct<TypeDeclarationSyntax>().Attach(filteredDeclarations, context.CompilationProvider);
     }
 
-    private static Optional<RawScalarBaseType> ExtractScalar((Optional<RawScalarBaseType> Definition, ForeignSymbolCollection ForeignSymbols) input, CancellationToken _) => input.Definition;
-    private static Optional<RawScalarSpecializationType> ExtractScalar((Optional<RawScalarSpecializationType> Definition, ForeignSymbolCollection ForeignSymbols) input, CancellationToken _) => input.Definition;
-    private static ForeignSymbolCollection ExtractForeignSymbols((Optional<RawScalarBaseType> Definition, ForeignSymbolCollection ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
-    private static ForeignSymbolCollection ExtractForeignSymbols((Optional<RawScalarSpecializationType> Definition, ForeignSymbolCollection ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
+    private static Optional<RawScalarBaseType> ExtractScalar((Optional<RawScalarBaseType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
+    private static Optional<RawScalarSpecializationType> ExtractScalar((Optional<RawScalarSpecializationType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawScalarBaseType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawScalarSpecializationType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
 
     private static IEnumerable<IDeclarationFilter> DeclarationFilters<TAttribute>() => new IDeclarationFilter[]
     {

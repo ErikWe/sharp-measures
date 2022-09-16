@@ -3,36 +3,36 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
 internal abstract class AVectorParser<TDefinition, TProduct>
 {
-    public (Optional<TProduct> Definition, ForeignSymbolCollection ForeignSymbols) Parse(Optional<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)> input, CancellationToken token)
+    public (Optional<TProduct> Definition, IEnumerable<INamedTypeSymbol> ForeignSymbols) Parse(Optional<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)> input, CancellationToken token)
     {
         if (token.IsCancellationRequested || input.HasValue is false)
         {
-            return (new Optional<TProduct>(), ForeignSymbolCollection.Empty);
+            return (new Optional<TProduct>(), Array.Empty<INamedTypeSymbol>());
         }
 
         return Parse(input.Value.Declaration, input.Value.TypeSymbol);
     }
 
-    private (Optional<TProduct>, ForeignSymbolCollection) Parse(TypeDeclarationSyntax declaration, INamedTypeSymbol typeSymbol)
+    private (Optional<TProduct>, IEnumerable<INamedTypeSymbol>) Parse(TypeDeclarationSyntax declaration, INamedTypeSymbol typeSymbol)
     {
         (var vector, var vectorForeignSymbols) = ParseVector(typeSymbol);
 
         if (vector.HasValue is false)
         {
-            return (new Optional<TProduct>(), ForeignSymbolCollection.Empty);
+            return (new Optional<TProduct>(), Array.Empty<INamedTypeSymbol>());
         }
 
         (var derivations, var derivationForeignSymbols) = CommonParsing.ParseDerivations(typeSymbol);
@@ -43,7 +43,7 @@ internal abstract class AVectorParser<TDefinition, TProduct>
         var excludeUnitInstances = CommonParsing.ParseExcludeUnitInstances(typeSymbol);
 
         TProduct product = ProduceResult(typeSymbol.AsDefinedType(), declaration.Identifier.GetLocation().Minimize(), vector.Value, derivations, constants, conversions, includeUnitInstances, excludeUnitInstances);
-        ForeignSymbolCollection foreignSymbols = new(vectorForeignSymbols.Concat(derivationForeignSymbols).Concat(conversionForeignSymbols).ToList());
+        var foreignSymbols = vectorForeignSymbols.Concat(derivationForeignSymbols).Concat(conversionForeignSymbols);
 
         return (product, foreignSymbols);
     }

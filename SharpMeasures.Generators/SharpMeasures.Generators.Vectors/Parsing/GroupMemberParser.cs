@@ -29,7 +29,7 @@ internal class GroupMemberParser : AVectorParser<RawSharpMeasuresVectorGroupMemb
         }
 
         var rawVector = RawSharpMeasuresVectorGroupMemberDefinition.FromSymbolic(symbolicVector);
-        var foreignSymbols = symbolicVector.ForeignSymbols(typeSymbol.ContainingAssembly.Name);
+        var foreignSymbols = symbolicVector.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false);
 
         return (rawVector, foreignSymbols);
     }

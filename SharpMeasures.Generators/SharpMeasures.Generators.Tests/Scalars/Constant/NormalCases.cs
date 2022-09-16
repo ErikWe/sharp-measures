@@ -2,6 +2,8 @@
 
 using SharpMeasures.Generators.Tests.Verify;
 
+using System.Threading.Tasks;
+
 using VerifyXunit;
 
 using Xunit;
@@ -10,7 +12,7 @@ using Xunit;
 public class NormalCases
 {
     [Fact]
-    public void Assert() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text).VerifyMatchingSourceNames("Length.Units.g.cs");
+    public Task Assert() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text).VerifyMatchingSourceNames("Length.Units.g.cs");
 
     private static string Text => """
         using SharpMeasures.Generators.Scalars;

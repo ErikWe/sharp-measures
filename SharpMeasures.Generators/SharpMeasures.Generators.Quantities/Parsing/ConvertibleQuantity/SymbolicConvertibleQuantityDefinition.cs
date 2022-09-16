@@ -21,13 +21,13 @@ public record class SymbolicConvertibleQuantityDefinition : ARawItemListDefiniti
 
     protected SymbolicConvertibleQuantityDefinition(ConvertibleQuantityLocations locations) : base(locations) { }
 
-    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName)
+    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName, bool alreadyInForeignAssembly)
     {
         if (Quantities is null)
         {
             return Array.Empty<INamedTypeSymbol>();
         }
 
-        return Quantities.Where((symbol) => symbol is not null && symbol.ContainingAssembly.Name != localAssemblyName).Select(static (symbol) => symbol!);
+        return Quantities.Where((symbol) => symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName)).Select(static (symbol) => symbol!);
     }
 }

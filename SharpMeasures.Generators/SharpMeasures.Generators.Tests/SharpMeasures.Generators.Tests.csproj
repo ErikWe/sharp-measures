@@ -44,6 +44,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Verify\Snapshots\Scalars\Constant\" />
       <Folder Include="Verify\Snapshots\Scalars\Derived\" />
     </ItemGroup>
     

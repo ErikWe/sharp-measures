@@ -3,7 +3,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
@@ -12,34 +11,35 @@ using SharpMeasures.Generators.Scalars.Parsing.ExcludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
 internal abstract class AScalarParser<TDefinition, TProduct>
 {
-    public (Optional<TProduct> Definition, ForeignSymbolCollection ForeignSymbols) Parse(Optional<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)> input, CancellationToken token)
+    public (Optional<TProduct> Definition, IEnumerable<INamedTypeSymbol> ForeignSymbols) Parse(Optional<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)> input, CancellationToken token)
     {
         if (token.IsCancellationRequested || input.HasValue is false)
         {
-            return (new Optional<TProduct>(), ForeignSymbolCollection.Empty);
+            return (new Optional<TProduct>(), Array.Empty<INamedTypeSymbol>());
         }
 
         return Parse(input.Value.Declaration, input.Value.TypeSymbol);
     }
 
-    public (Optional<TProduct>, ForeignSymbolCollection) Parse(TypeDeclarationSyntax declaration, INamedTypeSymbol typeSymbol)
+    public (Optional<TProduct>, IEnumerable<INamedTypeSymbol>) Parse(TypeDeclarationSyntax declaration, INamedTypeSymbol typeSymbol)
     {
         (var scalar, var scalarForeignSymbols) = ParseScalar(typeSymbol);
 
         if (scalar.HasValue is false)
         {
-            return (new Optional<TProduct>(), ForeignSymbolCollection.Empty);
+            return (new Optional<TProduct>(), Array.Empty<INamedTypeSymbol>());
         }
 
-        (var derivations, var derivationForeignSymbols) = ParseDerivations(typeSymbol);
+        (var derivations, var derivationsForeignSymbols) = ParseDerivations(typeSymbol);
         var constants = ParseConstants(typeSymbol);
-        (var conversions, var conversionForeignSymbols) = ParseConversions(typeSymbol);
+        (var conversions, var conversionsForeignSymbols) = ParseConversions(typeSymbol);
 
         var includeUnitInstanceBases = ParseIncludeUnitBases(typeSymbol);
         var excludeUnitInstanceBases = ParseExcludeUnitBases(typeSymbol);
@@ -48,7 +48,7 @@ internal abstract class AScalarParser<TDefinition, TProduct>
         var excludeUnitInstances = ParseExcludeUnits(typeSymbol);
 
         TProduct product = ProduceResult(typeSymbol.AsDefinedType(), declaration.Identifier.GetLocation().Minimize(), scalar.Value, derivations, constants, conversions, includeUnitInstanceBases, excludeUnitInstanceBases, includeUnitInstances, excludeUnitInstances);
-        ForeignSymbolCollection foreignSymbols = new(scalarForeignSymbols.Concat(derivationForeignSymbols).Concat(conversionForeignSymbols).ToList());
+        var foreignSymbols = scalarForeignSymbols.Concat(derivationsForeignSymbols).Concat(conversionsForeignSymbols);
 
         return (product, foreignSymbols);
     }
@@ -57,14 +57,14 @@ internal abstract class AScalarParser<TDefinition, TProduct>
         IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitBasesDefinition> baseInclusions,
         IEnumerable<RawExcludeUnitBasesDefinition> baseExclusions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions);
 
-    protected abstract (Optional<TDefinition> Definition, IEnumerable<INamedTypeSymbol> ForeignSymbols)  ParseScalar(INamedTypeSymbol typeSymbol);
+    protected abstract (Optional<TDefinition>, IEnumerable<INamedTypeSymbol>)  ParseScalar(INamedTypeSymbol typeSymbol);
 
-    private static (IEnumerable<RawDerivedQuantityDefinition> Definitions, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseDerivations(INamedTypeSymbol typeSymbol)
+    private static (IEnumerable<RawDerivedQuantityDefinition>, IEnumerable<INamedTypeSymbol>) ParseDerivations(INamedTypeSymbol typeSymbol)
     {
         var symbolicDerivations = DerivedQuantityParser.Parser.ParseAllOccurrences(typeSymbol);
 
         var rawDerivations = symbolicDerivations.Select(static (symbolicDerivation) => RawDerivedQuantityDefinition.FromSymbolic(symbolicDerivation));
-        var foreignSymbols = symbolicDerivations.SelectMany((symbolicDerivation) => symbolicDerivation.ForeignSymbols(typeSymbol.ContainingAssembly.Name));
+        var foreignSymbols = symbolicDerivations.SelectMany((symbolicDerivation) => symbolicDerivation.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false));
 
         return (rawDerivations, foreignSymbols);
     }
@@ -79,7 +79,7 @@ internal abstract class AScalarParser<TDefinition, TProduct>
         var symbolicConversions = ConvertibleQuantityParser.Parser.ParseAllOccurrences(typeSymbol);
 
         var rawConversions = symbolicConversions.Select(static (symbolicConversion) => RawConvertibleQuantityDefinition.FromSymbolic(symbolicConversion));
-        var foreignSymbols = symbolicConversions.SelectMany((symbolicConversion) => symbolicConversion.ForeignSymbols(typeSymbol.ContainingAssembly.Name));
+        var foreignSymbols = symbolicConversions.SelectMany((symbolicConversion) => symbolicConversion.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false));
 
         return (rawConversions, foreignSymbols);
     }

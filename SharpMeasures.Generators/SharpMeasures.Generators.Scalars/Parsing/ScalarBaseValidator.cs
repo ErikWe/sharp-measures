@@ -29,25 +29,25 @@ using System.Threading;
 internal static class ScalarBaseValidator
 {
     public static IncrementalValuesProvider<Optional<ScalarBaseType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<ScalarBaseType>> scalarProvider,
-        IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulationWithData> scalarPopulationProvider,
+        IncrementalValueProvider<ScalarProcessingData> processingDataProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
         IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
-        return scalarProvider.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
+        return scalarProvider.Combine(processingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
 
-    private static IOptionalWithDiagnostics<ScalarBaseType> Validate((Optional<ScalarBaseType> UnvalidatedScalar, IUnitPopulation UnitPopulation, IScalarPopulationWithData ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
+    private static IOptionalWithDiagnostics<ScalarBaseType> Validate((Optional<ScalarBaseType> UnvalidatedScalar, ScalarProcessingData ProcessingData, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
     {
         if (token.IsCancellationRequested || input.UnvalidatedScalar.HasValue is false)
         {
             return OptionalWithDiagnostics.Empty<ScalarBaseType>();
         }
 
-        return Validate(input.UnvalidatedScalar.Value, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        return Validate(input.UnvalidatedScalar.Value, input.ProcessingData, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
     }
 
-    private static IOptionalWithDiagnostics<ScalarBaseType> Validate(ScalarBaseType scalarType, IUnitPopulation unitPopulation, IScalarPopulationWithData scalarPopulation, IVectorPopulation vectorPopulation)
+    private static IOptionalWithDiagnostics<ScalarBaseType> Validate(ScalarBaseType scalarType, ScalarProcessingData proceessingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        var scalar = ValidateScalar(scalarType, unitPopulation, scalarPopulation, vectorPopulation);
+        var scalar = ValidateScalar(scalarType, proceessingData, unitPopulation, scalarPopulation, vectorPopulation);
 
         if (scalar.LacksResult)
         {
@@ -62,20 +62,20 @@ internal static class ScalarBaseValidator
 
         var unitBaseInclusions = ValidateIncludeUnitBaseInstances(scalarType, unitPopulation, includedUnitsInstanceNames);
         var unitBaseExclusions = ValidateExcludeUnitBaseInstances(scalarType, unitPopulation, includedUnitsInstanceNames);
-        var unitInstnaceInclusions = ValidateIncludeUnitInstances(scalarType, unitPopulation, includedUnitsInstanceNames);
+        var unitInstanceInclusions = ValidateIncludeUnitInstances(scalarType, unitPopulation, includedUnitsInstanceNames);
         var unitInstanceExclusions = ValidateExcludeUnitInstances(scalarType, unitPopulation, includedUnitsInstanceNames);
 
         ScalarBaseType product = new(scalarType.Type, scalarType.TypeLocation, scalar.Result, derivations.Result, constants.Result, conversions.Result, unitBaseInclusions.Result,
-            unitBaseExclusions.Result, unitInstnaceInclusions.Result, unitInstanceExclusions.Result);
+            unitBaseExclusions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
 
-        var allDiagnostics = scalar.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitBaseInclusions).Concat(unitBaseExclusions).Concat(unitInstnaceInclusions).Concat(unitInstanceExclusions);
+        var allDiagnostics = scalar.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitBaseInclusions).Concat(unitBaseExclusions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static IOptionalWithDiagnostics<SharpMeasuresScalarDefinition> ValidateScalar(ScalarBaseType scalarType, IUnitPopulation unitPopulation, IScalarPopulationWithData scalarPopulation, IVectorPopulation vectorPopulation)
+    private static IOptionalWithDiagnostics<SharpMeasuresScalarDefinition> ValidateScalar(ScalarBaseType scalarType, ScalarProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        var validationContext = new SharpMeasuresScalarValidationContext(scalarType.Type, unitPopulation, scalarPopulation, vectorPopulation);
+        var validationContext = new SharpMeasuresScalarValidationContext(scalarType.Type, processingData, unitPopulation, scalarPopulation, vectorPopulation);
 
         return ProcessingFilter.Create(SharpMeasuresScalarValidator).Filter(validationContext, scalarType.Definition);
     }

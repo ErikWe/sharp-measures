@@ -7,7 +7,6 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
-using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 
 using System.Linq;
 
@@ -27,9 +26,11 @@ internal interface ISpecializedSharpMeasuresVectorValidationDiagnostics : IDefau
 
 internal interface ISpecializedSharpMeasuresVectorValidationContext : IProcessingContext
 {
+    public abstract VectorProcessingData ProcessingData { get; }
+
     public abstract IUnitPopulation UnitPopulation { get; }
     public abstract IScalarPopulation ScalarPopulation { get; }
-    public abstract IVectorPopulationWithData VectorPopulation { get; }
+    public abstract IVectorPopulation VectorPopulation { get; }
 }
 
 internal class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpecializedSharpMeasuresVectorValidationContext, SpecializedSharpMeasuresVectorDefinition, SpecializedSharpMeasuresVectorDefinition>
@@ -95,14 +96,14 @@ internal class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpecialized
 
     private IValidityWithDiagnostics ValidateTypeNotAlreadyVectorBase(ISpecializedSharpMeasuresVectorValidationContext context, SpecializedSharpMeasuresVectorDefinition definition)
     {
-        var typeAlreadyVectorBase = context.VectorPopulation.VectorSpecializationsAlreadyDefinedAsVectorBases.ContainsKey(context.Type.AsNamedType());
+        var typeAlreadyVectorBase = context.ProcessingData.VectorSpecializationsAlreadyDefinedAsVectorBases.ContainsKey(context.Type.AsNamedType());
 
         return ValidityWithDiagnostics.Conditional(typeAlreadyVectorBase is false, () => Diagnostics.TypeAlreadyVectorBase(context, definition));
     }
 
     private static IValidityWithDiagnostics ValidateTypeNotDuplicatelyDefined(ISpecializedSharpMeasuresVectorValidationContext context)
     {
-        var typeDuplicatelyDefined = context.VectorPopulation.DuplicatelyDefinedVectorSpecializations.ContainsKey(context.Type.AsNamedType());
+        var typeDuplicatelyDefined = context.ProcessingData.DuplicatelyDefinedVectorSpecializations.ContainsKey(context.Type.AsNamedType());
 
         return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(typeDuplicatelyDefined is false);
     }

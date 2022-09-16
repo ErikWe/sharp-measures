@@ -22,7 +22,7 @@ public record class RawDerivedQuantityDefinition : ARawAttributeDefinition<RawDe
         init => signature = value.AsReadOnlyEquatable();
     }
 
-    public DerivationOperatorImplementation OperatorImplementation { get; init; } = DerivationOperatorImplementation.AlgebraicallyEquivalent;
+    public DerivationOperatorImplementation OperatorImplementation { get; init; } = DerivationOperatorImplementation.Suitable;
 
     public bool Permutations { get; init; }
 

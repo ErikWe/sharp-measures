@@ -72,7 +72,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.Exact)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.All)]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
@@ -83,7 +83,7 @@ public class DerivationOperatorsIncompatibleExpression
     private static GeneratorVerifier AssertScalar(TextConfig config)
     {
         var source = ScalarText(config);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.Exact", prefix: "OperatorImplementation = ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.All", prefix: "OperatorImplementation = ");
 
         return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ScalarIdentical(config));
     }
@@ -99,7 +99,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.Exact)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.All)]
         [SpecializedSharpMeasuresScalar(typeof(Length2))]
         public partial class Length { }
 
@@ -113,7 +113,7 @@ public class DerivationOperatorsIncompatibleExpression
     private static GeneratorVerifier AssertSpecializedScalar(TextConfig config)
     {
         var source = SpecializedScalarText(config);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.Exact", prefix: "OperatorImplementation = ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.All", prefix: "OperatorImplementation = ");
 
         return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical(config));
     }
@@ -130,7 +130,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.Exact)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.All)]
         [SharpMeasuresVector(typeof(UnitOfLength))]
         public partial class Position3 { }
 
@@ -144,7 +144,7 @@ public class DerivationOperatorsIncompatibleExpression
     private static GeneratorVerifier AssertVector(TextConfig config)
     {
         var source = VectorText(config);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.Exact", prefix: "OperatorImplementation = ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.All", prefix: "OperatorImplementation = ");
 
         return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical(config));
     }
@@ -161,7 +161,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.Exact)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.All)]
         [SpecializedSharpMeasuresVector(typeof(Position3))]
         public partial class Displacement3 { }
 
@@ -178,7 +178,7 @@ public class DerivationOperatorsIncompatibleExpression
     private static GeneratorVerifier AssertSpecializedVector(TextConfig config)
     {
         var source = SpecializedVectorText(config);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.Exact", prefix: "OperatorImplementation = ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.All", prefix: "OperatorImplementation = ");
 
         return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical(config));
     }
@@ -195,7 +195,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.Exact)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.All)]
         [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
 
@@ -209,7 +209,7 @@ public class DerivationOperatorsIncompatibleExpression
     private static GeneratorVerifier AssertVectorGroup(TextConfig config)
     {
         var source = VectorGroupText(config);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.Exact", prefix: "OperatorImplementation = ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.All", prefix: "OperatorImplementation = ");
 
         return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupIdentical(config));
     }
@@ -226,7 +226,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.Exact)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.All)]
         [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
         public static partial class Displacement { }
 
@@ -243,7 +243,7 @@ public class DerivationOperatorsIncompatibleExpression
     private static GeneratorVerifier AssertSpecializedVectorGroup(TextConfig config)
     {
         var source = SpecializedVectorGroupText(config);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.Exact", prefix: "OperatorImplementation = ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.All", prefix: "OperatorImplementation = ");
 
         return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorGroupIdentical(config));
     }
@@ -260,7 +260,7 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
-        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.Exact)]
+        [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.All)]
         [SharpMeasuresVectorGroupMember(typeof(Position))]
         public partial class Position3 { }
 
@@ -277,7 +277,7 @@ public class DerivationOperatorsIncompatibleExpression
     private static GeneratorVerifier AssertVectorGroupMember(TextConfig config)
     {
         var source = VectorGroupMemberText(config);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.Exact", prefix: "OperatorImplementation = ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, target: "DerivationOperatorImplementation.All", prefix: "OperatorImplementation = ");
 
         return AssertExactlyDerivationOperatorsIncompatibleExpressionDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical(config));
     }

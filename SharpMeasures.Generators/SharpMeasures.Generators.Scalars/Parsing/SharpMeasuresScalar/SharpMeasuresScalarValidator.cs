@@ -28,8 +28,10 @@ internal interface ISharpMeasuresScalarValidationDiagnostics : IDefaultUnitInsta
 
 internal interface ISharpMeasuresScalarValidationContext : IProcessingContext
 {
+    public abstract ScalarProcessingData ProcessingData { get; }
+
     public abstract IUnitPopulation UnitPopulation { get; }
-    public abstract IScalarPopulationWithData ScalarPopulation { get; }
+    public abstract IScalarPopulation ScalarPopulation { get; }
     public abstract IVectorPopulation VectorPopulation { get; }
 }
 
@@ -93,7 +95,7 @@ internal class SharpMeasuresScalarValidator : IProcesser<ISharpMeasuresScalarVal
 
     private static IValidityWithDiagnostics ValidateTypeNotDuplicatelyDefined(ISharpMeasuresScalarValidationContext context)
     {
-        var typeDuplicatelyDefined = context.ScalarPopulation.DuplicatelyDefinedScalarBases.ContainsKey(context.Type.AsNamedType());
+        var typeDuplicatelyDefined = context.ProcessingData.DuplicatelyDefinedScalarBases.ContainsKey(context.Type.AsNamedType());
 
         return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(typeDuplicatelyDefined is false);
     }

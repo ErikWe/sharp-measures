@@ -8,7 +8,7 @@ using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 
 using System;
 
-internal interface ISharpMeasuresScalarSpecializationProcessingDiagnostics : IDefaultUnitInstanceProcessingDiagnostics
+internal interface ISpecializedSharpMeasuresScalarProcessingDiagnostics : IDefaultUnitInstanceProcessingDiagnostics
 {
     public abstract Diagnostic? NullOriginalScalar(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? NullVector(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
@@ -25,9 +25,9 @@ internal interface ISharpMeasuresScalarSpecializationProcessingDiagnostics : IDe
 
 internal class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProcessingContext, RawSpecializedSharpMeasuresScalarDefinition, SpecializedSharpMeasuresScalarDefinition>
 {
-    private ISharpMeasuresScalarSpecializationProcessingDiagnostics Diagnostics { get; }
+    private ISpecializedSharpMeasuresScalarProcessingDiagnostics Diagnostics { get; }
 
-    public SpecializedSharpMeasuresScalarProcesser(ISharpMeasuresScalarSpecializationProcessingDiagnostics diagnostics)
+    public SpecializedSharpMeasuresScalarProcesser(ISpecializedSharpMeasuresScalarProcessingDiagnostics diagnostics)
     {
         Diagnostics = diagnostics;
     }

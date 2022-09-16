@@ -97,11 +97,16 @@ internal static class Execution
                 AppendMethodDerivation(indentation, derivation);
             }
 
-            foreach (var operatorDerivation in Data.OperatorDerivations)
+            foreach (var derivation in Data.Derivations)
             {
-                if (operatorDerivation.LeftHandSide == Data.Scalar.AsNamedType() || operatorDerivation.LeftHandSide.Assembly != Data.Scalar.Assembly)
+                var operatorDerivations = OperatorDerivationSearcher.GetDerivations(Data.Scalar.AsNamedType(), derivation);
+
+                foreach (var operatorDerivation in operatorDerivations)
                 {
-                    AppendOperatorDerivation(indentation, operatorDerivation);
+                    if (operatorDerivation.LeftHandSide == Data.Scalar.AsNamedType() || operatorDerivation.LeftHandSide.Assembly != Data.Scalar.Assembly)
+                    {
+                        AppendOperatorDerivation(indentation, operatorDerivation);
+                    }
                 }
             }
         }
@@ -196,7 +201,7 @@ internal static class Execution
             }
         }
 
-        private void AppendOperatorDerivation(Indentation indentation, IOperatorDerivation operatorDerivation)
+        private void AppendOperatorDerivation(Indentation indentation, OperatorDerivation operatorDerivation)
         {
             AnyImplementations = true;
 

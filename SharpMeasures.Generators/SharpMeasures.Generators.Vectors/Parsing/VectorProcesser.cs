@@ -2,8 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
-
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
@@ -55,9 +53,12 @@ public class VectorProcesser : IVectorProcesser
         var vectorBaseInterfaces = vectorBases.Select(ExtractInterface).CollectResults();
         var vectorSpecializationInterfaces = vectorSpecializations.Select(ExtractInterface).CollectResults();
 
-        var populationWithData = groupBaseInterfaces.Combine(groupSpecializationInterfaces, groupMemberInterfaces, vectorBaseInterfaces, vectorSpecializationInterfaces).Select(CreatePopulation);
+        var populationAndProcessingData = groupBaseInterfaces.Combine(groupSpecializationInterfaces, groupMemberInterfaces, vectorBaseInterfaces, vectorSpecializationInterfaces).Select(CreatePopulation);
 
-        return (populationWithData.Select(ReducePopulation), new VectorValidator(populationWithData, groupBases, groupSpecializations, groupMembers, vectorBases, vectorSpecializations));
+        var population = populationAndProcessingData.Select(ExtractPopulation);
+        var processingData = populationAndProcessingData.Select(ExtractProcessingData);
+
+        return (population, new VectorValidator(processingData, groupBases, groupSpecializations, groupMembers, vectorBases, vectorSpecializations));
     }
 
     private static Optional<IVectorGroupBaseType> ExtractInterface(Optional<GroupBaseType> groupType, CancellationToken _) => groupType.HasValue ? groupType.Value : new Optional<IVectorGroupBaseType>();
@@ -67,9 +68,10 @@ public class VectorProcesser : IVectorProcesser
     private static Optional<IVectorBaseType> ExtractInterface(Optional<VectorBaseType> vectorType, CancellationToken _) => vectorType.HasValue ? vectorType.Value : new Optional<IVectorBaseType>();
     private static Optional<IVectorSpecializationType> ExtractInterface(Optional<VectorSpecializationType> vectorType, CancellationToken _) => vectorType.HasValue ? vectorType.Value : new Optional<IVectorSpecializationType>();
 
-    private static IVectorPopulation ReducePopulation(IVectorPopulationWithData vectorPopulation, CancellationToken _) => vectorPopulation;
+    private static IVectorPopulation ExtractPopulation((IVectorPopulation Population, VectorProcessingData) input, CancellationToken _) => input.Population;
+    private static VectorProcessingData ExtractProcessingData((IVectorPopulation, VectorProcessingData ProcessingData) input, CancellationToken _) => input.ProcessingData;
 
-    private static IVectorPopulationWithData CreatePopulation((ImmutableArray<IVectorGroupBaseType> GroupBases, ImmutableArray<IVectorGroupSpecializationType> GroupSpecializations,
+    private static (IVectorPopulation Population, VectorProcessingData ProcessingData) CreatePopulation((ImmutableArray<IVectorGroupBaseType> GroupBases, ImmutableArray<IVectorGroupSpecializationType> GroupSpecializations,
         ImmutableArray<IVectorGroupMemberType> GroupMembers, ImmutableArray<IVectorBaseType> VectorBases, ImmutableArray<IVectorSpecializationType> VectorSpecializations) vectors, CancellationToken _)
     {
         return VectorPopulation.Build(vectors.VectorBases, vectors.VectorSpecializations, vectors.GroupBases, vectors.GroupSpecializations, vectors.GroupMembers);

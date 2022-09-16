@@ -1,6 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
-using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units;
@@ -31,7 +30,7 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string FromCubeRoot(NamedType _) => "FromCubeRoot";
 
     public string Derivation(DerivedQuantitySignature signature) => $"Derivation_{ParseDerivableSignature(signature)}";
-    public string OperatorDerivationLHS(IOperatorDerivation derivation) => $"OperatorDerivationLHS_{derivation.Result.Name}_{derivation.RightHandSide.Name}";
+    public string OperatorDerivationLHS(OperatorDerivation derivation) => $"OperatorDerivationLHS_{derivation.Result.Name}_{derivation.RightHandSide.Name}";
 
     public string ScalarConstructor() => "Constructor_Scalar";
     public string ScalarAndUnitConstructor() => "Constructor_Scalar_Unit";

@@ -1,6 +1,5 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
-using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Units;
 
@@ -23,7 +22,7 @@ internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocu
     string IDocumentationStrategy.FromSquareRoot(NamedType _) => string.Empty;
     string IDocumentationStrategy.FromCubeRoot(NamedType _) => string.Empty;
     string IDocumentationStrategy.Derivation(DerivedQuantitySignature _) => string.Empty;
-    string IDocumentationStrategy.OperatorDerivationLHS(IOperatorDerivation _) => string.Empty;
+    string IDocumentationStrategy.OperatorDerivationLHS(OperatorDerivation _) => string.Empty;
     string IDocumentationStrategy.Magnitude() => string.Empty;
     string IDocumentationStrategy.ScalarConstructor() => string.Empty;
     string IDocumentationStrategy.ScalarAndUnitConstructor() => string.Empty;

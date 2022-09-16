@@ -35,5 +35,5 @@ internal record class SymbolicSharpMeasuresScalarDefinition : ARawAttributeDefin
 
     private SymbolicSharpMeasuresScalarDefinition() : base(SharpMeasuresScalarLocations.Empty) { }
 
-    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName) => new[] { Unit, Vector, Difference, Reciprocal, Square, Cube, SquareRoot, CubeRoot }.Where((symbol) => symbol is not null && symbol.ContainingAssembly.Name != localAssemblyName).Select(static (symbol) => symbol!);
+    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName, bool alreadyInForeignAssembly) => new[] { Unit, Vector, Difference, Reciprocal, Square, Cube, SquareRoot, CubeRoot }.Where((symbol) => symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName)).Select(static (symbol) => symbol!);
 }

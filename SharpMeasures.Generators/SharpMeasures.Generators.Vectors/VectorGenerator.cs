@@ -17,14 +17,12 @@ using System.Threading;
 public interface IVectorGenerator
 {
     public abstract void Generate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
-        IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider,
-        IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider);
+        IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider,
+        IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider);
 }
 
 internal class VectorGenerator : IVectorGenerator
 {
-    public IncrementalValueProvider<IResolvedVectorPopulation> VectorPopulationProvider { get; }
-
     private IncrementalValuesProvider<Optional<ResolvedGroupType>> GroupBaseProvider { get; }
     private IncrementalValuesProvider<Optional<ResolvedGroupType>> GroupSpecializationProvider { get; }
     private IncrementalValuesProvider<Optional<ResolvedVectorType>> GroupMemberProvider { get; }
@@ -32,12 +30,9 @@ internal class VectorGenerator : IVectorGenerator
     private IncrementalValuesProvider<Optional<ResolvedVectorType>> VectorBaseProvider { get; }
     private IncrementalValuesProvider<Optional<ResolvedVectorType>> VectorSpecializationProvider { get; }
     
-    internal VectorGenerator(IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider, IncrementalValuesProvider<Optional<ResolvedGroupType>> groupBaseProvider,
-        IncrementalValuesProvider<Optional<ResolvedGroupType>> groupSpecializationProvider, IncrementalValuesProvider<Optional<ResolvedVectorType>> groupMemberProvider,
-        IncrementalValuesProvider<Optional<ResolvedVectorType>> vectorBaseProvider, IncrementalValuesProvider<Optional<ResolvedVectorType>> vectorSpecializationProvider)
+    internal VectorGenerator(IncrementalValuesProvider<Optional<ResolvedGroupType>> groupBaseProvider, IncrementalValuesProvider<Optional<ResolvedGroupType>> groupSpecializationProvider,
+        IncrementalValuesProvider<Optional<ResolvedVectorType>> groupMemberProvider, IncrementalValuesProvider<Optional<ResolvedVectorType>> vectorBaseProvider, IncrementalValuesProvider<Optional<ResolvedVectorType>> vectorSpecializationProvider)
     {
-        VectorPopulationProvider = vectorPopulationProvider;
-
         GroupBaseProvider = groupBaseProvider;
         GroupSpecializationProvider = groupSpecializationProvider;
         GroupMemberProvider = groupMemberProvider;
@@ -46,23 +41,15 @@ internal class VectorGenerator : IVectorGenerator
         VectorSpecializationProvider = vectorSpecializationProvider;
     }
 
-    public void Generate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
+    public void Generate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
+        IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider,
         IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
     {
-        Generate(GroupBaseProvider, unitPopulationProvider, scalarPopulationProvider, VectorPopulationProvider, globalAnalyzerConfigProvider,
-            documentationDictionaryProvider);
-
-        Generate(GroupSpecializationProvider, unitPopulationProvider, scalarPopulationProvider, VectorPopulationProvider, globalAnalyzerConfigProvider,
-            documentationDictionaryProvider);
-
-        Generate(context, GroupMemberProvider, unitPopulationProvider, scalarPopulationProvider, VectorPopulationProvider, globalAnalyzerConfigProvider,
-            documentationDictionaryProvider);
-
-        Generate(context, VectorBaseProvider, unitPopulationProvider, scalarPopulationProvider, VectorPopulationProvider, globalAnalyzerConfigProvider,
-            documentationDictionaryProvider);
-
-        Generate(context, VectorSpecializationProvider, unitPopulationProvider, scalarPopulationProvider, VectorPopulationProvider, globalAnalyzerConfigProvider,
-            documentationDictionaryProvider);
+        Generate(GroupBaseProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
+        Generate(GroupSpecializationProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
+        Generate(context, GroupMemberProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
+        Generate(context, VectorBaseProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
+        Generate(context, VectorSpecializationProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
     }
 
     private static void Generate(IncrementalValuesProvider<Optional<ResolvedGroupType>> vectors,

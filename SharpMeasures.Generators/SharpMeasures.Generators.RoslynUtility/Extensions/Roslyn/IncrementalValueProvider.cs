@@ -4,7 +4,9 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 
 public static partial class RoslynUtilityExtensions
@@ -89,6 +91,20 @@ public static partial class RoslynUtilityExtensions
         {
             return (tupleHierarchy.Item1.Item1.Item1.Item1.Item1, tupleHierarchy.Item1.Item1.Item1.Item1.Item2, tupleHierarchy.Item1.Item1.Item1.Item2,
                 tupleHierarchy.Item1.Item1.Item2, tupleHierarchy.Item1.Item2, tupleHierarchy.Item2);
+        }
+    }
+
+    public static IncrementalValueProvider<ImmutableArray<T>> Expand<T>(this IncrementalValueProvider<ImmutableArray<IEnumerable<T>>> provider)
+    {
+        return provider.Select(expand);
+
+        static ImmutableArray<T> expand(ImmutableArray<IEnumerable<T>> input, CancellationToken _)
+        {
+            var builder = ImmutableArray.CreateBuilder<T>();
+
+            builder.AddRange(input.SelectMany(static (array) => array));
+
+            return builder.ToImmutableArray();
         }
     }
 }

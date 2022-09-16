@@ -18,7 +18,7 @@ internal static class CommonParsing
         var symbolicDerivations = DerivedQuantityParser.Parser.ParseAllOccurrences(typeSymbol);
 
         var rawDerivations = symbolicDerivations.Select(static (symbolicDerivation) => RawDerivedQuantityDefinition.FromSymbolic(symbolicDerivation));
-        var foreignSymbols = symbolicDerivations.SelectMany((symbolicDerivation) => symbolicDerivation.ForeignSymbols(typeSymbol.ContainingAssembly.Name));
+        var foreignSymbols = symbolicDerivations.SelectMany((symbolicDerivation) => symbolicDerivation.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false));
 
         return (rawDerivations, foreignSymbols);
     }
@@ -33,7 +33,7 @@ internal static class CommonParsing
         var symbolicConversions = ConvertibleQuantityParser.Parser.ParseAllOccurrences(typeSymbol);
 
         var rawConversions = symbolicConversions.Select(static (symbolicConversion) => RawConvertibleQuantityDefinition.FromSymbolic(symbolicConversion));
-        var foreignSymbols = symbolicConversions.SelectMany((symbolicConversion) => symbolicConversion.ForeignSymbols(typeSymbol.ContainingAssembly.Name));
+        var foreignSymbols = symbolicConversions.SelectMany((symbolicConversion) => symbolicConversion.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false));
 
         return (rawConversions, foreignSymbols);
     }

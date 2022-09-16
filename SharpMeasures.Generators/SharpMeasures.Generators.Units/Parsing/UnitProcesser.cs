@@ -39,11 +39,12 @@ public class UnitProcesser : IUnitProcesser
     {
         var units = UnitProvider.Select(Process).ReportDiagnostics(context);
 
-        var population = units.Select(ExtractInterface).CollectResults().Select(CreatePopulation);
+        var populationAndProcessingData = units.Select(ExtractInterface).CollectResults().Select(CreatePopulation);
 
-        var reducedPopulation = population.Select(ExtractInterface);
+        var population = populationAndProcessingData.Select(ExtractPopulation);
+        var processingData = populationAndProcessingData.Select(ExtractProcessingData);
 
-        return (reducedPopulation, new UnitValidator(population, units));
+        return (population, new UnitValidator(processingData, units));
     }
 
     private static IOptionalWithDiagnostics<UnitType> Process(Optional<RawUnitType> rawUnit, CancellationToken token)
@@ -136,9 +137,10 @@ public class UnitProcesser : IUnitProcesser
     }
 
     private static Optional<IUnitType> ExtractInterface(Optional<UnitType> unitType, CancellationToken _) => unitType.HasValue ? unitType.Value : new Optional<IUnitType>();
-    private static IUnitPopulation ExtractInterface(IUnitPopulation population, CancellationToken _) => population;
+    private static IUnitPopulation ExtractPopulation((IUnitPopulation Population, UnitProcessingData) input, CancellationToken _) => input.Population;
+    private static UnitProcessingData ExtractProcessingData((IUnitPopulation, UnitProcessingData ProcessingData) input, CancellationToken _) => input.ProcessingData;
 
-    private static IUnitPopulationWithData CreatePopulation(ImmutableArray<IUnitType> units, CancellationToken _)
+    private static (IUnitPopulation, UnitProcessingData) CreatePopulation(ImmutableArray<IUnitType> units, CancellationToken _)
     {
         return UnitPopulation.Build(units);
     }

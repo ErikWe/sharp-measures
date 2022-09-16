@@ -3,12 +3,11 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-public readonly record struct DefinedType(string Name, string Namespace, string Assembly, Accessibility Accessibility, bool IsSealed, bool IsReadOnly, bool IsRecord,
-    bool IsValueType)
+public readonly record struct DefinedType(string Name, string Namespace, string Assembly, Accessibility Accessibility, bool IsSealed, bool IsReadOnly, bool IsRecord, bool IsValueType)
 {
     public static DefinedType Empty { get; } = new(string.Empty, string.Empty, string.Empty, Accessibility.NotApplicable, false, false, false, false);
 
-    internal static DefinedType FromSymbol(INamedTypeSymbol symbol)
+    public static DefinedType FromSymbol(INamedTypeSymbol symbol)
     {
         NamedType namedType = NamedType.FromSymbol(symbol);
 

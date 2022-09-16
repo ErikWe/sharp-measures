@@ -3,7 +3,6 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Units;
 
 using System;
@@ -14,12 +13,12 @@ using System.Threading;
 internal static class ScalarSpecializationResolver
 {
     public static IncrementalValuesProvider<Optional<ResolvedScalarType>> Resolve(IncrementalValuesProvider<Optional<ScalarSpecializationType>> scalarProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
-        IncrementalValueProvider<IScalarPopulationWithData> scalarPopulationProvider)
+        IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider)
     {
         return scalarProvider.Combine(unitPopulationProvider, scalarPopulationProvider).Select(Resolve);
     }
 
-    private static Optional<ResolvedScalarType> Resolve((Optional<ScalarSpecializationType> UnresolvedScalar, IUnitPopulation UnitPopulation, IScalarPopulationWithData ScalarPopulation) input, CancellationToken token)
+    private static Optional<ResolvedScalarType> Resolve((Optional<ScalarSpecializationType> UnresolvedScalar, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation) input, CancellationToken token)
     {
         if (token.IsCancellationRequested || input.UnresolvedScalar.HasValue is false)
         {
@@ -29,10 +28,12 @@ internal static class ScalarSpecializationResolver
         return Resolve(input.UnresolvedScalar.Value, input.UnitPopulation, input.ScalarPopulation);
     }
 
-    private static Optional<ResolvedScalarType> Resolve(ScalarSpecializationType scalarType, IUnitPopulation unitPopulation, IScalarPopulationWithData scalarPopulation)
+    private static Optional<ResolvedScalarType> Resolve(ScalarSpecializationType scalarType, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation)
     {
-        var scalarBase = scalarPopulation.ScalarBases[scalarType.Type.AsNamedType()];
-        var unit = unitPopulation.Units[scalarBase.Definition.Unit];
+        if (scalarPopulation.ScalarBases.TryGetValue(scalarType.Type.AsNamedType(), out var scalarBase) is false || unitPopulation.Units.TryGetValue(scalarBase.Definition.Unit, out var unit) is false)
+        {
+            return new Optional<ResolvedScalarType>();
+        }
 
         var definedDerivations = scalarType.Derivations;
         var inheritedDerivations = CollectItems(scalarType, scalarPopulation, static (scalar) => scalar.Derivations, static (scalar) => scalar.Definition.InheritDerivations, onlyInherited: true);
@@ -40,7 +41,7 @@ internal static class ScalarSpecializationResolver
         var constants = CollectItems(scalarType, scalarPopulation, static (scalar) => scalar.Constants, static (scalar) => scalar.Definition.InheritConstants);
         var conversions = CollectItems(scalarType, scalarPopulation, static (scalar) => scalar.Conversions, static (scalar) => scalar.Definition.InheritConversions);
 
-        var includedUnitInstanceBases = ResolveUnitInstanceInclusions(scalarType, scalarPopulation, unit, static (scalar) => scalar.UnitInstanceBaseInclusions, static (scalar) => scalar.UnitInstanceBaseExclusions, static (scalar) => scalar.Definition.InheritBases);
+        var includedUnitInstanceBases = ResolveUnitInstanceInclusions(scalarType, scalarPopulation, unit, static (scalar) => scalar.UnitBaseInstanceInclusions, static (scalar) => scalar.UnitBaseInstanceExclusions, static (scalar) => scalar.Definition.InheritBases);
         var includedUnitInstances = ResolveUnitInstanceInclusions(scalarType, scalarPopulation, unit, static (scalar) => scalar.UnitInstanceInclusions, static (scalar) => scalar.UnitInstanceExclusions, static (scalar) => scalar.Definition.InheritUnits);
 
         var vector = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.Vector);

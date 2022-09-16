@@ -25,6 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\SharpMeasures.Equatables\SharpMeasures.Equatables.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.Attributes\SharpMeasures.Generators.Attributes.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.Attributes.API\SharpMeasures.Generators.Attributes.API.csproj" PrivateAssets="all" />
         <ProjectReference Include="..\SharpMeasures.Generators.Attributes.Parsing\SharpMeasures.Generators.Attributes.Parsing.csproj" PrivateAssets="all" />
@@ -51,7 +52,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="..\README.md" Pack="true" PackagePath="\"/>
+        <None Include="..\README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
 </Project>

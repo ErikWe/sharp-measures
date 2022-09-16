@@ -32,7 +32,7 @@ internal class ScalarSpecializationParser : AScalarParser<RawSpecializedSharpMea
         }
 
         var rawScalar = RawSpecializedSharpMeasuresScalarDefinition.FromSymbolic(symbolicScalar);
-        var foreignSymbols = symbolicScalar.ForeignSymbols(typeSymbol.ContainingAssembly.Name);
+        var foreignSymbols = symbolicScalar.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false);
 
         return (rawScalar, foreignSymbols);
     }

@@ -3,7 +3,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Providers;
 using SharpMeasures.Generators.Providers.DeclarationFilter;
 using SharpMeasures.Generators.Units.Parsing.BiasedUnitInstance;
@@ -24,7 +23,7 @@ using System.Threading;
 
 public static class UnitParser
 {
-    public static (IUnitProcesser Processer, IncrementalValueProvider<ImmutableArray<ForeignSymbolCollection>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context)
+    public static (IUnitProcesser Processer, IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context)
     {
         var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<SharpMeasuresUnitAttribute>(context.SyntaxProvider);
         var filteredDeclarations = FilteredDeclarationProvider.Construct<TypeDeclarationSyntax>(DeclarationFilters).AttachAndReport(context, declarations);
@@ -33,30 +32,30 @@ public static class UnitParser
         var unitsAndForeignSymbols = symbols.Select(Parse);
 
         var units = unitsAndForeignSymbols.Select(ExtractUnit);
-        var foreignSymbols = unitsAndForeignSymbols.Select(ExtractForeignSymbols).Collect();
+        var foreignSymbols = unitsAndForeignSymbols.Select(ExtractForeignSymbols).Collect().Expand();
 
         UnitProcesser processer = new(units);
 
         return (processer, foreignSymbols);
     }
 
-    private static (Optional<RawUnitType> Definition, ForeignSymbolCollection ForeignSymbolcs) Parse(Optional<IntermediateResult> input, CancellationToken token)
+    private static (Optional<RawUnitType>, IEnumerable<INamedTypeSymbol>) Parse(Optional<IntermediateResult> input, CancellationToken token)
     {
         if (token.IsCancellationRequested || input.HasValue is false)
         {
-            return (new Optional<RawUnitType>(), ForeignSymbolCollection.Empty);
+            return (new Optional<RawUnitType>(), Array.Empty<INamedTypeSymbol>());
         }
 
         return Parse(input.Value);
     }
 
-    private static (Optional<RawUnitType> Definition, ForeignSymbolCollection ForeignSymbolcs) Parse(IntermediateResult input)
+    private static (Optional<RawUnitType>, IEnumerable<INamedTypeSymbol>) Parse(IntermediateResult input)
     {
         (var unit, var unitForeignSymbols) = ParseUnit(input.TypeSymbol);
 
         if (unit.HasValue is false)
         {
-            return (new Optional<RawUnitType>(), ForeignSymbolCollection.Empty);
+            return (new Optional<RawUnitType>(), Array.Empty<INamedTypeSymbol>());
         }
 
         (var derivations, var derivationsForeignSymbols) = ParseDerivations(input.TypeSymbol);
@@ -69,12 +68,12 @@ public static class UnitParser
         var scaledUnitInstances = ParseScaledUnitInstances(input.TypeSymbol);
 
         RawUnitType unitType = new(input.TypeSymbol.AsDefinedType(), input.Declaration.Identifier.GetLocation().Minimize(), unit.Value, derivations, fixedUnitInstance.HasValue ? fixedUnitInstance.Value : null, unitInstanceAliases, derivedUnitInstances, biasedUnitInstances, prefixedUnitInstances, scaledUnitInstances);
-        ForeignSymbolCollection foreignSymbols = new(unitForeignSymbols.Concat(derivationsForeignSymbols).ToList());
+        var foreignSymbols = unitForeignSymbols.Concat(derivationsForeignSymbols);
 
         return (unitType, foreignSymbols);
     }
 
-    private static (Optional<RawSharpMeasuresUnitDefinition> Definition, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseUnit(INamedTypeSymbol typeSymbol)
+    private static (Optional<RawSharpMeasuresUnitDefinition>, IEnumerable<INamedTypeSymbol>) ParseUnit(INamedTypeSymbol typeSymbol)
     {
         if (SharpMeasuresUnitParser.Parser.ParseFirstOccurrence(typeSymbol) is not SymbolicSharpMeasuresUnitDefinition symbolicUnit)
         {
@@ -82,17 +81,17 @@ public static class UnitParser
         }
 
         var rawUnit = RawSharpMeasuresUnitDefinition.FromSymbolic(symbolicUnit);
-        var foreignSymbols = symbolicUnit.ForeignSymbols(typeSymbol.ContainingAssembly.Name);
+        var foreignSymbols = symbolicUnit.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false);
 
         return (rawUnit, foreignSymbols);
     }
 
-    private static (IEnumerable<RawDerivableUnitDefinition> Definitions, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseDerivations(INamedTypeSymbol typeSymbol)
+    private static (IEnumerable<RawDerivableUnitDefinition>, IEnumerable<INamedTypeSymbol>) ParseDerivations(INamedTypeSymbol typeSymbol)
     {
         var symbolicDerivations = DerivableUnitParser.Parser.ParseAllOccurrences(typeSymbol);
 
         var rawDerivations = symbolicDerivations.Select(static (symbolicDerivation) => RawDerivableUnitDefinition.FromSymbolic(symbolicDerivation));
-        var foreignSymbols = symbolicDerivations.SelectMany((symbolicDerivation) => symbolicDerivation.ForeignSymbols(typeSymbol.ContainingAssembly.Name));
+        var foreignSymbols = symbolicDerivations.SelectMany((symbolicDerivation) => symbolicDerivation.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false));
 
         return (rawDerivations, foreignSymbols);
     }
@@ -138,8 +137,8 @@ public static class UnitParser
         new NonStaticDeclarationFilter(UnitTypeDiagnostics.TypeStatic)
     };
 
-    private static Optional<RawUnitType> ExtractUnit((Optional<RawUnitType> Definition, ForeignSymbolCollection ForeignSymbols) input, CancellationToken _) => input.Definition;
-    private static ForeignSymbolCollection ExtractForeignSymbols((Optional<RawUnitType> Definition, ForeignSymbolCollection ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
+    private static Optional<RawUnitType> ExtractUnit((Optional<RawUnitType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawUnitType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
 
     private readonly record struct IntermediateResult(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)
     {

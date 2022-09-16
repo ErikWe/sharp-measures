@@ -28,7 +28,7 @@ internal class GroupSpecializationParser : AGroupParser<RawSpecializedSharpMeasu
         }
 
         var rawGroup = RawSpecializedSharpMeasuresVectorGroupDefinition.FromSymbolic(symbolicGroup);
-        var foreignSymbols = symbolicGroup.ForeignSymbols(typeSymbol.ContainingAssembly.Name);
+        var foreignSymbols = symbolicGroup.ForeignSymbols(typeSymbol.ContainingAssembly.Name, alreadyInForeignAssembly: false);
 
         return (rawGroup, foreignSymbols);
     }

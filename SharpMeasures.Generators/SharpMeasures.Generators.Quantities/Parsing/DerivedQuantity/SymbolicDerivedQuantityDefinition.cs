@@ -20,7 +20,7 @@ public record class SymbolicDerivedQuantityDefinition : ARawAttributeDefinition<
         init => signature = value.AsReadOnlyEquatable();
     }
 
-    public DerivationOperatorImplementation OperatorImplementation { get; init; } = DerivationOperatorImplementation.AlgebraicallyEquivalent;
+    public DerivationOperatorImplementation OperatorImplementation { get; init; } = DerivationOperatorImplementation.Suitable;
 
     public bool Permutations { get; init; }
 
@@ -30,13 +30,13 @@ public record class SymbolicDerivedQuantityDefinition : ARawAttributeDefinition<
 
     private SymbolicDerivedQuantityDefinition(DerivedQuantityLocations locations) : base(locations) { }
 
-    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName)
+    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName, bool alreadyInForeignAssembly)
     {
         if (Signature is null)
         {
             return Array.Empty<INamedTypeSymbol>();
         }
 
-        return Signature.Where((symbol) => symbol is not null && symbol.ContainingAssembly.Name != localAssemblyName).Select(static (symbol) => symbol!);
+        return Signature.Where((symbol) => symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName)).Select(static (symbol) => symbol!);
     }
 }

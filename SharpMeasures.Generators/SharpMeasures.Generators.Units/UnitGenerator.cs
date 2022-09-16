@@ -6,7 +6,6 @@ using SharpMeasures.Generators.Configuration;
 using SharpMeasures.Generators.Documentation;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units.Documentation;
-using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.Pipelines.Common;
 using SharpMeasures.Generators.Units.Pipelines.Derivable;
 using SharpMeasures.Generators.Units.Pipelines.UnitInstances;
@@ -15,29 +14,25 @@ using System.Threading;
 
 public interface IUnitGenerator
 {
-    public abstract void Generate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
+    public abstract void Generate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
         IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider);
 }
 
 internal class UnitGenerator : IUnitGenerator
 {
-    private IncrementalValueProvider<IUnitPopulationWithData> UnitPopulationProvider { get; }
-
     private IncrementalValuesProvider<Optional<UnitType>> UnitProvider { get; }
 
-    internal UnitGenerator(IncrementalValueProvider<IUnitPopulationWithData> unitPopulationProvider, IncrementalValuesProvider<Optional<UnitType>> unitProvider)
+    internal UnitGenerator(IncrementalValuesProvider<Optional<UnitType>> unitProvider)
     {
-        UnitPopulationProvider = unitPopulationProvider;
-
         UnitProvider = unitProvider;
     }
 
-    public void Generate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
+    public void Generate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
         IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
     {
         var defaultGenerateDocumentation = globalAnalyzerConfigProvider.Select(ExtractDefaultGenerateDocumentation);
 
-        var minimized = UnitProvider.Combine(UnitPopulationProvider, scalarPopulationProvider).Select(ReduceToDataModel)
+        var minimized = UnitProvider.Combine(unitPopulationProvider, scalarPopulationProvider).Select(ReduceToDataModel)
             .Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionaryProvider).Flatten()
             .Select(AppendDocumentationFile);
 
@@ -46,7 +41,7 @@ internal class UnitGenerator : IUnitGenerator
         UnitInstancesGenerator.Initialize(context, minimized);
     }
 
-    private static Optional<DataModel> ReduceToDataModel((Optional<UnitType> Unit, IUnitPopulationWithData UnitPopulation, IResolvedScalarPopulation ScalarPopulation) input, CancellationToken _)
+    private static Optional<DataModel> ReduceToDataModel((Optional<UnitType> Unit, IUnitPopulation UnitPopulation, IResolvedScalarPopulation ScalarPopulation) input, CancellationToken _)
     {
         if (input.Unit.HasValue is false)
         {

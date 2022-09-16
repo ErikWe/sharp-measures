@@ -35,17 +35,21 @@ internal class ScalarProcesser : IScalarProcesser
         var scalarBaseInterfaces = scalarBases.Select(ExtractInterface).CollectResults();
         var scalarSpecializationInterfaces = scalarSpecializations.Select(ExtractInterface).CollectResults();
 
-        var populationWithData = scalarBaseInterfaces.Combine(scalarSpecializationInterfaces).Select(CreatePopulation);
+        var populationAndProcessingData = scalarBaseInterfaces.Combine(scalarSpecializationInterfaces).Select(CreatePopulation);
 
-        return (populationWithData.Select(ReducePopulation), new ScalarValidator(populationWithData, scalarBases, scalarSpecializations));
+        var population = populationAndProcessingData.Select(ExtractPopulation);
+        var processingData = populationAndProcessingData.Select(ExtractProcessingData);
+
+        return (population, new ScalarValidator(processingData, scalarBases, scalarSpecializations));
     }
 
     private static Optional<IScalarBaseType> ExtractInterface(Optional<ScalarBaseType> scalarType, CancellationToken _) => scalarType.HasValue ? scalarType.Value : new Optional<IScalarBaseType>();
     private static Optional<IScalarSpecializationType> ExtractInterface(Optional<ScalarSpecializationType> scalarType, CancellationToken _) => scalarType.HasValue ? scalarType.Value : new Optional<IScalarSpecializationType>();
 
-    private static IScalarPopulation ReducePopulation(IScalarPopulationWithData scalarPopulation, CancellationToken _) => scalarPopulation;
+    private static IScalarPopulation ExtractPopulation((IScalarPopulation Population, ScalarProcessingData) input, CancellationToken _) => input.Population;
+    private static ScalarProcessingData ExtractProcessingData((IScalarPopulation, ScalarProcessingData ProcessingData) input, CancellationToken _) => input.ProcessingData;
 
-    private static IScalarPopulationWithData CreatePopulation((ImmutableArray<IScalarBaseType> Bases, ImmutableArray<IScalarSpecializationType> Specializations) scalars, CancellationToken _)
+    private static (IScalarPopulation Population, ScalarProcessingData ProcessingData) CreatePopulation((ImmutableArray<IScalarBaseType> Bases, ImmutableArray<IScalarSpecializationType> Specializations) scalars, CancellationToken _)
     {
         return ScalarPopulation.Build(scalars.Bases, scalars.Specializations);
     }
