@@ -10,6 +10,7 @@
         <Description>
             Provides a minimal version of SharpMeasures, used to construct a system of units and quantities from scratch.
         </Description>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
     
     <PropertyGroup>
@@ -17,5 +18,9 @@
         <IsPackable>true</IsPackable>
         <IsPublishable>true</IsPublishable>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
 
 </Project>
