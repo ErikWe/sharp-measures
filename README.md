@@ -46,11 +46,12 @@ using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
-[SharpMeasuresScalar(typeof(UnitOfTime))]
+[DerivedQuantity("1 / {0}", typeof(Frequency))]
+[SharpMeasuresScalar(typeof(UnitOfTime))] // <-- [Specialized...] attributes are no longer used
 public partial class Time { }
 
 [DerivedQuantity("1 / {0}", typeof(Time))]
-[SharpMeasuresScalar(typeof(UnitOfFrequency))] // <-- [Specialized...] attributes are no longer used
+[SharpMeasuresScalar(typeof(UnitOfFrequency), DefaultUnitInstanceName = "Hertz", DefaultUnitInstanceSymbol = "Hz")]
 public partial class Frequency { }
 
 [FixedUnitInstance("Second", "[*]s")]
@@ -70,7 +71,7 @@ The above declarations would make the following code valid:
 Time time = 78 * Time.OneMinute;
 Frequency frequency = 1 / time;
 
-Console.WriteLine(frequency); // "0.769230769230769"
+Console.WriteLine(frequency); // "0.769230769230769 [Hz]"
 ```
 
 ### Diagnostics
