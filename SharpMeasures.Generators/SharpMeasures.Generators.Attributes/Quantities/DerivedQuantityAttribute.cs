@@ -13,14 +13,15 @@ public sealed class DerivedQuantityAttribute : Attribute
     /// <summary>The quantity may be derived from these quantities, according to <see cref="Expression"/>.</summary>
     public Type[] Signature { get; }
 
-    /// <summary>Describes whether this type implements the algebrically equivalent operations as operators - and if so, how they are implemented. The default behaviour is <see cref="DerivationOperatorImplementation.Suitable"/>.</summary>
+    /// <summary>Describes whether this type implements the algebrically equivalent operations where this type is included as operators - and if so, how they are implemented. The default behaviour is <see cref="DerivationOperatorImplementation.Suitable"/>.</summary>
     /// <remarks>For example, if a type <i>Speed</i> defines a derivation { <i>Length</i> / <i>Time</i> } with <see cref="DerivationOperatorImplementation.All"/>, the following operators would be implemented:
     /// <list type="bullet">
     /// <item><i>Length</i> = { <i>Speed</i> * <i>Time</i> }</item>
     /// <item><i>Length</i> = { <i>Time</i> * <i>Speed</i> }</item>
     /// <item><i>Time</i> = { <i>Length</i> / <i>Speed</i> }</item>
     /// </list>
-    /// If <i>Length</i> defines the algebrically equivalent derivations, this would result in duplicate operator implementations. In such cases, <see cref="DerivationOperatorImplementation.Suitable"/>, <see cref="DerivationOperatorImplementation.LeftHandSide"/>, or <see cref="DerivationOperatorImplementation.RightHandSide"/> is recommended.</remarks>
+    /// Note that the actual derivation { <i>Speed</i> = <i>Length</i> / <i>Time</i> } has not been implemented through operators. This would require, for example, <i>Length</i> to define the derivation { <i>Speed</i> * <i>Time</i> }.
+    /// Furthermore, if the hypothetical derivation defined by <i>Length</i> also uses <see cref="DerivationOperatorImplementation.All"/>, this would result in duplicate operator implementations. Therefore, <see cref="DerivationOperatorImplementation.Suitable"/>, <see cref="DerivationOperatorImplementation.LeftHandSide"/>, or <see cref="DerivationOperatorImplementation.RightHandSide"/> is recommended.</remarks>
     public DerivationOperatorImplementation OperatorImplementation { get; init; }
 
     /// <summary>Whether to also allow derivation using permutations of the signature. The default behaviour is <see langword="false"/>.</summary>
