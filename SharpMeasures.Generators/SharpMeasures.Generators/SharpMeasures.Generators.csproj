@@ -10,7 +10,7 @@
         <Description>
             Provides source generators related to the creation of units and quantities within SharpMeasures.
         </Description>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageReadmeFile>README.nupkg.md</PackageReadmeFile>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -52,7 +52,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="..\README.md" Pack="true" PackagePath="\" />
+        <None Include="..\README.nupkg.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
 </Project>
