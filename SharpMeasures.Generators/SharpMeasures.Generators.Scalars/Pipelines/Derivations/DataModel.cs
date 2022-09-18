@@ -3,6 +3,7 @@
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Scalars.Documentation;
+using SharpMeasures.Generators.Vectors;
 
 using System.Collections.Generic;
 

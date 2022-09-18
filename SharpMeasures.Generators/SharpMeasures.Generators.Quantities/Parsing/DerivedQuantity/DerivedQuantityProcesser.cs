@@ -18,6 +18,9 @@ public interface IDerivedQuantityProcessingDiagnostics
     public abstract Diagnostic? UnmatchedExpressionQuantity(IProcessingContext context, RawDerivedQuantityDefinition definition, int requestedIndex);
     public abstract Diagnostic? ExpressionDoesNotIncludeQuantity(IProcessingContext context, RawDerivedQuantityDefinition definition, int index);
 
+    public abstract Diagnostic? MalformedExpression(IProcessingContext context, RawDerivedQuantityDefinition definition);
+    public abstract Diagnostic? ExpressionContainsConstant(IProcessingContext context, RawDerivedQuantityDefinition definition);
+
     public abstract Diagnostic? NullSignature(IProcessingContext context, RawDerivedQuantityDefinition definition);
     public abstract Diagnostic? EmptySignature(IProcessingContext context, RawDerivedQuantityDefinition definition);
     public abstract Diagnostic? NullSignatureElement(IProcessingContext context, RawDerivedQuantityDefinition definition, int index);
@@ -43,6 +46,7 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
     {
         var processedExpression = ValidateExpressionNotNull(context, definition)
             .Validate(() => ValidateExpressionNotEmpty(context, definition))
+            .Validate(() => PartiallyValidateExpressionFormat(context, definition))
             .Validate(() => ValidateExpressionMatchesSignature(context, definition));
 
         if (processedExpression.IsInvalid)
@@ -77,6 +81,164 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
     private IValidityWithDiagnostics ValidateExpressionNotEmpty(IProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.Expression!.Length is not 0, () => Diagnostics.NullExpression(context, definition));
+    }
+
+    private IValidityWithDiagnostics PartiallyValidateExpressionFormat(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    {
+        string expression = definition.Expression!.Replace(" ", string.Empty);
+
+        int parenthesisLevel = 0;
+        bool canOpenParenthesis = true;
+        bool canCloseParenthesis = false;
+
+        bool canOpenFormatting = true;
+        bool isFormatting = false;
+        bool canCloseFormatting = false;
+
+        bool canHaveOperator = false;
+        bool canHaveConstantOne = true;
+
+        bool requireDivision = false;
+
+        for (int i = 0; i < expression.Length; i++)
+        {
+            if (expression[i] is '(')
+            {
+                if (canOpenParenthesis is false)
+                {
+                    return ValidityWithDiagnostics.Invalid(Diagnostics.MalformedExpression(context, definition));
+                }
+
+                canCloseParenthesis = false;
+                canOpenFormatting = true;
+                isFormatting = false;
+                canCloseFormatting = false;
+                canHaveOperator = false;
+                canHaveConstantOne = true;
+                requireDivision = false;
+
+                parenthesisLevel += 1;
+
+                continue;
+            }
+
+            if (expression[i] is ')')
+            {
+                if (canCloseParenthesis is false || parenthesisLevel is 0)
+                {
+                    return ValidityWithDiagnostics.Invalid(Diagnostics.MalformedExpression(context, definition));
+                }
+
+                canOpenParenthesis = false;
+                canOpenFormatting = false;
+                isFormatting = false;
+                canCloseFormatting = false;
+                canHaveOperator = true;
+                canHaveConstantOne = false;
+                requireDivision = false;
+
+                parenthesisLevel -= 1;
+
+                continue;
+            }
+
+            if (expression[i] is '{')
+            {
+                if (canOpenFormatting is false)
+                {
+                    return ValidityWithDiagnostics.Invalid(Diagnostics.MalformedExpression(context, definition));
+                }
+
+                canOpenParenthesis = false;
+                canCloseParenthesis = false;
+                canOpenFormatting = false;
+                isFormatting = true;
+                canCloseFormatting = false;
+                canHaveOperator = false;
+                canHaveConstantOne = false;
+                requireDivision = false;
+
+                continue;
+            }
+
+            if (expression[i] is '}')
+            {
+                if (canCloseFormatting is false)
+                {
+                    return ValidityWithDiagnostics.Invalid(Diagnostics.MalformedExpression(context, definition));
+                }
+
+                canOpenParenthesis = false;
+                canCloseParenthesis = true;
+                canOpenFormatting = false;
+                isFormatting = false;
+                canCloseFormatting = false;
+                canHaveOperator = true;
+                canHaveConstantOne = false;
+                requireDivision = false;
+
+                continue;
+            }
+
+            if (expression[i] is '+' or '-' or '*' or '/' or '.' or 'x')
+            {
+                if (canHaveOperator is false)
+                {
+                    return ValidityWithDiagnostics.Invalid(Diagnostics.MalformedExpression(context, definition));
+                }
+
+                if (requireDivision && expression[i] is not '/')
+                {
+                    return ValidityWithDiagnostics.Invalid(Diagnostics.ExpressionContainsConstant(context, definition));
+                }
+
+                canOpenParenthesis = true;
+                canCloseParenthesis = false;
+                canOpenFormatting = true;
+                isFormatting = false;
+                canCloseFormatting = false;
+                canHaveOperator = false;
+                canHaveConstantOne = false;
+                requireDivision = false;
+
+                continue;
+            }
+
+            if (char.IsDigit(expression[i]))
+            {
+                if (isFormatting)
+                {
+                    canOpenParenthesis = false;
+                    canOpenFormatting = false;
+                    isFormatting = true;
+                    canCloseFormatting = true;
+                    canHaveOperator = false;
+                    canHaveConstantOne = false;
+                    requireDivision = false;
+
+                    continue;
+                }
+
+                if (canHaveConstantOne is false || expression[i] is not '1')
+                {
+                    return ValidityWithDiagnostics.Invalid(Diagnostics.ExpressionContainsConstant(context, definition));
+                }
+
+                canOpenParenthesis = false;
+                canOpenFormatting = false;
+                isFormatting = false;
+                canCloseFormatting = false;
+                canHaveOperator = true;
+                canHaveConstantOne = false;
+                requireDivision = true;
+
+                continue;
+            }
+
+            return ValidityWithDiagnostics.Invalid(Diagnostics.MalformedExpression(context, definition));
+        }
+
+        return ValidityWithDiagnostics.Valid;
     }
 
     private IValidityWithDiagnostics ValidateExpressionMatchesSignature(IProcessingContext context, RawDerivedQuantityDefinition definition)
