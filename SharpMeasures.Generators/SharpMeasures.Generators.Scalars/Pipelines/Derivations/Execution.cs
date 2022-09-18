@@ -3,7 +3,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.SourceBuilding;
 
@@ -92,7 +91,7 @@ internal static class Execution
 
             foreach (var derivation in Data.Derivations)
             {
-                AppendMethodDerivation(indentation, derivation);
+                AppendMethodDerivation(indentation, derivation.Expression, derivation.Signature, derivation.Permutations);
             }
 
             foreach (var derivation in Data.Derivations)
@@ -107,12 +106,6 @@ internal static class Execution
                     }
                 }
             }
-        }
-
-        private void AppendMethodDerivation(Indentation indentation, IDerivedQuantity derivation)
-        {
-            AppendMethodDerivation(indentation, derivation.Expression, derivation.Signature, derivation.Permutations);
-
         }
 
         private void AppendMethodDerivation(Indentation indentation, string expression, IReadOnlyList<NamedType> signature, bool permutations)
@@ -270,23 +263,26 @@ internal static class Execution
 
             var parameterNameEnumerator = parameterNames.GetEnumerator();
 
-            int index = 0;
+            int index = -1;
             while (parameterNameEnumerator.MoveNext())
             {
+                index += 1;
+
                 if (signature[index].FullyQualifiedName is "global::SharpMeasures.Scalar")
                 {
                     parameterNameAndQuantity[index] = $"{parameterNameEnumerator.Current}";
-                }
-                else if (Data.ScalarPopulation.Scalars.ContainsKey(signature[index]))
-                {
-                    parameterNameAndQuantity[index] = $"{parameterNameEnumerator.Current}.Magnitude";
-                }
-                else
-                {
-                    parameterNameAndQuantity[index] = $"{parameterNameEnumerator.Current}.Components";
+
+                    continue;
                 }
 
-                index += 1;
+                if (Data.ScalarPopulation.Scalars.ContainsKey(signature[index]))
+                {
+                    parameterNameAndQuantity[index] = $"{parameterNameEnumerator.Current}.Magnitude";
+
+                    continue;
+                }
+
+                parameterNameAndQuantity[index] = $"{parameterNameEnumerator.Current}.Components";
             }
 
             try
@@ -327,11 +323,11 @@ internal static class Execution
                 if (counts.TryGetValue(signatureComponent.Name, out int count))
                 {
                     counts[signatureComponent.Name] = count - 1;
+
+                    return;
                 }
-                else
-                {
-                    counts[signatureComponent.Name] = -1;
-                }
+                
+                counts[signatureComponent.Name] = -1;
             }
 
             string appendParameterNumber(string text, NamedType signatureComponent)
@@ -342,16 +338,15 @@ internal static class Execution
                 {
                     return text;
                 }
-                else if (count < 0)
+                
+                if (count < 0)
                 {
                     counts[signatureComponent.Name] = 1;
                     return $"{text}1";
                 }
-                else
-                {
-                    counts[signatureComponent.Name] += 1;
-                    return $"{text}{counts[signatureComponent.Name]}";
-                }
+
+                counts[signatureComponent.Name] += 1;
+                return $"{text}{counts[signatureComponent.Name]}";
             }
         }
 
