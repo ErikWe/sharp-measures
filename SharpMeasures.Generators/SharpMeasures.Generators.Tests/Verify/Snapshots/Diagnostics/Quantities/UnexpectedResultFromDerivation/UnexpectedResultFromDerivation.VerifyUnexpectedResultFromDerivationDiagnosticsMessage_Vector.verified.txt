@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1266,
+    Title: Derivation unexpectedly results in a vector quantity,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (5,1)-(5,16),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The derivation results in a vector quantity, but a scalar quantity was expected,
+    Message: The derivation results in a vector quantity, but a scalar quantity was expected,
+    Category: Usage,
+    CustomTags: []
+  }
+]

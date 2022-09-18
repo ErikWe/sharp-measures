@@ -15,46 +15,57 @@ using Xunit;
 public class DerivationOperatorsIncompatibleExpression
 {
     [Fact]
-    public Task VerifyDerivationOperatorsIncompatibleExpressionDiagnosticsMessage() => AssertScalar(OneElementTwiceAndOtherOnce).VerifyDiagnostics();
+    public Task VerifyDerivationOperatorsIncompatibleExpressionDiagnosticsMessage() => AssertScalar(OneElementTwiceAndOtherOnceToScalar).VerifyDiagnostics();
 
     [Theory]
-    [MemberData(nameof(InvalidExpressions))]
+    [MemberData(nameof(ScalarResultingInvalidExpressions))]
     public void Scalar(TextConfig config) => AssertScalar(config);
 
     [Theory]
-    [MemberData(nameof(InvalidExpressions))]
+    [MemberData(nameof(ScalarResultingInvalidExpressions))]
     public void SpecializedScalar(TextConfig config) => AssertSpecializedScalar(config);
 
     [Theory]
-    [MemberData(nameof(InvalidExpressions))]
+    [MemberData(nameof(VectorResultingInvalidExpressions))]
     public void Vector(TextConfig config) => AssertVector(config);
 
     [Theory]
-    [MemberData(nameof(InvalidExpressions))]
+    [MemberData(nameof(VectorResultingInvalidExpressions))]
     public void SpecializedVector(TextConfig config) => AssertSpecializedVector(config);
 
     [Theory]
-    [MemberData(nameof(InvalidExpressions))]
+    [MemberData(nameof(VectorResultingInvalidExpressions))]
     public void VectorGroup(TextConfig config) => AssertVectorGroup(config);
 
     [Theory]
-    [MemberData(nameof(InvalidExpressions))]
+    [MemberData(nameof(VectorResultingInvalidExpressions))]
     public void SpecializedVectorGroup(TextConfig config) => AssertSpecializedVectorGroup(config);
 
     [Theory]
-    [MemberData(nameof(InvalidExpressions))]
+    [MemberData(nameof(VectorResultingInvalidExpressions))]
     public void VectorGroupMember(TextConfig config) => AssertVectorGroupMember(config);
 
-    public static IEnumerable<object[]> InvalidExpressions() => new object[][]
+    public static IEnumerable<object[]> ScalarResultingInvalidExpressions() => new object[][]
     {
-        new object[] { OneElementOnce },
-        new object[] { OneElementTwice },
-        new object[] { OneElementTwiceAndOtherOnce }
+        new object[] { OneElementOnceToScalar },
+        new object[] { OneElementTwiceToScalar },
+        new object[] { OneElementTwiceAndOtherOnceToScalar }
     };
 
-    private static TextConfig OneElementOnce => new("\"{0}\"", "typeof(Height)");
-    private static TextConfig OneElementTwice => new("\"{0} * {0}\"", "typeof(Height)");
-    private static TextConfig OneElementTwiceAndOtherOnce => new("\"{0} * {0} / {1}\"", "typeof(Height), typeof(Distance)");
+    public static IEnumerable<object[]> VectorResultingInvalidExpressions() => new object[][]
+    {
+        new object[] { OneElementOnceToVector },
+        new object[] { OneElementTwiceToVector },
+        new object[] { OneElementTwiceAndOtherOnceToVector }
+    };
+
+    private static TextConfig OneElementOnceToScalar => new("\"{0}\"", "typeof(Height)");
+    private static TextConfig OneElementTwiceToScalar => new("\"{0} * {0}\"", "typeof(Height)");
+    private static TextConfig OneElementTwiceAndOtherOnceToScalar => new("\"{0} * {0} / {1}\"", "typeof(Height), typeof(Distance)");
+
+    private static TextConfig OneElementOnceToVector => new("\"{0}\"", "typeof(Size3)");
+    private static TextConfig OneElementTwiceToVector => new("\"{0} + {0}\"", "typeof(Size3)");
+    private static TextConfig OneElementTwiceAndOtherOnceToVector => new("\"{0} * {0} * {1}\"", "typeof(Height), typeof(Size3)");
 
     public readonly record struct TextConfig(string Expression, string Signature);
 
@@ -130,6 +141,9 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Size3 { }
+
         [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.All)]
         [SharpMeasuresVector(typeof(UnitOfLength))]
         public partial class Position3 { }
@@ -160,6 +174,9 @@ public class DerivationOperatorsIncompatibleExpression
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Size3 { }
 
         [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.All)]
         [SpecializedSharpMeasuresVector(typeof(Position3))]
@@ -195,6 +212,12 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Size3 { }
+
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Position3 { }
+
         [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.All)]
         [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
@@ -225,6 +248,12 @@ public class DerivationOperatorsIncompatibleExpression
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Size3 { }
+
+        [SharpMeasuresVectorGroupMember(typeof(Displacement))]
+        public partial class Displacement3 { }
 
         [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.All)]
         [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
@@ -259,6 +288,9 @@ public class DerivationOperatorsIncompatibleExpression
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Size3 { }
 
         [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.All)]
         [SharpMeasuresVectorGroupMember(typeof(Position))]
@@ -343,6 +375,9 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Size3 { }
+
         [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.None)]
         [SharpMeasuresVector(typeof(UnitOfLength))]
         public partial class Position3 { }
@@ -365,6 +400,9 @@ public class DerivationOperatorsIncompatibleExpression
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Size3 { }
 
         [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.None)]
         [SpecializedSharpMeasuresVector(typeof(Position3))]
@@ -392,6 +430,12 @@ public class DerivationOperatorsIncompatibleExpression
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
 
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Size3 { }
+
+        [SharpMeasuresVectorGroupMember(typeof(Position))]
+        public partial class Position3 { }
+
         [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.None)]
         [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
@@ -414,6 +458,12 @@ public class DerivationOperatorsIncompatibleExpression
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Size3 { }
+
+        [SharpMeasuresVectorGroupMember(typeof(Displacement))]
+        public partial class Displacement3 { }
 
         [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.None)]
         [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
@@ -440,6 +490,9 @@ public class DerivationOperatorsIncompatibleExpression
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Height { }
+
+        [SharpMeasuresVector(typeof(UnitOfLength))]
+        public partial class Size3 { }
 
         [DerivedQuantity({{config.Expression}}, {{config.Signature}}, OperatorImplementation = DerivationOperatorImplementation.None)]
         [SharpMeasuresVectorGroupMember(typeof(Position))]

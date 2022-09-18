@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1263,
+    Title: Expression could not be interpreted,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (4,17)-(4,24),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The expression could not be interpreted - separate each element by one of the operators { +, -, *, /, ., x },
+    Message: The expression could not be interpreted - separate each element by one of the operators { +, -, *, /, ., x },
+    Category: Usage,
+    CustomTags: []
+  }
+]

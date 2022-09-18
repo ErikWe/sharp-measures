@@ -84,7 +84,7 @@ internal static class ScalarBaseValidator
     {
         var validationContext = new DerivedQuantityValidationContext(scalarType.Type, scalarPopulation, vectorPopulation);
 
-        return ValidityFilter.Create(DerivedQuantityValidator).Filter(validationContext, scalarType.Derivations);
+        return ProcessingFilter.Create(DerivedQuantityValidator).Filter(validationContext, scalarType.Derivations);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<ScalarConstantDefinition>> ValidateConstants(ScalarBaseType scalarType, IUnitPopulation unitPopulation)

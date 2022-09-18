@@ -74,7 +74,7 @@ internal static class GroupBaseValidator
     {
         var validationContext = new DerivedQuantityValidationContext(vectorType.Type, scalarPopulation, vectorPopulation);
 
-        return ValidityFilter.Create(DerivedQuantityValidator).Filter(validationContext, vectorType.Derivations);
+        return ProcessingFilter.Create(DerivedQuantityValidator).Filter(validationContext, vectorType.Derivations);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ValidateConversions(GroupBaseType vectorType, IVectorPopulation vectorPopulation)

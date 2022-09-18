@@ -11,6 +11,9 @@ public interface IDerivedQuantity : IAttributeDefinition
 
     public abstract bool Permutations { get; }
 
+    public abstract IReadOnlyList<IExpandedDerivedQuantity> ExpandedScalarResults { get; }
+    public abstract IReadOnlyDictionary<int, IReadOnlyList<IExpandedDerivedQuantity>> ExpandedVectorResults { get; }
+
     new public abstract IDerivedQuantityLocations Locations { get; }
 }
 

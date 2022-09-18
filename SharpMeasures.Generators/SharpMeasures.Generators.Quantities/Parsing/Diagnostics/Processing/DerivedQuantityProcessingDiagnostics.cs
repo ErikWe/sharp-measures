@@ -29,6 +29,16 @@ public class DerivedQuantityProcessingDiagnostics : IDerivedQuantityProcessingDi
         return DiagnosticConstruction.ExpressionDoesNotIncludeQuantity(definition.Locations.Expression?.AsRoslynLocation(), index);
     }
 
+    public Diagnostic MalformedExpression(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    {
+        return DiagnosticConstruction.MalformedDerivationExpression(definition.Locations.Expression?.AsRoslynLocation());
+    }
+
+    public Diagnostic ExpressionContainsConstant(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    {
+        return DiagnosticConstruction.DerivationExpressionContainsConstant(definition.Locations.Expression?.AsRoslynLocation());
+    }
+
     public Diagnostic NullSignature(IProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         return DiagnosticConstruction.NullDerivationSignature(definition.Locations.SignatureCollection?.AsRoslynLocation());

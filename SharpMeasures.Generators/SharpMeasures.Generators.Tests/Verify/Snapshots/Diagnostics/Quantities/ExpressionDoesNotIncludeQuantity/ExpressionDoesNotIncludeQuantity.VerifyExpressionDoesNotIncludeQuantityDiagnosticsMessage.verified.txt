@@ -4,11 +4,11 @@
     Title: Quantity is not included in expression,
     Severity: Warning,
     WarningLevel: 1,
-    Location: : (10,17)-(10,20),
+    Location: : (10,17)-(10,22),
     Description: ,
     HelpLink: ,
     MessageFormat: The expression does not include the quantity with index {0},
-    Message: The expression does not include the quantity with index 0,
+    Message: The expression does not include the quantity with index 1,
     Category: Usage,
     CustomTags: []
   }

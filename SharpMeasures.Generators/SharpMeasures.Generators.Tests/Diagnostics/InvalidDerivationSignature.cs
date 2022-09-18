@@ -21,10 +21,6 @@ public class InvalidDerivationSignature
     [MemberData(nameof(InvalidSignatures))]
     public void DerivableUnit(SourceSubtext signature) => AssertDerivableUnit(signature);
 
-    [Theory]
-    [MemberData(nameof(InvalidSignatures))]
-    public void DerivedQuantity(SourceSubtext signature) => AssertDerivedQuantity(signature);
-
     public static IEnumerable<object[]> InvalidSignatures() => new object[][]
     {
         new object[] { NullSignature },
@@ -69,41 +65,7 @@ public class InvalidDerivationSignature
         return AssertExactlyInvalidDerivationSignatureDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(DerivableUnitIdentical);
     }
 
-    private static string DerivedQuantityText(SourceSubtext signature) => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-
-        [DerivedQuantity("42", {{signature}})]
-        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
-        public partial class Speed { }
-
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
-        public partial class Time { }
-
-        [SharpMeasuresUnit(typeof(Speed))]
-        public partial class UnitOfSpeed { }
-
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-
-        [SharpMeasuresUnit(typeof(Time))]
-        public partial class UnitOfTime { }
-        """;
-
-    private static GeneratorVerifier AssertDerivedQuantity(SourceSubtext signature)
-    {
-        var source = DerivedQuantityText(signature);
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, signature.Context.With(outerPrefix: "DerivedQuantity(\"42\", "));
-
-        return AssertExactlyInvalidDerivationSignatureDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(DerivableQuantityIdentical);
-    }
-
     private static GeneratorVerifier DerivableUnitIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(DerivableUnitIdenticalText);
-    private static GeneratorVerifier DerivableQuantityIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(DerivedQuantityIdenticalText);
 
     private static string DerivableUnitIdenticalText => """
         using SharpMeasures.Generators.Scalars;
@@ -126,29 +88,5 @@ public class InvalidDerivationSignature
 
         [SharpMeasuresScalar(typeof(UnitOfTime))]
         public partial class Time { }
-        """;
-
-    private static string DerivedQuantityIdenticalText => $$"""
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-
-        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
-        public partial class Speed { }
-
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
-        public partial class Time { }
-
-        [SharpMeasuresUnit(typeof(Speed))]
-        public partial class UnitOfSpeed { }
-
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-
-        [SharpMeasuresUnit(typeof(Time))]
-        public partial class UnitOfTime { }
         """;
 }

@@ -46,7 +46,7 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
     {
         var processedExpression = ValidateExpressionNotNull(context, definition)
             .Validate(() => ValidateExpressionNotEmpty(context, definition))
-            .Validate(() => PartiallyValidateExpressionFormat(context, definition))
+            .Validate(() => ValidateExpressionFormat(context, definition))
             .Validate(() => ValidateExpressionMatchesSignature(context, definition));
 
         if (processedExpression.IsInvalid)
@@ -83,11 +83,12 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
         return ValidityWithDiagnostics.Conditional(definition.Expression!.Length is not 0, () => Diagnostics.NullExpression(context, definition));
     }
 
-    private IValidityWithDiagnostics PartiallyValidateExpressionFormat(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    private IValidityWithDiagnostics ValidateExpressionFormat(IProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         string expression = definition.Expression!.Replace(" ", string.Empty);
 
         int parenthesisLevel = 0;
+
         bool canOpenParenthesis = true;
         bool canCloseParenthesis = false;
 
@@ -99,6 +100,8 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
         bool canHaveConstantOne = true;
 
         bool requireDivision = false;
+
+        bool canEndExpression = false;
 
         for (int i = 0; i < expression.Length; i++)
         {
@@ -116,6 +119,7 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
                 canHaveOperator = false;
                 canHaveConstantOne = true;
                 requireDivision = false;
+                canEndExpression = false;
 
                 parenthesisLevel += 1;
 
@@ -136,6 +140,7 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
                 canHaveOperator = true;
                 canHaveConstantOne = false;
                 requireDivision = false;
+                canEndExpression = true;
 
                 parenthesisLevel -= 1;
 
@@ -157,6 +162,7 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
                 canHaveOperator = false;
                 canHaveConstantOne = false;
                 requireDivision = false;
+                canEndExpression = false;
 
                 continue;
             }
@@ -176,6 +182,7 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
                 canHaveOperator = true;
                 canHaveConstantOne = false;
                 requireDivision = false;
+                canEndExpression = true;
 
                 continue;
             }
@@ -200,6 +207,7 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
                 canHaveOperator = false;
                 canHaveConstantOne = false;
                 requireDivision = false;
+                canEndExpression = false;
 
                 continue;
             }
@@ -215,6 +223,7 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
                     canHaveOperator = false;
                     canHaveConstantOne = false;
                     requireDivision = false;
+                    canEndExpression = false;
 
                     continue;
                 }
@@ -231,10 +240,16 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
                 canHaveOperator = true;
                 canHaveConstantOne = false;
                 requireDivision = true;
+                canEndExpression = false;
 
                 continue;
             }
 
+            return ValidityWithDiagnostics.Invalid(Diagnostics.MalformedExpression(context, definition));
+        }
+
+        if (canEndExpression is false || parenthesisLevel is not 0)
+        {
             return ValidityWithDiagnostics.Invalid(Diagnostics.MalformedExpression(context, definition));
         }
 

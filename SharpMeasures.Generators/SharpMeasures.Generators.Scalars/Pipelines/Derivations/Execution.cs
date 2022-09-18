@@ -91,18 +91,24 @@ internal static class Execution
 
             foreach (var derivation in Data.Derivations)
             {
-                AppendMethodDerivation(indentation, derivation.Expression, derivation.Signature, derivation.Permutations);
+                foreach (var expandedDerivation in derivation.ExpandedScalarResults)
+                {
+                    AppendMethodDerivation(indentation, expandedDerivation.Expression, expandedDerivation.Signature, derivation.Permutations);
+                }
             }
 
             foreach (var derivation in Data.Derivations)
             {
-                var operatorDerivations = OperatorDerivationSearcher.GetDerivations(Data.Scalar.AsNamedType(), derivation);
-
-                foreach (var operatorDerivation in operatorDerivations)
+                foreach (var expandedDerivation in derivation.ExpandedScalarResults)
                 {
-                    if (operatorDerivation.LeftHandSide == Data.Scalar.AsNamedType() || operatorDerivation.LeftHandSide.Assembly != Data.Scalar.Assembly)
+                    var operatorDerivations = OperatorDerivationSearcher.GetDerivations(Data.Scalar.AsNamedType(), expandedDerivation.Expression, expandedDerivation.Signature, derivation.OperatorImplementation);
+
+                    foreach (var operatorDerivation in operatorDerivations)
                     {
-                        AppendOperatorDerivation(indentation, operatorDerivation);
+                        if (operatorDerivation.LeftHandSide == Data.Scalar.AsNamedType() || operatorDerivation.LeftHandSide.Assembly != Data.Scalar.Assembly)
+                        {
+                            AppendOperatorDerivation(indentation, operatorDerivation);
+                        }
                     }
                 }
             }
