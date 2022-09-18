@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 
 internal static class Execution
 {
@@ -51,7 +50,6 @@ internal static class Execution
 
         private HashSet<DerivedQuantitySignature> ImplementedSignatures { get; } = new();
 
-        private Regex ConstantInExpressionPattern { get; } = new("""(?:^|[^{])(?'constant'[0-9]+)(?:[^}]|$)""", RegexOptions.ExplicitCapture);
         private bool AnyImplementations { get; set; }
 
         private Composer(DataModel data)
@@ -113,68 +111,8 @@ internal static class Execution
 
         private void AppendMethodDerivation(Indentation indentation, IDerivedQuantity derivation)
         {
-            var constant = ConstantInExpressionPattern.Matches(derivation.Expression);
+            AppendMethodDerivation(indentation, derivation.Expression, derivation.Signature, derivation.Permutations);
 
-            if (constant.Count is 0)
-            {
-                AppendMethodDerivation(indentation, derivation.Expression, derivation.Signature, derivation.Permutations);
-
-                return;
-            }
-
-            NamedType pureScalar = new("Scalar", "SharpMeasures", "SharpMeasures.Base", true);
-
-            var expression = derivation.Expression;
-            List<NamedType> signature = new(derivation.Signature);
-
-            iterativelyReplaceConstant();
-
-            AppendMethodDerivation(indentation, expression, signature, derivation.Permutations);
-
-            void iterativelyReplaceConstant()
-            {
-                var updatedExpression = ConstantInExpressionPattern.Replace(expression, $$"""{{{signature.Count}}} """, 1);
-
-                if (expression == updatedExpression)
-                {
-                    return;
-                }
-
-                modifyExpressionAndSignature(updatedExpression);
-
-                iterativelyReplaceConstant();
-            }
-
-            void modifyExpressionAndSignature(string updatedExpression)
-            {
-                int insertedAtIndex = updatedExpression.IndexOf($$"""{{{signature.Count}}}""", StringComparison.InvariantCulture);
-
-                for (int i = 0; i < signature.Count; i++)
-                {
-                    if (updatedExpression.IndexOf($$"""{{{i}}}""", StringComparison.InvariantCulture) > insertedAtIndex)
-                    {
-                        updatedExpression = decreaseExpressionElementIndex(updatedExpression, signature.Count, i);
-
-                        expression = updatedExpression;
-                        signature.Insert(i, pureScalar);
-
-                        return;
-                    }
-                }
-
-                expression = updatedExpression;
-                signature.Add(pureScalar);
-            }
-
-            string decreaseExpressionElementIndex(string expression, int initial, int final)
-            {
-                for (int i = initial; i >= final; i--)
-                {
-                    expression = expression.Replace($$"""{{{i}}}""", $$"""{{{i + 1}}}""");
-                }
-
-                return expression.Replace($$"""{{{initial + 1}}}""", $$"""{{{final}}}""");
-            }
         }
 
         private void AppendMethodDerivation(Indentation indentation, string expression, IReadOnlyList<NamedType> signature, bool permutations)
