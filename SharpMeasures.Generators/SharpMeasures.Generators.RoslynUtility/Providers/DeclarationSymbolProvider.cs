@@ -26,13 +26,9 @@ public static class DeclarationSymbolProvider
 
     private delegate TOut DNullableEraser<TOut, TNullableOut>(TNullableOut? output);
 
-    public static IDeclarationSymbolProvider<TIn, TOut> Construct<TIn, TOut>(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
-    {
-        return new Provider<TIn, TOut>(inputTransform, outputTransform);
-    }
+    public static IDeclarationSymbolProvider<TIn, TOut> Construct<TIn, TOut>(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform) => new Provider<TIn, TOut>(inputTransform, outputTransform);
 
-    public static IPartialDeclarationSymbolProvider<TDeclaration, (TDeclaration Declaration, INamedTypeSymbol TypeSymbol)> Construct<TDeclaration>()
-        where TDeclaration : BaseTypeDeclarationSyntax
+    public static IPartialDeclarationSymbolProvider<TDeclaration, (TDeclaration Declaration, INamedTypeSymbol TypeSymbol)> Construct<TDeclaration>() where TDeclaration : BaseTypeDeclarationSyntax
     {
         return Construct<TDeclaration, (TDeclaration, INamedTypeSymbol)>(outputTransform);
 
@@ -47,20 +43,15 @@ public static class DeclarationSymbolProvider
         }
     }
 
-    public static IPartialDeclarationSymbolProvider<TIn, TOut> Construct<TIn, TOut>(DPartialInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform)
-    {
-        return new PartialProvider<TIn, TOut>(inputTransform, outputTransform);
-    }
-
-    public static IPartialDeclarationSymbolProvider<TDeclaration, TOut> Construct<TDeclaration, TOut>(DOutputTransform<TDeclaration, TOut> outputTransform)
-        where TDeclaration : BaseTypeDeclarationSyntax
+    public static IPartialDeclarationSymbolProvider<TIn, TOut> Construct<TIn, TOut>(DPartialInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform) => new PartialProvider<TIn, TOut>(inputTransform, outputTransform);
+    public static IPartialDeclarationSymbolProvider<TDeclaration, TOut> Construct<TDeclaration, TOut>(DOutputTransform<TDeclaration, TOut> outputTransform) where TDeclaration : BaseTypeDeclarationSyntax
     {
         return new PartialProvider<TDeclaration, TOut>(inputTransform, outputTransform);
 
         static BaseTypeDeclarationSyntax inputTransform(TDeclaration declaration) => declaration;
     }
 
-    private class Provider<TIn, TOut> : IDeclarationSymbolProvider<TIn, TOut>
+    private sealed class Provider<TIn, TOut> : IDeclarationSymbolProvider<TIn, TOut>
     {
         private DInputTransform<TIn> InputTransform { get; }
         private DOutputTransform<TIn, TOut> OutputTransform { get; }
@@ -71,10 +62,7 @@ public static class DeclarationSymbolProvider
             OutputTransform = outputTransform;
         }
 
-        public IncrementalValuesProvider<Optional<TOut>> Attach(IncrementalValuesProvider<Optional<TIn>> inputProvider)
-        {
-            return inputProvider.Select(ExtractSymbol);
-        }
+        public IncrementalValuesProvider<Optional<TOut>> Attach(IncrementalValuesProvider<Optional<TIn>> inputProvider) => inputProvider.Select(ExtractSymbol);
 
         private Optional<TOut> ExtractSymbol(Optional<TIn> input, CancellationToken token)
         {
@@ -100,10 +88,8 @@ public static class DeclarationSymbolProvider
             {
                 return OutputTransform(input.Value, symbol);
             }
-            else
-            {
-                return default;
-            }
+
+            return default;
         }
     }
 

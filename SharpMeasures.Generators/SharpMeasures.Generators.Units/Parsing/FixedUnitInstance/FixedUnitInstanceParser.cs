@@ -8,7 +8,7 @@ internal static class FixedUnitInstanceParser
 
     private static RawFixedUnitInstanceDefinition DefaultDefinition() => RawFixedUnitInstanceDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawFixedUnitInstanceDefinition, FixedUnitInstanceLocations, FixedUnitInstanceAttribute>
+    private sealed class AttributeParser : AAttributeParser<RawFixedUnitInstanceDefinition, FixedUnitInstanceLocations, FixedUnitInstanceAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, FixedUnitInstanceProperties.AllProperties) { }
     }

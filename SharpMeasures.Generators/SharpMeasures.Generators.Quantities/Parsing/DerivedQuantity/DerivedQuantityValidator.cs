@@ -20,7 +20,7 @@ public interface IDerivedQuantityValidationContext : IProcessingContext
     public abstract IVectorPopulation VectorPopulation { get; }
 }
 
-public class DerivedQuantityValidator : AProcesser<IDerivedQuantityValidationContext, DerivedQuantityDefinition, DerivedQuantityDefinition>
+public sealed class DerivedQuantityValidator : AProcesser<IDerivedQuantityValidationContext, DerivedQuantityDefinition, DerivedQuantityDefinition>
 {
     private IDerivedQuantityValidationDiagnostics Diagnostics { get; }
 

@@ -25,9 +25,8 @@ using System.Threading;
 
 internal static class VectorSpecializationValidator
 {
-    public static IncrementalValuesProvider<Optional<VectorSpecializationType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<VectorSpecializationType>> vectorProvider,
-       IncrementalValueProvider<VectorProcessingData> processingDataProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
-       IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
+    public static IncrementalValuesProvider<Optional<VectorSpecializationType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<VectorSpecializationType>> vectorProvider, IncrementalValueProvider<VectorProcessingData> processingDataProvider,
+        IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
         return vectorProvider.Combine(processingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
@@ -69,9 +68,7 @@ internal static class VectorSpecializationValidator
         var constants = ValidateConstants(vectorType, vectorPopulation, vectorBase.Definition.Dimension, unit, allUnitInstances);
         var conversions = ValidateConversions(vectorType, vectorPopulation, vectorBase.Definition.Dimension);
 
-        VectorSpecializationType product = new(vectorType.Type, vectorType.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result,
-            unitInstanceInclusions.Result, unitInstanceExclusions.Result);
-
+        VectorSpecializationType product = new(vectorType.Type, vectorType.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
         var allDiagnostics = vector.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
@@ -147,8 +144,7 @@ internal static class VectorSpecializationValidator
         }
     }
 
-    private static IEnumerable<IUnitInstance> GetUnitInstanceInclusions(VectorSpecializationType vectorType, IVectorPopulation vectorPopulation, IEnumerable<IUnitInstance> initialUnits, IUnitType unit,
-        Func<IVectorSpecializationType, bool> shouldInherit, bool onlyInherited = false)
+    private static IEnumerable<IUnitInstance> GetUnitInstanceInclusions(VectorSpecializationType vectorType, IVectorPopulation vectorPopulation, IEnumerable<IUnitInstance> initialUnits, IUnitType unit, Func<IVectorSpecializationType, bool> shouldInherit, bool onlyInherited = false)
     {
         HashSet<IUnitInstance> includedUnits = new(initialUnits);
 

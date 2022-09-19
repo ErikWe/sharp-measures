@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-internal class VectorDocumentationTags : IVectorDocumentationStrategy, IEquatable<VectorDocumentationTags>
+internal sealed class VectorDocumentationTags : IVectorDocumentationStrategy, IEquatable<VectorDocumentationTags>
 {
     private int Dimension { get; }
 
@@ -112,7 +112,7 @@ internal class VectorDocumentationTags : IVectorDocumentationStrategy, IEquatabl
         return tag.ToString();
     }
 
-    public virtual bool Equals(VectorDocumentationTags? other) => other is not null && Dimension == other.Dimension;
+    public bool Equals(VectorDocumentationTags? other) => other is not null && Dimension == other.Dimension;
     public override bool Equals(object? obj) => obj is VectorDocumentationTags other && Equals(other);
 
     public static bool operator ==(VectorDocumentationTags? lhs, VectorDocumentationTags? rhs) => lhs?.Equals(rhs) ?? rhs is null;

@@ -1,6 +1,3 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
-internal interface IGroupDocumentationStrategy
-{
-    
-}
+internal interface IGroupDocumentationStrategy { }

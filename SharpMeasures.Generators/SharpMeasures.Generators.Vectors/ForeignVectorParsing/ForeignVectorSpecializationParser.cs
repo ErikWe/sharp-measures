@@ -9,15 +9,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public static class ForeignVectorSpecializationParser
+internal static class ForeignVectorSpecializationParser
 {
-    public static (Optional<IVectorSpecializationType> Definition, IEnumerable<INamedTypeSymbol> ReferencedSymbols) Parse(INamedTypeSymbol typeSymbol)
+    public static (Optional<RawVectorSpecializationType> Definition, IEnumerable<INamedTypeSymbol> ReferencedSymbols) Parse(INamedTypeSymbol typeSymbol)
     {
         (var vector, var vectorReferencedSymbols) = ParseVector(typeSymbol);
 
         if (vector.HasValue is false)
         {
-            return (new Optional<IVectorSpecializationType>(), Array.Empty<INamedTypeSymbol>());
+            return (new Optional<RawVectorSpecializationType>(), Array.Empty<INamedTypeSymbol>());
         }
 
         (var derivations, var derivationsReferencedSymbols) = CommonParsing.ParseDerivations(typeSymbol);
@@ -28,17 +28,9 @@ public static class ForeignVectorSpecializationParser
         var excludeUnitInstances = CommonParsing.ParseExcludeUnits(typeSymbol);
 
         RawVectorSpecializationType rawVectorType = new(typeSymbol.AsDefinedType(), MinimalLocation.None, vector.Value, derivations, constants, conversions, includeUnitInstances, excludeUnitInstances);
-
-        var vectorType = new ForeignVectorSpecializationProcesser().Process(rawVectorType);
-
-        if (vectorType.HasValue is false)
-        {
-            return (new Optional<IVectorSpecializationType>(), Array.Empty<INamedTypeSymbol>());
-        }
-
         var referencedSymbols = vectorReferencedSymbols.Concat(derivationsReferencedSymbols).Concat(conversionsReferencedSymbols);
 
-        return (vectorType.Value, referencedSymbols);
+        return (rawVectorType, referencedSymbols);
     }
     
     private static (Optional<RawSpecializedSharpMeasuresVectorDefinition>, IEnumerable<INamedTypeSymbol>) ParseVector(INamedTypeSymbol typeSymbol)

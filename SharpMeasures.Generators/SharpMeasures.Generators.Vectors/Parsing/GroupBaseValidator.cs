@@ -22,80 +22,78 @@ using System.Threading;
 
 internal static class GroupBaseValidator
 {
-    public static IncrementalValuesProvider<Optional<GroupBaseType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<GroupBaseType>> vectorProvider,
-       IncrementalValueProvider<VectorProcessingData> processingDataProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
-       IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
+    public static IncrementalValuesProvider<Optional<GroupBaseType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<GroupBaseType>> vectorProvider, IncrementalValueProvider<VectorProcessingData> processingDataProvider,
+        IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
         return vectorProvider.Combine(processingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
 
-    private static IOptionalWithDiagnostics<GroupBaseType> Validate((Optional<GroupBaseType> UnvalidatedVector, VectorProcessingData ProcessingData, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
+    private static IOptionalWithDiagnostics<GroupBaseType> Validate((Optional<GroupBaseType> UnvalidatedGroup, VectorProcessingData ProcessingData, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
     {
-        if (token.IsCancellationRequested || input.UnvalidatedVector.HasValue is false)
+        if (token.IsCancellationRequested || input.UnvalidatedGroup.HasValue is false)
         {
             return OptionalWithDiagnostics.Empty<GroupBaseType>();
         }
 
-        return Validate(input.UnvalidatedVector.Value, input.ProcessingData, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        return Validate(input.UnvalidatedGroup.Value, input.ProcessingData, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
     }
 
-    private static IOptionalWithDiagnostics<GroupBaseType> Validate(GroupBaseType vectorType, VectorProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
+    private static IOptionalWithDiagnostics<GroupBaseType> Validate(GroupBaseType groupType, VectorProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        var vector = ValidateVector(vectorType, processingData, unitPopulation, scalarPopulation, vectorPopulation);
+        var group = ValidateGroup(groupType, processingData, unitPopulation, scalarPopulation, vectorPopulation);
 
-        if (vector.LacksResult)
+        if (group.LacksResult)
         {
-            return vector.AsEmptyOptional<GroupBaseType>();
+            return group.AsEmptyOptional<GroupBaseType>();
         }
 
-        var derivations = ValidateDerivations(vectorType, scalarPopulation, vectorPopulation);
-        var conversions = ValidateConversions(vectorType, vectorPopulation);
+        var derivations = ValidateDerivations(groupType, scalarPopulation, vectorPopulation);
+        var conversions = ValidateConversions(groupType, vectorPopulation);
 
-        var includedUnitInstanceNames = new HashSet<string>(unitPopulation.Units[vectorType.Definition.Unit].UnitInstancesByName.Keys);
+        var includedUnitInstanceNames = new HashSet<string>(unitPopulation.Units[groupType.Definition.Unit].UnitInstancesByName.Keys);
 
-        var unitInstanceInclusions = ValidateIncludeUnitInstances(vectorType, unitPopulation, includedUnitInstanceNames);
-        var unitInstanceExclusions = ValidateExcludeUnitInstances(vectorType, unitPopulation, includedUnitInstanceNames);
+        var unitInstanceInclusions = ValidateIncludeUnitInstances(groupType, unitPopulation, includedUnitInstanceNames);
+        var unitInstanceExclusions = ValidateExcludeUnitInstances(groupType, unitPopulation, includedUnitInstanceNames);
 
-        GroupBaseType product = new(vectorType.Type, vectorType.TypeLocation, vector.Result, derivations.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
-
-        var allDiagnostics = vector.Concat(derivations).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
+        GroupBaseType product = new(groupType.Type, groupType.TypeLocation, group.Result, derivations.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
+        var allDiagnostics = group.Concat(derivations).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static IOptionalWithDiagnostics<SharpMeasuresVectorGroupDefinition> ValidateVector(GroupBaseType vectorType, VectorProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
+    private static IOptionalWithDiagnostics<SharpMeasuresVectorGroupDefinition> ValidateGroup(GroupBaseType groupType, VectorProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        var validationContext = new SharpMeasuresVectorGroupValidationContext(vectorType.Type, processingData, unitPopulation, scalarPopulation, vectorPopulation);
+        var validationContext = new SharpMeasuresVectorGroupValidationContext(groupType.Type, processingData, unitPopulation, scalarPopulation, vectorPopulation);
 
-        return ProcessingFilter.Create(SharpMeasuresVectorGroupValidator).Filter(validationContext, vectorType.Definition);
+        return ProcessingFilter.Create(SharpMeasuresVectorGroupValidator).Filter(validationContext, groupType.Definition);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ValidateDerivations(GroupBaseType vectorType, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
+    private static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ValidateDerivations(GroupBaseType groupType, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        var validationContext = new DerivedQuantityValidationContext(vectorType.Type, scalarPopulation, vectorPopulation);
+        var validationContext = new DerivedQuantityValidationContext(groupType.Type, scalarPopulation, vectorPopulation);
 
-        return ProcessingFilter.Create(DerivedQuantityValidator).Filter(validationContext, vectorType.Derivations);
+        return ProcessingFilter.Create(DerivedQuantityValidator).Filter(validationContext, groupType.Derivations);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ValidateConversions(GroupBaseType vectorType, IVectorPopulation vectorPopulation)
+    private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ValidateConversions(GroupBaseType groupType, IVectorPopulation vectorPopulation)
     {
-        var filteringContext = new ConvertibleVectorFilteringContext(vectorType.Type, VectorType.Group, vectorPopulation, new HashSet<NamedType>());
+        var filteringContext = new ConvertibleVectorFilteringContext(groupType.Type, VectorType.Group, vectorPopulation, new HashSet<NamedType>());
 
-        return ProcessingFilter.Create(ConvertibleVectorFilterer).Filter(filteringContext, vectorType.Conversions);
+        return ProcessingFilter.Create(ConvertibleVectorFilterer).Filter(filteringContext, groupType.Conversions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ValidateIncludeUnitInstances(GroupBaseType vectorType, IUnitPopulation unitPopulation, HashSet<string> includedUnitInstanceNames)
+    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ValidateIncludeUnitInstances(GroupBaseType groupType, IUnitPopulation unitPopulation, HashSet<string> includedUnitInstanceNames)
     {
-        var filteringContext = new IncludeUnitsFilteringContext(vectorType.Type, unitPopulation.Units[vectorType.Definition.Unit], includedUnitInstanceNames);
+        var filteringContext = new IncludeUnitsFilteringContext(groupType.Type, unitPopulation.Units[groupType.Definition.Unit], includedUnitInstanceNames);
 
-        return ProcessingFilter.Create(IncludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInstanceInclusions);
+        return ProcessingFilter.Create(IncludeUnitsFilterer).Filter(filteringContext, groupType.UnitInstanceInclusions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ValidateExcludeUnitInstances(GroupBaseType vectorType, IUnitPopulation unitPopulation, HashSet<string> includedUnitInstanceNames)
+    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ValidateExcludeUnitInstances(GroupBaseType groupType, IUnitPopulation unitPopulation, HashSet<string> includedUnitInstanceNames)
     {
-        var filteringContext = new ExcludeUnitsFilteringContext(vectorType.Type, unitPopulation.Units[vectorType.Definition.Unit], includedUnitInstanceNames);
+        var filteringContext = new ExcludeUnitsFilteringContext(groupType.Type, unitPopulation.Units[groupType.Definition.Unit], includedUnitInstanceNames);
 
-        return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInstanceExclusions);
+        return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, groupType.UnitInstanceExclusions);
     }
 
     private static SharpMeasuresVectorGroupValidator SharpMeasuresVectorGroupValidator { get; } = new(SharpMeasuresVectorGroupValidationDiagnostics.Instance);

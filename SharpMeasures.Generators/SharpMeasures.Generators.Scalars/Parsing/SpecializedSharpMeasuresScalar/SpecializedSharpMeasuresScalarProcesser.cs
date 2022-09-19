@@ -23,7 +23,7 @@ internal interface ISpecializedSharpMeasuresScalarProcessingDiagnostics : IDefau
     public abstract Diagnostic? NullCubeRootQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
 }
 
-internal class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProcessingContext, RawSpecializedSharpMeasuresScalarDefinition, SpecializedSharpMeasuresScalarDefinition>
+internal sealed class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProcessingContext, RawSpecializedSharpMeasuresScalarDefinition, SpecializedSharpMeasuresScalarDefinition>
 {
     private ISpecializedSharpMeasuresScalarProcessingDiagnostics Diagnostics { get; }
 
@@ -50,9 +50,8 @@ internal class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProcessingC
 
     private static SpecializedSharpMeasuresScalarDefinition ProduceResult(RawSpecializedSharpMeasuresScalarDefinition definition, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
-        return new(definition.OriginalQuantity!.Value, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritBases, definition.InheritUnits,
-            definition.Vector, definition.ImplementSum, definition.ImplementDifference, definition.Difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.Reciprocal, definition.Square, definition.Cube,
-            definition.SquareRoot, definition.CubeRoot, definition.GenerateDocumentation, definition.Locations);
+        return new(definition.OriginalQuantity!.Value, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritBases, definition.InheritUnits, definition.Vector, definition.ImplementSum, definition.ImplementDifference, definition.Difference,
+            defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.Reciprocal, definition.Square, definition.Cube, definition.SquareRoot, definition.CubeRoot, definition.GenerateDocumentation, definition.Locations);
     }
 
     private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawSpecializedSharpMeasuresScalarDefinition definition)

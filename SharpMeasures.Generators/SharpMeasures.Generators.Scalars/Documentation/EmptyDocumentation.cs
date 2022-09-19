@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Units;
 using System;
 using System.Collections.Generic;
 
-internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocumentation>
+internal sealed class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocumentation>
 {
     public static EmptyDocumentation Instance { get; } = new();
 
@@ -87,11 +87,7 @@ internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocu
     string IDocumentationStrategy.LessThanOrEqualSameType() => string.Empty;
     string IDocumentationStrategy.GreaterThanOrEqualSameType() => string.Empty;
 
-    public virtual bool Equals(EmptyDocumentation? other)
-    {
-        return other is not null;
-    }
-
+    public bool Equals(EmptyDocumentation? other) => other is not null;
     public override bool Equals(object? obj) => obj is EmptyDocumentation other && Equals(other);
 
     public static bool operator ==(EmptyDocumentation? lhs, EmptyDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;

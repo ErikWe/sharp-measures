@@ -20,7 +20,7 @@ public interface IDerivedQuantityExpandingDiagnostics
     public abstract Diagnostic? DerivationResultsInUnexpectedDimension(IDerivedQuantity definition, NamedType vector);
 }
 
-public class DerivedQuantityExpander
+public sealed class DerivedQuantityExpander
 {
     public static IOptionalWithDiagnostics<DerivedQuantityDefinition> Expand(NamedType resultingQuantity, IDerivedQuantity derivation, IVectorPopulation vectorPopulation, IDerivedQuantityExpandingDiagnostics diagnostics)
     {
@@ -412,7 +412,7 @@ public class DerivedQuantityExpander
         public abstract void FillSignature(IList<NamedType> signature);
     }
 
-    private class GroupNode : INode
+    private sealed class GroupNode : INode
     {
         private int SignatureIndex { get; }
         private IReadOnlyDictionary<int, NamedType> GroupPopulation { get; }
@@ -428,7 +428,6 @@ public class DerivedQuantityExpander
         }
 
         QuantityType INode.ResultingType() => QuantityType.Vector;
-
         IReadOnlyList<int> INode.ResultingDimensions() => Dimensions;
 
         public INode DeepCopy()
@@ -456,7 +455,7 @@ public class DerivedQuantityExpander
         public void FillSignature(IList<NamedType> signature) => signature[SignatureIndex] = GroupPopulation[Dimensions.Single()];
     }
 
-    private class VectorNode : INode
+    private sealed class VectorNode : INode
     {
         private int SignatureIndex { get; }
         private NamedType SignatureType { get; } 
@@ -472,14 +471,11 @@ public class DerivedQuantityExpander
         }
 
         QuantityType INode.ResultingType() => QuantityType.Vector;
-
         IReadOnlyList<int> INode.ResultingDimensions() => new[] { Dimension };
 
         public INode DeepCopy() => new VectorNode(SignatureIndex, SignatureType, Dimension);
-
         void INode.ReduceChoices() { }
         void INode.LimitResult(IReadOnlyList<int> dimensions) { }
-
         void INode.LimitGroupWithIndex(int index, int dimension) { }
 
         bool INode.Verify() => true;
@@ -487,7 +483,7 @@ public class DerivedQuantityExpander
         public void FillSignature(IList<NamedType> signature) => signature[SignatureIndex] = SignatureType;
     }
 
-    private class ScalarNode : INode
+    private sealed class ScalarNode : INode
     {
         private int SignatureIndex { get; }
         private NamedType SignatureType { get; }
@@ -511,7 +507,7 @@ public class DerivedQuantityExpander
         public void FillSignature(IList<NamedType> signature) => signature[SignatureIndex] = SignatureType;
     }
 
-    private class ConstantNode : INode
+    private sealed class ConstantNode : INode
     {
         QuantityType INode.ResultingType() => QuantityType.Scalar;
         IReadOnlyList<int> INode.ResultingDimensions() => Array.Empty<int>();
@@ -526,7 +522,7 @@ public class DerivedQuantityExpander
         void INode.FillSignature(IList<NamedType> signature) { }
     }
 
-    private class AdditionNode : INode
+    private sealed class AdditionNode : INode
     {
         private INode Left { get; }
         private INode Right { get; }
@@ -593,7 +589,7 @@ public class DerivedQuantityExpander
         }
     }
 
-    private class SubtractionNode : INode
+    private sealed class SubtractionNode : INode
     {
         private INode Left { get; }
         private INode Right { get; }
@@ -660,7 +656,7 @@ public class DerivedQuantityExpander
         }
     }
 
-    private class MultplicationNode : INode
+    private sealed class MultplicationNode : INode
     {
         private INode Left { get; }
         private INode Right { get; }
@@ -722,7 +718,7 @@ public class DerivedQuantityExpander
         }
     }
 
-    private class DivisionNode : INode
+    private sealed class DivisionNode : INode
     {
         private INode Left { get; }
         private INode Right { get; }
@@ -778,7 +774,7 @@ public class DerivedQuantityExpander
         }
     }
 
-    private class DotNode : INode
+    private sealed class DotNode : INode
     {
         private INode Left { get; }
         private INode Right { get; }
@@ -841,7 +837,7 @@ public class DerivedQuantityExpander
         }
     }
 
-    private class CrossNode : INode
+    private sealed class CrossNode : INode
     {
         private INode Left { get; }
         private INode Right { get; }

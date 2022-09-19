@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-public sealed class EquatableCollection<T> : ICollection<T>, IReadOnlyCollection<T>, IEquatable<EquatableCollection<T>>
+public class EquatableCollection<T> : ICollection<T>, IReadOnlyCollection<T>, IEquatable<EquatableCollection<T>>
 {
     [SuppressMessage("Design", "CA1000", Justification = "Property")]
     public static EquatableCollection<T> Empty => new(new List<T>());
@@ -14,6 +14,8 @@ public sealed class EquatableCollection<T> : ICollection<T>, IReadOnlyCollection
     private ICollection<T> Items { get; }
 
     public int Count => Items.Count;
+
+    [SuppressMessage("Design", "CA1033", Justification = "Available through Items")]
     bool ICollection<T>.IsReadOnly => Items.IsReadOnly;
 
     public EquatableCollection(ICollection<T> items)
@@ -29,6 +31,7 @@ public sealed class EquatableCollection<T> : ICollection<T>, IReadOnlyCollection
 
     public bool Contains(T item) => Items.Contains(item);
 
+    [SuppressMessage("Design", "CA1033", Justification = "Available through Items")]
     void ICollection<T>.CopyTo(T[] array, int arrayIndex) => Items.CopyTo(array, arrayIndex);
 
     public bool Equals(EquatableCollection<T>? other) => other is not null && Items.SequenceEqual(other.Items);

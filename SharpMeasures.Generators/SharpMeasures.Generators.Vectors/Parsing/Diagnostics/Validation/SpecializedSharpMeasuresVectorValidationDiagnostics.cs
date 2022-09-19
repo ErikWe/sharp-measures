@@ -9,7 +9,7 @@ using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Validation;
 using SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVector;
 
-internal class SpecializedSharpMeasuresVectorValidationDiagnostics : ISpecializedSharpMeasuresVectorValidationDiagnostics
+internal sealed class SpecializedSharpMeasuresVectorValidationDiagnostics : ISpecializedSharpMeasuresVectorValidationDiagnostics
 {
     public static SpecializedSharpMeasuresVectorValidationDiagnostics Instance { get; } = new();
 

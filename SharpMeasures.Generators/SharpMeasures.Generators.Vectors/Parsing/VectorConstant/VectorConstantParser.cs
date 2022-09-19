@@ -13,12 +13,11 @@ internal static class VectorConstantParser
 
     private static RawVectorConstantDefinition DefaultDefiniton() => RawVectorConstantDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawVectorConstantDefinition, VectorConstantLocations, VectorConstantAttribute>
+    private sealed class AttributeParser : AAttributeParser<RawVectorConstantDefinition, VectorConstantLocations, VectorConstantAttribute>
     {
         public AttributeParser() : base(DefaultDefiniton, VectorConstantProperties.AllProperties) { }
 
-        protected override RawVectorConstantDefinition AddCustomData(RawVectorConstantDefinition definition, AttributeData attributeData,
-            AttributeSyntax attributeSyntax, ImmutableArray<IParameterSymbol> parameterSymbols)
+        protected override RawVectorConstantDefinition AddCustomData(RawVectorConstantDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax, ImmutableArray<IParameterSymbol> parameterSymbols)
         {
             definition = SetUnassignedDefaults(definition);
 

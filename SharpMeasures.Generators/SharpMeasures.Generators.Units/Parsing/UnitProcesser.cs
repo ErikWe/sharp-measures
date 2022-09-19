@@ -26,7 +26,7 @@ public interface IUnitProcesser
     public abstract (IncrementalValueProvider<IUnitPopulation> Population, IUnitValidator Validator) Process(IncrementalGeneratorInitializationContext context);
 }
 
-public class UnitProcesser : IUnitProcesser
+public sealed class UnitProcesser : IUnitProcesser
 {
     private IncrementalValuesProvider<Optional<RawUnitType>> UnitProvider { get; }
 
@@ -140,10 +140,7 @@ public class UnitProcesser : IUnitProcesser
     private static IUnitPopulation ExtractPopulation((IUnitPopulation Population, UnitProcessingData) input, CancellationToken _) => input.Population;
     private static UnitProcessingData ExtractProcessingData((IUnitPopulation, UnitProcessingData ProcessingData) input, CancellationToken _) => input.ProcessingData;
 
-    private static (IUnitPopulation, UnitProcessingData) CreatePopulation(ImmutableArray<IUnitType> units, CancellationToken _)
-    {
-        return UnitPopulation.Build(units);
-    }
+    private static (IUnitPopulation, UnitProcessingData) CreatePopulation(ImmutableArray<IUnitType> units, CancellationToken _) => UnitPopulation.Build(units);
 
     private static class Processers
     {

@@ -13,12 +13,11 @@ internal static class ScalarConstantParser
 
     private static RawScalarConstantDefinition DefaultDefiniton() => RawScalarConstantDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawScalarConstantDefinition, ScalarConstantLocations, ScalarConstantAttribute>
+    private sealed class AttributeParser : AAttributeParser<RawScalarConstantDefinition, ScalarConstantLocations, ScalarConstantAttribute>
     {
         public AttributeParser() : base(DefaultDefiniton, ScalarConstantProperties.AllProperties) { }
 
-        protected override RawScalarConstantDefinition AddCustomData(RawScalarConstantDefinition definition, AttributeData attributeData,
-            AttributeSyntax attributeSyntax, ImmutableArray<IParameterSymbol> parameterSymbols)
+        protected override RawScalarConstantDefinition AddCustomData(RawScalarConstantDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax, ImmutableArray<IParameterSymbol> parameterSymbols)
         {
             definition = SetUnassignedDefaults(definition);
 

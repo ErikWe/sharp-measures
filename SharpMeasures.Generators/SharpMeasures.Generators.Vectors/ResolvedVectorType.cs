@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Quantities;
 
 using System.Collections.Generic;
 
-internal record class ResolvedVectorType : IResolvedVectorType
+internal sealed record class ResolvedVectorType : IResolvedVectorType
 {
     public DefinedType Type { get; }
     public MinimalLocation TypeLocation { get; }
@@ -23,26 +23,19 @@ internal record class ResolvedVectorType : IResolvedVectorType
     public string? DefaultUnitInstanceName { get; }
     public string? DefaultUnitInstanceSymbol { get; }
 
-    public IReadOnlyList<IDerivedQuantity> DefinedDerivations => definedDerivations;
-    public IReadOnlyList<IDerivedQuantity> InheritedDerivations => inheritedDerivations;
-    public IReadOnlyList<IVectorConstant> Constants => constants;
-    public IReadOnlyList<IConvertibleQuantity> Conversions => conversions;
+    public IReadOnlyList<IDerivedQuantity> DefinedDerivations { get; }
+    public IReadOnlyList<IDerivedQuantity> InheritedDerivations { get; }
+    public IReadOnlyList<IVectorConstant> Constants { get; }
+    public IReadOnlyList<IConvertibleQuantity> Conversions { get; }
 
-    public IReadOnlyList<string> IncludedUnitInstanceNames => includedUnits;
-
-    private ReadOnlyEquatableList<IDerivedQuantity> definedDerivations { get; }
-    private ReadOnlyEquatableList<IDerivedQuantity> inheritedDerivations { get; }
-    private ReadOnlyEquatableList<IVectorConstant> constants { get; }
-    private ReadOnlyEquatableList<IConvertibleQuantity> conversions { get; }
-
-    private ReadOnlyEquatableList<string> includedUnits { get; }
+    public IReadOnlyList<string> IncludedUnitInstanceNames { get; }
 
     public bool? GenerateDocumentation { get; }
 
     IReadOnlyList<IConvertibleQuantity> IResolvedQuantityType.Conversions => Conversions;
 
     public ResolvedVectorType(DefinedType type, MinimalLocation typeLocation, int dimension, NamedType unit, NamedType? scalar, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol,
-        IReadOnlyList<IDerivedQuantity> definedDerivations, IReadOnlyList<IDerivedQuantity> inheritedDerivations, IReadOnlyList<IVectorConstant> constants, IReadOnlyList<IConvertibleQuantity> conversions, IReadOnlyList<string> includedUnits, bool? generateDocumentation)
+        IReadOnlyList<IDerivedQuantity> definedDerivations, IReadOnlyList<IDerivedQuantity> inheritedDerivations, IReadOnlyList<IVectorConstant> constants, IReadOnlyList<IConvertibleQuantity> conversions, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
     {
         Type = type;
         TypeLocation = typeLocation;
@@ -60,12 +53,12 @@ internal record class ResolvedVectorType : IResolvedVectorType
         DefaultUnitInstanceName = defaultUnitInstanceName;
         DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol;
 
-        this.definedDerivations = definedDerivations.AsReadOnlyEquatable();
-        this.inheritedDerivations = inheritedDerivations.AsReadOnlyEquatable();
-        this.constants = constants.AsReadOnlyEquatable();
-        this.conversions = conversions.AsReadOnlyEquatable();
+        DefinedDerivations = definedDerivations.AsReadOnlyEquatable();
+        InheritedDerivations = inheritedDerivations.AsReadOnlyEquatable();
+        Constants = constants.AsReadOnlyEquatable();
+        Conversions = conversions.AsReadOnlyEquatable();
 
-        this.includedUnits = includedUnits.AsReadOnlyEquatable();
+        IncludedUnitInstanceNames = includedUnitInstanceNames.AsReadOnlyEquatable();
 
         GenerateDocumentation = generateDocumentation;
     }

@@ -3,7 +3,7 @@
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;
 
-internal record class SharpMeasuresVectorGroupMemberDefinition : AAttributeDefinition<SharpMeasuresVectorGroupMemberLocations>, IVectorGroupMember
+internal sealed record class SharpMeasuresVectorGroupMemberDefinition : AAttributeDefinition<SharpMeasuresVectorGroupMemberLocations>, IVectorGroupMember
 {
     public NamedType VectorGroup { get; }
 
@@ -32,9 +32,8 @@ internal record class SharpMeasuresVectorGroupMemberDefinition : AAttributeDefin
     IVectorGroupMemberLocations IVectorGroupMember.Locations => Locations;
     IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
-    public SharpMeasuresVectorGroupMemberDefinition(NamedType vectorGroup, bool inheritDerivations, bool inheritConversions, bool inheritUnits, bool inheritDerivationsFromMembers, bool inheritConstantsFromMembers,
-        bool inheritConversionsFromMembers, bool inheritUnitsFromMembers, int dimension, bool? generateDocumentation, SharpMeasuresVectorGroupMemberLocations locations)
-        : base(locations)
+    public SharpMeasuresVectorGroupMemberDefinition(NamedType vectorGroup, bool inheritDerivations, bool inheritConversions, bool inheritUnits, bool inheritDerivationsFromMembers, bool inheritConstantsFromMembers, bool inheritConversionsFromMembers, bool inheritUnitsFromMembers, int dimension,
+        bool? generateDocumentation, SharpMeasuresVectorGroupMemberLocations locations) : base(locations)
     {
         VectorGroup = vectorGroup;
 

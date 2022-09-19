@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Processing;
 
-internal class ConvertibleVectorProcessingDiagnostics : AConvertibleQuantityProcessingDiagnostics
+internal sealed class ConvertibleVectorProcessingDiagnostics : AConvertibleQuantityProcessingDiagnostics
 {
     public static ConvertibleVectorProcessingDiagnostics Instance { get; } = new();
 

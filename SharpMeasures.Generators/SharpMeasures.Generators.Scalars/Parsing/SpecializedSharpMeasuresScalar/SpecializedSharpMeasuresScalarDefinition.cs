@@ -3,7 +3,7 @@
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;
 
-internal record class SpecializedSharpMeasuresScalarDefinition : AAttributeDefinition<SpecializedSharpMeasuresScalarLocations>, IScalarSpecialization, IDefaultUnitInstanceDefinition
+internal sealed record class SpecializedSharpMeasuresScalarDefinition : AAttributeDefinition<SpecializedSharpMeasuresScalarLocations>, IScalarSpecialization, IDefaultUnitInstanceDefinition
 {
     public NamedType OriginalQuantity { get; }
 
@@ -37,10 +37,8 @@ internal record class SpecializedSharpMeasuresScalarDefinition : AAttributeDefin
     IScalarSpecializationLocations IScalarSpecialization.Locations => Locations;
     IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
-    public SpecializedSharpMeasuresScalarDefinition(NamedType originalScalar, bool inheritDerivations, bool inheritConstants, bool inheritConversions, bool inheritBases, bool inheritUnits,
-        NamedType? vector, bool? implementSum, bool? implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, NamedType? reciprocal, NamedType? square,
-        NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot, bool? generateDocumentation, SpecializedSharpMeasuresScalarLocations locations)
-        : base(locations)
+    public SpecializedSharpMeasuresScalarDefinition(NamedType originalScalar, bool inheritDerivations, bool inheritConstants, bool inheritConversions, bool inheritBases, bool inheritUnits, NamedType? vector, bool? implementSum, bool? implementDifference, NamedType? difference,
+        string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot, bool? generateDocumentation, SpecializedSharpMeasuresScalarLocations locations) : base(locations)
     {
         OriginalQuantity = originalScalar;
 

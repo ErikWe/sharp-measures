@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-internal record class SymbolicDerivableUnitDefinition : ARawAttributeDefinition<SymbolicDerivableUnitDefinition, DerivableUnitLocations>
+internal sealed record class SymbolicDerivableUnitDefinition : ARawAttributeDefinition<SymbolicDerivableUnitDefinition, DerivableUnitLocations>
 {
     public static SymbolicDerivableUnitDefinition Empty { get; } = new(DerivableUnitLocations.Empty);
 
@@ -23,7 +23,7 @@ internal record class SymbolicDerivableUnitDefinition : ARawAttributeDefinition<
 
     public bool Permutations { get; init; }
 
-    private ReadOnlyEquatableList<INamedTypeSymbol?>? signature { get; init; }
+    private IReadOnlyList<INamedTypeSymbol?>? signature { get; init; }
 
     protected override SymbolicDerivableUnitDefinition Definition => this;
 

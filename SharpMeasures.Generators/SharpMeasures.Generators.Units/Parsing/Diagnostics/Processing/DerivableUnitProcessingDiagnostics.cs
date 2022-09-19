@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 
-internal class DerivableUnitProcessingDiagnostics : IDerivableUnitProcessingDiagnostics
+internal sealed class DerivableUnitProcessingDiagnostics : IDerivableUnitProcessingDiagnostics
 {
     public static DerivableUnitProcessingDiagnostics Instance { get; } = new();
 

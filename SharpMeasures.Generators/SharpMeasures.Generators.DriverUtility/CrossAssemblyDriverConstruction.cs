@@ -17,14 +17,10 @@ public static class CrossAssemblyDriverConstruction
     private static CSharpParseOptions ParseOptions { get; } = new(languageVersion: LanguageVersion);
     private static CSharpCompilationOptions CompilationOptions { get; } = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
 
-    public static Task<(GeneratorDriver Driver, Compilation Compilation)?> ConstructAndRun<TGenerator>(string localSource, string foreignSource, string documentationDirectory) where TGenerator : IIncrementalGenerator, new()
-        => ConstructAndRun(localSource, foreignSource, new TGenerator(), documentationDirectory);
+    public static Task<(GeneratorDriver Driver, Compilation Compilation)?> ConstructAndRun<TGenerator>(string localSource, string foreignSource, string documentationDirectory) where TGenerator : IIncrementalGenerator, new() => ConstructAndRun(localSource, foreignSource, new TGenerator(), documentationDirectory);
+    public static Task<(GeneratorDriver Driver, Compilation Compilation)?> ConstructAndRun(string localSource, string foreignSource, IIncrementalGenerator generator, string documentationDirectory) => RunAndUpdateCompilation(localSource, foreignSource, Construct(generator, documentationDirectory));
 
-    public static Task<(GeneratorDriver Driver, Compilation Compilation)?> ConstructAndRun(string localSource, string foreignSource, IIncrementalGenerator generator, string documentationDirectory)
-        => RunAndUpdateCompilation(localSource, foreignSource, Construct(generator, documentationDirectory));
-
-    public static GeneratorDriver Construct<TGenerator>(string documentationDirectory) where TGenerator : IIncrementalGenerator, new()
-        => Construct(new TGenerator(), documentationDirectory);
+    public static GeneratorDriver Construct<TGenerator>(string documentationDirectory) where TGenerator : IIncrementalGenerator, new() => Construct(new TGenerator(), documentationDirectory);
 
     public static GeneratorDriver Construct(IIncrementalGenerator generator, string documentationDirectory)
     {

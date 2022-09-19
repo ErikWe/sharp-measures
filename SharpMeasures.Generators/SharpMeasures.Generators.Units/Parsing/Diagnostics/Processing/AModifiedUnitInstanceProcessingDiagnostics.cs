@@ -5,8 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal abstract class AModifiedUnitInstanceProcessingDiagnostics<TRawDefinition, TLocations> : AUnitInstanceProcessingDiagnostics<TRawDefinition, TLocations>,
-    IModifiedUnitInstanceProcessingDiagnostics<TRawDefinition, TLocations>
+internal abstract class AModifiedUnitInstanceProcessingDiagnostics<TRawDefinition, TLocations> : AUnitInstanceProcessingDiagnostics<TRawDefinition, TLocations>, IModifiedUnitInstanceProcessingDiagnostics<TRawDefinition, TLocations>
     where TRawDefinition : IRawModifiedUnitInstance<TLocations>
     where TLocations : IModifiedUnitInstanceLocations
 {

@@ -12,8 +12,7 @@ using System.Threading;
 
 internal static class ScalarSpecializationResolver
 {
-    public static IncrementalValuesProvider<Optional<ResolvedScalarType>> Resolve(IncrementalValuesProvider<Optional<ScalarSpecializationType>> scalarProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
-        IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider)
+    public static IncrementalValuesProvider<Optional<ResolvedScalarType>> Resolve(IncrementalValuesProvider<Optional<ScalarSpecializationType>> scalarProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider)
     {
         return scalarProvider.Combine(unitPopulationProvider, scalarPopulationProvider).Select(Resolve);
     }
@@ -99,8 +98,7 @@ internal static class ScalarSpecializationResolver
         }
     }
 
-    private static IReadOnlyList<string> ResolveUnitInstanceInclusions(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation, IUnitType unit, Func<IScalarType, IEnumerable<IUnitInstanceList>> inclusionsDelegate,
-        Func<IScalarType, IEnumerable<IUnitInstanceList>> exclusionsDelegate, Func<IScalarSpecializationType, bool> shouldInherit)
+    private static IReadOnlyList<string> ResolveUnitInstanceInclusions(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation, IUnitType unit, Func<IScalarType, IEnumerable<IUnitInstanceList>> inclusionsDelegate, Func<IScalarType, IEnumerable<IUnitInstanceList>> exclusionsDelegate, Func<IScalarSpecializationType, bool> shouldInherit)
     {
         HashSet<string> includedUnitInstances = new(unit.UnitInstancesByName.Keys);
 
@@ -138,11 +136,7 @@ internal static class ScalarSpecializationResolver
         }
     }
 
-    private static T? RecursivelySearchForDefined<T>(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation, Func<IScalarType, T?> itemDelegate)
-    {
-        return RecursivelySearchForMatching(scalarType, scalarPopulation, itemDelegate, static (_, item) => item is not null);
-    }
-
+    private static T? RecursivelySearchForDefined<T>(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation, Func<IScalarType, T?> itemDelegate) => RecursivelySearchForMatching(scalarType, scalarPopulation, itemDelegate, static (_, item) => item is not null);
     private static T? RecursivelySearchForMatching<T>(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation, Func<IScalarType, T?> itemDelegate, Func<IScalarType, T?, bool> predicate)
     {
         return recursivelySearch(scalarType);

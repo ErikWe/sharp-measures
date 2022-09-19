@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal record class FixedUnitInstanceLocations : AUnitInstanceLocations<FixedUnitInstanceLocations>, IFixedUnitInstanceLocations
+internal sealed record class FixedUnitInstanceLocations : AUnitInstanceLocations<FixedUnitInstanceLocations>, IFixedUnitInstanceLocations
 {
     public static FixedUnitInstanceLocations Empty { get; } = new();
 

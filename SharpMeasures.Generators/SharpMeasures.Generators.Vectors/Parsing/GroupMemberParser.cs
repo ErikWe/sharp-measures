@@ -13,7 +13,7 @@ using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 using System;
 using System.Collections.Generic;
 
-internal class GroupMemberParser : AVectorParser<RawSharpMeasuresVectorGroupMemberDefinition, RawGroupMemberType>
+internal sealed class GroupMemberParser : AVectorParser<RawSharpMeasuresVectorGroupMemberDefinition, RawGroupMemberType>
 {
     protected override RawGroupMemberType ProduceResult(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresVectorGroupMemberDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations,
         IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)

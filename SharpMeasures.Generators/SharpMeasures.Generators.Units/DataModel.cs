@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Units.Documentation;
 
-internal record class DataModel
+internal sealed record class DataModel
 {
     public UnitType Unit { get; }
 

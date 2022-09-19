@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 
-public class DerivedQuantityProcessingDiagnostics : IDerivedQuantityProcessingDiagnostics
+public sealed class DerivedQuantityProcessingDiagnostics : IDerivedQuantityProcessingDiagnostics
 {
     public static DerivedQuantityProcessingDiagnostics Instance { get; } = new();
 

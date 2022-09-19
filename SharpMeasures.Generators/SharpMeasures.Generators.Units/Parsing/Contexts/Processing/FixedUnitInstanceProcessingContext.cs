@@ -4,12 +4,22 @@ using SharpMeasures.Generators.Units.Parsing.FixedUnitInstance;
 
 using System.Collections.Generic;
 
-internal record class FixedUnitInstanceProcessingContext : UnitInstanceProcessingContext, IFixedUnitInstanceProcessingContext
+internal sealed record class FixedUnitInstanceProcessingContext : IFixedUnitInstanceProcessingContext
 {
+    public DefinedType Type { get; }
+
+    public HashSet<string> ReservedUnitInstanceNames { get; }
+    public HashSet<string> ReservedUnitInstancePluralForms { get; }
+
     public bool UnitIsDerivable { get; }
 
-    public FixedUnitInstanceProcessingContext(DefinedType type, HashSet<string> reservedUnitInstanceNames, HashSet<string> reservedUnitInstancePluralForms, bool unitIsDerivable) : base(type, reservedUnitInstanceNames, reservedUnitInstancePluralForms)
+    public FixedUnitInstanceProcessingContext(DefinedType type, HashSet<string> reservedUnitInstanceNames, HashSet<string> reservedUnitInstancePluralForms, bool unitIsDerivable)
     {
+        Type = type;
+
+        ReservedUnitInstanceNames = reservedUnitInstanceNames;
+        ReservedUnitInstancePluralForms = reservedUnitInstancePluralForms;
+
         UnitIsDerivable = unitIsDerivable;
     }
 }

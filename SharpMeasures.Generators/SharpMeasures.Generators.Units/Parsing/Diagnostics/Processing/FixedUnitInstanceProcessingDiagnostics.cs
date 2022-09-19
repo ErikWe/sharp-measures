@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.FixedUnitInstance;
 
-internal class FixedUnitInstanceProcessingDiagnostics : AUnitInstanceProcessingDiagnostics<RawFixedUnitInstanceDefinition, FixedUnitInstanceLocations>, IFixedUnitInstanceProcessingDiagnostics
+internal sealed class FixedUnitInstanceProcessingDiagnostics : AUnitInstanceProcessingDiagnostics<RawFixedUnitInstanceDefinition, FixedUnitInstanceLocations>, IFixedUnitInstanceProcessingDiagnostics
 {
     public static FixedUnitInstanceProcessingDiagnostics Instance { get; } = new();
 

@@ -13,11 +13,9 @@ internal readonly record struct DataModel
 
     public IUnitPopulation UnitPopulation { get; }
 
-    public IReadOnlyCollection<DerivableUnitDefinition> Derivations => derivations;
+    public IReadOnlyCollection<DerivableUnitDefinition> Derivations { get; }
 
     public IDocumentationStrategy Documentation { get; }
-
-    private ReadOnlyEquatableCollection<DerivableUnitDefinition> derivations { get; }
 
     public DataModel(DefinedType unit, NamedType quantity, IUnitPopulation unitPopulation, IReadOnlyCollection<DerivableUnitDefinition> derivations, IDocumentationStrategy documentation)
     {
@@ -26,7 +24,7 @@ internal readonly record struct DataModel
 
         UnitPopulation = unitPopulation;
 
-        this.derivations = derivations.AsReadOnlyEquatable();
+        Derivations = derivations.AsReadOnlyEquatable();
 
         Documentation = documentation;
     }

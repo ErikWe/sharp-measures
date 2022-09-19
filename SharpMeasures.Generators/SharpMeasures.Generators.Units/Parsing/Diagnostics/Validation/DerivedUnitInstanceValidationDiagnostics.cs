@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.DerivedUnitInstance;
 
-internal class DerivedUnitInstanceValidationDiagnostics : IDerivedUnitInstanceValidationDiagnostics
+internal sealed class DerivedUnitInstanceValidationDiagnostics : IDerivedUnitInstanceValidationDiagnostics
 {
     public static DerivedUnitInstanceValidationDiagnostics Instance { get; } = new();
 

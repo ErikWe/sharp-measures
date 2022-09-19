@@ -6,10 +6,7 @@ public readonly record struct NamedType(string Name, string Namespace, string As
 {
     public static NamedType Empty { get; } = new NamedType(string.Empty, string.Empty, string.Empty, false);
 
-    public static NamedType FromSymbol(INamedTypeSymbol symbol)
-    {
-        return new(symbol.Name, GetNamespace(symbol), symbol.ContainingAssembly.Name, symbol.IsValueType);
-    }
+    public static NamedType FromSymbol(INamedTypeSymbol symbol) => new(symbol.Name, GetNamespace(symbol), symbol.ContainingAssembly.Name, symbol.IsValueType);
 
     public bool IsReferenceType => IsValueType is false;
 

@@ -7,8 +7,7 @@ using SharpMeasures.Generators.Diagnostics;
 
 using System.Collections.Generic;
 
-internal interface IModifiedUnitInstanceValidationDiagnostics<in TDefinition>
-    where TDefinition : IModifiedUnitInstance
+internal interface IModifiedUnitInstanceValidationDiagnostics<in TDefinition> where TDefinition : IModifiedUnitInstance
 {
     public abstract Diagnostic? UnrecognizedOriginalUnitInstance(IModifiedUnitInstanceValidationContext context, TDefinition definition);
     public abstract Diagnostic? CyclicallyModified(IModifiedUnitInstanceValidationContext context, TDefinition definition);

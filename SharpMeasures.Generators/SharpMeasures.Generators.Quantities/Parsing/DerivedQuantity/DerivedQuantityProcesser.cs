@@ -34,10 +34,10 @@ public interface IDerivedQuantityProcessingContext : IProcessingContext
     public abstract QuantityType ResultingQuantityType { get; }
 }
 
-public class DerivedQuantityProcesser : AProcesser<IDerivedQuantityProcessingContext, RawDerivedQuantityDefinition, DerivedQuantityDefinition>
+public sealed class DerivedQuantityProcesser : AProcesser<IDerivedQuantityProcessingContext, RawDerivedQuantityDefinition, DerivedQuantityDefinition>
 {
     private Regex ExpressionQuantityPattern { get; } = new("""{(?'index'[0-9]+)}""", RegexOptions.ExplicitCapture);
-    private Regex ValidImplementOperatorsExpressionPattern_TwoQuantities { get; } = new("""^\s*\(*\s*{[01]}\s*\)*\s*[+-/*]\s*\(*\s*{[01]}\s*\)*\s*$""");
+    private Regex ValidImplementOperatorsExpressionPattern_TwoQuantities { get; } = new("""^\s*\(*\s*{[01]}\s*\)*\s*[+\-/*]\s*\(*\s*{[01]}\s*\)*\s*$""");
     private Regex ValidImplementOperatorsExpressionPattern_OneQuantity { get; } = new("""^\s*\(*\s*1\s*\)*\s*[/]\s*\(*\s*{[0]}\s*\)*\s*$""");
 
     private IDerivedQuantityProcessingDiagnostics Diagnostics { get; }
@@ -350,10 +350,19 @@ public class DerivedQuantityProcesser : AProcesser<IDerivedQuantityProcessingCon
 
     private IValidityWithDiagnostics ValidateExpressionIfImplementOperators(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
-        var expressionIsValidAndImplementOperators = definition.Locations.ExplicitlySetOperatorImplementation is false || definition.OperatorImplementation is DerivationOperatorImplementation.None
-            || ValidImplementOperatorsExpressionPattern_TwoQuantities.IsMatch(definition.Expression!) && definition.Expression!.Contains("{0}") && definition.Expression!.Contains("{1}") && definition.Signature.Count is 2
+        if (definition.OperatorImplementation is DerivationOperatorImplementation.None)
+        {
+            return ValidityWithDiagnostics.Valid;
+        }
+
+        var expressionIsValid = ValidImplementOperatorsExpressionPattern_TwoQuantities.IsMatch(definition.Expression!) && definition.Expression!.Contains("{0}") && definition.Expression!.Contains("{1}") && definition.Signature.Count is 2
             || ValidImplementOperatorsExpressionPattern_OneQuantity.IsMatch(definition.Expression!) && definition.Signature.Count is 1 && context.ResultingQuantityType is QuantityType.Scalar;
 
-        return ValidityWithDiagnostics.Conditional(expressionIsValidAndImplementOperators, () => Diagnostics.ExpressionNotCompatibleWithOperators(context, definition));
+        if (expressionIsValid)
+        {
+            return ValidityWithDiagnostics.Valid;
+        }
+
+        return ValidityWithDiagnostics.InvalidWithConditionalDiagnostics(definition.Locations.ExplicitlySetOperatorImplementation, () => Diagnostics.ExpressionNotCompatibleWithOperators(context, definition));
     }
 }

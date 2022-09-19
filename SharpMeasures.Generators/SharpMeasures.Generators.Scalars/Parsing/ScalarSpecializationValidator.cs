@@ -28,9 +28,8 @@ using System.Threading;
 
 internal static class ScalarSpecializationValidator
 {
-    public static IncrementalValuesProvider<Optional<ScalarSpecializationType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<ScalarSpecializationType>> scalarProvider,
-        IncrementalValueProvider<ScalarProcessingData> processingDataProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
-        IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
+    public static IncrementalValuesProvider<Optional<ScalarSpecializationType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<ScalarSpecializationType>> scalarProvider, IncrementalValueProvider<ScalarProcessingData> processingDataProvider,
+        IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
         return scalarProvider.Combine(processingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
@@ -78,9 +77,7 @@ internal static class ScalarSpecializationValidator
         var constants = ValidateConstants(scalarType, unit, allUnitBaseInstances, allUnitInstances, scalarPopulation);
         var conversions = ValidateConversions(scalarType, scalarPopulation);
 
-        ScalarSpecializationType product = new(scalarType.Type, scalarType.TypeLocation, scalar.Result, derivations.Result, constants.Result,
-            conversions.Result, unitBaseInstanceInclusions.Result, unitBaseInstanceExclusions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
-
+        ScalarSpecializationType product = new(scalarType.Type, scalarType.TypeLocation, scalar.Result, derivations.Result, constants.Result, conversions.Result, unitBaseInstanceInclusions.Result, unitBaseInstanceExclusions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
         var allDiagnostics = scalar.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitBaseInstanceInclusions).Concat(unitBaseInstanceExclusions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
@@ -100,8 +97,7 @@ internal static class ScalarSpecializationValidator
         return ProcessingFilter.Create(DerivedQuantityValidator).Filter(validationContext, scalarType.Derivations);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ScalarConstantDefinition>> ValidateConstants(ScalarSpecializationType scalarType, IUnitType unit, IEnumerable<IUnitInstance> includedBases,
-        IEnumerable<IUnitInstance> includedUnits, IScalarPopulation scalarPopulation)
+    private static IResultWithDiagnostics<IReadOnlyList<ScalarConstantDefinition>> ValidateConstants(ScalarSpecializationType scalarType, IUnitType unit, IEnumerable<IUnitInstance> includedBases, IEnumerable<IUnitInstance> includedUnits, IScalarPopulation scalarPopulation)
     {
         var inheritedConstants = CollectInheritedItems(scalarType, scalarPopulation, static (scalar) => scalar.Constants, static (scalar) => scalar.Definition.InheritConstants);
 
@@ -233,8 +229,8 @@ internal static class ScalarSpecializationValidator
     private static ScalarConstantValidator ScalarConstantValidator { get; } = new(ScalarConstantValidationDiagnostics.Instance);
     private static ConvertibleScalarFilterer ConvertibleScalarFilterer { get; } = new(ConvertibleScalarFilteringDiagnostics.Instance);
 
-    private static IncludeUnitBasesFilterer IncludeBasesFilterer { get; } = new(IncludeBasesFilteringDiagnostics.Instance);
-    private static ExcludeUnitBasesFilterer ExcludeBasesFilterer { get; } = new(ExcludeBasesFilteringDiagnostics.Instance);
+    private static IncludeUnitBasesFilterer IncludeBasesFilterer { get; } = new(IncludeUnitBasesFilteringDiagnostics.Instance);
+    private static ExcludeUnitBasesFilterer ExcludeBasesFilterer { get; } = new(ExcludeUnitBasesFilteringDiagnostics.Instance);
     private static IncludeUnitsFilterer IncludeUnitsFilterer { get; } = new(IncludeUnitsFilteringDiagnostics.Instance);
     private static ExcludeUnitsFilterer ExcludeUnitsFilterer { get; } = new(ExcludeUnitsFilteringDiagnostics.Instance);
 }

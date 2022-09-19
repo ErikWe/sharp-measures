@@ -21,7 +21,7 @@ public interface IExcludeUnitsFilteringContext : IProcessingContext
     public HashSet<string> IncludedUnitInstances { get; }
 }
 
-public class ExcludeUnitsFilterer : AProcesser<IExcludeUnitsFilteringContext, ExcludeUnitsDefinition, ExcludeUnitsDefinition>
+public sealed class ExcludeUnitsFilterer : AProcesser<IExcludeUnitsFilteringContext, ExcludeUnitsDefinition, ExcludeUnitsDefinition>
 {
     private IExcludeUnitsFilteringDiagnostics Diagnostics { get; }
 

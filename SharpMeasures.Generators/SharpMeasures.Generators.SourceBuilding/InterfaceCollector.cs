@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-public class InterfaceCollector
+public sealed class InterfaceCollector
 {
     public static InterfaceCollector Start(StringBuilder source)
     {
@@ -31,22 +31,14 @@ public class InterfaceCollector
         StartIndex = Source.Length;
     }
 
-    public void AddInterface(string name)
-    {
-        CollectedInterfaces.Add(name);
-    }
-
+    public void AddInterface(string name) => CollectedInterfaces.Add(name);
+    public void AddInterfaces(params string[] names) => AddInterfaces(names as IEnumerable<string>);
     public void AddInterfaces(IEnumerable<string> names)
     {
         foreach (string name in names)
         {
             AddInterface(name);
         }
-    }
-
-    public void AddInterfaces(params string[] names)
-    {
-        AddInterfaces(names as IEnumerable<string>);
     }
 
     public void InsertInterfaces()

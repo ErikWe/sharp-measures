@@ -4,7 +4,7 @@ using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 
 using System.Collections.Generic;
 
-public record class ConvertibleQuantityLocations : AItemListLocations<ConvertibleQuantityLocations>, IConvertibleQuantityLocations
+public sealed record class ConvertibleQuantityLocations : AItemListLocations<ConvertibleQuantityLocations>, IConvertibleQuantityLocations
 {
     internal static ConvertibleQuantityLocations Empty { get; } = new();
 

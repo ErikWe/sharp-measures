@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
 using System.Collections.Generic;
 
-internal record class DerivedUnitInstanceLocations : AUnitInstanceLocations<DerivedUnitInstanceLocations>, IDerivedUnitInstanceLocations
+internal sealed record class DerivedUnitInstanceLocations : AUnitInstanceLocations<DerivedUnitInstanceLocations>, IDerivedUnitInstanceLocations
 {
     public static DerivedUnitInstanceLocations Empty { get; } = new();
 
@@ -23,7 +23,7 @@ internal record class DerivedUnitInstanceLocations : AUnitInstanceLocations<Deri
 
     protected override DerivedUnitInstanceLocations Locations => this;
 
-    private ReadOnlyEquatableList<MinimalLocation> unitsElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
+    private IReadOnlyList<MinimalLocation> unitsElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
 
     private DerivedUnitInstanceLocations() { }
 }

@@ -9,10 +9,7 @@ using System.Threading;
 
 public static class GlobalAnalyzerConfigProvider
 {
-    public static IncrementalValueProvider<GlobalAnalyzerConfig> Attach(IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider)
-    {
-        return optionsProvider.Select(GlobalAnalyzerParser.Parse);
-    }
+    public static IncrementalValueProvider<GlobalAnalyzerConfig> Attach(IncrementalValueProvider<AnalyzerConfigOptionsProvider> optionsProvider) => optionsProvider.Select(GlobalAnalyzerParser.Parse);
 
     private static class GlobalAnalyzerParser
     {

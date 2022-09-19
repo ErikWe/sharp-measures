@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.Parsing.PrefixedUnitInstance;
 
-internal class PrefixedUnitInstanceProcessingDiagnostics : AModifiedUnitInstanceProcessingDiagnostics<RawPrefixedUnitInstanceDefinition, PrefixedUnitInstanceLocations>, IPrefixedUnitInstanceProcessingDiagnostics
+internal sealed class PrefixedUnitInstanceProcessingDiagnostics : AModifiedUnitInstanceProcessingDiagnostics<RawPrefixedUnitInstanceDefinition, PrefixedUnitInstanceLocations>, IPrefixedUnitInstanceProcessingDiagnostics
 {
     public static PrefixedUnitInstanceProcessingDiagnostics Instance { get; } = new();
 

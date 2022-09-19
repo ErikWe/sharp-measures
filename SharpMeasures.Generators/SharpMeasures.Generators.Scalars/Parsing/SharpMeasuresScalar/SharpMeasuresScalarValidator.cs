@@ -35,7 +35,7 @@ internal interface ISharpMeasuresScalarValidationContext : IProcessingContext
     public abstract IVectorPopulation VectorPopulation { get; }
 }
 
-internal class SharpMeasuresScalarValidator : IProcesser<ISharpMeasuresScalarValidationContext, SharpMeasuresScalarDefinition, SharpMeasuresScalarDefinition>
+internal sealed class SharpMeasuresScalarValidator : IProcesser<ISharpMeasuresScalarValidationContext, SharpMeasuresScalarDefinition, SharpMeasuresScalarDefinition>
 {
     private ISharpMeasuresScalarValidationDiagnostics Diagnostics { get; }
 
@@ -79,11 +79,9 @@ internal class SharpMeasuresScalarValidator : IProcesser<ISharpMeasuresScalarVal
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static SharpMeasuresScalarDefinition ProduceResult(SharpMeasuresScalarDefinition definition, NamedType? vector, NamedType? difference,
-        string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot)
+    private static SharpMeasuresScalarDefinition ProduceResult(SharpMeasuresScalarDefinition definition, NamedType? vector, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot)
     {
-        return new(definition.Unit, vector, definition.UseUnitBias, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, reciprocal, square, cube,
-            squareRoot, cubeRoot, definition.GenerateDocumentation, definition.Locations);
+        return new(definition.Unit, vector, definition.UseUnitBias, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, reciprocal, square, cube, squareRoot, cubeRoot, definition.GenerateDocumentation, definition.Locations);
     }
 
     private IValidityWithDiagnostics ValidateTypeNotAlreadyUnit(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition)
@@ -116,8 +114,7 @@ internal class SharpMeasuresScalarValidator : IProcesser<ISharpMeasuresScalarVal
 
     private IValidityWithDiagnostics ValidateVectorIsVector(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition)
     {
-        var vectorIsNotVector = definition.Vector is not null && (context.VectorPopulation.Vectors.ContainsKey(definition.Vector.Value) is false
-            || context.VectorPopulation.Groups.ContainsKey(definition.Vector.Value) is false || context.VectorPopulation.GroupMembers.ContainsKey(definition.Vector.Value) is false);
+        var vectorIsNotVector = definition.Vector is not null && (context.VectorPopulation.Vectors.ContainsKey(definition.Vector.Value) is false || context.VectorPopulation.Groups.ContainsKey(definition.Vector.Value) is false || context.VectorPopulation.GroupMembers.ContainsKey(definition.Vector.Value) is false);
 
         return ValidityWithDiagnostics.Conditional(vectorIsNotVector is false, () => Diagnostics.TypeNotVector(context, definition));
     }

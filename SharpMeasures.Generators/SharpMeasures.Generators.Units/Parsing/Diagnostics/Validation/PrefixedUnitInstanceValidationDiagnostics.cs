@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Units.Parsing.PrefixedUnitInstance;
 
-internal class PrefixedUnitInstanceValidationDiagnostics : AModifiedUnitInstanceValidationDiagnostics<PrefixedUnitInstanceDefinition>
+internal sealed class PrefixedUnitInstanceValidationDiagnostics : AModifiedUnitInstanceValidationDiagnostics<PrefixedUnitInstanceDefinition>
 {
     public static PrefixedUnitInstanceValidationDiagnostics Instance { get; } = new();
 

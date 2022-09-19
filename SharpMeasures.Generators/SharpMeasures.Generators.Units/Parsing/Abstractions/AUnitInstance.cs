@@ -2,8 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal abstract record class AUnitInstance<TLocations> : AAttributeDefinition<TLocations>, IUnitInstance
-    where TLocations : IUnitInstanceLocations
+internal abstract record class AUnitInstance<TLocations> : AAttributeDefinition<TLocations>, IUnitInstance where TLocations : IUnitInstanceLocations
 {
     public string Name { get; }
     public string PluralForm { get; }

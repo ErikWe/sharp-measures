@@ -23,11 +23,7 @@ internal static class CommonParsing
         return (rawDerivations, foreignSymbols);
     }
 
-    public static IEnumerable<RawVectorConstantDefinition> ParseConstants(INamedTypeSymbol typeSymbol)
-    {
-        return VectorConstantParser.Parser.ParseAllOccurrences(typeSymbol);
-    }
-
+    public static IEnumerable<RawVectorConstantDefinition> ParseConstants(INamedTypeSymbol typeSymbol) => VectorConstantParser.Parser.ParseAllOccurrences(typeSymbol);
     public static (IEnumerable<RawConvertibleQuantityDefinition> Definitions, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseConversions(INamedTypeSymbol typeSymbol)
     {
         var symbolicConversions = ConvertibleQuantityParser.Parser.ParseAllOccurrences(typeSymbol);
@@ -38,13 +34,6 @@ internal static class CommonParsing
         return (rawConversions, foreignSymbols);
     }
 
-    public static IEnumerable<RawIncludeUnitsDefinition> ParseIncludeUnits(INamedTypeSymbol typeSymbol)
-    {
-        return IncludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
-    }
-
-    public static IEnumerable<RawExcludeUnitsDefinition> ParseExcludeUnits(INamedTypeSymbol typeSymbol)
-    {
-        return ExcludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
-    }
+    public static IEnumerable<RawIncludeUnitsDefinition> ParseIncludeUnits(INamedTypeSymbol typeSymbol) => IncludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
+    public static IEnumerable<RawExcludeUnitsDefinition> ParseExcludeUnits(INamedTypeSymbol typeSymbol) => ExcludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
 }

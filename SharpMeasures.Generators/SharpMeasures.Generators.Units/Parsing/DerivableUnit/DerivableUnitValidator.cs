@@ -15,7 +15,7 @@ internal interface IDerivableUnitValidationContext : IValidationContext
     public abstract IUnitPopulation UnitPopulation { get; }
 }
 
-internal class DerivableUnitValidator : AValidator<IDerivableUnitValidationContext, DerivableUnitDefinition>
+internal sealed class DerivableUnitValidator : AValidator<IDerivableUnitValidationContext, DerivableUnitDefinition>
 {
     private IDerivableUnitValidationDiagnostics Diagnostics { get; }
 
@@ -24,10 +24,7 @@ internal class DerivableUnitValidator : AValidator<IDerivableUnitValidationConte
         Diagnostics = diagnostics;
     }
 
-    public override IValidityWithDiagnostics Validate(IDerivableUnitValidationContext context, DerivableUnitDefinition definition)
-    {
-        return ValidateSignatureElements(context, definition);
-    }
+    public override IValidityWithDiagnostics Validate(IDerivableUnitValidationContext context, DerivableUnitDefinition definition) => ValidateSignatureElements(context, definition);
 
     private IValidityWithDiagnostics ValidateSignatureElements(IDerivableUnitValidationContext context, DerivableUnitDefinition definition)
     {

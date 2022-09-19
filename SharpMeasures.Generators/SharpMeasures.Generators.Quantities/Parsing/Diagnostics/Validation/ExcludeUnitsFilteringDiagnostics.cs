@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 
-public class ExcludeUnitsFilteringDiagnostics : IExcludeUnitsFilteringDiagnostics
+public sealed class ExcludeUnitsFilteringDiagnostics : IExcludeUnitsFilteringDiagnostics
 {
     public static ExcludeUnitsFilteringDiagnostics Instance { get; } = new();
 

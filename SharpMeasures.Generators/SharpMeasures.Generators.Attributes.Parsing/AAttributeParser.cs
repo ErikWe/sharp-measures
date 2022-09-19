@@ -22,11 +22,8 @@ public abstract class AAttributeParser<TDefinition, TLocations, TAttribute> : AA
 {
     protected override Type AttributeType { get; } = typeof(TAttribute);
 
-    protected AAttributeParser(Func<TDefinition> defaultValueConstructor, IReadOnlyDictionary<string, IAttributeProperty<TDefinition>> constructorParameters, IReadOnlyDictionary<string, IAttributeProperty<TDefinition>> namedParameters)
-        : base(defaultValueConstructor, constructorParameters, namedParameters) { }
-
-    protected AAttributeParser(Func<TDefinition> defaultValueConstructor, IEnumerable<IAttributeProperty<TDefinition>> properties)
-        : base(defaultValueConstructor, properties) { }
+    protected AAttributeParser(Func<TDefinition> defaultValueConstructor, IReadOnlyDictionary<string, IAttributeProperty<TDefinition>> constructorParameters, IReadOnlyDictionary<string, IAttributeProperty<TDefinition>> namedParameters) : base(defaultValueConstructor, constructorParameters, namedParameters) { }
+    protected AAttributeParser(Func<TDefinition> defaultValueConstructor, IEnumerable<IAttributeProperty<TDefinition>> properties) : base(defaultValueConstructor, properties) { }
 }
 
 public abstract class AAttributeParser<TDefinition, TLocations> : IAttributeParser<TDefinition>
@@ -48,8 +45,7 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
         NamedParameters = namedParameters;
     }
 
-    protected AAttributeParser(Func<TDefinition> defaultValueConstructor, IEnumerable<IAttributeProperty<TDefinition>> properties)
-        : this(defaultValueConstructor, properties.ToImmutableDictionary(static (x) => x.ParameterName), properties.ToImmutableDictionary(static (x) => x.Name)) { }
+    protected AAttributeParser(Func<TDefinition> defaultValueConstructor, IEnumerable<IAttributeProperty<TDefinition>> properties) : this(defaultValueConstructor, properties.ToImmutableDictionary(static (x) => x.ParameterName), properties.ToImmutableDictionary(static (x) => x.Name)) { }
 
     public TDefinition? Parse(AttributeData attributeData)
     {
@@ -94,10 +90,7 @@ public abstract class AAttributeParser<TDefinition, TLocations> : IAttributePars
         return default;
     }
 
-    public IEnumerable<TDefinition> ParseAllOccurrences(INamedTypeSymbol typeSymbol)
-    {
-        return Parse(typeSymbol.GetAttributesOfType(AttributeType));
-    }
+    public IEnumerable<TDefinition> ParseAllOccurrences(INamedTypeSymbol typeSymbol) => Parse(typeSymbol.GetAttributesOfType(AttributeType));
 
     protected virtual TDefinition AddCustomData(TDefinition definition, AttributeData attributeData, AttributeSyntax attributeSyntax, ImmutableArray<IParameterSymbol> parameterSymbols) => definition;
  

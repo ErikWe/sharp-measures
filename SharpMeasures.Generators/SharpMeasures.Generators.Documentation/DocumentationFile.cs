@@ -10,26 +10,23 @@ using SharpMeasures.Generators.Diagnostics;
 using System;
 using System.Collections.Generic;
 
-public class DocumentationFile : IEquatable<DocumentationFile>
+public sealed class DocumentationFile : IEquatable<DocumentationFile>
 {
-    public static DocumentationFile Empty { get; } = new(string.Empty, null as MinimalLocation?, new Dictionary<string, string>(), new EmptyDiagnosticsStrategy(),
-        GlobalAnalyzerConfig.Default, false);
+    public static DocumentationFile Empty { get; } = new(string.Empty, null as MinimalLocation?, new Dictionary<string, string>(), new EmptyDiagnosticsStrategy(), GlobalAnalyzerConfig.Default, false);
 
     public string Name { get; }
     public MinimalLocation? Location { get; }
-    private ReadOnlyEquatableDictionary<string, string> Content { get; }
+    private IReadOnlyDictionary<string, string> Content { get; }
 
     private IDiagnosticsStrategy DiagnosticsStrategy { get; }
 
     private GlobalAnalyzerConfig Configuration { get; }
     private bool HasReportedOneMissingTag { get; set; }
 
-    internal DocumentationFile(string name, AdditionalText file, IReadOnlyDictionary<string, string> content, IDiagnosticsStrategy diagnosticsStrategy,
-        GlobalAnalyzerConfig configuration, bool hasReportedOneMissingTag)
+    internal DocumentationFile(string name, AdditionalText file, IReadOnlyDictionary<string, string> content, IDiagnosticsStrategy diagnosticsStrategy, GlobalAnalyzerConfig configuration, bool hasReportedOneMissingTag)
         : this(name, DetermineFileLocation(file), content, diagnosticsStrategy, configuration, hasReportedOneMissingTag) { }
 
-    internal DocumentationFile(string name, MinimalLocation? location, IReadOnlyDictionary<string, string> content, IDiagnosticsStrategy diagnosticsStrategy,
-        GlobalAnalyzerConfig configuration, bool hasReportedOneMissingTag)
+    internal DocumentationFile(string name, MinimalLocation? location, IReadOnlyDictionary<string, string> content, IDiagnosticsStrategy diagnosticsStrategy, GlobalAnalyzerConfig configuration, bool hasReportedOneMissingTag)
     {
         Name = name;
         Location = location;
@@ -98,7 +95,7 @@ public class DocumentationFile : IEquatable<DocumentationFile>
         return Microsoft.CodeAnalysis.Location.Create(file.Path, TextSpan.FromBounds(0, file.ToString().Length - 1), span).Minimize();
     }
 
-    public virtual bool Equals(DocumentationFile? other) => other is not null && Name == other.Name && Location == other.Location && Content == other.Content;
+    public bool Equals(DocumentationFile? other) => other is not null && Name == other.Name && Location == other.Location && Content == other.Content;
     public override bool Equals(object? obj) => obj is DocumentationFile other && Equals(other);
 
     public static bool operator ==(DocumentationFile? lhs, DocumentationFile? rhs) => lhs?.Equals(rhs) ?? rhs is null;

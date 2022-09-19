@@ -9,13 +9,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public static class ForeignGroupBaseResolver
+internal static class ForeignGroupBaseResolver
 {
-    public static Optional<IResolvedVectorGroupType> Resolve(IVectorGroupBaseType groupType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
+    public static Optional<ResolvedGroupType> Resolve(GroupBaseType groupType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
     {
         if (unitPopulation.Units.TryGetValue(groupType.Definition.Unit, out var unit) is false)
         {
-            return new Optional<IResolvedVectorGroupType>();
+            return new Optional<ResolvedGroupType>();
         }
 
         var membersByDimension = ResolveMembers(groupType, vectorPopulation);
@@ -43,8 +43,5 @@ public static class ForeignGroupBaseResolver
         return includedUnitInstances.ToList();
     }
 
-    private static IReadOnlyDictionary<int, NamedType> ResolveMembers(IVectorGroupBaseType groupType, IVectorPopulation vectorPopulation)
-    {
-        return vectorPopulation.GroupMembersByGroup[groupType.Type.AsNamedType()].GroupMembersByDimension.Transform(static (vector) => vector.Type.AsNamedType());
-    }
+    private static IReadOnlyDictionary<int, NamedType> ResolveMembers(IVectorGroupBaseType groupType, IVectorPopulation vectorPopulation) => vectorPopulation.GroupMembersByGroup[groupType.Type.AsNamedType()].GroupMembersByDimension.Transform(static (vector) => vector.Type.AsNamedType());
 }

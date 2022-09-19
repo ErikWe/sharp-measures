@@ -15,7 +15,7 @@ internal interface IVectorConstantValidationContext : IQuantityConstantValidatio
     public abstract int Dimension { get; }
 }
 
-internal class VectorConstantValidator : AQuantityConstantValidator<IVectorConstantValidationContext, VectorConstantDefinition, VectorConstantLocations>
+internal sealed class VectorConstantValidator : AQuantityConstantValidator<IVectorConstantValidationContext, VectorConstantDefinition, VectorConstantLocations>
 {
     private IVectorConstantValidationDiagnostics Diagnostics { get; }
 
@@ -24,10 +24,7 @@ internal class VectorConstantValidator : AQuantityConstantValidator<IVectorConst
         Diagnostics = diagnostics;
     }
 
-    protected override VectorConstantDefinition ProduceResult(VectorConstantDefinition definition, bool generateMultiples)
-    {
-        return new(definition.Name, definition.UnitInstanceName, definition.Value, generateMultiples, definition.Multiples, definition.Locations);
-    }
+    protected override VectorConstantDefinition ProduceResult(VectorConstantDefinition definition, bool generateMultiples) => new(definition.Name, definition.UnitInstanceName, definition.Value, generateMultiples, definition.Multiples, definition.Locations);
 
     protected override IValidityWithDiagnostics ValidateConstant(IVectorConstantValidationContext context, VectorConstantDefinition definition)
     {

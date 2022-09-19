@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
 using System.Collections.Generic;
 
-internal record class RawDerivedUnitInstanceDefinition : ARawUnitInstance<RawDerivedUnitInstanceDefinition, DerivedUnitInstanceLocations>
+internal sealed record class RawDerivedUnitInstanceDefinition : ARawUnitInstance<RawDerivedUnitInstanceDefinition, DerivedUnitInstanceLocations>
 {
     public static RawDerivedUnitInstanceDefinition Empty { get; } = new(DerivedUnitInstanceLocations.Empty);
 
@@ -16,7 +16,7 @@ internal record class RawDerivedUnitInstanceDefinition : ARawUnitInstance<RawDer
         init => units = value.AsReadOnlyEquatable(); 
     }
 
-    private ReadOnlyEquatableList<string?> units { get; init; } = ReadOnlyEquatableList<string?>.Empty;
+    private IReadOnlyList<string?> units { get; init; } = ReadOnlyEquatableList<string?>.Empty;
 
     protected override RawDerivedUnitInstanceDefinition Definition => this;
 

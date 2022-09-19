@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
 using System.Linq;
 
-internal class ScalarConstantProcesser : AQuantityConstantProcesser<IQuantityConstantProcessingContext, RawScalarConstantDefinition, ScalarConstantLocations, ScalarConstantDefinition>
+internal sealed class ScalarConstantProcesser : AQuantityConstantProcesser<IQuantityConstantProcessingContext, RawScalarConstantDefinition, ScalarConstantLocations, ScalarConstantDefinition>
 {
     public ScalarConstantProcesser(IQuantityConstantProcessingDiagnostics<RawScalarConstantDefinition, ScalarConstantLocations> diagnostics) : base(diagnostics) { }
 
@@ -28,8 +28,5 @@ internal class ScalarConstantProcesser : AQuantityConstantProcesser<IQuantityCon
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static ScalarConstantDefinition ProduceResult(RawScalarConstantDefinition definition, bool generateMultiples, string? multiplesName)
-    {
-        return new(definition.Name!, definition.UnitInstanceName!, definition.Value, generateMultiples, multiplesName, definition.Locations);
-    }
+    private static ScalarConstantDefinition ProduceResult(RawScalarConstantDefinition definition, bool generateMultiples, string? multiplesName) => new(definition.Name!, definition.UnitInstanceName!, definition.Value, generateMultiples, multiplesName, definition.Locations);
 }

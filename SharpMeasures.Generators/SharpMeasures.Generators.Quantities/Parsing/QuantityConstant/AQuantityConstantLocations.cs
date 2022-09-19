@@ -2,8 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-public abstract record class AQuantityConstantLocations<TLocations> : AAttributeLocations<TLocations>, IQuantityConstantLocations
-    where TLocations : AQuantityConstantLocations<TLocations>
+public abstract record class AQuantityConstantLocations<TLocations> : AAttributeLocations<TLocations>, IQuantityConstantLocations where TLocations : AQuantityConstantLocations<TLocations>
 {
     public MinimalLocation? Name { get; init; }
     public MinimalLocation? UnitInstanceName { get; init; }

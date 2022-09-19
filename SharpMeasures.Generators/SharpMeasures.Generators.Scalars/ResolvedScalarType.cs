@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Quantities;
 
 using System.Collections.Generic;
 
-internal record class ResolvedScalarType : IResolvedScalarType
+internal sealed record class ResolvedScalarType : IResolvedScalarType
 {
     public DefinedType Type { get; }
     public MinimalLocation TypeLocation { get; }
@@ -28,21 +28,13 @@ internal record class ResolvedScalarType : IResolvedScalarType
     public string? DefaultUnitInstanceName { get; }
     public string? DefaultUnitInstanceSymbol { get; }
 
-    public IReadOnlyList<IDerivedQuantity> DefinedDerivations => definedDerivations;
-    public IReadOnlyList<IDerivedQuantity> InheritedDerivations => inheritedDerivations;
-    public IReadOnlyList<IScalarConstant> Constants => constants;
-    public IReadOnlyList<IConvertibleQuantity> Conversions => conversions;
+    public IReadOnlyList<IDerivedQuantity> DefinedDerivations { get; }
+    public IReadOnlyList<IDerivedQuantity> InheritedDerivations { get; }
+    public IReadOnlyList<IScalarConstant> Constants { get; }
+    public IReadOnlyList<IConvertibleQuantity> Conversions { get; }
 
-    public IReadOnlyList<string> IncludedUnitBaseInstancesNames => includedUnitBaseInstanceNames;
-    public IReadOnlyList<string> IncludedUnitInstanceNames => includedUnitInstanceNames;
-
-    private ReadOnlyEquatableList<IDerivedQuantity> definedDerivations { get; }
-    private ReadOnlyEquatableList<IDerivedQuantity> inheritedDerivations { get; }
-    private ReadOnlyEquatableList<IScalarConstant> constants { get; }
-    private ReadOnlyEquatableList<IConvertibleQuantity> conversions { get; }
-
-    private ReadOnlyEquatableList<string> includedUnitBaseInstanceNames { get; }
-    private ReadOnlyEquatableList<string> includedUnitInstanceNames { get; }
+    public IReadOnlyList<string> IncludedUnitBaseInstanceNames { get; }
+    public IReadOnlyList<string> IncludedUnitInstanceNames { get; }
 
     public bool? GenerateDocumentation { get; }
 
@@ -73,13 +65,13 @@ internal record class ResolvedScalarType : IResolvedScalarType
         DefaultUnitInstanceName = defaultUnitInstanceName;
         DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol;
 
-        this.definedDerivations = definedDerivations.AsReadOnlyEquatable();
-        this.inheritedDerivations = inheritedDerivations.AsReadOnlyEquatable();
-        this.constants = constants.AsReadOnlyEquatable();
-        this.conversions = conversions.AsReadOnlyEquatable();
+        DefinedDerivations = definedDerivations.AsReadOnlyEquatable();
+        InheritedDerivations = inheritedDerivations.AsReadOnlyEquatable();
+        Constants = constants.AsReadOnlyEquatable();
+        Conversions = conversions.AsReadOnlyEquatable();
 
-        this.includedUnitBaseInstanceNames = includedUnitBaseInstanceNames.AsReadOnlyEquatable();
-        this.includedUnitInstanceNames = includedUnitInstanceNames.AsReadOnlyEquatable();
+        IncludedUnitBaseInstanceNames = includedUnitBaseInstanceNames.AsReadOnlyEquatable();
+        IncludedUnitInstanceNames = includedUnitInstanceNames.AsReadOnlyEquatable();
 
         GenerateDocumentation = generateDocumentation;
     }

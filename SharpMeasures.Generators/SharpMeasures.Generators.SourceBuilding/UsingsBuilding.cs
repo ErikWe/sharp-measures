@@ -6,6 +6,7 @@ using System.Text;
 
 public static class UsingsBuilding
 {
+    public static void AppendUsings(StringBuilder source, string fromNamespace, params string[] usingsNames) => AppendUsings(source, fromNamespace, usingsNames as IEnumerable<string>);
     public static void AppendUsings(StringBuilder source, string fromNamespace, IEnumerable<string> usingsNames)
     {
         AppendUsings(source, implicitlyUsed, usingsNames);
@@ -13,11 +14,7 @@ public static class UsingsBuilding
         bool implicitlyUsed(string name) => fromNamespace.StartsWith(name, StringComparison.Ordinal);
     }
 
-    public static void AppendUsings(StringBuilder source, string fromNamespace, params string[] usingsNames)
-    {
-        AppendUsings(source, fromNamespace, usingsNames as IEnumerable<string>);
-    }
-
+    public static void AppendUsings(StringBuilder source, params string[] usingsNames) => AppendUsings(source, usingsNames as IEnumerable<string>);
     public static void AppendUsings(StringBuilder source, IEnumerable<string> usingsNames)
     {
         AppendUsings(source, ignoreUsing, usingsNames);
@@ -25,6 +22,7 @@ public static class UsingsBuilding
         static bool ignoreUsing(string name) => false;
     }
 
+    public static void InsertUsings(StringBuilder source, string fromNamespace, int startIndex, params string[] usingsNames) => InsertUsings(source, fromNamespace, startIndex, usingsNames as IEnumerable<string>);
     public static void InsertUsings(StringBuilder source, string fromNamespace, int startIndex, IEnumerable<string> usingsNames)
     {
         StringBuilder usings = new();
@@ -34,11 +32,7 @@ public static class UsingsBuilding
         source.Insert(startIndex, usings);
     }
 
-    public static void InsertUsings(StringBuilder source, string fromNamespace, int startIndex, params string[] usingsNames)
-    {
-        InsertUsings(source, fromNamespace, startIndex, usingsNames as IEnumerable<string>);
-    }
-
+    public static void InsertUsings(StringBuilder source, int startIndex, params string[] usingsNames) => InsertUsings(source, startIndex, usingsNames as IEnumerable<string>);
     public static void InsertUsings(StringBuilder source, int startIndex, IEnumerable<string> usingsNames)
     {
         StringBuilder usings = new();
@@ -46,11 +40,6 @@ public static class UsingsBuilding
         AppendUsings(usings, usingsNames);
 
         source.Insert(startIndex, usings);
-    }
-
-    public static void InsertUsings(StringBuilder source, int startIndex, params string[] usingsNames)
-    {
-        InsertUsings(source, startIndex, usingsNames as IEnumerable<string>);
     }
 
     private static void AppendUsings(StringBuilder source, Func<string, bool> ignoreDelegate, IEnumerable<string> usingsNames)

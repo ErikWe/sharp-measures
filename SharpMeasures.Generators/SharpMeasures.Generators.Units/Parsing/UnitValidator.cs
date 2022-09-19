@@ -26,7 +26,7 @@ public interface IUnitValidator
     public abstract (IncrementalValueProvider<IUnitPopulation>, IUnitGenerator) Validate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider);
 }
 
-internal class UnitValidator : IUnitValidator
+internal sealed class UnitValidator : IUnitValidator
 {
     private IncrementalValueProvider<UnitProcessingData> ProcessingDataProvider { get; }
 
@@ -79,9 +79,7 @@ internal class UnitValidator : IUnitValidator
         var prefixedUnitInstances = ValidatePrefixedUnitInstances(unitType, unitInstanceValidationContext);
         var scaledUnitInstances = ValidateScaledUnitInstances(unitType, unitInstanceValidationContext);
 
-        UnitType product = new(unitType.Type, unitType.TypeLocation, unitType.Definition, derivations.Result, unitType.FixedUnitInstance, unitInstanceAliases.Result,
-            derivedUnitInstances.Result, biasedUnitInstances.Result, prefixedUnitInstances.Result, scaledUnitInstances.Result);
-
+        UnitType product = new(unitType.Type, unitType.TypeLocation, unitType.Definition, derivations.Result, unitType.FixedUnitInstance, unitInstanceAliases.Result, derivedUnitInstances.Result, biasedUnitInstances.Result, prefixedUnitInstances.Result, scaledUnitInstances.Result);
         var allDiagnostics = unit.Concat(derivations).Concat(unitInstanceAliases).Concat(derivedUnitInstances).Concat(biasedUnitInstances).Concat(prefixedUnitInstances).Concat(scaledUnitInstances);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);

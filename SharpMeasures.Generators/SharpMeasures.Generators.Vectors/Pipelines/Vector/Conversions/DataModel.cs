@@ -13,11 +13,9 @@ internal readonly record struct DataModel
 
     public IResolvedVectorPopulation VectorPopulation { get; }
 
-    public IReadOnlyList<IConvertibleQuantity> Conversions => conversions;
+    public IReadOnlyList<IConvertibleQuantity> Conversions { get; }
 
     public IVectorDocumentationStrategy Documentation { get; }
-
-    private ReadOnlyEquatableList<IConvertibleQuantity> conversions { get; }
 
     public DataModel(DefinedType vector, int dimension, IReadOnlyList<IConvertibleQuantity> conversions, IResolvedVectorPopulation vectorPopulation, IVectorDocumentationStrategy documentation)
     {
@@ -26,7 +24,7 @@ internal readonly record struct DataModel
 
         VectorPopulation = vectorPopulation;
 
-        this.conversions = conversions.AsReadOnlyEquatable();
+        Conversions = conversions.AsReadOnlyEquatable();
 
         Documentation = documentation;
     }

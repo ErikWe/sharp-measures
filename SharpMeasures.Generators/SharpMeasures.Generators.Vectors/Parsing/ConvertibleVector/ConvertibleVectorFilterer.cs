@@ -27,7 +27,7 @@ internal interface IConvertibleVectorFilteringContext : IProcessingContext
     public abstract HashSet<NamedType> ListedMatchingConversions { get; }
 }
 
-internal class ConvertibleVectorFilterer : AActionableProcesser<IConvertibleVectorFilteringContext, ConvertibleVectorDefinition, ConvertibleVectorDefinition>
+internal sealed class ConvertibleVectorFilterer : AActionableProcesser<IConvertibleVectorFilteringContext, ConvertibleVectorDefinition, ConvertibleVectorDefinition>
 {
     private IConvertibleVectorFilteringDiagnostics Diagnostics { get; }
 
@@ -36,15 +36,8 @@ internal class ConvertibleVectorFilterer : AActionableProcesser<IConvertibleVect
         Diagnostics = diagnostics;
     }
 
-    public override void OnStartProcessing(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition)
-    {
-        SetMatchingConversionsAsListed(context, context.InheritedConversions);
-    }
-
-    public override void OnSuccessfulProcess(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, ConvertibleVectorDefinition product)
-    {
-        SetMatchingConversionsAsListed(context, product.Quantities);
-    }
+    public override void OnStartProcessing(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition) => SetMatchingConversionsAsListed(context, context.InheritedConversions);
+    public override void OnSuccessfulProcess(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, ConvertibleVectorDefinition product) => SetMatchingConversionsAsListed(context, product.Quantities);
 
     public override IOptionalWithDiagnostics<ConvertibleVectorDefinition> Process(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition)
     {

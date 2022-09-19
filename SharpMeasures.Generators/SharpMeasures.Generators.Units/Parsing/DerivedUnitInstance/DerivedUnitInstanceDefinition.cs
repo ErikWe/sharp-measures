@@ -5,19 +5,16 @@ using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
 using System.Collections.Generic;
 
-internal record class DerivedUnitInstanceDefinition : AUnitInstance<DerivedUnitInstanceLocations>, IDerivedUnitInstance
+internal sealed record class DerivedUnitInstanceDefinition : AUnitInstance<DerivedUnitInstanceLocations>, IDerivedUnitInstance
 {
     public string? DerivationID { get; }
-    public IReadOnlyList<string> Units => units;
-
-    private ReadOnlyEquatableList<string> units { get; }
+    public IReadOnlyList<string> Units { get; }
 
     IDerivedUnitInstanceLocations IDerivedUnitInstance.Locations => Locations;
 
-    public DerivedUnitInstanceDefinition(string name, string pluralForm, string? derivationID, IReadOnlyList<string> units, DerivedUnitInstanceLocations locations)
-        : base(name, pluralForm, locations)
+    public DerivedUnitInstanceDefinition(string name, string pluralForm, string? derivationID, IReadOnlyList<string> units, DerivedUnitInstanceLocations locations) : base(name, pluralForm, locations)
     {
         DerivationID = derivationID;
-        this.units = units.AsReadOnlyEquatable();
+        Units = units.AsReadOnlyEquatable();
     }
 }

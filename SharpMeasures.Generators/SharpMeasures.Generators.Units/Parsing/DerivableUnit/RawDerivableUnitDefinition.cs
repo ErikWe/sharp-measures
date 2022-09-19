@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 
 using System.Collections.Generic;
 
-internal record class RawDerivableUnitDefinition : ARawAttributeDefinition<RawDerivableUnitDefinition, DerivableUnitLocations>
+internal sealed record class RawDerivableUnitDefinition : ARawAttributeDefinition<RawDerivableUnitDefinition, DerivableUnitLocations>
 {
     public static RawDerivableUnitDefinition FromSymbolic(SymbolicDerivableUnitDefinition symolicDefinition) => new RawDerivableUnitDefinition(symolicDefinition.Locations) with
     {
@@ -25,7 +25,7 @@ internal record class RawDerivableUnitDefinition : ARawAttributeDefinition<RawDe
 
     public bool Permutations { get; init; }
 
-    private ReadOnlyEquatableList<NamedType?>? signature { get; init; }
+    private IReadOnlyList<NamedType?>? signature { get; init; }
 
     protected override RawDerivableUnitDefinition Definition => this;
 

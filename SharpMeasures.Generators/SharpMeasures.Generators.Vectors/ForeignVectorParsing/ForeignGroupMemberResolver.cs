@@ -9,13 +9,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public static class ForeignGroupMemberResolver
+internal static class ForeignGroupMemberResolver
 {
-    public static Optional<IResolvedVectorType> Resolve(IVectorGroupMemberType vectorType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
+    public static Optional<ResolvedVectorType> Resolve(GroupMemberType vectorType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
     {
         if (vectorPopulation.GroupBases.TryGetValue(vectorType.Definition.VectorGroup, out var groupBase) is false || unitPopulation.Units.TryGetValue(groupBase.Definition.Unit, out var unit) is false)
         {
-            return new Optional<IResolvedVectorType>();
+            return new Optional<ResolvedVectorType>();
         }
 
         var definedDerivations = vectorType.Derivations;
@@ -152,11 +152,7 @@ public static class ForeignGroupMemberResolver
         }
     }
 
-    private static T? RecursivelySearchForDefinedInGroups<T>(IVectorGroupMemberType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, T?> itemDelegate)
-    {
-        return RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => default, itemDelegate);
-    }
-
+    private static T? RecursivelySearchForDefinedInGroups<T>(IVectorGroupMemberType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, T?> itemDelegate) => RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => default, itemDelegate);
     private static T? RecursivelySearchForDefined<T>(IVectorGroupMemberType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupMemberType, T?> memberItemDelegate, Func<IVectorGroupType, T?> groupItemDelegate)
     {
         if (memberItemDelegate(vectorType) is T item)

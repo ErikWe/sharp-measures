@@ -11,11 +11,10 @@ using System.Threading;
 
 public interface IVectorResolver
 {
-    public abstract (IncrementalValueProvider<IResolvedVectorPopulation>, IVectorGenerator) Resolve(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
-        IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider);
+    public abstract (IncrementalValueProvider<IResolvedVectorPopulation>, IVectorGenerator) Resolve(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider);
 }
 
-internal class VectorResolver : IVectorResolver
+internal sealed class VectorResolver : IVectorResolver
 {
     private IncrementalValuesProvider<Optional<GroupBaseType>> GroupBaseProvider { get; }
     private IncrementalValuesProvider<Optional<GroupSpecializationType>> GroupSpecializationProvider { get; }
@@ -35,8 +34,7 @@ internal class VectorResolver : IVectorResolver
         VectorSpecializationProvider = vectorSpecializationProvider;
     }
 
-    public (IncrementalValueProvider<IResolvedVectorPopulation>, IVectorGenerator) Resolve(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
-        IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
+    public (IncrementalValueProvider<IResolvedVectorPopulation>, IVectorGenerator) Resolve(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
         var resolvedGroupBases = GroupBaseResolver.Resolve(GroupBaseProvider, unitPopulationProvider, vectorPopulationProvider);
         var resolvedGroupSpecializations = GroupSpecializationResolver.Resolve(GroupSpecializationProvider, unitPopulationProvider, vectorPopulationProvider);
@@ -60,8 +58,7 @@ internal class VectorResolver : IVectorResolver
     private static Optional<IResolvedVectorGroupType> ExtractInterface(Optional<ResolvedGroupType> groupType, CancellationToken _) => groupType.HasValue ? groupType.Value : new Optional<IResolvedVectorGroupType>();
     private static Optional<IResolvedVectorType> ExtractInterface(Optional<ResolvedVectorType> vectorType, CancellationToken _) => vectorType.HasValue ? vectorType.Value : new Optional<IResolvedVectorType>();
 
-    private static IResolvedVectorPopulation CreatePopulation((ImmutableArray<IResolvedVectorGroupType> GroupBases, ImmutableArray<IResolvedVectorGroupType> GroupSpecializations,
-        ImmutableArray<IResolvedVectorType> GroupMembers, ImmutableArray<IResolvedVectorType> VectorBases, ImmutableArray<IResolvedVectorType> VectorSpecializations) vectors, CancellationToken _)
+    private static IResolvedVectorPopulation CreatePopulation((ImmutableArray<IResolvedVectorGroupType> GroupBases, ImmutableArray<IResolvedVectorGroupType> GroupSpecializations, ImmutableArray<IResolvedVectorType> GroupMembers, ImmutableArray<IResolvedVectorType> VectorBases, ImmutableArray<IResolvedVectorType> VectorSpecializations) vectors, CancellationToken _)
     {
         return ResolvedVectorPopulation.Build(vectors.VectorBases, vectors.VectorSpecializations, vectors.GroupBases, vectors.GroupSpecializations, vectors.GroupMembers);
     }

@@ -3,7 +3,7 @@
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal class UnitInstanceAliasProcesser : AModifiedUnitInstanceProcesser<IUnitInstanceProcessingContext, RawUnitInstanceAliasDefinition, UnitInstanceAliasLocations, UnitInstanceAliasDefinition>
+internal sealed class UnitInstanceAliasProcesser : AModifiedUnitInstanceProcesser<IUnitInstanceProcessingContext, RawUnitInstanceAliasDefinition, UnitInstanceAliasLocations, UnitInstanceAliasDefinition>
 {
     public UnitInstanceAliasProcesser(IModifiedUnitInstanceProcessingDiagnostics<RawUnitInstanceAliasDefinition, UnitInstanceAliasLocations> diagnostics) : base(diagnostics) { }
 
@@ -16,8 +16,5 @@ internal class UnitInstanceAliasProcesser : AModifiedUnitInstanceProcesser<IUnit
             .Transform((interpretedPluralForm) => ProduceResult(definition, interpretedPluralForm));
     }
 
-    private static UnitInstanceAliasDefinition ProduceResult(RawUnitInstanceAliasDefinition definition, string interpretedPluralForm)
-    {
-        return new(definition.Name!, interpretedPluralForm, definition.OriginalUnitInstance!, definition.Locations);
-    }
+    private static UnitInstanceAliasDefinition ProduceResult(RawUnitInstanceAliasDefinition definition, string interpretedPluralForm) => new(definition.Name!, interpretedPluralForm, definition.OriginalUnitInstance!, definition.Locations);
 }

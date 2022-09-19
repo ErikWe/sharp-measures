@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Documentation;
 
-internal class DocumentationDiagnostics : IDiagnosticsStrategy
+internal sealed class DocumentationDiagnostics : IDiagnosticsStrategy
 {
     public static DocumentationDiagnostics Instance { get; } = new();
 
@@ -12,13 +12,6 @@ internal class DocumentationDiagnostics : IDiagnosticsStrategy
 
     private DocumentationDiagnostics() { }
 
-    public Diagnostic UnresolvedDocumentationDependency(Location location, string name, string dependency)
-    {
-        return DiagnosticConstruction.UnresolvedDocumentationDependency(location, name, dependency);
-    }
-
-    public Diagnostic DocumentationFileMissingRequestedTag(Location location, string name, string tag)
-    {
-        return DiagnosticConstruction.DocumentationFileMissingRequestedTag(location, name, tag);
-    }
+    public Diagnostic UnresolvedDocumentationDependency(Location location, string name, string dependency) => DiagnosticConstruction.UnresolvedDocumentationDependency(location, name, dependency);
+    public Diagnostic DocumentationFileMissingRequestedTag(Location location, string name, string tag) => DiagnosticConstruction.DocumentationFileMissingRequestedTag(location, name, tag);
 }

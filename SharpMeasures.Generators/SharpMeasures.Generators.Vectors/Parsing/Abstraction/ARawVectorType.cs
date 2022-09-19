@@ -16,33 +16,25 @@ internal record class ARawVectorType<TDefinition>
 
     public TDefinition Definition { get; }
 
-    public IEnumerable<RawDerivedQuantityDefinition> Derivations => derivations;
-    public IEnumerable<RawVectorConstantDefinition> Constants => constants;
-    public IEnumerable<RawConvertibleQuantityDefinition> Conversions => conversions;
+    public IEnumerable<RawDerivedQuantityDefinition> Derivations { get; }
+    public IEnumerable<RawVectorConstantDefinition> Constants { get; }
+    public IEnumerable<RawConvertibleQuantityDefinition> Conversions { get; }
 
-    public IEnumerable<RawIncludeUnitsDefinition> UnitInstanceInclusions => unitInstanceInclusions;
-    public IEnumerable<RawExcludeUnitsDefinition> UnitInstanceExclusions => unitInstanceExclusions;
+    public IEnumerable<RawIncludeUnitsDefinition> UnitInstanceInclusions { get; }
+    public IEnumerable<RawExcludeUnitsDefinition> UnitInstanceExclusions { get; }
 
-    private EquatableEnumerable<RawDerivedQuantityDefinition> derivations { get; }
-    private EquatableEnumerable<RawVectorConstantDefinition> constants { get; }
-    private EquatableEnumerable<RawConvertibleQuantityDefinition> conversions { get; }
-
-    private EquatableEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions { get; }
-    private EquatableEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions { get; }
-
-    protected ARawVectorType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawVectorConstantDefinition> constants,
-        IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
+    protected ARawVectorType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
     {
         Type = type;
         TypeLocation = typeLocation;
 
         Definition = definition;
 
-        this.derivations = derivations.AsEquatable();
-        this.constants = constants.AsEquatable();
-        this.conversions = conversions.AsEquatable();
+        Derivations = derivations.AsEquatable();
+        Constants = constants.AsEquatable();
+        Conversions = conversions.AsEquatable();
 
-        this.unitInstanceInclusions = unitInstanceInclusions.AsEquatable();
-        this.unitInstanceExclusions = unitInstanceExclusions.AsEquatable();
+        UnitInstanceInclusions = unitInstanceInclusions.AsEquatable();
+        UnitInstanceExclusions = unitInstanceExclusions.AsEquatable();
     }
 }

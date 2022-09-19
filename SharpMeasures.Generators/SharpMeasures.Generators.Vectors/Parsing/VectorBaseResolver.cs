@@ -12,10 +12,7 @@ using System.Threading;
 
 internal static class VectorBaseResolver
 {
-    public static IncrementalValuesProvider<Optional<ResolvedVectorType>> Resolve(IncrementalValuesProvider<Optional<VectorBaseType>> vectorProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider)
-    {
-        return vectorProvider.Combine(unitPopulationProvider).Select(Resolve);
-    }
+    public static IncrementalValuesProvider<Optional<ResolvedVectorType>> Resolve(IncrementalValuesProvider<Optional<VectorBaseType>> vectorProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider) => vectorProvider.Combine(unitPopulationProvider).Select(Resolve);
 
     private static Optional<ResolvedVectorType> Resolve((Optional<VectorBaseType> UnresolvedVector, IUnitPopulation UnitPopulation) input, CancellationToken token)
     {
@@ -33,10 +30,8 @@ internal static class VectorBaseResolver
 
         var includedUnitInstances = ResolveUnitInstanceInclusions(unit, vectorType.UnitInstanceInclusions, () => vectorType.UnitInstanceExclusions);
 
-        return new(vectorType.Type, vectorType.TypeLocation, vectorType.Definition.Dimension, vectorType.Definition.Unit,
-            vectorType.Definition.Scalar, vectorType.Definition.ImplementSum, vectorType.Definition.ImplementDifference,
-            vectorType.Definition.Difference, vectorType.Definition.DefaultUnitInstanceName, vectorType.Definition.DefaultUnitInstanceSymbol, vectorType.Derivations,
-            Array.Empty<IDerivedQuantity>(), vectorType.Constants, vectorType.Conversions, includedUnitInstances, vectorType.Definition.GenerateDocumentation);
+        return new(vectorType.Type, vectorType.TypeLocation, vectorType.Definition.Dimension, vectorType.Definition.Unit, vectorType.Definition.Scalar, vectorType.Definition.ImplementSum, vectorType.Definition.ImplementDifference, vectorType.Definition.Difference,
+            vectorType.Definition.DefaultUnitInstanceName, vectorType.Definition.DefaultUnitInstanceSymbol, vectorType.Derivations, Array.Empty<IDerivedQuantity>(), vectorType.Constants, vectorType.Conversions, includedUnitInstances, vectorType.Definition.GenerateDocumentation);
     }
 
     private static IReadOnlyList<string> ResolveUnitInstanceInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> unitInstanceInclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)

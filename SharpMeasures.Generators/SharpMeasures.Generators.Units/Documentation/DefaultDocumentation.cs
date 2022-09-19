@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<DefaultDocumentation>
+internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<DefaultDocumentation>
 {
     private DefinedType UnitType { get; }
     private NamedType Quantity { get; }
@@ -201,9 +201,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
 
     private static string InheritDoc => "/// <inheritdoc/>";
 
-    public virtual bool Equals(DefaultDocumentation? other) => other is not null && UnitType == other.UnitType && Quantity == other.Quantity
-        && BiasTerm == other.BiasTerm;
-
+    public bool Equals(DefaultDocumentation? other) => other is not null && UnitType == other.UnitType && Quantity == other.Quantity && BiasTerm == other.BiasTerm;
     public override bool Equals(object? obj) => obj is DefaultDocumentation other && Equals(other);
 
     public static bool operator ==(DefaultDocumentation? lhs, DefaultDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;

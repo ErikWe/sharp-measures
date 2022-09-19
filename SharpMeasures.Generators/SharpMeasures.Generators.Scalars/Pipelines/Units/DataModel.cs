@@ -13,30 +13,24 @@ internal readonly record struct DataModel
     public NamedType Unit { get; }
     public NamedType UnitQuantity { get; }
 
-    public IReadOnlyList<IUnitInstance> IncludedBases => includedBases;
-    public IReadOnlyList<IUnitInstance> IncluedUnits => includedUnits;
+    public IReadOnlyList<IUnitInstance> IncludedUnitBases { get; }
+    public IReadOnlyList<IUnitInstance> IncludedUnits { get; }
 
-    public IReadOnlyList<IScalarConstant> Constants => constants;
+    public IReadOnlyList<IScalarConstant> Constants { get; }
 
     public IDocumentationStrategy Documentation { get; }
 
-    private ReadOnlyEquatableList<IUnitInstance> includedBases { get; }
-    private ReadOnlyEquatableList<IUnitInstance> includedUnits { get; }
-
-    private ReadOnlyEquatableList<IScalarConstant> constants { get; }
-
-    public DataModel(DefinedType scalar, NamedType unit, NamedType unitQuantity, IReadOnlyList<IUnitInstance> includedBases, IReadOnlyList<IUnitInstance> includedUnits,
-        IReadOnlyList<IScalarConstant> constants, IDocumentationStrategy documentation)
+    public DataModel(DefinedType scalar, NamedType unit, NamedType unitQuantity, IReadOnlyList<IUnitInstance> includedBases, IReadOnlyList<IUnitInstance> includedUnits, IReadOnlyList<IScalarConstant> constants, IDocumentationStrategy documentation)
     {
         Scalar = scalar;
 
         Unit = unit;
         UnitQuantity = unitQuantity;
 
-        this.includedBases = includedBases.AsReadOnlyEquatable();
-        this.includedUnits = includedUnits.AsReadOnlyEquatable();
+        IncludedUnitBases = includedBases.AsReadOnlyEquatable();
+        IncludedUnits = includedUnits.AsReadOnlyEquatable();
 
-        this.constants = constants.AsReadOnlyEquatable();
+        Constants = constants.AsReadOnlyEquatable();
 
         Documentation = documentation;
     }

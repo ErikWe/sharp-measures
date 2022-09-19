@@ -31,7 +31,7 @@ internal interface ISpecializedSharpMeasuresVectorGroupValidationContext : IProc
     public abstract IVectorPopulation VectorPopulation { get; }
 }
 
-internal class SpecializedSharpMeasuresVectorGroupValidator : IProcesser<ISpecializedSharpMeasuresVectorGroupValidationContext, SpecializedSharpMeasuresVectorGroupDefinition, SpecializedSharpMeasuresVectorGroupDefinition>
+internal sealed class SpecializedSharpMeasuresVectorGroupValidator : IProcesser<ISpecializedSharpMeasuresVectorGroupValidationContext, SpecializedSharpMeasuresVectorGroupDefinition, SpecializedSharpMeasuresVectorGroupDefinition>
 {
     private ISpecializedSharpMeasuresVectorGroupValidationDiagnostics Diagnostics { get; }
 
@@ -66,7 +66,6 @@ internal class SpecializedSharpMeasuresVectorGroupValidator : IProcesser<ISpecia
         var defaultUnitInstanceSymbol = defaultUnitInstanceValidity.Transform(definition.DefaultUnitInstanceSymbol);
 
         var product = ProduceResult(definition, scalar.NullableValueResult(), difference.NullableValueResult(), defaultUnitInstanceName.NullableReferenceResult(), defaultUnitInstanceSymbol.NullableReferenceResult());
-
         var allDiagnostics = validity.Diagnostics.Concat(scalar).Concat(difference).Concat(defaultUnitInstanceValidity);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
@@ -74,8 +73,7 @@ internal class SpecializedSharpMeasuresVectorGroupValidator : IProcesser<ISpecia
 
     private static SpecializedSharpMeasuresVectorGroupDefinition ProduceResult(SpecializedSharpMeasuresVectorGroupDefinition definition, NamedType? scalar, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
-        return new(definition.OriginalQuantity, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritUnits, scalar, definition.ImplementSum,
-            definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.GenerateDocumentation, definition.Locations);
+        return new(definition.OriginalQuantity, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritUnits, scalar, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.GenerateDocumentation, definition.Locations);
     }
 
     private IValidityWithDiagnostics ValidateTypeNotAlreadyUnit(ISpecializedSharpMeasuresVectorGroupValidationContext context, SpecializedSharpMeasuresVectorGroupDefinition definition)

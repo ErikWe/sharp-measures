@@ -23,7 +23,7 @@ internal static class Execution
         context.AddSource($"{data.Value.Vector.QualifiedName}.Units.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
-    private class Composer
+    private sealed class Composer
     {
         public static string Compose(DataModel data)
         {
@@ -55,10 +55,7 @@ internal static class Execution
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
         }
 
-        private string Retrieve()
-        {
-            return Builder.ToString();
-        }
+        private string Retrieve() => Builder.ToString();
 
         private void ComposeTypeBlock(Indentation indentation)
         {
@@ -138,16 +135,13 @@ internal static class Execution
 
         private void AppendUnitPlural(Indentation indentation)
         {
-            foreach (var includedUnit in Data.IncluedUnits)
+            foreach (var includedUnit in Data.IncludedUnits)
             {
                 AppendDocumentation(indentation, Data.Documentation.InSpecifiedUnit(includedUnit));
                 Builder.AppendLine($"{indentation}public global::SharpMeasures.Vector{Data.Dimension} {includedUnit.PluralForm} => InUnit({Data.Unit.FullyQualifiedName}.{includedUnit.Name});");
             }
         }
 
-        private void AppendDocumentation(Indentation indentation, string text)
-        {
-            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
-        }
+        private void AppendDocumentation(Indentation indentation, string text) => DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
     }
 }

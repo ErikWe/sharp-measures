@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class IncludeUnitsProperty<TPropertyType> : AttributeProperty<RawIncludeUnitsDefinition, IncludeUnitsLocations, TPropertyType>
+internal sealed record class IncludeUnitsProperty<TPropertyType> : AttributeProperty<RawIncludeUnitsDefinition, IncludeUnitsLocations, TPropertyType>
 {
     public IncludeUnitsProperty(string name, string parameterName, DTypeSetter setter, DSingleLocationSetter locator) : base(name, parameterName, setter, locator) { }
     public IncludeUnitsProperty(string name, DTypeSetter setter, DSingleLocationSetter locator) : base(name, setter, locator) { }

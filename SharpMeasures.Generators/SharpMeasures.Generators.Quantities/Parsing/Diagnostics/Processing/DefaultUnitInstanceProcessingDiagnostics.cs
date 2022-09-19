@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 
-public class DefaultUnitInstanceProcessingDiagnostics : IDefaultUnitInstanceProcessingDiagnostics
+public sealed class DefaultUnitInstanceProcessingDiagnostics : IDefaultUnitInstanceProcessingDiagnostics
 {
     public static DefaultUnitInstanceProcessingDiagnostics Instance { get; } = new();
 

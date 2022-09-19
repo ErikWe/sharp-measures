@@ -11,10 +11,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-internal class DocumentationFileBuilder
+internal sealed class DocumentationFileBuilder
 {
-    public static IResultWithDiagnostics<DocumentationDictionary> Build(IEnumerable<Optional<AdditionalText>> relevantFiles, IDiagnosticsStrategy diagnosticsStrategy,
-        GlobalAnalyzerConfig configuration)
+    public static IResultWithDiagnostics<DocumentationDictionary> Build(IEnumerable<Optional<AdditionalText>> relevantFiles, IDiagnosticsStrategy diagnosticsStrategy, GlobalAnalyzerConfig configuration)
     {
         Dictionary<string, DocumentationFileBuilder> builders = createBuilders().ToDictionary(static (builder) => builder.Name);
 
@@ -101,10 +100,7 @@ internal class DocumentationFileBuilder
         Configuration = configuration;
     }
 
-    public DocumentationFile Finalize()
-    {
-        return new(Name, File, Content.AsReadOnlyEquatable(), DiagnosticsStrategy, Configuration, HasReportedOneMissingTag);
-    }
+    public DocumentationFile Finalize() => new(Name, File, Content.AsReadOnlyEquatable(), DiagnosticsStrategy, Configuration, HasReportedOneMissingTag);
 
     private void ResolveDependencies(Dictionary<string, DocumentationFileBuilder> documentationFiles)
     {

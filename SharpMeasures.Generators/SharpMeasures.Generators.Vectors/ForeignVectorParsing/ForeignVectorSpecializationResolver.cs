@@ -8,13 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public static class ForeignVectorSpecializationResolver
+internal static class ForeignVectorSpecializationResolver
 {
-    public static Optional<IResolvedVectorType> Resolve(IVectorSpecializationType vectorType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
+    public static Optional<ResolvedVectorType> Resolve(VectorSpecializationType vectorType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
     {
         if (vectorPopulation.VectorBases.TryGetValue(vectorType.Type.AsNamedType(), out var vectorBase) is false || unitPopulation.Units.TryGetValue(vectorBase.Definition.Unit, out var unit) is false)
         {
-            return new Optional<IResolvedVectorType>();
+            return new Optional<ResolvedVectorType>();
         }
 
         var definedDerivations = vectorType.Derivations;
@@ -110,11 +110,7 @@ public static class ForeignVectorSpecializationResolver
         }
     }
 
-    private static T? RecursivelySearchForDefined<T>(IVectorSpecializationType vectorType, IVectorPopulation vectorPopulation, Func<IVectorType, T?> itemDelegate)
-    {
-        return RecursivelySearchForMatching(vectorType, vectorPopulation, itemDelegate, static (_, item) => item is not null);
-    }
-
+    private static T? RecursivelySearchForDefined<T>(IVectorSpecializationType vectorType, IVectorPopulation vectorPopulation, Func<IVectorType, T?> itemDelegate) => RecursivelySearchForMatching(vectorType, vectorPopulation, itemDelegate, static (_, item) => item is not null);
     private static T? RecursivelySearchForMatching<T>(IVectorSpecializationType vectorType, IVectorPopulation vectorPopulation, Func<IVectorType, T?> itemDelegate, Func<IVectorType, T?, bool> predicate)
     {
         return recursivelySearch(vectorType);

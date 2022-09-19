@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal abstract record class AModifiedUnitInstanceLocations<TLocations> : AUnitInstanceLocations<TLocations>, IOpenModifiedUnitInstanceLocations<TLocations>
-    where TLocations : AModifiedUnitInstanceLocations<TLocations>
+internal abstract record class AModifiedUnitInstanceLocations<TLocations> : AUnitInstanceLocations<TLocations>, IOpenModifiedUnitInstanceLocations<TLocations> where TLocations : AModifiedUnitInstanceLocations<TLocations>
 {
     protected MinimalLocation? OriginalUnitInstance { get; private init; }
 

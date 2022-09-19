@@ -5,17 +5,14 @@ using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
 using System.Collections.Generic;
 
-internal record class VectorConstantDefinition : AQuantityConstantDefinition<VectorConstantLocations>, IVectorConstant
+internal sealed record class VectorConstantDefinition : AQuantityConstantDefinition<VectorConstantLocations>, IVectorConstant
 {
-    public IReadOnlyList<double> Value => value;
-
-    private ReadOnlyEquatableList<double> value { get; }
+    public IReadOnlyList<double> Value { get; }
 
     IVectorConstantLocations IVectorConstant.Locations => Locations;
 
-    public VectorConstantDefinition(string name, string unit, IReadOnlyList<double> value, bool generateMultiplesProperty, string? multiples, VectorConstantLocations locations)
-        : base(name, unit, generateMultiplesProperty, multiples, locations)
+    public VectorConstantDefinition(string name, string unit, IReadOnlyList<double> value, bool generateMultiplesProperty, string? multiples, VectorConstantLocations locations) : base(name, unit, generateMultiplesProperty, multiples, locations)
     {
-        this.value = value.AsReadOnlyEquatable();
+        Value = value.AsReadOnlyEquatable();
     }
 }

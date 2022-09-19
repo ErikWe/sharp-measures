@@ -1,19 +1,20 @@
 ﻿namespace SharpMeasures.Generators.Vectors.ForeignVectorParsing;
 
+using Microsoft.CodeAnalysis;
+
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
-using SharpMeasures.Generators.Vectors.ForeignVectorParsing.Diagnostics;
+using SharpMeasures.Generators.Vectors.ForeignVectorParsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Vectors.Parsing;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
-using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
+using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System.Collections.Generic;
 
-internal class ForeignVectorBaseProcesser : AForeignVectorProcesser<RawVectorBaseType, RawSharpMeasuresVectorDefinition, VectorBaseType, SharpMeasuresVectorDefinition>
+internal sealed class ForeignVectorBaseProcesser : AForeignVectorProcesser<RawVectorBaseType, RawSharpMeasuresVectorDefinition, VectorBaseType, SharpMeasuresVectorDefinition>
 {
     protected override VectorBaseType ProduceResult(DefinedType type, MinimalLocation typeLocation, SharpMeasuresVectorDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
         IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions,
@@ -22,11 +23,18 @@ internal class ForeignVectorBaseProcesser : AForeignVectorProcesser<RawVectorBas
         return new(type, typeLocation, definition, derivations, constants, conversions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
-    protected override IOptionalWithDiagnostics<SharpMeasuresVectorDefinition> ProcessVector(DefinedType type, RawSharpMeasuresVectorDefinition rawDefinition)
+    protected override Optional<SharpMeasuresVectorDefinition> ProcessVector(DefinedType type, RawSharpMeasuresVectorDefinition rawDefinition)
     {
         var processingContext = new SimpleProcessingContext(type);
 
-        return ProcessingFilter.Create(SharpMeasuresVectorProcesser).Filter(processingContext, rawDefinition);
+        var vector = ProcessingFilter.Create(SharpMeasuresVectorProcesser).Filter(processingContext, rawDefinition);
+
+        if (vector.LacksResult)
+        {
+            return new Optional<SharpMeasuresVectorDefinition>();
+        }
+
+        return vector.Result;
     }
 
     private static SharpMeasuresVectorProcesser SharpMeasuresVectorProcesser { get; } = new(EmptySharpMeasuresVectorProcessingDiagnostics.Instance);

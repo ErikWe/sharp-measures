@@ -12,20 +12,22 @@ internal readonly record struct DataModel
     public DefinedType Vector { get; }
     public int Dimension { get; }
 
-    public IReadOnlyList<IDerivedQuantity> Derivations => derivations;
+    public bool HasDefinedScalar { get; }
+
+    public IReadOnlyList<IDerivedQuantity> Derivations { get; }
 
     public IResolvedScalarPopulation ScalarPopulation { get; }
 
     public IVectorDocumentationStrategy Documentation { get; }
 
-    private ReadOnlyEquatableList<IDerivedQuantity> derivations { get; }
-
-    public DataModel(DefinedType vector, int dimension, IReadOnlyList<IDerivedQuantity> derivations, IResolvedScalarPopulation scalarPopulation, IVectorDocumentationStrategy documentation)
+    public DataModel(DefinedType vector, int dimension, bool hasDefinedScalar, IReadOnlyList<IDerivedQuantity> derivations, IResolvedScalarPopulation scalarPopulation, IVectorDocumentationStrategy documentation)
     {
         Vector = vector;
         Dimension = dimension;
 
-        this.derivations = derivations.AsReadOnlyEquatable();
+        HasDefinedScalar = hasDefinedScalar;
+
+        Derivations = derivations.AsReadOnlyEquatable();
 
         ScalarPopulation = scalarPopulation;
 

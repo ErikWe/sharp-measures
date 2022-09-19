@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.Text;
 using System.IO;
 using System.Threading;
 
-internal class CustomAdditionalText : AdditionalText
+internal sealed class CustomAdditionalText : AdditionalText
 {
     public override string Path { get; }
     private string Source { get; }
@@ -17,8 +17,5 @@ internal class CustomAdditionalText : AdditionalText
         Source = File.ReadAllText(path);
     }
 
-    public override SourceText GetText(CancellationToken cancellationToken = new CancellationToken())
-    {
-        return SourceText.From(Source);
-    }
+    public override SourceText GetText(CancellationToken cancellationToken = new CancellationToken()) => SourceText.From(Source);
 }

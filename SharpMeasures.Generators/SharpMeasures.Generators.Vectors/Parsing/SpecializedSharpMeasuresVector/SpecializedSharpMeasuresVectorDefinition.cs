@@ -3,7 +3,7 @@
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;
 
-internal record class SpecializedSharpMeasuresVectorDefinition : AAttributeDefinition<SpecializedSharpMeasuresVectorLocations>, IVectorSpecialization, IDefaultUnitInstanceDefinition
+internal sealed record class SpecializedSharpMeasuresVectorDefinition : AAttributeDefinition<SpecializedSharpMeasuresVectorLocations>, IVectorSpecialization, IDefaultUnitInstanceDefinition
 {
     public NamedType OriginalQuantity { get; }
 
@@ -30,9 +30,8 @@ internal record class SpecializedSharpMeasuresVectorDefinition : AAttributeDefin
     IVectorSpecializationLocations IVectorSpecialization.Locations => Locations;
     IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
-    public SpecializedSharpMeasuresVectorDefinition(NamedType originalQuantity, bool inheritDerivations, bool inheritConstants, bool inheritConversions, bool inheritUnits, NamedType? scalar, bool? implementSum,
-        bool? implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, bool? generateDocumentation, SpecializedSharpMeasuresVectorLocations locations)
-        : base(locations)
+    public SpecializedSharpMeasuresVectorDefinition(NamedType originalQuantity, bool inheritDerivations, bool inheritConstants, bool inheritConversions, bool inheritUnits, NamedType? scalar, bool? implementSum, bool? implementDifference, NamedType? difference, string? defaultUnitInstanceName,
+        string? defaultUnitInstanceSymbol, bool? generateDocumentation, SpecializedSharpMeasuresVectorLocations locations) : base(locations)
     {
         OriginalQuantity = originalQuantity;
 

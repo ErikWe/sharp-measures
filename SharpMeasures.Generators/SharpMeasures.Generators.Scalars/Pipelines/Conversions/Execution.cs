@@ -22,7 +22,7 @@ internal static class Execution
         context.AddSource($"{data.Value.Scalar.QualifiedName}.Conversions.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
-    private class Composer
+    private sealed class Composer
     {
         public static string Compose(DataModel data)
         {
@@ -62,10 +62,7 @@ internal static class Execution
             InterfaceCollector.InsertInterfacesOnNewLines(new Indentation(1));
         }
 
-        private string Retrieve()
-        {
-            return Builder.ToString();
-        }
+        private string Retrieve() => Builder.ToString();
 
         private void ComposeTypeBlock(Indentation indentation)
         {
@@ -166,9 +163,6 @@ internal static class Execution
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, $"public static {behaviour} operator {Data.Scalar.Name}", "new(x.Magnitude)", (scalar, "x"));
         }
 
-        private void AppendDocumentation(Indentation indentation, string text)
-        {
-            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
-        }
+        private void AppendDocumentation(Indentation indentation, string text) => DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
     }
 }

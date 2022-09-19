@@ -6,25 +6,20 @@ using SharpMeasures.Generators.Quantities;
 using System.Collections.Generic;
 using System.Linq;
 
-internal class ResolvedVectorPopulation : IResolvedVectorPopulation
+internal sealed record class ResolvedVectorPopulation : IResolvedVectorPopulation
 {
-    public IReadOnlyDictionary<NamedType, IResolvedVectorGroupType> Groups => groups;
-    public IReadOnlyDictionary<NamedType, IResolvedVectorType> Vectors => vectors;
+    public IReadOnlyDictionary<NamedType, IResolvedVectorGroupType> Groups { get; }
+    public IReadOnlyDictionary<NamedType, IResolvedVectorType> Vectors { get; }
 
-    private ReadOnlyEquatableDictionary<NamedType, IResolvedVectorGroupType> groups { get; }
-    private ReadOnlyEquatableDictionary<NamedType, IResolvedVectorType> vectors { get; }
-
-    IReadOnlyDictionary<NamedType, IResolvedQuantityType> IResolvedQuantityPopulation.Quantities => Groups.Transform(static (vector) => vector as IResolvedQuantityType)
-        .Concat(Vectors.Transform(static (vector) => vector as IResolvedQuantityType)).ToDictionary().AsEquatable();
+    IReadOnlyDictionary<NamedType, IResolvedQuantityType> IResolvedQuantityPopulation.Quantities => Groups.Transform(static (vector) => vector as IResolvedQuantityType) .Concat(Vectors.Transform(static (vector) => vector as IResolvedQuantityType)).ToDictionary().AsEquatable();
 
     private ResolvedVectorPopulation(IReadOnlyDictionary<NamedType, IResolvedVectorGroupType> groups, IReadOnlyDictionary<NamedType, IResolvedVectorType> vectors)
     {
-        this.groups = groups.AsReadOnlyEquatable();
-        this.vectors = vectors.AsReadOnlyEquatable();
+        Groups = groups.AsReadOnlyEquatable();
+        Vectors = vectors.AsReadOnlyEquatable();
     }
 
-    public static ResolvedVectorPopulation Build(IReadOnlyList<IResolvedVectorType> vectorBases, IReadOnlyList<IResolvedVectorType> vectorSpecializations, IReadOnlyList<IResolvedVectorGroupType> groupBases,
-        IReadOnlyList<IResolvedVectorGroupType> groupSpecializations, IReadOnlyList<IResolvedVectorType> groupMembers)
+    public static ResolvedVectorPopulation Build(IReadOnlyList<IResolvedVectorType> vectorBases, IReadOnlyList<IResolvedVectorType> vectorSpecializations, IReadOnlyList<IResolvedVectorGroupType> groupBases, IReadOnlyList<IResolvedVectorGroupType> groupSpecializations, IReadOnlyList<IResolvedVectorType> groupMembers)
     {
         return new(groupBases.Concat(groupSpecializations).ToDictionary(static (vector) => vector.Type.AsNamedType()), vectorBases.Concat(vectorSpecializations).Concat(groupMembers).ToDictionary(static (vector) => vector.Type.AsNamedType()));
     }

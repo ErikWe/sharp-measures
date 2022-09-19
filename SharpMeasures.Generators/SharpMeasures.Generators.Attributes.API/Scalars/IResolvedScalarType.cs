@@ -18,5 +18,5 @@ public interface IResolvedScalarType : IResolvedQuantityType
 
     public abstract IReadOnlyList<IScalarConstant> Constants { get; }
 
-    public abstract IReadOnlyList<string> IncludedUnitBaseInstancesNames { get; }
+    public abstract IReadOnlyList<string> IncludedUnitBaseInstanceNames { get; }
 }

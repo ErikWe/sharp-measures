@@ -57,10 +57,7 @@ internal static class GroupSpecializationResolver
             defaultUnitInstanceName, defaultUnitInstanceSymbol, membersByDimension, definedDerivations, inheritedDerivations, conversions, includedUnitInstances, generateDocumentation);
     }
 
-    private static IReadOnlyDictionary<int, NamedType> ResolveMembers(GroupSpecializationType groupType, IVectorPopulation vectorPopulation)
-    {
-        return vectorPopulation.GroupMembersByGroup[groupType.Type.AsNamedType()].GroupMembersByDimension.Transform(static (vector) => vector.Type.AsNamedType());
-    }
+    private static IReadOnlyDictionary<int, NamedType> ResolveMembers(GroupSpecializationType groupType, IVectorPopulation vectorPopulation) => vectorPopulation.GroupMembersByGroup[groupType.Type.AsNamedType()].GroupMembersByDimension.Transform(static (vector) => vector.Type.AsNamedType());
 
     private static NamedType? ResolveDifference(GroupSpecializationType groupType, IVectorPopulation vectorPopulation)
     {
@@ -132,11 +129,7 @@ internal static class GroupSpecializationResolver
         }
     }
 
-    private static T? RecursivelySearchForDefined<T>(GroupSpecializationType groupType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, T?> itemDelegate)
-    {
-        return RecursivelySearchForMatching(groupType, vectorPopulation, itemDelegate, static (_, item) => item is not null);
-    }
-
+    private static T? RecursivelySearchForDefined<T>(GroupSpecializationType groupType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, T?> itemDelegate) => RecursivelySearchForMatching(groupType, vectorPopulation, itemDelegate, static (_, item) => item is not null);
     private static T? RecursivelySearchForMatching<T>(GroupSpecializationType groupType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, T?> itemDelegate, Func<IVectorGroupType, T?, bool> predicate)
     {
         return recursivelySearch(groupType);

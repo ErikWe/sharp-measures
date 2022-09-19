@@ -16,15 +16,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public static class ForeignUnitParser
+public sealed class ForeignUnitParser
 {
-    public static (Optional<IUnitType> Definition, IEnumerable<INamedTypeSymbol> ReferencedSymbols) Parse(INamedTypeSymbol typeSymbol)
+    private List<RawUnitType> Units { get; } = new();
+
+    public Optional<IEnumerable<INamedTypeSymbol>> TryParse(INamedTypeSymbol typeSymbol)
+    {
+        (var unit, var unitReferencedSymbols) = Parse(typeSymbol);
+
+        if (unit.HasValue)
+        {
+            Units.Add(unit.Value);
+
+            return new Optional<IEnumerable<INamedTypeSymbol>>(unitReferencedSymbols);
+        }
+
+        return new Optional<IEnumerable<INamedTypeSymbol>>();
+    }
+
+    public IForeignUnitProcesser Finalize() => new ForeignUnitProcesser(new ForeignUnitParsingResult(Units));
+
+    private static (Optional<RawUnitType> Definition, IEnumerable<INamedTypeSymbol> ReferencedSymbols) Parse(INamedTypeSymbol typeSymbol)
     {
         (var unit, var unitReferencedSymbols) = ParseUnit(typeSymbol);
 
         if (unit.HasValue is false)
         {
-            return (new Optional<IUnitType>(), Array.Empty<INamedTypeSymbol>());
+            return (new Optional<RawUnitType>(), Array.Empty<INamedTypeSymbol>());
         }
 
         (var derivations, var derivationsReferencedSymbols) = ParseDerivations(typeSymbol);
@@ -36,18 +54,10 @@ public static class ForeignUnitParser
         var prefixedUnitInstances = ParsePrefixedUnitInstances(typeSymbol);
         var scaledUnitInstances = ParseScaledUnitInstances(typeSymbol);
 
-        RawUnitType rawUnitType = new(typeSymbol.AsDefinedType(), MinimalLocation.None, unit.Value, derivations, fixedUnitInstance.HasValue ? fixedUnitInstance.Value : null, unitInstanceAliases, derivedUnitInstances, biasedUnitInstances, prefixedUnitInstances, scaledUnitInstances);
-
-        var unitType = ForeignUnitProcesser.Process(rawUnitType);
-
-        if (unitType.HasValue is false)
-        {
-            return (new Optional<IUnitType>(), Array.Empty<INamedTypeSymbol>());
-        }
-
+        RawUnitType rawUnit = new(typeSymbol.AsDefinedType(), MinimalLocation.None, unit.Value, derivations, fixedUnitInstance.HasValue ? fixedUnitInstance.Value : null, unitInstanceAliases, derivedUnitInstances, biasedUnitInstances, prefixedUnitInstances, scaledUnitInstances);
         var referencedSymbols = unitReferencedSymbols.Concat(derivationsReferencedSymbols);
 
-        return (unitType, referencedSymbols);
+        return (rawUnit, referencedSymbols);
     }
 
     private static (Optional<RawSharpMeasuresUnitDefinition>, IEnumerable<INamedTypeSymbol>) ParseUnit(INamedTypeSymbol typeSymbol)
@@ -83,28 +93,9 @@ public static class ForeignUnitParser
         return rawFixedUnitInstance;
     }
 
-    private static IEnumerable<RawUnitInstanceAliasDefinition> ParseUnitInstanceAliases(INamedTypeSymbol typeSymbol)
-    {
-        return UnitInstanceAliasParser.Parser.ParseAllOccurrences(typeSymbol);
-    }
-
-    private static IEnumerable<RawDerivedUnitInstanceDefinition> ParseDerivedUnitInstances(INamedTypeSymbol typeSymbol)
-    {
-        return DerivedUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
-    }
-
-    private static IEnumerable<RawBiasedUnitInstanceDefinition> ParseBiasedUnitInstances(INamedTypeSymbol typeSymbol)
-    {
-        return BiasedUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
-    }
-
-    private static IEnumerable<RawPrefixedUnitInstanceDefinition> ParsePrefixedUnitInstances(INamedTypeSymbol typeSymbol)
-    {
-        return PrefixedUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
-    }
-
-    private static IEnumerable<RawScaledUnitInstanceDefinition> ParseScaledUnitInstances(INamedTypeSymbol typeSymbol)
-    {
-        return ScaledUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
-    }
+    private static IEnumerable<RawUnitInstanceAliasDefinition> ParseUnitInstanceAliases(INamedTypeSymbol typeSymbol) => UnitInstanceAliasParser.Parser.ParseAllOccurrences(typeSymbol);
+    private static IEnumerable<RawDerivedUnitInstanceDefinition> ParseDerivedUnitInstances(INamedTypeSymbol typeSymbol) => DerivedUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
+    private static IEnumerable<RawBiasedUnitInstanceDefinition> ParseBiasedUnitInstances(INamedTypeSymbol typeSymbol) => BiasedUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
+    private static IEnumerable<RawPrefixedUnitInstanceDefinition> ParsePrefixedUnitInstances(INamedTypeSymbol typeSymbol) => PrefixedUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
+    private static IEnumerable<RawScaledUnitInstanceDefinition> ParseScaledUnitInstances(INamedTypeSymbol typeSymbol) => ScaledUnitInstanceParser.Parser.ParseAllOccurrences(typeSymbol);
 }

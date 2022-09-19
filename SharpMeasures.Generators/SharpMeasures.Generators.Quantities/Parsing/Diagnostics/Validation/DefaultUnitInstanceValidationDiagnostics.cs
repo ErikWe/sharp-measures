@@ -7,7 +7,7 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 using SharpMeasures.Generators.Units;
 
-public class DefaultUnitInstanceValidationDiagnostics : IDefaultUnitInstanceValidationDiagnostics
+public sealed class DefaultUnitInstanceValidationDiagnostics : IDefaultUnitInstanceValidationDiagnostics
 {
     public static DefaultUnitInstanceValidationDiagnostics Instance { get; } = new();
 

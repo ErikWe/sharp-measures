@@ -56,15 +56,12 @@ internal abstract class AVectorProcesser<TRawType, TRawDefinition, TProductType,
             excludeUnitInstances = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
         }
 
-        TProductType product = ProduceResult(rawVector.Type, rawVector.TypeLocation, vector.Result, derivations.Result, constants.Result,
-            conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
+        TProductType product = ProduceResult(rawVector.Type, rawVector.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    protected abstract TProductType ProduceResult(DefinedType type, MinimalLocation typeLocation, TProductDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
-        IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions,
-        IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
+    protected abstract TProductType ProduceResult(DefinedType type, MinimalLocation typeLocation, TProductDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
 
     protected abstract IOptionalWithDiagnostics<TProductDefinition> ProcessVector(DefinedType type, TRawDefinition rawDefinition);
 

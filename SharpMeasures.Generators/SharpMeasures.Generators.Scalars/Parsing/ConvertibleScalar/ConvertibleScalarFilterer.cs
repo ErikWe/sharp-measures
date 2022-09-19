@@ -23,7 +23,7 @@ internal interface IConvertibleScalarFilteringContext : IProcessingContext
     public abstract HashSet<NamedType> InheritedConversions { get; }
 }
 
-internal class ConvertibleScalarFilterer : IProcesser<IConvertibleScalarFilteringContext, ConvertibleScalarDefinition, ConvertibleScalarDefinition>
+internal sealed class ConvertibleScalarFilterer : IProcesser<IConvertibleScalarFilteringContext, ConvertibleScalarDefinition, ConvertibleScalarDefinition>
 {
     private IConvertibleScalarFilteringDiagnostics Diagnostics { get; }
 

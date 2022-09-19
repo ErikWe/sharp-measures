@@ -13,37 +13,25 @@ using SharpMeasures.Generators.Units.Parsing.UnitInstanceAlias;
 using System.Collections.Generic;
 using System.Linq;
 
-internal class UnitType : IUnitType
+internal sealed class UnitType : IUnitType
 {
     public DefinedType Type { get; }
     public MinimalLocation TypeLocation { get; }
 
     public SharpMeasuresUnitDefinition Definition { get; }
 
-    public IReadOnlyList<DerivableUnitDefinition> UnitDerivations => unitDerivations;
+    public IReadOnlyList<DerivableUnitDefinition> UnitDerivations { get; }
 
     public FixedUnitInstanceDefinition? FixedUnitInstance { get; }
-    public IReadOnlyList<UnitInstanceAliasDefinition> UnitInstanceAliases => unitInstanceAliases;
-    public IReadOnlyList<BiasedUnitInstanceDefinition> BiasedUnitInstances => biasedUnitInstances;
-    public IReadOnlyList<DerivedUnitInstanceDefinition> DerivedUnitInstances => derivedUnitInstances;
-    public IReadOnlyList<PrefixedUnitInstanceDefinition> PrefixedUnitInstances => prefixedUnitInstances;
-    public IReadOnlyList<ScaledUnitInstanceDefinition> ScaledUnitInstances => scaledUnitInstances;
+    public IReadOnlyList<UnitInstanceAliasDefinition> UnitInstanceAliases { get; }
+    public IReadOnlyList<BiasedUnitInstanceDefinition> BiasedUnitInstances { get; }
+    public IReadOnlyList<DerivedUnitInstanceDefinition> DerivedUnitInstances { get; }
+    public IReadOnlyList<PrefixedUnitInstanceDefinition> PrefixedUnitInstances { get; }
+    public IReadOnlyList<ScaledUnitInstanceDefinition> ScaledUnitInstances { get; }
 
-    public IReadOnlyDictionary<string, IUnitInstance> UnitInstancesByName => unitInstancesByName;
-    public IReadOnlyDictionary<string, IUnitInstance> UnitInstancesByPluralForm => unitInstancesByPluralForm;
-    public IReadOnlyDictionary<string, IDerivableUnit> DerivationsByID => derivationsByID;
-
-    private ReadOnlyEquatableList<DerivableUnitDefinition> unitDerivations { get; }
-
-    private ReadOnlyEquatableList<UnitInstanceAliasDefinition> unitInstanceAliases { get; }
-    private ReadOnlyEquatableList<DerivedUnitInstanceDefinition> derivedUnitInstances { get; }
-    private ReadOnlyEquatableList<BiasedUnitInstanceDefinition> biasedUnitInstances { get; }
-    private ReadOnlyEquatableList<PrefixedUnitInstanceDefinition> prefixedUnitInstances { get; }
-    private ReadOnlyEquatableList<ScaledUnitInstanceDefinition> scaledUnitInstances { get; }
-
-    private ReadOnlyEquatableDictionary<string, IUnitInstance> unitInstancesByName { get; }
-    private ReadOnlyEquatableDictionary<string, IUnitInstance> unitInstancesByPluralForm { get; }
-    private ReadOnlyEquatableDictionary<string, IDerivableUnit> derivationsByID { get; }
+    public IReadOnlyDictionary<string, IUnitInstance> UnitInstancesByName { get; }
+    public IReadOnlyDictionary<string, IUnitInstance> UnitInstancesByPluralForm { get; }
+    public IReadOnlyDictionary<string, IDerivableUnit> DerivationsByID { get; }
 
     ISharpMeasuresObject ISharpMeasuresObjectType.Definition => Definition;
     IUnit IUnitType.Definition => Definition;
@@ -66,18 +54,18 @@ internal class UnitType : IUnitType
 
         Definition = definition;
 
-        this.unitDerivations = unitDerivations.AsReadOnlyEquatable();
+        UnitDerivations = unitDerivations.AsReadOnlyEquatable();
 
         FixedUnitInstance = fixedUnitInstance;
-        this.unitInstanceAliases = unitInstanceAliases.AsReadOnlyEquatable();
-        this.derivedUnitInstances = derivedUnitInstances.AsReadOnlyEquatable();
-        this.biasedUnitInstances = biasedUnitInstances.AsReadOnlyEquatable();
-        this.prefixedUnitInstances = prefixedUnitInstances.AsReadOnlyEquatable();
-        this.scaledUnitInstances = scaledUnitInstances.AsReadOnlyEquatable();
+        UnitInstanceAliases = unitInstanceAliases.AsReadOnlyEquatable();
+        DerivedUnitInstances = derivedUnitInstances.AsReadOnlyEquatable();
+        BiasedUnitInstances = biasedUnitInstances.AsReadOnlyEquatable();
+        PrefixedUnitInstances = prefixedUnitInstances.AsReadOnlyEquatable();
+        ScaledUnitInstances = scaledUnitInstances.AsReadOnlyEquatable();
 
-        unitInstancesByName = ConstructUnitInstancesByNameDictionary();
-        unitInstancesByPluralForm = ConstructUnitInstancesByPluralFormDictionary();
-        derivationsByID = ConstructDerivationsByIDDictionary();
+        UnitInstancesByName = ConstructUnitInstancesByNameDictionary();
+        UnitInstancesByPluralForm = ConstructUnitInstancesByPluralFormDictionary();
+        DerivationsByID = ConstructDerivationsByIDDictionary();
     }
 
     private IEnumerable<IUnitInstance> AllUnitInstances()

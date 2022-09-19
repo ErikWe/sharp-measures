@@ -1,18 +1,32 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.Contexts.Validation;
 
-using SharpMeasures.Generators.Quantities.Parsing.Contexts.Validation;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;
 
-internal record class ScalarConstantValidationContext : QuantityConstantValidationContext, IScalarConstantValidationContext
+internal sealed record class ScalarConstantValidationContext : IScalarConstantValidationContext
 {
-    public HashSet<string> IncludedUnitInstanceNames { get; }
+    public DefinedType Type { get; }
 
-    public ScalarConstantValidationContext(DefinedType type, IUnitType unitType, HashSet<string> inheritedConstantNames, HashSet<string> inheritedConstantMuliplesNames, HashSet<string> includedUnitInstanceNames, HashSet<string> includedUnitInstancePlurals)
-        : base(type, unitType, inheritedConstantNames, inheritedConstantMuliplesNames, includedUnitInstancePlurals)
+    public IUnitType UnitType { get; }
+
+    public HashSet<string> InheritedConstantNames { get; }
+    public HashSet<string> InheritedConstantMultiples { get; }
+
+    public HashSet<string> IncludedUnitInstanceNames { get; }
+    public HashSet<string> IncludedUnitInstancePluralForms { get; }
+
+    public ScalarConstantValidationContext(DefinedType type, IUnitType unitType, HashSet<string> inheritedConstantNames, HashSet<string> inheritedConstantMuliples, HashSet<string> includedUnitInstanceNames, HashSet<string> includedUnitInstancePluralForms)
     {
+        Type = type;
+
+        UnitType = unitType;
+
+        InheritedConstantNames = inheritedConstantNames;
+        InheritedConstantMultiples = inheritedConstantMuliples;
+
         IncludedUnitInstanceNames = includedUnitInstanceNames;
+        IncludedUnitInstancePluralForms = includedUnitInstancePluralForms;
     }
 }

@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 
 using System.Collections.Generic;
 
-internal class ConvertibleScalarProcesser : AConvertibleQuantityProcesser<IConvertibleQuantityProcessingContext, ConvertibleScalarDefinition>
+internal sealed class ConvertibleScalarProcesser : AConvertibleQuantityProcesser<IConvertibleQuantityProcessingContext, ConvertibleScalarDefinition>
 {
     public ConvertibleScalarProcesser(IConvertibleQuantityProcessingDiagnostics diagnostics) : base(diagnostics) { }
 
@@ -16,8 +16,5 @@ internal class ConvertibleScalarProcesser : AConvertibleQuantityProcesser<IConve
             .Transform((scalarsAndLocationMap) => ProduceResult(definition, scalarsAndLocationMap.Quantities, scalarsAndLocationMap.LocationMap));
     }
 
-    private static ConvertibleScalarDefinition ProduceResult(RawConvertibleQuantityDefinition definition, IReadOnlyList<NamedType> scalars, IReadOnlyList<int> locationMap)
-    {
-        return new(scalars, definition.ConversionDirection, definition.CastOperatorBehaviour, definition.Locations, locationMap);
-    }
+    private static ConvertibleScalarDefinition ProduceResult(RawConvertibleQuantityDefinition definition, IReadOnlyList<NamedType> scalars, IReadOnlyList<int> locationMap) => new(scalars, definition.ConversionDirection, definition.CastOperatorBehaviour, definition.Locations, locationMap);
 }

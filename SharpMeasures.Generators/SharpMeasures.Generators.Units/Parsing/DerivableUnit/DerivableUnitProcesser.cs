@@ -37,7 +37,7 @@ internal interface IDerivableUnitProcessingContext : IProcessingContext
     public abstract HashSet<DerivableUnitSignature> ReservedSignatures { get; }
 }
 
-internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProcessingContext, RawDerivableUnitDefinition, DerivableUnitDefinition>
+internal sealed class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProcessingContext, RawDerivableUnitDefinition, DerivableUnitDefinition>
 {
     private Regex ExpressionQuantityPattern { get; } = new("""{(?'index'[0-9]+)}""", RegexOptions.ExplicitCapture);
 
@@ -75,10 +75,7 @@ internal class DerivableUnitProcesser : AActionableProcesser<IDerivableUnitProce
             .Transform((signature) => ProduceResult(definition, signature));
     }
 
-    private static DerivableUnitDefinition ProduceResult(RawDerivableUnitDefinition definition, IReadOnlyList<NamedType> signature)
-    {
-        return new(definition.DerivationID, definition.Expression!, signature, definition.Permutations, definition.Locations);
-    }
+    private static DerivableUnitDefinition ProduceResult(RawDerivableUnitDefinition definition, IReadOnlyList<NamedType> signature) => new(definition.DerivationID, definition.Expression!, signature, definition.Permutations, definition.Locations);
 
     private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawDerivableUnitDefinition definition)
     {

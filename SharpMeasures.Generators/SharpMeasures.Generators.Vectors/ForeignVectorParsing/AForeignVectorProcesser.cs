@@ -2,7 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
@@ -21,7 +20,7 @@ internal abstract class AForeignVectorProcesser<TRawType, TRawDefinition, TProdu
     {
         var vector = ProcessVector(rawVector.Type, rawVector.Definition);
 
-        if (vector.LacksResult)
+        if (vector.HasValue is false)
         {
             return new Optional<TProductType>();
         }
@@ -33,17 +32,16 @@ internal abstract class AForeignVectorProcesser<TRawType, TRawDefinition, TProdu
         var includeUnitInstances = CommonProcessing.ProcessIncludeUnits(rawVector.Type, rawVector.UnitInstanceInclusions);
         var excludeUnitInstances = CommonProcessing.ProcessExcludeUnits(rawVector.Type, rawVector.UnitInstanceExclusions);
 
-        if (includeUnitInstances.HasResult && includeUnitInstances.Result.Count > 0 && excludeUnitInstances.HasResult && excludeUnitInstances.Result.Count > 0)
+        if (includeUnitInstances.Count > 0 && excludeUnitInstances.Count > 0)
         {
-            excludeUnitInstances = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
+            excludeUnitInstances = Array.Empty<ExcludeUnitsDefinition>();
         }
 
-        return ProduceResult(rawVector.Type, rawVector.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
+        return ProduceResult(rawVector.Type, rawVector.TypeLocation, vector.Value, derivations, constants, conversions, includeUnitInstances, excludeUnitInstances);
     }
 
-    protected abstract TProductType ProduceResult(DefinedType type, MinimalLocation typeLocation, TProductDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
-        IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions,
-        IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
+    protected abstract TProductType ProduceResult(DefinedType type, MinimalLocation typeLocation, TProductDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions,
+        IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
 
-    protected abstract IOptionalWithDiagnostics<TProductDefinition> ProcessVector(DefinedType type, TRawDefinition rawDefinition);
+    protected abstract Optional<TProductDefinition> ProcessVector(DefinedType type, TRawDefinition rawDefinition);
 }

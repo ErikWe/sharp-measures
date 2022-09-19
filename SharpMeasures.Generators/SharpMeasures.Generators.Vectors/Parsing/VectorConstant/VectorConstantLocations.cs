@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
 using System.Collections.Generic;
 
-internal record class VectorConstantLocations : AQuantityConstantLocations<VectorConstantLocations>, IVectorConstantLocations
+internal sealed record class VectorConstantLocations : AQuantityConstantLocations<VectorConstantLocations>, IVectorConstantLocations
 {
     public static VectorConstantLocations Empty { get; } = new();
 
@@ -18,7 +18,7 @@ internal record class VectorConstantLocations : AQuantityConstantLocations<Vecto
 
     public bool ExplicitlySetValue => ValueCollection is not null;
 
-    private ReadOnlyEquatableList<MinimalLocation> valueElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
+    private IReadOnlyList<MinimalLocation> valueElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
 
     protected override VectorConstantLocations Locations => this;
 

@@ -5,8 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal abstract class AModifiedUnitInstanceValidationDiagnostics<TDefinition> : IModifiedUnitInstanceValidationDiagnostics<TDefinition>
-    where TDefinition : IModifiedUnitInstance
+internal abstract class AModifiedUnitInstanceValidationDiagnostics<TDefinition> : IModifiedUnitInstanceValidationDiagnostics<TDefinition> where TDefinition : IModifiedUnitInstance
 {
     public Diagnostic UnrecognizedOriginalUnitInstance(IModifiedUnitInstanceValidationContext context, TDefinition definition)
     {

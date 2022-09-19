@@ -7,7 +7,7 @@ using SharpMeasures.Generators.Units;
 using System;
 using System.Collections.Generic;
 
-internal class VectorFileDocumentation : IVectorDocumentationStrategy, IEquatable<VectorFileDocumentation>
+internal sealed class VectorFileDocumentation : IVectorDocumentationStrategy, IEquatable<VectorFileDocumentation>
 {
     private VectorDocumentationTags DocumentationTags { get; }
 
@@ -119,9 +119,7 @@ internal class VectorFileDocumentation : IVectorDocumentationStrategy, IEquatabl
         return tagContent;
     }
 
-    public virtual bool Equals(VectorFileDocumentation? other) => other is not null && DocumentationTags == other.DocumentationTags
-        && DocumentationFile == other.DocumentationFile && DefaultDocumentationStrategy.Equals(other.DefaultDocumentationStrategy);
-
+    public bool Equals(VectorFileDocumentation? other) => other is not null && DocumentationTags == other.DocumentationTags && DocumentationFile == other.DocumentationFile && DefaultDocumentationStrategy.Equals(other.DefaultDocumentationStrategy);
     public override bool Equals(object? obj) => obj is VectorFileDocumentation other && Equals(other);
 
     public static bool operator ==(VectorFileDocumentation? lhs, VectorFileDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;

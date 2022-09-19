@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal abstract record class ADependantUnitInstance<TLocations> : AUnitInstance<TLocations>, IModifiedUnitInstance
-    where TLocations : IModifiedUnitInstanceLocations
+internal abstract record class ADependantUnitInstance<TLocations> : AUnitInstance<TLocations>, IModifiedUnitInstance where TLocations : IModifiedUnitInstanceLocations
 {
     public string OriginalUnitInstance { get; }
 

@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Units.Parsing.UnitInstanceAlias;
 
-internal class UnitInstanceAliasProcessingDiagnostics : AModifiedUnitInstanceProcessingDiagnostics<RawUnitInstanceAliasDefinition, UnitInstanceAliasLocations>
+internal sealed class UnitInstanceAliasProcessingDiagnostics : AModifiedUnitInstanceProcessingDiagnostics<RawUnitInstanceAliasDefinition, UnitInstanceAliasLocations>
 {
     public static UnitInstanceAliasProcessingDiagnostics Instance { get; } = new();
 

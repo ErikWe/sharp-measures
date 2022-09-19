@@ -11,11 +11,8 @@ public readonly record struct ProviderData<TIdentifier>(TIdentifier Identifier, 
 
 public interface IDocumentationProvider<TIn, TOut, TIdentifier>
 {
-    public abstract IncrementalValuesProvider<TOut> AttachAndReport(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<TIn> inputProvider,
-        IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider, IDiagnosticsStrategy<TIdentifier> diagnosticsStrategy);
-
-    public abstract IncrementalValuesProvider<TOut> AttachWithoutDiagnostics(IncrementalValuesProvider<TIn> inputProvider,
-        IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider);
+    public abstract IncrementalValuesProvider<TOut> AttachAndReport(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<TIn> inputProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider, IDiagnosticsStrategy<TIdentifier> diagnosticsStrategy);
+    public abstract IncrementalValuesProvider<TOut> AttachWithoutDiagnostics(IncrementalValuesProvider<TIn> inputProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider);
 }
 
 public static class DocumentationProvider
@@ -25,28 +22,24 @@ public static class DocumentationProvider
 
     public delegate string DIdentifierName<in TIdentifier>(TIdentifier identifier);
 
-    public static IDocumentationProvider<TIn, TOut, TIdentifier> Construct<TIn, TOut, TIdentifier>(DInputTransform<TIn, TIdentifier> inputTransform,
-        DOutputTransform<TIn, TOut> outputTransform, DIdentifierName<TIdentifier> identifierNameDelegate)
+    public static IDocumentationProvider<TIn, TOut, TIdentifier> Construct<TIn, TOut, TIdentifier>(DInputTransform<TIn, TIdentifier> inputTransform, DOutputTransform<TIn, TOut> outputTransform, DIdentifierName<TIdentifier> identifierNameDelegate)
     {
         return new Provider<TIn, TOut, TIdentifier>(inputTransform, outputTransform, identifierNameDelegate);
     }
 
-    public static IDocumentationProvider<TIn, TOut, TDeclaration> Construct<TIn, TOut, TDeclaration>(DInputTransform<TIn, TDeclaration> inputTransform,
-        DOutputTransform<TIn, TOut> outputTransform)
-        where TDeclaration : BaseTypeDeclarationSyntax
+    public static IDocumentationProvider<TIn, TOut, TDeclaration> Construct<TIn, TOut, TDeclaration>(DInputTransform<TIn, TDeclaration> inputTransform, DOutputTransform<TIn, TOut> outputTransform) where TDeclaration : BaseTypeDeclarationSyntax
     {
         return Construct(inputTransform, outputTransform);
     }
 
-    private class Provider<TIn, TOut, TIdentifier> : IDocumentationProvider<TIn, TOut, TIdentifier>
+    private sealed class Provider<TIn, TOut, TIdentifier> : IDocumentationProvider<TIn, TOut, TIdentifier>
     {
         private DInputTransform<TIn, TIdentifier> InputTransform { get; }
         private DOutputTransform<TIn, TOut> OutputTransform { get; }
 
         private DIdentifierName<TIdentifier> IdentifierNameDelegate { get; }
 
-        public Provider(DInputTransform<TIn, TIdentifier> inputTransform, DOutputTransform<TIn, TOut> outputTransform,
-            DIdentifierName<TIdentifier> identifierNameDelegate)
+        public Provider(DInputTransform<TIn, TIdentifier> inputTransform, DOutputTransform<TIn, TOut> outputTransform, DIdentifierName<TIdentifier> identifierNameDelegate)
         {
             InputTransform = inputTransform;
             OutputTransform = outputTransform;
@@ -54,8 +47,7 @@ public static class DocumentationProvider
             IdentifierNameDelegate = identifierNameDelegate;
         }
 
-        public IncrementalValuesProvider<TOut> AttachWithoutDiagnostics(IncrementalValuesProvider<TIn> inputProvider,
-            IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
+        public IncrementalValuesProvider<TOut> AttachWithoutDiagnostics(IncrementalValuesProvider<TIn> inputProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
         {
             return inputProvider.Combine(documentationDictionaryProvider).Select(extractCorrectFile).ExtractResults();
 
@@ -65,8 +57,7 @@ public static class DocumentationProvider
             }
         }
 
-        public IncrementalValuesProvider<TOut> AttachAndReport(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<TIn> inputProvider,
-            IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider, IDiagnosticsStrategy<TIdentifier> diagnosticsStrategy)
+        public IncrementalValuesProvider<TOut> AttachAndReport(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<TIn> inputProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider, IDiagnosticsStrategy<TIdentifier> diagnosticsStrategy)
         {
             return inputProvider.Combine(documentationDictionaryProvider).Select(extractCorrectFile).ReportDiagnostics(context);
 
@@ -76,7 +67,7 @@ public static class DocumentationProvider
             }
         }
 
-        protected IResultWithDiagnostics<TOut> ExtractFile(TIn input, DocumentationDictionary dictionary, IDiagnosticsStrategy<TIdentifier> diagnosticsStrategy)
+        private IResultWithDiagnostics<TOut> ExtractFile(TIn input, DocumentationDictionary dictionary, IDiagnosticsStrategy<TIdentifier> diagnosticsStrategy)
         {
             ProviderData<TIdentifier> inputData = InputTransform(input);
 

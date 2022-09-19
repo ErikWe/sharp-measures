@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.BiasedUnitInstance;
 
-internal class BiasedUnitInstanceValidationDiagnostics : AModifiedUnitInstanceValidationDiagnostics<BiasedUnitInstanceDefinition>, IBiasedUnitInstanceValidationDiagnostics
+internal sealed class BiasedUnitInstanceValidationDiagnostics : AModifiedUnitInstanceValidationDiagnostics<BiasedUnitInstanceDefinition>, IBiasedUnitInstanceValidationDiagnostics
 {
     public static BiasedUnitInstanceValidationDiagnostics Instance { get; } = new();
 

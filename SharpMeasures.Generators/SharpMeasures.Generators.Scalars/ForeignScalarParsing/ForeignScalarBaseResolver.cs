@@ -9,13 +9,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public static class ForeignScalarBaseResolver
+internal static class ForeignScalarBaseResolver
 {
-    public static Optional<IResolvedScalarType> Resolve(IScalarBaseType scalarType, IUnitPopulation unitPopulation)
+    public static Optional<ResolvedScalarType> Resolve(ScalarBaseType scalarType, IUnitPopulation unitPopulation)
     {
         if (unitPopulation.Units.TryGetValue(scalarType.Definition.Unit, out var unit) is false)
         {
-            return new Optional<IResolvedScalarType>();
+            return new Optional<ResolvedScalarType>();
         }
 
         var includedUnitBaseInstances = ResolveUnitInstanceInclusions(unit, scalarType.UnitBaseInstanceInclusions, () => scalarType.UnitBaseInstanceExclusions);

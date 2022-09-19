@@ -25,21 +25,9 @@ public static class DocumentationBuilding
         source.AppendLine(indentedTagContent);
     }
 
-    public static void AppendExceptionTag<TException>(StringBuilder source, Indentation indentation)
-    {
-        source.AppendLine($"{indentation}{ExceptionTag<TException>()}");
-    }
-
-    public static void AppendArgumentNullExceptionTag(StringBuilder source, Indentation indentation)
-    {
-        AppendExceptionTag<ArgumentNullException>(source, indentation);
-    }
-
-    public static void AppendArgumentNullExceptionTagIfReferenceType(StringBuilder source, Indentation indentation, params NamedType[] parameterTypes)
-    {
-        AppendArgumentNullExceptionTagIfReferenceType(source, indentation, parameterTypes as IEnumerable<NamedType>);
-    }
-
+    public static void AppendExceptionTag<TException>(StringBuilder source, Indentation indentation) => source.AppendLine($"{indentation}{ExceptionTag<TException>()}");
+    public static void AppendArgumentNullExceptionTag(StringBuilder source, Indentation indentation) => AppendExceptionTag<ArgumentNullException>(source, indentation);
+    public static void AppendArgumentNullExceptionTagIfReferenceType(StringBuilder source, Indentation indentation, params NamedType[] parameterTypes) => AppendArgumentNullExceptionTagIfReferenceType(source, indentation, parameterTypes as IEnumerable<NamedType>);
     public static void AppendArgumentNullExceptionTagIfReferenceType(StringBuilder source, Indentation indentation, IEnumerable<NamedType> parameterTypes)
     {
         if (parameterTypes.Where(static (parameter) => parameter.IsReferenceType).Any())

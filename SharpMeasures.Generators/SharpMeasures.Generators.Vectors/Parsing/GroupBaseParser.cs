@@ -12,10 +12,9 @@ using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroup;
 using System;
 using System.Collections.Generic;
 
-internal class GroupBaseParser : AGroupParser<RawSharpMeasuresVectorGroupDefinition, RawGroupBaseType>
+internal sealed class GroupBaseParser : AGroupParser<RawSharpMeasuresVectorGroupDefinition, RawGroupBaseType>
 {
-    protected override RawGroupBaseType ProduceResult(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresVectorGroupDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations,
-        IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
+    protected override RawGroupBaseType ProduceResult(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresVectorGroupDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
     {
         return new(type, typeLocation, definition, derivations, conversions, unitInstanceInclusions, unitInstanceExclusions);
     }

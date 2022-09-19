@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Units;
 
 using System.Collections.Generic;
 
-public record class ExcludeUnitsFilteringContext : IExcludeUnitsFilteringContext
+public sealed record class ExcludeUnitsFilteringContext : IExcludeUnitsFilteringContext
 {
     public DefinedType Type { get; }
 

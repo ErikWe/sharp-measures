@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 
-public class VectorTextBuilder
+public sealed class VectorTextBuilder
 {
     public static string Compose(Func<int, int, string> elementDelegate, string separator, int dimension)
     {

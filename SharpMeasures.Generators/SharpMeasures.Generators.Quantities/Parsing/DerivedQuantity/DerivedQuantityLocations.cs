@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 
 using System.Collections.Generic;
 
-public record class DerivedQuantityLocations : AAttributeLocations<DerivedQuantityLocations>, IDerivedQuantityLocations
+public sealed record class DerivedQuantityLocations : AAttributeLocations<DerivedQuantityLocations>, IDerivedQuantityLocations
 {
     public static DerivedQuantityLocations Empty { get; } = new();
 
@@ -28,7 +28,7 @@ public record class DerivedQuantityLocations : AAttributeLocations<DerivedQuanti
 
     public bool ExplicitlySetPermutations => Permutations is not null;
 
-    private ReadOnlyEquatableList<MinimalLocation> signatureElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
+    private IReadOnlyList<MinimalLocation> signatureElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
 
     protected override DerivedQuantityLocations Locations => this;
 

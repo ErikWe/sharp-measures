@@ -4,28 +4,24 @@ using SharpMeasures.Equatables;
 
 using System.Collections.Generic;
 
-public abstract record class AItemListDefinition<TItem, TLocations> : AAttributeDefinition<TLocations>, IItemListDefinition<TItem, TLocations>
-    where TLocations : IItemListLocations
+public abstract record class AItemListDefinition<TItem, TLocations> : AAttributeDefinition<TLocations>, IItemListDefinition<TItem, TLocations> where TLocations : IItemListLocations
 {
-    protected IReadOnlyList<TItem> Items => items;
+    protected IReadOnlyList<TItem> Items { get; } = ReadOnlyEquatableList<TItem>.Empty;
 
-    public IReadOnlyList<int> LocationMap => locationMap;
+    public IReadOnlyList<int> LocationMap { get; }
 
-    private ReadOnlyEquatableList<TItem> items { get; } = ReadOnlyEquatableList<TItem>.Empty;
     IReadOnlyList<TItem> IItemListDefinition<TItem, TLocations>.Items => Items;
-
-    private ReadOnlyEquatableList<int> locationMap { get; }
 
     protected AItemListDefinition(IReadOnlyList<TItem> items, TLocations locations, IReadOnlyList<int> locationMap) : base(locations)
     {
-        this.items = items.AsReadOnlyEquatable();
+        Items = items.AsReadOnlyEquatable();
 
-        this.locationMap = locationMap.AsReadOnlyEquatable();
+        LocationMap = locationMap.AsReadOnlyEquatable();
     }
 
     protected AItemListDefinition(IReadOnlyList<TItem> items, TLocations locations) : base(locations)
     {
-        this.items = items.AsReadOnlyEquatable();
+        Items = items.AsReadOnlyEquatable();
 
         var locationMap = new int[items.Count];
 
@@ -34,6 +30,6 @@ public abstract record class AItemListDefinition<TItem, TLocations> : AAttribute
             locationMap[i] = i;
         }
 
-        this.locationMap = locationMap.AsReadOnlyEquatable();
+        LocationMap = locationMap.AsReadOnlyEquatable();
     }
 }

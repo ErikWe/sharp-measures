@@ -12,7 +12,7 @@ using SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVectorGro
 
 using System.Collections.Generic;
 
-internal class GroupSpecializationProcesser : AGroupProcesser<RawGroupSpecializationType, RawSpecializedSharpMeasuresVectorGroupDefinition, GroupSpecializationType, SpecializedSharpMeasuresVectorGroupDefinition>
+internal sealed class GroupSpecializationProcesser : AGroupProcesser<RawGroupSpecializationType, RawSpecializedSharpMeasuresVectorGroupDefinition, GroupSpecializationType, SpecializedSharpMeasuresVectorGroupDefinition>
 {
     protected override GroupSpecializationType ProduceResult(DefinedType type, MinimalLocation typeLocation, SpecializedSharpMeasuresVectorGroupDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
         IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)

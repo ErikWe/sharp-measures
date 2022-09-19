@@ -25,9 +25,8 @@ using System.Threading;
 
 internal static class GroupMemberValidator
 {
-    public static IncrementalValuesProvider<Optional<GroupMemberType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<GroupMemberType>> vectorProvider,
-       IncrementalValueProvider<VectorProcessingData> processingDataProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
-       IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
+    public static IncrementalValuesProvider<Optional<GroupMemberType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<GroupMemberType>> vectorProvider, IncrementalValueProvider<VectorProcessingData> processingDataProvider,
+        IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
         return vectorProvider.Combine(processingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
@@ -71,7 +70,6 @@ internal static class GroupMemberValidator
         var conversions = ValidateConversions(vectorType, vectorPopulation);
 
         GroupMemberType product = new(vectorType.Type, vectorType.TypeLocation, vector.Result, derivations.Result, constants.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
-
         var allDiagnostics = vector.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
@@ -172,8 +170,7 @@ internal static class GroupMemberValidator
     }
 
     private static IEnumerable<IUnitInstance> GetUnitInstanceInclusions(GroupMemberType vectorType, IVectorPopulation vectorPopulation, IEnumerable<IUnitInstance> initialUnits, IUnitType unit,
-        Func<IVectorGroupMemberType, bool> shouldMemberInheritFromMembers, Func<IVectorGroupMemberType, bool> shouldMemberInheritFromGroup, Func<IVectorGroupSpecializationType, bool> shouldGroupInherit,
-        bool onlyInherited = false)
+        Func<IVectorGroupMemberType, bool> shouldMemberInheritFromMembers, Func<IVectorGroupMemberType, bool> shouldMemberInheritFromGroup, Func<IVectorGroupSpecializationType, bool> shouldGroupInherit, bool onlyInherited = false)
     {
         HashSet<IUnitInstance> includedUnits = new(initialUnits);
 

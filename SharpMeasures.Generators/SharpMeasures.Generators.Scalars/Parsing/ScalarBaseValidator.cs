@@ -28,9 +28,8 @@ using System.Threading;
 
 internal static class ScalarBaseValidator
 {
-    public static IncrementalValuesProvider<Optional<ScalarBaseType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<ScalarBaseType>> scalarProvider,
-        IncrementalValueProvider<ScalarProcessingData> processingDataProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
-        IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
+    public static IncrementalValuesProvider<Optional<ScalarBaseType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<ScalarBaseType>> scalarProvider, IncrementalValueProvider<ScalarProcessingData> processingDataProvider,
+        IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
         return scalarProvider.Combine(processingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
@@ -159,8 +158,8 @@ internal static class ScalarBaseValidator
     private static ScalarConstantValidator ScalarConstantValidator { get; } = new(ScalarConstantValidationDiagnostics.Instance);
     private static ConvertibleScalarFilterer ConvertibleScalarFilterer { get; } = new(ConvertibleScalarFilteringDiagnostics.Instance);
 
-    private static IncludeUnitBasesFilterer IncludeBasesFilterer { get; } = new(IncludeBasesFilteringDiagnostics.Instance);
-    private static ExcludeUnitBasesFilterer ExcludeBasesFilterer { get; } = new(ExcludeBasesFilteringDiagnostics.Instance);
+    private static IncludeUnitBasesFilterer IncludeBasesFilterer { get; } = new(IncludeUnitBasesFilteringDiagnostics.Instance);
+    private static ExcludeUnitBasesFilterer ExcludeBasesFilterer { get; } = new(ExcludeUnitBasesFilteringDiagnostics.Instance);
     private static IncludeUnitsFilterer IncludeUnitsFilterer { get; } = new(IncludeUnitsFilteringDiagnostics.Instance);
     private static ExcludeUnitsFilterer ExcludeUnitsFilterer { get; } = new(ExcludeUnitsFilteringDiagnostics.Instance);
 }

@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-public class ScalarOperatorDerivationSearcher
+public sealed class ScalarOperatorDerivationSearcher
 {
     public static IReadOnlyList<OperatorDerivation> GetDerivations(NamedType quantity, string expression, IReadOnlyList<NamedType> signature, DerivationOperatorImplementation operatorImplementation)
     {
@@ -152,17 +152,14 @@ public class ScalarOperatorDerivationSearcher
         return OperatorType.Division;
     }
 
-    private static OperatorType GetOppositeOperatorType(OperatorType originalOperatorType)
+    private static OperatorType GetOppositeOperatorType(OperatorType originalOperatorType) => originalOperatorType switch
     {
-        return originalOperatorType switch
-        {
-            OperatorType.Addition => OperatorType.Subtraction,
-            OperatorType.Subtraction => OperatorType.Addition,
-            OperatorType.Multiplication => OperatorType.Division,
-            OperatorType.Division => OperatorType.Multiplication,
-            _ => throw new NotSupportedException($"Unrecognized {typeof(OperatorType).Name}: {originalOperatorType}")
-        };
-    }
+        OperatorType.Addition => OperatorType.Subtraction,
+        OperatorType.Subtraction => OperatorType.Addition,
+        OperatorType.Multiplication => OperatorType.Division,
+        OperatorType.Division => OperatorType.Multiplication,
+        _ => throw new NotSupportedException($"Unrecognized {typeof(OperatorType).Name}: {originalOperatorType}")
+    };
 
     private bool ShouldImplementLHS => OperatorImplementation is DerivationOperatorImplementation.All or DerivationOperatorImplementation.LeftHandSide or DerivationOperatorImplementation.Suitable;
     private bool ShouldImplementRHS(NamedType lhs) => OperatorImplementation is DerivationOperatorImplementation.All or DerivationOperatorImplementation.RightHandSide || OperatorImplementation is DerivationOperatorImplementation.Suitable && lhs.Assembly != Quantity.Assembly;

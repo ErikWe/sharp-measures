@@ -22,8 +22,7 @@ internal static class VectorMathsGenerator
 
         var unit = model.Value.UnitPopulation.Units[model.Value.Vector.Unit];
 
-        return new DataModel(model.Value.Vector.Type, model.Value.Vector.Dimension, model.Value.Vector.ImplementSum, model.Value.Vector.ImplementDifference, model.Value.Vector.Difference, model.Value.Vector.Scalar,
-            GetSquaredScalar(model.Value), model.Value.Vector.Unit, unit.Definition.Quantity, model.Value.Documentation);
+        return new DataModel(model.Value.Vector.Type, model.Value.Vector.Dimension, model.Value.Vector.ImplementSum, model.Value.Vector.ImplementDifference, model.Value.Vector.Difference, model.Value.Vector.Scalar, GetSquaredScalar(model.Value), model.Value.Vector.Unit, unit.Definition.Quantity, model.Value.Documentation);
     }
 
     private static NamedType? GetSquaredScalar(VectorDataModel model)

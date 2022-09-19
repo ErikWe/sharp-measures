@@ -21,7 +21,7 @@ internal static class Execution
         context.AddSource($"{data.Value.Vector.QualifiedName}.Maths.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
-    private class Composer
+    private sealed class Composer
     {
         public static string Compose(DataModel data)
         {
@@ -53,10 +53,7 @@ internal static class Execution
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
         }
 
-        private string Retrieve()
-        {
-            return Builder.ToString();
-        }
+        private string Retrieve() => Builder.ToString();
 
         private void ComposeTypeBlock(Indentation indentation)
         {
@@ -89,10 +86,10 @@ internal static class Execution
             }
 
             AppendMultiplyScalarLHS(indentation);
-            ComposeMultiplyScalarRHS(indentation);
-            ComposeDivideScalarLHS(indentation);
+            AppendMultiplyScalarRHS(indentation);
+            AppendDivideScalarLHS(indentation);
 
-            ComposeMathUtility(indentation);
+            AppendMathUtility(indentation);
         }
 
         private void AppendUnaryMethods(Indentation indentation)
@@ -279,7 +276,7 @@ internal static class Execution
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
-        private void ComposeMultiplyScalarRHS(Indentation indentation)
+        private void AppendMultiplyScalarRHS(Indentation indentation)
         {
             SeparationHandler.AddIfNecessary();
 
@@ -291,7 +288,7 @@ internal static class Execution
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
-        private void ComposeDivideScalarLHS(Indentation indentation)
+        private void AppendDivideScalarLHS(Indentation indentation)
         {
             SeparationHandler.AddIfNecessary();
 
@@ -303,7 +300,7 @@ internal static class Execution
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
-        private void ComposeMathUtility(Indentation indentation)
+        private void AppendMathUtility(Indentation indentation)
         {
             SeparationHandler.AddIfNecessary();
 
@@ -312,7 +309,8 @@ internal static class Execution
                 Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in a pure <see cref=\"global::SharpMeasures.Scalar\"/>.</summary>");
                 Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IScalarResultingMaths<global::SharpMeasures.Scalar> ScalarMaths {{ get; }} = global::SharpMeasures.Maths.MathFactory.ScalarResult();");
             }
-            else
+            
+            if (Data.Scalar is not null)
             {
                 Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in a pure <see cref=\"global::SharpMeasures.Scalar\"/>.</summary>");
                 Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IScalarResultingMaths<global::SharpMeasures.Scalar> PureScalarMaths {{ get; }} = global::SharpMeasures.Maths.MathFactory.ScalarResult();");
@@ -320,8 +318,7 @@ internal static class Execution
                 SeparationHandler.Add();
 
                 Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in <see cref=\"{Data.Scalar.Value.FullyQualifiedName}\"/>.</summary>");
-                Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IScalarResultingMaths<{Data.Scalar.Value.FullyQualifiedName}> ScalarMaths {{ get; }} " +
-                    $"= global::SharpMeasures.Maths.MathFactory.ScalarResult<{Data.Scalar.Value.FullyQualifiedName}();");
+                Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IScalarResultingMaths<{Data.Scalar.Value.FullyQualifiedName}> ScalarMaths {{ get; }} = global::SharpMeasures.Maths.MathFactory.ScalarResult<{Data.Scalar.Value.FullyQualifiedName}();");
             }
 
             if (Data.SquaredScalar is not null)
@@ -329,20 +326,15 @@ internal static class Execution
                 SeparationHandler.Add();
 
                 Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in <see cref=\"{Data.SquaredScalar.Value.FullyQualifiedName}\"/>.</summary>");
-                Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IScalarResultingMaths<{Data.SquaredScalar.Value.Name}> SquaredScalarMaths {{ get; }} " +
-                    $"= global::SharpMeasures.Maths.MathFactory.ScalarResult<{Data.SquaredScalar.Value.Name}();");
+                Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IScalarResultingMaths<{Data.SquaredScalar.Value.Name}> SquaredScalarMaths {{ get; }} = global::SharpMeasures.Maths.MathFactory.ScalarResult<{Data.SquaredScalar.Value.Name}();");
             }
 
             SeparationHandler.Add();
 
             Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in <see cref=\"{Data.Vector.FullyQualifiedName}\"/>.</summary>");
-            Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IVector{Data.Dimension}ResultingMaths<{Data.Vector.FullyQualifiedName}> VectorMaths {{ get; }} " +
-                $"= global::SharpMeasures.Maths.MathFactory.Vector{Data.Dimension}Result<{Data.Vector.FullyQualifiedName}>();");
+            Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IVector{Data.Dimension}ResultingMaths<{Data.Vector.FullyQualifiedName}> VectorMaths {{ get; }} = global::SharpMeasures.Maths.MathFactory.Vector{Data.Dimension}Result<{Data.Vector.FullyQualifiedName}>();");
         }
 
-        private void AppendDocumentation(Indentation indentation, string text)
-        {
-            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
-        }
+        private void AppendDocumentation(Indentation indentation, string text) => DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
     }
 }

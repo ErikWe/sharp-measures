@@ -53,9 +53,8 @@ internal abstract class AScalarParser<TDefinition, TProduct>
         return (product, foreignSymbols);
     }
 
-    protected abstract TProduct ProduceResult(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations,
-        IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitBasesDefinition> baseInclusions,
-        IEnumerable<RawExcludeUnitBasesDefinition> baseExclusions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions);
+    protected abstract TProduct ProduceResult(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
+        IEnumerable<RawIncludeUnitBasesDefinition> baseInclusions, IEnumerable<RawExcludeUnitBasesDefinition> baseExclusions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions);
 
     protected abstract (Optional<TDefinition>, IEnumerable<INamedTypeSymbol>)  ParseScalar(INamedTypeSymbol typeSymbol);
 
@@ -69,11 +68,7 @@ internal abstract class AScalarParser<TDefinition, TProduct>
         return (rawDerivations, foreignSymbols);
     }
 
-    private static IEnumerable<RawScalarConstantDefinition> ParseConstants(INamedTypeSymbol typeSymbol)
-    {
-        return ScalarConstantParser.Parser.ParseAllOccurrences(typeSymbol);
-    }
-
+    private static IEnumerable<RawScalarConstantDefinition> ParseConstants(INamedTypeSymbol typeSymbol) => ScalarConstantParser.Parser.ParseAllOccurrences(typeSymbol);
     private static (IEnumerable<RawConvertibleQuantityDefinition> Definitions, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseConversions(INamedTypeSymbol typeSymbol)
     {
         var symbolicConversions = ConvertibleQuantityParser.Parser.ParseAllOccurrences(typeSymbol);
@@ -84,23 +79,8 @@ internal abstract class AScalarParser<TDefinition, TProduct>
         return (rawConversions, foreignSymbols);
     }
 
-    private static IEnumerable<RawIncludeUnitBasesDefinition> ParseIncludeUnitBases(INamedTypeSymbol typeSymbol)
-    {
-        return IncludeUnitBasesParser.Parser.ParseAllOccurrences(typeSymbol);
-    }
-
-    private static IEnumerable<RawExcludeUnitBasesDefinition> ParseExcludeUnitBases(INamedTypeSymbol typeSymbol)
-    {
-        return ExcludeUnitBasesParser.Parser.ParseAllOccurrences(typeSymbol);
-    }
-
-    private static IEnumerable<RawIncludeUnitsDefinition> ParseIncludeUnits(INamedTypeSymbol typeSymbol)
-    {
-        return IncludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
-    }
-
-    private static IEnumerable<RawExcludeUnitsDefinition> ParseExcludeUnits(INamedTypeSymbol typeSymbol)
-    {
-        return ExcludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
-    }
+    private static IEnumerable<RawIncludeUnitBasesDefinition> ParseIncludeUnitBases(INamedTypeSymbol typeSymbol) => IncludeUnitBasesParser.Parser.ParseAllOccurrences(typeSymbol);
+    private static IEnumerable<RawExcludeUnitBasesDefinition> ParseExcludeUnitBases(INamedTypeSymbol typeSymbol) => ExcludeUnitBasesParser.Parser.ParseAllOccurrences(typeSymbol);
+    private static IEnumerable<RawIncludeUnitsDefinition> ParseIncludeUnits(INamedTypeSymbol typeSymbol) => IncludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
+    private static IEnumerable<RawExcludeUnitsDefinition> ParseExcludeUnits(INamedTypeSymbol typeSymbol) => ExcludeUnitsParser.Parser.ParseAllOccurrences(typeSymbol);
 }

@@ -21,7 +21,7 @@ internal interface IExcludeUnitBasesFilteringContext : IProcessingContext
     public HashSet<string> IncludedUnitInstances { get; }
 }
 
-internal class ExcludeUnitBasesFilterer : AProcesser<IExcludeUnitBasesFilteringContext, ExcludeUnitBasesDefinition, ExcludeUnitBasesDefinition>
+internal sealed class ExcludeUnitBasesFilterer : AProcesser<IExcludeUnitBasesFilteringContext, ExcludeUnitBasesDefinition, ExcludeUnitBasesDefinition>
 {
     private IExcludeUnitBasesFilteringDiagnostics Diagnostics { get; }
 

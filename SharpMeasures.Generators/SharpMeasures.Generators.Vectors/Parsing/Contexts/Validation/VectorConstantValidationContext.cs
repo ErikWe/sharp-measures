@@ -1,18 +1,34 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Parsing.Contexts.Validation;
 
-using SharpMeasures.Generators.Quantities.Parsing.Contexts.Validation;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System.Collections.Generic;
 
-internal record class VectorConstantValidationContext : QuantityConstantValidationContext, IVectorConstantValidationContext
+internal sealed record class VectorConstantValidationContext : IVectorConstantValidationContext
 {
+    public DefinedType Type { get; }
+
     public int Dimension { get; }
 
-    public VectorConstantValidationContext(DefinedType type, int dimension, IUnitType unitType, HashSet<string> inheritedConstantNames, HashSet<string> inheritedConstantMuliplesNames, HashSet<string> includedUnitPlurals)
-        : base(type, unitType, inheritedConstantNames, inheritedConstantMuliplesNames, includedUnitPlurals)
+    public IUnitType UnitType { get; }
+
+    public HashSet<string> InheritedConstantNames { get; }
+    public HashSet<string> InheritedConstantMultiples { get; }
+
+    public HashSet<string> IncludedUnitInstancePluralForms { get; }
+
+    public VectorConstantValidationContext(DefinedType type, int dimension, IUnitType unitType, HashSet<string> inheritedConstantNames, HashSet<string> inheritedConstantMuliples, HashSet<string> includedUnitInstancePluralForms)
     {
+        Type = type;
+
         Dimension = dimension;
+
+        UnitType = unitType;
+
+        InheritedConstantNames = inheritedConstantNames;
+        InheritedConstantMultiples = inheritedConstantMuliples;
+
+        IncludedUnitInstancePluralForms = includedUnitInstancePluralForms;
     }
 }

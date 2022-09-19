@@ -78,9 +78,8 @@ internal abstract class AScalarProcesser<TRawType, TRawDefinition, TProductType,
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    protected abstract TProductType ProduceResult(DefinedType type, MinimalLocation typeLocation, TProductDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
-        IReadOnlyList<ScalarConstantDefinition> constants, IReadOnlyList<ConvertibleScalarDefinition> conversions, IReadOnlyList<IncludeUnitBasesDefinition> baseInclusions,
-        IReadOnlyList<ExcludeUnitBasesDefinition> baseExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
+    protected abstract TProductType ProduceResult(DefinedType type, MinimalLocation typeLocation, TProductDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ScalarConstantDefinition> constants, IReadOnlyList<ConvertibleScalarDefinition> conversions,
+        IReadOnlyList<IncludeUnitBasesDefinition> baseInclusions, IReadOnlyList<ExcludeUnitBasesDefinition> baseExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
 
     protected abstract IOptionalWithDiagnostics<TProductDefinition> ProcessScalar(DefinedType type, TRawDefinition rawDefinition);
 
@@ -95,9 +94,7 @@ internal abstract class AScalarProcesser<TRawType, TRawDefinition, TProductType,
 
     private static IResultWithDiagnostics<IReadOnlyList<ScalarConstantDefinition>> ProcessConstants(DefinedType type, IEnumerable<RawScalarConstantDefinition> rawDefinitions, NamedType? unit)
     {
-        var scalarConstantProcesser = unit is null
-            ? ScalarConstantProcesserForUnknownUnit
-            : ScalarConstantProcesser(unit.Value);
+        var scalarConstantProcesser = unit is null ? ScalarConstantProcesserForUnknownUnit : ScalarConstantProcesser(unit.Value);
 
         QuantityConstantProcessingContext processingContext = new(type);
 

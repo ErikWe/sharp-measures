@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Processing;
 
-internal class ConvertibleScalarProcessingDiagnostics : AConvertibleQuantityProcessingDiagnostics
+internal sealed class ConvertibleScalarProcessingDiagnostics : AConvertibleQuantityProcessingDiagnostics
 {
     public static ConvertibleScalarProcessingDiagnostics Instance { get; } = new();
 

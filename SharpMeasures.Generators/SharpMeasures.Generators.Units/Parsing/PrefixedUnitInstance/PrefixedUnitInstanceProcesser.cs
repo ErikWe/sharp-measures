@@ -13,7 +13,7 @@ internal interface IPrefixedUnitInstanceProcessingDiagnostics : IModifiedUnitIns
     public abstract Diagnostic? UnrecognizedBinaryPrefix(IUnitInstanceProcessingContext context, RawPrefixedUnitInstanceDefinition definition);
 }
 
-internal class PrefixedUnitInstanceProcesser : AModifiedUnitInstanceProcesser<IUnitInstanceProcessingContext, RawPrefixedUnitInstanceDefinition, PrefixedUnitInstanceLocations, PrefixedUnitInstanceDefinition>
+internal sealed class PrefixedUnitInstanceProcesser : AModifiedUnitInstanceProcesser<IUnitInstanceProcessingContext, RawPrefixedUnitInstanceDefinition, PrefixedUnitInstanceLocations, PrefixedUnitInstanceDefinition>
 {
     private IPrefixedUnitInstanceProcessingDiagnostics Diagnostics { get; }
 

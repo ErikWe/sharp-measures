@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal record class UnitInstanceAliasDefinition : ADependantUnitInstance<UnitInstanceAliasLocations>, IUnitInstanceAlias
+internal sealed record class UnitInstanceAliasDefinition : ADependantUnitInstance<UnitInstanceAliasLocations>, IUnitInstanceAlias
 {
     IUnitInstanceAliasLocations IUnitInstanceAlias.Locations => Locations;
 

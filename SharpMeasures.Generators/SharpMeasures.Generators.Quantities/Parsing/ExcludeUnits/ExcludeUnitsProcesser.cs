@@ -13,7 +13,7 @@ public interface IExcludeUnitsProcessingDiagnostics : IUniqueItemListProcessingD
     public abstract Diagnostic? EmptyItem(IUniqueItemListProcessingContext<string> context, RawExcludeUnitsDefinition definition, int index);
 }
 
-public class ExcludeUnitsProcesser : AUniqueItemListProcesser<string?, string, IUniqueItemListProcessingContext<string>, RawExcludeUnitsDefinition, ExcludeUnitsLocations, ExcludeUnitsDefinition>
+public sealed class ExcludeUnitsProcesser : AUniqueItemListProcesser<string?, string, IUniqueItemListProcessingContext<string>, RawExcludeUnitsDefinition, ExcludeUnitsLocations, ExcludeUnitsDefinition>
 {
     private IExcludeUnitsProcessingDiagnostics Diagnostics { get; }
 
@@ -36,6 +36,5 @@ public class ExcludeUnitsProcesser : AUniqueItemListProcesser<string?, string, I
     protected override string UpgradeItem(string? item) => UpgradeNullItem(item);
     protected override string UpgradeNullItem(string? item) => item ?? throw new ArgumentNullException(nameof(item));
 
-    protected override ExcludeUnitsDefinition ProduceResult(IReadOnlyList<string> items, RawExcludeUnitsDefinition definition, IReadOnlyList<int> locationMap)
-        => new(items, definition.Locations, locationMap);
+    protected override ExcludeUnitsDefinition ProduceResult(IReadOnlyList<string> items, RawExcludeUnitsDefinition definition, IReadOnlyList<int> locationMap) => new(items, definition.Locations, locationMap);
 }

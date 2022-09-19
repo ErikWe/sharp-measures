@@ -8,7 +8,7 @@ public static class ConvertibleQuantityParser
 
     private static SymbolicConvertibleQuantityDefinition DefaultDefinition() => SymbolicConvertibleQuantityDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<SymbolicConvertibleQuantityDefinition, ConvertibleQuantityLocations, ConvertibleQuantityAttribute>
+    private sealed class AttributeParser : AAttributeParser<SymbolicConvertibleQuantityDefinition, ConvertibleQuantityLocations, ConvertibleQuantityAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, ConvertibleQuantityProperties.AllProperties) { }
     }

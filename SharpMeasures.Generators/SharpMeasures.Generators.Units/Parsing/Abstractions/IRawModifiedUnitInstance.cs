@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal interface IRawModifiedUnitInstance<out TLocations> : IRawUnitInstance<TLocations>
-    where TLocations : IModifiedUnitInstanceLocations
+internal interface IRawModifiedUnitInstance<out TLocations> : IRawUnitInstance<TLocations> where TLocations : IModifiedUnitInstanceLocations
 {
     public abstract string? OriginalUnitInstance { get; }
 }

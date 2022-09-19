@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 
 using System.Collections.Generic;
 
-public record class ConvertibleScalarDefinition : AItemListDefinition<NamedType, ConvertibleQuantityLocations>, IConvertibleQuantity
+public sealed record class ConvertibleScalarDefinition : AItemListDefinition<NamedType, ConvertibleQuantityLocations>, IConvertibleQuantity
 {
     public IReadOnlyList<NamedType> Quantities => Items;
 
@@ -15,8 +15,7 @@ public record class ConvertibleScalarDefinition : AItemListDefinition<NamedType,
 
     IConvertibleQuantityLocations IConvertibleQuantity.Locations => Locations;
 
-    public ConvertibleScalarDefinition(IReadOnlyList<NamedType> quantities, QuantityConversionDirection conversionDirection, ConversionOperatorBehaviour castOperatorBehaviour, ConvertibleQuantityLocations locations, IReadOnlyList<int> locationMap)
-        : base(quantities, locations, locationMap)
+    public ConvertibleScalarDefinition(IReadOnlyList<NamedType> quantities, QuantityConversionDirection conversionDirection, ConversionOperatorBehaviour castOperatorBehaviour, ConvertibleQuantityLocations locations, IReadOnlyList<int> locationMap) : base(quantities, locations, locationMap)
     {
         ConversionDirection = conversionDirection;
         CastOperatorBehaviour = castOperatorBehaviour;

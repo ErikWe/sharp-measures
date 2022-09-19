@@ -15,20 +15,12 @@ public static class DriverConstruction
     private static CSharpParseOptions ParseOptions { get; } = new(languageVersion: LanguageVersion);
     private static CSharpCompilationOptions CompilationOptions { get; } = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
 
-    public static GeneratorDriver ConstructAndRun<TGenerator>(string source, string documentationDirectory) where TGenerator : IIncrementalGenerator, new()
-        => ConstructAndRun(source, new TGenerator(), documentationDirectory);
+    public static GeneratorDriver ConstructAndRun<TGenerator>(string source, string documentationDirectory) where TGenerator : IIncrementalGenerator, new() => ConstructAndRun(source, new TGenerator(), documentationDirectory);
+    public static GeneratorDriver ConstructAndRun(string source, IIncrementalGenerator generator, string documentationDirectory) => Run(source, Construct(generator, documentationDirectory));
+    public static GeneratorDriver ConstructAndRun<TGenerator>(string source, string documentationDirectory, out Compilation compilation) where TGenerator : IIncrementalGenerator, new() => ConstructAndRun(source, new TGenerator(), documentationDirectory, out compilation);
+    public static GeneratorDriver ConstructAndRun(string source, IIncrementalGenerator generator, string documentationDirectory, out Compilation compilation) => RunAndUpdateCompilation(source, Construct(generator, documentationDirectory), out compilation);
 
-    public static GeneratorDriver ConstructAndRun(string source, IIncrementalGenerator generator, string documentationDirectory)
-        => Run(source, Construct(generator, documentationDirectory));
-
-    public static GeneratorDriver ConstructAndRun<TGenerator>(string source, string documentationDirectory, out Compilation compilation) where TGenerator : IIncrementalGenerator, new()
-        => ConstructAndRun(source, new TGenerator(), documentationDirectory, out compilation);
-
-    public static GeneratorDriver ConstructAndRun(string source, IIncrementalGenerator generator, string documentationDirectory, out Compilation compilation)
-        => RunAndUpdateCompilation(source, Construct(generator, documentationDirectory), out compilation);
-
-    public static GeneratorDriver Construct<TGenerator>(string documentationDirectory) where TGenerator : IIncrementalGenerator, new()
-        => Construct(new TGenerator(), documentationDirectory);
+    public static GeneratorDriver Construct<TGenerator>(string documentationDirectory) where TGenerator : IIncrementalGenerator, new() => Construct(new TGenerator(), documentationDirectory);
 
     public static GeneratorDriver Construct(IIncrementalGenerator generator, string documentationDirectory)
     {
@@ -49,15 +41,8 @@ public static class DriverConstruction
         return CSharpCompilation.Create("SharpMeasuresTesting", new[] { syntaxTree }, references, CompilationOptions);
     }
 
-    public static GeneratorDriver Run(string source, GeneratorDriver driver)
-    {
-        return driver.RunGenerators(CreateCompilation(source));
-    }
-
-    public static GeneratorDriver RunAndUpdateCompilation(string source, GeneratorDriver driver, out Compilation compilation)
-    {
-        return driver.RunGeneratorsAndUpdateCompilation(CreateCompilation(source), out compilation, out _);
-    }
+    public static GeneratorDriver Run(string source, GeneratorDriver driver) => driver.RunGenerators(CreateCompilation(source));
+    public static GeneratorDriver RunAndUpdateCompilation(string source, GeneratorDriver driver, out Compilation compilation) => driver.RunGeneratorsAndUpdateCompilation(CreateCompilation(source), out compilation, out _);
 
     private static ImmutableArray<AdditionalText> GetAdditionalFiles(string documentationDirectory)
     {

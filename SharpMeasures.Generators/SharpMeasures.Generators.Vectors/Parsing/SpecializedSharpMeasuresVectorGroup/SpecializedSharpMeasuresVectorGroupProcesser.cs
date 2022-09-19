@@ -17,7 +17,7 @@ internal interface ISpecializedSharpMeasuresVectorGroupProcessingDiagnostics : I
     public abstract Diagnostic? NullDifferenceQuantity(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition);
 }
 
-internal class SpecializedSharpMeasuresVectorGroupProcesser : AProcesser<IProcessingContext, RawSpecializedSharpMeasuresVectorGroupDefinition, SpecializedSharpMeasuresVectorGroupDefinition>
+internal sealed class SpecializedSharpMeasuresVectorGroupProcesser : AProcesser<IProcessingContext, RawSpecializedSharpMeasuresVectorGroupDefinition, SpecializedSharpMeasuresVectorGroupDefinition>
 {
     private ISpecializedSharpMeasuresVectorGroupProcessingDiagnostics Diagnostics { get; }
 

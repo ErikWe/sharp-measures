@@ -12,36 +12,30 @@ using Xunit;
 public class FromCrossProduct
 {
     [Fact]
-    public Task ThreeDimensional() => AssertNDimensional(3).VerifyMatchingSourceNames("D3.Derivations.g.cs");
+    public Task InvolvingVectors() => AssertInvolvingVectors().VerifyMatchingSourceNames("D3.Derivations.g.cs");
 
     [Fact]
-    public Task InvolvingGroup() => AssertInvolvingGroup().VerifyMatchingSourceNames("D3.Derivations.g.cs");
+    public Task InvolvingGroups() => AssertInvolvingGroups().VerifyMatchingSourceNames("D3.Derivations.g.cs");
 
-    [Fact]
-    public void TwoDimensional() => AssertNDimensional(2);
+    private static GeneratorVerifier AssertInvolvingVectors() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(InvolvingVectorsText).AssertNoDiagnosticsReported();
+    private static GeneratorVerifier AssertInvolvingGroups() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(InvolvingGroupsText).AssertNoDiagnosticsReported();
 
-    [Fact]
-    public void FourDimensional() => AssertNDimensional(4);
-
-    private static GeneratorVerifier AssertNDimensional(int dimension) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(NDimensionalText(dimension)).AssertNoDiagnosticsReported();
-    private static GeneratorVerifier AssertInvolvingGroup() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(InvolvingGroupText).AssertNoDiagnosticsReported();
-
-    private static string NDimensionalText(int dimension) => $$"""
+    private static string InvolvingVectorsText => """
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
         [SharpMeasuresVector(typeof(Unit))]
-        public partial class C{{dimension}} { }
+        public partial class C3 { }
 
         [SharpMeasuresVector(typeof(Unit))]
-        public partial class B{{dimension}} { }
+        public partial class B3 { }
 
         [SharpMeasuresVectorGroupMember(typeof(D))]
-        public partial class D{{dimension}} { }
+        public partial class D3 { }
 
-        [DerivedQuantity("{0} x {1}", typeof(B{{dimension}}), typeof(C{{dimension}}))]
+        [DerivedQuantity("{0} x {1}", typeof(B3), typeof(C3))]
         [SharpMeasuresVectorGroup(typeof(Unit))]
         public static partial class D { }
 
@@ -52,7 +46,7 @@ public class FromCrossProduct
         public partial class Unit { }
         """;
 
-    private static string InvolvingGroupText => $$"""
+    private static string InvolvingGroupsText => """
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;

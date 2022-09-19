@@ -27,7 +27,7 @@ internal static class Execution
         context.AddSource($"{data.Value.Vector.QualifiedName}.Conversions.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
-    private class Composer
+    private sealed class Composer
     {
         public static string Compose(DataModel data)
         {
@@ -218,9 +218,6 @@ internal static class Execution
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, $"public static {behaviour} operator {Data.Vector.Name}", "new(a.Components)", (vector, "a"));
         }
 
-        private void AppendDocumentation(Indentation indentation, string text)
-        {
-            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
-        }
+        private void AppendDocumentation(Indentation indentation, string text) => DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
     }
 }

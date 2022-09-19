@@ -8,7 +8,7 @@ internal static class IncludeUnitBasesParser
 
     private static RawIncludeUnitBasesDefinition DefaultDefinition() => RawIncludeUnitBasesDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawIncludeUnitBasesDefinition, IncludeUnitBasesLocations, IncludeUnitBasesAttribute>
+    private sealed class AttributeParser : AAttributeParser<RawIncludeUnitBasesDefinition, IncludeUnitBasesLocations, IncludeUnitBasesAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, IncludeUnitBasesProperties.AllProperties) { }
     }

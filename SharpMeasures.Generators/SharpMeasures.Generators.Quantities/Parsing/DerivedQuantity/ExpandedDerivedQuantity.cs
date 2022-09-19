@@ -4,16 +4,14 @@ using SharpMeasures.Equatables;
 
 using System.Collections.Generic;
 
-public record class ExpandedDerivedQuantity : IExpandedDerivedQuantity
+public sealed record class ExpandedDerivedQuantity : IExpandedDerivedQuantity
 {
     public string Expression { get; }
-    public IReadOnlyList<NamedType> Signature => signature;
-
-    private ReadOnlyEquatableList<NamedType> signature { get; }
+    public IReadOnlyList<NamedType> Signature { get; }
 
     public ExpandedDerivedQuantity(string expression, IReadOnlyList<NamedType> signature)
     {
         Expression = expression;
-        this.signature = signature.AsReadOnlyEquatable();
+        Signature = signature.AsReadOnlyEquatable();
     }
 }

@@ -17,16 +17,8 @@ public interface IResultWithDiagnostics<T> : IOptionalWithDiagnostics<T>
 
 public static class ResultWithDiagnostics
 {
-    public static IResultWithDiagnostics<T> Construct<T>(T result, IEnumerable<Diagnostic> diagnostics)
-    {
-        return new SimpleResultWithDiagnostics<T>(result, diagnostics);
-    }
-
-    public static IResultWithDiagnostics<T> Construct<T>(T result, params Diagnostic[] diagnostics)
-    {
-        return Construct(result, diagnostics as IEnumerable<Diagnostic>);
-    }
-
+    public static IResultWithDiagnostics<T> Construct<T>(T result, IEnumerable<Diagnostic> diagnostics) => new SimpleResultWithDiagnostics<T>(result, diagnostics);
+    public static IResultWithDiagnostics<T> Construct<T>(T result, params Diagnostic[] diagnostics) => Construct(result, diagnostics as IEnumerable<Diagnostic>);
     public static IResultWithDiagnostics<T> Construct<T>(T result, Diagnostic? diagnostics)
     {
         if (diagnostics is null)
@@ -37,7 +29,7 @@ public static class ResultWithDiagnostics
         return Construct(result, new[] { diagnostics });
     }
 
-    private class SimpleResultWithDiagnostics<T> : IResultWithDiagnostics<T>
+    private sealed class SimpleResultWithDiagnostics<T> : IResultWithDiagnostics<T>
     {
         public T Result { get; }
         public IEnumerable<Diagnostic> Diagnostics { get; }
@@ -48,10 +40,7 @@ public static class ResultWithDiagnostics
             Diagnostics = diagnostics;
         }
 
-        public IResultWithDiagnostics<T> AddDiagnostics(params IEnumerable<Diagnostic>[] diagnostics)
-        {
-            return new SimpleResultWithDiagnostics<T>(Result, Diagnostics.Concat(diagnostics.SelectMany(static (diagnostics) => diagnostics)));
-        }
+        public IResultWithDiagnostics<T> AddDiagnostics(params IEnumerable<Diagnostic>[] diagnostics) => new SimpleResultWithDiagnostics<T>(Result, Diagnostics.Concat(diagnostics.SelectMany(static (diagnostics) => diagnostics)));
 
         public IOptionalWithDiagnostics<T> Validate(IOptionalWithDiagnostics<T>.DValidator validator)
         {
@@ -66,15 +55,8 @@ public static class ResultWithDiagnostics
             return new SimpleResultWithDiagnostics<T>(Result, allDiagnostics);
         }
 
-        public IValidityWithDiagnostics Reduce()
-        {
-            return ValidityWithDiagnostics.ValidWithDiagnostics(Diagnostics);
-        }
-
-        public IValidityWithDiagnostics Reduce(IOptionalWithDiagnostics<T>.DValidator validator)
-        {
-            return Validate(validator).Reduce();
-        }
+        public IValidityWithDiagnostics Reduce() => ValidityWithDiagnostics.ValidWithDiagnostics(Diagnostics);
+        public IValidityWithDiagnostics Reduce(IOptionalWithDiagnostics<T>.DValidator validator) => Validate(validator).Reduce();
 
         public IResultWithDiagnostics<TNew> Merge<TNew>(IResultWithDiagnostics<T>.DTransform<TNew> transform)
         {

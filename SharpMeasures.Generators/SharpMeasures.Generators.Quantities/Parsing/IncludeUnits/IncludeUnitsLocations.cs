@@ -4,7 +4,7 @@ using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 
 using System.Collections.Generic;
 
-public record class IncludeUnitsLocations : AItemListLocations<IncludeUnitsLocations>, IUnitInstanceInclusionListLocations
+public sealed record class IncludeUnitsLocations : AItemListLocations<IncludeUnitsLocations>, IUnitInstanceInclusionListLocations
 {
     internal static IncludeUnitsLocations Empty { get; } = new();
 

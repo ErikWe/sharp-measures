@@ -2,7 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
@@ -20,7 +19,7 @@ internal abstract class AForeignGroupProcesser<TRawType, TRawDefinition, TProduc
     {
         var group = ProcessGroup(rawGroup.Type, rawGroup.Definition);
 
-        if (group.LacksResult)
+        if (group.HasValue is false)
         {
             return new Optional<TProductType>();
         }
@@ -31,16 +30,15 @@ internal abstract class AForeignGroupProcesser<TRawType, TRawDefinition, TProduc
         var includeUnitInstances = CommonProcessing.ProcessIncludeUnits(rawGroup.Type, rawGroup.UnitInstanceInclusions);
         var excludeUnitInstances = CommonProcessing.ProcessExcludeUnits(rawGroup.Type, rawGroup.UnitInstanceExclusions);
 
-        if (includeUnitInstances.HasResult && includeUnitInstances.Result.Count > 0 && excludeUnitInstances.HasResult && excludeUnitInstances.Result.Count > 0)
+        if (includeUnitInstances.Count > 0 && excludeUnitInstances.Count > 0)
         {
-            excludeUnitInstances = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
+            excludeUnitInstances = Array.Empty<ExcludeUnitsDefinition>();
         }
 
-        return ProduceResult(rawGroup.Type, rawGroup.TypeLocation, group.Result, derivations.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
+        return ProduceResult(rawGroup.Type, rawGroup.TypeLocation, group.Value, derivations, conversions, includeUnitInstances, excludeUnitInstances);
     }
 
-    protected abstract TProductType ProduceResult(DefinedType type, MinimalLocation typeLocation, TProductDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
-        IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
+    protected abstract TProductType ProduceResult(DefinedType type, MinimalLocation typeLocation, TProductDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
 
-    protected abstract IOptionalWithDiagnostics<TProductDefinition> ProcessGroup(DefinedType type, TRawDefinition rawDefinition);
+    protected abstract Optional<TProductDefinition> ProcessGroup(DefinedType type, TRawDefinition rawDefinition);
 }

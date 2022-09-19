@@ -5,19 +5,19 @@ using SharpMeasures.Equatables;
 using System.Collections;
 using System.Collections.Generic;
 
-internal record class DerivableUnitSignature : IReadOnlyList<NamedType>
+internal sealed record class DerivableUnitSignature : IReadOnlyList<NamedType>
 {
-    public NamedType this[int index] => signature[index];
+    public NamedType this[int index] => Signature[index];
 
-    public int Count => signature.Count;
+    public int Count => Signature.Count;
 
-    public IEnumerator<NamedType> GetEnumerator() => signature.GetEnumerator();
+    public IEnumerator<NamedType> GetEnumerator() => Signature.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    private ReadOnlyEquatableList<NamedType> signature { get; }
+    private IReadOnlyList<NamedType> Signature { get; }
 
     public DerivableUnitSignature(IReadOnlyList<NamedType> signature)
     {
-        this.signature = signature.AsReadOnlyEquatable();
+        Signature = signature.AsReadOnlyEquatable();
     }
 }

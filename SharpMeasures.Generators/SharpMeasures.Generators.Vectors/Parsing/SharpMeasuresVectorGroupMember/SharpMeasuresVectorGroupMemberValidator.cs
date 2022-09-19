@@ -26,7 +26,7 @@ internal interface ISharpMeasuresVectorGroupMemberValidationContext : IValidatio
     public abstract IVectorPopulation VectorPopulation { get; }
 }
 
-internal class SharpMeasuresVectorGroupMemberValidator : IValidator<ISharpMeasuresVectorGroupMemberValidationContext, SharpMeasuresVectorGroupMemberDefinition>
+internal sealed class SharpMeasuresVectorGroupMemberValidator : IValidator<ISharpMeasuresVectorGroupMemberValidationContext, SharpMeasuresVectorGroupMemberDefinition>
 {
     private ISharpMeasuresVectorGroupMemberValidationDiagnostics Diagnostics { get; }
 

@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class RawSharpMeasuresUnitDefinition : ARawSharpMeasuresObjectDefinition<RawSharpMeasuresUnitDefinition, SharpMeasuresUnitLocations>
+internal sealed record class RawSharpMeasuresUnitDefinition : ARawSharpMeasuresObjectDefinition<RawSharpMeasuresUnitDefinition, SharpMeasuresUnitLocations>
 {
     public static RawSharpMeasuresUnitDefinition FromSymbolic(SymbolicSharpMeasuresUnitDefinition symbolicDefinition) => new RawSharpMeasuresUnitDefinition(symbolicDefinition.Locations) with
     {

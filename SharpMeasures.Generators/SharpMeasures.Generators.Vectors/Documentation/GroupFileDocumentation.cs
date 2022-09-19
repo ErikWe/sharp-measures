@@ -4,7 +4,7 @@ using SharpMeasures.Generators.Documentation;
 
 using System;
 
-internal class GroupFileDocumentation : IGroupDocumentationStrategy, IEquatable<GroupFileDocumentation>
+internal sealed class GroupFileDocumentation : IGroupDocumentationStrategy, IEquatable<GroupFileDocumentation>
 {
     private GroupDocumentationTags DocumentationTags { get; }
 
@@ -19,9 +19,7 @@ internal class GroupFileDocumentation : IGroupDocumentationStrategy, IEquatable<
         DefaultDocumentationStrategy = defaultDocumentationStrategy;
     }
 
-    public virtual bool Equals(GroupFileDocumentation? other) => other is not null && DocumentationTags == other.DocumentationTags
-        && DocumentationFile == other.DocumentationFile && DefaultDocumentationStrategy.Equals(other.DefaultDocumentationStrategy);
-
+    public bool Equals(GroupFileDocumentation? other) => other is not null && DocumentationTags == other.DocumentationTags && DocumentationFile == other.DocumentationFile && DefaultDocumentationStrategy.Equals(other.DefaultDocumentationStrategy);
     public override bool Equals(object? obj) => obj is GroupFileDocumentation other && Equals(other);
 
     public static bool operator ==(GroupFileDocumentation? lhs, GroupFileDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;

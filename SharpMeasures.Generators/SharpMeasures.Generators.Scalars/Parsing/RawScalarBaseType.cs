@@ -12,10 +12,9 @@ using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 
 using System.Collections.Generic;
 
-internal record class RawScalarBaseType : ARawScalarType<RawSharpMeasuresScalarDefinition>
+internal sealed record class RawScalarBaseType : ARawScalarType<RawSharpMeasuresScalarDefinition>
 {
-    public RawScalarBaseType(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresScalarDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations,
-        IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitBasesDefinition> baseInclusions,
-        IEnumerable<RawExcludeUnitBasesDefinition> baseExclusions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
+    public RawScalarBaseType(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresScalarDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
+        IEnumerable<RawIncludeUnitBasesDefinition> baseInclusions, IEnumerable<RawExcludeUnitBasesDefinition> baseExclusions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
         : base(type, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInstanceInclusions, unitInstanceExclusions) { }
 }

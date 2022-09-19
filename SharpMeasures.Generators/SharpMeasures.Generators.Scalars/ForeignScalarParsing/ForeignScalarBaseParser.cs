@@ -2,49 +2,26 @@
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars.Parsing;
+using SharpMeasures.Generators.Scalars.Parsing.ExcludeUnitBases;
+using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
+using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
-public static class ForeignScalarBaseParser
+internal sealed class ForeignScalarBaseParser : AForeignScalarParser<RawScalarBaseType, RawSharpMeasuresScalarDefinition>
 {
-    public static (Optional<IScalarBaseType> Definition, IEnumerable<INamedTypeSymbol> ReferencedSymbols) Parse(INamedTypeSymbol typeSymbol)
-    {
-        (var scalar, var scalarReferencedSymbols) = ParseScalar(typeSymbol);
+    protected override RawScalarBaseType ProduceResult(DefinedType type, RawSharpMeasuresScalarDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
+        IEnumerable<RawIncludeUnitBasesDefinition> baseInclusions, IEnumerable<RawExcludeUnitBasesDefinition> baseExclusions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
+        => new(type, MinimalLocation.None, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInstanceInclusions, unitInstanceExclusions);
 
-        if (scalar.HasValue is false)
-        {
-            return (new Optional<IScalarBaseType>(), Array.Empty<INamedTypeSymbol>());
-        }
-
-        (var derivations, var derivationsReferencedSymbols) = CommonParsing.ParseDerivations(typeSymbol);
-        var constants = CommonParsing.ParseConstants(typeSymbol);
-        (var conversions, var conversionsReferencedSymbols) = CommonParsing.ParseConversions(typeSymbol);
-
-        var includeUnitInstanceBases = CommonParsing.ParseIncludeUnitBases(typeSymbol);
-        var excludeUnitInstanceBases = CommonParsing.ParseExcludeUnitBases(typeSymbol);
-
-        var includeUnitInstances = CommonParsing.ParseIncludeUnits(typeSymbol);
-        var excludeUnitInstances = CommonParsing.ParseExcludeUnits(typeSymbol);
-
-        RawScalarBaseType rawScalarType = new(typeSymbol.AsDefinedType(), MinimalLocation.None, scalar.Value, derivations, constants, conversions, includeUnitInstanceBases, excludeUnitInstanceBases, includeUnitInstances, excludeUnitInstances);
-
-        var scalarType = new ForeignScalarBaseProcesser().Process(rawScalarType);
-
-        if (scalarType.HasValue is false)
-        {
-            return (new Optional<IScalarBaseType>(), Array.Empty<INamedTypeSymbol>());
-        }
-
-        var referencedSymbols = scalarReferencedSymbols.Concat(derivationsReferencedSymbols).Concat(conversionsReferencedSymbols);
-
-        return (scalarType.Value, referencedSymbols);
-    }
-    
-    private static (Optional<RawSharpMeasuresScalarDefinition>, IEnumerable<INamedTypeSymbol>) ParseScalar(INamedTypeSymbol typeSymbol)
+    protected override (Optional<RawSharpMeasuresScalarDefinition>, IEnumerable<INamedTypeSymbol>) ParseScalar(INamedTypeSymbol typeSymbol)
     {
         if (SharpMeasuresScalarParser.Parser.ParseFirstOccurrence(typeSymbol) is not SymbolicSharpMeasuresScalarDefinition symbolicScalar)
         {

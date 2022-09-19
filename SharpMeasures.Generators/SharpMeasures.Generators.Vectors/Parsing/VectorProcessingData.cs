@@ -4,41 +4,29 @@ using SharpMeasures.Equatables;
 
 using System.Collections.Generic;
 
-internal record class VectorProcessingData
+internal sealed record class VectorProcessingData
 {
-    public IReadOnlyDictionary<NamedType, IVectorBaseType> DuplicatelyDefinedVectorBases => duplicatelyDefinedVectorBases;
-    public IReadOnlyDictionary<NamedType, IVectorSpecializationType> DuplicatelyDefinedVectorSpecializations => duplicatelyDefinedVectorSpecializations;
-    public IReadOnlyDictionary<NamedType, IVectorSpecializationType> VectorSpecializationsAlreadyDefinedAsVectorBases => vectorSpecializationsAlreadyDefinedAsVectorBases;
+    public IReadOnlyDictionary<NamedType, IVectorBaseType> DuplicatelyDefinedVectorBases { get; }
+    public IReadOnlyDictionary<NamedType, IVectorSpecializationType> DuplicatelyDefinedVectorSpecializations { get; }
+    public IReadOnlyDictionary<NamedType, IVectorSpecializationType> VectorSpecializationsAlreadyDefinedAsVectorBases { get; }
 
-    public IReadOnlyDictionary<NamedType, IVectorGroupBaseType> DuplicatelyDefinedGroupBases => duplicatelyDefinedGroupBases;
-    public IReadOnlyDictionary<NamedType, IVectorGroupSpecializationType> DuplicatelyDefinedGroupSpecializations => duplicatelyDefinedGroupSpecializations;
-    public IReadOnlyDictionary<NamedType, IVectorGroupSpecializationType> GroupSpecializationsAlreadyDefinedAsGroupBases => groupSpecializationsAlreadyDefinedAsGroupBases;
+    public IReadOnlyDictionary<NamedType, IVectorGroupBaseType> DuplicatelyDefinedGroupBases { get; }
+    public IReadOnlyDictionary<NamedType, IVectorGroupSpecializationType> DuplicatelyDefinedGroupSpecializations { get; }
+    public IReadOnlyDictionary<NamedType, IVectorGroupSpecializationType> GroupSpecializationsAlreadyDefinedAsGroupBases { get; }
 
-    public IReadOnlyDictionary<NamedType, IVectorGroupMemberType> DuplicatelyDefinedGroupMembers => duplicatelyDefinedGroupMembers;
+    public IReadOnlyDictionary<NamedType, IVectorGroupMemberType> DuplicatelyDefinedGroupMembers { get; }
 
-    private ReadOnlyEquatableDictionary<NamedType, IVectorBaseType> duplicatelyDefinedVectorBases { get; }
-    private ReadOnlyEquatableDictionary<NamedType, IVectorSpecializationType> duplicatelyDefinedVectorSpecializations { get; }
-    private ReadOnlyEquatableDictionary<NamedType, IVectorSpecializationType> vectorSpecializationsAlreadyDefinedAsVectorBases { get; }
-
-    private ReadOnlyEquatableDictionary<NamedType, IVectorGroupBaseType> duplicatelyDefinedGroupBases { get; }
-    private ReadOnlyEquatableDictionary<NamedType, IVectorGroupSpecializationType> duplicatelyDefinedGroupSpecializations { get; }
-    private ReadOnlyEquatableDictionary<NamedType, IVectorGroupSpecializationType> groupSpecializationsAlreadyDefinedAsGroupBases { get; }
-
-    private ReadOnlyEquatableDictionary<NamedType, IVectorGroupMemberType> duplicatelyDefinedGroupMembers { get; }
-
-    public VectorProcessingData(IReadOnlyDictionary<NamedType, IVectorBaseType> duplicatelyDefinedVectorBases, IReadOnlyDictionary<NamedType, IVectorSpecializationType> duplicatelyDefinedVectorSpecializations,
-        IReadOnlyDictionary<NamedType, IVectorSpecializationType> vectorSpecializationsAlreadyDefinedAsVectorBases, IReadOnlyDictionary<NamedType, IVectorGroupBaseType> duplicatelyDefinedGroupBases,
-        IReadOnlyDictionary<NamedType, IVectorGroupSpecializationType> duplicatelyDefinedGroupSpecializations, IReadOnlyDictionary<NamedType, IVectorGroupSpecializationType> groupSpecializationsAlreadyDefinedAsGroupBases,
-        IReadOnlyDictionary<NamedType, IVectorGroupMemberType> duplicatelyDefinedGroupMembers)
+    public VectorProcessingData(IReadOnlyDictionary<NamedType, IVectorBaseType> duplicatelyDefinedVectorBases, IReadOnlyDictionary<NamedType, IVectorSpecializationType> duplicatelyDefinedVectorSpecializations, IReadOnlyDictionary<NamedType, IVectorSpecializationType> vectorSpecializationsAlreadyDefinedAsVectorBases,
+        IReadOnlyDictionary<NamedType, IVectorGroupBaseType> duplicatelyDefinedGroupBases, IReadOnlyDictionary<NamedType, IVectorGroupSpecializationType> duplicatelyDefinedGroupSpecializations, IReadOnlyDictionary<NamedType, IVectorGroupSpecializationType> groupSpecializationsAlreadyDefinedAsGroupBases, IReadOnlyDictionary<NamedType, IVectorGroupMemberType> duplicatelyDefinedGroupMembers)
     {
-        this.duplicatelyDefinedVectorBases = duplicatelyDefinedVectorBases.AsReadOnlyEquatable();
-        this.duplicatelyDefinedVectorSpecializations = duplicatelyDefinedVectorSpecializations.AsReadOnlyEquatable();
-        this.vectorSpecializationsAlreadyDefinedAsVectorBases = vectorSpecializationsAlreadyDefinedAsVectorBases.AsReadOnlyEquatable();
+        DuplicatelyDefinedVectorBases = duplicatelyDefinedVectorBases.AsReadOnlyEquatable();
+        DuplicatelyDefinedVectorSpecializations = duplicatelyDefinedVectorSpecializations.AsReadOnlyEquatable();
+        VectorSpecializationsAlreadyDefinedAsVectorBases = vectorSpecializationsAlreadyDefinedAsVectorBases.AsReadOnlyEquatable();
 
-        this.duplicatelyDefinedGroupBases = duplicatelyDefinedGroupBases.AsReadOnlyEquatable();
-        this.duplicatelyDefinedGroupSpecializations = duplicatelyDefinedGroupSpecializations.AsReadOnlyEquatable();
-        this.groupSpecializationsAlreadyDefinedAsGroupBases = groupSpecializationsAlreadyDefinedAsGroupBases.AsReadOnlyEquatable();
+        DuplicatelyDefinedGroupBases = duplicatelyDefinedGroupBases.AsReadOnlyEquatable();
+        DuplicatelyDefinedGroupSpecializations = duplicatelyDefinedGroupSpecializations.AsReadOnlyEquatable();
+        GroupSpecializationsAlreadyDefinedAsGroupBases = groupSpecializationsAlreadyDefinedAsGroupBases.AsReadOnlyEquatable();
 
-        this.duplicatelyDefinedGroupMembers = duplicatelyDefinedGroupMembers.AsReadOnlyEquatable();
+        DuplicatelyDefinedGroupMembers = duplicatelyDefinedGroupMembers.AsReadOnlyEquatable();
     }
 }

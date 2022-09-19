@@ -10,7 +10,7 @@ internal interface IConvertibleVectorGroupMemberProcessingContext : IConvertible
     public abstract NamedType Group { get; }
 }
 
-internal class ConvertibleVectorGroupMemberrProcesser : AConvertibleQuantityProcesser<IConvertibleVectorGroupMemberProcessingContext, ConvertibleVectorDefinition>
+internal sealed class ConvertibleVectorGroupMemberrProcesser : AConvertibleQuantityProcesser<IConvertibleVectorGroupMemberProcessingContext, ConvertibleVectorDefinition>
 {
     private IConvertibleQuantityProcessingDiagnostics Diagnostics { get; }
 
@@ -26,10 +26,7 @@ internal class ConvertibleVectorGroupMemberrProcesser : AConvertibleQuantityProc
             .Transform((scalarsAndLocationMap) => ProduceResult(definition, scalarsAndLocationMap.Quantities, scalarsAndLocationMap.LocationMap));
     }
 
-    private static ConvertibleVectorDefinition ProduceResult(RawConvertibleQuantityDefinition definition, IReadOnlyList<NamedType> scalars, IReadOnlyList<int> locationMap)
-    {
-        return new(scalars, definition.ConversionDirection, definition.CastOperatorBehaviour, definition.Locations, locationMap);
-    }
+    private static ConvertibleVectorDefinition ProduceResult(RawConvertibleQuantityDefinition definition, IReadOnlyList<NamedType> scalars, IReadOnlyList<int> locationMap) => new(scalars, definition.ConversionDirection, definition.CastOperatorBehaviour, definition.Locations, locationMap);
 
     protected override IValidityWithDiagnostics ValidateQuantity(IConvertibleVectorGroupMemberProcessingContext context, RawConvertibleQuantityDefinition definition, int index)
     {

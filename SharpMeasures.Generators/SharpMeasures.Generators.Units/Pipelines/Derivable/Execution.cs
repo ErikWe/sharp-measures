@@ -31,7 +31,7 @@ internal static class Execution
         context.AddSource($"{data.Value.Unit.QualifiedName}.Derivable.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
-    private class Composer
+    private sealed class Composer
     {
         public static string ComposeAndReportDiagnostics(DataModel data)
         {
@@ -271,9 +271,6 @@ internal static class Execution
             }
         }
 
-        private void AppendDocumentation(Indentation indentation, string text)
-        {
-            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
-        }
+        private void AppendDocumentation(Indentation indentation, string text) => DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
     }
 }

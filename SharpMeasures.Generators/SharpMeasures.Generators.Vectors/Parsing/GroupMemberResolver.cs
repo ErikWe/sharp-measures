@@ -168,11 +168,7 @@ internal static class GroupMemberResolver
         }
     }
 
-    private static T? RecursivelySearchForDefinedInGroups<T>(GroupMemberType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, T?> itemDelegate)
-    {
-        return RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => default, itemDelegate);
-    }
-
+    private static T? RecursivelySearchForDefinedInGroups<T>(GroupMemberType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, T?> itemDelegate) => RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => default, itemDelegate);
     private static T? RecursivelySearchForDefined<T>(GroupMemberType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupMemberType, T?> memberItemDelegate, Func<IVectorGroupType, T?> groupItemDelegate)
     {
         if (memberItemDelegate(vectorType) is T item)

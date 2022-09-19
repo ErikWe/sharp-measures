@@ -3,7 +3,7 @@
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;
 
-internal record class SharpMeasuresScalarLocations : AAttributeLocations<SharpMeasuresScalarLocations>, IScalarBaseLocations, IDefaultUnitInstanceLocations
+internal sealed record class SharpMeasuresScalarLocations : AAttributeLocations<SharpMeasuresScalarLocations>, IScalarBaseLocations, IDefaultUnitInstanceLocations
 {
     public static SharpMeasuresScalarLocations Empty => new();
 

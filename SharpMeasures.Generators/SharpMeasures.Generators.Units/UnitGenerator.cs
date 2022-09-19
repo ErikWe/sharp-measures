@@ -18,7 +18,7 @@ public interface IUnitGenerator
         IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider);
 }
 
-internal class UnitGenerator : IUnitGenerator
+internal sealed class UnitGenerator : IUnitGenerator
 {
     private IncrementalValuesProvider<Optional<UnitType>> UnitProvider { get; }
 

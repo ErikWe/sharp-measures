@@ -20,23 +20,15 @@ internal readonly record struct DataModel
 
     public FixedUnitInstanceDefinition? FixedUnitInstance { get; }
 
-    public IEnumerable<UnitInstanceAliasDefinition> UnitInstanceAliases => unitInstanceAliases;
-    public IEnumerable<DerivedUnitInstanceDefinition> DerivedUnitInstances => derivedUnitInstances;
-    public IEnumerable<BiasedUnitInstanceDefinition> BiasedUnitInstances => biasedUnitInstances;
-    public IEnumerable<PrefixedUnitInstanceDefinition> PrefixedUnitInstances => prefixedUnitInstances;
-    public IEnumerable<ScaledUnitInstanceDefinition> ScaledUnitInstances => scaledUnitInstances;
+    public IEnumerable<UnitInstanceAliasDefinition> UnitInstanceAliases { get; }
+    public IEnumerable<DerivedUnitInstanceDefinition> DerivedUnitInstances { get; }
+    public IEnumerable<BiasedUnitInstanceDefinition> BiasedUnitInstances { get; }
+    public IEnumerable<PrefixedUnitInstanceDefinition> PrefixedUnitInstances { get; }
+    public IEnumerable<ScaledUnitInstanceDefinition> ScaledUnitInstances { get; }
 
-    public IReadOnlyDictionary<string, IDerivableUnit> DerivationsByID => derivationsByID;
+    public IReadOnlyDictionary<string, IDerivableUnit> DerivationsByID { get; }
 
     public IDocumentationStrategy Documentation { get; }
-
-    private EquatableEnumerable<UnitInstanceAliasDefinition> unitInstanceAliases { get; }
-    private EquatableEnumerable<DerivedUnitInstanceDefinition> derivedUnitInstances { get; }
-    private EquatableEnumerable<BiasedUnitInstanceDefinition> biasedUnitInstances { get; }
-    private EquatableEnumerable<PrefixedUnitInstanceDefinition> prefixedUnitInstances { get; }
-    private EquatableEnumerable<ScaledUnitInstanceDefinition> scaledUnitInstances { get; }
-
-    private ReadOnlyEquatableDictionary<string, IDerivableUnit> derivationsByID { get; }
 
     public DataModel(DefinedType unit, NamedType quantity, bool biasTerm, FixedUnitInstanceDefinition? fixedUnitInstance, IEnumerable<UnitInstanceAliasDefinition> unitInstanceAliases, IEnumerable<DerivedUnitInstanceDefinition> derivedUnitInstances,
         IEnumerable<BiasedUnitInstanceDefinition> biasedUnitInstances, IEnumerable<PrefixedUnitInstanceDefinition> prefixedUnitInstances, IEnumerable<ScaledUnitInstanceDefinition> scaledUnitInstances, IReadOnlyDictionary<string, IDerivableUnit> derivationsByID,
@@ -49,13 +41,13 @@ internal readonly record struct DataModel
 
         FixedUnitInstance = fixedUnitInstance;
 
-        this.unitInstanceAliases = unitInstanceAliases.AsEquatable();
-        this.derivedUnitInstances = derivedUnitInstances.AsEquatable();
-        this.biasedUnitInstances = biasedUnitInstances.AsEquatable();
-        this.prefixedUnitInstances = prefixedUnitInstances.AsEquatable();
-        this.scaledUnitInstances = scaledUnitInstances.AsEquatable();
+        UnitInstanceAliases = unitInstanceAliases.AsEquatable();
+        DerivedUnitInstances = derivedUnitInstances.AsEquatable();
+        BiasedUnitInstances = biasedUnitInstances.AsEquatable();
+        PrefixedUnitInstances = prefixedUnitInstances.AsEquatable();
+        ScaledUnitInstances = scaledUnitInstances.AsEquatable();
 
-        this.derivationsByID = derivationsByID.AsReadOnlyEquatable();
+        DerivationsByID = derivationsByID.AsReadOnlyEquatable();
 
         Documentation = documentation;
     }

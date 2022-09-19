@@ -4,7 +4,7 @@ using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 
 using System.Collections.Generic;
 
-public record class ExcludeUnitsDefinition : AItemListDefinition<string, ExcludeUnitsLocations>, IUnitInstanceList
+public sealed record class ExcludeUnitsDefinition : AItemListDefinition<string, ExcludeUnitsLocations>, IUnitInstanceList
 {
     public IReadOnlyList<string> UnitInstances => Items;
 

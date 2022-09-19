@@ -7,21 +7,18 @@ using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using System.Collections.Generic;
 using System.Linq;
 
-internal class ScalarPopulation : IScalarPopulation
+internal sealed record class ScalarPopulation : IScalarPopulation
 {
-    public IReadOnlyDictionary<NamedType, IScalarBaseType> ScalarBases => scalarBases;
-    public IReadOnlyDictionary<NamedType, IScalarType> Scalars => scalars;
-
-    private ReadOnlyEquatableDictionary<NamedType, IScalarBaseType> scalarBases { get; }
-    private ReadOnlyEquatableDictionary<NamedType, IScalarType> scalars { get; }
+    public IReadOnlyDictionary<NamedType, IScalarBaseType> ScalarBases { get; }
+    public IReadOnlyDictionary<NamedType, IScalarType> Scalars { get; }
 
     IReadOnlyDictionary<NamedType, IQuantityBaseType> IQuantityPopulation.QuantityBases => ScalarBases.Transform(static (scalarBase) => scalarBase as IQuantityBaseType);
     IReadOnlyDictionary<NamedType, IQuantityType> IQuantityPopulation.Quantities => Scalars.Transform(static (scalar) => scalar as IQuantityType);
 
     private ScalarPopulation(IReadOnlyDictionary<NamedType, IScalarBaseType> scalarBases, IReadOnlyDictionary<NamedType, IScalarType> scalars)
     {
-        this.scalarBases = scalarBases.AsReadOnlyEquatable();
-        this.scalars = scalars.AsReadOnlyEquatable();
+        ScalarBases = scalarBases.AsReadOnlyEquatable();
+        Scalars = scalars.AsReadOnlyEquatable();
     }
 
     public static (ScalarPopulation Population, ScalarProcessingData ProcessingData) Build(IReadOnlyList<IScalarBaseType> scalarBases, IReadOnlyList<IScalarSpecializationType> scalarSpecializations)

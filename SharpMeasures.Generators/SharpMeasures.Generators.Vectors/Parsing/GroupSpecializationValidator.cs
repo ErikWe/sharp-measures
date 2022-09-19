@@ -24,137 +24,135 @@ using System.Threading;
 
 internal static class GroupSpecializationValidator
 {
-    public static IncrementalValuesProvider<Optional<GroupSpecializationType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<GroupSpecializationType>> vectorProvider,
-       IncrementalValueProvider<VectorProcessingData> processingDataProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
-       IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
+    public static IncrementalValuesProvider<Optional<GroupSpecializationType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<GroupSpecializationType>> vectorProvider, IncrementalValueProvider<VectorProcessingData> processingDataProvider,
+        IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
         return vectorProvider.Combine(processingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }
 
-    private static IOptionalWithDiagnostics<GroupSpecializationType> Validate((Optional<GroupSpecializationType> UnvalidatedVector, VectorProcessingData ProcessingData, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
+    private static IOptionalWithDiagnostics<GroupSpecializationType> Validate((Optional<GroupSpecializationType> UnvalidatedGroup, VectorProcessingData ProcessingData, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulation VectorPopulation) input, CancellationToken token)
     {
-        if (token.IsCancellationRequested || input.UnvalidatedVector.HasValue is false)
+        if (token.IsCancellationRequested || input.UnvalidatedGroup.HasValue is false)
         {
             return OptionalWithDiagnostics.Empty<GroupSpecializationType>();
         }
 
-        return Validate(input.UnvalidatedVector.Value, input.ProcessingData, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
+        return Validate(input.UnvalidatedGroup.Value, input.ProcessingData, input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation);
     }
 
-    private static IOptionalWithDiagnostics<GroupSpecializationType> Validate(GroupSpecializationType vectorType, VectorProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
+    private static IOptionalWithDiagnostics<GroupSpecializationType> Validate(GroupSpecializationType groupType, VectorProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        var vector = ValidateVector(vectorType, processingData, unitPopulation, scalarPopulation, vectorPopulation);
+        var group = ValidateGroup(groupType, processingData, unitPopulation, scalarPopulation, vectorPopulation);
 
-        if (vector.LacksResult)
+        if (group.LacksResult)
         {
-            return vector.AsEmptyOptional<GroupSpecializationType>();
+            return group.AsEmptyOptional<GroupSpecializationType>();
         }
 
-        var groupBase = vectorPopulation.GroupBases[vectorType.Type.AsNamedType()];
+        var groupBase = vectorPopulation.GroupBases[groupType.Type.AsNamedType()];
 
         var unit = unitPopulation.Units[groupBase.Definition.Unit];
 
-        var inheritedUnitInstances = GetUnitInstanceInclusions(vectorType, vectorPopulation, unit.UnitInstancesByName.Values, unit, static (vector) => vector.Definition.InheritUnits, onlyInherited: true);
+        var inheritedUnitInstances = GetUnitInstanceInclusions(groupType, vectorPopulation, unit.UnitInstancesByName.Values, unit, static (vector) => vector.Definition.InheritUnits, onlyInherited: true);
         var inheritedUnitInstanceNames = new HashSet<string>(inheritedUnitInstances.Select(static (unit) => unit.Name));
 
-        var unitInstanceInclusions = ValidateIncludeUnitInstances(vectorType, unit, inheritedUnitInstanceNames);
-        var unitInstanceExclusions = ValidateExcludeUnitInstances(vectorType, unit, inheritedUnitInstanceNames);
+        var unitInstanceInclusions = ValidateIncludeUnitInstances(groupType, unit, inheritedUnitInstanceNames);
+        var unitInstanceExclusions = ValidateExcludeUnitInstances(groupType, unit, inheritedUnitInstanceNames);
 
-        var derivations = ValidateDerivations(vectorType, scalarPopulation, vectorPopulation);
-        var conversions = ValidateConversions(vectorType, vectorPopulation);
+        var derivations = ValidateDerivations(groupType, scalarPopulation, vectorPopulation);
+        var conversions = ValidateConversions(groupType, vectorPopulation);
 
-        GroupSpecializationType product = new(vectorType.Type, vectorType.TypeLocation, vector.Result, derivations.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
+        GroupSpecializationType product = new(groupType.Type, groupType.TypeLocation, group.Result, derivations.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
 
-        var allDiagnostics = vector.Concat(derivations).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
+        var allDiagnostics = group.Concat(derivations).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static IOptionalWithDiagnostics<SpecializedSharpMeasuresVectorGroupDefinition> ValidateVector(GroupSpecializationType vectorType, VectorProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
+    private static IOptionalWithDiagnostics<SpecializedSharpMeasuresVectorGroupDefinition> ValidateGroup(GroupSpecializationType groupType, VectorProcessingData processingData, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        var validationContext = new SpecializedSharpMeasuresVectorGroupValidationContext(vectorType.Type, processingData, unitPopulation, scalarPopulation, vectorPopulation);
+        var validationContext = new SpecializedSharpMeasuresVectorGroupValidationContext(groupType.Type, processingData, unitPopulation, scalarPopulation, vectorPopulation);
 
-        return ProcessingFilter.Create(SpecializedSharpMeasuresVectorGroupValidator).Filter(validationContext, vectorType.Definition);
+        return ProcessingFilter.Create(SpecializedSharpMeasuresVectorGroupValidator).Filter(validationContext, groupType.Definition);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ValidateDerivations(GroupSpecializationType vectorType, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
+    private static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ValidateDerivations(GroupSpecializationType groupType, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        var validationContext = new DerivedQuantityValidationContext(vectorType.Type, scalarPopulation, vectorPopulation);
+        var validationContext = new DerivedQuantityValidationContext(groupType.Type, scalarPopulation, vectorPopulation);
 
-        return ProcessingFilter.Create(DerivedQuantityValidator).Filter(validationContext, vectorType.Derivations);
+        return ProcessingFilter.Create(DerivedQuantityValidator).Filter(validationContext, groupType.Derivations);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ValidateConversions(GroupSpecializationType vectorType, IVectorPopulation vectorPopulation)
+    private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ValidateConversions(GroupSpecializationType groupType, IVectorPopulation vectorPopulation)
     {
-        var inheritedConversions = CollectInheritedItems(vectorType, vectorPopulation, static (vector) => vector.Conversions.SelectMany(static (vectorList) => vectorList.Quantities), static (vector) => vector.Definition.InheritConversions);
+        var inheritedConversions = CollectInheritedItems(groupType, vectorPopulation, static (vector) => vector.Conversions.SelectMany(static (vectorList) => vectorList.Quantities), static (vector) => vector.Definition.InheritConversions);
 
-        var filteringContext = new ConvertibleVectorFilteringContext(vectorType.Type, VectorType.Group, vectorPopulation, new HashSet<NamedType>(inheritedConversions));
+        var filteringContext = new ConvertibleVectorFilteringContext(groupType.Type, VectorType.Group, vectorPopulation, new HashSet<NamedType>(inheritedConversions));
 
-        return ProcessingFilter.Create(ConvertibleVectorFilterer).Filter(filteringContext, vectorType.Conversions);
+        return ProcessingFilter.Create(ConvertibleVectorFilterer).Filter(filteringContext, groupType.Conversions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ValidateIncludeUnitInstances(GroupSpecializationType vectorType, IUnitType unit, HashSet<string> inheritedUnits)
+    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ValidateIncludeUnitInstances(GroupSpecializationType groupType, IUnitType unit, HashSet<string> inheritedUnits)
     {
-        var filteringContext = new IncludeUnitsFilteringContext(vectorType.Type, unit, inheritedUnits);
+        var filteringContext = new IncludeUnitsFilteringContext(groupType.Type, unit, inheritedUnits);
 
-        return ProcessingFilter.Create(IncludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInstanceInclusions);
+        return ProcessingFilter.Create(IncludeUnitsFilterer).Filter(filteringContext, groupType.UnitInstanceInclusions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ValidateExcludeUnitInstances(GroupSpecializationType vectorType, IUnitType unit, HashSet<string> inheritedUnits)
+    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ValidateExcludeUnitInstances(GroupSpecializationType groupType, IUnitType unit, HashSet<string> inheritedUnits)
     {
-        var filteringContext = new ExcludeUnitsFilteringContext(vectorType.Type, unit, inheritedUnits);
+        var filteringContext = new ExcludeUnitsFilteringContext(groupType.Type, unit, inheritedUnits);
 
-        return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, vectorType.UnitInstanceExclusions);
+        return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, groupType.UnitInstanceExclusions);
     }
 
-    private static IEnumerable<T> CollectInheritedItems<T>(GroupSpecializationType vectorType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, IEnumerable<T>> itemsDelegate, Func<IVectorGroupSpecializationType, bool> shouldInherit)
+    private static IEnumerable<T> CollectInheritedItems<T>(GroupSpecializationType groupType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, IEnumerable<T>> itemsDelegate, Func<IVectorGroupSpecializationType, bool> shouldInherit)
     {
         List<T> items = new();
 
-        recursivelyAddItems(vectorPopulation.Groups[vectorType.Definition.OriginalQuantity]);
+        recursivelyAddItems(vectorPopulation.Groups[groupType.Definition.OriginalQuantity]);
 
         return items;
 
-        void recursivelyAddItems(IVectorGroupType vector)
+        void recursivelyAddItems(IVectorGroupType group)
         {
-            items.AddRange(itemsDelegate(vector));
+            items.AddRange(itemsDelegate(group));
 
-            if (vector is IVectorGroupSpecializationType vectorSpecialization && shouldInherit(vectorSpecialization))
+            if (group is IVectorGroupSpecializationType vectorSpecialization && shouldInherit(vectorSpecialization))
             {
                 recursivelyAddItems(vectorPopulation.Groups[vectorSpecialization.Definition.OriginalQuantity]);
             }
         }
     }
 
-    private static IEnumerable<IUnitInstance> GetUnitInstanceInclusions(GroupSpecializationType vectorType, IVectorPopulation vectorPopulation, IEnumerable<IUnitInstance> initialUnits, IUnitType unit,
-        Func<IVectorGroupSpecializationType, bool> shouldInherit, bool onlyInherited = false)
+    private static IEnumerable<IUnitInstance> GetUnitInstanceInclusions(GroupSpecializationType groupType, IVectorPopulation vectorPopulation, IEnumerable<IUnitInstance> initialUnits, IUnitType unit, Func<IVectorGroupSpecializationType, bool> shouldInherit, bool onlyInherited = false)
     {
         HashSet<IUnitInstance> includedUnits = new(initialUnits);
 
-        recurisvelyAdd(vectorType, onlyInherited);
+        recurisvelyAdd(groupType, onlyInherited);
 
         return includedUnits;
 
-        void recurisvelyAdd(IVectorGroupType vector, bool onlyInherited = false)
+        void recurisvelyAdd(IVectorGroupType group, bool onlyInherited = false)
         {
             if (onlyInherited is false)
             {
-                modify(vector);
+                modify(group);
             }
 
-            recurse(vector);
+            recurse(group);
         }
 
-        void modify(IVectorGroupType vector)
+        void modify(IVectorGroupType group)
         {
-            if (vector.UnitInstanceInclusions.Any())
+            if (group.UnitInstanceInclusions.Any())
             {
-                includedUnits.IntersectWith(listUnits(vector.UnitInstanceInclusions));
+                includedUnits.IntersectWith(listUnits(group.UnitInstanceInclusions));
 
                 return;
             }
 
-            includedUnits.ExceptWith(listUnits(vector.UnitInstanceExclusions));
+            includedUnits.ExceptWith(listUnits(group.UnitInstanceExclusions));
 
             IEnumerable<IUnitInstance> listUnits(IEnumerable<IUnitInstanceList> unitLists)
             {
@@ -168,9 +166,9 @@ internal static class GroupSpecializationValidator
             }
         }
 
-        void recurse(IVectorGroupType vector)
+        void recurse(IVectorGroupType group)
         {
-            if (vector is IVectorGroupSpecializationType vectorSpecialization && shouldInherit(vectorSpecialization))
+            if (group is IVectorGroupSpecializationType vectorSpecialization && shouldInherit(vectorSpecialization))
             {
                 recurisvelyAdd(vectorPopulation.Groups[vectorSpecialization.Definition.OriginalQuantity]);
             }

@@ -36,7 +36,7 @@ internal interface ISpecializedSharpMeasuresScalarValidationContext : IProcessin
     public abstract IVectorPopulation VectorPopulation { get; }
 }
 
-internal class SpecializedSharpMeasuresScalarValidator : IProcesser<ISpecializedSharpMeasuresScalarValidationContext, SpecializedSharpMeasuresScalarDefinition, SpecializedSharpMeasuresScalarDefinition>
+internal sealed class SpecializedSharpMeasuresScalarValidator : IProcesser<ISpecializedSharpMeasuresScalarValidationContext, SpecializedSharpMeasuresScalarDefinition, SpecializedSharpMeasuresScalarDefinition>
 {
     private ISpecializedSharpMeasuresScalarValidationDiagnostics Diagnostics { get; }
 
@@ -82,12 +82,10 @@ internal class SpecializedSharpMeasuresScalarValidator : IProcesser<ISpecialized
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static SpecializedSharpMeasuresScalarDefinition ProduceResult(SpecializedSharpMeasuresScalarDefinition definition, NamedType? vector, NamedType? difference, string? defaultUnitInstanceName,
-        string? defaultUnitInstanceSymbol, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot)
+    private static SpecializedSharpMeasuresScalarDefinition ProduceResult(SpecializedSharpMeasuresScalarDefinition definition, NamedType? vector, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot)
     {
-        return new(definition.OriginalQuantity, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritBases, definition.InheritUnits, vector,
-            definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, reciprocal, square, cube, squareRoot, cubeRoot, definition.GenerateDocumentation,
-            definition.Locations);
+        return new(definition.OriginalQuantity, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritBases, definition.InheritUnits, vector, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName,
+            defaultUnitInstanceSymbol, reciprocal, square, cube, squareRoot, cubeRoot, definition.GenerateDocumentation, definition.Locations);
     }
 
     private IValidityWithDiagnostics ValidateTypeNotAlreadyUnit(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition)
@@ -134,8 +132,7 @@ internal class SpecializedSharpMeasuresScalarValidator : IProcesser<ISpecialized
 
     private IValidityWithDiagnostics ValidateVectorIsVector(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition)
     {
-        var vectorIsNotVector = definition.Vector is not null && (context.VectorPopulation.Vectors.ContainsKey(definition.Vector.Value) is false
-            || context.VectorPopulation.Groups.ContainsKey(definition.Vector.Value) is false || context.VectorPopulation.GroupMembers.ContainsKey(definition.Vector.Value) is false);
+        var vectorIsNotVector = definition.Vector is not null && (context.VectorPopulation.Vectors.ContainsKey(definition.Vector.Value) is false || context.VectorPopulation.Groups.ContainsKey(definition.Vector.Value) is false || context.VectorPopulation.GroupMembers.ContainsKey(definition.Vector.Value) is false);
 
         return ValidityWithDiagnostics.Conditional(vectorIsNotVector is false, () => Diagnostics.TypeNotVector(context, definition));
     }
@@ -147,8 +144,7 @@ internal class SpecializedSharpMeasuresScalarValidator : IProcesser<ISpecialized
         return ValidityWithDiagnostics.Conditional(differenceIsNotScalar is false, () => Diagnostics.DifferenceNotScalar(context, definition));
     }
 
-    private static IValidityWithDiagnostics ValidatePowerIsScalar(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition, NamedType? powerQuantity,
-        Func<ISpecializedSharpMeasuresScalarValidationContext, SpecializedSharpMeasuresScalarDefinition, Diagnostic?> typeNotScalarDiagnosticsDelegate)
+    private static IValidityWithDiagnostics ValidatePowerIsScalar(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition, NamedType? powerQuantity, Func<ISpecializedSharpMeasuresScalarValidationContext, SpecializedSharpMeasuresScalarDefinition, Diagnostic?> typeNotScalarDiagnosticsDelegate)
     {
         var powerQuantityIsNotScalar = powerQuantity is not null && context.ScalarPopulation.Scalars.ContainsKey(powerQuantity.Value) is false;
 

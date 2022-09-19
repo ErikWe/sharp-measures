@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-internal class DocumentationTags : IDocumentationStrategy, IEquatable<DocumentationTags>
+internal sealed class DocumentationTags : IDocumentationStrategy, IEquatable<DocumentationTags>
 {
     public static DocumentationTags Instance { get; } = new();
 
@@ -58,11 +58,7 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
         return tag.ToString();
     }
 
-    public virtual bool Equals(DocumentationTags? other)
-    {
-        return other is not null;
-    }
-
+    public bool Equals(DocumentationTags? other) => other is not null;
     public override bool Equals(object? obj) => obj is DocumentationTags other && Equals(other);
 
     public static bool operator ==(DocumentationTags? lhs, DocumentationTags? rhs) => lhs?.Equals(rhs) ?? rhs is null;

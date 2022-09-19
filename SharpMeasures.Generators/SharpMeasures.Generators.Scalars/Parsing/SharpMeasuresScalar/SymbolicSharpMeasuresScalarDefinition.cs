@@ -7,7 +7,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using System.Collections.Generic;
 using System.Linq;
 
-internal record class SymbolicSharpMeasuresScalarDefinition : ARawAttributeDefinition<SymbolicSharpMeasuresScalarDefinition, SharpMeasuresScalarLocations>
+internal sealed record class SymbolicSharpMeasuresScalarDefinition : ARawAttributeDefinition<SymbolicSharpMeasuresScalarDefinition, SharpMeasuresScalarLocations>
 {
     public static SymbolicSharpMeasuresScalarDefinition Empty => new();
 

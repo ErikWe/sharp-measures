@@ -11,12 +11,11 @@ using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System.Collections.Generic;
 
-internal record class VectorSpecializationType : AVectorType<SpecializedSharpMeasuresVectorDefinition>, IVectorSpecializationType
+internal sealed record class VectorSpecializationType : AVectorType<SpecializedSharpMeasuresVectorDefinition>, IVectorSpecializationType
 {
     IQuantitySpecialization IQuantitySpecializationType.Definition => Definition;
     IVectorSpecialization IVectorSpecializationType.Definition => Definition;
 
-    public VectorSpecializationType(DefinedType type, MinimalLocation typeLocation, SpecializedSharpMeasuresVectorDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
-        IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
+    public VectorSpecializationType(DefinedType type, MinimalLocation typeLocation, SpecializedSharpMeasuresVectorDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
         : base(type, typeLocation, definition, derivations, constants, conversions, unitInstanceInclusions, unitInstanceExclusions) { }
 }

@@ -9,7 +9,7 @@ using System;
 using System.Collections.Immutable;
 using System.Threading;
 
-public class DocumentationDictionaryProvider
+public sealed class DocumentationDictionaryProvider
 {
     private const string DocumentationExtension = ".doc.txt";
 
@@ -20,9 +20,7 @@ public class DocumentationDictionaryProvider
         return Construct(outputProvider, additionalTextProvider).ExtractResult();
     }
 
-    public static IncrementalValueProvider<DocumentationDictionary> AttachAndReport(IncrementalGeneratorInitializationContext context,
-        IncrementalValuesProvider<AdditionalText> additionalTextProvider, IncrementalValueProvider<GlobalAnalyzerConfig> configurationProvider,
-        IDiagnosticsStrategy diagnosticsStrategy)
+    public static IncrementalValueProvider<DocumentationDictionary> AttachAndReport(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<AdditionalText> additionalTextProvider, IncrementalValueProvider<GlobalAnalyzerConfig> configurationProvider, IDiagnosticsStrategy diagnosticsStrategy)
     {
         DocumentationDictionaryProvider outputProvider = new(diagnosticsStrategy);
 
@@ -39,8 +37,7 @@ public class DocumentationDictionaryProvider
         DiagnosticsStrategy = diagnosticsStrategy;
     }
 
-    private IResultWithDiagnostics<DocumentationDictionary> ConstructDocumentationDictionary((ImmutableArray<Optional<AdditionalText>> AdditionalTexts,
-        GlobalAnalyzerConfig Configuration) data, CancellationToken _)
+    private IResultWithDiagnostics<DocumentationDictionary> ConstructDocumentationDictionary((ImmutableArray<Optional<AdditionalText>> AdditionalTexts, GlobalAnalyzerConfig Configuration) data, CancellationToken _)
     {
         return DocumentationFileBuilder.Build(data.AdditionalTexts, DiagnosticsStrategy, data.Configuration);
     }
@@ -55,14 +52,12 @@ public class DocumentationDictionaryProvider
         return new Optional<AdditionalText>();
     }
 
-    private static IncrementalValueProvider<IResultWithDiagnostics<DocumentationDictionary>> Construct(DocumentationDictionaryProvider documentationProvider,
-        IncrementalValuesProvider<AdditionalText> additionalTextProvider)
+    private static IncrementalValueProvider<IResultWithDiagnostics<DocumentationDictionary>> Construct(DocumentationDictionaryProvider documentationProvider, IncrementalValuesProvider<AdditionalText> additionalTextProvider)
     {
         return additionalTextProvider.Select(EnsureFileHasCorrectExtension).Collect().Select(addDefaultConfiguration)
             .Select(documentationProvider.ConstructDocumentationDictionary);
 
-        static (ImmutableArray<Optional<AdditionalText>>, GlobalAnalyzerConfig) addDefaultConfiguration(ImmutableArray<Optional<AdditionalText>> input, CancellationToken _)
-            => (input, GlobalAnalyzerConfig.Default);
+        static (ImmutableArray<Optional<AdditionalText>>, GlobalAnalyzerConfig) addDefaultConfiguration(ImmutableArray<Optional<AdditionalText>> input, CancellationToken _) => (input, GlobalAnalyzerConfig.Default);
     }
 
     private static IncrementalValueProvider<IResultWithDiagnostics<DocumentationDictionary>> Construct(DocumentationDictionaryProvider documentationProvider,

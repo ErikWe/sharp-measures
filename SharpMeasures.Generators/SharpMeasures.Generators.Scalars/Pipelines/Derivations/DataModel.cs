@@ -10,19 +10,17 @@ internal readonly record struct DataModel
 {
     public DefinedType Scalar { get; }
 
-    public IReadOnlyList<IDerivedQuantity> Derivations => derivations;
+    public IReadOnlyList<IDerivedQuantity> Derivations { get; }
 
     public IResolvedScalarPopulation ScalarPopulation { get; }
 
     public IDocumentationStrategy Documentation { get; }
 
-    private ReadOnlyEquatableList<IDerivedQuantity> derivations { get; }
-
     public DataModel(DefinedType scalar, IReadOnlyList<IDerivedQuantity> derivations, IResolvedScalarPopulation scalarPopulation, IDocumentationStrategy documentation)
     {
         Scalar = scalar;
 
-        this.derivations = derivations.AsReadOnlyEquatable();
+        Derivations = derivations.AsReadOnlyEquatable();
 
         ScalarPopulation = scalarPopulation;
 

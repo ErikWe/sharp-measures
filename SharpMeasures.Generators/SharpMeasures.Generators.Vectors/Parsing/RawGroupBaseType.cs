@@ -9,9 +9,8 @@ using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroup;
 
 using System.Collections.Generic;
 
-internal record class RawGroupBaseType : ARawGroupType<RawSharpMeasuresVectorGroupDefinition>
+internal sealed record class RawGroupBaseType : ARawGroupType<RawSharpMeasuresVectorGroupDefinition>
 {
-    public RawGroupBaseType(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresVectorGroupDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations,
-        IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
+    public RawGroupBaseType(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresVectorGroupDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
         : base(type, typeLocation, definition, derivations, conversions, unitInstanceInclusions, unitInstanceExclusions) { }
 }

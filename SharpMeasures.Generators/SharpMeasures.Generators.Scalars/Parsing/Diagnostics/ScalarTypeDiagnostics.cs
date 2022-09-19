@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Diagnostics;
 
-internal class ScalarTypeDiagnostics
+internal static class ScalarTypeDiagnostics
 {
     public static Diagnostic TypeNotPartial<TAttribute>(BaseTypeDeclarationSyntax declaration)
     {

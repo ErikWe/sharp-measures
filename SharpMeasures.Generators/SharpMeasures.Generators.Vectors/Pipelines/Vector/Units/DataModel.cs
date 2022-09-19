@@ -16,16 +16,12 @@ internal readonly record struct DataModel
     public NamedType Unit { get; }
     public NamedType UnitQuantity { get; }
 
-    public IReadOnlyList<IUnitInstance> IncluedUnits => includedUnits;
-    public IReadOnlyList<IVectorConstant> Constants => constants;
+    public IReadOnlyList<IUnitInstance> IncludedUnits { get; }
+    public IReadOnlyList<IVectorConstant> Constants { get; }
 
     public IVectorDocumentationStrategy Documentation { get; }
 
-    private ReadOnlyEquatableList<IUnitInstance> includedUnits { get; }
-    private ReadOnlyEquatableList<IVectorConstant> constants { get; }
-
-    public DataModel(DefinedType vector, int dimension, NamedType? scalar, NamedType unit, NamedType unitQuantity, IReadOnlyList<IUnitInstance> includedUnits,
-        IReadOnlyList<IVectorConstant> constants, IVectorDocumentationStrategy documentation)
+    public DataModel(DefinedType vector, int dimension, NamedType? scalar, NamedType unit, NamedType unitQuantity, IReadOnlyList<IUnitInstance> includedUnits, IReadOnlyList<IVectorConstant> constants, IVectorDocumentationStrategy documentation)
     {
         Vector = vector;
         Dimension = dimension;
@@ -35,8 +31,8 @@ internal readonly record struct DataModel
         Unit = unit;
         UnitQuantity = unitQuantity;
 
-        this.includedUnits = includedUnits.AsReadOnlyEquatable();
-        this.constants = constants.AsReadOnlyEquatable();
+        IncludedUnits = includedUnits.AsReadOnlyEquatable();
+        Constants = constants.AsReadOnlyEquatable();
 
         Documentation = documentation;
     }

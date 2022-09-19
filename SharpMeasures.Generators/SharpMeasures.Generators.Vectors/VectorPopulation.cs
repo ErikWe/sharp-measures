@@ -7,47 +7,34 @@ using SharpMeasures.Generators.Vectors.Parsing;
 using System.Collections.Generic;
 using System.Linq;
 
-internal class VectorPopulation : IVectorPopulation
+internal sealed record class VectorPopulation : IVectorPopulation
 {
-    public IReadOnlyDictionary<NamedType, IVectorGroupBaseType> GroupBases => vectorGroupBases;
-    public IReadOnlyDictionary<NamedType, IVectorBaseType> VectorBases => vectorBases;
+    public IReadOnlyDictionary<NamedType, IVectorGroupBaseType> GroupBases { get; }
+    public IReadOnlyDictionary<NamedType, IVectorBaseType> VectorBases { get; }
 
-    public IReadOnlyDictionary<NamedType, IVectorGroupType> Groups => vectorGroups;
-    public IReadOnlyDictionary<NamedType, IVectorGroupMemberType> GroupMembers => vectorGroupMembers;
-    public IReadOnlyDictionary<NamedType, IVectorType> Vectors => vectors;
+    public IReadOnlyDictionary<NamedType, IVectorGroupType> Groups { get; }
+    public IReadOnlyDictionary<NamedType, IVectorGroupMemberType> GroupMembers { get; }
+    public IReadOnlyDictionary<NamedType, IVectorType> Vectors { get; }
 
-    public IReadOnlyDictionary<NamedType, IGroupPopulation> GroupMembersByGroup => groupMembersByGroup;
+    public IReadOnlyDictionary<NamedType, IGroupPopulation> GroupMembersByGroup { get; }
 
-    private ReadOnlyEquatableDictionary<NamedType, IVectorGroupBaseType> vectorGroupBases { get; }
-    private ReadOnlyEquatableDictionary<NamedType, IVectorBaseType> vectorBases { get; }
+    IReadOnlyDictionary<NamedType, IQuantityBaseType> IQuantityPopulation.QuantityBases => GroupBases.Transform(static (vector) => vector as IQuantityBaseType) .Concat(VectorBases.Transform(static (vector) => vector as IQuantityBaseType)).ToDictionary().AsEquatable();
+    IReadOnlyDictionary<NamedType, IQuantityType> IQuantityPopulation.Quantities => Groups.Transform(static (vector) => vector as IQuantityType) .Concat(Vectors.Transform(static (vector) => vector as IQuantityType)).Concat(GroupMembers.Transform(static (vector) => vector as IQuantityType)).ToDictionary().AsEquatable();
 
-    private ReadOnlyEquatableDictionary<NamedType, IVectorGroupType> vectorGroups { get; }
-    private ReadOnlyEquatableDictionary<NamedType, IVectorGroupMemberType> vectorGroupMembers { get; }
-    private ReadOnlyEquatableDictionary<NamedType, IVectorType> vectors { get; }
-
-    private ReadOnlyEquatableDictionary<NamedType, IGroupPopulation> groupMembersByGroup { get; }
-
-    IReadOnlyDictionary<NamedType, IQuantityBaseType> IQuantityPopulation.QuantityBases => GroupBases.Transform(static (vector) => vector as IQuantityBaseType)
-        .Concat(VectorBases.Transform(static (vector) => vector as IQuantityBaseType)).ToDictionary().AsEquatable();
-
-    IReadOnlyDictionary<NamedType, IQuantityType> IQuantityPopulation.Quantities => Groups.Transform(static (vector) => vector as IQuantityType)
-        .Concat(Vectors.Transform(static (vector) => vector as IQuantityType)).Concat(GroupMembers.Transform(static (vector) => vector as IQuantityType)).ToDictionary().AsEquatable();
-
-    private VectorPopulation(IReadOnlyDictionary<NamedType, IVectorGroupBaseType> vectorGroupBases, IReadOnlyDictionary<NamedType, IVectorGroupType> vectorGroups, IReadOnlyDictionary<NamedType, IVectorGroupMemberType> vectorGroupMembers,
+    private VectorPopulation(IReadOnlyDictionary<NamedType, IVectorGroupBaseType> vectorGroupBases, IReadOnlyDictionary<NamedType, IVectorGroupType> groups, IReadOnlyDictionary<NamedType, IVectorGroupMemberType> groupMembers,
         IReadOnlyDictionary<NamedType, IVectorBaseType> vectorBases, IReadOnlyDictionary<NamedType, IVectorType> vectors, IReadOnlyDictionary<NamedType, IGroupPopulation> groupMembersByGroup)
     {
-        this.vectorGroupBases = vectorGroupBases.AsReadOnlyEquatable();
-        this.vectorBases = vectorBases.AsReadOnlyEquatable();
+        GroupBases = vectorGroupBases.AsReadOnlyEquatable();
+        VectorBases = vectorBases.AsReadOnlyEquatable();
 
-        this.vectorGroups = vectorGroups.AsReadOnlyEquatable();
-        this.vectorGroupMembers = vectorGroupMembers.AsReadOnlyEquatable();
-        this.vectors = vectors.AsReadOnlyEquatable();
+        Groups = groups.AsReadOnlyEquatable();
+        GroupMembers = groupMembers.AsReadOnlyEquatable();
+        Vectors = vectors.AsReadOnlyEquatable();
 
-        this.groupMembersByGroup = groupMembersByGroup.AsReadOnlyEquatable();
+        GroupMembersByGroup = groupMembersByGroup.AsReadOnlyEquatable();
     }
 
-    public static (VectorPopulation Population, VectorProcessingData ProcessingData) Build(IReadOnlyList<IVectorBaseType> vectorBases, IReadOnlyList<IVectorSpecializationType> vectorSpecializations, IReadOnlyList<IVectorGroupBaseType> groupBases,
-        IReadOnlyList<IVectorGroupSpecializationType> groupSpecializations, IReadOnlyList<IVectorGroupMemberType> groupMembers)
+    public static (VectorPopulation Population, VectorProcessingData ProcessingData) Build(IReadOnlyList<IVectorBaseType> vectorBases, IReadOnlyList<IVectorSpecializationType> vectorSpecializations, IReadOnlyList<IVectorGroupBaseType> groupBases, IReadOnlyList<IVectorGroupSpecializationType> groupSpecializations, IReadOnlyList<IVectorGroupMemberType> groupMembers)
     {
         Dictionary<NamedType, IVectorGroupBaseType> groupBasePopulation = new(groupBases.Count);
         Dictionary<NamedType, IVectorGroupSpecializationType> groupSpecializationPopulation = new(groupSpecializations.Count);
@@ -173,8 +160,7 @@ internal class VectorPopulation : IVectorPopulation
         return (population, processingData);
     }
 
-    public static VectorPopulation BuildWithoutProcessingData(IReadOnlyList<IVectorBaseType> vectorBases, IReadOnlyList<IVectorSpecializationType> vectorSpecializations, IReadOnlyList<IVectorGroupBaseType> groupBases,
-        IReadOnlyList<IVectorGroupSpecializationType> groupSpecializations, IReadOnlyList<IVectorGroupMemberType> groupMembers)
+    public static VectorPopulation BuildWithoutProcessingData(IReadOnlyList<IVectorBaseType> vectorBases, IReadOnlyList<IVectorSpecializationType> vectorSpecializations, IReadOnlyList<IVectorGroupBaseType> groupBases, IReadOnlyList<IVectorGroupSpecializationType> groupSpecializations, IReadOnlyList<IVectorGroupMemberType> groupMembers)
     {
         Dictionary<NamedType, IVectorGroupBaseType> groupBasePopulation = new(groupBases.Count);
         Dictionary<NamedType, IVectorGroupSpecializationType> groupSpecializationPopulation = new(groupSpecializations.Count);

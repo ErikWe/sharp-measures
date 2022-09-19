@@ -24,7 +24,7 @@ internal interface IDerivedUnitInstanceValidationContext : IValidationContext
     public abstract IUnitPopulation UnitPopulation { get; }
 }
 
-internal class DerivedUnitInstanceValidator : AValidator<IDerivedUnitInstanceValidationContext, DerivedUnitInstanceDefinition>
+internal sealed class DerivedUnitInstanceValidator : AValidator<IDerivedUnitInstanceValidationContext, DerivedUnitInstanceDefinition>
 {
     private IDerivedUnitInstanceValidationDiagnostics Diagnostics { get; }
 

@@ -29,20 +29,12 @@ public static class FilteredDeclarationProvider
     public delegate Type DAttributeTypeTransform<in TData>(TData input);
     public delegate string DAttributeNameTransform<in TData>(TData input);
 
-    public static IFilteredDeclarationProvider<TData> Construct<TData>(DInputTransform<TData> inputTransform, IEnumerable<IDeclarationFilter> filters)
-    {
-        return new ImmediateProvider<TData>(inputTransform, filters);
-    }
-
-    public static IFilteredDeclarationProvider<TDeclaration> Construct<TDeclaration>(IEnumerable<IDeclarationFilter> filters)
-        where TDeclaration : BaseTypeDeclarationSyntax
-    {
-        return Construct<TDeclaration>(ExtractDeclaration, filters);
-    }
+    public static IFilteredDeclarationProvider<TData> Construct<TData>(DInputTransform<TData> inputTransform, IEnumerable<IDeclarationFilter> filters) => new ImmediateProvider<TData>(inputTransform, filters);
+    public static IFilteredDeclarationProvider<TDeclaration> Construct<TDeclaration>(IEnumerable<IDeclarationFilter> filters) where TDeclaration : BaseTypeDeclarationSyntax => Construct<TDeclaration>(ExtractDeclaration, filters);
 
     private static BaseTypeDeclarationSyntax ExtractDeclaration<TDeclaration>(TDeclaration declaration) where TDeclaration : BaseTypeDeclarationSyntax => declaration;
 
-    private class ImmediateProvider<TData> : IFilteredDeclarationProvider<TData>
+    private sealed class ImmediateProvider<TData> : IFilteredDeclarationProvider<TData>
     {
         private DInputTransform<TData> InputTransform { get; }
         private IEnumerable<IDeclarationFilter> Filters { get; }
@@ -78,12 +70,9 @@ public static class FilteredDeclarationProvider
             }
         }
 
-        public IncrementalValuesProvider<Optional<TData>> AttachAndReport(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<TData>> inputProvider)
-        {
-            return inputProvider.Select(Process).ReportDiagnostics(context);
-        }
+        public IncrementalValuesProvider<Optional<TData>> AttachAndReport(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<TData>> inputProvider) => inputProvider.Select(Process).ReportDiagnostics(context);
 
-        protected IOptionalWithDiagnostics<TData> Process(Optional<TData> input, CancellationToken token)
+        private IOptionalWithDiagnostics<TData> Process(Optional<TData> input, CancellationToken token)
         {
             if (token.IsCancellationRequested || input.HasValue is false)
             {

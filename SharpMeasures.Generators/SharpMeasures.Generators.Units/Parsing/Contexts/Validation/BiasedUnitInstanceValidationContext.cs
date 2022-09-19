@@ -4,12 +4,24 @@ using SharpMeasures.Generators.Units.Parsing.BiasedUnitInstance;
 
 using System.Collections.Generic;
 
-internal record class BiasedUnitInstanceValidationContext : ModifiedUnitValidationContext, IBiasedUnitInstanceValidationContext
+internal sealed record class BiasedUnitInstanceValidationContext : IBiasedUnitInstanceValidationContext
 {
+    public DefinedType Type { get; }
+
     public bool UnitIncludesBiasTerm { get; }
 
-    public BiasedUnitInstanceValidationContext(DefinedType type, bool unitIncludesBiasTerm, IReadOnlyDictionary<string, IUnitInstance> unitInstancesByName, HashSet<IModifiedUnitInstance> cyclicallyModifiedUnits) : base(type, unitInstancesByName, cyclicallyModifiedUnits)
+    public IReadOnlyDictionary<string, IUnitInstance> UnitInstancesByName { get; }
+
+    public HashSet<IModifiedUnitInstance> CyclicallyModifiedUnits { get; }
+
+    public BiasedUnitInstanceValidationContext(DefinedType type, bool unitIncludesBiasTerm, IReadOnlyDictionary<string, IUnitInstance> unitInstancesByName, HashSet<IModifiedUnitInstance> cyclicallyModifiedUnits)
     {
+        Type = type;
+
         UnitIncludesBiasTerm = unitIncludesBiasTerm;
+
+        UnitInstancesByName = unitInstancesByName;
+
+        CyclicallyModifiedUnits = cyclicallyModifiedUnits;
     }
 }

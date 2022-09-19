@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public record class SymbolicDerivedQuantityDefinition : ARawAttributeDefinition<SymbolicDerivedQuantityDefinition, DerivedQuantityLocations>
+public sealed record class SymbolicDerivedQuantityDefinition : ARawAttributeDefinition<SymbolicDerivedQuantityDefinition, DerivedQuantityLocations>
 {
     public static SymbolicDerivedQuantityDefinition Empty { get; } = new(DerivedQuantityLocations.Empty);
 
@@ -24,7 +24,7 @@ public record class SymbolicDerivedQuantityDefinition : ARawAttributeDefinition<
 
     public bool Permutations { get; init; }
 
-    private ReadOnlyEquatableList<INamedTypeSymbol?> signature { get; init; } = ReadOnlyEquatableList<INamedTypeSymbol?>.Empty;
+    private IReadOnlyList<INamedTypeSymbol?> signature { get; init; } = ReadOnlyEquatableList<INamedTypeSymbol?>.Empty;
 
     protected override SymbolicDerivedQuantityDefinition Definition => this;
 

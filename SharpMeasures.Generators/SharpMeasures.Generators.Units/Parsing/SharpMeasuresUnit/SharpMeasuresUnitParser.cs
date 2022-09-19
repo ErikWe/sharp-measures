@@ -8,7 +8,7 @@ internal static class SharpMeasuresUnitParser
 
     private static SymbolicSharpMeasuresUnitDefinition DefaultDefiniton() => SymbolicSharpMeasuresUnitDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<SymbolicSharpMeasuresUnitDefinition, SharpMeasuresUnitLocations, SharpMeasuresUnitAttribute>
+    private sealed class AttributeParser : AAttributeParser<SymbolicSharpMeasuresUnitDefinition, SharpMeasuresUnitLocations, SharpMeasuresUnitAttribute>
     {
         public AttributeParser() : base(DefaultDefiniton, SharpMeasuresUnitProperties.AllProperties) { }
     }

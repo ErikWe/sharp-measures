@@ -1,14 +1,17 @@
 ﻿namespace SharpMeasures.Generators.Units.Parsing.Contexts.Validation;
 
-using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 
-internal record class DerivableUnitValidationContext : SimpleProcessingContext, IDerivableUnitValidationContext
+internal sealed record class DerivableUnitValidationContext : IDerivableUnitValidationContext
 {
+    public DefinedType Type { get; }
+
     public IUnitPopulation UnitPopulation { get; }
 
-    public DerivableUnitValidationContext(DefinedType type, IUnitPopulation unitPopulation) : base(type)
+    public DerivableUnitValidationContext(DefinedType type, IUnitPopulation unitPopulation)
     {
+        Type = type;
+
         UnitPopulation = unitPopulation;
     }
 }

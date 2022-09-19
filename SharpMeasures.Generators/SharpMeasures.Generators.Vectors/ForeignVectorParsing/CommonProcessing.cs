@@ -1,13 +1,12 @@
 ﻿namespace SharpMeasures.Generators.Vectors.ForeignVectorParsing;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.Contexts.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
-using SharpMeasures.Generators.Vectors.ForeignVectorParsing.Diagnostics;
+using SharpMeasures.Generators.Vectors.ForeignVectorParsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
@@ -15,39 +14,39 @@ using System.Collections.Generic;
 
 internal static class CommonProcessing
 {
-    public static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ProcessDerivations(DefinedType type, IEnumerable<RawDerivedQuantityDefinition> rawDefinitions)
+    public static IReadOnlyList<DerivedQuantityDefinition> ProcessDerivations(DefinedType type, IEnumerable<RawDerivedQuantityDefinition> rawDefinitions)
     {
         DerivedQuantityProcessingContext processingContext = new(type, Quantities.QuantityType.Vector);
 
-        return ProcessingFilter.Create(DerivedQuantityProcesser).Filter(processingContext, rawDefinitions);
+        return ProcessingFilter.Create(DerivedQuantityProcesser).Filter(processingContext, rawDefinitions).Result;
     }
 
-    public static IResultWithDiagnostics<IReadOnlyList<VectorConstantDefinition>> ProcessConstants(DefinedType type, IEnumerable<RawVectorConstantDefinition> rawDefinitions)
+    public static IReadOnlyList<VectorConstantDefinition> ProcessConstants(DefinedType type, IEnumerable<RawVectorConstantDefinition> rawDefinitions)
     {
         QuantityConstantProcessingContext processingContext = new(type);
 
-        return ProcessingFilter.Create(ScalarConstantProcesser).Filter(processingContext, rawDefinitions);
+        return ProcessingFilter.Create(ScalarConstantProcesser).Filter(processingContext, rawDefinitions).Result;
     }
 
-    public static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ProcessConversions(DefinedType type, IEnumerable<RawConvertibleQuantityDefinition> rawDefinitions)
+    public static IReadOnlyList<ConvertibleVectorDefinition> ProcessConversions(DefinedType type, IEnumerable<RawConvertibleQuantityDefinition> rawDefinitions)
     {
         ConvertibleQuantityProcessingContext processingContext = new(type);
 
-        return ProcessingFilter.Create(ConvertibleScalarProcesser).Filter(processingContext, rawDefinitions);
+        return ProcessingFilter.Create(ConvertibleScalarProcesser).Filter(processingContext, rawDefinitions).Result;
     }
 
-    public static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ProcessIncludeUnits(DefinedType type, IEnumerable<RawIncludeUnitsDefinition> rawDefinitions)
+    public static IReadOnlyList<IncludeUnitsDefinition> ProcessIncludeUnits(DefinedType type, IEnumerable<RawIncludeUnitsDefinition> rawDefinitions)
     {
         IncludeUnitsProcessingContext processingContext = new(type);
 
-        return ProcessingFilter.Create(IncludeUnitsProcesser).Filter(processingContext, rawDefinitions);
+        return ProcessingFilter.Create(IncludeUnitsProcesser).Filter(processingContext, rawDefinitions).Result;
     }
 
-    public static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ProcessExcludeUnits(DefinedType type, IEnumerable<RawExcludeUnitsDefinition> rawDefinitions)
+    public static IReadOnlyList<ExcludeUnitsDefinition> ProcessExcludeUnits(DefinedType type, IEnumerable<RawExcludeUnitsDefinition> rawDefinitions)
     {
         ExcludeUnitsProcessingContext processingContext = new(type);
 
-        return ProcessingFilter.Create(ExcludeUnitsProcesser).Filter(processingContext, rawDefinitions);
+        return ProcessingFilter.Create(ExcludeUnitsProcesser).Filter(processingContext, rawDefinitions).Result;
     }
 
     private static DerivedQuantityProcesser DerivedQuantityProcesser { get; } = new(EmptyDerivedQuantityProcessingDiagnostics.Instance);

@@ -8,7 +8,7 @@ public static class ExcludeUnitsParser
 
     private static RawExcludeUnitsDefinition DefaultDefinition() => RawExcludeUnitsDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawExcludeUnitsDefinition, ExcludeUnitsLocations, ExcludeUnitsAttribute>
+    private sealed class AttributeParser : AAttributeParser<RawExcludeUnitsDefinition, ExcludeUnitsLocations, ExcludeUnitsAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, ExcludeUnitsProperties.AllProperties) { }
     }

@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Quantities;
 
 using System.Collections.Generic;
 
-internal record class ResolvedGroupType : IResolvedVectorGroupType
+internal sealed record class ResolvedGroupType : IResolvedVectorGroupType
 {
     public DefinedType Type { get; }
     public MinimalLocation TypeLocation { get; }
@@ -21,28 +21,20 @@ internal record class ResolvedGroupType : IResolvedVectorGroupType
     public string? DefaultUnitInstanceName { get; }
     public string? DefaultUnitInstanceSymbol { get; }
 
-    public IReadOnlyDictionary<int, NamedType> MembersByDimension => membersByDimension;
+    public IReadOnlyDictionary<int, NamedType> MembersByDimension { get; }
 
-    public IReadOnlyList<IDerivedQuantity> DefinedDerivations => definedDerivations;
-    public IReadOnlyList<IDerivedQuantity> InheritedDerivations => inheritedDerivations;
-    public IReadOnlyList<IConvertibleQuantity> Conversions => conversions;
+    public IReadOnlyList<IDerivedQuantity> DefinedDerivations { get; }
+    public IReadOnlyList<IDerivedQuantity> InheritedDerivations { get; }
+    public IReadOnlyList<IConvertibleQuantity> Conversions { get; }
 
-    public IReadOnlyList<string> IncludedUnitInstanceNames => includedUnits;
-
-    private ReadOnlyEquatableDictionary<int, NamedType> membersByDimension { get; }
-
-    private ReadOnlyEquatableList<IDerivedQuantity> definedDerivations { get; }
-    private ReadOnlyEquatableList<IDerivedQuantity> inheritedDerivations { get; }
-    private ReadOnlyEquatableList<IConvertibleQuantity> conversions { get; }
-
-    private ReadOnlyEquatableList<string> includedUnits { get; }
+    public IReadOnlyList<string> IncludedUnitInstanceNames { get; }
 
     public bool? GenerateDocumentation { get; }
 
     IReadOnlyList<IConvertibleQuantity> IResolvedQuantityType.Conversions => Conversions;
 
     public ResolvedGroupType(DefinedType type, MinimalLocation typeLocation, NamedType unit, NamedType? scalar, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol,
-        IReadOnlyDictionary<int, NamedType> membersByDimension, IReadOnlyList<IDerivedQuantity> definedDerivations, IReadOnlyList<IDerivedQuantity> inheritedDerivations, IReadOnlyList<IConvertibleQuantity> conversions, IReadOnlyList<string> includedUnits, bool? generateDocumentation)
+        IReadOnlyDictionary<int, NamedType> membersByDimension, IReadOnlyList<IDerivedQuantity> definedDerivations, IReadOnlyList<IDerivedQuantity> inheritedDerivations, IReadOnlyList<IConvertibleQuantity> conversions, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
     {
         Type = type;
         TypeLocation = typeLocation;
@@ -58,13 +50,13 @@ internal record class ResolvedGroupType : IResolvedVectorGroupType
         DefaultUnitInstanceName = defaultUnitInstanceName;
         DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol;
 
-        this.membersByDimension = membersByDimension.AsReadOnlyEquatable();
+        MembersByDimension = membersByDimension.AsReadOnlyEquatable();
 
-        this.definedDerivations = definedDerivations.AsReadOnlyEquatable();
-        this.inheritedDerivations = inheritedDerivations.AsReadOnlyEquatable();
-        this.conversions = conversions.AsReadOnlyEquatable();
+        DefinedDerivations = definedDerivations.AsReadOnlyEquatable();
+        InheritedDerivations = inheritedDerivations.AsReadOnlyEquatable();
+        Conversions = conversions.AsReadOnlyEquatable();
 
-        this.includedUnits = includedUnits.AsReadOnlyEquatable();
+        IncludedUnitInstanceNames = includedUnitInstanceNames.AsReadOnlyEquatable();
 
         GenerateDocumentation = generateDocumentation;
     }

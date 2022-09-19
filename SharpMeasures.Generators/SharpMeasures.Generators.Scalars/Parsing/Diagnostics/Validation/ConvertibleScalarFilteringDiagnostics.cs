@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 
-internal class ConvertibleScalarFilteringDiagnostics : IConvertibleScalarFilteringDiagnostics
+internal sealed class ConvertibleScalarFilteringDiagnostics : IConvertibleScalarFilteringDiagnostics
 {
     public static ConvertibleScalarFilteringDiagnostics Instance { get; } = new();
 

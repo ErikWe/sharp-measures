@@ -4,7 +4,7 @@ using SharpMeasures.Generators.Scalars.Documentation;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors;
 
-internal record class DataModel
+internal sealed record class DataModel
 {
     public ResolvedScalarType Scalar { get; }
 

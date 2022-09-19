@@ -9,7 +9,7 @@ using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Validation;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroup;
 
-internal class SharpMeasuresVectorGroupValidationDiagnostics : ISharpMeasuresVectorGroupValidationDiagnostics
+internal sealed class SharpMeasuresVectorGroupValidationDiagnostics : ISharpMeasuresVectorGroupValidationDiagnostics
 {
     public static SharpMeasuresVectorGroupValidationDiagnostics Instance { get; } = new();
 

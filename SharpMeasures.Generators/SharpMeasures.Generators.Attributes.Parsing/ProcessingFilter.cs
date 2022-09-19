@@ -8,47 +8,40 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public interface IProcessingFilter<in TContext, in TDefinition, TProduct>
-    where TContext : IProcessingContext
+public interface IProcessingFilter<in TContext, in TDefinition, TProduct> where TContext : IProcessingContext
 {
     public abstract IResultWithDiagnostics<IReadOnlyList<TProduct>> Filter(TContext context, IEnumerable<TDefinition> definitions);
     public abstract IOptionalWithDiagnostics<TProduct> Filter(TContext context, TDefinition definition);
 }
 
-public interface IReprocessingFilter<in TContext, in TDefinition, TProduct>
-    where TContext : IProcessingContext
+public interface IReprocessingFilter<in TContext, in TDefinition, TProduct> where TContext : IProcessingContext
 {
     public abstract IOptionalWithDiagnostics<TProduct> Filter(TContext context, IEnumerable<TDefinition> definitions, TProduct initialProduct);
 }
 
 public static class ProcessingFilter
 {
-    public static IProcessingFilter<TContext, TDefinition, TProduct> Create<TContext, TDefinition, TProduct>(IProcesser<TContext, TDefinition, TProduct> processer)
-        where TContext : IProcessingContext
+    public static IProcessingFilter<TContext, TDefinition, TProduct> Create<TContext, TDefinition, TProduct>(IProcesser<TContext, TDefinition, TProduct> processer) where TContext : IProcessingContext
     {
         return new SimpleProcessingFilter<TContext, TDefinition, TProduct>(processer);
     }
 
-    public static IProcessingFilter<TContext, TDefinition, TProduct> Create<TContext, TDefinition, TProduct>(IActionableProcesser<TContext, TDefinition, TProduct> processer)
-        where TContext : IProcessingContext
+    public static IProcessingFilter<TContext, TDefinition, TProduct> Create<TContext, TDefinition, TProduct>(IActionableProcesser<TContext, TDefinition, TProduct> processer) where TContext : IProcessingContext
     {
         return new ActionableProcessingFilter<TContext, TDefinition, TProduct>(processer);
     }
 
-    public static IReprocessingFilter<TContext, TDefinitionw, TProduct> Create<TContext, TDefinitionw, TProduct>(IReprocesser<TContext, TDefinitionw, TProduct> reprocesser)
-        where TContext : IProcessingContext
+    public static IReprocessingFilter<TContext, TDefinitionw, TProduct> Create<TContext, TDefinitionw, TProduct>(IReprocesser<TContext, TDefinitionw, TProduct> reprocesser) where TContext : IProcessingContext
     {
         return new SimpleReprocessingFilter<TContext, TDefinitionw, TProduct>(reprocesser);
     }
 
-    public static IReprocessingFilter<TContext, TDefinitionw, TProduct> Create<TContext, TDefinitionw, TProduct>(IActionableReprocesser<TContext, TDefinitionw, TProduct> reprocesser)
-        where TContext : IProcessingContext
+    public static IReprocessingFilter<TContext, TDefinitionw, TProduct> Create<TContext, TDefinitionw, TProduct>(IActionableReprocesser<TContext, TDefinitionw, TProduct> reprocesser) where TContext : IProcessingContext
     {
         return new ActionableReprocessingFilter<TContext, TDefinitionw, TProduct>(reprocesser);
     }
 
-    private class SimpleProcessingFilter<TContext, TDefinition, TProduct> : IProcessingFilter<TContext, TDefinition, TProduct>
-        where TContext : IProcessingContext
+    private class SimpleProcessingFilter<TContext, TDefinition, TProduct> : IProcessingFilter<TContext, TDefinition, TProduct> where TContext : IProcessingContext
     {
         private IProcesser<TContext, TDefinition, TProduct> Processer { get; }
 
@@ -87,8 +80,7 @@ public static class ProcessingFilter
         }
     }
 
-    private class ActionableProcessingFilter<TContext, TDefinition, TProduct> : SimpleProcessingFilter<TContext, TDefinition, TProduct>
-        where TContext : IProcessingContext
+    private sealed class ActionableProcessingFilter<TContext, TDefinition, TProduct> : SimpleProcessingFilter<TContext, TDefinition, TProduct> where TContext : IProcessingContext
     {
         private IActionableProcesser<TContext, TDefinition, TProduct> Processer { get; }
 
@@ -102,21 +94,25 @@ public static class ProcessingFilter
             Processer.OnStartProcessing(context, definition);
             var result = base.Process(context, definition);
 
-            if (result.HasResult)
-            {
-                Processer.OnSuccessfulProcess(context, definition, result.Result);
-            }
-            else
-            {
-                Processer.OnUnsuccessfulProcess(context, definition);
-            }
+            InvokeResultingCall(context, definition, result);
 
             return result;
         }
+
+        private void InvokeResultingCall(TContext context, TDefinition definition, IOptionalWithDiagnostics<TProduct> result)
+        {
+            if (result.HasResult)
+            {
+                Processer.OnSuccessfulProcess(context, definition, result.Result);
+
+                return;
+            }
+                
+            Processer.OnUnsuccessfulProcess(context, definition);
+        }
     }
 
-    private class SimpleReprocessingFilter<TContext, TDefinition, TProduct> : IReprocessingFilter<TContext, TDefinition, TProduct>
-        where TContext : IProcessingContext
+    private class SimpleReprocessingFilter<TContext, TDefinition, TProduct> : IReprocessingFilter<TContext, TDefinition, TProduct> where TContext : IProcessingContext
     {
         private IReprocesser<TContext, TDefinition, TProduct> Reprocesser { get; }
 
@@ -150,8 +146,7 @@ public static class ProcessingFilter
         }
     }
 
-    private class ActionableReprocessingFilter<TContext, TDefinition, TProduct> : SimpleReprocessingFilter<TContext, TDefinition, TProduct>
-        where TContext : IProcessingContext
+    private sealed class ActionableReprocessingFilter<TContext, TDefinition, TProduct> : SimpleReprocessingFilter<TContext, TDefinition, TProduct> where TContext : IProcessingContext
     {
         private IActionableReprocesser<TContext, TDefinition, TProduct> Reprocesser { get; }
 
@@ -165,16 +160,21 @@ public static class ProcessingFilter
             Reprocesser.OnStartReprocessing(context, definition, product);
             var result = base.Reprocess(context, definition, product);
 
-            if (result.HasResult)
-            {
-                Reprocesser.OnSuccessfulReprocess(context, definition, product);
-            }
-            else
-            {
-                Reprocesser.OnUnsuccessfulReprocess(context, definition, product);
-            }
+            InvokeResultingCall(context, definition, result);
 
             return result;
+        }
+
+        private void InvokeResultingCall(TContext context, TDefinition definition, IOptionalWithDiagnostics<TProduct> product)
+        {
+            if (product.HasResult)
+            {
+                Reprocesser.OnSuccessfulReprocess(context, definition, product.Result);
+
+                return;
+            }
+
+            Reprocesser.OnUnsuccessfulReprocess(context, definition, product.Result);
         }
     }
 }

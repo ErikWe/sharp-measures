@@ -21,8 +21,7 @@ internal readonly record struct DataModel
 
     public IDocumentationStrategy Documentation { get; }
 
-    public DataModel(DefinedType scalar, NamedType unit, bool implementSum, bool implementDifference, NamedType? difference, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot,
-        NamedType? cubeRoot, IDocumentationStrategy documentation)
+    public DataModel(DefinedType scalar, NamedType unit, bool implementSum, bool implementDifference, NamedType? difference, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot, IDocumentationStrategy documentation)
     {
         Scalar = scalar;
 

@@ -4,7 +4,7 @@ using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 
 using System.Collections.Generic;
 
-public record class RawExcludeUnitsDefinition : ARawItemListDefinition<string?, RawExcludeUnitsDefinition, ExcludeUnitsLocations>
+public sealed record class RawExcludeUnitsDefinition : ARawItemListDefinition<string?, RawExcludeUnitsDefinition, ExcludeUnitsLocations>
 {
     public static RawExcludeUnitsDefinition Empty => new();
 

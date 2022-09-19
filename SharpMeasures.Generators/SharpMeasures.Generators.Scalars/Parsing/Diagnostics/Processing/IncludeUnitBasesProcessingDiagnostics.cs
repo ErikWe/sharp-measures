@@ -7,7 +7,7 @@ using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 
-internal class IncludeUnitBasesProcessingDiagnostics : IIncludeUnitBasesProcessingDiagnostics
+internal sealed class IncludeUnitBasesProcessingDiagnostics : IIncludeUnitBasesProcessingDiagnostics
 {
     public static IncludeUnitBasesProcessingDiagnostics Instance { get; } = new();
 

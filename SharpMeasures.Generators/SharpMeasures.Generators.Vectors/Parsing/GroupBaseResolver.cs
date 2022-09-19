@@ -38,9 +38,8 @@ internal static class GroupBaseResolver
 
         var includedUnitInstances = ResolveUnitInstanceInclusions(unit, groupType.UnitInstanceInclusions, () => groupType.UnitInstanceExclusions);
 
-        return new ResolvedGroupType(groupType.Type, groupType.TypeLocation, groupType.Definition.Unit, groupType.Definition.Scalar, groupType.Definition.ImplementSum,
-            groupType.Definition.ImplementDifference, groupType.Definition.Difference, groupType.Definition.DefaultUnitInstanceName, groupType.Definition.DefaultUnitInstanceSymbol,
-            membersByDimension, groupType.Derivations, Array.Empty<IDerivedQuantity>(), groupType.Conversions, includedUnitInstances, groupType.Definition.GenerateDocumentation);
+        return new ResolvedGroupType(groupType.Type, groupType.TypeLocation, groupType.Definition.Unit, groupType.Definition.Scalar, groupType.Definition.ImplementSum, groupType.Definition.ImplementDifference, groupType.Definition.Difference, groupType.Definition.DefaultUnitInstanceName,
+            groupType.Definition.DefaultUnitInstanceSymbol, membersByDimension, groupType.Derivations, Array.Empty<IDerivedQuantity>(), groupType.Conversions, includedUnitInstances, groupType.Definition.GenerateDocumentation);
     }
 
     private static IReadOnlyList<string> ResolveUnitInstanceInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)
@@ -57,8 +56,5 @@ internal static class GroupBaseResolver
         return includedUnits.ToList();
     }
 
-    private static IReadOnlyDictionary<int, NamedType> ResolveMembers(GroupBaseType groupType, IVectorPopulation vectorPopulation)
-    {
-        return vectorPopulation.GroupMembersByGroup[groupType.Type.AsNamedType()].GroupMembersByDimension.Transform(static (vector) => vector.Type.AsNamedType());
-    }
+    private static IReadOnlyDictionary<int, NamedType> ResolveMembers(GroupBaseType groupType, IVectorPopulation vectorPopulation) => vectorPopulation.GroupMembersByGroup[groupType.Type.AsNamedType()].GroupMembersByDimension.Transform(static (vector) => vector.Type.AsNamedType());
 }

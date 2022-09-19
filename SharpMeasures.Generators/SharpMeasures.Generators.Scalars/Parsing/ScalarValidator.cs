@@ -15,7 +15,7 @@ public interface IScalarValidator
         IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider);
 }
 
-internal class ScalarValidator : IScalarValidator
+internal sealed class ScalarValidator : IScalarValidator
 {
     private IncrementalValueProvider<ScalarProcessingData> ProcessingDataProvider { get; }
 
@@ -47,8 +47,5 @@ internal class ScalarValidator : IScalarValidator
     private static Optional<IScalarBaseType> ExtractInterface(Optional<ScalarBaseType> scalarType, CancellationToken _) => scalarType.HasValue ? scalarType.Value : new Optional<IScalarBaseType>();
     private static Optional<IScalarSpecializationType> ExtractInterface(Optional<ScalarSpecializationType> scalarType, CancellationToken _) => scalarType.HasValue ? scalarType.Value : new Optional<IScalarSpecializationType>();
 
-    private static IScalarPopulation CreatePopulation((ImmutableArray<IScalarBaseType> Bases, ImmutableArray<IScalarSpecializationType> Specializations) scalars, CancellationToken _)
-    {
-        return ScalarPopulation.BuildWithoutProcessingData(scalars.Bases, scalars.Specializations);
-    }
+    private static IScalarPopulation CreatePopulation((ImmutableArray<IScalarBaseType> Bases, ImmutableArray<IScalarSpecializationType> Specializations) scalars, CancellationToken _) => ScalarPopulation.BuildWithoutProcessingData(scalars.Bases, scalars.Specializations);
 }

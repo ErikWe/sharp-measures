@@ -10,9 +10,8 @@ using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System.Collections.Generic;
 
-internal record class RawGroupMemberType : ARawVectorType<RawSharpMeasuresVectorGroupMemberDefinition>
+internal sealed record class RawGroupMemberType : ARawVectorType<RawSharpMeasuresVectorGroupMemberDefinition>
 {
-    public RawGroupMemberType(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresVectorGroupMemberDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawVectorConstantDefinition> constants,
-        IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
+    public RawGroupMemberType(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresVectorGroupMemberDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
         : base(type, typeLocation, definition, derivations, constants, conversions, unitInstanceInclusions, unitInstanceExclusions) { }
 }

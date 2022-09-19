@@ -4,14 +4,12 @@ using SharpMeasures.Equatables;
 
 using System.Collections.Generic;
 
-internal class GroupPopulation : IGroupPopulation
+internal sealed record class GroupPopulation : IGroupPopulation
 {
-    public IReadOnlyDictionary<int, IVectorGroupMemberType> GroupMembersByDimension => vectorGroupMembersByDimension;
+    public IReadOnlyDictionary<int, IVectorGroupMemberType> GroupMembersByDimension { get; }
 
-    private ReadOnlyEquatableDictionary<int, IVectorGroupMemberType> vectorGroupMembersByDimension { get; }
-
-    public GroupPopulation(IReadOnlyDictionary<int, IVectorGroupMemberType> vectorGroupMembersByDimension)
+    public GroupPopulation(IReadOnlyDictionary<int, IVectorGroupMemberType> groupMembersByDimension)
     {
-        this.vectorGroupMembersByDimension = vectorGroupMembersByDimension.AsReadOnlyEquatable();
+        GroupMembersByDimension = groupMembersByDimension.AsReadOnlyEquatable();
     }
 }

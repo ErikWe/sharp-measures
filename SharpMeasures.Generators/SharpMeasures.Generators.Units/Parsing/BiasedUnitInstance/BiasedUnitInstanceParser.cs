@@ -8,7 +8,7 @@ internal static class BiasedUnitInstanceParser
 
     private static RawBiasedUnitInstanceDefinition DefaultDefinition() => RawBiasedUnitInstanceDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawBiasedUnitInstanceDefinition, BiasedUnitInstanceLocations, BiasedUnitInstanceAttribute>
+    private sealed class AttributeParser : AAttributeParser<RawBiasedUnitInstanceDefinition, BiasedUnitInstanceLocations, BiasedUnitInstanceAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, BiasedUnitInstanceProperties.AllProperties) { }
     }

@@ -3,7 +3,7 @@
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;
 
-internal record class RawSpecializedSharpMeasuresVectorDefinition : ARawAttributeDefinition<RawSpecializedSharpMeasuresVectorDefinition, SpecializedSharpMeasuresVectorLocations>, IDefaultUnitInstanceDefinition
+internal sealed record class RawSpecializedSharpMeasuresVectorDefinition : ARawAttributeDefinition<RawSpecializedSharpMeasuresVectorDefinition, SpecializedSharpMeasuresVectorLocations>, IDefaultUnitInstanceDefinition
 {
     public static RawSpecializedSharpMeasuresVectorDefinition FromSymbolic(SymbolicSpecializedSharpMeasuresVectorDefinition symbolicDefinition) => new RawSpecializedSharpMeasuresVectorDefinition(symbolicDefinition.Locations) with
     {

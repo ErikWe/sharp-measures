@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal record class RawPrefixedUnitInstanceDefinition : ARawModifiedUnitDefinition<RawPrefixedUnitInstanceDefinition, PrefixedUnitInstanceLocations>
+internal sealed record class RawPrefixedUnitInstanceDefinition : ARawModifiedUnitDefinition<RawPrefixedUnitInstanceDefinition, PrefixedUnitInstanceLocations>
 {
     public static RawPrefixedUnitInstanceDefinition Empty { get; } = new();
 

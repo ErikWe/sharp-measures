@@ -11,7 +11,7 @@ internal interface IScaledUnitInstanceProcessingDiagnostics : IModifiedUnitInsta
     public abstract Diagnostic? EmptyExpression(IUnitInstanceProcessingContext context, RawScaledUnitInstanceDefinition definition);
 }
 
-internal class ScaledUnitInstanceProcesser : AModifiedUnitInstanceProcesser<IUnitInstanceProcessingContext, RawScaledUnitInstanceDefinition, ScaledUnitInstanceLocations, ScaledUnitInstanceDefinition>
+internal sealed class ScaledUnitInstanceProcesser : AModifiedUnitInstanceProcesser<IUnitInstanceProcessingContext, RawScaledUnitInstanceDefinition, ScaledUnitInstanceLocations, ScaledUnitInstanceDefinition>
 {
     private IScaledUnitInstanceProcessingDiagnostics Diagnostics { get; }
 

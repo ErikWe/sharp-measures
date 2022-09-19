@@ -20,7 +20,7 @@ internal interface ISharpMeasuresVectorProcessingDiagnostics : IDefaultUnitInsta
     public abstract Diagnostic? NullDifferenceQuantity(IProcessingContext context, RawSharpMeasuresVectorDefinition definition);
 }
 
-internal class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, RawSharpMeasuresVectorDefinition, SharpMeasuresVectorDefinition>
+internal sealed class SharpMeasuresVectorProcesser : AProcesser<IProcessingContext, RawSharpMeasuresVectorDefinition, SharpMeasuresVectorDefinition>
 {
     private ISharpMeasuresVectorProcessingDiagnostics Diagnostics { get; }
 

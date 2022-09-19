@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
 
-internal class SharpMeasuresVectorGroupMemberProcessingDiagnostics : ISharpMeasuresVectorGroupMemberProcessingDiagnostics
+internal sealed class SharpMeasuresVectorGroupMemberProcessingDiagnostics : ISharpMeasuresVectorGroupMemberProcessingDiagnostics
 {
     public static SharpMeasuresVectorGroupMemberProcessingDiagnostics Instance { get; } = new();
 

@@ -10,6 +10,7 @@ internal static class DimensionParsingUtility
     public static int? InterpretDimensionFromName(string name)
     {
         var trailingNumber = Regex.Match(name, @"\d+$", RegexOptions.RightToLeft);
+
         if (trailingNumber.Success && int.TryParse(trailingNumber.Value, NumberStyles.None, CultureInfo.InvariantCulture, out int result))
         {
             return result;

@@ -9,7 +9,7 @@ using SharpMeasures.Generators;
 using System.Linq;
 using System.Threading.Tasks;
 
-public class IncrementalDriver
+public sealed class IncrementalDriver
 {
     public static async Task<IncrementalDriver> Build(string initialText, string documentationDirectory)
     {

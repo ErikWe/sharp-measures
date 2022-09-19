@@ -11,7 +11,7 @@ public interface IVectorProcesser
     public abstract (IncrementalValueProvider<IVectorPopulation> Population, IVectorValidator Validator) Process(IncrementalGeneratorInitializationContext context);
 }
 
-public class VectorProcesser : IVectorProcesser
+public sealed class VectorProcesser : IVectorProcesser
 {
     private IncrementalValuesProvider<Optional<RawGroupBaseType>> GroupBaseProvider { get; }
     private IncrementalValuesProvider<Optional<RawGroupSpecializationType>> GroupSpecializationProvider { get; }

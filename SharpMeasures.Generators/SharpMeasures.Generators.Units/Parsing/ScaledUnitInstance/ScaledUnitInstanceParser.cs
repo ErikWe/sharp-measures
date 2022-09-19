@@ -8,7 +8,7 @@ internal static class ScaledUnitInstanceParser
 
     private static RawScaledUnitInstanceDefinition DefaultDefinition() => RawScaledUnitInstanceDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawScaledUnitInstanceDefinition, ScaledUnitInstanceLocations, ScaledUnitInstanceAttribute>
+    private sealed class AttributeParser : AAttributeParser<RawScaledUnitInstanceDefinition, ScaledUnitInstanceLocations, ScaledUnitInstanceAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, ScaledUnitInstanceProperties.AllProperties) { }
     }

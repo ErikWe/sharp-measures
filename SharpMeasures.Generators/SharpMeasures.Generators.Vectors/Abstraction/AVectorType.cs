@@ -11,33 +11,22 @@ using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 using System.Collections.Generic;
 using System.Linq;
 
-internal record class AVectorType<TDefinition> : IVectorType
-    where TDefinition : IVector
+internal record class AVectorType<TDefinition> : IVectorType where TDefinition : IVector
 {
     public DefinedType Type { get; }
     public MinimalLocation TypeLocation { get; }
 
     public TDefinition Definition { get; }
 
-    public IReadOnlyList<DerivedQuantityDefinition> Derivations => derivations;
-    public IReadOnlyList<VectorConstantDefinition> Constants => constants;
-    public IReadOnlyList<ConvertibleVectorDefinition> Conversions => conversions;
+    public IReadOnlyList<DerivedQuantityDefinition> Derivations { get; }
+    public IReadOnlyList<VectorConstantDefinition> Constants { get; }
+    public IReadOnlyList<ConvertibleVectorDefinition> Conversions { get; }
 
-    public IReadOnlyList<IncludeUnitsDefinition> UnitInstanceInclusions => unitInstanceInclusions;
-    public IReadOnlyList<ExcludeUnitsDefinition> UnitInstanceExclusions => unitInstanceExclusions;
+    public IReadOnlyList<IncludeUnitsDefinition> UnitInstanceInclusions { get; }
+    public IReadOnlyList<ExcludeUnitsDefinition> UnitInstanceExclusions { get; }
 
-    public IReadOnlyDictionary<string, IVectorConstant> ConstantsByName => constantsByName;
-    public IReadOnlyDictionary<string, IVectorConstant> ConstantsByMultiplesName => constantsByMultiplesName;
-
-    private ReadOnlyEquatableList<DerivedQuantityDefinition> derivations { get; }
-    private ReadOnlyEquatableList<VectorConstantDefinition> constants { get; }
-    private ReadOnlyEquatableList<ConvertibleVectorDefinition> conversions { get; }
-
-    private ReadOnlyEquatableList<IncludeUnitsDefinition> unitInstanceInclusions { get; }
-    private ReadOnlyEquatableList<ExcludeUnitsDefinition> unitInstanceExclusions { get; }
-
-    private ReadOnlyEquatableDictionary<string, IVectorConstant> constantsByName { get; }
-    private ReadOnlyEquatableDictionary<string, IVectorConstant> constantsByMultiplesName { get; }
+    public IReadOnlyDictionary<string, IVectorConstant> ConstantsByName { get; }
+    public IReadOnlyDictionary<string, IVectorConstant> ConstantsByMultiplesName { get; }
 
     ISharpMeasuresObject ISharpMeasuresObjectType.Definition => Definition;
     IQuantity IQuantityType.Definition => Definition;
@@ -50,28 +39,24 @@ internal record class AVectorType<TDefinition> : IVectorType
     IReadOnlyList<IUnitInstanceInclusionList> IQuantityType.UnitInstanceInclusions => UnitInstanceInclusions;
     IReadOnlyList<IUnitInstanceList> IQuantityType.UnitInstanceExclusions => UnitInstanceExclusions;
 
-    protected AVectorType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<VectorConstantDefinition> constants,
-        IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
+    protected AVectorType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
     {
         Type = type;
         TypeLocation = typeLocation;
 
         Definition = definition;
 
-        this.derivations = derivations.AsReadOnlyEquatable();
-        this.constants = constants.AsReadOnlyEquatable();
-        this.conversions = conversions.AsReadOnlyEquatable();
+        Derivations = derivations.AsReadOnlyEquatable();
+        Constants = constants.AsReadOnlyEquatable();
+        Conversions = conversions.AsReadOnlyEquatable();
 
-        this.unitInstanceInclusions = unitInstanceInclusions.AsReadOnlyEquatable();
-        this.unitInstanceExclusions = unitInstanceExclusions.AsReadOnlyEquatable();
+        UnitInstanceInclusions = unitInstanceInclusions.AsReadOnlyEquatable();
+        UnitInstanceExclusions = unitInstanceExclusions.AsReadOnlyEquatable();
 
-        constantsByName = ConstructConstantsByNameDictionary();
-        constantsByMultiplesName = ConstructConstantsByMultiplesNameDictionary();
+        ConstantsByName = ConstructConstantsByNameDictionary();
+        ConstantsByMultiplesName = ConstructConstantsByMultiplesNameDictionary();
     }
 
-    private ReadOnlyEquatableDictionary<string, IVectorConstant> ConstructConstantsByNameDictionary()
-        => Constants.ToDictionary(static (constant) => constant.Name, static (constant) => constant as IVectorConstant).AsReadOnlyEquatable();
-
-    private ReadOnlyEquatableDictionary<string, IVectorConstant> ConstructConstantsByMultiplesNameDictionary()
-        => Constants.Where(static (constant) => constant.Multiples is not null).ToDictionary(static (constant) => constant.Multiples!, static (constant) => constant as IVectorConstant).AsReadOnlyEquatable();
+    private ReadOnlyEquatableDictionary<string, IVectorConstant> ConstructConstantsByNameDictionary() => Constants.ToDictionary(static (constant) => constant.Name, static (constant) => constant as IVectorConstant).AsReadOnlyEquatable();
+    private ReadOnlyEquatableDictionary<string, IVectorConstant> ConstructConstantsByMultiplesNameDictionary() => Constants.Where(static (constant) => constant.Multiples is not null).ToDictionary(static (constant) => constant.Multiples!, static (constant) => constant as IVectorConstant).AsReadOnlyEquatable();
 }

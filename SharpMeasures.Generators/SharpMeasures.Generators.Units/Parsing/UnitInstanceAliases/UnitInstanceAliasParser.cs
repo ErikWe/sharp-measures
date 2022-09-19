@@ -8,7 +8,7 @@ internal static class UnitInstanceAliasParser
 
     private static RawUnitInstanceAliasDefinition DefaultDefinition() => RawUnitInstanceAliasDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawUnitInstanceAliasDefinition, UnitInstanceAliasLocations, UnitInstanceAliasAttribute>
+    private sealed class AttributeParser : AAttributeParser<RawUnitInstanceAliasDefinition, UnitInstanceAliasLocations, UnitInstanceAliasAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, UnitInstanceAliasProperties.AllProperties) { }
     }

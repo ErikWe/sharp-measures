@@ -10,8 +10,7 @@ public interface IItemListLocations : IAttributeLocations
     public abstract bool ExplicitlySetItems { get; }
 }
 
-public interface IOpenItemListLocations<out TLocations> : IItemListLocations, IOpenAttributeLocations<TLocations>
-    where TLocations : IOpenItemListLocations<TLocations>
+public interface IOpenItemListLocations<out TLocations> : IItemListLocations, IOpenAttributeLocations<TLocations> where TLocations : IOpenItemListLocations<TLocations>
 {
     public abstract TLocations WithItems(MinimalLocation collection, IReadOnlyList<MinimalLocation> elements);
 }

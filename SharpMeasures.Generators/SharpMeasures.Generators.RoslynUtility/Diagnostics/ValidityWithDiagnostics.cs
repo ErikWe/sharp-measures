@@ -38,16 +38,8 @@ public static class ValidityWithDiagnostics
     public static IValidityWithDiagnostics Valid => SimpleValidityWithDiagnostics.Valid;
     public static IValidityWithDiagnostics InvalidWithoutDiagnostics => SimpleValidityWithDiagnostics.InvalidWithoutDiagnostics;
 
-    public static IValidityWithDiagnostics ValidWithDiagnostics(IEnumerable<Diagnostic> diagnostics)
-    {
-        return new SimpleValidityWithDiagnostics(true, diagnostics);
-    }
-
-    public static IValidityWithDiagnostics ValidWithDiagnostics(params Diagnostic[] diagnostics)
-    {
-        return ValidWithDiagnostics(diagnostics as IEnumerable<Diagnostic>);
-    }
-
+    public static IValidityWithDiagnostics ValidWithDiagnostics(IEnumerable<Diagnostic> diagnostics) => new SimpleValidityWithDiagnostics(true, diagnostics);
+    public static IValidityWithDiagnostics ValidWithDiagnostics(params Diagnostic[] diagnostics) => ValidWithDiagnostics(diagnostics as IEnumerable<Diagnostic>);
     public static IValidityWithDiagnostics ValidWithDiagnostics(Diagnostic? diagnostics)
     {
         if (diagnostics is null)
@@ -78,13 +70,8 @@ public static class ValidityWithDiagnostics
         return Valid;
     }
 
-    public static IValidityWithDiagnostics Invalid(IEnumerable<Diagnostic> diagnostics)
-    {
-        return new SimpleValidityWithDiagnostics(false, diagnostics);
-    }
-
+    public static IValidityWithDiagnostics Invalid(IEnumerable<Diagnostic> diagnostics) => new SimpleValidityWithDiagnostics(false, diagnostics);
     public static IValidityWithDiagnostics Invalid(params Diagnostic[] diagnostics) => Invalid(diagnostics as IEnumerable<Diagnostic>);
-
     public static IValidityWithDiagnostics Invalid(Diagnostic? diagnostics)
     {
         if (diagnostics is null)
@@ -93,6 +80,26 @@ public static class ValidityWithDiagnostics
         }
 
         return Invalid(new[] { diagnostics });
+    }
+
+    public static IValidityWithDiagnostics InvalidWithConditionalDiagnostics(bool condition, Func<IEnumerable<Diagnostic>> diagnostics)
+    {
+        if (condition)
+        {
+            return Invalid(diagnostics());
+        }
+
+        return InvalidWithoutDiagnostics;
+    }
+
+    public static IValidityWithDiagnostics InvalidWithConditionalDiagnostics(bool condition, Func<Diagnostic?> diagnostics)
+    {
+        if (condition)
+        {
+            return Invalid(diagnostics());
+        }
+
+        return InvalidWithoutDiagnostics;
     }
 
     public static IValidityWithDiagnostics ConditionalWithoutDiagnostics(bool condition)
@@ -151,7 +158,7 @@ public static class ValidityWithDiagnostics
     public static IValidityWithDiagnostics Conditional(bool condition, Diagnostic? invalidDiagnostics) => Conditional(condition, () => invalidDiagnostics);
     public static IValidityWithDiagnostics Conditional(bool condition, Diagnostic? validDiagnostics, Diagnostic? invalidDiagnostics) => Conditional(condition, () => validDiagnostics, () => invalidDiagnostics);
 
-    private class SimpleValidityWithDiagnostics : IValidityWithDiagnostics
+    private sealed class SimpleValidityWithDiagnostics : IValidityWithDiagnostics
     {
         public static SimpleValidityWithDiagnostics Valid => WithoutDiagnostics(true);
         public static SimpleValidityWithDiagnostics InvalidWithoutDiagnostics => WithoutDiagnostics(false);
@@ -172,7 +179,6 @@ public static class ValidityWithDiagnostics
         public IOptionalWithDiagnostics<T> AsEmptyOptional<T>() => OptionalWithDiagnostics.Empty<T>(Diagnostics);
 
         public IValidityWithDiagnostics Validate(IValidityWithDiagnostics other) => new SimpleValidityWithDiagnostics(IsValid && other.IsValid, Diagnostics.Concat(other.Diagnostics));
-
         public IValidityWithDiagnostics Validate(IValidityWithDiagnostics.DValidity otherDelegate)
         {
             if (IsInvalid)
@@ -184,7 +190,6 @@ public static class ValidityWithDiagnostics
         }
 
         public IOptionalWithDiagnostics<T> Merge<T>(IOptionalWithDiagnostics<T> result) => Merge<T>(() => result);
-
         public IOptionalWithDiagnostics<T> Merge<T>(IValidityWithDiagnostics.DOptional<T> transform)
         {
             if (IsInvalid)
@@ -205,7 +210,6 @@ public static class ValidityWithDiagnostics
         }
 
         public IOptionalWithDiagnostics<T> Transform<T>(T result) => Transform(() => result);
-
         public IOptionalWithDiagnostics<T> Transform<T>(IValidityWithDiagnostics.DResult<T> resultDelegate)
         {
             if (IsInvalid)

@@ -7,7 +7,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using System.Collections.Generic;
 using System.Linq;
 
-internal record class SymbolicSharpMeasuresUnitDefinition : ARawSharpMeasuresObjectDefinition<SymbolicSharpMeasuresUnitDefinition, SharpMeasuresUnitLocations>
+internal sealed record class SymbolicSharpMeasuresUnitDefinition : ARawSharpMeasuresObjectDefinition<SymbolicSharpMeasuresUnitDefinition, SharpMeasuresUnitLocations>
 {
     public static SymbolicSharpMeasuresUnitDefinition Empty { get; } = new(SharpMeasuresUnitLocations.Empty);
 

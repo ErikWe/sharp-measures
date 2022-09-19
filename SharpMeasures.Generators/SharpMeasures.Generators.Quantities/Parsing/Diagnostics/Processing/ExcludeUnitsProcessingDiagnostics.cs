@@ -7,7 +7,7 @@ using SharpMeasures.Generators.Attributes.Parsing.ItemLists;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 
-public class ExcludeUnitsProcessingDiagnostics : IExcludeUnitsProcessingDiagnostics
+public sealed class ExcludeUnitsProcessingDiagnostics : IExcludeUnitsProcessingDiagnostics
 {
     public static ExcludeUnitsProcessingDiagnostics Instance { get; } = new();
 

@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
 using System.Linq;
 
-internal class VectorConstantProcesser : AQuantityConstantProcesser<IQuantityConstantProcessingContext, RawVectorConstantDefinition, VectorConstantLocations, VectorConstantDefinition>
+internal sealed class VectorConstantProcesser : AQuantityConstantProcesser<IQuantityConstantProcessingContext, RawVectorConstantDefinition, VectorConstantLocations, VectorConstantDefinition>
 {
     public VectorConstantProcesser(IQuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations> diagnostics) : base(diagnostics) { }
 
@@ -28,8 +28,5 @@ internal class VectorConstantProcesser : AQuantityConstantProcesser<IQuantityCon
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static VectorConstantDefinition ProduceResult(RawVectorConstantDefinition definition, bool generateMultiples, string? multiplesName)
-    {
-        return new(definition.Name!, definition.UnitInstanceName!, definition.Value, generateMultiples, multiplesName, definition.Locations);
-    }
+    private static VectorConstantDefinition ProduceResult(RawVectorConstantDefinition definition, bool generateMultiples, string? multiplesName) => new(definition.Name!, definition.UnitInstanceName!, definition.Value, generateMultiples, multiplesName, definition.Locations);
 }

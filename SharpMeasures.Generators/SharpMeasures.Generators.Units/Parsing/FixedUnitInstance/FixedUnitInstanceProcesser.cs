@@ -15,7 +15,7 @@ internal interface IFixedUnitInstanceProcessingContext : IUnitInstanceProcessing
     public abstract bool UnitIsDerivable { get; }
 }
 
-internal class FixedUnitInstanceProcesser : AUnitInstanceProcesser<IFixedUnitInstanceProcessingContext, RawFixedUnitInstanceDefinition, FixedUnitInstanceLocations, FixedUnitInstanceDefinition>
+internal sealed class FixedUnitInstanceProcesser : AUnitInstanceProcesser<IFixedUnitInstanceProcessingContext, RawFixedUnitInstanceDefinition, FixedUnitInstanceLocations, FixedUnitInstanceDefinition>
 {
     private IFixedUnitInstanceProcessingDiagnostics Diagnostics { get; }
 
@@ -33,10 +33,7 @@ internal class FixedUnitInstanceProcesser : AUnitInstanceProcesser<IFixedUnitIns
             .Transform((processedPluralForm) => ProduceResult(definition, processedPluralForm));
     }
 
-    private static FixedUnitInstanceDefinition ProduceResult(RawFixedUnitInstanceDefinition definition, string processedPluralForm)
-    {
-        return new(definition.Name!, processedPluralForm, definition.Locations);
-    }
+    private static FixedUnitInstanceDefinition ProduceResult(RawFixedUnitInstanceDefinition definition, string processedPluralForm) => new(definition.Name!, processedPluralForm, definition.Locations);
 
     private IValidityWithDiagnostics ValidateUnitNotDerivable(IFixedUnitInstanceProcessingContext context, RawFixedUnitInstanceDefinition definition)
     {

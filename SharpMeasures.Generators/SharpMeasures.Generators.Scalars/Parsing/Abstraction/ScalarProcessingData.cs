@@ -4,21 +4,16 @@ using SharpMeasures.Equatables;
 
 using System.Collections.Generic;
 
-internal record class ScalarProcessingData
+internal sealed record class ScalarProcessingData
 {
-    public IReadOnlyDictionary<NamedType, IScalarBaseType> DuplicatelyDefinedScalarBases => duplicatelyDefinedScalarBases;
-    public IReadOnlyDictionary<NamedType, IScalarSpecializationType> DuplicatelyDefinedScalarSpecializations => duplicatelyDefinedScalarSpecializations;
-    public IReadOnlyDictionary<NamedType, IScalarSpecializationType> ScalarSpecializationsAlreadyDefinedAsScalarBases => scalarSpecializationsAlreadyDefinedAsScalarBases;
+    public IReadOnlyDictionary<NamedType, IScalarBaseType> DuplicatelyDefinedScalarBases { get; }
+    public IReadOnlyDictionary<NamedType, IScalarSpecializationType> DuplicatelyDefinedScalarSpecializations { get; }
+    public IReadOnlyDictionary<NamedType, IScalarSpecializationType> ScalarSpecializationsAlreadyDefinedAsScalarBases { get; }
 
-    private ReadOnlyEquatableDictionary<NamedType, IScalarBaseType> duplicatelyDefinedScalarBases { get; }
-    private ReadOnlyEquatableDictionary<NamedType, IScalarSpecializationType> duplicatelyDefinedScalarSpecializations { get; }
-    private ReadOnlyEquatableDictionary<NamedType, IScalarSpecializationType> scalarSpecializationsAlreadyDefinedAsScalarBases { get; }
-
-    public ScalarProcessingData(IReadOnlyDictionary<NamedType, IScalarBaseType> duplicatelyDefinedScalarBases, IReadOnlyDictionary<NamedType, IScalarSpecializationType> duplicatelyDefinedScalarSpecializations,
-        IReadOnlyDictionary<NamedType, IScalarSpecializationType> scalarSpecializationsAlreadyDefinedAsScalarBases)
+    public ScalarProcessingData(IReadOnlyDictionary<NamedType, IScalarBaseType> duplicatelyDefinedScalarBases, IReadOnlyDictionary<NamedType, IScalarSpecializationType> duplicatelyDefinedScalarSpecializations, IReadOnlyDictionary<NamedType, IScalarSpecializationType> scalarSpecializationsAlreadyDefinedAsScalarBases)
     {
-        this.duplicatelyDefinedScalarBases = duplicatelyDefinedScalarBases.AsReadOnlyEquatable();
-        this.duplicatelyDefinedScalarSpecializations = duplicatelyDefinedScalarSpecializations.AsReadOnlyEquatable();
-        this.scalarSpecializationsAlreadyDefinedAsScalarBases = scalarSpecializationsAlreadyDefinedAsScalarBases.AsReadOnlyEquatable();
+        DuplicatelyDefinedScalarBases = duplicatelyDefinedScalarBases.AsReadOnlyEquatable();
+        DuplicatelyDefinedScalarSpecializations = duplicatelyDefinedScalarSpecializations.AsReadOnlyEquatable();
+        ScalarSpecializationsAlreadyDefinedAsScalarBases = scalarSpecializationsAlreadyDefinedAsScalarBases.AsReadOnlyEquatable();
     }
 }

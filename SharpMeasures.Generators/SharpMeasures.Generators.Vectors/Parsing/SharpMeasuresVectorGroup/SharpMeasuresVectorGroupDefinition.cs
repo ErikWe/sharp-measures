@@ -3,7 +3,7 @@
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;
 
-internal record class SharpMeasuresVectorGroupDefinition : AAttributeDefinition<SharpMeasuresVectorGroupLocations>, IVectorGroupBase, IDefaultUnitInstanceDefinition
+internal sealed record class SharpMeasuresVectorGroupDefinition : AAttributeDefinition<SharpMeasuresVectorGroupLocations>, IVectorGroupBase, IDefaultUnitInstanceDefinition
 {
     public NamedType Unit { get; }
     public NamedType? Scalar { get; }
@@ -28,9 +28,7 @@ internal record class SharpMeasuresVectorGroupDefinition : AAttributeDefinition<
     IVectorGroupBaseLocations IVectorGroupBase.Locations => Locations;
     IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
-    public SharpMeasuresVectorGroupDefinition(NamedType unit, NamedType? scalar, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol,
-        bool? generateDocumentation, SharpMeasuresVectorGroupLocations locations)
-        : base(locations)
+    public SharpMeasuresVectorGroupDefinition(NamedType unit, NamedType? scalar, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, bool? generateDocumentation, SharpMeasuresVectorGroupLocations locations) : base(locations)
     {
         Unit = unit;
         Scalar = scalar;

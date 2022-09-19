@@ -9,13 +9,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public static class ForeignVectorBaseResolver
+internal static class ForeignVectorBaseResolver
 {
-    public static Optional<IResolvedVectorType> Resolve(IVectorBaseType vectorType, IUnitPopulation unitPopulation)
+    public static Optional<ResolvedVectorType> Resolve(VectorBaseType vectorType, IUnitPopulation unitPopulation)
     {
         if (unitPopulation.Units.TryGetValue(vectorType.Definition.Unit, out var unit) is false)
         {
-            return new Optional<IResolvedVectorType>();
+            return new Optional<ResolvedVectorType>();
         }
 
         var includedUnitInstances = ResolveUnitInstanceInclusions(unit, vectorType.UnitInstanceInclusions, () => vectorType.UnitInstanceExclusions);

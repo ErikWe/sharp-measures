@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Units.Parsing;
 
 using System.Collections.Generic;
 
-internal class UnitPopulation : IUnitPopulation
+internal sealed record class UnitPopulation : IUnitPopulation
 {
     public static (UnitPopulation Population, UnitProcessingData ProcessingData) Build(IReadOnlyList<IUnitType> units)
     {
@@ -38,12 +38,10 @@ internal class UnitPopulation : IUnitPopulation
         return new(unitPopulation);
     }
 
-    public IReadOnlyDictionary<NamedType, IUnitType> Units => units;
-
-    private ReadOnlyEquatableDictionary<NamedType, IUnitType> units { get; }
+    public IReadOnlyDictionary<NamedType, IUnitType> Units { get; }
 
     public UnitPopulation(IReadOnlyDictionary<NamedType, IUnitType> units)
     {
-        this.units = units.AsReadOnlyEquatable();
+        Units = units.AsReadOnlyEquatable();
     }
 }

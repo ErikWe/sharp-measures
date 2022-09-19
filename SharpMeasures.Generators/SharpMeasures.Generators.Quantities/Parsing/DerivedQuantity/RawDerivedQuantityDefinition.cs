@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 
 using System.Collections.Generic;
 
-public record class RawDerivedQuantityDefinition : ARawAttributeDefinition<RawDerivedQuantityDefinition, DerivedQuantityLocations>
+public sealed record class RawDerivedQuantityDefinition : ARawAttributeDefinition<RawDerivedQuantityDefinition, DerivedQuantityLocations>
 {
     public static RawDerivedQuantityDefinition FromSymbolic(SymbolicDerivedQuantityDefinition symbolicDefinition) => new RawDerivedQuantityDefinition(symbolicDefinition.Locations) with
     {
@@ -26,7 +26,7 @@ public record class RawDerivedQuantityDefinition : ARawAttributeDefinition<RawDe
 
     public bool Permutations { get; init; }
 
-    private ReadOnlyEquatableList<NamedType?> signature { get; init; } = ReadOnlyEquatableList<NamedType?>.Empty;
+    private IReadOnlyList<NamedType?> signature { get; init; } = ReadOnlyEquatableList<NamedType?>.Empty;
 
     protected override RawDerivedQuantityDefinition Definition => this;
 

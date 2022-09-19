@@ -3,14 +3,12 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
-using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
-using SharpMeasures.Generators.Vectors.ForeignVectorParsing.Diagnostics;
+using SharpMeasures.Generators.Vectors.ForeignVectorParsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Vectors.Parsing;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
 
 using System;
-using System.Collections.Generic;
 
 internal static class ForeignGroupMemberProcesser
 {
@@ -18,7 +16,7 @@ internal static class ForeignGroupMemberProcesser
     {
         var member = ProcessMember(rawMember.Type, rawMember.Definition);
 
-        if (member.LacksResult)
+        if (member.HasValue is false)
         {
             return new Optional<GroupMemberType>();
         }
@@ -30,19 +28,26 @@ internal static class ForeignGroupMemberProcesser
         var includeUnitInstances = CommonProcessing.ProcessIncludeUnits(rawMember.Type, rawMember.UnitInstanceInclusions);
         var excludeUnitInstances = CommonProcessing.ProcessExcludeUnits(rawMember.Type, rawMember.UnitInstanceExclusions);
 
-        if (includeUnitInstances.HasResult && includeUnitInstances.Result.Count > 0 && excludeUnitInstances.HasResult && excludeUnitInstances.Result.Count > 0)
+        if (includeUnitInstances.Count > 0 && excludeUnitInstances.Count > 0)
         {
-            excludeUnitInstances = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
+            excludeUnitInstances = Array.Empty<ExcludeUnitsDefinition>();
         }
 
-        return new GroupMemberType(rawMember.Type, rawMember.TypeLocation, member.Result, derivations.Result, constants.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
+        return new GroupMemberType(rawMember.Type, rawMember.TypeLocation, member.Value, derivations, constants, conversions, includeUnitInstances, excludeUnitInstances);
     }
 
-    private static IOptionalWithDiagnostics<SharpMeasuresVectorGroupMemberDefinition> ProcessMember(DefinedType type, RawSharpMeasuresVectorGroupMemberDefinition rawDefinition)
+    private static Optional<SharpMeasuresVectorGroupMemberDefinition> ProcessMember(DefinedType type, RawSharpMeasuresVectorGroupMemberDefinition rawDefinition)
     {
         var processingContext = new SimpleProcessingContext(type);
 
-        return ProcessingFilter.Create(SharpMeasuresVectorGroupMemberProcesser).Filter(processingContext, rawDefinition);
+        var member = ProcessingFilter.Create(SharpMeasuresVectorGroupMemberProcesser).Filter(processingContext, rawDefinition);
+
+        if (member.LacksResult)
+        {
+            return new Optional<SharpMeasuresVectorGroupMemberDefinition>();
+        }
+
+        return member.Result;
     }
 
     private static SharpMeasuresVectorGroupMemberProcesser SharpMeasuresVectorGroupMemberProcesser { get; } = new(EmptySharpMeasuresVectorGroupMemberProcessingDiagnostics.Instance);

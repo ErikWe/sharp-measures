@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public record class SymbolicConvertibleQuantityDefinition : ARawItemListDefinition<INamedTypeSymbol?, SymbolicConvertibleQuantityDefinition, ConvertibleQuantityLocations>
+public sealed record class SymbolicConvertibleQuantityDefinition : ARawItemListDefinition<INamedTypeSymbol?, SymbolicConvertibleQuantityDefinition, ConvertibleQuantityLocations>
 {
     internal static SymbolicConvertibleQuantityDefinition Empty => new(ConvertibleQuantityLocations.Empty);
 
@@ -19,7 +19,7 @@ public record class SymbolicConvertibleQuantityDefinition : ARawItemListDefiniti
 
     protected override SymbolicConvertibleQuantityDefinition Definition => this;
 
-    protected SymbolicConvertibleQuantityDefinition(ConvertibleQuantityLocations locations) : base(locations) { }
+    private SymbolicConvertibleQuantityDefinition(ConvertibleQuantityLocations locations) : base(locations) { }
 
     public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName, bool alreadyInForeignAssembly)
     {

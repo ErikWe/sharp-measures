@@ -8,7 +8,7 @@ internal static class DerivableUnitParser
 
     private static SymbolicDerivableUnitDefinition DefaultDefinition() => SymbolicDerivableUnitDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<SymbolicDerivableUnitDefinition, DerivableUnitLocations, DerivableUnitAttribute>
+    private sealed class AttributeParser : AAttributeParser<SymbolicDerivableUnitDefinition, DerivableUnitLocations, DerivableUnitAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, DerivableUnitProperties.AllProperties) { }
     }

@@ -72,16 +72,9 @@ public static class OptionalWithDiagnostics
 {
     public static IOptionalWithDiagnostics<T> EmptyWithoutDiagnostics<T>() => Empty<T>(Array.Empty<Diagnostic>());
 
-    public static IOptionalWithDiagnostics<T> Result<T>(T result, IEnumerable<Diagnostic> diagnostics)
-    {
-        return new SimpleOptionalWithDiagnostics<T>(result, diagnostics);
-    }
-
-    public static IOptionalWithDiagnostics<T> Result<T>(T result, params Diagnostic[] diagnostics)
-    {
-        return Result(result, diagnostics as IEnumerable<Diagnostic>);
-    }
-
+    public static IOptionalWithDiagnostics<T> Result<T>(T result, IEnumerable<Diagnostic> diagnostics) => new SimpleOptionalWithDiagnostics<T>(result, diagnostics);
+    public static IOptionalWithDiagnostics<T> Result<T>(T result, params Diagnostic[] diagnostics) => Result(result, diagnostics as IEnumerable<Diagnostic>);
+    public static IOptionalWithDiagnostics<T> Result<T>(T result) => Result(result, Array.Empty<Diagnostic>());
     public static IOptionalWithDiagnostics<T> Result<T>(T result, Diagnostic? diagnostics)
     {
         if (diagnostics is null)
@@ -92,15 +85,8 @@ public static class OptionalWithDiagnostics
         return Result(result, new[] { diagnostics });
     }
 
-    public static IOptionalWithDiagnostics<T> Result<T>(T result) => Result(result, Array.Empty<Diagnostic>());
-
-    public static IOptionalWithDiagnostics<T> Empty<T>(IEnumerable<Diagnostic> diagnostics)
-    {
-        return new SimpleOptionalWithDiagnostics<T>(diagnostics);
-    }
-
+    public static IOptionalWithDiagnostics<T> Empty<T>(IEnumerable<Diagnostic> diagnostics) => new SimpleOptionalWithDiagnostics<T>(diagnostics);
     public static IOptionalWithDiagnostics<T> Empty<T>(params Diagnostic[] diagnostics) => Empty<T>(diagnostics as IEnumerable<Diagnostic>);
-
     public static IOptionalWithDiagnostics<T> Empty<T>(Diagnostic? diagnostics)
     {
         if (diagnostics is null)
@@ -164,7 +150,7 @@ public static class OptionalWithDiagnostics
         return Empty<T>(diagnostics);
     }
 
-    private class SimpleOptionalWithDiagnostics<T> : IOptionalWithDiagnostics<T>
+    private sealed class SimpleOptionalWithDiagnostics<T> : IOptionalWithDiagnostics<T>
     {
         private Optional<T> Optional { get; }
 
@@ -197,10 +183,7 @@ public static class OptionalWithDiagnostics
 
         public IOptionalWithDiagnostics<TNew> AsEmptyOptional<TNew>() => new SimpleOptionalWithDiagnostics<TNew>(Diagnostics);
 
-        public IOptionalWithDiagnostics<T> AddDiagnostics(params IEnumerable<Diagnostic>[] diagnostics)
-        {
-            return new SimpleOptionalWithDiagnostics<T>(Optional, Diagnostics.Concat(diagnostics.SelectMany(static (diagnostics) => diagnostics)));
-        }
+        public IOptionalWithDiagnostics<T> AddDiagnostics(params IEnumerable<Diagnostic>[] diagnostics) => new SimpleOptionalWithDiagnostics<T>(Optional, Diagnostics.Concat(diagnostics.SelectMany(static (diagnostics) => diagnostics)));
 
         public IOptionalWithDiagnostics<T> Validate(IOptionalWithDiagnostics<T>.DValidator validator)
         {
@@ -220,6 +203,7 @@ public static class OptionalWithDiagnostics
             return new SimpleOptionalWithDiagnostics<T>(Result, allDiagnostics);
         }
 
+        public IValidityWithDiagnostics Reduce(IOptionalWithDiagnostics<T>.DValidator validator) => Validate(validator).Reduce();
         public IValidityWithDiagnostics Reduce()
         {
             if (HasResult)
@@ -228,11 +212,6 @@ public static class OptionalWithDiagnostics
             }
 
             return ValidityWithDiagnostics.Invalid(Diagnostics);
-        }
-
-        public IValidityWithDiagnostics Reduce(IOptionalWithDiagnostics<T>.DValidator validator)
-        {
-            return Validate(validator).Reduce();
         }
 
         public IOptionalWithDiagnostics<TNew> Merge<TNew>(IOptionalWithDiagnostics<T>.DTransform<TNew> transform)

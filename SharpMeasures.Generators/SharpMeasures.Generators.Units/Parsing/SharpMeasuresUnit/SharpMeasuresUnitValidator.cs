@@ -18,7 +18,7 @@ internal interface ISharpMeasuresUnitValidationContext : IValidationContext
     public abstract IScalarPopulation ScalarPopulation { get; }
 }
 
-internal class SharpMeasuresUnitValidator : AValidator<ISharpMeasuresUnitValidationContext, SharpMeasuresUnitDefinition>
+internal sealed class SharpMeasuresUnitValidator : AValidator<ISharpMeasuresUnitValidationContext, SharpMeasuresUnitDefinition>
 {
     private ISharpMeasuresUnitValidationDiagnostics Diagnostics { get; }
 

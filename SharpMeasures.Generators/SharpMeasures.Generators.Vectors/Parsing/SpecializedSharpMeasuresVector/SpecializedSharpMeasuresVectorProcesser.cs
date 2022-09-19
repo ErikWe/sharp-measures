@@ -15,7 +15,7 @@ internal interface ISpecializedSharpMeasuresVectorProcessingDiagnostics : IDefau
     public abstract Diagnostic? DifferenceDisabledButQuantitySpecified(IProcessingContext context, RawSpecializedSharpMeasuresVectorDefinition definition);
 }
 
-internal class SpecializedSharpMeasuresVectorProcesser : AProcesser<IProcessingContext, RawSpecializedSharpMeasuresVectorDefinition, SpecializedSharpMeasuresVectorDefinition>
+internal sealed class SpecializedSharpMeasuresVectorProcesser : AProcesser<IProcessingContext, RawSpecializedSharpMeasuresVectorDefinition, SpecializedSharpMeasuresVectorDefinition>
 {
     private ISpecializedSharpMeasuresVectorProcessingDiagnostics Diagnostics { get; }
 

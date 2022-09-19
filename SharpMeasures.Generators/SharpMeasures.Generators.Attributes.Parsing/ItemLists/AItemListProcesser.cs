@@ -26,8 +26,7 @@ public interface IUniqueItemListProcessingContext<TItem> : IProcessingContext
     public abstract HashSet<TItem> ListedItems { get; }
 }
 
-public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext, TDefinition, TLocations, TProduct>
-    : AActionableProcesser<TContext, TDefinition, TProduct>
+public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext, TDefinition, TLocations, TProduct> : AActionableProcesser<TContext, TDefinition, TProduct>
     where TContext : IProcessingContext
     where TDefinition : IItemListDefinition<TDefinitionItem?, TLocations>
     where TLocations : IItemListLocations
@@ -110,8 +109,7 @@ public abstract class AItemListProcesser<TDefinitionItem, TProductItem, TContext
     }
 }
 
-public abstract class AUniqueItemListProcesser<TDefinitionItem, TProductItem, TContext, TDefinition, TLocations, TProduct>
-    : AItemListProcesser<TDefinitionItem, TProductItem, TContext, TDefinition, TLocations, TProduct>
+public abstract class AUniqueItemListProcesser<TDefinitionItem, TProductItem, TContext, TDefinition, TLocations, TProduct> : AItemListProcesser<TDefinitionItem, TProductItem, TContext, TDefinition, TLocations, TProduct>
     where TContext : IUniqueItemListProcessingContext<TProductItem>
     where TDefinition : IItemListDefinition<TDefinitionItem?, TLocations>
     where TLocations : IItemListLocations

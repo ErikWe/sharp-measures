@@ -8,7 +8,7 @@ using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 
-internal class SharpMeasuresScalarProcessingDiagnostics : ISharpMeasuresScalarProcessingDiagnostics
+internal sealed class SharpMeasuresScalarProcessingDiagnostics : ISharpMeasuresScalarProcessingDiagnostics
 {
     public static SharpMeasuresScalarProcessingDiagnostics Instance { get; } = new();
 

@@ -15,7 +15,7 @@ internal interface IBiasedUnitInstanceValidationContext : IModifiedUnitInstanceV
     public abstract bool UnitIncludesBiasTerm { get; }
 }
 
-internal class BiasedUnitInstanceValidator : AModifiedUnitInstanceValidator<IBiasedUnitInstanceValidationContext, BiasedUnitInstanceDefinition>
+internal sealed class BiasedUnitInstanceValidator : AModifiedUnitInstanceValidator<IBiasedUnitInstanceValidationContext, BiasedUnitInstanceDefinition>
 {
     private IBiasedUnitInstanceValidationDiagnostics Diagnostics { get; }
 

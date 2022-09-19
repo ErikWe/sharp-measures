@@ -14,7 +14,7 @@ internal interface IDerivedUnitInstanceProcessingDiagnostics : IUnitInstanceProc
     public abstract Diagnostic? EmptyUnitsElement(IUnitInstanceProcessingContext context, RawDerivedUnitInstanceDefinition definition, int index);
 }
 
-internal class DerivedUnitInstanceProcesser : AUnitInstanceProcesser<IUnitInstanceProcessingContext, RawDerivedUnitInstanceDefinition, DerivedUnitInstanceLocations, DerivedUnitInstanceDefinition>
+internal sealed class DerivedUnitInstanceProcesser : AUnitInstanceProcesser<IUnitInstanceProcessingContext, RawDerivedUnitInstanceDefinition, DerivedUnitInstanceLocations, DerivedUnitInstanceDefinition>
 {
     private IDerivedUnitInstanceProcessingDiagnostics Diagnostics { get; }
 
@@ -39,10 +39,7 @@ internal class DerivedUnitInstanceProcesser : AUnitInstanceProcesser<IUnitInstan
             .AddDiagnostics(interpretedPluralForm);
     }
 
-    private static DerivedUnitInstanceDefinition ProduceResult(RawDerivedUnitInstanceDefinition definition, string interpretedPluralForm, IReadOnlyList<string> units)
-    {
-        return new(definition.Name!, interpretedPluralForm, definition.DerivationID, units, definition.Locations);
-    }
+    private static DerivedUnitInstanceDefinition ProduceResult(RawDerivedUnitInstanceDefinition definition, string interpretedPluralForm, IReadOnlyList<string> units) => new(definition.Name!, interpretedPluralForm, definition.DerivationID, units, definition.Locations);
 
     private IOptionalWithDiagnostics<IReadOnlyList<string>> ProcessUnits(IUnitInstanceProcessingContext context, RawDerivedUnitInstanceDefinition definition)
     {

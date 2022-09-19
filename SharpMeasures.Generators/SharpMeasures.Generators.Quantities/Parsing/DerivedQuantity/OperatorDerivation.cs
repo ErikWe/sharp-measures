@@ -1,6 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 
-public record class OperatorDerivation
+public sealed record class OperatorDerivation
 {
     public NamedType Result { get; }
 

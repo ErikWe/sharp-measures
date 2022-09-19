@@ -35,30 +35,6 @@ public partial class A
         return new(PureScalarMaths.Dot2(b.Components, c.Components));
     }
 
-    /// <summary>Computes { <paramref name="a"/> * <paramref name="b"/> }, resulting in a <see cref="global::B3"/>.</summary>
-    /// <param name="a">The factor of { <paramref name="a"/> * <paramref name="b"/> }.</param>
-    /// <param name="b">The factor of { <paramref name="a"/> * <paramref name="b"/> }.</param>
-    /// <exception cref="global::System.ArgumentNullException"/>
-    public static global::B3 operator *(global::A a, global::C3 b)
-    {
-        global::System.ArgumentNullException.ThrowIfNull(a);
-        global::System.ArgumentNullException.ThrowIfNull(b);
-
-        return new(a.Magnitude * b.Components);
-    }
-
-    /// <summary>Computes { <paramref name="a"/> * <paramref name="b"/> }, resulting in a <see cref="global::B2"/>.</summary>
-    /// <param name="a">The factor of { <paramref name="a"/> * <paramref name="b"/> }.</param>
-    /// <param name="b">The factor of { <paramref name="a"/> * <paramref name="b"/> }.</param>
-    /// <exception cref="global::System.ArgumentNullException"/>
-    public static global::B2 operator *(global::A a, global::C2 b)
-    {
-        global::System.ArgumentNullException.ThrowIfNull(a);
-        global::System.ArgumentNullException.ThrowIfNull(b);
-
-        return new(a.Magnitude * b.Components);
-    }
-
     /// <summary>Describes mathematical operations that result in a pure <see cref="global::SharpMeasures.Scalar"/>.</summary>
     private static global::SharpMeasures.Maths.IScalarResultingMaths<global::SharpMeasures.Scalar> PureScalarMaths { get; } = global::SharpMeasures.Maths.MathFactory.ScalarResult();
 }

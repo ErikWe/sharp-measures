@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
-internal record class RawBiasedUnitInstanceDefinition : ARawModifiedUnitDefinition<RawBiasedUnitInstanceDefinition, BiasedUnitInstanceLocations>
+internal sealed record class RawBiasedUnitInstanceDefinition : ARawModifiedUnitDefinition<RawBiasedUnitInstanceDefinition, BiasedUnitInstanceLocations>
 {
     internal static RawBiasedUnitInstanceDefinition Empty { get; } = new();
 

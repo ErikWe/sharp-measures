@@ -13,13 +13,12 @@ using SharpMeasures.Generators.Scalars.Parsing.SpecializedSharpMeasuresScalar;
 
 using System.Collections.Generic;
 
-internal record class ScalarSpecializationType : AScalarType<SpecializedSharpMeasuresScalarDefinition>, IScalarSpecializationType
+internal sealed record class ScalarSpecializationType : AScalarType<SpecializedSharpMeasuresScalarDefinition>, IScalarSpecializationType
 {
     IQuantitySpecialization IQuantitySpecializationType.Definition => Definition;
     IScalarSpecialization IScalarSpecializationType.Definition => Definition;
 
-    public ScalarSpecializationType(DefinedType type, MinimalLocation typeLocation, SpecializedSharpMeasuresScalarDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
-        IReadOnlyList<ScalarConstantDefinition> constants, IReadOnlyList<ConvertibleScalarDefinition> conversions, IReadOnlyList<IncludeUnitBasesDefinition> baseInclusions,
-        IReadOnlyList<ExcludeUnitBasesDefinition> baseExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
+    public ScalarSpecializationType(DefinedType type, MinimalLocation typeLocation, SpecializedSharpMeasuresScalarDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ScalarConstantDefinition> constants, IReadOnlyList<ConvertibleScalarDefinition> conversions,
+        IReadOnlyList<IncludeUnitBasesDefinition> baseInclusions, IReadOnlyList<ExcludeUnitBasesDefinition> baseExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
         : base(type, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInstanceInclusions, unitInstanceExclusions) { }
 }

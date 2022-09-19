@@ -72,31 +72,12 @@ public static class ConstantVectorTexts
             public static VectorTextBuilder MultiplyAScalar { get; } = new(MultiplyAScalarDelegate, ", ");
             public static VectorTextBuilder MultiplyBScalar { get; } = new(MultiplyBScalarDelegate, ", ");
             public static VectorTextBuilder DivideAScalar { get; } = new(DivideAScalarDelegate, ", ");
-            
-            private static string NameDelegate(int componentIndex, int dimension)
-            {
-                return $"{GetComponentName(componentIndex, dimension)}";
-            }
 
-            private static string ComponentsAccessDelegate(int componentIndex, int dimension)
-            {
-                return $"components.{GetComponentName(componentIndex, dimension)}";
-            }
-
-            private static string ComponentsPropertyAccessDelegate(int componentIndex, int dimension)
-            {
-                return $"Components.{GetComponentName(componentIndex, dimension)}";
-            }
-
-            private static string ScalarDelegate(int componentIndex, int dimension)
-            {
-                return $"global::SharpMeasures.Scalar {GetComponentName(componentIndex, dimension)}";
-            }
-
-            private static string MagnitudeDelegate(int componentIndex, int dimension)
-            {
-                return $"{GetComponentName(componentIndex, dimension)}.Magnitude";
-            }
+            private static string NameDelegate(int componentIndex, int dimension) => $"{GetComponentName(componentIndex, dimension)}";
+            private static string ComponentsAccessDelegate(int componentIndex, int dimension) => $"components.{GetComponentName(componentIndex, dimension)}";
+            private static string ComponentsPropertyAccessDelegate(int componentIndex, int dimension) => $"Components.{GetComponentName(componentIndex, dimension)}";
+            private static string ScalarDelegate(int componentIndex, int dimension) => $"global::SharpMeasures.Scalar {GetComponentName(componentIndex, dimension)}";
+            private static string MagnitudeDelegate(int componentIndex, int dimension) => $"{GetComponentName(componentIndex, dimension)}.Magnitude";
 
             private static string AddAddendVectorDelegate(int componentIndex, int dimension)
             {
@@ -119,25 +100,10 @@ public static class ConstantVectorTexts
                 return $"minuend.{componentName} - {componentName}";
             }
 
-            private static string MultiplyFactorScalarDelegate(int componentIndex, int dimension)
-            {
-                return $"{GetComponentName(componentIndex, dimension)} * factor";
-            }
-
-            private static string DivideDivisorScalarDelegate(int componentIndex, int dimension)
-            {
-                return $"{GetComponentName(componentIndex, dimension)} / divisor";
-            }
-
-            private static string NegateDelegate(int componentIndex, int dimension)
-            {
-                return $"-{GetComponentName(componentIndex, dimension)}";
-            }
-
-            private static string NegateADelegate(int componentIndex, int dimension)
-            {
-                return $"-a.{GetComponentName(componentIndex, dimension)}";
-            }
+            private static string MultiplyFactorScalarDelegate(int componentIndex, int dimension) => $"{GetComponentName(componentIndex, dimension)} * factor";
+            private static string DivideDivisorScalarDelegate(int componentIndex, int dimension) => $"{GetComponentName(componentIndex, dimension)} / divisor";
+            private static string NegateDelegate(int componentIndex, int dimension) => $"-{GetComponentName(componentIndex, dimension)}";
+            private static string NegateADelegate(int componentIndex, int dimension) => $"-a.{GetComponentName(componentIndex, dimension)}";
 
             private static string AddBVectorDelegate(int componentIndex, int dimension)
             {
@@ -153,20 +119,9 @@ public static class ConstantVectorTexts
                 return $"a.{componentName} - b.{componentName}";
             }
 
-            private static string MultiplyAScalarDelegate(int componentIndex, int dimension)
-            {
-                return $"a.{GetComponentName(componentIndex, dimension)} * b";
-            }
-
-            private static string MultiplyBScalarDelegate(int componentIndex, int dimension)
-            {
-                return $"a * b.{GetComponentName(componentIndex, dimension)}";
-            }
-
-            private static string DivideAScalarDelegate(int componentIndex, int dimension)
-            {
-                return $"a.{GetComponentName(componentIndex, dimension)} / b";
-            }
+            private static string MultiplyAScalarDelegate(int componentIndex, int dimension) => $"a.{GetComponentName(componentIndex, dimension)} * b";
+            private static string MultiplyBScalarDelegate(int componentIndex, int dimension) => $"a * b.{GetComponentName(componentIndex, dimension)}";
+            private static string DivideAScalarDelegate(int componentIndex, int dimension) => $"a.{GetComponentName(componentIndex, dimension)} / b";
 
             private static string GetComponentName(int componentIndex, int dimension) => VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension);
         }
@@ -180,52 +135,18 @@ public static class ConstantVectorTexts
             public static VectorTextBuilder NewScalar { get; } = new(NewScalarDelegate, ", ");
             public static VectorTextBuilder Magnitude { get; } = new(MagnitudeDelegate, ", ");
 
-            private static string NameDelegate(int componentIndex, int dimension)
-            {
-                return $"{GetComponentName(componentIndex, dimension)}";
-            }
-
-            private static string ComponentsAccessDelegate(int componentIndex, int dimension)
-            {
-                return $"components.{GetComponentName(componentIndex, dimension)}";
-            }
-
-            private static string ScalarDelegate(int componentIndex, int dimension)
-            {
-                return $"global::SharpMeasures.Scalar {GetComponentName(componentIndex, dimension)}";
-            }
-
-            private static string NewScalarDelegate(int componentIndex, int dimension)
-            {
-                return $"new global::SharpMeasures.Scalar({GetComponentName(componentIndex, dimension)})";
-            }
-
-            private static string MagnitudeDelegate(int componentIndex, int dimension)
-            {
-                return $"{GetComponentName(componentIndex, dimension)}.Magnitude";
-            }
+            private static string NameDelegate(int componentIndex, int dimension) => $"{GetComponentName(componentIndex, dimension)}";
+            private static string ComponentsAccessDelegate(int componentIndex, int dimension) => $"components.{GetComponentName(componentIndex, dimension)}";
+            private static string ScalarDelegate(int componentIndex, int dimension) => $"global::SharpMeasures.Scalar {GetComponentName(componentIndex, dimension)}";
+            private static string NewScalarDelegate(int componentIndex, int dimension) => $"new global::SharpMeasures.Scalar({GetComponentName(componentIndex, dimension)})";
+            private static string MagnitudeDelegate(int componentIndex, int dimension) => $"{GetComponentName(componentIndex, dimension)}.Magnitude";
 
             private static string GetComponentName(int componentIndex, int dimension) => VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
         }
 
-        private static string SampleValuesDelegate(int componentIndex, int _)
-        {
-            return $"{2.3 * (componentIndex + 1) * Math.Sign(componentIndex)}";
-        }
-
-        private static string DeconstructScalarHeaderDelegate(int componentIndex, int dimension)
-        {
-            return $"out global::SharpMeasures.Scalar {VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension)}";
-        }
-
-        private static string MultiplyScalarLHSDelegate(int componentIndex, int dimension)
-        {
-            return $"a.{VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension)} * b";
-        }
-
-        private static string MultiplyScalarRHSDelegate(int componentIndex, int dimension)
-        {
-            return $"a * b.{VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension)}";
-        }
+        private static string SampleValuesDelegate(int componentIndex, int _) => $"{2.3 * (componentIndex + 1) * Math.Sign(componentIndex)}";
+        private static string DeconstructScalarHeaderDelegate(int componentIndex, int dimension) => $"out global::SharpMeasures.Scalar {VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension)}";
+        private static string MultiplyScalarLHSDelegate(int componentIndex, int dimension) => $"a.{VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension)} * b";
+        private static string MultiplyScalarRHSDelegate(int componentIndex, int dimension) => $"a * b.{VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension)}";
     }
 }

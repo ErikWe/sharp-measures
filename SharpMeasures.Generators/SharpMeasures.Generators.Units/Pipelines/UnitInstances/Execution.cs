@@ -24,7 +24,7 @@ internal static class Execution
         context.AddSource($"{data.Value.Unit.QualifiedName}.Instances.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
-    private class Composer
+    private sealed class Composer
     {
         public static string Compose(DataModel data)
         {
@@ -58,10 +58,7 @@ internal static class Execution
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
         }
 
-        private string Retrieve()
-        {
-            return Builder.ToString();
-        }
+        private string Retrieve() => Builder.ToString();
 
         private void ComposeTypeBlock(Indentation indentation)
         {
@@ -261,9 +258,6 @@ internal static class Execution
             return result;
         }
 
-        private void AppendDocumentation(Indentation indentation, string text)
-        {
-            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
-        }
+        private void AppendDocumentation(Indentation indentation, string text) => DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
     }
 }

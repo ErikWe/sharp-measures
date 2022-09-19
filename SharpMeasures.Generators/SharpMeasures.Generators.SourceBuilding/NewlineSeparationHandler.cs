@@ -2,7 +2,7 @@
 
 using System.Text;
 
-public class NewlineSeparationHandler
+public sealed class NewlineSeparationHandler
 {
     private StringBuilder Builder { get; }
 
@@ -15,9 +15,7 @@ public class NewlineSeparationHandler
     {
         Builder = builder;
 
-        BuilderLengthAtLastAddedSeparation = initialState
-            ? Builder.Length
-            : -1;
+        BuilderLengthAtLastAddedSeparation = initialState ? Builder.Length : -1;
     }
 
     public void AddIfNecessary()
@@ -35,8 +33,5 @@ public class NewlineSeparationHandler
         MarkUnncecessary();
     }
 
-    public void MarkUnncecessary()
-    {
-        BuilderLengthAtLastAddedSeparation = Builder.Length;
-    }
+    public void MarkUnncecessary() => BuilderLengthAtLastAddedSeparation = Builder.Length;
 }

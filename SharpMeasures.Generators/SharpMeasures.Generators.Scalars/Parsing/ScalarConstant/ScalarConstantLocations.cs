@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
-internal record class ScalarConstantLocations : AQuantityConstantLocations<ScalarConstantLocations>, IScalarConstantLocations
+internal sealed record class ScalarConstantLocations : AQuantityConstantLocations<ScalarConstantLocations>, IScalarConstantLocations
 {
     public static ScalarConstantLocations Empty { get; } = new();
 

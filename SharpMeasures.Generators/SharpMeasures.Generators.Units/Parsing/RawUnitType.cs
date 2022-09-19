@@ -12,29 +12,21 @@ using SharpMeasures.Generators.Units.Parsing.UnitInstanceAlias;
 
 using System.Collections.Generic;
 
-internal record class RawUnitType
+internal sealed record class RawUnitType
 {
     public DefinedType Type { get; }
     public MinimalLocation TypeLocation { get; }
 
     public RawSharpMeasuresUnitDefinition Definition { get; }
 
-    public IEnumerable<RawDerivableUnitDefinition> UnitDerivations => unitDerivations;
+    public IEnumerable<RawDerivableUnitDefinition> UnitDerivations { get; }
 
     public RawFixedUnitInstanceDefinition? FixedUnitInstance { get; }
-    public IEnumerable<RawUnitInstanceAliasDefinition> UnitInstanceAliases => unitInstanceAliases;
-    public IEnumerable<RawBiasedUnitInstanceDefinition> BiasedUnitInstances => biasedUnitInstances;
-    public IEnumerable<RawDerivedUnitInstanceDefinition> DerivedUnitInstances => derivedUnitInstances;
-    public IEnumerable<RawPrefixedUnitInstanceDefinition> PrefixedUnitInstances => prefixedUnitInstances;
-    public IEnumerable<RawScaledUnitInstanceDefinition> ScaledUnitInstances => scaledUnitInstances;
-
-    private EquatableEnumerable<RawDerivableUnitDefinition> unitDerivations { get; }
-
-    private EquatableEnumerable<RawUnitInstanceAliasDefinition> unitInstanceAliases { get; }
-    private EquatableEnumerable<RawDerivedUnitInstanceDefinition> derivedUnitInstances { get; }
-    private EquatableEnumerable<RawBiasedUnitInstanceDefinition> biasedUnitInstances { get; }
-    private EquatableEnumerable<RawPrefixedUnitInstanceDefinition> prefixedUnitInstances { get; }
-    private EquatableEnumerable<RawScaledUnitInstanceDefinition> scaledUnitInstances { get; }
+    public IEnumerable<RawUnitInstanceAliasDefinition> UnitInstanceAliases { get; }
+    public IEnumerable<RawBiasedUnitInstanceDefinition> BiasedUnitInstances { get; }
+    public IEnumerable<RawDerivedUnitInstanceDefinition> DerivedUnitInstances { get; }
+    public IEnumerable<RawPrefixedUnitInstanceDefinition> PrefixedUnitInstances { get; }
+    public IEnumerable<RawScaledUnitInstanceDefinition> ScaledUnitInstances { get; }
 
     public RawUnitType(DefinedType type, MinimalLocation unitLocation, RawSharpMeasuresUnitDefinition definition, IEnumerable<RawDerivableUnitDefinition> unitDerivations, RawFixedUnitInstanceDefinition? fixedUnitInstance,
         IEnumerable<RawUnitInstanceAliasDefinition> unitInstanceAliases, IEnumerable<RawDerivedUnitInstanceDefinition> derivedUnitInstances, IEnumerable<RawBiasedUnitInstanceDefinition> biasedUnitInstances,
@@ -45,13 +37,13 @@ internal record class RawUnitType
 
         Definition = definition;
 
-        this.unitDerivations = unitDerivations.AsEquatable();
+        UnitDerivations = unitDerivations.AsEquatable();
 
         FixedUnitInstance = fixedUnitInstance;
-        this.unitInstanceAliases = unitInstanceAliases.AsEquatable();
-        this.derivedUnitInstances = derivedUnitInstances.AsEquatable();
-        this.biasedUnitInstances = biasedUnitInstances.AsEquatable();
-        this.prefixedUnitInstances = prefixedUnitInstances.AsEquatable();
-        this.scaledUnitInstances = scaledUnitInstances.AsEquatable();
+        UnitInstanceAliases = unitInstanceAliases.AsEquatable();
+        DerivedUnitInstances = derivedUnitInstances.AsEquatable();
+        BiasedUnitInstances = biasedUnitInstances.AsEquatable();
+        PrefixedUnitInstances = prefixedUnitInstances.AsEquatable();
+        ScaledUnitInstances = scaledUnitInstances.AsEquatable();
     }
 }

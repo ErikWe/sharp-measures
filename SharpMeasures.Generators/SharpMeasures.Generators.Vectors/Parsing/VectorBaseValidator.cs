@@ -25,9 +25,8 @@ using System.Threading;
 
 internal static class VectorBaseValidator
 {
-    public static IncrementalValuesProvider<Optional<VectorBaseType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<VectorBaseType>> vectorProvider,
-       IncrementalValueProvider<VectorProcessingData> processingDataProvider, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider,
-       IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
+    public static IncrementalValuesProvider<Optional<VectorBaseType>> Validate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<VectorBaseType>> vectorProvider, IncrementalValueProvider<VectorProcessingData> processingDataProvider,
+        IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
         return vectorProvider.Combine(processingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(Validate).ReportDiagnostics(context);
     }

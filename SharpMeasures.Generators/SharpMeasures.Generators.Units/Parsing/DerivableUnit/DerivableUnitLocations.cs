@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Attributes.Parsing;
 
 using System.Collections.Generic;
 
-internal record class DerivableUnitLocations : AAttributeLocations<DerivableUnitLocations>, IDerivableUnitLocations
+internal sealed record class DerivableUnitLocations : AAttributeLocations<DerivableUnitLocations>, IDerivableUnitLocations
 {
     public static DerivableUnitLocations Empty { get; } = new();
 
@@ -28,7 +28,7 @@ internal record class DerivableUnitLocations : AAttributeLocations<DerivableUnit
 
     protected override DerivableUnitLocations Locations => this;
 
-    private ReadOnlyEquatableList<MinimalLocation> signatureElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
+    private IReadOnlyList<MinimalLocation> signatureElements { get; init; } = ReadOnlyEquatableList<MinimalLocation>.Empty;
 
     private DerivableUnitLocations() { }
 }

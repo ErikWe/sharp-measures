@@ -13,7 +13,7 @@ using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 using System;
 using System.Collections.Generic;
 
-internal class VectorSpecializationParser : AVectorParser<RawSpecializedSharpMeasuresVectorDefinition, RawVectorSpecializationType>
+internal sealed class VectorSpecializationParser : AVectorParser<RawSpecializedSharpMeasuresVectorDefinition, RawVectorSpecializationType>
 {
     protected override RawVectorSpecializationType ProduceResult(DefinedType type, MinimalLocation typeLocation, RawSpecializedSharpMeasuresVectorDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations,
         IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)

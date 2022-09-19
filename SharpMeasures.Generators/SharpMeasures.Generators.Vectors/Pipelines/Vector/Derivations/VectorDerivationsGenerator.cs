@@ -21,6 +21,6 @@ internal static class VectorDerivationsGenerator
             return new Optional<DataModel>();
         }
 
-        return new DataModel(model.Value.Vector.Type, model.Value.Vector.Dimension, model.Value.Vector.DefinedDerivations.Concat(model.Value.Vector.InheritedDerivations).ToList(), model.Value.ScalarPopulation, model.Value.Documentation);
+        return new DataModel(model.Value.Vector.Type, model.Value.Vector.Dimension, model.Value.Vector.Scalar is not null, model.Value.Vector.DefinedDerivations.Concat(model.Value.Vector.InheritedDerivations).ToList(), model.Value.ScalarPopulation, model.Value.Documentation);
     }
 }

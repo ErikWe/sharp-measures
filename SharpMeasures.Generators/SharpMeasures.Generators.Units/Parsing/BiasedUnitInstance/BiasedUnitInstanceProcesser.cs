@@ -11,7 +11,7 @@ internal interface IBiasedUnitInstanceProcessingDiagnostics : IModifiedUnitInsta
     public abstract Diagnostic? EmptyExpression(IUnitInstanceProcessingContext context, RawBiasedUnitInstanceDefinition definition);
 }
 
-internal class BiasedUnitInstanceProcesser : AModifiedUnitInstanceProcesser<IUnitInstanceProcessingContext, RawBiasedUnitInstanceDefinition, BiasedUnitInstanceLocations, BiasedUnitInstanceDefinition>
+internal sealed class BiasedUnitInstanceProcesser : AModifiedUnitInstanceProcesser<IUnitInstanceProcessingContext, RawBiasedUnitInstanceDefinition, BiasedUnitInstanceLocations, BiasedUnitInstanceDefinition>
 {
     private IBiasedUnitInstanceProcessingDiagnostics Diagnostics { get; }
 

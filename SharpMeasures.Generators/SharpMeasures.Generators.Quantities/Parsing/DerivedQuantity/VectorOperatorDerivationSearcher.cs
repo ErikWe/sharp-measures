@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Scalars;
 using System;
 using System.Collections.Generic;
 
-public class VectorOperatorDerivationSearcher
+public sealed class VectorOperatorDerivationSearcher
 {
     public static IReadOnlyList<OperatorDerivation> GetDerivations(NamedType quantity, string expression, IReadOnlyList<NamedType> signature, DerivationOperatorImplementation operatorImplementation, IResolvedScalarPopulation scalarPopulation)
     {

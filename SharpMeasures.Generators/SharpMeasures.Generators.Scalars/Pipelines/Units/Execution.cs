@@ -21,7 +21,7 @@ internal static class Execution
         context.AddSource($"{data.Value.Scalar.QualifiedName}.Units.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
-    private class Composer
+    private sealed class Composer
     {
         public static string Compose(DataModel data)
         {
@@ -53,10 +53,7 @@ internal static class Execution
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
         }
 
-        private string Retrieve()
-        {
-            return Builder.ToString();
-        }
+        private string Retrieve() => Builder.ToString();
 
         private void ComposeTypeBlock(Indentation indentation)
         {
@@ -82,7 +79,7 @@ internal static class Execution
 
         private void AppendUnitBases(Indentation indentation)
         {
-            foreach (var includedBase in Data.IncludedBases)
+            foreach (var includedBase in Data.IncludedUnitBases)
             {
                 SeparationHandler.AddIfNecessary();
 
@@ -118,7 +115,7 @@ internal static class Execution
 
         private void AppendUnitPlurals(Indentation indentation)
         {
-            foreach (var includedUnit in Data.IncluedUnits)
+            foreach (var includedUnit in Data.IncludedUnits)
             {
                 SeparationHandler.AddIfNecessary();
 
@@ -127,9 +124,6 @@ internal static class Execution
             }
         }
 
-        private void AppendDocumentation(Indentation indentation, string text)
-        {
-            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
-        }
+        private void AppendDocumentation(Indentation indentation, string text) => DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
     }
 }

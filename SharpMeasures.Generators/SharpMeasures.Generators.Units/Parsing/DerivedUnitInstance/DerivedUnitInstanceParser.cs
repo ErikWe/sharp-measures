@@ -8,7 +8,7 @@ internal static class DerivedUnitInstanceParser
 
     private static RawDerivedUnitInstanceDefinition DefaultDefinition() => RawDerivedUnitInstanceDefinition.Empty;
 
-    private class AttributeParser : AAttributeParser<RawDerivedUnitInstanceDefinition, DerivedUnitInstanceLocations, DerivedUnitInstanceAttribute>
+    private sealed class AttributeParser : AAttributeParser<RawDerivedUnitInstanceDefinition, DerivedUnitInstanceLocations, DerivedUnitInstanceAttribute>
     {
         public AttributeParser() : base(DefaultDefinition, DerivedUnitInstanceProperties.AllProperties) { }
     }

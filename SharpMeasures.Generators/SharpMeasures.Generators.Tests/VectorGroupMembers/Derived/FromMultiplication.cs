@@ -35,15 +35,15 @@ public class FromMultiplication
         [SharpMeasuresVector(typeof(Unit))]
         public partial class C{{dimension}} { }
 
-        [SharpMeasuresVector(typeof(Unit))]
-        public partial class B{{dimension}} { }
-
         [SharpMeasuresVectorGroupMember(typeof(D))]
-        public partial class D3 { }
+        public partial class D{{dimension}} { }
 
-        [DerivedQuantity("{0} * {1}", typeof(B{{dimension}}), typeof(C{{dimension}}))]
+        [DerivedQuantity("{0} * {1}", typeof(B), typeof(C{{dimension}}))]
         [SharpMeasuresVectorGroup(typeof(Unit))]
         public static partial class D { }
+
+        [SharpMeasuresScalar(typeof(Unit))]
+        public partial class B { }
 
         [SharpMeasuresScalar(typeof(Unit))]
         public partial class A { }
@@ -75,7 +75,7 @@ public class FromMultiplication
         public static partial class D { }
 
         [SharpMeasuresScalar(typeof(Unit))]
-        public static partial class B { }
+        public partial class B { }
 
         [SharpMeasuresScalar(typeof(Unit))]
         public partial class A { }

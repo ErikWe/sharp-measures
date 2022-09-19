@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquatable<DefaultVectorDocumentation>
+internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquatable<DefaultVectorDocumentation>
 {
     private DefinedType Type { get; }
     private int Dimension { get; }
@@ -61,7 +61,7 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
     {
         if (model.Vector.Scalar is not null && model.ScalarPopulation.Scalars.TryGetValue(model.Vector.Scalar.Value, out var scalar) && model.UnitPopulation.Units.TryGetValue(scalar.Unit, out var scalarUnit))
         {
-            foreach (var includedBaseName in scalar.IncludedUnitBaseInstancesNames)
+            foreach (var includedBaseName in scalar.IncludedUnitBaseInstanceNames)
             {
                 if (scalarUnit.UnitInstancesByName.TryGetValue(includedBaseName, out var includedBase))
                 {
@@ -355,7 +355,7 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
 
     private static string InheritDoc => "/// <inheritdoc/>";
 
-    private class SpecificTexts
+    private sealed class SpecificTexts
     {
         public string ParameterTuple() => ParameterTupleBuilder.GetText(Dimension);
         public string ComponentsConstructor() => ComponentsConstructorBuilder.GetText(Dimension);
@@ -446,33 +446,25 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
         }
     }
 
-    private static string GetOperatorSymbol(OperatorType operatorType)
+    private static string GetOperatorSymbol(OperatorType operatorType) => operatorType switch
     {
-        return operatorType switch
-        {
-            OperatorType.Addition => "+",
-            OperatorType.Subtraction => "-",
-            OperatorType.Multiplication => "*",
-            OperatorType.Division => "/",
-            _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
-        };
-    }
+        OperatorType.Addition => "+",
+        OperatorType.Subtraction => "-",
+        OperatorType.Multiplication => "*",
+        OperatorType.Division => "/",
+        _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
+    };
 
-    private static (string First, string Second) GetOperatorComponentNames(OperatorType operatorType)
+    private static (string First, string Second) GetOperatorComponentNames(OperatorType operatorType) => operatorType switch
     {
-        return operatorType switch
-        {
-            OperatorType.Addition => ("term", "term"),
-            OperatorType.Subtraction => ("term", "term"),
-            OperatorType.Multiplication => ("factor", "factor"),
-            OperatorType.Division => ("dividend", "divisor"),
-            _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
-        };
-    }
+        OperatorType.Addition => ("term", "term"),
+        OperatorType.Subtraction => ("term", "term"),
+        OperatorType.Multiplication => ("factor", "factor"),
+        OperatorType.Division => ("dividend", "divisor"),
+        _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
+    };
 
-    public virtual bool Equals(DefaultVectorDocumentation? other) => other is not null && Type == other.Type && Dimension == other.Dimension && Unit == other.Unit && Scalar == other.Scalar
-        && DefaultUnitInstance == other.DefaultUnitInstance && DefaultUnitInstanceSymbol == other.DefaultUnitInstanceSymbol;
-
+    public bool Equals(DefaultVectorDocumentation? other) => other is not null && Type == other.Type && Dimension == other.Dimension && Unit == other.Unit && Scalar == other.Scalar && DefaultUnitInstance == other.DefaultUnitInstance && DefaultUnitInstanceSymbol == other.DefaultUnitInstanceSymbol;
     public override bool Equals(object? obj) => obj is DefaultVectorDocumentation other && Equals(other);
     
     public static bool operator ==(DefaultVectorDocumentation? lhs, DefaultVectorDocumentation? rhs) => lhs?.Equals(rhs) ?? rhs is null;

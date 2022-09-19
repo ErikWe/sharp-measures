@@ -23,7 +23,7 @@ internal interface ISharpMeasuresScalarProcessingDiagnostics : IDefaultUnitInsta
     public abstract Diagnostic? NullCubeRootQuantity(IProcessingContext context, RawSharpMeasuresScalarDefinition definition);
 }
 
-internal class SharpMeasuresScalarProcesser : AProcesser<IProcessingContext, RawSharpMeasuresScalarDefinition, SharpMeasuresScalarDefinition>
+internal sealed class SharpMeasuresScalarProcesser : AProcesser<IProcessingContext, RawSharpMeasuresScalarDefinition, SharpMeasuresScalarDefinition>
 {
     private ISharpMeasuresScalarProcessingDiagnostics Diagnostics { get; }
 
@@ -61,15 +61,8 @@ internal class SharpMeasuresScalarProcesser : AProcesser<IProcessingContext, Raw
             defaultUnitInstanceSymbol, definition.Reciprocal, definition.Square, definition.Cube, definition.SquareRoot, definition.CubeRoot, definition.GenerateDocumentation, definition.Locations);
     }
 
-    private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawSharpMeasuresScalarDefinition definition)
-    {
-        return ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Locations.ExplicitlySetUnit);
-    }
-
-    private IValidityWithDiagnostics ValidateUnitNotNull(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
-    {
-        return ValidityWithDiagnostics.Conditional(definition.Unit is not null, () => Diagnostics.NullUnit(context, definition));
-    }
+    private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawSharpMeasuresScalarDefinition definition) => ValidityWithDiagnostics.ConditionalWithoutDiagnostics(definition.Locations.ExplicitlySetUnit);
+    private IValidityWithDiagnostics ValidateUnitNotNull(IProcessingContext context, RawSharpMeasuresScalarDefinition definition) => ValidityWithDiagnostics.Conditional(definition.Unit is not null, () => Diagnostics.NullUnit(context, definition));
 
     private IValidityWithDiagnostics ValidateVectorNotNull(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
     {

@@ -22,7 +22,7 @@ internal static class Execution
         context.AddSource($"{data.Value.Vector.QualifiedName}.Common.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
-    private class Composer
+    private sealed class Composer
     {
         public static string Compose(DataModel data)
         {
@@ -63,10 +63,7 @@ internal static class Execution
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
         }
 
-        private string Retrieve()
-        {
-            return Builder.ToString();
-        }
+        private string Retrieve() => Builder.ToString();
 
         private void AppendInterfaces()
         {
@@ -599,13 +596,10 @@ internal static class Execution
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
-        private void AppendDocumentation(Indentation indentation, string text)
-        {
-            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
-        }
+        private void AppendDocumentation(Indentation indentation, string text) => DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
     }
 
-    private class SpecificTexts
+    private sealed class SpecificTexts
     {
         public UpperTexts Upper { get; }
         public LowerTexts Lower { get; }
@@ -623,12 +617,10 @@ internal static class Execution
             Upper = new(dimension, scalar);
             Lower = new(dimension, scalar, unitQuantity, unitParameterName);
 
-            DeconstructHeaderBuilder = scalar is null
-                ? ConstantVectorTexts.Builders.DeconstructScalarHeader
-                : CommonTextBuilders.DeconstructComponents(scalar.Value.Name);
+            DeconstructHeaderBuilder = scalar is null ? ConstantVectorTexts.Builders.DeconstructScalarHeader : CommonTextBuilders.DeconstructComponents(scalar.Value.Name);
         }
 
-        public class UpperTexts
+        public sealed class UpperTexts
         {
             public string ComponentName(int index) => VectorTextBuilder.GetUpperCasedComponentName(index, Dimension);
 
@@ -642,13 +634,11 @@ internal static class Execution
             {
                 Dimension = dimension;
 
-                ComponentBuilder = scalar is null
-                    ? ConstantVectorTexts.Builders.Upper.Scalar
-                    : CommonTextBuilders.Upper.Component(scalar.Value.Name);
+                ComponentBuilder = scalar is null ? ConstantVectorTexts.Builders.Upper.Scalar : CommonTextBuilders.Upper.Component(scalar.Value.Name);
             }
         }
 
-        public class LowerTexts
+        public sealed class LowerTexts
         {
             public string ComponentName(int index) => VectorTextBuilder.GetLowerCasedComponentName(index, Dimension);
 
@@ -666,13 +656,8 @@ internal static class Execution
             {
                 Dimension = dimension;
 
-                ComponentBuilder = scalar is null
-                    ? ConstantVectorTexts.Builders.Lower.Scalar
-                    : CommonTextBuilders.Lower.Component(scalar.Value.Name);
-
-                NewComponentBuilder = scalar is null
-                    ? ConstantVectorTexts.Builders.Lower.NewScalar
-                    : CommonTextBuilders.Lower.NewComponent(scalar.Value.Name);
+                ComponentBuilder = scalar is null ? ConstantVectorTexts.Builders.Lower.Scalar : CommonTextBuilders.Lower.Component(scalar.Value.Name);
+                NewComponentBuilder = scalar is null ? ConstantVectorTexts.Builders.Lower.NewScalar : CommonTextBuilders.Lower.NewComponent(scalar.Value.Name);
 
                 ScalarMultiplyUnitBuilder = CommonTextBuilders.Lower.ScalarMultiplyUnit(unitParameterName, unitQuantity.Name);
             }

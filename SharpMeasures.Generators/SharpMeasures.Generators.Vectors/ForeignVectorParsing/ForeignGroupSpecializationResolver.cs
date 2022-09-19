@@ -8,13 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public static class ForeignGroupSpecializationResolver
+internal static class ForeignGroupSpecializationResolver
 {
-    public static Optional<IResolvedVectorGroupType> Resolve(IVectorGroupSpecializationType groupType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
+    public static Optional<ResolvedGroupType> Resolve(GroupSpecializationType groupType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
     {
         if (vectorPopulation.GroupBases.TryGetValue(groupType.Type.AsNamedType(), out var groupBase) is false || unitPopulation.Units.TryGetValue(groupBase.Definition.Unit, out var unit) is false)
         {
-            return new Optional<IResolvedVectorGroupType>();
+            return new Optional<ResolvedGroupType>();
         }
 
         var membersByDimension = ResolveMembers(groupType, vectorPopulation);
@@ -41,10 +41,7 @@ public static class ForeignGroupSpecializationResolver
             defaultUnitInstanceName, defaultUnitInstanceSymbol, membersByDimension, definedDerivations, inheritedDerivations, conversions, includedUnitInstances, generateDocumentation);
     }
 
-    private static IReadOnlyDictionary<int, NamedType> ResolveMembers(IVectorGroupSpecializationType groupType, IVectorPopulation vectorPopulation)
-    {
-        return vectorPopulation.GroupMembersByGroup[groupType.Type.AsNamedType()].GroupMembersByDimension.Transform(static (vector) => vector.Type.AsNamedType());
-    }
+    private static IReadOnlyDictionary<int, NamedType> ResolveMembers(IVectorGroupSpecializationType groupType, IVectorPopulation vectorPopulation) => vectorPopulation.GroupMembersByGroup[groupType.Type.AsNamedType()].GroupMembersByDimension.Transform(static (vector) => vector.Type.AsNamedType());
 
     private static NamedType? ResolveDifference(IVectorGroupSpecializationType groupType, IVectorPopulation vectorPopulation)
     {
@@ -116,11 +113,7 @@ public static class ForeignGroupSpecializationResolver
         }
     }
 
-    private static T? RecursivelySearchForDefined<T>(IVectorGroupSpecializationType groupType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, T?> itemDelegate)
-    {
-        return RecursivelySearchForMatching(groupType, vectorPopulation, itemDelegate, static (_, item) => item is not null);
-    }
-
+    private static T? RecursivelySearchForDefined<T>(IVectorGroupSpecializationType groupType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, T?> itemDelegate) => RecursivelySearchForMatching(groupType, vectorPopulation, itemDelegate, static (_, item) => item is not null);
     private static T? RecursivelySearchForMatching<T>(IVectorGroupSpecializationType groupType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, T?> itemDelegate, Func<IVectorGroupType, T?, bool> predicate)
     {
         return recursivelySearch(groupType);

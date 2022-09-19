@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
 using System.Collections.Generic;
 
-internal record class RawVectorConstantDefinition : ARawQuantityConstantDefinition<RawVectorConstantDefinition, VectorConstantLocations>
+internal sealed record class RawVectorConstantDefinition : ARawQuantityConstantDefinition<RawVectorConstantDefinition, VectorConstantLocations>
 {
     public static RawVectorConstantDefinition Empty { get; } = new();
 
@@ -15,7 +15,7 @@ internal record class RawVectorConstantDefinition : ARawQuantityConstantDefiniti
         init => this.value = value.AsReadOnlyEquatable();
     }
 
-    private ReadOnlyEquatableList<double> value { get; init; } = ReadOnlyEquatableList<double>.Empty;
+    private IReadOnlyList<double> value { get; init; } = ReadOnlyEquatableList<double>.Empty;
 
     protected override RawVectorConstantDefinition Definition => this;
 

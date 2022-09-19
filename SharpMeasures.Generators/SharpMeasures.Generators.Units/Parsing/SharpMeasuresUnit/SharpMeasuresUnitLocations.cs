@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class SharpMeasuresUnitLocations : AAttributeLocations<SharpMeasuresUnitLocations>, IUnitLocations
+internal sealed record class SharpMeasuresUnitLocations : AAttributeLocations<SharpMeasuresUnitLocations>, IUnitLocations
 {
     public static SharpMeasuresUnitLocations Empty { get; } = new();
 

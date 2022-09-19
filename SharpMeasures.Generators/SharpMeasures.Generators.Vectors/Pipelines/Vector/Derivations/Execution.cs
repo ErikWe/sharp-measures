@@ -31,7 +31,7 @@ internal static class Execution
         context.AddSource($"{data.Value.Vector.QualifiedName}.Derivations.g.cs", SourceText.From(source, Encoding.UTF8));
     }
 
-    private class Composer
+    private sealed class Composer
     {
         public static string Compose(DataModel data)
         {
@@ -50,6 +50,9 @@ internal static class Execution
         private HashSet<DerivedQuantitySignature> ImplementedSignatures { get; } = new();
 
         private bool AnyImplementations { get; set; }
+
+        private bool AppendPureVector3Maths { get; set; }
+        private bool AppendPureScalarMaths { get; set; }
 
         private Composer(DataModel data)
         {
@@ -122,6 +125,8 @@ internal static class Execution
                     }
                 }
             }
+
+            AppendMathUtility(indentation);
         }
 
         private void AppendMethodDerivation(Indentation indentation, string expression, IReadOnlyList<NamedType> signature, bool permutations)
@@ -133,6 +138,16 @@ internal static class Execution
             if (processedExpression is null)
             {
                 return;
+            }
+
+            if (expression.Contains("PureScalarMaths."))
+            {
+                AppendPureScalarMaths = true;
+            }
+
+            if (expression.Contains("PureVector3Maths."))
+            {
+                AppendPureVector3Maths = true;
             }
 
             AnyImplementations = true;
@@ -188,17 +203,14 @@ internal static class Execution
             }
         }
 
-        private static string GetOperatorSymbol(OperatorType operatorType)
+        private static string GetOperatorSymbol(OperatorType operatorType) => operatorType switch
         {
-            return operatorType switch
-            {
-                OperatorType.Addition => "+",
-                OperatorType.Subtraction => "-",
-                OperatorType.Multiplication => "*",
-                OperatorType.Division => "/",
-                _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
-            };
-        }
+            OperatorType.Addition => "+",
+            OperatorType.Subtraction => "-",
+            OperatorType.Multiplication => "*",
+            OperatorType.Division => "/",
+            _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
+        };
 
         private void AppendMethodDefinition(Indentation indentation, string methodNameAndModifiers, string expression, DerivedQuantitySignature signature, IReadOnlyList<string> parameterNames)
         {
@@ -231,6 +243,25 @@ internal static class Execution
             }
 
             AppendMethodDefinition(indentation, methodNameAndModifiers, expression, signature, parameterNames);
+        }
+
+        private void AppendMathUtility(Indentation indentation)
+        {
+            if (Data.HasDefinedScalar is false && AppendPureScalarMaths)
+            {
+                SeparationHandler.AddIfNecessary();
+
+                Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in a pure <see cref=\"global::SharpMeasures.Scalar\"/>.</summary>");
+                Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IScalarResultingMaths<global::SharpMeasures.Scalar> PureScalarMaths {{ get; }} = global::SharpMeasures.Maths.MathFactory.ScalarResult();");
+            }
+
+            if (AppendPureVector3Maths)
+            {
+                SeparationHandler.AddIfNecessary();
+
+                Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in a pure <see cref=\"global::SharpMeasures.Vector3\"/>.</summary>");
+                Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IVector3ResultingMaths<global::SharpMeasures.Vector3> PureVector3Maths {{ get; }} = global::SharpMeasures.Maths.MathFactory.Vector3Result();");
+            }
         }
 
         private static IEnumerable<(DerivedQuantitySignature Signature, IReadOnlyList<string> ParameterNames)> GetPermutedSignatures(IReadOnlyList<NamedType> signature, bool permutations, IReadOnlyList<string> parameterNames)
@@ -371,9 +402,6 @@ internal static class Execution
             }
         }
 
-        private void AppendDocumentation(Indentation indentation, string text)
-        {
-            DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
-        }
+        private void AppendDocumentation(Indentation indentation, string text) => DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
     }
 }

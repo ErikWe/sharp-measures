@@ -19,7 +19,7 @@ internal interface IScalarConstantValidationContext : IQuantityConstantValidatio
     public abstract HashSet<string> IncludedUnitInstanceNames { get; }
 }
 
-internal class ScalarConstantValidator : AQuantityConstantValidator<IScalarConstantValidationContext, ScalarConstantDefinition, ScalarConstantLocations>
+internal sealed class ScalarConstantValidator : AQuantityConstantValidator<IScalarConstantValidationContext, ScalarConstantDefinition, ScalarConstantLocations>
 {
     private IScalarConstantValidationDiagnostics Diagnostics { get; }
 
@@ -28,10 +28,7 @@ internal class ScalarConstantValidator : AQuantityConstantValidator<IScalarConst
         Diagnostics = diagnostics;
     }
 
-    protected override ScalarConstantDefinition ProduceResult(ScalarConstantDefinition definition, bool generateMultiples)
-    {
-        return new(definition.Name, definition.UnitInstanceName, definition.Value, generateMultiples, definition.Multiples, definition.Locations);
-    }
+    protected override ScalarConstantDefinition ProduceResult(ScalarConstantDefinition definition, bool generateMultiples) => new(definition.Name, definition.UnitInstanceName, definition.Value, generateMultiples, definition.Multiples, definition.Locations);
 
     protected override IValidityWithDiagnostics ValidateConstant(IScalarConstantValidationContext context, ScalarConstantDefinition definition)
     {
@@ -54,8 +51,7 @@ internal class ScalarConstantValidator : AQuantityConstantValidator<IScalarConst
 
     private IValidityWithDiagnostics ValidateMultiplesNotReservedByUnit(IScalarConstantValidationContext context, ScalarConstantDefinition definition)
     {
-        var multiplesReservedByUnitInstanceName = definition.GenerateMultiplesProperty && definition.Multiples!.StartsWith("One", StringComparison.InvariantCulture)
-            && context.IncludedUnitInstanceNames.Contains(definition.Multiples.Substring(3));
+        var multiplesReservedByUnitInstanceName = definition.GenerateMultiplesProperty && definition.Multiples!.StartsWith("One", StringComparison.InvariantCulture) && context.IncludedUnitInstanceNames.Contains(definition.Multiples.Substring(3));
 
         return ValidityWithDiagnostics.Conditional(multiplesReservedByUnitInstanceName is false, () => Diagnostics.MultiplesNameReservedByUnitInstanceName(context, definition));
     }

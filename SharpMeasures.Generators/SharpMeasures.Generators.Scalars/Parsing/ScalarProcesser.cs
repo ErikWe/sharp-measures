@@ -13,7 +13,7 @@ public interface IScalarProcesser
     public abstract (IncrementalValueProvider<IScalarPopulation> Population, IScalarValidator Validator) Process(IncrementalGeneratorInitializationContext context);
 }
 
-internal class ScalarProcesser : IScalarProcesser
+internal sealed class ScalarProcesser : IScalarProcesser
 {
     private IncrementalValuesProvider<Optional<RawScalarBaseType>> ScalarBaseProvider { get; }
     private IncrementalValuesProvider<Optional<RawScalarSpecializationType>> ScalarSpecializationProvider { get; }
@@ -49,8 +49,5 @@ internal class ScalarProcesser : IScalarProcesser
     private static IScalarPopulation ExtractPopulation((IScalarPopulation Population, ScalarProcessingData) input, CancellationToken _) => input.Population;
     private static ScalarProcessingData ExtractProcessingData((IScalarPopulation, ScalarProcessingData ProcessingData) input, CancellationToken _) => input.ProcessingData;
 
-    private static (IScalarPopulation Population, ScalarProcessingData ProcessingData) CreatePopulation((ImmutableArray<IScalarBaseType> Bases, ImmutableArray<IScalarSpecializationType> Specializations) scalars, CancellationToken _)
-    {
-        return ScalarPopulation.Build(scalars.Bases, scalars.Specializations);
-    }
+    private static (IScalarPopulation Population, ScalarProcessingData ProcessingData) CreatePopulation((ImmutableArray<IScalarBaseType> Bases, ImmutableArray<IScalarSpecializationType> Specializations) scalars, CancellationToken _) => ScalarPopulation.Build(scalars.Bases, scalars.Specializations);
 }

@@ -15,11 +15,10 @@ using SharpMeasures.Generators.Scalars.Parsing.SpecializedSharpMeasuresScalar;
 
 using System.Collections.Generic;
 
-internal class ScalarSpecializationProcesser : AScalarProcesser<RawScalarSpecializationType, RawSpecializedSharpMeasuresScalarDefinition, ScalarSpecializationType, SpecializedSharpMeasuresScalarDefinition>
+internal sealed class ScalarSpecializationProcesser : AScalarProcesser<RawScalarSpecializationType, RawSpecializedSharpMeasuresScalarDefinition, ScalarSpecializationType, SpecializedSharpMeasuresScalarDefinition>
 {
-    protected override ScalarSpecializationType ProduceResult(DefinedType type, MinimalLocation typeLocation, SpecializedSharpMeasuresScalarDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
-        IReadOnlyList<ScalarConstantDefinition> constants, IReadOnlyList<ConvertibleScalarDefinition> conversions, IReadOnlyList<IncludeUnitBasesDefinition> baseInclusions, IReadOnlyList<ExcludeUnitBasesDefinition> baseExclusions,
-        IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
+    protected override ScalarSpecializationType ProduceResult(DefinedType type, MinimalLocation typeLocation, SpecializedSharpMeasuresScalarDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ScalarConstantDefinition> constants,
+        IReadOnlyList<ConvertibleScalarDefinition> conversions, IReadOnlyList<IncludeUnitBasesDefinition> baseInclusions, IReadOnlyList<ExcludeUnitBasesDefinition> baseExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
     {
         return new(type, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInstanceInclusions, unitInstanceExclusions);
     }

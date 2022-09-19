@@ -15,7 +15,7 @@ public interface IIncludeUnitsProcessingDiagnostics : IUniqueItemListProcessingD
     public abstract Diagnostic? UnrecognizedInclusionStackingMode(IUniqueItemListProcessingContext<string> context, RawIncludeUnitsDefinition definition);
 }
 
-public class IncludeUnitsProcesser : AUniqueItemListProcesser<string?, string, IUniqueItemListProcessingContext<string>, RawIncludeUnitsDefinition, IncludeUnitsLocations, IncludeUnitsDefinition>
+public sealed class IncludeUnitsProcesser : AUniqueItemListProcesser<string?, string, IUniqueItemListProcessingContext<string>, RawIncludeUnitsDefinition, IncludeUnitsLocations, IncludeUnitsDefinition>
 {
     private IIncludeUnitsProcessingDiagnostics Diagnostics { get; }
 
@@ -51,6 +51,5 @@ public class IncludeUnitsProcesser : AUniqueItemListProcesser<string?, string, I
     protected override string UpgradeItem(string? item) => UpgradeNullItem(item);
     protected override string UpgradeNullItem(string? item) => item ?? throw new ArgumentNullException(nameof(item));
 
-    protected override IncludeUnitsDefinition ProduceResult(IReadOnlyList<string> items, RawIncludeUnitsDefinition definition, IReadOnlyList<int> locationMap)
-        => new(items, definition.StackingMode, definition.Locations, locationMap);
+    protected override IncludeUnitsDefinition ProduceResult(IReadOnlyList<string> items, RawIncludeUnitsDefinition definition, IReadOnlyList<int> locationMap) => new(items, definition.StackingMode, definition.Locations, locationMap);
 }

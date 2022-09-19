@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 
-internal class ConvertibleVectorFilteringDiagnostics : IConvertibleVectorFilteringDiagnostics
+internal sealed class ConvertibleVectorFilteringDiagnostics : IConvertibleVectorFilteringDiagnostics
 {
     public static ConvertibleVectorFilteringDiagnostics Instance { get; } = new();
 

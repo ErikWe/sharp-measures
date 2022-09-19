@@ -25,9 +25,7 @@ internal static class CommonProcessing
 
     public static IResultWithDiagnostics<IReadOnlyList<VectorConstantDefinition>> ProcessConstants(DefinedType type, IEnumerable<RawVectorConstantDefinition> rawDefinitions, NamedType? unit)
     {
-        var scalarConstantProcesser = unit is null
-            ? VectorConstantProcesserForUnknownUnit
-            : VectorConstantProcesser(unit.Value);
+        var scalarConstantProcesser = unit is null ? VectorConstantProcesserForUnknownUnit : VectorConstantProcesser(unit.Value);
 
         QuantityConstantProcessingContext processingContext = new(type);
 

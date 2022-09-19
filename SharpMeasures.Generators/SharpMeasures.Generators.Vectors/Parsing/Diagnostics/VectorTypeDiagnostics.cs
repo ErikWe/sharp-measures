@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Diagnostics;
 
-internal class VectorTypeDiagnostics
+internal static class VectorTypeDiagnostics
 {
     public static Diagnostic TypeNotPartial<TAttribute>(BaseTypeDeclarationSyntax declaration)
     {

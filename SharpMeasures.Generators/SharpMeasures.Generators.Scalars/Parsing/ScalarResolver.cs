@@ -10,11 +10,10 @@ using System.Threading;
 
 public interface IScalarResolver
 {
-    public abstract (IncrementalValueProvider<IResolvedScalarPopulation>, IScalarGenerator) Resolve(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider,
-        IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider);
+    public abstract (IncrementalValueProvider<IResolvedScalarPopulation>, IScalarGenerator) Resolve(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider);
 }
 
-internal class ScalarResolver : IScalarResolver
+internal sealed class ScalarResolver : IScalarResolver
 {
     private IncrementalValuesProvider<Optional<ScalarBaseType>> ScalarBaseProvider { get; }
     private IncrementalValuesProvider<Optional<ScalarSpecializationType>> ScalarSpecializationProvider { get; }
@@ -40,9 +39,5 @@ internal class ScalarResolver : IScalarResolver
     }
 
     private static Optional<IResolvedScalarType> ExtractInterface(Optional<ResolvedScalarType> scalarType, CancellationToken _) => scalarType.HasValue ? scalarType.Value : new Optional<IResolvedScalarType>();
-
-    private static IResolvedScalarPopulation CreatePopulation((ImmutableArray<IResolvedScalarType> Bases, ImmutableArray<IResolvedScalarType> Specializations) scalars, CancellationToken _)
-    {
-        return ResolvedScalarPopulation.Build(scalars.Bases, scalars.Specializations);
-    }
+    private static IResolvedScalarPopulation CreatePopulation((ImmutableArray<IResolvedScalarType> Bases, ImmutableArray<IResolvedScalarType> Specializations) scalars, CancellationToken _) => ResolvedScalarPopulation.Build(scalars.Bases, scalars.Specializations);
 }

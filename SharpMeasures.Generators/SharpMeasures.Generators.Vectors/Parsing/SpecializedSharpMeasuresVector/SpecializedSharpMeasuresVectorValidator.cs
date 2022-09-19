@@ -33,7 +33,7 @@ internal interface ISpecializedSharpMeasuresVectorValidationContext : IProcessin
     public abstract IVectorPopulation VectorPopulation { get; }
 }
 
-internal class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpecializedSharpMeasuresVectorValidationContext, SpecializedSharpMeasuresVectorDefinition, SpecializedSharpMeasuresVectorDefinition>
+internal sealed class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpecializedSharpMeasuresVectorValidationContext, SpecializedSharpMeasuresVectorDefinition, SpecializedSharpMeasuresVectorDefinition>
 {
     private ISpecializedSharpMeasuresVectorValidationDiagnostics Diagnostics { get; }
 

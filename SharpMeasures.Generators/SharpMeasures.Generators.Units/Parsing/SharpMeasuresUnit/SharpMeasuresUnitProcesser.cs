@@ -10,7 +10,7 @@ internal interface ISharpMeasuresUnitProcessingDiagnostics
     public abstract Diagnostic? NullQuantity(IProcessingContext context, RawSharpMeasuresUnitDefinition definition);
 }
 
-internal class SharpMeasuresUnitProcesser : AProcesser<IProcessingContext, RawSharpMeasuresUnitDefinition, SharpMeasuresUnitDefinition>
+internal sealed class SharpMeasuresUnitProcesser : AProcesser<IProcessingContext, RawSharpMeasuresUnitDefinition, SharpMeasuresUnitDefinition>
 {
     private ISharpMeasuresUnitProcessingDiagnostics Diagnostics { get; }
 
@@ -26,10 +26,7 @@ internal class SharpMeasuresUnitProcesser : AProcesser<IProcessingContext, RawSh
             .Transform(() => ProduceResult(definition));
     }
 
-    private static SharpMeasuresUnitDefinition ProduceResult(RawSharpMeasuresUnitDefinition definition)
-    {
-        return new(definition.Quantity!.Value, definition.BiasTerm, definition.GenerateDocumentation, definition.Locations);
-    }
+    private static SharpMeasuresUnitDefinition ProduceResult(RawSharpMeasuresUnitDefinition definition) => new(definition.Quantity!.Value, definition.BiasTerm, definition.GenerateDocumentation, definition.Locations);
 
     private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawSharpMeasuresUnitDefinition definition)
     {

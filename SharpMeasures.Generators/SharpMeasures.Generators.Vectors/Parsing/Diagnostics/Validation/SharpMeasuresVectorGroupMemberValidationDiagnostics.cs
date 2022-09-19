@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
 
-internal class SharpMeasuresVectorGroupMemberValidationDiagnostics : ISharpMeasuresVectorGroupMemberValidationDiagnostics
+internal sealed class SharpMeasuresVectorGroupMemberValidationDiagnostics : ISharpMeasuresVectorGroupMemberValidationDiagnostics
 {
     public static SharpMeasuresVectorGroupMemberValidationDiagnostics Instance { get; } = new();
 

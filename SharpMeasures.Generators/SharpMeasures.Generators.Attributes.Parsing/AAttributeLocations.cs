@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Attributes.Parsing;
 
-public abstract record class AAttributeLocations<TLocations> : IOpenAttributeLocations<TLocations>
-    where TLocations : AAttributeLocations<TLocations>
+public abstract record class AAttributeLocations<TLocations> : IOpenAttributeLocations<TLocations> where TLocations : AAttributeLocations<TLocations>
 {
     protected abstract TLocations Locations { get; }
 

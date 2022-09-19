@@ -29,7 +29,7 @@ internal interface ISharpMeasuresVectorGroupValidationContext : IProcessingConte
     public abstract IVectorPopulation VectorPopulation { get; }
 }
 
-internal class SharpMeasuresVectorGroupValidator : IProcesser<ISharpMeasuresVectorGroupValidationContext, SharpMeasuresVectorGroupDefinition, SharpMeasuresVectorGroupDefinition>
+internal sealed class SharpMeasuresVectorGroupValidator : IProcesser<ISharpMeasuresVectorGroupValidationContext, SharpMeasuresVectorGroupDefinition, SharpMeasuresVectorGroupDefinition>
 {
     private ISharpMeasuresVectorGroupValidationDiagnostics Diagnostics { get; }
 
@@ -61,14 +61,12 @@ internal class SharpMeasuresVectorGroupValidator : IProcesser<ISharpMeasuresVect
         var defaultUnitInstanceSymbol = defaultUnitInstanceValidity.Transform(definition.DefaultUnitInstanceSymbol);
 
         var product = ProduceResult(definition, scalar.NullableValueResult(), difference.NullableValueResult(), defaultUnitInstanceName.NullableReferenceResult(), defaultUnitInstanceSymbol.NullableReferenceResult());
-
         var allDiagnostics = validity.Diagnostics.Concat(scalar).Concat(difference).Concat(defaultUnitInstanceValidity);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    private static SharpMeasuresVectorGroupDefinition ProduceResult(SharpMeasuresVectorGroupDefinition definition, NamedType? scalar, NamedType? difference,
-        string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
+    private static SharpMeasuresVectorGroupDefinition ProduceResult(SharpMeasuresVectorGroupDefinition definition, NamedType? scalar, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
         return new(definition.Unit, scalar, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.GenerateDocumentation, definition.Locations);
     }

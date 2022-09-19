@@ -9,15 +9,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public static class ForeignGroupBaseParser
+internal static class ForeignGroupBaseParser
 {
-    public static (Optional<IVectorGroupBaseType> Definition, IEnumerable<INamedTypeSymbol> ReferencedSymbols) Parse(INamedTypeSymbol typeSymbol)
+    public static (Optional<RawGroupBaseType> Definition, IEnumerable<INamedTypeSymbol> ReferencedSymbols) Parse(INamedTypeSymbol typeSymbol)
     {
         (var group, var groupReferencedSymbols) = ParseGroup(typeSymbol);
 
         if (group.HasValue is false)
         {
-            return (new Optional<IVectorGroupBaseType>(), Array.Empty<INamedTypeSymbol>());
+            return (new Optional<RawGroupBaseType>(), Array.Empty<INamedTypeSymbol>());
         }
 
         (var derivations, var derivationsReferencedSymbols) = CommonParsing.ParseDerivations(typeSymbol);
@@ -27,17 +27,9 @@ public static class ForeignGroupBaseParser
         var excludeUnitInstances = CommonParsing.ParseExcludeUnits(typeSymbol);
 
         RawGroupBaseType rawGroupType = new(typeSymbol.AsDefinedType(), MinimalLocation.None, group.Value, derivations, conversions, includeUnitInstances, excludeUnitInstances);
-
-        var groupType = new ForeignGroupBaseProcesser().Process(rawGroupType);
-
-        if (groupType.HasValue is false)
-        {
-            return (new Optional<IVectorGroupBaseType>(), Array.Empty<INamedTypeSymbol>());
-        }
-
         var referencedSymbols = groupReferencedSymbols.Concat(derivationsReferencedSymbols).Concat(conversionsReferencedSymbols);
 
-        return (groupType.Value, referencedSymbols);
+        return (rawGroupType, referencedSymbols);
     }
     
     private static (Optional<RawSharpMeasuresVectorGroupDefinition>, IEnumerable<INamedTypeSymbol>) ParseGroup(INamedTypeSymbol typeSymbol)

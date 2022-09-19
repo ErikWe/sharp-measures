@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Quantities;
 
 using System.Collections.Generic;
 
-public record class IncludeUnitBasesDefinition : AItemListDefinition<string, IncludeUnitBasesLocations>, IUnitInstanceInclusionList
+public sealed record class IncludeUnitBasesDefinition : AItemListDefinition<string, IncludeUnitBasesLocations>, IUnitInstanceInclusionList
 {
     public IReadOnlyList<string> UnitInstances => Items;
 

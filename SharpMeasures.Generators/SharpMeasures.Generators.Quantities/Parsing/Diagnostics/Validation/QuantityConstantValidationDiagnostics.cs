@@ -7,14 +7,14 @@ using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
 using System.Diagnostics.CodeAnalysis;
 
-public class QuantityConstantValidationDiagnostics<TDefinition, TLocations> : IQuantityConstantValidationDiagnostics<TDefinition, TLocations>
+public sealed class QuantityConstantValidationDiagnostics<TDefinition, TLocations> : IQuantityConstantValidationDiagnostics<TDefinition, TLocations>
     where TDefinition : AQuantityConstantDefinition<TLocations>
     where TLocations : AQuantityConstantLocations<TLocations>
 {
     [SuppressMessage("Design", "CA1000", Justification = "Property")]
     public static QuantityConstantValidationDiagnostics<TDefinition, TLocations> Instance { get; } = new();
 
-    protected QuantityConstantValidationDiagnostics() { }
+    private QuantityConstantValidationDiagnostics() { }
 
     public Diagnostic UnrecognizedUnitInstanceName(IQuantityConstantValidationContext context, TDefinition definition)
     {

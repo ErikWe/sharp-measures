@@ -2,8 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 
-internal record class ScalarConstantProperty<TPropertyType>
-    : AttributeProperty<RawScalarConstantDefinition, ScalarConstantLocations, TPropertyType>
+internal sealed record class ScalarConstantProperty<TPropertyType> : AttributeProperty<RawScalarConstantDefinition, ScalarConstantLocations, TPropertyType>
 {
     public ScalarConstantProperty(string name, string parameterName, DTypeSetter setter, DSingleLocationSetter locator) : base(name, parameterName, setter, locator) { }
     public ScalarConstantProperty(string name, DTypeSetter setter, DSingleLocationSetter locator) : base(name, setter, locator) { }

@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 using SharpMeasures.Generators.Units.Parsing.BiasedUnitInstance;
 
-internal class BiasedUnitInstanceProcessingDiagnostics : AModifiedUnitInstanceProcessingDiagnostics<RawBiasedUnitInstanceDefinition, BiasedUnitInstanceLocations>, IBiasedUnitInstanceProcessingDiagnostics
+internal sealed class BiasedUnitInstanceProcessingDiagnostics : AModifiedUnitInstanceProcessingDiagnostics<RawBiasedUnitInstanceDefinition, BiasedUnitInstanceLocations>, IBiasedUnitInstanceProcessingDiagnostics
 {
     public static BiasedUnitInstanceProcessingDiagnostics Instance { get; } = new();
 

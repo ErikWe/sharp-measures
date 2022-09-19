@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<DefaultDocumentation>
+internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<DefaultDocumentation>
 {
     private DefinedType Type { get; }
     private IUnitType Unit { get; }
@@ -32,7 +32,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
 
         UnitParameterName = SourceBuildingUtility.ToParameterName(Unit.Type.Name);
 
-        ExampleUnitBaseInstance = model.Scalar.IncludedUnitBaseInstancesNames.Count > 0 ? Unit.UnitInstancesByName[model.Scalar.IncludedUnitBaseInstancesNames[0]] : null;
+        ExampleUnitBaseInstance = model.Scalar.IncludedUnitBaseInstanceNames.Count > 0 ? Unit.UnitInstancesByName[model.Scalar.IncludedUnitBaseInstanceNames[0]] : null;
         ExampleUnitInstance = model.Scalar.IncludedUnitInstanceNames.Count > 0 ? Unit.UnitInstancesByName[model.Scalar.IncludedUnitInstanceNames[0]] : null;
     }
 
@@ -60,8 +60,7 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         return $$"""/// <summary>The {{ScalarReference}} representing the constant {{constant.Name}}, equivalent to { {{value}} [<see cref="{{Unit.Type.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/>] }.</summary>""";
     }
 
-    public string UnitBase(IUnitInstance unitInstance)
-        => $$"""/// <summary>The {{ScalarReference}} representing { 1 [<see cref="{{Unit.Type.FullyQualifiedName}}.{{unitInstance.Name}}"/>] }.</summary>""";
+    public string UnitBase(IUnitInstance unitInstance) => $$"""/// <summary>The {{ScalarReference}} representing { 1 [<see cref="{{Unit.Type.FullyQualifiedName}}.{{unitInstance.Name}}"/>] }.</summary>""";
 
     public string WithMagnitude() => InheritDoc;
 
@@ -321,32 +320,26 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
 
     private static string InheritDoc => "/// <inheritdoc/>";
 
-    private static string GetOperatorSymbol(OperatorType operatorType)
+    private static string GetOperatorSymbol(OperatorType operatorType) => operatorType switch
     {
-        return operatorType switch
-        {
-            OperatorType.Addition => "+",
-            OperatorType.Subtraction => "-",
-            OperatorType.Multiplication => "*",
-            OperatorType.Division => "/",
-            _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
-        };
-    }
+        OperatorType.Addition => "+",
+        OperatorType.Subtraction => "-",
+        OperatorType.Multiplication => "*",
+        OperatorType.Division => "/",
+        _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
+    };
 
-    private static (string First, string Second) GetOperatorComponentNames(OperatorType operatorType)
+    private static (string First, string Second) GetOperatorComponentNames(OperatorType operatorType) => operatorType switch
     {
-        return operatorType switch
-        {
-            OperatorType.Addition => ("term", "term"),
-            OperatorType.Subtraction => ("term", "term"),
-            OperatorType.Multiplication => ("factor", "factor"),
-            OperatorType.Division => ("dividend", "divisor"),
-            _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
-        };
-    }
+        OperatorType.Addition => ("term", "term"),
+        OperatorType.Subtraction => ("term", "term"),
+        OperatorType.Multiplication => ("factor", "factor"),
+        OperatorType.Division => ("dividend", "divisor"),
+        _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
+    };
 
-    public virtual bool Equals(DefaultDocumentation? other) => other is not null && Type == other.Type && Unit == other.Unit && DefaultUnitInstance == other.DefaultUnitInstance
-        && DefaultUnitInstanceSymbol == other.DefaultUnitInstanceSymbol && UnitParameterName == other.UnitParameterName && ExampleUnitBaseInstance == other.ExampleUnitBaseInstance && ExampleUnitInstance == other.ExampleUnitInstance;
+    public bool Equals(DefaultDocumentation? other) => other is not null && Type == other.Type && Unit == other.Unit && DefaultUnitInstance == other.DefaultUnitInstance && DefaultUnitInstanceSymbol == other.DefaultUnitInstanceSymbol && UnitParameterName == other.UnitParameterName
+        && ExampleUnitBaseInstance == other.ExampleUnitBaseInstance && ExampleUnitInstance == other.ExampleUnitInstance;
 
     public override bool Equals(object? obj) => obj is DefaultDocumentation other && Equals(other);
 
