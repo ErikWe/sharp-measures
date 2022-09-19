@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1264,
+    Title: Expression contains constant,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (4,17)-(4,21),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The expression may not contain constants,
+    Message: The expression may not contain constants,
+    Category: Usage,
+    CustomTags: []
+  }
+]

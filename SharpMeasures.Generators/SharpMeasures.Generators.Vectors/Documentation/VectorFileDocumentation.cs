@@ -1,9 +1,11 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
 using SharpMeasures.Generators.Documentation;
+using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Units;
 
 using System;
+using System.Collections.Generic;
 
 internal class VectorFileDocumentation : IVectorDocumentationStrategy, IEquatable<VectorFileDocumentation>
 {
@@ -49,6 +51,9 @@ internal class VectorFileDocumentation : IVectorDocumentationStrategy, IEquatabl
     public string AntidirectionalConversion(NamedType vector) => FromFileOrDefault((strategy) => strategy.AntidirectionalConversion(vector));
     public string CastConversion(NamedType vector) => FromFileOrDefault((strategy) => strategy.CastConversion(vector));
     public string AntidirectionalCastConversion(NamedType vector) => FromFileOrDefault((strategy) => strategy.AntidirectionalCastConversion(vector));
+
+    public string Derivation(DerivedQuantitySignature signature, IReadOnlyList<string> parameterNames) => FromFileOrDefault((strategy) => strategy.Derivation(signature, parameterNames));
+    public string OperatorDerivation(OperatorDerivation derivation) => FromFileOrDefault((strategy) => strategy.OperatorDerivation(derivation));
 
     public string IsNaN() => FromFileOrDefault(static (strategy) => strategy.IsNaN());
     public string IsZero() => FromFileOrDefault(static (strategy) => strategy.IsZero());

@@ -1,5 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
+using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units;
@@ -240,6 +241,35 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
         /// <param name="a">This <see cref="{vector.FullyQualifiedName}"/> is converted to the equivalent {VectorReference}.</param>
         """;
 
+    public string Derivation(DerivedQuantitySignature signature, IReadOnlyList<string> parameterNames)
+    {
+        StringBuilder source = new();
+        source.Append($"""/// <summary>Constructs a new {VectorReference}, derived from other quantities.</summary>""");
+
+        for (int i = 0; i < signature.Count; i++)
+        {
+            source.AppendLine();
+
+            source.Append($"""
+                /// <param name="{parameterNames[i]}">This <see cref="{signature[i].FullyQualifiedName}"/> is used to derive a {VectorReference}.</param>
+                """);
+        }
+
+        return source.ToString();
+    }
+
+    public string OperatorDerivation(OperatorDerivation derivation)
+    {
+        var operatorSymbol = GetOperatorSymbol(derivation.OperatorType);
+        (var firstComponentName, var secondComponentName) = GetOperatorComponentNames(derivation.OperatorType);
+
+        return $$"""
+            /// <summary>Computes { <paramref name="a"/> {{operatorSymbol}} <paramref name="b"/> }, resulting in a <see cref="{{derivation.Result.FullyQualifiedName}}"/>.</summary>
+            /// <param name="a">The {{(firstComponentName == secondComponentName ? string.Empty : "first ")}}{{firstComponentName}} of { <paramref name="a"/> {{operatorSymbol}} <paramref name="b"/> }.</param>
+            /// <param name="b">The {{(firstComponentName == secondComponentName ? string.Empty : "second ")}}{{secondComponentName}} of { <paramref name="a"/> {{operatorSymbol}} <paramref name="b"/> }.</param>
+            """;
+    }
+
     public string IsNaN() => $"""/// <inheritdoc cref="global::SharpMeasures.Vector{Dimension}.IsNaN"/>""";
     public string IsZero() => $"""/// <inheritdoc cref="global::SharpMeasures.Vector{Dimension}.IsZero"/>""";
     public string IsFinite() => $"""/// <inheritdoc cref="global::SharpMeasures.Vector{Dimension}.IsFinite"/>""";
@@ -414,6 +444,30 @@ internal class DefaultVectorDocumentation : IVectorDocumentationStrategy, IEquat
                 return $"""/// <param name="{componentLowerCase}">The {componentUpperCase}-component of <see langword="this"/>.</param>""";
             }
         }
+    }
+
+    private static string GetOperatorSymbol(OperatorType operatorType)
+    {
+        return operatorType switch
+        {
+            OperatorType.Addition => "+",
+            OperatorType.Subtraction => "-",
+            OperatorType.Multiplication => "*",
+            OperatorType.Division => "/",
+            _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
+        };
+    }
+
+    private static (string First, string Second) GetOperatorComponentNames(OperatorType operatorType)
+    {
+        return operatorType switch
+        {
+            OperatorType.Addition => ("term", "term"),
+            OperatorType.Subtraction => ("term", "term"),
+            OperatorType.Multiplication => ("factor", "factor"),
+            OperatorType.Division => ("dividend", "divisor"),
+            _ => throw new NotSupportedException($"Invalid {typeof(OperatorType).Name}: {operatorType}")
+        };
     }
 
     public virtual bool Equals(DefaultVectorDocumentation? other) => other is not null && Type == other.Type && Dimension == other.Dimension && Unit == other.Unit && Scalar == other.Scalar

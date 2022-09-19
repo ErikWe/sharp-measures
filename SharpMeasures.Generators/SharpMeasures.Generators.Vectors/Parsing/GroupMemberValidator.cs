@@ -88,7 +88,7 @@ internal static class GroupMemberValidator
     {
         var validationContext = new DerivedQuantityValidationContext(vectorType.Type, scalarPopulation, vectorPopulation);
 
-        return ValidityFilter.Create(DerivedQuantityValidator).Filter(validationContext, vectorType.Derivations);
+        return ProcessingFilter.Create(DerivedQuantityValidator).Filter(validationContext, vectorType.Derivations);
     }
 
     private static IResultWithDiagnostics<IReadOnlyList<VectorConstantDefinition>> ValidateConstants(GroupMemberType vectorType, IVectorPopulation vectorPopulation, IUnitType unit, IEnumerable<IUnitInstance> includedUnits)

@@ -88,7 +88,7 @@ internal abstract class AScalarProcesser<TRawType, TRawDefinition, TProductType,
 
     private static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ProcessDerivations(DefinedType type, IEnumerable<RawDerivedQuantityDefinition> rawDefinitions)
     {
-        var processingContext = new SimpleProcessingContext(type);
+        DerivedQuantityProcessingContext processingContext = new(type, Quantities.QuantityType.Scalar);
 
         return ProcessingFilter.Create(DerivedQuantityProcesser).Filter(processingContext, rawDefinitions);
     }

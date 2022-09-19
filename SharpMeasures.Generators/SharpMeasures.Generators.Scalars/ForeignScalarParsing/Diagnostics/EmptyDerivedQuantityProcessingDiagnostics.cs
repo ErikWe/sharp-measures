@@ -11,8 +11,10 @@ internal class EmptyDerivedQuantityProcessingDiagnostics : IDerivedQuantityProce
 
     Diagnostic? IDerivedQuantityProcessingDiagnostics.EmptyExpression(IProcessingContext context, RawDerivedQuantityDefinition definition) => null;
     Diagnostic? IDerivedQuantityProcessingDiagnostics.EmptySignature(IProcessingContext context, RawDerivedQuantityDefinition definition) => null;
+    Diagnostic? IDerivedQuantityProcessingDiagnostics.ExpressionContainsConstant(IProcessingContext context, RawDerivedQuantityDefinition definition) => null;
     Diagnostic? IDerivedQuantityProcessingDiagnostics.ExpressionDoesNotIncludeQuantity(IProcessingContext context, RawDerivedQuantityDefinition definition, int index) => null;
     Diagnostic? IDerivedQuantityProcessingDiagnostics.ExpressionNotCompatibleWithOperators(IProcessingContext context, RawDerivedQuantityDefinition definition) => null;
+    Diagnostic? IDerivedQuantityProcessingDiagnostics.MalformedExpression(IProcessingContext context, RawDerivedQuantityDefinition definition) => null;
     Diagnostic? IDerivedQuantityProcessingDiagnostics.NullExpression(IProcessingContext context, RawDerivedQuantityDefinition definition) => null;
     Diagnostic? IDerivedQuantityProcessingDiagnostics.NullSignature(IProcessingContext context, RawDerivedQuantityDefinition definition) => null;
     Diagnostic? IDerivedQuantityProcessingDiagnostics.NullSignatureElement(IProcessingContext context, RawDerivedQuantityDefinition definition, int index) => null;

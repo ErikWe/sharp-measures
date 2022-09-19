@@ -18,7 +18,7 @@ internal static class CommonProcessing
 {
     public static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ProcessDerivations(DefinedType type, IEnumerable<RawDerivedQuantityDefinition> rawDefinitions)
     {
-        var processingContext = new SimpleProcessingContext(type);
+        DerivedQuantityProcessingContext processingContext = new(type, Quantities.QuantityType.Vector);
 
         return ProcessingFilter.Create(DerivedQuantityProcesser).Filter(processingContext, rawDefinitions);
     }

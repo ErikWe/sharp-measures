@@ -5,7 +5,6 @@ using SharpMeasures.Generators.Vectors.Documentation;
 internal readonly record struct DataModel
 {
     public DefinedType Vector { get; }
-
     public int Dimension { get; }
 
     public bool ImplementSum { get; }
@@ -25,7 +24,6 @@ internal readonly record struct DataModel
         NamedType unit, NamedType unitQuantity, IVectorDocumentationStrategy documentation)
     {
         Vector = vector;
-
         Dimension = dimension;
 
         ImplementSum = implementSum;

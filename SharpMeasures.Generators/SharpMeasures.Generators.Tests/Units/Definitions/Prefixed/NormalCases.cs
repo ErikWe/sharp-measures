@@ -17,7 +17,7 @@ public class NormalCases
     [Fact]
     public Task BinaryPrefix() => Verify(BinaryPrefixText);
 
-    private static Task Verify(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfLength.Instances.g.cs");
+    private static Task Verify(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoDiagnosticsReported().VerifyMatchingSourceNames("UnitOfLength.Instances.g.cs");
 
     private static string MetricPrefixText => """
         using SharpMeasures.Generators.Scalars;

@@ -13,20 +13,28 @@ using System.Text.RegularExpressions;
 
 public interface IDerivedQuantityProcessingDiagnostics
 {
-    public abstract Diagnostic? NullExpression(IProcessingContext context, RawDerivedQuantityDefinition definition);
-    public abstract Diagnostic? EmptyExpression(IProcessingContext context, RawDerivedQuantityDefinition definition);
-    public abstract Diagnostic? UnmatchedExpressionQuantity(IProcessingContext context, RawDerivedQuantityDefinition definition, int requestedIndex);
-    public abstract Diagnostic? ExpressionDoesNotIncludeQuantity(IProcessingContext context, RawDerivedQuantityDefinition definition, int index);
+    public abstract Diagnostic? NullExpression(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition);
+    public abstract Diagnostic? EmptyExpression(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition);
+    public abstract Diagnostic? UnmatchedExpressionQuantity(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition, int requestedIndex);
+    public abstract Diagnostic? ExpressionDoesNotIncludeQuantity(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition, int index);
 
-    public abstract Diagnostic? NullSignature(IProcessingContext context, RawDerivedQuantityDefinition definition);
-    public abstract Diagnostic? EmptySignature(IProcessingContext context, RawDerivedQuantityDefinition definition);
-    public abstract Diagnostic? NullSignatureElement(IProcessingContext context, RawDerivedQuantityDefinition definition, int index);
+    public abstract Diagnostic? MalformedExpression(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition);
+    public abstract Diagnostic? ExpressionContainsConstant(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition);
 
-    public abstract Diagnostic? UnrecognizedOperatorImplementation(IProcessingContext context, RawDerivedQuantityDefinition definition);
-    public abstract Diagnostic? ExpressionNotCompatibleWithOperators(IProcessingContext context, RawDerivedQuantityDefinition definition);
+    public abstract Diagnostic? NullSignature(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition);
+    public abstract Diagnostic? EmptySignature(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition);
+    public abstract Diagnostic? NullSignatureElement(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition, int index);
+
+    public abstract Diagnostic? UnrecognizedOperatorImplementation(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition);
+    public abstract Diagnostic? ExpressionNotCompatibleWithOperators(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition);
 }
 
-public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerivedQuantityDefinition, DerivedQuantityDefinition>
+public interface IDerivedQuantityProcessingContext : IProcessingContext
+{
+    public abstract QuantityType ResultingQuantityType { get; }
+}
+
+public class DerivedQuantityProcesser : AProcesser<IDerivedQuantityProcessingContext, RawDerivedQuantityDefinition, DerivedQuantityDefinition>
 {
     private Regex ExpressionQuantityPattern { get; } = new("""{(?'index'[0-9]+)}""", RegexOptions.ExplicitCapture);
     private Regex ValidImplementOperatorsExpressionPattern_TwoQuantities { get; } = new("""^\s*\(*\s*{[01]}\s*\)*\s*[+-/*]\s*\(*\s*{[01]}\s*\)*\s*$""");
@@ -39,10 +47,11 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
         Diagnostics = diagnostics;
     }
 
-    public override IOptionalWithDiagnostics<DerivedQuantityDefinition> Process(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    public override IOptionalWithDiagnostics<DerivedQuantityDefinition> Process(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         var processedExpression = ValidateExpressionNotNull(context, definition)
             .Validate(() => ValidateExpressionNotEmpty(context, definition))
+            .Validate(() => ValidateExpressionFormat(context, definition))
             .Validate(() => ValidateExpressionMatchesSignature(context, definition));
 
         if (processedExpression.IsInvalid)
@@ -69,17 +78,190 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
         return new(definition.Expression!, signature, operatorImplementation, definition.Permutations, definition.Locations);
     }
 
-    private IValidityWithDiagnostics ValidateExpressionNotNull(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    private IValidityWithDiagnostics ValidateExpressionNotNull(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.Expression is not null, () => Diagnostics.NullExpression(context, definition));
     }
 
-    private IValidityWithDiagnostics ValidateExpressionNotEmpty(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    private IValidityWithDiagnostics ValidateExpressionNotEmpty(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.Expression!.Length is not 0, () => Diagnostics.NullExpression(context, definition));
     }
 
-    private IValidityWithDiagnostics ValidateExpressionMatchesSignature(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    private IValidityWithDiagnostics ValidateExpressionFormat(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
+    {
+        string expression = definition.Expression!.Replace(" ", string.Empty);
+
+        int parenthesisLevel = 0;
+
+        bool canOpenParenthesis = true;
+        bool canCloseParenthesis = false;
+
+        bool canOpenFormatting = true;
+        bool isFormatting = false;
+        bool canCloseFormatting = false;
+
+        bool canHaveOperator = false;
+        bool canHaveConstantOne = true;
+
+        bool requireDivision = false;
+
+        bool canEndExpression = false;
+
+        for (int i = 0; i < expression.Length; i++)
+        {
+            if (expression[i] is '(')
+            {
+                if (canOpenParenthesis is false)
+                {
+                    return ValidityWithDiagnostics.Invalid(Diagnostics.MalformedExpression(context, definition));
+                }
+
+                canCloseParenthesis = false;
+                canOpenFormatting = true;
+                isFormatting = false;
+                canCloseFormatting = false;
+                canHaveOperator = false;
+                canHaveConstantOne = true;
+                requireDivision = false;
+                canEndExpression = false;
+
+                parenthesisLevel += 1;
+
+                continue;
+            }
+
+            if (expression[i] is ')')
+            {
+                if (canCloseParenthesis is false || parenthesisLevel is 0)
+                {
+                    return ValidityWithDiagnostics.Invalid(Diagnostics.MalformedExpression(context, definition));
+                }
+
+                canOpenParenthesis = false;
+                canOpenFormatting = false;
+                isFormatting = false;
+                canCloseFormatting = false;
+                canHaveOperator = true;
+                canHaveConstantOne = false;
+                requireDivision = false;
+                canEndExpression = true;
+
+                parenthesisLevel -= 1;
+
+                continue;
+            }
+
+            if (expression[i] is '{')
+            {
+                if (canOpenFormatting is false)
+                {
+                    return ValidityWithDiagnostics.Invalid(Diagnostics.MalformedExpression(context, definition));
+                }
+
+                canOpenParenthesis = false;
+                canCloseParenthesis = false;
+                canOpenFormatting = false;
+                isFormatting = true;
+                canCloseFormatting = false;
+                canHaveOperator = false;
+                canHaveConstantOne = false;
+                requireDivision = false;
+                canEndExpression = false;
+
+                continue;
+            }
+
+            if (expression[i] is '}')
+            {
+                if (canCloseFormatting is false)
+                {
+                    return ValidityWithDiagnostics.Invalid(Diagnostics.MalformedExpression(context, definition));
+                }
+
+                canOpenParenthesis = false;
+                canCloseParenthesis = true;
+                canOpenFormatting = false;
+                isFormatting = false;
+                canCloseFormatting = false;
+                canHaveOperator = true;
+                canHaveConstantOne = false;
+                requireDivision = false;
+                canEndExpression = true;
+
+                continue;
+            }
+
+            if (expression[i] is '+' or '-' or '*' or '/' or '.' or 'x')
+            {
+                if (canHaveOperator is false)
+                {
+                    return ValidityWithDiagnostics.Invalid(Diagnostics.MalformedExpression(context, definition));
+                }
+
+                if (requireDivision && expression[i] is not '/')
+                {
+                    return ValidityWithDiagnostics.Invalid(Diagnostics.ExpressionContainsConstant(context, definition));
+                }
+
+                canOpenParenthesis = true;
+                canCloseParenthesis = false;
+                canOpenFormatting = true;
+                isFormatting = false;
+                canCloseFormatting = false;
+                canHaveOperator = false;
+                canHaveConstantOne = false;
+                requireDivision = false;
+                canEndExpression = false;
+
+                continue;
+            }
+
+            if (char.IsDigit(expression[i]))
+            {
+                if (isFormatting)
+                {
+                    canOpenParenthesis = false;
+                    canOpenFormatting = false;
+                    isFormatting = true;
+                    canCloseFormatting = true;
+                    canHaveOperator = false;
+                    canHaveConstantOne = false;
+                    requireDivision = false;
+                    canEndExpression = false;
+
+                    continue;
+                }
+
+                if (canHaveConstantOne is false || expression[i] is not '1')
+                {
+                    return ValidityWithDiagnostics.Invalid(Diagnostics.ExpressionContainsConstant(context, definition));
+                }
+
+                canOpenParenthesis = false;
+                canOpenFormatting = false;
+                isFormatting = false;
+                canCloseFormatting = false;
+                canHaveOperator = true;
+                canHaveConstantOne = false;
+                requireDivision = true;
+                canEndExpression = false;
+
+                continue;
+            }
+
+            return ValidityWithDiagnostics.Invalid(Diagnostics.MalformedExpression(context, definition));
+        }
+
+        if (canEndExpression is false || parenthesisLevel is not 0)
+        {
+            return ValidityWithDiagnostics.Invalid(Diagnostics.MalformedExpression(context, definition));
+        }
+
+        return ValidityWithDiagnostics.Valid;
+    }
+
+    private IValidityWithDiagnostics ValidateExpressionMatchesSignature(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         var quantityMatches = ExpressionQuantityPattern.Matches(definition.Expression);
 
@@ -112,17 +294,17 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
         return ValidityWithDiagnostics.Valid;
     }
 
-    private IValidityWithDiagnostics ValidateSignatureNotNull(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    private IValidityWithDiagnostics ValidateSignatureNotNull(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.Signature is not null, () => Diagnostics.NullSignature(context, definition));
     }
 
-    private IValidityWithDiagnostics ValidateSignatureNotEmpty(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    private IValidityWithDiagnostics ValidateSignatureNotEmpty(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.Signature.Count is not 0, () => Diagnostics.EmptySignature(context, definition));
     }
 
-    private IOptionalWithDiagnostics<IReadOnlyList<NamedType>> ProcessSignature(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    private IOptionalWithDiagnostics<IReadOnlyList<NamedType>> ProcessSignature(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         IOptionalWithDiagnostics<NamedType[]> signature = OptionalWithDiagnostics.Result(new NamedType[definition.Signature!.Count]);
 
@@ -134,7 +316,7 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
         return signature.Transform((signature) => (IReadOnlyList<NamedType>)signature);
     }
 
-    private IOptionalWithDiagnostics<NamedType[]> ProcessSignatureElement(IProcessingContext context, RawDerivedQuantityDefinition definition, int index, NamedType[] signature)
+    private IOptionalWithDiagnostics<NamedType[]> ProcessSignatureElement(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition, int index, NamedType[] signature)
     {
         if (definition.Signature[index] is not NamedType signatureElement)
         {
@@ -146,7 +328,7 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
         return OptionalWithDiagnostics.Result(signature);
     }
 
-    private IResultWithDiagnostics<DerivationOperatorImplementation> ProcessOperatorImplementation(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    private IResultWithDiagnostics<DerivationOperatorImplementation> ProcessOperatorImplementation(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         var validity = ValidateRecognizedOperatorImplementation(context, definition)
             .Validate(() => ValidateExpressionIfImplementOperators(context, definition));
@@ -159,18 +341,18 @@ public class DerivedQuantityProcesser : AProcesser<IProcessingContext, RawDerive
         return ResultWithDiagnostics.Construct(definition.OperatorImplementation, validity);
     }
 
-    private IValidityWithDiagnostics ValidateRecognizedOperatorImplementation(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    private IValidityWithDiagnostics ValidateRecognizedOperatorImplementation(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         var operationImplementationRecognized = Enum.IsDefined(typeof(DerivationOperatorImplementation), definition.OperatorImplementation);
 
         return ValidityWithDiagnostics.Conditional(operationImplementationRecognized, () => Diagnostics.UnrecognizedOperatorImplementation(context, definition));
     }
 
-    private IValidityWithDiagnostics ValidateExpressionIfImplementOperators(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    private IValidityWithDiagnostics ValidateExpressionIfImplementOperators(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         var expressionIsValidAndImplementOperators = definition.Locations.ExplicitlySetOperatorImplementation is false || definition.OperatorImplementation is DerivationOperatorImplementation.None
             || ValidImplementOperatorsExpressionPattern_TwoQuantities.IsMatch(definition.Expression!) && definition.Expression!.Contains("{0}") && definition.Expression!.Contains("{1}") && definition.Signature.Count is 2
-            || ValidImplementOperatorsExpressionPattern_OneQuantity.IsMatch(definition.Expression!) && definition.Signature.Count is 1;
+            || ValidImplementOperatorsExpressionPattern_OneQuantity.IsMatch(definition.Expression!) && definition.Signature.Count is 1 && context.ResultingQuantityType is QuantityType.Scalar;
 
         return ValidityWithDiagnostics.Conditional(expressionIsValidAndImplementOperators, () => Diagnostics.ExpressionNotCompatibleWithOperators(context, definition));
     }

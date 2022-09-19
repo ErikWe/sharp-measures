@@ -9,7 +9,6 @@ using System.Collections.Generic;
 internal readonly record struct DataModel
 {
     public DefinedType Vector { get; }
-
     public int Dimension { get; }
 
     public NamedType? Scalar { get; }
@@ -29,7 +28,6 @@ internal readonly record struct DataModel
         IReadOnlyList<IVectorConstant> constants, IVectorDocumentationStrategy documentation)
     {
         Vector = vector;
-
         Dimension = dimension;
 
         Scalar = scalar;

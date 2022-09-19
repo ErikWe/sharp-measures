@@ -15,7 +15,7 @@ public class DuplicateTypeDefinition
     [Fact]
     public void SpecializedScalar() => Assert(SpecializedScalarText);
 
-    private static GeneratorVerifier Assert(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, new GeneratorVerifierSettings(false, false)).AssertNoDiagnosticsReported();
+    private static GeneratorVerifier Assert(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, new GeneratorVerifierSettings(false, false));
 
     private static string ScalarText => $$"""
         using SharpMeasures.Generators.Scalars;

@@ -142,4 +142,34 @@ public static partial class DiagnosticConstruction
     {
         return Diagnostic.Create(DiagnosticRules.ExpressionDoesNotIncludeQuantity, location, index.ToString(CultureInfo.InvariantCulture));
     }
+
+    public static Diagnostic MalformedDerivationExpression(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.MalformedDerivationExpression, location);
+    }
+
+    public static Diagnostic DerivationExpressionContainsConstant(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.DerivationExpressionContainsConstant, location);
+    }
+
+    public static Diagnostic IncompatibleQuantitiesInDerivation(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.IncompatibleQuantitiesInDerivation, location);
+    }
+
+    public static Diagnostic DerivationUnexpectedlyResultInScalar(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.DerivationUnexpectedlyResultInScalar, location);
+    }
+
+    public static Diagnostic DerivationUnexpectedlyResultInVector(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.DerivationUnexpectedlyResultInVector, location);
+    }
+
+    public static Diagnostic DerivationResultsInNonOverlappingDimension(Location? location, string quantityType)
+    {
+        return Diagnostic.Create(DiagnosticRules.DerivationResultsInNonOverlappingDimension, location, quantityType);
+    }
 }

@@ -3,7 +3,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.SourceBuilding;
 
@@ -12,7 +11,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 
 internal static class Execution
 {
@@ -51,8 +49,9 @@ internal static class Execution
 
         private HashSet<DerivedQuantitySignature> ImplementedSignatures { get; } = new();
 
-        private Regex ConstantInExpressionPattern { get; } = new("""(?:^|[^{])(?'constant'[0-9]+)(?:[^}]|$)""", RegexOptions.ExplicitCapture);
         private bool AnyImplementations { get; set; }
+
+        private bool AppendPureScalarMaths { get; set; }
 
         private Composer(DataModel data)
         {
@@ -94,87 +93,29 @@ internal static class Execution
 
             foreach (var derivation in Data.Derivations)
             {
-                AppendMethodDerivation(indentation, derivation);
+                foreach (var expandedDerivation in derivation.ExpandedScalarResults)
+                {
+                    AppendMethodDerivation(indentation, expandedDerivation.Expression, expandedDerivation.Signature, derivation.Permutations);
+                }
             }
 
             foreach (var derivation in Data.Derivations)
             {
-                var operatorDerivations = OperatorDerivationSearcher.GetDerivations(Data.Scalar.AsNamedType(), derivation);
-
-                foreach (var operatorDerivation in operatorDerivations)
+                foreach (var expandedDerivation in derivation.ExpandedScalarResults)
                 {
-                    if (operatorDerivation.LeftHandSide == Data.Scalar.AsNamedType() || operatorDerivation.LeftHandSide.Assembly != Data.Scalar.Assembly)
+                    var operatorDerivations = ScalarOperatorDerivationSearcher.GetDerivations(Data.Scalar.AsNamedType(), expandedDerivation.Expression, expandedDerivation.Signature, derivation.OperatorImplementation);
+
+                    foreach (var operatorDerivation in operatorDerivations)
                     {
-                        AppendOperatorDerivation(indentation, operatorDerivation);
+                        if (operatorDerivation.LeftHandSide == Data.Scalar.AsNamedType() || operatorDerivation.LeftHandSide.Assembly != Data.Scalar.Assembly)
+                        {
+                            AppendOperatorDerivation(indentation, operatorDerivation);
+                        }
                     }
                 }
             }
-        }
 
-        private void AppendMethodDerivation(Indentation indentation, IDerivedQuantity derivation)
-        {
-            var constant = ConstantInExpressionPattern.Matches(derivation.Expression);
-
-            if (constant.Count is 0)
-            {
-                AppendMethodDerivation(indentation, derivation.Expression, derivation.Signature, derivation.Permutations);
-
-                return;
-            }
-
-            NamedType pureScalar = new("Scalar", "SharpMeasures", "SharpMeasures.Base", true);
-
-            var expression = derivation.Expression;
-            List<NamedType> signature = new(derivation.Signature);
-
-            iterativelyReplaceConstant();
-
-            AppendMethodDerivation(indentation, expression, signature, derivation.Permutations);
-
-            void iterativelyReplaceConstant()
-            {
-                var updatedExpression = ConstantInExpressionPattern.Replace(expression, $$"""{{{signature.Count}}} """, 1);
-
-                if (expression == updatedExpression)
-                {
-                    return;
-                }
-
-                modifyExpressionAndSignature(updatedExpression);
-
-                iterativelyReplaceConstant();
-            }
-
-            void modifyExpressionAndSignature(string updatedExpression)
-            {
-                int insertedAtIndex = updatedExpression.IndexOf($$"""{{{signature.Count}}}""", StringComparison.InvariantCulture);
-
-                for (int i = 0; i < signature.Count; i++)
-                {
-                    if (updatedExpression.IndexOf($$"""{{{i}}}""", StringComparison.InvariantCulture) > insertedAtIndex)
-                    {
-                        updatedExpression = decreaseExpressionElementIndex(updatedExpression, signature.Count, i);
-
-                        expression = updatedExpression;
-                        signature.Insert(i, pureScalar);
-
-                        return;
-                    }
-                }
-
-                expression = updatedExpression;
-                signature.Add(pureScalar);
-            }
-
-            string decreaseExpressionElementIndex(string expression, int initial, int final)
-            {
-                for (int i = initial; i >= final; i--)
-                {
-                    expression = expression.Replace($$"""{{{i}}}""", $$"""{{{i + 1}}}""");
-                }
-
-                return expression.Replace($$"""{{{initial + 1}}}""", $$"""{{{final}}}""");
-            }
+            ComposeMathUtility(indentation);
         }
 
         private void AppendMethodDerivation(Indentation indentation, string expression, IReadOnlyList<NamedType> signature, bool permutations)
@@ -186,6 +127,11 @@ internal static class Execution
             if (processedExpression is null)
             {
                 return;
+            }
+
+            if (expression.Contains("PureScalarMaths."))
+            {
+                AppendPureScalarMaths = true;
             }
 
             AnyImplementations = true;
@@ -212,7 +158,7 @@ internal static class Execution
             var methodNameAndModifiers = $"public static {operatorDerivation.Result.FullyQualifiedName} operator {operatorSymbol}";
             (NamedType Type, string Name)[] parameters = new[] { (operatorDerivation.LeftHandSide, "a"), (operatorDerivation.RightHandSide, "b") };
 
-            AppendDocumentation(indentation, Data.Documentation.OperatorDerivationLHS(operatorDerivation));
+            AppendDocumentation(indentation, Data.Documentation.OperatorDerivation(operatorDerivation));
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, getExpression(), parameters);
 
             string getExpression()
@@ -259,7 +205,7 @@ internal static class Execution
 
             var parameters = GetSignatureComponents(signature, parameterNames);
 
-            AppendDocumentation(indentation, Data.Documentation.Derivation(signature));
+            AppendDocumentation(indentation, Data.Documentation.Derivation(signature, parameterNames));
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
@@ -332,23 +278,26 @@ internal static class Execution
 
             var parameterNameEnumerator = parameterNames.GetEnumerator();
 
-            int index = 0;
+            int index = -1;
             while (parameterNameEnumerator.MoveNext())
             {
+                index += 1;
+
                 if (signature[index].FullyQualifiedName is "global::SharpMeasures.Scalar")
                 {
                     parameterNameAndQuantity[index] = $"{parameterNameEnumerator.Current}";
-                }
-                else if (Data.ScalarPopulation.Scalars.ContainsKey(signature[index]))
-                {
-                    parameterNameAndQuantity[index] = $"{parameterNameEnumerator.Current}.Magnitude";
-                }
-                else
-                {
-                    parameterNameAndQuantity[index] = $"{parameterNameEnumerator.Current}.Components";
+
+                    continue;
                 }
 
-                index += 1;
+                if (Data.ScalarPopulation.Scalars.ContainsKey(signature[index]))
+                {
+                    parameterNameAndQuantity[index] = $"{parameterNameEnumerator.Current}.Magnitude";
+
+                    continue;
+                }
+
+                parameterNameAndQuantity[index] = $"{parameterNameEnumerator.Current}.Components";
             }
 
             try
@@ -389,11 +338,11 @@ internal static class Execution
                 if (counts.TryGetValue(signatureComponent.Name, out int count))
                 {
                     counts[signatureComponent.Name] = count - 1;
+
+                    return;
                 }
-                else
-                {
-                    counts[signatureComponent.Name] = -1;
-                }
+                
+                counts[signatureComponent.Name] = -1;
             }
 
             string appendParameterNumber(string text, NamedType signatureComponent)
@@ -404,22 +353,32 @@ internal static class Execution
                 {
                     return text;
                 }
-                else if (count < 0)
+                
+                if (count < 0)
                 {
                     counts[signatureComponent.Name] = 1;
                     return $"{text}1";
                 }
-                else
-                {
-                    counts[signatureComponent.Name] += 1;
-                    return $"{text}{counts[signatureComponent.Name]}";
-                }
+
+                counts[signatureComponent.Name] += 1;
+                return $"{text}{counts[signatureComponent.Name]}";
             }
         }
 
         private void AppendDocumentation(Indentation indentation, string text)
         {
             DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
+        }
+
+        private void ComposeMathUtility(Indentation indentation)
+        {
+            if (AppendPureScalarMaths)
+            {
+                SeparationHandler.AddIfNecessary();
+
+                Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in a pure <see cref=\"global::SharpMeasures.Scalar\"/>.</summary>");
+                Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IScalarResultingMaths<global::SharpMeasures.Scalar> PureScalarMaths {{ get; }} = global::SharpMeasures.Maths.MathFactory.ScalarResult();");
+            }
         }
     }
 }

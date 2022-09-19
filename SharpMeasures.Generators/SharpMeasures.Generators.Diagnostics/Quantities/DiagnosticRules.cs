@@ -262,4 +262,64 @@ public static partial class DiagnosticRules
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
+
+    public static readonly DiagnosticDescriptor MalformedDerivationExpression = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.MalformedDerivationExpression,
+        title: "Expression could not be interpreted",
+        messageFormat: "The expression could not be interpreted - separate each element by one of the operators { +, -, *, /, ., x }",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor DerivationExpressionContainsConstant = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.DerivationExpressionContainsConstant,
+        title: "Expression contains constant",
+        messageFormat: "The expression may not contain constants",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor IncompatibleQuantitiesInDerivation = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.IncompatibleQuantitiesInDerivation,
+        title: "Derivation contains incompatible quantities",
+        messageFormat: "The combination of expression and signature does not yield a valid result",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor DerivationUnexpectedlyResultInScalar = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.UnexpectedResultFromDerivation,
+        title: "Derivation unexpectedly results in a scalar quantity",
+        messageFormat: "The derivation results in a scalar quantity, but a vector quantity was expected",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor DerivationUnexpectedlyResultInVector = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.UnexpectedResultFromDerivation,
+        title: "Derivation unexpectedly results in a vector quantity",
+        messageFormat: "The derivation results in a vector quantity, but a scalar quantity was expected",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor DerivationResultsInNonOverlappingDimension = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.UnexpectedResultFromDerivation,
+        title: "Unexpected dimension of result from derivation",
+        messageFormat: "The dimension of the resulting quantity never overlaps with the dimensions supported by {0}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
 }

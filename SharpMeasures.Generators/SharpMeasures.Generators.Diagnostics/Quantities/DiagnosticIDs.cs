@@ -20,4 +20,8 @@ public static partial class DiagnosticIDs
     public const string DerivationOperatorsIncompatibleExpression = $"{Prefix}{Numbering.Hundreds.Quantities}60";
     public const string UnmatchedDerivationExpressionQuantity = $"{Prefix}{Numbering.Hundreds.Quantities}61";
     public const string ExpressionDoesNotIncludeQuantity = $"{Prefix}{Numbering.Hundreds.Quantities}62";
+    public const string MalformedDerivationExpression = $"{Prefix}{Numbering.Hundreds.Quantities}63";
+    public const string DerivationExpressionContainsConstant = $"{Prefix}{Numbering.Hundreds.Quantities}64";
+    public const string IncompatibleQuantitiesInDerivation = $"{Prefix}{Numbering.Hundreds.Quantities}65";
+    public const string UnexpectedResultFromDerivation = $"{Prefix}{Numbering.Hundreds.Quantities}66";
 }

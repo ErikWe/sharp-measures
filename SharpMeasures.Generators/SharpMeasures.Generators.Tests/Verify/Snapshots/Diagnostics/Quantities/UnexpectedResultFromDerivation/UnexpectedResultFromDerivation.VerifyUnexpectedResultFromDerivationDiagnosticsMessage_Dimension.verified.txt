@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1266,
+    Title: Unexpected dimension of result from derivation,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (5,1)-(5,16),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The dimension of the resulting quantity never overlaps with the dimensions supported by {0},
+    Message: The dimension of the resulting quantity never overlaps with the dimensions supported by A2,
+    Category: Usage,
+    CustomTags: []
+  }
+]

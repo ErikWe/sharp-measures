@@ -59,6 +59,10 @@ Measures1242 | Usage | Info | Union inclusion stacking mode is redundant
 Measures1260 | Usage | Warning | Expression cannot be implemented with operators
 Measures1261 | Usage | Warning | Unmatched derivation expression quantity
 Measures1262 | Usage | Warning | Quantity is not included in expression
+Measures1263 | Usage | Warning | Expression could not be interpreted
+Measures1264 | Usage | Warning | Expression contains constant
+Measures1265 | Usage | Warning | Derivation contains incompatible quantities
+Measures1266 | Usage | Warning | Derivation results in an unexpected quantity
 Measures1420 | Usage | Warning | Invalid vector dimension
 Measures1421 | Usage | Warning | Missing vector dimension
 Measures1422 | Usage | Warning | Vector of unexpected dimension
