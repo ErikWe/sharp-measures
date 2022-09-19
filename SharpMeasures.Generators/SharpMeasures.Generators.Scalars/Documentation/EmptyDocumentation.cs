@@ -4,6 +4,7 @@ using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Units;
 
 using System;
+using System.Collections.Generic;
 
 internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocumentation>
 {
@@ -21,8 +22,6 @@ internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocu
     string IDocumentationStrategy.FromCube(NamedType _) => string.Empty;
     string IDocumentationStrategy.FromSquareRoot(NamedType _) => string.Empty;
     string IDocumentationStrategy.FromCubeRoot(NamedType _) => string.Empty;
-    string IDocumentationStrategy.Derivation(DerivedQuantitySignature _) => string.Empty;
-    string IDocumentationStrategy.OperatorDerivationLHS(OperatorDerivation _) => string.Empty;
     string IDocumentationStrategy.Magnitude() => string.Empty;
     string IDocumentationStrategy.ScalarConstructor() => string.Empty;
     string IDocumentationStrategy.ScalarAndUnitConstructor() => string.Empty;
@@ -33,6 +32,8 @@ internal class EmptyDocumentation : IDocumentationStrategy, IEquatable<EmptyDocu
     string IDocumentationStrategy.AntidirectionalConversion(NamedType _) => string.Empty;
     string IDocumentationStrategy.CastConversion(NamedType _) => string.Empty;
     string IDocumentationStrategy.AntidirectionalCastConversion(NamedType _) => string.Empty;
+    string IDocumentationStrategy.Derivation(DerivedQuantitySignature _, IReadOnlyList<string> _2) => string.Empty;
+    string IDocumentationStrategy.OperatorDerivation(OperatorDerivation _) => string.Empty;
     string IDocumentationStrategy.IsNaN() => string.Empty;
     string IDocumentationStrategy.IsZero() => string.Empty;
     string IDocumentationStrategy.IsPositive() => string.Empty;

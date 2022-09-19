@@ -29,9 +29,6 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string FromSquareRoot(NamedType _) => "FromSquareRoot";
     public string FromCubeRoot(NamedType _) => "FromCubeRoot";
 
-    public string Derivation(DerivedQuantitySignature signature) => $"Derivation_{ParseDerivableSignature(signature)}";
-    public string OperatorDerivationLHS(OperatorDerivation derivation) => $"OperatorDerivationLHS_{derivation.Result.Name}_{derivation.RightHandSide.Name}";
-
     public string ScalarConstructor() => "Constructor_Scalar";
     public string ScalarAndUnitConstructor() => "Constructor_Scalar_Unit";
 
@@ -44,6 +41,9 @@ internal class DocumentationTags : IDocumentationStrategy, IEquatable<Documentat
     public string AntidirectionalConversion(NamedType scalar) => $"From_{scalar.Name}";
     public string CastConversion(NamedType scalar) => $"Operator_CastTo_{scalar.Name}";
     public string AntidirectionalCastConversion(NamedType scalar) => $"Operator_CastFrom_{scalar.Name}";
+
+    public string Derivation(DerivedQuantitySignature signature, IReadOnlyList<string> parameterNames) => $"Derivation_{ParseDerivableSignature(signature)}";
+    public string OperatorDerivation(OperatorDerivation derivation) => $"OperatorDerivationLHS_{derivation.Result.Name}_{derivation.RightHandSide.Name}";
 
     public string IsNaN() => "IsNaN";
     public string IsZero() => "IsZero";

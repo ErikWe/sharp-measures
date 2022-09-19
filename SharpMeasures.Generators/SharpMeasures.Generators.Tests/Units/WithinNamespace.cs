@@ -12,7 +12,7 @@ using Xunit;
 public class WithinNamespace
 {
     [Fact]
-    public Task Verify() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text).VerifyMatchingSourceNames("Test.Testing.Tests.UnitTests.UnitOfLength.Common.g.cs");
+    public Task Verify() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text).AssertNoDiagnosticsReported().VerifyMatchingSourceNames("Test.Testing.Tests.UnitTests.UnitOfLength.Common.g.cs");
 
     private static string Text => """
         namespace Test.Testing.Tests.UnitTests;

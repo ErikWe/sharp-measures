@@ -7,8 +7,8 @@
     Location: : (5,17)-(5,28),
     Description: ,
     HelpLink: ,
-    MessageFormat: The expression does not yield the expected result due to incompatible quantities,
-    Message: The expression does not yield the expected result due to incompatible quantities,
+    MessageFormat: The combination of expression and signature does not yield a valid result,
+    Message: The combination of expression and signature does not yield a valid result,
     Category: Usage,
     CustomTags: []
   }

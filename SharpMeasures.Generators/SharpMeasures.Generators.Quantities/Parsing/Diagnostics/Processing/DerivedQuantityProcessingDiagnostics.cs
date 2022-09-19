@@ -2,7 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 
@@ -12,54 +11,54 @@ public class DerivedQuantityProcessingDiagnostics : IDerivedQuantityProcessingDi
 
     private DerivedQuantityProcessingDiagnostics() { }
 
-    public Diagnostic NullExpression(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    public Diagnostic NullExpression(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         return DiagnosticConstruction.NullDerivationExpression(definition.Locations.Expression?.AsRoslynLocation());
     }
 
-    public Diagnostic EmptyExpression(IProcessingContext context, RawDerivedQuantityDefinition definition) => NullExpression(context, definition);
+    public Diagnostic EmptyExpression(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition) => NullExpression(context, definition);
 
-    public Diagnostic UnmatchedExpressionQuantity(IProcessingContext context, RawDerivedQuantityDefinition definition, int requestedIndex)
+    public Diagnostic UnmatchedExpressionQuantity(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition, int requestedIndex)
     {
         return DiagnosticConstruction.UnmatchedDerivationExpressionQuantity(definition.Locations.Expression?.AsRoslynLocation(), requestedIndex);
     }
 
-    public Diagnostic ExpressionDoesNotIncludeQuantity(IProcessingContext context, RawDerivedQuantityDefinition definition, int index)
+    public Diagnostic ExpressionDoesNotIncludeQuantity(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition, int index)
     {
         return DiagnosticConstruction.ExpressionDoesNotIncludeQuantity(definition.Locations.Expression?.AsRoslynLocation(), index);
     }
 
-    public Diagnostic MalformedExpression(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    public Diagnostic MalformedExpression(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         return DiagnosticConstruction.MalformedDerivationExpression(definition.Locations.Expression?.AsRoslynLocation());
     }
 
-    public Diagnostic ExpressionContainsConstant(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    public Diagnostic ExpressionContainsConstant(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         return DiagnosticConstruction.DerivationExpressionContainsConstant(definition.Locations.Expression?.AsRoslynLocation());
     }
 
-    public Diagnostic NullSignature(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    public Diagnostic NullSignature(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         return DiagnosticConstruction.NullDerivationSignature(definition.Locations.SignatureCollection?.AsRoslynLocation());
     }
 
-    public Diagnostic EmptySignature(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    public Diagnostic EmptySignature(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         return DiagnosticConstruction.EmptyQuantityDerivationSignature(definition.Locations.SignatureCollection?.AsRoslynLocation());
     }
 
-    public Diagnostic NullSignatureElement(IProcessingContext context, RawDerivedQuantityDefinition definition, int index)
+    public Diagnostic NullSignatureElement(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition, int index)
     {
         return DiagnosticConstruction.NullTypeNotQuantity(definition.Locations.SignatureElements[index].AsRoslynLocation());
     }
 
-    public Diagnostic UnrecognizedOperatorImplementation(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    public Diagnostic UnrecognizedOperatorImplementation(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         return DiagnosticConstruction.UnrecognizedEnumValue(definition.Locations.OperatorImplementation?.AsRoslynLocation(), definition.OperatorImplementation);
     }
 
-    public Diagnostic ExpressionNotCompatibleWithOperators(IProcessingContext context, RawDerivedQuantityDefinition definition)
+    public Diagnostic ExpressionNotCompatibleWithOperators(IDerivedQuantityProcessingContext context, RawDerivedQuantityDefinition definition)
     {
         return DiagnosticConstruction.DerivationOperatorsIncompatibleExpression(definition.Locations.OperatorImplementation?.AsRoslynLocation());
     }

@@ -5,7 +5,6 @@ using SharpMeasures.Generators.Vectors.Documentation;
 internal readonly record struct DataModel
 {
     public DefinedType Vector { get; }
-
     public int Dimension { get; }
 
     public NamedType? Scalar { get; }
@@ -24,7 +23,6 @@ internal readonly record struct DataModel
         string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IVectorDocumentationStrategy documentation)
     {
         Vector = vector;
-
         Dimension = dimension;
 
         Scalar = scalar;

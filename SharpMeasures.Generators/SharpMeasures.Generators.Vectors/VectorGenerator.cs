@@ -7,6 +7,7 @@ using SharpMeasures.Generators.Documentation;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Documentation;
+using SharpMeasures.Generators.Vectors.Pipelines.Derivations;
 using SharpMeasures.Generators.Vectors.Pipelines.Vector.Common;
 using SharpMeasures.Generators.Vectors.Pipelines.Vector.Conversions;
 using SharpMeasures.Generators.Vectors.Pipelines.Vector.Maths;
@@ -75,6 +76,7 @@ internal class VectorGenerator : IVectorGenerator
 
         VectorCommonGenerator.Initialize(context, reduced);
         VectorConversionsGenerator.Initialize(context, reduced);
+        VectorDerivationsGenerator.Initialize(context, reduced);
         VectorMathsGenerator.Initialize(context, reduced);
         VectorUnitsGenerator.Initialize(context, reduced);
     }

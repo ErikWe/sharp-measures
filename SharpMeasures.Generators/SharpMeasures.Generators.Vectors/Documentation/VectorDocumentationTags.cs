@@ -1,9 +1,13 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
+using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 internal class VectorDocumentationTags : IVectorDocumentationStrategy, IEquatable<VectorDocumentationTags>
 {
@@ -43,6 +47,9 @@ internal class VectorDocumentationTags : IVectorDocumentationStrategy, IEquatabl
     public string AntidirectionalConversion(NamedType vector) => $"From_{vector.Name}";
     public string CastConversion(NamedType vector) => $"Operator_CastTo_{vector.Name}";
     public string AntidirectionalCastConversion(NamedType vector) => $"Operator_CastFrom_{vector.Name}";
+
+    public string Derivation(DerivedQuantitySignature signature, IReadOnlyList<string> parameterNames) => $"Derivation_{ParseDerivableSignature(signature)}";
+    public string OperatorDerivation(OperatorDerivation derivation) => $"OperatorDerivationLHS_{derivation.Result.Name}_{derivation.RightHandSide.Name}";
 
     public string IsNaN() => "IsNaN";
     public string IsZero() => "IsZero";
@@ -95,6 +102,15 @@ internal class VectorDocumentationTags : IVectorDocumentationStrategy, IEquatabl
     public string MultiplyScalarOperatorLHS() => "Operator_Multiply_Scalar_LHS";
     public string MultiplyScalarOperatorRHS() => "Operator_Multiply_Scalar_RHS";
     public string DivideScalarOperatorLHS() => "Operator_Divide_Scalar_LHS";
+
+    private static string ParseDerivableSignature(IReadOnlyList<NamedType> signature)
+    {
+        StringBuilder tag = new();
+
+        IterativeBuilding.AppendEnumerable(tag, signature.Select(static (signatureElement) => signatureElement.Name), "_");
+
+        return tag.ToString();
+    }
 
     public virtual bool Equals(VectorDocumentationTags? other) => other is not null && Dimension == other.Dimension;
     public override bool Equals(object? obj) => obj is VectorDocumentationTags other && Equals(other);

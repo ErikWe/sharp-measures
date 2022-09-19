@@ -12,7 +12,7 @@ using Xunit;
 public class NormalCases
 {
     [Fact]
-    public Task Assert() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text).VerifyMatchingSourceNames("Length.Units.g.cs");
+    public Task Assert() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text).AssertNoDiagnosticsReported().VerifyMatchingSourceNames("Length.Units.g.cs");
 
     private static string Text => """
         using SharpMeasures.Generators.Scalars;

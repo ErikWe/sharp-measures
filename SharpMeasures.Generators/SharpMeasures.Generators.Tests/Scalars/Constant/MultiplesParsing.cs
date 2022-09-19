@@ -15,7 +15,7 @@ public class MultiplesParsing
     [Fact]
     public void Regex() => AssertIdentical(RegexText);
 
-    private static GeneratorVerifier AssertIdentical(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertIdenticalSources(Identical);
+    private static GeneratorVerifier AssertIdentical(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoDiagnosticsReported().AssertIdenticalSources(Identical);
 
     private static string CustomShorthandText => """
         using SharpMeasures.Generators.Scalars;

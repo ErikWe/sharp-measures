@@ -17,7 +17,7 @@ public class NormalCases
     [Fact]
     public Task PermutedDerivation() => Verify(PermutedDerivationText);
 
-    private static Task Verify(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).VerifyMatchingSourceNames("UnitOfSpeed.Derivable.g.cs");
+    private static Task Verify(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertNoDiagnosticsReported().VerifyMatchingSourceNames("UnitOfSpeed.Derivable.g.cs");
 
     private static string SimpleDerivationText => """
         using SharpMeasures.Generators.Scalars;

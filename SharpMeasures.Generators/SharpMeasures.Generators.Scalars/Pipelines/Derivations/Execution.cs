@@ -51,6 +51,8 @@ internal static class Execution
 
         private bool AnyImplementations { get; set; }
 
+        private bool AppendPureScalarMaths { get; set; }
+
         private Composer(DataModel data)
         {
             Data = data;
@@ -101,7 +103,7 @@ internal static class Execution
             {
                 foreach (var expandedDerivation in derivation.ExpandedScalarResults)
                 {
-                    var operatorDerivations = OperatorDerivationSearcher.GetDerivations(Data.Scalar.AsNamedType(), expandedDerivation.Expression, expandedDerivation.Signature, derivation.OperatorImplementation);
+                    var operatorDerivations = ScalarOperatorDerivationSearcher.GetDerivations(Data.Scalar.AsNamedType(), expandedDerivation.Expression, expandedDerivation.Signature, derivation.OperatorImplementation);
 
                     foreach (var operatorDerivation in operatorDerivations)
                     {
@@ -112,6 +114,8 @@ internal static class Execution
                     }
                 }
             }
+
+            ComposeMathUtility(indentation);
         }
 
         private void AppendMethodDerivation(Indentation indentation, string expression, IReadOnlyList<NamedType> signature, bool permutations)
@@ -123,6 +127,11 @@ internal static class Execution
             if (processedExpression is null)
             {
                 return;
+            }
+
+            if (expression.Contains("PureScalarMaths."))
+            {
+                AppendPureScalarMaths = true;
             }
 
             AnyImplementations = true;
@@ -149,7 +158,7 @@ internal static class Execution
             var methodNameAndModifiers = $"public static {operatorDerivation.Result.FullyQualifiedName} operator {operatorSymbol}";
             (NamedType Type, string Name)[] parameters = new[] { (operatorDerivation.LeftHandSide, "a"), (operatorDerivation.RightHandSide, "b") };
 
-            AppendDocumentation(indentation, Data.Documentation.OperatorDerivationLHS(operatorDerivation));
+            AppendDocumentation(indentation, Data.Documentation.OperatorDerivation(operatorDerivation));
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, getExpression(), parameters);
 
             string getExpression()
@@ -196,7 +205,7 @@ internal static class Execution
 
             var parameters = GetSignatureComponents(signature, parameterNames);
 
-            AppendDocumentation(indentation, Data.Documentation.Derivation(signature));
+            AppendDocumentation(indentation, Data.Documentation.Derivation(signature, parameterNames));
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, methodNameAndModifiers, expression, parameters);
         }
 
@@ -359,6 +368,17 @@ internal static class Execution
         private void AppendDocumentation(Indentation indentation, string text)
         {
             DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
+        }
+
+        private void ComposeMathUtility(Indentation indentation)
+        {
+            if (AppendPureScalarMaths)
+            {
+                SeparationHandler.AddIfNecessary();
+
+                Builder.AppendLine($"{indentation}/// <summary>Describes mathematical operations that result in a pure <see cref=\"global::SharpMeasures.Scalar\"/>.</summary>");
+                Builder.AppendLine($"{indentation}private static global::SharpMeasures.Maths.IScalarResultingMaths<global::SharpMeasures.Scalar> PureScalarMaths {{ get; }} = global::SharpMeasures.Maths.MathFactory.ScalarResult();");
+            }
         }
     }
 }

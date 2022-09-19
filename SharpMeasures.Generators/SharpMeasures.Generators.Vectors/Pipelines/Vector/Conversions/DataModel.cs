@@ -9,7 +9,6 @@ using System.Collections.Generic;
 internal readonly record struct DataModel
 {
     public DefinedType Vector { get; }
-
     public int Dimension { get; }
 
     public IResolvedVectorPopulation VectorPopulation { get; }
@@ -23,7 +22,6 @@ internal readonly record struct DataModel
     public DataModel(DefinedType vector, int dimension, IReadOnlyList<IConvertibleQuantity> conversions, IResolvedVectorPopulation vectorPopulation, IVectorDocumentationStrategy documentation)
     {
         Vector = vector;
-
         Dimension = dimension;
 
         VectorPopulation = vectorPopulation;

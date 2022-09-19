@@ -3,6 +3,8 @@
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Units;
 
+using System.Collections.Generic;
+
 internal interface IDocumentationStrategy
 {
     public abstract string Header();
@@ -19,9 +21,6 @@ internal interface IDocumentationStrategy
     public abstract string FromSquareRoot(NamedType squareRoot);
     public abstract string FromCubeRoot(NamedType cubeRoot);
 
-    public abstract string Derivation(DerivedQuantitySignature signature);
-    public abstract string OperatorDerivationLHS(OperatorDerivation derivation);
-
     public abstract string ScalarConstructor();
     public abstract string ScalarAndUnitConstructor();
 
@@ -34,6 +33,9 @@ internal interface IDocumentationStrategy
     public abstract string AntidirectionalConversion(NamedType scalar);
     public abstract string CastConversion(NamedType scalar);
     public abstract string AntidirectionalCastConversion(NamedType scalar);
+
+    public abstract string Derivation(DerivedQuantitySignature signature, IReadOnlyList<string> parameterNames);
+    public abstract string OperatorDerivation(OperatorDerivation derivation);
 
     public abstract string IsNaN();
     public abstract string IsZero();

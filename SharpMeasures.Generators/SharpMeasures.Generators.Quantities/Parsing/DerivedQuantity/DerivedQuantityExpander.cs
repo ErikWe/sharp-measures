@@ -2,6 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 
+using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Vectors;
 
@@ -252,6 +253,8 @@ public class DerivedQuantityExpander
 
         var trees = RecursivelyLimitGroups();
 
+        HashSet<ReadOnlyEquatableList<NamedType>> detectedSignatures = new();
+
         foreach (var tree in trees)
         {
             var expression = tree.ComposeExpression();
@@ -263,6 +266,11 @@ public class DerivedQuantityExpander
 
             var signature = new NamedType[OriginalDerivation.Signature.Count];
             tree.FillSignature(signature);
+
+            if (detectedSignatures.Add(signature.AsReadOnlyEquatable()) is false)
+            {
+                continue;
+            }
 
             ExpandedDerivedQuantity resolvedDerivation = new(expression, signature);
 
@@ -373,12 +381,18 @@ public class DerivedQuantityExpander
 
                 if (fromIndex == GroupIndices.Count - 1)
                 {
-                    yield return tree;
+                    if (tree.Verify())
+                    {
+                        yield return tree;
+                    }
 
                     continue;
                 }
 
-                recurse(tree, fromIndex + 1);
+                foreach (var result in recurse(tree, fromIndex + 1))
+                {
+                    yield return result;
+                }
             }
         }
     }
@@ -393,6 +407,7 @@ public class DerivedQuantityExpander
         public abstract void LimitResult(IReadOnlyList<int> dimensions);
         public abstract void LimitGroupWithIndex(int index, int dimension);
 
+        public abstract bool Verify();
         public abstract string ComposeExpression();
         public abstract void FillSignature(IList<NamedType> signature);
     }
@@ -436,6 +451,7 @@ public class DerivedQuantityExpander
             }
         }
 
+        bool INode.Verify() => true;
         public string ComposeExpression() => $$"""{{{SignatureIndex}}}""";
         public void FillSignature(IList<NamedType> signature) => signature[SignatureIndex] = GroupPopulation[Dimensions.Single()];
     }
@@ -466,6 +482,7 @@ public class DerivedQuantityExpander
 
         void INode.LimitGroupWithIndex(int index, int dimension) { }
 
+        bool INode.Verify() => true;
         public string ComposeExpression() => $$"""{{{SignatureIndex}}}""";
         public void FillSignature(IList<NamedType> signature) => signature[SignatureIndex] = SignatureType;
     }
@@ -489,6 +506,7 @@ public class DerivedQuantityExpander
         void INode.LimitResult(IReadOnlyList<int> dimensions) { }
         void INode.LimitGroupWithIndex(int index, int dimension) { }
 
+        bool INode.Verify() => true;
         public string ComposeExpression() => $$"""{{{SignatureIndex}}}""";
         public void FillSignature(IList<NamedType> signature) => signature[SignatureIndex] = SignatureType;
     }
@@ -503,6 +521,7 @@ public class DerivedQuantityExpander
         void INode.LimitResult(IReadOnlyList<int> dimensions) { }
         void INode.LimitGroupWithIndex(int index, int dimension) { }
 
+        bool INode.Verify() => true;
         string INode.ComposeExpression() => "1";
         void INode.FillSignature(IList<NamedType> signature) { }
     }
@@ -553,6 +572,16 @@ public class DerivedQuantityExpander
         {
             Left.LimitGroupWithIndex(index, dimension);
             Right.LimitGroupWithIndex(index, dimension);
+        }
+
+        bool INode.Verify()
+        {
+            if (ResultingType() is QuantityType.Scalar)
+            {
+                return true;
+            }
+
+            return Left.ResultingDimensions().Single() == Right.ResultingDimensions().Single();
         }
 
         public string ComposeExpression() => $"({Left.ComposeExpression()} + {Right.ComposeExpression()})";
@@ -610,6 +639,16 @@ public class DerivedQuantityExpander
         {
             Left.LimitGroupWithIndex(index, dimension);
             Right.LimitGroupWithIndex(index, dimension);
+        }
+
+        bool INode.Verify()
+        {
+            if (ResultingType() is QuantityType.Scalar)
+            {
+                return true;
+            }
+
+            return Left.ResultingDimensions().Single() == Right.ResultingDimensions().Single();
         }
 
         public string ComposeExpression() => $"({Left.ComposeExpression()} - {Right.ComposeExpression()})";
@@ -672,6 +711,8 @@ public class DerivedQuantityExpander
             Right.LimitGroupWithIndex(index, dimension);
         }
 
+        bool INode.Verify() => true;
+
         public string ComposeExpression() => $"({Left.ComposeExpression()} * {Right.ComposeExpression()})";
 
         public void FillSignature(IList<NamedType> signature)
@@ -725,6 +766,8 @@ public class DerivedQuantityExpander
             Left.LimitGroupWithIndex(index, dimension);
             Right.LimitGroupWithIndex(index, dimension);
         }
+
+        bool INode.Verify() => true;
 
         public string ComposeExpression() => $"({Left.ComposeExpression()} / {Right.ComposeExpression()})";
 
@@ -781,6 +824,8 @@ public class DerivedQuantityExpander
             Left.LimitGroupWithIndex(index, dimension);
             Right.LimitGroupWithIndex(index, dimension);
         }
+
+        bool INode.Verify() => Left.ResultingDimensions().Single() == Right.ResultingDimensions().Single();
 
         public string ComposeExpression()
         {
@@ -842,6 +887,8 @@ public class DerivedQuantityExpander
             Left.LimitGroupWithIndex(index, dimension);
             Right.LimitGroupWithIndex(index, dimension);
         }
+
+        bool INode.Verify() => Left.ResultingDimensions().Single() is 3 && Right.ResultingDimensions().Single() is 3;
 
         public string ComposeExpression()
         {

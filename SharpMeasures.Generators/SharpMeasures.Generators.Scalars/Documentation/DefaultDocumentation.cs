@@ -5,6 +5,7 @@ using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units;
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
@@ -114,35 +115,6 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
             """;
     }
 
-    public string Derivation(DerivedQuantitySignature signature)
-    {
-        StringBuilder source = new();
-        source.Append($"""/// <summary>Constructs a new {ScalarReference}, derived from other quantities.</summary>""");
-
-        foreach (var quantity in signature)
-        {
-            source.AppendLine();
-
-            source.Append($"""
-                /// <param name="{SourceBuildingUtility.ToParameterName(quantity.Name)}">This <see cref="{quantity.FullyQualifiedName}"/> is used to derive a {ScalarReference}.</param>
-                """);
-        }
-
-        return source.ToString();
-    }
-
-    public string OperatorDerivationLHS(OperatorDerivation derivation)
-    {
-        var operatorSymbol = GetOperatorSymbol(derivation.OperatorType);
-        (var firstComponentName, var secondComponentName) = GetOperatorComponentNames(derivation.OperatorType);
-
-        return $$"""
-            /// <summary>Computes { <paramref name="a"/> {{operatorSymbol}} <paramref name="b"/> }, resulting in a <see cref="{{derivation.Result.FullyQualifiedName}}"/>.</summary>
-            /// <param name="a">The {{(firstComponentName == secondComponentName ? string.Empty : "first ")}}{{firstComponentName}} of { <paramref name="a"/> {{operatorSymbol}} <paramref name="b"/> }.</param>
-            /// <param name="b">The {{(firstComponentName == secondComponentName ? string.Empty : "second ")}}{{secondComponentName}} of { <paramref name="a"/> {{operatorSymbol}} <paramref name="b"/> }.</param>
-            """;
-    }
-
     public string Magnitude()
     {
         var commonText = $"""
@@ -217,6 +189,35 @@ internal class DefaultDocumentation : IDocumentationStrategy, IEquatable<Default
         /// <summary>Converts <paramref name="x"/> to the equivalent {ScalarReference}.</summary>
         /// <param name="x">This <see cref="{scalar.FullyQualifiedName}"/> is converted to the equivalent {ScalarReference}.</param>
         """;
+
+    public string Derivation(DerivedQuantitySignature signature, IReadOnlyList<string> parameterNames)
+    {
+        StringBuilder source = new();
+        source.Append($"""/// <summary>Constructs a new {ScalarReference}, derived from other quantities.</summary>""");
+
+        for (int i = 0; i < signature.Count; i++)
+        {
+            source.AppendLine();
+
+            source.Append($"""
+                /// <param name="{parameterNames[i]}">This <see cref="{signature[i].FullyQualifiedName}"/> is used to derive a {ScalarReference}.</param>
+                """);
+        }
+
+        return source.ToString();
+    }
+
+    public string OperatorDerivation(OperatorDerivation derivation)
+    {
+        var operatorSymbol = GetOperatorSymbol(derivation.OperatorType);
+        (var firstComponentName, var secondComponentName) = GetOperatorComponentNames(derivation.OperatorType);
+
+        return $$"""
+            /// <summary>Computes { <paramref name="a"/> {{operatorSymbol}} <paramref name="b"/> }, resulting in a <see cref="{{derivation.Result.FullyQualifiedName}}"/>.</summary>
+            /// <param name="a">The {{(firstComponentName == secondComponentName ? string.Empty : "first ")}}{{firstComponentName}} of { <paramref name="a"/> {{operatorSymbol}} <paramref name="b"/> }.</param>
+            /// <param name="b">The {{(firstComponentName == secondComponentName ? string.Empty : "second ")}}{{secondComponentName}} of { <paramref name="a"/> {{operatorSymbol}} <paramref name="b"/> }.</param>
+            """;
+    }
 
     public string IsNaN() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.IsNaN"/>""";
     public string IsZero() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.IsZero"/>""";

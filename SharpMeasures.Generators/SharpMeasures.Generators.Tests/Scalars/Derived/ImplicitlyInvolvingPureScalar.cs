@@ -12,7 +12,7 @@ using Xunit;
 public class ImplicitlyInvolvingPureScalar
 {
     [Fact]
-    public Task Defaults() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(DefaultsText).VerifyMatchingSourceNames("Time.Derivations.g.cs");
+    public Task Defaults() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(DefaultsText).AssertNoDiagnosticsReported().VerifyMatchingSourceNames("Time.Derivations.g.cs");
 
     private static string DefaultsText => """
         using SharpMeasures.Generators.Quantities;

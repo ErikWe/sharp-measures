@@ -287,7 +287,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.IncompatibleQuantitiesInDerivation,
         title: "Derivation contains incompatible quantities",
-        messageFormat: "The expression does not yield the expected result due to incompatible quantities",
+        messageFormat: "The combination of expression and signature does not yield a valid result",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
