@@ -106,11 +106,7 @@ internal static class GroupMemberValidator
 
     private static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ValidateConversions(GroupMemberType vectorType, IVectorPopulation vectorPopulation)
     {
-        var inheritedConversions = CollectInheritedItems(vectorType, vectorPopulation, static (vector) => vector.Conversions.SelectMany(static (vectorList) => vectorList.Quantities),
-            static (vector) => vector.Conversions.SelectMany(static (vectorList) => vectorList.Quantities), static (vector) => vector.Definition.InheritConversionsFromMembers,
-            static (vector) => vector.Definition.InheritConversions, static (vector) => vector.Definition.InheritConversions);
-
-        var filteringContext = new ConvertibleVectorFilteringContext(vectorType.Type, vectorType.Definition.Dimension, VectorType.GroupMember, vectorPopulation, new HashSet<NamedType>(inheritedConversions));
+        var filteringContext = new ConvertibleVectorFilteringContext(vectorType.Type, vectorType.Definition.Dimension, VectorType.GroupMember, vectorPopulation);
 
         return ProcessingFilter.Create(ConvertibleVectorFilterer).Filter(filteringContext, vectorType.Conversions);
     }

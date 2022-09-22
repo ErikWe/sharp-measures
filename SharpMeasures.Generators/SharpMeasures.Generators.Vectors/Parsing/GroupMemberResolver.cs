@@ -35,13 +35,11 @@ internal static class GroupMemberResolver
         }
 
         var definedDerivations = vectorType.Derivations;
-        var inheritedDerivations = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Derivations,
-            static (vector) => vector.Definition.InheritDerivationsFromMembers, static (vector) => vector.Definition.InheritDerivations, static (vector) => vector.Definition.InheritDerivations, onlyInherited: true);
+        var constants = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Constants, static (vector) => Array.Empty<IVectorConstant>(), static (vector) => vector.Definition.InheritConstantsFromMembers, static (vector) => false, static (vector) => false);
+        var conversions = vectorType.Conversions;
 
-        var constants = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Constants, static (vector) => Array.Empty<IVectorConstant>(),
-            static (vector) => vector.Definition.InheritConstantsFromMembers, static (vector) => false, static (vector) => false);
-        var conversions = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Conversions, static (vector) => vector.Conversions,
-            static (vector) => vector.Definition.InheritConversionsFromMembers, static (vector) => vector.Definition.InheritConversions, static (vector) => vector.Definition.InheritConversions);
+        var inheritedDerivations = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Derivations, static (vector) => vector.Definition.InheritDerivationsFromMembers, static (vector) => vector.Definition.InheritDerivations, static (vector) => vector.Definition.InheritDerivations, onlyInherited: true);
+        var inheritedConversions = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Conversions, static (vector) => vector.Conversions, static (vector) => vector.Definition.InheritConversionsFromMembers, static (vector) => vector.Definition.InheritConversions, static (vector) => vector.Definition.InheritConversions, onlyInherited: true);
 
         var includedUnitInstances = ResolveUnitInstanceInclusions(vectorType, vectorPopulation, unit);
 
@@ -56,8 +54,20 @@ internal static class GroupMemberResolver
 
         var generateDocumentation = RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => vector.Definition.GenerateDocumentation, static (vector) => vector.Definition.GenerateDocumentation);
 
-        return new ResolvedVectorType(vectorType.Type, vectorType.TypeLocation, vectorType.Definition.Dimension, unit.Type.AsNamedType(), scalar, implementSum!.Value, implementDifference!.Value,
-            difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definedDerivations, inheritedDerivations, constants, conversions, includedUnitInstances, generateDocumentation);
+        (var forwardsCastBehaviour, var backwardsCastBehaviour) = GetSpecializationCastBehaviour(vectorType.Definition.VectorGroup, vectorPopulation);
+
+        return new ResolvedVectorType(vectorType.Type, vectorType.TypeLocation, vectorType.Definition.Dimension, vectorType.Definition.VectorGroup, unit.Type.AsNamedType(), originalQuantity: null, forwardsCastBehaviour, backwardsCastBehaviour, scalar, implementSum!.Value,
+            implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definedDerivations, constants, conversions, inheritedDerivations, inheritedConversions, includedUnitInstances, generateDocumentation);
+    }
+
+    private static (ConversionOperatorBehaviour ForwardsCastBehaviour, ConversionOperatorBehaviour BackwardsCastBehaviour) GetSpecializationCastBehaviour(NamedType group, IVectorPopulation vectorPopulation)
+    {
+        if (vectorPopulation.Groups[group] is IVectorGroupSpecializationType groupSpecialization)
+        {
+            return (groupSpecialization.Definition.ForwardsCastOperatorBehaviour, groupSpecialization.Definition.BackwardsCastOperatorBehaviour);
+        }
+
+        return (ConversionOperatorBehaviour.None, ConversionOperatorBehaviour.None);
     }
 
     private static NamedType? ResolveDifference(GroupMemberType vectorType, IVectorPopulation vectorPopulation)

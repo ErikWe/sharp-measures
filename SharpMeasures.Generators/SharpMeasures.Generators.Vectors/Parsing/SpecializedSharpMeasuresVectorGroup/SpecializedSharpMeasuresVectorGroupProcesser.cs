@@ -6,8 +6,13 @@ using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
 using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 
+using System;
+
 internal interface ISpecializedSharpMeasuresVectorGroupProcessingDiagnostics : IDefaultUnitInstanceProcessingDiagnostics
 {
+    public abstract Diagnostic? UnrecognizedForwardsCastOperatorBehaviour(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition);
+    public abstract Diagnostic? UnrecognizedBackwardsCastOperatorBehaviour(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition);
+
     public abstract Diagnostic? NameSuggestsDimension(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition, int interpretedDimension);
 
     public abstract Diagnostic? NullOriginalVectorGroup(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition);
@@ -31,6 +36,8 @@ internal sealed class SpecializedSharpMeasuresVectorGroupProcesser : AProcesser<
         return VerifyRequiredPropertiesSet(definition)
             .Validate(() => ValidateNameNotSuggestingDimension(context, definition))
             .Validate(() => ValidateOriginalVectorGroupNotNull(context, definition))
+            .Validate(() => ValidateForwardsCastOperatorBehaviourDefined(context, definition))
+            .Validate(() => ValidateBackwardsCastOperatorBehaviourDefined(context, definition))
             .Validate(() => ValidateScalarNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotUnexpectedlySpecified(context, definition))
@@ -40,7 +47,7 @@ internal sealed class SpecializedSharpMeasuresVectorGroupProcesser : AProcesser<
 
     private static SpecializedSharpMeasuresVectorGroupDefinition ProduceResult(RawSpecializedSharpMeasuresVectorGroupDefinition definition, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
-        return new(definition.OriginalQuantity!.Value, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritUnits, definition.Scalar,
+        return new(definition.OriginalQuantity!.Value, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritUnits, definition.ForwardsCastOperatorBehaviour, definition.BackwardsCastOperatorBehaviour, definition.Scalar,
             definition.ImplementSum, definition.ImplementDifference, definition.Difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.GenerateDocumentation, definition.Locations);
     }
 
@@ -59,6 +66,20 @@ internal sealed class SpecializedSharpMeasuresVectorGroupProcesser : AProcesser<
     private IValidityWithDiagnostics ValidateOriginalVectorGroupNotNull(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.OriginalQuantity is not null, () => Diagnostics.NullOriginalVectorGroup(context, definition));
+    }
+
+    private IValidityWithDiagnostics ValidateForwardsCastOperatorBehaviourDefined(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition)
+    {
+        var enumDefined = Enum.IsDefined(typeof(ConversionOperatorBehaviour), definition.ForwardsCastOperatorBehaviour);
+
+        return ValidityWithDiagnostics.Conditional(enumDefined, () => Diagnostics.UnrecognizedForwardsCastOperatorBehaviour(context, definition));
+    }
+
+    private IValidityWithDiagnostics ValidateBackwardsCastOperatorBehaviourDefined(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition)
+    {
+        var enumDefined = Enum.IsDefined(typeof(ConversionOperatorBehaviour), definition.BackwardsCastOperatorBehaviour);
+
+        return ValidityWithDiagnostics.Conditional(enumDefined, () => Diagnostics.UnrecognizedBackwardsCastOperatorBehaviour(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateScalarNotNull(IProcessingContext context, RawSpecializedSharpMeasuresVectorGroupDefinition definition)

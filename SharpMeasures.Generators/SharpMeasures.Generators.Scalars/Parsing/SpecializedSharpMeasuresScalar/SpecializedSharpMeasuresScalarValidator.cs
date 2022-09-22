@@ -84,8 +84,8 @@ internal sealed class SpecializedSharpMeasuresScalarValidator : IProcesser<ISpec
 
     private static SpecializedSharpMeasuresScalarDefinition ProduceResult(SpecializedSharpMeasuresScalarDefinition definition, NamedType? vector, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot)
     {
-        return new(definition.OriginalQuantity, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritBases, definition.InheritUnits, vector, definition.ImplementSum, definition.ImplementDifference, difference, defaultUnitInstanceName,
-            defaultUnitInstanceSymbol, reciprocal, square, cube, squareRoot, cubeRoot, definition.GenerateDocumentation, definition.Locations);
+        return new(definition.OriginalQuantity, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritBases, definition.InheritUnits, definition.ForwardsCastOperatorBehaviour, definition.BackwardsCastOperatorBehaviour, vector, definition.ImplementSum,
+            definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, reciprocal, square, cube, squareRoot, cubeRoot, definition.GenerateDocumentation, definition.Locations);
     }
 
     private IValidityWithDiagnostics ValidateTypeNotAlreadyUnit(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition)

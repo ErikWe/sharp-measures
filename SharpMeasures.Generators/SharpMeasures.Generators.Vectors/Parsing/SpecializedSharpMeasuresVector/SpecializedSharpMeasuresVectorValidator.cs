@@ -76,7 +76,7 @@ internal sealed class SpecializedSharpMeasuresVectorValidator : IProcesser<ISpec
 
     private static SpecializedSharpMeasuresVectorDefinition ProduceResult(SpecializedSharpMeasuresVectorDefinition definition, NamedType? scalar, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
-        return new(definition.OriginalQuantity, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritUnits, scalar, definition.ImplementSum,
+        return new(definition.OriginalQuantity, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritUnits, definition.ForwardsCastOperatorBehaviour, definition.BackwardsCastOperatorBehaviour, scalar, definition.ImplementSum,
             definition.ImplementDifference, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.GenerateDocumentation, definition.Locations);
     }
 

@@ -23,8 +23,8 @@ internal interface IConvertibleVectorFilteringContext : IProcessingContext
 
     public abstract IVectorPopulation VectorPopulation { get; }
 
-    public abstract HashSet<NamedType> InheritedConversions { get; }
-    public abstract HashSet<NamedType> ListedMatchingConversions { get; }
+    public abstract HashSet<NamedType> ListedIngoingMatchingConversions { get; }
+    public abstract HashSet<NamedType> ListedOutgoingMatchingConversions { get; }
 }
 
 internal sealed class ConvertibleVectorFilterer : AActionableProcesser<IConvertibleVectorFilteringContext, ConvertibleVectorDefinition, ConvertibleVectorDefinition>
@@ -36,8 +36,7 @@ internal sealed class ConvertibleVectorFilterer : AActionableProcesser<IConverti
         Diagnostics = diagnostics;
     }
 
-    public override void OnStartProcessing(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition) => SetMatchingConversionsAsListed(context, context.InheritedConversions);
-    public override void OnSuccessfulProcess(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, ConvertibleVectorDefinition product) => SetMatchingConversionsAsListed(context, product.Quantities);
+    public override void OnSuccessfulProcess(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, ConvertibleVectorDefinition product) => SetMatchingConversionsAsListed(context, definition.ConversionDirection, product.Quantities);
 
     public override IOptionalWithDiagnostics<ConvertibleVectorDefinition> Process(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition)
     {
@@ -73,18 +72,39 @@ internal sealed class ConvertibleVectorFilterer : AActionableProcesser<IConverti
 
     private IValidityWithDiagnostics ValidateVectorNotDuplicate(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index)
     {
-        var vectorIsExplicitlyDuplicate = context.ListedMatchingConversions.Contains(definition.Quantities[index]);
-
-        if (context.VectorType is VectorType.Group || vectorIsExplicitlyDuplicate)
+        if (context.VectorType is VectorType.Group)
         {
-            return ValidityWithDiagnostics.Conditional(vectorIsExplicitlyDuplicate is false, Diagnostics.DuplicateVector(context, definition, index));
+            return ValidityWithDiagnostics.Valid;
         }
 
-        var vectorIsImplictlyDuplicate = context.VectorPopulation.GroupMembersByGroup.TryGetValue(definition.Quantities[index], out var groupMembers)
-            && groupMembers.GroupMembersByDimension.TryGetValue(context.Dimension, out var matchingVector)
-            && context.ListedMatchingConversions.Contains(matchingVector.Type.AsNamedType());
+        return ValidityWithDiagnostics.Conditional(vectorIsImplicitlyDuplicate() is false, Diagnostics.DuplicateVector(context, definition, index));
 
-        return ValidityWithDiagnostics.Conditional(vectorIsImplictlyDuplicate is false, Diagnostics.DuplicateVector(context, definition, index));
+        bool vectorIsImplicitlyDuplicate()
+        {
+            if (context.VectorPopulation.GroupMembersByGroup.TryGetValue(definition.Quantities[index], out var groupMembers) is false
+                || groupMembers.GroupMembersByDimension.TryGetValue(context.Dimension, out var matchingVector) is false)
+            {
+                return false;
+            }
+
+            if (definition.ConversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
+            {
+                if (context.ListedOutgoingMatchingConversions.Contains(matchingVector.Type.AsNamedType()))
+                {
+                    return true;
+                }
+            }
+
+            if (definition.ConversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
+            {
+                if (context.ListedIngoingMatchingConversions.Contains(matchingVector.Type.AsNamedType()))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 
     private IValidityWithDiagnostics ValidateVectorIsOfExpectedVectorType(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index)
@@ -125,13 +145,21 @@ internal sealed class ConvertibleVectorFilterer : AActionableProcesser<IConverti
         return ValidityWithDiagnostics.Valid;
     }
 
-    private static void SetMatchingConversionsAsListed(IConvertibleVectorFilteringContext context, IEnumerable<NamedType> conversions)
+    private static void SetMatchingConversionsAsListed(IConvertibleVectorFilteringContext context, QuantityConversionDirection conversionDirection, IEnumerable<NamedType> conversions)
     {
         if (context.VectorType is VectorType.Group)
         {
             foreach (var conversion in conversions)
             {
-                context.ListedMatchingConversions.Add(conversion);
+                if (conversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
+                {
+                    context.ListedOutgoingMatchingConversions.Add(conversion);
+                }
+
+                if (conversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
+                {
+                    context.ListedIngoingMatchingConversions.Add(conversion);
+                }
             }
 
             return;
@@ -143,13 +171,29 @@ internal sealed class ConvertibleVectorFilterer : AActionableProcesser<IConverti
             {
                 if (groupMembers.GroupMembersByDimension.TryGetValue(context.Dimension, out var matchingConversion))
                 {
-                    context.ListedMatchingConversions.Add(matchingConversion.Type.AsNamedType());
+                    if (conversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
+                    {
+                        context.ListedOutgoingMatchingConversions.Add(matchingConversion.Type.AsNamedType());
+                    }
+
+                    if (conversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
+                    {
+                        context.ListedIngoingMatchingConversions.Add(matchingConversion.Type.AsNamedType());
+                    }
                 }
 
                 continue;
             }
 
-            context.ListedMatchingConversions.Add(conversion);
+            if (conversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
+            {
+                context.ListedOutgoingMatchingConversions.Add(conversion);
+            }
+
+            if (conversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
+            {
+                context.ListedIngoingMatchingConversions.Add(conversion);
+            }
         }
     }
 }

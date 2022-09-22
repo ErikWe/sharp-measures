@@ -23,7 +23,7 @@ internal static class ForeignGroupMemberProcesser
 
         var derivations = CommonProcessing.ProcessDerivations(rawMember.Type, rawMember.Derivations);
         var constants = CommonProcessing.ProcessConstants(rawMember.Type, rawMember.Constants);
-        var conversions = CommonProcessing.ProcessConversions(rawMember.Type, rawMember.Conversions);
+        var conversions = CommonProcessing.ProcessConversions(rawMember.Type, originalQuantity: null, conversionFromOriginalQuantitySpecified: false, conversionToOriginalQuantitySpecified: false, rawMember.Conversions);
 
         var includeUnitInstances = CommonProcessing.ProcessIncludeUnits(rawMember.Type, rawMember.UnitInstanceInclusions);
         var excludeUnitInstances = CommonProcessing.ProcessExcludeUnits(rawMember.Type, rawMember.UnitInstanceExclusions);

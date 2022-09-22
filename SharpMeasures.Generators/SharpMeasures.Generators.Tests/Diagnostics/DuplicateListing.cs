@@ -26,8 +26,10 @@ public class DuplicateListing
     [Fact]
     public void ConvertibleSpecializedScalar_MultipleAttributes() => AssertConvertibleSpecializedScalar_MultipleAttributes();
 
-    [Fact]
-    public void ConvertibleSpecializedScalar_InheritedAttribute() => AssertConvertibleSpecializedScalar_InheritedAttribute();
+    [Theory]
+    [InlineData("ForwardsCastOperatorBehaviour")]
+    [InlineData("BackwardsCastOperatorBehaviour")]
+    public void ConvertibleSpecializedScalar_Property(string property) => AssertConvertibleSpecializedScalar_Property(property);
 
     [Fact]
     public void ConvertibleVector_SingleAttribute() => AssertConvertibleVector_SingleAttribute();
@@ -41,8 +43,10 @@ public class DuplicateListing
     [Fact]
     public void ConvertibleSpecializedVector_MultipleAttributes() => AssertConvertibleSpecializedVector_MultipleAttributes();
 
-    [Fact]
-    public void ConvertibleSpecializedVector_InheritedAttribute() => AssertConvertibleSpecializedVector_InheritedAttribute();
+    [Theory]
+    [InlineData("ForwardsCastOperatorBehaviour")]
+    [InlineData("BackwardsCastOperatorBehaviour")]
+    public void ConvertibleSpecializedVector_Property(string property) => AssertConvertibleSpecializedVector_Property(property);
 
     [Fact]
     public void ConvertibleVectorGroup_SingleAttribute() => AssertConvertibleVectorGroup_SingleAttribute();
@@ -56,17 +60,16 @@ public class DuplicateListing
     [Fact]
     public void ConvertibleSpecializedVectorGroup_MultipleAttributes() => AssertConvertibleSpecializedVectorGroup_MultipleAttributes();
 
-    [Fact]
-    public void ConvertibleSpecializedVectorGroup_InheritedAttribute() => AssertConvertibleSpecializedVectorGroup_InheritedAttribute();
+    [Theory]
+    [InlineData("ForwardsCastOperatorBehaviour")]
+    [InlineData("BackwardsCastOperatorBehaviour")]
+    public void ConvertibleSpecializedVectorGroup_Property(string property) => AssertConvertibleSpecializedVectorGroup_Property(property);
 
     [Fact]
     public void ConvertibleVectorGroupMember_SingleAttribute() => AssertConvertibleVectorGroupMember_SingleAttribute();
 
     [Fact]
     public void ConvertibleVectorGroupMember_MultipleAttributes() => AssertConvertibleVectorGroupMember_MultipleAttributes();
-
-    [Fact]
-    public void ConvertibleVectorGroupMember_InheritedAttributeFromGroup() => AssertConvertibleVectorGroupMember_InheritedAttributeFromGroup();
 
     private static GeneratorVerifier AssertExactlyDuplicateListingDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(DuplicateListingDiagnostics);
     private static IReadOnlyCollection<string> DuplicateListingDiagnostics { get; } = new string[] { DiagnosticIDs.DuplicateListing };
@@ -165,31 +168,29 @@ public class DuplicateListing
         return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedScalarText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedScalarIdentical_InSpecialized);
     }
 
-    private static string ConvertibleSpecializedScalarText_InheritedAttribute => """
+    private static string ConvertibleSpecializedScalarText_Property(string property) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
-
-        [ConvertibleQuantity(typeof(Height))] // <-
-        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        
+        [ConvertibleQuantity(typeof(Length), ConversionDirection = QuantityConversionDirection.Bidirectional, CastOperatorBehaviour = ConversionOperatorBehaviour.Implicit)]
+        [SpecializedSharpMeasuresScalar(typeof(Length), {{property}} = ConversionOperatorBehaviour.Explicit)]
         public partial class Distance { }
-
-        [ConvertibleQuantity(typeof(Height))]
+        
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
-
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Height { }
-
+        
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
-    private static GeneratorVerifier AssertConvertibleSpecializedScalar_InheritedAttribute()
+    private static GeneratorVerifier AssertConvertibleSpecializedScalar_Property(string property)
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedScalarText_InheritedAttribute, target: "Height", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
+        var source = ConvertibleSpecializedScalarText_Property(property);
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(source, target: "Length", prefix: "ConvertibleQuantity(");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedScalarText_InheritedAttribute).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedScalarIdentical_InOriginal);
+        return AssertExactlyDuplicateListingDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedScalarIdentical_Property(property));
     }
 
     private static string ConvertibleVectorText_SingleAttribute => """
@@ -302,35 +303,33 @@ public class DuplicateListing
         return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedVectorIdentical_InSpecialized);
     }
 
-    private static string ConvertibleSpecializedVectorText_InheritedAttribute => """
+    private static string ConvertibleSpecializedVectorText_Property(string property) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
-
-        [ConvertibleQuantity(typeof(Size3))] // <-
-        [SpecializedSharpMeasuresVector(typeof(Position3))]
-        public partial class Displacement3 { }
         
-        [ConvertibleQuantity(typeof(Size3))]
+        [ConvertibleQuantity(typeof(Position3), ConversionDirection = QuantityConversionDirection.Bidirectional, CastOperatorBehaviour = ConversionOperatorBehaviour.Explicit)]
+        [SpecializedSharpMeasuresVector(typeof(Position3), {{property}} = ConversionOperatorBehaviour.Implicit)]
+        public partial class Displacement3 { }
+
         [SharpMeasuresVector(typeof(UnitOfLength))]
         public partial class Position3 { }
-
-        [SharpMeasuresVector(typeof(UnitOfLength))]
-        public partial class Size3 { }
-
+        
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
-
+        
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
-    private static GeneratorVerifier AssertConvertibleSpecializedVector_InheritedAttribute()
+    private static GeneratorVerifier AssertConvertibleSpecializedVector_Property(string property)
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorText_InheritedAttribute, target: "Size3", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
+        var source = ConvertibleSpecializedVectorText_Property(property);
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(source, target: "Position3", prefix: "ConvertibleQuantity(");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorText_InheritedAttribute).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedVectorIdentical_InOriginal);
+        return AssertExactlyDuplicateListingDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedVectorIdentical_Property(property));
     }
 
     private static string ConvertibleVectorGroupText_SingleAttribute => """
@@ -443,35 +442,33 @@ public class DuplicateListing
         return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorGroupText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedVectorGroupIdentical_InSpecialized);
     }
 
-    private static string ConvertibleSpecializedVectorGroupText_InheritedAttribute => """
+    private static string ConvertibleSpecializedVectorGroupText_Property(string property) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
-
-        [ConvertibleQuantity(typeof(Size))] // <-
-        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
-        public static partial class Displacement { }
         
-        [ConvertibleQuantity(typeof(Size))]
+        [ConvertibleQuantity(typeof(Position), ConversionDirection = QuantityConversionDirection.Bidirectional, CastOperatorBehaviour = ConversionOperatorBehaviour.Explicit)]
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position), {{property}} = ConversionOperatorBehaviour.Implicit)]
+        public static partial class Displacement { }
+
         [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
         
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
-        public static partial class Size { }
-
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
-
+        
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
 
-    private static GeneratorVerifier AssertConvertibleSpecializedVectorGroup_InheritedAttribute()
+    private static GeneratorVerifier AssertConvertibleSpecializedVectorGroup_Property(string property)
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleSpecializedVectorGroupText_InheritedAttribute, target: "Size", prefix: "ConvertibleQuantity(", postfix: ")] // <-");
+        var source = ConvertibleSpecializedVectorGroupText_Property(property);
+        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(source, target: "Position", prefix: "ConvertibleQuantity(");
 
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleSpecializedVectorGroupText_InheritedAttribute).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedVectorGroupIdentical_InOriginal);
+        return AssertExactlyDuplicateListingDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleSpecializedVectorGroupIdentical_Property(property));
     }
 
     private static string ConvertibleVectorGroupMemberText_SingleAttribute => """
@@ -535,51 +532,16 @@ public class DuplicateListing
         return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorGroupMemberText_MultipleAttributes).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleVectorGroupMemberIdentical_InMember);
     }
 
-    private static string ConvertibleVectorGroupMemberText_InheritedAttributeFromGroup => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
-
-        [ConvertibleQuantity(typeof(Displacement3))]
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
-        public partial class Position3 { }
-        
-        [ConvertibleQuantity(typeof(Displacement))]
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
-        public static partial class Position { }
-
-        [SharpMeasuresVectorGroupMember(typeof(Displacement))]
-        public partial class Displacement3 { }
-
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
-        public static partial class Displacement { }
-
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-        """;
-
-    private static GeneratorVerifier AssertConvertibleVectorGroupMember_InheritedAttributeFromGroup()
-    {
-        var expectedLocation = ExpectedDiagnosticsLocation.AsTypeofArgumentTextSpan(ConvertibleVectorGroupMemberText_InheritedAttributeFromGroup, target: "Displacement3");
-
-        return AssertExactlyDuplicateListingDiagnostics(ConvertibleVectorGroupMemberText_InheritedAttributeFromGroup).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(ConvertibleVectorGroupMemberIdentical_InGroup);
-    }
-
     private static GeneratorVerifier ConvertibleScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleScalarIdenticalText);
     private static GeneratorVerifier ConvertibleSpecializedScalarIdentical_InSpecialized => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedScalarIdenticalText_InSpecialized);
-    private static GeneratorVerifier ConvertibleSpecializedScalarIdentical_InOriginal => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedScalarIdenticalText_InOriginal);
+    private static GeneratorVerifier ConvertibleSpecializedScalarIdentical_Property(string property) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedScalarIdenticalText_Property(property));
     private static GeneratorVerifier ConvertibleVectorIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleVectorIdenticalText);
     private static GeneratorVerifier ConvertibleSpecializedVectorIdentical_InSpecialized => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedVectorIdenticalText_InSpecialized);
-    private static GeneratorVerifier ConvertibleSpecializedVectorIdentical_InOriginal => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedVectorIdenticalText_InOriginal);
+    private static GeneratorVerifier ConvertibleSpecializedVectorIdentical_Property(string property) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedVectorIdenticalText_Property(property));
     private static GeneratorVerifier ConvertibleVectorGroupIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleVectorGroupIdenticalText);
     private static GeneratorVerifier ConvertibleSpecializedVectorGroupIdentical_InSpecialized => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedVectorGroupIdenticalText_InSpecialized);
-    private static GeneratorVerifier ConvertibleSpecializedVectorGroupIdentical_InOriginal => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedVectorGroupIdenticalText_InOriginal);
+    private static GeneratorVerifier ConvertibleSpecializedVectorGroupIdentical_Property(string property) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleSpecializedVectorGroupIdenticalText_Property(property));
     private static GeneratorVerifier ConvertibleVectorGroupMemberIdentical_InMember => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleVectorGroupMemberIdenticalText_InMember);
-    private static GeneratorVerifier ConvertibleVectorGroupMemberIdentical_InGroup => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ConvertibleVectorGroupMemberIdenticalText_InGroup);
 
     private static string ConvertibleScalarIdenticalText => """
         using SharpMeasures.Generators.Quantities;
@@ -613,20 +575,17 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static string ConvertibleSpecializedScalarIdenticalText_InOriginal => """
+    private static string ConvertibleSpecializedScalarIdenticalText_Property(string property) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [SpecializedSharpMeasuresScalar(typeof(Length))]
+        [SpecializedSharpMeasuresScalar(typeof(Length), {{property}} = ConversionOperatorBehaviour.Explicit)]
         public partial class Distance { }
 
-        [ConvertibleQuantity(typeof(Height))]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
-
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Height { }
 
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
@@ -672,21 +631,17 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static string ConvertibleSpecializedVectorIdenticalText_InOriginal => """
-        using SharpMeasures.Generators.Quantities;
+    private static string ConvertibleSpecializedVectorIdenticalText_Property(string property) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
 
-        [SpecializedSharpMeasuresVector(typeof(Position3))]
+        [SpecializedSharpMeasuresVector(typeof(Position3), {{property}} = ConversionOperatorBehaviour.Implicit)]
         public partial class Displacement3 { }
 
-        [ConvertibleQuantity(typeof(Size3))]
         [SharpMeasuresVector(typeof(UnitOfLength))]
         public partial class Position3 { }
-
-        [SharpMeasuresVector(typeof(UnitOfLength))]
-        public partial class Size3 { }
 
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
@@ -735,25 +690,21 @@ public class DuplicateListing
         public partial class UnitOfLength { }
         """;
 
-    private static string ConvertibleSpecializedVectorGroupIdenticalText_InOriginal => """
-        using SharpMeasures.Generators.Quantities;
+    private static string ConvertibleSpecializedVectorGroupIdenticalText_Property(string property) => $$"""
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
         using SharpMeasures.Generators.Vectors;
-        
-        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
+
+        [SpecializedSharpMeasuresVectorGroup(typeof(Position), {{property}} = ConversionOperatorBehaviour.Implicit)]
         public static partial class Displacement { }
-        
-        [ConvertibleQuantity(typeof(Size))]
+
         [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
         public static partial class Position { }
-        
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
-        public static partial class Size { }
-        
+
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
-        
+
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;
@@ -777,32 +728,6 @@ public class DuplicateListing
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Length { }
 
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-        """;
-
-    private static string ConvertibleVectorGroupMemberIdenticalText_InGroup => """
-        using SharpMeasures.Generators.Quantities;
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
-        
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
-        public partial class Position3 { }
-        
-        [ConvertibleQuantity(typeof(Displacement))]
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
-        public static partial class Position { }
-        
-        [SharpMeasuresVectorGroupMember(typeof(Displacement))]
-        public partial class Displacement3 { }
-        
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
-        public static partial class Displacement { }
-        
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-        
         [SharpMeasuresUnit(typeof(Length))]
         public partial class UnitOfLength { }
         """;

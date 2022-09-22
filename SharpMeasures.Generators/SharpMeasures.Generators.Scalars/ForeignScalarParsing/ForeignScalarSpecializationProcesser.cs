@@ -22,6 +22,10 @@ internal sealed class ForeignScalarSpecializationProcesser : AForeignScalarProce
         IReadOnlyList<ConvertibleScalarDefinition> conversions, IReadOnlyList<IncludeUnitBasesDefinition> baseInclusions, IReadOnlyList<ExcludeUnitBasesDefinition> baseExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
         => new(type, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInstanceInclusions, unitInstanceExclusions);
 
+    protected override NamedType? GetOriginalQuantity(SpecializedSharpMeasuresScalarDefinition scalar) => scalar.OriginalQuantity;
+    protected override bool ConversionFromOriginalQuantitySpecified(SpecializedSharpMeasuresScalarDefinition scalar) => scalar.Locations.ExplicitlySetForwardsCastOperatorBehaviour;
+    protected override bool ConversionToOriginalQuantitySpecified(SpecializedSharpMeasuresScalarDefinition scalar) => scalar.Locations.ExplicitlySetBackwardsCastOperatorBehaviour;
+
     protected override Optional<SpecializedSharpMeasuresScalarDefinition> ProcessScalar(DefinedType type, RawSpecializedSharpMeasuresScalarDefinition rawDefinition)
     {
         var processingContext = new SimpleProcessingContext(type);

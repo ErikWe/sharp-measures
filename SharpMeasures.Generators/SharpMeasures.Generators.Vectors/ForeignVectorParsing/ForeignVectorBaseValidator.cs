@@ -83,7 +83,7 @@ internal static class ForeignVectorBaseValidator
 
     private static IReadOnlyList<ConvertibleVectorDefinition> ValidateConversions(VectorBaseType vectorType, IVectorPopulation vectorPopulation)
     {
-        var filteringContext = new ConvertibleVectorFilteringContext(vectorType.Type, vectorType.Definition.Dimension, VectorType.Vector, vectorPopulation, new HashSet<NamedType>());
+        var filteringContext = new ConvertibleVectorFilteringContext(vectorType.Type, vectorType.Definition.Dimension, VectorType.Vector, vectorPopulation);
 
         return ProcessingFilter.Create(ConvertibleVectorFilterer).Filter(filteringContext, vectorType.Conversions).Result;
     }

@@ -25,7 +25,7 @@ internal abstract class AForeignGroupProcesser<TRawType, TRawDefinition, TProduc
         }
 
         var derivations = CommonProcessing.ProcessDerivations(rawGroup.Type, rawGroup.Derivations);
-        var conversions = CommonProcessing.ProcessConversions(rawGroup.Type, rawGroup.Conversions);
+        var conversions = CommonProcessing.ProcessConversions(rawGroup.Type, GetOriginalQuantity(group.Value), ConversionFromOriginalQuantitySpecified(group.Value), ConversionToOriginalQuantitySpecified(group.Value), rawGroup.Conversions);
 
         var includeUnitInstances = CommonProcessing.ProcessIncludeUnits(rawGroup.Type, rawGroup.UnitInstanceInclusions);
         var excludeUnitInstances = CommonProcessing.ProcessExcludeUnits(rawGroup.Type, rawGroup.UnitInstanceExclusions);
@@ -41,4 +41,8 @@ internal abstract class AForeignGroupProcesser<TRawType, TRawDefinition, TProduc
     protected abstract TProductType ProduceResult(DefinedType type, MinimalLocation typeLocation, TProductDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
 
     protected abstract Optional<TProductDefinition> ProcessGroup(DefinedType type, TRawDefinition rawDefinition);
+
+    protected abstract NamedType? GetOriginalQuantity(TProductDefinition vector);
+    protected abstract bool ConversionFromOriginalQuantitySpecified(TProductDefinition vector);
+    protected abstract bool ConversionToOriginalQuantitySpecified(TProductDefinition vector);
 }

@@ -8,7 +8,7 @@
     Description: ,
     HelpLink: ,
     MessageFormat: Could not identify the root of the group of associated quantities. Exactly one quantity in the group should be decorated with the attribute {0}.,
-    Message: Could not identify the root of the group of associated quantities. Exactly one quantity in the group should be decorated with the attribute SharpMeasures.Generators.Scalars.SharpMeasuresScalarAttribute.,
+    Message: Could not identify the root of the group of associated quantities. Exactly one quantity in the group should be decorated with the attribute SharpMeasures.Generators.Scalars.SharpMeasuresScalar.,
     Category: Usage,
     CustomTags: []
   }

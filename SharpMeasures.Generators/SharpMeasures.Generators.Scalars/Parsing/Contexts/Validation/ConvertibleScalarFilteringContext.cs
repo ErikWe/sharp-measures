@@ -2,8 +2,6 @@
 
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
 
-using System.Collections.Generic;
-
 internal sealed record class ConvertibleScalarFilteringContext : IConvertibleScalarFilteringContext
 {
     public DefinedType Type { get; }
@@ -11,15 +9,11 @@ internal sealed record class ConvertibleScalarFilteringContext : IConvertibleSca
     public bool UseUnitBias { get; }
     public IScalarPopulation ScalarPopulation { get; }
 
-    public HashSet<NamedType> InheritedConversions { get; }
-
-    public ConvertibleScalarFilteringContext(DefinedType type, bool useUnitBias, IScalarPopulation scalarPopulation, HashSet<NamedType> inheritedConvertibleScalars)
+    public ConvertibleScalarFilteringContext(DefinedType type, bool useUnitBias, IScalarPopulation scalarPopulation)
     {
         Type = type;
 
         UseUnitBias = useUnitBias;
         ScalarPopulation = scalarPopulation;
-
-        InheritedConversions = inheritedConvertibleScalars;
     }
 }

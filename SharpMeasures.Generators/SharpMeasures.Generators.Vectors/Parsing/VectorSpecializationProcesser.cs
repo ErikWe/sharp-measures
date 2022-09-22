@@ -22,6 +22,9 @@ internal sealed class VectorSpecializationProcesser : AVectorProcesser<RawVector
     }
 
     protected override NamedType? GetUnit(SpecializedSharpMeasuresVectorDefinition scalar) => null;
+    protected override NamedType? GetOriginalQuantity(SpecializedSharpMeasuresVectorDefinition vector) => vector.OriginalQuantity;
+    protected override bool ConversionFromOriginalQuantitySpecified(SpecializedSharpMeasuresVectorDefinition vector) => vector.Locations.ExplicitlySetForwardsCastOperatorBehaviour;
+    protected override bool ConversionToOriginalQuantitySpecified(SpecializedSharpMeasuresVectorDefinition vector) => vector.Locations.ExplicitlySetBackwardsCastOperatorBehaviour;
 
     protected override IOptionalWithDiagnostics<SpecializedSharpMeasuresVectorDefinition> ProcessVector(DefinedType type, RawSpecializedSharpMeasuresVectorDefinition rawDefinition)
     {

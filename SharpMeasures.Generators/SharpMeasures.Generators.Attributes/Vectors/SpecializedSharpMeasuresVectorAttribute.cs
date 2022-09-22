@@ -45,6 +45,11 @@ public sealed class SpecializedSharpMeasuresVectorAttribute : Attribute
     /// <inheritdoc cref="SpecializedSharpMeasuresScalarAttribute.InheritUnits"/>
     public bool InheritUnits { get; init; }
 
+    /// <summary>Determines the behaviour of the operator converting from the original quantity to this quantity. The default behaviour is <see cref="ConversionOperatorBehaviour.Explicit"/>.</summary>
+    public ConversionOperatorBehaviour ForwardsCastOperatorBehaviour { get; init; }
+    /// <summary>Determines the behaviour of the operator converting from this quantity to the original quantity. The default behaviour is <see cref="ConversionOperatorBehaviour.Implicit"/>.</summary>
+    public ConversionOperatorBehaviour BackwardsCastOperatorBehaviour { get; init; }
+
     /// <summary><inheritdoc cref="SharpMeasuresVectorAttribute.Scalar" path="/summary"/> By default, the value is inherited from the original quantity.</summary>
     /// <remarks>For example; <i>Speed</i> could be considered the scalar associated with <i>Velocity</i>.</remarks>
     public Type? Scalar { get; init; }

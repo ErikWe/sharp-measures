@@ -15,6 +15,8 @@ internal static class SpecializedSharpMeasuresVectorGroupProperties
         InheritConstants,
         InheritConversions,
         InheritUnits,
+        ForwardsCastOperatorBehaviour,
+        BackwardsCastOperatorBehaviour,
         Scalar,
         ImplementSum,
         ImplementDifference,
@@ -57,6 +59,20 @@ internal static class SpecializedSharpMeasuresVectorGroupProperties
         name: nameof(SpecializedSharpMeasuresVectorGroupAttribute.InheritUnits),
         setter: static (definition, inheritUnits) => definition with { InheritUnits = inheritUnits },
         locator: static (locations, inheritUnitsLocation) => locations with { InheritUnits = inheritUnitsLocation }
+    );
+
+    private static SpecializedSharpMeasuresVectorGroupProperty<int> ForwardsCastOperatorBehaviour { get; } = new
+    (
+        name: nameof(SpecializedSharpMeasuresVectorGroupAttribute.ForwardsCastOperatorBehaviour),
+        setter: static (definition, forwardsCastOperatorBehaviour) => definition with { ForwardsCastOperatorBehaviour = (ConversionOperatorBehaviour)forwardsCastOperatorBehaviour },
+        locator: static (locations, forwardsCastOperatorBehaviourLocation) => locations with { ForwardsCastOperatorBehaviour = forwardsCastOperatorBehaviourLocation }
+    );
+
+    private static SpecializedSharpMeasuresVectorGroupProperty<int> BackwardsCastOperatorBehaviour { get; } = new
+    (
+        name: nameof(SpecializedSharpMeasuresVectorGroupAttribute.BackwardsCastOperatorBehaviour),
+        setter: static (definition, backwardsCastOperatorBehaviour) => definition with { BackwardsCastOperatorBehaviour = (ConversionOperatorBehaviour)backwardsCastOperatorBehaviour },
+        locator: static (locations, backwardsCastOperatorBehaviourLocation) => locations with { BackwardsCastOperatorBehaviour = backwardsCastOperatorBehaviourLocation }
     );
 
     private static SpecializedSharpMeasuresVectorGroupProperty<INamedTypeSymbol> Scalar { get; } = new

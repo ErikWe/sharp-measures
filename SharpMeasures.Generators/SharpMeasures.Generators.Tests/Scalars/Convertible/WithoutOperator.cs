@@ -9,7 +9,7 @@ using VerifyXunit;
 using Xunit;
 
 [UsesVerify]
-public class NormalCases
+public class WithoutOperator
 {
     [Fact]
     public Task UnbiasedScalar() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(UnbiasedScalarText).AssertNoDiagnosticsReported().VerifyMatchingSourceNames("Distance.Conversions.g.cs");
@@ -18,11 +18,12 @@ public class NormalCases
     public Task BiasedScalar() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedScalarText).AssertNoDiagnosticsReported().VerifyMatchingSourceNames("Temperature2.Conversions.g.cs");
 
     private static string UnbiasedScalarText => """
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [ConvertibleQuantity(typeof(Length))]
+        [ConvertibleQuantity(typeof(Length), ConversionDirection = QuantityConversionDirection.Bidirectional, CastOperatorBehaviour = ConversionOperatorBehaviour.None)]
         [SharpMeasuresScalar(typeof(UnitOfLength))]
         public partial class Distance { }
 
@@ -34,11 +35,12 @@ public class NormalCases
         """;
 
     private static string BiasedScalarText => """
+        using SharpMeasures.Generators;
         using SharpMeasures.Generators.Quantities;
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [ConvertibleQuantity(typeof(Temperature))]
+        [ConvertibleQuantity(typeof(Temperature), ConversionDirection = QuantityConversionDirection.Bidirectional, CastOperatorBehaviour = ConversionOperatorBehaviour.None)]
         [SharpMeasuresScalar(typeof(UnitOfTemperature), UseUnitBias = true)]
         public partial class Temperature2 { }
 

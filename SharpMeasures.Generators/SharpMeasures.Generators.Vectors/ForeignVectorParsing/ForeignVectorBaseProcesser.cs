@@ -23,6 +23,10 @@ internal sealed class ForeignVectorBaseProcesser : AForeignVectorProcesser<RawVe
         return new(type, typeLocation, definition, derivations, constants, conversions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
+    protected override NamedType? GetOriginalQuantity(SharpMeasuresVectorDefinition vector) => null;
+    protected override bool ConversionFromOriginalQuantitySpecified(SharpMeasuresVectorDefinition vector) => false;
+    protected override bool ConversionToOriginalQuantitySpecified(SharpMeasuresVectorDefinition vector) => false;
+
     protected override Optional<SharpMeasuresVectorDefinition> ProcessVector(DefinedType type, RawSharpMeasuresVectorDefinition rawDefinition)
     {
         var processingContext = new SimpleProcessingContext(type);

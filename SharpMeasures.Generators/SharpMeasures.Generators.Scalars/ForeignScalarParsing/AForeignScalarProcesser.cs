@@ -34,7 +34,7 @@ internal abstract class AForeignScalarProcesser<TRawType, TRawDefinition, TProdu
 
         var derivations = ProcessDerivations(rawScalar.Type, rawScalar.Derivations);
         var constants = ProcessConstants(rawScalar.Type, rawScalar.Constants);
-        var conversions = ProcessConversions(rawScalar.Type, rawScalar.Conversions);
+        var conversions = ProcessConversions(rawScalar.Type, GetOriginalQuantity(scalar.Value), ConversionFromOriginalQuantitySpecified(scalar.Value), ConversionToOriginalQuantitySpecified(scalar.Value), rawScalar.Conversions);
 
         var includeUnitInstanceBases = ProcessIncludeUnitBases(rawScalar.Type, rawScalar.UnitBaseInstanceInclusions);
         var excludeUnitInstanceBases = ProcessExcludeUnitBases(rawScalar.Type, rawScalar.UnitBaseInstanceExclusions);
@@ -60,6 +60,10 @@ internal abstract class AForeignScalarProcesser<TRawType, TRawDefinition, TProdu
 
     protected abstract Optional<TProductDefinition> ProcessScalar(DefinedType type, TRawDefinition rawDefinition);
 
+    protected abstract NamedType? GetOriginalQuantity(TProductDefinition scalar);
+    protected abstract bool ConversionFromOriginalQuantitySpecified(TProductDefinition scalar);
+    protected abstract bool ConversionToOriginalQuantitySpecified(TProductDefinition scalar);
+
     private static IReadOnlyList<DerivedQuantityDefinition> ProcessDerivations(DefinedType type, IEnumerable<RawDerivedQuantityDefinition> rawDefinitions)
     {
         DerivedQuantityProcessingContext processingContext = new(type, Quantities.QuantityType.Scalar);
@@ -74,9 +78,9 @@ internal abstract class AForeignScalarProcesser<TRawType, TRawDefinition, TProdu
         return ProcessingFilter.Create(ScalarConstantProcesser).Filter(processingContext, rawDefinitions).Result;
     }
 
-    private static IReadOnlyList<ConvertibleScalarDefinition> ProcessConversions(DefinedType type, IEnumerable<RawConvertibleQuantityDefinition> rawDefinitions)
+    private static IReadOnlyList<ConvertibleScalarDefinition> ProcessConversions(DefinedType type, NamedType? originalQuantity, bool conversionFromOriginalQuantitySpecified, bool conversionToOriginalQuantitySpecified, IEnumerable<RawConvertibleQuantityDefinition> rawDefinitions)
     {
-        ConvertibleQuantityProcessingContext processingContext = new(type);
+        ConvertibleQuantityProcessingContext processingContext = new(type, originalQuantity, conversionFromOriginalQuantitySpecified, conversionToOriginalQuantitySpecified);
 
         return ProcessingFilter.Create(ConvertibleScalarProcesser).Filter(processingContext, rawDefinitions).Result;
     }

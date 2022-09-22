@@ -12,6 +12,9 @@ internal sealed record class SpecializedSharpMeasuresVectorDefinition : AAttribu
     public bool InheritConversions { get; }
     public bool InheritUnits { get; }
 
+    public ConversionOperatorBehaviour ForwardsCastOperatorBehaviour { get; }
+    public ConversionOperatorBehaviour BackwardsCastOperatorBehaviour { get; }
+
     public NamedType? Scalar { get; }
 
     public bool? ImplementSum { get; }
@@ -30,8 +33,8 @@ internal sealed record class SpecializedSharpMeasuresVectorDefinition : AAttribu
     IVectorSpecializationLocations IVectorSpecialization.Locations => Locations;
     IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
-    public SpecializedSharpMeasuresVectorDefinition(NamedType originalQuantity, bool inheritDerivations, bool inheritConstants, bool inheritConversions, bool inheritUnits, NamedType? scalar, bool? implementSum, bool? implementDifference, NamedType? difference, string? defaultUnitInstanceName,
-        string? defaultUnitInstanceSymbol, bool? generateDocumentation, SpecializedSharpMeasuresVectorLocations locations) : base(locations)
+    public SpecializedSharpMeasuresVectorDefinition(NamedType originalQuantity, bool inheritDerivations, bool inheritConstants, bool inheritConversions, bool inheritUnits, ConversionOperatorBehaviour forwardsCastOperatorBehaviour, ConversionOperatorBehaviour backwardsCastOperatorBehaviour,
+        NamedType? scalar, bool? implementSum, bool? implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, bool? generateDocumentation, SpecializedSharpMeasuresVectorLocations locations) : base(locations)
     {
         OriginalQuantity = originalQuantity;
 
@@ -39,6 +42,9 @@ internal sealed record class SpecializedSharpMeasuresVectorDefinition : AAttribu
         InheritConstants = inheritConstants;
         InheritConversions = inheritConversions;
         InheritUnits = inheritUnits;
+
+        ForwardsCastOperatorBehaviour = forwardsCastOperatorBehaviour;
+        BackwardsCastOperatorBehaviour = backwardsCastOperatorBehaviour;
 
         Scalar = scalar;
 

@@ -21,6 +21,10 @@ internal sealed class ForeignGroupSpecializationProcesser : AForeignGroupProcess
         return new(type, typeLocation, definition, derivations, conversions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
+    protected override NamedType? GetOriginalQuantity(SpecializedSharpMeasuresVectorGroupDefinition group) => group.OriginalQuantity;
+    protected override bool ConversionFromOriginalQuantitySpecified(SpecializedSharpMeasuresVectorGroupDefinition group) => group.Locations.ExplicitlySetForwardsCastOperatorBehaviour;
+    protected override bool ConversionToOriginalQuantitySpecified(SpecializedSharpMeasuresVectorGroupDefinition group) => group.Locations.ExplicitlySetBackwardsCastOperatorBehaviour;
+
     protected override Optional<SpecializedSharpMeasuresVectorGroupDefinition> ProcessGroup(DefinedType type, RawSpecializedSharpMeasuresVectorGroupDefinition rawDefinition)
     {
         var processingContext = new SimpleProcessingContext(type);

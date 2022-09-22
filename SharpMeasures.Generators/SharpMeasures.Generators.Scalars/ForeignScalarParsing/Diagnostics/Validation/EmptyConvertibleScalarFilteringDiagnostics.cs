@@ -13,5 +13,4 @@ internal sealed class EmptyConvertibleScalarFilteringDiagnostics : IConvertibleS
     Diagnostic? IConvertibleScalarFilteringDiagnostics.TypeNotScalar(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index) => null;
     Diagnostic? IConvertibleScalarFilteringDiagnostics.ScalarNotUnbiased(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index) => null;
     Diagnostic? IConvertibleScalarFilteringDiagnostics.ScalarNotBiased(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index) => null;
-    Diagnostic? IConvertibleScalarFilteringDiagnostics.DuplicateScalar(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index) => null;
 }

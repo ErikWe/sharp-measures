@@ -5,8 +5,8 @@ public enum QuantityConversionDirection
 {
     /// <summary>A given quantity may be converted to another quantity.</summary>
     Onedirectional,
-    /// <summary>Two quantities are convertible to each other.</summary>
+    /// <summary>Two quantities may be converted to each other.</summary>
     Bidirectional,
-    /// <summary>Another quantity is convertible to the given quantity.</summary>
+    /// <summary>Another quantity may be converted to the given quantity.</summary>
     Antidirectional
 }

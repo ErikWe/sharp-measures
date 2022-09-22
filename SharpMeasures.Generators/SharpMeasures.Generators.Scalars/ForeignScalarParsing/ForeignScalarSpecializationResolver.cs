@@ -18,11 +18,12 @@ internal static class ForeignScalarSpecializationResolver
             return new Optional<ResolvedScalarType>();
         }
 
-        var definedDerivations = scalarType.Derivations;
-        var inheritedDerivations = CollectItems(scalarType, scalarPopulation, static (scalar) => scalar.Derivations, static (scalar) => scalar.Definition.InheritDerivations, onlyInherited: true);
-
+        var derivations = scalarType.Derivations;
         var constants = CollectItems(scalarType, scalarPopulation, static (scalar) => scalar.Constants, static (scalar) => scalar.Definition.InheritConstants);
-        var conversions = CollectItems(scalarType, scalarPopulation, static (scalar) => scalar.Conversions, static (scalar) => scalar.Definition.InheritConversions);
+        var conversions = scalarType.Conversions;
+
+        var inheritedDerivations = CollectItems(scalarType, scalarPopulation, static (scalar) => scalar.Derivations, static (scalar) => scalar.Definition.InheritDerivations, onlyInherited: true);
+        var inheritedConversions = CollectItems(scalarType, scalarPopulation, static (scalar) => scalar.Conversions, static (scalar) => scalar.Definition.InheritConversions, onlyInherited: true);
 
         var includedUnitInstanceBases = ResolveUnitInstanceInclusions(scalarType, scalarPopulation, unit, static (scalar) => scalar.UnitBaseInstanceInclusions, static (scalar) => scalar.UnitBaseInstanceExclusions, static (scalar) => scalar.Definition.InheritBases);
         var includedUnitInstances = ResolveUnitInstanceInclusions(scalarType, scalarPopulation, unit, static (scalar) => scalar.UnitInstanceInclusions, static (scalar) => scalar.UnitInstanceExclusions, static (scalar) => scalar.Definition.InheritUnits);
@@ -44,8 +45,8 @@ internal static class ForeignScalarSpecializationResolver
 
         var generateDocumentation = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.GenerateDocumentation);
 
-        return new ResolvedScalarType(scalarType.Type, MinimalLocation.None, unit.Type.AsNamedType(), scalarBase.Definition.UseUnitBias, vector, reciprocal, square, cube, squareRoot, cubeRoot, implementSum!.Value,
-            implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definedDerivations, inheritedDerivations, constants, conversions, includedUnitInstanceBases, includedUnitInstances, generateDocumentation);
+        return new ResolvedScalarType(scalarType.Type, MinimalLocation.None, unit.Type.AsNamedType(), scalarBase.Definition.UseUnitBias, scalarType.Definition.OriginalQuantity, scalarType.Definition.ForwardsCastOperatorBehaviour, scalarType.Definition.BackwardsCastOperatorBehaviour, vector, reciprocal, square, cube, squareRoot, cubeRoot, implementSum!.Value,
+            implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, derivations, constants, conversions, inheritedDerivations, inheritedConversions, includedUnitInstanceBases, includedUnitInstances, generateDocumentation);
     }
 
     private static NamedType? ResolveDifference(IScalarSpecializationType scalarType, IScalarPopulation scalarPopulation)

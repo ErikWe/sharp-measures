@@ -73,9 +73,7 @@ internal static class ForeignGroupSpecializationValidator
 
     private static IReadOnlyList<ConvertibleVectorDefinition> ValidateConversions(GroupSpecializationType groupType, IVectorPopulation vectorPopulation)
     {
-        var inheritedConversions = CollectInheritedItems(groupType, vectorPopulation, static (vector) => vector.Conversions.SelectMany(static (vectorList) => vectorList.Quantities), static (vector) => vector.Definition.InheritConversions);
-
-        var filteringContext = new ConvertibleVectorFilteringContext(groupType.Type, VectorType.Group, vectorPopulation, new HashSet<NamedType>(inheritedConversions));
+        var filteringContext = new ConvertibleVectorFilteringContext(groupType.Type, VectorType.Group, vectorPopulation);
 
         return ProcessingFilter.Create(ConvertibleVectorFilterer).Filter(filteringContext, groupType.Conversions).Result;
     }
@@ -92,25 +90,6 @@ internal static class ForeignGroupSpecializationValidator
         var filteringContext = new ExcludeUnitsFilteringContext(groupType.Type, unit, inheritedUnits);
 
         return ProcessingFilter.Create(ExcludeUnitsFilterer).Filter(filteringContext, groupType.UnitInstanceExclusions).Result;
-    }
-
-    private static IEnumerable<T> CollectInheritedItems<T>(GroupSpecializationType groupType, IVectorPopulation vectorPopulation, Func<IVectorGroupType, IEnumerable<T>> itemsDelegate, Func<IVectorGroupSpecializationType, bool> shouldInherit)
-    {
-        List<T> items = new();
-
-        recursivelyAddItems(vectorPopulation.Groups[groupType.Definition.OriginalQuantity]);
-
-        return items;
-
-        void recursivelyAddItems(IVectorGroupType group)
-        {
-            items.AddRange(itemsDelegate(group));
-
-            if (group is IVectorGroupSpecializationType vectorSpecialization && shouldInherit(vectorSpecialization))
-            {
-                recursivelyAddItems(vectorPopulation.Groups[vectorSpecialization.Definition.OriginalQuantity]);
-            }
-        }
     }
 
     private static IEnumerable<IUnitInstance> GetUnitInstanceInclusions(GroupSpecializationType groupType, IVectorPopulation vectorPopulation, IEnumerable<IUnitInstance> initialUnits, IUnitType unit, Func<IVectorGroupSpecializationType, bool> shouldInherit, bool onlyInherited = false)

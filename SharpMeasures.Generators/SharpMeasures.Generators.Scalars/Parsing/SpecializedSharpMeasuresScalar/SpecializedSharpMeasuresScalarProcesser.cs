@@ -11,6 +11,10 @@ using System;
 internal interface ISpecializedSharpMeasuresScalarProcessingDiagnostics : IDefaultUnitInstanceProcessingDiagnostics
 {
     public abstract Diagnostic? NullOriginalScalar(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
+
+    public abstract Diagnostic? UnrecognizedForwardsCastOperatorBehaviour(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
+    public abstract Diagnostic? UnrecognizedBackwardsCastOperatorBehaviour(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
+
     public abstract Diagnostic? NullVector(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
 
     public abstract Diagnostic? NullDifferenceQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
@@ -36,6 +40,8 @@ internal sealed class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProc
     {
         return VerifyRequiredPropertiesSet(definition)
             .Validate(() => ValidateOriginalScalar(context, definition))
+            .Validate(() => ValidateForwardsCastOperatorBehaviourDefined(context, definition))
+            .Validate(() => ValidateBackwardsCastOperatorBehaviourDefined(context, definition))
             .Validate(() => ValidateVectorNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotUnexpectedlySpecified(context, definition))
@@ -50,7 +56,7 @@ internal sealed class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProc
 
     private static SpecializedSharpMeasuresScalarDefinition ProduceResult(RawSpecializedSharpMeasuresScalarDefinition definition, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
-        return new(definition.OriginalQuantity!.Value, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritBases, definition.InheritUnits, definition.Vector, definition.ImplementSum, definition.ImplementDifference, definition.Difference,
+        return new(definition.OriginalQuantity!.Value, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritBases, definition.InheritUnits, definition.ForwardsCastOperatorBehaviour, definition.BackwardsCastOperatorBehaviour, definition.Vector, definition.ImplementSum, definition.ImplementDifference, definition.Difference,
             defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.Reciprocal, definition.Square, definition.Cube, definition.SquareRoot, definition.CubeRoot, definition.GenerateDocumentation, definition.Locations);
     }
 
@@ -62,6 +68,20 @@ internal sealed class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProc
     private IValidityWithDiagnostics ValidateOriginalScalar(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
     {
         return ValidityWithDiagnostics.Conditional(definition.OriginalQuantity is not null, () => Diagnostics.NullOriginalScalar(context, definition));
+    }
+
+    private IValidityWithDiagnostics ValidateForwardsCastOperatorBehaviourDefined(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
+    {
+        var enumDefined = Enum.IsDefined(typeof(ConversionOperatorBehaviour), definition.ForwardsCastOperatorBehaviour);
+
+        return ValidityWithDiagnostics.Conditional(enumDefined, () => Diagnostics.UnrecognizedForwardsCastOperatorBehaviour(context, definition));
+    }
+
+    private IValidityWithDiagnostics ValidateBackwardsCastOperatorBehaviourDefined(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
+    {
+        var enumDefined = Enum.IsDefined(typeof(ConversionOperatorBehaviour), definition.BackwardsCastOperatorBehaviour);
+
+        return ValidityWithDiagnostics.Conditional(enumDefined, () => Diagnostics.UnrecognizedBackwardsCastOperatorBehaviour(context, definition));
     }
 
     private IValidityWithDiagnostics ValidateVectorNotNull(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)

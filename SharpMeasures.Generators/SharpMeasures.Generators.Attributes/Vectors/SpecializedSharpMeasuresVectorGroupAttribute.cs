@@ -41,6 +41,11 @@ public sealed class SpecializedSharpMeasuresVectorGroupAttribute : Attribute
     /// <inheritdoc cref="SpecializedSharpMeasuresVectorAttribute.InheritUnits"/>
     public bool InheritUnits { get; init; }
 
+    /// <summary>Determines the behaviour of the operator converting from the original quantity to this quantity. The default behaviour is <see cref="ConversionOperatorBehaviour.Explicit"/>.</summary>
+    public ConversionOperatorBehaviour ForwardsCastOperatorBehaviour { get; init; }
+    /// <summary>Determines the behaviour of the operator converting from this quantity to the original quantity. The default behaviour is <see cref="ConversionOperatorBehaviour.Implicit"/>.</summary>
+    public ConversionOperatorBehaviour BackwardsCastOperatorBehaviour { get; init; }
+
     /// <summary><inheritdoc cref="SharpMeasuresVectorGroupAttribute.Scalar" path="/summary"/> By default, the value is inherited from the original group.</summary>
     /// <remarks><inheritdoc cref="SharpMeasuresVectorGroupAttribute.Scalar" path="/remarks"/></remarks>
     public Type? Scalar { get; init; }

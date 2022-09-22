@@ -11,14 +11,26 @@ internal readonly record struct DataModel
     public DefinedType Scalar { get; }
 
     public IReadOnlyList<IConvertibleQuantity> Conversions { get; }
+    public IReadOnlyList<IConvertibleQuantity> InheritedConversions { get; }
+
+    public ConversionOperatorBehaviour SpecializationForwardsBehaviour { get; }
+    public ConversionOperatorBehaviour SpecializationBackwardsBehaviour { get; }
+
+    public IResolvedScalarPopulation ScalarPopulation { get; }
 
     public IDocumentationStrategy Documentation { get; }
 
-    public DataModel(DefinedType scalar, IReadOnlyList<IConvertibleQuantity> conversions, IDocumentationStrategy documentation)
+    public DataModel(DefinedType scalar, IReadOnlyList<IConvertibleQuantity> conversions, IReadOnlyList<IConvertibleQuantity> inheritedConversions, ConversionOperatorBehaviour specializationForwardsBehaviour, ConversionOperatorBehaviour specializationBackwardsBehaviour, IResolvedScalarPopulation scalarPopulation, IDocumentationStrategy documentation)
     {
         Scalar = scalar;
 
         Conversions = conversions.AsReadOnlyEquatable();
+        InheritedConversions = inheritedConversions.AsReadOnlyEquatable();
+
+        SpecializationForwardsBehaviour = specializationForwardsBehaviour;
+        SpecializationBackwardsBehaviour = specializationBackwardsBehaviour;
+
+        ScalarPopulation = scalarPopulation;
 
         Documentation = documentation;
     }

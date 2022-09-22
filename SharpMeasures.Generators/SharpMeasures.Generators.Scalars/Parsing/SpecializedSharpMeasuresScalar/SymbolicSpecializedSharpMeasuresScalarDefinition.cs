@@ -19,6 +19,9 @@ internal sealed record class SymbolicSpecializedSharpMeasuresScalarDefinition : 
     public bool InheritBases { get; init; } = true;
     public bool InheritUnits { get; init; } = true;
 
+    public ConversionOperatorBehaviour ForwardsCastOperatorBehaviour { get; init; } = ConversionOperatorBehaviour.Explicit;
+    public ConversionOperatorBehaviour BackwardsCastOperatorBehaviour { get; init; } = ConversionOperatorBehaviour.Implicit;
+
     public INamedTypeSymbol? Vector { get; init; }
 
     public bool? ImplementSum { get; init; }

@@ -15,6 +15,9 @@ internal sealed record class SpecializedSharpMeasuresScalarLocations : AAttribut
     public MinimalLocation? InheritBases { get; init; }
     public MinimalLocation? InheritUnits { get; init; }
 
+    public MinimalLocation? ForwardsCastOperatorBehaviour { get; init; }
+    public MinimalLocation? BackwardsCastOperatorBehaviour { get; init; }
+
     public MinimalLocation? Vector { get; init; }
 
     public MinimalLocation? ImplementSum { get; init; }
@@ -39,6 +42,9 @@ internal sealed record class SpecializedSharpMeasuresScalarLocations : AAttribut
     public bool ExplicitlySetInheritConversions => InheritConversions is not null;
     public bool ExplicitlySetInheritBases => InheritBases is not null;
     public bool ExplicitlySetInheritUnits => InheritUnits is not null;
+
+    public bool ExplicitlySetForwardsCastOperatorBehaviour => ForwardsCastOperatorBehaviour is not null;
+    public bool ExplicitlySetBackwardsCastOperatorBehaviour => BackwardsCastOperatorBehaviour is not null;
 
     public bool ExplicitlySetVector => Vector is not null;
 

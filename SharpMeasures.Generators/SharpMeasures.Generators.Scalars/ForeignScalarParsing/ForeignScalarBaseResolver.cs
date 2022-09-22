@@ -21,10 +21,9 @@ internal static class ForeignScalarBaseResolver
         var includedUnitBaseInstances = ResolveUnitInstanceInclusions(unit, scalarType.UnitBaseInstanceInclusions, () => scalarType.UnitBaseInstanceExclusions);
         var includedUnitInstances = ResolveUnitInstanceInclusions(unit, scalarType.UnitInstanceInclusions, () => scalarType.UnitInstanceExclusions);
 
-        return new ResolvedScalarType(scalarType.Type, MinimalLocation.None, scalarType.Definition.Unit, scalarType.Definition.UseUnitBias, scalarType.Definition.Vector, scalarType.Definition.Reciprocal,
-            scalarType.Definition.Square, scalarType.Definition.Cube, scalarType.Definition.SquareRoot, scalarType.Definition.CubeRoot, scalarType.Definition.ImplementSum, scalarType.Definition.ImplementDifference,
-            scalarType.Definition.Difference, scalarType.Definition.DefaultUnitInstanceName, scalarType.Definition.DefaultUnitInstanceSymbol, scalarType.Derivations, Array.Empty<IDerivedQuantity>(),
-            scalarType.Constants, scalarType.Conversions, includedUnitBaseInstances, includedUnitInstances, scalarType.Definition.GenerateDocumentation);
+        return new ResolvedScalarType(scalarType.Type, MinimalLocation.None, scalarType.Definition.Unit, scalarType.Definition.UseUnitBias, originalQuantity: null, ConversionOperatorBehaviour.None, ConversionOperatorBehaviour.None, scalarType.Definition.Vector, scalarType.Definition.Reciprocal, scalarType.Definition.Square, scalarType.Definition.Cube,
+            scalarType.Definition.SquareRoot, scalarType.Definition.CubeRoot, scalarType.Definition.ImplementSum, scalarType.Definition.ImplementDifference, scalarType.Definition.Difference, scalarType.Definition.DefaultUnitInstanceName, scalarType.Definition.DefaultUnitInstanceSymbol,
+            scalarType.Derivations, scalarType.Constants, scalarType.Conversions, inheritedDerivations: Array.Empty<IDerivedQuantity>(), inheritedConversions: Array.Empty<IConvertibleQuantity>(), includedUnitBaseInstances, includedUnitInstances, scalarType.Definition.GenerateDocumentation);
     }
 
     private static IReadOnlyList<string> ResolveUnitInstanceInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)

@@ -13,6 +13,9 @@ internal sealed record class SpecializedSharpMeasuresScalarDefinition : AAttribu
     public bool InheritBases { get; }
     public bool InheritUnits { get; }
 
+    public ConversionOperatorBehaviour ForwardsCastOperatorBehaviour { get; }
+    public ConversionOperatorBehaviour BackwardsCastOperatorBehaviour { get; }
+
     public NamedType? Vector { get; }
 
     public bool? ImplementSum { get; }
@@ -37,8 +40,8 @@ internal sealed record class SpecializedSharpMeasuresScalarDefinition : AAttribu
     IScalarSpecializationLocations IScalarSpecialization.Locations => Locations;
     IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
-    public SpecializedSharpMeasuresScalarDefinition(NamedType originalScalar, bool inheritDerivations, bool inheritConstants, bool inheritConversions, bool inheritBases, bool inheritUnits, NamedType? vector, bool? implementSum, bool? implementDifference, NamedType? difference,
-        string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot, bool? generateDocumentation, SpecializedSharpMeasuresScalarLocations locations) : base(locations)
+    public SpecializedSharpMeasuresScalarDefinition(NamedType originalScalar, bool inheritDerivations, bool inheritConstants, bool inheritConversions, bool inheritBases, bool inheritUnits, ConversionOperatorBehaviour forwardsCastOperatorBehaviour, ConversionOperatorBehaviour backwardsCastOperatorBehaviour, NamedType? vector, bool? implementSum,
+        bool? implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot, bool? generateDocumentation, SpecializedSharpMeasuresScalarLocations locations) : base(locations)
     {
         OriginalQuantity = originalScalar;
 
@@ -47,6 +50,9 @@ internal sealed record class SpecializedSharpMeasuresScalarDefinition : AAttribu
         InheritConversions = inheritConversions;
         InheritBases = inheritBases;
         InheritUnits = inheritUnits;
+
+        ForwardsCastOperatorBehaviour = forwardsCastOperatorBehaviour;
+        BackwardsCastOperatorBehaviour = backwardsCastOperatorBehaviour;
 
         Vector = vector;
 

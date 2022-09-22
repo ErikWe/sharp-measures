@@ -274,13 +274,13 @@ internal class GeneratorVerifier
         return AssertDiagnosticsLocation(expectedLocations as IEnumerable<TextSpan>);
     }
 
-    public GeneratorVerifier AssertIdenticalSources(GeneratorVerifier expectedSources)
+    public GeneratorVerifier AssertIdenticalSpecifiedSources(GeneratorVerifier expectedSources, Regex sourceNamePattern)
     {
         HashSet<(string, string, string)> unmatchedOutput = new();
 
         foreach (GeneratorRunResult result in RunResult.Results)
         {
-            foreach (GeneratedSourceResult output in result.GeneratedSources)
+            foreach (GeneratedSourceResult output in result.GeneratedSources.Where((source) => sourceNamePattern.IsMatch(Source)))
             {
                 unmatchedOutput.Add(createIdentifier(result, output));
             }
@@ -288,7 +288,7 @@ internal class GeneratorVerifier
 
         foreach (GeneratorRunResult result in expectedSources.RunResult.Results)
         {
-            foreach (GeneratedSourceResult output in result.GeneratedSources)
+            foreach (GeneratedSourceResult output in result.GeneratedSources.Where((source) => sourceNamePattern.IsMatch(Source)))
             {
                 (string, string, string) identifier = createIdentifier(result, output);
 
@@ -306,6 +306,53 @@ internal class GeneratorVerifier
 
         static string removeStamp(GeneratedSourceResult generatedSource) => StampRegex.Replace(generatedSource.SourceText.ToString(), StampReplacement);
     }
+
+    public GeneratorVerifier AssertIdenticalSpecifiedSources(GeneratorVerifier expectedSources, params string[] sourceNames)
+    {
+        return AssertIdenticalSpecifiedSources(expectedSources, sourceNames as IEnumerable<string>);
+    }
+
+    public GeneratorVerifier AssertIdenticalSpecifiedSources(GeneratorVerifier expectedSources, IEnumerable<string> sourceNames)
+    {
+        HashSet<string> includedSourceNames = new(sourceNames);
+
+        HashSet<(string, string, string)> unmatchedOutput = new();
+
+        foreach (GeneratorRunResult result in RunResult.Results)
+        {
+            foreach (GeneratedSourceResult output in result.GeneratedSources.Where((source) => sourceNames.Contains(source.HintName)))
+            {
+                unmatchedOutput.Add(createIdentifier(result, output));
+            }
+        }
+
+        foreach (GeneratorRunResult result in expectedSources.RunResult.Results)
+        {
+            foreach (GeneratedSourceResult output in result.GeneratedSources.Where((source) => sourceNames.Contains(source.HintName)))
+            {
+                (string, string, string) identifier = createIdentifier(result, output);
+
+                Assert.Contains(identifier, unmatchedOutput);
+
+                unmatchedOutput.Remove(identifier);
+            }
+        }
+
+        Assert.Empty(unmatchedOutput);
+
+        return this;
+
+        static (string, string, string) createIdentifier(GeneratorRunResult result, GeneratedSourceResult output) => (result.Generator.GetGeneratorType().ToString(), output.HintName, removeStamp(output));
+
+        static string removeStamp(GeneratedSourceResult generatedSource) => StampRegex.Replace(generatedSource.SourceText.ToString(), StampReplacement);
+    }
+
+    public GeneratorVerifier AssertIdenticalSources(GeneratorVerifier expectedSources)
+    {
+        return AssertIdenticalSpecifiedSources(expectedSources, new Regex(".*"));
+    }
+
+    public GeneratorVerifier AssertIdenticalSources<TGenerator>(string identical) where TGenerator : IIncrementalGenerator, new() => AssertIdenticalSources(Construct<TGenerator>(identical));
 
     public GeneratorVerifier AssertIdenticalDiagnostics(GeneratorVerifier expectedDiagnostics)
     {

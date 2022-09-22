@@ -22,6 +22,10 @@ internal sealed class ForeignScalarBaseProcesser : AForeignScalarProcesser<RawSc
         IReadOnlyList<IncludeUnitBasesDefinition> baseInclusions, IReadOnlyList<ExcludeUnitBasesDefinition> baseExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
         => new(type, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInstanceInclusions, unitInstanceExclusions);
 
+    protected override NamedType? GetOriginalQuantity(SharpMeasuresScalarDefinition scalar) => null;
+    protected override bool ConversionFromOriginalQuantitySpecified(SharpMeasuresScalarDefinition scalar) => false;
+    protected override bool ConversionToOriginalQuantitySpecified(SharpMeasuresScalarDefinition scalar) => false;
+
     protected override Optional<SharpMeasuresScalarDefinition> ProcessScalar(DefinedType type, RawSharpMeasuresScalarDefinition rawDefinition)
     {
         var processingContext = new SimpleProcessingContext(type);

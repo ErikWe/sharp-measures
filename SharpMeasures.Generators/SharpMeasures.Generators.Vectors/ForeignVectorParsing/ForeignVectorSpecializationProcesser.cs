@@ -22,6 +22,10 @@ internal sealed class ForeignVectorSpecializationProcesser : AForeignVectorProce
         return new(type, typeLocation, definition, derivations, constants, conversions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
+    protected override NamedType? GetOriginalQuantity(SpecializedSharpMeasuresVectorDefinition vector) => vector.OriginalQuantity;
+    protected override bool ConversionFromOriginalQuantitySpecified(SpecializedSharpMeasuresVectorDefinition vector) => vector.Locations.ExplicitlySetForwardsCastOperatorBehaviour;
+    protected override bool ConversionToOriginalQuantitySpecified(SpecializedSharpMeasuresVectorDefinition vector) => vector.Locations.ExplicitlySetBackwardsCastOperatorBehaviour;
+
     protected override Optional<SpecializedSharpMeasuresVectorDefinition> ProcessVector(DefinedType type, RawSpecializedSharpMeasuresVectorDefinition rawDefinition)
     {
         var processingContext = new SimpleProcessingContext(type);

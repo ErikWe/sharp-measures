@@ -2,6 +2,7 @@
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Diagnostics;
+using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.Contexts.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
@@ -18,7 +19,7 @@ internal static class CommonProcessing
 {
     public static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ProcessDerivations(DefinedType type, IEnumerable<RawDerivedQuantityDefinition> rawDefinitions)
     {
-        DerivedQuantityProcessingContext processingContext = new(type, Quantities.QuantityType.Vector);
+        DerivedQuantityProcessingContext processingContext = new(type, QuantityType.Vector);
 
         return ProcessingFilter.Create(DerivedQuantityProcesser).Filter(processingContext, rawDefinitions);
     }
@@ -32,9 +33,9 @@ internal static class CommonProcessing
         return ProcessingFilter.Create(scalarConstantProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    public static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ProcessConversions(DefinedType type, IEnumerable<RawConvertibleQuantityDefinition> rawDefinitions)
+    public static IResultWithDiagnostics<IReadOnlyList<ConvertibleVectorDefinition>> ProcessConversions(DefinedType type, NamedType? originalQuantity, bool conversionFromOriginalQuantitySpecified, bool conversionToOriginalQuantitySpecified, IEnumerable<RawConvertibleQuantityDefinition> rawDefinitions)
     {
-        ConvertibleQuantityProcessingContext processingContext = new(type);
+        ConvertibleQuantityProcessingContext processingContext = new(type, originalQuantity, conversionFromOriginalQuantitySpecified, conversionToOriginalQuantitySpecified);
 
         return ProcessingFilter.Create(ConvertibleVectorProcesser).Filter(processingContext, rawDefinitions);
     }

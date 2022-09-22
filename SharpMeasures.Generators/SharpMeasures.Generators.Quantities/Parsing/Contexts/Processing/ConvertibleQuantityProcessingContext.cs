@@ -8,10 +8,21 @@ public sealed record class ConvertibleQuantityProcessingContext : IConvertibleQu
 {
     public DefinedType Type { get; }
 
-    public HashSet<NamedType> ListedQuantities { get; } = new();
+    public HashSet<NamedType> ListedIncomingConversions { get; } = new();
+    public HashSet<NamedType> ListedOutgoingConversions { get; } = new();
 
-    public ConvertibleQuantityProcessingContext(DefinedType type)
+    public NamedType? OriginalQuantity { get; }
+
+    public bool ConversionFromOriginalQuantitySpecified { get; }
+    public bool ConversionToOriginalQuantitySpecified { get; }
+
+    public ConvertibleQuantityProcessingContext(DefinedType type, NamedType? originalQuantity, bool conversionFromOriginalQuantitySpecified, bool conversionToOriginalQuantitySpecified)
     {
         Type = type;
+
+        OriginalQuantity = originalQuantity;
+
+        ConversionFromOriginalQuantitySpecified = conversionFromOriginalQuantitySpecified;
+        ConversionToOriginalQuantitySpecified = conversionToOriginalQuantitySpecified;
     }
 }

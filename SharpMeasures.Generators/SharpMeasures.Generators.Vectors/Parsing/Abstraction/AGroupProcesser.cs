@@ -31,20 +31,20 @@ internal abstract class AGroupProcesser<TRawType, TRawDefinition, TProductType, 
 
     private IOptionalWithDiagnostics<TProductType> Process(TRawType rawGroup)
     {
-        var vector = ProcessVector(rawGroup.Type, rawGroup.Definition);
+        var group = ProcessVector(rawGroup.Type, rawGroup.Definition);
 
-        if (vector.LacksResult)
+        if (group.LacksResult)
         {
-            return vector.AsEmptyOptional<TProductType>();
+            return group.AsEmptyOptional<TProductType>();
         }
 
         var derivations = CommonProcessing.ProcessDerivations(rawGroup.Type, rawGroup.Derivations);
-        var conversions = CommonProcessing.ProcessConversions(rawGroup.Type, rawGroup.Conversions);
+        var conversions = CommonProcessing.ProcessConversions(rawGroup.Type, GetOriginalQuantity(group.Result), ConversionFromOriginalQuantitySpecified(group.Result), ConversionToOriginalQuantitySpecified(group.Result), rawGroup.Conversions);
 
         var includeUnitInstances = CommonProcessing.ProcessIncludeUnitInstances(rawGroup.Type, rawGroup.UnitInstanceInclusions);
         var excludeUnitInstances = CommonProcessing.ProcessExcludeUnitInstances(rawGroup.Type, rawGroup.UnitInstanceExclusions);
 
-        var allDiagnostics = vector.Diagnostics.Concat(derivations).Concat(conversions).Concat(includeUnitInstances).Concat(excludeUnitInstances);
+        var allDiagnostics = group.Diagnostics.Concat(derivations).Concat(conversions).Concat(includeUnitInstances).Concat(excludeUnitInstances);
 
         if (includeUnitInstances.HasResult && includeUnitInstances.Result.Count > 0 && excludeUnitInstances.HasResult && excludeUnitInstances.Result.Count > 0)
         {
@@ -52,7 +52,7 @@ internal abstract class AGroupProcesser<TRawType, TRawDefinition, TProductType, 
             excludeUnitInstances = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
         }
 
-        TProductType product = ProduceResult(rawGroup.Type, rawGroup.TypeLocation, vector.Result, derivations.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
+        TProductType product = ProduceResult(rawGroup.Type, rawGroup.TypeLocation, group.Result, derivations.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
@@ -60,4 +60,8 @@ internal abstract class AGroupProcesser<TRawType, TRawDefinition, TProductType, 
     protected abstract TProductType ProduceResult(DefinedType type, MinimalLocation typeLocation, TProductDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
 
     protected abstract IOptionalWithDiagnostics<TProductDefinition> ProcessVector(DefinedType type, TRawDefinition rawDefinition);
+
+    protected abstract NamedType? GetOriginalQuantity(TProductDefinition groyp);
+    protected abstract bool ConversionFromOriginalQuantitySpecified(TProductDefinition group);
+    protected abstract bool ConversionToOriginalQuantitySpecified(TProductDefinition group);
 }

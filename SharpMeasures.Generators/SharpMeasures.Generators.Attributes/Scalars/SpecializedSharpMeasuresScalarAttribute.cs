@@ -57,6 +57,11 @@ public sealed class SpecializedSharpMeasuresScalarAttribute : Attribute
     /// <remarks>The attributes <see cref="IncludeUnitsAttribute"/> and <see cref="ExcludeUnitsAttribute"/> enable more granular control of what units are included.</remarks>
     public bool InheritUnits { get; init; }
 
+    /// <summary>Determines the behaviour of the operator converting from the original quantity to this quantity. The default behaviour is <see cref="ConversionOperatorBehaviour.Explicit"/>.</summary>
+    public ConversionOperatorBehaviour ForwardsCastOperatorBehaviour { get; init; }
+    /// <summary>Determines the behaviour of the operator converting from this quantity to the original quantity. The default behaviour is <see cref="ConversionOperatorBehaviour.Implicit"/>.</summary>
+    public ConversionOperatorBehaviour BackwardsCastOperatorBehaviour { get; init; }
+
     /// <summary><inheritdoc cref="SharpMeasuresScalarAttribute.Vector" path="/summary"/> By default, the value is inherited from the original quantity.</summary>
     /// <remarks><inheritdoc cref="SharpMeasuresScalarAttribute.Vector" path="/remarks"/></remarks>
     public Type? Vector { get; init; }

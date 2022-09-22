@@ -24,6 +24,9 @@ internal sealed class ScalarBaseProcesser : AScalarProcesser<RawScalarBaseType, 
     }
 
     protected override NamedType? GetUnit(SharpMeasuresScalarDefinition scalar) => scalar.Unit;
+    protected override NamedType? GetOriginalQuantity(SharpMeasuresScalarDefinition scalar) => null;
+    protected override bool ConversionFromOriginalQuantitySpecified(SharpMeasuresScalarDefinition scalar) => false;
+    protected override bool ConversionToOriginalQuantitySpecified(SharpMeasuresScalarDefinition scalar) => false;
 
     protected override IOptionalWithDiagnostics<SharpMeasuresScalarDefinition> ProcessScalar(DefinedType type, RawSharpMeasuresScalarDefinition rawDefinition)
     {

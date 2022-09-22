@@ -20,9 +20,8 @@ internal static class ForeignVectorBaseResolver
 
         var includedUnitInstances = ResolveUnitInstanceInclusions(unit, vectorType.UnitInstanceInclusions, () => vectorType.UnitInstanceExclusions);
 
-        return new ResolvedVectorType(vectorType.Type, MinimalLocation.None, vectorType.Definition.Dimension, vectorType.Definition.Unit, vectorType.Definition.Scalar, vectorType.Definition.ImplementSum,
-            vectorType.Definition.ImplementDifference, vectorType.Definition.Difference, vectorType.Definition.DefaultUnitInstanceName, vectorType.Definition.DefaultUnitInstanceSymbol, vectorType.Derivations,
-            Array.Empty<IDerivedQuantity>(), vectorType.Constants, vectorType.Conversions, includedUnitInstances, vectorType.Definition.GenerateDocumentation);
+        return new ResolvedVectorType(vectorType.Type, MinimalLocation.None, vectorType.Definition.Dimension, group: null, vectorType.Definition.Unit, originalQuantity: null, ConversionOperatorBehaviour.None, ConversionOperatorBehaviour.None, vectorType.Definition.Scalar, vectorType.Definition.ImplementSum, vectorType.Definition.ImplementDifference, vectorType.Definition.Difference,
+            vectorType.Definition.DefaultUnitInstanceName, vectorType.Definition.DefaultUnitInstanceSymbol, vectorType.Derivations, vectorType.Constants, vectorType.Conversions, inheritedDerivations: Array.Empty<IDerivedQuantity>(), inheritedConversions: Array.Empty<IConvertibleQuantity>(), includedUnitInstances, vectorType.Definition.GenerateDocumentation);
     }
 
     private static IReadOnlyList<string> ResolveUnitInstanceInclusions(IUnitType unit, IEnumerable<IUnitInstanceList> inclusions, Func<IEnumerable<IUnitInstanceList>> exclusionsDelegate)

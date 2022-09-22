@@ -24,7 +24,7 @@ public static partial class DiagnosticConstruction
 
     public static Diagnostic QuantityGroupMissingRoot<TAttribute>(Location? location)
     {
-        return Diagnostic.Create(DiagnosticRules.QuantityGroupMissingRoot, location, typeof(TAttribute).FullName);
+        return Diagnostic.Create(DiagnosticRules.QuantityGroupMissingRoot, location, Utility.FullAttributeName<TAttribute>());
     }
 
     public static Diagnostic InvalidConstantName(Location? location, string constantName)
@@ -99,8 +99,7 @@ public static partial class DiagnosticConstruction
 
     public static Diagnostic ContradictoryAttributes(Location? location, string inclusionAttributeName, string exclusionAttributeName)
     {
-        return Diagnostic.Create(DiagnosticRules.ContradictoryAttributes, location, Utility.AttributeName(inclusionAttributeName),
-            Utility.AttributeName(exclusionAttributeName));
+        return Diagnostic.Create(DiagnosticRules.ContradictoryAttributes, location, Utility.AttributeName(inclusionAttributeName), Utility.AttributeName(exclusionAttributeName));
     }
 
     public static Diagnostic IncludingAlreadyIncludedUnitInstanceWithIntersection(Location? location, string unitName)

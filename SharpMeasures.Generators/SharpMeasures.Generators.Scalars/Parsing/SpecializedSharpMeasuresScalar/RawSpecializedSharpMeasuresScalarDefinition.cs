@@ -14,6 +14,8 @@ internal sealed record class RawSpecializedSharpMeasuresScalarDefinition : ARawA
         InheritBases = symbolicDefinition.InheritBases,
         InheritUnits = symbolicDefinition.InheritUnits,
         Vector = symbolicDefinition.Vector?.AsNamedType(),
+        ForwardsCastOperatorBehaviour = symbolicDefinition.ForwardsCastOperatorBehaviour,
+        BackwardsCastOperatorBehaviour = symbolicDefinition.BackwardsCastOperatorBehaviour,
         ImplementSum = symbolicDefinition.ImplementSum,
         ImplementDifference = symbolicDefinition.ImplementDifference,
         Difference = symbolicDefinition.Difference?.AsNamedType(),
@@ -34,6 +36,9 @@ internal sealed record class RawSpecializedSharpMeasuresScalarDefinition : ARawA
     public bool InheritConversions { get; init; } = true;
     public bool InheritBases { get; init; } = true;
     public bool InheritUnits { get; init; } = true;
+
+    public ConversionOperatorBehaviour ForwardsCastOperatorBehaviour { get; init; } = ConversionOperatorBehaviour.Explicit;
+    public ConversionOperatorBehaviour BackwardsCastOperatorBehaviour { get; init; } = ConversionOperatorBehaviour.Implicit;
 
     public NamedType? Vector { get; init; }
 

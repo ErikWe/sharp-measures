@@ -12,7 +12,13 @@ internal sealed record class ResolvedVectorType : IResolvedVectorType
 
     public int Dimension { get; }
 
+    public NamedType? Group { get; }
     public NamedType Unit { get; }
+
+    public NamedType? OriginalQuantity { get; }
+
+    public ConversionOperatorBehaviour SpecializationForwardsConversionBehaviour { get; }
+    public ConversionOperatorBehaviour SpecializationBackwardsConversionBehaviour { get; }
 
     public NamedType? Scalar { get; }
 
@@ -23,10 +29,12 @@ internal sealed record class ResolvedVectorType : IResolvedVectorType
     public string? DefaultUnitInstanceName { get; }
     public string? DefaultUnitInstanceSymbol { get; }
 
-    public IReadOnlyList<IDerivedQuantity> DefinedDerivations { get; }
-    public IReadOnlyList<IDerivedQuantity> InheritedDerivations { get; }
+    public IReadOnlyList<IDerivedQuantity> Derivations { get; }
     public IReadOnlyList<IVectorConstant> Constants { get; }
     public IReadOnlyList<IConvertibleQuantity> Conversions { get; }
+
+    public IReadOnlyList<IDerivedQuantity> InheritedDerivations { get; }
+    public IReadOnlyList<IConvertibleQuantity> InheritedConversions { get; }
 
     public IReadOnlyList<string> IncludedUnitInstanceNames { get; }
 
@@ -34,15 +42,22 @@ internal sealed record class ResolvedVectorType : IResolvedVectorType
 
     IReadOnlyList<IConvertibleQuantity> IResolvedQuantityType.Conversions => Conversions;
 
-    public ResolvedVectorType(DefinedType type, MinimalLocation typeLocation, int dimension, NamedType unit, NamedType? scalar, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol,
-        IReadOnlyList<IDerivedQuantity> definedDerivations, IReadOnlyList<IDerivedQuantity> inheritedDerivations, IReadOnlyList<IVectorConstant> constants, IReadOnlyList<IConvertibleQuantity> conversions, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
+    public ResolvedVectorType(DefinedType type, MinimalLocation typeLocation, int dimension, NamedType? group, NamedType unit, NamedType? originalQuantity, ConversionOperatorBehaviour specializationForwardsConversionBehaviour, ConversionOperatorBehaviour specializationBackwardsConversionBehaviour, NamedType? scalar,
+        bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IReadOnlyList<IDerivedQuantity> derivations, IReadOnlyList<IVectorConstant> constants, IReadOnlyList<IConvertibleQuantity> conversions,
+        IReadOnlyList<IDerivedQuantity> inheritedDerivations, IReadOnlyList<IConvertibleQuantity> inheritedConversions, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
     {
         Type = type;
         TypeLocation = typeLocation;
 
         Dimension = dimension;
 
+        Group = group;
         Unit = unit;
+
+        OriginalQuantity = originalQuantity;
+
+        SpecializationForwardsConversionBehaviour = specializationForwardsConversionBehaviour;
+        SpecializationBackwardsConversionBehaviour = specializationBackwardsConversionBehaviour;
 
         Scalar = scalar;
 
@@ -53,10 +68,12 @@ internal sealed record class ResolvedVectorType : IResolvedVectorType
         DefaultUnitInstanceName = defaultUnitInstanceName;
         DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol;
 
-        DefinedDerivations = definedDerivations.AsReadOnlyEquatable();
-        InheritedDerivations = inheritedDerivations.AsReadOnlyEquatable();
+        Derivations = derivations.AsReadOnlyEquatable();
         Constants = constants.AsReadOnlyEquatable();
         Conversions = conversions.AsReadOnlyEquatable();
+
+        InheritedDerivations = inheritedDerivations.AsReadOnlyEquatable();
+        InheritedConversions = inheritedConversions.AsReadOnlyEquatable();
 
         IncludedUnitInstanceNames = includedUnitInstanceNames.AsReadOnlyEquatable();
 

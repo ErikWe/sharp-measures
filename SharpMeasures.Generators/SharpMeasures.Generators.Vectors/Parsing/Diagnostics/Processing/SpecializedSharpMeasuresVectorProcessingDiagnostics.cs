@@ -34,6 +34,16 @@ internal sealed class SpecializedSharpMeasuresVectorProcessingDiagnostics : ISpe
         return DiagnosticConstruction.DifferenceDisabledButQuantitySpecified(definition.Locations.Difference?.AsRoslynLocation(), context.Type.Name);
     }
 
+    public Diagnostic? UnrecognizedForwardsCastOperatorBehaviour(IProcessingContext context, RawSpecializedSharpMeasuresVectorDefinition definition)
+    {
+        return DiagnosticConstruction.UnrecognizedEnumValue(definition.Locations.ForwardsCastOperatorBehaviour?.AsRoslynLocation(), definition.ForwardsCastOperatorBehaviour);
+    }
+
+    public Diagnostic? UnrecognizedBackwardsCastOperatorBehaviour(IProcessingContext context, RawSpecializedSharpMeasuresVectorDefinition definition)
+    {
+        return DiagnosticConstruction.UnrecognizedEnumValue(definition.Locations.BackwardsCastOperatorBehaviour?.AsRoslynLocation(), definition.BackwardsCastOperatorBehaviour);
+    }
+
     public Diagnostic NullDefaultUnitInstanceName(IProcessingContext context, IDefaultUnitInstanceDefinition definition)
     {
         return DefaultUnitInstanceProcessingDiagnostics.Instance.NullDefaultUnitInstanceName(context, definition);

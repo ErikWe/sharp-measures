@@ -17,11 +17,10 @@ internal static class ForeignVectorSpecializationResolver
             return new Optional<ResolvedVectorType>();
         }
 
-        var definedDerivations = vectorType.Derivations;
-        var inheritedDerivations = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Definition.InheritDerivations, onlyInherited: true);
-
         var constants = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Constants, static (vector) => vector.Definition.InheritConstants);
-        var conversions = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Conversions, static (vector) => vector.Definition.InheritConversions);
+
+        var inheritedDerivations = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Definition.InheritDerivations, onlyInherited: true);
+        var inheritedConversions = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Conversions, static (vector) => vector.Definition.InheritConversions, onlyInherited: true);
 
         var includedUnitInstances = ResolveUnitInstanceInclusions(vectorType, vectorPopulation, unit);
 
@@ -36,8 +35,8 @@ internal static class ForeignVectorSpecializationResolver
 
         var generateDocumentation = RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => vector.Definition.GenerateDocumentation);
 
-        return new ResolvedVectorType(vectorType.Type, MinimalLocation.None, vectorBase.Definition.Dimension, unit.Type.AsNamedType(), scalar, implementSum!.Value, implementDifference!.Value, difference,
-            defaultUnitInstanceName, defaultUnitInstanceSymbol, definedDerivations, inheritedDerivations, constants, conversions, includedUnitInstances, generateDocumentation);
+        return new ResolvedVectorType(vectorType.Type, MinimalLocation.None, vectorBase.Definition.Dimension, group: null, unit.Type.AsNamedType(), vectorType.Definition.OriginalQuantity, vectorType.Definition.ForwardsCastOperatorBehaviour, vectorType.Definition.BackwardsCastOperatorBehaviour, scalar,
+            implementSum!.Value, implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, vectorType.Derivations, constants, vectorType.Conversions, inheritedDerivations, inheritedConversions, includedUnitInstances, generateDocumentation);
     }
 
     private static NamedType? ResolveDifference(IVectorSpecializationType vectorType, IVectorPopulation vectorPopulation)

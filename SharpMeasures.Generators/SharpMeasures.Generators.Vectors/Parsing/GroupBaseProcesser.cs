@@ -19,6 +19,10 @@ internal sealed class GroupBaseProcesser : AGroupProcesser<RawGroupBaseType, Raw
         return new(type, typeLocation, definition, derivations, conversions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
+    protected override NamedType? GetOriginalQuantity(SharpMeasuresVectorGroupDefinition group) => null;
+    protected override bool ConversionFromOriginalQuantitySpecified(SharpMeasuresVectorGroupDefinition group) => false;
+    protected override bool ConversionToOriginalQuantitySpecified(SharpMeasuresVectorGroupDefinition group) => false;
+
     protected override IOptionalWithDiagnostics<SharpMeasuresVectorGroupDefinition> ProcessVector(DefinedType type, RawSharpMeasuresVectorGroupDefinition rawDefinition)
     {
         var processingContext = new SimpleProcessingContext(type);

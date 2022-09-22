@@ -21,4 +21,6 @@ internal sealed class EmptySpecializedSharpMeasuresVectorProcessingDiagnostics :
     Diagnostic? ISpecializedSharpMeasuresVectorProcessingDiagnostics.NullScalar(IProcessingContext context, RawSpecializedSharpMeasuresVectorDefinition definition) => null;
     Diagnostic? IDefaultUnitInstanceProcessingDiagnostics.SetDefaultUnitInstanceNameButNotSymbol(IProcessingContext context, IDefaultUnitInstanceDefinition definition) => null;
     Diagnostic? IDefaultUnitInstanceProcessingDiagnostics.SetDefaultUnitInstanceSymbolButNotName(IProcessingContext context, IDefaultUnitInstanceDefinition definition) => null;
+    Diagnostic? ISpecializedSharpMeasuresVectorProcessingDiagnostics.UnrecognizedForwardsCastOperatorBehaviour(IProcessingContext context, RawSpecializedSharpMeasuresVectorDefinition definition) => null;
+    Diagnostic? ISpecializedSharpMeasuresVectorProcessingDiagnostics.UnrecognizedBackwardsCastOperatorBehaviour(IProcessingContext context, RawSpecializedSharpMeasuresVectorDefinition definition) => null;
 }

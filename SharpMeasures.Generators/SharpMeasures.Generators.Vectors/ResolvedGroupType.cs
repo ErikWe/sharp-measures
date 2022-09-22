@@ -12,6 +12,11 @@ internal sealed record class ResolvedGroupType : IResolvedVectorGroupType
 
     public NamedType Unit { get; }
 
+    public NamedType? OriginalQuantity { get; }
+
+    public ConversionOperatorBehaviour SpecializationForwardsConversionBehaviour { get; }
+    public ConversionOperatorBehaviour SpecializationBackwardsConversionBehaviour { get; }
+
     public NamedType? Scalar { get; }
 
     public bool ImplementSum { get; }
@@ -23,9 +28,11 @@ internal sealed record class ResolvedGroupType : IResolvedVectorGroupType
 
     public IReadOnlyDictionary<int, NamedType> MembersByDimension { get; }
 
-    public IReadOnlyList<IDerivedQuantity> DefinedDerivations { get; }
-    public IReadOnlyList<IDerivedQuantity> InheritedDerivations { get; }
+    public IReadOnlyList<IDerivedQuantity> Derivations { get; }
     public IReadOnlyList<IConvertibleQuantity> Conversions { get; }
+
+    public IReadOnlyList<IDerivedQuantity> InheritedDerivations { get; }
+    public IReadOnlyList<IConvertibleQuantity> InheritedConversions { get; }
 
     public IReadOnlyList<string> IncludedUnitInstanceNames { get; }
 
@@ -33,13 +40,19 @@ internal sealed record class ResolvedGroupType : IResolvedVectorGroupType
 
     IReadOnlyList<IConvertibleQuantity> IResolvedQuantityType.Conversions => Conversions;
 
-    public ResolvedGroupType(DefinedType type, MinimalLocation typeLocation, NamedType unit, NamedType? scalar, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol,
-        IReadOnlyDictionary<int, NamedType> membersByDimension, IReadOnlyList<IDerivedQuantity> definedDerivations, IReadOnlyList<IDerivedQuantity> inheritedDerivations, IReadOnlyList<IConvertibleQuantity> conversions, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
+    public ResolvedGroupType(DefinedType type, MinimalLocation typeLocation, NamedType unit, NamedType? originalQuantity, ConversionOperatorBehaviour specializationForwardsConversionBehaviour, ConversionOperatorBehaviour specializationBackwardsConversionBehaviour, NamedType? scalar, bool implementSum,
+        bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IReadOnlyDictionary<int, NamedType> membersByDimension, IReadOnlyList<IDerivedQuantity> derivations, IReadOnlyList<IConvertibleQuantity> conversions,
+        IReadOnlyList<IDerivedQuantity> inheritedDerivations, IReadOnlyList<IConvertibleQuantity> inheritedConversions, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
     {
         Type = type;
         TypeLocation = typeLocation;
 
         Unit = unit;
+
+        OriginalQuantity = originalQuantity;
+
+        SpecializationForwardsConversionBehaviour = specializationForwardsConversionBehaviour;
+        SpecializationBackwardsConversionBehaviour = specializationBackwardsConversionBehaviour;
 
         Scalar = scalar;
 
@@ -52,9 +65,11 @@ internal sealed record class ResolvedGroupType : IResolvedVectorGroupType
 
         MembersByDimension = membersByDimension.AsReadOnlyEquatable();
 
-        DefinedDerivations = definedDerivations.AsReadOnlyEquatable();
-        InheritedDerivations = inheritedDerivations.AsReadOnlyEquatable();
+        Derivations = derivations.AsReadOnlyEquatable();
         Conversions = conversions.AsReadOnlyEquatable();
+
+        InheritedDerivations = inheritedDerivations.AsReadOnlyEquatable();
+        InheritedConversions = inheritedConversions.AsReadOnlyEquatable();
 
         IncludedUnitInstanceNames = includedUnitInstanceNames.AsReadOnlyEquatable();
 

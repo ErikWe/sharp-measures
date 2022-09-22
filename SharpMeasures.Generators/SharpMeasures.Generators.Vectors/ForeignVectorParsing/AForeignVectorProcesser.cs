@@ -27,7 +27,7 @@ internal abstract class AForeignVectorProcesser<TRawType, TRawDefinition, TProdu
 
         var derivations = CommonProcessing.ProcessDerivations(rawVector.Type, rawVector.Derivations);
         var constants = CommonProcessing.ProcessConstants(rawVector.Type, rawVector.Constants);
-        var conversions = CommonProcessing.ProcessConversions(rawVector.Type, rawVector.Conversions);
+        var conversions = CommonProcessing.ProcessConversions(rawVector.Type, GetOriginalQuantity(vector.Value), ConversionFromOriginalQuantitySpecified(vector.Value), ConversionToOriginalQuantitySpecified(vector.Value), rawVector.Conversions);
 
         var includeUnitInstances = CommonProcessing.ProcessIncludeUnits(rawVector.Type, rawVector.UnitInstanceInclusions);
         var excludeUnitInstances = CommonProcessing.ProcessExcludeUnits(rawVector.Type, rawVector.UnitInstanceExclusions);
@@ -44,4 +44,8 @@ internal abstract class AForeignVectorProcesser<TRawType, TRawDefinition, TProdu
         IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
 
     protected abstract Optional<TProductDefinition> ProcessVector(DefinedType type, TRawDefinition rawDefinition);
+
+    protected abstract NamedType? GetOriginalQuantity(TProductDefinition vector);
+    protected abstract bool ConversionFromOriginalQuantitySpecified(TProductDefinition vector);
+    protected abstract bool ConversionToOriginalQuantitySpecified(TProductDefinition vector);
 }

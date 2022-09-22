@@ -13,6 +13,11 @@ internal sealed record class ResolvedScalarType : IResolvedScalarType
     public NamedType Unit { get; }
     public bool UseUnitBias { get; }
 
+    public NamedType? OriginalQuantity { get; }
+
+    public ConversionOperatorBehaviour SpecializationForwardsConversionBehaviour { get; }
+    public ConversionOperatorBehaviour SpecializationBackwardsConversionBehaviour { get; }
+
     public NamedType? Vector { get; }
 
     public NamedType? Reciprocal { get; }
@@ -28,10 +33,12 @@ internal sealed record class ResolvedScalarType : IResolvedScalarType
     public string? DefaultUnitInstanceName { get; }
     public string? DefaultUnitInstanceSymbol { get; }
 
-    public IReadOnlyList<IDerivedQuantity> DefinedDerivations { get; }
-    public IReadOnlyList<IDerivedQuantity> InheritedDerivations { get; }
+    public IReadOnlyList<IDerivedQuantity> Derivations { get; }
     public IReadOnlyList<IScalarConstant> Constants { get; }
     public IReadOnlyList<IConvertibleQuantity> Conversions { get; }
+
+    public IReadOnlyList<IDerivedQuantity> InheritedDerivations { get; }
+    public IReadOnlyList<IConvertibleQuantity> InheritedConversions { get; }
 
     public IReadOnlyList<string> IncludedUnitBaseInstanceNames { get; }
     public IReadOnlyList<string> IncludedUnitInstanceNames { get; }
@@ -40,15 +47,20 @@ internal sealed record class ResolvedScalarType : IResolvedScalarType
 
     IReadOnlyList<IConvertibleQuantity> IResolvedQuantityType.Conversions => Conversions;
 
-    public ResolvedScalarType(DefinedType type, MinimalLocation typeLocation, NamedType unit, bool useUnitBias, NamedType? vector, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot, bool implementSum,
-        bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IReadOnlyList<IDerivedQuantity> definedDerivations, IReadOnlyList<IDerivedQuantity> inheritedDerivations,
-        IReadOnlyList<IScalarConstant> constants, IReadOnlyList<IConvertibleQuantity> conversions, IReadOnlyList<string> includedUnitBaseInstanceNames, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
+    public ResolvedScalarType(DefinedType type, MinimalLocation typeLocation, NamedType unit, bool useUnitBias, NamedType? originalQuantity, ConversionOperatorBehaviour specializationForwardsConversionBehaviour, ConversionOperatorBehaviour specializationBackwardsConversionBehaviour, NamedType? vector, NamedType? reciprocal, NamedType? square,
+        NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IReadOnlyList<IDerivedQuantity> derivations, IReadOnlyList<IScalarConstant> constants, IReadOnlyList<IConvertibleQuantity> conversions,
+        IReadOnlyList<IDerivedQuantity> inheritedDerivations, IReadOnlyList<IConvertibleQuantity> inheritedConversions, IReadOnlyList<string> includedUnitBaseInstanceNames, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
     {
         Type = type;
         TypeLocation = typeLocation;
 
         Unit = unit;
         UseUnitBias = useUnitBias;
+
+        OriginalQuantity = originalQuantity;
+
+        SpecializationForwardsConversionBehaviour = specializationForwardsConversionBehaviour;
+        SpecializationBackwardsConversionBehaviour = specializationBackwardsConversionBehaviour;
 
         Vector = vector;
 
@@ -65,10 +77,12 @@ internal sealed record class ResolvedScalarType : IResolvedScalarType
         DefaultUnitInstanceName = defaultUnitInstanceName;
         DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol;
 
-        DefinedDerivations = definedDerivations.AsReadOnlyEquatable();
-        InheritedDerivations = inheritedDerivations.AsReadOnlyEquatable();
+        Derivations = derivations.AsReadOnlyEquatable();
         Constants = constants.AsReadOnlyEquatable();
         Conversions = conversions.AsReadOnlyEquatable();
+
+        InheritedDerivations = inheritedDerivations.AsReadOnlyEquatable();
+        InheritedConversions = inheritedConversions.AsReadOnlyEquatable();
 
         IncludedUnitBaseInstanceNames = includedUnitBaseInstanceNames.AsReadOnlyEquatable();
         IncludedUnitInstanceNames = includedUnitInstanceNames.AsReadOnlyEquatable();

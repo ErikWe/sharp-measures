@@ -3,9 +3,11 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
+using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.SourceBuilding;
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 internal static class Execution
@@ -56,7 +58,7 @@ internal static class Execution
 
             NamespaceBuilding.AppendNamespace(Builder, Data.Vector.Namespace);
 
-            Builder.AppendLine(Data.Vector.ComposeDeclaration());
+            Builder.Append(Data.Vector.ComposeDeclaration());
 
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
         }
@@ -77,120 +79,137 @@ internal static class Execution
 
             SeparationHandler.MarkUnncecessary();
 
-            foreach (var conversionDefinition in Data.Conversions)
-            {
-                if (conversionDefinition.ConversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
-                {
-                    foreach (var vector in conversionDefinition.Quantities)
-                    {
-                        if (Data.VectorPopulation.Groups.TryGetValue(vector, out var group))
-                        {
-                            if (group.MembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
-                            {
-                                AppendNormalMethodConversion(indentation, correspondingMember);
-                            }
-                        }
-
-                        if (Data.VectorPopulation.Vectors.ContainsKey(vector))
-                        {
-                            AppendNormalMethodConversion(indentation, vector);
-                        }
-                    }
-                }
-
-                if (conversionDefinition.ConversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
-                {
-                    foreach (var vector in conversionDefinition.Quantities)
-                    {
-                        if (Data.VectorPopulation.Groups.TryGetValue(vector, out var group))
-                        {
-                            if (group.MembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
-                            {
-                                AppendAntidirectionalMethodConversion(indentation, correspondingMember);
-                            }
-                        }
-
-                        if (Data.VectorPopulation.Vectors.ContainsKey(vector))
-                        {
-                            AppendAntidirectionalMethodConversion(indentation, vector);
-                        }
-                    }
-                }
-            }
-
-            foreach (var conversionDefinition in Data.Conversions)
-            {
-                if (conversionDefinition.CastOperatorBehaviour is ConversionOperatorBehaviour.None)
-                {
-                    continue;
-                }
-
-                if (conversionDefinition.ConversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
-                {
-                    Action<Indentation, NamedType> composer = conversionDefinition.CastOperatorBehaviour switch
-                    {
-                        ConversionOperatorBehaviour.Explicit => (indentation, vector) => AppendNormalOperatorConversion(indentation, vector, "explicit"),
-                        ConversionOperatorBehaviour.Implicit => (indentation, vector) => AppendAntidirectionalOperatorConversion(indentation, vector, "implicit"),
-                        _ => throw new NotSupportedException("Invalid cast operation")
-                    };
-
-                    foreach (var vector in conversionDefinition.Quantities)
-                    {
-                        if (Data.VectorPopulation.Groups.TryGetValue(vector, out var group))
-                        {
-                            if (group.MembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
-                            {
-                                composer(indentation, correspondingMember);
-                            }
-                        }
-
-                        if (Data.VectorPopulation.Vectors.ContainsKey(vector))
-                        {
-                            composer(indentation, vector);
-                        }
-                    }
-                }
-
-                if (conversionDefinition.ConversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
-                {
-                    Action<Indentation, NamedType> composer = conversionDefinition.CastOperatorBehaviour switch
-                    {
-                        ConversionOperatorBehaviour.Explicit => (indentation, vector) => AppendAntidirectionalOperatorConversion(indentation, vector, "explicit"),
-                        ConversionOperatorBehaviour.Implicit => (indentation, vector) => AppendAntidirectionalOperatorConversion(indentation, vector, "implicit"),
-                        _ => throw new NotSupportedException("Invalid cast operation")
-                    };
-
-                    foreach (var vector in conversionDefinition.Quantities)
-                    {
-                        if (Data.VectorPopulation.Groups.TryGetValue(vector, out var group))
-                        {
-                            if (group.MembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
-                            {
-                                composer(indentation, correspondingMember);
-                            }
-                        }
-
-                        if (Data.VectorPopulation.Vectors.ContainsKey(vector))
-                        {
-                            composer(indentation, vector);
-                        }
-                    }
-                }
-            }
+            AppendMethodConversions(indentation);
+            AppendOperatorConversions(indentation);
 
             AnyConversions = Builder.Length > initialLength;
         }
 
-        private void AppendNormalMethodConversion(Indentation indentation, NamedType vector)
+        private void AppendMethodConversions(Indentation indentation)
         {
+            HashSet<NamedType> implementedOutgoingConversions = new();
+            HashSet<NamedType> implementedIngoingConversions = new();
+
+            foreach (var conversionDefinition in Data.Conversions)
+            {
+                appendMethodConversions(conversionDefinition);
+            }
+
+            if (Data.Group is null && Data.VectorPopulation.Vectors.TryGetValue(Data.Vector.AsNamedType(), out var vector) && vector.OriginalQuantity is not null)
+            {
+                recursivelyAppendVectorSpecializationMethodConversion(vector.OriginalQuantity.Value);
+            }
+
+            if (Data.Group is not null && Data.VectorPopulation.Groups.TryGetValue(Data.Group.Value, out var group) && group.OriginalQuantity is not null)
+            {
+                recursivelyAppendGroupSpecializationMethodConversion(group.OriginalQuantity.Value);
+            }
+
+            foreach (var conversionDefinition in Data.InheritedConversions)
+            {
+                appendMethodConversions(conversionDefinition);
+            }
+
+            void appendMethodConversions(IConvertibleQuantity definition)
+            {
+                foreach (var quantity in definition.Quantities)
+                {
+                    if (Data.VectorPopulation.Vectors.ContainsKey(quantity))
+                    {
+                        appendMethodConversionForQuantity(quantity);
+                    }
+
+                    if (Data.VectorPopulation.Groups.TryGetValue(quantity, out var group) && group.MembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
+                    {
+                        appendMethodConversionForQuantity(correspondingMember);
+                    }
+                }
+
+                void appendMethodConversionForQuantity(NamedType quantity)
+                {
+                    if (definition.ConversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
+                    {
+                        if (implementedOutgoingConversions.Add(quantity))
+                        {
+                            AppendOutgoingMethodConversion(indentation, quantity);
+                        }
+                    }
+
+                    if (definition.ConversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
+                    {
+                        if (implementedIngoingConversions.Add(quantity))
+                        {
+                            AppendIngoingMethodConversion(indentation, quantity);
+                        }
+                    }
+                }
+            }
+
+            void recursivelyAppendVectorSpecializationMethodConversion(NamedType originalQuantity)
+            {
+                if (implementedOutgoingConversions.Add(originalQuantity))
+                {
+                    AppendOutgoingMethodConversion(indentation, originalQuantity);
+                }
+
+                if (implementedIngoingConversions.Add(originalQuantity))
+                {
+                    AppendIngoingMethodConversion(indentation, originalQuantity);
+                }
+
+                if (Data.VectorPopulation.Vectors.TryGetValue(originalQuantity, out var vector) && vector.OriginalQuantity is not null)
+                {
+                    recursivelyAppendVectorSpecializationMethodConversion(vector.OriginalQuantity!.Value);
+                }
+            }
+
+            void recursivelyAppendGroupSpecializationMethodConversion(NamedType originalGroupName)
+            {
+                if (Data.VectorPopulation.Groups.TryGetValue(originalGroupName, out var originalGroup) is false)
+                {
+                    return;
+                }
+
+                if (originalGroup.MembersByDimension.TryGetValue(Data.Dimension, out var member))
+                {
+                    if (implementedOutgoingConversions.Add(member))
+                    {
+                        AppendOutgoingMethodConversion(indentation, member);
+                    }
+
+                    if (implementedIngoingConversions.Add(member))
+                    {
+                        AppendIngoingMethodConversion(indentation, member);
+                    }
+                }
+
+                if (originalGroup.OriginalQuantity is not null)
+                {
+                    recursivelyAppendGroupSpecializationMethodConversion(originalGroup.OriginalQuantity.Value);
+                }
+            }
+        }
+
+        private void AppendOutgoingMethodConversion(Indentation indentation, NamedType vector)
+        {
+            if (vector == Data.Vector.AsNamedType())
+            {
+                return;
+            }
+
             SeparationHandler.AddIfNecessary();
 
             AppendDocumentation(indentation, Data.Documentation.Conversion(vector));
             Builder.AppendLine($"{indentation}public {vector.FullyQualifiedName} As{vector.Name} => new(Components);");
         }
 
-        private void AppendAntidirectionalMethodConversion(Indentation indentation, NamedType vector)
+        private void AppendIngoingMethodConversion(Indentation indentation, NamedType vector)
         {
+            if (vector == Data.Vector.AsNamedType())
+            {
+                return;
+            }
+
             var parameterName = SourceBuildingUtility.ToParameterName(vector.Name);
 
             SeparationHandler.AddIfNecessary();
@@ -200,8 +219,128 @@ internal static class Execution
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, $"public {Data.Vector.Name} From", $"new({parameterName}.Components)", (vector, parameterName));
         }
 
-        private void AppendNormalOperatorConversion(Indentation indentation, NamedType vector, string behaviour)
+        private void AppendOperatorConversions(Indentation indentation)
         {
+            HashSet<NamedType> implementedOutgoingConversions = new();
+            HashSet<NamedType> implementedIngoingConversions = new();
+
+            foreach (var conversionDefinition in Data.Conversions)
+            {
+                appendOperatorConversion(conversionDefinition);
+            }
+
+            if (Data.Group is null && Data.VectorPopulation.Vectors.TryGetValue(Data.Vector.AsNamedType(), out var vector) && vector.OriginalQuantity is not null)
+            {
+                recursivelyAppendVectorSpecializationOperatorConversion(vector.OriginalQuantity.Value);
+            }
+
+            if (Data.Group is not null && Data.VectorPopulation.Groups.TryGetValue(Data.Group.Value, out var group) && group.OriginalQuantity is not null)
+            {
+                recursivelyAppendGroupSpecializationOperatorConversion(group.OriginalQuantity.Value);
+            }
+
+            foreach (var conversionDefinition in Data.InheritedConversions)
+            {
+                appendOperatorConversion(conversionDefinition);
+            }
+
+            void appendOperatorConversion(IConvertibleQuantity definition)
+            {
+                var behaviour = definition.CastOperatorBehaviour is ConversionOperatorBehaviour.None ? string.Empty : GetConversionBehaviourText(definition.CastOperatorBehaviour);
+
+                foreach (var quantity in definition.Quantities)
+                {
+                    if (Data.VectorPopulation.Vectors.ContainsKey(quantity))
+                    {
+                        appendOperatorConversionForQuantity(quantity);
+                    }
+
+                    if (Data.VectorPopulation.Groups.TryGetValue(quantity, out var group) && group.MembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
+                    {
+                        appendOperatorConversionForQuantity(correspondingMember);
+                    }
+                }
+
+                void appendOperatorConversionForQuantity(NamedType quantity)
+                {
+                    if (definition.ConversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
+                    {
+                        if (implementedOutgoingConversions.Add(quantity) && definition.CastOperatorBehaviour is not ConversionOperatorBehaviour.None)
+                        {
+                            AppendOutgoingOperatorConversion(indentation, quantity, behaviour);
+                        }
+                    }
+
+                    if (definition.ConversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
+                    {
+                        if (implementedIngoingConversions.Add(quantity) && definition.CastOperatorBehaviour is not ConversionOperatorBehaviour.None)
+                        {
+                            AppendIngoingOperatorConversion(indentation, quantity, behaviour);
+                        }
+                    }
+                }
+            }
+
+            void recursivelyAppendVectorSpecializationOperatorConversion(NamedType originalQuantity)
+            {
+                if (implementedOutgoingConversions.Add(originalQuantity) && Data.SpecializationBackwardsBehaviour is not ConversionOperatorBehaviour.None)
+                {
+                    var behaviour = GetConversionBehaviourText(Data.SpecializationBackwardsBehaviour);
+
+                    AppendOutgoingOperatorConversion(indentation, originalQuantity, behaviour);
+                }
+
+                if (implementedIngoingConversions.Add(originalQuantity) && Data.SpecializationForwardsBehaviour is not ConversionOperatorBehaviour.None)
+                {
+                    var behaviour = GetConversionBehaviourText(Data.SpecializationForwardsBehaviour);
+
+                    AppendIngoingOperatorConversion(indentation, originalQuantity, behaviour);
+                }
+
+                if (Data.VectorPopulation.Vectors.TryGetValue(originalQuantity, out var vector) && vector.OriginalQuantity is not null)
+                {
+                    recursivelyAppendVectorSpecializationOperatorConversion(vector.OriginalQuantity!.Value);
+                }
+            }
+
+            void recursivelyAppendGroupSpecializationOperatorConversion(NamedType originalGroupName)
+            {
+                if (Data.VectorPopulation.Groups.TryGetValue(originalGroupName, out var originalGroup) is false)
+                {
+                    return;
+                }
+
+                if (originalGroup.MembersByDimension.TryGetValue(Data.Dimension, out var correspondingMember))
+                {
+                    if (implementedOutgoingConversions.Add(correspondingMember) && Data.SpecializationBackwardsBehaviour is not ConversionOperatorBehaviour.None)
+                    {
+                        var behaviour = GetConversionBehaviourText(Data.SpecializationBackwardsBehaviour);
+
+                        AppendOutgoingOperatorConversion(indentation, correspondingMember, behaviour);
+                    }
+
+                    if (implementedIngoingConversions.Add(correspondingMember) && Data.SpecializationForwardsBehaviour is not ConversionOperatorBehaviour.None)
+                    {
+                        var behaviour = GetConversionBehaviourText(Data.SpecializationForwardsBehaviour);
+
+                        AppendIngoingOperatorConversion(indentation, correspondingMember, behaviour);
+                    }
+                }
+
+                if (originalGroup.OriginalQuantity is not null)
+                {
+                    recursivelyAppendGroupSpecializationOperatorConversion(originalGroup.OriginalQuantity.Value);
+                }
+            }
+        }
+
+        private void AppendOutgoingOperatorConversion(Indentation indentation, NamedType vector, string behaviour)
+        {
+            if (vector == Data.Vector.AsNamedType())
+            {
+                return;
+            }
+
             SeparationHandler.AddIfNecessary();
 
             AppendDocumentation(indentation, Data.Documentation.CastConversion(vector));
@@ -209,8 +348,13 @@ internal static class Execution
             StaticBuilding.AppendSingleLineMethodWithPotentialNullArgumentGuards(Builder, indentation, $"public static {behaviour} operator {vector.Name}", "new(a.Components)", (Data.Vector.AsNamedType(), "a"));
         }
 
-        private void AppendAntidirectionalOperatorConversion(Indentation indentation, NamedType vector, string behaviour)
+        private void AppendIngoingOperatorConversion(Indentation indentation, NamedType vector, string behaviour)
         {
+            if (vector == Data.Vector.AsNamedType())
+            {
+                return;
+            }
+
             SeparationHandler.AddIfNecessary();
 
             AppendDocumentation(indentation, Data.Documentation.AntidirectionalCastConversion(vector));
@@ -219,5 +363,12 @@ internal static class Execution
         }
 
         private void AppendDocumentation(Indentation indentation, string text) => DocumentationBuilding.AppendDocumentation(Builder, indentation, text);
+
+        private static string GetConversionBehaviourText(ConversionOperatorBehaviour behaviour) => behaviour switch
+        {
+            ConversionOperatorBehaviour.Explicit => "explicit",
+            ConversionOperatorBehaviour.Implicit => "implicit",
+            _ => throw new NotSupportedException("Invalid cast operation")
+        };
     }
 }

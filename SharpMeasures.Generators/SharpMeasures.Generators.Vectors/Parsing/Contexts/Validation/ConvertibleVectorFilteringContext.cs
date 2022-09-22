@@ -13,11 +13,11 @@ internal sealed record class ConvertibleVectorFilteringContext : IConvertibleVec
 
     public IVectorPopulation VectorPopulation { get; }
 
-    public HashSet<NamedType> InheritedConversions { get; }
-    public HashSet<NamedType> ListedMatchingConversions { get; } = new();
+    public HashSet<NamedType> ListedOutgoingMatchingConversions { get; } = new();
+    public HashSet<NamedType> ListedIngoingMatchingConversions { get; } = new();
 
-    public ConvertibleVectorFilteringContext(DefinedType type, VectorType vectorType, IVectorPopulation vectorPopulation, HashSet<NamedType> inheritedConversions) : this(type, -1, vectorType, vectorPopulation, inheritedConversions) { }
-    public ConvertibleVectorFilteringContext(DefinedType type, int dimension, VectorType vectorType, IVectorPopulation vectorPopulation, HashSet<NamedType> inheritedConversions)
+    public ConvertibleVectorFilteringContext(DefinedType type, VectorType vectorType, IVectorPopulation vectorPopulation) : this(type, -1, vectorType, vectorPopulation) { }
+    public ConvertibleVectorFilteringContext(DefinedType type, int dimension, VectorType vectorType, IVectorPopulation vectorPopulation)
     {
         Type = type;
 
@@ -25,7 +25,5 @@ internal sealed record class ConvertibleVectorFilteringContext : IConvertibleVec
         VectorType = vectorType;
 
         VectorPopulation = vectorPopulation;
-
-        InheritedConversions = inheritedConversions;
     }
 }

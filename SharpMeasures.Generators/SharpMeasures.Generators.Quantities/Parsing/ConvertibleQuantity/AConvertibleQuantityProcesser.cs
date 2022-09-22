@@ -22,7 +22,13 @@ public interface IConvertibleQuantityProcessingDiagnostics
 
 public interface IConvertibleQuantityProcessingContext : IProcessingContext
 {
-    public abstract HashSet<NamedType> ListedQuantities { get; }
+    public abstract HashSet<NamedType> ListedIncomingConversions { get; }
+    public abstract HashSet<NamedType> ListedOutgoingConversions { get; }
+
+    public abstract NamedType? OriginalQuantity { get; }
+
+    public abstract bool ConversionFromOriginalQuantitySpecified { get; }
+    public abstract bool ConversionToOriginalQuantitySpecified { get; }
 }
 
 public abstract class AConvertibleQuantityProcesser<TContext, TProduct> : AActionableProcesser<TContext, RawConvertibleQuantityDefinition, TProduct>
@@ -40,7 +46,15 @@ public abstract class AConvertibleQuantityProcesser<TContext, TProduct> : AActio
     {
         foreach (var quantity in product.Quantities)
         {
-            context.ListedQuantities.Add(quantity);
+            if (product.ConversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
+            {
+                context.ListedOutgoingConversions.Add(quantity);
+            }
+
+            if (product.ConversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
+            {
+                context.ListedIncomingConversions.Add(quantity);
+            }
         }
     }
 
@@ -108,7 +122,8 @@ public abstract class AConvertibleQuantityProcesser<TContext, TProduct> : AActio
     {
         return ValidateQuantityNotNull(context, definition, index)
             .Validate(() => ValidateQuantityNotSelf(context, definition, index))
-            .Validate(() => ValidateQuantityNotDuplicate(context, definition, index));
+            .Validate(() => ValidateQuantityNotDuplicate(context, definition, index))
+            .Validate(() => ValidateConversionNotSpecifiedDuringSpecialization(context, definition, index));
     }
 
     private IValidityWithDiagnostics ValidateQuantityNotNull(TContext context, RawConvertibleQuantityDefinition definition, int index)
@@ -125,8 +140,58 @@ public abstract class AConvertibleQuantityProcesser<TContext, TProduct> : AActio
 
     private IValidityWithDiagnostics ValidateQuantityNotDuplicate(TContext context, RawConvertibleQuantityDefinition definition, int index)
     {
-        var quantityIsDuplicate = context.ListedQuantities.Contains(definition.Quantities[index]!.Value);
+        return ValidityWithDiagnostics.Conditional(quantityIsDuplicate() is false, () => Diagnostics.DuplicateQuantity(context, definition, index));
 
-        return ValidityWithDiagnostics.Conditional(quantityIsDuplicate is false, () => Diagnostics.DuplicateQuantity(context, definition, index));
+        bool quantityIsDuplicate()
+        {
+            if (definition.ConversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
+            {
+                if (context.ListedOutgoingConversions.Contains(definition.Quantities[index]!.Value))
+                {
+                    return true;
+                }
+            }
+
+            if (definition.ConversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
+            {
+                if (context.ListedIncomingConversions.Contains(definition.Quantities[index]!.Value))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    private IValidityWithDiagnostics ValidateConversionNotSpecifiedDuringSpecialization(TContext context, RawConvertibleQuantityDefinition definition, int index)
+    {
+        return ValidityWithDiagnostics.Conditional(conversionSpecifiedDuringSpecialization() is false, () => Diagnostics.DuplicateQuantity(context, definition, index));
+
+        bool conversionSpecifiedDuringSpecialization()
+        {
+            if (context.OriginalQuantity != definition.Quantities[index]!.Value || context.ConversionToOriginalQuantitySpecified is false && context.ConversionFromOriginalQuantitySpecified is false)
+            {
+                return false;
+            }
+
+            if (definition.ConversionDirection is QuantityConversionDirection.Onedirectional or QuantityConversionDirection.Bidirectional)
+            {
+                if (context.ConversionToOriginalQuantitySpecified)
+                {
+                    return true;
+                }
+            }
+
+            if (definition.ConversionDirection is QuantityConversionDirection.Antidirectional or QuantityConversionDirection.Bidirectional)
+            {
+                if (context.ConversionFromOriginalQuantitySpecified)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

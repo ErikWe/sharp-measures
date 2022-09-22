@@ -24,6 +24,9 @@ internal sealed class ScalarSpecializationProcesser : AScalarProcesser<RawScalar
     }
 
     protected override NamedType? GetUnit(SpecializedSharpMeasuresScalarDefinition scalar) => null;
+    protected override NamedType? GetOriginalQuantity(SpecializedSharpMeasuresScalarDefinition scalar) => scalar.OriginalQuantity;
+    protected override bool ConversionFromOriginalQuantitySpecified(SpecializedSharpMeasuresScalarDefinition scalar) => scalar.Locations.ExplicitlySetForwardsCastOperatorBehaviour;
+    protected override bool ConversionToOriginalQuantitySpecified(SpecializedSharpMeasuresScalarDefinition scalar) => scalar.Locations.ExplicitlySetBackwardsCastOperatorBehaviour;
 
     protected override IOptionalWithDiagnostics<SpecializedSharpMeasuresScalarDefinition> ProcessScalar(DefinedType type, RawSpecializedSharpMeasuresScalarDefinition rawDefinition)
     {

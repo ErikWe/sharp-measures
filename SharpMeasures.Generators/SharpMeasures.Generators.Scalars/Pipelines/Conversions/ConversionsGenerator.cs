@@ -16,11 +16,11 @@ internal static class ConversionsGenerator
 
     private static Optional<DataModel> Reduce(Optional<Scalars.DataModel> model, CancellationToken _)
     {
-        if (model.HasValue is false || model.Value.Scalar.Conversions.Count is 0)
+        if (model.HasValue is false || model.Value.Scalar.Conversions.Count is 0 && model.Value.Scalar.OriginalQuantity is null)
         {
             return new Optional<DataModel>();
         }
 
-        return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Conversions, model.Value.Documentation);
+        return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Conversions, model.Value.Scalar.InheritedConversions, model.Value.Scalar.SpecializationForwardsConversionBehaviour, model.Value.Scalar.SpecializationBackwardsConversionBehaviour, model.Value.ScalarPopulation, model.Value.Documentation);
     }
 }

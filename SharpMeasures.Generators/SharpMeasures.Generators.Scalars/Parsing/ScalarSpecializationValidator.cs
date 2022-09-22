@@ -114,11 +114,9 @@ internal static class ScalarSpecializationValidator
 
     private static IResultWithDiagnostics<IReadOnlyList<ConvertibleScalarDefinition>> ValidateConversions(ScalarSpecializationType scalarType, IScalarPopulation scalarPopulation)
     {
-        var inheritedConversions = CollectInheritedItems(scalarType, scalarPopulation, static (scalar) => scalar.Conversions.SelectMany(static (scalarList) => scalarList.Quantities), static (scalar) => scalar.Definition.InheritConversions);
-
         var useUnitBias = scalarPopulation.ScalarBases[scalarType.Type.AsNamedType()].Definition.UseUnitBias;
 
-        var filteringContext = new ConvertibleScalarFilteringContext(scalarType.Type, useUnitBias, scalarPopulation, new HashSet<NamedType>(inheritedConversions));
+        var filteringContext = new ConvertibleScalarFilteringContext(scalarType.Type, useUnitBias, scalarPopulation);
 
         return ProcessingFilter.Create(ConvertibleScalarFilterer).Filter(filteringContext, scalarType.Conversions);
     }

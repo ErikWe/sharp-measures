@@ -22,6 +22,9 @@ internal sealed class VectorBaseProcesser : AVectorProcesser<RawVectorBaseType, 
     }
 
     protected override NamedType? GetUnit(SharpMeasuresVectorDefinition vector) => vector.Unit;
+    protected override NamedType? GetOriginalQuantity(SharpMeasuresVectorDefinition vector) => null;
+    protected override bool ConversionFromOriginalQuantitySpecified(SharpMeasuresVectorDefinition vector) => false;
+    protected override bool ConversionToOriginalQuantitySpecified(SharpMeasuresVectorDefinition vector) => false;
 
     protected override IOptionalWithDiagnostics<SharpMeasuresVectorDefinition> ProcessVector(DefinedType type, RawSharpMeasuresVectorDefinition rawDefinition)
     {

@@ -8,6 +8,8 @@ public interface IResolvedVectorType : IResolvedQuantityType
 {
     public abstract int Dimension { get; }
 
+    public abstract NamedType? Group { get; }
+
     public abstract NamedType? Scalar { get; }
 
     public abstract IReadOnlyList<IVectorConstant> Constants { get; }
