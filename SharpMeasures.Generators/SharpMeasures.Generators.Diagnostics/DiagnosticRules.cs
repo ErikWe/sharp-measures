@@ -15,7 +15,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotPartial,
         title: "Expected a partial type",
-        messageFormat: "The SharpMeasures source generator associated with the attribute {0} requires {1} to be a partial type",
+        messageFormat: "The source generator associated with the attribute {0} requires {1} to be a partial type",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -25,7 +25,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeStatic,
         title: "Expected a non-static type",
-        messageFormat: "The SharpMeasures source generator associated with the attribute {0} requires {1} to be a non-static type",
+        messageFormat: "The source generator associated with the attribute {0} requires {1} to be a non-static type",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -35,7 +35,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotStatic,
         title: "Expected a static type",
-        messageFormat: "The SharpMeasures source generator associated with the attribute {0} requires {1} to be a static type",
+        messageFormat: "The source generator associated with the attribute {0} requires {1} to be a static type",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
