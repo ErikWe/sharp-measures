@@ -72,6 +72,7 @@ Time time = 78 * Time.OneMinute;
 Frequency frequency = 1 / time;
 
 Console.WriteLine(frequency); // "0.769230769230769 [Hz]"
+
 ```
 
 ### Diagnostics
@@ -79,7 +80,7 @@ Console.WriteLine(frequency); // "0.769230769230769 [Hz]"
 The source generator include a large set of diagnostics, which helps ensure that the tool is used correctly:
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/19408310/191651853-9f29e901-955f-437a-be21-12c371fafc25.png" />
+  <img src="https://user-images.githubusercontent.com/19408310/191860992-9821db9e-fcb9-4385-af36-87c75d701bdf.png" />
 </p>
 
 ## Similar Projects
