@@ -76,7 +76,7 @@ Console.WriteLine(frequency); // "0.769230769230769 [Hz]"
 
 ### Diagnostics
 
-The source generator include a large set of diagnostics message, which helps make sure that the tool is used correctly:
+The source generator include a large set of diagnostics, which helps ensure that the tool is used correctly:
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/19408310/191651853-9f29e901-955f-437a-be21-12c371fafc25.png" />
