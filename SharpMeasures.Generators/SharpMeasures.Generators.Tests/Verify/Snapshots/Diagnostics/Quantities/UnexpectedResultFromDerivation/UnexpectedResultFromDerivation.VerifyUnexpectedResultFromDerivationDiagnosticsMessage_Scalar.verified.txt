@@ -2,8 +2,8 @@
   {
     Id: Measures1266,
     Title: Derivation unexpectedly results in a scalar quantity,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (5,1)-(5,16),
     Description: ,
     HelpLink: ,

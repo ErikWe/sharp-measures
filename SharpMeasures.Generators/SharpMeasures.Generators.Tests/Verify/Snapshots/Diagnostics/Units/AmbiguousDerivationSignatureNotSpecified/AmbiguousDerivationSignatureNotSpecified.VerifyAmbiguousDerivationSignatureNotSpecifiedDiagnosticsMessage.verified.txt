@@ -2,8 +2,8 @@
   {
     Id: Measures1141,
     Title: Ambiguous unit derivation signature,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (22,1)-(22,20),
     Description: ,
     HelpLink: ,

@@ -2,8 +2,8 @@
   {
     Id: Measures1100,
     Title: Invalid unit name,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (6,19)-(6,21),
     Description: ,
     HelpLink: ,

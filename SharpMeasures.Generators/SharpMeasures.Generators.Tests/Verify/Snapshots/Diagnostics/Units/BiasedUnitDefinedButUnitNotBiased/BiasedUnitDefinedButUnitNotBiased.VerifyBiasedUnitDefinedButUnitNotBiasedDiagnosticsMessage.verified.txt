@@ -2,8 +2,8 @@
   {
     Id: Measures1122,
     Title: Unit does not support biased instances,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (7,1)-(7,19),
     Description: ,
     HelpLink: ,

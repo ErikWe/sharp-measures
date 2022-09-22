@@ -2,8 +2,8 @@
   {
     Id: Measures1103,
     Title: Duplicate unit plural form,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (8,29)-(8,37),
     Description: ,
     HelpLink: ,

@@ -10,7 +10,7 @@ public static partial class DiagnosticRules
         title: "Unresolved documentation dependency",
         messageFormat: "The documentation file {0} has dependency \"{1}\", which was not recognized as a documentation file",
         category: "Documentation",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -21,7 +21,7 @@ public static partial class DiagnosticRules
         messageFormat: "Documentation tag \"{1}\" was not recognized as part of {0} or any of its dependencies. If this file is " +
             "only used as a dependency, this message should be suppressed by adding the following line to the file: \"# Utility: True\".",
         category: "Documentation",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 }

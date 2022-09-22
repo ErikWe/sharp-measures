@@ -12,7 +12,7 @@ public static partial class DiagnosticRules
         title: "Invalid vector dimension",
         messageFormat: $"{{0}} is not a valid vector dimension, one of {ValidVectorDimensions} was expected",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -22,7 +22,7 @@ public static partial class DiagnosticRules
         title: "Invalid vector dimension",
         messageFormat: $"Interpreted the dimension of {{0}} as {{1}}, which is not a valid dimension - one of {ValidVectorDimensions} was expected",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -30,10 +30,9 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.MissingVectorDimension,
         title: "Missing vector dimension",
-        messageFormat: "Could not interpret the vector dimension of {0}. Specify the dimension manually, or change the name of the type to \"{0}X\", " +
-            "where X is the dimension.",
+        messageFormat: "Could not interpret the vector dimension of {0}. Specify the dimension manually, or change the name of the type to \"{0}X\", where X is the dimension.",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -43,7 +42,7 @@ public static partial class DiagnosticRules
         title: "Vector of unexpected dimension",
         messageFormat: "Expected a vector of dimension {0}, but {1} is of dimension {2}",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -51,9 +50,9 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.DuplicateVectorDimension,
         title: "Vector group already contains dimension",
-        messageFormat: "Vector group {0} already contains a member of dimension {1}",
+        messageFormat: "The vector group {0} already contains a member of dimension {1}",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -61,9 +60,9 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.VectorGroupLacksMemberOfDimension,
         title: "No vector of appropiate dimension in group",
-        messageFormat: "Vector group {0} does not contain a member of dimension {1}",
+        messageFormat: "The vector group {0} does not contain a member of dimension {1}",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -93,7 +92,7 @@ public static partial class DiagnosticRules
         title: "Invalid dimension of vector constant",
         messageFormat: "Expected {0} elements, as the dimension of {2} is {0} - but received {1} element(s)",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 }

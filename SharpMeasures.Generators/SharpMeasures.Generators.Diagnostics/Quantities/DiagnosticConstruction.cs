@@ -2,7 +2,6 @@
 
 using Microsoft.CodeAnalysis;
 
-using System;
 using System.Globalization;
 
 public static partial class DiagnosticConstruction
@@ -89,17 +88,7 @@ public static partial class DiagnosticConstruction
 
     public static Diagnostic ContradictoryAttributes<TInclusionAttribute, TExclusionAttribute>(Location? location)
     {
-        return ContradictoryAttributes(location, typeof(TInclusionAttribute), typeof(TExclusionAttribute));
-    }
-
-    public static Diagnostic ContradictoryAttributes(Location? location, Type inclusionAttributeType, Type exclusionAttributeType)
-    {
-        return ContradictoryAttributes(location, inclusionAttributeType.Name, exclusionAttributeType.Name);
-    }
-
-    public static Diagnostic ContradictoryAttributes(Location? location, string inclusionAttributeName, string exclusionAttributeName)
-    {
-        return Diagnostic.Create(DiagnosticRules.ContradictoryAttributes, location, Utility.AttributeName(inclusionAttributeName), Utility.AttributeName(exclusionAttributeName));
+        return Diagnostic.Create(DiagnosticRules.ContradictoryAttributes, location, Utility.ShortAttributeName<TInclusionAttribute>(), Utility.ShortAttributeName<TExclusionAttribute>(), "the latter");
     }
 
     public static Diagnostic IncludingAlreadyIncludedUnitInstanceWithIntersection(Location? location, string unitName)
@@ -109,7 +98,7 @@ public static partial class DiagnosticConstruction
 
     public static Diagnostic IncludingAlreadyIncludedUnitInstanceWithUnion<TOppositeAttribute>(Location? location, string unitName)
     {
-        return Diagnostic.Create(DiagnosticRules.IncludingAlreadyIncludedUnitInstanceWithUnion, location, unitName, Utility.AttributeName(typeof(TOppositeAttribute).FullName));
+        return Diagnostic.Create(DiagnosticRules.IncludingAlreadyIncludedUnitInstanceWithUnion, location, unitName, Utility.FullAttributeName<TOppositeAttribute>());
     }
 
     public static Diagnostic ExcludingAlreadyExcludedUnitInstance(Location? location, string unitName)

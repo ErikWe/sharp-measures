@@ -2,53 +2,21 @@
 
 using Microsoft.CodeAnalysis;
 
-using System;
-
 public static partial class DiagnosticConstruction
 {
     public static Diagnostic TypeNotPartial<TAttribute>(Location? location, string typeName)
     {
-        return TypeNotPartial(location, typeof(TAttribute), typeName);
-    }
-
-    public static Diagnostic TypeNotPartial(Location? location, Type attributeType, string typeName)
-    {
-        return TypeNotPartial(location, attributeType.Name, typeName);
-    }
-
-    public static Diagnostic TypeNotPartial(Location? location, string attributeName, string typeName)
-    {
-        return Diagnostic.Create(DiagnosticRules.TypeNotPartial, location, Utility.AttributeName(attributeName), typeName);
+        return Diagnostic.Create(DiagnosticRules.TypeNotPartial, location, Utility.ShortAttributeName<TAttribute>(), typeName);
     }
 
     public static Diagnostic TypeStatic<TAttribute>(Location? location, string typeName)
     {
-        return TypeStatic(location, typeof(TAttribute), typeName);
-    }
-
-    public static Diagnostic TypeStatic(Location? location, Type attributeType, string typeName)
-    {
-        return TypeStatic(location, attributeType.Name, typeName);
-    }
-
-    public static Diagnostic TypeStatic(Location? location, string attributeName, string typeName)
-    {
-        return Diagnostic.Create(DiagnosticRules.TypeStatic, location, Utility.AttributeName(attributeName), typeName);
+        return Diagnostic.Create(DiagnosticRules.TypeStatic, location, Utility.ShortAttributeName<TAttribute>(), typeName);
     }
 
     public static Diagnostic TypeNotStatic<TAttribute>(Location? location, string typeName)
     {
-        return TypeNotStatic(location, typeof(TAttribute), typeName);
-    }
-
-    public static Diagnostic TypeNotStatic(Location? location, Type attributeType, string typeName)
-    {
-        return TypeNotStatic(location, attributeType.Name, typeName);
-    }
-
-    public static Diagnostic TypeNotStatic(Location? location, string attributeName, string typeName)
-    {
-        return Diagnostic.Create(DiagnosticRules.TypeNotStatic, location, Utility.AttributeName(attributeName), typeName);
+        return Diagnostic.Create(DiagnosticRules.TypeNotStatic, location, Utility.ShortAttributeName<TAttribute>(), typeName);
     }
 
     public static Diagnostic TypeNotScalar(Location? location, string typeName)
@@ -121,16 +89,11 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.TypeAlreadyDefined, location, typeName, attemptedDefinition, existingDefinition);
     }
 
-    public static Diagnostic TypeAlreadyDefinedAsUnit(Location? location, string typeName, string attemptedDefinition)
-        => TypeAlreadyDefined(location, typeName, attemptedDefinition, "unit");
-    public static Diagnostic TypeAlreadyDefinedAsScalar(Location? location, string typeName, string attemptedDefinition)
-        => TypeAlreadyDefined(location, typeName, attemptedDefinition, "scalar");
-    public static Diagnostic TypeAlreadyDefinedAsVector(Location? location, string typeName, string attemptedDefinition)
-        => TypeAlreadyDefined(location, typeName, attemptedDefinition, "vector");
-    public static Diagnostic TypeAlreadyDefinedAsVectorGroup(Location? location, string typeName, string attemptedDefinition)
-        => TypeAlreadyDefined(location, typeName, attemptedDefinition, "vector group");
-    public static Diagnostic TypeAlreadyDefinedAsVectorGroupMember(Location? location, string typeName, string attemptedDefinition)
-        => TypeAlreadyDefined(location, typeName, attemptedDefinition, "vector group member");
+    public static Diagnostic TypeAlreadyDefinedAsUnit(Location? location, string typeName, string attemptedDefinition) => TypeAlreadyDefined(location, typeName, attemptedDefinition, "unit");
+    public static Diagnostic TypeAlreadyDefinedAsScalar(Location? location, string typeName, string attemptedDefinition) => TypeAlreadyDefined(location, typeName, attemptedDefinition, "scalar");
+    public static Diagnostic TypeAlreadyDefinedAsVector(Location? location, string typeName, string attemptedDefinition) => TypeAlreadyDefined(location, typeName, attemptedDefinition, "vector");
+    public static Diagnostic TypeAlreadyDefinedAsVectorGroup(Location? location, string typeName, string attemptedDefinition) => TypeAlreadyDefined(location, typeName, attemptedDefinition, "vector group");
+    public static Diagnostic TypeAlreadyDefinedAsVectorGroupMember(Location? location, string typeName, string attemptedDefinition) => TypeAlreadyDefined(location, typeName, attemptedDefinition, "vector group member");
 
     public static Diagnostic UnitTypeAlreadyDefinedAsUnit(Location? location, string typeName) => TypeAlreadyDefinedAsUnit(location, typeName, "unit");
     public static Diagnostic ScalarTypeAlreadyDefinedAsUnit(Location? location, string typeName) => TypeAlreadyDefinedAsUnit(location, typeName, "scalar");
@@ -188,34 +151,31 @@ public static partial class DiagnosticConstruction
         return Diagnostic.Create(DiagnosticRules.NullDerivationSignature, location);
     }
 
+    public static Diagnostic EmptyUnitDerivationSignature(Location? location) => EmptyDerivationSignature(location, "unit");
+    public static Diagnostic EmptyQuantityDerivationSignature(Location? location) => EmptyDerivationSignature(location, "quantity");
     public static Diagnostic EmptyDerivationSignature(Location? location, string objectType)
     {
         return Diagnostic.Create(DiagnosticRules.EmptyDerivationSignature, location, objectType);
     }
-
-    public static Diagnostic EmptyUnitDerivationSignature(Location? location) => EmptyDerivationSignature(location, "unit");
-    public static Diagnostic EmptyQuantityDerivationSignature(Location? location) => EmptyDerivationSignature(location, "quantity");
 
     public static Diagnostic SetRegexSubstitutionButNotPattern(Location? location)
     {
         return Diagnostic.Create(DiagnosticRules.SetRegexSubstitutionButNotPattern, location);
     }
 
+    public static Diagnostic EmptyUnitList(Location? location) => EmptyList(location, "unit");
+    public static Diagnostic EmptyQuantityList(Location? location) => EmptyList(location, "quantity");
     public static Diagnostic EmptyList(Location? location, string objectType)
     {
         return Diagnostic.Create(DiagnosticRules.EmptyList, location, objectType);
     }
 
-    public static Diagnostic EmptyUnitList(Location? location) => EmptyList(location, "unit");
-    public static Diagnostic EmptyQuantityList(Location? location) => EmptyList(location, "quantity");
-
+    public static Diagnostic DuplicateUnitListing(Location? location, string unitName) => DuplicateListing(location, "unit", unitName);
+    public static Diagnostic DuplicateQuantityListing(Location? location, string quantityName) => DuplicateListing(location, "quantity", quantityName);
     public static Diagnostic DuplicateListing(Location? location, string objectType, string objectName)
     {
         return Diagnostic.Create(DiagnosticRules.DuplicateListing, location, objectType, objectName);
     }
-
-    public static Diagnostic DuplicateUnitListing(Location? location, string unitName) => DuplicateListing(location, "unit", unitName);
-    public static Diagnostic DuplicateQuantityListing(Location? location, string quantityName) => DuplicateListing(location, "quantity", quantityName);
 
     public static Diagnostic UnrecognizedEnumValue<TEnum>(Location? location, TEnum value)
     {

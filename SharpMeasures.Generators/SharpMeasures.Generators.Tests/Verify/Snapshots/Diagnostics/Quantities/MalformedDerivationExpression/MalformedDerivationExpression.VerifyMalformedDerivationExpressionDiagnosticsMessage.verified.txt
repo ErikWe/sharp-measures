@@ -2,8 +2,8 @@
   {
     Id: Measures1263,
     Title: Expression could not be interpreted,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (4,17)-(4,24),
     Description: ,
     HelpLink: ,

@@ -125,7 +125,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotVectorGroupMember,
         title: "Expected a vector group member",
-        messageFormat: $"Expected a member of the vector group {{0}}. Decorate {{1}} with the attribute {Utility.FullAttributeName<SharpMeasuresVectorGroupMemberAttribute>()}, or use another type.",
+        messageFormat: $"Expected a member of the vector group {{0}}. Decorate {{1}} with the attribute {Utility.FullAttributeName<SharpMeasuresVectorGroupMemberAttribute>()} targetting {{0}}, or use another type.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -135,7 +135,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotQuantity,
         title: "Expected a SharpMeasures quantity",
-        messageFormat: $"Expected a SharpMeasures quantity. Decorate {{0}} with an attribute describing a SharpMeasures quantity, such as {Utility.FullAttributeName<SharpMeasuresScalarAttribute>()}, or use another type.",
+        messageFormat: $"Expected a quantity. Decorate {{0}} with an attribute describing a quantity, such as {Utility.FullAttributeName<SharpMeasuresScalarAttribute>()}, or use another type.",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -145,7 +145,7 @@ public static partial class DiagnosticRules
     (
         id: DiagnosticIDs.TypeNotQuantity,
         title: "Expected a SharpMeasures quantity",
-        messageFormat: $"Expected a type decorated with an attribute describing a SharpMeasures quantity, such as {Utility.FullAttributeName<SharpMeasuresScalarAttribute>()}",
+        messageFormat: $"Expected a type decorated with an attribute describing a quantity, such as {Utility.FullAttributeName<SharpMeasuresScalarAttribute>()}",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
@@ -217,7 +217,7 @@ public static partial class DiagnosticRules
         title: "Invalid derivation expression",
         messageFormat: $"The derivation expression \"{{0}}\" is invalid. Common expressions can be found in {typeof(CommonAlgebraicDerivations).FullName}.",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -227,7 +227,7 @@ public static partial class DiagnosticRules
         title: "Invalid derivation expression",
         messageFormat: $"The derivation expression must be defined. Common expressions can be found in {typeof(CommonAlgebraicDerivations).FullName}.",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -237,7 +237,7 @@ public static partial class DiagnosticRules
         title: "Invalid derivation signature",
         messageFormat: "The derivation signature must be defined",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -247,7 +247,7 @@ public static partial class DiagnosticRules
         title: "Invalid derivation signature",
         messageFormat: "The derivation signature should consist of at least one {0}",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -279,7 +279,7 @@ public static partial class DiagnosticRules
         title: "Item has already been listed",
         messageFormat: "The {0} {1} has already been listed",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Info,
+        defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         customTags: WellKnownDiagnosticTags.Unnecessary
     );
@@ -290,7 +290,7 @@ public static partial class DiagnosticRules
         title: "Unrecognized enum value",
         messageFormat: "{0} was not recognized as a {1}",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 }

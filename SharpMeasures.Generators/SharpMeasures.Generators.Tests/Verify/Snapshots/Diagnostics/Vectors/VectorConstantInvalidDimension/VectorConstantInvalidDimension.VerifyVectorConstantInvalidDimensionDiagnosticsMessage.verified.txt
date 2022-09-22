@@ -2,8 +2,8 @@
   {
     Id: Measures1440,
     Title: Invalid dimension of vector constant,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (4,1)-(4,15),
     Description: ,
     HelpLink: ,

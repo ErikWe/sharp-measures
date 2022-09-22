@@ -2,8 +2,8 @@
   {
     Id: Measures1148,
     Title: Derivation signature is not permutable,
-    Severity: Info,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (12,66)-(12,70),
     Description: ,
     HelpLink: ,

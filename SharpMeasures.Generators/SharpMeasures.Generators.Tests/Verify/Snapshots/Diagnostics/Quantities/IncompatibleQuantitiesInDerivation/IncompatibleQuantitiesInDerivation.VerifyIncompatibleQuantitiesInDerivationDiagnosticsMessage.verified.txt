@@ -2,8 +2,8 @@
   {
     Id: Measures1265,
     Title: Derivation contains incompatible quantities,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (5,17)-(5,28),
     Description: ,
     HelpLink: ,

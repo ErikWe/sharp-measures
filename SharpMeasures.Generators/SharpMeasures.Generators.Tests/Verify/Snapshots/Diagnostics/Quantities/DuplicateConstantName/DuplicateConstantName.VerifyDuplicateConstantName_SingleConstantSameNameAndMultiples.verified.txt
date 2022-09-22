@@ -2,8 +2,8 @@
   {
     Id: Measures1222,
     Title: Constant uses same name for multiples,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (4,1)-(4,15),
     Description: ,
     HelpLink: ,

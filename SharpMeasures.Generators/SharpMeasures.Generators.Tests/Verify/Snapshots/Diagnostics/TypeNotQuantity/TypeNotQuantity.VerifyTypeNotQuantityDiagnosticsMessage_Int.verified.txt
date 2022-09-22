@@ -7,8 +7,8 @@
     Location: : (4,31)-(4,34),
     Description: ,
     HelpLink: ,
-    MessageFormat: Expected a SharpMeasures quantity. Decorate {0} with an attribute describing a SharpMeasures quantity, such as SharpMeasures.Generators.Scalars.SharpMeasuresScalar, or use another type.,
-    Message: Expected a SharpMeasures quantity. Decorate Int32 with an attribute describing a SharpMeasures quantity, such as SharpMeasures.Generators.Scalars.SharpMeasuresScalar, or use another type.,
+    MessageFormat: Expected a quantity. Decorate {0} with an attribute describing a quantity, such as SharpMeasures.Generators.Scalars.SharpMeasuresScalar, or use another type.,
+    Message: Expected a quantity. Decorate Int32 with an attribute describing a quantity, such as SharpMeasures.Generators.Scalars.SharpMeasuresScalar, or use another type.,
     Category: Usage,
     CustomTags: []
   }

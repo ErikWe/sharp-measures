@@ -2,8 +2,8 @@
   {
     Id: Measures1264,
     Title: Expression contains constant,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (4,17)-(4,21),
     Description: ,
     HelpLink: ,

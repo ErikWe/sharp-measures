@@ -2,8 +2,8 @@
   {
     Id: Measures1143,
     Title: Duplicate derivation signature,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (19,33)-(19,73),
     Description: ,
     HelpLink: ,

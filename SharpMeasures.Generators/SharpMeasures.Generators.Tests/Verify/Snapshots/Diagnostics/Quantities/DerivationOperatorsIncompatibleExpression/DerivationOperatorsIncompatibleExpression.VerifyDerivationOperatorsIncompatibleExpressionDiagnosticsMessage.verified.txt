@@ -2,13 +2,13 @@
   {
     Id: Measures1260,
     Title: Expression cannot be implemented with operators,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (10,95)-(10,131),
     Description: ,
     HelpLink: ,
-    MessageFormat: Quantity derivation through operators require the expression to involve at most two quantities, and one of the trivial operators { +, -, *, / },
-    Message: Quantity derivation through operators require the expression to involve at most two quantities, and one of the trivial operators { +, -, *, / },
+    MessageFormat: Quantity derivation through operators require the expression to involve at most two quantities, and one of the trivial operators { +, -, *, / }. Modify the expression or disable operator implementation.,
+    Message: Quantity derivation through operators require the expression to involve at most two quantities, and one of the trivial operators { +, -, *, / }. Modify the expression or disable operator implementation.,
     Category: Usage,
     CustomTags: []
   }

@@ -2,8 +2,8 @@
   {
     Id: Measures1040,
     Title: Invalid derivation expression,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (3,15)-(3,19),
     Description: ,
     HelpLink: ,

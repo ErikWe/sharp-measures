@@ -2,8 +2,8 @@
   {
     Id: Measures1225,
     Title: Quantity convertible to itself,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (4,28)-(4,34),
     Description: ,
     HelpLink: ,

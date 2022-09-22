@@ -2,8 +2,8 @@
   {
     Id: Measures1149,
     Title: Unmatched derivation expression unit,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (12,15)-(12,26),
     Description: ,
     HelpLink: ,

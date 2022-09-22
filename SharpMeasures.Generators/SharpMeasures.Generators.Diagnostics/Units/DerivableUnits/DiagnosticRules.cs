@@ -12,7 +12,7 @@ public static partial class DiagnosticRules
         title: "Unnamed derivation signature",
         messageFormat: "The derivation ID must be specified, as {0} defines multiple derivations",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -22,7 +22,7 @@ public static partial class DiagnosticRules
         title: "Ambiguous unit derivation signature",
         messageFormat: $"{{0}} contains multiple derivation definitions, but the ID of the intended derivation was not specified",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -32,7 +32,7 @@ public static partial class DiagnosticRules
         title: "Duplicate derivation ID",
         messageFormat: "{0} already defines a derivation with ID \"{1}\"",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -42,7 +42,7 @@ public static partial class DiagnosticRules
         title: "Duplicate derivation signature",
         messageFormat: "{0} already defines a derivation with an identical signature",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -52,7 +52,7 @@ public static partial class DiagnosticRules
         title: "Derivation ID not recognized",
         messageFormat: "{0} does not define a derivation with ID \"{1}\"",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -62,7 +62,7 @@ public static partial class DiagnosticRules
         title: "Unit list length not matching signature",
         messageFormat: "Expected {0} units to match the derivation signature - but received {1}",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -72,7 +72,7 @@ public static partial class DiagnosticRules
         title: "Unit not derivable",
         messageFormat: $"{{0}} has no defined derivations. Add a definition using {Utility.FullAttributeName<DerivableUnitAttribute>()}.",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -82,7 +82,7 @@ public static partial class DiagnosticRules
         title: "Derivation signature is not permutable",
         messageFormat: $"The derivation signature cannot be permuted",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Info,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         customTags: WellKnownDiagnosticTags.Unnecessary
     );
@@ -93,7 +93,7 @@ public static partial class DiagnosticRules
         title: "Unmatched derivation expression unit",
         messageFormat: $"The signature does not contain a unit with index {{0}}",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 
@@ -103,7 +103,7 @@ public static partial class DiagnosticRules
         title: "Unit is not included in expression",
         messageFormat: $"The expression does not include the unit with index {{0}}",
         category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
 }

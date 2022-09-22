@@ -7,8 +7,8 @@
     Location: : (4,13)-(4,20),
     Description: ,
     HelpLink: ,
-    MessageFormat: The SharpMeasures source generator associated with the attribute {0} requires {1} to be a partial type,
-    Message: The SharpMeasures source generator associated with the attribute SpecializedSharpMeasuresScalar requires Length2 to be a partial type,
+    MessageFormat: The source generator associated with the attribute {0} requires {1} to be a partial type,
+    Message: The source generator associated with the attribute SpecializedSharpMeasuresScalar requires Length2 to be a partial type,
     Category: Usage,
     CustomTags: []
   }

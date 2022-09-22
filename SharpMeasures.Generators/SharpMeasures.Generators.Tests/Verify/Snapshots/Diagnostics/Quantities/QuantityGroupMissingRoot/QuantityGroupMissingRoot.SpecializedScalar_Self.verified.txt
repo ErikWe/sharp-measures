@@ -2,8 +2,8 @@
   {
     Id: Measures1201,
     Title: Quantity group missing root quantity,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (3,1)-(3,31),
     Description: ,
     HelpLink: ,

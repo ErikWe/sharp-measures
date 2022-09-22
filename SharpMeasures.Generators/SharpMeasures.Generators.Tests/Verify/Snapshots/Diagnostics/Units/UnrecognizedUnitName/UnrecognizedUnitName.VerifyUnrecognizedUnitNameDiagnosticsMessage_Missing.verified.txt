@@ -2,8 +2,8 @@
   {
     Id: Measures1104,
     Title: Expected the name of a unit,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (6,38)-(6,45),
     Description: ,
     HelpLink: ,

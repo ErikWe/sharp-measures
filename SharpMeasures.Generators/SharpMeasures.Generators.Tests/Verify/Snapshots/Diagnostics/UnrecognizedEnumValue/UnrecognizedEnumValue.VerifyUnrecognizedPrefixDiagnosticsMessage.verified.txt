@@ -2,8 +2,8 @@
   {
     Id: Measures1800,
     Title: Unrecognized enum value,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (7,77)-(7,79),
     Description: ,
     HelpLink: ,

@@ -2,8 +2,8 @@
   {
     Id: Measures1150,
     Title: Unit is not included in expression,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (18,15)-(18,18),
     Description: ,
     HelpLink: ,

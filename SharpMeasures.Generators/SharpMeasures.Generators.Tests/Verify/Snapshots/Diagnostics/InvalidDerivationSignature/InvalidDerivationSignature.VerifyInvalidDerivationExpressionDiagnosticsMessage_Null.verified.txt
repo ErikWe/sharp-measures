@@ -2,8 +2,8 @@
   {
     Id: Measures1041,
     Title: Invalid derivation signature,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (3,36)-(3,40),
     Description: ,
     HelpLink: ,

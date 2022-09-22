@@ -7,8 +7,8 @@
     Location: : (4,28)-(4,35),
     Description: ,
     HelpLink: ,
-    MessageFormat: The SharpMeasures source generator associated with the attribute {0} requires {1} to be a non-static type,
-    Message: The SharpMeasures source generator associated with the attribute SharpMeasuresScalar requires Length2 to be a non-static type,
+    MessageFormat: The source generator associated with the attribute {0} requires {1} to be a non-static type,
+    Message: The source generator associated with the attribute SharpMeasuresScalar requires Length2 to be a non-static type,
     Category: Usage,
     CustomTags: []
   }

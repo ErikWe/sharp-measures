@@ -2,8 +2,8 @@
   {
     Id: Measures1266,
     Title: Unexpected dimension of result from derivation,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (5,1)-(5,16),
     Description: ,
     HelpLink: ,

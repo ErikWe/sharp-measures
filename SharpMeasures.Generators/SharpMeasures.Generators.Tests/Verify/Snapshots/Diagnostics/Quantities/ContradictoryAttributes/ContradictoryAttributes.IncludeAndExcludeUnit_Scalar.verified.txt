@@ -7,8 +7,8 @@
     Location: : (7,21)-(7,27),
     Description: ,
     HelpLink: ,
-    MessageFormat: Contradictory attributes {0} and {1} were used,
-    Message: Contradictory attributes IncludeUnits and ExcludeUnits were used,
+    MessageFormat: Contradictory attributes {0} and {1} were used, making {2} redundant,
+    Message: Contradictory attributes IncludeUnits and ExcludeUnits were used, making the latter redundant,
     Category: Usage,
     CustomTags: [
       Unnecessary

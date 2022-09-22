@@ -2,7 +2,7 @@
   {
     Id: Measures1081,
     Title: Item has already been listed,
-    Severity: Info,
+    Severity: Warning,
     WarningLevel: 1,
     Location: : (4,44)-(4,50),
     Description: ,

@@ -2,8 +2,8 @@
   {
     Id: Measures1145,
     Title: Unit list length not matching signature,
-    Severity: Warning,
-    WarningLevel: 1,
+    Severity: Error,
+    WarningLevel: 0,
     Location: : (20,64)-(20,71),
     Description: ,
     HelpLink: ,

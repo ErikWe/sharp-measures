@@ -2,7 +2,7 @@
   {
     Id: Measures1241,
     Title: Inclusion or exclusion had no effect,
-    Severity: Info,
+    Severity: Warning,
     WarningLevel: 1,
     Location: : (4,27)-(4,34),
     Description: ,
