@@ -31,7 +31,7 @@ The goal is for SharpMeasures to include the most common quantites, and to be su
 ```csharp
 using SharpMeasures.Generators.Scalars;
 
-[SpecializedSharpMeasuresScalar(typeof(Length))] // <-- note the [Specialized...] attribute
+[SpecializedSharpMeasuresScalar(typeof(Length))]
 public partial class Altitude { }
 ```
 
@@ -47,7 +47,7 @@ using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
 [DerivedQuantity("1 / {0}", typeof(Frequency))]
-[SharpMeasuresScalar(typeof(UnitOfTime))] // <-- [Specialized...] attributes are no longer used
+[SharpMeasuresScalar(typeof(UnitOfTime))]
 public partial class Time { }
 
 [DerivedQuantity("1 / {0}", typeof(Time))]
