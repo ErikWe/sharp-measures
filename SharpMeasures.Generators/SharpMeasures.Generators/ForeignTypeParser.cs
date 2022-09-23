@@ -20,9 +20,9 @@ internal sealed class ForeignTypeParser
         return (combinedProvider.Select(ExtractUnits), combinedProvider.Select(ExtractScalars), combinedProvider.Select(ExtractVectors));
     }
 
-    private static (IForeignUnitProcesser Units, IForeignScalarProcesser Scalars, IForeignVectorProcesser Vectors) Parse(ImmutableArray<INamedTypeSymbol> foreignSymbols, CancellationToken _)
+    private static (IForeignUnitProcesser Units, IForeignScalarProcesser Scalars, IForeignVectorProcesser Vectors) Parse(ImmutableArray<INamedTypeSymbol> foreignSymbols, CancellationToken token)
     {
-        return new ForeignTypeParser(foreignSymbols).Parse();
+        return new ForeignTypeParser(foreignSymbols).Parse(token);
     }
 
     private ForeignUnitParser UnitParser { get; } = new();
@@ -38,9 +38,12 @@ internal sealed class ForeignTypeParser
         ForeignSymbols.AddRange(foreignSymbols);
     }
 
-    private (IForeignUnitProcesser, IForeignScalarProcesser, IForeignVectorProcesser) Parse()
+    private (IForeignUnitProcesser, IForeignScalarProcesser, IForeignVectorProcesser) Parse(CancellationToken token)
     {
-        IterativelyParse();
+        if (token.IsCancellationRequested is false)
+        {
+            IterativelyParse();
+        }
 
         return (UnitParser.Finalize(), ScalarParser.Finalize(), VectorParser.Finalize());
     }

@@ -35,19 +35,19 @@ internal static class ForeignTypeProcesser
         return (populationAndValidator.Select(ExtractPopulation), populationAndValidator.Select(ExtractValidator));
     }
 
-    private static (IUnitPopulation Population, IForeignUnitValidator Validator) Process((IForeignUnitProcesser UnitProcesser, IUnitPopulation UnitPopulation) input, CancellationToken _)
+    private static (IUnitPopulation Population, IForeignUnitValidator Validator) Process((IForeignUnitProcesser UnitProcesser, IUnitPopulation UnitPopulation) input, CancellationToken token)
     {
-        return input.UnitProcesser.ProcessAndExtend(input.UnitPopulation);
+        return input.UnitProcesser.ProcessAndExtend(input.UnitPopulation, token);
     }
 
-    private static (IScalarPopulation Population, IForeignScalarValidator Validator) Process((IForeignScalarProcesser ScalarProcesser, IScalarPopulation ScalarPopulation) input, CancellationToken _)
+    private static (IScalarPopulation Population, IForeignScalarValidator Validator) Process((IForeignScalarProcesser ScalarProcesser, IScalarPopulation ScalarPopulation) input, CancellationToken token)
     {
-        return input.ScalarProcesser.ProcessAndExtend(input.ScalarPopulation);
+        return input.ScalarProcesser.ProcessAndExtend(input.ScalarPopulation, token);
     }
 
-    private static (IVectorPopulation Population, IForeignVectorValidator Validator) Process((IForeignVectorProcesser VectorProcesser, IVectorPopulation VectorPopulation) input, CancellationToken _)
+    private static (IVectorPopulation Population, IForeignVectorValidator Validator) Process((IForeignVectorProcesser VectorProcesser, IVectorPopulation VectorPopulation) input, CancellationToken token)
     {
-        return input.VectorProcesser.ProcessAndExtend(input.VectorPopulation);
+        return input.VectorProcesser.ProcessAndExtend(input.VectorPopulation, token);
     }
 
     private static IUnitPopulation ExtractPopulation((IUnitPopulation Population, IForeignUnitValidator) input, CancellationToken _) => input.Population;

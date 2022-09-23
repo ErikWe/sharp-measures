@@ -33,19 +33,19 @@ internal static class ForeignTypeValidator
         return (populationAndResolver.Select(ExtractPopulation), populationAndResolver.Select(ExtractResolver));
     }
 
-    private static IUnitPopulation Validate((IForeignUnitValidator UnitValidator, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IUnitPopulation UnextendedUnitPopulation) input, CancellationToken _)
+    private static IUnitPopulation Validate((IForeignUnitValidator UnitValidator, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IUnitPopulation UnextendedUnitPopulation) input, CancellationToken token)
     {
-        return input.UnitValidator.ValidateAndExtend(input.UnitPopulation, input.ScalarPopulation, input.UnextendedUnitPopulation);
+        return input.UnitValidator.ValidateAndExtend(input.UnitPopulation, input.ScalarPopulation, input.UnextendedUnitPopulation, token);
     }
 
-    private static (IScalarPopulation Population, IForeignScalarResolver Resolver) Validate((IForeignScalarValidator ScalarValidator, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulation VectorPopulation, IScalarPopulation UnextendedScalarPopulation) input, CancellationToken _)
+    private static (IScalarPopulation Population, IForeignScalarResolver Resolver) Validate((IForeignScalarValidator ScalarValidator, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulation VectorPopulation, IScalarPopulation UnextendedScalarPopulation) input, CancellationToken token)
     {
-        return input.ScalarValidator.ValidateAndExtend(input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation, input.UnextendedScalarPopulation);
+        return input.ScalarValidator.ValidateAndExtend(input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation, input.UnextendedScalarPopulation, token);
     }
 
-    private static (IVectorPopulation Population, IForeignVectorResolver Resolver) Validate((IForeignVectorValidator VectorValidator, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulation VectorPopulation, IVectorPopulation UnextendedVectorPopulation) input, CancellationToken _)
+    private static (IVectorPopulation Population, IForeignVectorResolver Resolver) Validate((IForeignVectorValidator VectorValidator, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IVectorPopulation VectorPopulation, IVectorPopulation UnextendedVectorPopulation) input, CancellationToken token)
     {
-        return input.VectorValidator.ValidateAndExtend(input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation, input.UnextendedVectorPopulation);
+        return input.VectorValidator.ValidateAndExtend(input.UnitPopulation, input.ScalarPopulation, input.VectorPopulation, input.UnextendedVectorPopulation, token);
     }
 
     private static IScalarPopulation ExtractPopulation((IScalarPopulation Population, IForeignScalarResolver) input, CancellationToken _) => input.Population;

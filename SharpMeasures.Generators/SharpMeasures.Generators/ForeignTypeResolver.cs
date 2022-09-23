@@ -23,13 +23,13 @@ internal static class ForeignTypeResolver
         return vectorResolver.Combine(unitPopulation, vectorPopulation, unextendedVectorPopulation).Select(Resolve);
     }
 
-    private static IResolvedScalarPopulation Resolve((IForeignScalarResolver ScalarResolver, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IResolvedScalarPopulation UnextendedScalarPopulation) input, CancellationToken _)
+    private static IResolvedScalarPopulation Resolve((IForeignScalarResolver ScalarResolver, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IResolvedScalarPopulation UnextendedScalarPopulation) input, CancellationToken token)
     {
-        return input.ScalarResolver.ResolveAndExtend(input.UnitPopulation, input.ScalarPopulation, input.UnextendedScalarPopulation);
+        return input.ScalarResolver.ResolveAndExtend(input.UnitPopulation, input.ScalarPopulation, input.UnextendedScalarPopulation, token);
     }
 
-    private static IResolvedVectorPopulation Resolve((IForeignVectorResolver VectorResolvers, IUnitPopulation UnitPopulation, IVectorPopulation VectorPopulation, IResolvedVectorPopulation UnextendedVectorPopulation) input, CancellationToken _)
+    private static IResolvedVectorPopulation Resolve((IForeignVectorResolver VectorResolvers, IUnitPopulation UnitPopulation, IVectorPopulation VectorPopulation, IResolvedVectorPopulation UnextendedVectorPopulation) input, CancellationToken token)
     {
-        return input.VectorResolvers.ResolveAndExtend(input.UnitPopulation, input.VectorPopulation, input.UnextendedVectorPopulation);
+        return input.VectorResolvers.ResolveAndExtend(input.UnitPopulation, input.VectorPopulation, input.UnextendedVectorPopulation, token);
     }
 }

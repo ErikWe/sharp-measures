@@ -4,9 +4,11 @@ using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 
+using System.Threading;
+
 public interface IForeignVectorValidator
 {
-    public abstract (IVectorPopulation Population, IForeignVectorResolver Resolver) ValidateAndExtend(IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation, IVectorPopulation unextendedVectorPopulation);
+    public abstract (IVectorPopulation Population, IForeignVectorResolver Resolver) ValidateAndExtend(IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation, IVectorPopulation unextendedVectorPopulation, CancellationToken token);
 }
 
 internal sealed record class ForeignVectorValidator : IForeignVectorValidator
@@ -25,55 +27,58 @@ internal sealed record class ForeignVectorValidator : IForeignVectorValidator
         ProcessingResult = processingResult;
     }
 
-    public (IVectorPopulation, IForeignVectorResolver) ValidateAndExtend(IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation, IVectorPopulation unextendedVectorPopulation)
+    public (IVectorPopulation, IForeignVectorResolver) ValidateAndExtend(IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation, IVectorPopulation unextendedVectorPopulation, CancellationToken token)
     {
-        foreach (var processedGroupBase in ProcessingResult.GroupBases)
+        if (token.IsCancellationRequested is false)
         {
-            var groupBase = ForeignGroupBaseValidator.Validate(processedGroupBase, unitPopulation, scalarPopulation, vectorPopulation);
-
-            if (groupBase.HasValue)
+            foreach (var processedGroupBase in ProcessingResult.GroupBases)
             {
-                GroupBases.Add(groupBase.Value);
+                var groupBase = ForeignGroupBaseValidator.Validate(processedGroupBase, unitPopulation, scalarPopulation, vectorPopulation);
+
+                if (groupBase.HasValue)
+                {
+                    GroupBases.Add(groupBase.Value);
+                }
             }
-        }
 
-        foreach (var processedGroupSpecialization in ProcessingResult.GroupSpecializations)
-        {
-            var groupSpecialization = ForeignGroupSpecializationValidator.Validate(processedGroupSpecialization, unitPopulation, scalarPopulation, vectorPopulation);
-
-            if (groupSpecialization.HasValue)
+            foreach (var processedGroupSpecialization in ProcessingResult.GroupSpecializations)
             {
-                GroupSpecializations.Add(groupSpecialization.Value);
+                var groupSpecialization = ForeignGroupSpecializationValidator.Validate(processedGroupSpecialization, unitPopulation, scalarPopulation, vectorPopulation);
+
+                if (groupSpecialization.HasValue)
+                {
+                    GroupSpecializations.Add(groupSpecialization.Value);
+                }
             }
-        }
 
-        foreach (var processedMember in ProcessingResult.GroupMembers)
-        {
-            var member = ForeignGroupMemberValidator.Validate(processedMember, unitPopulation, scalarPopulation, vectorPopulation);
-
-            if (member.HasValue)
+            foreach (var processedMember in ProcessingResult.GroupMembers)
             {
-                GroupMembers.Add(member.Value);
+                var member = ForeignGroupMemberValidator.Validate(processedMember, unitPopulation, scalarPopulation, vectorPopulation);
+
+                if (member.HasValue)
+                {
+                    GroupMembers.Add(member.Value);
+                }
             }
-        }
 
-        foreach (var processedVectorBase in ProcessingResult.VectorBases)
-        {
-            var vectorBase = ForeignVectorBaseValidator.Validate(processedVectorBase, unitPopulation, scalarPopulation, vectorPopulation);
-
-            if (vectorBase.HasValue)
+            foreach (var processedVectorBase in ProcessingResult.VectorBases)
             {
-                VectorBases.Add(vectorBase.Value);
+                var vectorBase = ForeignVectorBaseValidator.Validate(processedVectorBase, unitPopulation, scalarPopulation, vectorPopulation);
+
+                if (vectorBase.HasValue)
+                {
+                    VectorBases.Add(vectorBase.Value);
+                }
             }
-        }
 
-        foreach (var processedVectorSpecialization in ProcessingResult.VectorSpecializations)
-        {
-            var vectorSpecialization = ForeignVectorSpecializationValidator.Validate(processedVectorSpecialization, unitPopulation, scalarPopulation, vectorPopulation);
-
-            if (vectorSpecialization.HasValue)
+            foreach (var processedVectorSpecialization in ProcessingResult.VectorSpecializations)
             {
-                VectorSpecializations.Add(vectorSpecialization.Value);
+                var vectorSpecialization = ForeignVectorSpecializationValidator.Validate(processedVectorSpecialization, unitPopulation, scalarPopulation, vectorPopulation);
+
+                if (vectorSpecialization.HasValue)
+                {
+                    VectorSpecializations.Add(vectorSpecialization.Value);
+                }
             }
         }
 

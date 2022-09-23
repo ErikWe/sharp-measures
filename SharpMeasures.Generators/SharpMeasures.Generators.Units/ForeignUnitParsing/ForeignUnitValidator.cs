@@ -19,10 +19,11 @@ using SharpMeasures.Generators.Units.Parsing.UnitInstanceAlias;
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 public interface IForeignUnitValidator
 {
-    public abstract IUnitPopulation ValidateAndExtend(IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IUnitPopulation unextendedUnitPopulation);
+    public abstract IUnitPopulation ValidateAndExtend(IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IUnitPopulation unextendedUnitPopulation, CancellationToken token);
 }
 
 internal sealed record class ForeignUnitValidator : IForeignUnitValidator
@@ -36,15 +37,18 @@ internal sealed record class ForeignUnitValidator : IForeignUnitValidator
         ProcessingResult = processingResult;
     }
 
-    public IUnitPopulation ValidateAndExtend(IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IUnitPopulation unextendedUnitPopulation)
+    public IUnitPopulation ValidateAndExtend(IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IUnitPopulation unextendedUnitPopulation, CancellationToken token)
     {
-        foreach (var processedUnit in ProcessingResult.Units)
+        if (token.IsCancellationRequested is false)
         {
-            var unit = Validate(processedUnit, unitPopulation, scalarPopulation);
-
-            if (unit.HasValue)
+            foreach (var processedUnit in ProcessingResult.Units)
             {
-                Units.Add(unit.Value);
+                var unit = Validate(processedUnit, unitPopulation, scalarPopulation);
+
+                if (unit.HasValue)
+                {
+                    Units.Add(unit.Value);
+                }
             }
         }
 

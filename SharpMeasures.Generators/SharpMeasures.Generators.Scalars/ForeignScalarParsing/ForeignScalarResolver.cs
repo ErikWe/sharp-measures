@@ -3,9 +3,11 @@
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Units;
 
+using System.Threading;
+
 public interface IForeignScalarResolver
 {
-    public abstract IResolvedScalarPopulation ResolveAndExtend(IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IResolvedScalarPopulation unextendedScalarPopulation);
+    public abstract IResolvedScalarPopulation ResolveAndExtend(IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IResolvedScalarPopulation unextendedScalarPopulation, CancellationToken token);
 }
 
 internal sealed record class ForeignScalarResolver : IForeignScalarResolver
@@ -19,25 +21,28 @@ internal sealed record class ForeignScalarResolver : IForeignScalarResolver
         ProcessingResult = parsingResult;
     }
 
-    public IResolvedScalarPopulation ResolveAndExtend(IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IResolvedScalarPopulation unextendedScalarPopulation)
+    public IResolvedScalarPopulation ResolveAndExtend(IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IResolvedScalarPopulation unextendedScalarPopulation, CancellationToken token)
     {
-        foreach (var processedScalarBase in ProcessingResult.ScalarBases)
+        if (token.IsCancellationRequested is false)
         {
-            var scalar = ForeignScalarBaseResolver.Resolve(processedScalarBase, unitPopulation);
-
-            if (scalar.HasValue)
+            foreach (var processedScalarBase in ProcessingResult.ScalarBases)
             {
-                Scalars.Add(scalar.Value);
+                var scalar = ForeignScalarBaseResolver.Resolve(processedScalarBase, unitPopulation);
+
+                if (scalar.HasValue)
+                {
+                    Scalars.Add(scalar.Value);
+                }
             }
-        }
 
-        foreach (var processedScalarSpecialization in ProcessingResult.ScalarSpecializations)
-        {
-            var scalar = ForeignScalarSpecializationResolver.Resolve(processedScalarSpecialization, unitPopulation, scalarPopulation);
-
-            if (scalar.HasValue)
+            foreach (var processedScalarSpecialization in ProcessingResult.ScalarSpecializations)
             {
-                Scalars.Add(scalar.Value);
+                var scalar = ForeignScalarSpecializationResolver.Resolve(processedScalarSpecialization, unitPopulation, scalarPopulation);
+
+                if (scalar.HasValue)
+                {
+                    Scalars.Add(scalar.Value);
+                }
             }
         }
 

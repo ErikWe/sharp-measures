@@ -19,10 +19,11 @@ using SharpMeasures.Generators.Units.Parsing.UnitInstanceAlias;
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 public interface IForeignUnitProcesser
 {
-    public abstract (IUnitPopulation Population, IForeignUnitValidator Validator) ProcessAndExtend(IUnitPopulation unextendedUnitPopulation);
+    public abstract (IUnitPopulation Population, IForeignUnitValidator Validator) ProcessAndExtend(IUnitPopulation unextendedUnitPopulation, CancellationToken token);
 }
 
 internal sealed record class ForeignUnitProcesser : IForeignUnitProcesser
@@ -36,15 +37,18 @@ internal sealed record class ForeignUnitProcesser : IForeignUnitProcesser
         ParsingResult = parsingResult;
     }
 
-    public (IUnitPopulation, IForeignUnitValidator) ProcessAndExtend(IUnitPopulation unextendedUnitPopulation)
+    public (IUnitPopulation, IForeignUnitValidator) ProcessAndExtend(IUnitPopulation unextendedUnitPopulation, CancellationToken token)
     {
-        foreach (var rawUnit in ParsingResult.Units)
+        if (token.IsCancellationRequested is false)
         {
-            var unit = Process(rawUnit);
-
-            if (unit.HasValue)
+            foreach (var rawUnit in ParsingResult.Units)
             {
-                Units.Add(unit.Value);
+                var unit = Process(rawUnit);
+
+                if (unit.HasValue)
+                {
+                    Units.Add(unit.Value);
+                }
             }
         }
 

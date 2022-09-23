@@ -2,9 +2,11 @@
 
 using SharpMeasures.Equatables;
 
+using System.Threading;
+
 public interface IForeignVectorProcesser
 {
-    public abstract (IVectorPopulation Population, IForeignVectorValidator Validator) ProcessAndExtend(IVectorPopulation unextendedVectorPopulation);
+    public abstract (IVectorPopulation Population, IForeignVectorValidator Validator) ProcessAndExtend(IVectorPopulation unextendedVectorPopulation, CancellationToken token);
 }
 
 internal sealed record class ForeignVectorProcesser : IForeignVectorProcesser
@@ -23,61 +25,64 @@ internal sealed record class ForeignVectorProcesser : IForeignVectorProcesser
         ParsingResult = parsingResult;
     }
 
-    public (IVectorPopulation, IForeignVectorValidator) ProcessAndExtend(IVectorPopulation unextendedVectorPopulation)
+    public (IVectorPopulation, IForeignVectorValidator) ProcessAndExtend(IVectorPopulation unextendedVectorPopulation, CancellationToken token)
     {
-        ForeignGroupBaseProcesser groupBaseProcesser = new();
-        ForeignGroupSpecializationProcesser groupSpecializationProcesser = new();
-
-        ForeignVectorBaseProcesser vectorBaseProcesser = new();
-        ForeignVectorSpecializationProcesser vectorSpecializationProcesser = new();
-
-        foreach (var rawGroupBase in ParsingResult.GroupBases)
+        if (token.IsCancellationRequested is false)
         {
-            var groupBase = groupBaseProcesser.Process(rawGroupBase);
+            ForeignGroupBaseProcesser groupBaseProcesser = new();
+            ForeignGroupSpecializationProcesser groupSpecializationProcesser = new();
 
-            if (groupBase.HasValue)
+            ForeignVectorBaseProcesser vectorBaseProcesser = new();
+            ForeignVectorSpecializationProcesser vectorSpecializationProcesser = new();
+
+            foreach (var rawGroupBase in ParsingResult.GroupBases)
             {
-                GroupBases.Add(groupBase.Value);
+                var groupBase = groupBaseProcesser.Process(rawGroupBase);
+
+                if (groupBase.HasValue)
+                {
+                    GroupBases.Add(groupBase.Value);
+                }
             }
-        }
 
-        foreach (var rawGroupSpecialization in ParsingResult.GroupSpecializations)
-        {
-            var groupSpecialization = groupSpecializationProcesser.Process(rawGroupSpecialization);
-
-            if (groupSpecialization.HasValue)
+            foreach (var rawGroupSpecialization in ParsingResult.GroupSpecializations)
             {
-                GroupSpecializations.Add(groupSpecialization.Value);
+                var groupSpecialization = groupSpecializationProcesser.Process(rawGroupSpecialization);
+
+                if (groupSpecialization.HasValue)
+                {
+                    GroupSpecializations.Add(groupSpecialization.Value);
+                }
             }
-        }
 
-        foreach (var rawMember in ParsingResult.GroupMembers)
-        {
-            var member = ForeignGroupMemberProcesser.Process(rawMember);
-
-            if (member.HasValue)
+            foreach (var rawMember in ParsingResult.GroupMembers)
             {
-                GroupMembers.Add(member.Value);
+                var member = ForeignGroupMemberProcesser.Process(rawMember);
+
+                if (member.HasValue)
+                {
+                    GroupMembers.Add(member.Value);
+                }
             }
-        }
 
-        foreach (var rawVectorBase in ParsingResult.VectorBases)
-        {
-            var vectorBase = vectorBaseProcesser.Process(rawVectorBase);
-
-            if (vectorBase.HasValue)
+            foreach (var rawVectorBase in ParsingResult.VectorBases)
             {
-                VectorBases.Add(vectorBase.Value);
+                var vectorBase = vectorBaseProcesser.Process(rawVectorBase);
+
+                if (vectorBase.HasValue)
+                {
+                    VectorBases.Add(vectorBase.Value);
+                }
             }
-        }
 
-        foreach (var rawVectorSpecialization in ParsingResult.VectorSpecializations)
-        {
-            var vectorSpecialization = vectorSpecializationProcesser.Process(rawVectorSpecialization);
-
-            if (vectorSpecialization.HasValue)
+            foreach (var rawVectorSpecialization in ParsingResult.VectorSpecializations)
             {
-                VectorSpecializations.Add(vectorSpecialization.Value);
+                var vectorSpecialization = vectorSpecializationProcesser.Process(rawVectorSpecialization);
+
+                if (vectorSpecialization.HasValue)
+                {
+                    VectorSpecializations.Add(vectorSpecialization.Value);
+                }
             }
         }
 

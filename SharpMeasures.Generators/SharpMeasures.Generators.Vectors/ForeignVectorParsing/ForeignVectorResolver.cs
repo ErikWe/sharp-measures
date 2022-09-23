@@ -3,9 +3,11 @@
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Units;
 
+using System.Threading;
+
 public interface IForeignVectorResolver
 {
-    public abstract IResolvedVectorPopulation ResolveAndExtend(IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation, IResolvedVectorPopulation unextendedVectorPopulation);
+    public abstract IResolvedVectorPopulation ResolveAndExtend(IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation, IResolvedVectorPopulation unextendedVectorPopulation, CancellationToken token);
 }
 
 internal sealed record class ForeignVectorResolver : IForeignVectorResolver
@@ -20,55 +22,58 @@ internal sealed record class ForeignVectorResolver : IForeignVectorResolver
         ProcessingResult = processingResult;
     }
 
-    public IResolvedVectorPopulation ResolveAndExtend(IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation, IResolvedVectorPopulation unextendedVectorPopulation)
+    public IResolvedVectorPopulation ResolveAndExtend(IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation, IResolvedVectorPopulation unextendedVectorPopulation, CancellationToken token)
     {
-        foreach (var processedGroupBase in ProcessingResult.GroupBases)
+        if (token.IsCancellationRequested is false)
         {
-            var groupBase = ForeignGroupBaseResolver.Resolve(processedGroupBase, unitPopulation, vectorPopulation);
-
-            if (groupBase.HasValue)
+            foreach (var processedGroupBase in ProcessingResult.GroupBases)
             {
-                Groups.Add(groupBase.Value);
+                var groupBase = ForeignGroupBaseResolver.Resolve(processedGroupBase, unitPopulation, vectorPopulation);
+
+                if (groupBase.HasValue)
+                {
+                    Groups.Add(groupBase.Value);
+                }
             }
-        }
 
-        foreach (var processedGroupSpecialization in ProcessingResult.GroupSpecializations)
-        {
-            var groupSpecialization = ForeignGroupSpecializationResolver.Resolve(processedGroupSpecialization, unitPopulation, vectorPopulation);
-
-            if (groupSpecialization.HasValue)
+            foreach (var processedGroupSpecialization in ProcessingResult.GroupSpecializations)
             {
-                Groups.Add(groupSpecialization.Value);
+                var groupSpecialization = ForeignGroupSpecializationResolver.Resolve(processedGroupSpecialization, unitPopulation, vectorPopulation);
+
+                if (groupSpecialization.HasValue)
+                {
+                    Groups.Add(groupSpecialization.Value);
+                }
             }
-        }
 
-        foreach (var processedMember in ProcessingResult.GroupMembers)
-        {
-            var member = ForeignGroupMemberResolver.Resolve(processedMember, unitPopulation, vectorPopulation);
-
-            if (member.HasValue)
+            foreach (var processedMember in ProcessingResult.GroupMembers)
             {
-                Vectors.Add(member.Value);
+                var member = ForeignGroupMemberResolver.Resolve(processedMember, unitPopulation, vectorPopulation);
+
+                if (member.HasValue)
+                {
+                    Vectors.Add(member.Value);
+                }
             }
-        }
 
-        foreach (var processedVectorBase in ProcessingResult.VectorBases)
-        {
-            var vectorBase = ForeignVectorBaseResolver.Resolve(processedVectorBase, unitPopulation);
-
-            if (vectorBase.HasValue)
+            foreach (var processedVectorBase in ProcessingResult.VectorBases)
             {
-                Vectors.Add(vectorBase.Value);
+                var vectorBase = ForeignVectorBaseResolver.Resolve(processedVectorBase, unitPopulation);
+
+                if (vectorBase.HasValue)
+                {
+                    Vectors.Add(vectorBase.Value);
+                }
             }
-        }
 
-        foreach (var processedVectorSpecialization in ProcessingResult.VectorSpecializations)
-        {
-            var vectorSpecialization = ForeignVectorSpecializationResolver.Resolve(processedVectorSpecialization, unitPopulation, vectorPopulation);
-
-            if (vectorSpecialization.HasValue)
+            foreach (var processedVectorSpecialization in ProcessingResult.VectorSpecializations)
             {
-                Vectors.Add(vectorSpecialization.Value);
+                var vectorSpecialization = ForeignVectorSpecializationResolver.Resolve(processedVectorSpecialization, unitPopulation, vectorPopulation);
+
+                if (vectorSpecialization.HasValue)
+                {
+                    Vectors.Add(vectorSpecialization.Value);
+                }
             }
         }
 
