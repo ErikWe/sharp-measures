@@ -12,6 +12,8 @@ public sealed class ScalarOperatorDerivationSearcher
         return searcher.GetDerivations();
     }
 
+    private static NamedType PureScalar { get; } = new("Scalar", "SharpMeasures", "SharpMeasures.Base", true);
+
     private NamedType Quantity { get; }
 
     private string Expression { get; }
@@ -20,6 +22,8 @@ public sealed class ScalarOperatorDerivationSearcher
 
     private OperatorType OriginalOperatorType { get; }
     private OperatorType OppositeOperatorType { get; }
+
+    private bool OrderedExpression { get; }
 
     private ScalarOperatorDerivationSearcher(NamedType quantity, string expression, IReadOnlyList<NamedType> signature, DerivationOperatorImplementation operatorImplementation)
     {
@@ -36,6 +40,8 @@ public sealed class ScalarOperatorDerivationSearcher
 
         OriginalOperatorType = GetOperatorType(Expression);
         OppositeOperatorType = GetOppositeOperatorType(OriginalOperatorType);
+
+        OrderedExpression = CheckIfOrderedExpression();
     }
 
     private IReadOnlyList<OperatorDerivation> GetDerivations()
@@ -57,27 +63,28 @@ public sealed class ScalarOperatorDerivationSearcher
     {
         List<OperatorDerivation> derivations = new(3);
 
-        NamedType pureScalar = new("Scalar", "SharpMeasures", "SharpMeasures.Base", true);
+        if (Signature[0] == Quantity)
+        {
+            derivations.Add(new OperatorDerivation(Quantity, OperatorType.Division, PureScalar, Signature[0]));
+        }
 
         if (ShouldImplementLHS)
         {
-            derivations.Add(new OperatorDerivation(pureScalar, OperatorType.Multiplication, Quantity, Signature[0]));
+            derivations.Add(new OperatorDerivation(PureScalar, OperatorType.Multiplication, Quantity, Signature[0]));
         }
 
         if (ShouldImplementRHS(Signature[0]))
         {
-            derivations.Add(new OperatorDerivation(pureScalar, OperatorType.Multiplication, Signature[0], Quantity));
+            derivations.Add(new OperatorDerivation(PureScalar, OperatorType.Multiplication, Signature[0], Quantity));
         }
 
-        derivations.Add(new OperatorDerivation(Signature[0], OperatorType.Division, pureScalar, Quantity));
+        derivations.Add(new OperatorDerivation(Signature[0], OperatorType.Division, PureScalar, Quantity));
 
         return derivations;
     }
 
     private IReadOnlyList<OperatorDerivation> GetDoubleQuantityDerivations()
     {
-        bool orderedExpression = Expression.IndexOf("0", StringComparison.InvariantCulture) < Expression.IndexOf("1", StringComparison.InvariantCulture);
-
         List<OperatorDerivation> derivations = new(3);
 
         if (OriginalOperatorType is OperatorType.Addition or OperatorType.Multiplication)
@@ -93,7 +100,7 @@ public sealed class ScalarOperatorDerivationSearcher
 
         if (OriginalOperatorType is OperatorType.Subtraction or OperatorType.Division)
         {
-            if (orderedExpression)
+            if (OrderedExpression)
             {
                 if (ShouldImplementLHS)
                 {
@@ -160,6 +167,16 @@ public sealed class ScalarOperatorDerivationSearcher
         OperatorType.Division => OperatorType.Multiplication,
         _ => throw new NotSupportedException($"Unrecognized {typeof(OperatorType).Name}: {originalOperatorType}")
     };
+
+    private bool CheckIfOrderedExpression()
+    {
+        if (Signature.Count is 1)
+        {
+            return true;
+        }
+
+        return Expression.IndexOf("0", StringComparison.InvariantCulture) < Expression.IndexOf("1", StringComparison.InvariantCulture);
+    }
 
     private bool ShouldImplementLHS => OperatorImplementation is DerivationOperatorImplementation.All or DerivationOperatorImplementation.LeftHandSide or DerivationOperatorImplementation.Suitable;
     private bool ShouldImplementRHS(NamedType lhs) => OperatorImplementation is DerivationOperatorImplementation.All or DerivationOperatorImplementation.RightHandSide || OperatorImplementation is DerivationOperatorImplementation.Suitable && lhs.Assembly != Quantity.Assembly;

@@ -25,6 +25,8 @@ public sealed class VectorOperatorDerivationSearcher
 
     private OperatorType OriginalOperatorType { get; }
 
+    private bool OrderedExpression { get; }
+
     private VectorOperatorDerivationSearcher(NamedType quantity, string expression, IReadOnlyList<NamedType> signature, DerivationOperatorImplementation operatorImplementation, bool firstElementIsVector)
     {
         Quantity = quantity;
@@ -40,6 +42,8 @@ public sealed class VectorOperatorDerivationSearcher
         }
 
         OriginalOperatorType = GetOperatorType(Expression);
+
+        OrderedExpression = CheckIfOrderedExpression();
     }
 
     private IReadOnlyList<OperatorDerivation> GetDerivations()
@@ -54,8 +58,6 @@ public sealed class VectorOperatorDerivationSearcher
 
     private IReadOnlyList<OperatorDerivation> GetQuantityDerivations()
     {
-        bool orderedExpression = Expression.IndexOf("0", StringComparison.InvariantCulture) < Expression.IndexOf("1", StringComparison.InvariantCulture);
-
         List<OperatorDerivation> derivations = new(3);
 
         if (OriginalOperatorType is OperatorType.Addition)
@@ -71,7 +73,7 @@ public sealed class VectorOperatorDerivationSearcher
 
         if (OriginalOperatorType is OperatorType.Subtraction)
         {
-            if (orderedExpression)
+            if (OrderedExpression)
             {
                 if (ShouldImplementLHS)
                 {
@@ -128,7 +130,7 @@ public sealed class VectorOperatorDerivationSearcher
 
         if (OriginalOperatorType is OperatorType.Division)
         {
-            if (orderedExpression)
+            if (OrderedExpression)
             {
                 if (ShouldImplementLHS)
                 {
@@ -175,6 +177,16 @@ public sealed class VectorOperatorDerivationSearcher
         }
 
         return OperatorType.Division;
+    }
+
+    private bool CheckIfOrderedExpression()
+    {
+        if (Signature.Count is 1)
+        {
+            return true;
+        }
+
+        return Expression.IndexOf("0", StringComparison.InvariantCulture) < Expression.IndexOf("1", StringComparison.InvariantCulture);
     }
 
     private bool ShouldImplementLHS => OperatorImplementation is DerivationOperatorImplementation.All or DerivationOperatorImplementation.LeftHandSide or DerivationOperatorImplementation.Suitable;
