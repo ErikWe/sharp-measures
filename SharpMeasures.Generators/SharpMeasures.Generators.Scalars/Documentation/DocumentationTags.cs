@@ -23,12 +23,6 @@ internal sealed class DocumentationTags : IDocumentationStrategy, IEquatable<Doc
 
     public string WithMagnitude() => "WithMagnitude";
 
-    public string FromReciprocal(NamedType _) => "FromReciprocal";
-    public string FromSquare(NamedType _) => "FromSquare";
-    public string FromCube(NamedType _) => "FromCube";
-    public string FromSquareRoot(NamedType _) => "FromSquareRoot";
-    public string FromCubeRoot(NamedType _) => "FromCubeRoot";
-
     public string ScalarConstructor() => "Constructor_Scalar";
     public string ScalarAndUnitConstructor() => "Constructor_Scalar_Unit";
 
@@ -57,12 +51,6 @@ internal sealed class DocumentationTags : IDocumentationStrategy, IEquatable<Doc
     public string Absolute() => "Absolute";
     public string Sign() => "Sign";
 
-    public string Reciprocal() => "Reciprocal";
-    public string Square() => "Square";
-    public string Cube() => "Cube";
-    public string SquareRoot() => "SquareRoot";
-    public string CubeRoot() => "CubeRoot";
-
     public string ToStringDocumentation() => "ToString";
 
     public string EqualsSameTypeMethod() => "Method_Equals_SameType";
@@ -85,7 +73,6 @@ internal sealed class DocumentationTags : IDocumentationStrategy, IEquatable<Doc
     public string MultiplyScalarMethod() => "Method_Multiply_Scalar";
     public string DivideScalarMethod() => "Method_Divide_Scalar";
 
-    public string MultiplySameTypeMethod() => "Method_Multiply_SameType";
     public string DivideSameTypeMethod() => "Method_Divide_SameType";
 
     public string MultiplyVectorMethod(int dimension) => $"Method_Multiply_Vector_{dimension}";
@@ -103,9 +90,7 @@ internal sealed class DocumentationTags : IDocumentationStrategy, IEquatable<Doc
     public string MultiplyScalarOperatorLHS() => "Operator_Multiply_Scalar_LHS";
     public string MultiplyScalarOperatorRHS() => "Operator_Multiply_Scalar_RHS";
     public string DivideScalarOperatorLHS() => "Operator_Divide_Scalar_LHS";
-    public string DivideScalarOperatorRHS() => "Operator_Divide_Scalar_RHS";
 
-    public string MultiplySameTypeOperator() => "Operator_Multiply_SameType";
     public string DivideSameTypeOperator() => "Operator_Divide_SameType";
 
     public string MultiplyVectorOperatorLHS(int dimension) => $"Operator_MultiplyVector_LHS_{dimension}";

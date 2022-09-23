@@ -57,7 +57,6 @@ internal sealed class VectorDocumentationTags : IVectorDocumentationStrategy, IE
     public string IsInfinite() => "IsInfinite";
 
     public string Magnitude() => "Magnitude";
-    public string SquaredMagnitude() => "SquaredMagnitude";
 
     public string ScalarMagnitude() => "Magnitude_Scalar";
     public string ScalarSquaredMagnitude() => "SquaredMagnitude_Scalar";

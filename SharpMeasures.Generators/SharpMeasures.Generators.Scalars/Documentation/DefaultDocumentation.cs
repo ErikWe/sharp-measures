@@ -64,56 +64,6 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
 
     public string WithMagnitude() => InheritDoc;
 
-    public string FromReciprocal(NamedType reciprocal)
-    {
-        var parameterName = SourceBuildingUtility.ToParameterName(reciprocal.Name);
-    
-        return $$"""
-            /// <summary>Computes { 1 / <paramref name="{{parameterName}}"/> }.</summary>
-            /// <param name="{{parameterName}}">The reciprocal of the computed {{ScalarReference}}.</param>
-            """;
-    }
-
-    public string FromSquare(NamedType square)
-    {
-        var parameterName = SourceBuildingUtility.ToParameterName(square.Name);
-
-        return $$"""
-            /// <summary>Computes { √ <paramref name="{{parameterName}}"/> }.</summary>
-            /// <param name="{{parameterName}}">The square of the computed {{ScalarReference}}.</param>
-            """;
-    }
-
-    public string FromCube(NamedType cube)
-    {
-        var parameterName = SourceBuildingUtility.ToParameterName(cube.Name);
-
-        return $$"""
-            /// <summary>Computes { ³√ <paramref name="{{parameterName}}"/> }.</summary>
-            /// <param name="{{parameterName}}">The cube of the computed {{ScalarReference}}.</param>
-            """;
-    }
-
-    public string FromSquareRoot(NamedType squareRoot)
-    {
-        var parameterName = SourceBuildingUtility.ToParameterName(squareRoot.Name);
-
-        return $$"""
-            /// <summary>Computes { <paramref name="{{parameterName}}"/> ² }.</summary>
-            /// <param name="{{parameterName}}">The square root of the computed {{ScalarReference}}.</param>
-            """;
-    }
-
-    public string FromCubeRoot(NamedType cubeRoot)
-    {
-        var parameterName = SourceBuildingUtility.ToParameterName(cubeRoot.Name);
-
-        return $$"""
-            /// <summary>Computes { <paramref name="{{parameterName}}"/> ³ }.</summary>
-            /// <param name="{{parameterName}}">The cube root of the computed {{ScalarReference}}.</param>
-            """;
-    }
-
     public string Magnitude()
     {
         var commonText = $"""
@@ -230,12 +180,6 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
     public string Absolute() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.Absolute"/>""";
     public string Sign() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.Sign"/>""";
 
-    public string Reciprocal() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.Reciprocal()"/>""";
-    public string Square() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.Square()"/>""";
-    public string Cube() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.Cube()"/>""";
-    public string SquareRoot() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.SquareRoot()"/>""";
-    public string CubeRoot() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.CubeRoot()"/>""";
-
     public string ToStringDocumentation()
     {
         var commonText = $"""/// <summary>Produces a description of <see langword="this"/> containing the""";
@@ -282,7 +226,6 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
     public string MultiplyScalarMethod() => InheritDoc;
     public string DivideScalarMethod() => InheritDoc;
 
-    public string MultiplySameTypeMethod() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.Multiply(global::SharpMeasures.Scalar)"/>""";
     public string DivideSameTypeMethod() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.Divide(global::SharpMeasures.Scalar)"/>""";
 
     public string MultiplyVectorMethod(int dimension) => $$"""/// <inheritdoc cref="Scalar.Multiply(global::SharpMeasures.Vector{{dimension}})"/>""";
@@ -300,9 +243,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
     public string MultiplyScalarOperatorLHS() => InheritDoc;
     public string MultiplyScalarOperatorRHS() => InheritDoc;
     public string DivideScalarOperatorLHS() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.operator /(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
-    public string DivideScalarOperatorRHS() => InheritDoc;
 
-    public string MultiplySameTypeOperator() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.operator *(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
     public string DivideSameTypeOperator() => """/// <inheritdoc cref="global::SharpMeasures.Scalar.operator /(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>""";
 
     public string MultiplyVectorOperatorLHS(int dimension) => $$"""/// <inheritdoc cref="global::SharpMeasures.Vector{{dimension}}.operator *(global::SharpMeasures.Scalar, global::SharpMeasures.Vector{{dimension}})"/>""";

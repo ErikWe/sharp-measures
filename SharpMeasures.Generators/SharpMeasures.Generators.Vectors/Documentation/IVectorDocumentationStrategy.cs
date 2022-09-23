@@ -45,7 +45,6 @@ internal interface IVectorDocumentationStrategy
     public abstract string IsInfinite();
     
     public abstract string Magnitude();
-    public abstract string SquaredMagnitude();
 
     public abstract string ScalarMagnitude();
     public abstract string ScalarSquaredMagnitude();

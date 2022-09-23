@@ -276,7 +276,6 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
     public string IsInfinite() => $"""/// <inheritdoc cref="global::SharpMeasures.Vector{Dimension}.IsInfinite"/>""";
 
     public string Magnitude() => $$"""/// <inheritdoc cref="global::SharpMeasures.IVector{{Dimension}}.Magnitude()"/>""";
-    public string SquaredMagnitude() => $$"""/// <inheritdoc cref="global::SharpMeasures.IVector{{Dimension}}.SquaredMagnitude()"/>""";
 
     public string ScalarMagnitude() => InheritDoc;
     public string ScalarSquaredMagnitude() => InheritDoc;

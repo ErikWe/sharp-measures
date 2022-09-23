@@ -53,29 +53,4 @@ internal sealed class SharpMeasuresScalarProcessingDiagnostics : ISharpMeasuresS
     {
         return DefaultUnitInstanceProcessingDiagnostics.Instance.SetDefaultUnitInstanceNameButNotSymbol(context, definition);
     }
-
-    public Diagnostic NullReciprocalQuantity(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
-    {
-        return DiagnosticConstruction.NullTypeNotScalar(definition.Locations.Reciprocal?.AsRoslynLocation());
-    }
-
-    public Diagnostic NullSquareQuantity(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
-    {
-        return DiagnosticConstruction.NullTypeNotScalar(definition.Locations.Square?.AsRoslynLocation());
-    }
-
-    public Diagnostic NullCubeQuantity(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
-    {
-        return DiagnosticConstruction.NullTypeNotScalar(definition.Locations.Cube?.AsRoslynLocation());
-    }
-
-    public Diagnostic NullSquareRootQuantity(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
-    {
-        return DiagnosticConstruction.NullTypeNotScalar(definition.Locations.SquareRoot?.AsRoslynLocation());
-    }
-
-    public Diagnostic NullCubeRootQuantity(IProcessingContext context, RawSharpMeasuresScalarDefinition definition)
-    {
-        return DiagnosticConstruction.NullTypeNotScalar(definition.Locations.CubeRoot?.AsRoslynLocation());
-    }
 }

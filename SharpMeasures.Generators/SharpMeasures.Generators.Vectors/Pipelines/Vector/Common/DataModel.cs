@@ -8,7 +8,6 @@ internal readonly record struct DataModel
     public int Dimension { get; }
 
     public NamedType? Scalar { get; }
-    public NamedType? SquaredScalar { get; }
 
     public NamedType Unit { get; }
     public NamedType UnitQuantity { get; }
@@ -19,13 +18,12 @@ internal readonly record struct DataModel
 
     public IVectorDocumentationStrategy Documentation { get; }
 
-    public DataModel(DefinedType vector, int dimension, NamedType? scalar, NamedType? squaredScalar, NamedType unit, NamedType unitQuantity, string unitParameterName, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IVectorDocumentationStrategy documentation)
+    public DataModel(DefinedType vector, int dimension, NamedType? scalar, NamedType unit, NamedType unitQuantity, string unitParameterName, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IVectorDocumentationStrategy documentation)
     {
         Vector = vector;
         Dimension = dimension;
 
         Scalar = scalar;
-        SquaredScalar = squaredScalar;
 
         Unit = unit;
         UnitQuantity = unitQuantity;

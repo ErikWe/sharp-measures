@@ -25,12 +25,6 @@ internal sealed record class SpecializedSharpMeasuresScalarDefinition : AAttribu
     public string? DefaultUnitInstanceName { get; }
     public string? DefaultUnitInstanceSymbol { get; }
 
-    public NamedType? Reciprocal { get; }
-    public NamedType? Square { get; }
-    public NamedType? Cube { get; }
-    public NamedType? SquareRoot { get; }
-    public NamedType? CubeRoot { get; }
-
     public bool? GenerateDocumentation { get; }
 
     ISharpMeasuresObjectLocations ISharpMeasuresObject.Locations => Locations;
@@ -41,7 +35,7 @@ internal sealed record class SpecializedSharpMeasuresScalarDefinition : AAttribu
     IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
     public SpecializedSharpMeasuresScalarDefinition(NamedType originalScalar, bool inheritDerivations, bool inheritConstants, bool inheritConversions, bool inheritBases, bool inheritUnits, ConversionOperatorBehaviour forwardsCastOperatorBehaviour, ConversionOperatorBehaviour backwardsCastOperatorBehaviour, NamedType? vector, bool? implementSum,
-        bool? implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot, bool? generateDocumentation, SpecializedSharpMeasuresScalarLocations locations) : base(locations)
+        bool? implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, bool? generateDocumentation, SpecializedSharpMeasuresScalarLocations locations) : base(locations)
     {
         OriginalQuantity = originalScalar;
 
@@ -62,12 +56,6 @@ internal sealed record class SpecializedSharpMeasuresScalarDefinition : AAttribu
 
         DefaultUnitInstanceName = defaultUnitInstanceName;
         DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol;
-
-        Reciprocal = reciprocal;
-        Square = square;
-        Cube = cube;
-        SquareRoot = squareRoot;
-        CubeRoot = cubeRoot;
 
         GenerateDocumentation = generateDocumentation;
     }

@@ -18,11 +18,6 @@ internal static class SharpMeasuresScalarProperties
         Difference,
         DefaultUnitInstanceName,
         DefaultUnitInstanceSymbol,
-        Reciprocal,
-        Square,
-        Cube,
-        SquareRoot,
-        CubeRoot,
         GenerateDocumentation
     };
 
@@ -80,41 +75,6 @@ internal static class SharpMeasuresScalarProperties
         name: nameof(SharpMeasuresScalarAttribute.DefaultUnitInstanceSymbol),
         setter: static (definition, defaultUnitInstanceSymbol) => definition with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbol },
         locator: static (locations, defaultUnitInstanceSymbolLocation) => locations with { DefaultUnitInstanceSymbol = defaultUnitInstanceSymbolLocation }
-    );
-
-    private static SharpMeasuresScalarProperty<INamedTypeSymbol> Reciprocal { get; } = new
-    (
-        name: nameof(SharpMeasuresScalarAttribute.Reciprocal),
-        setter: static (definition, reciprocal) => definition with { Reciprocal = reciprocal },
-        locator: static (locations, reciprocalLocation) => locations with { Reciprocal = reciprocalLocation }
-    );
-
-    private static SharpMeasuresScalarProperty<INamedTypeSymbol> Square { get; } = new
-    (
-        name: nameof(SharpMeasuresScalarAttribute.Square),
-        setter: static (definition, square) => definition with { Square = square },
-        locator: static (locations, squareLocation) => locations with { Square = squareLocation }
-    );
-
-    private static SharpMeasuresScalarProperty<INamedTypeSymbol> Cube { get; } = new
-    (
-        name: nameof(SharpMeasuresScalarAttribute.Cube),
-        setter: static (definition, cube) => definition with { Cube = cube },
-        locator: static (locations, cubeLocation) => locations with { Cube = cubeLocation }
-    );
-
-    private static SharpMeasuresScalarProperty<INamedTypeSymbol> SquareRoot { get; } = new
-    (
-        name: nameof(SharpMeasuresScalarAttribute.SquareRoot),
-        setter: static (definition, squareRoot) => definition with { SquareRoot = squareRoot },
-        locator: static (locations, squareRootLocation) => locations with { SquareRoot = squareRootLocation }
-    );
-
-    private static SharpMeasuresScalarProperty<INamedTypeSymbol> CubeRoot { get; } = new
-    (
-        name: nameof(SharpMeasuresScalarAttribute.CubeRoot),
-        setter: static (definition, cubeRoot) => definition with { CubeRoot = cubeRoot },
-        locator: static (locations, cubeRootLocation) => locations with { CubeRoot = cubeRootLocation }
     );
 
     private static SharpMeasuresScalarProperty<bool> GenerateDocumentation { get; } = new

@@ -15,12 +15,6 @@ internal interface IDocumentationStrategy
 
     public abstract string WithMagnitude();
 
-    public abstract string FromReciprocal(NamedType reciprocal);
-    public abstract string FromSquare(NamedType square);
-    public abstract string FromCube(NamedType cube);
-    public abstract string FromSquareRoot(NamedType squareRoot);
-    public abstract string FromCubeRoot(NamedType cubeRoot);
-
     public abstract string ScalarConstructor();
     public abstract string ScalarAndUnitConstructor();
 
@@ -49,12 +43,6 @@ internal interface IDocumentationStrategy
     public abstract string Absolute();
     public abstract string Sign();
 
-    public abstract string Reciprocal();
-    public abstract string Square();
-    public abstract string Cube();
-    public abstract string SquareRoot();
-    public abstract string CubeRoot();
-
     public abstract string ToStringDocumentation();
 
     public abstract string EqualsSameTypeMethod();
@@ -77,7 +65,6 @@ internal interface IDocumentationStrategy
     public abstract string MultiplyScalarMethod();
     public abstract string DivideScalarMethod();
 
-    public abstract string MultiplySameTypeMethod();
     public abstract string DivideSameTypeMethod();
 
     public abstract string MultiplyVectorMethod(int dimension);
@@ -95,9 +82,7 @@ internal interface IDocumentationStrategy
     public abstract string MultiplyScalarOperatorLHS();
     public abstract string MultiplyScalarOperatorRHS();
     public abstract string DivideScalarOperatorLHS();
-    public abstract string DivideScalarOperatorRHS();
 
-    public abstract string MultiplySameTypeOperator();
     public abstract string DivideSameTypeOperator();
 
     public abstract string MultiplyVectorOperatorLHS(int dimension);

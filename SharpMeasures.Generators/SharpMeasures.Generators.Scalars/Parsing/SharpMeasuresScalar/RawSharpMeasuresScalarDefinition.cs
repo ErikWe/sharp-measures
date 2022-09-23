@@ -15,11 +15,6 @@ internal sealed record class RawSharpMeasuresScalarDefinition : ARawAttributeDef
         Difference = symbolicDefinition.Difference?.AsNamedType(),
         DefaultUnitInstanceName = symbolicDefinition.DefaultUnitInstanceName,
         DefaultUnitInstanceSymbol = symbolicDefinition.DefaultUnitInstanceSymbol,
-        Reciprocal = symbolicDefinition.Reciprocal?.AsNamedType(),
-        Square = symbolicDefinition.Square?.AsNamedType(),
-        Cube = symbolicDefinition.Cube?.AsNamedType(),
-        SquareRoot = symbolicDefinition.SquareRoot?.AsNamedType(),
-        CubeRoot = symbolicDefinition.CubeRoot?.AsNamedType(),
         GenerateDocumentation = symbolicDefinition.GenerateDocumentation
     };
 
@@ -34,12 +29,6 @@ internal sealed record class RawSharpMeasuresScalarDefinition : ARawAttributeDef
 
     public string? DefaultUnitInstanceName { get; init; }
     public string? DefaultUnitInstanceSymbol { get; init; }
-
-    public NamedType? Reciprocal { get; init; }
-    public NamedType? Square { get; init; }
-    public NamedType? Cube { get; init; }
-    public NamedType? SquareRoot { get; init; }
-    public NamedType? CubeRoot { get; init; }
 
     public bool? GenerateDocumentation { get; init; }
 

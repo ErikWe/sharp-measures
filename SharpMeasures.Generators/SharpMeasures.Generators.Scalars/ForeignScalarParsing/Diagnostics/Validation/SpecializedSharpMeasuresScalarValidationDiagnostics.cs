@@ -20,10 +20,5 @@ internal sealed class SpecializedSharpMeasuresScalarValidationDiagnostics : ISpe
     Diagnostic? ISpecializedSharpMeasuresScalarValidationDiagnostics.RootScalarNotResolved(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition) => null;
     Diagnostic? ISpecializedSharpMeasuresScalarValidationDiagnostics.TypeNotVector(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition) => null;
     Diagnostic? ISpecializedSharpMeasuresScalarValidationDiagnostics.DifferenceNotScalar(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition) => null;
-    Diagnostic? ISpecializedSharpMeasuresScalarValidationDiagnostics.ReciprocalNotScalar(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition) => null;
-    Diagnostic? ISpecializedSharpMeasuresScalarValidationDiagnostics.SquareNotScalar(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition) => null;
-    Diagnostic? ISpecializedSharpMeasuresScalarValidationDiagnostics.CubeNotScalar(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition) => null;
-    Diagnostic? ISpecializedSharpMeasuresScalarValidationDiagnostics.SquareRootNotScalar(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition) => null;
-    Diagnostic? ISpecializedSharpMeasuresScalarValidationDiagnostics.CubeRootNotScalar(ISpecializedSharpMeasuresScalarValidationContext context, SpecializedSharpMeasuresScalarDefinition definition) => null;
     Diagnostic? IDefaultUnitInstanceValidationDiagnostics.UnrecognizedDefaultUnitInstance(IProcessingContext context, IDefaultUnitInstanceDefinition definition, IUnitType unit) => null;
 }

@@ -20,12 +20,6 @@ internal sealed record class ResolvedScalarType : IResolvedScalarType
 
     public NamedType? Vector { get; }
 
-    public NamedType? Reciprocal { get; }
-    public NamedType? Square { get; }
-    public NamedType? Cube { get; }
-    public NamedType? SquareRoot { get; }
-    public NamedType? CubeRoot { get; }
-
     public bool ImplementSum { get; }
     public bool ImplementDifference { get; }
     public NamedType? Difference { get; }
@@ -47,8 +41,8 @@ internal sealed record class ResolvedScalarType : IResolvedScalarType
 
     IReadOnlyList<IConvertibleQuantity> IResolvedQuantityType.Conversions => Conversions;
 
-    public ResolvedScalarType(DefinedType type, MinimalLocation typeLocation, NamedType unit, bool useUnitBias, NamedType? originalQuantity, ConversionOperatorBehaviour specializationForwardsConversionBehaviour, ConversionOperatorBehaviour specializationBackwardsConversionBehaviour, NamedType? vector, NamedType? reciprocal, NamedType? square,
-        NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot, bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IReadOnlyList<IDerivedQuantity> derivations, IReadOnlyList<IScalarConstant> constants, IReadOnlyList<IConvertibleQuantity> conversions,
+    public ResolvedScalarType(DefinedType type, MinimalLocation typeLocation, NamedType unit, bool useUnitBias, NamedType? originalQuantity, ConversionOperatorBehaviour specializationForwardsConversionBehaviour, ConversionOperatorBehaviour specializationBackwardsConversionBehaviour, NamedType? vector,
+        bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IReadOnlyList<IDerivedQuantity> derivations, IReadOnlyList<IScalarConstant> constants, IReadOnlyList<IConvertibleQuantity> conversions,
         IReadOnlyList<IDerivedQuantity> inheritedDerivations, IReadOnlyList<IConvertibleQuantity> inheritedConversions, IReadOnlyList<string> includedUnitBaseInstanceNames, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
     {
         Type = type;
@@ -63,12 +57,6 @@ internal sealed record class ResolvedScalarType : IResolvedScalarType
         SpecializationBackwardsConversionBehaviour = specializationBackwardsConversionBehaviour;
 
         Vector = vector;
-
-        Reciprocal = reciprocal;
-        Square = square;
-        Cube = cube;
-        SquareRoot = squareRoot;
-        CubeRoot = cubeRoot;
 
         ImplementSum = implementSum;
         ImplementDifference = implementDifference;

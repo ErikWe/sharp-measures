@@ -26,12 +26,6 @@ internal sealed class FileDocumentation : IDocumentationStrategy, IEquatable<Fil
 
     public string WithMagnitude() => FromFileOrDefault(static (strategy) => strategy.WithMagnitude());
 
-    public string FromReciprocal(NamedType reciprocal) => FromFileOrDefault((strategy) => strategy.FromReciprocal(reciprocal));
-    public string FromSquare(NamedType square) => FromFileOrDefault((strategy) => strategy.FromSquare(square));
-    public string FromCube(NamedType cube) => FromFileOrDefault((strategy) => strategy.FromCube(cube));
-    public string FromSquareRoot(NamedType squareRoot) => FromFileOrDefault((strategy) => strategy.FromSquareRoot(squareRoot));
-    public string FromCubeRoot(NamedType cubeRoot) => FromFileOrDefault((strategy) => strategy.FromCubeRoot(cubeRoot));
-
     public string Magnitude() => FromFileOrDefault(static (strategy) => strategy.Magnitude());
 
     public string ScalarConstructor() => FromFileOrDefault(static (strategy) => strategy.ScalarConstructor());
@@ -61,12 +55,6 @@ internal sealed class FileDocumentation : IDocumentationStrategy, IEquatable<Fil
     public string Absolute() => FromFileOrDefault(static (strategy) => strategy.Absolute());
     public string Sign() => FromFileOrDefault(static (strategy) => strategy.Sign());
 
-    public string Reciprocal() => FromFileOrDefault(static (strategy) => strategy.Reciprocal());
-    public string Square() => FromFileOrDefault(static (strategy) => strategy.Square());
-    public string Cube() => FromFileOrDefault(static (strategy) => strategy.Cube());
-    public string SquareRoot() => FromFileOrDefault(static (strategy) => strategy.SquareRoot());
-    public string CubeRoot() => FromFileOrDefault(static (strategy) => strategy.CubeRoot());
-
     public string ToStringDocumentation() => FromFileOrDefault(static (strategy) => strategy.ToStringDocumentation());
 
     public string EqualsSameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.EqualsSameTypeMethod());
@@ -89,7 +77,6 @@ internal sealed class FileDocumentation : IDocumentationStrategy, IEquatable<Fil
     public string MultiplyScalarMethod() => FromFileOrDefault(static (strategy) => strategy.MultiplyScalarMethod());
     public string DivideScalarMethod() => FromFileOrDefault(static (strategy) => strategy.DivideScalarMethod());
 
-    public string MultiplySameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.MultiplySameTypeMethod());
     public string DivideSameTypeMethod() => FromFileOrDefault(static (strategy) => strategy.DivideSameTypeMethod());
 
     public string MultiplyVectorMethod(int dimension) => FromFileOrDefault((strategy) => strategy.MultiplyVectorMethod(dimension));
@@ -108,9 +95,7 @@ internal sealed class FileDocumentation : IDocumentationStrategy, IEquatable<Fil
     public string MultiplyScalarOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.MultiplyScalarOperatorRHS());
 
     public string DivideScalarOperatorLHS() => FromFileOrDefault(static (strategy) => strategy.DivideScalarOperatorLHS());
-    public string DivideScalarOperatorRHS() => FromFileOrDefault(static (strategy) => strategy.DivideScalarOperatorRHS());
 
-    public string MultiplySameTypeOperator() => FromFileOrDefault(static (strategy) => strategy.MultiplySameTypeOperator());
     public string DivideSameTypeOperator() => FromFileOrDefault(static (strategy) => strategy.DivideSameTypeOperator());
 
     public string MultiplyVectorOperatorLHS(int dimension) => FromFileOrDefault((strategy) => strategy.MultiplyVectorOperatorLHS(dimension));

@@ -86,27 +86,6 @@ public sealed class SpecializedSharpMeasuresScalarAttribute : Attribute
     /// <summary>The symbol of the default unit instance. By default, the value is inherited from the original quantity.</summary>
     public string? DefaultUnitInstanceSymbol { get; init; }
 
-    /// <summary><inheritdoc cref="SharpMeasuresScalarAttribute.Reciprocal" path="/summary"/> By default, the value is inherited from
-    /// the original quantity.</summary>
-    /// <remarks><inheritdoc cref="SharpMeasuresScalarAttribute.Reciprocal" path="/remarks"/></remarks>
-    public Type? Reciprocal { get; init; }
-    /// <summary><inheritdoc cref="SharpMeasuresScalarAttribute.Square" path="/summary"/> By default, the value is inherited from
-    /// the original quantity.</summary>
-    /// <remarks><inheritdoc cref="SharpMeasuresScalarAttribute.Square" path="/remarks"/></remarks>
-    public Type? Square { get; init; }
-    /// <summary><inheritdoc cref="SharpMeasuresScalarAttribute.Cube" path="/summary"/> By default, the value is inherited from
-    /// the original quantity.</summary>
-    /// <remarks><inheritdoc cref="SharpMeasuresScalarAttribute.Cube" path="/remarks"/></remarks>
-    public Type? Cube { get; init; }
-    /// <summary><inheritdoc cref="SharpMeasuresScalarAttribute.SquareRoot" path="/summary"/> By default, the value is inherited from
-    /// the original quantity.</summary>
-    /// <remarks><inheritdoc cref="SharpMeasuresScalarAttribute.SquareRoot" path="/remarks"/></remarks>
-    public Type? SquareRoot { get; init; }
-    /// <summary><inheritdoc cref="SharpMeasuresScalarAttribute.CubeRoot" path="/summary"/> By default, the value is inherited from
-    /// the original quantity.</summary>
-    /// <remarks><inheritdoc cref="SharpMeasuresScalarAttribute.CubeRoot" path="/remarks"/></remarks>
-    public Type? CubeRoot { get; init; }
-
     /// <summary><inheritdoc cref="SharpMeasuresScalarAttribute.GenerateDocumentation" path="/summary"/> By default, the behaviour is inherited from
     /// the original quantity.</summary>
     public bool GenerateDocumentation { get; init; }

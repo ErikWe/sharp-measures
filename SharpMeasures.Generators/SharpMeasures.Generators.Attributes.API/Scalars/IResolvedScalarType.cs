@@ -10,12 +10,6 @@ public interface IResolvedScalarType : IResolvedQuantityType
 
     public abstract NamedType? Vector { get; }
 
-    public abstract NamedType? Reciprocal { get; }
-    public abstract NamedType? Square { get; }
-    public abstract NamedType? Cube { get; }
-    public abstract NamedType? SquareRoot { get; }
-    public abstract NamedType? CubeRoot { get; }
-
     public abstract IReadOnlyList<IScalarConstant> Constants { get; }
 
     public abstract IReadOnlyList<string> IncludedUnitBaseInstanceNames { get; }

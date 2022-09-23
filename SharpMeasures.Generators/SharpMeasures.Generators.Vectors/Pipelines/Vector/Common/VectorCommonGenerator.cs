@@ -26,16 +26,6 @@ internal static class VectorCommonGenerator
 
         string unitParameterName = SourceBuildingUtility.ToParameterName(model.Value.Vector.Unit.Name);
 
-        return new DataModel(model.Value.Vector.Type, model.Value.Vector.Dimension, model.Value.Vector.Scalar, GetSquaredScalar(model.Value), model.Value.Vector.Unit, unit.Definition.Quantity, unitParameterName, model.Value.Vector.DefaultUnitInstanceName, model.Value.Vector.DefaultUnitInstanceSymbol, model.Value.Documentation);
-    }
-
-    private static NamedType? GetSquaredScalar(VectorDataModel model)
-    {
-        if (model.Vector.Scalar is not null && model.ScalarPopulation.Scalars.TryGetValue(model.Vector.Scalar.Value, out var scalar))
-        {
-            return scalar.Square;
-        }
-
-        return null;
+        return new DataModel(model.Value.Vector.Type, model.Value.Vector.Dimension, model.Value.Vector.Scalar, model.Value.Vector.Unit, unit.Definition.Quantity, unitParameterName, model.Value.Vector.DefaultUnitInstanceName, model.Value.Vector.DefaultUnitInstanceSymbol, model.Value.Documentation);
     }
 }

@@ -80,7 +80,7 @@ public partial class Length
     {
         global::System.ArgumentNullException.ThrowIfNull(x);
 
-        return new(-x.Magnitude);
+        return new(-x.Magnitude.Value);
     }
 
     /// <inheritdoc cref="global::SharpMeasures.Scalar.operator +(global::SharpMeasures.Scalar, global::SharpMeasures.Scalar)"/>

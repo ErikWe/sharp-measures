@@ -19,10 +19,5 @@ internal sealed class EmptySharpMeasuresScalarValidationDiagnostics : ISharpMeas
     Diagnostic? ISharpMeasuresScalarValidationDiagnostics.UnitNotIncludingBiasTerm(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition) => null;
     Diagnostic? ISharpMeasuresScalarValidationDiagnostics.TypeNotVector(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition) => null;
     Diagnostic? ISharpMeasuresScalarValidationDiagnostics.DifferenceNotScalar(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition) => null;
-    Diagnostic? ISharpMeasuresScalarValidationDiagnostics.ReciprocalNotScalar(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition) => null;
-    Diagnostic? ISharpMeasuresScalarValidationDiagnostics.SquareNotScalar(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition) => null;
-    Diagnostic? ISharpMeasuresScalarValidationDiagnostics.CubeNotScalar(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition) => null;
-    Diagnostic? ISharpMeasuresScalarValidationDiagnostics.SquareRootNotScalar(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition) => null;
-    Diagnostic? ISharpMeasuresScalarValidationDiagnostics.CubeRootNotScalar(ISharpMeasuresScalarValidationContext context, SharpMeasuresScalarDefinition definition) => null;
     Diagnostic? IDefaultUnitInstanceValidationDiagnostics.UnrecognizedDefaultUnitInstance(IProcessingContext context, IDefaultUnitInstanceDefinition definition, IUnitType unit) => null;
 }

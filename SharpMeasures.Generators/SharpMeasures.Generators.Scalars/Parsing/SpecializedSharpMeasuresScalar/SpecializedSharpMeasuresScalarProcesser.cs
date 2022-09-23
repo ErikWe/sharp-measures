@@ -19,12 +19,6 @@ internal interface ISpecializedSharpMeasuresScalarProcessingDiagnostics : IDefau
 
     public abstract Diagnostic? NullDifferenceQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
     public abstract Diagnostic? DifferenceDisabledButQuantitySpecified(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
-
-    public abstract Diagnostic? NullReciprocalQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? NullSquareQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? NullCubeQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? NullSquareRootQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
-    public abstract Diagnostic? NullCubeRootQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition);
 }
 
 internal sealed class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProcessingContext, RawSpecializedSharpMeasuresScalarDefinition, SpecializedSharpMeasuresScalarDefinition>
@@ -45,19 +39,13 @@ internal sealed class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProc
             .Validate(() => ValidateVectorNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotNull(context, definition))
             .Validate(() => ValidateDifferenceNotUnexpectedlySpecified(context, definition))
-            .Validate(() => ValidatePowerPropertyNotNull(definition.Locations.ExplicitlySetReciprocal, definition.Reciprocal, () => Diagnostics.NullReciprocalQuantity(context, definition)))
-            .Validate(() => ValidatePowerPropertyNotNull(definition.Locations.ExplicitlySetSquare, definition.Square, () => Diagnostics.NullSquareQuantity(context, definition)))
-            .Validate(() => ValidatePowerPropertyNotNull(definition.Locations.ExplicitlySetCube, definition.Cube, () => Diagnostics.NullCubeQuantity(context, definition)))
-            .Validate(() => ValidatePowerPropertyNotNull(definition.Locations.ExplicitlySetSquareRoot, definition.SquareRoot, () => Diagnostics.NullSquareRootQuantity(context, definition)))
-            .Validate(() => ValidatePowerPropertyNotNull(definition.Locations.ExplicitlySetCubeRoot, definition.CubeRoot, () => Diagnostics.NullCubeRootQuantity(context, definition)))
             .Merge(() => DefaultUnitInstanceProcesser.Process(context, Diagnostics, definition))
             .Transform((defaultUnitInstance) => ProduceResult(definition, defaultUnitInstance.Name, defaultUnitInstance.Symbol));
     }
 
     private static SpecializedSharpMeasuresScalarDefinition ProduceResult(RawSpecializedSharpMeasuresScalarDefinition definition, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol)
     {
-        return new(definition.OriginalQuantity!.Value, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritBases, definition.InheritUnits, definition.ForwardsCastOperatorBehaviour, definition.BackwardsCastOperatorBehaviour, definition.Vector, definition.ImplementSum, definition.ImplementDifference, definition.Difference,
-            defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.Reciprocal, definition.Square, definition.Cube, definition.SquareRoot, definition.CubeRoot, definition.GenerateDocumentation, definition.Locations);
+        return new(definition.OriginalQuantity!.Value, definition.InheritDerivations, definition.InheritConstants, definition.InheritConversions, definition.InheritBases, definition.InheritUnits, definition.ForwardsCastOperatorBehaviour, definition.BackwardsCastOperatorBehaviour, definition.Vector, definition.ImplementSum, definition.ImplementDifference, definition.Difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definition.GenerateDocumentation, definition.Locations);
     }
 
     private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawSpecializedSharpMeasuresScalarDefinition definition)
@@ -103,12 +91,5 @@ internal sealed class SpecializedSharpMeasuresScalarProcesser : AProcesser<IProc
         var differenceUnexpectedlySpecified = definition.ImplementDifference is false && definition.Locations.ExplicitlySetDifference;
 
         return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(differenceUnexpectedlySpecified, () => Diagnostics.DifferenceDisabledButQuantitySpecified(context, definition));
-    }
-
-    private static IValidityWithDiagnostics ValidatePowerPropertyNotNull(bool explicitlySet, NamedType? value, Func<Diagnostic?> nullQuantityDiagnosticsDelegate)
-    {
-        var powerPropertyIsNull = explicitlySet && value is null;
-
-        return ValidityWithDiagnostics.ValidWithConditionalDiagnostics(powerPropertyIsNull, () => nullQuantityDiagnosticsDelegate());
     }
 }

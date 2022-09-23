@@ -34,31 +34,6 @@ internal sealed class SpecializedSharpMeasuresScalarProcessingDiagnostics : ISpe
         return DiagnosticConstruction.DifferenceDisabledButQuantitySpecified(definition.Locations.Difference?.AsRoslynLocation(), context.Type.Name);
     }
 
-    public Diagnostic NullReciprocalQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
-    {
-        return DiagnosticConstruction.NullTypeNotScalar(definition.Locations.Reciprocal?.AsRoslynLocation());
-    }
-
-    public Diagnostic NullSquareQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
-    {
-        return DiagnosticConstruction.NullTypeNotScalar(definition.Locations.Square?.AsRoslynLocation());
-    }
-
-    public Diagnostic NullCubeQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
-    {
-        return DiagnosticConstruction.NullTypeNotScalar(definition.Locations.Cube?.AsRoslynLocation());
-    }
-
-    public Diagnostic NullSquareRootQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
-    {
-        return DiagnosticConstruction.NullTypeNotScalar(definition.Locations.SquareRoot?.AsRoslynLocation());
-    }
-
-    public Diagnostic NullCubeRootQuantity(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
-    {
-        return DiagnosticConstruction.NullTypeNotScalar(definition.Locations.CubeRoot?.AsRoslynLocation());
-    }
-
     public Diagnostic? UnrecognizedForwardsCastOperatorBehaviour(IProcessingContext context, RawSpecializedSharpMeasuresScalarDefinition definition)
     {
         return DiagnosticConstruction.UnrecognizedEnumValue(definition.Locations.ForwardsCastOperatorBehaviour?.AsRoslynLocation(), definition.ForwardsCastOperatorBehaviour);

@@ -20,7 +20,6 @@ internal static class MathsGenerator
             return new Optional<DataModel>();
         }
 
-        return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Unit, model.Value.Scalar.ImplementSum, model.Value.Scalar.ImplementDifference, model.Value.Scalar.Difference, model.Value.Scalar.Reciprocal, model.Value.Scalar.Square, model.Value.Scalar.Cube,
-            model.Value.Scalar.SquareRoot, model.Value.Scalar.CubeRoot, model.Value.Documentation);
+        return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Unit, model.Value.Scalar.ImplementSum, model.Value.Scalar.ImplementDifference, model.Value.Scalar.Difference, model.Value.Documentation);
     }
 }

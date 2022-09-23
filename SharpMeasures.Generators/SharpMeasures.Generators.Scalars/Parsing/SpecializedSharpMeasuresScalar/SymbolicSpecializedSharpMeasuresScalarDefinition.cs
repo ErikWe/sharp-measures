@@ -31,17 +31,11 @@ internal sealed record class SymbolicSpecializedSharpMeasuresScalarDefinition : 
     public string? DefaultUnitInstanceName { get; init; }
     public string? DefaultUnitInstanceSymbol { get; init; }
 
-    public INamedTypeSymbol? Reciprocal { get; init; }
-    public INamedTypeSymbol? Square { get; init; }
-    public INamedTypeSymbol? Cube { get; init; }
-    public INamedTypeSymbol? SquareRoot { get; init; }
-    public INamedTypeSymbol? CubeRoot { get; init; }
-
     public bool? GenerateDocumentation { get; init; }
 
     protected override SymbolicSpecializedSharpMeasuresScalarDefinition Definition => this;
 
     private SymbolicSpecializedSharpMeasuresScalarDefinition(SpecializedSharpMeasuresScalarLocations locations) : base(locations) { }
 
-    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName, bool alreadyInForeignAssembly) => new[] { OriginalQuantity, Vector, Difference, Reciprocal, Square, Cube, SquareRoot, CubeRoot }.Where((symbol) => symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName)).Select(static (symbol) => symbol!);
+    public IEnumerable<INamedTypeSymbol> ForeignSymbols(string localAssemblyName, bool alreadyInForeignAssembly) => new[] { OriginalQuantity, Vector, Difference }.Where((symbol) => symbol is not null && (alreadyInForeignAssembly || symbol.ContainingAssembly.Name != localAssemblyName)).Select(static (symbol) => symbol!);
 }

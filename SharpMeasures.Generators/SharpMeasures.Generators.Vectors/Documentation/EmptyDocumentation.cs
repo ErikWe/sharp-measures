@@ -40,7 +40,6 @@ internal sealed class EmptyDocumentation : IGroupDocumentationStrategy, IVectorD
     string IVectorDocumentationStrategy.IsFinite() => string.Empty;
     string IVectorDocumentationStrategy.IsInfinite() => string.Empty;
     string IVectorDocumentationStrategy.Magnitude() => string.Empty;
-    string IVectorDocumentationStrategy.SquaredMagnitude() => string.Empty;
     string IVectorDocumentationStrategy.ScalarMagnitude() => string.Empty;
     string IVectorDocumentationStrategy.ScalarSquaredMagnitude() => string.Empty;
     string IVectorDocumentationStrategy.Normalize() => string.Empty;

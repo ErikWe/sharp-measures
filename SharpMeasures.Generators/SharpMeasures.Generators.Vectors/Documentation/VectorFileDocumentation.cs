@@ -61,7 +61,6 @@ internal sealed class VectorFileDocumentation : IVectorDocumentationStrategy, IE
     public string IsInfinite() => FromFileOrDefault(static (strategy) => strategy.IsInfinite());
 
     public string Magnitude() => FromFileOrDefault(static (strategy) => strategy.Magnitude());
-    public string SquaredMagnitude() => FromFileOrDefault(static (strategy) => strategy.SquaredMagnitude());
 
     public string ScalarMagnitude() => FromFileOrDefault(static (strategy) => strategy.ScalarMagnitude());
     public string ScalarSquaredMagnitude() => FromFileOrDefault(static (strategy) => strategy.ScalarSquaredMagnitude());

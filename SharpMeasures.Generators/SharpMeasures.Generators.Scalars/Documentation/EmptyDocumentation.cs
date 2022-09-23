@@ -17,11 +17,6 @@ internal sealed class EmptyDocumentation : IDocumentationStrategy, IEquatable<Em
     string IDocumentationStrategy.Constant(IScalarConstant _) => string.Empty;
     string IDocumentationStrategy.UnitBase(IUnitInstance _) => string.Empty;
     string IDocumentationStrategy.WithMagnitude() => string.Empty;
-    string IDocumentationStrategy.FromReciprocal(NamedType _) => string.Empty;
-    string IDocumentationStrategy.FromSquare(NamedType _) => string.Empty;
-    string IDocumentationStrategy.FromCube(NamedType _) => string.Empty;
-    string IDocumentationStrategy.FromSquareRoot(NamedType _) => string.Empty;
-    string IDocumentationStrategy.FromCubeRoot(NamedType _) => string.Empty;
     string IDocumentationStrategy.Magnitude() => string.Empty;
     string IDocumentationStrategy.ScalarConstructor() => string.Empty;
     string IDocumentationStrategy.ScalarAndUnitConstructor() => string.Empty;
@@ -44,11 +39,6 @@ internal sealed class EmptyDocumentation : IDocumentationStrategy, IEquatable<Em
     string IDocumentationStrategy.IsNegativeInfinity() => string.Empty;
     string IDocumentationStrategy.Absolute() => string.Empty;
     string IDocumentationStrategy.Sign() => string.Empty;
-    string IDocumentationStrategy.Reciprocal() => string.Empty;
-    string IDocumentationStrategy.Square() => string.Empty;
-    string IDocumentationStrategy.Cube() => string.Empty;
-    string IDocumentationStrategy.SquareRoot() => string.Empty;
-    string IDocumentationStrategy.CubeRoot() => string.Empty;
     string IDocumentationStrategy.ToStringDocumentation() => string.Empty;
     string IDocumentationStrategy.EqualsSameTypeMethod() => string.Empty;
     string IDocumentationStrategy.EqualsObjectMethod() => string.Empty;
@@ -63,7 +53,6 @@ internal sealed class EmptyDocumentation : IDocumentationStrategy, IEquatable<Em
     string IDocumentationStrategy.SubtractDifferenceMethod() => string.Empty;
     string IDocumentationStrategy.MultiplyScalarMethod() => string.Empty;
     string IDocumentationStrategy.DivideScalarMethod() => string.Empty;
-    string IDocumentationStrategy.MultiplySameTypeMethod() => string.Empty;
     string IDocumentationStrategy.DivideSameTypeMethod() => string.Empty;
     string IDocumentationStrategy.MultiplyVectorMethod(int dimension) => string.Empty;
     string IDocumentationStrategy.UnaryPlusOperator() => string.Empty;
@@ -76,8 +65,6 @@ internal sealed class EmptyDocumentation : IDocumentationStrategy, IEquatable<Em
     string IDocumentationStrategy.MultiplyScalarOperatorLHS() => string.Empty;
     string IDocumentationStrategy.MultiplyScalarOperatorRHS() => string.Empty;
     string IDocumentationStrategy.DivideScalarOperatorLHS() => string.Empty;
-    string IDocumentationStrategy.DivideScalarOperatorRHS() => string.Empty;
-    string IDocumentationStrategy.MultiplySameTypeOperator() => string.Empty;
     string IDocumentationStrategy.DivideSameTypeOperator() => string.Empty;
     string IDocumentationStrategy.MultiplyVectorOperatorLHS(int _) => string.Empty;
     string IDocumentationStrategy.MultiplyVectorOperatorRHS(int _) => string.Empty;

@@ -13,15 +13,9 @@ internal readonly record struct DataModel
 
     public NamedType? Difference { get; }
 
-    public NamedType? Reciprocal { get; }
-    public NamedType? Square { get; }
-    public NamedType? Cube { get; }
-    public NamedType? SquareRoot { get; }
-    public NamedType? CubeRoot { get; }
-
     public IDocumentationStrategy Documentation { get; }
 
-    public DataModel(DefinedType scalar, NamedType unit, bool implementSum, bool implementDifference, NamedType? difference, NamedType? reciprocal, NamedType? square, NamedType? cube, NamedType? squareRoot, NamedType? cubeRoot, IDocumentationStrategy documentation)
+    public DataModel(DefinedType scalar, NamedType unit, bool implementSum, bool implementDifference, NamedType? difference, IDocumentationStrategy documentation)
     {
         Scalar = scalar;
 
@@ -31,12 +25,6 @@ internal readonly record struct DataModel
         ImplementDifference = implementDifference;
 
         Difference = difference;
-
-        Reciprocal = reciprocal;
-        Square = square;
-        Cube = cube;
-        SquareRoot = squareRoot;
-        CubeRoot = cubeRoot;
 
         Documentation = documentation;
     }

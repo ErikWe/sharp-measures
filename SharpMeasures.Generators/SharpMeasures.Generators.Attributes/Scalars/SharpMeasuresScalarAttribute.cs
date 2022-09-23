@@ -72,17 +72,6 @@ public sealed class SharpMeasuresScalarAttribute : Attribute
     /// <summary>The symbol of the default unit instance.</summary>
     public string? DefaultUnitInstanceSymbol { get; init; }
 
-    /// <summary>The scalar quantity that is considered the reciprocal, or inverse, of this quantity, if one exists.</summary>
-    public Type? Reciprocal { get; init; }
-    /// <summary>The scalar quantity that is considered the square of this quantity, if one exists.</summary>
-    public Type? Square { get; init; }
-    /// <summary>The scalar quantity that is considered the cube of this quantity, if one exists.</summary>
-    public Type? Cube { get; init; }
-    /// <summary>The scalar quantity that is considered the square root of this quantity, if one exists.</summary>
-    public Type? SquareRoot { get; init; }
-    /// <summary>The scalar quantity that is considered the cube root of this quantity, if one exists.</summary>
-    public Type? CubeRoot { get; init; }
-
     /// <summary>Dictates whether documentation should be generated for this quantity.</summary>
     /// <remarks>If this property is not explicitly set, the entry [<i>SharpMeasures_GenerateDocumentation</i>] in the global AnalyzerConfig
     /// file is used to determine whether documentation is generated - which in turn is <see langword="true"/> by default.</remarks>

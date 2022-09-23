@@ -302,21 +302,8 @@ internal static class Execution
 
             SeparationHandler.Add();
 
-            if (Data.SquaredScalar is null)
-            {
-                AppendDocumentation(indentation, Data.Documentation.ScalarSquaredMagnitude());
-                Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar SquaredMagnitude() => ScalarMaths.SquaredMagnitude{Data.Dimension}(this);");
-            }
-            else
-            {
-                AppendDocumentation(indentation, Data.Documentation.SquaredMagnitude());
-                Builder.AppendLine($"{indentation}public {Data.SquaredScalar.Value.FullyQualifiedName} SquaredMagnitude() => SquaredScalarMaths.SquaredMagnitude{Data.Dimension}(this);");
-
-                SeparationHandler.Add();
-
-                AppendDocumentation(indentation, Data.Documentation.ScalarSquaredMagnitude());
-                Builder.AppendLine($"{indentation}Scalar global::SharpMeasures.IVector{Data.Dimension}.SquaredMagnitude() => PureScalarMaths.SquaredMagnitude{Data.Dimension}(this);");
-            }
+            AppendDocumentation(indentation, Data.Documentation.ScalarSquaredMagnitude());
+            Builder.AppendLine($"{indentation}public global::SharpMeasures.Scalar SquaredMagnitude() => ScalarMaths.SquaredMagnitude{Data.Dimension}(this);");
         }
 
         private void AppendInUnit(Indentation indentation)

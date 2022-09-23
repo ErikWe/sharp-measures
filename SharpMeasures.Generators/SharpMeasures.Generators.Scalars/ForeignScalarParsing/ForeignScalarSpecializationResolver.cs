@@ -30,12 +30,6 @@ internal static class ForeignScalarSpecializationResolver
 
         var vector = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.Vector);
 
-        var reciprocal = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.Reciprocal);
-        var square = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.Square);
-        var cube = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.Cube);
-        var squareRoot = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.SquareRoot);
-        var cubeRoot = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.CubeRoot);
-
         var implementSum = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.ImplementSum);
         var implementDifference = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.ImplementDifference);
         var difference = ResolveDifference(scalarType, scalarPopulation);
@@ -45,7 +39,7 @@ internal static class ForeignScalarSpecializationResolver
 
         var generateDocumentation = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.GenerateDocumentation);
 
-        return new ResolvedScalarType(scalarType.Type, MinimalLocation.None, unit.Type.AsNamedType(), scalarBase.Definition.UseUnitBias, scalarType.Definition.OriginalQuantity, scalarType.Definition.ForwardsCastOperatorBehaviour, scalarType.Definition.BackwardsCastOperatorBehaviour, vector, reciprocal, square, cube, squareRoot, cubeRoot, implementSum!.Value,
+        return new ResolvedScalarType(scalarType.Type, MinimalLocation.None, unit.Type.AsNamedType(), scalarBase.Definition.UseUnitBias, scalarType.Definition.OriginalQuantity, scalarType.Definition.ForwardsCastOperatorBehaviour, scalarType.Definition.BackwardsCastOperatorBehaviour, vector, implementSum!.Value,
             implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, derivations, constants, conversions, inheritedDerivations, inheritedConversions, includedUnitInstanceBases, includedUnitInstances, generateDocumentation);
     }
 

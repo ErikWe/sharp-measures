@@ -26,51 +26,11 @@ public class TypeNotScalar
 
     [Theory]
     [MemberData(nameof(NonScalarTypes))]
-    public void ScalarReciprocal(SourceSubtext argumentValue) => AssertScalarArgument("Reciprocal", argumentValue);
-
-    [Theory]
-    [MemberData(nameof(NonScalarTypes))]
-    public void ScalarSquare(SourceSubtext argumentValue) => AssertScalarArgument("Square", argumentValue);
-
-    [Theory]
-    [MemberData(nameof(NonScalarTypes))]
-    public void ScalarCube(SourceSubtext argumentValue) => AssertScalarArgument("Cube", argumentValue);
-
-    [Theory]
-    [MemberData(nameof(NonScalarTypes))]
-    public void ScalarSquareRoot(SourceSubtext argumentValue) => AssertScalarArgument("SquareRoot", argumentValue);
-
-    [Theory]
-    [MemberData(nameof(NonScalarTypes))]
-    public void ScalarCubeRoot(SourceSubtext argumentValue) => AssertScalarArgument("CubeRoot", argumentValue);
-
-    [Theory]
-    [MemberData(nameof(NonScalarTypes))]
     public void ScalarDifference(SourceSubtext argumentValue) => AssertScalarArgument("Difference", argumentValue);
 
     [Theory]
     [MemberData(nameof(NonScalarTypes))]
     public void SpecializedScalarOriginalScalar(SourceSubtext originalScalarType) => AssertSpecializedScalarOriginalScalar(originalScalarType);
-
-    [Theory]
-    [MemberData(nameof(NonScalarTypes))]
-    public void SpecializedScalarReciprocal(SourceSubtext argumentValue) => AssertSpecializedScalarArgument("Reciprocal", argumentValue);
-
-    [Theory]
-    [MemberData(nameof(NonScalarTypes))]
-    public void SpecializedScalarSquare(SourceSubtext argumentValue) => AssertSpecializedScalarArgument("Square", argumentValue);
-
-    [Theory]
-    [MemberData(nameof(NonScalarTypes))]
-    public void SpecializedScalarCube(SourceSubtext argumentValue) => AssertSpecializedScalarArgument("Cube", argumentValue);
-
-    [Theory]
-    [MemberData(nameof(NonScalarTypes))]
-    public void SpecializedScalarSquareRoot(SourceSubtext argumentValue) => AssertSpecializedScalarArgument("SquareRoot", argumentValue);
-
-    [Theory]
-    [MemberData(nameof(NonScalarTypes))]
-    public void SpecializedScalarCubeRoot(SourceSubtext argumentValue) => AssertSpecializedScalarArgument("CubeRoot", argumentValue);
 
     [Theory]
     [MemberData(nameof(NonScalarTypes))]
