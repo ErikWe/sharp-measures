@@ -18,7 +18,9 @@ SharpMeasures is implemented entirely using a source generator, which means that
 
 ### Functionality
 
-SharpMeasures consists of two main components: quantities and units. A quantity represents a scalar magnitude (or multiple, for vectors), and is not expressed in any particular unit - rather, they are always expressed in a default unit (typically SI units). A specific unit is only applied when constructing a quantity, or when accessing the magnitude of a quantity. Dimensional analysis is not performed when evaluating mathematical expressions, which means that mathematical operations require all involved quantities (even intermediate) to be explicitly implemented in SharpMeasures.
+SharpMeasures consists of two main components: quantities and units. A quantity represents a scalar magnitude (or multiple, for vectors), and is not expressed in any particular unit - rather, they are always expressed in a default unit (typically SI units). A specific unit is only applied when constructing a quantity, or when accessing the magnitude of a quantity.
+
+Dimensional analysis is not performed when evaluating mathematical expressions, which means that mathematical operations require all involved quantities (even intermediate) to be explicitly implemented in SharpMeasures. If this is not the case, a catch-all quantity `Unhandled` will be the result of the operation - which will need to be explicitly convert to the desired type. Currently, the set of supported operations is fairly limited - so this issue will be encountered relatively often if moderately complex or uncommon expressions are used.
 
 ## Source Generator [![NuGet version (SharpMeasures.Generators)](https://img.shields.io/nuget/v/SharpMeasures.Generators.svg?style=plastic)](https://www.nuget.org/packages/SharpMeasures.Generators/)
 
@@ -36,6 +38,8 @@ public partial class Altitude { }
 ```
 
 This means that `Altitude` will borrow the definition from `Length` - including units, derivations, and constants. Cast operators ensure that `Altitude` can implicitly be used in place of `Length` - while the reverse action would require an explicit cast.
+
+> Caveat: Any functionality manually added to `Length` will not be present in `Altitude`.
 
 ### New Types
 
