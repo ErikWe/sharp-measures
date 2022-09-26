@@ -4,17 +4,18 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Scalars.Parsing;
 
+using System;
 using System.Collections.Generic;
 
 public sealed class ForeignScalarParser
 {
+    private static ScalarBaseParser ScalarBaseParser { get; } = new();
+    private static ScalarSpecializationParser ScalarSpecializationParser { get; } = new();
+
     private List<RawScalarBaseType> ScalarBases { get; } = new();
     private List<RawScalarSpecializationType> ScalarSpecializations { get; } = new();
 
-    private ForeignScalarBaseParser ScalarBaseParser { get; } = new();
-    private ForeignScalarSpecializationParser ScalarSpecializationParser { get; } = new();
-
-    public Optional<IEnumerable<INamedTypeSymbol>> TryParse(INamedTypeSymbol typeSymbol)
+    public (bool Sucess, IEnumerable<INamedTypeSymbol> ReferencedSymbols) TryParse(INamedTypeSymbol typeSymbol)
     {
         (var scalarBase, var scalarBaseSymbols) = ScalarBaseParser.Parse(typeSymbol);
 
@@ -22,7 +23,7 @@ public sealed class ForeignScalarParser
         {
             ScalarBases.Add(scalarBase.Value);
 
-            return new Optional<IEnumerable<INamedTypeSymbol>>(scalarBaseSymbols);
+            return (true, scalarBaseSymbols);
         }
 
         (var scalarSpecialization, var scalarSpecializationSymbols) = ScalarSpecializationParser.Parse(typeSymbol);
@@ -31,11 +32,11 @@ public sealed class ForeignScalarParser
         {
             ScalarSpecializations.Add(scalarSpecialization.Value);
 
-            return new Optional<IEnumerable<INamedTypeSymbol>>(scalarSpecializationSymbols);
+            return (true, scalarSpecializationSymbols);
         }
 
-        return new Optional<IEnumerable<INamedTypeSymbol>>();
+        return (false, Array.Empty<INamedTypeSymbol>());
     }
 
-    public IForeignScalarProcesser Finalize() => new ForeignScalarProcesser(new ForeignScalarParsingResult(ScalarBases, ScalarSpecializations));
+    public ForeignScalarParsingResult Finalize() => new(ScalarBases, ScalarSpecializations);
 }

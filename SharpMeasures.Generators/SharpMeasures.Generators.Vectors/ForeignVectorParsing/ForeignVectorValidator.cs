@@ -3,17 +3,30 @@
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Vectors.Parsing;
 
 using System.Threading;
 
-public interface IForeignVectorValidator
+public sealed class ForeignVectorValidator
 {
-    public abstract (IVectorPopulation Population, IForeignVectorResolver Resolver) ValidateAndExtend(IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation, IVectorPopulation unextendedVectorPopulation, CancellationToken token);
-}
+    public static (ForeignVectorProcessingResult ValidationResult, IVectorPopulation Population) ValidateAndExtend(ForeignVectorProcessingResult processingResult, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation, IVectorPopulation unextendedVectorPopulation, CancellationToken token)
+    {
+        var validator = new ForeignVectorValidator();
 
-internal sealed record class ForeignVectorValidator : IForeignVectorValidator
-{
-    private ForeignVectorProcessingResult ProcessingResult { get; }
+        if (token.IsCancellationRequested is false)
+        {
+            validator.Validate(processingResult, unitPopulation, scalarPopulation, vectorPopulation);
+        }
+
+        return (validator.Finalize(), validator.Extend(unextendedVectorPopulation));
+    }
+
+    private GroupBaseValidator GroupBaseValidator { get; } = new(VectorValidationDiagnosticsStrategies.EmptyDiagnostics);
+    private GroupSpecializationValidator GroupSpecializationValidator { get; } = new(VectorValidationDiagnosticsStrategies.EmptyDiagnostics);
+    private GroupMemberValidator GroupMemberValidator { get; } = new(VectorValidationDiagnosticsStrategies.EmptyDiagnostics);
+
+    private VectorBaseValidator VectorBaseValidator { get; } = new(VectorValidationDiagnosticsStrategies.EmptyDiagnostics);
+    private VectorSpecializationValidator VectorSpecializationValidator { get; } = new(VectorValidationDiagnosticsStrategies.EmptyDiagnostics);
 
     private EquatableList<GroupBaseType> GroupBases { get; } = new();
     private EquatableList<GroupSpecializationType> GroupSpecializations { get; } = new();
@@ -22,70 +35,61 @@ internal sealed record class ForeignVectorValidator : IForeignVectorValidator
     private EquatableList<VectorBaseType> VectorBases { get; } = new();
     private EquatableList<VectorSpecializationType> VectorSpecializations { get; } = new();
 
-    public ForeignVectorValidator(ForeignVectorProcessingResult processingResult)
-    {
-        ProcessingResult = processingResult;
-    }
+    private ForeignVectorValidator() { }
 
-    public (IVectorPopulation, IForeignVectorResolver) ValidateAndExtend(IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation, IVectorPopulation unextendedVectorPopulation, CancellationToken token)
+    private void Validate(ForeignVectorProcessingResult processingResult, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
     {
-        if (token.IsCancellationRequested is false)
+        foreach (var processedGroupBase in processingResult.GroupBases)
         {
-            foreach (var processedGroupBase in ProcessingResult.GroupBases)
+            var groupBase = GroupBaseValidator.Validate(processedGroupBase, VectorProcessingData.Empty, unitPopulation, scalarPopulation, vectorPopulation);
+
+            if (groupBase.HasResult)
             {
-                var groupBase = ForeignGroupBaseValidator.Validate(processedGroupBase, unitPopulation, scalarPopulation, vectorPopulation);
-
-                if (groupBase.HasValue)
-                {
-                    GroupBases.Add(groupBase.Value);
-                }
-            }
-
-            foreach (var processedGroupSpecialization in ProcessingResult.GroupSpecializations)
-            {
-                var groupSpecialization = ForeignGroupSpecializationValidator.Validate(processedGroupSpecialization, unitPopulation, scalarPopulation, vectorPopulation);
-
-                if (groupSpecialization.HasValue)
-                {
-                    GroupSpecializations.Add(groupSpecialization.Value);
-                }
-            }
-
-            foreach (var processedMember in ProcessingResult.GroupMembers)
-            {
-                var member = ForeignGroupMemberValidator.Validate(processedMember, unitPopulation, scalarPopulation, vectorPopulation);
-
-                if (member.HasValue)
-                {
-                    GroupMembers.Add(member.Value);
-                }
-            }
-
-            foreach (var processedVectorBase in ProcessingResult.VectorBases)
-            {
-                var vectorBase = ForeignVectorBaseValidator.Validate(processedVectorBase, unitPopulation, scalarPopulation, vectorPopulation);
-
-                if (vectorBase.HasValue)
-                {
-                    VectorBases.Add(vectorBase.Value);
-                }
-            }
-
-            foreach (var processedVectorSpecialization in ProcessingResult.VectorSpecializations)
-            {
-                var vectorSpecialization = ForeignVectorSpecializationValidator.Validate(processedVectorSpecialization, unitPopulation, scalarPopulation, vectorPopulation);
-
-                if (vectorSpecialization.HasValue)
-                {
-                    VectorSpecializations.Add(vectorSpecialization.Value);
-                }
+                GroupBases.Add(groupBase.Result);
             }
         }
 
-        var result = new ForeignVectorProcessingResult(GroupBases, GroupSpecializations, GroupMembers, VectorBases, VectorSpecializations);
-        var extendedPopulation = ExtendedVectorPopulation.Build(unextendedVectorPopulation, result);
-        var validator = new ForeignVectorResolver(result);
+        foreach (var processedGroupSpecialization in processingResult.GroupSpecializations)
+        {
+            var groupSpecialization = GroupSpecializationValidator.Validate(processedGroupSpecialization, VectorProcessingData.Empty, unitPopulation, scalarPopulation, vectorPopulation);
 
-        return (extendedPopulation, validator);
+            if (groupSpecialization.HasResult)
+            {
+                GroupSpecializations.Add(groupSpecialization.Result);
+            }
+        }
+
+        foreach (var processedMember in processingResult.GroupMembers)
+        {
+            var member = GroupMemberValidator.Validate(processedMember, VectorProcessingData.Empty, unitPopulation, scalarPopulation, vectorPopulation);
+
+            if (member.HasResult)
+            {
+                GroupMembers.Add(member.Result);
+            }
+        }
+
+        foreach (var processedVectorBase in processingResult.VectorBases)
+        {
+            var vectorBase = VectorBaseValidator.Validate(processedVectorBase, VectorProcessingData.Empty, unitPopulation, scalarPopulation, vectorPopulation);
+
+            if (vectorBase.HasResult)
+            {
+                VectorBases.Add(vectorBase.Result);
+            }
+        }
+
+        foreach (var processedVectorSpecialization in processingResult.VectorSpecializations)
+        {
+            var vectorSpecialization = VectorSpecializationValidator.Validate(processedVectorSpecialization, VectorProcessingData.Empty, unitPopulation, scalarPopulation, vectorPopulation);
+
+            if (vectorSpecialization.HasResult)
+            {
+                VectorSpecializations.Add(vectorSpecialization.Result);
+            }
+        }
     }
+
+    private ForeignVectorProcessingResult Finalize() => new(GroupBases, GroupSpecializations, GroupMembers, VectorBases, VectorSpecializations);
+    private IVectorPopulation Extend(IVectorPopulation vectorPopulation) => ExtendedVectorPopulation.Build(vectorPopulation, Finalize());
 }

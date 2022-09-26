@@ -26,7 +26,7 @@ internal static class GroupSpecializationResolver
         return Resolve(input.UnresolvedGroup.Value, input.UnitPopulation, input.VectorPopulation);
     }
 
-    private static Optional<ResolvedGroupType> Resolve(GroupSpecializationType groupType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
+    public static Optional<ResolvedGroupType> Resolve(GroupSpecializationType groupType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
     {
         if (vectorPopulation.GroupBases.TryGetValue(groupType.Type.AsNamedType(), out var groupBase) is false || unitPopulation.Units.TryGetValue(groupBase.Definition.Unit, out var unit) is false)
         {
@@ -51,7 +51,7 @@ internal static class GroupSpecializationResolver
 
         var generateDocumentation = RecursivelySearchForDefined(groupType, vectorPopulation, static (vector) => vector.Definition.GenerateDocumentation);
 
-        return new ResolvedGroupType(groupType.Type, groupType.TypeLocation, unit.Type.AsNamedType(), groupType.Definition.OriginalQuantity, groupType.Definition.ForwardsCastOperatorBehaviour, groupType.Definition.BackwardsCastOperatorBehaviour, scalar, implementSum!.Value, implementDifference!.Value,
+        return new ResolvedGroupType(groupType.Type, unit.Type.AsNamedType(), groupType.Definition.OriginalQuantity, groupType.Definition.ForwardsCastOperatorBehaviour, groupType.Definition.BackwardsCastOperatorBehaviour, scalar, implementSum!.Value, implementDifference!.Value,
             difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, membersByDimension, groupType.Derivations, groupType.Conversions, inheritedDerivations, inheritedConversions, includedUnitInstances, generateDocumentation);
     }
 

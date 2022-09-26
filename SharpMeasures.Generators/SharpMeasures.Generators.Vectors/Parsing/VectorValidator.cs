@@ -9,43 +9,23 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 
-public interface IVectorValidator
+public static class VectorValidator
 {
-    public abstract (IncrementalValueProvider<IVectorPopulation>, IVectorResolver) Validate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider);
-}
+    private static GroupBaseValidator GroupBaseValidator { get; } = new(VectorValidationDiagnosticsStrategies.Default);
+    private static GroupSpecializationValidator GroupSpecializationValidator { get; } = new(VectorValidationDiagnosticsStrategies.Default);
+    private static GroupMemberValidator GroupMemberValidator { get; } = new(VectorValidationDiagnosticsStrategies.Default);
 
-internal sealed class VectorValidator : IVectorValidator
-{
-    private IncrementalValueProvider<VectorProcessingData> ProcessingDataProvider { get; }
+    private static VectorBaseValidator VectorBaseValidator { get; } = new(VectorValidationDiagnosticsStrategies.Default);
+    private static VectorSpecializationValidator VectorSpecializationValidator { get; } = new(VectorValidationDiagnosticsStrategies.Default);
 
-    private IncrementalValuesProvider<Optional<GroupBaseType>> GroupBaseProvider { get; }
-    private IncrementalValuesProvider<Optional<GroupSpecializationType>> GroupSpecializationProvider { get; }
-    private IncrementalValuesProvider<Optional<GroupMemberType>> GroupMemberProvider { get; }
-
-    private IncrementalValuesProvider<Optional<VectorBaseType>> VectorBaseProvider { get; }
-    private IncrementalValuesProvider<Optional<VectorSpecializationType>> VectorSpecializationProvider { get; }
-
-    internal VectorValidator(IncrementalValueProvider<VectorProcessingData> processingDataProvider, IncrementalValuesProvider<Optional<GroupBaseType>> groupBaseProvider, IncrementalValuesProvider<Optional<GroupSpecializationType>> groupSpecializationProvider,
-        IncrementalValuesProvider<Optional<GroupMemberType>> groupMemberProvider, IncrementalValuesProvider<Optional<VectorBaseType>> vectorBaseProvider, IncrementalValuesProvider<Optional<VectorSpecializationType>> vectorSpecializationProvider)
+    public static (VectorValidationResult ValidationResult, IncrementalValueProvider<IVectorPopulation> Population) Validate(IncrementalGeneratorInitializationContext context, VectorProcessingResult processingResult, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
     {
-        ProcessingDataProvider = processingDataProvider;
+        var validatedGroupBases = processingResult.GroupBaseProvider.Combine(processingResult.ProcessingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(GroupBaseValidator.Validate).ReportDiagnostics(context);
+        var validatedGroupSpecializations = processingResult.GroupSpecializationProvider.Combine(processingResult.ProcessingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(GroupSpecializationValidator.Validate).ReportDiagnostics(context);
+        var validatedGroupMembers = processingResult.GroupMemberProvider.Combine(processingResult.ProcessingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(GroupMemberValidator.Validate).ReportDiagnostics(context);
 
-        GroupBaseProvider = groupBaseProvider;
-        GroupSpecializationProvider = groupSpecializationProvider;
-        GroupMemberProvider = groupMemberProvider;
-
-        VectorBaseProvider = vectorBaseProvider;
-        VectorSpecializationProvider = vectorSpecializationProvider;
-    }
-
-    public (IncrementalValueProvider<IVectorPopulation>, IVectorResolver) Validate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IScalarPopulation> scalarPopulationProvider, IncrementalValueProvider<IVectorPopulation> vectorPopulationProvider)
-    {
-        var validatedGroupBases = GroupBaseValidator.Validate(context, GroupBaseProvider, ProcessingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider);
-        var validatedGroupSpecializations = GroupSpecializationValidator.Validate(context, GroupSpecializationProvider, ProcessingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider);
-        var validatedGroupMembers = GroupMemberValidator.Validate(context, GroupMemberProvider, ProcessingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider);
-
-        var validatedVectorBases = VectorBaseValidator.Validate(context, VectorBaseProvider, ProcessingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider);
-        var validatedVectorSpecializations = VectorSpecializationValidator.Validate(context, VectorSpecializationProvider, ProcessingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider);
+        var validatedVectorBases = processingResult.VectorBaseProvider.Combine(processingResult.ProcessingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(VectorBaseValidator.Validate).ReportDiagnostics(context);
+        var validatedVectorSpecializations = processingResult.VectorSpecializationProvider.Combine(processingResult.ProcessingDataProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(VectorSpecializationValidator.Validate).ReportDiagnostics(context);
 
         var groupBaseInterfaces = validatedGroupBases.Select(ExtractInterface).CollectResults();
         var groupSpecializationInterfaces = validatedGroupSpecializations.Select(ExtractInterface).CollectResults();
@@ -54,9 +34,10 @@ internal sealed class VectorValidator : IVectorValidator
         var vectorBaseInterfaces = validatedVectorBases.Select(ExtractInterface).CollectResults();
         var vectorSpecializationInterfaces = validatedVectorSpecializations.Select(ExtractInterface).CollectResults();
 
+        var result = new VectorValidationResult(validatedGroupBases, validatedGroupSpecializations, validatedGroupMembers, validatedVectorBases, validatedVectorSpecializations);
         var population = groupBaseInterfaces.Combine(groupSpecializationInterfaces, groupMemberInterfaces, vectorBaseInterfaces, vectorSpecializationInterfaces).Select(CreatePopulation);
 
-        return (population, new VectorResolver(validatedGroupBases, validatedGroupSpecializations, validatedGroupMembers, validatedVectorBases, validatedVectorSpecializations));
+        return (result, population);
     }
 
     private static Optional<IVectorGroupBaseType> ExtractInterface(Optional<GroupBaseType> groupType, CancellationToken _) => groupType.HasValue ? groupType.Value : new Optional<IVectorGroupBaseType>();

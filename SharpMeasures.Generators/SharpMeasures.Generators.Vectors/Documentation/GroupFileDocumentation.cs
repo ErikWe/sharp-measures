@@ -19,6 +19,24 @@ internal sealed class GroupFileDocumentation : IGroupDocumentationStrategy, IEqu
         DefaultDocumentationStrategy = defaultDocumentationStrategy;
     }
 
+    public string Header() => FromFileOrDefault(static (strategy) => strategy.Header());
+
+    public string ScalarFactoryMethod(int dimension) => FromFileOrDefault((strategy) => strategy.ScalarFactoryMethod(dimension));
+    public string VectorFactoryMethod(int dimension) => FromFileOrDefault((strategy) => strategy.VectorFactoryMethod(dimension));
+    public string ComponentsFactoryMethod(int dimension) => FromFileOrDefault((strategy) => strategy.ComponentsFactoryMethod(dimension));
+
+    private string FromFileOrDefault(Func<IGroupDocumentationStrategy, string> defaultDelegate)
+    {
+        string tag = defaultDelegate(DocumentationTags);
+
+        if (DocumentationFile.OptionallyResolveTag(tag) is not string { Length: > 0 } tagContent)
+        {
+            tagContent = defaultDelegate(DefaultDocumentationStrategy);
+        }
+
+        return tagContent;
+    }
+
     public bool Equals(GroupFileDocumentation? other) => other is not null && DocumentationTags == other.DocumentationTags && DocumentationFile == other.DocumentationFile && DefaultDocumentationStrategy.Equals(other.DefaultDocumentationStrategy);
     public override bool Equals(object? obj) => obj is GroupFileDocumentation other && Equals(other);
 

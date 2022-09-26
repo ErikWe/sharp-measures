@@ -27,7 +27,7 @@ internal static class ScalarSpecializationResolver
         return Resolve(input.UnresolvedScalar.Value, input.UnitPopulation, input.ScalarPopulation);
     }
 
-    private static Optional<ResolvedScalarType> Resolve(ScalarSpecializationType scalarType, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation)
+    public static Optional<ResolvedScalarType> Resolve(ScalarSpecializationType scalarType, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation)
     {
         if (scalarPopulation.ScalarBases.TryGetValue(scalarType.Type.AsNamedType(), out var scalarBase) is false || unitPopulation.Units.TryGetValue(scalarBase.Definition.Unit, out var unit) is false)
         {
@@ -55,7 +55,7 @@ internal static class ScalarSpecializationResolver
 
         var generateDocumentation = RecursivelySearchForDefined(scalarType, scalarPopulation, static (scalar) => scalar.Definition.GenerateDocumentation);
 
-        return new ResolvedScalarType(scalarType.Type, scalarType.TypeLocation, unit.Type.AsNamedType(), scalarBase.Definition.UseUnitBias, scalarType.Definition.OriginalQuantity, scalarType.Definition.ForwardsCastOperatorBehaviour, scalarType.Definition.BackwardsCastOperatorBehaviour, vector, implementSum!.Value,
+        return new ResolvedScalarType(scalarType.Type, unit.Type.AsNamedType(), scalarBase.Definition.UseUnitBias, scalarType.Definition.OriginalQuantity, scalarType.Definition.ForwardsCastOperatorBehaviour, scalarType.Definition.BackwardsCastOperatorBehaviour, vector, implementSum!.Value,
             implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, derivations, constants, conversions, inheritedDerivations, inheritedConversions, includedUnitInstanceBases, includedUnitInstances, generateDocumentation);
     }
 

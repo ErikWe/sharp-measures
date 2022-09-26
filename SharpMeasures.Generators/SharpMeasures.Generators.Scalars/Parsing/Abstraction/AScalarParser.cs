@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
@@ -18,17 +17,17 @@ using System.Threading;
 
 internal abstract class AScalarParser<TDefinition, TProduct>
 {
-    public (Optional<TProduct> Definition, IEnumerable<INamedTypeSymbol> ForeignSymbols) Parse(Optional<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)> input, CancellationToken token)
+    public (Optional<TProduct> Definition, IEnumerable<INamedTypeSymbol> ForeignSymbols) Parse(Optional<INamedTypeSymbol> typeSymbol, CancellationToken token)
     {
-        if (token.IsCancellationRequested || input.HasValue is false)
+        if (token.IsCancellationRequested || typeSymbol.HasValue is false)
         {
             return (new Optional<TProduct>(), Array.Empty<INamedTypeSymbol>());
         }
 
-        return Parse(input.Value.Declaration, input.Value.TypeSymbol);
+        return Parse(typeSymbol.Value);
     }
 
-    public (Optional<TProduct>, IEnumerable<INamedTypeSymbol>) Parse(TypeDeclarationSyntax declaration, INamedTypeSymbol typeSymbol)
+    public (Optional<TProduct>, IEnumerable<INamedTypeSymbol>) Parse(INamedTypeSymbol typeSymbol)
     {
         (var scalar, var scalarForeignSymbols) = ParseScalar(typeSymbol);
 
@@ -47,13 +46,13 @@ internal abstract class AScalarParser<TDefinition, TProduct>
         var includeUnitInstances = ParseIncludeUnits(typeSymbol);
         var excludeUnitInstances = ParseExcludeUnits(typeSymbol);
 
-        TProduct product = ProduceResult(typeSymbol.AsDefinedType(), declaration.Identifier.GetLocation().Minimize(), scalar.Value, derivations, constants, conversions, includeUnitInstanceBases, excludeUnitInstanceBases, includeUnitInstances, excludeUnitInstances);
+        TProduct product = ProduceResult(typeSymbol.AsDefinedType(), scalar.Value, derivations, constants, conversions, includeUnitInstanceBases, excludeUnitInstanceBases, includeUnitInstances, excludeUnitInstances);
         var foreignSymbols = scalarForeignSymbols.Concat(derivationsForeignSymbols).Concat(conversionsForeignSymbols);
 
         return (product, foreignSymbols);
     }
 
-    protected abstract TProduct ProduceResult(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
+    protected abstract TProduct ProduceResult(DefinedType type, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
         IEnumerable<RawIncludeUnitBasesDefinition> baseInclusions, IEnumerable<RawExcludeUnitBasesDefinition> baseExclusions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions);
 
     protected abstract (Optional<TDefinition>, IEnumerable<INamedTypeSymbol>)  ParseScalar(INamedTypeSymbol typeSymbol);

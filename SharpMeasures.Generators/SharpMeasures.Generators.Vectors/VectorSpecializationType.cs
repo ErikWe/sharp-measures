@@ -16,6 +16,6 @@ internal sealed record class VectorSpecializationType : AVectorType<SpecializedS
     IQuantitySpecialization IQuantitySpecializationType.Definition => Definition;
     IVectorSpecialization IVectorSpecializationType.Definition => Definition;
 
-    public VectorSpecializationType(DefinedType type, MinimalLocation typeLocation, SpecializedSharpMeasuresVectorDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
-        : base(type, typeLocation, definition, derivations, constants, conversions, unitInstanceInclusions, unitInstanceExclusions) { }
+    public VectorSpecializationType(DefinedType type, SpecializedSharpMeasuresVectorDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
+        : base(type, definition, derivations, constants, conversions, unitInstanceInclusions, unitInstanceExclusions) { }
 }

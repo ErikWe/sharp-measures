@@ -20,7 +20,7 @@ public class UnitNotDerivable
     [Fact]
     public void WithID() => AssertWithID();
 
-    private static GeneratorVerifier AssertExactlyUnitNotDerivableDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnitNotDerivableDiagnostics);
+    private static GeneratorVerifier AssertExactlyUnitNotDerivableDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, GeneratorVerifierSettings.TestCodeAssertions).AssertExactlyListedDiagnosticsIDsReported(UnitNotDerivableDiagnostics);
     private static IReadOnlyCollection<string> UnitNotDerivableDiagnostics { get; } = new string[] { DiagnosticIDs.UnitNotDerivable };
 
     private static string WithoutIDText => """
@@ -39,7 +39,7 @@ public class UnitNotDerivable
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(WithoutIDText, target: "DerivedUnitInstance");
 
-        return AssertExactlyUnitNotDerivableDiagnostics(WithoutIDText).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
+        return AssertExactlyUnitNotDerivableDiagnostics(WithoutIDText).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string WithIDText => """
@@ -58,19 +58,6 @@ public class UnitNotDerivable
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(WithIDText, target: "DerivedUnitInstance");
 
-        return AssertExactlyUnitNotDerivableDiagnostics(WithIDText).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
+        return AssertExactlyUnitNotDerivableDiagnostics(WithIDText).AssertDiagnosticsLocation(expectedLocation);
     }
-
-    private static GeneratorVerifier Identical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText);
-
-    private static string IdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-        
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-        """;
 }

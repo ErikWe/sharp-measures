@@ -12,7 +12,7 @@ public class InvalidUseUnitBiasValue
     [Fact]
     public void Falsee() => AssertIdentical(FalseeText);
 
-    private static GeneratorVerifier AssertIdentical(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, new GeneratorVerifierSettings(true, false)).AssertIdenticalSources(Identical);
+    private static GeneratorVerifier AssertIdentical(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, GeneratorVerifierSettings.GeneratedCodeAssertions).AssertIdenticalSources(Identical);
 
     private static string FalseeText => """
         using SharpMeasures.Generators.Scalars;

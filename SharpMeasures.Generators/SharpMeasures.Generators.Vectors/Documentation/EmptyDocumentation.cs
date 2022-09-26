@@ -70,6 +70,11 @@ internal sealed class EmptyDocumentation : IGroupDocumentationStrategy, IVectorD
     string IVectorDocumentationStrategy.MultiplyScalarOperatorRHS() => string.Empty;
     string IVectorDocumentationStrategy.DivideScalarOperatorLHS() => string.Empty;
 
+    string IGroupDocumentationStrategy.Header() => string.Empty;
+    string IGroupDocumentationStrategy.ScalarFactoryMethod(int _) => string.Empty;
+    string IGroupDocumentationStrategy.VectorFactoryMethod(int _) => string.Empty;
+    string IGroupDocumentationStrategy.ComponentsFactoryMethod(int _) => string.Empty;
+
     public bool Equals(EmptyDocumentation? other) => other is not null;
     public override bool Equals(object? obj) => obj is EmptyDocumentation other && Equals(other);
 

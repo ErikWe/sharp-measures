@@ -24,13 +24,16 @@ internal static class VectorBaseResolver
         return Resolve(input.UnresolvedVector.Value, input.UnitPopulation);
     }
 
-    private static ResolvedVectorType Resolve(VectorBaseType vectorType, IUnitPopulation unitPopulation)
+    public static Optional<ResolvedVectorType> Resolve(VectorBaseType vectorType, IUnitPopulation unitPopulation)
     {
-        var unit = unitPopulation.Units[vectorType.Definition.Unit];
+        if (unitPopulation.Units.TryGetValue(vectorType.Definition.Unit, out var unit) is false)
+        {
+            return new Optional<ResolvedVectorType>();
+        }
 
         var includedUnitInstances = ResolveUnitInstanceInclusions(unit, vectorType.UnitInstanceInclusions, () => vectorType.UnitInstanceExclusions);
 
-        return new(vectorType.Type, vectorType.TypeLocation, vectorType.Definition.Dimension, group: null, vectorType.Definition.Unit, originalQuantity: null, ConversionOperatorBehaviour.None, ConversionOperatorBehaviour.None, vectorType.Definition.Scalar, vectorType.Definition.ImplementSum, vectorType.Definition.ImplementDifference, vectorType.Definition.Difference,
+        return new ResolvedVectorType(vectorType.Type, vectorType.Definition.Dimension, group: null, vectorType.Definition.Unit, originalQuantity: null, ConversionOperatorBehaviour.None, ConversionOperatorBehaviour.None, vectorType.Definition.Scalar, vectorType.Definition.ImplementSum, vectorType.Definition.ImplementDifference, vectorType.Definition.Difference,
             vectorType.Definition.DefaultUnitInstanceName, vectorType.Definition.DefaultUnitInstanceSymbol, vectorType.Derivations, vectorType.Constants, vectorType.Conversions, inheritedDerivations: Array.Empty<IDerivedQuantity>(), inheritedConversions: Array.Empty<IConvertibleQuantity>(), includedUnitInstances, vectorType.Definition.GenerateDocumentation);
     }
 

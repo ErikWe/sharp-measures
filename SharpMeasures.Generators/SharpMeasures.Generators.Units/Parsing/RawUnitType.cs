@@ -15,7 +15,6 @@ using System.Collections.Generic;
 internal sealed record class RawUnitType
 {
     public DefinedType Type { get; }
-    public MinimalLocation TypeLocation { get; }
 
     public RawSharpMeasuresUnitDefinition Definition { get; }
 
@@ -28,12 +27,11 @@ internal sealed record class RawUnitType
     public IEnumerable<RawPrefixedUnitInstanceDefinition> PrefixedUnitInstances { get; }
     public IEnumerable<RawScaledUnitInstanceDefinition> ScaledUnitInstances { get; }
 
-    public RawUnitType(DefinedType type, MinimalLocation unitLocation, RawSharpMeasuresUnitDefinition definition, IEnumerable<RawDerivableUnitDefinition> unitDerivations, RawFixedUnitInstanceDefinition? fixedUnitInstance,
+    public RawUnitType(DefinedType type, RawSharpMeasuresUnitDefinition definition, IEnumerable<RawDerivableUnitDefinition> unitDerivations, RawFixedUnitInstanceDefinition? fixedUnitInstance,
         IEnumerable<RawUnitInstanceAliasDefinition> unitInstanceAliases, IEnumerable<RawDerivedUnitInstanceDefinition> derivedUnitInstances, IEnumerable<RawBiasedUnitInstanceDefinition> biasedUnitInstances,
         IEnumerable<RawPrefixedUnitInstanceDefinition> prefixedUnitInstances, IEnumerable<RawScaledUnitInstanceDefinition> scaledUnitInstances)
     {
         Type = type;
-        TypeLocation = unitLocation;
 
         Definition = definition;
 

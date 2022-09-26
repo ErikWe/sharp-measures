@@ -9,7 +9,6 @@ using SharpMeasures.Generators.Units.Parsing.BiasedUnitInstance;
 using SharpMeasures.Generators.Units.Parsing.Contexts.Processing;
 using SharpMeasures.Generators.Units.Parsing.DerivableUnit;
 using SharpMeasures.Generators.Units.Parsing.DerivedUnitInstance;
-using SharpMeasures.Generators.Units.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Units.Parsing.FixedUnitInstance;
 using SharpMeasures.Generators.Units.Parsing.PrefixedUnitInstance;
 using SharpMeasures.Generators.Units.Parsing.ScaledUnitInstance;
@@ -21,43 +20,40 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 
-public interface IUnitProcesser
+public sealed class UnitProcesser
 {
-    public abstract (IncrementalValueProvider<IUnitPopulation> Population, IUnitValidator Validator) Process(IncrementalGeneratorInitializationContext context);
-}
-
-public sealed class UnitProcesser : IUnitProcesser
-{
-    private IncrementalValuesProvider<Optional<RawUnitType>> UnitProvider { get; }
-
-    internal UnitProcesser(IncrementalValuesProvider<Optional<RawUnitType>> unitProvider)
+    public static (UnitProcessingResult ProcessingResult, IncrementalValueProvider<IUnitPopulation> Population) Process(IncrementalGeneratorInitializationContext context, UnitParsingResult parsingResult)
     {
-        UnitProvider = unitProvider;
-    }
+        UnitProcesser processer = new(UnitProcessingDiagnosticsStrategies.Default);
 
-    public (IncrementalValueProvider<IUnitPopulation>, IUnitValidator) Process(IncrementalGeneratorInitializationContext context)
-    {
-        var units = UnitProvider.Select(Process).ReportDiagnostics(context);
+        var units = parsingResult.UnitProvider.Select(process).ReportDiagnostics(context);
 
         var populationAndProcessingData = units.Select(ExtractInterface).CollectResults().Select(CreatePopulation);
 
         var population = populationAndProcessingData.Select(ExtractPopulation);
         var processingData = populationAndProcessingData.Select(ExtractProcessingData);
 
-        return (population, new UnitValidator(processingData, units));
-    }
+        return (new UnitProcessingResult(units, processingData), population);
 
-    private static IOptionalWithDiagnostics<UnitType> Process(Optional<RawUnitType> rawUnit, CancellationToken token)
-    {
-        if (token.IsCancellationRequested || rawUnit.HasValue is false)
+        IOptionalWithDiagnostics<UnitType> process(Optional<RawUnitType> rawUnit, CancellationToken token)
         {
-            return OptionalWithDiagnostics.Empty<UnitType>();
-        }
+            if (token.IsCancellationRequested || rawUnit.HasValue is false)
+            {
+                return OptionalWithDiagnostics.Empty<UnitType>();
+            }
 
-        return Process(rawUnit.Value);
+            return processer.Process(rawUnit.Value);
+        }
     }
 
-    private static IOptionalWithDiagnostics<UnitType> Process(RawUnitType rawUnit)
+    private IUnitProcessingDiagnosticsStrategy DiagnosticsStrategy { get; }
+
+    internal UnitProcesser(IUnitProcessingDiagnosticsStrategy diagnosticsStrategy)
+    {
+        DiagnosticsStrategy = diagnosticsStrategy;
+    }
+
+    internal IOptionalWithDiagnostics<UnitType> Process(RawUnitType rawUnit)
     {
         var unit = ProcessUnit(rawUnit.Type, rawUnit.Definition);
 
@@ -83,76 +79,73 @@ public sealed class UnitProcesser : IUnitProcesser
         var prefixedUnitInstances = ProcessPrefixedUnitInstances(rawUnit.PrefixedUnitInstances, unitInstanceProcessingContext);
         var scaledUnitInstances = ProcessScaledUnitInstances(rawUnit.ScaledUnitInstances, unitInstanceProcessingContext);
 
-        UnitType unitType = new(rawUnit.Type, rawUnit.TypeLocation, unit.Result, derivations.Result, fixedUnitInstance.NullableReferenceResult(), unitInstanceAliases.Result, derivedUnitInstances.Result, biasedUnitInstances.Result, prefixedUnitInstances.Result, scaledUnitInstances.Result);
+        UnitType unitType = new(rawUnit.Type, unit.Result, derivations.Result, fixedUnitInstance.NullableReferenceResult(), unitInstanceAliases.Result, derivedUnitInstances.Result, biasedUnitInstances.Result, prefixedUnitInstances.Result, scaledUnitInstances.Result);
 
         var allDiagnostics = unit.Concat(derivations).Concat(fixedUnitInstance).Concat(unitInstanceAliases).Concat(derivedUnitInstances).Concat(biasedUnitInstances).Concat(prefixedUnitInstances).Concat(scaledUnitInstances);
 
         return OptionalWithDiagnostics.Result(unitType, allDiagnostics);
     }
 
-    private static IOptionalWithDiagnostics<SharpMeasuresUnitDefinition> ProcessUnit(DefinedType type, RawSharpMeasuresUnitDefinition rawDefinition)
+    private IOptionalWithDiagnostics<SharpMeasuresUnitDefinition> ProcessUnit(DefinedType type, RawSharpMeasuresUnitDefinition rawDefinition)
     {
         var processingContext = new SimpleProcessingContext(type);
 
-        return ProcessingFilter.Create(Processers.SharpMeasuresUnitProcesser).Filter(processingContext, rawDefinition);
+        return ProcessingFilter.Create(SharpMeasuresUnitProcesser).Filter(processingContext, rawDefinition);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<DerivableUnitDefinition>> ProcessDerivations(DefinedType type, IEnumerable<RawDerivableUnitDefinition> rawDefinition, bool unitIncludesBiasTerm)
+    private IResultWithDiagnostics<IReadOnlyList<DerivableUnitDefinition>> ProcessDerivations(DefinedType type, IEnumerable<RawDerivableUnitDefinition> rawDefinition, bool unitIncludesBiasTerm)
     {
         var processingContext = new DerivableUnitProcessingContext(type, unitIncludesBiasTerm, rawDefinition.Skip(1).Any());
 
-        return ProcessingFilter.Create(Processers.DerivableUnitProcesser).Filter(processingContext, rawDefinition);
+        return ProcessingFilter.Create(DerivableUnitProcesser).Filter(processingContext, rawDefinition);
     }
 
-    private static IOptionalWithDiagnostics<FixedUnitInstanceDefinition> ProcessFixedUnitInstance(DefinedType type, RawFixedUnitInstanceDefinition rawDefinitions, bool unitIsDerivable, HashSet<string> reservedUnitInstanceNames, HashSet<string> reservedUnitInstancePluralForms)
+    private IOptionalWithDiagnostics<FixedUnitInstanceDefinition> ProcessFixedUnitInstance(DefinedType type, RawFixedUnitInstanceDefinition rawDefinitions, bool unitIsDerivable, HashSet<string> reservedUnitInstanceNames, HashSet<string> reservedUnitInstancePluralForms)
     {
         var processingContext = new FixedUnitInstanceProcessingContext(type, reservedUnitInstanceNames, reservedUnitInstancePluralForms, unitIsDerivable);
 
-        return ProcessingFilter.Create(Processers.FixedUnitInstanceProcesser).Filter(processingContext, rawDefinitions);
+        return ProcessingFilter.Create(FixedUnitInstanceProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<UnitInstanceAliasDefinition>> ProcessUnitInstanceAliases(IEnumerable<RawUnitInstanceAliasDefinition> rawDefinitions, IUnitInstanceProcessingContext processingContext)
+    private IResultWithDiagnostics<IReadOnlyList<UnitInstanceAliasDefinition>> ProcessUnitInstanceAliases(IEnumerable<RawUnitInstanceAliasDefinition> rawDefinitions, IUnitInstanceProcessingContext processingContext)
     {
-        return ProcessingFilter.Create(Processers.UnitInstanceAliasProcesser).Filter(processingContext, rawDefinitions);
+        return ProcessingFilter.Create(UnitInstanceAliasProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<DerivedUnitInstanceDefinition>> ProcessDerivedUnitInstances(IEnumerable<RawDerivedUnitInstanceDefinition> rawDefinitions, IUnitInstanceProcessingContext processingContext)
+    private IResultWithDiagnostics<IReadOnlyList<DerivedUnitInstanceDefinition>> ProcessDerivedUnitInstances(IEnumerable<RawDerivedUnitInstanceDefinition> rawDefinitions, IUnitInstanceProcessingContext processingContext)
     {
-        return ProcessingFilter.Create(Processers.DerivedUnitInstanceProcesser).Filter(processingContext, rawDefinitions);
+        return ProcessingFilter.Create(DerivedUnitInstanceProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<BiasedUnitInstanceDefinition>> ProcessBiasedUnitInstances(IEnumerable<RawBiasedUnitInstanceDefinition> rawDefinitions, IUnitInstanceProcessingContext processingContext)
+    private IResultWithDiagnostics<IReadOnlyList<BiasedUnitInstanceDefinition>> ProcessBiasedUnitInstances(IEnumerable<RawBiasedUnitInstanceDefinition> rawDefinitions, IUnitInstanceProcessingContext processingContext)
     {
-        return ProcessingFilter.Create(Processers.BiasedUnitInstanceProcesser).Filter(processingContext, rawDefinitions);
+        return ProcessingFilter.Create(BiasedUnitInstanceProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<PrefixedUnitInstanceDefinition>> ProcessPrefixedUnitInstances(IEnumerable<RawPrefixedUnitInstanceDefinition> rawDefinitions, IUnitInstanceProcessingContext processingContext)
+    private IResultWithDiagnostics<IReadOnlyList<PrefixedUnitInstanceDefinition>> ProcessPrefixedUnitInstances(IEnumerable<RawPrefixedUnitInstanceDefinition> rawDefinitions, IUnitInstanceProcessingContext processingContext)
     {
-        return ProcessingFilter.Create(Processers.PrefixedUnitInstanceProcesser).Filter(processingContext, rawDefinitions);
+        return ProcessingFilter.Create(PrefixedUnitInstanceProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ScaledUnitInstanceDefinition>> ProcessScaledUnitInstances(IEnumerable<RawScaledUnitInstanceDefinition> rawDefinitions, IUnitInstanceProcessingContext processingContext)
+    private IResultWithDiagnostics<IReadOnlyList<ScaledUnitInstanceDefinition>> ProcessScaledUnitInstances(IEnumerable<RawScaledUnitInstanceDefinition> rawDefinitions, IUnitInstanceProcessingContext processingContext)
     {
-        return ProcessingFilter.Create(Processers.ScaledUnitInstanceProcesser).Filter(processingContext, rawDefinitions);
+        return ProcessingFilter.Create(ScaledUnitInstanceProcesser).Filter(processingContext, rawDefinitions);
     }
 
     private static Optional<IUnitType> ExtractInterface(Optional<UnitType> unitType, CancellationToken _) => unitType.HasValue ? unitType.Value : new Optional<IUnitType>();
-    private static IUnitPopulation ExtractPopulation((IUnitPopulation Population, UnitProcessingData) input, CancellationToken _) => input.Population;
-    private static UnitProcessingData ExtractProcessingData((IUnitPopulation, UnitProcessingData ProcessingData) input, CancellationToken _) => input.ProcessingData;
+    private static IUnitPopulation ExtractPopulation<T>((IUnitPopulation Population, T) input, CancellationToken _) => input.Population;
+    private static UnitProcessingData ExtractProcessingData<T>((T, UnitProcessingData ProcessingData) input, CancellationToken _) => input.ProcessingData;
 
     private static (IUnitPopulation, UnitProcessingData) CreatePopulation(ImmutableArray<IUnitType> units, CancellationToken _) => UnitPopulation.Build(units);
 
-    private static class Processers
-    {
-        public static SharpMeasuresUnitProcesser SharpMeasuresUnitProcesser { get; } = new(SharpMeasuresUnitProcessingDiagnostics.Instance);
+    private SharpMeasuresUnitProcesser SharpMeasuresUnitProcesser => new(DiagnosticsStrategy.SharpMeasuresUnitDiagnostics);
 
-        public static FixedUnitInstanceProcesser FixedUnitInstanceProcesser { get; } = new(FixedUnitInstanceProcessingDiagnostics.Instance);
-        public static DerivableUnitProcesser DerivableUnitProcesser { get; } = new(DerivableUnitProcessingDiagnostics.Instance);
+    private DerivableUnitProcesser DerivableUnitProcesser => new(DiagnosticsStrategy.DerivableUnitDiagnostics);
 
-        public static UnitInstanceAliasProcesser UnitInstanceAliasProcesser { get; } = new(UnitInstanceAliasProcessingDiagnostics.Instance);
-        public static DerivedUnitInstanceProcesser DerivedUnitInstanceProcesser { get; } = new(DerivedUnitInstanceProcessingDiagnostics.Instance);
-        public static BiasedUnitInstanceProcesser BiasedUnitInstanceProcesser { get; } = new(BiasedUnitInstanceProcessingDiagnostics.Instance);
-        public static PrefixedUnitInstanceProcesser PrefixedUnitInstanceProcesser { get; } = new(PrefixedUnitInstanceProcessingDiagnostics.Instance);
-        public static ScaledUnitInstanceProcesser ScaledUnitInstanceProcesser { get; } = new(ScaledUnitInstanceProcessingDiagnostics.Instance);
-    }
+    private FixedUnitInstanceProcesser FixedUnitInstanceProcesser => new(DiagnosticsStrategy.FixedUnitInstanceDiagnostics);
+    private UnitInstanceAliasProcesser UnitInstanceAliasProcesser => new(DiagnosticsStrategy.UnitInstanceAliasDiagnostics);
+    private DerivedUnitInstanceProcesser DerivedUnitInstanceProcesser => new(DiagnosticsStrategy.DerivedUnitInstanceDiagnostics);
+    private BiasedUnitInstanceProcesser BiasedUnitInstanceProcesser => new(DiagnosticsStrategy.BiasedUnitInstanceDiagnostics);
+    private PrefixedUnitInstanceProcesser PrefixedUnitInstanceProcesser => new(DiagnosticsStrategy.PrefixedUnitInstanceDiagnostics);
+    private ScaledUnitInstanceProcesser ScaledUnitInstanceProcesser => new(DiagnosticsStrategy.ScaledUnitInstanceDiagnostics);
 }

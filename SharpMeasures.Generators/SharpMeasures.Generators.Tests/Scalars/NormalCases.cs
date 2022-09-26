@@ -2,6 +2,7 @@
 
 using SharpMeasures.Generators.Tests.Verify;
 
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using VerifyXunit;
@@ -12,16 +13,16 @@ using Xunit;
 public class NormalCases
 {
     [Fact]
-    public Task UnbiasedScalar() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(UnbiasedScalarText).AssertNoDiagnosticsReported().VerifyMatchingSourceNames(@"^Length.\S+\.g\.cs");
+    public Task UnbiasedScalar() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(UnbiasedScalarText).AssertNoDiagnosticsReported().VerifyMatchingSourceNames(new Regex(@"^Length\.\S+\.g\.cs"));
 
     [Fact]
-    public Task UnbiasedScalarWithDefault() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(UnbiasedScalarWithDefaultText).AssertNoDiagnosticsReported().VerifyMatchingSourceNames(@"^Length.Common.g.cs");
+    public Task UnbiasedScalarWithDefault() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(UnbiasedScalarWithDefaultText).AssertNoDiagnosticsReported().VerifyMatchingSourceNames("Length.Common.g.cs");
 
     [Fact]
-    public Task BiasedScalar() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedScalarText).AssertNoDiagnosticsReported().VerifyMatchingSourceNames(@"^Temperature.\S+\.g\.cs");
+    public Task BiasedScalar() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedScalarText).AssertNoDiagnosticsReported().VerifyMatchingSourceNames(new Regex(@"^Temperature\.\S+\.g\.cs"));
 
     [Fact]
-    public Task BiasedScalarWithDefault() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedScalarWithDefaultText).AssertNoDiagnosticsReported().VerifyMatchingSourceNames(@"^Temperature.Common.g.cs");
+    public Task BiasedScalarWithDefault() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedScalarWithDefaultText).AssertNoDiagnosticsReported().VerifyMatchingSourceNames("Temperature.Common.g.cs");
 
     private static string UnbiasedScalarText => """
         using SharpMeasures.Generators.Scalars;

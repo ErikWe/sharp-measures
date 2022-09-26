@@ -12,7 +12,7 @@ public class DiscardedUnitInstanceAsDefault
     [Fact]
     public void Unbiased() => Assert(UnbiasedText);
 
-    private static GeneratorVerifier Assert(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, new GeneratorVerifierSettings(false, false));
+    private static GeneratorVerifier Assert(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, GeneratorVerifierSettings.NoAssertions);
 
     private static string UnbiasedText => """
         using SharpMeasures.Generators.Units;

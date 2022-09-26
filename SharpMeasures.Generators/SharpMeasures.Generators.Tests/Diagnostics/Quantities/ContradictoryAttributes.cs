@@ -62,7 +62,7 @@ public class ContradictoryAttributes
 
     private static GeneratorVerifier AssertIncludeAndExcludeUnit_Scalar()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeUnitText_Scalar, target: "Length", prefix: "public partial class ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeUnitText_Scalar, target: "SharpMeasuresScalar");
 
         return AssertExactlyContradictoryAttributesDiagnostics(IncludeAndExcludeUnitText_Scalar).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(IncludeAndExcludeUnitIdentical_Scalar);
     }
@@ -88,7 +88,7 @@ public class ContradictoryAttributes
 
     private static GeneratorVerifier AssertIncludeAndExcludeUnit_SpecializedScalar()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeUnitText_SpecializedScalar, target: "Distance", prefix: "public partial class ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeUnitText_SpecializedScalar, target: "SpecializedSharpMeasuresScalar");
 
         return AssertExactlyContradictoryAttributesDiagnostics(IncludeAndExcludeUnitText_SpecializedScalar).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(IncludeAndExcludeUnitIdentical_SpecializedScalar);
     }
@@ -115,7 +115,7 @@ public class ContradictoryAttributes
 
     private static GeneratorVerifier AssertIncludeAndExcludeUnit_Vector()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeUnitText_Vector, target: "Position3", prefix: "public partial class ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeUnitText_Vector, target: "SharpMeasuresVector");
 
         return AssertExactlyContradictoryAttributesDiagnostics(IncludeAndExcludeUnitText_Vector).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(IncludeAndExcludeUnitIdentical_Vector);
     }
@@ -145,7 +145,7 @@ public class ContradictoryAttributes
 
     private static GeneratorVerifier AssertIncludeAndExcludeUnit_SpecializedVector()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeUnitText_SpecializedVector, target: "Displacement3", prefix: "public partial class ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeUnitText_SpecializedVector, target: "SpecializedSharpMeasuresVector");
 
         return AssertExactlyContradictoryAttributesDiagnostics(IncludeAndExcludeUnitText_SpecializedVector).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(IncludeAndExcludeUnitIdentical_SpecializedVector);
     }
@@ -172,7 +172,7 @@ public class ContradictoryAttributes
 
     private static GeneratorVerifier AssertIncludeAndExcludeUnit_VectorGroup()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeUnitText_VectorGroup, target: "Position", prefix: "public static partial class ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeUnitText_VectorGroup, target: "SharpMeasuresVectorGroup");
 
         return AssertExactlyContradictoryAttributesDiagnostics(IncludeAndExcludeUnitText_VectorGroup).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(IncludeAndExcludeUnitIdentical_VectorGroup);
     }
@@ -202,7 +202,7 @@ public class ContradictoryAttributes
 
     private static GeneratorVerifier AssertIncludeAndExcludeUnit_SpecializedVectorGroup()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeUnitText_SpecializedVectorGroup, target: "Displacement", prefix: "public static partial class ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeUnitText_SpecializedVectorGroup, target: "SpecializedSharpMeasuresVectorGroup");
 
         return AssertExactlyContradictoryAttributesDiagnostics(IncludeAndExcludeUnitText_SpecializedVectorGroup).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(IncludeAndExcludeUnitIdentical_SpecializedVectorGroup);
     }
@@ -232,7 +232,7 @@ public class ContradictoryAttributes
 
     private static GeneratorVerifier AssertIncludeAndExcludeUnit_VectorGroupMember()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeUnitText_VectorGroupMember, target: "Position3", prefix: "public partial class ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeUnitText_VectorGroupMember, target: "SharpMeasuresVectorGroupMember");
 
         return AssertExactlyContradictoryAttributesDiagnostics(IncludeAndExcludeUnitText_VectorGroupMember).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(IncludeAndExcludeUnitIdentical_VectorGroupMember);
     }
@@ -255,7 +255,7 @@ public class ContradictoryAttributes
 
     private static GeneratorVerifier AssertIncludeAndExcludeBase_Scalar()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeBaseText_Scalar, target: "Length", prefix: "public partial class ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeBaseText_Scalar, target: "SharpMeasuresScalar");
 
         return AssertExactlyContradictoryAttributesDiagnostics(IncludeAndExcludeBaseText_Scalar).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(IncludeAndExcludeBaseIdentical_Scalar);
     }
@@ -281,7 +281,7 @@ public class ContradictoryAttributes
 
     private static GeneratorVerifier AssertIncludeAndExcludeBase_SpecializedScalar()
     {
-        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeBaseText_SpecializedScalar, target: "Distance", prefix: "public partial class ");
+        var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(IncludeAndExcludeBaseText_SpecializedScalar, target: "SpecializedSharpMeasuresScalar");
 
         return AssertExactlyContradictoryAttributesDiagnostics(IncludeAndExcludeBaseText_SpecializedScalar).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(IncludeAndExcludeBaseIdentical_SpecializedScalar);
     }

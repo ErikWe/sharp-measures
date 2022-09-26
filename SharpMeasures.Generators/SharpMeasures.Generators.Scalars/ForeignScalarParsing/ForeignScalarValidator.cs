@@ -1,57 +1,58 @@
 ﻿namespace SharpMeasures.Generators.Scalars.ForeignScalarParsing;
 
-using SharpMeasures.Equatables;
+using SharpMeasures.Generators.Scalars.Parsing;
+using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors;
 
+using System.Collections.Generic;
 using System.Threading;
 
-public interface IForeignScalarValidator
+public sealed class ForeignScalarValidator
 {
-    public abstract (IScalarPopulation Population, IForeignScalarResolver Resolver) ValidateAndExtend(IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation, IScalarPopulation unextendedScalarPopulation, CancellationToken token);
-}
-
-internal sealed record class ForeignScalarValidator : IForeignScalarValidator
-{
-    private ForeignScalarProcessingResult ProcessingResult { get; }
-
-    private EquatableList<ScalarBaseType> ScalarBases { get; } = new();
-    private EquatableList<ScalarSpecializationType> ScalarSpecializations { get; } = new();
-
-    public ForeignScalarValidator(ForeignScalarProcessingResult parsingResult)
+    public static (ForeignScalarProcessingResult ValidationResult, IScalarPopulation Population) ValidateAndExtend(ForeignScalarProcessingResult processingResult, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation, IScalarPopulation unextendedScalarPopulation, CancellationToken token)
     {
-        ProcessingResult = parsingResult;
-    }
+        var validator = new ForeignScalarValidator();
 
-    public (IScalarPopulation, IForeignScalarResolver) ValidateAndExtend(IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation, IScalarPopulation unextendedScalarPopulation, CancellationToken token)
-    {
         if (token.IsCancellationRequested is false)
         {
-            foreach (var processedScalarBase in ProcessingResult.ScalarBases)
+            validator.Validate(processingResult, unitPopulation, scalarPopulation, vectorPopulation);
+        }
+
+        return (validator.Finalize(), validator.Extend(unextendedScalarPopulation));
+    }
+
+    private static ScalarBaseValidator ScalarBaseValidator { get; } = new(ScalarValidationDiagnosticsStrategies.EmptyDiagnostics);
+    private static ScalarSpecializationValidator ScalarSpecializationValidator { get; } = new(ScalarValidationDiagnosticsStrategies.EmptyDiagnostics);
+
+    private List<ScalarBaseType> ScalarBases { get; } = new();
+    private List<ScalarSpecializationType> ScalarSpecializations { get; } = new();
+
+    private ForeignScalarValidator() { }
+
+    private void Validate(ForeignScalarProcessingResult processingResult, IUnitPopulation unitPopulation, IScalarPopulation scalarPopulation, IVectorPopulation vectorPopulation)
+    {
+        foreach (var processedScalarBase in processingResult.ScalarBases)
+        {
+            var scalarBase = ScalarBaseValidator.Validate(processedScalarBase, ScalarProcessingData.Empty,  unitPopulation, scalarPopulation, vectorPopulation);
+
+            if (scalarBase.HasResult)
             {
-                var scalarBase = ForeignScalarBaseValidator.Validate(processedScalarBase, unitPopulation, scalarPopulation, vectorPopulation);
-
-                if (scalarBase.HasValue)
-                {
-                    ScalarBases.Add(scalarBase.Value);
-                }
-            }
-
-            foreach (var processedScalarSpecialization in ProcessingResult.ScalarSpecializations)
-            {
-                var scalarSpecialization = ForeignScalarSpecializationValidator.Validate(processedScalarSpecialization, unitPopulation, scalarPopulation, vectorPopulation);
-
-                if (scalarSpecialization.HasValue)
-                {
-                    ScalarSpecializations.Add(scalarSpecialization.Value);
-                }
+                ScalarBases.Add(scalarBase.Result);
             }
         }
 
-        var result = new ForeignScalarProcessingResult(ScalarBases, ScalarSpecializations);
-        var extendedPopulation = ExtendedScalarPopulation.Build(unextendedScalarPopulation, result);
-        var resolver = new ForeignScalarResolver(result);
+        foreach (var processedScalarSpecialization in processingResult.ScalarSpecializations)
+        {
+            var scalarSpecialization = ScalarSpecializationValidator.Validate(processedScalarSpecialization, ScalarProcessingData.Empty, unitPopulation, scalarPopulation, vectorPopulation);
 
-        return (extendedPopulation, resolver);
+            if (scalarSpecialization.HasResult)
+            {
+                ScalarSpecializations.Add(scalarSpecialization.Result);
+            }
+        }
     }
+
+    private ForeignScalarProcessingResult Finalize() => new(ScalarBases, ScalarSpecializations);
+    private IScalarPopulation Extend(IScalarPopulation scalarPopulation) => ExtendedScalarPopulation.Build(scalarPopulation, Finalize());
 }

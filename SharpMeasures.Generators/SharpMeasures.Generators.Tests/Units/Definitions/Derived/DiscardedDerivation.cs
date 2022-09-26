@@ -12,7 +12,7 @@ public class DiscardedDerivation
     [Fact]
     public void RunTest() => Assert(Text);
 
-    private static GeneratorVerifier Assert(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, new GeneratorVerifierSettings(false, false));
+    private static GeneratorVerifier Assert(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, GeneratorVerifierSettings.NoAssertions);
 
     private static string Text => """
         using SharpMeasures.Generators.Units;

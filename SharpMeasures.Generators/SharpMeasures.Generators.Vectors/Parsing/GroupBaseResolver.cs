@@ -27,7 +27,7 @@ internal static class GroupBaseResolver
         return Resolve(input.UnresolvedGroup.Value, input.UnitPopulation, input.VectorPopulation);
     }
 
-    private static Optional<ResolvedGroupType> Resolve(GroupBaseType groupType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
+    public static Optional<ResolvedGroupType> Resolve(GroupBaseType groupType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
     {
         if (unitPopulation.Units.TryGetValue(groupType.Definition.Unit, out var unit) is false)
         {
@@ -38,7 +38,7 @@ internal static class GroupBaseResolver
 
         var includedUnitInstances = ResolveUnitInstanceInclusions(unit, groupType.UnitInstanceInclusions, () => groupType.UnitInstanceExclusions);
 
-        return new ResolvedGroupType(groupType.Type, groupType.TypeLocation, groupType.Definition.Unit, originalQuantity: null, ConversionOperatorBehaviour.None, ConversionOperatorBehaviour.None, groupType.Definition.Scalar, groupType.Definition.ImplementSum, groupType.Definition.ImplementDifference, groupType.Definition.Difference, groupType.Definition.DefaultUnitInstanceName,
+        return new ResolvedGroupType(groupType.Type, groupType.Definition.Unit, originalQuantity: null, ConversionOperatorBehaviour.None, ConversionOperatorBehaviour.None, groupType.Definition.Scalar, groupType.Definition.ImplementSum, groupType.Definition.ImplementDifference, groupType.Definition.Difference, groupType.Definition.DefaultUnitInstanceName,
             groupType.Definition.DefaultUnitInstanceSymbol, membersByDimension, groupType.Derivations, groupType.Conversions, inheritedDerivations: Array.Empty<IDerivedQuantity>(), inheritedConversions: Array.Empty<IConvertibleQuantity>(), includedUnitInstances, groupType.Definition.GenerateDocumentation);
     }
 

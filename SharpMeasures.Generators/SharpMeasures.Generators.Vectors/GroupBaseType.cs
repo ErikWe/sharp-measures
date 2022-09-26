@@ -15,6 +15,6 @@ internal sealed record class GroupBaseType : AGroupType<SharpMeasuresVectorGroup
     IQuantityBase IQuantityBaseType.Definition => Definition;
     IVectorGroupBase IVectorGroupBaseType.Definition => Definition;
 
-    public GroupBaseType(DefinedType type, MinimalLocation typeLocation, SharpMeasuresVectorGroupDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
-        : base(type, typeLocation, definition, derivations, conversions, unitInstanceInclusions, unitInstanceExclusions) { }
+    public GroupBaseType(DefinedType type, SharpMeasuresVectorGroupDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
+        : base(type, definition, derivations, conversions, unitInstanceInclusions, unitInstanceExclusions) { }
 }

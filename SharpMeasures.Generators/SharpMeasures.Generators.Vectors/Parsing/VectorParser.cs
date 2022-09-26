@@ -14,7 +14,7 @@ using System.Threading;
 
 public static class VectorParser
 {
-    public static (IVectorProcesser Processer, IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context)
+    public static (VectorParsingResult ParsingResult, IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context)
     {
         var groupBaseSymbols = AttachSymbolProvider<SharpMeasuresVectorGroupAttribute>(context, VectorGroupDeclarationFilters<SharpMeasuresVectorGroupAttribute>());
         var groupSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresVectorGroupAttribute>(context, VectorGroupDeclarationFilters<SpecializedSharpMeasuresVectorGroupAttribute>());
@@ -51,18 +51,20 @@ public static class VectorParser
         var vectorBaseForeignSymbols = vectorBasesAndForeignSymbols.Select(ExtractForeignSymbols).Collect();
         var vectorSpecializationForeignSymbols = vectorSpecializationsAndForeignSymbols.Select(ExtractForeignSymbols).Collect();
 
-        VectorProcesser processer = new(groupBases, groupSpecializations, groupMembers, vectorBases, vectorSpecializations);
-
         var foreignSymbols = groupBaseForeignSymbols.Concat(groupSpecializationForeignSymbols).Concat(groupMemberForeignSymbols).Concat(vectorBaseForeignSymbols).Concat(vectorSpecializationForeignSymbols).Expand();
 
-        return (processer, foreignSymbols);
+        VectorParsingResult result = new(groupBases, groupSpecializations, groupMembers, vectorBases, vectorSpecializations);
+
+        return (result, foreignSymbols);
     }
 
-    private static IncrementalValuesProvider<Optional<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)>> AttachSymbolProvider<TAttribute>(IncrementalGeneratorInitializationContext context, IEnumerable<IDeclarationFilter> declarationFilters)
+    private static IncrementalValuesProvider<Optional<INamedTypeSymbol>> AttachSymbolProvider<TAttribute>(IncrementalGeneratorInitializationContext context, IEnumerable<IDeclarationFilter> declarationFilters)
     {
         var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<TAttribute>(context.SyntaxProvider);
         var filteredDeclarations = FilteredDeclarationProvider.Construct<TypeDeclarationSyntax>(declarationFilters).AttachAndReport(context, declarations);
-        return DeclarationSymbolProvider.Construct<TypeDeclarationSyntax>().Attach(filteredDeclarations, context.CompilationProvider);
+        return DeclarationSymbolProvider.Construct<TypeDeclarationSyntax, INamedTypeSymbol>(extractSymbol).Attach(filteredDeclarations, context.CompilationProvider);
+
+        static Optional<INamedTypeSymbol> extractSymbol(Optional<TypeDeclarationSyntax> declaration, INamedTypeSymbol typeSymbol) => new(typeSymbol);
     }
 
     private static Optional<RawGroupBaseType> ExtractGroup((Optional<RawGroupBaseType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
@@ -79,8 +81,8 @@ public static class VectorParser
 
     private static IEnumerable<IDeclarationFilter> VectorGroupDeclarationFilters<TAttribute>() => new IDeclarationFilter[]
     {
-        new PartialDeclarationFilter(VectorTypeDiagnostics.TypeNotPartial<TAttribute>),
-        new StaticDeclarationFilter(VectorTypeDiagnostics.TypeNotStatic<TAttribute>)
+        new PartialDeclarationFilter(GroupTypeDiagnostics.TypeNotPartial<TAttribute>),
+        new StaticDeclarationFilter(GroupTypeDiagnostics.TypeNotStatic<TAttribute>)
     };
 
     private static IEnumerable<IDeclarationFilter> VectorDeclarationFilters<TAttribute>() => new IDeclarationFilter[]

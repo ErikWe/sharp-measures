@@ -26,7 +26,7 @@ internal static class VectorSpecializationResolver
         return Resolve(input.UnresolvedVector.Value, input.UnitPopulation, input.VectorPopulation);
     }
 
-    private static Optional<ResolvedVectorType> Resolve(VectorSpecializationType vectorType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
+    public static Optional<ResolvedVectorType> Resolve(VectorSpecializationType vectorType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
     {
         if (vectorPopulation.VectorBases.TryGetValue(vectorType.Type.AsNamedType(), out var vectorBase) is false || unitPopulation.Units.TryGetValue(vectorBase.Definition.Unit, out var unit) is false)
         {
@@ -51,7 +51,7 @@ internal static class VectorSpecializationResolver
 
         var generateDocumentation = RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => vector.Definition.GenerateDocumentation);
 
-        return new ResolvedVectorType(vectorType.Type, vectorType.TypeLocation, vectorBase.Definition.Dimension, group: null, unit.Type.AsNamedType(), vectorType.Definition.OriginalQuantity, vectorType.Definition.ForwardsCastOperatorBehaviour, vectorType.Definition.BackwardsCastOperatorBehaviour, scalar,
+        return new ResolvedVectorType(vectorType.Type, vectorBase.Definition.Dimension, group: null, unit.Type.AsNamedType(), vectorType.Definition.OriginalQuantity, vectorType.Definition.ForwardsCastOperatorBehaviour, vectorType.Definition.BackwardsCastOperatorBehaviour, scalar,
             implementSum!.Value, implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, vectorType.Derivations, allConstants, vectorType.Conversions, inheritedDerivations, inheritedConversions, includedUnitInstances, generateDocumentation);
     }
 

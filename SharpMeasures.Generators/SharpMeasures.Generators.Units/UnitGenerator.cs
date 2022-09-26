@@ -6,35 +6,22 @@ using SharpMeasures.Generators.Configuration;
 using SharpMeasures.Generators.Documentation;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units.Documentation;
+using SharpMeasures.Generators.Units.Parsing;
 using SharpMeasures.Generators.Units.Pipelines.Common;
 using SharpMeasures.Generators.Units.Pipelines.Derivable;
 using SharpMeasures.Generators.Units.Pipelines.UnitInstances;
 
 using System.Threading;
 
-public interface IUnitGenerator
+public static class UnitGenerator
 {
-    public abstract void Generate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
-        IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider);
-}
-
-internal sealed class UnitGenerator : IUnitGenerator
-{
-    private IncrementalValuesProvider<Optional<UnitType>> UnitProvider { get; }
-
-    internal UnitGenerator(IncrementalValuesProvider<Optional<UnitType>> unitProvider)
-    {
-        UnitProvider = unitProvider;
-    }
-
-    public void Generate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
+    public static void Generate(IncrementalGeneratorInitializationContext context, UnitValidationResult validationResult, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
         IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
     {
         var defaultGenerateDocumentation = globalAnalyzerConfigProvider.Select(ExtractDefaultGenerateDocumentation);
 
-        var minimized = UnitProvider.Combine(unitPopulationProvider, scalarPopulationProvider).Select(ReduceToDataModel)
-            .Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionaryProvider).Flatten()
-            .Select(AppendDocumentationFile);
+        var minimized = validationResult.UnitProvider.Combine(unitPopulationProvider, scalarPopulationProvider).Select(ReduceToDataModel)
+            .Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionaryProvider).Flatten().Select(AppendDocumentationFile);
 
         CommonGenerator.Initialize(context, minimized);
         DerivableUnitGenerator.Initialize(context, minimized);

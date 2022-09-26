@@ -40,7 +40,7 @@ internal static class ForeignGroupMemberResolver
 
         (var forwardsCastBehaviour, var backwardsCastBehaviour) = GetSpecializationCastBehaviour(vectorType.Definition.VectorGroup, vectorPopulation);
 
-        return new ResolvedVectorType(vectorType.Type, MinimalLocation.None, vectorType.Definition.Dimension, vectorType.Definition.VectorGroup, unit.Type.AsNamedType(), originalQuantity: null, forwardsCastBehaviour, backwardsCastBehaviour, scalar, implementSum!.Value,
+        return new ResolvedVectorType(vectorType.Type, vectorType.Definition.Dimension, vectorType.Definition.VectorGroup, unit.Type.AsNamedType(), originalQuantity: null, forwardsCastBehaviour, backwardsCastBehaviour, scalar, implementSum!.Value,
             implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, derivations, constants: constants, conversions, inheritedDerivations, inheritedConversions, includedUnitInstances, generateDocumentation);
     }
 

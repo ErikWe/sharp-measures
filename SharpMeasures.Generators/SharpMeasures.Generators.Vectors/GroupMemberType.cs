@@ -15,7 +15,6 @@ using System.Linq;
 internal sealed record class GroupMemberType : IVectorGroupMemberType
 {
     public DefinedType Type { get; }
-    public MinimalLocation TypeLocation { get; }
 
     public SharpMeasuresVectorGroupMemberDefinition Definition { get; }
 
@@ -40,11 +39,10 @@ internal sealed record class GroupMemberType : IVectorGroupMemberType
     IReadOnlyList<IUnitInstanceInclusionList> IQuantityType.UnitInstanceInclusions => UnitInstanceInclusions;
     IReadOnlyList<IUnitInstanceList> IQuantityType.UnitInstanceExclusions => UnitInstanceExclusions;
 
-    public GroupMemberType(DefinedType type, MinimalLocation typeLocation, SharpMeasuresVectorGroupMemberDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
+    public GroupMemberType(DefinedType type, SharpMeasuresVectorGroupMemberDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
         IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
     {
         Type = type;
-        TypeLocation = typeLocation;
 
         Definition = definition;
 

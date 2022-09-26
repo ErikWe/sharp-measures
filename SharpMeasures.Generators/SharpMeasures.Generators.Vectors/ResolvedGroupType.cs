@@ -8,7 +8,6 @@ using System.Collections.Generic;
 internal sealed record class ResolvedGroupType : IResolvedVectorGroupType
 {
     public DefinedType Type { get; }
-    public MinimalLocation TypeLocation { get; }
 
     public NamedType Unit { get; }
 
@@ -40,12 +39,11 @@ internal sealed record class ResolvedGroupType : IResolvedVectorGroupType
 
     IReadOnlyList<IConvertibleQuantity> IResolvedQuantityType.Conversions => Conversions;
 
-    public ResolvedGroupType(DefinedType type, MinimalLocation typeLocation, NamedType unit, NamedType? originalQuantity, ConversionOperatorBehaviour specializationForwardsConversionBehaviour, ConversionOperatorBehaviour specializationBackwardsConversionBehaviour, NamedType? scalar, bool implementSum,
+    public ResolvedGroupType(DefinedType type, NamedType unit, NamedType? originalQuantity, ConversionOperatorBehaviour specializationForwardsConversionBehaviour, ConversionOperatorBehaviour specializationBackwardsConversionBehaviour, NamedType? scalar, bool implementSum,
         bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IReadOnlyDictionary<int, NamedType> membersByDimension, IReadOnlyList<IDerivedQuantity> derivations, IReadOnlyList<IConvertibleQuantity> conversions,
         IReadOnlyList<IDerivedQuantity> inheritedDerivations, IReadOnlyList<IConvertibleQuantity> inheritedConversions, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
     {
         Type = type;
-        TypeLocation = typeLocation;
 
         Unit = unit;
 

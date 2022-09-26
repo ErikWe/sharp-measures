@@ -15,7 +15,7 @@ public class DiscardedUnitInstanceAsDefault
     [Fact]
     public void VectorGroup() => Assert(VectorGroupText);
 
-    private static GeneratorVerifier Assert(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, new GeneratorVerifierSettings(false, false));
+    private static GeneratorVerifier Assert(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, GeneratorVerifierSettings.NoAssertions);
 
     private static string VectorText => """
         using SharpMeasures.Generators.Units;

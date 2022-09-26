@@ -23,23 +23,21 @@ using System.Threading;
 
 public static class UnitParser
 {
-    public static (IUnitProcesser Processer, IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context)
+    public static (UnitParsingResult ParsingResult, IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context)
     {
         var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<SharpMeasuresUnitAttribute>(context.SyntaxProvider);
         var filteredDeclarations = FilteredDeclarationProvider.Construct<TypeDeclarationSyntax>(DeclarationFilters).AttachAndReport(context, declarations);
-        var symbols = DeclarationSymbolProvider.Construct(IntermediateResult.Construct).Attach(filteredDeclarations, context.CompilationProvider);
+        var symbols = DeclarationSymbolProvider.Construct<TypeDeclarationSyntax, INamedTypeSymbol>(ExtractSymbol).Attach(filteredDeclarations, context.CompilationProvider);
 
         var unitsAndForeignSymbols = symbols.Select(Parse);
 
-        var units = unitsAndForeignSymbols.Select(ExtractUnit);
+        var units = unitsAndForeignSymbols.Select(ProduceParsingResult);
         var foreignSymbols = unitsAndForeignSymbols.Select(ExtractForeignSymbols).Collect().Expand();
 
-        UnitProcesser processer = new(units);
-
-        return (processer, foreignSymbols);
+        return (new UnitParsingResult(units), foreignSymbols);
     }
 
-    private static (Optional<RawUnitType>, IEnumerable<INamedTypeSymbol>) Parse(Optional<IntermediateResult> input, CancellationToken token)
+    private static (Optional<RawUnitType>, IEnumerable<INamedTypeSymbol>) Parse(Optional<INamedTypeSymbol> input, CancellationToken token)
     {
         if (token.IsCancellationRequested || input.HasValue is false)
         {
@@ -49,25 +47,25 @@ public static class UnitParser
         return Parse(input.Value);
     }
 
-    private static (Optional<RawUnitType>, IEnumerable<INamedTypeSymbol>) Parse(IntermediateResult input)
+    internal static (Optional<RawUnitType> Units, IEnumerable<INamedTypeSymbol> ForeignSymbols) Parse(INamedTypeSymbol typeSymbol)
     {
-        (var unit, var unitForeignSymbols) = ParseUnit(input.TypeSymbol);
+        (var unit, var unitForeignSymbols) = ParseUnit(typeSymbol);
 
         if (unit.HasValue is false)
         {
             return (new Optional<RawUnitType>(), Array.Empty<INamedTypeSymbol>());
         }
 
-        (var derivations, var derivationsForeignSymbols) = ParseDerivations(input.TypeSymbol);
+        (var derivations, var derivationsForeignSymbols) = ParseDerivations(typeSymbol);
 
-        var fixedUnitInstance = ParseFixedUnitInstance(input.TypeSymbol);
-        var unitInstanceAliases = ParseUnitInstanceAliases(input.TypeSymbol);
-        var derivedUnitInstances = ParseDerivedUnitInstances(input.TypeSymbol);
-        var biasedUnitInstances = ParseBiasedUnitInstances(input.TypeSymbol);
-        var prefixedUnitInstances = ParsePrefixedUnitInstances(input.TypeSymbol);
-        var scaledUnitInstances = ParseScaledUnitInstances(input.TypeSymbol);
+        var fixedUnitInstance = ParseFixedUnitInstance(typeSymbol);
+        var unitInstanceAliases = ParseUnitInstanceAliases(typeSymbol);
+        var derivedUnitInstances = ParseDerivedUnitInstances(typeSymbol);
+        var biasedUnitInstances = ParseBiasedUnitInstances(typeSymbol);
+        var prefixedUnitInstances = ParsePrefixedUnitInstances(typeSymbol);
+        var scaledUnitInstances = ParseScaledUnitInstances(typeSymbol);
 
-        RawUnitType unitType = new(input.TypeSymbol.AsDefinedType(), input.Declaration.Identifier.GetLocation().Minimize(), unit.Value, derivations, fixedUnitInstance.HasValue ? fixedUnitInstance.Value : null, unitInstanceAliases, derivedUnitInstances, biasedUnitInstances, prefixedUnitInstances, scaledUnitInstances);
+        RawUnitType unitType = new(typeSymbol.AsDefinedType(), unit.Value, derivations, fixedUnitInstance.HasValue ? fixedUnitInstance.Value : null, unitInstanceAliases, derivedUnitInstances, biasedUnitInstances, prefixedUnitInstances, scaledUnitInstances);
         var foreignSymbols = unitForeignSymbols.Concat(derivationsForeignSymbols);
 
         return (unitType, foreignSymbols);
@@ -118,19 +116,7 @@ public static class UnitParser
         new NonStaticDeclarationFilter(UnitTypeDiagnostics.TypeStatic)
     };
 
-    private static Optional<RawUnitType> ExtractUnit((Optional<RawUnitType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
-    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawUnitType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
-
-    private readonly record struct IntermediateResult(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)
-    {
-        public static DeclarationSymbolProvider.DOutputTransform<TypeDeclarationSyntax, IntermediateResult> Construct => (declaration, symbol) =>
-        {
-            if (declaration.HasValue is false)
-            {
-                return new Optional<IntermediateResult>();
-            }
-
-            return new IntermediateResult(declaration.Value, symbol);
-        };
-    }
+    private static Optional<RawUnitType> ProduceParsingResult<T>((Optional<RawUnitType> Definition, T) input, CancellationToken _) => input.Definition;
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols<T>((T, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
+    private static Optional<INamedTypeSymbol> ExtractSymbol(Optional<TypeDeclarationSyntax> declaration, INamedTypeSymbol typeSymbol) => new(typeSymbol);
 }

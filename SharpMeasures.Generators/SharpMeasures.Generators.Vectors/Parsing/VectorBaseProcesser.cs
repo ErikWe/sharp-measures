@@ -7,7 +7,6 @@ using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
-using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
@@ -15,10 +14,12 @@ using System.Collections.Generic;
 
 internal sealed class VectorBaseProcesser : AVectorProcesser<RawVectorBaseType, RawSharpMeasuresVectorDefinition, VectorBaseType, SharpMeasuresVectorDefinition>
 {
-    protected override VectorBaseType ProduceResult(DefinedType type, MinimalLocation typeLocation, SharpMeasuresVectorDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
+    public VectorBaseProcesser(IVectorProcessingDiagnosticsStrategy diagnosticsStrategy) : base(diagnosticsStrategy) { }
+
+    protected override VectorBaseType ProduceResult(DefinedType type, SharpMeasuresVectorDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
         IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
     {
-        return new(type, typeLocation, definition, derivations, constants, conversions, unitInstanceInclusions, unitInstanceExclusions);
+        return new(type, definition, derivations, constants, conversions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
     protected override NamedType? GetUnit(SharpMeasuresVectorDefinition vector) => vector.Unit;
@@ -33,5 +34,5 @@ internal sealed class VectorBaseProcesser : AVectorProcesser<RawVectorBaseType, 
         return ProcessingFilter.Create(SharpMeasuresVectorProcesser).Filter(processingContext, rawDefinition);
     }
 
-    private static SharpMeasuresVectorProcesser SharpMeasuresVectorProcesser { get; } = new(SharpMeasuresVectorProcessingDiagnostics.Instance);
+    private SharpMeasuresVectorProcesser SharpMeasuresVectorProcesser => new(DiagnosticsStrategy.SharpMeasuresVectorDiagnostics);
 }

@@ -14,7 +14,6 @@ using System.Collections.Generic;
 internal record class ARawScalarType<TDefinition>
 {
     public DefinedType Type { get; }
-    public MinimalLocation TypeLocation { get; }
 
     public TDefinition Definition { get; }
 
@@ -28,11 +27,10 @@ internal record class ARawScalarType<TDefinition>
     public IEnumerable<RawIncludeUnitsDefinition> UnitInstanceInclusions { get; }
     public IEnumerable<RawExcludeUnitsDefinition> UnitInstanceExclusions { get; }
 
-    protected ARawScalarType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
+    protected ARawScalarType(DefinedType type, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
         IEnumerable<RawIncludeUnitBasesDefinition> unitBaseInstanceInclusions, IEnumerable<RawExcludeUnitBasesDefinition> unitBaseInstanceExclusions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
     {
         Type = type;
-        TypeLocation = typeLocation;
 
         Definition = definition;
 

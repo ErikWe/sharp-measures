@@ -7,7 +7,6 @@ using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars.Parsing.Abstraction;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
-using SharpMeasures.Generators.Scalars.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Scalars.Parsing.ExcludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
@@ -17,10 +16,12 @@ using System.Collections.Generic;
 
 internal sealed class ScalarSpecializationProcesser : AScalarProcesser<RawScalarSpecializationType, RawSpecializedSharpMeasuresScalarDefinition, ScalarSpecializationType, SpecializedSharpMeasuresScalarDefinition>
 {
-    protected override ScalarSpecializationType ProduceResult(DefinedType type, MinimalLocation typeLocation, SpecializedSharpMeasuresScalarDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ScalarConstantDefinition> constants,
+    public ScalarSpecializationProcesser(IScalarProcessingDiagnosticsStrategy diagnosticsStrategy) : base(diagnosticsStrategy) { }
+    
+    protected override ScalarSpecializationType ProduceResult(DefinedType type, SpecializedSharpMeasuresScalarDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ScalarConstantDefinition> constants,
         IReadOnlyList<ConvertibleScalarDefinition> conversions, IReadOnlyList<IncludeUnitBasesDefinition> baseInclusions, IReadOnlyList<ExcludeUnitBasesDefinition> baseExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
     {
-        return new(type, typeLocation, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInstanceInclusions, unitInstanceExclusions);
+        return new(type, definition, derivations, constants, conversions, baseInclusions, baseExclusions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
     protected override NamedType? GetUnit(SpecializedSharpMeasuresScalarDefinition scalar) => null;
@@ -35,5 +36,5 @@ internal sealed class ScalarSpecializationProcesser : AScalarProcesser<RawScalar
         return ProcessingFilter.Create(SpecializedSharpMeasuresScalarProcesser).Filter(processingContext, rawDefinition);
     }
 
-    private static SpecializedSharpMeasuresScalarProcesser SpecializedSharpMeasuresScalarProcesser { get; } = new(SpecializedSharpMeasuresScalarProcessingDiagnostics.Instance);
+    private SpecializedSharpMeasuresScalarProcesser SpecializedSharpMeasuresScalarProcesser => new(DiagnosticsStrategy.SpecializedSharpMeasuresScalarDiagnostics);
 }

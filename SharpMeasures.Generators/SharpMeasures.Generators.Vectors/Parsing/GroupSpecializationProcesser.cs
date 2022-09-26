@@ -7,17 +7,18 @@ using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
-using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Vectors.Parsing.SpecializedSharpMeasuresVectorGroup;
 
 using System.Collections.Generic;
 
 internal sealed class GroupSpecializationProcesser : AGroupProcesser<RawGroupSpecializationType, RawSpecializedSharpMeasuresVectorGroupDefinition, GroupSpecializationType, SpecializedSharpMeasuresVectorGroupDefinition>
 {
-    protected override GroupSpecializationType ProduceResult(DefinedType type, MinimalLocation typeLocation, SpecializedSharpMeasuresVectorGroupDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
+    public GroupSpecializationProcesser(IVectorProcessingDiagnosticsStrategy diagnosticsStrategy) : base(diagnosticsStrategy) { }
+
+    protected override GroupSpecializationType ProduceResult(DefinedType type, SpecializedSharpMeasuresVectorGroupDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
         IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
     {
-        return new(type, typeLocation, definition, derivations, conversions, unitInstanceInclusions, unitInstanceExclusions);
+        return new(type, definition, derivations, conversions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
     protected override NamedType? GetOriginalQuantity(SpecializedSharpMeasuresVectorGroupDefinition group) => group.OriginalQuantity;
@@ -31,5 +32,5 @@ internal sealed class GroupSpecializationProcesser : AGroupProcesser<RawGroupSpe
         return ProcessingFilter.Create(SpecializedSharpMeasuresVectorGroupProcesser).Filter(processingContext, rawDefinition);
     }
 
-    private static SpecializedSharpMeasuresVectorGroupProcesser SpecializedSharpMeasuresVectorGroupProcesser { get; } = new(SpecializedSharpMeasuresVectorGroupProcessingDiagnostics.Instance);
+    private SpecializedSharpMeasuresVectorGroupProcesser SpecializedSharpMeasuresVectorGroupProcesser => new(DiagnosticsStrategy.SpecializedSharpMeasuresVectorGroupDiagnostics);
 }

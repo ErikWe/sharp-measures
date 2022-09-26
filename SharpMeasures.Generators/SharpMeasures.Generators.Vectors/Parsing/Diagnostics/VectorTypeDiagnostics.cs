@@ -16,14 +16,4 @@ internal static class VectorTypeDiagnostics
     {
         return DiagnosticConstruction.TypeStatic<TAttribute>(declaration.Identifier.GetLocation(), declaration.Identifier.Text);
     }
-
-    public static Diagnostic TypeNotStatic<TAttribute>(BaseTypeDeclarationSyntax declaration)
-    {
-        return DiagnosticConstruction.TypeNotStatic<TAttribute>(declaration.Identifier.GetLocation(), declaration.Identifier.Text);
-    }
-
-    public static Diagnostic ContradictoryAttributes<TInclusionAttribute, TExclusionAttriubte>(MinimalLocation location)
-    {
-        return DiagnosticConstruction.ContradictoryAttributes<TInclusionAttribute, TExclusionAttriubte>(location.AsRoslynLocation());
-    }
 }

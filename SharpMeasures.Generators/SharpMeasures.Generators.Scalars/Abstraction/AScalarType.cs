@@ -16,7 +16,6 @@ using System.Linq;
 internal record class AScalarType<TDefinition> : IScalarType where TDefinition : IScalar
 {
     public DefinedType Type { get; }
-    public MinimalLocation TypeLocation { get; }
 
     public TDefinition Definition { get; }
 
@@ -47,11 +46,10 @@ internal record class AScalarType<TDefinition> : IScalarType where TDefinition :
     IReadOnlyList<IUnitInstanceInclusionList> IQuantityType.UnitInstanceInclusions => UnitInstanceInclusions;
     IReadOnlyList<IUnitInstanceList> IQuantityType.UnitInstanceExclusions => UnitInstanceExclusions;
 
-    protected AScalarType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ScalarConstantDefinition> constants, IReadOnlyList<ConvertibleScalarDefinition> conversions,
+    protected AScalarType(DefinedType type, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ScalarConstantDefinition> constants, IReadOnlyList<ConvertibleScalarDefinition> conversions,
         IReadOnlyList<IncludeUnitBasesDefinition> unitBaseInstanceInclusions, IReadOnlyList<ExcludeUnitBasesDefinition> unitBaseInstanceExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
     {
         Type = type;
-        TypeLocation = typeLocation;
 
         Definition = definition;
 

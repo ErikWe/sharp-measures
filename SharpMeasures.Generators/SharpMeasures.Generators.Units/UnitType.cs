@@ -16,7 +16,6 @@ using System.Linq;
 internal sealed class UnitType : IUnitType
 {
     public DefinedType Type { get; }
-    public MinimalLocation TypeLocation { get; }
 
     public SharpMeasuresUnitDefinition Definition { get; }
 
@@ -45,12 +44,10 @@ internal sealed class UnitType : IUnitType
     IReadOnlyList<IPrefixedUnitInstance> IUnitType.PrefixedUnitInstances => PrefixedUnitInstances;
     IReadOnlyList<IScaledUnitInstance> IUnitType.ScaledUnitInstances => ScaledUnitInstances;
 
-    public UnitType(DefinedType type, MinimalLocation unitLocation, SharpMeasuresUnitDefinition definition, IReadOnlyList<DerivableUnitDefinition> unitDerivations, FixedUnitInstanceDefinition? fixedUnitInstance,
-        IReadOnlyList<UnitInstanceAliasDefinition> unitInstanceAliases, IReadOnlyList<DerivedUnitInstanceDefinition> derivedUnitInstances, IReadOnlyList<BiasedUnitInstanceDefinition> biasedUnitInstances, IReadOnlyList<PrefixedUnitInstanceDefinition> prefixedUnitInstances,
-        IReadOnlyList<ScaledUnitInstanceDefinition> scaledUnitInstances)
+    public UnitType(DefinedType type, SharpMeasuresUnitDefinition definition, IReadOnlyList<DerivableUnitDefinition> unitDerivations, FixedUnitInstanceDefinition? fixedUnitInstance, IReadOnlyList<UnitInstanceAliasDefinition> unitInstanceAliases,
+        IReadOnlyList<DerivedUnitInstanceDefinition> derivedUnitInstances, IReadOnlyList<BiasedUnitInstanceDefinition> biasedUnitInstances, IReadOnlyList<PrefixedUnitInstanceDefinition> prefixedUnitInstances, IReadOnlyList<ScaledUnitInstanceDefinition> scaledUnitInstances)
     {
         Type = type;
-        TypeLocation = unitLocation;
 
         Definition = definition;
 

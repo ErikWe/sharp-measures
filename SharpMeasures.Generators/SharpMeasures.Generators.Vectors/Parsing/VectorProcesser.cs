@@ -6,45 +6,23 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 
-public interface IVectorProcesser
+public static class VectorProcesser
 {
-    public abstract (IncrementalValueProvider<IVectorPopulation> Population, IVectorValidator Validator) Process(IncrementalGeneratorInitializationContext context);
-}
+    private static GroupBaseProcesser GroupBaseProcesser { get; } = new(VectorProcessingDiagnosticsStrategies.Default);
+    private static GroupSpecializationProcesser GroupSpecializationProcesser { get; } = new(VectorProcessingDiagnosticsStrategies.Default);
+    private static GroupMemberProcesser GroupMemberProcesser { get; } = new(VectorProcessingDiagnosticsStrategies.Default);
 
-public sealed class VectorProcesser : IVectorProcesser
-{
-    private IncrementalValuesProvider<Optional<RawGroupBaseType>> GroupBaseProvider { get; }
-    private IncrementalValuesProvider<Optional<RawGroupSpecializationType>> GroupSpecializationProvider { get; }
-    private IncrementalValuesProvider<Optional<RawGroupMemberType>> GroupMemberProvider { get; }
+    private static VectorBaseProcesser VectorBaseProcesser { get; } = new(VectorProcessingDiagnosticsStrategies.Default);
+    private static VectorSpecializationProcesser VectorSpecializationProcesser { get; } = new(VectorProcessingDiagnosticsStrategies.Default);
 
-    private IncrementalValuesProvider<Optional<RawVectorBaseType>> VectorBaseProvider { get; }
-    private IncrementalValuesProvider<Optional<RawVectorSpecializationType>> VectorSpecializationProvider { get; }
-
-    internal VectorProcesser(IncrementalValuesProvider<Optional<RawGroupBaseType>> groupBaseProvider, IncrementalValuesProvider<Optional<RawGroupSpecializationType>> groupSpecializationProvider,
-        IncrementalValuesProvider<Optional<RawGroupMemberType>> groupMemberProvider, IncrementalValuesProvider<Optional<RawVectorBaseType>> vectorBaseProvider, IncrementalValuesProvider<Optional<RawVectorSpecializationType>> vectorSpecializationProvider)
+    public static (VectorProcessingResult ProcessingResult, IncrementalValueProvider<IVectorPopulation> Population) Process(IncrementalGeneratorInitializationContext context, VectorParsingResult parsingResult)
     {
-        GroupBaseProvider = groupBaseProvider;
-        GroupSpecializationProvider = groupSpecializationProvider;
-        GroupMemberProvider = groupMemberProvider;
+        var groupBases = parsingResult.GroupBaseProvider.Select(GroupBaseProcesser.Process).ReportDiagnostics(context);
+        var groupSpecializations = parsingResult.GroupSpecializationProvider.Select(GroupSpecializationProcesser.Process).ReportDiagnostics(context);
+        var groupMembers = parsingResult.GroupMemberProvider.Select(GroupMemberProcesser.Process).ReportDiagnostics(context);
 
-        VectorBaseProvider = vectorBaseProvider;
-        VectorSpecializationProvider = vectorSpecializationProvider;
-    }
-
-    public (IncrementalValueProvider<IVectorPopulation>, IVectorValidator) Process(IncrementalGeneratorInitializationContext context)
-    {
-        GroupBaseProcesser groupBaseProcesser = new();
-        GroupSpecializationProcesser groupSpecializationProcesser = new();
-
-        VectorBaseProcesser vectorBaseProcesser = new();
-        VectorSpecializationProcesser vectorSpecializationProcesser = new();
-
-        var groupBases = GroupBaseProvider.Select(groupBaseProcesser.Process).ReportDiagnostics(context);
-        var groupSpecializations = GroupSpecializationProvider.Select(groupSpecializationProcesser.Process).ReportDiagnostics(context);
-        var groupMembers = GroupMemberProvider.Select(GroupMemberProcesser.Process).ReportDiagnostics(context);
-
-        var vectorBases = VectorBaseProvider.Select(vectorBaseProcesser.Process).ReportDiagnostics(context);
-        var vectorSpecializations = VectorSpecializationProvider.Select(vectorSpecializationProcesser.Process).ReportDiagnostics(context);
+        var vectorBases = parsingResult.VectorBaseProvider.Select(VectorBaseProcesser.Process).ReportDiagnostics(context);
+        var vectorSpecializations = parsingResult.VectorSpecializationProvider.Select(VectorSpecializationProcesser.Process).ReportDiagnostics(context);
 
         var groupBaseInterfaces = groupBases.Select(ExtractInterface).CollectResults();
         var groupSpecializationInterfaces = groupSpecializations.Select(ExtractInterface).CollectResults();
@@ -58,7 +36,7 @@ public sealed class VectorProcesser : IVectorProcesser
         var population = populationAndProcessingData.Select(ExtractPopulation);
         var processingData = populationAndProcessingData.Select(ExtractProcessingData);
 
-        return (population, new VectorValidator(processingData, groupBases, groupSpecializations, groupMembers, vectorBases, vectorSpecializations));
+        return (new VectorProcessingResult(groupBases, groupSpecializations, groupMembers, vectorBases, vectorSpecializations, processingData), population);
     }
 
     private static Optional<IVectorGroupBaseType> ExtractInterface(Optional<GroupBaseType> groupType, CancellationToken _) => groupType.HasValue ? groupType.Value : new Optional<IVectorGroupBaseType>();
@@ -68,8 +46,8 @@ public sealed class VectorProcesser : IVectorProcesser
     private static Optional<IVectorBaseType> ExtractInterface(Optional<VectorBaseType> vectorType, CancellationToken _) => vectorType.HasValue ? vectorType.Value : new Optional<IVectorBaseType>();
     private static Optional<IVectorSpecializationType> ExtractInterface(Optional<VectorSpecializationType> vectorType, CancellationToken _) => vectorType.HasValue ? vectorType.Value : new Optional<IVectorSpecializationType>();
 
-    private static IVectorPopulation ExtractPopulation((IVectorPopulation Population, VectorProcessingData) input, CancellationToken _) => input.Population;
-    private static VectorProcessingData ExtractProcessingData((IVectorPopulation, VectorProcessingData ProcessingData) input, CancellationToken _) => input.ProcessingData;
+    private static IVectorPopulation ExtractPopulation<T>((IVectorPopulation Population, T) input, CancellationToken _) => input.Population;
+    private static VectorProcessingData ExtractProcessingData<T>((T, VectorProcessingData ProcessingData) input, CancellationToken _) => input.ProcessingData;
 
     private static (IVectorPopulation Population, VectorProcessingData ProcessingData) CreatePopulation((ImmutableArray<IVectorGroupBaseType> GroupBases, ImmutableArray<IVectorGroupSpecializationType> GroupSpecializations,
         ImmutableArray<IVectorGroupMemberType> GroupMembers, ImmutableArray<IVectorBaseType> VectorBases, ImmutableArray<IVectorSpecializationType> VectorSpecializations) vectors, CancellationToken _)

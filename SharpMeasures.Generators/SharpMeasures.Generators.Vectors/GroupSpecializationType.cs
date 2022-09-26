@@ -15,6 +15,6 @@ internal sealed record class GroupSpecializationType : AGroupType<SpecializedSha
     IQuantitySpecialization IQuantitySpecializationType.Definition => Definition;
     IVectorGroupSpecialization IVectorGroupSpecializationType.Definition => Definition;
 
-    public GroupSpecializationType(DefinedType type, MinimalLocation typeLocation, SpecializedSharpMeasuresVectorGroupDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
-        : base(type, typeLocation, definition, derivations, conversions, unitInstanceInclusions, unitInstanceExclusions) { }
+    public GroupSpecializationType(DefinedType type, SpecializedSharpMeasuresVectorGroupDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
+        : base(type, definition, derivations, conversions, unitInstanceInclusions, unitInstanceExclusions) { }
 }

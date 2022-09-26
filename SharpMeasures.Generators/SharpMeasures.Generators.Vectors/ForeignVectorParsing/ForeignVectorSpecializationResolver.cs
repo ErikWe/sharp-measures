@@ -35,7 +35,7 @@ internal static class ForeignVectorSpecializationResolver
 
         var generateDocumentation = RecursivelySearchForDefined(vectorType, vectorPopulation, static (vector) => vector.Definition.GenerateDocumentation);
 
-        return new ResolvedVectorType(vectorType.Type, MinimalLocation.None, vectorBase.Definition.Dimension, group: null, unit.Type.AsNamedType(), vectorType.Definition.OriginalQuantity, vectorType.Definition.ForwardsCastOperatorBehaviour, vectorType.Definition.BackwardsCastOperatorBehaviour, scalar,
+        return new ResolvedVectorType(vectorType.Type, vectorBase.Definition.Dimension, group: null, unit.Type.AsNamedType(), vectorType.Definition.OriginalQuantity, vectorType.Definition.ForwardsCastOperatorBehaviour, vectorType.Definition.BackwardsCastOperatorBehaviour, scalar,
             implementSum!.Value, implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, vectorType.Derivations, constants, vectorType.Conversions, inheritedDerivations, inheritedConversions, includedUnitInstances, generateDocumentation);
     }
 

@@ -12,7 +12,6 @@ using System.Collections.Generic;
 internal record class ARawVectorType<TDefinition>
 {
     public DefinedType Type { get; }
-    public MinimalLocation TypeLocation { get; }
 
     public TDefinition Definition { get; }
 
@@ -23,10 +22,9 @@ internal record class ARawVectorType<TDefinition>
     public IEnumerable<RawIncludeUnitsDefinition> UnitInstanceInclusions { get; }
     public IEnumerable<RawExcludeUnitsDefinition> UnitInstanceExclusions { get; }
 
-    protected ARawVectorType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
+    protected ARawVectorType(DefinedType type, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
     {
         Type = type;
-        TypeLocation = typeLocation;
 
         Definition = definition;
 

@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
-using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units;
 
@@ -14,9 +13,9 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
 {
     private DefinedType Type { get; }
     private int Dimension { get; }
-    private IUnitType Unit { get; }
+    private NamedType Unit { get; }
 
-    private IScalarType? Scalar { get; }
+    private NamedType? Scalar { get; }
 
     private IUnitInstance? DefaultUnitInstance { get; }
     private string? DefaultUnitInstanceSymbol { get; }
@@ -34,22 +33,22 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
     {
         Type = model.Vector.Type;
         Dimension = model.Vector.Dimension;
-        Unit = model.UnitPopulation.Units[model.Vector.Unit];
+        Unit = model.Vector.Unit;
 
-        DefaultUnitInstance = GetDefaultUnitInstance(model, Unit);
+        DefaultUnitInstance = GetDefaultUnitInstance(model);
         DefaultUnitInstanceSymbol = model.Vector.DefaultUnitInstanceSymbol;
 
-        UnitParameterName = SourceBuildingUtility.ToParameterName(Unit.Type.Name);
+        UnitParameterName = SourceBuildingUtility.ToParameterName(Unit.Name);
 
         ExampleScalarUnitBaseInstance = GetExampleScalarBase(model);
-        ExampleUnitInstance = GetExampleUnit(model, Unit);
+        ExampleUnitInstance = GetExampleUnit(model);
 
         Texts = new(Dimension, VectorReference, UnitParameterName);
     }
 
-    private static IUnitInstance? GetDefaultUnitInstance(VectorDataModel model, IUnitType unit)
+    private static IUnitInstance? GetDefaultUnitInstance(VectorDataModel model)
     {
-        if (model.Vector.DefaultUnitInstanceName is not null && unit.UnitInstancesByName.TryGetValue(model.Vector.DefaultUnitInstanceName, out var defaultUnitInstance))
+        if (model.Vector.DefaultUnitInstanceName is not null && model.UnitPopulation.Units.TryGetValue(model.Vector.Unit, out var unit) && unit.UnitInstancesByName.TryGetValue(model.Vector.DefaultUnitInstanceName, out var defaultUnitInstance))
         {
             return defaultUnitInstance;
         }
@@ -73,8 +72,13 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         return null;
     }
 
-    private static IUnitInstance? GetExampleUnit(VectorDataModel model, IUnitType unit)
+    private static IUnitInstance? GetExampleUnit(VectorDataModel model)
     {
+        if (model.UnitPopulation.Units.TryGetValue(model.Vector.Unit, out var unit) is false)
+        {
+            return null;
+        }
+
         foreach (var includedUnitName in model.Vector.IncludedUnitInstanceNames)
         {
             if (unit.UnitInstancesByName.TryGetValue(includedUnitName, out var includedUnit))
@@ -106,7 +110,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         StringBuilder componentText = new();
         IterativeBuilding.AppendEnumerable(componentText, components(), ", ");
 
-        return $$"""/// <summary>The {{ScalarReference}} representing the constant {{constant.Name}}, equivalent to { ({{componentText}}) [<see cref="{{Unit.Type.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/>] }.</summary>""";
+        return $$"""/// <summary>The {{ScalarReference}} representing the constant {{constant.Name}}, equivalent to { ({{componentText}}) [<see cref="{{Unit.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/>] }.</summary>""";
 
         IEnumerable<string> components()
         {
@@ -132,14 +136,14 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
     public string ScalarsConstructor() => $$"""
         /// <summary>Constructs a new {{VectorReference}} representing { {{Texts.ParameterTuple()}} }, expressed in an arbitrary unit.</summary>
         {{Texts.ScalarsConstructor()}}
-        /// <remarks>Consider preferring construction through <see cref="{{Type.FullyQualifiedName}}({{ConstantVectorTexts.UnnamedScalars(Dimension)}}, {{Unit.Type.FullyQualifiedName}})"/>,
+        /// <remarks>Consider preferring construction through <see cref="{{Type.FullyQualifiedName}}({{ConstantVectorTexts.UnnamedScalars(Dimension)}}, {{Unit.FullyQualifiedName}})"/>,
         /// where the components are expressed in a specified {{UnitReference}}.</remarks>
         """;
 
     public string VectorConstructor() => $$"""
         /// <summary>Constructs a new {{VectorReference}} representing { <paramref name="components"/> }, expressed in an arbitrary unit.</summary>
         /// <param name="components">The magnitudes of the components of the constructed {{VectorReference}}, expressed in an arbitrary unit.</param>
-        /// <remarks>Consider preferring construction through <see cref="{{Type.FullyQualifiedName}}(global::SharpMeasures.Vector{{Dimension}}, {{Unit.Type.FullyQualifiedName}})"/>,
+        /// <remarks>Consider preferring construction through <see cref="{{Type.FullyQualifiedName}}(global::SharpMeasures.Vector{{Dimension}}, {{Unit.FullyQualifiedName}})"/>,
         /// where the components are expressed in a specified {{UnitReference}}.</remarks>
         """;
 
@@ -156,7 +160,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
             commonText = $"""
                 {commonText}
                 /// <remarks>A {VectorReference} may also be constructed as demonstrated below.
-                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Type.FullyQualifiedName}.One{ExampleScalarUnitBaseInstance.Name}"/>;</code>
+                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Value.FullyQualifiedName}.One{ExampleScalarUnitBaseInstance.Name}"/>;</code>
                 /// </remarks>
                 """;
         }
@@ -176,7 +180,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
             commonText = $"""
                 {commonText}
                 /// <remarks>A {VectorReference} may also be constructed as demonstrated below.
-                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Type.FullyQualifiedName}.One{ExampleScalarUnitBaseInstance.Name}"/>;</code>
+                /// <code>{VectorReference} x = ({ConstantVectorTexts.SampleValues(Dimension)}) * <see cref="{Scalar.Value.FullyQualifiedName}.One{ExampleScalarUnitBaseInstance.Name}"/>;</code>
                 /// </remarks>
                 """;
         }
@@ -201,7 +205,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         var commonText = $"""
             /// <summary>The magnitudes of the components of <see langword="this"/>, expressed in an arbitrary unit.</summary>
             /// <remarks>In most cases, expressing the magnitudes in a specified {UnitReference} should be preferred. This is achieved through
-            /// <see cref="InUnit({Unit.Type.FullyQualifiedName})"/>
+            /// <see cref="InUnit({Unit.FullyQualifiedName})"/>
             """;
 
         if (ExampleUnitInstance is not null)
@@ -220,7 +224,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         /// <summary>The components of <see langword="this", expressed in multiples of <see cref="{VectorReference}.{constant.Name}"/>.</summary>
         """;
     public string InSpecifiedUnit(IUnitInstance unitInstance) => $"""
-        /// <summary>The components of <see langword="this"/>, expressed in <see cref="{Unit.Type.FullyQualifiedName}.{unitInstance.Name}"/>.</summary>
+        /// <summary>The components of <see langword="this"/>, expressed in <see cref="{Unit.FullyQualifiedName}.{unitInstance.Name}"/>.</summary>
         """;
 
     public string Conversion(NamedType vector) => $"""
@@ -289,12 +293,12 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
 
         if (DefaultUnitInstance is not null && DefaultUnitInstanceSymbol is not null)
         {
-            return $"""{commonText} components expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance.Name}"/>, followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
+            return $"""{commonText} components expressed in <see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstance.Name}"/>, followed by the symbol [{DefaultUnitInstanceSymbol}].</summary>""";
         }
 
         if (DefaultUnitInstance is not null)
         {
-            return $"""{commonText} components expressed in <see cref="{Unit.Type.FullyQualifiedName}.{DefaultUnitInstance.Name}"/>.</summary>""";
+            return $"""{commonText} components expressed in <see cref="{Unit.FullyQualifiedName}.{DefaultUnitInstance.Name}"/>.</summary>""";
         }
 
         return $"""{commonText} components expressed in an arbitrary unit.</summary>""";
@@ -349,8 +353,8 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
     public string DivideScalarOperatorLHS() => InheritDoc;
 
     private string VectorReference => $"""<see cref="{Type.FullyQualifiedName}"/>""";
-    private string UnitReference => $"""<see cref="{Unit.Type.FullyQualifiedName}"/>""";
-    private string ScalarReference => $"""<see cref={Scalar?.Type.FullyQualifiedName}"/>""";
+    private string UnitReference => $"""<see cref="{Unit.FullyQualifiedName}"/>""";
+    private string ScalarReference => $"""<see cref="{Scalar?.FullyQualifiedName}"/>""";
 
     private static string InheritDoc => "/// <inheritdoc/>";
 

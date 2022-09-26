@@ -24,7 +24,7 @@ internal static class ScalarBaseResolver
         return Resolve(input.UnvalidatedScalar.Value, input.UnitPopulation);
     }
 
-    private static Optional<ResolvedScalarType> Resolve(ScalarBaseType scalarType, IUnitPopulation unitPopulation)
+    public static Optional<ResolvedScalarType> Resolve(ScalarBaseType scalarType, IUnitPopulation unitPopulation)
     {
         if (unitPopulation.Units.TryGetValue(scalarType.Definition.Unit, out var unit) is false)
         {
@@ -34,7 +34,7 @@ internal static class ScalarBaseResolver
         var includedUnitBaseInstances = ResolveUnitInstanceInclusions(unit, scalarType.UnitBaseInstanceInclusions, () => scalarType.UnitBaseInstanceExclusions);
         var includedUnitInstances = ResolveUnitInstanceInclusions(unit, scalarType.UnitInstanceInclusions, () => scalarType.UnitInstanceExclusions);
 
-        return new ResolvedScalarType(scalarType.Type, scalarType.TypeLocation, scalarType.Definition.Unit, scalarType.Definition.UseUnitBias, originalQuantity: null, ConversionOperatorBehaviour.None, ConversionOperatorBehaviour.None, scalarType.Definition.Vector, scalarType.Definition.ImplementSum,
+        return new ResolvedScalarType(scalarType.Type, scalarType.Definition.Unit, scalarType.Definition.UseUnitBias, originalQuantity: null, ConversionOperatorBehaviour.None, ConversionOperatorBehaviour.None, scalarType.Definition.Vector, scalarType.Definition.ImplementSum,
             scalarType.Definition.ImplementDifference, scalarType.Definition.Difference, scalarType.Definition.DefaultUnitInstanceName, scalarType.Definition.DefaultUnitInstanceSymbol, scalarType.Derivations, scalarType.Constants, scalarType.Conversions,
             inheritedDerivations: Array.Empty<IDerivedQuantity>(), inheritedConversions: Array.Empty<IConvertibleQuantity>(), includedUnitBaseInstances, includedUnitInstances, scalarType.Definition.GenerateDocumentation);
     }

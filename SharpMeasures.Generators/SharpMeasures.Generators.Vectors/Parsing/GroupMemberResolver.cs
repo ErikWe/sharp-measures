@@ -27,7 +27,7 @@ internal static class GroupMemberResolver
         return Resolve(input.UnresolvedVector.Value, input.UnitPopulation, input.VectorPopulation);
     }
 
-    private static Optional<ResolvedVectorType> Resolve(GroupMemberType vectorType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
+    public static Optional<ResolvedVectorType> Resolve(GroupMemberType vectorType, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
     {
         if (vectorPopulation.GroupBases.TryGetValue(vectorType.Definition.VectorGroup, out var groupBase) is false || unitPopulation.Units.TryGetValue(groupBase.Definition.Unit, out var unit) is false)
         {
@@ -56,7 +56,7 @@ internal static class GroupMemberResolver
 
         (var forwardsCastBehaviour, var backwardsCastBehaviour) = GetSpecializationCastBehaviour(vectorType.Definition.VectorGroup, vectorPopulation);
 
-        return new ResolvedVectorType(vectorType.Type, vectorType.TypeLocation, vectorType.Definition.Dimension, vectorType.Definition.VectorGroup, unit.Type.AsNamedType(), originalQuantity: null, forwardsCastBehaviour, backwardsCastBehaviour, scalar, implementSum!.Value,
+        return new ResolvedVectorType(vectorType.Type, vectorType.Definition.Dimension, vectorType.Definition.VectorGroup, unit.Type.AsNamedType(), originalQuantity: null, forwardsCastBehaviour, backwardsCastBehaviour, scalar, implementSum!.Value,
             implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definedDerivations, constants, conversions, inheritedDerivations, inheritedConversions, includedUnitInstances, generateDocumentation);
     }
 

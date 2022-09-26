@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures;
 
 using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
 
 /// <summary>Describes a four-dimensional vector quantity, consisting of X, Y, Z, and W components.</summary>
 public interface IVector4Quantity

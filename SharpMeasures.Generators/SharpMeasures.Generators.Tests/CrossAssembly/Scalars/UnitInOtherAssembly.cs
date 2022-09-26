@@ -17,7 +17,7 @@ public class UnitInOtherAssembly
 
         Assert.NotNull(driverAndCompilation);
 
-        GeneratorVerifier.Construct(LocalSource, driverAndCompilation.Value.Driver, driverAndCompilation.Value.Compilation, new GeneratorVerifierSettings(false, false));
+        GeneratorVerifier.Construct(LocalSource, driverAndCompilation.Value.Driver, driverAndCompilation.Value.Compilation, GeneratorVerifierSettings.NoAssertions);
     }
 
     private static string LocalSource => """

@@ -24,7 +24,7 @@ internal static class CommonGenerator
 
         var unit = model.Value.UnitPopulation.Units[model.Value.Scalar.Unit];
 
-        string unitParameterName = SourceBuildingUtility.ToParameterName(model.Value.Scalar.Unit.Name);
+        var unitParameterName = SourceBuildingUtility.ToParameterName(model.Value.Scalar.Unit.Name);
 
         return new DataModel(model.Value.Scalar.Type, model.Value.Scalar.Unit, unit.Definition.Quantity, unitParameterName, model.Value.Scalar.UseUnitBias, model.Value.Scalar.DefaultUnitInstanceName, model.Value.Scalar.DefaultUnitInstanceSymbol, model.Value.Documentation);
     }

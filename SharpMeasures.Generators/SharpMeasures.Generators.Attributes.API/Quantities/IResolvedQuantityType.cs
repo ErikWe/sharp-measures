@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public interface IResolvedQuantityType
 {
     public abstract DefinedType Type { get; }
-    public abstract MinimalLocation TypeLocation { get; }
 
     public abstract NamedType Unit { get; }
 

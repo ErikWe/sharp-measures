@@ -2,7 +2,9 @@
 
 using SharpMeasures.Generators.Units.Parsing.Abstractions;
 
+internal interface IScaledUnitInstanceValidationDiagnostics : IModifiedUnitInstanceValidationDiagnostics<ScaledUnitInstanceDefinition> { }
+
 internal sealed class ScaledUnitInstanceValidator : AModifiedUnitInstanceValidator<IModifiedUnitInstanceValidationContext, ScaledUnitInstanceDefinition>
 {
-    public ScaledUnitInstanceValidator(IModifiedUnitInstanceValidationDiagnostics<ScaledUnitInstanceDefinition> diagnostics) : base(diagnostics) { }
+    public ScaledUnitInstanceValidator(IScaledUnitInstanceValidationDiagnostics diagnostics) : base(diagnostics) { }
 }

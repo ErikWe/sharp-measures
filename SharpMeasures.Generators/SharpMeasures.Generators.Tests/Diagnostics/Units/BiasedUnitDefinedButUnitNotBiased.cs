@@ -17,7 +17,7 @@ public class BiasedUnitDefinedButUnitNotBiased
     [Fact]
     public Task VerifyBiasedUnitDefinedButUnitNotBiasedDiagnosticsMessage() => Assert().VerifyDiagnostics();
 
-    private static GeneratorVerifier AssertExactlyBiasedUnitDefinedButUnitNotBiasedDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(BiasedUnitDefinedButUnitNotBiasedDiagnostics);
+    private static GeneratorVerifier AssertExactlyBiasedUnitDefinedButUnitNotBiasedDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, GeneratorVerifierSettings.TestCodeAssertions).AssertExactlyListedDiagnosticsIDsReported(BiasedUnitDefinedButUnitNotBiasedDiagnostics);
     private static IReadOnlyCollection<string> BiasedUnitDefinedButUnitNotBiasedDiagnostics { get; } = new string[] { DiagnosticIDs.BiasedUnitDefinedButUnitNotBiased };
 
     private static string Text => """
@@ -37,20 +37,6 @@ public class BiasedUnitDefinedButUnitNotBiased
     {
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(Text, target: "BiasedUnitInstance", postfix: "(\"Metre2\", \"Metres2\", \"Metre\", 1)]");
 
-        return AssertExactlyBiasedUnitDefinedButUnitNotBiasedDiagnostics(Text).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(Identical);
+        return AssertExactlyBiasedUnitDefinedButUnitNotBiasedDiagnostics(Text).AssertDiagnosticsLocation(expectedLocation);
     }
-
-    private static GeneratorVerifier Identical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(IdenticalText);
-
-    private static string IdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-
-        [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-        """;
 }

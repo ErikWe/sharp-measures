@@ -7,56 +7,36 @@ using SharpMeasures.Generators.Documentation;
 using SharpMeasures.Generators.Scalars;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Documentation;
-using SharpMeasures.Generators.Vectors.Pipelines.Derivations;
-using SharpMeasures.Generators.Vectors.Pipelines.Vector.Common;
-using SharpMeasures.Generators.Vectors.Pipelines.Vector.Conversions;
-using SharpMeasures.Generators.Vectors.Pipelines.Vector.Maths;
-using SharpMeasures.Generators.Vectors.Pipelines.Vector.Units;
+using SharpMeasures.Generators.Vectors.Parsing;
+using SharpMeasures.Generators.Vectors.Pipelines.Groups.MemberFactory;
+using SharpMeasures.Generators.Vectors.Pipelines.Vectors.Derivations;
+using SharpMeasures.Generators.Vectors.Pipelines.Vectors.Common;
+using SharpMeasures.Generators.Vectors.Pipelines.Vectors.Conversions;
+using SharpMeasures.Generators.Vectors.Pipelines.Vectors.Maths;
+using SharpMeasures.Generators.Vectors.Pipelines.Vectors.Units;
 
 using System.Threading;
 
-public interface IVectorGenerator
+public static class VectorGenerator
 {
-    public abstract void Generate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
-        IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider);
-}
-
-internal sealed class VectorGenerator : IVectorGenerator
-{
-    private IncrementalValuesProvider<Optional<ResolvedGroupType>> GroupBaseProvider { get; }
-    private IncrementalValuesProvider<Optional<ResolvedGroupType>> GroupSpecializationProvider { get; }
-    private IncrementalValuesProvider<Optional<ResolvedVectorType>> GroupMemberProvider { get; }
-
-    private IncrementalValuesProvider<Optional<ResolvedVectorType>> VectorBaseProvider { get; }
-    private IncrementalValuesProvider<Optional<ResolvedVectorType>> VectorSpecializationProvider { get; }
-    
-    internal VectorGenerator(IncrementalValuesProvider<Optional<ResolvedGroupType>> groupBaseProvider, IncrementalValuesProvider<Optional<ResolvedGroupType>> groupSpecializationProvider,
-        IncrementalValuesProvider<Optional<ResolvedVectorType>> groupMemberProvider, IncrementalValuesProvider<Optional<ResolvedVectorType>> vectorBaseProvider, IncrementalValuesProvider<Optional<ResolvedVectorType>> vectorSpecializationProvider)
-    {
-        GroupBaseProvider = groupBaseProvider;
-        GroupSpecializationProvider = groupSpecializationProvider;
-        GroupMemberProvider = groupMemberProvider;
-
-        VectorBaseProvider = vectorBaseProvider;
-        VectorSpecializationProvider = vectorSpecializationProvider;
-    }
-
-    public void Generate(IncrementalGeneratorInitializationContext context, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
+    public static void Generate(IncrementalGeneratorInitializationContext context, VectorResolutionResult resolutionResult, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
         IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
     {
-        Generate(GroupBaseProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
-        Generate(GroupSpecializationProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
-        Generate(context, GroupMemberProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
-        Generate(context, VectorBaseProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
-        Generate(context, VectorSpecializationProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
+        Generate(context, resolutionResult.GroupBaseProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
+        Generate(context, resolutionResult.GroupSpecializationProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
+        Generate(context, resolutionResult.GroupMemberProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
+        Generate(context, resolutionResult.VectorBaseProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
+        Generate(context, resolutionResult.VectorSpecializationProvider, unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider, globalAnalyzerConfigProvider, documentationDictionaryProvider);
     }
 
-    private static void Generate(IncrementalValuesProvider<Optional<ResolvedGroupType>> vectors, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
+    private static void Generate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<ResolvedGroupType>> vectors, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
         IncrementalValueProvider<IResolvedVectorPopulation> vectorPopulationProvider, IncrementalValueProvider<GlobalAnalyzerConfig> globalAnalyzerConfigProvider, IncrementalValueProvider<DocumentationDictionary> documentationDictionaryProvider)
     {
         var defaultGenerateDocumentation = globalAnalyzerConfigProvider.Select(ExtractDefaultGenerateDocumentation);
 
         var reduced = vectors.Combine(unitPopulationProvider, scalarPopulationProvider, vectorPopulationProvider).Select(ReduceToDataModel) .Combine(defaultGenerateDocumentation).Select(InterpretGenerateDocumentation).Combine(documentationDictionaryProvider).Flatten().Select(AppendDocumentation);
+
+        GroupMemberFactoryGenerator.Initialize(context, reduced);
     }
 
     private static void Generate(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Optional<ResolvedVectorType>> vectors, IncrementalValueProvider<IUnitPopulation> unitPopulationProvider, IncrementalValueProvider<IResolvedScalarPopulation> scalarPopulationProvider,
@@ -100,7 +80,7 @@ internal sealed class VectorGenerator : IVectorGenerator
             return (data.Model, false);
         }
 
-        return (data.Model, data.Model.Value.VectorGroup.GenerateDocumentation ?? data.Default);
+        return (data.Model, data.Model.Value.Group.GenerateDocumentation ?? data.Default);
     }
 
     private static (Optional<VectorDataModel> Model, bool GenerateDocumentation) InterpretGenerateDocumentation((Optional<VectorDataModel> Model, bool Default) data, CancellationToken _)
@@ -120,9 +100,9 @@ internal sealed class VectorGenerator : IVectorGenerator
             return input.Model;
         }
 
-        DefaultGroupDocumentation defaultDocumentation = new();
+        DefaultGroupDocumentation defaultDocumentation = new(input.Model.Value);
 
-        if (input.DocumentationDictionary.TryGetValue(input.Model.Value.VectorGroup.Type.Name, out DocumentationFile documentationFile))
+        if (input.DocumentationDictionary.TryGetValue(input.Model.Value.Group.Type.Name, out DocumentationFile documentationFile))
         {
             return input.Model.Value with
             {

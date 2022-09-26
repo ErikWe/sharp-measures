@@ -27,6 +27,7 @@ public static class DeclarationSymbolProvider
     private delegate TOut DNullableEraser<TOut, TNullableOut>(TNullableOut? output);
 
     public static IDeclarationSymbolProvider<TIn, TOut> Construct<TIn, TOut>(DInputTransform<TIn> inputTransform, DOutputTransform<TIn, TOut> outputTransform) => new Provider<TIn, TOut>(inputTransform, outputTransform);
+    public static IDeclarationSymbolProvider<TIn, INamedTypeSymbol> Construct<TIn>(DInputTransform<TIn> inputTransform) => new Provider<TIn, INamedTypeSymbol>(inputTransform, static (input, symbol) => new Optional<INamedTypeSymbol>(symbol));
 
     public static IPartialDeclarationSymbolProvider<TDeclaration, (TDeclaration Declaration, INamedTypeSymbol TypeSymbol)> Construct<TDeclaration>() where TDeclaration : BaseTypeDeclarationSyntax
     {

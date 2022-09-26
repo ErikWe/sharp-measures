@@ -35,7 +35,7 @@ internal static class ForeignGroupSpecializationResolver
 
         var generateDocumentation = RecursivelySearchForDefined(groupType, vectorPopulation, static (vector) => vector.Definition.GenerateDocumentation);
 
-        return new ResolvedGroupType(groupType.Type, MinimalLocation.None, unit.Type.AsNamedType(), groupType.Definition.OriginalQuantity, groupType.Definition.ForwardsCastOperatorBehaviour, groupType.Definition.BackwardsCastOperatorBehaviour, scalar, implementSum!.Value, implementDifference!.Value,
+        return new ResolvedGroupType(groupType.Type, unit.Type.AsNamedType(), groupType.Definition.OriginalQuantity, groupType.Definition.ForwardsCastOperatorBehaviour, groupType.Definition.BackwardsCastOperatorBehaviour, scalar, implementSum!.Value, implementDifference!.Value,
             difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, membersByDimension, groupType.Derivations, groupType.Conversions, inheritedDerivations, inheritedConversions, includedUnitInstances, generateDocumentation);
     }
 

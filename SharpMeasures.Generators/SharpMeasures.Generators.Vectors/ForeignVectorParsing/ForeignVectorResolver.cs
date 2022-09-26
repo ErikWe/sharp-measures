@@ -2,83 +2,82 @@
 
 using SharpMeasures.Equatables;
 using SharpMeasures.Generators.Units;
+using SharpMeasures.Generators.Vectors.Parsing;
 
 using System.Threading;
 
-public interface IForeignVectorResolver
+public sealed class ForeignVectorResolver
 {
-    public abstract IResolvedVectorPopulation ResolveAndExtend(IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation, IResolvedVectorPopulation unextendedVectorPopulation, CancellationToken token);
-}
+    public static IResolvedVectorPopulation ResolveAndExtend(ForeignVectorProcessingResult processingResult, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation, IResolvedVectorPopulation unextendedVectorPopulation, CancellationToken token)
+    {
+        var resolver = new ForeignVectorResolver();
 
-internal sealed record class ForeignVectorResolver : IForeignVectorResolver
-{
-    private ForeignVectorProcessingResult ProcessingResult { get; }
+        if (token.IsCancellationRequested is false)
+        {
+            resolver.Resolve(processingResult, unitPopulation, vectorPopulation);
+        }
+
+        return resolver.Extend(unextendedVectorPopulation);
+    }
 
     private EquatableList<ResolvedGroupType> Groups { get; } = new();
     private EquatableList<ResolvedVectorType> Vectors { get; } = new();
 
-    public ForeignVectorResolver(ForeignVectorProcessingResult processingResult)
-    {
-        ProcessingResult = processingResult;
-    }
+    private ForeignVectorResolver() { }
 
-    public IResolvedVectorPopulation ResolveAndExtend(IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation, IResolvedVectorPopulation unextendedVectorPopulation, CancellationToken token)
+    private void Resolve(ForeignVectorProcessingResult processingResult, IUnitPopulation unitPopulation, IVectorPopulation vectorPopulation)
     {
-        if (token.IsCancellationRequested is false)
+        foreach (var processedGroupBase in processingResult.GroupBases)
         {
-            foreach (var processedGroupBase in ProcessingResult.GroupBases)
+            var groupBase = GroupBaseResolver.Resolve(processedGroupBase, unitPopulation, vectorPopulation);
+
+            if (groupBase.HasValue)
             {
-                var groupBase = ForeignGroupBaseResolver.Resolve(processedGroupBase, unitPopulation, vectorPopulation);
-
-                if (groupBase.HasValue)
-                {
-                    Groups.Add(groupBase.Value);
-                }
-            }
-
-            foreach (var processedGroupSpecialization in ProcessingResult.GroupSpecializations)
-            {
-                var groupSpecialization = ForeignGroupSpecializationResolver.Resolve(processedGroupSpecialization, unitPopulation, vectorPopulation);
-
-                if (groupSpecialization.HasValue)
-                {
-                    Groups.Add(groupSpecialization.Value);
-                }
-            }
-
-            foreach (var processedMember in ProcessingResult.GroupMembers)
-            {
-                var member = ForeignGroupMemberResolver.Resolve(processedMember, unitPopulation, vectorPopulation);
-
-                if (member.HasValue)
-                {
-                    Vectors.Add(member.Value);
-                }
-            }
-
-            foreach (var processedVectorBase in ProcessingResult.VectorBases)
-            {
-                var vectorBase = ForeignVectorBaseResolver.Resolve(processedVectorBase, unitPopulation);
-
-                if (vectorBase.HasValue)
-                {
-                    Vectors.Add(vectorBase.Value);
-                }
-            }
-
-            foreach (var processedVectorSpecialization in ProcessingResult.VectorSpecializations)
-            {
-                var vectorSpecialization = ForeignVectorSpecializationResolver.Resolve(processedVectorSpecialization, unitPopulation, vectorPopulation);
-
-                if (vectorSpecialization.HasValue)
-                {
-                    Vectors.Add(vectorSpecialization.Value);
-                }
+                Groups.Add(groupBase.Value);
             }
         }
 
-        var result = new ForeignVectorResolutionResult(Groups, Vectors);
+        foreach (var processedGroupSpecialization in processingResult.GroupSpecializations)
+        {
+            var groupSpecialization = GroupSpecializationResolver.Resolve(processedGroupSpecialization, unitPopulation, vectorPopulation);
 
-        return ExtendedResolvedVectorPopulation.Build(unextendedVectorPopulation, result);
+            if (groupSpecialization.HasValue)
+            {
+                Groups.Add(groupSpecialization.Value);
+            }
+        }
+
+        foreach (var processedMember in processingResult.GroupMembers)
+        {
+            var member = GroupMemberResolver.Resolve(processedMember, unitPopulation, vectorPopulation);
+
+            if (member.HasValue)
+            {
+                Vectors.Add(member.Value);
+            }
+        }
+
+        foreach (var processedVectorBase in processingResult.VectorBases)
+        {
+            var vectorBase = VectorBaseResolver.Resolve(processedVectorBase, unitPopulation);
+
+            if (vectorBase.HasValue)
+            {
+                Vectors.Add(vectorBase.Value);
+            }
+        }
+
+        foreach (var processedVectorSpecialization in processingResult.VectorSpecializations)
+        {
+            var vectorSpecialization = VectorSpecializationResolver.Resolve(processedVectorSpecialization, unitPopulation, vectorPopulation);
+
+            if (vectorSpecialization.HasValue)
+            {
+                Vectors.Add(vectorSpecialization.Value);
+            }
+        }
     }
+
+    private ForeignVectorResolutionResult Finalize() => new(Groups, Vectors);
+    private IResolvedVectorPopulation Extend(IResolvedVectorPopulation vectorPopulation) => ExtendedResolvedVectorPopulation.Build(vectorPopulation, Finalize());
 }

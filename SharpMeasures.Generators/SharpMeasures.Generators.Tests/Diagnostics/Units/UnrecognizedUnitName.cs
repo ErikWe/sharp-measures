@@ -164,7 +164,7 @@ public class UnrecognizedUnitName
         return name;
     }
 
-    private static GeneratorVerifier AssertExactlyUnrecognizedUnitNameDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(UnrecognizedUnitNameDiagnostics);
+    private static GeneratorVerifier AssertExactlyUnrecognizedUnitNameDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, GeneratorVerifierSettings.TestCodeAssertions).AssertExactlyListedDiagnosticsIDsReported(UnrecognizedUnitNameDiagnostics);
     private static IReadOnlyCollection<string> UnrecognizedUnitNameDiagnostics { get; } = new string[] { DiagnosticIDs.UnrecognizedUnitInstanceName };
 
     private static string UnitAliasText(SourceSubtext aliasOf) => $$"""
@@ -184,7 +184,7 @@ public class UnrecognizedUnitName
         var source = UnitAliasText(aliasOf);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, aliasOf.Context.With(outerPrefix: "UnitInstanceAlias(\"Meter\", \"Meters\", "));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(UnbiasedIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string BiasedUnitText(SourceSubtext from) => $$"""
@@ -204,7 +204,7 @@ public class UnrecognizedUnitName
         var source = BiasedUnitText(from);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, from.Context.With(outerPrefix: "BiasedUnitInstance(\"Celsius\", \"Celsius\", "));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(BiasedIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string DerivedUnitText(SourceSubtext signatureElement) => $$"""
@@ -238,7 +238,7 @@ public class UnrecognizedUnitName
         var source = DerivedUnitText(signatureElement);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, signatureElement.Context.With(outerPrefix: "new[] { ", outerPostfix: ", \"Second\" })]"));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(DerivedUnitIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string PrefixedUnitText(SourceSubtext from) => $$"""
@@ -258,7 +258,7 @@ public class UnrecognizedUnitName
         var source = PrefixedUnitText(from);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, from.Context.With(outerPrefix: "PrefixedUnitInstance(\"Kilometre\", \"Kilometres\", ", outerPostfix: ", MetricPrefixName.Kilo)]"));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(UnbiasedIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string ScaledUnitText(SourceSubtext from) => $$"""
@@ -278,7 +278,7 @@ public class UnrecognizedUnitName
         var source = ScaledUnitText(from);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, from.Context.With(outerPrefix: "ScaledUnitInstance(\"Kilometre\", \"Kilometres\", ", outerPostfix: ", 1000)]"));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(UnbiasedIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string ScalarDefaultUnitInstanceNameText(SourceSubtext name) => $$"""
@@ -297,7 +297,7 @@ public class UnrecognizedUnitName
         var source = ScalarDefaultUnitInstanceNameText(name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnitInstanceName = "));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(UnbiasedIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string SpecializedScalarDefaultUnitInstanceNameText(SourceSubtext name) => $$"""
@@ -319,7 +319,7 @@ public class UnrecognizedUnitName
         var source = SpecializedScalarDefaultUnitInstanceNameText(name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnitInstanceName = "));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string VectorDefaultUnitInstanceNameText(SourceSubtext name) => $$"""
@@ -342,7 +342,7 @@ public class UnrecognizedUnitName
         var source = VectorDefaultUnitInstanceNameText(name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnitInstanceName = "));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string SpecializedVectorDefaultUnitInstanceNameText(SourceSubtext name) => $$"""
@@ -368,7 +368,7 @@ public class UnrecognizedUnitName
         var source = SpecializedVectorDefaultUnitInstanceNameText(name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnitInstanceName = "));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string VectorGroupDefaultUnitInstanceNameText(SourceSubtext name) => $$"""
@@ -391,7 +391,7 @@ public class UnrecognizedUnitName
         var source = VectorGroupDefaultUnitInstanceNameText(name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnitInstanceName = "));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string SpecializedVectorGroupDefaultUnitInstanceNameText(SourceSubtext name) => $$"""
@@ -417,7 +417,7 @@ public class UnrecognizedUnitName
         var source = SpecializedVectorGroupDefaultUnitInstanceNameText(name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "DefaultUnitInstanceName = "));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorGroupIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string ScalarConstantText(SourceSubtext name) => $$"""
@@ -437,7 +437,7 @@ public class UnrecognizedUnitName
         var source = ScalarConstantText(name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "\"Planck\", "));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(UnbiasedIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string SpecializedScalarConstantText(SourceSubtext name) => $$"""
@@ -460,7 +460,7 @@ public class UnrecognizedUnitName
         var source = SpecializedScalarConstantText(name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "\"Planck\", "));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string VectorConstantText(SourceSubtext name) => $$"""
@@ -484,7 +484,7 @@ public class UnrecognizedUnitName
         var source = VectorConstantText(name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "\"MetreOnes\", "));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string SpecializedVectorConstantText(SourceSubtext name) => $$"""
@@ -511,7 +511,7 @@ public class UnrecognizedUnitName
         var source = SpecializedVectorConstantText(name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "\"MetreOnes\", "));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string VectorGroupMemberConstantText(SourceSubtext name) => $$"""
@@ -538,7 +538,7 @@ public class UnrecognizedUnitName
         var source = VectorGroupMemberConstantText(name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: "\"MetreOnes\", "));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string ScalarUnitListText(string attribute, SourceSubtext name) => $$"""
@@ -559,7 +559,7 @@ public class UnrecognizedUnitName
         var source = ScalarUnitListText(attribute, name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: $"{attribute}("));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(UnbiasedIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string SpecializedScalarUnitListText(string attribute, SourceSubtext name) => $$"""
@@ -583,7 +583,7 @@ public class UnrecognizedUnitName
         var source = SpecializedScalarUnitListText(attribute, name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: $"{attribute}("));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string VectorUnitListText(string attribute, SourceSubtext name) => $$"""
@@ -608,7 +608,7 @@ public class UnrecognizedUnitName
         var source = VectorUnitListText(attribute, name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: $"{attribute}("));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string SpecializedVectorUnitListText(string attribute, SourceSubtext name) => $$"""
@@ -636,7 +636,7 @@ public class UnrecognizedUnitName
         var source = SpecializedVectorUnitListText(attribute, name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: $"{attribute}("));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string VectorGroupUnitListText(string attribute, SourceSubtext name) => $$"""
@@ -661,7 +661,7 @@ public class UnrecognizedUnitName
         var source = VectorGroupUnitListText(attribute, name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: $"{attribute}("));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
 
     private static string SpecializedVectorGroupUnitListText(string attribute, SourceSubtext name) => $$"""
@@ -689,161 +689,6 @@ public class UnrecognizedUnitName
         var source = SpecializedVectorGroupUnitListText(attribute, name);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, name.Context.With(outerPrefix: $"{attribute}("));
 
-        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorGroupIdentical);
+        return AssertExactlyUnrecognizedUnitNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
-
-    private static GeneratorVerifier UnbiasedIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(UnbiasedIdenticalText);
-    private static GeneratorVerifier BiasedIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedIdenticalText);
-    private static GeneratorVerifier DerivedUnitIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(DerivedUnitIdenticalText);
-    private static GeneratorVerifier SpecializedScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedScalarIdenticalText);
-    private static GeneratorVerifier VectorIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorIdenticalText);
-    private static GeneratorVerifier SpecializedVectorIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorIdenticalText);
-    private static GeneratorVerifier VectorGroupIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupIdenticalText);
-    private static GeneratorVerifier SpecializedVectorGroupIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(SpecializedVectorGroupIdenticalText);
-    private static GeneratorVerifier VectorGroupMemberIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(VectorGroupMemberIdenticalText);
-
-    private static string UnbiasedIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-        """;
-
-    private static string BiasedIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-
-        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
-        public partial class TemperatureDifference { }
-
-        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
-        public partial class UnitOfTemperature { }
-        """;
-
-    private static string DerivedUnitIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
-        public partial class Time { }
-
-        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
-        public partial class Speed { }
-
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-
-        [FixedUnitInstance("Second", "Seconds")]
-        [SharpMeasuresUnit(typeof(Time))]
-        public partial class UnitOfTime { }
-
-        [DerivableUnit("{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-        [SharpMeasuresUnit(typeof(Speed))]
-        public partial class UnitOfSpeed { }
-        """;
-
-    private static string SpecializedScalarIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-
-        [SpecializedSharpMeasuresScalar(typeof(Length))]
-        public partial class Distance { }
-
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-            
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-        """;
-
-    private static string VectorIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
-
-        [SharpMeasuresVector(typeof(UnitOfLength))]
-        public partial class Position3 { }
-
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-            
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-        """;
-
-    private static string SpecializedVectorIdenticalText => $$"""
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
-
-        [SpecializedSharpMeasuresVector(typeof(Position3))]
-        public partial class Displacement3 { }
-
-        [SharpMeasuresVector(typeof(UnitOfLength))]
-        public partial class Position3 { }
-
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-            
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-        """;
-
-    private static string VectorGroupIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
-
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
-        public static partial class Position { }
-
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-            
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-        """;
-
-    private static string SpecializedVectorGroupIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
-
-        [SpecializedSharpMeasuresVectorGroup(typeof(Position))]
-        public static partial class Displacement { }
-
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
-        public static partial class Position { }
-
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-            
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-        """;
-
-    private static string VectorGroupMemberIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-        using SharpMeasures.Generators.Vectors;
-
-        [SharpMeasuresVectorGroupMember(typeof(Position))]
-        public partial class Position3 { }
-
-        [SharpMeasuresVectorGroup(typeof(UnitOfLength))]
-        public static partial class Position { }
-
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-            
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-        """;
 }

@@ -13,23 +13,23 @@ using System.Threading;
 
 internal static class ForeignTypeResolver
 {
-    public static IncrementalValueProvider<IResolvedScalarPopulation> Resolve(IncrementalValueProvider<IForeignScalarResolver> scalarResolver, IncrementalValueProvider<IUnitPopulation> unitPopulation, IncrementalValueProvider<IScalarPopulation> scalarPopulation, IncrementalValueProvider<IResolvedScalarPopulation> unextendedScalarPopulation)
+    public static IncrementalValueProvider<IResolvedScalarPopulation> Resolve(IncrementalValueProvider<ForeignScalarProcessingResult> processingResult, IncrementalValueProvider<IUnitPopulation> unitPopulation, IncrementalValueProvider<IScalarPopulation> scalarPopulation, IncrementalValueProvider<IResolvedScalarPopulation> unextendedScalarPopulation)
     {
-        return scalarResolver.Combine(unitPopulation, scalarPopulation, unextendedScalarPopulation).Select(Resolve);
+        return processingResult.Combine(unitPopulation, scalarPopulation, unextendedScalarPopulation).Select(Resolve);
     }
 
-    public static IncrementalValueProvider<IResolvedVectorPopulation> Resolve(IncrementalValueProvider<IForeignVectorResolver> vectorResolver, IncrementalValueProvider<IUnitPopulation> unitPopulation, IncrementalValueProvider<IVectorPopulation> vectorPopulation, IncrementalValueProvider<IResolvedVectorPopulation> unextendedVectorPopulation)
+    public static IncrementalValueProvider<IResolvedVectorPopulation> Resolve(IncrementalValueProvider<ForeignVectorProcessingResult> processingResult, IncrementalValueProvider<IUnitPopulation> unitPopulation, IncrementalValueProvider<IVectorPopulation> vectorPopulation, IncrementalValueProvider<IResolvedVectorPopulation> unextendedVectorPopulation)
     {
-        return vectorResolver.Combine(unitPopulation, vectorPopulation, unextendedVectorPopulation).Select(Resolve);
+        return processingResult.Combine(unitPopulation, vectorPopulation, unextendedVectorPopulation).Select(Resolve);
     }
 
-    private static IResolvedScalarPopulation Resolve((IForeignScalarResolver ScalarResolver, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IResolvedScalarPopulation UnextendedScalarPopulation) input, CancellationToken token)
+    private static IResolvedScalarPopulation Resolve((ForeignScalarProcessingResult ProcessingResult, IUnitPopulation UnitPopulation, IScalarPopulation ScalarPopulation, IResolvedScalarPopulation UnextendedScalarPopulation) input, CancellationToken token)
     {
-        return input.ScalarResolver.ResolveAndExtend(input.UnitPopulation, input.ScalarPopulation, input.UnextendedScalarPopulation, token);
+        return ForeignScalarResolver.ResolveAndExtend(input.ProcessingResult, input.UnitPopulation, input.ScalarPopulation, input.UnextendedScalarPopulation, token);
     }
 
-    private static IResolvedVectorPopulation Resolve((IForeignVectorResolver VectorResolvers, IUnitPopulation UnitPopulation, IVectorPopulation VectorPopulation, IResolvedVectorPopulation UnextendedVectorPopulation) input, CancellationToken token)
+    private static IResolvedVectorPopulation Resolve((ForeignVectorProcessingResult ProcessingResult, IUnitPopulation UnitPopulation, IVectorPopulation VectorPopulation, IResolvedVectorPopulation UnextendedVectorPopulation) input, CancellationToken token)
     {
-        return input.VectorResolvers.ResolveAndExtend(input.UnitPopulation, input.VectorPopulation, input.UnextendedVectorPopulation, token);
+        return ForeignVectorResolver.ResolveAndExtend(input.ProcessingResult, input.UnitPopulation, input.VectorPopulation, input.UnextendedVectorPopulation, token);
     }
 }

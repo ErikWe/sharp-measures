@@ -24,7 +24,7 @@ public class DuplicateTypeDefinition
     [Fact]
     public void VectorGroupMember() => Assert(VectorGroupMemberText);
 
-    private static GeneratorVerifier Assert(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, new GeneratorVerifierSettings(false, false)).AssertNoDiagnosticsReported();
+    private static GeneratorVerifier Assert(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, GeneratorVerifierSettings.NoAssertions).AssertNoDiagnosticsReported();
 
     private static string VectorText => $$"""
         using SharpMeasures.Generators.Scalars;

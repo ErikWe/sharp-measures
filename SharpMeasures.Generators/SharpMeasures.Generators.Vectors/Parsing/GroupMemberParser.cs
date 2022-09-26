@@ -15,10 +15,10 @@ using System.Collections.Generic;
 
 internal sealed class GroupMemberParser : AVectorParser<RawSharpMeasuresVectorGroupMemberDefinition, RawGroupMemberType>
 {
-    protected override RawGroupMemberType ProduceResult(DefinedType type, MinimalLocation typeLocation, RawSharpMeasuresVectorGroupMemberDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations,
+    protected override RawGroupMemberType ProduceResult(DefinedType type, RawSharpMeasuresVectorGroupMemberDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations,
         IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
     {
-        return new(type, typeLocation, definition, derivations, constants, conversions, unitInstanceInclusions, unitInstanceExclusions);
+        return new(type, definition, derivations, constants, conversions, unitInstanceInclusions, unitInstanceExclusions);
     }
 
     protected override (Optional<RawSharpMeasuresVectorGroupMemberDefinition>, IEnumerable<INamedTypeSymbol>) ParseVector(INamedTypeSymbol typeSymbol)

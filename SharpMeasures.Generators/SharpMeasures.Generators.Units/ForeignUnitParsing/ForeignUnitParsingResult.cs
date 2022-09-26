@@ -5,7 +5,7 @@ using SharpMeasures.Generators.Units.Parsing;
 
 using System.Collections.Generic;
 
-internal sealed record class ForeignUnitParsingResult
+public sealed record class ForeignUnitParsingResult
 {
     internal IReadOnlyList<RawUnitType> Units { get; }
 

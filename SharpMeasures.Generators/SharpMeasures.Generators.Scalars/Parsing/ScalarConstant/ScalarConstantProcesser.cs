@@ -5,9 +5,11 @@ using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 
 using System.Linq;
 
+internal interface IScalarConstantProcessingDiagnostics : IQuantityConstantProcessingDiagnostics<RawScalarConstantDefinition, ScalarConstantLocations> { }
+
 internal sealed class ScalarConstantProcesser : AQuantityConstantProcesser<IQuantityConstantProcessingContext, RawScalarConstantDefinition, ScalarConstantLocations, ScalarConstantDefinition>
 {
-    public ScalarConstantProcesser(IQuantityConstantProcessingDiagnostics<RawScalarConstantDefinition, ScalarConstantLocations> diagnostics) : base(diagnostics) { }
+    public ScalarConstantProcesser(IScalarConstantProcessingDiagnostics diagnostics) : base(diagnostics) { }
 
     public override IOptionalWithDiagnostics<ScalarConstantDefinition> Process(IQuantityConstantProcessingContext context, RawScalarConstantDefinition definition)
     {

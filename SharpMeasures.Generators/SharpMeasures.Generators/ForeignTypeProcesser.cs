@@ -14,46 +14,42 @@ using System.Threading;
 
 internal static class ForeignTypeProcesser
 {
-    public static (IncrementalValueProvider<IUnitPopulation> Population, IncrementalValueProvider<IForeignUnitValidator> Validator) Process(IncrementalValueProvider<IForeignUnitProcesser> unitProcesser, IncrementalValueProvider<IUnitPopulation> unitPopulation)
+    public static (IncrementalValueProvider<ForeignUnitProcessingResult> ProcessingResult, IncrementalValueProvider<IUnitPopulation> Population) Process(IncrementalValueProvider<ForeignUnitParsingResult> parsingResult, IncrementalValueProvider<IUnitPopulation> unitPopulation)
     {
-        var populationAndValidator = unitProcesser.Combine(unitPopulation).Select(Process);
+        var populationAndValidator = parsingResult.Combine(unitPopulation).Select(Process);
 
-        return (populationAndValidator.Select(ExtractPopulation), populationAndValidator.Select(ExtractValidator));
+        return (populationAndValidator.Select(ExtractProcessingResult), populationAndValidator.Select(ExtractPopulation));
     }
 
-    public static (IncrementalValueProvider<IScalarPopulation> Population, IncrementalValueProvider<IForeignScalarValidator> Validator) Process(IncrementalValueProvider<IForeignScalarProcesser> scalarProcesser, IncrementalValueProvider<IScalarPopulation> scalarPopulation)
+    public static (IncrementalValueProvider<ForeignScalarProcessingResult> ProcessingResult, IncrementalValueProvider<IScalarPopulation> Population) Process(IncrementalValueProvider<ForeignScalarParsingResult> parsingResult, IncrementalValueProvider<IScalarPopulation> scalarPopulation)
     {
-        var populationAndValidator = scalarProcesser.Combine(scalarPopulation).Select(Process);
+        var populationAndValidator = parsingResult.Combine(scalarPopulation).Select(Process);
 
-        return (populationAndValidator.Select(ExtractPopulation), populationAndValidator.Select(ExtractValidator));
+        return (populationAndValidator.Select(ExtractProcessingResult), populationAndValidator.Select(ExtractPopulation));
     }
 
-    public static (IncrementalValueProvider<IVectorPopulation> Population, IncrementalValueProvider<IForeignVectorValidator> Validator) Process(IncrementalValueProvider<IForeignVectorProcesser> vectorProcesser, IncrementalValueProvider<IVectorPopulation> vectorPopulation)
+    public static (IncrementalValueProvider<ForeignVectorProcessingResult> ProcessingResult, IncrementalValueProvider<IVectorPopulation> Population) Process(IncrementalValueProvider<ForeignVectorParsingResult> parsingResult, IncrementalValueProvider<IVectorPopulation> vectorPopulation)
     {
-        var populationAndValidator = vectorProcesser.Combine(vectorPopulation).Select(Process);
+        var populationAndValidator = parsingResult.Combine(vectorPopulation).Select(Process);
 
-        return (populationAndValidator.Select(ExtractPopulation), populationAndValidator.Select(ExtractValidator));
+        return (populationAndValidator.Select(ExtractProcessingResult), populationAndValidator.Select(ExtractPopulation));
     }
 
-    private static (IUnitPopulation Population, IForeignUnitValidator Validator) Process((IForeignUnitProcesser UnitProcesser, IUnitPopulation UnitPopulation) input, CancellationToken token)
+    private static (ForeignUnitProcessingResult ProcessingResult, IUnitPopulation Population) Process((ForeignUnitParsingResult ParsingResult, IUnitPopulation UnitPopulation) input, CancellationToken token)
     {
-        return input.UnitProcesser.ProcessAndExtend(input.UnitPopulation, token);
+        return ForeignUnitProcesser.ProcessAndExtend(input.ParsingResult, input.UnitPopulation, token);
     }
 
-    private static (IScalarPopulation Population, IForeignScalarValidator Validator) Process((IForeignScalarProcesser ScalarProcesser, IScalarPopulation ScalarPopulation) input, CancellationToken token)
+    private static (ForeignScalarProcessingResult ProcessingResult, IScalarPopulation Population) Process((ForeignScalarParsingResult ParsingResult, IScalarPopulation ScalarPopulation) input, CancellationToken token)
     {
-        return input.ScalarProcesser.ProcessAndExtend(input.ScalarPopulation, token);
+        return ForeignScalarProcesser.ProcessAndExtend(input.ParsingResult, input.ScalarPopulation, token);
     }
 
-    private static (IVectorPopulation Population, IForeignVectorValidator Validator) Process((IForeignVectorProcesser VectorProcesser, IVectorPopulation VectorPopulation) input, CancellationToken token)
+    private static (ForeignVectorProcessingResult ProcessingResult, IVectorPopulation Population) Process((ForeignVectorParsingResult ParsingResult, IVectorPopulation VectorPopulation) input, CancellationToken token)
     {
-        return input.VectorProcesser.ProcessAndExtend(input.VectorPopulation, token);
+        return ForeignVectorProcesser.ProcessAndExtend(input.ParsingResult, input.VectorPopulation, token);
     }
 
-    private static IUnitPopulation ExtractPopulation((IUnitPopulation Population, IForeignUnitValidator) input, CancellationToken _) => input.Population;
-    private static IScalarPopulation ExtractPopulation((IScalarPopulation Population, IForeignScalarValidator) input, CancellationToken _) => input.Population;
-    private static IVectorPopulation ExtractPopulation((IVectorPopulation Population, IForeignVectorValidator) input, CancellationToken _) => input.Population;
-    private static IForeignUnitValidator ExtractValidator((IUnitPopulation, IForeignUnitValidator Validator) input, CancellationToken _) => input.Validator;
-    private static IForeignScalarValidator ExtractValidator((IScalarPopulation, IForeignScalarValidator Validator) input, CancellationToken _) => input.Validator;
-    private static IForeignVectorValidator ExtractValidator((IVectorPopulation, IForeignVectorValidator Validator) input, CancellationToken _) => input.Validator;
+    private static TPopulation ExtractPopulation<TPopulation, T>((T, TPopulation Population) input, CancellationToken _) => input.Population;
+    private static TProcessingResult ExtractProcessingResult<TProcessingResult, T>((TProcessingResult ProcessingResult, T) input, CancellationToken _) => input.ProcessingResult;
 }

@@ -23,7 +23,7 @@ public class TypeNotUnbiasedScalar
     [Fact]
     public void ConvertibleScalar() => AssertConvertibleScalar();
 
-    private static GeneratorVerifier AssertExactlyTypeNotUnbiasedScalarDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(TypeNotUnbiasedDiagnostics);
+    private static GeneratorVerifier AssertExactlyTypeNotUnbiasedScalarDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, GeneratorVerifierSettings.TestCodeAssertions).AssertExactlyListedDiagnosticsIDsReported(TypeNotUnbiasedDiagnostics);
     private static IReadOnlyCollection<string> TypeNotUnbiasedDiagnostics { get; } = new string[] { DiagnosticIDs.TypeNotUnbiasedScalar };
 
     private static string UnbiasedUnitQuantityText => """
@@ -54,10 +54,16 @@ public class TypeNotUnbiasedScalar
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
+        [SharpMeasuresUnit(typeof(Temperature), BiasTerm = true)]
+        public partial class UnitOfTemperature2 { }
+
         [SharpMeasuresScalar(typeof(UnitOfTemperature), UseUnitBias = true)]
         public partial class Temperature { }
+        
+        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        public partial class TemperatureDifference { }
 
-        [SharpMeasuresUnit(typeof(Temperature), BiasTerm = true)]
+        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
         public partial class UnitOfTemperature { }
         """;
 
@@ -109,7 +115,19 @@ public class TypeNotUnbiasedScalar
         public partial class UnitOfTemperature { }
         """;
 
-    private static string BiasedUnitQuantityIdenticalText => string.Empty;
+    private static string BiasedUnitQuantityIdenticalText => """
+        using SharpMeasures.Generators.Scalars;
+        using SharpMeasures.Generators.Units;
+        
+        [SharpMeasuresScalar(typeof(UnitOfTemperature), UseUnitBias = true)]
+        public partial class Temperature { }
+        
+        [SharpMeasuresScalar(typeof(UnitOfTemperature))]
+        public partial class TemperatureDifference { }
+        
+        [SharpMeasuresUnit(typeof(TemperatureDifference), BiasTerm = true)]
+        public partial class UnitOfTemperature { }
+        """;
 
     private static string ConvertibleScalarIdenticalText => """
         using SharpMeasures.Generators.Quantities;

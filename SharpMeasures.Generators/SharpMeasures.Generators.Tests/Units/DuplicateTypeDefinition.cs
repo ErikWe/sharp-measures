@@ -10,7 +10,7 @@ using Xunit;
 public class DuplicateTypeDefinition
 {
     [Fact]
-    public void AssertNoException() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text, new GeneratorVerifierSettings(true, false)).AssertNoDiagnosticsReported();
+    public void AssertNoException() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(Text, GeneratorVerifierSettings.NoAssertions).AssertNoDiagnosticsReported();
 
     private static string Text => $$"""
         using SharpMeasures.Generators.Scalars;

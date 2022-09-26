@@ -144,7 +144,7 @@ public static class ConstantVectorTexts
             private static string GetComponentName(int componentIndex, int dimension) => VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension);
         }
 
-        private static string SampleValuesDelegate(int componentIndex, int _) => $"{2.3 * (componentIndex + 1) * Math.Sign(componentIndex)}";
+        private static string SampleValuesDelegate(int componentIndex, int _) => $"{2.1 * (componentIndex + 1) * Math.Sign(componentIndex)}";
         private static string DeconstructScalarHeaderDelegate(int componentIndex, int dimension) => $"out global::SharpMeasures.Scalar {VectorTextBuilder.GetLowerCasedComponentName(componentIndex, dimension)}";
         private static string MultiplyScalarLHSDelegate(int componentIndex, int dimension) => $"a.{VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension)} * b";
         private static string MultiplyScalarRHSDelegate(int componentIndex, int dimension) => $"a * b.{VectorTextBuilder.GetUpperCasedComponentName(componentIndex, dimension)}";

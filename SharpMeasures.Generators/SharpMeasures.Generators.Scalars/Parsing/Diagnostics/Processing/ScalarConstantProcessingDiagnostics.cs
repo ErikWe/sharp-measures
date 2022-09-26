@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 
-internal sealed class ScalarConstantProcessingDiagnostics : IQuantityConstantProcessingDiagnostics<RawScalarConstantDefinition, ScalarConstantLocations>
+internal sealed class ScalarConstantProcessingDiagnostics : IScalarConstantProcessingDiagnostics
 {
     private QuantityConstantProcessingDiagnostics<RawScalarConstantDefinition, ScalarConstantLocations> QuantityInstance { get; }
 

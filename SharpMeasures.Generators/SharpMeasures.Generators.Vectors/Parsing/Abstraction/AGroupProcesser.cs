@@ -3,22 +3,32 @@
 using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Diagnostics;
-using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
-using SharpMeasures.Generators.Vectors.Parsing.Diagnostics;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
+internal interface IGroupTypeProcessingDiagnostics
+{
+    public abstract Diagnostic? ContradictoryUnitInstanceInclusionAndExclusion(IVectorGroup group);
+}
+
 internal abstract class AGroupProcesser<TRawType, TRawDefinition, TProductType, TProductDefinition>
     where TRawType : ARawGroupType<TRawDefinition>
     where TProductDefinition : IVectorGroup
 {
+    protected IVectorProcessingDiagnosticsStrategy DiagnosticsStrategy { get; }
+
+    protected AGroupProcesser(IVectorProcessingDiagnosticsStrategy diagnosticsStrategy)
+    {
+        DiagnosticsStrategy = diagnosticsStrategy;
+    }
+
     public IOptionalWithDiagnostics<TProductType> Process(Optional<TRawType> rawGroup, CancellationToken token)
     {
         if (token.IsCancellationRequested || rawGroup.HasValue is false)
@@ -29,7 +39,7 @@ internal abstract class AGroupProcesser<TRawType, TRawDefinition, TProductType, 
         return Process(rawGroup.Value);
     }
 
-    private IOptionalWithDiagnostics<TProductType> Process(TRawType rawGroup)
+    public IOptionalWithDiagnostics<TProductType> Process(TRawType rawGroup)
     {
         var group = ProcessVector(rawGroup.Type, rawGroup.Definition);
 
@@ -38,26 +48,30 @@ internal abstract class AGroupProcesser<TRawType, TRawDefinition, TProductType, 
             return group.AsEmptyOptional<TProductType>();
         }
 
-        var derivations = CommonProcessing.ProcessDerivations(rawGroup.Type, rawGroup.Derivations);
-        var conversions = CommonProcessing.ProcessConversions(rawGroup.Type, GetOriginalQuantity(group.Result), ConversionFromOriginalQuantitySpecified(group.Result), ConversionToOriginalQuantitySpecified(group.Result), rawGroup.Conversions);
+        var derivations = CommonProcessing.ProcessDerivations(rawGroup.Type, rawGroup.Derivations, DiagnosticsStrategy);
+        var conversions = CommonProcessing.ProcessConversions(rawGroup.Type, GetOriginalQuantity(group.Result), ConversionFromOriginalQuantitySpecified(group.Result), ConversionToOriginalQuantitySpecified(group.Result), rawGroup.Conversions, DiagnosticsStrategy);
 
-        var includeUnitInstances = CommonProcessing.ProcessIncludeUnitInstances(rawGroup.Type, rawGroup.UnitInstanceInclusions);
-        var excludeUnitInstances = CommonProcessing.ProcessExcludeUnitInstances(rawGroup.Type, rawGroup.UnitInstanceExclusions);
+        var includeUnitInstances = CommonProcessing.ProcessIncludeUnitInstances(rawGroup.Type, rawGroup.UnitInstanceInclusions, DiagnosticsStrategy);
+        var excludeUnitInstances = CommonProcessing.ProcessExcludeUnitInstances(rawGroup.Type, rawGroup.UnitInstanceExclusions, DiagnosticsStrategy);
 
         var allDiagnostics = group.Diagnostics.Concat(derivations).Concat(conversions).Concat(includeUnitInstances).Concat(excludeUnitInstances);
 
         if (includeUnitInstances.HasResult && includeUnitInstances.Result.Count > 0 && excludeUnitInstances.HasResult && excludeUnitInstances.Result.Count > 0)
         {
-            allDiagnostics = allDiagnostics.Concat(new[] { VectorTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(rawGroup.TypeLocation) });
+            if (DiagnosticsStrategy.GroupTypeDiagnostics.ContradictoryUnitInstanceInclusionAndExclusion(group.Result) is Diagnostic contradictoryDiagnostics)
+            {
+                allDiagnostics = allDiagnostics.Concat(new[] { contradictoryDiagnostics });
+            }
+
             excludeUnitInstances = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
         }
 
-        TProductType product = ProduceResult(rawGroup.Type, rawGroup.TypeLocation, group.Result, derivations.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
+        TProductType product = ProduceResult(rawGroup.Type, group.Result, derivations.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    protected abstract TProductType ProduceResult(DefinedType type, MinimalLocation typeLocation, TProductDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
+    protected abstract TProductType ProduceResult(DefinedType type, TProductDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
 
     protected abstract IOptionalWithDiagnostics<TProductDefinition> ProcessVector(DefinedType type, TRawDefinition rawDefinition);
 

@@ -6,7 +6,7 @@ using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.QuantityConstant;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
-internal sealed class VectorConstantProcessingDiagnostics : IQuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>
+internal sealed class VectorConstantProcessingDiagnostics : IVectorConstantProcessingDiagnostics
 {
     private QuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations> QuantityInstance { get; }
 

@@ -16,9 +16,4 @@ internal static class ScalarTypeDiagnostics
     {
         return DiagnosticConstruction.TypeStatic<TAttribute>(declaration.Identifier.GetLocation(), declaration.Identifier.Text);
     }
-
-    public static Diagnostic ContradictoryAttributes<TInclusionAttribute, TExclusionAttriubte>(MinimalLocation location)
-    {
-        return DiagnosticConstruction.ContradictoryAttributes<TInclusionAttribute, TExclusionAttriubte>(location.AsRoslynLocation());
-    }
 }

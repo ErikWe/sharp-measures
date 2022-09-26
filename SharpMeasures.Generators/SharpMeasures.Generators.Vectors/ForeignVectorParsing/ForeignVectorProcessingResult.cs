@@ -4,16 +4,16 @@ using SharpMeasures.Equatables;
 
 using System.Collections.Generic;
 
-internal sealed record class ForeignVectorProcessingResult
+public sealed record class ForeignVectorProcessingResult
 {
-    public IReadOnlyList<GroupBaseType> GroupBases { get; }
-    public IReadOnlyList<GroupSpecializationType> GroupSpecializations { get; }
-    public IReadOnlyList<GroupMemberType> GroupMembers { get; }
+    internal IReadOnlyList<GroupBaseType> GroupBases { get; }
+    internal IReadOnlyList<GroupSpecializationType> GroupSpecializations { get; }
+    internal IReadOnlyList<GroupMemberType> GroupMembers { get; }
 
-    public IReadOnlyList<VectorBaseType> VectorBases { get; }
-    public IReadOnlyList<VectorSpecializationType> VectorSpecializations { get; }
+    internal IReadOnlyList<VectorBaseType> VectorBases { get; }
+    internal IReadOnlyList<VectorSpecializationType> VectorSpecializations { get; }
 
-    public ForeignVectorProcessingResult(IReadOnlyList<GroupBaseType> groupBases, IReadOnlyList<GroupSpecializationType> groupSpecializations, IReadOnlyList<GroupMemberType> groupMembers, IReadOnlyList<VectorBaseType> vectorBases, IReadOnlyList<VectorSpecializationType> vectorSpecializations)
+    internal ForeignVectorProcessingResult(IReadOnlyList<GroupBaseType> groupBases, IReadOnlyList<GroupSpecializationType> groupSpecializations, IReadOnlyList<GroupMemberType> groupMembers, IReadOnlyList<VectorBaseType> vectorBases, IReadOnlyList<VectorSpecializationType> vectorSpecializations)
     {
         GroupBases = groupBases.AsReadOnlyEquatable();
         GroupSpecializations = groupSpecializations.AsReadOnlyEquatable();

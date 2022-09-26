@@ -11,6 +11,6 @@ using System.Collections.Generic;
 
 internal sealed record class RawGroupSpecializationType : ARawGroupType<RawSpecializedSharpMeasuresVectorGroupDefinition>
 {
-    public RawGroupSpecializationType(DefinedType type, MinimalLocation typeLocation, RawSpecializedSharpMeasuresVectorGroupDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
-        : base(type, typeLocation, definition, derivations, conversions, unitInstanceInclusions, unitInstanceExclusions) { }
+    public RawGroupSpecializationType(DefinedType type, RawSpecializedSharpMeasuresVectorGroupDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
+        : base(type, definition, derivations, conversions, unitInstanceInclusions, unitInstanceExclusions) { }
 }

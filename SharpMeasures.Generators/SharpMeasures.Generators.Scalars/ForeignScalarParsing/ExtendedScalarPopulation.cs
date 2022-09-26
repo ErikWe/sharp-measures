@@ -21,7 +21,7 @@ internal sealed record class ExtendedScalarPopulation : IScalarPopulation
         Scalars = scalars.AsReadOnlyEquatable();
     }
 
-    public static ExtendedScalarPopulation Build(IScalarPopulation originalPopulation, IForeignScalarProcessingResult processingResult)
+    public static ExtendedScalarPopulation Build(IScalarPopulation originalPopulation, ForeignScalarProcessingResult processingResult)
     {
         Dictionary<NamedType, IScalarBaseType> scalarBasePopulation = new(originalPopulation.ScalarBases.Count + processingResult.ScalarBases.Count);
         Dictionary<NamedType, IScalarSpecializationType> additionalScalarSpecializationPopulation = new(processingResult.ScalarSpecializations.Count);

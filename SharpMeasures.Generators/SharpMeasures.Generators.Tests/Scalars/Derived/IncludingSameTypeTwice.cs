@@ -20,7 +20,7 @@ public class IncludingSameTypeTwice
         using SharpMeasures.Generators.Scalars;
         using SharpMeasures.Generators.Units;
 
-        [DerivedQuantity("{0} * {1}", typeof(Length), typeof(Length), OperatorImplementation = DerivationOperatorImplementation.All)]
+        [DerivedQuantity("{0} * {1}", typeof(Length), typeof(Length), Permutations = true, OperatorImplementation = DerivationOperatorImplementation.All)]
         [SharpMeasuresScalar(typeof(UnitOfArea))]
         public partial class Area { }
 

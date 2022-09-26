@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 internal sealed record class VectorProcessingData
 {
+    public static VectorProcessingData Empty { get; } = new(new Dictionary<NamedType, IVectorBaseType>(), new Dictionary<NamedType, IVectorSpecializationType>(), new Dictionary<NamedType, IVectorSpecializationType>(), new Dictionary<NamedType, IVectorGroupBaseType>(),
+        new Dictionary<NamedType, IVectorGroupSpecializationType>(), new Dictionary<NamedType, IVectorGroupSpecializationType>(), new Dictionary<NamedType, IVectorGroupMemberType>());
+
     public IReadOnlyDictionary<NamedType, IVectorBaseType> DuplicatelyDefinedVectorBases { get; }
     public IReadOnlyDictionary<NamedType, IVectorSpecializationType> DuplicatelyDefinedVectorSpecializations { get; }
     public IReadOnlyDictionary<NamedType, IVectorSpecializationType> VectorSpecializationsAlreadyDefinedAsVectorBases { get; }

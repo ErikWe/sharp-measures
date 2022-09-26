@@ -12,9 +12,9 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 
-public static partial class ScalarParser
+public static class ScalarParser
 {
-    public static (IScalarProcesser Processer, IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context)
+    public static (ScalarParsingResult ParsingResult, IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> ForeignSymbols) Attach(IncrementalGeneratorInitializationContext context)
     {
         var scalarBaseSymbols = AttachSymbolProvider<SharpMeasuresScalarAttribute>(context);
         var scalarSpecializationSymbols = AttachSymbolProvider<SpecializedSharpMeasuresScalarAttribute>(context);
@@ -33,23 +33,22 @@ public static partial class ScalarParser
 
         var foreignSymbols = scalarBaseForeignSymbols.Concat(scalarSpecializationForeignSymbols).Expand();
 
-        ScalarProcesser processer = new(scalarBases, scalarSpecializations);
+        ScalarParsingResult result = new(scalarBases, scalarSpecializations);
 
-        return (processer, foreignSymbols);
+        return (result, foreignSymbols);
     }
 
-    private static IncrementalValuesProvider<Optional<(TypeDeclarationSyntax Declaration, INamedTypeSymbol TypeSymbol)>> AttachSymbolProvider<TAttribute>(IncrementalGeneratorInitializationContext context)
+    private static IncrementalValuesProvider<Optional<INamedTypeSymbol>> AttachSymbolProvider<TAttribute>(IncrementalGeneratorInitializationContext context)
     {
         var declarations = MarkedTypeDeclarationCandidateProvider.Construct().Attach<TAttribute>(context.SyntaxProvider);
         var filteredDeclarations = FilteredDeclarationProvider.Construct<TypeDeclarationSyntax>(DeclarationFilters<TAttribute>()).AttachAndReport(context, declarations);
+        return DeclarationSymbolProvider.Construct<TypeDeclarationSyntax, INamedTypeSymbol>(extractSymbol).Attach(filteredDeclarations, context.CompilationProvider);
 
-        return DeclarationSymbolProvider.Construct<TypeDeclarationSyntax>().Attach(filteredDeclarations, context.CompilationProvider);
+        static Optional<INamedTypeSymbol> extractSymbol(Optional<TypeDeclarationSyntax> declaration, INamedTypeSymbol typeSymbol) => new(typeSymbol);
     }
 
-    private static Optional<RawScalarBaseType> ExtractScalar((Optional<RawScalarBaseType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
-    private static Optional<RawScalarSpecializationType> ExtractScalar((Optional<RawScalarSpecializationType> Definition, IEnumerable<INamedTypeSymbol>) input, CancellationToken _) => input.Definition;
-    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawScalarBaseType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
-    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols((Optional<RawScalarSpecializationType>, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
+    private static Optional<TScalar> ExtractScalar<TScalar, T>((Optional<TScalar> Definition, T) input, CancellationToken _) => input.Definition;
+    private static IEnumerable<INamedTypeSymbol> ExtractForeignSymbols<T>((T, IEnumerable<INamedTypeSymbol> ForeignSymbols) input, CancellationToken _) => input.ForeignSymbols;
 
     private static IEnumerable<IDeclarationFilter> DeclarationFilters<TAttribute>() => new IDeclarationFilter[]
     {

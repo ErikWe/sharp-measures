@@ -8,13 +8,10 @@ using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.Contexts.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
-using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
 using SharpMeasures.Generators.Scalars.Parsing.Contexts.Processing;
 using SharpMeasures.Generators.Scalars.Parsing.ConvertibleScalar;
-using SharpMeasures.Generators.Scalars.Parsing.Diagnostics;
-using SharpMeasures.Generators.Scalars.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Scalars.Parsing.ExcludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
@@ -24,10 +21,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
+internal interface IScalarTypeProcessingDiagnostics
+{
+    public abstract Diagnostic? ContradictoryUnitInstanceInclusionAndExclusion(IScalar scalar);
+    public abstract Diagnostic? ContradictoryUnitBaseInstanceInclusionAndExclusion(IScalar scalar);
+}
+
 internal abstract class AScalarProcesser<TRawType, TRawDefinition, TProductType, TProductDefinition>
     where TRawType : ARawScalarType<TRawDefinition>
     where TProductDefinition : IScalar
 {
+    protected IScalarProcessingDiagnosticsStrategy DiagnosticsStrategy { get; }
+
+    protected AScalarProcesser(IScalarProcessingDiagnosticsStrategy diagnosticsStrategy)
+    {
+        DiagnosticsStrategy = diagnosticsStrategy;
+    }
+
     public IOptionalWithDiagnostics<TProductType> Process(Optional<TRawType> rawScalar, CancellationToken token)
     {
         if (token.IsCancellationRequested || rawScalar.HasValue is false)
@@ -63,22 +73,30 @@ internal abstract class AScalarProcesser<TRawType, TRawDefinition, TProductType,
 
         if (includeUnitInstanceBases.HasResult && includeUnitInstanceBases.Result.Count > 0 && excludeUnitInstanceBases.HasResult && excludeUnitInstanceBases.Result.Count > 0)
         {
-            allDiagnostics = allDiagnostics.Concat(new[] { ScalarTypeDiagnostics.ContradictoryAttributes<IncludeUnitBasesAttribute, ExcludeUnitBasesAttribute>(rawScalar.TypeLocation) });
+            if (DiagnosticsStrategy.ScalarTypeDiagnostics.ContradictoryUnitBaseInstanceInclusionAndExclusion(scalar.Result) is Diagnostic contradictoryDiagnostics)
+            {
+                allDiagnostics = allDiagnostics.Concat(new[] { contradictoryDiagnostics });
+            }
+
             excludeUnitInstanceBases = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitBasesDefinition>() as IReadOnlyList<ExcludeUnitBasesDefinition>);
         }
 
         if (includeUnitInstances.HasResult && includeUnitInstances.Result.Count > 0 && excludeUnitInstances.HasResult && excludeUnitInstances.Result.Count > 0)
         {
-            allDiagnostics = allDiagnostics.Concat(new[] { ScalarTypeDiagnostics.ContradictoryAttributes<IncludeUnitsAttribute, ExcludeUnitsAttribute>(rawScalar.TypeLocation) });
+            if (DiagnosticsStrategy.ScalarTypeDiagnostics.ContradictoryUnitInstanceInclusionAndExclusion(scalar.Result) is Diagnostic contradictoryDiagnostics)
+            {
+                allDiagnostics = allDiagnostics.Concat(new[] { contradictoryDiagnostics });
+            }
+
             excludeUnitInstances = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
         }
 
-        TProductType product = ProduceResult(rawScalar.Type, rawScalar.TypeLocation, scalar.Result, derivations.Result, constants.Result, conversions.Result, includeUnitInstanceBases.Result, excludeUnitInstanceBases.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
+        TProductType product = ProduceResult(rawScalar.Type, scalar.Result, derivations.Result, constants.Result, conversions.Result, includeUnitInstanceBases.Result, excludeUnitInstanceBases.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }
 
-    protected abstract TProductType ProduceResult(DefinedType type, MinimalLocation typeLocation, TProductDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ScalarConstantDefinition> constants, IReadOnlyList<ConvertibleScalarDefinition> conversions,
+    protected abstract TProductType ProduceResult(DefinedType type, TProductDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ScalarConstantDefinition> constants, IReadOnlyList<ConvertibleScalarDefinition> conversions,
         IReadOnlyList<IncludeUnitBasesDefinition> baseInclusions, IReadOnlyList<ExcludeUnitBasesDefinition> baseExclusions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions);
 
     protected abstract IOptionalWithDiagnostics<TProductDefinition> ProcessScalar(DefinedType type, TRawDefinition rawDefinition);
@@ -88,14 +106,14 @@ internal abstract class AScalarProcesser<TRawType, TRawDefinition, TProductType,
     protected abstract bool ConversionFromOriginalQuantitySpecified(TProductDefinition scalar);
     protected abstract bool ConversionToOriginalQuantitySpecified(TProductDefinition scalar);
 
-    private static IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ProcessDerivations(DefinedType type, IEnumerable<RawDerivedQuantityDefinition> rawDefinitions)
+    private IResultWithDiagnostics<IReadOnlyList<DerivedQuantityDefinition>> ProcessDerivations(DefinedType type, IEnumerable<RawDerivedQuantityDefinition> rawDefinitions)
     {
         DerivedQuantityProcessingContext processingContext = new(type, QuantityType.Scalar);
 
         return ProcessingFilter.Create(DerivedQuantityProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ScalarConstantDefinition>> ProcessConstants(DefinedType type, IEnumerable<RawScalarConstantDefinition> rawDefinitions, NamedType? unit)
+    private IResultWithDiagnostics<IReadOnlyList<ScalarConstantDefinition>> ProcessConstants(DefinedType type, IEnumerable<RawScalarConstantDefinition> rawDefinitions, NamedType? unit)
     {
         var scalarConstantProcesser = unit is null ? ScalarConstantProcesserForUnknownUnit : ScalarConstantProcesser(unit.Value);
 
@@ -104,48 +122,48 @@ internal abstract class AScalarProcesser<TRawType, TRawDefinition, TProductType,
         return ProcessingFilter.Create(scalarConstantProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ConvertibleScalarDefinition>> ProcessConversions(DefinedType type, NamedType? originalQuantity, bool conversionFromOriginalQuantitySpecified, bool conversionToOriginalQuantitySpecified, IEnumerable<RawConvertibleQuantityDefinition> rawDefinitions)
+    private IResultWithDiagnostics<IReadOnlyList<ConvertibleScalarDefinition>> ProcessConversions(DefinedType type, NamedType? originalQuantity, bool conversionFromOriginalQuantitySpecified, bool conversionToOriginalQuantitySpecified, IEnumerable<RawConvertibleQuantityDefinition> rawDefinitions)
     {
         ConvertibleQuantityProcessingContext processingContext = new(type, originalQuantity, conversionFromOriginalQuantitySpecified, conversionToOriginalQuantitySpecified);
 
         return ProcessingFilter.Create(ConvertibleScalarProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitBasesDefinition>> ProcessIncludeUnitBases(DefinedType type, IEnumerable<RawIncludeUnitBasesDefinition> rawDefinitions)
+    private IResultWithDiagnostics<IReadOnlyList<IncludeUnitBasesDefinition>> ProcessIncludeUnitBases(DefinedType type, IEnumerable<RawIncludeUnitBasesDefinition> rawDefinitions)
     {
         IncludeUnitBasesProcessingContext processingContext = new(type);
 
         return ProcessingFilter.Create(IncludeUnitBasesProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitBasesDefinition>> ProcessExcludeUnitBases(DefinedType type, IEnumerable<RawExcludeUnitBasesDefinition> rawDefinitions)
+    private IResultWithDiagnostics<IReadOnlyList<ExcludeUnitBasesDefinition>> ProcessExcludeUnitBases(DefinedType type, IEnumerable<RawExcludeUnitBasesDefinition> rawDefinitions)
     {
         ExcludUniteBasesProcessingContext processingContext = new(type);
 
         return ProcessingFilter.Create(ExcludeUnitBasesProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ProcessIncludeUnits(DefinedType type, IEnumerable<RawIncludeUnitsDefinition> rawDefinitions)
+    private IResultWithDiagnostics<IReadOnlyList<IncludeUnitsDefinition>> ProcessIncludeUnits(DefinedType type, IEnumerable<RawIncludeUnitsDefinition> rawDefinitions)
     {
         IncludeUnitsProcessingContext processingContext = new(type);
 
         return ProcessingFilter.Create(IncludeUnitsProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ProcessExcludeUnits(DefinedType type, IEnumerable<RawExcludeUnitsDefinition> rawDefinitions)
+    private IResultWithDiagnostics<IReadOnlyList<ExcludeUnitsDefinition>> ProcessExcludeUnits(DefinedType type, IEnumerable<RawExcludeUnitsDefinition> rawDefinitions)
     {
         ExcludeUnitsProcessingContext processingContext = new(type);
 
         return ProcessingFilter.Create(ExcludeUnitsProcesser).Filter(processingContext, rawDefinitions);
     }
 
-    private static DerivedQuantityProcesser DerivedQuantityProcesser { get; } = new(DerivedQuantityProcessingDiagnostics.Instance);
-    private static ScalarConstantProcesser ScalarConstantProcesser(NamedType unit) => new(new ScalarConstantProcessingDiagnostics(unit));
-    private static ScalarConstantProcesser ScalarConstantProcesserForUnknownUnit { get; } = new(new ScalarConstantProcessingDiagnostics());
-    private static ConvertibleScalarProcesser ConvertibleScalarProcesser { get; } = new(ConvertibleScalarProcessingDiagnostics.Instance);
+    private DerivedQuantityProcesser DerivedQuantityProcesser => new(DiagnosticsStrategy.DerivedQuantityDiagnostics);
+    private ScalarConstantProcesser ScalarConstantProcesser(NamedType unit) => new(DiagnosticsStrategy.ScalarConstantDiagnostics(unit));
+    private ScalarConstantProcesser ScalarConstantProcesserForUnknownUnit => new(DiagnosticsStrategy.ScalarConstantDiagnosticsForUnknownUnit);
+    private ConvertibleScalarProcesser ConvertibleScalarProcesser => new(DiagnosticsStrategy.ConvertibleScalarDiagnostics);
 
-    private static IncludeUnitBasesProcesser IncludeUnitBasesProcesser { get; } = new(IncludeUnitBasesProcessingDiagnostics.Instance);
-    private static ExcludeUnitBasesProcesser ExcludeUnitBasesProcesser { get; } = new(ExcludeUnitBasesProcessingDiagnostics.Instance);
-    private static IncludeUnitsProcesser IncludeUnitsProcesser { get; } = new(IncludeUnitsProcessingDiagnostics.Instance);
-    private static ExcludeUnitsProcesser ExcludeUnitsProcesser { get; } = new(ExcludeUnitsProcessingDiagnostics.Instance);
+    private IncludeUnitBasesProcesser IncludeUnitBasesProcesser => new(DiagnosticsStrategy.IncludeUnitBasesDiagnostics);
+    private ExcludeUnitBasesProcesser ExcludeUnitBasesProcesser => new(DiagnosticsStrategy.ExcludeUnitBasesDiagnostics);
+    private IncludeUnitsProcesser IncludeUnitsProcesser => new(DiagnosticsStrategy.IncludeUnitsDiagnostics);
+    private ExcludeUnitsProcesser ExcludeUnitsProcesser => new(DiagnosticsStrategy.ExcludeUnitsDiagnostics);
 }

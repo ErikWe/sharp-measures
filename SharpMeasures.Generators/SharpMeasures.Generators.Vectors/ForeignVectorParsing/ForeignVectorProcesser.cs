@@ -1,17 +1,30 @@
 ﻿namespace SharpMeasures.Generators.Vectors.ForeignVectorParsing;
 
 using SharpMeasures.Equatables;
+using SharpMeasures.Generators.Vectors.Parsing;
 
 using System.Threading;
 
-public interface IForeignVectorProcesser
+public sealed class ForeignVectorProcesser
 {
-    public abstract (IVectorPopulation Population, IForeignVectorValidator Validator) ProcessAndExtend(IVectorPopulation unextendedVectorPopulation, CancellationToken token);
-}
+    public static (ForeignVectorProcessingResult ProcessingResult, IVectorPopulation Population) ProcessAndExtend(ForeignVectorParsingResult parsingResult, IVectorPopulation unextendedVectorPopulation, CancellationToken token)
+    {
+        var processer = new ForeignVectorProcesser();
 
-internal sealed record class ForeignVectorProcesser : IForeignVectorProcesser
-{
-    private ForeignVectorParsingResult ParsingResult { get; }
+        if (token.IsCancellationRequested is false)
+        {
+            processer.Process(parsingResult);
+        }
+
+        return (processer.Finalize(), processer.Extend(unextendedVectorPopulation));
+    }
+
+    private GroupBaseProcesser GroupBaseProcesser { get; } = new(VectorProcessingDiagnosticsStrategies.EmptyDiagnostics);
+    private GroupSpecializationProcesser GroupSpecializationProcesser { get; } = new(VectorProcessingDiagnosticsStrategies.EmptyDiagnostics);
+    private GroupMemberProcesser GroupMemberProcesser { get; } = new(VectorProcessingDiagnosticsStrategies.EmptyDiagnostics);
+
+    private VectorBaseProcesser VectorBaseProcesser { get; } = new(VectorProcessingDiagnosticsStrategies.EmptyDiagnostics);
+    private VectorSpecializationProcesser VectorSpecializationProcesser { get; } = new(VectorProcessingDiagnosticsStrategies.EmptyDiagnostics);
 
     private EquatableList<GroupBaseType> GroupBases { get; } = new();
     private EquatableList<GroupSpecializationType> GroupSpecializations { get; } = new();
@@ -20,76 +33,61 @@ internal sealed record class ForeignVectorProcesser : IForeignVectorProcesser
     private EquatableList<VectorBaseType> VectorBases { get; } = new();
     private EquatableList<VectorSpecializationType> VectorSpecializations { get; } = new();
 
-    public ForeignVectorProcesser(ForeignVectorParsingResult parsingResult)
-    {
-        ParsingResult = parsingResult;
-    }
+    private ForeignVectorProcesser() { }
 
-    public (IVectorPopulation, IForeignVectorValidator) ProcessAndExtend(IVectorPopulation unextendedVectorPopulation, CancellationToken token)
+    private void Process(ForeignVectorParsingResult parsingResult)
     {
-        if (token.IsCancellationRequested is false)
+        foreach (var rawGroupBase in parsingResult.GroupBases)
         {
-            ForeignGroupBaseProcesser groupBaseProcesser = new();
-            ForeignGroupSpecializationProcesser groupSpecializationProcesser = new();
+            var groupBase = GroupBaseProcesser.Process(rawGroupBase);
 
-            ForeignVectorBaseProcesser vectorBaseProcesser = new();
-            ForeignVectorSpecializationProcesser vectorSpecializationProcesser = new();
-
-            foreach (var rawGroupBase in ParsingResult.GroupBases)
+            if (groupBase.HasResult)
             {
-                var groupBase = groupBaseProcesser.Process(rawGroupBase);
-
-                if (groupBase.HasValue)
-                {
-                    GroupBases.Add(groupBase.Value);
-                }
-            }
-
-            foreach (var rawGroupSpecialization in ParsingResult.GroupSpecializations)
-            {
-                var groupSpecialization = groupSpecializationProcesser.Process(rawGroupSpecialization);
-
-                if (groupSpecialization.HasValue)
-                {
-                    GroupSpecializations.Add(groupSpecialization.Value);
-                }
-            }
-
-            foreach (var rawMember in ParsingResult.GroupMembers)
-            {
-                var member = ForeignGroupMemberProcesser.Process(rawMember);
-
-                if (member.HasValue)
-                {
-                    GroupMembers.Add(member.Value);
-                }
-            }
-
-            foreach (var rawVectorBase in ParsingResult.VectorBases)
-            {
-                var vectorBase = vectorBaseProcesser.Process(rawVectorBase);
-
-                if (vectorBase.HasValue)
-                {
-                    VectorBases.Add(vectorBase.Value);
-                }
-            }
-
-            foreach (var rawVectorSpecialization in ParsingResult.VectorSpecializations)
-            {
-                var vectorSpecialization = vectorSpecializationProcesser.Process(rawVectorSpecialization);
-
-                if (vectorSpecialization.HasValue)
-                {
-                    VectorSpecializations.Add(vectorSpecialization.Value);
-                }
+                GroupBases.Add(groupBase.Result);
             }
         }
 
-        var result = new ForeignVectorProcessingResult(GroupBases, GroupSpecializations, GroupMembers, VectorBases, VectorSpecializations);
-        var extendedPopulation = ExtendedVectorPopulation.Build(unextendedVectorPopulation, result);
-        var validator = new ForeignVectorValidator(result);
+        foreach (var rawGroupSpecialization in parsingResult.GroupSpecializations)
+        {
+            var groupSpecialization = GroupSpecializationProcesser.Process(rawGroupSpecialization);
 
-        return (extendedPopulation, validator);
+            if (groupSpecialization.HasResult)
+            {
+                GroupSpecializations.Add(groupSpecialization.Result);
+            }
+        }
+
+        foreach (var rawMember in parsingResult.GroupMembers)
+        {
+            var member = GroupMemberProcesser.Process(rawMember);
+
+            if (member.HasResult)
+            {
+                GroupMembers.Add(member.Result);
+            }
+        }
+
+        foreach (var rawVectorBase in parsingResult.VectorBases)
+        {
+            var vectorBase = VectorBaseProcesser.Process(rawVectorBase);
+
+            if (vectorBase.HasResult)
+            {
+                VectorBases.Add(vectorBase.Result);
+            }
+        }
+
+        foreach (var rawVectorSpecialization in parsingResult.VectorSpecializations)
+        {
+            var vectorSpecialization = VectorSpecializationProcesser.Process(rawVectorSpecialization);
+
+            if (vectorSpecialization.HasResult)
+            {
+                VectorSpecializations.Add(vectorSpecialization.Result);
+            }
+        }
     }
+
+    private ForeignVectorProcessingResult Finalize() => new(GroupBases, GroupSpecializations, GroupMembers, VectorBases, VectorSpecializations);
+    private IVectorPopulation Extend(IVectorPopulation vectorPopulation) => ExtendedVectorPopulation.Build(vectorPopulation, Finalize());
 }

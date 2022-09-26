@@ -14,7 +14,6 @@ using System.Linq;
 internal record class AVectorType<TDefinition> : IVectorType where TDefinition : IVector
 {
     public DefinedType Type { get; }
-    public MinimalLocation TypeLocation { get; }
 
     public TDefinition Definition { get; }
 
@@ -39,10 +38,9 @@ internal record class AVectorType<TDefinition> : IVectorType where TDefinition :
     IReadOnlyList<IUnitInstanceInclusionList> IQuantityType.UnitInstanceInclusions => UnitInstanceInclusions;
     IReadOnlyList<IUnitInstanceList> IQuantityType.UnitInstanceExclusions => UnitInstanceExclusions;
 
-    protected AVectorType(DefinedType type, MinimalLocation typeLocation, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
+    protected AVectorType(DefinedType type, TDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
     {
         Type = type;
-        TypeLocation = typeLocation;
 
         Definition = definition;
 

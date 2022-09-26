@@ -1,7 +1,6 @@
 ﻿namespace SharpMeasures;
 
 using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
 
 /// <summary>Describes a two-dimensional vector quantity, consisting of X and Y components.</summary>
 public interface IVector2Quantity

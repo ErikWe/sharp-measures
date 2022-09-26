@@ -12,7 +12,7 @@ public class InvalidPermutationsValue
     [Fact]
     public void Truee() => AssertIdentical(TrueeText);
 
-    private static GeneratorVerifier AssertIdentical(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, new GeneratorVerifierSettings(true, false)).AssertIdenticalSources(Identical);
+    private static GeneratorVerifier AssertIdentical(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, GeneratorVerifierSettings.GeneratedCodeAssertions).AssertIdenticalSources(Identical);
 
     private static string TrueeText => """
         using SharpMeasures.Generators.Scalars;

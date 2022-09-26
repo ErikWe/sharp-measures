@@ -8,7 +8,6 @@ using System.Collections.Generic;
 internal sealed record class ResolvedVectorType : IResolvedVectorType
 {
     public DefinedType Type { get; }
-    public MinimalLocation TypeLocation { get; }
 
     public int Dimension { get; }
 
@@ -42,12 +41,11 @@ internal sealed record class ResolvedVectorType : IResolvedVectorType
 
     IReadOnlyList<IConvertibleQuantity> IResolvedQuantityType.Conversions => Conversions;
 
-    public ResolvedVectorType(DefinedType type, MinimalLocation typeLocation, int dimension, NamedType? group, NamedType unit, NamedType? originalQuantity, ConversionOperatorBehaviour specializationForwardsConversionBehaviour, ConversionOperatorBehaviour specializationBackwardsConversionBehaviour, NamedType? scalar,
+    public ResolvedVectorType(DefinedType type, int dimension, NamedType? group, NamedType unit, NamedType? originalQuantity, ConversionOperatorBehaviour specializationForwardsConversionBehaviour, ConversionOperatorBehaviour specializationBackwardsConversionBehaviour, NamedType? scalar,
         bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IReadOnlyList<IDerivedQuantity> derivations, IReadOnlyList<IVectorConstant> constants, IReadOnlyList<IConvertibleQuantity> conversions,
         IReadOnlyList<IDerivedQuantity> inheritedDerivations, IReadOnlyList<IConvertibleQuantity> inheritedConversions, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
     {
         Type = type;
-        TypeLocation = typeLocation;
 
         Dimension = dimension;
 

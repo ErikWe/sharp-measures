@@ -32,7 +32,7 @@ public class IncompatibleDerivedUnitListSize
     private static SourceSubtext OneElementArray { get; } = SourceSubtext.Covered("{ \"Metre\" }", prefix: "new[] ");
     private static SourceSubtext ThreeElements { get; } = SourceSubtext.Covered("\"Metre\", \"Metre\", \"Metre\"");
 
-    private static GeneratorVerifier AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source).AssertExactlyListedDiagnosticsIDsReported(IncompatibleDerivedUnitListSizeDiagnostics);
+    private static GeneratorVerifier AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(string source) => GeneratorVerifier.Construct<SharpMeasuresGenerator>(source, GeneratorVerifierSettings.TestCodeAssertions).AssertExactlyListedDiagnosticsIDsReported(IncompatibleDerivedUnitListSizeDiagnostics);
     private static IReadOnlyCollection<string> IncompatibleDerivedUnitListSizeDiagnostics { get; } = new string[] { DiagnosticIDs.IncompatibleDerivedUnitListSize };
 
     private static string TwoElementSignatureText(SourceSubtext units) => $$"""
@@ -66,33 +66,6 @@ public class IncompatibleDerivedUnitListSize
         var source = TwoElementSignatureText(units);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, units.Context.With(outerPrefix: "DerivedUnitInstance(\"MetrePerSecond\", \"MetresPerSecond\", \"id\", "));
 
-        return AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(TwoElementSignatureIdentical);
+        return AssertExactlyIncompatibleDerivedUnitListSizeDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
     }
-
-    private static GeneratorVerifier TwoElementSignatureIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(TwoElementSignatureIdenticalText);
-
-    private static string TwoElementSignatureIdenticalText => """
-        using SharpMeasures.Generators.Scalars;
-        using SharpMeasures.Generators.Units;
-
-        [SharpMeasuresScalar(typeof(UnitOfLength))]
-        public partial class Length { }
-
-        [SharpMeasuresScalar(typeof(UnitOfTime))]
-        public partial class Time { }
-
-        [SharpMeasuresScalar(typeof(UnitOfSpeed))]
-        public partial class Speed { }
-
-        [FixedUnitInstance("Metre", "Metres")]
-        [SharpMeasuresUnit(typeof(Length))]
-        public partial class UnitOfLength { }
-
-        [SharpMeasuresUnit(typeof(Time))]
-        public partial class UnitOfTime { }
-
-        [DerivableUnit("id", "{0} / {1}", typeof(UnitOfLength), typeof(UnitOfTime))]
-        [SharpMeasuresUnit(typeof(Speed))]
-        public partial class UnitOfSpeed { }
-        """;
 }

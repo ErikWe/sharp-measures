@@ -13,14 +13,14 @@ using System.Threading;
 
 internal sealed class ForeignTypeParser
 {
-    public static (IncrementalValueProvider<IForeignUnitProcesser> UnitProvider, IncrementalValueProvider<IForeignScalarProcesser> ScalarProvider, IncrementalValueProvider<IForeignVectorProcesser> VectorProvider) Parse(IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> foreignSymbols)
+    public static (IncrementalValueProvider<ForeignUnitParsingResult> UnitProvider, IncrementalValueProvider<ForeignScalarParsingResult> ScalarProvider, IncrementalValueProvider<ForeignVectorParsingResult> VectorProvider) Parse(IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> foreignSymbols)
     {
         var combinedProvider = foreignSymbols.Select(Parse);
 
         return (combinedProvider.Select(ExtractUnits), combinedProvider.Select(ExtractScalars), combinedProvider.Select(ExtractVectors));
     }
 
-    private static (IForeignUnitProcesser Units, IForeignScalarProcesser Scalars, IForeignVectorProcesser Vectors) Parse(ImmutableArray<INamedTypeSymbol> foreignSymbols, CancellationToken token)
+    private static (ForeignUnitParsingResult Units, ForeignScalarParsingResult Scalars, ForeignVectorParsingResult Vectors) Parse(ImmutableArray<INamedTypeSymbol> foreignSymbols, CancellationToken token)
     {
         return new ForeignTypeParser(foreignSymbols).Parse(token);
     }
@@ -38,7 +38,7 @@ internal sealed class ForeignTypeParser
         ForeignSymbols.AddRange(foreignSymbols);
     }
 
-    private (IForeignUnitProcesser, IForeignScalarProcesser, IForeignVectorProcesser) Parse(CancellationToken token)
+    private (ForeignUnitParsingResult, ForeignScalarParsingResult, ForeignVectorParsingResult) Parse(CancellationToken token)
     {
         if (token.IsCancellationRequested is false)
         {
@@ -77,47 +77,41 @@ internal sealed class ForeignTypeParser
 
     private bool ParseUnit(INamedTypeSymbol foreignSymbol)
     {
-        var referencedSymbols = UnitParser.TryParse(foreignSymbol);
+        (var success, var referencedSymbols) = UnitParser.TryParse(foreignSymbol);
 
-        if (referencedSymbols.HasValue is false)
+        if (success)
         {
-            return false;
+            ForeignSymbols.AddRange(referencedSymbols);
         }
 
-        ForeignSymbols.AddRange(referencedSymbols.Value);
-
-        return true;
+        return success;
     }
 
     private bool ParseScalar(INamedTypeSymbol foreignSymbol)
     {
-        var referencedSymbols = ScalarParser.TryParse(foreignSymbol);
+        (var success, var referencedSymbols) = ScalarParser.TryParse(foreignSymbol);
 
-        if (referencedSymbols.HasValue is false)
+        if (success)
         {
-            return false;
+            ForeignSymbols.AddRange(referencedSymbols);
         }
 
-        ForeignSymbols.AddRange(referencedSymbols.Value);
-
-        return true;
+        return success;
     }
 
     private bool ParseVector(INamedTypeSymbol foreignSymbol)
     {
-        var referencedSymbols = VectorParser.TryParse(foreignSymbol);
+        (var success, var referencedSymbols) = VectorParser.TryParse(foreignSymbol);
 
-        if (referencedSymbols.HasValue is false)
+        if (success)
         {
-            return false;
+            ForeignSymbols.AddRange(referencedSymbols);
         }
 
-        ForeignSymbols.AddRange(referencedSymbols.Value);
-
-        return true;
+        return success;
     }
 
-    private static IForeignUnitProcesser ExtractUnits((IForeignUnitProcesser Units, IForeignScalarProcesser, IForeignVectorProcesser) results, CancellationToken _) => results.Units;
-    private static IForeignScalarProcesser ExtractScalars((IForeignUnitProcesser, IForeignScalarProcesser Scalars, IForeignVectorProcesser) results, CancellationToken _) => results.Scalars;
-    private static IForeignVectorProcesser ExtractVectors((IForeignUnitProcesser, IForeignScalarProcesser, IForeignVectorProcesser Vectors) results, CancellationToken _) => results.Vectors;
+    private static ForeignUnitParsingResult ExtractUnits<T1, T2>((ForeignUnitParsingResult Units, T1, T2) results, CancellationToken _) => results.Units;
+    private static ForeignScalarParsingResult ExtractScalars<T1, T2>((T1, ForeignScalarParsingResult Scalars, T2) results, CancellationToken _) => results.Scalars;
+    private static ForeignVectorParsingResult ExtractVectors<T1, T2>((T1, T2, ForeignVectorParsingResult Vectors) results, CancellationToken _) => results.Vectors;
 }

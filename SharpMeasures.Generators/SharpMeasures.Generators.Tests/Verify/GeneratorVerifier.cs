@@ -18,14 +18,17 @@ using Xunit;
 
 internal readonly record struct GeneratorVerifierSettings(bool AssertNoDiagnosticsFromGeneratedCode, bool AssertNoErrorsOrWarningsFromTestCode)
 {
-    public static GeneratorVerifierSettings Default { get; } = new(true, true);
+    public static GeneratorVerifierSettings AllAssertions { get; } = new(true, true);
+    public static GeneratorVerifierSettings TestCodeAssertions { get; } = new(false, true);
+    public static GeneratorVerifierSettings GeneratedCodeAssertions { get; } = new(true, false);
+    public static GeneratorVerifierSettings NoAssertions { get; } = new(false, false);
 }
 
 [UsesVerify]
 internal class GeneratorVerifier
 {
     public static GeneratorVerifier Construct<TGenerator>(string source) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator());
-    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator) => Construct(source, generator, GeneratorVerifierSettings.Default);
+    public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator) => Construct(source, generator, GeneratorVerifierSettings.AllAssertions);
 
     public static GeneratorVerifier Construct<TGenerator>(string source, GeneratorVerifierSettings settings) where TGenerator : IIncrementalGenerator, new() => Construct(source, new TGenerator(), settings);
     public static GeneratorVerifier Construct(string source, IIncrementalGenerator generator, GeneratorVerifierSettings settings)
@@ -35,7 +38,7 @@ internal class GeneratorVerifier
         return new(source, driver, compilation, settings);
     }
 
-    public static GeneratorVerifier Construct(string source, GeneratorDriver driver, Compilation compilation) => Construct(source, driver, compilation, GeneratorVerifierSettings.Default);
+    public static GeneratorVerifier Construct(string source, GeneratorDriver driver, Compilation compilation) => Construct(source, driver, compilation, GeneratorVerifierSettings.AllAssertions);
     public static GeneratorVerifier Construct(string source, GeneratorDriver driver, Compilation compilation, GeneratorVerifierSettings settings) => new(source, driver, compilation, settings);
 
     private string Source { get; }
@@ -84,7 +87,7 @@ internal class GeneratorVerifier
 
     private void AssertNoErrorsOrWarningsFromTestCode()
     {
-        Assert.Empty(Compilation.GetDiagnostics().Where(static (diagnostics) => diagnostics.Severity is DiagnosticSeverity.Error or DiagnosticSeverity.Warning));
+        Assert.Empty(Compilation.GetDiagnostics().Where(static (diagnostics) => diagnostics.Severity is DiagnosticSeverity.Error or DiagnosticSeverity.Warning && string.IsNullOrEmpty(diagnostics.Location.SourceTree?.FilePath)));
     }
 
     public GeneratorVerifier AssertNoSourceGenerated()
@@ -410,9 +413,45 @@ internal class GeneratorVerifier
         await Verifier.Verify(Output.Where((result) => includedNames.Contains(result.HintName)));
     }
 
-    public async Task VerifyMatchingSourceNames(params string[] regexPatterns)
+    public async Task VerifyMatchingSourceNames(IEnumerable<string> sourceNames)
     {
-        await VerifyMatchingSourceNames(regexPatterns.Select(static (pattern) => new Regex(pattern))).ConfigureAwait(false);
+        var sourceNamesList = sourceNames.ToList();
+
+        HashSet<int> unmatchedNamesIndices = new(sourceNamesList.Count);
+
+        for (int i = 0; i < sourceNamesList.Count; i++)
+        {
+            unmatchedNamesIndices.Add(i);
+        }
+
+        var matchingSourceNames = Output.Select(static (result) => result.HintName).Where(matches).ToList();
+
+        var unmatchedSourceNames = unmatchedNamesIndices.Select((index) => sourceNamesList[index]).ToList();
+
+        Assert.Empty(unmatchedSourceNames);
+        Assert.NotEmpty(matchingSourceNames);
+
+        await VerifyListedSourceNames(matchingSourceNames).ConfigureAwait(false);
+
+        bool matches(string sourceName)
+        {
+            for (int i = 0; i < sourceNamesList.Count; i++)
+            {
+                if (sourceNamesList[i] == sourceName)
+                {
+                    unmatchedNamesIndices.Remove(i);
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    public async Task VerifyMatchingSourceNames(params string[] sourceNames)
+    {
+        await VerifyMatchingSourceNames(sourceNames as IEnumerable<string>).ConfigureAwait(false);
     }
 
     public async Task VerifyMatchingSourceNames(IEnumerable<Regex> patterns)

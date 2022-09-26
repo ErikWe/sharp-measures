@@ -2,6 +2,7 @@
 
 using SharpMeasures.Generators.Tests.Verify;
 
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using VerifyXunit;
@@ -12,10 +13,10 @@ using Xunit;
 public class NormalCases
 {
     [Fact]
-    public Task UnbiasedUnit() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(UnbiasedUnitText).AssertNoDiagnosticsReported().VerifyMatchingSourceNames(@"UnitOfLength.\S+\.g\.cs");
+    public Task UnbiasedUnit() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(UnbiasedUnitText).AssertNoDiagnosticsReported().VerifyMatchingSourceNames(new Regex(@"UnitOfLength.\S+\.g\.cs"));
 
     [Fact]
-    public Task BiasedUnit() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedUnitText).AssertNoDiagnosticsReported().VerifyMatchingSourceNames(@"UnitOfTemperature.\S+\.g\.cs");
+    public Task BiasedUnit() => GeneratorVerifier.Construct<SharpMeasuresGenerator>(BiasedUnitText).AssertNoDiagnosticsReported().VerifyMatchingSourceNames(new Regex(@"UnitOfTemperature.\S+\.g\.cs"));
 
     private static string UnbiasedUnitText => $$"""
         using SharpMeasures.Generators.Scalars;

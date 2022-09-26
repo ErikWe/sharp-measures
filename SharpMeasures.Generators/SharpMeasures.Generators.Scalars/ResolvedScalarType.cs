@@ -8,7 +8,6 @@ using System.Collections.Generic;
 internal sealed record class ResolvedScalarType : IResolvedScalarType
 {
     public DefinedType Type { get; }
-    public MinimalLocation TypeLocation { get; }
 
     public NamedType Unit { get; }
     public bool UseUnitBias { get; }
@@ -41,12 +40,11 @@ internal sealed record class ResolvedScalarType : IResolvedScalarType
 
     IReadOnlyList<IConvertibleQuantity> IResolvedQuantityType.Conversions => Conversions;
 
-    public ResolvedScalarType(DefinedType type, MinimalLocation typeLocation, NamedType unit, bool useUnitBias, NamedType? originalQuantity, ConversionOperatorBehaviour specializationForwardsConversionBehaviour, ConversionOperatorBehaviour specializationBackwardsConversionBehaviour, NamedType? vector,
+    public ResolvedScalarType(DefinedType type, NamedType unit, bool useUnitBias, NamedType? originalQuantity, ConversionOperatorBehaviour specializationForwardsConversionBehaviour, ConversionOperatorBehaviour specializationBackwardsConversionBehaviour, NamedType? vector,
         bool implementSum, bool implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, IReadOnlyList<IDerivedQuantity> derivations, IReadOnlyList<IScalarConstant> constants, IReadOnlyList<IConvertibleQuantity> conversions,
         IReadOnlyList<IDerivedQuantity> inheritedDerivations, IReadOnlyList<IConvertibleQuantity> inheritedConversions, IReadOnlyList<string> includedUnitBaseInstanceNames, IReadOnlyList<string> includedUnitInstanceNames, bool? generateDocumentation)
     {
         Type = type;
-        TypeLocation = typeLocation;
 
         Unit = unit;
         UseUnitBias = useUnitBias;
