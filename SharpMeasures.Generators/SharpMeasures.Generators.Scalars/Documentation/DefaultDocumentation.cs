@@ -57,7 +57,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
             _ => constant.Value.ToString("0.####", CultureInfo.InvariantCulture)
         };
 
-        return $$"""/// <summary>The {{ScalarReference}} representing the constant {{constant.Name}}, equivalent to { {{value}} [<see cref="{{Unit.Type.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/>] }.</summary>""";
+        return $$"""/// <summary>The {{ScalarReference}} representing { {{value}} [<see cref="{{Unit.Type.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/>] }.</summary>""";
     }
 
     public string UnitBase(IUnitInstance unitInstance) => $$"""/// <summary>The {{ScalarReference}} representing { 1 [<see cref="{{Unit.Type.FullyQualifiedName}}.{{unitInstance.Name}}"/>] }.</summary>""";
@@ -113,7 +113,7 @@ internal sealed class DefaultDocumentation : IDocumentationStrategy, IEquatable<
         """;
 
     public string InConstantMultiples(IScalarConstant constant) => $"""
-        /// <summary>The magnitude of <see langword="this", expressed in multiples of <see cref="{Type.FullyQualifiedName}.{constant.Name}"/>.</summary>
+        /// <summary>The magnitude of <see langword="this"/>, expressed in multiples of <see cref="{Type.FullyQualifiedName}.{constant.Name}"/>.</summary>
         """;
 
     public string InSpecifiedUnit(IUnitInstance unitInstance) => $"""

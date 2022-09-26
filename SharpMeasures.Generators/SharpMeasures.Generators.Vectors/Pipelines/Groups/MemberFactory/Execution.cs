@@ -82,7 +82,7 @@ internal static class Execution
             SeparationHandler.AddIfNecessary();
 
             AppendDocumentation(indentation, Data.Documentation.VectorFactoryMethod(dimension));
-            Builder.AppendLine($"{indentation}public static {member.FullyQualifiedName} Create(global::SharpMeasures.Vector{dimension} vector, {Data.Unit.FullyQualifiedName} {Data.UnitParameterName}) => new(vector, {Data.UnitParameterName});");
+            Builder.AppendLine($"{indentation}public static {member.FullyQualifiedName} Create(global::SharpMeasures.Vector{dimension} components, {Data.Unit.FullyQualifiedName} {Data.UnitParameterName}) => new(components, {Data.UnitParameterName});");
         }
 
         private void AppendComponentsFactoryMethod(Indentation indentation, NamedType member, int dimension)

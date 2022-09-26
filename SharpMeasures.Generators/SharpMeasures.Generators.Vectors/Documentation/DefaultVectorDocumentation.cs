@@ -97,7 +97,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
     };
 
     private string ComponentedHeader() => $"""
-        /// <summary>A measure of the {Dimension}-dimensional vector quantity {Type.Name}, composed of {ScalarReference}, and expressed in {UnitReference}.</summary>
+        /// <summary>A measure of the {Dimension}-dimensional vector quantity {Type.Name}, composed of {ScalarReference} and expressed in {UnitReference}.</summary>
         """;
 
     private string UncomponentedHeader() => $"""
@@ -110,7 +110,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         StringBuilder componentText = new();
         IterativeBuilding.AppendEnumerable(componentText, components(), ", ");
 
-        return $$"""/// <summary>The {{ScalarReference}} representing the constant {{constant.Name}}, equivalent to { ({{componentText}}) [<see cref="{{Unit.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/>] }.</summary>""";
+        return $$"""/// <summary>The {{ScalarReference}} representing { ({{componentText}}) [<see cref="{{Unit.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/>] }.</summary>""";
 
         IEnumerable<string> components()
         {
@@ -221,7 +221,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         /// <param name="{UnitParameterName}">The {UnitReference} in which the components of <see langword="this"/> are expressed.</param>
         """;
     public string InConstantMultiples(IVectorConstant constant) => $"""
-        /// <summary>The components of <see langword="this", expressed in multiples of <see cref="{VectorReference}.{constant.Name}"/>.</summary>
+        /// <summary>The components of <see langword="this"/>, expressed in multiples of <see cref="{VectorReference}.{constant.Name}"/>.</summary>
         """;
     public string InSpecifiedUnit(IUnitInstance unitInstance) => $"""
         /// <summary>The components of <see langword="this"/>, expressed in <see cref="{Unit.FullyQualifiedName}.{unitInstance.Name}"/>.</summary>
