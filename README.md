@@ -1,6 +1,6 @@
 # SharpMeasures [![NuGet version (SharpMeasures)](https://img.shields.io/nuget/v/SharpMeasures.svg?style=plastic)](https://www.nuget.org/packages/SharpMeasures/)
 
-SharpMeasures is a C# tool that aims to simplify proper usage of physical quantities and units of measurement during development. This is done by providing concrete types, such as `Time`, `UnitOfLength`, and `Acceleration3`. Common matematical operations are also implemented, allowing quantities to be derived from other quantities - as demonstrated below.
+SharpMeasures is an easily extendable C# tool that aims to encourage explicit usage of physical quantities and units of measurement during development. This is done by providing concrete types, such as `Time`, `UnitOfLength`, and `Acceleration3` - together with a custom source generator. While SharpMeasures is mainly designed as a treatment for *primitive obsession*, common matematical operations are also implemented, allowing quantities to be derived from other quantities - as demonstrated below.
 
 ```csharp
 Displacement3 displacement = (0, 1.5, -4) * Length.OneMetre;
@@ -14,11 +14,11 @@ Console.WriteLine(velocity.InUnit(UnitOfSpeed.KilometresPerHour)); // "(0, 10.8,
 
 ### Extendability
 
-SharpMeasures is implemented entirely using a source generator, which means that it's trivial to extend the existing set of quantities and units. It is especially simple to construct specialized forms of existing quantities - for example a quantity `Altitude` as a specialized form of `Length`. Using such specialized types helps make your code even more expressive and accurate, with minimal effort. Read more further down.
+SharpMeasures is implemented entirely using a source generator, which means that it's trivial to extend the existing set of quantities and units. It is especially simple to construct specialized forms of existing quantities - for example a quantity `Altitude` as a specialized form of `Length`. Read more further down.
 
-### Functionality
+### Limitations
 
-SharpMeasures consists of two main components: quantities and units. A quantity represents a scalar magnitude (or multiple, for vectors), and is not expressed in any particular unit - rather, they are always expressed in a default unit (typically SI units). A specific unit is only applied when constructing a quantity, or when accessing the magnitude of a quantity. Dimensional analysis is not performed when evaluating mathematical expressions, which means that mathematical operations require all involved quantities (even intermediate) to be explicitly implemented in SharpMeasures.
+Dimensional analysis is not performed when evaluating mathematical expressions, which means that mathematical operations require all involved quantities (even intermediate) to be explicitly implemented in SharpMeasures. If this is not the case, a catch-all quantity `Unhandled` will be the result of the operation - which will need to be explicitly convert to the desired type. Currently, the set of supported operations is fairly limited - so this issue will be encountered relatively often if moderately complex or uncommon expressions are used.
 
 ## Source Generator [![NuGet version (SharpMeasures.Generators)](https://img.shields.io/nuget/v/SharpMeasures.Generators.svg?style=plastic)](https://www.nuget.org/packages/SharpMeasures.Generators/)
 
@@ -36,6 +36,8 @@ public partial class Altitude { }
 ```
 
 This means that `Altitude` will borrow the definition from `Length` - including units, derivations, and constants. Cast operators ensure that `Altitude` can implicitly be used in place of `Length` - while the reverse action would require an explicit cast.
+
+> Caveat: Any functionality manually added to `Length` will not be present in `Altitude`.
 
 ### New Types
 
@@ -77,11 +79,9 @@ Console.WriteLine(frequency); // "0.769230769230769 [Hz]"
 
 ### Diagnostics
 
-The source generator include a large set of diagnostics, which helps ensure that the tool is used correctly:
+The source generator includes a large set of diagnostics, which helps ensure that the tool is used correctly:
 
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/19408310/191860992-9821db9e-fcb9-4385-af36-87c75d701bdf.png" />
-</p>
+![DiagnosticsExample](https://user-images.githubusercontent.com/19408310/191860992-9821db9e-fcb9-4385-af36-87c75d701bdf.png)
 
 ## Similar Projects
 
