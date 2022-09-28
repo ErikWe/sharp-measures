@@ -10,7 +10,7 @@ internal sealed class EmptyConvertibleScalarFilteringDiagnostics : IConvertibleS
 
     private EmptyConvertibleScalarFilteringDiagnostics() { }
 
-    Diagnostic? IConvertibleScalarFilteringDiagnostics.TypeNotScalar(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index) => null;
-    Diagnostic? IConvertibleScalarFilteringDiagnostics.ScalarNotUnbiased(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index) => null;
-    Diagnostic? IConvertibleScalarFilteringDiagnostics.ScalarNotBiased(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index) => null;
+    public Diagnostic? TypeNotScalar(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index) => null;
+    public Diagnostic? ScalarNotUnbiased(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index) => null;
+    public Diagnostic? ScalarNotBiased(IConvertibleScalarFilteringContext context, ConvertibleScalarDefinition definition, int index) => null;
 }

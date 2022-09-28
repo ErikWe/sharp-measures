@@ -10,10 +10,10 @@ internal sealed class EmptySharpMeasuresVectorGroupMemberValidationDiagnostics :
 
     private EmptySharpMeasuresVectorGroupMemberValidationDiagnostics() { }
 
-    Diagnostic? ISharpMeasuresVectorGroupMemberValidationDiagnostics.TypeAlreadyUnit(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorGroupMemberValidationDiagnostics.TypeAlreadyScalar(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorGroupMemberValidationDiagnostics.TypeAlreadyVector(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorGroupMemberValidationDiagnostics.TypeAlreadyVectorGroup(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorGroupMemberValidationDiagnostics.TypeNotVectorGroup(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorGroupMemberValidationDiagnostics.VectorGroupAlreadyContainsDimension(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition) => null;
+    public Diagnostic? TypeAlreadyUnit(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition) => null;
+    public Diagnostic? TypeAlreadyScalar(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition) => null;
+    public Diagnostic? TypeAlreadyVector(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition) => null;
+    public Diagnostic? TypeAlreadyVectorGroup(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition) => null;
+    public Diagnostic? TypeNotVectorGroup(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition) => null;
+    public Diagnostic? VectorGroupAlreadyContainsDimension(ISharpMeasuresVectorGroupMemberValidationContext context, SharpMeasuresVectorGroupMemberDefinition definition) => null;
 }

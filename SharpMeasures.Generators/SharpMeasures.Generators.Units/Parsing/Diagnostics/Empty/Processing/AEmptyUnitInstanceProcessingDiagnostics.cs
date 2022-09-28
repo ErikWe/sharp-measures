@@ -8,13 +8,13 @@ internal abstract class AEmptyUnitInstanceProcessingDiagnostics<TDefinition, TLo
     where TDefinition : IRawUnitInstance<TLocations>
     where TLocations : IUnitInstanceLocations
 {
-    Diagnostic? IUnitInstanceProcessingDiagnostics<TDefinition, TLocations>.DuplicateUnitInstanceName(IUnitInstanceProcessingContext context, TDefinition definition) => null;
-    Diagnostic? IUnitInstanceProcessingDiagnostics<TDefinition, TLocations>.DuplicateUnitInstancePluralForm(IUnitInstanceProcessingContext context, TDefinition definition, string interpretedPluralForm) => null;
-    Diagnostic? IUnitInstanceProcessingDiagnostics<TDefinition, TLocations>.EmptyUnitInstanceName(IUnitInstanceProcessingContext context, TDefinition definition) => null;
-    Diagnostic? IUnitInstanceProcessingDiagnostics<TDefinition, TLocations>.EmptyUnitInstancePluralForm(IUnitInstanceProcessingContext context, TDefinition definition) => null;
-    Diagnostic? IUnitInstanceProcessingDiagnostics<TDefinition, TLocations>.InvalidUnitInstancePluralForm(IUnitInstanceProcessingContext context, TDefinition definition) => null;
-    Diagnostic? IUnitInstanceProcessingDiagnostics<TDefinition, TLocations>.NullUnitInstanceName(IUnitInstanceProcessingContext context, TDefinition definition) => null;
-    Diagnostic? IUnitInstanceProcessingDiagnostics<TDefinition, TLocations>.NullUnitInstancePluralForm(IUnitInstanceProcessingContext context, TDefinition definition) => null;
-    Diagnostic? IUnitInstanceProcessingDiagnostics<TDefinition, TLocations>.UnitInstanceNameReservedByUnitInstancePluralForm(IUnitInstanceProcessingContext context, TDefinition definition) => null;
-    Diagnostic? IUnitInstanceProcessingDiagnostics<TDefinition, TLocations>.UnitInstancePluralFormReservedByUnitInstanceName(IUnitInstanceProcessingContext context, TDefinition definition, string interpretedPluralForm) => null;
+    public Diagnostic? DuplicateUnitInstanceName(IUnitInstanceProcessingContext context, TDefinition definition) => null;
+    public Diagnostic? DuplicateUnitInstancePluralForm(IUnitInstanceProcessingContext context, TDefinition definition, string interpretedPluralForm) => null;
+    public Diagnostic? EmptyUnitInstanceName(IUnitInstanceProcessingContext context, TDefinition definition) => null;
+    public Diagnostic? EmptyUnitInstancePluralForm(IUnitInstanceProcessingContext context, TDefinition definition) => null;
+    public Diagnostic? InvalidUnitInstancePluralForm(IUnitInstanceProcessingContext context, TDefinition definition) => null;
+    public Diagnostic? NullUnitInstanceName(IUnitInstanceProcessingContext context, TDefinition definition) => null;
+    public Diagnostic? NullUnitInstancePluralForm(IUnitInstanceProcessingContext context, TDefinition definition) => null;
+    public Diagnostic? UnitInstanceNameReservedByUnitInstancePluralForm(IUnitInstanceProcessingContext context, TDefinition definition) => null;
+    public Diagnostic? UnitInstancePluralFormReservedByUnitInstanceName(IUnitInstanceProcessingContext context, TDefinition definition, string interpretedPluralForm) => null;
 }

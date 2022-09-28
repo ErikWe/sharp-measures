@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 
 internal sealed class EmptySharpMeasuresVectorProcessingDiagnostics : ISharpMeasuresVectorProcessingDiagnostics
@@ -13,16 +12,16 @@ internal sealed class EmptySharpMeasuresVectorProcessingDiagnostics : ISharpMeas
 
     private EmptySharpMeasuresVectorProcessingDiagnostics() { }
 
-    Diagnostic? ISharpMeasuresVectorProcessingDiagnostics.DifferenceDisabledButQuantitySpecified(IProcessingContext context, RawSharpMeasuresVectorDefinition definition) => null;
-    Diagnostic? IDefaultUnitInstanceProcessingDiagnostics.EmptyDefaultUnitInstanceName(IProcessingContext context, IDefaultUnitInstanceDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorProcessingDiagnostics.InvalidDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorProcessingDiagnostics.InvalidInterpretedDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition, int dimension) => null;
-    Diagnostic? ISharpMeasuresVectorProcessingDiagnostics.MissingDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition) => null;
-    Diagnostic? IDefaultUnitInstanceProcessingDiagnostics.NullDefaultUnitInstanceName(IProcessingContext context, IDefaultUnitInstanceDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorProcessingDiagnostics.NullDifferenceQuantity(IProcessingContext context, RawSharpMeasuresVectorDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorProcessingDiagnostics.NullScalar(IProcessingContext context, RawSharpMeasuresVectorDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorProcessingDiagnostics.NullUnit(IProcessingContext context, RawSharpMeasuresVectorDefinition definition) => null;
-    Diagnostic? IDefaultUnitInstanceProcessingDiagnostics.SetDefaultUnitInstanceNameButNotSymbol(IProcessingContext context, IDefaultUnitInstanceDefinition definition) => null;
-    Diagnostic? IDefaultUnitInstanceProcessingDiagnostics.SetDefaultUnitInstanceSymbolButNotName(IProcessingContext context, IDefaultUnitInstanceDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorProcessingDiagnostics.VectorNameAndDimensionConflict(IProcessingContext context, RawSharpMeasuresVectorDefinition definition, int interpretedDimension) => null;
+    public Diagnostic? DifferenceDisabledButQuantitySpecified(IProcessingContext context, RawSharpMeasuresVectorDefinition definition) => null;
+    public Diagnostic? EmptyDefaultUnitInstanceName(IProcessingContext context, IDefaultUnitInstanceDefinition definition) => null;
+    public Diagnostic? InvalidDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition) => null;
+    public Diagnostic? InvalidInterpretedDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition, int dimension) => null;
+    public Diagnostic? MissingDimension(IProcessingContext context, RawSharpMeasuresVectorDefinition definition) => null;
+    public Diagnostic? NullDefaultUnitInstanceName(IProcessingContext context, IDefaultUnitInstanceDefinition definition) => null;
+    public Diagnostic? NullDifferenceQuantity(IProcessingContext context, RawSharpMeasuresVectorDefinition definition) => null;
+    public Diagnostic? NullScalar(IProcessingContext context, RawSharpMeasuresVectorDefinition definition) => null;
+    public Diagnostic? NullUnit(IProcessingContext context, RawSharpMeasuresVectorDefinition definition) => null;
+    public Diagnostic? SetDefaultUnitInstanceNameButNotSymbol(IProcessingContext context, IDefaultUnitInstanceDefinition definition) => null;
+    public Diagnostic? SetDefaultUnitInstanceSymbolButNotName(IProcessingContext context, IDefaultUnitInstanceDefinition definition) => null;
+    public Diagnostic? VectorNameAndDimensionConflict(IProcessingContext context, RawSharpMeasuresVectorDefinition definition, int interpretedDimension) => null;
 }

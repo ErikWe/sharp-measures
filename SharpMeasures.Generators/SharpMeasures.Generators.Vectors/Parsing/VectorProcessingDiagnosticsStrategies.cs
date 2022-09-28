@@ -2,9 +2,11 @@
 
 using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
+using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Empty.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Processing;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.ProcessedQuantity;
 using SharpMeasures.Generators.Vectors.Parsing.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Empty.Processing;
 using SharpMeasures.Generators.Vectors.Parsing.Diagnostics.Processing;
@@ -29,6 +31,7 @@ internal interface IVectorProcessingDiagnosticsStrategy
     public abstract ISpecializedSharpMeasuresVectorProcessingDiagnostics SpecializedSharpMeasuresVectorDiagnostics { get; }
 
     public abstract IDerivedQuantityProcessingDiagnostics DerivedQuantityDiagnostics { get; }
+    public abstract IProcessedQuantityProcessingDiagnostics ProcessedQuantityDiagnostics { get; }
     public abstract IVectorConstantProcessingDiagnostics VectorConstantDiagnostics(NamedType unit);
     public abstract IVectorConstantProcessingDiagnostics VectorConstantDiagnosticsForUnknownUnit { get; }
     public abstract IConvertibleQuantityProcessingDiagnostics ConvertibleVectorDiagnostics { get; }
@@ -56,6 +59,7 @@ internal static class VectorProcessingDiagnosticsStrategies
         public ISpecializedSharpMeasuresVectorProcessingDiagnostics SpecializedSharpMeasuresVectorDiagnostics { get; } = SpecializedSharpMeasuresVectorProcessingDiagnostics.Instance;
 
         public IDerivedQuantityProcessingDiagnostics DerivedQuantityDiagnostics => DerivedQuantityProcessingDiagnostics.Instance;
+        public IProcessedQuantityProcessingDiagnostics ProcessedQuantityDiagnostics => ProcessedQuantityProcessingDiagnostics.Instance;
         public IVectorConstantProcessingDiagnostics VectorConstantDiagnostics(NamedType unit) => new VectorConstantProcessingDiagnostics(unit);
         public IVectorConstantProcessingDiagnostics VectorConstantDiagnosticsForUnknownUnit { get; } = new VectorConstantProcessingDiagnostics();
         public IConvertibleQuantityProcessingDiagnostics ConvertibleVectorDiagnostics => ConvertibleVectorProcessingDiagnostics.Instance;
@@ -78,6 +82,7 @@ internal static class VectorProcessingDiagnosticsStrategies
         public ISpecializedSharpMeasuresVectorProcessingDiagnostics SpecializedSharpMeasuresVectorDiagnostics => EmptySpecializedSharpMeasuresVectorProcessingDiagnostics.Instance;
 
         public IDerivedQuantityProcessingDiagnostics DerivedQuantityDiagnostics => EmptyDerivedQuantityProcessingDiagnostics.Instance;
+        public IProcessedQuantityProcessingDiagnostics ProcessedQuantityDiagnostics => EmptyProcessedQuantityProcessingDiagnostics.Instance;
         public IVectorConstantProcessingDiagnostics VectorConstantDiagnostics(NamedType _) => VectorConstantDiagnosticsForUnknownUnit;
         public IVectorConstantProcessingDiagnostics VectorConstantDiagnosticsForUnknownUnit => EmptyVectorConstantProcessingDiagnostics.Instance;
         public IConvertibleQuantityProcessingDiagnostics ConvertibleVectorDiagnostics => EmptyConvertibleQuantityProcessingDiagnostics.Instance;

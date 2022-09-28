@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1281,
+    Title: Duplicate name of process,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: : (5,19)-(5,25),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: {0} already defines a process "{1}",
+    Message: Length already defines a process "Name",
+    Category: Naming,
+    CustomTags: []
+  }
+]

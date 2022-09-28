@@ -11,5 +11,5 @@ internal sealed class EmptySharpMeasuresUnitProcessingDiagnostics : ISharpMeasur
 
     private EmptySharpMeasuresUnitProcessingDiagnostics() { }
 
-    Diagnostic? ISharpMeasuresUnitProcessingDiagnostics.NullQuantity(IProcessingContext context, RawSharpMeasuresUnitDefinition definition) => null;
+    public Diagnostic? NullQuantity(IProcessingContext context, RawSharpMeasuresUnitDefinition definition) => null;
 }

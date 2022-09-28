@@ -6,6 +6,7 @@ using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.ProcessedQuantity;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ internal static class CommonParsing
         return (rawDerivations, foreignSymbols);
     }
 
+    public static IEnumerable<RawProcessedQuantityDefinition> ParseProcesses(INamedTypeSymbol typeSymbol) => ProcessedQuantityParser.Parser.ParseAllOccurrences(typeSymbol);
     public static IEnumerable<RawVectorConstantDefinition> ParseConstants(INamedTypeSymbol typeSymbol) => VectorConstantParser.Parser.ParseAllOccurrences(typeSymbol);
     public static (IEnumerable<RawConvertibleQuantityDefinition> Definitions, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseConversions(INamedTypeSymbol typeSymbol)
     {

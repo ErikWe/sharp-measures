@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1282,
+    Title: Invalid processing expression,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: : (4,27)-(4,31),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The expression describing the process must be defined,
+    Message: The expression describing the process must be defined,
+    Category: Usage,
+    CustomTags: []
+  }
+]

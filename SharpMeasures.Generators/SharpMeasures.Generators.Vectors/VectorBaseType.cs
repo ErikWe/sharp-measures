@@ -4,6 +4,7 @@ using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.ProcessedQuantity;
 using SharpMeasures.Generators.Vectors.Abstraction;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
@@ -16,6 +17,6 @@ internal sealed record class VectorBaseType : AVectorType<SharpMeasuresVectorDef
     IQuantityBase IQuantityBaseType.Definition => Definition;
     IVectorBase IVectorBaseType.Definition => Definition;
 
-    public VectorBaseType(DefinedType type, SharpMeasuresVectorDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
-        : base(type, definition, derivations, constants, conversions, unitInstanceInclusions, unitInstanceExclusions) { }
+    public VectorBaseType(DefinedType type, SharpMeasuresVectorDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ProcessedQuantityDefinition> processes, IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
+        : base(type, definition, derivations, processes, constants, conversions, unitInstanceInclusions, unitInstanceExclusions) { }
 }

@@ -11,9 +11,9 @@ internal sealed class EmptySharpMeasuresVectorGroupMemberProcessingDiagnostics :
 
     private EmptySharpMeasuresVectorGroupMemberProcessingDiagnostics() { }
 
-    Diagnostic? ISharpMeasuresVectorGroupMemberProcessingDiagnostics.InvalidDimension(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorGroupMemberProcessingDiagnostics.InvalidInterpretedDimension(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition, int dimension) => null;
-    Diagnostic? ISharpMeasuresVectorGroupMemberProcessingDiagnostics.MissingDimension(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorGroupMemberProcessingDiagnostics.NullVectorGroup(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorGroupMemberProcessingDiagnostics.VectorNameAndDimensionConflict(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition, int interpretedDimension) => null;
+    public Diagnostic? InvalidDimension(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition) => null;
+    public Diagnostic? InvalidInterpretedDimension(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition, int dimension) => null;
+    public Diagnostic? MissingDimension(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition) => null;
+    public Diagnostic? NullVectorGroup(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition) => null;
+    public Diagnostic? VectorNameAndDimensionConflict(IProcessingContext context, RawSharpMeasuresVectorGroupMemberDefinition definition, int interpretedDimension) => null;
 }

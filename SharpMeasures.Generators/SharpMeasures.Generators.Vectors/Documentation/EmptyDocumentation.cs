@@ -1,5 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
+using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Units;
 
@@ -35,6 +36,7 @@ internal sealed class EmptyDocumentation : IGroupDocumentationStrategy, IVectorD
     string IVectorDocumentationStrategy.AntidirectionalCastConversion(NamedType _) => string.Empty;
     string IVectorDocumentationStrategy.Derivation(DerivedQuantitySignature _, IReadOnlyList<string> _2) => string.Empty;
     string IVectorDocumentationStrategy.OperatorDerivation(OperatorDerivation _) => string.Empty;
+    string IVectorDocumentationStrategy.Process(IProcessedQuantity _) => string.Empty;
     string IVectorDocumentationStrategy.IsNaN() => string.Empty;
     string IVectorDocumentationStrategy.IsZero() => string.Empty;
     string IVectorDocumentationStrategy.IsFinite() => string.Empty;

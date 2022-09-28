@@ -5,6 +5,7 @@ using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.ProcessedQuantity;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroupMember;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
@@ -19,6 +20,7 @@ internal sealed record class GroupMemberType : IVectorGroupMemberType
     public SharpMeasuresVectorGroupMemberDefinition Definition { get; }
 
     public IReadOnlyList<DerivedQuantityDefinition> Derivations { get; }
+    public IReadOnlyList<ProcessedQuantityDefinition> Processes { get; }
     public IReadOnlyList<VectorConstantDefinition> Constants { get; }
     public IReadOnlyList<ConvertibleVectorDefinition> Conversions { get; }
 
@@ -33,13 +35,14 @@ internal sealed record class GroupMemberType : IVectorGroupMemberType
     IVectorGroupMember IVectorGroupMemberType.Definition => Definition;
 
     IReadOnlyList<IDerivedQuantity> IQuantityType.Derivations => Derivations;
+    IReadOnlyList<IProcessedQuantity> IVectorGroupMemberType.Processes => Processes;
     IReadOnlyList<IVectorConstant> IVectorGroupMemberType.Constants => Constants;
     IReadOnlyList<IConvertibleQuantity> IQuantityType.Conversions => Conversions;
 
     IReadOnlyList<IUnitInstanceInclusionList> IQuantityType.UnitInstanceInclusions => UnitInstanceInclusions;
     IReadOnlyList<IUnitInstanceList> IQuantityType.UnitInstanceExclusions => UnitInstanceExclusions;
 
-    public GroupMemberType(DefinedType type, SharpMeasuresVectorGroupMemberDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations,
+    public GroupMemberType(DefinedType type, SharpMeasuresVectorGroupMemberDefinition definition, IReadOnlyList<DerivedQuantityDefinition> derivations, IReadOnlyList<ProcessedQuantityDefinition> processes,
         IReadOnlyList<VectorConstantDefinition> constants, IReadOnlyList<ConvertibleVectorDefinition> conversions, IReadOnlyList<IncludeUnitsDefinition> unitInstanceInclusions, IReadOnlyList<ExcludeUnitsDefinition> unitInstanceExclusions)
     {
         Type = type;
@@ -47,6 +50,7 @@ internal sealed record class GroupMemberType : IVectorGroupMemberType
         Definition = definition;
 
         Derivations = derivations.AsReadOnlyEquatable();
+        Processes = processes.AsReadOnlyEquatable();
         Constants = constants.AsReadOnlyEquatable();
         Conversions = conversions.AsReadOnlyEquatable();
 

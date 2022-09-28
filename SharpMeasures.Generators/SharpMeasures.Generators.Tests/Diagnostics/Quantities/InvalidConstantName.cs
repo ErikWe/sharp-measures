@@ -17,9 +17,6 @@ public class InvalidConstantName
     [Fact]
     public Task VerifyInvalidConstantNameDiagnosticsMessage_Null() => AssertScalar(NullName).VerifyDiagnostics();
 
-    [Fact]
-    public Task VerifyInvalidConstantNameDiagnosticsMessage_Empt() => AssertScalar(EmptyName).VerifyDiagnostics();
-
     [Theory]
     [MemberData(nameof(InvalidConstantNames))]
     public void Scalar(SourceSubtext constantName) => AssertScalar(constantName);
@@ -38,7 +35,7 @@ public class InvalidConstantName
 
     [Theory]
     [MemberData(nameof(InvalidConstantNames))]
-    public void VectorGroupMember(SourceSubtext constantName) => AssertSpecializedVector(constantName);
+    public void VectorGroupMember(SourceSubtext constantName) => AssertVectorGroupMember(constantName);
 
     public static IEnumerable<object[]> InvalidConstantNames() => new object[][]
     {
@@ -94,7 +91,7 @@ public class InvalidConstantName
         var source = SpecializedScalarText(constantName);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantName.Context.With(outerPrefix: "ScalarConstant("));
 
-        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
+        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedScalarIdentical);
     }
 
     private static string VectorText(SourceSubtext constantName) => $$"""
@@ -119,7 +116,7 @@ public class InvalidConstantName
         var source = VectorText(constantName);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantName.Context.With(outerPrefix: "VectorConstant("));
 
-        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
+        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorIdentical);
     }
 
     private static string SpecializedVectorText(SourceSubtext constantName) => $$"""
@@ -147,7 +144,7 @@ public class InvalidConstantName
         var source = SpecializedVectorText(constantName);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantName.Context.With(outerPrefix: "VectorConstant("));
 
-        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
+        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(SpecializedVectorIdentical);
     }
 
     private static string VectorGroupMemberText(SourceSubtext constantName) => $$"""
@@ -175,7 +172,7 @@ public class InvalidConstantName
         var source = VectorGroupMemberText(constantName);
         var expectedLocation = ExpectedDiagnosticsLocation.TextSpan(source, constantName.Context.With(outerPrefix: "VectorConstant("));
 
-        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation);
+        return AssertExactlyInvalidConstantNameDiagnostics(source).AssertDiagnosticsLocation(expectedLocation).AssertIdenticalSources(VectorGroupMemberIdentical);
     }
 
     private static GeneratorVerifier ScalarIdentical => GeneratorVerifier.Construct<SharpMeasuresGenerator>(ScalarIdenticalText);

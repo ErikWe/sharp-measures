@@ -6,6 +6,7 @@ using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.ProcessedQuantity;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
 using System;
@@ -35,19 +36,20 @@ internal abstract class AVectorParser<TDefinition, TProduct>
         }
 
         (var derivations, var derivationForeignSymbols) = CommonParsing.ParseDerivations(typeSymbol);
+        var processes = CommonParsing.ParseProcesses(typeSymbol);
         var constants = CommonParsing.ParseConstants(typeSymbol);
         (var conversions, var conversionForeignSymbols) = CommonParsing.ParseConversions(typeSymbol);
 
         var includeUnitInstances = CommonParsing.ParseIncludeUnitInstances(typeSymbol);
         var excludeUnitInstances = CommonParsing.ParseExcludeUnitInstances(typeSymbol);
 
-        TProduct product = ProduceResult(typeSymbol.AsDefinedType(), vector.Value, derivations, constants, conversions, includeUnitInstances, excludeUnitInstances);
+        TProduct product = ProduceResult(typeSymbol.AsDefinedType(), vector.Value, derivations, processes, constants, conversions, includeUnitInstances, excludeUnitInstances);
         var foreignSymbols = vectorForeignSymbols.Concat(derivationForeignSymbols).Concat(conversionForeignSymbols);
 
         return (product, foreignSymbols);
     }
 
-    protected abstract TProduct ProduceResult(DefinedType type, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions);
+    protected abstract TProduct ProduceResult(DefinedType type, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawProcessedQuantityDefinition> processes, IEnumerable<RawVectorConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions);
 
     protected abstract (Optional<TDefinition> Definition, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseVector(INamedTypeSymbol typeSymbol);
 }

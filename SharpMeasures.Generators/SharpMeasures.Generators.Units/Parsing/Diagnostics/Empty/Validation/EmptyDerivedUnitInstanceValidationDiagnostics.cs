@@ -11,9 +11,9 @@ internal sealed class EmptyDerivedUnitInstanceValidationDiagnostics : IDerivedUn
 
     private EmptyDerivedUnitInstanceValidationDiagnostics() { }
 
-    Diagnostic? IDerivedUnitInstanceValidationDiagnostics.UnitNotDerivable(IDerivedUnitInstanceValidationContext context, DerivedUnitInstanceDefinition definition) => null;
-    Diagnostic? IDerivedUnitInstanceValidationDiagnostics.AmbiguousSignatureNotSpecified(IDerivedUnitInstanceValidationContext context, DerivedUnitInstanceDefinition definition) => null;
-    Diagnostic? IDerivedUnitInstanceValidationDiagnostics.UnrecognizedDerivationID(IDerivedUnitInstanceValidationContext context, DerivedUnitInstanceDefinition definition) => null;
-    Diagnostic? IDerivedUnitInstanceValidationDiagnostics.InvalidUnitListLength(IDerivedUnitInstanceValidationContext context, DerivedUnitInstanceDefinition definition, int signatureLength) => null;
-    Diagnostic? IDerivedUnitInstanceValidationDiagnostics.UnrecognizedUnitInstance(IDerivedUnitInstanceValidationContext context, DerivedUnitInstanceDefinition definition, int index, NamedType unitType) => null;
+    public Diagnostic? UnitNotDerivable(IDerivedUnitInstanceValidationContext context, DerivedUnitInstanceDefinition definition) => null;
+    public Diagnostic? AmbiguousSignatureNotSpecified(IDerivedUnitInstanceValidationContext context, DerivedUnitInstanceDefinition definition) => null;
+    public Diagnostic? UnrecognizedDerivationID(IDerivedUnitInstanceValidationContext context, DerivedUnitInstanceDefinition definition) => null;
+    public Diagnostic? InvalidUnitListLength(IDerivedUnitInstanceValidationContext context, DerivedUnitInstanceDefinition definition, int signatureLength) => null;
+    public Diagnostic? UnrecognizedUnitInstance(IDerivedUnitInstanceValidationContext context, DerivedUnitInstanceDefinition definition, int index, NamedType unitType) => null;
 }

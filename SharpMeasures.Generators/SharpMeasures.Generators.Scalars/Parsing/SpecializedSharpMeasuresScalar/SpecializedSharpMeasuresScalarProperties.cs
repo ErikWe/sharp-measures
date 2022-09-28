@@ -12,6 +12,7 @@ internal static class SpecializedSharpMeasuresScalarProperties
     {
         OriginalQuantity,
         InheritDerivations,
+        InheritProcesses,
         InheritConstants,
         InheritConversions,
         InheritBases,
@@ -39,6 +40,13 @@ internal static class SpecializedSharpMeasuresScalarProperties
         name: nameof(SpecializedSharpMeasuresScalarAttribute.InheritDerivations),
         setter: static (definition, inheritDerivations) => definition with { InheritDerivations = inheritDerivations },
         locator: static (locations, inheritDerivationsLocation) => locations with { InheritDerivations = inheritDerivationsLocation }
+    );
+
+    private static SpecializedSharpMeasuresScalarProperty<bool> InheritProcesses { get; } = new
+    (
+        name: nameof(SpecializedSharpMeasuresScalarAttribute.InheritProcesses),
+        setter: static (definition, inheritProcesses) => definition with { InheritProcesses = inheritProcesses },
+        locator: static (locations, inheritProcessesLocation) => locations with { InheritProcesses = inheritProcessesLocation }
     );
 
     private static SpecializedSharpMeasuresScalarProperty<bool> InheritConstants { get; } = new

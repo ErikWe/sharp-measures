@@ -10,5 +10,5 @@ internal sealed class EmptyGroupTypeProcessingDiagnostics : IGroupTypeProcessing
 
     private EmptyGroupTypeProcessingDiagnostics() { }
 
-    Diagnostic? IGroupTypeProcessingDiagnostics.ContradictoryUnitInstanceInclusionAndExclusion(IVectorGroup group) => null;
+    public Diagnostic? ContradictoryUnitInstanceInclusionAndExclusion(IVectorGroup group) => null;
 }

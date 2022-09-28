@@ -160,4 +160,44 @@ public static partial class DiagnosticConstruction
     {
         return Diagnostic.Create(DiagnosticRules.DerivationResultsInNonOverlappingDimension, location, quantityType);
     }
+
+    public static Diagnostic InvalidProcessName(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.InvalidProcessName, location);
+    }
+
+    public static Diagnostic DuplicateProcessName(Location? location, string quantityType, string processName)
+    {
+        return Diagnostic.Create(DiagnosticRules.DuplicateProcessName, location, quantityType, processName);
+    }
+
+    public static Diagnostic InvalidProcessExpression(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.InvalidProcessExpression, location);
+    }
+
+    public static Diagnostic ProcessPropertyIncompatibleWithParameters(Location? location, string processName)
+    {
+        return Diagnostic.Create(DiagnosticRules.ProcessPropertyIncompatibleWithParameters, location, processName);
+    }
+
+    public static Diagnostic UnmatchedProcessParameterDefinitions(Location? location, string processName, string parameterTypeCount, string parameterNameCount)
+    {
+        return Diagnostic.Create(DiagnosticRules.UnmatchedProcessParameterDefinitions, location, processName, parameterTypeCount.ToString(CultureInfo.InvariantCulture), parameterNameCount.ToString(CultureInfo.InvariantCulture));
+    }
+
+    public static Diagnostic NullProcessParameterType(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.NullProcessParameterType, location);
+    }
+
+    public static Diagnostic InvalidProcessParameterName(Location? location)
+    {
+        return Diagnostic.Create(DiagnosticRules.InvalidProcessParameterName, location);
+    }
+
+    public static Diagnostic DuplicateProcessParameterName(Location? location, string processName, string parameterName)
+    {
+        return Diagnostic.Create(DiagnosticRules.DuplicateProcessParameterName, location, processName, parameterName);
+    }
 }

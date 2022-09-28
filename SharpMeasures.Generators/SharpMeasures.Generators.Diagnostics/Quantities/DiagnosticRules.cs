@@ -321,4 +321,84 @@ public static partial class DiagnosticRules
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
+
+    public static readonly DiagnosticDescriptor InvalidProcessName = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InvalidProcessName,
+        title: "Invalid name of process",
+        messageFormat: "The name of the process must be defined",
+        category: "Naming",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor DuplicateProcessName = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.DuplicateProcessName,
+        title: "Duplicate name of process",
+        messageFormat: "{0} already defines a process \"{1}\"",
+        category: "Naming",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor InvalidProcessExpression = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InvalidProcessExpression,
+        title: "Invalid processing expression",
+        messageFormat: "The expression describing the process must be defined",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor ProcessPropertyIncompatibleWithParameters = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.ProcessPropertyIncompatibleWithParameters,
+        title: "Process with parameter cannot be a property",
+        messageFormat: "As \"{0}\" defines parameters, it can not be defined as a property. Remove all parameters or do not define the process as a property.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor UnmatchedProcessParameterDefinitions = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.UnmatchedProcessParameterDefinitions,
+        title: "Process has unmatched parameter definitions",
+        messageFormat: "\"{0}\" specifies {1} parameter types, but {2} parameter names",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor NullProcessParameterType = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.NullProcessParameterType,
+        title: "Invalid process parameter type",
+        messageFormat: "Expected a non-null type",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor InvalidProcessParameterName = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.InvalidProcessParameterName,
+        title: "Invalid name of process parameter",
+        messageFormat: "The name of the process parameter must be defined",
+        category: "Naming",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
+    public static readonly DiagnosticDescriptor DuplicateProcessParameterName = new DiagnosticDescriptor
+    (
+        id: DiagnosticIDs.DuplicateProcessParameterName,
+        title: "Duplicate process parameter name",
+        messageFormat: "\"{0}\" already defines a parameter \"{1}\"",
+        category: "Naming",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
 }

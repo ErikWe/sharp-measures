@@ -2,6 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,26 @@ public static class ResultWithDiagnostics
         }
 
         return Construct(result, new[] { diagnostics });
+    }
+
+    public static IResultWithDiagnostics<T> ConditionalDiagnostics<T>(T result, bool condition, Func<IEnumerable<Diagnostic>> diagnosticsDelegate)
+    {
+        if (condition)
+        {
+            return Construct(result);
+        }
+
+        return Construct(result, diagnosticsDelegate());
+    }
+
+    public static IResultWithDiagnostics<T> ConditionalDiagnostics<T>(T result, bool condition, Func<Diagnostic?> diagnosticsDelegate)
+    {
+        if (condition)
+        {
+            return Construct(result);
+        }
+
+        return Construct(result, diagnosticsDelegate());
     }
 
     private sealed class SimpleResultWithDiagnostics<T> : IResultWithDiagnostics<T>

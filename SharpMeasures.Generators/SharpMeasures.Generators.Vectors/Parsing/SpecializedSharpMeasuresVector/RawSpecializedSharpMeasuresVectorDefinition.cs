@@ -9,6 +9,7 @@ internal sealed record class RawSpecializedSharpMeasuresVectorDefinition : ARawA
     {
         OriginalQuantity = symbolicDefinition.OriginalQuantity?.AsNamedType(),
         InheritDerivations = symbolicDefinition.InheritDerivations,
+        InheritProcesses = symbolicDefinition.InheritProcesses,
         InheritConstants = symbolicDefinition.InheritConstants,
         InheritConversions = symbolicDefinition.InheritConversions,
         InheritUnits = symbolicDefinition.InheritUnits,
@@ -26,6 +27,7 @@ internal sealed record class RawSpecializedSharpMeasuresVectorDefinition : ARawA
     public NamedType? OriginalQuantity { get; init; }
 
     public bool InheritDerivations { get; init; } = true;
+    public bool InheritProcesses { get; init; } = true;
     public bool InheritConstants { get; init; } = true;
     public bool InheritConversions { get; init; } = true;
     public bool InheritUnits { get; init; } = true;

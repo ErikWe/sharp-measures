@@ -45,12 +45,8 @@ internal static class Execution
 
         private DataModel Data { get; }
 
-        private InterfaceCollector InterfaceCollector { get; }
-
         private HashSet<DerivedQuantitySignature> ImplementedSignatures { get; } = new();
         private HashSet<OperatorDerivation> ImplementedOperators { get; } = new();
-
-        private bool AnyImplementations { get; set; }
 
         private bool AppendPureVector3Maths { get; set; }
         private bool AppendPureScalarMaths { get; set; }
@@ -60,8 +56,6 @@ internal static class Execution
             Data = data;
 
             SeparationHandler = new(Builder);
-
-            InterfaceCollector = InterfaceCollector.Delayed(Builder);
         }
 
         private void Compose()
@@ -72,16 +66,12 @@ internal static class Execution
 
             Builder.Append(Data.Scalar.ComposeDeclaration());
 
-            InterfaceCollector.MarkInsertionPoint();
-
             BlockBuilding.AppendBlock(Builder, ComposeTypeBlock, originalIndentationLevel: 0, initialNewLine: true);
-
-            InterfaceCollector.InsertInterfacesOnNewLines(new Indentation(1));
         }
 
         private string Retrieve()
         {
-            if (AnyImplementations is false)
+            if (ImplementedSignatures.Count is 0 && ImplementedOperators.Count is 0)
             {
                 return string.Empty;
             }
@@ -138,8 +128,6 @@ internal static class Execution
                 AppendPureVector3Maths = true;
             }
 
-            AnyImplementations = true;
-
             var methodNameAndModifiers = $"public static {Data.Scalar.FullyQualifiedName} From";
             expression = $"new({processedExpression})";
 
@@ -157,8 +145,6 @@ internal static class Execution
             {
                 return;
             }
-
-            AnyImplementations = true;
 
             SeparationHandler.AddIfNecessary();
 

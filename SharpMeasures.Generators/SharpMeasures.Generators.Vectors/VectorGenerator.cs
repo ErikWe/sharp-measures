@@ -13,6 +13,7 @@ using SharpMeasures.Generators.Vectors.Pipelines.Vectors.Derivations;
 using SharpMeasures.Generators.Vectors.Pipelines.Vectors.Common;
 using SharpMeasures.Generators.Vectors.Pipelines.Vectors.Conversions;
 using SharpMeasures.Generators.Vectors.Pipelines.Vectors.Maths;
+using SharpMeasures.Generators.Vectors.Pipelines.Vectors.Processes;
 using SharpMeasures.Generators.Vectors.Pipelines.Vectors.Units;
 
 using System.Threading;
@@ -50,6 +51,7 @@ public static class VectorGenerator
         VectorConversionsGenerator.Initialize(context, reduced);
         VectorDerivationsGenerator.Initialize(context, reduced);
         VectorMathsGenerator.Initialize(context, reduced);
+        VectorProcessesGenerator.Initialize(context, reduced);
         VectorUnitsGenerator.Initialize(context, reduced);
     }
 

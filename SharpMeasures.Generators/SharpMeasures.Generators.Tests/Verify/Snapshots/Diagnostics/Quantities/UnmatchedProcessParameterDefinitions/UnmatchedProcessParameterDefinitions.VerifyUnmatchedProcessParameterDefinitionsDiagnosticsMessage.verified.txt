@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1284,
+    Title: Process has unmatched parameter definitions,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: : (4,1)-(4,18),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: "{0}" specifies {1} parameter types, but {2} parameter names,
+    Message: "Name" specifies 2 parameter types, but 1 parameter names,
+    Category: Usage,
+    CustomTags: []
+  }
+]

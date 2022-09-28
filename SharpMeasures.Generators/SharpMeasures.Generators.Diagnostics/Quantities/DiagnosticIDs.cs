@@ -24,4 +24,13 @@ public static partial class DiagnosticIDs
     public const string DerivationExpressionContainsConstant = $"{Prefix}{Numbering.Hundreds.Quantities}64";
     public const string IncompatibleQuantitiesInDerivation = $"{Prefix}{Numbering.Hundreds.Quantities}65";
     public const string UnexpectedResultFromDerivation = $"{Prefix}{Numbering.Hundreds.Quantities}66";
+
+    public const string InvalidProcessName = $"{Prefix}{Numbering.Hundreds.Quantities}80";
+    public const string DuplicateProcessName = $"{Prefix}{Numbering.Hundreds.Quantities}81";
+    public const string InvalidProcessExpression = $"{Prefix}{Numbering.Hundreds.Quantities}82";
+    public const string ProcessPropertyIncompatibleWithParameters = $"{Prefix}{Numbering.Hundreds.Quantities}83";
+    public const string UnmatchedProcessParameterDefinitions = $"{Prefix}{Numbering.Hundreds.Quantities}84";
+    public const string NullProcessParameterType = $"{Prefix}{Numbering.Hundreds.Quantities}85";
+    public const string InvalidProcessParameterName = $"{Prefix}{Numbering.Hundreds.Quantities}86";
+    public const string DuplicateProcessParameterName = $"{Prefix}{Numbering.Hundreds.Quantities}87";
 }

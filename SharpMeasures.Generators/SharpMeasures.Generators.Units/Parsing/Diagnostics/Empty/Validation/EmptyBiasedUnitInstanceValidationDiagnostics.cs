@@ -10,5 +10,5 @@ internal sealed class EmptyBiasedUnitInstanceValidationDiagnostics : AEmptyModif
 
     private EmptyBiasedUnitInstanceValidationDiagnostics() { }
 
-    Diagnostic? IBiasedUnitInstanceValidationDiagnostics.UnitNotIncludingBiasTerm(IBiasedUnitInstanceValidationContext context, BiasedUnitInstanceDefinition definition) => null;
+    public Diagnostic? UnitNotIncludingBiasTerm(IBiasedUnitInstanceValidationContext context, BiasedUnitInstanceDefinition definition) => null;
 }

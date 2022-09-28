@@ -12,6 +12,7 @@ internal sealed record class SharpMeasuresVectorGroupMemberDefinition : AAttribu
     public bool InheritUnits { get; }
 
     public bool InheritDerivationsFromMembers { get; }
+    public bool InheritProcessesFromMembers { get; }
     public bool InheritConstantsFromMembers { get; }
     public bool InheritConversionsFromMembers { get; }
     public bool InheritUnitsFromMembers { get; }
@@ -32,9 +33,9 @@ internal sealed record class SharpMeasuresVectorGroupMemberDefinition : AAttribu
     IVectorGroupMemberLocations IVectorGroupMember.Locations => Locations;
     IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
-    public SharpMeasuresVectorGroupMemberDefinition(NamedType vectorGroup, bool inheritDerivations, bool inheritConversions, bool inheritUnits, bool inheritDerivationsFromMembers, bool inheritConstantsFromMembers, bool inheritConversionsFromMembers, bool inheritUnitsFromMembers, int dimension,
-        bool? generateDocumentation, SharpMeasuresVectorGroupMemberLocations locations) : base(locations)
-    {
+    public SharpMeasuresVectorGroupMemberDefinition(NamedType vectorGroup, bool inheritDerivations, bool inheritConversions, bool inheritUnits, bool inheritDerivationsFromMembers, bool inheritProcessesFromMembers, bool inheritConstantsFromMembers,
+        bool inheritConversionsFromMembers, bool inheritUnitsFromMembers, int dimension, bool? generateDocumentation, SharpMeasuresVectorGroupMemberLocations locations) : base(locations)
+ {
         VectorGroup = vectorGroup;
 
         InheritDerivations = inheritDerivations;
@@ -42,6 +43,7 @@ internal sealed record class SharpMeasuresVectorGroupMemberDefinition : AAttribu
         InheritUnits = inheritUnits;
 
         InheritDerivationsFromMembers = inheritDerivationsFromMembers;
+        InheritProcessesFromMembers = inheritProcessesFromMembers;
         InheritConstantsFromMembers = inheritConstantsFromMembers;
         InheritConversionsFromMembers = inheritConversionsFromMembers;
         InheritUnitsFromMembers = inheritUnitsFromMembers;

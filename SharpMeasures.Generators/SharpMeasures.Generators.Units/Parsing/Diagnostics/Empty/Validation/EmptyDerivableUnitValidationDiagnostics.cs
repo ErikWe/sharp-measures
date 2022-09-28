@@ -10,5 +10,5 @@ internal sealed class EmptyDerivableUnitValidationDiagnostics : IDerivableUnitVa
 
     private EmptyDerivableUnitValidationDiagnostics() { }
 
-    Diagnostic? IDerivableUnitValidationDiagnostics.SignatureElementNotUnit(IDerivableUnitValidationContext context, DerivableUnitDefinition definition, int index) => null;
+    public Diagnostic? SignatureElementNotUnit(IDerivableUnitValidationContext context, DerivableUnitDefinition definition, int index) => null;
 }

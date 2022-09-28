@@ -11,18 +11,18 @@ internal sealed class EmptyVectorConstantProcessingDiagnostics : IVectorConstant
 
     private EmptyVectorConstantProcessingDiagnostics() { }
 
-    Diagnostic? IQuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>.DuplicateMultiples(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition, string interpretedMultiples) => null;
-    Diagnostic? IQuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>.DuplicateName(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>.EmptyMultiples(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>.EmptyName(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>.EmptyUnitInstanceName(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>.InvalidMultiples(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>.MultiplesDisabledButNameSpecified(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>.MultiplesReservedByName(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition, string interpretedMultiples) => null;
-    Diagnostic? IQuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>.NameAndMultiplesIdentical(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>.NameReservedByMultiples(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>.NullMultiples(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>.NullName(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>.NullUnitInstanceName(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantProcessingDiagnostics<RawVectorConstantDefinition, VectorConstantLocations>.SetRegexSubstitutionButNotPattern(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
+    public Diagnostic? DuplicateMultiples(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition, string interpretedMultiples) => null;
+    public Diagnostic? DuplicateName(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
+    public Diagnostic? EmptyMultiples(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
+    public Diagnostic? EmptyName(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
+    public Diagnostic? EmptyUnitInstanceName(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
+    public Diagnostic? InvalidMultiples(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
+    public Diagnostic? MultiplesDisabledButNameSpecified(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
+    public Diagnostic? MultiplesReservedByName(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition, string interpretedMultiples) => null;
+    public Diagnostic? NameAndMultiplesIdentical(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
+    public Diagnostic? NameReservedByMultiples(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
+    public Diagnostic? NullMultiples(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
+    public Diagnostic? NullName(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
+    public Diagnostic? NullUnitInstanceName(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
+    public Diagnostic? SetRegexSubstitutionButNotPattern(IQuantityConstantProcessingContext context, RawVectorConstantDefinition definition) => null;
 }

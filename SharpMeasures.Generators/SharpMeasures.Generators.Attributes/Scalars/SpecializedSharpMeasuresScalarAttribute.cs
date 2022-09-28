@@ -45,6 +45,8 @@ public sealed class SpecializedSharpMeasuresScalarAttribute : Attribute
 
     /// <summary>Dictates whether this quantity inherits the derivations defined by the original quantity. The default behaviour is <see langword="true"/>.</summary>
     public bool InheritDerivations { get; init; }
+    /// <summary>Dictates whether this quantity inherits the processes defined by the original quantity. The default behaviour is <see langword="true"/>.</summary>
+    public bool InheritProcesses { get; init; }
     /// <summary>Dictates whether this quantity inherits the constants defined by the original quantity. The default behaviour is <see langword="true"/>.</summary>
     public bool InheritConstants { get; init; }
     /// <summary>Dictates whether this quantity inherits the conversions defined by the original quantity. The default behaviour is <see langword="true"/>.</summary>

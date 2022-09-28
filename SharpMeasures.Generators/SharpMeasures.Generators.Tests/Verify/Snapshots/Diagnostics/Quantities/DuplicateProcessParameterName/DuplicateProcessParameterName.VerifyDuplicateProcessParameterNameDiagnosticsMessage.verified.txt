@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1287,
+    Title: Duplicate process parameter name,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: : (4,104)-(4,107),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: "{0}" already defines a parameter "{1}",
+    Message: "Name" already defines a parameter "1",
+    Category: Naming,
+    CustomTags: []
+  }
+]

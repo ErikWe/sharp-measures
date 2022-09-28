@@ -8,5 +8,5 @@ internal sealed class EmptyGroupMemberTypeProcessingDiagnostics : IGroupMemberTy
 
     private EmptyGroupMemberTypeProcessingDiagnostics() { }
 
-    Diagnostic? IGroupMemberTypeProcessingDiagnostics.ContradictoryUnitInstanceInclusionAndExclusion(IVectorGroupMember member) => null;
+    public Diagnostic? ContradictoryUnitInstanceInclusionAndExclusion(IVectorGroupMember member) => null;
 }

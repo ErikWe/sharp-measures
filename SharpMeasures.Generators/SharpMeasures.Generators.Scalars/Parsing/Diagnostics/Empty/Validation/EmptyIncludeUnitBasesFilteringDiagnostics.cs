@@ -10,8 +10,8 @@ internal sealed class EmptyIncludeUnitBasesFilteringDiagnostics : IIncludeUnitBa
 
     private EmptyIncludeUnitBasesFilteringDiagnostics() { }
 
-    Diagnostic? IIncludeUnitBasesFilteringDiagnostics.UnionInclusionStackingModeRedundant(IIncludeUnitBasesFilteringContext context, IncludeUnitBasesDefinition definition) => null;
-    Diagnostic? IIncludeUnitBasesFilteringDiagnostics.UnrecognizedUnitInstance(IIncludeUnitBasesFilteringContext context, IncludeUnitBasesDefinition definition, int index) => null;
-    Diagnostic? IIncludeUnitBasesFilteringDiagnostics.UnitInstanceAlreadyIncluded(IIncludeUnitBasesFilteringContext context, IncludeUnitBasesDefinition definition, int index) => null;
-    Diagnostic? IIncludeUnitBasesFilteringDiagnostics.UnitInstanceExcluded(IIncludeUnitBasesFilteringContext context, IncludeUnitBasesDefinition definition, int index) => null;
+    public Diagnostic? UnionInclusionStackingModeRedundant(IIncludeUnitBasesFilteringContext context, IncludeUnitBasesDefinition definition) => null;
+    public Diagnostic? UnrecognizedUnitInstance(IIncludeUnitBasesFilteringContext context, IncludeUnitBasesDefinition definition, int index) => null;
+    public Diagnostic? UnitInstanceAlreadyIncluded(IIncludeUnitBasesFilteringContext context, IncludeUnitBasesDefinition definition, int index) => null;
+    public Diagnostic? UnitInstanceExcluded(IIncludeUnitBasesFilteringContext context, IncludeUnitBasesDefinition definition, int index) => null;
 }

@@ -10,16 +10,16 @@ internal sealed class EmptyDerivableUnitProcessingDiagnostics : IDerivableUnitPr
 
     private EmptyDerivableUnitProcessingDiagnostics() { }
 
-    Diagnostic? IDerivableUnitProcessingDiagnostics.DerivationSignatureNotPermutable(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
-    Diagnostic? IDerivableUnitProcessingDiagnostics.DuplicateDerivationID(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
-    Diagnostic? IDerivableUnitProcessingDiagnostics.DuplicateDerivationSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
-    Diagnostic? IDerivableUnitProcessingDiagnostics.EmptyExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
-    Diagnostic? IDerivableUnitProcessingDiagnostics.EmptySignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
-    Diagnostic? IDerivableUnitProcessingDiagnostics.ExpressionDoesNotIncludeUnit(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int index) => null;
-    Diagnostic? IDerivableUnitProcessingDiagnostics.MultipleDerivationsButNotNamed(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
-    Diagnostic? IDerivableUnitProcessingDiagnostics.NullExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
-    Diagnostic? IDerivableUnitProcessingDiagnostics.NullSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
-    Diagnostic? IDerivableUnitProcessingDiagnostics.NullSignatureElement(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int index) => null;
-    Diagnostic? IDerivableUnitProcessingDiagnostics.UnitIncludesBiasTerm(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
-    Diagnostic? IDerivableUnitProcessingDiagnostics.UnmatchedExpressionUnit(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int requestedIndex) => null;
+    public Diagnostic? DerivationSignatureNotPermutable(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
+    public Diagnostic? DuplicateDerivationID(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
+    public Diagnostic? DuplicateDerivationSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
+    public Diagnostic? EmptyExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
+    public Diagnostic? EmptySignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
+    public Diagnostic? ExpressionDoesNotIncludeUnit(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int index) => null;
+    public Diagnostic? MultipleDerivationsButNotNamed(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
+    public Diagnostic? NullExpression(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
+    public Diagnostic? NullSignature(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
+    public Diagnostic? NullSignatureElement(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int index) => null;
+    public Diagnostic? UnitIncludesBiasTerm(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition) => null;
+    public Diagnostic? UnmatchedExpressionUnit(IDerivableUnitProcessingContext context, RawDerivableUnitDefinition definition, int requestedIndex) => null;
 }

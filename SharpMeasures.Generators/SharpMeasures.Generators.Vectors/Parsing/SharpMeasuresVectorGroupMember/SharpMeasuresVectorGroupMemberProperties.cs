@@ -15,6 +15,7 @@ internal static class SharpMeasuresVectorGroupMemberProperties
         InheritConversions,
         InheritUnits,
         InheritDerivationsFromMembers,
+        InheritProcessesFromMembers,
         InheritConstantsFromMembers,
         InheritConversionsFromMembers,
         InheritUnitsFromMembers,
@@ -55,6 +56,13 @@ internal static class SharpMeasuresVectorGroupMemberProperties
         name: nameof(SharpMeasuresVectorGroupMemberAttribute.InheritDerivationsFromMembers),
         setter: static (definition, inheritDerivationsFromMembers) => definition with { InheritDerivationsFromMembers = inheritDerivationsFromMembers },
         locator: static (locations, inheritDerivationsFromMembersLocation) => locations with { InheritDerivationsFromMembers = inheritDerivationsFromMembersLocation }
+    );
+
+    private static SharpMeasuresVectorGroupMemberProperty<bool> InheritProcessesFromMembers { get; } = new
+    (
+        name: nameof(SharpMeasuresVectorGroupMemberAttribute.InheritProcessesFromMembers),
+        setter: static (definition, inheritProcessesFromMembers) => definition with { InheritProcessesFromMembers = inheritProcessesFromMembers },
+        locator: static (locations, inheritProcessesFromMembersLocation) => locations with { InheritProcessesFromMembers = inheritProcessesFromMembersLocation }
     );
 
     private static SharpMeasuresVectorGroupMemberProperty<bool> InheritConstantsFromMembers { get; } = new

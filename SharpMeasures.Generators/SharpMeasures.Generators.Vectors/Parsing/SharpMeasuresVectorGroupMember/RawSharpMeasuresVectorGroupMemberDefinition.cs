@@ -12,6 +12,7 @@ internal sealed record class RawSharpMeasuresVectorGroupMemberDefinition : ARawA
         InheritConversions = symbolicDefinition.InheritConversions,
         InheritUnits = symbolicDefinition.InheritUnits,
         InheritDerivationsFromMembers = symbolicDefinition.InheritDerivationsFromMembers,
+        InheritProcessesFromMembers = symbolicDefinition.InheritProcessesFromMembers,
         InheritConstantsFromMembers = symbolicDefinition.InheritConstantsFromMembers,
         InheritConversionsFromMembers = symbolicDefinition.InheritConversionsFromMembers,
         InheritUnitsFromMembers = symbolicDefinition.InheritUnitsFromMembers,
@@ -26,6 +27,7 @@ internal sealed record class RawSharpMeasuresVectorGroupMemberDefinition : ARawA
     public bool InheritUnits { get; init; } = true;
 
     public bool? InheritDerivationsFromMembers { get; init; }
+    public bool InheritProcessesFromMembers { get; init; }
     public bool InheritConstantsFromMembers { get; init; } = true;
     public bool? InheritConversionsFromMembers { get; init; }
     public bool? InheritUnitsFromMembers { get; init; }

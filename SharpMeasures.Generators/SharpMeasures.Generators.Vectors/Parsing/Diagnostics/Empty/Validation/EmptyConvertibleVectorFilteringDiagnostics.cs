@@ -10,9 +10,9 @@ internal sealed class EmptyConvertibleVectorFilteringDiagnostics : IConvertibleV
 
     private EmptyConvertibleVectorFilteringDiagnostics() { }
 
-    Diagnostic? IConvertibleVectorFilteringDiagnostics.TypeNotVector(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index) => null;
-    Diagnostic? IConvertibleVectorFilteringDiagnostics.TypeNotVectorGroup(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index) => null;
-    Diagnostic? IConvertibleVectorFilteringDiagnostics.DuplicateVector(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index) => null;
-    Diagnostic? IConvertibleVectorFilteringDiagnostics.VectorUnexpectedDimension(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index, int dimension) => null;
-    Diagnostic? IConvertibleVectorFilteringDiagnostics.VectorGroupLacksMemberOfMatchingDimension(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index) => null;
+    public Diagnostic? TypeNotVector(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index) => null;
+    public Diagnostic? TypeNotVectorGroup(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index) => null;
+    public Diagnostic? DuplicateVector(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index) => null;
+    public Diagnostic? VectorUnexpectedDimension(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index, int dimension) => null;
+    public Diagnostic? VectorGroupLacksMemberOfMatchingDimension(IConvertibleVectorFilteringContext context, ConvertibleVectorDefinition definition, int index) => null;
 }

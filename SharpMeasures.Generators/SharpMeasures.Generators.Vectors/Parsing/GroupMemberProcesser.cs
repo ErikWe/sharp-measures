@@ -50,13 +50,14 @@ internal sealed class GroupMemberProcesser
         }
 
         var derivations = CommonProcessing.ProcessDerivations(rawMember.Type, rawMember.Derivations, DiagnosticsStrategy);
+        var processes = CommonProcessing.ProcessProcesses(rawMember.Type, rawMember.Processes, DiagnosticsStrategy);
         var constants = CommonProcessing.ProcessConstants(rawMember.Type, rawMember.Constants, null, DiagnosticsStrategy);
         var conversions = ProcessConversions(rawMember.Type, rawMember.Conversions, member.Result.VectorGroup);
 
         var includeUnitInstances = CommonProcessing.ProcessIncludeUnitInstances(rawMember.Type, rawMember.UnitInstanceInclusions, DiagnosticsStrategy);
         var excludeUnitInstances = CommonProcessing.ProcessExcludeUnitInstances(rawMember.Type, rawMember.UnitInstanceExclusions, DiagnosticsStrategy);
 
-        var allDiagnostics = member.Diagnostics.Concat(derivations).Concat(constants).Concat(conversions).Concat(includeUnitInstances).Concat(excludeUnitInstances);
+        var allDiagnostics = member.Diagnostics.Concat(derivations).Concat(processes).Concat(constants).Concat(conversions).Concat(includeUnitInstances).Concat(excludeUnitInstances);
 
         if (includeUnitInstances.HasResult && includeUnitInstances.Result.Count > 0 && excludeUnitInstances.HasResult && excludeUnitInstances.Result.Count > 0)
         {
@@ -68,7 +69,7 @@ internal sealed class GroupMemberProcesser
             excludeUnitInstances = ResultWithDiagnostics.Construct(Array.Empty<ExcludeUnitsDefinition>() as IReadOnlyList<ExcludeUnitsDefinition>);
         }
 
-        GroupMemberType product = new(rawMember.Type, member.Result, derivations.Result, constants.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
+        GroupMemberType product = new(rawMember.Type, member.Result, derivations.Result, processes.Result, constants.Result, conversions.Result, includeUnitInstances.Result, excludeUnitInstances.Result);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);
     }

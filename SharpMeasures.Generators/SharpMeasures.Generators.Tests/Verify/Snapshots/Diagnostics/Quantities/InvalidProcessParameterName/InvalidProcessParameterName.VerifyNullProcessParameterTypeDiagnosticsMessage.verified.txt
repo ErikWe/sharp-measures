@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1286,
+    Title: Invalid name of process parameter,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: : (4,83)-(4,87),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The name of the process parameter must be defined,
+    Message: The name of the process parameter must be defined,
+    Category: Naming,
+    CustomTags: []
+  }
+]

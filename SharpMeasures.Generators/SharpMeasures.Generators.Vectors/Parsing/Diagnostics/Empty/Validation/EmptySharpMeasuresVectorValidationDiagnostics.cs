@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVector;
 
@@ -14,12 +13,12 @@ internal sealed class EmptySharpMeasuresVectorValidationDiagnostics : ISharpMeas
 
     private EmptySharpMeasuresVectorValidationDiagnostics() { }
 
-    Diagnostic? ISharpMeasuresVectorValidationDiagnostics.TypeAlreadyUnit(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorValidationDiagnostics.TypeAlreadyScalar(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorValidationDiagnostics.TypeNotUnit(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorValidationDiagnostics.TypeNotScalar(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorValidationDiagnostics.DifferenceNotVector(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorValidationDiagnostics.DifferenceVectorInvalidDimension(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition, int dimension) => null;
-    Diagnostic? ISharpMeasuresVectorValidationDiagnostics.DifferenceVectorGroupLacksMatchingDimension(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition) => null;
-    Diagnostic? IDefaultUnitInstanceValidationDiagnostics.UnrecognizedDefaultUnitInstance(IProcessingContext context, IDefaultUnitInstanceDefinition definition, IUnitType unit) => null;
+    public Diagnostic? TypeAlreadyUnit(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition) => null;
+    public Diagnostic? TypeAlreadyScalar(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition) => null;
+    public Diagnostic? TypeNotUnit(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition) => null;
+    public Diagnostic? TypeNotScalar(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition) => null;
+    public Diagnostic? DifferenceNotVector(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition) => null;
+    public Diagnostic? DifferenceVectorInvalidDimension(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition, int dimension) => null;
+    public Diagnostic? DifferenceVectorGroupLacksMatchingDimension(ISharpMeasuresVectorValidationContext context, SharpMeasuresVectorDefinition definition) => null;
+    public Diagnostic? UnrecognizedDefaultUnitInstance(IProcessingContext context, IDefaultUnitInstanceDefinition definition, IUnitType unit) => null;
 }

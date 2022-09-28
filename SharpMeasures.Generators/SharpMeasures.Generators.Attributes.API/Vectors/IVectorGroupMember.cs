@@ -13,6 +13,7 @@ public interface IVectorGroupMember : IQuantity
     public abstract bool InheritUnits { get; }
 
     public abstract bool InheritDerivationsFromMembers { get; }
+    public abstract bool InheritProcessesFromMembers { get; }
     public abstract bool InheritConstantsFromMembers { get; }
     public abstract bool InheritConversionsFromMembers { get; }
     public abstract bool InheritUnitsFromMembers { get; }
@@ -31,6 +32,7 @@ public interface IVectorGroupMemberLocations : IQuantityLocations
     public abstract MinimalLocation? InheritUnits { get; }
 
     public abstract MinimalLocation? InheritDerivationsFromMembers { get; }
+    public abstract MinimalLocation? InheritProcessesFromMembers { get; }
     public abstract MinimalLocation? InheritConstantsFromMembers { get; }
     public abstract MinimalLocation? InheritConversionsFromMembers { get; }
     public abstract MinimalLocation? InheritUnitsFromMembers { get; }
@@ -44,6 +46,7 @@ public interface IVectorGroupMemberLocations : IQuantityLocations
     public abstract bool ExplicitlySetInheritUnits { get; }
 
     public abstract bool ExplicitlySetInheritDerivationsFromMembers { get; }
+    public abstract bool ExplicitlySetInheritProcessesFromMembers { get; }
     public abstract bool ExplicitlySetInheritConstantsFromMembers { get; }
     public abstract bool ExplicitlySetInheritConversionsFromMembers { get; }
     public abstract bool ExplicitlySetInheritUnitsFromMembers { get; }

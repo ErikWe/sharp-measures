@@ -10,7 +10,7 @@ internal sealed class EmptyScalarTypeProcessingDiagnostics : IScalarTypeProcessi
 
     private EmptyScalarTypeProcessingDiagnostics() { }
 
-    Diagnostic? IScalarTypeProcessingDiagnostics.ContradictoryUnitInstanceInclusionAndExclusion(IScalar scalar) => null;
+    public Diagnostic? ContradictoryUnitInstanceInclusionAndExclusion(IScalar scalar) => null;
 
-    Diagnostic? IScalarTypeProcessingDiagnostics.ContradictoryUnitBaseInstanceInclusionAndExclusion(IScalar scalar) => null;
+    public Diagnostic? ContradictoryUnitBaseInstanceInclusionAndExclusion(IScalar scalar) => null;
 }
