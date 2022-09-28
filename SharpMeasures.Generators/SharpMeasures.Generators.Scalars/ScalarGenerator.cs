@@ -10,6 +10,7 @@ using SharpMeasures.Generators.Scalars.Pipelines.Common;
 using SharpMeasures.Generators.Scalars.Pipelines.Conversions;
 using SharpMeasures.Generators.Scalars.Pipelines.Derivations;
 using SharpMeasures.Generators.Scalars.Pipelines.Maths;
+using SharpMeasures.Generators.Scalars.Pipelines.Processes;
 using SharpMeasures.Generators.Scalars.Pipelines.Units;
 using SharpMeasures.Generators.Scalars.Pipelines.Vectors;
 using SharpMeasures.Generators.Units;
@@ -38,6 +39,7 @@ public static class ScalarGenerator
         ConversionsGenerator.Initialize(context, reducedScalars);
         DerivationsGenerator.Initialize(context, reducedScalars);
         MathsGenerator.Initialize(context, reducedScalars);
+        ProcessesGenerator.Initialize(context, reducedScalars);
         UnitsGenerator.Initialize(context, reducedScalars);
         VectorsGenerator.Initialize(context, reducedScalars);
     }

@@ -14,6 +14,7 @@ internal sealed record class SymbolicSpecializedSharpMeasuresVectorDefinition : 
     public INamedTypeSymbol? OriginalQuantity { get; init; }
 
     public bool InheritDerivations { get; init; } = true;
+    public bool InheritProcesses { get; init; } = true;
     public bool InheritConstants { get; init; } = true;
     public bool InheritConversions { get; init; } = true;
     public bool InheritUnits { get; init; } = true;

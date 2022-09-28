@@ -11,13 +11,13 @@ internal sealed class EmptyScalarConstantValidationDiagnostics : IScalarConstant
 
     private EmptyScalarConstantValidationDiagnostics() { }
 
-    Diagnostic? IScalarConstantValidationDiagnostics.NameReservedByUnitInstanceName(IScalarConstantValidationContext context, ScalarConstantDefinition definition) => null;
-    Diagnostic? IScalarConstantValidationDiagnostics.MultiplesNameReservedByUnitInstanceName(IScalarConstantValidationContext context, ScalarConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantValidationDiagnostics<ScalarConstantDefinition, ScalarConstantLocations>.UnrecognizedUnitInstanceName(IQuantityConstantValidationContext context, ScalarConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantValidationDiagnostics<ScalarConstantDefinition, ScalarConstantLocations>.DuplicateName(IQuantityConstantValidationContext context, ScalarConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantValidationDiagnostics<ScalarConstantDefinition, ScalarConstantLocations>.NameReservedByMultiples(IQuantityConstantValidationContext context, ScalarConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantValidationDiagnostics<ScalarConstantDefinition, ScalarConstantLocations>.DuplicateMultiples(IQuantityConstantValidationContext context, ScalarConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantValidationDiagnostics<ScalarConstantDefinition, ScalarConstantLocations>.MultiplesReservedByName(IQuantityConstantValidationContext context, ScalarConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantValidationDiagnostics<ScalarConstantDefinition, ScalarConstantLocations>.NameReservedByUnitInstancePluralForm(IQuantityConstantValidationContext context, ScalarConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantValidationDiagnostics<ScalarConstantDefinition, ScalarConstantLocations>.MultiplesReservedByUnitInstancePluralForm(IQuantityConstantValidationContext context, ScalarConstantDefinition definition) => null;
+    public Diagnostic? NameReservedByUnitInstanceName(IScalarConstantValidationContext context, ScalarConstantDefinition definition) => null;
+    public Diagnostic? MultiplesNameReservedByUnitInstanceName(IScalarConstantValidationContext context, ScalarConstantDefinition definition) => null;
+    public Diagnostic? UnrecognizedUnitInstanceName(IQuantityConstantValidationContext context, ScalarConstantDefinition definition) => null;
+    public Diagnostic? DuplicateName(IQuantityConstantValidationContext context, ScalarConstantDefinition definition) => null;
+    public Diagnostic? NameReservedByMultiples(IQuantityConstantValidationContext context, ScalarConstantDefinition definition) => null;
+    public Diagnostic? DuplicateMultiples(IQuantityConstantValidationContext context, ScalarConstantDefinition definition) => null;
+    public Diagnostic? MultiplesReservedByName(IQuantityConstantValidationContext context, ScalarConstantDefinition definition) => null;
+    public Diagnostic? NameReservedByUnitInstancePluralForm(IQuantityConstantValidationContext context, ScalarConstantDefinition definition) => null;
+    public Diagnostic? MultiplesReservedByUnitInstancePluralForm(IQuantityConstantValidationContext context, ScalarConstantDefinition definition) => null;
 }

@@ -46,6 +46,9 @@ public sealed class SharpMeasuresVectorGroupMemberAttribute : Attribute
     /// original vector group. If the vector group is not a specialized form of another vector group, this property has no effect. By default the behaviour mimics that of <see cref="InheritDerivations"/>,
     /// which in turn is <see langword="true"/> by default.</summary>
     public bool InheritDerivationsFromMembers { get; init; }
+    /// <summary>If the vector group is a specialized form of another vector group, this property dictates whether this member inherits the processes defined by the corresponding member of the
+    /// original vector group. If the vector group is not a specialized form of another vector group, this property has no effect. The default behaviour is <see langword="true"/>.</summary>
+    public bool InheritProcessesFromMembers { get; init; }
     /// <summary>If the vector group is a specialized form of another vector group, this property dictates whether this member inherits the constants defined by the corresponding member of the
     /// original vector group. If the vector group is not a specialized form of another vector group, this property has no effect. The default behaviour is <see langword="true"/>.</summary>
     public bool InheritConstantsFromMembers { get; init; }

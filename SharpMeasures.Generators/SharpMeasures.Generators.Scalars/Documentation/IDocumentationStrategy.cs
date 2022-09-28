@@ -1,5 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
+using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Units;
 
@@ -30,6 +31,8 @@ internal interface IDocumentationStrategy
 
     public abstract string Derivation(DerivedQuantitySignature signature, IReadOnlyList<string> parameterNames);
     public abstract string OperatorDerivation(OperatorDerivation derivation);
+
+    public abstract string Process(IProcessedQuantity process);
 
     public abstract string IsNaN();
     public abstract string IsZero();

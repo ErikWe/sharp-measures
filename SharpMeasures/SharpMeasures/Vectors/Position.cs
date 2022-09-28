@@ -2,7 +2,7 @@
 
 using SharpMeasures.Generators.Vectors;
 
-[SharpMeasuresVectorGroup(typeof(UnitOfLength))]
+[SharpMeasuresVectorGroup(typeof(UnitOfLength), DefaultUnitInstanceName = "Metre", DefaultUnitInstanceSymbol = "m")]
 public static partial class Position { }
 
 [SharpMeasuresVectorGroupMember(typeof(Position))]

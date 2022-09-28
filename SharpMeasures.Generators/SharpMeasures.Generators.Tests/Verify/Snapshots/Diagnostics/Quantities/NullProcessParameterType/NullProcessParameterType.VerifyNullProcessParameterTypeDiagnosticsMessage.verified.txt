@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1285,
+    Title: Invalid process parameter type,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: : (4,65)-(4,69),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: Expected a non-null type,
+    Message: Expected a non-null type,
+    Category: Usage,
+    CustomTags: []
+  }
+]

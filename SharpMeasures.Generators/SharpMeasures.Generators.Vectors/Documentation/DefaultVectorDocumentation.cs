@@ -1,5 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Vectors.Documentation;
 
+using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units;
@@ -97,7 +98,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
     };
 
     private string ComponentedHeader() => $"""
-        /// <summary>A measure of the {Dimension}-dimensional vector quantity {Type.Name}, composed of {ScalarReference}, and expressed in {UnitReference}.</summary>
+        /// <summary>A measure of the {Dimension}-dimensional vector quantity {Type.Name}, composed of {ScalarReference} and expressed in {UnitReference}.</summary>
         """;
 
     private string UncomponentedHeader() => $"""
@@ -110,7 +111,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         StringBuilder componentText = new();
         IterativeBuilding.AppendEnumerable(componentText, components(), ", ");
 
-        return $$"""/// <summary>The {{ScalarReference}} representing the constant {{constant.Name}}, equivalent to { ({{componentText}}) [<see cref="{{Unit.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/>] }.</summary>""";
+        return $$"""/// <summary>The {{ScalarReference}} representing { ({{componentText}}) [<see cref="{{Unit.FullyQualifiedName}}.{{constant.UnitInstanceName}}"/>] }.</summary>""";
 
         IEnumerable<string> components()
         {
@@ -221,7 +222,7 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
         /// <param name="{UnitParameterName}">The {UnitReference} in which the components of <see langword="this"/> are expressed.</param>
         """;
     public string InConstantMultiples(IVectorConstant constant) => $"""
-        /// <summary>The components of <see langword="this", expressed in multiples of <see cref="{VectorReference}.{constant.Name}"/>.</summary>
+        /// <summary>The components of <see langword="this"/>, expressed in multiples of <see cref="{VectorReference}.{constant.Name}"/>.</summary>
         """;
     public string InSpecifiedUnit(IUnitInstance unitInstance) => $"""
         /// <summary>The components of <see langword="this"/>, expressed in <see cref="{Unit.FullyQualifiedName}.{unitInstance.Name}"/>.</summary>
@@ -273,6 +274,8 @@ internal sealed class DefaultVectorDocumentation : IVectorDocumentationStrategy,
             /// <param name="b">The {{(firstComponentName == secondComponentName ? string.Empty : "second ")}}{{secondComponentName}} of { <paramref name="a"/> {{operatorSymbol}} <paramref name="b"/> }.</param>
             """;
     }
+
+    public string Process(IProcessedQuantity process) => $"""/// <summary>Processes the {VectorReference}.</summary>""";
 
     public string IsNaN() => $"""/// <inheritdoc cref="global::SharpMeasures.Vector{Dimension}.IsNaN"/>""";
     public string IsZero() => $"""/// <inheritdoc cref="global::SharpMeasures.Vector{Dimension}.IsZero"/>""";

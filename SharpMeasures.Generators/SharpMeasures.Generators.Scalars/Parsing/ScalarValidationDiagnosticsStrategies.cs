@@ -12,6 +12,7 @@ using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 using SharpMeasures.Generators.Scalars.Parsing.SharpMeasuresScalar;
 using SharpMeasures.Generators.Scalars.Parsing.SpecializedSharpMeasuresScalar;
+using SharpMeasures.Generators.Quantities.Parsing.Diagnostics.Empty.Validation;
 
 internal interface IScalarValidationDiagnosticsStrategy
 {

@@ -12,5 +12,8 @@ public interface IResolvedVectorType : IResolvedQuantityType
 
     public abstract NamedType? Scalar { get; }
 
+    public abstract IReadOnlyList<IProcessedQuantity> Processes { get; }
     public abstract IReadOnlyList<IVectorConstant> Constants { get; }
+
+    public abstract IReadOnlyList<IProcessedQuantity> InheritedProcesses { get; }
 }

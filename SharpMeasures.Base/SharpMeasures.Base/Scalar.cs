@@ -1,4 +1,4 @@
-﻿namespace SharpMeasures;
+namespace SharpMeasures;
 
 using SharpMeasures.Maths;
 
@@ -84,7 +84,7 @@ public readonly record struct Scalar : IScalarQuantity<Scalar>, IComparable<Scal
     /// <remarks>The behaviour is consistent with <see cref="double.CompareTo(double)"/>.</remarks>
     public int CompareTo(Scalar other) => Value.CompareTo(other.Value);
     /// <summary>Produces a description of <see langword="this"/> containing the represented value.</summary>
-    public override string ToString() => Value.ToString(CultureInfo.InvariantCulture);
+    public override string ToString() => Value.ToString(CultureInfo.CurrentCulture);
 
     /// <inheritdoc/>
     public Scalar Plus() => this;

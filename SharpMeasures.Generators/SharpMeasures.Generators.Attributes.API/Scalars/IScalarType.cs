@@ -8,11 +8,12 @@ public interface IScalarType : IQuantityType
 {
     new public abstract IScalar Definition { get; }
 
+    public abstract IReadOnlyList<IProcessedQuantity> Processes { get; }
     public abstract IReadOnlyList<IScalarConstant> Constants { get; }
 
     public abstract IReadOnlyList<IUnitInstanceInclusionList> UnitBaseInstanceInclusions { get; }
     public abstract IReadOnlyList<IUnitInstanceList> UnitBaseInstanceExclusions { get; }
 
-    public IReadOnlyDictionary<string, IScalarConstant> ConstantsByName { get; }
-    public IReadOnlyDictionary<string, IScalarConstant> ConstantsByMultiplesName { get; }
+    public abstract IReadOnlyDictionary<string, IScalarConstant> ConstantsByName { get; }
+    public abstract IReadOnlyDictionary<string, IScalarConstant> ConstantsByMultiplesName { get; }
 }

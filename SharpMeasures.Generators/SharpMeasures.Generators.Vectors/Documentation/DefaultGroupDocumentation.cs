@@ -58,11 +58,11 @@ internal sealed class DefaultGroupDocumentation : IGroupDocumentationStrategy, I
     };
 
     private string ComponentedHeader() => $"""
-        /// <summary>Root of a group of vector quantities, composed of {ScalarReference}, and expressed in {UnitReference}.</summary>
+        /// <summary>Root of a group of vector quantities, each composed of {ScalarReference} and expressed in {UnitReference}.</summary>
         """;
 
     private string UncomponentedHeader() => $"""
-        /// <summary>Root of a group of vector quantities, expressed in {UnitReference}.</summary>
+        /// <summary>Root of a group of vector quantities, each expressed in {UnitReference}.</summary>
         """;
 
     public string ScalarFactoryMethod(int dimension)

@@ -10,6 +10,6 @@ internal sealed class EmptyExcludeUnitBasesFilteringDiagnostics : IExcludeUnitBa
 
     private EmptyExcludeUnitBasesFilteringDiagnostics() { }
 
-    Diagnostic? IExcludeUnitBasesFilteringDiagnostics.UnrecognizedUnitInstance(IExcludeUnitBasesFilteringContext context, ExcludeUnitBasesDefinition definition, int index) => null;
-    Diagnostic? IExcludeUnitBasesFilteringDiagnostics.UnitInstanceAlreadyExcluded(IExcludeUnitBasesFilteringContext context, ExcludeUnitBasesDefinition definition, int index) => null;
+    public Diagnostic? UnrecognizedUnitInstance(IExcludeUnitBasesFilteringContext context, ExcludeUnitBasesDefinition definition, int index) => null;
+    public Diagnostic? UnitInstanceAlreadyExcluded(IExcludeUnitBasesFilteringContext context, ExcludeUnitBasesDefinition definition, int index) => null;
 }

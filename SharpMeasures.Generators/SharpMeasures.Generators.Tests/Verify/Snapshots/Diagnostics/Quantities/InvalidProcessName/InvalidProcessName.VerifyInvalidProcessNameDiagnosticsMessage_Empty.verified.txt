@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1280,
+    Title: Invalid name of process,
+    Severity: Error,
+    WarningLevel: 0,
+    Location: : (4,19)-(4,21),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: The name of the process must be defined,
+    Message: The name of the process must be defined,
+    Category: Naming,
+    CustomTags: []
+  }
+]

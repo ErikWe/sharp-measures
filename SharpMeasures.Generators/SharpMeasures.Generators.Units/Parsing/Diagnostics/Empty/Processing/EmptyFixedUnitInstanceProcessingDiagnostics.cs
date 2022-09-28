@@ -10,5 +10,5 @@ internal sealed class EmptyFixedUnitInstanceProcessingDiagnostics : AEmptyUnitIn
 
     private EmptyFixedUnitInstanceProcessingDiagnostics() { }
 
-    Diagnostic? IFixedUnitInstanceProcessingDiagnostics.UnitIsDerivable(IFixedUnitInstanceProcessingContext context, RawFixedUnitInstanceDefinition definition) => null;
+    public Diagnostic? UnitIsDerivable(IFixedUnitInstanceProcessingContext context, RawFixedUnitInstanceDefinition definition) => null;
 }

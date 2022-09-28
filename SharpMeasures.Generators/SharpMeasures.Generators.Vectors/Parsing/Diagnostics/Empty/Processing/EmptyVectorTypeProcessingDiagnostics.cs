@@ -10,5 +10,5 @@ internal sealed class EmptyVectorTypeProcessingDiagnostics : IVectorTypeProcessi
 
     private EmptyVectorTypeProcessingDiagnostics() { }
 
-    Diagnostic? IVectorTypeProcessingDiagnostics.ContradictoryUnitInstanceInclusionAndExclusion(IVector vector) => null;
+    public Diagnostic? ContradictoryUnitInstanceInclusionAndExclusion(IVector vector) => null;
 }

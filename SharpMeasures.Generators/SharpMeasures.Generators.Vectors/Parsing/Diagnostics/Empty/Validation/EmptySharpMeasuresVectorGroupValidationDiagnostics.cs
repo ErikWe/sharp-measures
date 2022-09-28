@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 
 using SharpMeasures.Generators.Attributes.Parsing;
 using SharpMeasures.Generators.Quantities;
-using SharpMeasures.Generators.Quantities.Parsing.DefaultUnitInstance;
 using SharpMeasures.Generators.Units;
 using SharpMeasures.Generators.Vectors.Parsing.SharpMeasuresVectorGroup;
 
@@ -14,11 +13,11 @@ internal sealed class EmptySharpMeasuresVectorGroupValidationDiagnostics : IShar
 
     private EmptySharpMeasuresVectorGroupValidationDiagnostics() { }
 
-    Diagnostic? ISharpMeasuresVectorGroupValidationDiagnostics.TypeAlreadyUnit(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorGroupValidationDiagnostics.TypeAlreadyScalar(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorGroupValidationDiagnostics.TypeAlreadyVector(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorGroupValidationDiagnostics.TypeNotUnit(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorGroupValidationDiagnostics.TypeNotScalar(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition) => null;
-    Diagnostic? ISharpMeasuresVectorGroupValidationDiagnostics.DifferenceNotVectorGroup(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition) => null;
-    Diagnostic? IDefaultUnitInstanceValidationDiagnostics.UnrecognizedDefaultUnitInstance(IProcessingContext context, IDefaultUnitInstanceDefinition definition, IUnitType unit) => null;
+    public Diagnostic? TypeAlreadyUnit(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition) => null;
+    public Diagnostic? TypeAlreadyScalar(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition) => null;
+    public Diagnostic? TypeAlreadyVector(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition) => null;
+    public Diagnostic? TypeNotUnit(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition) => null;
+    public Diagnostic? TypeNotScalar(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition) => null;
+    public Diagnostic? DifferenceNotVectorGroup(ISharpMeasuresVectorGroupValidationContext context, SharpMeasuresVectorGroupDefinition definition) => null;
+    public Diagnostic? UnrecognizedDefaultUnitInstance(IProcessingContext context, IDefaultUnitInstanceDefinition definition, IUnitType unit) => null;
 }

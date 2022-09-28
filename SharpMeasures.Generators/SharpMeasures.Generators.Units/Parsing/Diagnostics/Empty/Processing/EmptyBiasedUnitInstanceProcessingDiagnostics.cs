@@ -11,6 +11,6 @@ internal sealed class EmptyBiasedUnitInstanceProcessingDiagnostics : AEmptyModif
 
     private EmptyBiasedUnitInstanceProcessingDiagnostics() { }
 
-    Diagnostic? IBiasedUnitInstanceProcessingDiagnostics.EmptyExpression(IUnitInstanceProcessingContext context, RawBiasedUnitInstanceDefinition definition) => null;
-    Diagnostic? IBiasedUnitInstanceProcessingDiagnostics.NullExpression(IUnitInstanceProcessingContext context, RawBiasedUnitInstanceDefinition definition) => null;
+    public Diagnostic? EmptyExpression(IUnitInstanceProcessingContext context, RawBiasedUnitInstanceDefinition definition) => null;
+    public Diagnostic? NullExpression(IUnitInstanceProcessingContext context, RawBiasedUnitInstanceDefinition definition) => null;
 }

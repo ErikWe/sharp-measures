@@ -11,6 +11,6 @@ internal sealed class EmptyPrefixedUnitInstanceProcessingDiagnostics : AEmptyMod
 
     private EmptyPrefixedUnitInstanceProcessingDiagnostics() { }
 
-    Diagnostic? IPrefixedUnitInstanceProcessingDiagnostics.UnrecognizedBinaryPrefix(IUnitInstanceProcessingContext context, RawPrefixedUnitInstanceDefinition definition) => null;
-    Diagnostic? IPrefixedUnitInstanceProcessingDiagnostics.UnrecognizedMetricPrefix(IUnitInstanceProcessingContext context, RawPrefixedUnitInstanceDefinition definition) => null;
+    public Diagnostic? UnrecognizedBinaryPrefix(IUnitInstanceProcessingContext context, RawPrefixedUnitInstanceDefinition definition) => null;
+    public Diagnostic? UnrecognizedMetricPrefix(IUnitInstanceProcessingContext context, RawPrefixedUnitInstanceDefinition definition) => null;
 }

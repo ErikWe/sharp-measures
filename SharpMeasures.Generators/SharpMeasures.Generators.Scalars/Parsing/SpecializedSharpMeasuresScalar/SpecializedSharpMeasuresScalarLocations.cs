@@ -10,6 +10,7 @@ internal sealed record class SpecializedSharpMeasuresScalarLocations : AAttribut
     public MinimalLocation? OriginalQuantity { get; init; }
 
     public MinimalLocation? InheritDerivations { get; init; }
+    public MinimalLocation? InheritProcesses { get; init; }
     public MinimalLocation? InheritConstants { get; init; }
     public MinimalLocation? InheritConversions { get; init; }
     public MinimalLocation? InheritBases { get; init; }
@@ -32,6 +33,7 @@ internal sealed record class SpecializedSharpMeasuresScalarLocations : AAttribut
     public bool ExplicitlySetOriginalQuantity => OriginalQuantity is not null;
 
     public bool ExplicitlySetInheritDerivations => InheritDerivations is not null;
+    public bool ExplicitlySetInheritProcesses => InheritProcesses is not null;
     public bool ExplicitlySetInheritConstants => InheritConstants is not null;
     public bool ExplicitlySetInheritConversions => InheritConversions is not null;
     public bool ExplicitlySetInheritBases => InheritBases is not null;

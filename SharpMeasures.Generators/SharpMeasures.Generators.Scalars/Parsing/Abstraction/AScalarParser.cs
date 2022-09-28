@@ -6,6 +6,7 @@ using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.ProcessedQuantity;
 using SharpMeasures.Generators.Scalars.Parsing.ExcludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
@@ -37,6 +38,7 @@ internal abstract class AScalarParser<TDefinition, TProduct>
         }
 
         (var derivations, var derivationsForeignSymbols) = ParseDerivations(typeSymbol);
+        var processes = ParseProcesses(typeSymbol);
         var constants = ParseConstants(typeSymbol);
         (var conversions, var conversionsForeignSymbols) = ParseConversions(typeSymbol);
 
@@ -46,13 +48,13 @@ internal abstract class AScalarParser<TDefinition, TProduct>
         var includeUnitInstances = ParseIncludeUnits(typeSymbol);
         var excludeUnitInstances = ParseExcludeUnits(typeSymbol);
 
-        TProduct product = ProduceResult(typeSymbol.AsDefinedType(), scalar.Value, derivations, constants, conversions, includeUnitInstanceBases, excludeUnitInstanceBases, includeUnitInstances, excludeUnitInstances);
+        TProduct product = ProduceResult(typeSymbol.AsDefinedType(), scalar.Value, derivations, processes, constants, conversions, includeUnitInstanceBases, excludeUnitInstanceBases, includeUnitInstances, excludeUnitInstances);
         var foreignSymbols = scalarForeignSymbols.Concat(derivationsForeignSymbols).Concat(conversionsForeignSymbols);
 
         return (product, foreignSymbols);
     }
 
-    protected abstract TProduct ProduceResult(DefinedType type, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
+    protected abstract TProduct ProduceResult(DefinedType type, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawProcessedQuantityDefinition> processes, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
         IEnumerable<RawIncludeUnitBasesDefinition> baseInclusions, IEnumerable<RawExcludeUnitBasesDefinition> baseExclusions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions);
 
     protected abstract (Optional<TDefinition>, IEnumerable<INamedTypeSymbol>)  ParseScalar(INamedTypeSymbol typeSymbol);
@@ -67,6 +69,7 @@ internal abstract class AScalarParser<TDefinition, TProduct>
         return (rawDerivations, foreignSymbols);
     }
 
+    private static IEnumerable<RawProcessedQuantityDefinition> ParseProcesses(INamedTypeSymbol typeSymbol) => ProcessedQuantityParser.Parser.ParseAllOccurrences(typeSymbol);
     private static IEnumerable<RawScalarConstantDefinition> ParseConstants(INamedTypeSymbol typeSymbol) => ScalarConstantParser.Parser.ParseAllOccurrences(typeSymbol);
     private static (IEnumerable<RawConvertibleQuantityDefinition> Definitions, IEnumerable<INamedTypeSymbol> ForeignSymbols) ParseConversions(INamedTypeSymbol typeSymbol)
     {

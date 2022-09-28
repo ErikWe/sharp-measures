@@ -1,0 +1,15 @@
+﻿[
+  {
+    Id: Measures1283,
+    Title: Process with parameter cannot be a property,
+    Severity: Warning,
+    WarningLevel: 1,
+    Location: : (4,105)-(4,109),
+    Description: ,
+    HelpLink: ,
+    MessageFormat: As "{0}" defines parameters, it can not be defined as a property. Remove all parameters or do not define the process as a property.,
+    Message: As "Name" defines parameters, it can not be defined as a property. Remove all parameters or do not define the process as a property.,
+    Category: Usage,
+    CustomTags: []
+  }
+]

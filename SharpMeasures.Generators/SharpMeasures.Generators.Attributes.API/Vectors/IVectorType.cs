@@ -8,8 +8,9 @@ public interface IVectorType : IQuantityType
 {
     new public abstract IVector Definition { get; }
 
+    public abstract IReadOnlyList<IProcessedQuantity> Processes { get; }
     public abstract IReadOnlyList<IVectorConstant> Constants { get; }
 
-    public IReadOnlyDictionary<string, IVectorConstant> ConstantsByName { get; }
-    public IReadOnlyDictionary<string, IVectorConstant> ConstantsByMultiplesName { get; }
+    public abstract IReadOnlyDictionary<string, IVectorConstant> ConstantsByName { get; }
+    public abstract IReadOnlyDictionary<string, IVectorConstant> ConstantsByMultiplesName { get; }
 }

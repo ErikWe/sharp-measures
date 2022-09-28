@@ -34,12 +34,11 @@ internal static class GroupMemberResolver
             return new Optional<ResolvedVectorType>();
         }
 
-        var definedDerivations = vectorType.Derivations;
-        var constants = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Constants, static (vector) => Array.Empty<IVectorConstant>(), static (vector) => vector.Definition.InheritConstantsFromMembers, static (vector) => false, static (vector) => false);
-        var conversions = vectorType.Conversions;
+        var constants = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Constants, static (group) => Array.Empty<IVectorConstant>(), static (vector) => vector.Definition.InheritConstantsFromMembers, static (vector) => false, static (group) => false);
 
-        var inheritedDerivations = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Derivations, static (vector) => vector.Derivations, static (vector) => vector.Definition.InheritDerivationsFromMembers, static (vector) => vector.Definition.InheritDerivations, static (vector) => vector.Definition.InheritDerivations, onlyInherited: true);
-        var inheritedConversions = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Conversions, static (vector) => vector.Conversions, static (vector) => vector.Definition.InheritConversionsFromMembers, static (vector) => vector.Definition.InheritConversions, static (vector) => vector.Definition.InheritConversions, onlyInherited: true);
+        var inheritedDerivations = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Derivations, static (group) => group.Derivations, static (vector) => vector.Definition.InheritDerivationsFromMembers, static (vector) => vector.Definition.InheritDerivations, static (group) => group.Definition.InheritDerivations, onlyInherited: true);
+        var inheritedProcesses = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Processes, static (group) => Array.Empty<IProcessedQuantity>(), static (vector) => vector.Definition.InheritProcessesFromMembers, static (group) => false, static (group) => false, onlyInherited: true);
+        var inheritedConversions = CollectItems(vectorType, vectorPopulation, static (vector) => vector.Conversions, static (group) => group.Conversions, static (vector) => vector.Definition.InheritConversionsFromMembers, static (vector) => vector.Definition.InheritConversions, static (group) => group.Definition.InheritConversions, onlyInherited: true);
 
         var includedUnitInstances = ResolveUnitInstanceInclusions(vectorType, vectorPopulation, unit);
 
@@ -56,8 +55,8 @@ internal static class GroupMemberResolver
 
         (var forwardsCastBehaviour, var backwardsCastBehaviour) = GetSpecializationCastBehaviour(vectorType.Definition.VectorGroup, vectorPopulation);
 
-        return new ResolvedVectorType(vectorType.Type, vectorType.Definition.Dimension, vectorType.Definition.VectorGroup, unit.Type.AsNamedType(), originalQuantity: null, forwardsCastBehaviour, backwardsCastBehaviour, scalar, implementSum!.Value,
-            implementDifference!.Value, difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, definedDerivations, constants, conversions, inheritedDerivations, inheritedConversions, includedUnitInstances, generateDocumentation);
+        return new ResolvedVectorType(vectorType.Type, vectorType.Definition.Dimension, vectorType.Definition.VectorGroup, unit.Type.AsNamedType(), originalQuantity: null, forwardsCastBehaviour, backwardsCastBehaviour, scalar, implementSum!.Value, implementDifference!.Value,
+            difference, defaultUnitInstanceName, defaultUnitInstanceSymbol, vectorType.Derivations, vectorType.Processes, constants, vectorType.Conversions, inheritedDerivations, inheritedProcesses, inheritedConversions, includedUnitInstances, generateDocumentation);
     }
 
     private static (ConversionOperatorBehaviour ForwardsCastBehaviour, ConversionOperatorBehaviour BackwardsCastBehaviour) GetSpecializationCastBehaviour(NamedType group, IVectorPopulation vectorPopulation)

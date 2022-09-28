@@ -37,8 +37,8 @@ internal sealed class SharpMeasuresVectorGroupMemberProcesser : AProcesser<IProc
 
     private static SharpMeasuresVectorGroupMemberDefinition ProduceResult(RawSharpMeasuresVectorGroupMemberDefinition definition, int dimension)
     {
-        return new(definition.VectorGroup!.Value, definition.InheritDerivations, definition.InheritConversions, definition.InheritUnits, definition.InheritDerivationsFromMembers ?? definition.InheritDerivations, definition.InheritConstantsFromMembers,
-            definition.InheritConversionsFromMembers ?? definition.InheritConversions, definition.InheritUnitsFromMembers ?? definition.InheritUnits, dimension, definition.GenerateDocumentation, definition.Locations);
+        return new(definition.VectorGroup!.Value, definition.InheritDerivations, definition.InheritConversions, definition.InheritUnits, definition.InheritDerivationsFromMembers ?? definition.InheritDerivations, definition.InheritProcessesFromMembers,
+            definition.InheritConstantsFromMembers, definition.InheritConversionsFromMembers ?? definition.InheritConversions, definition.InheritUnitsFromMembers ?? definition.InheritUnits, dimension, definition.GenerateDocumentation, definition.Locations);
     }
 
     private static IValidityWithDiagnostics VerifyRequiredPropertiesSet(RawSharpMeasuresVectorGroupMemberDefinition definition)

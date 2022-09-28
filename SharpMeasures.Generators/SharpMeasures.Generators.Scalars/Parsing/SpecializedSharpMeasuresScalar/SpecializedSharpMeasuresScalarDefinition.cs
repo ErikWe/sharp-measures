@@ -8,6 +8,7 @@ internal sealed record class SpecializedSharpMeasuresScalarDefinition : AAttribu
     public NamedType OriginalQuantity { get; }
 
     public bool InheritDerivations { get; }
+    public bool InheritProcesses { get; }
     public bool InheritConstants { get; }
     public bool InheritConversions { get; }
     public bool InheritBases { get; }
@@ -34,12 +35,13 @@ internal sealed record class SpecializedSharpMeasuresScalarDefinition : AAttribu
     IScalarSpecializationLocations IScalarSpecialization.Locations => Locations;
     IDefaultUnitInstanceLocations IDefaultUnitInstanceDefinition.DefaultUnitInstanceLocations => Locations;
 
-    public SpecializedSharpMeasuresScalarDefinition(NamedType originalScalar, bool inheritDerivations, bool inheritConstants, bool inheritConversions, bool inheritBases, bool inheritUnits, ConversionOperatorBehaviour forwardsCastOperatorBehaviour, ConversionOperatorBehaviour backwardsCastOperatorBehaviour, NamedType? vector, bool? implementSum,
+    public SpecializedSharpMeasuresScalarDefinition(NamedType originalScalar, bool inheritDerivations, bool inheritProcesses, bool inheritConstants, bool inheritConversions, bool inheritBases, bool inheritUnits, ConversionOperatorBehaviour forwardsCastOperatorBehaviour, ConversionOperatorBehaviour backwardsCastOperatorBehaviour, NamedType? vector, bool? implementSum,
         bool? implementDifference, NamedType? difference, string? defaultUnitInstanceName, string? defaultUnitInstanceSymbol, bool? generateDocumentation, SpecializedSharpMeasuresScalarLocations locations) : base(locations)
     {
         OriginalQuantity = originalScalar;
 
         InheritDerivations = inheritDerivations;
+        InheritProcesses = inheritProcesses;
         InheritConstants = inheritConstants;
         InheritConversions = inheritConversions;
         InheritBases = inheritBases;

@@ -10,6 +10,7 @@ using SharpMeasures.Generators.Scalars.Parsing.IncludeUnitBases;
 using SharpMeasures.Generators.Scalars.Parsing.ScalarConstant;
 
 using System.Collections.Generic;
+using SharpMeasures.Generators.Quantities.Parsing.ProcessedQuantity;
 
 internal record class ARawScalarType<TDefinition>
 {
@@ -18,6 +19,7 @@ internal record class ARawScalarType<TDefinition>
     public TDefinition Definition { get; }
 
     public IEnumerable<RawDerivedQuantityDefinition> Derivations { get; }
+    public IEnumerable<RawProcessedQuantityDefinition> Processes { get; }
     public IEnumerable<RawScalarConstantDefinition> Constants { get; }
     public IEnumerable<RawConvertibleQuantityDefinition> Conversions { get; }
 
@@ -27,7 +29,7 @@ internal record class ARawScalarType<TDefinition>
     public IEnumerable<RawIncludeUnitsDefinition> UnitInstanceInclusions { get; }
     public IEnumerable<RawExcludeUnitsDefinition> UnitInstanceExclusions { get; }
 
-    protected ARawScalarType(DefinedType type, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
+    protected ARawScalarType(DefinedType type, TDefinition definition, IEnumerable<RawDerivedQuantityDefinition> derivations, IEnumerable<RawProcessedQuantityDefinition> processes, IEnumerable<RawScalarConstantDefinition> constants, IEnumerable<RawConvertibleQuantityDefinition> conversions,
         IEnumerable<RawIncludeUnitBasesDefinition> unitBaseInstanceInclusions, IEnumerable<RawExcludeUnitBasesDefinition> unitBaseInstanceExclusions, IEnumerable<RawIncludeUnitsDefinition> unitInstanceInclusions, IEnumerable<RawExcludeUnitsDefinition> unitInstanceExclusions)
     {
         Type = type;
@@ -35,6 +37,7 @@ internal record class ARawScalarType<TDefinition>
         Definition = definition;
 
         Derivations = derivations.AsEquatable();
+        Processes = processes.AsEquatable();
         Constants = constants.AsEquatable();
         Conversions = conversions.AsEquatable();
 

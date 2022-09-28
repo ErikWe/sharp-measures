@@ -8,6 +8,7 @@ public interface IVectorGroupMemberType : IQuantityType
 {
     new public abstract IVectorGroupMember Definition { get; }
 
+    public abstract IReadOnlyList<IProcessedQuantity> Processes { get; }
     public abstract IReadOnlyList<IVectorConstant> Constants { get; }
 
     public IReadOnlyDictionary<string, IVectorConstant> ConstantsByName { get; }

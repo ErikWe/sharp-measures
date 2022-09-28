@@ -18,6 +18,7 @@ internal sealed record class SymbolicSharpMeasuresVectorGroupMemberDefinition : 
     public bool InheritUnits { get; init; } = true;
 
     public bool? InheritDerivationsFromMembers { get; init; }
+    public bool InheritProcessesFromMembers { get; init; } = true;
     public bool InheritConstantsFromMembers { get; init; } = true;
     public bool? InheritConversionsFromMembers { get; init; }
     public bool? InheritUnitsFromMembers { get; init; }

@@ -11,12 +11,12 @@ internal sealed class EmptyVectorConstantValidationDiagnostics : IVectorConstant
 
     private EmptyVectorConstantValidationDiagnostics() { }
 
-    Diagnostic? IVectorConstantValidationDiagnostics.InvalidConstantDimensionality(IVectorConstantValidationContext context, VectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantValidationDiagnostics<VectorConstantDefinition, VectorConstantLocations>.UnrecognizedUnitInstanceName(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantValidationDiagnostics<VectorConstantDefinition, VectorConstantLocations>.DuplicateName(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantValidationDiagnostics<VectorConstantDefinition, VectorConstantLocations>.NameReservedByMultiples(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantValidationDiagnostics<VectorConstantDefinition, VectorConstantLocations>.DuplicateMultiples(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantValidationDiagnostics<VectorConstantDefinition, VectorConstantLocations>.MultiplesReservedByName(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantValidationDiagnostics<VectorConstantDefinition, VectorConstantLocations>.NameReservedByUnitInstancePluralForm(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => null;
-    Diagnostic? IQuantityConstantValidationDiagnostics<VectorConstantDefinition, VectorConstantLocations>.MultiplesReservedByUnitInstancePluralForm(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => null;
+    public Diagnostic? InvalidConstantDimensionality(IVectorConstantValidationContext context, VectorConstantDefinition definition) => null;
+    public Diagnostic? UnrecognizedUnitInstanceName(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => null;
+    public Diagnostic? DuplicateName(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => null;
+    public Diagnostic? NameReservedByMultiples(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => null;
+    public Diagnostic? DuplicateMultiples(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => null;
+    public Diagnostic? MultiplesReservedByName(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => null;
+    public Diagnostic? NameReservedByUnitInstancePluralForm(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => null;
+    public Diagnostic? MultiplesReservedByUnitInstancePluralForm(IQuantityConstantValidationContext context, VectorConstantDefinition definition) => null;
 }

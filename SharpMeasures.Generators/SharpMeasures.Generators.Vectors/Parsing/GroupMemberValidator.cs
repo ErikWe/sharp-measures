@@ -72,7 +72,7 @@ internal sealed class GroupMemberValidator
         var constants = CommonValidation.ValidateConstants(vectorType.Type, vectorType.Definition.Dimension, unit, allUnits, vectorType.Constants, inheritedConstants, DiagnosticsStrategy);
         var conversions = CommonValidation.ValidateConversions(vectorType.Type, vectorType.Definition.Dimension, vectorType.Conversions, vectorPopulation, DiagnosticsStrategy);
 
-        GroupMemberType product = new(vectorType.Type, vector.Result, derivations.Result, constants.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
+        GroupMemberType product = new(vectorType.Type, vector.Result, derivations.Result, vectorType.Processes, constants.Result, conversions.Result, unitInstanceInclusions.Result, unitInstanceExclusions.Result);
         var allDiagnostics = vector.Concat(derivations).Concat(constants).Concat(conversions).Concat(unitInstanceInclusions).Concat(unitInstanceExclusions);
 
         return OptionalWithDiagnostics.Result(product, allDiagnostics);

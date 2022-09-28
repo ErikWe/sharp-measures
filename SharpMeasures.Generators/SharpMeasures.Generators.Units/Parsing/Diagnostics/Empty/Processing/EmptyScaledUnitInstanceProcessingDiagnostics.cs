@@ -11,6 +11,6 @@ internal sealed class EmptyScaledUnitInstanceProcessingDiagnostics : AEmptyModif
 
     private EmptyScaledUnitInstanceProcessingDiagnostics() { }
 
-    Diagnostic? IScaledUnitInstanceProcessingDiagnostics.EmptyExpression(IUnitInstanceProcessingContext context, RawScaledUnitInstanceDefinition definition) => null;
-    Diagnostic? IScaledUnitInstanceProcessingDiagnostics.NullExpression(IUnitInstanceProcessingContext context, RawScaledUnitInstanceDefinition definition) => null;
+    public Diagnostic? EmptyExpression(IUnitInstanceProcessingContext context, RawScaledUnitInstanceDefinition definition) => null;
+    public Diagnostic? NullExpression(IUnitInstanceProcessingContext context, RawScaledUnitInstanceDefinition definition) => null;
 }

@@ -10,6 +10,6 @@ internal sealed class EmptySharpMeasuresUnitValidationDiagnostics : ISharpMeasur
 
     private EmptySharpMeasuresUnitValidationDiagnostics() { }
 
-    Diagnostic? ISharpMeasuresUnitValidationDiagnostics.QuantityNotScalar(ISharpMeasuresUnitValidationContext context, SharpMeasuresUnitDefinition definition) => null;
-    Diagnostic? ISharpMeasuresUnitValidationDiagnostics.QuantityBiased(ISharpMeasuresUnitValidationContext context, SharpMeasuresUnitDefinition definition) => null;
+    public Diagnostic? QuantityNotScalar(ISharpMeasuresUnitValidationContext context, SharpMeasuresUnitDefinition definition) => null;
+    public Diagnostic? QuantityBiased(ISharpMeasuresUnitValidationContext context, SharpMeasuresUnitDefinition definition) => null;
 }

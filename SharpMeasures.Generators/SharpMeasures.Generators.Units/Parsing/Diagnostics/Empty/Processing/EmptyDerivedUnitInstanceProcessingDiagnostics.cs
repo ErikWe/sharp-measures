@@ -11,7 +11,7 @@ internal sealed class EmptyDerivedUnitInstanceProcessingDiagnostics : AEmptyUnit
 
     private EmptyDerivedUnitInstanceProcessingDiagnostics() { }
 
-    Diagnostic? IDerivedUnitInstanceProcessingDiagnostics.EmptyUnitList(IUnitInstanceProcessingContext context, RawDerivedUnitInstanceDefinition definition) => null;
-    Diagnostic? IDerivedUnitInstanceProcessingDiagnostics.EmptyUnitsElement(IUnitInstanceProcessingContext context, RawDerivedUnitInstanceDefinition definition, int index) => null;
-    Diagnostic? IDerivedUnitInstanceProcessingDiagnostics.NullUnitsElement(IUnitInstanceProcessingContext context, RawDerivedUnitInstanceDefinition definition, int index) => null;
+    public Diagnostic? EmptyUnitList(IUnitInstanceProcessingContext context, RawDerivedUnitInstanceDefinition definition) => null;
+    public Diagnostic? EmptyUnitsElement(IUnitInstanceProcessingContext context, RawDerivedUnitInstanceDefinition definition, int index) => null;
+    public Diagnostic? NullUnitsElement(IUnitInstanceProcessingContext context, RawDerivedUnitInstanceDefinition definition, int index) => null;
 }

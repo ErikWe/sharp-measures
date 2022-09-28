@@ -8,6 +8,7 @@ using SharpMeasures.Generators.Quantities.Parsing.ConvertibleQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.Quantities.Parsing.ExcludeUnits;
 using SharpMeasures.Generators.Quantities.Parsing.IncludeUnits;
+using SharpMeasures.Generators.Quantities.Parsing.ProcessedQuantity;
 using SharpMeasures.Generators.Vectors.Parsing.ConvertibleVector;
 using SharpMeasures.Generators.Vectors.Parsing.VectorConstant;
 
@@ -20,6 +21,13 @@ internal static class CommonProcessing
         DerivedQuantityProcessingContext processingContext = new(type, QuantityType.Vector);
 
         return ProcessingFilter.Create(new DerivedQuantityProcesser(diagnosticsStrategy.DerivedQuantityDiagnostics)).Filter(processingContext, rawDefinitions);
+    }
+
+    public static IResultWithDiagnostics<IReadOnlyList<ProcessedQuantityDefinition>> ProcessProcesses(DefinedType type, IEnumerable<RawProcessedQuantityDefinition> rawDefinitions, IVectorProcessingDiagnosticsStrategy diagnosticsStrategy)
+    {
+        ProcessedQuantityProcessingContext processingContext = new(type);
+
+        return ProcessingFilter.Create(new ProcessedQuantityProcesser(diagnosticsStrategy.ProcessedQuantityDiagnostics)).Filter(processingContext, rawDefinitions);
     }
 
     public static IResultWithDiagnostics<IReadOnlyList<VectorConstantDefinition>> ProcessConstants(DefinedType type, IEnumerable<RawVectorConstantDefinition> rawDefinitions, NamedType? unit, IVectorProcessingDiagnosticsStrategy diagnosticsStrategy)

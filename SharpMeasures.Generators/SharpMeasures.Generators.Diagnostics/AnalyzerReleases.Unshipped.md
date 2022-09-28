@@ -63,6 +63,14 @@ Measures1263 | Usage | Error | Expression could not be interpreted
 Measures1264 | Usage | Error | Expression contains constant
 Measures1265 | Usage | Error | Derivation contains incompatible quantities
 Measures1266 | Usage | Error | Derivation results in an unexpected quantity
+Measures1280 | Naming | Error | Invalid name of process
+Measures1281 | Naming | Error | Duplicate name of process
+Measures1282 | Usage | Error | Invalid processing expression
+Measures1283 | Usage | Warning | Process with parameter cannot be a property
+Measures1284 | Usage | Error | Process has unmatched parameter definitions
+Measures1285 | Usage | Error | Invalid process parameter type
+Measures1286 | Naming | Error | Invalid name of process parameter
+Measures1287 | Naming | Error | Duplicate process parameter name
 Measures1420 | Usage | Error | Invalid vector dimension
 Measures1421 | Usage | Error | Missing vector dimension
 Measures1422 | Usage | Error | Vector of unexpected dimension

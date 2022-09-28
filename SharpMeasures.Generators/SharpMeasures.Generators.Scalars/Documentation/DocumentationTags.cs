@@ -1,5 +1,6 @@
 ﻿namespace SharpMeasures.Generators.Scalars.Documentation;
 
+using SharpMeasures.Generators.Quantities;
 using SharpMeasures.Generators.Quantities.Parsing.DerivedQuantity;
 using SharpMeasures.Generators.SourceBuilding;
 using SharpMeasures.Generators.Units;
@@ -38,6 +39,8 @@ internal sealed class DocumentationTags : IDocumentationStrategy, IEquatable<Doc
 
     public string Derivation(DerivedQuantitySignature signature, IReadOnlyList<string> parameterNames) => $"Derivation_{ParseDerivableSignature(signature)}";
     public string OperatorDerivation(OperatorDerivation derivation) => $"OperatorDerivationLHS_{derivation.Result.Name}_{derivation.RightHandSide.Name}";
+
+    public string Process(IProcessedQuantity process) => $"Process_{process.Name}";
 
     public string IsNaN() => "IsNaN";
     public string IsZero() => "IsZero";

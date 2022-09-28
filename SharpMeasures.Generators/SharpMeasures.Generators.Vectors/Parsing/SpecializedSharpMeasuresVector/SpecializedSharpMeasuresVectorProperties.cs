@@ -12,6 +12,7 @@ internal static class SpecializedSharpMeasuresVectorProperties
     {
         OriginalVector,
         InheritDerivations,
+        InheritProcesses,
         InheritConstants,
         InheritConversions,
         InheritUnits,
@@ -38,6 +39,13 @@ internal static class SpecializedSharpMeasuresVectorProperties
         name: nameof(SpecializedSharpMeasuresVectorAttribute.InheritDerivations),
         setter: static (definition, inheritDerivations) => definition with { InheritDerivations = inheritDerivations },
         locator: static (locations, inheritDerivationsLocation) => locations with { InheritDerivations = inheritDerivationsLocation }
+    );
+
+    private static SpecializedSharpMeasuresVectorProperty<bool> InheritProcesses { get; } = new
+    (
+        name: nameof(SpecializedSharpMeasuresVectorAttribute.InheritProcesses),
+        setter: static (definition, inheritProcesses) => definition with { InheritProcesses = inheritProcesses },
+        locator: static (locations, inheritProcessesLocation) => locations with { InheritProcesses = inheritProcessesLocation }
     );
 
     private static SpecializedSharpMeasuresVectorProperty<bool> InheritConstants { get; } = new
